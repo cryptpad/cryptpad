@@ -479,28 +479,46 @@ define([
                     value: ''
                 };
 
-                // Hidden hash: can't find the channel in our drives: abort
-                var noPadData = function (err) {
-                    sframeChan.event("EV_PAD_NODATA", err);
-                };
+                var getRevocable = function (w) {
+                    var correctPassword = waitFor();
 
-                var newHref;
-                var expire;
-                nThen(function (w) {
-                    // XXX REVOCATION
-                    if (parsed.hashData.version !== 5) { return; }
-                    var seed = parsed.hashData.key;
-                    Cryptpad.universal.execCommand({
-                        type: 'revocation',
-                        data: {
-                            cmd: 'LOAD_PAD',
+                    var revCommand = function (cmd, data, cb) {
+                        Cryptpad.universal.execCommand({
+                            type: 'revocation',
                             data: {
-                                seed: seed
+                                cmd: cmd,
+                                data: data
                             }
-                        }
+                        }, cb)
+                    };
+
+                    var lastUid;
+                    sframeChan.on('Q_PAD_PASSWORD_VALUE', function (data, cb) {
+                        password = data;
+                        revCommand('PASSWORD', {
+                            uid: lastUid,
+                            pw: password
+                        });
+                    });
+                    var onEvent = function (obj) {
+                        if (obj.type !== 'revocation') { return; }
+                        var q = obj.data;
+                        if (q.ev !== 'ASK_PASSWORD') { return; }
+                        lastUid = q.data && q.data.uid;
+                        var oldPw = q.data && q.data.pw;
+                        if (oldPw) { passwordCfg.value = oldPw; }
+
+                        sframeChan.event("EV_PAD_PASSWORD", passwordCfg);
+                    };
+                    Cryptpad.universal.onEvent.reg(onEvent);
+
+                    var seed = parsed.revocable && parsed.hashData.key;
+                    var chan = parsed.hashData && parsed.hashData.channel;
+                    revCommand('LOAD_PAD', {
+                        seed: seed,
+                        chan: chan
                     }, w(function (obj) {
                         // XXX fix with password workflow
-                        w.abort();
                         if (obj && obj.error) {
                             if (obj.error === 'EFORBIDDEN') {
                                 sframeChan.event("EV_RESTRICTED_ERROR");
@@ -508,6 +526,9 @@ define([
                             console.error(obj.error);
                             return;
                         }
+
+                        Cryptpad.universal.onEvent.unreg(onEvent);
+                        correctPassword();
 
                         // XXX get access type (sf/team/user/link)
                         currentPad.type = 'link';
@@ -530,8 +551,22 @@ define([
                                 keys: secret.revocation
                             }
                         };
-                        done();
                     }));
+
+                };
+
+                // Hidden hash: can't find the channel in our drives: abort
+                var noPadData = function (err) {
+                    sframeChan.event("EV_PAD_NODATA", err);
+                };
+
+                var newHref;
+                var expire;
+                var revocable;
+                nThen(function (w) {
+                    return;
+                    // XXX REVOCATION
+                    if (parsed.hashData.version !== 5) { return; }
                 }).nThen(function (w) {
                     // If we're using an unsafe link, get pad attribute
                     if (parsed.hashData.key || !parsed.hashData.channel) {
@@ -548,6 +583,7 @@ define([
                         edit: edit,
                         file: parsed.hashData.type === 'file'
                     }, w(function (err, res) {
+                        console.error(res);
                         // Error while getting data? abort
                         if (err || !res || res.error) {
                             w.abort();
@@ -560,6 +596,9 @@ define([
                         }
                         // Data found but weaker? warn
                         expire = res.expire;
+
+                        if (res.r) { revocable = true; return; } // Revocable
+
                         if (edit && !res.href) {
                             newHref = res.roHref;
                             return;
@@ -576,13 +615,25 @@ define([
                         currentPad.href = parsed.getUrl(opts);
                         currentPad.hash = parsed.hashData && parsed.hashData.getHash(opts);
                     }
+                    var chan = parsed.hashData.version === 3 && parsed.hashData.channel;
+                    var url = revocable ? null : parsed.getUrl();
                     Cryptpad.getPadAttribute('channel', w(function (err, data) {
+                        console.error(err, data);
                         stored = (!err && typeof (data) === "string");
-                    }));
+                    }), null, chan);
                     Cryptpad.getPadAttribute('password', w(function (err, val) {
+                        console.error(err, val);
                         password = val;
-                    }), parsed.getUrl());
+                    }), url, chan);
                 }).nThen(function (w) {
+                    console.error(expire, password);
+                    // Revocable pad, safe (revocable) or unsafe (parsed.revocable) link
+                    if (parsed.revocable || revocable) {
+                        console.error(parsed.revocable, revocable);
+                        return void getRevocable(w);
+                    }
+
+
                     // If we've already tested this password and this is a redirect, force
                     if (typeof(newPadPassword) !== "undefined" && newPadPasswordForce) {
                         password = newPadPassword;
@@ -1244,7 +1295,8 @@ define([
                         var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
                         if (useUnsafe !== true && window.history && window.history.replaceState) {
                             if (!/^#/.test(hash)) { hash = '#' + hash; }
-                            window.history.replaceState({}, window.document.title, hash);
+                            //window.history.replaceState({}, window.document.title, hash);
+                            // XXX REVOCATION USE SAFE HERE
                         }
                     }
                     cb({error: err});

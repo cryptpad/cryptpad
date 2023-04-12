@@ -85,7 +85,21 @@ id: {
         });
     };
 
-    var isValidRotateMessage = function (ctx, log, newSeeds, channel, _cb) {
+
+    var askPassword = function (ctx, clients, cb) {
+        var uid = Util.uid();
+        ctx.passwords.expect(uid, cb)
+        ctx.emit('ASK_PASSWORD', {
+            uid: uid
+        }, clients);
+    };
+    var onPassword = function (ctx, data) {
+        var uid = data.uid;
+        var pw = data.pw;
+        ctx.passwords.handle(uid, pw);
+    };
+
+    var isValidRotateMessage = function (ctx, clients, log, newSeeds, channel, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
         var rotateUid = newSeeds.uid;
@@ -132,8 +146,20 @@ id: {
             } else {
                 valid = isValidPw(pw);
             }
-            if (valid) { return void cb(true, pw); }
-            return void cb(false);
+            if (valid) {
+                if (!knownPasswords.includes(pw)) {
+                    return ctx.Store.setPadAttribute(null, {
+                        channel: channel,
+                        attr: 'password',
+                        value: pw
+                    }, function () {
+                        console.error('stored');
+                        cb(true, pw);
+                    });
+                }
+                return void cb(true, pw);
+            }
+            //return void cb(false);
             /*
             // XXX check last password from drive
             // XXX then start asking passwords to the user
@@ -143,23 +169,24 @@ id: {
 
 
             // TODO since we need to support old pads, we may have to move all the password logic to the worker, even for old pads, to avoid duplicate code
-            askPassword(ctx, function (pw) {
+            */
+            askPassword(ctx, clients, function (pw) {
+                console.error(pw);
                 check(pw);
             });
-            */
         };
         check(false);
     };
 
 
     var getChannelFromBox = function (messages) {
-        if (!Array.isArray(messages) || !messages.length) { return void cb('EEMPTY'); }
+        if (!Array.isArray(messages) || !messages.length) { return; }
         var init = messages[0];
         if (init.type !== 'INIT') { return; }
         var content = init.content;
         return content && content.doc && content.doc.channel;
     };
-    var getMailboxParser = function (ctx, onNewKeys) {
+    var getMailboxParser = function (ctx, clients, onNewKeys) {
         var data = {
             doc: {}
         };
@@ -169,7 +196,7 @@ id: {
             // Only the INIT message can add a private key AND must be line 0
             INIT: function (msg, log, channel, i, waitFor) {
                 if (i || !msg.content || !msg.content.doc || !msg.content.edPrivate) { return; }
-                isValidRotateMessage(ctx, log, msg.content.doc, channel,
+                isValidRotateMessage(ctx, clients, log, msg.content.doc, channel,
                                         waitFor(function (valid, password) {
                     if (!valid) { return; }
                     data = JSON.parse(JSON.stringify(msg.content));
@@ -180,7 +207,7 @@ id: {
                 if (!i || !data.doc) { return; }
                 // Trust that all the keys you need are there
                 // Make sure it was sent by the same moderator than in the moderators log
-                isValidRotateMessage(ctx, log, msg.content, channel, waitFor(function (valid, password) {
+                isValidRotateMessage(ctx, clients, log, msg.content, channel, waitFor(function (valid, password) {
                     if (!valid) { return; }
                     data.doc = msg.content
                     data.password = password;
@@ -264,7 +291,7 @@ id: {
         var cb = Util.once(Util.mkAsync(_cb));
 
         var seed = boxData.seed;
-
+console.error(seed);
 
         var secret = Hash.getRevocable('pad', seed);
 
@@ -308,15 +335,18 @@ id: {
             cb({ error: info.type });
         };
 
-        box.parse = getMailboxParser(ctx, function (keys) {
+        box.parse = getMailboxParser(ctx, box.clients, function (keys) {
             if (keys === false) {
                 // XXX revoked
                 // XXX close mailbox, etc.
                 box.revoked = true;
                 cb({error: 'EFORBIDDEN'});
             }
-            if (first) { cb(keys); }
-            first = false;
+            if (first) {
+                cb(keys);
+                first = false;
+                return;
+            }
             onNewKeys(keys);
         });
 
@@ -329,6 +359,7 @@ id: {
             if (box.ready) { return; }
             box.ready = true;
 
+            console.error(box.messages);
             var padChan = getChannelFromBox(box.messages);
             if (!padChan) { return void cb({error: 'ENOCHAN'}); }
 
@@ -346,7 +377,11 @@ id: {
             box.messages.push(parsed);
             if (box.ready) { box.parse.addMessages([parsed]); }
         };
-        CPNetflux.start(config);
+        config.onConnectionChange = function (info) {
+            console.warn(secret.channel, info.state, info.myID, ctx.store.network.myID);
+        };
+
+        box.cpNf = CPNetflux.start(config);
 
     };
 
@@ -427,8 +462,10 @@ id: {
         accesses.map(function (obj) {
             n = n(function (waitFor) {
                 loadMailbox(ctx, clientId, obj, function (newKeys) {
-                    // XXX called when we received new keys in real time
-                }, waitFor());
+                    data.onNewKeysEvt.fire(newKeys);
+                }, waitFor(function () {
+
+                }));
             }).nThen;
         });
 
@@ -454,16 +491,48 @@ id: {
         loadMailbox(ctx, clientId, {
             seed: seed
         }, function (newKeys) {
-            // XXX called when we received new keys in real time
+            data.onNewKeysEvt.fire(newKeys);
         }, function (obj) {
             if (obj && obj.error) { return void cb(obj); }
-            // XXX we now know the channel ID and we can load the other mailboxes on this channel
             console.error(obj);
             var chan = obj.channel;
-            loadMailboxesFromChannel(ctx, {channel: chan}, clientId, function (bestKeys) {
+            loadMailboxesFromChannel(ctx, {
+                channel: chan,
+                onNewKeysEvt: data.onNewKeysEvt
+            }, clientId, function (bestKeys) {
                 cb(bestKeys);
             });
         });
+    };
+
+    var loadPad = function (ctx, data, clientId, cb) {
+        var seed = data.seed;
+        var chan = data.chan;
+        var onNewKeysEvt = Util.mkEvent();
+        onNewKeysEvt.reg(function (newKeys) {
+            // XXX REVOCATION all mailboxes can fire at once
+            console.error('NEW KEYS', newKeys);
+        });
+
+
+        if (chan) {
+            loadMailboxesFromChannel(ctx, {
+                channel: chan,
+                onNewKeysEvt: onNewKeysEvt
+            }, clientId, function (bestKeys) {
+                cb(bestKeys);
+            });
+            return;
+        }
+
+        loadPadFromBox(ctx, {
+            seed: seed,
+            onNewKeysEvt: onNewKeysEvt
+        }, clientId, function (bestKeys) {
+            cb(bestKeys);
+        });
+
+
     };
 
 
@@ -770,17 +839,17 @@ console.error(keyHashStr);
         });
     };
 
+
+    var leaveBox = function (ctx, box, boxChannel) {
+        if (box.cpNf) { box.cpNf.stop(); }
+        delete ctx.mailboxes[boxChannel];
+    };
     var leaveChannel = function (ctx, padChan) {
         // Leave channel and prevent reconnect when we leave a pad
         Object.keys(ctx.mailboxes).some(function (boxChannel) {
             var box = ctx.mailboxes[boxChannel];
             if (box.padChan !== padChan) { return; }
-            if (box.wc) { box.wc.leave(); }
-            if (box.onReconnect) {
-                var network = ctx.store.network;
-                network.off('reconnect', box.onReconnect);
-            }
-            delete ctx.mailboxes[boxChannel];
+            leaveBox(ctx, box, boxChannel);
             return true;
         });
     };
@@ -796,14 +865,7 @@ console.error(keyHashStr);
         for (var k in ctx.mailboxes) {
             box = ctx.mailboxes[k];
             box.clients = box.clients.filter(filter);
-            if (box.clients.length === 0) {
-                if (box.wc) { box.wc.leave(); }
-                if (box.onReconnect) {
-                    var network = ctx.store.network;
-                    network.off('reconnect', box.onReconnect);
-                }
-                delete ctx.mailboxes[k];
-            }
+            if (box.clients.length === 0) { leaveBox(ctx, box, k); }
         }
     };
 
@@ -819,6 +881,7 @@ console.error(keyHashStr);
             store: cfg.store,
             Store: cfg.Store,
             emit: emit,
+            passwords: Util.response(function (l, i) { console.error('REV_PW_' + l, i); }),
             mailboxes: {},
         };
 
@@ -841,10 +904,13 @@ console.error(keyHashStr);
                 return void addAccess(ctx, data, clientId, cb);
             }
             if (cmd === 'LOAD_PAD') {
-                return void loadPadFromBox(ctx, data, clientId, cb);
+                return void loadPad(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_PAD') {
                 return void createPad(ctx, data, clientId, cb);
+            }
+            if (cmd === 'PASSWORD') {
+                return void onPassword(ctx, data, clientId, cb);
             }
         };
 

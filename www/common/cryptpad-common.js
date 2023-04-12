@@ -763,7 +763,7 @@ define([
     };
     common.getPadAttribute = function (attr, cb, href, channel) {
         href = Hash.getRelativeHref(href || currentPad.href);
-        if (!href) {
+        if (!href && !channel) {
             return void cb('E404');
         }
         postMessage("GET_PAD_ATTRIBUTE", {

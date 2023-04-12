@@ -1188,10 +1188,7 @@ console.error(el, data, app, isRo);
 
             var obj = { t: APP.team };
 
-            if (!data.roHref && parsed.revocable) { // Revocable
-                if (isRo) { obj.mode = 'view'; } // force view VS use best rights
-                return void common.openURL(Hash.getNewPadURL(href, obj));
-            }
+            if (isRo && parsed.revocable) { obj.mode = 'view'; }
 
 
             var priv = metadataMgr.getPrivateData();
@@ -1201,7 +1198,8 @@ console.error(el, data, app, isRo);
             }
 
             // Get hidden hash
-            var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+            var secret = parsed.revocable ? { key: true, channel: data.channel }
+                                : Hash.getSecrets(parsed.type, parsed.hash, data.password);
             var opts = {};
             if (isRo) { opts.view = true; }
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);

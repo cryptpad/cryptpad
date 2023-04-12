@@ -1089,7 +1089,7 @@ define([
             }
             Env.user.proxy[UserObject.SHARED_FOLDERS][sfId][data.attr] = data.value;
         }
-        var datas = findHref(Env, data.href);
+        var datas = data.channel ? findChannel(Env, data.channel) : findHref(Env, data.href);
         var nt = nThen;
         datas.forEach(function (d) {
             nt = nt(function (waitFor) {

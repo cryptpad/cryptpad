@@ -1244,7 +1244,7 @@ define([
                     }
                 }
 
-                if (h.mode === 'view') { return; }
+                if (h.mode === 'view' || accessType) { return; }
 
                 // If we only have rohref, it means we have a stronger href
                 if (!pad.href) {
@@ -1388,6 +1388,13 @@ define([
                 return chans.some(function (pad) {
                     if (!pad || !pad.data) { return; }
                     var data = pad.data;
+
+                    // Revocable pads: the revocation module will try to get the best access later
+                    if (data.r) {
+                        res = data;
+                        return true;
+                    }
+
                     // We've found a match: return the value and stop the loops
                     if ((edit && data.href) || (!edit && data.roHref) || isFile) {
                         res = data;
