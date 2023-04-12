@@ -1829,7 +1829,9 @@ define([
                         validateKey: channel.data.validateKey
                     });
                 });
-                postMessage(clientId, "PAD_READY");
+                if (channel.ready) {
+                    postMessage(clientId, "PAD_READY");
+                }
 
                 return;
             }
@@ -1852,10 +1854,10 @@ define([
             var conf = {
                 Cache: Cache, // ICE pad cache
                 onCacheStart: function () {
-                    postMessage(clientId, "PAD_CACHE");
+                    channel.bcast("PAD_CACHE");
                 },
                 onCacheReady: function () {
-                    postMessage(clientId, "PAD_CACHE_READY");
+                    channel.bcast("PAD_CACHE_READY");
                 },
                 onInit: function (obj) {
                     // We know our netflux ID: use it to prove you know the creator key
@@ -1873,11 +1875,13 @@ define([
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
                     if (!store.proxy) {
-                        postMessage(clientId, "PAD_READY", pad.noCache);
+                        channel.ready = true;
+                        channel.bcast("PAD_READY", pad.noCache);
                         return;
                     }
                     onReadyEvt.reg(function () {
-                        postMessage(clientId, "PAD_READY", pad.noCache);
+                        channel.ready = true;
+                        channel.bcast("PAD_READY", pad.noCache);
                     });
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
@@ -1900,6 +1904,7 @@ define([
                 onRejected: Store.onRejected,
                 onConnectionChange: function (info) {
                     if (!info.state) {
+                        channel.ready = false;
                         channel.bcast("PAD_DISCONNECT");
                     }
                 },
