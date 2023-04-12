@@ -795,9 +795,14 @@ console.error('MODERATOR HASH', Hash.getRevocableHashFromKeys(type, moderator.ma
 
         var data = {
             // displayed hash
-            newHash: Hash.getRevocableHashFromKeys(type, editor.mailbox, password),
+            newHash: Hash.getRevocableHashFromKeys(type, editor.mailbox),
+            modHash: Hash.getRevocableHashFromKeys(type, moderator.mailbox),
             docKeys: docKeys,
             crypto: crypto,
+            seeds: {
+                moderator: moderator.mailbox.keys.seed,
+                editor: editor.mailbox.keys.seed
+            },
             rtConfig: {
                 creation: {
                     creatorEdPrivate: doc.keys.creator,
@@ -836,6 +841,19 @@ console.error(keyHashStr);
             sendInitMsg(ctx, editor.initMsg, waitFor());
         }).nThen(function (waitFor) {
             cb(data);
+        });
+    };
+
+    var joinCreatedPad = function (ctx, seeds, clientId, cb) {
+        nThen(function (waitFor) {
+            loadMailbox(ctx, clientId, { seed: seeds.moderator }, function (newKeys) {
+                // XXX new keys received
+            }, waitFor());
+            loadMailbox(ctx, clientId, { seed: seeds.editor }, function (newKeys) {
+                // XXX new keys received
+            }, waitFor());
+        }).nThen(function (waitFor) {
+            cb();
         });
     };
 
@@ -885,6 +903,8 @@ console.error(keyHashStr);
             mailboxes: {},
         };
 
+revocation.ctx = ctx; // debug
+
         revocation.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };
@@ -905,6 +925,9 @@ console.error(keyHashStr);
             }
             if (cmd === 'LOAD_PAD') {
                 return void loadPad(ctx, data, clientId, cb);
+            }
+            if (cmd === 'JOIN_CREATED_PAD') {
+                return void joinCreatedPad(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_PAD') {
                 return void createPad(ctx, data, clientId, cb);

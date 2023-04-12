@@ -1268,6 +1268,15 @@ define([
     };
     universal.onEvent = Util.mkEvent();
 
+    common.universalCommand = function (module, cmd, data, cb) {
+        universal.execCommand({
+            type: module,
+            data: {
+                cmd: cmd,
+                data: data
+            }
+        }, cb);
+    };
 
     // Pad RPC
     var pad = common.padRpc = {};

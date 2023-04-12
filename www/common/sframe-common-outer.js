@@ -483,15 +483,10 @@ define([
                     var correctPassword = waitFor();
 
                     var revCommand = function (cmd, data, cb) {
-                        Cryptpad.universal.execCommand({
-                            type: 'revocation',
-                            data: {
-                                cmd: cmd,
-                                data: data
-                            }
-                        }, cb)
+                        Cryptpad.universalCommand('revocation', cmd, data, cb);
                     };
 
+                    // Receive password requests from worker and relay them to inner
                     var lastUid;
                     sframeChan.on('Q_PAD_PASSWORD_VALUE', function (data, cb) {
                         password = data;
@@ -533,7 +528,6 @@ define([
                         // XXX get access type (sf/team/user/link)
                         currentPad.type = 'link';
 
-                        console.error(obj);
                         secret = Utils.secret = Utils.Hash.getRevocableSecret({
                             channel: obj.channel,
                             viewerSeedStr: obj.doc.viewer,
@@ -548,7 +542,6 @@ define([
                             editHash: currentPad.hash,
                             revocableData: {
                                 channel: secret.channel,
-                                keys: secret.revocation
                             }
                         };
                     }));
@@ -707,7 +700,7 @@ define([
             // Check if the pad exists on server
             if (!currentPad.hash) { isNewFile = true; return; }
 
-            if (realtime) {
+            if (realtime && !currentPad.type) {
                 // TODO we probably don't need to check again for password-protected pads
                 Cryptpad.hasChannelHistory(currentPad.href, password, waitFor(function (e, isNew) {
                     if (e) { return console.error(e); }
@@ -1282,7 +1275,7 @@ define([
             };
 
             var setPadTitle = function (data, cb) {
-                if (currentPad.type) {
+                if (!data.href && currentPad.type) {
                     data.accessType = currentPad.type;
                     data.accessHref = Utils.Hash.getRelativeHref(currentPad.href);
                 }
@@ -1298,6 +1291,13 @@ define([
                             //window.history.replaceState({}, window.document.title, hash);
                             // XXX REVOCATION USE SAFE HERE
                         }
+                    }
+                    // If we just created a pad, also store the moderator access
+                    if (currentPad.revocationModerator) {
+                        var data2 = Utils.Util.clone(data);
+                        data2.accessHref = currentPad.revocationModerator.href;
+                        data2.accessType = currentPad.revocationModerator.type;
+                        Cryptpad.setPadTitle(data2, function () {});
                     }
                     cb({error: err});
                 });
@@ -2177,16 +2177,10 @@ define([
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
 
 
-                Cryptpad.universal.execCommand({
-                    type: 'revocation',
-                    data: {
-                        cmd: 'CREATE_PAD',
-                        data: {
-                            type: parsed.type,
-                            password: password,
-                            edPublic: edPublic
-                        }
-                    }
+                Cryptpad.universalCommand('revocation', 'CREATE_PAD', {
+                    type: parsed.type,
+                    password: password,
+                    edPublic: edPublic
                 }, function (data) {
                     var docKeys = data.docKeys;
                     secret = Utils.secret = Utils.Hash.getRevocableSecret({
@@ -2197,10 +2191,31 @@ define([
 
                     var crypto = Utils.crypto = Crypto.createEncryptor(secret.keys);
 
+                    var onCreated = function () {
+                        Cryptpad.universalCommand('revocation', 'JOIN_CREATED_PAD', data.seeds);
+                        setTimeout(function () {
+                            Cryptpad.padRpc.onReadyEvent.unreg(onCreated);
+                        });
+                    };
+                    Cryptpad.padRpc.onReadyEvent.reg(onCreated);
+
+                    currentPad.revocationModerator = {
+                        type: edPublic ? 'user' : 'link',
+                        href: Utils.Hash.hashToHref(data.modHash, parsed.type)
+                    };
+
                     // Update the hash in the address bar
                     currentPad.hash = data.newHash;
                     currentPad.href = '/' + parsed.type + '/#' + data.newHash;
+                    currentPad.type = 'link'; // XXX editor seed
                     Cryptpad.setTabHash(data.newHash);
+
+                    hashes = {
+                        editHash: currentPad.hash,
+                        revocableData: {
+                            channel: secret.channel,
+                        }
+                    };
 
                     parsed = Utils.Hash.parsePadUrl(currentPad.href);
                     defaultTitle = Utils.UserObject.getDefaultName(parsed);
@@ -2229,8 +2244,6 @@ define([
 
                     startRealtime(rtConfig); // XXX
                     cb(); // XXX
-
-
                 });
 
 

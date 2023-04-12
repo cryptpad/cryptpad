@@ -1119,7 +1119,8 @@ define([
             });
         }
 
-        if (parsedHref.revocable) {
+        console.warn(parsedHref, href, hashes);
+        if (hashes.revocableData) {
             tabs = [{
                 getTab: getRevocableTab,
                 title: 'REVOCABLE', // XXX

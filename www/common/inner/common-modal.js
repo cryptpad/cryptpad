@@ -38,10 +38,6 @@ define([
             var priv = common.getMetadataMgr().getPrivateData();
 
             var hashes = opts.hashes || priv.hashes;
-            var channel;
-            if (hashes && hashes.revocableData) {
-                channel = hashes.revocableData.channel;
-            }
 
             var base = priv.origin;
             // this fetches attributes from your shared worker's memory
@@ -77,11 +73,11 @@ define([
                 Util.extend(data, val);
                 if (data.href) { data.href = base + data.href; }
                 if (data.roHref) { data.roHref = base + data.roHref; }
-            }), opts.href, channel);
+            }), opts.href, opts.channel);
 
             if (opts.channel) { data.channel = opts.channel; }
             // If this is a file, don't try to look for metadata
-            if (opts.channel && opts.channel.length > 32) { return; }
+            if (opts.channel && opts.channel.length > 32 && !opts.revocable) { return; }
             // this fetches data from the server
             Modal.loadMetadata(Env, data, waitFor);
         }).nThen(function () {
@@ -112,6 +108,12 @@ define([
         }];
         var tabs = [];
         nThen(function (waitFor) {
+            var priv = common.getMetadataMgr().getPrivateData();
+            var hashes = opts.hashes || priv.hashes;
+            if (hashes && hashes.revocableData) {
+                opts.revocable = true;
+                opts.channel = hashes.revocableData.channel;
+            }
             Modal.getPadData(Env, opts, waitFor(function (e, _data) {
                 if (e) {
                     blocked = false;

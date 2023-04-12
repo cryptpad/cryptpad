@@ -1164,8 +1164,6 @@ define([
         var openFile = function (el, isRo, app) {
             var data = manager.getFileData(el);
 
-console.error(el, data, app, isRo);
-
             if (data.static) {
                 if (data.href) {
                     common.openUnsafeURL(data.href);
@@ -1193,6 +1191,9 @@ console.error(el, data, app, isRo);
 
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
+
+            if (parsed.revocable) { useUnsafe = false; } // XXX
+
             if (useUnsafe === true || APP.newSharedFolder) {
                 return void common.openURL(Hash.getNewPadURL(href, obj));
             }

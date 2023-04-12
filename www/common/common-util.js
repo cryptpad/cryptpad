@@ -76,6 +76,7 @@
                 handlers.push(cb);
             },
             unreg: function (cb) {
+                console.error(handlers, handlers.indexOf(cb), cb);
                 if (handlers.indexOf(cb) === -1) {
                     return void console.error("event handler was already unregistered");
                 }

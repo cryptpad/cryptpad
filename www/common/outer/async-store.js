@@ -1230,17 +1230,18 @@ define([
                 }
 
                 // XXX REVOCATION auto-store new accesses to already stored pad
-                console.error(accessHref);
-                if (accessType === 'link') {
-                    if (!Array.isArray(pad.accesses)) {
-                        pad.accesses = [accessHref];
-                    } else if (!pad.accesses.includes(accessHref)) {
-                        pad.accesses.push(accessHref);
-                    }
-                } else if (accessType) {
-                    if (!pad.href) {
-                        obj.userObject.setHref(channel, null, accessHref);
-                        // XXX SF: roHref with revocable
+                if (h.version !== 3) { // Don't store safe links
+                    if (accessType === 'link') {
+                        if (!Array.isArray(pad.accesses)) {
+                            pad.accesses = [accessHref];
+                        } else if (!pad.accesses.includes(accessHref)) {
+                            pad.accesses.push(accessHref);
+                        }
+                    } else if (accessType) {
+                        if (!pad.href) {
+                            obj.userObject.setHref(channel, null, accessHref);
+                            // XXX SF: roHref with revocable
+                        }
                     }
                 }
 
