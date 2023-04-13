@@ -321,6 +321,8 @@ define([
 
         var hasFriends = opts.hasFriends;
         var onFriendShare = Util.mkEvent();
+        var myName = common.getMetadataMgr().getUserData().name;
+        var title = opts.title;
 
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
@@ -344,15 +346,21 @@ define([
 
         var viewAs = h('div.cp-share-access-as');
         var list = h('div.cp-share-access-list');
-        var content = h('div.cp-share-access-list-container', [viewAs, list]);
-        var $content = $(list);
+        var buttonContainer = h('div');
+        var content = h('div.cp-share-access-list-container', [viewAs, list, buttonContainer]);
+        var $list = $(list);
         var $viewAs = $(viewAs);
+
+        var usergrid = h('div.cp-share-access-usergrid');
+        var $usergrid = $(usergrid);
+        var $content = $(content);
 
         var channel = rev.channel;
         var revocation = common.makeUniversal('revocation');
 
         var updateAccess = function () {};
         var addAccess = function () {};
+        var redraw = function () {};
 
         var TYPES = {
             user: { icon: '.fa.fa-user', order: 1 },
@@ -363,16 +371,18 @@ define([
 
         var makeDD = function (current, editable, maxR) {
             var value;
-            if (current.includes('m')) { value = 'moderate'; }
-            else if (current.includes('w')) { value = 'write'; }
+            current = current.replace(/d+$/, '');
+
+            if (current.includes('rwm')) { value = 'moderate'; }
+            else if (current.includes('rw')) { value = 'write'; }
             else if (current.includes('r')) { value = 'read'; }
 
             if (!editable) {
                 return [h('button.btn.btn-secondary', {disabled:'disabled'}, value)]; // XXX
             }
-            var options = ['r', 'w', 'm'].map(function (r, i) {
+            var options = ['r', 'rw', 'rwm'].map(function (r, i) {
                 if (maxR === 'r' && i) { return; }
-                if (maxR === 'w' && i > 1) { return; }
+                if (maxR === 'rw' && i > 1) { return; }
                 return {
                     tag: 'a',
                     attributes: {
@@ -397,9 +407,9 @@ define([
         var getRights = function (dd, $d) {
             var r = dd.getValue() || 'r';
             var d = Util.isChecked($d);
-            var rights = r === 'm' ? 'rwm' : (r === 'w' ? 'rw' : 'r');
-            if (d) { rights += 'd'; }
-            return rights;
+            //var rights = r === 'm' ? 'rwm' : (r === 'w' ? 'rw' : 'r');
+            if (d) { r += 'd'; }
+            return r;
         };
         var renderAccess = function (edPublic, accessData, editable, maxR, renderedAs) {
             var type = accessData.notes.type
@@ -451,9 +461,11 @@ define([
             ]);
         };
 
-        var addAccessButton = function (maxR, renderedAs) {
+        var addAccessForm = function (maxR, renderedAs, userData, onCancel) {
             // new form
-            var input = h('input', {placeholder:'Note'}); // XXX
+            var input = h('input', {
+                placeholder: (userData && userData.displayName) || 'Note' // XXX
+            });
             var dd = makeDD('r', true, maxR);
             var canDestroy = UI.createCheckbox('cp-share-can-destroy', h('i.fa.fa-trash'), false, {});
             var $d = $(canDestroy).find('input');
@@ -465,8 +477,8 @@ define([
                 h('i.fa.fa-times')
             ]);
 
-            var temp = h('div.cp-share-access', {order:100, style: 'display:none;'}, [
-                h('i.fa.fa-plus'),
+            var temp = h('div.cp-share-access', {order:100}, [
+                userData ? h('i.fa.fa-user-plus') : h('i.fa.fa-plus'),
                 input,
                 dd[0],
                 canDestroy,
@@ -475,6 +487,93 @@ define([
             ]);
             var $temp = $(temp);
 
+            $(cancelBtn).click(function () {
+                onCancel();
+                $temp.remove();
+            });
+            $(saveBtn).click(function () {
+                var access = getRights(dd, $d);
+                var note = {
+                    type: 'link',
+                    note: $(input).val()
+                };
+                if (userData && userData.edPublic) {
+                    // XXX REVOCATION teams and sf?
+                    note.type = 'user';
+                    note.edPublic = userData.edPublic;
+                }
+                // XXX REVOCATION add "share with team when I'm a viewer" (send to mailbox)
+                addAccess(access, note, renderedAs.key, function (obj) {
+                    redraw();
+                    if (obj && obj.error) { return UI.warn(Messages.error); }
+                    var box = Hash.getRevocable(priv.app, obj.seed);
+                    var hash = Hash.getRevocableHashFromKeys(priv.app, box);
+                    var href = Hash.hashToHref(hash, priv.app);
+                    common.mailbox.sendTo("SHARE_PAD", {
+                        href: href,
+                        isStatic: Boolean(opts.static),
+                        password: opts.password,
+                        isTemplate: opts.isTemplate,
+                        name: myName,
+                        isCalendar: Boolean(opts.calendar),
+                        title: title,
+                        revocable: {
+                            channel: opts.channel,
+                        }
+                    }, {
+                        channel: userData.notifications,
+                        curvePublic: userData.curvePublic
+                    });
+                });
+            });
+
+            return $temp;
+        };
+
+        var refreshUsergrid = function (cb) {
+            $usergrid.empty().show();
+            $content.hide();
+            var friendsList = UIElements.getUserGrid(Messages.share_linkFriends, {
+                common: common,
+                data: opts.friends,
+                noFilter: true, // XXX
+                noSelect: true,
+                picker: true,
+                large: true
+            }, function ($friend) {
+                var curve = $friend.data('curve');
+                var data = opts.friends[curve];
+                if (!data || !data.notifications || !data.curvePublic) {
+                    // XXX REVOCATION show error? can't share with this contact
+                    return void redraw();
+                }
+                $usergrid.hide();
+                $content.show();
+                cb(data);
+            });
+            $usergrid.append(friendsList.div);
+        };
+        var addUserAccessButton = function (maxR, renderedAs) {
+            var button = h('button.btn.btn-primary', [
+                h('i.fa.fa-plus'),
+                h('span', 'ADD USER') // XXX
+            ]);
+            var $b = $(button);
+
+            var onCancel = function () { $b.show(); };
+
+            $b.click(function () {
+                $b.hide();
+                refreshUsergrid(function (userData) {
+                    var $form = addAccessForm(maxR, renderedAs, userData, onCancel);
+                    $list.append($form);
+                });
+            });
+
+            $(buttonContainer).append($b);
+            return button;
+        };
+        var addAccessButton = function (maxR, renderedAs) {
             // show form btn
             var button = h('button.btn.btn-primary', [
                 h('i.fa.fa-plus'),
@@ -482,34 +581,21 @@ define([
             ]);
             var $b = $(button);
 
-            $(saveBtn).click(function () {
-                var access = getRights(dd, $d);
-                var note = {
-                    type: 'link',
-                    note: $(input).val()
-                };
-                if (false) { note.edPublic = "edpublic"; } // XXX user access
-                addAccess(access, note, renderedAs.key);
-            });
-            $(cancelBtn).click(function () {
-                $b.show();
-                $temp.hide();
-            });
+            var onCancel = function () { $b.show(); };
+
             $b.click(function () {
                 $b.hide();
-                $temp.css('display', 'flex');
-
+                var $form = addAccessForm(maxR, renderedAs, null, onCancel);
+                $list.append($form);
             });
 
-            $content.append(temp);
-            var container = h('div', button);
-            $(content).append(container);
-            return container;
+            $(buttonContainer).append($b);
+            return button;
         };
 
-        var addButton;
+        var addButton, addUserButton;
         var renderAll = function (obj, renderedAs) {
-            $content.empty();
+            $list.empty();
             var list = obj.list;
             var myAccess = list[renderedAs.key];
             var maxRights = myAccess.rights.includes('m') ? 'm' :
@@ -517,10 +603,12 @@ define([
             Object.keys(list || {}).forEach(function (ed) {
                 var editable = renderedAs.moderator || renderedAs.key === list[ed].from;
                 var a = renderAccess(ed, list[ed], editable, maxRights, renderedAs);
-                $content.append(a);
+                $list.append(a);
             });
             if (addButton) { $(addButton).remove(); }
             addButton = addAccessButton(maxRights, renderedAs);
+            if (addUserButton) { $(addUserButton).remove(); }
+            addUserButton = addUserAccessButton(maxRights, renderedAs);
         };
         var renderAs = function (obj) {
             $viewAs.empty();
@@ -554,7 +642,22 @@ define([
             renderAll(obj, myKeys[0]);
         };
 
-        addAccess = function (rights, note, updateAs) {
+        redraw = function () {
+            revocation.execCommand('LIST_ACCESS', {
+                channel: channel
+            }, function (obj) {
+                if (obj && obj.error) {
+                    return void UI.warn(Messages.error);
+                }
+                if (!obj.myKeys || !obj.myKeys.length) {
+                    console.error('Not a member!');
+                    return void UI.warn(Messages.error);
+                }
+                renderAs(obj);
+            });
+        };
+
+        addAccess = function (rights, note, updateAs, cb) {
             revocation.execCommand('ADD_ACCESS', {
                 type: priv.app,
                 channel: channel,
@@ -562,8 +665,10 @@ define([
                 note: note,
                 from: updateAs
             }, function (obj) {
-                console.warn(obj);
-                // XXX refresh view
+                if (cb) { return void cb(obj); }
+
+                redraw();
+                if (obj && obj.error) { return UI.warn(Messages.error); }
             });
         };
         updateAccess = function (user, rights, updateAs) {
@@ -578,25 +683,15 @@ define([
                 },
                 from: updateAs
             }, function () {
+                redraw();
                 // XXX refresh view
             });
         };
 
-        revocation.execCommand('LIST_ACCESS', {
-            channel: channel
-        }, function (obj) {
-            if (obj && obj.error) {
-                return void UI.warn(Messages.error);
-            }
-            if (!obj.myKeys || !obj.myKeys.length) {
-                console.error('Not a member!');
-                return void UI.warn(Messages.error);
-            }
-            renderAs(obj);
-        });
+        redraw();
 
         cb(void 0, {
-            content: content,
+            content: [content, usergrid],
             buttons: [{
                     className: 'cancel',
                     name: Messages.filePicker_close,
@@ -1071,7 +1166,7 @@ define([
         opts.hasPassword = parsedHref.hashData.password;
 
         var $rights;
-        if (!parsedHref.revocable) {
+        if (!hashes.revocableData) {
             // XXX this function adds opts.channel which breaks data
             // but we may not need it for revocable pads
             $rights = opts.$rights = getRightsHeader(common, opts);

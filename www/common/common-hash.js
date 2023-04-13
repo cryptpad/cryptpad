@@ -726,7 +726,8 @@ Version 5: Revocable mailbox
     Hash.hrefToHexChannelId = function (href, password) {
         var parsed = Hash.parsePadUrl(href);
         if (!parsed || !parsed.hash) { return; }
-        var secret = Hash.getSecrets(parsed.type, parsed.hash, password);
+        var secret = parsed.revocable ? Hash.getRevocable(parsed.type, parsed.hashData.key)
+                        : Hash.getSecrets(parsed.type, parsed.hash, password);
         return secret.channel;
     };
 

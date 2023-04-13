@@ -368,6 +368,11 @@ define([
     (function () {
         var bypassHashChange = function (key) {
             return function (value) {
+                if (currentPad.type && currentPad.type !== 'link' && /^\/5\//.test(value)) {
+                    // XXX REVOCATION decide if we store user access before opening it
+                    console.error('Preserve safe link for revocable access', key);
+                    return;
+                }
                 var ohc = window.onhashchange;
                 window.onhashchange = function () {};
                 window.location[key] = value;

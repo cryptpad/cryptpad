@@ -222,6 +222,10 @@ define([
                 }
                 onSelect();
             });
+        } else if (config.picker) {
+            $div.on('click', '.cp-usergrid-user', function () {
+                onSelect($(this));
+            });
         }
 
         return {

@@ -661,7 +661,7 @@ updateAccess({
         var keys = box.parse.getContent();
 
         getPadMetadata(ctx, obj.channel, function (md) {
-            if (md && md.error) { return; }
+            if (md && md.error) { return void cb(md); }
             var edPrivate = keys.edPrivate;
             var log = Revocable.getSanitizedLog(md);
             var last = log[log.length-1];
@@ -724,14 +724,15 @@ updateAccess({
             moderatorSeedStr: keys.doc.moderator
         }, keys.password);
         var crypto = Crypto.createEncryptor(doc.keys);
-        var cryptoSym = crypto.encrypt;
+        var cryptoSym = crypto.encrypt; // XXX WRONG ==> DONT SIGN THE NOTES? ONLY ENCRYPT
         var cryptoAsym = crypto.encrypt; // XXX
 
         var mailboxData = Revocable.createMailbox(type, box.secret, keys.doc, rights);
         var access = Revocable.createAccess(type, mailboxData, note, cryptoSym, cryptoAsym);
 console.error('NEW HASH', Hash.getRevocableHashFromKeys(type, mailboxData.mailbox)); // XXX
 
-        sendInitMsg(ctx, mailboxData.initMsg, function () {
+        sendInitMsg(ctx, mailboxData.initMsg, function (sendObj) {
+            if (sendObj && sendObj.error) { return void cb(sendObj); }
             updateAccess(ctx, {
                 add: true,
                 channel: keys.channel,
@@ -740,7 +741,15 @@ console.error('NEW HASH', Hash.getRevocableHashFromKeys(type, mailboxData.mailbo
                     access: access
                 },
                 from: obj.from,
-            }, clientId, cb);
+            }, clientId, function (accessObj) {
+                if (accessObj && accessObj.error) {
+                    // XXX delete mailbox? or let it be deleted after 3 months
+                    return void cb(accessObj);
+                }
+                cb({
+                    seed: mailboxData.mailbox.keys.seed
+                });
+            });
         });
     };
 
@@ -839,6 +848,7 @@ console.error(keyHashStr);
         nThen(function (waitFor) {
             sendInitMsg(ctx, moderator.initMsg, waitFor());
             sendInitMsg(ctx, editor.initMsg, waitFor());
+            // XXX handle errors
         }).nThen(function (waitFor) {
             cb(data);
         });

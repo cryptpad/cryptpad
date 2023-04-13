@@ -122,12 +122,29 @@ define([
                 }, defaultDismiss(common, data));
                 return;
             }
+            var href = msg.content.href;
             var obj = {
                 p: msg.content.isTemplate ? ['template'] : undefined,
                 t: teamNotification || undefined,
                 pw: msg.content.password || ''
             };
-            common.openURL(Hash.getNewPadURL(msg.content.href, obj));
+            if (msg.content.revocable) {
+                // XXX TODO
+                // We don't want to leak the user personal access for this pad
+                // The URL should not be visible in the address bar otherwise the user may try
+                // to copy it and send it to others.
+                // Option 1: [ ] Ask the user to store in drive before opening
+                // Option 2: [x] Hide mailbox data in pad options (instantly removed in sco)
+                var channel = msg.content.revocable.channel;
+                var parsed = Hash.parsePadUrl(href);
+                var hash = Hash.getHiddenHashFromKeys(parsed.type, {channel:channel});
+                href = Hash.hashToHref(hash, parsed.type);
+                obj.revocable = {
+                    type: 'user',
+                    seed: parsed.hashData && parsed.hashData.key
+                };
+            }
+            common.openURL(Hash.getNewPadURL(href, obj));
             defaultDismiss(common, data)();
         };
         if (!content.archived) {

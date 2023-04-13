@@ -360,6 +360,7 @@ define([
                 // New pad options
                 var options = parsed.getOptions();
                 if (options.newPadOpts) {
+                    var rev = false;
                     try {
                         var newPad = Utils.Hash.decodeDataOptions(options.newPadOpts);
                         Cryptpad.initialTeam = newPad.t;
@@ -381,15 +382,26 @@ define([
                                 delete Cryptpad.fromFileData;
                             }
                         }
-
+                        if (newPad.revocable) {
+                            // XXX REVOCATION fake safe link user access, might change
+                            var seed = newPad.revocable.seed;
+                            var box = Utils.Hash.getRevocable(parsed.type, seed);
+                            currentPad.hash = Utils.Hash.getRevocableHashFromKeys(parsed.type, box);
+                            currentPad.type = newPad.revocable.type;
+                            currentPad.href = Utils.Hash.hashToHref(currentPad.hash, parsed.type);
+                            rev = true;
+                            Cryptpad.setTabHash(parsed.hashData.getHash({}));
+                        }
                     } catch (e) {
                         console.error(e, parsed.hashData.newPadOpts);
                     }
                     delete options.newPadOpts;
 
-                    currentPad.href = parsed.getUrl(options);
-                    currentPad.hash = parsed.hashData.getHash ? parsed.hashData.getHash(options)
-                                                              : '';
+                    if (!rev) {
+                        currentPad.href = parsed.getUrl(options);
+                        currentPad.hash = parsed.hashData.getHash ? parsed.hashData.getHash(options)
+                                                                  : '';
+                    }
                     var version = parsed.hashData.version;
                     parsed = Utils.Hash.parsePadUrl(currentPad.href);
                     Cryptpad.setTabHash(currentPad.hash);
@@ -479,6 +491,7 @@ define([
                     value: ''
                 };
 
+                // Handle pads with revocable access (safe & unsafe)
                 var getRevocable = function (w) {
                     var correctPassword = waitFor();
 
@@ -545,7 +558,6 @@ define([
                             }
                         };
                     }));
-
                 };
 
                 // Hidden hash: can't find the channel in our drives: abort
@@ -557,10 +569,6 @@ define([
                 var expire;
                 var revocable;
                 nThen(function (w) {
-                    return;
-                    // XXX REVOCATION
-                    if (parsed.hashData.version !== 5) { return; }
-                }).nThen(function (w) {
                     // If we're using an unsafe link, get pad attribute
                     if (parsed.hashData.key || !parsed.hashData.channel) {
                         Cryptpad.getPadAttribute('expire', w(function (err, data) {
@@ -611,18 +619,14 @@ define([
                     var chan = parsed.hashData.version === 3 && parsed.hashData.channel;
                     var url = revocable ? null : parsed.getUrl();
                     Cryptpad.getPadAttribute('channel', w(function (err, data) {
-                        console.error(err, data);
                         stored = (!err && typeof (data) === "string");
                     }), null, chan);
                     Cryptpad.getPadAttribute('password', w(function (err, val) {
-                        console.error(err, val);
                         password = val;
                     }), url, chan);
                 }).nThen(function (w) {
-                    console.error(expire, password);
                     // Revocable pad, safe (revocable) or unsafe (parsed.revocable) link
                     if (parsed.revocable || revocable) {
-                        console.error(parsed.revocable, revocable);
                         return void getRevocable(w);
                     }
 
