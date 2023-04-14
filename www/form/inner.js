@@ -110,6 +110,7 @@ define([
         if (!Util.isObject(obj)) { return obj; }
         return obj.v;
     };
+
     var extractValues = function (values) {
         if (!Array.isArray(values)) { return []; }
         return values.map(getOptionValue);
@@ -139,6 +140,7 @@ define([
                 h('span', Messages.form_editMaxLength),
                 lengthInput
             ]);
+            //YY
             getLengthVal = function () {
                 var val = Number($(lengthInput).val()) || 1000;
                 if (val < 1) { val = 1; }
@@ -187,14 +189,14 @@ define([
         setCursorGetter(function () {
             return {};
         });
-
+        //YY
         var getSaveRes = function () {
             return {
                 maxLength: getLengthVal ? getLengthVal() : undefined,
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
         };
-
+        //YY
         evOnSave.reg(function () {
             var res = getSaveRes();
             if (!res) { return; }
@@ -234,7 +236,6 @@ define([
         if (tmp && tmp.cursor) {
             cursor = tmp.cursor;
         }
-
         // Checkbox: max options
         var maxOptions, maxInput;
         if (typeof(v.max) === "number") {
@@ -301,7 +302,6 @@ define([
                 });
             }
             if (uid) { $input.data('uid', uid); }
-
             // If the input is a date, initialize flatpickr
             if (v.type && v.type !== 'text') {
                 if (v.type === 'time') {
@@ -921,7 +921,6 @@ define([
 
         return total;
     };
-
     var multiAnswerSubHeading = function (content) {
         return h('span.cp-charts-row', h('td.cp-charts-cell.cp-grid-sub-question', {
             colspan: 3,
@@ -960,13 +959,14 @@ define([
         });
         return res;
     };
-
+    
     var getSections = function (content) {
         var uids = Object.keys(content.form).filter(function (uid) {
             return content.form[uid].type === 'section';
         });
         return uids;
     };
+    
     var getFullOrder = function (content) {
         var order = content.order.slice();
         getSections(content).forEach(function (uid) {
@@ -981,7 +981,7 @@ define([
         });
         return order;
     };
-
+    
     var getBlockAnswers = function (answers, uid, filterCurve) {
         if (!answers) { return; }
         return Object.keys(answers || {}).map(function (key) {
@@ -1177,7 +1177,7 @@ define([
                 var form = content.form;
                 var framework = APP.framework;
                 var tmp = data.tmp;
-
+                //YY
                 var getConditionsValues = function () {
                     var order = getFullOrder(content);
                     var blockIdx = order.indexOf(uid);
@@ -1631,6 +1631,7 @@ define([
     };
 
     var getSortedKeys = function (answers) {
+
         return Object.keys(answers).sort(function (uid1, uid2) {
             return (answers[uid1].time || 0) - (answers[uid2].time || 0);
         });
@@ -1683,7 +1684,6 @@ define([
                 var isEmpty = function (answer) {
                     return !answer || !answer.trim();
                 };
-
                 getSortedKeys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
@@ -1998,8 +1998,9 @@ define([
                     var counts = Object.values(count[q_uid]);
                     counts.push(max);
                     max = arrayMax(counts);
+                    // console.log('countkeys1', counts)
                 });
-
+                console.log('WOOOOO HERE')
                 results.push(getEmpty(empty));
                 count_keys.forEach(function (q_uid) {
                     var q = findItem(opts.items, q_uid);
@@ -2048,6 +2049,28 @@ define([
                 evOnChange.fire();
             }, 500));
 
+            ret = {
+                tag: tag,
+                isEmpty: function () { return !$tag.val().trim(); },
+                getValue: function () {
+                    var invalid = $tag.is(':invalid');
+                    if (invalid) { return; }
+                    return $tag.val();
+                    
+                },
+                setValue: function (val) { $tag.val(val); },
+                setEditable: function (state) {
+                    if (state) { $tag.removeAttr('disabled'); }
+                    else { $tag.attr('disabled', 'disabled'); }
+                },
+                edit: function (cb) {
+
+                    return editDateOptions(cb);
+                },
+                reset: function () { $tag.val(''); }
+            }
+            // console.log('RET')
+            // console.log(ret)
 
             return {
                 tag: tag,
@@ -2368,6 +2391,7 @@ define([
                     var counts = Object.values(count[q_uid]);
                     counts.push(max);
                     max = arrayMax(counts);
+                    // console.log('countkeys2', counts)
                 });
 
                 results.push(getEmpty(empty));
@@ -2645,7 +2669,8 @@ define([
                 // If content is defined, we'll be able to click on a row to display
                 // all the answers of this user
                 var lines = makePollTable(_answers, opts, content);
-
+                // console.log('RESULTS')
+                // console.log(lines)
                 var total = makePollTotal(_answers, opts);
                 if (total) { lines.push(h('div', total)); }
 
@@ -2682,8 +2707,12 @@ define([
     };
 
     var getDay = function (d) {
+        console.log('DATE1', d)
+        console.log('DATE2', new Date(d.getFullYear(), d.getMonth(), d.getDate()))
         return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     };
+
+    getDay(new Date(1681202916647))
 
     var ONE_DAY = 1000 *  60 * 60 * 24;
 
@@ -2697,6 +2726,7 @@ define([
             A.push(next);
             next += ONE_DAY;
         }
+        
         return A;
     };
 
@@ -2710,7 +2740,9 @@ define([
         Object.keys(answers).forEach(function (curve) {
             var obj = answers[curve];
             Object.keys(obj).forEach(function (uid) {
+                console.log('DATE3', obj[uid].time)
                 var day = getDay(new Date(obj[uid].time));
+                console.log('DATE4', day)
                 Util.inc(tally, +day);
             });
         });
@@ -2719,12 +2751,11 @@ define([
 
         var max_count = arrayMax(Util.values(tally));
 
+
         var min_day = Math.min.apply(null, times);
         var max_day = arrayMax(times);
         var days = getDayArray(new Date(min_day), new Date(max_day));
-
         if (days.length < 2) { return; }
-
         return h('div.timeline-container', {
             //style: 'width: 100%; height: 200px;',
 
@@ -2747,7 +2778,7 @@ define([
             )
         );
     };
-
+    
     var parseAnswers = function (answers) {
         var _answers = {};
         Object.keys(answers || {}).forEach(function (curve) {
@@ -2758,7 +2789,7 @@ define([
         });
         return _answers;
     };
-
+    
     var getAnswersLength = function (answers) {
         return Object.values(answers || {}).reduce(function (size, obj) {
             return size + Object.keys(obj).length;
@@ -2769,6 +2800,8 @@ define([
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var framework = APP.framework;
+        // console.log('HI')
+        // console.log(framework)
 
         var title = framework._.title.title || framework._.title.defaultTitle;
         var titleDiv = h('h1.cp-form-view-title', title);
@@ -2786,6 +2819,7 @@ define([
         var timeline = h('div.cp-form-creator-results-timeline');
         var $timeline = $(timeline).appendTo($container);
         $timeline.append(makeTimeline(answers));
+        console.log($timeline)
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
         var results = h('div.cp-form-creator-results-content');
@@ -2890,7 +2924,7 @@ define([
                 var showCondorcetWinner = function(answers, opts, uid, form) {
                 
                     var _answers = parseAnswers(answers);
-    
+                    
                     var optionArray = [];
                     opts.values.forEach(function (option) {
                         optionArray.push(option.v);
@@ -2926,12 +2960,62 @@ define([
                             condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
                         }
 
+<<<<<<< HEAD
                         var detailedResults = Object.keys(rankedResults).sort(function(a,b) { return a - b; }).reverse().map(function(result) {
                             if (rankedResults[result].length > 1) {
                                 return rankedResults[result].join(', ') + ' : ' + result;
                             } else {
                                 return rankedResults[result] + ' : ' + result;
                             }
+=======
+                        var calculateCondorcet = function() {
+                            // console.log(JSON.stringify(answers))
+                            // console.log({"HVfRpDskx2w7DkSGoHXj+naZUE8/sD3vOfch2uLjEXE=":{"tpsubv6rpe":{"msg":{"_uid":"tpsubv6rpe","_time":1681156327353,"_hash":"FvPNwKf6Y3bIvZq/bqR5F81NbVi/uQJLGqvKmpwIlhSmX5taTuNYFTbJNgHEHzkt"},"hash":"FvPNwKf6Y3bIvZq/bqR5F81NbVi/uQJLGqvKmpwIlhSmX5taTuNYFTbJNgHEHzkt","time":1681156327353}}})
+                            // console.log(JSON.stringify(block.opts))
+                            // console.log(uid)
+                            // console.log(form)
+                            var condorcetWinner;                        
+                            var detailedResults;
+                            var condorcetResults = h('span');
+                            var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[0][0];
+    
+                            if (form[uid].condorcetmethod === 'Schulze') {
+                                condorcetWinner = rankedResults[Object.keys(rankedResults).length - 1];
+                                condorcetWinner.join(', ');
+                                condorcetWinner.forEach(function(option) {
+                                    condorcetResults.append(h('span', option));
+                                });
+    
+                                detailedResults = Object.keys(rankedResults).reverse().map(function(result) {
+                                    return rankedResults[result] + ' : ' + result;
+                                });
+                                return [condorcetResults, detailedResults];
+                            } else if (form[uid].condorcetmethod === 'Ranked Pairs') {
+                                var sortedRankDict = showCondorcetWinner(answers, block.opts, uid, form)[0][1];
+                                condorcetWinner = rankedResults[0]; 
+    
+                                detailedResults = Object.keys(sortedRankDict).map(function(result) {
+                                    return result + ' : ' + sortedRankDict[result];
+                                });
+                            }
+                            return [condorcetWinner, detailedResults];
+                        };
+                        
+                        showCondorcetWinner.calculateCondorcet = calculateCondorcet;
+    
+                        var dropdownOpts = ['Schulze', 'Ranked Pairs'];
+    
+                        var options = dropdownOpts.map(function (t) {
+                            return {
+                                tag: 'a',
+                                attributes: {
+                                    'class': 'cp-form-type-value',
+                                    'data-value': t,
+                                    'href': '#',
+                                },
+                                content: t
+                            };
+>>>>>>> 1f2230a26 (initial commit)
                         });
                         return [condorcetResults, detailedResults];
                     }};
@@ -2949,6 +3033,7 @@ define([
                             },
                             content: t
                         };
+<<<<<<< HEAD
                     });
                     var dropdownConfig = {
                         text: '', // Button initial text
@@ -2994,6 +3079,38 @@ define([
                     ]));
                     
                 }
+=======
+                        var typeSelect = UIElements.createDropdown(dropdownConfig);
+    
+                        form[uid].condorcetmethod = 'Schulze';
+                        typeSelect.setValue(form[uid].condorcetmethod);
+    
+                        var method = h('div.cp-dropdown-container', typeSelect[0]);
+    
+                        var evOnSave = Util.mkEvent();
+                        typeSelect.onChange.reg(evOnSave.fire);
+                        var $typeSelect = $(typeSelect);
+    
+                        var $selector = $typeSelect.find('a');
+                        
+                        var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
+                        condorcetWinnerDiv = h('div.cp-form-edit-type');
+    
+                        var detailsDiv = h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
+    
+                        $selector.click(function () {
+                            form[uid].condorcetmethod = $(this).attr('data-value');
+                            $('#cW').replaceWith(h('span', { id: 'cW'}, calculateCondorcet()[0]));
+                            $('#dD').replaceWith(h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
+                        });
+                                            
+                        condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetMethod, method, Messages.form_showCondorcetWinner, condorcetWinner, detailsDiv, {style: {margin: '10px'}}));
+                        
+                    }
+                    }
+
+                    show.showCondorcetWinner = showCondorcetWinner;
+>>>>>>> 1f2230a26 (initial commit)
                     
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
@@ -3012,7 +3129,10 @@ define([
             if (header) { $results.prepend(header); }
         };
         show(answers);
-        
+
+
+        renderResults.show = show;
+
 
         if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
@@ -3332,13 +3452,13 @@ define([
     var getFormResults = function () {
         if (!Array.isArray(APP.formBlocks)) { return; }
         var results = {};
+        
         APP.formBlocks.some(function (data) {
             if (!data.getValue) { return; }
             results[data.uid] = data.getValue();
         });
         return results;
     };
-
     var getSectionFromQ = function (content, uid) {
         var arr = content.order;
         var idx = content.order.indexOf(uid);
@@ -3356,7 +3476,6 @@ define([
                 }
             });
         }
-
         return {
             uid: sectionUid,
             arr: arr,
@@ -3364,27 +3483,38 @@ define([
         };
     };
     var removeQuestion = function (content, uid) {
+        console.log('ELETER')
+        console.log(JSON.stringify(content))
+        console.log(uid)
         delete content.form[uid];
         var idx = content.order.indexOf(uid);
+        console.log(idx)
         if (idx !== -1) {
+            console.log('hey')
             content.order.splice(idx, 1);
         } else {
+            console.log('heyeo')
             getSections(content).some(function (_uid) {
                 var block = content.form[_uid];
                 if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
                 var _idx = block.opts.questions.indexOf(uid);
                 if (_idx !== -1) {
+                    console.log('HERE')
                     block.opts.questions.splice(_idx, 1);
                     return true;
                 }
             });
         }
     };
-
     var checkResults = {};
     var checkCondition = function (block) {
+        console.log('BLOCK', JSON.stringify(block))
         if (!block || block.type !== 'section') { return; }
+        console.log('c1', JSON.stringify(block.opts.when))
+        console.log('c2', JSON.stringify(block.opts))
+        console.log('c3', Array.isArray(block.opts.questions))
         if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) {
+            console.log('trueeee')
             return true;
         }
 
@@ -3408,6 +3538,19 @@ define([
             return results[uid];
         };
         var w = block.opts.when;
+        var resultt = !w.length || w.some(function (rules) {
+            return rules.every(function (rule) {
+                var res = findResult(rule.q);
+                // Checkbox
+                if (Array.isArray(res)) {
+                    var idx = res.indexOf(rule.v);
+                    return rule.is ? idx !== -1 : idx === -1;
+                }
+                // Radio
+                return rule.is ? res === rule.v : res !== rule.v;
+            });
+        });
+        console.log('RESULYS', JSON.stringify(resultt))
         return !w.length || w.some(function (rules) {
             return rules.every(function (rule) {
                 var res = findResult(rule.q);
@@ -3523,7 +3666,6 @@ define([
             if (!$radio.find('input[type="radio"]:checked').length) {
                 return UI.warn(Messages.error);
             }
-
             var results = getFormResults();
             if (!results) { return; }
 
@@ -3746,6 +3888,7 @@ define([
                 if (noBeforeUnload) { return; }
                 $container.find('.cp-reset-button').removeAttr('disabled');
                 var results = getFormResults();
+                console.log('RESULTS', JSON.stringify(results))
                 if (isSave) {
                     answers = Util.clone(results || {});
                     _answers = Util.clone(answers);
@@ -3766,7 +3909,6 @@ define([
             var full = !uid;
             var addControl = function (type) {
                 if (type === "section" && inSection) { return; }
-
                 var btn = h('button.btn.btn-secondary', {
                     title: full ? '' : Messages['form_type_'+type],
                     'data-type': type
@@ -4907,7 +5049,7 @@ define([
                 colorTheme
             ];
         };
-
+        //YY
         var checkIntegrity = function (getter) {
             if (!content.order || !content.form) { return; }
             var changed = false;
@@ -5471,8 +5613,33 @@ define([
 
     };
 
-    Framework.create({
-        toolbarContainer: '#cp-toolbar',
-        contentContainer: '#cp-app-form-editor',
-    }, andThen);
+    // Framework.create({
+    //     toolbarContainer: '#cp-toolbar',
+    //     contentContainer: '#cp-app-form-editor',
+    // }, andThen);
+
+    return {
+    getWeekDays: getWeekDays, 
+    arrayMax: arrayMax,
+    getOptionValue: getOptionValue,
+    extractValues: extractValues,
+    getSortedKeys: getSortedKeys,
+    getDay: getDay,
+    getDayArray: getDayArray,
+    parseAnswers: parseAnswers,
+    getAnswersLength: getAnswersLength,
+    findItem: findItem,
+    getSections: getSections,
+    getFullOrder: getFullOrder,
+    getBlockAnswers: getBlockAnswers,
+    getFormResults: getFormResults,
+    getSectionFromQ: getSectionFromQ, 
+    removeQuestion: removeQuestion,
+    checkCondition: checkCondition,
+
+
+
+
+
+  };
 });
