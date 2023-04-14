@@ -870,10 +870,10 @@ define([
                 });
             });
 
-            ctx.sframeChan.on('EV_UNIVERSAL_EVENT', function (obj) {
+            ctx.sframeChan.on('EV_UNIVERSAL_EVENT', function (obj, cb) {
                 var type = obj.type;
                 if (!type || !modules[type]) { return; }
-                modules[type].fire(obj.data);
+                modules[type].fire(obj.data, cb);
             });
 
             ctx.cache = Cache.create(ctx.sframeChan);

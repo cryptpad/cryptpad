@@ -72,6 +72,27 @@ var factory = function (Hash, Nacl) {
         if (!tree[value.from]) { return false; }
         return Revocable.isInMyAccessTree(tree[value.from], tree, myKey);
     };
+    Revocable.reencryptNotes = function (oldCrypto, newCrypto, md) {
+        if (!md) { return; }
+        var result = {};
+        var reencrypt = function (str) {
+            // XXX NO NEED TO SIGN HERE
+            return newCrypto.encrypt(oldCrypto.decrypt(str, true, true));
+        };
+        var abort = Object.keys(md.access || {}).some(function (ed) {
+            var access = md.access[ed];
+            try {
+                result[ed] = {
+                    mailbox: reencrypt(access.mailbox),
+                    notes: reencrypt(access.notes),
+                };
+            } catch (e) {
+                return true;
+            }
+        });
+        if (abort) { return; }
+        return result;
+    };
 
 
     // Log
@@ -184,6 +205,39 @@ var factory = function (Hash, Nacl) {
         });
         if (!Object.keys(toSend).length) { return; }
         return toSend;
+    };
+
+    Revocable.rotateMailboxes = function (md, crypto, from, docKeys) {
+
+        var error = false;
+        var all = Object.keys(md.access || {}).map(function (ed) {
+            var access = md.access[ed];
+            var clone = JSON.parse(JSON.stringify(docKeys));
+            var rights = access.rights;
+            if (!Revocable.isModerator(rights)) { delete clone.moderator; }
+            if (!Revocable.isEditor(rights)) { delete clone.editor; }
+            try {
+                var chan = crypto.decrypt(access.mailbox, true, true);
+                var curve = access.curvePublic;
+                return {
+                    type: "ROTATE",
+                    msg: clone,
+                    user: {
+                        channel: chan,
+                        curvePublic: curve
+                    }, // send to
+                    keys: from // send from
+                };
+            } catch (e) {
+                error = true;
+                console.error(e);
+                return true;
+            }
+
+
+        });
+        if (error) { return; }
+        return all;
     };
 
 
@@ -305,6 +359,13 @@ var factory = function (Hash, Nacl) {
     Revocable.hashMsg = function (msg) {
         try {
             return Revocable.hashBytes(Nacl.util.decodeUTF8(JSON.stringify(msg)));
+        } catch (e) {
+            return;
+        }
+    };
+    Revocable.getCpId = function (msg) {
+        try {
+            return Nacl.util.encodeBase64(Nacl.hash(Nacl.util.decodeUTF8(msg)).slice(0, 8));
         } catch (e) {
             return;
         }

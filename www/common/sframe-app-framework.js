@@ -55,7 +55,7 @@ define([
         INFINITE_SPINNER: 'INFINITE_SPINNER',
         ERROR: 'ERROR',
         INITIALIZING: 'INITIALIZING',
-        READY: 'READY'
+        READY: 'READY',
     });
 
     var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?
@@ -255,6 +255,7 @@ define([
 
             var newContent = JSON.parse(newContentStr);
             var meta = extractMetadata(newContent);
+
             cpNfInner.metadataMgr.updateMetadata(meta);
             newContent = normalize(newContent);
 
@@ -934,6 +935,28 @@ define([
 
             var $store = common.createButton('storeindrive', true);
             toolbar.$drawer.append($store);
+
+            var revocation = common.makeUniversal('revocation', {
+                onEvent: function (data, cb) {
+                    if (data.ev === 'ASK_CHECKPOINT') {
+                        console.warn(ChainPad, cpNfInner.chainpad);
+                        var chainpad = cpNfInner.chainpad;
+
+                        // Make patch
+                        var content = chainpad.getUserDoc();
+                        var authPatchHash = chainpad._.best.content.mut.inverseOf.parentHash
+                        var cp = ChainPad.Patch.createCheckpoint(content, content, authPatchHash);
+
+                        // Make message
+                        var h = chainpad.getAuthBlock().hashOf;
+                        var msg = ChainPad.Message.create(ChainPad.Message.CHECKPOINT, cp, h);
+                        var str = ChainPad.Message.toStr(msg);
+
+                        cb({msg: str});
+                        return;
+                    }
+                }
+            });
 
             if (!cpNfInner.metadataMgr.getPrivateData().isTemplate) {
                 var templateObj = {

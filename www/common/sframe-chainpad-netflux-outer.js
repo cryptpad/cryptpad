@@ -54,8 +54,9 @@ define([], function () {
                 var decryptedMsg = Crypto.decrypt(msg, key, isHk);
                 return decryptedMsg;
             } catch (err) {
-                console.error(err);
-                console.warn(peer, msg);
+                // XXX REVOCATION: it's normal to have the wrong decryption key
+                //console.error(err);
+                //console.warn(peer, msg.slice(0,30));
                 return false;
             }
         };

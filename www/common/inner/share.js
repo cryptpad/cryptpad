@@ -315,6 +315,140 @@ define([
         };
     };
 
+    var errorTab = function (txt) {
+        return {
+            content: h('p', txt),
+            buttons: [{
+                className: 'cancel',
+                name: Messages.filePicker_close,
+                onClick: function () {},
+                keys: [27]
+            }]
+        };
+    };
+
+    var redrawAccessEvt = Util.mkEvent();
+    var redrawAccess = function (Env, channel) {
+        var revocation = Env.common.makeUniversal('revocation');
+        revocation.execCommand('LIST_ACCESS', {
+            channel: channel
+        }, function (obj) {
+            redrawAccessEvt.fire(obj);
+        });
+    };
+
+    var renderAs = function ($viewAs, obj, onChange) {
+        $viewAs.empty();
+        var myKeys = obj.myKeys || [];
+        var options = myKeys.map(function (obj) {
+            return {
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-share-access-value',
+                    'data-value': obj.key,
+                    'href': '#',
+                },
+                content: obj.origin
+            };
+        });
+        var dropdownConfig = {
+            text: '', // Button initial text
+            options: options, // Entries displayed in the menu
+            isSelect: true,
+            caretDown: true,
+            buttonCls: 'btn btn-secondary'
+        };
+        var select = UIElements.createDropdown(dropdownConfig);
+        if (myKeys.length) { select.setValue(myKeys[0].key); }
+        select.onChange.reg(function () {
+            var v = select.getValue();
+            var renderedAs = myKeys.find(function (obj) { return obj.key === v});
+            onChange(renderedAs);
+        });
+        $viewAs.append(select);
+        onChange(myKeys[0]);
+    };
+    var getSecurityTab = function (Env, data, opts, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var common = Env.common;
+        var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
+
+        if (priv.offline) {
+            return void cb(void 0, errorTab(Messages.share_noContactsOffline));
+        }
+        var rev = opts.hashes && opts.hashes.revocableData;
+        if (!rev) {
+            return void cb(void 0, errorTab('EINVAL')); // XXX
+        }
+
+        var revocation = common.makeUniversal('revocation');
+        var channel = rev.channel;
+
+        var redraw = function () {
+            redrawAccess(Env, channel);
+        };
+
+        var rotate = h('div');
+        var $rotate = $(rotate);
+
+        var viewAs = h('div.cp-share-access-as');
+        var $viewAs = $(viewAs);
+
+        var content = h('div.cp-share-access-list-container', [viewAs, rotate]);
+        var $content = $(content);
+
+        var drawRotate = function (obj, as) {
+            $rotate.empty();
+            var button = h('button.btn.btn-primary', 'ROTATE KEYS'); // XXX
+            $rotate.append(button);
+
+            if (!as.moderator) {
+                $(button).attr('disabled', 'disabled');
+                return;
+            }
+
+            var c = UI.confirmButton(button, {
+                classes: 'btn-primary',
+                multiple: true // XXX
+            }, function () {
+                // Confirmed, start keys rotation
+                // XXX it may be easier to handle rotation in client?
+                // XXX because we need access to chainpad (lock + make checkpoint)
+                revocation.execCommand('ROTATE_KEYS', {
+                    channel: channel,
+                    from: as.key
+                }, function (obj) {
+                    console.warn(obj);
+                });
+            });
+        };
+
+
+        redrawAccessEvt.reg(function (obj) {
+            if (obj && obj.error) {
+                return void UI.warn(Messages.error);
+            }
+            if (!obj.myKeys || !obj.myKeys.length) {
+                console.error('Not a member!');
+                return void UI.warn(Messages.error);
+            }
+            renderAs($viewAs, obj, function (as) {
+                drawRotate(obj, as);
+            });
+        });
+
+
+        cb(void 0, {
+            content: [content],
+            buttons: [{
+                className: 'cancel',
+                name: Messages.filePicker_close,
+                onClick: function () {},
+                keys: [27]
+            }]
+        });
+    };
     var getRevocableTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
@@ -327,20 +461,12 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
         if (priv.offline) {
-            return void cb(void 0, {
-                content: h('p', Messages.share_noContactsOffline),
-                buttons: [{
-                    className: 'cancel',
-                    name: Messages.filePicker_close,
-                    onClick: function () {},
-                    keys: [27]
-                }]
-            });
+            return void cb(void 0, errorTab(Messages.share_noContactsOffline));
         }
 
         var rev = opts.hashes && opts.hashes.revocableData;
         if (!rev) {
-            // XXX
+            return void cb(void 0, errorTab('EINVAL')); // XXX
         }
 
 
@@ -360,7 +486,9 @@ define([
 
         var updateAccess = function () {};
         var addAccess = function () {};
-        var redraw = function () {};
+        var redraw = function () {
+            redrawAccess(Env, channel);
+        };
 
         var TYPES = {
             user: { icon: '.fa.fa-user', order: 1 },
@@ -610,52 +738,19 @@ define([
             if (addUserButton) { $(addUserButton).remove(); }
             addUserButton = addUserAccessButton(maxRights, renderedAs);
         };
-        var renderAs = function (obj) {
-            $viewAs.empty();
-            var myKeys = obj.myKeys || [];
-            var options = myKeys.map(function (obj) {
-                return {
-                    tag: 'a',
-                    attributes: {
-                        'class': 'cp-share-access-value',
-                        'data-value': obj.key,
-                        'href': '#',
-                    },
-                    content: obj.origin
-                };
-            });
-            var dropdownConfig = {
-                text: '', // Button initial text
-                options: options, // Entries displayed in the menu
-                isSelect: true,
-                caretDown: true,
-                buttonCls: 'btn btn-secondary'
-            };
-            var select = UIElements.createDropdown(dropdownConfig);
-            if (myKeys.length) { select.setValue(myKeys[0].key); }
-            select.onChange.reg(function () {
-                var v = select.getValue();
-                var renderedAs = myKeys.find(function (obj) { return obj.key === v});
-                renderAll(obj, renderedAs);
-            });
-            $viewAs.append(select);
-            renderAll(obj, myKeys[0]);
-        };
 
-        redraw = function () {
-            revocation.execCommand('LIST_ACCESS', {
-                channel: channel
-            }, function (obj) {
-                if (obj && obj.error) {
-                    return void UI.warn(Messages.error);
-                }
-                if (!obj.myKeys || !obj.myKeys.length) {
-                    console.error('Not a member!');
-                    return void UI.warn(Messages.error);
-                }
-                renderAs(obj);
+        redrawAccessEvt.reg(function (obj) {
+            if (obj && obj.error) {
+                return void UI.warn(Messages.error);
+            }
+            if (!obj.myKeys || !obj.myKeys.length) {
+                console.error('Not a member!');
+                return void UI.warn(Messages.error);
+            }
+            renderAs($viewAs, obj, function (as) {
+                renderAll(obj, as);
             });
-        };
+        });
 
         addAccess = function (rights, note, updateAs, cb) {
             revocation.execCommand('ADD_ACCESS', {
@@ -700,37 +795,6 @@ define([
 
             }]
         });
-
-        /*
-        var friendsObject = hasFriends ? createShareWithFriends(opts, onFriendShare, opts.getLinkValue) : UIElements.noContactsMessage(common);
-        var friendsList = friendsObject.content;
-
-        onFriendShare.reg(opts.saveValue);
-
-        var contactsContent = h('div.cp-share-modal');
-        var $contactsContent = $(contactsContent);
-        $contactsContent.append(friendsList);
-
-        // Show alert if the pad is password protected
-        if (opts.hasPassword) {
-            $contactsContent.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-unlock'),
-                Messages.share_contactPasswordAlert, h('br'),
-                makeFaqLink(opts)
-            ]));
-        }
-
-        // Burn after reading warning
-        if (opts.barAlert) { $contactsContent.append(opts.barAlert.cloneNode(true)); }
-
-        var contactButtons = friendsObject.buttons;
-        contactButtons.unshift(makeCancelButton());
-
-        cb(void 0, {
-            content: contactsContent,
-            buttons: contactButtons
-        });
-        */
     };
 
     var getContactsTab = function (Env, data, opts, _cb) {
@@ -1221,6 +1285,11 @@ define([
                 title: 'REVOCABLE', // XXX
                 icon: "fa fa-address-book",
                 active: true,
+            }, {
+                getTab: getSecurityTab,
+                title: 'SECURITY', // XXX
+                icon: "fa fa-lock",
+                active: false,
             }];
         }
 

@@ -539,7 +539,7 @@ define([
                         correctPassword();
 
                         // XXX get access type (sf/team/user/link)
-                        currentPad.type = 'link';
+                        if (!currentPad.type) { currentPad.type = 'link'; }
 
                         secret = Utils.secret = Utils.Hash.getRevocableSecret({
                             channel: obj.channel,
@@ -876,8 +876,10 @@ define([
                     _sframeChan.event('EV_ALERTIFY_WARN', msg);
                 });
 
-                Cryptpad.universal.onEvent.reg(function (data) {
-                    sframeChan.event('EV_UNIVERSAL_EVENT', data);
+                Cryptpad.universal.onEvent.reg(function (data, cb) {
+                    sframeChan.query('EV_UNIVERSAL_EVENT', data, function (err, obj) {
+                        cb(obj);
+                    });
                 });
                 sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
                     Cryptpad.universal.execCommand(data, cb);
@@ -1683,7 +1685,6 @@ define([
                     UnsafeObject.modal = UnsafeIframe.create(config);
                 }
                 UnsafeObject.modal.refresh(cfg, function (data) {
-                    console.error(data);
                     cb(data);
                 });
             };
