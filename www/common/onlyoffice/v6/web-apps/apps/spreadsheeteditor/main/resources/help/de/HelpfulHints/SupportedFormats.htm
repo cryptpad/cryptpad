@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Unterstützte Formate für Kalkulationstabellen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The list of spreadsheet formats supported by Spreadsheet Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Unterstützte Formate für Kalkulationstabellen</h1>
+			<p>Eine <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Kalkulationstabelle</b></a> ist eine Tabelle mit Daten, die in Zeilen und Spalten organisiert sind. 
+            Sie wird am häufigsten zur Speicherung von Finanzinformationen verwendet, da nach Änderungen an einer einzelnen Zelle automatisch das gesamte Blatt neu berechnet wird. 
+            Die <b>Tabellenkalkulation</b> ermöglicht das Öffnen, Anzeigen und Bearbeiten der gängigsten Dateiformate für Kalkulationstabellen.</p>
+            <p class="note">Beim Hochladen oder Öffnen der Datei für die Bearbeitung wird sie ins Office-Open-XML-Format (XLSX) konvertiert. Dies wird gemacht, um die Dateibearbeitung zu beschleunigen und die Interfunktionsfähigkeit zu erhöhen.</p>
+            <p>Die folgende Tabelle enthält die Formate, die zum Anzeigen und/oder zur Bearbeitung geöffnet werden können.</p>
+            <table>
+                <tr>
+                    <td><b>Formate</b></td>
+                    <td><b>Beschreibung</b></td>
+                    <td>Nativ anzeigen</td>
+                    <td>Anzeigen nach Konvertierung in OOXML</td>
+                    <td>Nativ bearbeiten</td>
+                    <td>Bearbeitung nach Konvertierung in OOXML</td>
+                </tr>
+                <tr>
+                    <td>CSV</td>
+                    <td>Comma Separated Values (durch Komma getrennte Werte)<br />Dateiformat das zur Speicherung tabellarischer Daten (Zahlen und Text) im Klartext genutzt wird.</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>ODS</td>
+                    <td>Dateiendung für eine Tabellendatei die in Paketen OpenOffice und StarOffice genutzt wird, ein offener Standard für Kalkulationstabellen</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>OTS</td>
+                    <td>OpenDocument-Tabellenvorlage<br />OpenDocument-Dateiformat für Tabellenvorlagen. Eine OTS-Vorlage enthält Formatierungseinstellungen, Stile usw. und kann zum Erstellen mehrerer Tabellen mit derselben Formatierung verwendet werden.</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>XLS</td>
+                    <td>Dateiendung für eine Tabellendatei, die mit Microsoft Excel erstellt wurde</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <!--<tr>
+                    <td>XLSB</td>
+                    <td>Excel Binary Spreadsheet<br />File extension for spreadsheet files which store information in binary format instead of XML</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                    </tr>-->
+                <tr>
+                    <td>XLSX</td>
+                    <td>Standard-Dateiendung für eine Tabellendatei, die mit Microsoft Office Excel 2007 (oder späteren Versionen) erstellt wurde</td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>XLTX</td>
+                    <td>Excel Open XML Tabellenvorlage<br />Gezipptes, XML-basiertes, von Microsoft für Tabellenvorlagen entwickeltes Dateiformat. Eine XLTX-Vorlage enthält Formatierungseinstellungen, Stile usw. und kann zum Erstellen mehrerer Tabellen mit derselben Formatierung verwendet werden.</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+            </table>
+            <p>Die folgende Tabelle enthält die Formate, in denen Sie eine Tabelle über das Menü <b>Datei</b> -> <b>Herunterladen als</b> herunterladen können.</p>
+            <table>
+                <tr>
+                    <td><b>Eingabeformat</b></td>
+                    <td><b>Kann herunterladen werden als</b></td>
+                </tr>
+                <tr>
+                    <td>CSV</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <tr>
+                    <td>ODS</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <tr>
+                    <td>OTS</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <tr>
+                    <td>XLS</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <!--<tr>
+            <td>XLSB</td>
+            <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+        </tr>-->
+                <tr>
+                    <td>XLSX</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+                <tr>
+                    <td>XLTX</td>
+                    <td>CSV, ODS, OTS, PDF, PDF/A, XLSX, XLTX</td>
+                </tr>
+            </table>
+            <p>Sie können sich auch auf die Conversion-Matrix auf <a href="https://api.onlyoffice.com/editors/conversionapi#spreadsheet-matrix" target="_blank" onclick="onhyperlinkclick(this)"><b>api.onlyoffice.com</b></a> beziehen, um die Möglichkeiten zu sehen, Ihre Kalkulationstabellen in die bekanntesten Dateiformate zu konvertieren.</p>
+		</div>
+	</body>
+</html>

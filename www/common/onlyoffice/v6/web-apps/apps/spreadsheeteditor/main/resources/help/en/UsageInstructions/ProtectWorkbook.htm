@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Protecting a workbook</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Protecting workbook structure and controlling user’s workbook manipulations" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Protecting a workbook</h1>
+			<p>The <b>Protect Workbook</b> option allows you to protect workbook structure and to control user’s workbook manipulations so that no one can view hidden worksheets, add, move, delete, hide and rename worksheets. You can protect workbook with or without a password. If you don’t use a password, anyone can unprotect the workbook.</p>
+			<p>To protect a workbook:</p>
+			<ol>
+			<li>Go to the <b>Protection</b> tab, and click the <b>Protect Workbook</b> button on the top toolbar.
+			</li>			
+            <li>
+                In the <b>Protect Workbook structure</b> window that opens, enter and confirm the password, if you want to set a password to unprotect this workbook.
+                <p><img alt="Protect Workbook" src="../images/protect_workbook.png" /></p>
+                </li>
+				<li>
+                Click the <b>Protect</b> button to enable the protection with or without a password.
+                <p class="note">The password cannot be restored if you lose or forget it. Please keep it in a safe place.</p>
+                <p>The <b>Protect Workbook</b> button on the top toolbar stays highlighted once the workbook is protected.</p>
+                <p><img alt="Protect Workbook Highlighted" src="../images/protectworkbook_highlighted.png" /></p>
+            </li>
+				<li>To unprotect the workbook:
+				<ul>
+				<li>with a password protected workbook, click the <b>Protect Workbook</b> button on the top toolbar, enter the password in the <b>Unprotect Workbook</b> pop-up window and click <b>OK</b>.
+				<p><img alt="Unrotect Workbook" src="../images/unprotect_workbook.png" /></p>
+				</li>
+				<li>with a workbook protected without a password, just click the <b>Protect Workbook</b> button on the top toolbar.</li>
+				</ul>
+			</ol>
+		</div>
+	</body>
+</html>

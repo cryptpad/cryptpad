@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>WENNFEHLER-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Erfahren Sie, wie Sie die WENNFEHLER-Formel in Excel-Tabellen und kompatiblen Dateien in ONLYOFFICE verwenden." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>WENNFEHLER-Funktion</h1>
+			<p>Die Funktion <b>WENNFEHLER</b> gehört zur Gruppe der logischen Funktionen. Sie wird verwendet, um zu überprüfen, ob im ersten Argument der Formel ein Fehler aufgetreten ist. Liegt kein Fehler vor, gibt die Funktion das Ergebnis der Formel aus. Im Falle eines Fehlers gibt die Formel den von Ihnen festgelegten Wert_falls_Fehler wieder.</p>
+			<p>Die Formelsyntax der Funktion <b>WENNFEHLER</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>WENNFEHLER(Wert;Wert_falls_Fehler)</em></b></p> 
+			<p><b><em>Wert</em></b> und <b><em>Wert_falls_Fehler</em></b> werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+			<h2>Wie funktioniert WENNFEHLER</h2>
+			<p>Anwendung der Funktion <b>WENNFEHLER</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <div class = "icon icon-insertfunction"></div> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <div class = "icon icon-function"></div> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Logisch</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>WENNFEHLER</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p><em>Beispiel:</em></p>
+			<p>Sie haben eine Liste des verfügbaren Artikelbestands und den Gesamtwert. Um den Stückpreis zu erfahren, verwenden wir die Funktion <b>WENNFEHLER</b>, um zu sehen, ob Fehler aufgetreten sind. Die Argumente lauten wie folgt: <em>Wert</em> = <b>B2/A2</b>, <em>Wert_falls_Fehler</em> = <b>"Nicht verrätig"</b>. Die Formel im ersten Argument enthält keine Fehler für die Zellen C2:C9 und C11:C14, sodass die Funktion das Ergebnis der Berechnung zurückgibt. Bei C10 und C11 ist es jedoch umgekehrt, da die Formel versucht, durch Null zu teilen, daher erhalten wir als Ergebnis <em>"Nicht verrätig"</em>.</></p>
+			<img class="gif" alt="WENNFEHLER-Funktion gif" src="../images/iferror_function.gif" />
+		</div>
+	</body>
+</html>

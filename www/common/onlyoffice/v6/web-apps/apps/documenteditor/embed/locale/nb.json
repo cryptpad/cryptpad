@@ -1,0 +1,19 @@
+{
+  "common.view.modals.txtCopy": "Kopier til utklippstavle",
+  "common.view.modals.txtHeight": "Høyde",
+  "common.view.modals.txtShare": "Del link",
+  "common.view.modals.txtWidth": "Bredde",
+  "DE.ApplicationController.criticalErrorTitle": "Feil",
+  "DE.ApplicationController.downloadErrorText": "Nedlasting feilet.",
+  "DE.ApplicationController.errorDefaultMessage": "Feilkode: %1",
+  "DE.ApplicationController.notcriticalErrorTitle": "Advarsel",
+  "DE.ApplicationController.textLoadingDocument": "Laster dokument",
+  "DE.ApplicationController.textOf": "av",
+  "DE.ApplicationController.txtClose": "Lukk",
+  "DE.ApplicationController.unknownErrorText": "Ukjent feil.",
+  "DE.ApplicationController.unsupportedBrowserErrorText": "Nettleseren din er ikke støttet.",
+  "DE.ApplicationController.waitText": "Vennligst vent...",
+  "DE.ApplicationView.txtDownload": "Last ned",
+  "DE.ApplicationView.txtFullScreen": "Fullskjerm",
+  "DE.ApplicationView.txtShare": "Del"
+}

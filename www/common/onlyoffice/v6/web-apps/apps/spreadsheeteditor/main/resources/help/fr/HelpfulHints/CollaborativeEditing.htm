@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title> Collaborer sur des feuilles de calcul en temps réel</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Astuces sur la collaboration" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Collaborer sur des feuilles de calcul en temps réel</h1>
+            <p> <a target="_blank" href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" onclick="onhyperlinkclick(this)"><b>Tableur</b></a> permet de gérer le flux de travail continu par l'ensemble de l'équipe : <a href="https://helpcenter.onlyoffice.com/fr/userguides/groups-guides-documents-share-documents.aspx">partager</a> des fichiers et des dossiers, <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">communiquer</a> directement depuis l'éditeur, <a href="../HelpfulHints/Commenting.htm" onclick="onhyperlinkclick(this)">laisser des commentaires</a> pour des fragments de la feuille de calcul nécessitant la participation d'une tierce personne, sauvegarder des <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">versions de la feuille de calcul</a> pour une utilisation ultérieure.</p>
+            <p>Dans le <b>Tableur</b> il y a deux modes de collaborer sur des feuilles de calcul en temps réel : <b>Rapide</b> et <b>Strict</b>.</p>
+            <p>Vous pouvez basculer entre les modes depuis <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a>. Il est également possible de choisir le mode voulu à l'aide de l'icône <span class="icon icon-coeditingmode"></span> <b>Mode de coédition</b> dans l'onglet <b>Collaboration</b> de la barre d'outils supérieure :</p>
+            <p><img alt="Menu Mode de co-édition" src="../../../../../../common/main/resources/help/fr/images/coeditingmodemenu.png" /></p>
+            <p>Le nombre d'utilisateurs qui travaillent sur la feuille de calcul actuelle est spécifié sur le côté droit de l'en-tête de l'éditeur - <span class="icon icon-usersnumber"></span>. Pour afficher les personnes qui travaillent sur le fichier, cliquez sur cette icône pour ouvrir le panneau <b>Chat</b> avec la liste complète affichée.</p>
+            <h3>Mode Rapide</h3>
+            <p>Le mode <b>Rapide</b> est utilisé par défaut et affiche les modifications effectuées par d'autres utilisateurs en temps réel. Lorsque vous co-éditez une feuille de calcul en mode <b>Rapide</b>, la possibilité de <b>Rétablir</b> la dernière opération annulée n'est pas disponible. Ce mode affichera les actions et les noms des co-auteurs tandis qu'ils modifient les données des cellules. Les bordures des cellules s'affichent en différentes couleurs pour mettre en surbrillance des plages de cellules sélectionnées par un autre utilisateur à ce moment.</p>
+            <p>Faites glisser le pointeur de la souris sur la plage sélectionnée pour afficher le nom de l'utilisateur qui fait la sélection.</p>
+            <h3>Mode Strict</h3>
+            <p>Le mode <b>Strict</b> est sélectionné pour masquer les modifications d'autres utilisateurs jusqu'à ce que vous cliquiez sur l'icône <b>Enregistrer</b> <span class="icon icon-saveupdate"></span> pour enregistrer vos propres modifications et accepter les modifications apportées par d'autres utilisateurs.</p>
+            <p>Lorsqu'une feuille de calcul est en cours de modification par plusieurs utilisateurs simultanément dans le mode <b>Strict</b>, les cellules modifiées sont marqués avec des lignes pointillées de couleurs différentes, l'onglet de la feuille de calcul où se situent ces cellules est marqué de rouge. Faites glisser le curseur sur l'une des cellules modifiées, pour afficher le nom de l'utilisateur qui est en train de l'éditer à ce moment.</p>
+            <p><img alt="Co-édition sélection en surbrillance" src="../images/coedit_selector.png" /></p>
+            <p>Lorsque l'un des utilisateurs enregistre ses modifications en cliquant sur l'icône <span class="icon icon-savewhilecoediting"></span>, les autres verront une note dans le coin supérieure gauche indiquant qu'il y a des mises à jour. Pour enregistrer les modifications apportées et récupérer les mises à jour de vos co-auteurs cliquez sur l'icône <span class="icon icon-saveupdate"></span> dans le coin supérieur gauche de la barre supérieure.</p>
+            <h3>Utilisateurs anonymes</h3>
+            <p>Les utilisateurs du portail qui ne sont pas enregistrés et n'ont pas du profil sont les utilisateurs anonymes qui quand même peuvent collaborer sur des documents. Pour affecter le nom à un utilisateur anonyme, ce dernier doit saisir le nom préféré dans le coin supérieur droit de l'écran lorsque l'on accède au document pour la première fois. Activez l'option "Ne plus poser cette question" pour enregistrer ce nom-ci.</p>
+            <p><img alt="Collaboration anonyme" src="../images/anonymous_collab.png" /></p>
+        </div>
+	</body>
+</html>

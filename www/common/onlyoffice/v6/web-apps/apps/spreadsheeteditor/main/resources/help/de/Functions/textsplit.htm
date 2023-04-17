@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEXTTEILEN-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>TEXTTEILEN-Funktion</h1>
+			<p>Die Funktion <b>TEXTTEILEN</b> ist eine der Text- und Datenfunktionen. Sie wird verwendet, um Textzeichenfolgen durch Spalten- und Zeilentrennzeichen zu trennen.</p>
+			<p class="note">Bitte beachten Sie, dass dies eine Matrixformel ist. Um mehr zu erfahren, lesen Sie bitte den Artikel <a href="../UsageInstructions/InsertArrayFormulas.htm" onclick="onhyperlinkclick(this)">Matrixformeln einfügen</a>.</p>
+			<p>Die Formelsyntax der Funktion <b>TEXTTEILEN</b> ist:</p>
+			<p style="text-indent: 150px;"><b><em>TEXTTEILEN(text,col_delimiter,[row_delimiter],[ignore_empty], [match_mode], [pad_with])</em></b></p>
+			<p>dabei gilt</p>
+			<p style="text-indent: 50px;"><b><em>text</em></b> wird verwendet, um den Text festzulegen, den Sie teilen möchten.</p>
+			<p style="text-indent: 50px;"><b><em>col_delimiter</em></b> ist ein optionales Argument. Es wird verwendet, um den Text festzulegen, der den Punkt markiert, an dem der Text über Spalten verteilt werden soll.</p>
+			<p style="text-indent: 50px;"><b><em>row_delimiter</em></b> ist ein optionales Argument. Es wird verwendet, um den Text festzulegen, der den Punkt markiert, an dem der Text über Zeilen verteilt werden soll.</p>
+			<p style="text-indent: 50px;"><b><em>ignore_empty</em></b> ist ein optionales Argument. Es wird verwendet, um <b>FALSE</b> anzugeben, um eine leere Zelle zu erstellen, wenn zwei Trennzeichen aufeinanderfolgend sind. Der Standardwert ist <b>TRUE</b>, wodurch eine leere Zelle erstellt wird.</p>
+			<p style="text-indent: 50px;"><b><em>match_mode</em></b> ist ein optionales Argument. Es wird verwendet, um den Text nach einem übereinstimmenden Trennzeichen zu durchsuchen. Standardmäßig wird eine Übereinstimmung zwischen Groß- und Kleinschreibung durchgeführt.</p>
+			<p style="text-indent: 50px;"><b><em>pad_with</em></b> wird verwendet, um den Wert festzulegen, mit dem das Ergebnis aufgefüllt werden soll. Standardmäßig ist #N/A.</p>
+			<p>Anwendung der Funktion <b>TEXTTEILEN</b>:</p>
+			<ol>
+				<li>Wählen Sie die Zelle aus, in der Sie das Ergebnis anzeigen möchten,</li>
+				<li>
+					Klicken Sie auf das Symbol <b>Funktion</b> <div class="icon icon-insertfunction"></div> in der oberen Symbolleiste
+					<br />oder klicken Sie mit der rechten Maustaste in eine ausgewählte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Menü
+					<br />oder klicken Sie auf das Symbol <div class="icon icon-function"></div> in der Bearbeitungsleiste.
+				</li>
+				<li>Wählen Sie aus der Liste die Funktionsgruppe <b>Text und Daten</b>.</li>
+				<li>Klicken Sie auf die Funktion <b>TEXTTEILEN</b>.</li>
+				<li>Geben Sie die erforderlichen Argumente ein, indem Sie sie durch Kommas trennen.</li>
+				<li>Drücken Sie die <b>Eingabe</b>-Taste.</li>
+			</ol>
+			<p>Das Ergebnis wird in der ausgewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="TEXTTEILEN-Funktion" src="../images/textsplit.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,90 @@
+﻿	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Ajouter des animations</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Description des possibilités de l'éditeur pour ajouter et gérer des effets d'animation sur une diapositive." />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<script type="text/javascript" src="../callback.js"></script>
+		<script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Ajouter des animations</h1>
+			<p><b>Animation</b> est un effet visuel permettant d'animer du texte, des objets et des graphiques pour rendre votre présentation plus dynamique et pour accentuer une information importante. Vous pouvez contrôler le trajectoire, la couleur et la taille du texte, des objets et des graphiques.</p>
+			<h3 id="applyanimation">Appliquer un effet d'animation</h3>
+			<ol>
+				<li>passez à l'onglet <b>Animation</b> de la barre d'outils supérieure.</li>
+				<li>sélectionnez le texte, l'objet ou l'élément graphique à animer.</li>
+				<li>sélectionnez l'<b>Animation</b> dans la galerie des effets d'animation.</li>
+				<li>paramétrez la direction du mouvement de l'animation en cliquant sur <b>Paramètres</b> à côté de la galerie des effets d'animation. Le choix des paramètres dans la liste déroulante dépend de l'effet choisi.</li>
+			</ol>
+			<p>Vous pouvez afficher l'aperçu des effets d'animation sur la diapositive actuelle. Par défaut, des effets d'animation démarrent automatiquement lorsque vous les ajoutez à la diapositive mais vous pouvez désactiver cette option. Cliquez sur la liste déroulante <b>Aperçu</b> dans l'onglet <b>Animation</b> et sélectionnez le mode d'aperçu :</p>
+			<ul>
+				<li><b>Aperçu</b> pour afficher l'aperçu lorsque vous cliquez sur le bouton <b>Aperçu</b>,</li>
+				<li><b>Aperçu partiel</b> pour afficher l'aperçu automatiquement lorsque vous ajoutez une animation à la diapositive ou remplacez l'animation existante. </li>
+			</ul>
+
+			<h3>Types d'animations</h3>
+			<p>La liste de toutes <b>animations</b> disponibles se trouve dans la <b>galerie des effets d'animation</b>. Cliquez sur la flèche déroulante pour ouvrir la galerie. Chaque <b>effet d'animation</b> est représenté sous forme d'une étoile. Les effets d'animation sont regroupées selon le moment auquel ils se produisent :</p>
+			<p><img alt="Galerie des effets d'animation" src="../images/animationgallery.png" /></p>
+			<p>Les effets d'<b>Entrée</b> permettent de faire apparaître des objets sur une diapositive et sont colorés en vert dans la galerie.</p>
+			<p>Les effets d'<b>Accentuation</b> permettent de modifier la taille et la couleur de l'objet pour le mettre en évidence et pour attirer l'attention de l'auditoire et sont colorés en jaune ou sont bicolores dans la galerie.</p>
+			<p>Les effets de <b>Sortie</b> permettent de faire disparaître des objets de la diapositive et sont colorés en rouge dans la galerie.</p>
+			<p>Les <b>Trajectoires du mouvement</b> permettent de déterminer le déplacement de l'objet et son trajectoire. Les icônes dans la galerie affichent le chemin proposé. L'option <b>Chemin personnalisé</b> est également disponible. Pour déterminer un chemin personnalisé, marquez les points du chemin avec le bouton gauche de la souris. Double-cliquez sur le bouton gauche de la souris, quand tout est prêt.</p>
+			<p>Faites défiler la page vers le bas pour naviguer tous les effets disponibles dans la galerie. Si vous ne trouvez pas l'animation requise dans la galerie, cliquez sur <b>Afficher plus d'effets</b> en bas de la galerie.</p>
+			<p><img alt="Plus d'effets" src="../images/moreeffects.png" /></p>
+			<p>Ici, vous allez trouver la liste complète des effets d'animation. En outre, les effets sont regroupés par leur impact visuel sur l'audience.</p>
+			<ul>
+				<li>Les effets d'<b>Entrée</b>, d'<b>Accentuation</b> et de <b>Sortie</b> sont regroupés par <b>Simple</b>, <b>Discret</b>, <b>Modérer</b> et <b>Captivant</b>.</li>
+				<li>Les <b>Trajectoires du mouvement</b> sont regroupés par <b>Simple</b>, <b>Discret</b> et <b>Modérer</b>.</li>
+			</ul>
+			<p>Par défaut, l'option <b>Effet d'aperçu</b> est activée, désactivez-la si vous n'en avez pas besoin.</p>
+
+			<h3 id="multipleanimations">Appliquer plusieurs animations</h3>
+			<p>Vous pouvez appliquer plusieurs effets d'animation au même objet. Pour ce faire,</p>
+			<ol>
+				<li>Cliquez sur le bouton <b>Ajouter une animation</b> sous l'onglet <b>Animation</b>.</li>
+				<li>La liste des effets d'animation s'affichera. Répétez les opérations 3 et 4 ci-dessus pour appliquer encore un effet d'animation.</li>
+			</ol>
+			<p>Si vous utilisez la <b>galerie des effets d'animation</b> au lieu du bouton <b>Ajouter une animation</b>, le premier effet d'animation sera remplacé par un nouvel. Les nombres dans des petits carrés gris indiquent l'ordre des effets appliqués.</p>
+			<p>Lorsque vous appliquez plusieurs effets à un objet, l'icône <b>Multiple</b> apparaîtra dans la galerie des effets d'animation.</p>
+			<p><img alt="Plusieurs effets " src="../images/multipleeffect_icon.png" /></p>
+			<h4 id="animationsorder">Changer l'ordre des effets d'animation sur une diapositive</h4>
+			<ol>
+				<li>Cliquez sur le symbole carré indiquant l'effet d'animation.</li>
+				<li>Cliquez sur l'une des flèches <img alt="Déplacer avant" src="../images/moveearlier.png" /> ou <img alt="Déplacer après" src="../images/movelater.png" /> sous l'onglet <b>Animation</b> pour modifier l'ordre d'apparition sur la diapositive.</li>
+			</ol>
+			<p><img alt="Ordre d'animations" src="../images/multipleanimations_order.png" /></p>
+			<h3 id="timing">Déterminer le minutage d'une animation</h3>
+			<p>Utilisez les options de minutage sous l'onglet <b>Animation</b> pour déterminer le <b>début</b>, la <b>durée</b>, le <b>retard</b>, la <b>répétition</b> et le <b>retour</b> à l'état d'origine de l'animation.</p>
+			<h4>Options de démarrage d'une animation.</h4>
+			<ul>
+				<li><b>Au clic</b> - l'animation va démarrer lorsque vous cliquez sur la diapositive. C'est l'option par défaut.</li>
+				<li><b>Avec la précédente</b> - l'animation va démarrer au même temps que l'animation précédente.</li>
+				<li><b>Après la précédente</b> - l'animation va démarrer immédiatement après l'animation précédente.</li>
+			</ul>
+			<p class="note"><b><b>Remarque</b> :</b> Les effets d'animation sont numérotés automatiquement sur une diapositive. Toutes les animations définies à démarrer <b>Avec la précédente</b> ou <b>Après la précédente</b> prennent le numéro de l'animation avec laquelle ils sont connectées.</p>
+			<p><img alt="Ordre des animations" src="../images/animationnumbering.png" /></p>
+			<h4>Options de déclenchement d'une animation :</h4>
+			<p>Cliquez sur le bouton <b>Déclencheur</b> et sélectionnez l'une des options appropriée :</p>
+			<ul>
+				<li><b>Séquence de clics</b> pour démarrer l'animation suivante chaque fois que vous cliquez n'importe où sur une diapositive. C'est l'option par défaut.</li>
+				<li><b>Au clic sur</b> pour démarrer l'animation lorsque vous cliquez sur l'objet que vous avez sélectionné dans la liste déroulante.</li>
+			</ul>
+			<p><img alt="Options de déclenchement" src="../images/triggeroptions.png" /></p>
+			<h4>Autres options de minutage</h4>
+			<p><img alt="Options de minutage" src="../images/timingoptions.png" /></p>
+			<p><b>Durée </b>- utilisez cette option pour contrôler la durée d'affichage de chaque animation. Sélectionnez l'une des options disponibles dans le menu ou saisissez votre valeur.</p>
+			<p><img alt="Durée d'animation" src="../images/animationduration.png" /></p>
+			<p><b>Retard</b> - utilisez cette option si vous voulez préciser le délai dans lequel une animation sera affichée ou si vous avez besoin d'une pause dans la lecture des effets. Sélectionnez une valeur appropriée en utilisant les flèches pu ou saisissez votre valeur mesurée en secondes.</p>
+			<p><b>Répéter</b> - utilisez cette option si vous souhaitez afficher une animation plusieurs fois. Activez l'option <b>Répéter</b> et sélectionnez l'une des options disponibles ou saisissez votre valeur.</p>
+			<p><img alt="Répéter animation" src="../images/animationrepeat.png" /></p>
+			<p><b>Rembobiner</b> - activez cette option si vous souhaitez revenir à l'état d'origine d'un effet après son affichage.</p>
+		</div>
+	</body>
+</html>

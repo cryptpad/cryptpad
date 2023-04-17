@@ -1,0 +1,21 @@
+{
+  "DE.Controllers.ApplicationController.convertationErrorText": "Konversija neizdevās.",
+  "DE.Controllers.ApplicationController.convertationTimeoutText": "Konversijas taimauts pārsniegts.",
+  "DE.Controllers.ApplicationController.criticalErrorTitle": "Kļūda",
+  "DE.Controllers.ApplicationController.downloadErrorText": "Lejuplāde neizdevās.",
+  "DE.Controllers.ApplicationController.downloadTextText": "Lejuplādē dokumentu...",
+  "DE.Controllers.ApplicationController.errorAccessDeny": "Jūs mēģināt veikt darbību, kuru nedrīkstat veikt.<br>Lūdzu, sazinieties ar savu dokumentu servera administratoru.",
+  "DE.Controllers.ApplicationController.errorDefaultMessage": "Kļūdas kods: %1",
+  "DE.Controllers.ApplicationController.errorFilePassProtect": "Fails ir aizsargāts ar paroli un to nevar atvērt.",
+  "DE.Controllers.ApplicationController.errorUserDrop": "Failam šobrīd nevar piekļūt.",
+  "DE.Controllers.ApplicationController.notcriticalErrorTitle": "Brīdinājums",
+  "DE.Controllers.ApplicationController.textLoadingDocument": "Ielādē dokumentu",
+  "DE.Controllers.ApplicationController.textOf": "no",
+  "DE.Controllers.ApplicationController.txtClose": "Aizvērt",
+  "DE.Controllers.ApplicationController.unknownErrorText": "Nezināma kļūda.",
+  "DE.Controllers.ApplicationController.unsupportedBrowserErrorText": "Jūsu pārlūkprogramma nav atbalstīta.",
+  "DE.Views.ApplicationView.txtDownload": "Lejupielādēt",
+  "DE.Views.ApplicationView.txtFileLocation": "Iet uz Dokumenti",
+  "DE.Views.ApplicationView.txtPrint": "Drukāt",
+  "DE.Views.ApplicationView.txtShare": "Dalīties"
+}

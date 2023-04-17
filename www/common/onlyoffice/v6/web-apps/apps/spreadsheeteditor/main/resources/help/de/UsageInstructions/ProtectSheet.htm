@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Blatt ändern</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Blätter schützen, um unerwünschte Änderungen zu verhindern und die Bearbeitungsmöglichkeiten anderer Benutzer einzuschränken" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Blatt ändern</h1>
+			<p>Mit der Option <b>Blatt schützen</b> können Sie die Blätter schützen und von anderen Benutzern in einem Blatt vorgenommene Änderungen verwalten, um unerwünschte Änderungen an Daten zu verhindern und die Bearbeitungsmöglichkeiten anderer Benutzer einzuschränken. Sie können ein Blatt mit oder ohne Kennwort schützen. Wenn Sie kein Kennwort verwenden, kann jeder den Schutz des geschützten Blatts aufheben.</p>
+			<p>Um ein Blatt zu schützen,</p>
+			<ol>
+				<li>
+					Gehen Sie zur Registerkarte <b>Schutz</b> und klicken Sie in der oberen Symbolleiste auf die Schaltfläche <b>Blatt schützen</b>
+					<p>oder</p>
+					<p>Klicken Sie mit der rechten Maustaste auf die Tabellenregisterkarte, die Sie schützen möchten, und wählen Sie <b>Schützen</b> aus der Liste der Optionen.</p>
+					<p><img alt="Tabellenregisterkarte schützen" src="../images/protect_sheettab.png" /></p>
+				</li>
+				<li>Geben Sie im geöffneten Fenster <b>Blatt schützen</b> das Kennwort ein und bestätigen Sie es, wenn Sie ein Kennwort festlegen möchten, um den Schutz dieses Blatts aufzuheben.
+					<p><img alt="Blatt schützen" src="../images/protect_sheet.png" /></p>
+					<p class="note">Das Kennwort kann nicht wiederhergestellt werden, wenn Sie es verlieren oder vergessen. Bitte bewahren Sie es an einem sicheren Ort auf.</p>
+				</li>
+				<li>Aktivieren Sie die Kontrollkästchen in der Liste <b>Alle Benutzer dieser Arbeitsblätter können</b>, um Vorgänge auszuwählen, die Benutzer ausführen können. Die Operationen <b>Gesperrte Zellen auswählen</b> und <b>Aufgesperrte Zellen auswählen</b> sind standardmäßig erlaubt.
+					<details class="details-example">
+						<summary>Operationen, die ein Benutzer ausführen kann.</summary>
+						<ul>
+							<li>Gesperrte Zellen auswählen</li>
+							<li>Entsperrte Zellen auswählen</li>
+							<li>Zellen formatieren</li>
+							<li>Spalten formatieren</li>
+							<li>Zeilen formatieren</li>
+							<li>Spalten einfügen</li>
+							<li>Zeilen einfügen</li>
+							<li>Hyperlink einfügen</li>
+							<li>Spalten löschen</li>
+							<li>Zeilen löschen</li>
+							<li>Sortieren</li>
+							<li>AutoFilter verwenden</li>
+							<li>PivotTable und PivotChart verwenden</li>
+							<li>Objekte bearbeiten</li>
+							<li>Szenarien bearbeiten</li>
+						</ul>
+					</details>
+				</li>
+				<li>Klicken Sie auf die Schaltfläche <b>Schützen</b>, um den Schutz zu aktivieren. Die Schaltfläche <b>Blatt schützen</b> in der oberen Symbolleiste bleibt hervorgehoben, sobald das Blatt geschützt ist.
+					<p><img alt="Blatt schützen - hervorheben" src="../images/protectsheet_highlighted.png" /></p>
+				</li>
+				<li>Um den Schutz des Blatts aufzuheben,
+					<ul>
+						<li>klicken Sie auf die Schaltfläche <b>Blatt schützen</b>
+							<p>oder</p>
+							<p>klicken Sie mit der rechten Maustaste auf die Registerkarte des geschützten Blatts und wählen Sie <b>Entschützen</b> aus der Liste der Optionen</p>
+							<p><img alt="Registerkarte Blatt entschützen" src="../images/unprotect_sheettab.png" /></p>
+						</li>
+						<li>Geben Sie ein Kennwort ein und klicken Sie im Fenster <b>Liste entschützen</b> auf <b>OK</b>, wenn Sie dazu aufgefordert werden.
+							<p><img alt="Blatt entschützen" src="../images/unprotect_sheet.png" /></p>
+						</li>
+					</ul>
+				</ol>
+		</div>
+	</body>
+</html>

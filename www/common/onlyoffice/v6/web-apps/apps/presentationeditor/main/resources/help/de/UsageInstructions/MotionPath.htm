@@ -1,0 +1,54 @@
+﻿	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Animationspfad erstellen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Wie Bewegungspfadanimationen für Objekte hinzugefügt und verwaltet werden." />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<script type="text/javascript" src="../callback.js"></script>
+		<script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Animationspfad erstellen</h1>
+            <p><b>Animationspfad</b> ist ein Teil der Effekte der Animationsgalerie, der die Bewegung eines Objekts und den ihm folgenden Pfad bestimmt. Die Symbole in der Galerie stellen den vorgeschlagenen Pfad dar. Die <b>Animationsgalerie</b> ist auf der Registerkarte <b>Animation</b> in der oberen Symbolleiste verfügbar.</p>
+            <h3 id="applyanimation">Anwenden eines Effekts für Animationspfade</h3>
+            <ol>
+                <li>Wechseln Sie in der oberen Symbolleiste zur Registerkarte <b>Animation</b>.</li>
+                <li>Wählen Sie einen Text, ein Objekt oder ein Grafikelement aus, auf das Sie den Animationseffekt anwenden möchten.</li>
+                <li>Wählen Sie eines der vorgefertigten Bewegungspfadmuster aus dem Abschnitt <b>Animationspfade</b> in der Animationsgalerie (<em>Zeilen</em>, <em>Bögen</em> usw.) oder wählen Sie die Option <b>Benutzerdefinierter Pfad</b>, wenn Sie einen eigenen Pfad erstellen möchten.</li>
+            </ol>
+            <p>Sie können Animationseffekte auf der aktuellen Folie in der Vorschau anzeigen. Standardmäßig werden Animationseffekte automatisch abgespielt, wenn Sie sie zu einer Folie hinzufügen, aber Sie können sie deaktivieren. Klicken Sie auf der Registerkarte <b>Animation</b> auf das Dropdown-Menü <b>Vorschau</b> und wählen Sie einen Vorschaumodus aus:</p>
+            <ul>
+                <li><b>Vorschau</b>, um eine Vorschau anzuzeigen, wenn Sie auf die Schaltfläche <b>Vorschau</b> klicken.</li>
+                <li><b>AutoVorschau</b>, um automatisch eine Vorschau anzuzeigen, wenn Sie einer Folie eine Animation hinzufügen oder eine vorhandene ersetzen.</li>
+            </ul>
+
+            <h3>Hinzufügen eines benutzerdefinierten Pfadanimationseffekts</h3> 
+            <p>Um einen benutzerdefinierten Pfad zu zeichnen,</p> 
+            <ol>
+                <li>Klicken Sie auf das Objekt, dem Sie eine benutzerdefinierte Pfadanimation geben möchten.</li>
+                <li>
+                    Markieren Sie die Wegpunkte mit der linken Maustaste. Ein Klick mit der linken Maustaste zeichnet eine Linie, während Sie mit gedrückter linker Maustaste jede gewünschte Kurve zeichnen können.
+                    <p>Der Startpunkt des Weges wird mit einem grünen Richtungspfeil markiert, der Endpunkt mit einem roten.</p>
+                    <p><div class="big big-custom_path"></div></p>
+                </li>
+                <li>Wenn Sie fertig sind, klicken Sie zweimal mit der linken Maustaste oder drücken Sie die <b>Esc</b>-Taste, um das Zeichnen Ihres Pfads zu beenden.</li>
+            </ol>
+
+            <h3>Bearbeiten von Animationspfadpunkten</h3>
+            <ol>
+                <li>
+                    Um die Animationspfadpunkte zu bearbeiten, wählen Sie das Pfadobjekt aus, klicken Sie mit der rechten Maustaste, um das Kontextmenü zu öffnen, und wählen Sie die Option <b>Punkte bearbeiten</b>.
+                    <p><div class="big big-edit_points"></div></p>
+                    <p>Ziehen Sie die <b>schwarzen</b> Quadrate, um die Position der Knoten der Pfadpunkte anzupassen; Ziehen Sie die <b>weißen</b> Quadrate, um die Richtung an den Ein- und Austrittspunkten des Knotens anzupassen. Drücken Sie <b>Esc</b> oder irgendwo außerhalb des Pfadobjekts, um den Bearbeitungsmodus zu verlassen.</p>
+                </li>
+                <li>Sie können den Animationspfad skalieren, indem Sie darauf klicken und die quadratischen Punkte an den Rändern des Objekts ziehen.</li>
+            </ol>
+        </div>
+		</body>
+	</html>

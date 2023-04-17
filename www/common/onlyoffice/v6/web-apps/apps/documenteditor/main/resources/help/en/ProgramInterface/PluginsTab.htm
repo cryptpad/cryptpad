@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Plugins tab</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Document Editor user interface - Plugins tab" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Plugins tab</h1>
+            <p>The <b>Plugins</b> tab of the <a href="https://www.onlyoffice.com/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> allows accessing the advanced editing features using the available third-party components. This tab also makes it possible to use macros to simplify routine operations.</p>
+            <div class="onlineDocumentFeatures">
+                <p>The corresponding window of the Online Document Editor:</p>
+                <p><img alt="Plugins tab" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>The corresponding window of the Desktop Document Editor:</p>
+                <p><img alt="Plugins tab" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">The <b>Settings</b> button allows viewing and managing all the installed plugins as well as adding new ones.</p>
+            <p>The <b>Macros</b> button allows you to create and run your own macros. To learn more about macros, please refer to our <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">API Documentation</a>.</p>
+            <p>Currently, the following plugins are available by default:</p>		
+            <ul>
+                <li class="desktopDocumentFeatures"><b>Send</b> allows to send the document via email using the default desktop mail client (available in the <em>desktop version</em> only),</li>
+                <li><a href="../UsageInstructions/HighlightedCode.htm" onclick="onhyperlinkclick(this)">Highlight code</a> allows to highlight syntax of the code selecting the necessary language, style, background color,</li>
+                <li><a href="../UsageInstructions/OCR.htm" onclick="onhyperlinkclick(this)">OCR</a> allows to recognize text included into a picture and insert it into the document text,</li>
+                <li><a href="../UsageInstructions/PhotoEditor.htm" onclick="onhyperlinkclick(this)">Photo Editor</a> allows to edit images: crop, flip, rotate them, draw lines and shapes, add icons and text, load a mask and apply filters such as Grayscale, Invert, Sepia, Blur, Sharpen, Emboss, etc.,</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/Speech.htm" onclick="onhyperlinkclick(this)">Speech</a> allows to convert the selected text into speech (available in the <em>online version</em> only),</li>
+                <li><a href="../UsageInstructions/Thesaurus.htm" onclick="onhyperlinkclick(this)">Thesaurus</a> allows to search for synonyms and antonyms of a word and replace it with the selected one,</li>
+                <li><a href="../UsageInstructions/Translator.htm" onclick="onhyperlinkclick(this)">Translator</a> allows to translate the selected text into other languages,
+                    <p class="note">This plugin doesn't work in Internet Explorer.</p>
+                </li>
+                <li><a href="../UsageInstructions/YouTube.htm" onclick="onhyperlinkclick(this)">YouTube</a> allows to embed YouTube videos into your document,</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#Mendeley_block" onclick="onhyperlinkclick(this)">Mendeley</a> allows to manage research papers and generate bibliographies for scholarly articles (available in the <em>online version</em> only),</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#Zotero_block" onclick="onhyperlinkclick(this)">Zotero</a> allows to manage bibliographic data and related research materials (available in the <em>online version</em> only),</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#EasyBib_block" onclick="onhyperlinkclick(this)">EasyBib</a> helps to find and insert related books, journal articles and websites (available in the <em>online version</em> only).</li>
+            </ul>
+            <p class="onlineDocumentFeatures">The <a href="../UsageInstructions/Wordpress.htm" onclick="onhyperlinkclick(this)">Wordpress</a> and <b>EasyBib</b> plugins can be used if you connect the corresponding services in your portal settings. You can use the following instructions <a target="_blank" href="https://helpcenter.onlyoffice.com/server/windows/community/authorization-keys.aspx" onclick="onhyperlinkclick(this)">for the server version</a> or <a target="_blank" href="https://helpcenter.onlyoffice.com/tipstricks/authorization-keys-saas.aspx" onclick="onhyperlinkclick(this)">for the SaaS version</a>. </p>
+            <p class="note">The Wordpress and EasyBib plugins are not included in the free version of the editors.</p>
+            <p>To learn more about plugins, please refer to our <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">API Documentation</a>. All the currently existing open source plugin examples are available on <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a>.</p>
+		</div>
+	</body>
+</html>

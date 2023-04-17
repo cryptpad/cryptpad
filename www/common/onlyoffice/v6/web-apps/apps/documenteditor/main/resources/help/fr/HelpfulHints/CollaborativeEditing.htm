@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Collaborer sur un document en temps réel</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tips on collaborative editing" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Collaborer sur un document en temps réel</h1>
+        <p><a href="https://www.onlyoffice.com/fr/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Éditeur de Documents</b></a> permet de gérer le flux de travail continu par l'ensemble de l'équipe : <a href="https://helpcenter.onlyoffice.com/fr/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">partager</a> des fichiers et des dossiers, <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">communiquer</a> directement depuis l'éditeur, <a href="../HelpfulHints/Commenting.htm" onclick="onhyperlinkclick(this)">laisser des commentaires</a> pour des fragments de la présentation nécessitant la participation d'une tierce personne, sauvegarder des <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">versions du document</a> pour une utilisation ultérieure, <a href="../HelpfulHints/Review.htm" onclick="onhyperlinkclick(this)">réviser</a> les documents et ajouter les modifications sans modifier le fichier, <a href="../HelpfulHints/Comparison.htm" onclick="onhyperlinkclick(this)">comparer et fusionner</a> les documents pour faciliter le traitement et l'édition.</p>
+        <p>Dans l'<b>Éditeur de Documents</b> il y a deux modes de collaborer sur des documents en temps réel : <b>Rapide</b> et <b>Strict</b>.</p>
+        <p>Vous pouvez basculer entre les modes depuis <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a>. Il est également possible de choisir le mode voulu à l'aide de l'icône <span class = "icon icon-coeditingmode"></span> <b>Mode de coédition</b> dans l'onglet <b>Collaboration</b> de la barre d'outils supérieure :</p>
+        <p><img alt="Menu Mode de co-édition" src="../../../../../../common/main/resources/help/fr/images/coeditingmodemenu.png" /></p>
+        <p>Le nombre d'utilisateurs qui travaillent sur le document actuel est spécifié sur le côté droit de l'en-tête de l'éditeur - <span class = "icon icon-usersnumber"></span>. Pour afficher les personnes qui travaillent sur le fichier, cliquez sur cette icône pour ouvrir le panneau <b>Chat</b> avec la liste complète affichée.</p>
+        <h3>Mode Rapide</h3>
+        <p>Le mode <b>Rapide</b> est utilisé par défaut et affiche les modifications effectuées par d'autres utilisateurs en temps réel. Lorsque vous co-éditez un document en mode <b>Rapide</b>, la possibilité de <b>Rétablir</b> la dernière opération annulée n'est pas disponible. Le mode <b>Rapide</b> affichera les actions et les noms des co-éditeurs tandis qu'ils modifient le texte.</p>
+        <p>Pour voir qui est en train d'éditer le fichier au présent, placez le curseur de la souris sur cette icône - les noms des utilisateurs seront affichés dans la fenêtre contextuelle.</p>
+        <p><img alt="Mode Rapide" src="../images/fastmode.png" /></p>
+        <h3>Mode Strict</h3>
+        <p>Le mode <b>Strict</b> est sélectionné pour masquer les modifications d'autres utilisateurs jusqu'à ce que vous cliquiez sur l'icône <b>Enregistrer</b> <span class = "icon icon-savewhilecoediting"></span> pour enregistrer vos propres modifications et accepter les modifications apportées par d'autres utilisateurs. Lorsqu'un document est en cours de modification par plusieurs utilisateurs simultanément dans le mode <b>Strict</b>, les passages de texte modifiés sont marqués avec des lignes pointillées de couleurs différentes.</p>
+        <p><img alt="Mode Strict" src="../images/strictmode.png" /></p>
+        <p>Dès que l'un des utilisateurs sauvegarde ses modifications en cliquant sur l'icône <span class = "icon icon-savewhilecoediting"></span>, les autres verront une note dans la barre d'état indiquant qu'il y a des mises à jour. Pour enregistrer les modifications apportées et récupérer les mises à jour de vos co-auteurs cliquez sur l'icône  <span class = "icon icon-saveupdate"></span> dans le coin supérieur gauche de la barre supérieure. Les mises à jour seront marquées pour vous aider à contrôler ce qui a été exactement modifié.</p>
+        <p>Vous pouvez spécifier les modifications que vous souhaitez mettre en surbrillance pendant la co-édition si vous cliquez sur l'onglet <b>Fichier</b> dans la barre d'outils supérieure, sélectionnez l'option <b>Paramètres avancés...</b> et choisissez l'une des options :</p>
+        <ul>
+            <li><b>Surligner toutes modifications</b> toutes les modifications apportées au cours de la session seront mises en surbrillance.</li>
+            <li><b>Voir le dernier </b>- uniquement les modifications apportées après le dernier clic sur <div class = "icon icon-saveupdate"></div> l'icône seront mises en surbrillance.</li>
+            <li><b>Surligner aucune modification</b> - aucune modification apportée au cours de la session ne sera mise en surbrillance.</li>
+        </ul>
+        <h3>Mode Visionneuse en direct</h3>
+        <p>Le mode <b>Visionneuse en direct</b> est utilisé pour voir les modifications apportées par d'autres utilisateurs en temps réel lorsque le document est ouvert par un utilisateur avec les droits d'accès <b>Lecture seule</b>.</p>
+        <p class="note">Pour que le mode fonctionne correctement, assurez-vous que la case <b>Afficher les modifications apportées par d'autres utilisateurs</b> est cochée dans les <b>Paramètres avancés</b> de l'éditeur.</p>
+        <h3>Utilisateurs anonymes</h3>
+        <p>Les utilisateurs du portail qui ne sont pas enregistrés et n'ont pas du profil sont les utilisateurs anonymes qui quand même peuvent collaborer sur des documents. Pour affecter le nom à un utilisateur anonyme, ce dernier doit saisir le nom préféré dans le coin supérieur droit de l'écran lorsque l'on accède au document pour la première fois. Activez l'option "Ne plus poser cette question" pour enregistrer ce nom-ci.</p>
+        <p><img alt="Collaboration anonyme" src="../images/anonymous_collab.png" /></p>
+    </div>
+</body>
+</html>
