@@ -87,6 +87,26 @@ id: {
         return pw;
     };
 
+    var sendRevocationCommand = function (ctx, clientId, data, key, cb) {
+        var box = findBoxFromKey(ctx, key);
+        if (!box) { return void cb({error: 'EINVAL'}); }
+        var keys = box.parse.getContent();
+        var edPrivate = keys.edPrivate;
+
+        var netfluxId = getNetfluxId(ctx);
+        var sig = Revocable.signLog([JSON.stringify(data), netfluxId], edPrivate);
+
+        ctx.Store.anonRpcMsg(clientId, {
+            msg: 'REVOCATION_COMMAND',
+            data: {
+                data: data,
+                signature: sig,
+                key: key
+            }
+        }, cb);
+
+    };
+
     var getPadMetadata = function (ctx, channel, cb, keys) {
     // XXX authenticate here too
     // XXX in order to get your subtree labels
@@ -286,6 +306,7 @@ id: {
                         //if (!myAccess) { return void onNewKeys(false); }
                         if (!Revocable.isModerator(myAccess)) { delete data.doc.moderator; }
                         if (!Revocable.isEditor(myAccess)) { delete data.doc.editor; }
+                        data.canDestroy = Revocable.canDestroy(myAccess);
                         onNewKeys(clone);
                         // XXX once messages handled, emit to client
                         // XXX password change or keys rotation
@@ -528,36 +549,83 @@ console.error(seed);
 
     };
 
-
-
-    var listPadAccess = function (ctx, data, clientId, cb) {
+    var getOrLoadPad = function (ctx, data, clientId, cb) {
         var channel = data.channel;
         var teamId = data.teamId;
         if (!channel) { return void cb({error: 'EINVAL'}); }
 
         var boxes = findMailboxesForPad(ctx, channel);
+        var closeAfter = false;
 
         nThen(function (waitFor) {
-            // Either the pad is stored and we can get a mailbox from our drive
-            // or it isn't stored but it means it's already loaded (share modal from the pad)
             if (boxes.length) { return; }
             // Pad not loaded, get mailboxes from drive
-            // XXX When we open the SHARE modal from the drive, we must close the mailboxes afterward
             loadMailboxesFromChannel(ctx, data, clientId, waitFor());
+            closeAfter = true;
         }).nThen(function (waitFor) {
-            var best = getBestKeysForPad(ctx, data.channel);
+            if (boxes.length) { return; }
+            boxes = findMailboxesForPad(ctx, channel);
+        }).nThen(function (waitFor) {
+            cb({
+                boxes: boxes,
+                after: function () {
+                    if (!closeAfter) { return; }
+                    // XXX close mailboxes
+                    ctx.leavePad(data.channel);
+                }
+            });
+        });
+    };
+
+    var destroy = function (ctx, data, clientId, _cb) {
+        var channel = data.channel;
+        var key = data.from;
+        getOrLoadPad(ctx, data, clientId, function (obj) {
+            console.error(obj, key, channel);
+            if (obj && obj.error) { return void _cb(obj); }
+            var cb = Util.both(_cb, obj.after);
+
+            if (!key) {
+                var best = getBestKeysForPad(ctx, channel);
+                if (!best) { return void cb({error: 'EINVAL'}); }
+                key = best.edPublic;
+            }
+
+            sendRevocationCommand(ctx, clientId, {
+                command: 'DESTROY',
+                channel: channel,
+            }, key, cb);
+        });
+    };
+    var destroyPad = function (ctx, data, clientId, cb) {
+        destroy(ctx, data, clientId, function (obj) {
+            if (obj && obj.error) { return void cb(obj); }
+            ctx.Store.deletePadFromStores(data.channel);
+        });
+    };
+
+
+    var listPadAccess = function (ctx, data, clientId, _cb) {
+        var channel = data.channel;
+        getOrLoadPad(ctx, data, clientId, function (obj) {
+            if (obj && obj.error) { return void _cb(obj); }
+            var boxes = obj.boxes;
+            var cb = Util.both(_cb, obj.after);
+
+            var best = getBestKeysForPad(ctx, channel);
             if (!best) { return void cb({error: 'ENOENT'}); }
 
-            var myKeys = findMailboxesForPad(ctx, data.channel).map(function (box) {
+            var myKeys = boxes.map(function (box) {
                 var c = box.parse.getContent();
                 return {
                     key: c.edPublic,
                     origin: box.origin,
-                    moderator: Boolean(c.doc.moderator)
+                    moderator: Boolean(c.doc.moderator),
+                    canDestroy: Boolean(c.canDestroy)
                 };
             });
 
-            getPadMetadata(ctx, channel, waitFor(function (md) {
+            getPadMetadata(ctx, channel, function (md) {
                 if (md && md.error) { return; }
                 var access = md.access;
 
@@ -574,7 +642,7 @@ console.error(a.rights, a.mailbox, n.hash, n.type, n.note);
                     list: access,
                     myKeys: myKeys,
                 });
-            }), best);
+            }, best);
         });
 
     };
@@ -752,7 +820,7 @@ updateAccess({
         var sig = Revocable.signLog([JSON.stringify(data), netfluxId], edPrivate);
 
         ctx.Store.anonRpcMsg(clientId, {
-            msg: 'SET_REVOCATION_METADATA',
+            msg: 'REVOCATION_SET_METADATA',
             data: {
                 data: data,
                 signature: sig,
@@ -963,18 +1031,16 @@ console.error(keyHashStr);
         });
     };
 
-
     var leaveBox = function (ctx, box, boxChannel) {
         if (box.cpNf) { box.cpNf.stop(); }
         delete ctx.mailboxes[boxChannel];
     };
     var leaveChannel = function (ctx, padChan) {
         // Leave channel and prevent reconnect when we leave a pad
-        Object.keys(ctx.mailboxes).some(function (boxChannel) {
+        Object.keys(ctx.mailboxes).forEach(function (boxChannel) {
             var box = ctx.mailboxes[boxChannel];
             if (box.padChan !== padChan) { return; }
             leaveBox(ctx, box, boxChannel);
-            return true;
         });
     };
     // Remove the client from all its channels when a tab is closed
@@ -1014,12 +1080,16 @@ revocation.ctx = ctx; // debug
         revocation.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };
-        revocation.leavePad = function (padChan) {
+        revocation.leavePad = ctx.leavePad = function (padChan) {
             leaveChannel(ctx, padChan);
+        };
+        revocation.destroy = function (clientId, channel, cb) {
+            destroy(ctx, {channel: channel}, clientId, cb);
         };
         revocation.execCommand = function (clientId, obj, cb) {
             var cmd = obj.cmd;
             var data = obj.data;
+            // share.js
             if (cmd === 'LIST_ACCESS') {
                 return void listPadAccess(ctx, data, clientId, cb);
             }
@@ -1029,6 +1099,13 @@ revocation.ctx = ctx; // debug
             if (cmd === 'ADD_ACCESS') {
                 return void addAccess(ctx, data, clientId, cb);
             }
+            if (cmd === 'ROTATE_KEYS') {
+                return void rotateKeys(ctx, data, clientId, cb);
+            }
+            if (cmd === 'DESTROY') {
+                return void destroyPad(ctx, data, clientId, cb);
+            }
+            // SCO
             if (cmd === 'LOAD_PAD') {
                 return void loadPad(ctx, data, clientId, cb);
             }
@@ -1040,9 +1117,6 @@ revocation.ctx = ctx; // debug
             }
             if (cmd === 'PASSWORD') {
                 return void onPassword(ctx, data, clientId, cb);
-            }
-            if (cmd === 'ROTATE_KEYS') {
-                return void rotateKeys(ctx, data, clientId, cb);
             }
         };
 

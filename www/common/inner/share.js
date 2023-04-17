@@ -399,7 +399,6 @@ define([
         var $content = $(content);
 
         var drawRotate = function (obj, as) {
-            $rotate.empty();
             var button = h('button.btn.btn-primary', 'ROTATE KEYS'); // XXX
             $rotate.append(button);
 
@@ -423,6 +422,30 @@ define([
                 });
             });
         };
+        var drawDestroy = function (obj, as) {
+            var button = h('button.btn.btn-danger', 'DESTROY'); // XXX
+            $rotate.append(button);
+
+            if (!as.canDestroy) {
+                $(button).attr('disabled', 'disabled');
+                return;
+            }
+
+            var c = UI.confirmButton(button, {
+                classes: 'btn-danger',
+                multiple: true // XXX
+            }, function () {
+                // Confirmed, start keys rotation
+                // XXX it may be easier to handle rotation in client?
+                // XXX because we need access to chainpad (lock + make checkpoint)
+                revocation.execCommand('DESTROY', {
+                    channel: channel,
+                    from: as.key
+                }, function (obj) {
+                    console.warn(obj);
+                });
+            });
+        };
 
 
         redrawAccessEvt.reg(function (obj) {
@@ -434,7 +457,9 @@ define([
                 return void UI.warn(Messages.error);
             }
             renderAs($viewAs, obj, function (as) {
+                $rotate.empty();
                 drawRotate(obj, as);
+                drawDestroy(obj, as);
             });
         });
 

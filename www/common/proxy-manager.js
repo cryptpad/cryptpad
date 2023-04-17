@@ -864,6 +864,27 @@ define([
             cb();
         });
     };
+    var _deleteChannel = function (Env, chan, cb) {
+        var ids = _findChannels(Env, [chan]);
+        if (!ids.length) { return void cb(); }
+
+        var toDelete = {
+            main: [],
+            folders: {}
+        };
+        ids.forEach(function (id) {
+            var paths = findFile(Env, id);
+            var _resolved = _resolvePaths(Env, paths);
+
+            Array.prototype.push.apply(toDelete.main, _resolved.main);
+            Object.keys(_resolved.folders).forEach(function (fId) {
+                toDelete.folders[fId] = toDelete.folders[fId] || [];
+                Array.prototype.push.apply(toDelete.folders[fId], _resolved.folders[fId]);
+            });
+        });
+        // Remove deleted pads from the drive
+        _delete(Env, { resolved: toDelete }, cb);
+    };
     // Delete permanently some pads or folders
     var _deleteOwned = function (Env, data, cb) {
         data = data || {};
@@ -1365,6 +1386,7 @@ define([
             getChannelsList: callWithEnv(getChannelsList),
             addPad: callWithEnv(addPad),
             delete: callWithEnv(_delete),
+            deleteChannel: callWithEnv(_deleteChannel),
             deleteOwned: callWithEnv(_deleteOwned),
             // Tools
             findChannel: callWithEnv(findChannel),

@@ -24,6 +24,13 @@ var factory = function (Hash, Nacl) {
         if (!access || !access.rights) { return false; }
         return access.rights.includes('r');
     };
+    Revocable.canDestroy = function (access) {
+        if (typeof(access) === "string") {
+            return access.includes('d');
+        }
+        if (!access || !access.rights) { return false; }
+        return access.rights.includes('d');
+    };
     Revocable.isValidRights = function (rights) {
         if (typeof(rights) !== "string") { return false; }
         return /^rw?m?d?$/.test(rights);

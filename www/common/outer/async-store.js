@@ -353,6 +353,23 @@ define([
             });
         };
 
+        var findStoredPad = function (channel) {
+            var revocable;
+            var stores = [];
+            getAllStores().forEach(function (s) {
+                var res = s.manager.findChannel(channel);
+                if (!res.length) { return; }
+                stores.push(s);
+                if (revocable) { return; }
+                revocable = res.some(function (obj) {
+                    revocable = obj && obj.data && obj.data.r;
+                });
+            });
+            return {
+                revocable: revocable,
+                stores: stores
+            };
+        };
         var myDeletions = {};
         Store.removeOwnedChannel = function (clientId, data, cb) {
             // "data" used to be a string (channelID), now it can also be an object
@@ -360,6 +377,7 @@ define([
             var channel = data;
             var force = false;
             var teamId;
+            var revocable = data.revocable;
             if (data && typeof(data) === "object") {
                 channel = data.channel;
                 force = data.force;
@@ -369,6 +387,15 @@ define([
             if (channel === store.driveChannel && !force) {
                 return void cb({error: 'User drive removal blocked!'});
             }
+
+            var all = findStoredPad(data.channel);
+            revocable = revocable || all.revocable;
+
+            if (revocable) {
+                var revocation = store.modules['revocation'];
+                return void revocation.destroy(clientId, channel, cb);
+            }
+
 
             var s = getStore(teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
@@ -1130,6 +1157,15 @@ define([
             }).nThen(function () {
                 cb({
                     error: allErrors ? 'FORBIDDEN' : undefined
+                });
+            });
+        };
+        Store.deletePadFromStores = function (channel) {
+            var all = findStoredPad(channel);
+            if (!all.stores || !all.stores.length) { return; }
+            all.stores.forEach(function (s) {
+                s.manager.deleteChannel(channel, function (obj) {
+                    if (obj && obj.error) { console.error(obj.error); }
                 });
             });
         };
