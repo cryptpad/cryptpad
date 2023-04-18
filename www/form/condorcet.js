@@ -25,10 +25,10 @@ define([], function () {
     };
 
     Condorcet.showCondorcetWinner = function(_answers, opts, uid, form, optionArray, listOfLists) {
-
+        
         var comparePairs = function() {
+
             var pairs = getPermutations(optionArray, 2);
-            
             var pairDict = {};
             pairs.forEach(function (pair) {                        
                 pairDict[pair] = 0;
@@ -38,7 +38,7 @@ define([], function () {
                     }
                 });
             });
-            
+
             var pathDictionary = {};
             //Adds winner of each pairwise comparison to path
             optionArray.forEach(function(option1) {
@@ -60,8 +60,9 @@ define([], function () {
         var schulzeMethod = function(optionArray) {
     
             var findWeakestPath = function(optionArray) {
+
                 var pathDictionary = comparePairs(optionArray);
-    
+
                 //Iterates through paths between two options comparing the weakest edge to current score
                 optionArray.forEach(function(option1) {
                     optionArray.forEach(function(option2) {
@@ -98,12 +99,14 @@ define([], function () {
                         }
                     });
                 });
+
                 return pathDictionary;
             };
     
             var calculateWinner = function() {
     
                 var pathDictionary = findWeakestPath(optionArray);
+
                 //Calculate scores for each option and select winner
                 var winningMatches = {};
                 optionArray.forEach(function(option){
@@ -111,9 +114,16 @@ define([], function () {
                 });
                 Object.keys(pathDictionary).forEach(function(pair) {
                     var option1 = pair.split(',')[0];
+                    var option2 = pair.split(',')[1];
                     winningMatches[option1] ++;
+                    winningMatches[option2] --;
+
+                    Object.keys(pathDictionary).forEach(function(p) {
+                        if (p.split(',')[1] === option1 && pathDictionary[p] > pathDictionary[pair]) {
+                            winningMatches[option1] --;
+                        }
+                    });
                 });
-                
                 var rankedResults = {};
                 Object.keys(winningMatches).forEach(function(option) {
                 if (Object.keys(rankedResults).includes(winningMatches[option].toString())) {
@@ -122,79 +132,164 @@ define([], function () {
                     rankedResults[winningMatches[option]] = [option];
                 }
                 });
-                return [rankedResults, winningMatches];
+
+                var losing = [];
+                var winning = [];
+                var winningPairs = [];
+                Object.keys(pathDictionary).forEach(function(pair) {
+                    var option1 = pair.split(',')[0];
+                    var option2 = pair.split(',')[1];
+
+                    losing.push(option2);
+                    winning.push(option1);
+
+                });
+                Object.keys(pathDictionary).forEach(function(pair) {
+                    var option1 = pair.split(',')[0];
+                    if (!losing.includes(option1)) {
+                        winningPairs.push(option1);
+                    }
+                });
+
+                var winner;
+                var winnersArray = [];
+
+                winningPairs.forEach(function(pair) {
+                    if (!winnersArray.includes(pair)) {
+                        winnersArray.push(pair);
+                    }
+                });
+
+                if (winnersArray.length !== 0) {
+                    winner = winnersArray;
+                } else if (winnersArray.length === 0 && Object.keys(rankedResults).length === 1) {
+                    winner = [];
+                } else {
+                    winner = rankedResults[0];
+                }
+                
+                return [winner, rankedResults];
             };
             return(calculateWinner());
         };
     
-        var rankedPairsMethod = function (optionArray, listOfLists, _answers) {
+        var rankedPairsMethod = function (optionArray, listOfLists) {
 
             var pairs = getPermutations(optionArray, 2);
             
-            var lockPairs = function() {
-                //'Locks' pairwise comparisons which do not create a beatpath cycle
-                var pathDictionary = comparePairs(listOfLists, pairs);
-    
-                var items = Object.keys(pathDictionary).map(function(key) {
-                    return [key, pathDictionary[key]];
-                });
+            //'Locks' pairwise comparisons which do not create a beatpath cycle
+            var pathDictionary = comparePairs(listOfLists, pairs);
+
+            var items = Object.keys(pathDictionary).sort().map(function(key) {
+                return [key, pathDictionary[key]];
+            });
+            var sortedItems = {};
+            Object.values(items).forEach(function(value) {
+                if (Object.keys(sortedItems).includes(value[1].toString())) {
+                    sortedItems[value[1]].push(value[0]);
+                } else {
+                    sortedItems[value[1]] = [];
+                    sortedItems[value[1]].push(value[0]);
+                }
                 
-                items.sort(function(first, second) {
-                    return second[1] - first[1];
+            });
+
+            var rankingDict = {};
+            var winning = [];
+            var losing = [];
+
+            Object.values(sortedItems).forEach(function(v) {
+                v.forEach(function(val){
+                    winning.push(val.split(',')[0]);
+                    losing.push(val.split(',')[1]);
                 });
-                
-                var list = [items[0][0]];
-                var list2 = [];
-                items.forEach(function(item){
-                    opts = item[0].split(',');
-                    if (!list2.includes(opts[0])) {
-                        list2.push(opts[1]);
-                        if (!list.includes(item[0])) {
-                            list.push(item[0]);
-                        }
-                    } 
+            });
+
+
+            optionArray.forEach(function(option){
+                rankingDict[option] = 0;
+            });
+
+            var rankingArray = [];  
+            Object.values(rankingDict).forEach(function(pair) {
+                if (!rankingArray .includes(pair)) {
+                    rankingArray .push(pair);
+                }
+            });
+            var winner;
+            if (rankingArray.length <= 1) {
+                optionArray.forEach(function(option){
+                    if (winning.includes(option)) {
+                        rankingDict[option] ++;
+                    }
+                    if (losing.includes(option)) {
+                        rankingDict[option] --;
+                    }
                 });
-                return list;
-    
-            };
-    
-            var rankPairs = function(optionArray, listOfLists, _answers) {
-                //Ranks locked pairs
-                var list = lockPairs(optionArray, listOfLists, _answers);
-    
-                var rankDict = {};
-                optionArray.forEach(function(o){
-                    rankDict[o] = 0;
-                    list.forEach(function(pair) {
-                        if (o === pair.split(',')[1]) {
-                            rankDict[o] --;
-                        } else if (o === pair.split(',')[0]) {
-                            rankDict[o] ++;
-                        }  
+            }
+
+            var rankedResults = {};
+            Object.keys(rankingDict).forEach(function(option) {
+            if (Object.keys(rankedResults).includes(rankingDict[option].toString())) {
+                rankedResults[rankingDict[option]].push(option);
+            } else {
+                rankedResults[rankingDict[option]] = [option];
+            }
+            });
+
+            var rankedKeys = Object.keys(rankedResults).sort().map(function(key) {
+                return [key, rankedResults[key]];
+            });
+            
+            var finalsortedItems = {};
+            Object.values(rankedKeys).forEach(function(value){
+                if (Object.keys(finalsortedItems).includes(value[1].toString())) {
+                    finalsortedItems[value[1]].push(value[0]);
+                } else {
+                    finalsortedItems[value[1]] = [];
+                    finalsortedItems[value[1]].push(value[0]);
+                } 
+            });
+
+            var finalRankingArray = [];
+            Object.values(rankingDict).forEach(function(pair) {
+                if (!finalRankingArray.includes(pair)) {
+                    finalRankingArray.push(pair);
+                }
+            });
+
+            if (finalRankingArray.length > 1) {
+                var maxScore = Math.max.apply(null, Object.keys(rankedResults));
+                winner = rankedResults[maxScore];
+            } else if (Object.keys(sortedItems).length === 0) {
+                winner = [];
+            } else {
+                var index = Array.apply(null, Array(Object.keys(sortedItems).length-1)).map(function (_, i) { return i; });
+                index.forEach(function(i) {
+                    pairs = Object.values(sortedItems).reverse()[i];
+                    pairs.forEach(function(pair) {
+                        var valIndex = winning.indexOf(pair.split(',')[1]);
+                        winning.splice(valIndex, 1);
                     });
                 });
-        
-                var rankedItems = Object.keys(rankDict).map(function(key) {
-                    return [key, rankDict[key]];
-                });
-                
-                rankedItems.sort(function(first, second) {
-                    return second[1] - first[1];
-                });
-    
-                var finalRank = [];
-                rankedItems.forEach(function(i){
-                    finalRank.push(i[0]);
-                });
-                var sortedRankDict = {};
-                finalRank.forEach(function(opt){
-                    sortedRankDict[opt] = rankDict[opt];
-                });
-                return [finalRank, sortedRankDict];
-            };
 
-            var condorcetWinner = rankPairs(optionArray, listOfLists, _answers);
-            return condorcetWinner;
+                var winnerArray = [];
+                winning.forEach(function(option){
+                    if (!winnerArray.includes(option)) {
+                        winnerArray.push(option);
+                    }
+                });
+
+                if (winnerArray.length === optionArray.length) {
+                    winner = [];
+                } else {
+                    winner = winnerArray;
+                }
+                
+            }
+
+            return [winner, rankedResults];
+    
         };
     
         var pickMethod = function(optionArray, listOfLists, _answers, uid){
@@ -202,12 +297,10 @@ define([], function () {
             var schulzeWinner = schulzeMethod(optionArray, listOfLists, _answers, uid);
             var rankedPairWinner = rankedPairsMethod(optionArray, listOfLists);
             var method = form[uid].condorcetmethod;
-            if (method === "Schulze") {
-                condorcetWinner[0] = schulzeWinner;
-                condorcetWinner[1] = rankedPairWinner;
-            } else if (method === "Ranked Pairs") {
-                condorcetWinner[0] = rankedPairWinner;
-                condorcetWinner[1] = schulzeWinner;
+            if (method === "schulze") {
+                condorcetWinner = schulzeWinner;
+            } else if (method === "ranked") {
+                condorcetWinner = rankedPairWinner;
             }
             return condorcetWinner;
         };

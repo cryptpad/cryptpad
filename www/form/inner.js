@@ -77,8 +77,12 @@ define([
 {   
     
     Messages.form_showCondorcetMethod = "Condorcet method "; //XXX;
+    Messages.form_condorcetSchulze = "Schulze";
+    Messages.form_condorcetRanked = "Ranked Pairs";
     Messages.form_showCondorcetWinner = " winner: ";
+    Messages.form_showDetails = "Details";
     Messages.form_condorcetExtendedDisplay = "Number of matches won by each candidate: ";
+    Messages.form_noCondorcetWinner = "No winner";
 
     var APP = window.APP = {
         blocks: {}
@@ -2894,94 +2898,97 @@ define([
     
                     var listOfLists = [];
                     Object.keys(_answers).forEach(function(a) {
-                        listOfLists.push(_answers[a].msg[uid]);
+                        if (_answers[a].msg[uid] !== undefined) {
+                            listOfLists.push(_answers[a].msg[uid]);
+                        }
+                        
                     });
-                    return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
+
+                    if (Object.keys(listOfLists).length !== 0) {
+                        return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
+                    }
                 };
 
                 var condorcetWinnerDiv = h('div.cp-form-block-content');
                 
 
-                if (type === "sort") {
-                    if (summary) {
+                if (type === "sort" && summary && showCondorcetWinner(answers, block.opts, uid, form) !== undefined) {
+                    var calculateCondorcet = function() {
+                    var condorcetResults = h('span');
+                    if (showCondorcetWinner(answers, block.opts, uid, form) !== undefined) {
+                        var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[1];
+                        var condorcetWinner = showCondorcetWinner(answers, block.opts, uid, form)[0];
+                        if (condorcetWinner.length > 1) {
+                            condorcetResults.append(h('span', condorcetWinner.join(', ')));
+                        } else if (condorcetWinner.length === 1 ) { 
+                            condorcetResults.append(h('span', condorcetWinner));
+                        } else {
+                            condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
+                        }
 
-                        var calculateCondorcet = function() {
-                            var condorcetWinner;                        
-                            var detailedResults;
-                            var condorcetResults = h('span');
-                            var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[0][0];
-    
-                            if (form[uid].condorcetmethod === 'Schulze') {
-                                condorcetWinner = rankedResults[Object.keys(rankedResults).length - 1];
-                                condorcetWinner.join(', ');
-                                condorcetWinner.forEach(function(option) {
-                                    condorcetResults.append(h('span', option));
-                                });
-    
-                                detailedResults = Object.keys(rankedResults).reverse().map(function(result) {
-                                    return rankedResults[result] + ' : ' + result;
-                                });
-                                return [condorcetResults, detailedResults];
-                            } else if (form[uid].condorcetmethod === 'Ranked Pairs') {
-                                var sortedRankDict = showCondorcetWinner(answers, block.opts, uid, form)[0][1];
-                                condorcetWinner = rankedResults[0]; 
-    
-                                detailedResults = Object.keys(sortedRankDict).map(function(result) {
-                                    return result + ' : ' + sortedRankDict[result];
-                                });
+                        var detailedResults = Object.keys(rankedResults).sort(function(a,b) { return a - b; }).reverse().map(function(result) {
+                            if (rankedResults[result].length > 1) {
+                                return rankedResults[result].join(', ') + ' : ' + result;
+                            } else {
+                                return rankedResults[result] + ' : ' + result;
                             }
-                            return [condorcetWinner, detailedResults];
-                        };
-                        
-    
-                        var dropdownOpts = ['Schulze', 'Ranked Pairs'];
-    
-                        var options = dropdownOpts.map(function (t) {
-                            return {
-                                tag: 'a',
-                                attributes: {
-                                    'class': 'cp-form-type-value',
-                                    'data-value': t,
-                                    'href': '#',
-                                },
-                                content: t
-                            };
                         });
-                        var dropdownConfig = {
-                            text: '', // Button initial text
-                            options: options, 
-                            isSelect: true,
-                            caretDown: true,
-                            buttonCls: 'btn btn-secondary'
+                        return [condorcetResults, detailedResults];
+                    }};
+                    
+
+                    var dropdownOpts = [Messages.form_condorcetSchulze, Messages.form_condorcetRanked];
+
+                    var options = dropdownOpts.map(function (t) {
+                        return {
+                            tag: 'a',
+                            attributes: {
+                                'class': 'cp-form-type-value',
+                                'data-value': t,
+                                'href': '#',
+                            },
+                            content: t
                         };
-                        var typeSelect = UIElements.createDropdown(dropdownConfig);
-    
-                        form[uid].condorcetmethod = 'Schulze';
-                        typeSelect.setValue(form[uid].condorcetmethod);
-    
-                        var method = h('div.cp-dropdown-container', typeSelect[0]);
-    
-                        var evOnSave = Util.mkEvent();
-                        typeSelect.onChange.reg(evOnSave.fire);
-                        var $typeSelect = $(typeSelect);
-    
-                        var $selector = $typeSelect.find('a');
-                        
-                        var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
-                        condorcetWinnerDiv = h('div.cp-form-edit-type');
-    
-                        var detailsDiv = h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
-    
-                        $selector.click(function () {
-                            form[uid].condorcetmethod = $(this).attr('data-value');
-                            $('#cW').replaceWith(h('span', { id: 'cW'}, calculateCondorcet()[0]));
-                            $('#dD').replaceWith(h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
-                        });
-                                            
-                        condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetMethod, method, Messages.form_showCondorcetWinner, condorcetWinner, detailsDiv, {style: {margin: '10px'}}));
-                        
-                    }
-                    }
+                    });
+                    var dropdownConfig = {
+                        text: '', // Button initial text
+                        options: options, 
+                        isSelect: true,
+                        caretDown: true,
+                        buttonCls: 'btn btn-secondary'
+                    };
+                    var typeSelect = UIElements.createDropdown(dropdownConfig);
+
+                    typeSelect.setValue(dropdownOpts[0]);
+                    
+                    var methodOptions = {0: 'schulze', 1: 'ranked'};
+                    var optionIndex = dropdownOpts.indexOf(typeSelect.getValue());
+                    
+                    form[uid].condorcetmethod = methodOptions[optionIndex];
+
+                    var method = h('div.cp-dropdown-container', typeSelect[0]);
+
+                    var evOnSave = Util.mkEvent();
+                    typeSelect.onChange.reg(evOnSave.fire);
+                    var $typeSelect = $(typeSelect);
+
+                    var $selector = $typeSelect.find('a');
+                    
+                    var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
+                    condorcetWinnerDiv = h('div.cp-form-edit-type');
+
+                    var detailsDiv = h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
+
+                    $selector.click(function () {
+                        optionIndex = dropdownOpts.indexOf($(this).attr('data-value'));
+                        form[uid].condorcetmethod = methodOptions[optionIndex];
+                        $('#cW').replaceWith(h('span', { id: 'cW'}, calculateCondorcet()[0]));
+                        $('#dD').replaceWith(h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
+                    });
+                                        
+                    condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetMethod, method, Messages.form_showCondorcetWinner, condorcetWinner, detailsDiv, {style: {margin: '10px'}}));
+                    
+                }
                     
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
