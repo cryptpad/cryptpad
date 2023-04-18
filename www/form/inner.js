@@ -76,10 +76,10 @@ define([
     )
 {   
     
-    Messages.form_showCondorcetMethod = "Condorcet method "; //XXX;
+    Messages.form_showCondorcetMethod = "Condorcet method"; //XXX;
     Messages.form_condorcetSchulze = "Schulze";
     Messages.form_condorcetRanked = "Ranked Pairs";
-    Messages.form_showCondorcetWinner = " winner: ";
+    Messages.form_showCondorcetWinner = "winner: ";
     Messages.form_showDetails = "Details";
     Messages.form_condorcetExtendedDisplay = "Number of matches won by each candidate: ";
     Messages.form_noCondorcetWinner = "No winner";
@@ -2986,7 +2986,12 @@ define([
                         $('#dD').replaceWith(h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
                     });
                                         
-                    condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetMethod, method, Messages.form_showCondorcetWinner, condorcetWinner, detailsDiv, {style: {margin: '10px'}}));
+                    condorcetWinnerDiv.append(h('div.cp-form-result-details', [
+                        h('span', Messages.form_showCondorcetMethod),
+                        method,
+                        h('span', Messages.form_showCondorcetWinner, condorcetWinner),
+                        detailsDiv
+                    ]));
                     
                 }
                     
