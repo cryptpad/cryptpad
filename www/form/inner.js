@@ -2000,7 +2000,7 @@ define([
                     max = arrayMax(counts);
                     // console.log('countkeys1', counts)
                 });
-                console.log('WOOOOO HERE')
+                // console.log('WOOOOO HERE')
                 results.push(getEmpty(empty));
                 count_keys.forEach(function (q_uid) {
                     var q = findItem(opts.items, q_uid);
@@ -2707,8 +2707,6 @@ define([
     };
 
     var getDay = function (d) {
-        console.log('DATE1', d)
-        console.log('DATE2', new Date(d.getFullYear(), d.getMonth(), d.getDate()))
         return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     };
 
@@ -2740,9 +2738,9 @@ define([
         Object.keys(answers).forEach(function (curve) {
             var obj = answers[curve];
             Object.keys(obj).forEach(function (uid) {
-                console.log('DATE3', obj[uid].time)
+                // console.log('DATE3', obj[uid].time)
                 var day = getDay(new Date(obj[uid].time));
-                console.log('DATE4', day)
+                // console.log('DATE4', day)
                 Util.inc(tally, +day);
             });
         });
@@ -2787,6 +2785,8 @@ define([
                 _answers[curve + '|' + uid] = all[uid];
             });
         });
+        // console.log("ANSWERS", JSON.stringify(answers))
+        // console.log("_ANSWERS", JSON.stringify(_answers))
         return _answers;
     };
     
@@ -2819,7 +2819,7 @@ define([
         var timeline = h('div.cp-form-creator-results-timeline');
         var $timeline = $(timeline).appendTo($container);
         $timeline.append(makeTimeline(answers));
-        console.log($timeline)
+        // console.log($timeline)
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
         var results = h('div.cp-form-creator-results-content');
@@ -3448,15 +3448,24 @@ define([
         ]));
         $container.append(getLogo());
     };
-
+    // console.log("APP HERE!!", APP)
+    // console.log("APP HERE - kjhdjh", typeof APP)
+    // console.log("APP HERE", JSON.stringify(APP))
+    console.log("BLOX", APP.formBlocks)
     var getFormResults = function () {
-        if (!Array.isArray(APP.formBlocks)) { return; }
+        // console.log("app here", APP)
+        console.log("bLOCKS")
+        if (!Array.isArray(APP.formBlocks)) { 
+            console.log('hi!!!') 
+            return; }
         var results = {};
         
         APP.formBlocks.some(function (data) {
+            console.log('DATA', data)
             if (!data.getValue) { return; }
             results[data.uid] = data.getValue();
         });
+        console.log("RESULTS", results)
         return results;
     };
     var getSectionFromQ = function (content, uid) {
@@ -3483,23 +3492,23 @@ define([
         };
     };
     var removeQuestion = function (content, uid) {
-        console.log('ELETER')
-        console.log(JSON.stringify(content))
-        console.log(uid)
+        // console.log('ELETER')
+        // console.log(JSON.stringify(content))
+        // console.log(uid)
         delete content.form[uid];
         var idx = content.order.indexOf(uid);
-        console.log(idx)
+        // console.log(idx)
         if (idx !== -1) {
-            console.log('hey')
+            // console.log('hey')
             content.order.splice(idx, 1);
         } else {
-            console.log('heyeo')
+            // console.log('heyeo')
             getSections(content).some(function (_uid) {
                 var block = content.form[_uid];
                 if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
                 var _idx = block.opts.questions.indexOf(uid);
                 if (_idx !== -1) {
-                    console.log('HERE')
+                    // console.log('HERE')
                     block.opts.questions.splice(_idx, 1);
                     return true;
                 }
@@ -3509,12 +3518,15 @@ define([
     var checkResults = {};
     var checkCondition = function (block) {
         console.log('BLOCK', JSON.stringify(block))
-        if (!block || block.type !== 'section') { return; }
-        console.log('c1', JSON.stringify(block.opts.when))
-        console.log('c2', JSON.stringify(block.opts))
-        console.log('c3', Array.isArray(block.opts.questions))
+        if (!block || block.type !== 'section') { 
+            console.log("HERE1")
+            return; }
+        // console.log('c1', JSON.stringify(block.opts.when))
+        // console.log('c2', JSON.stringify(block.opts))
+        // console.log('c3', Array.isArray(block.opts.questions))
         if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) {
-            console.log('trueeee')
+            // console.log('trueeee')
+            console.log("HERE2")
             return true;
         }
 
@@ -3529,9 +3541,12 @@ define([
         var findResult = function (uid) {
             if (results.hasOwnProperty(uid)) { return results[uid]; }
             APP.formBlocks.some(function (data) {
-                if (!data.getValue) { return; }
+                if (!data.getValue) { 
+                    console.log("HERE3")
+                    return; }
                 if (data.uid === String(uid)) {
                     results[uid] = data.getValue();
+                    console.log("HERE4")
                     return true;
                 }
             });
@@ -3544,12 +3559,15 @@ define([
                 // Checkbox
                 if (Array.isArray(res)) {
                     var idx = res.indexOf(rule.v);
+                    console.log("HERE5")
                     return rule.is ? idx !== -1 : idx === -1;
                 }
                 // Radio
+                console.log("HERE6", rule.is ? res === rule.v : res !== rule.v)
                 return rule.is ? res === rule.v : res !== rule.v;
             });
         });
+        console.log("BLOX", JSON.stringify(APP.formBlocks))
         console.log('RESULYS', JSON.stringify(resultt))
         return !w.length || w.some(function (rules) {
             return rules.every(function (rule) {
@@ -3666,6 +3684,7 @@ define([
             if (!$radio.find('input[type="radio"]:checked').length) {
                 return UI.warn(Messages.error);
             }
+            console.log("H2", JSON.stringify(getFormResults()))
             var results = getFormResults();
             if (!results) { return; }
 
@@ -3877,7 +3896,7 @@ define([
             });
             return;
         }
-
+        // console.log("JGHGJHGHGH", APP)
         var evOnChange = Util.mkEvent();
         if (!APP.isEditor) {
             var _answers = Util.clone(answers || {});
@@ -3888,7 +3907,7 @@ define([
                 if (noBeforeUnload) { return; }
                 $container.find('.cp-reset-button').removeAttr('disabled');
                 var results = getFormResults();
-                console.log('RESULTS', JSON.stringify(results))
+                console.log('HI1', JSON.stringify(results))
                 if (isSave) {
                     answers = Util.clone(results || {});
                     _answers = Util.clone(answers);
@@ -4064,9 +4083,10 @@ define([
             if (isStatic) { n--; }
 
             var editButtons, editContainer;
-
+            console.log("WDwdwd", data)
             APP.formBlocks.push(data);
-
+            console.log("HERE", getFormResults())
+            // console.log("HIEHEIHIE", APP.formBlocks)
             var previewDiv = h('div.cp-form-preview', Messages.form_preview_button);
 
             // Required radio displayed only for types that have an "isEmpty" function
@@ -5559,6 +5579,8 @@ define([
         var _redraw = Util.notAgainForAnother(function (framework, content) {
             var answers, temp;
             if (!APP.isEditor) {
+                console.log("H3", JSON.stringify(getFormResults()))
+
                 answers = getFormResults(true);
                 if (answers) { answers._isAnon = !APP.cantAnon; }
             } else { temp = getTempFields(); }
@@ -5613,29 +5635,31 @@ define([
 
     };
 
-    // Framework.create({
-    //     toolbarContainer: '#cp-toolbar',
-    //     contentContainer: '#cp-app-form-editor',
-    // }, andThen);
+    Framework.create({
+        toolbarContainer: '#cp-toolbar',
+        contentContainer: '#cp-app-form-editor',
+    }, andThen);
 
     return {
-    getWeekDays: getWeekDays, 
-    arrayMax: arrayMax,
-    getOptionValue: getOptionValue,
-    extractValues: extractValues,
-    getSortedKeys: getSortedKeys,
-    getDay: getDay,
-    getDayArray: getDayArray,
-    parseAnswers: parseAnswers,
-    getAnswersLength: getAnswersLength,
-    findItem: findItem,
-    getSections: getSections,
-    getFullOrder: getFullOrder,
-    getBlockAnswers: getBlockAnswers,
-    getFormResults: getFormResults,
-    getSectionFromQ: getSectionFromQ, 
-    removeQuestion: removeQuestion,
-    checkCondition: checkCondition,
+        getWeekDays: getWeekDays, 
+        arrayMax: arrayMax,
+        getOptionValue: getOptionValue,
+        extractValues: extractValues,
+        getSortedKeys: getSortedKeys,
+        getDay: getDay,
+        getDayArray: getDayArray,
+        parseAnswers: parseAnswers,
+        getAnswersLength: getAnswersLength,
+        findItem: findItem,
+        getSections: getSections,
+        getFullOrder: getFullOrder,
+        getBlockAnswers: getBlockAnswers,
+        removeQuestion: removeQuestion,
+        
+        getFormResults: getFormResults,
+        getSectionFromQ: getSectionFromQ, 
+        
+        checkCondition: checkCondition,
 
 
 
