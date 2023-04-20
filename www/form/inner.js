@@ -189,14 +189,12 @@ define([
         setCursorGetter(function () {
             return {};
         });
-        //YY
         var getSaveRes = function () {
             return {
                 maxLength: getLengthVal ? getLengthVal() : undefined,
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
         };
-        //YY
         evOnSave.reg(function () {
             var res = getSaveRes();
             if (!res) { return; }
@@ -204,7 +202,6 @@ define([
         });
 
         var saveAndCancel = saveAndCancelOptions(cb);
-
         return [
             maxLength,
             type,
@@ -985,8 +982,11 @@ define([
     var getBlockAnswers = function (answers, uid, filterCurve) {
         if (!answers) { return; }
         return Object.keys(answers || {}).map(function (key) {
+            
             var user = key.split('|')[0];
+            
             if (filterCurve && user === filterCurve) {
+                
                 var obj = answers[key];
                 // Only hide the current response (APP.editingUid), not all our responses
                 if (APP.editingUid && Util.find(obj, ['msg', '_uid']) === APP.editingUid) {
@@ -1205,6 +1205,7 @@ define([
                     }).filter(Boolean);
                     return values;
                 };
+
                 var addCondition = h('button.btn.btn-secondary', [
                     h('i.fa.fa-plus'),
                     h('span', Messages.form_conditional_add)
@@ -1631,7 +1632,6 @@ define([
     };
 
     var getSortedKeys = function (answers) {
-
         return Object.keys(answers).sort(function (uid1, uid2) {
             return (answers[uid1].time || 0) - (answers[uid2].time || 0);
         });
@@ -1998,9 +1998,7 @@ define([
                     var counts = Object.values(count[q_uid]);
                     counts.push(max);
                     max = arrayMax(counts);
-                    // console.log('countkeys1', counts)
                 });
-                // console.log('WOOOOO HERE')
                 results.push(getEmpty(empty));
                 count_keys.forEach(function (q_uid) {
                     var q = findItem(opts.items, q_uid);
@@ -2069,8 +2067,6 @@ define([
                 },
                 reset: function () { $tag.val(''); }
             }
-            // console.log('RET')
-            // console.log(ret)
 
             return {
                 tag: tag,
@@ -2391,7 +2387,6 @@ define([
                     var counts = Object.values(count[q_uid]);
                     counts.push(max);
                     max = arrayMax(counts);
-                    // console.log('countkeys2', counts)
                 });
 
                 results.push(getEmpty(empty));
@@ -2669,8 +2664,6 @@ define([
                 // If content is defined, we'll be able to click on a row to display
                 // all the answers of this user
                 var lines = makePollTable(_answers, opts, content);
-                // console.log('RESULTS')
-                // console.log(lines)
                 var total = makePollTotal(_answers, opts);
                 if (total) { lines.push(h('div', total)); }
 
@@ -2738,9 +2731,7 @@ define([
         Object.keys(answers).forEach(function (curve) {
             var obj = answers[curve];
             Object.keys(obj).forEach(function (uid) {
-                // console.log('DATE3', obj[uid].time)
                 var day = getDay(new Date(obj[uid].time));
-                // console.log('DATE4', day)
                 Util.inc(tally, +day);
             });
         });
@@ -2785,8 +2776,6 @@ define([
                 _answers[curve + '|' + uid] = all[uid];
             });
         });
-        // console.log("ANSWERS", JSON.stringify(answers))
-        // console.log("_ANSWERS", JSON.stringify(_answers))
         return _answers;
     };
     
@@ -2800,8 +2789,6 @@ define([
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var framework = APP.framework;
-        // console.log('HI')
-        // console.log(framework)
 
         var title = framework._.title.title || framework._.title.defaultTitle;
         var titleDiv = h('h1.cp-form-view-title', title);
@@ -2819,7 +2806,6 @@ define([
         var timeline = h('div.cp-form-creator-results-timeline');
         var $timeline = $(timeline).appendTo($container);
         $timeline.append(makeTimeline(answers));
-        // console.log($timeline)
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
         var results = h('div.cp-form-creator-results-content');
@@ -2960,20 +2946,7 @@ define([
                             condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
                         }
 
-<<<<<<< HEAD
-                        var detailedResults = Object.keys(rankedResults).sort(function(a,b) { return a - b; }).reverse().map(function(result) {
-                            if (rankedResults[result].length > 1) {
-                                return rankedResults[result].join(', ') + ' : ' + result;
-                            } else {
-                                return rankedResults[result] + ' : ' + result;
-                            }
-=======
                         var calculateCondorcet = function() {
-                            // console.log(JSON.stringify(answers))
-                            // console.log({"HVfRpDskx2w7DkSGoHXj+naZUE8/sD3vOfch2uLjEXE=":{"tpsubv6rpe":{"msg":{"_uid":"tpsubv6rpe","_time":1681156327353,"_hash":"FvPNwKf6Y3bIvZq/bqR5F81NbVi/uQJLGqvKmpwIlhSmX5taTuNYFTbJNgHEHzkt"},"hash":"FvPNwKf6Y3bIvZq/bqR5F81NbVi/uQJLGqvKmpwIlhSmX5taTuNYFTbJNgHEHzkt","time":1681156327353}}})
-                            // console.log(JSON.stringify(block.opts))
-                            // console.log(uid)
-                            // console.log(form)
                             var condorcetWinner;                        
                             var detailedResults;
                             var condorcetResults = h('span');
@@ -3015,7 +2988,6 @@ define([
                                 },
                                 content: t
                             };
->>>>>>> 1f2230a26 (initial commit)
                         });
                         return [condorcetResults, detailedResults];
                     }};
@@ -3033,7 +3005,6 @@ define([
                             },
                             content: t
                         };
-<<<<<<< HEAD
                     });
                     var dropdownConfig = {
                         text: '', // Button initial text
@@ -3079,38 +3050,6 @@ define([
                     ]));
                     
                 }
-=======
-                        var typeSelect = UIElements.createDropdown(dropdownConfig);
-    
-                        form[uid].condorcetmethod = 'Schulze';
-                        typeSelect.setValue(form[uid].condorcetmethod);
-    
-                        var method = h('div.cp-dropdown-container', typeSelect[0]);
-    
-                        var evOnSave = Util.mkEvent();
-                        typeSelect.onChange.reg(evOnSave.fire);
-                        var $typeSelect = $(typeSelect);
-    
-                        var $selector = $typeSelect.find('a');
-                        
-                        var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
-                        condorcetWinnerDiv = h('div.cp-form-edit-type');
-    
-                        var detailsDiv = h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
-    
-                        $selector.click(function () {
-                            form[uid].condorcetmethod = $(this).attr('data-value');
-                            $('#cW').replaceWith(h('span', { id: 'cW'}, calculateCondorcet()[0]));
-                            $('#dD').replaceWith(h('details', {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
-                        });
-                                            
-                        condorcetWinnerDiv.append(h('div', Messages.form_showCondorcetMethod, method, Messages.form_showCondorcetWinner, condorcetWinner, detailsDiv, {style: {margin: '10px'}}));
-                        
-                    }
-                    }
-
-                    show.showCondorcetWinner = showCondorcetWinner;
->>>>>>> 1f2230a26 (initial commit)
                     
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
@@ -3448,24 +3387,15 @@ define([
         ]));
         $container.append(getLogo());
     };
-    // console.log("APP HERE!!", APP)
-    // console.log("APP HERE - kjhdjh", typeof APP)
-    // console.log("APP HERE", JSON.stringify(APP))
-    console.log("BLOX", APP.formBlocks)
+
     var getFormResults = function () {
-        // console.log("app here", APP)
-        console.log("bLOCKS")
-        if (!Array.isArray(APP.formBlocks)) { 
-            console.log('hi!!!') 
-            return; }
+        if (!Array.isArray(APP.formBlocks)) { return; }
         var results = {};
-        
+        var seen = [];
         APP.formBlocks.some(function (data) {
-            console.log('DATA', data)
             if (!data.getValue) { return; }
             results[data.uid] = data.getValue();
         });
-        console.log("RESULTS", results)
         return results;
     };
     var getSectionFromQ = function (content, uid) {
@@ -3492,23 +3422,16 @@ define([
         };
     };
     var removeQuestion = function (content, uid) {
-        // console.log('ELETER')
-        // console.log(JSON.stringify(content))
-        // console.log(uid)
         delete content.form[uid];
         var idx = content.order.indexOf(uid);
-        // console.log(idx)
         if (idx !== -1) {
-            // console.log('hey')
             content.order.splice(idx, 1);
         } else {
-            // console.log('heyeo')
             getSections(content).some(function (_uid) {
                 var block = content.form[_uid];
                 if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
                 var _idx = block.opts.questions.indexOf(uid);
                 if (_idx !== -1) {
-                    // console.log('HERE')
                     block.opts.questions.splice(_idx, 1);
                     return true;
                 }
@@ -3517,16 +3440,8 @@ define([
     };
     var checkResults = {};
     var checkCondition = function (block) {
-        console.log('BLOCK', JSON.stringify(block))
-        if (!block || block.type !== 'section') { 
-            console.log("HERE1")
-            return; }
-        // console.log('c1', JSON.stringify(block.opts.when))
-        // console.log('c2', JSON.stringify(block.opts))
-        // console.log('c3', Array.isArray(block.opts.questions))
+        if (!block || block.type !== 'section') { return; }
         if (!block.opts || !Array.isArray(block.opts.questions) || !block.opts.when) {
-            // console.log('trueeee')
-            console.log("HERE2")
             return true;
         }
 
@@ -3541,12 +3456,9 @@ define([
         var findResult = function (uid) {
             if (results.hasOwnProperty(uid)) { return results[uid]; }
             APP.formBlocks.some(function (data) {
-                if (!data.getValue) { 
-                    console.log("HERE3")
-                    return; }
+                if (!data.getValue) { return; }
                 if (data.uid === String(uid)) {
                     results[uid] = data.getValue();
-                    console.log("HERE4")
                     return true;
                 }
             });
@@ -3559,16 +3471,12 @@ define([
                 // Checkbox
                 if (Array.isArray(res)) {
                     var idx = res.indexOf(rule.v);
-                    console.log("HERE5")
                     return rule.is ? idx !== -1 : idx === -1;
                 }
                 // Radio
-                console.log("HERE6", rule.is ? res === rule.v : res !== rule.v)
                 return rule.is ? res === rule.v : res !== rule.v;
             });
         });
-        console.log("BLOX", JSON.stringify(APP.formBlocks))
-        console.log('RESULYS', JSON.stringify(resultt))
         return !w.length || w.some(function (rules) {
             return rules.every(function (rule) {
                 var res = findResult(rule.q);
@@ -3684,7 +3592,6 @@ define([
             if (!$radio.find('input[type="radio"]:checked').length) {
                 return UI.warn(Messages.error);
             }
-            console.log("H2", JSON.stringify(getFormResults()))
             var results = getFormResults();
             if (!results) { return; }
 
@@ -3896,7 +3803,7 @@ define([
             });
             return;
         }
-        // console.log("JGHGJHGHGH", APP)
+
         var evOnChange = Util.mkEvent();
         if (!APP.isEditor) {
             var _answers = Util.clone(answers || {});
@@ -3907,7 +3814,6 @@ define([
                 if (noBeforeUnload) { return; }
                 $container.find('.cp-reset-button').removeAttr('disabled');
                 var results = getFormResults();
-                console.log('HI1', JSON.stringify(results))
                 if (isSave) {
                     answers = Util.clone(results || {});
                     _answers = Util.clone(answers);
@@ -4083,10 +3989,9 @@ define([
             if (isStatic) { n--; }
 
             var editButtons, editContainer;
-            console.log("WDwdwd", data)
+            
+
             APP.formBlocks.push(data);
-            console.log("HERE", getFormResults())
-            // console.log("HIEHEIHIE", APP.formBlocks)
             var previewDiv = h('div.cp-form-preview', Messages.form_preview_button);
 
             // Required radio displayed only for types that have an "isEmpty" function
@@ -4591,7 +4496,6 @@ define([
             $container.find('.cp-reset-button').attr('disabled', 'disabled');
         }
     };
-
     var getTempFields = function () {
         if (!Array.isArray(APP.formBlocks)) { return; }
         var temp = {};
@@ -5579,8 +5483,6 @@ define([
         var _redraw = Util.notAgainForAnother(function (framework, content) {
             var answers, temp;
             if (!APP.isEditor) {
-                console.log("H3", JSON.stringify(getFormResults()))
-
                 answers = getFormResults(true);
                 if (answers) { answers._isAnon = !APP.cantAnon; }
             } else { temp = getTempFields(); }
@@ -5655,15 +5557,11 @@ define([
         getFullOrder: getFullOrder,
         getBlockAnswers: getBlockAnswers,
         removeQuestion: removeQuestion,
-        
-        getFormResults: getFormResults,
-        getSectionFromQ: getSectionFromQ, 
-        
         checkCondition: checkCondition,
 
 
-
-
+        getSectionFromQ: getSectionFromQ, 
+        editTextOptions: editTextOptions
 
   };
 });
