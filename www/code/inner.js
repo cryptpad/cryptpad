@@ -14,6 +14,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+    '/lib/yjs_bundle.js',
 
 
     'css!cm/lib/codemirror.css',
@@ -60,7 +61,8 @@ define([
     Visible,
     TypingTest,
     Messages,
-    CMeditor)
+    CMeditor,
+    )
 {
     window.CodeMirror = CMeditor;
 
@@ -279,6 +281,23 @@ define([
         };
 
         framework.onReady(function () {
+            // [START] Integrate into Yjs
+            var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var hash = privateData.hashes.editHash || privateData.hashes.viewHash;
+            console.log(hash)
+            var secret = Hash.getSecrets('pad', hash, privateData.password);
+            console.log({privateData})
+            console.log({secret})
+            var cryptor = secret.keys
+            cryptor.chanId = secret.channel
+            console.log("⛓️ Channel: " + cryptor.chanId)
+            const connector = window.yjs_bundle.connect(CodeMirror.editor, cryptor)
+            console.log(connector)
+            // connector.binding.on('cursorActivity', (_editor) => updateCursor())
+            // [END] Integrate into Yjs
+
+
+
             // add the splitter
             var splitter = $('<div>', {
                 'class': 'cp-splitter'
@@ -469,27 +488,27 @@ define([
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
 
-            // Fix the markers offsets
-            markers.checkMarks(newContent);
+        //     // Fix the markers offsets
+        //     markers.checkMarks(newContent);
 
-            // Apply the text content
-            CodeMirror.contentUpdate(newContent);
+        //     // Apply the text content
+        //     CodeMirror.contentUpdate(newContent);
             previewPane.draw();
 
-            // Apply the markers
-            markers.setMarks();
+        //     // Apply the markers
+        //     markers.setMarks();
 
-            framework.localChange();
+        //     framework.localChange();
         });
 
         framework.setContentGetter(function () {
-            CodeMirror.removeCursors();
+        //     CodeMirror.removeCursors();
             var content = CodeMirror.getContent();
             content.highlightMode = CodeMirror.highlightMode;
             previewPane.draw();
 
-            markers.updateAuthorMarks();
-            content.authormarks = markers.getAuthorMarks();
+        //     markers.updateAuthorMarks();
+        //     content.authormarks = markers.getAuthorMarks();
 
             return content;
         });
@@ -499,15 +518,15 @@ define([
             if (cursorTo) { clearTimeout(cursorTo); }
             if (editor._noCursorUpdate) { return; }
             cursorTo = setTimeout(function () {
-                framework.updateCursor();
+                // framework.updateCursor();
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
-        framework.onCursorUpdate(CodeMirror.setRemoteCursor);
-        framework.setCursorGetter(CodeMirror.getCursor);
-        editor.on('cursorActivity', updateCursor);
+        // framework.onCursorUpdate(CodeMirror.setRemoteCursor);
+        // framework.setCursorGetter(CodeMirror.getCursor);
+        // editor.on('cursorActivity', updateCursor);
 
         framework.onEditableChange(function () {
-            editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
+            editor.setOption('readOnly', framework.isReadOnly());
         });
 
         framework.setTitleRecommender(CodeMirror.getHeadingText);
