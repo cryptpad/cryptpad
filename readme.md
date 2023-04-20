@@ -81,6 +81,8 @@ We love Open Source and we love contribution. Learn more about [contributing](ht
 
 If you have any questions or comments, or if you're interested in contributing to CryptPad, come say hi in our [Matrix channel](https://app.element.io/#/room/#cryptpad:matrix.xwiki.com).
 
+This project is tested with [BrowserStack](https://www.browserstack.com/).
+
 # License
 
 ![AGPL logo](https://www.gnu.org/graphics/agplv3-155x51.png "GNU Affero General Public License")
