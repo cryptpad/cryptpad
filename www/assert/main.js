@@ -801,13 +801,16 @@ define([
     }, "getSectionFromQ: ");  
 
     assert(function (cb) {
+        var _answers
+        var opts
+        var uid
+        var form
         var optionArray = []
         var listOfLists = []
-        var _answers
-        var uid
 
+        
 
-        var result = Condorcet.pickMethod(optionArray, listOfLists, _answers, uid)
+        var result = Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists)
 
         cb(result);
     }, "getSectionFromQ: ");  
