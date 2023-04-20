@@ -2925,6 +2925,12 @@ define([
                     });
 
                     if (Object.keys(listOfLists).length !== 0) {
+                        console.log("ANSWES", JSON.stringify(_answers))
+                        console.log("OPTS", opts)
+                        console.log("UID", uid)
+                        console.log("FORM", JSON.stringify(form))
+                        console.log("OPT ARR", optionArray)
+                        console.log("LIST OF LISTS", listOfLists)
                         return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
                     }
                 };
@@ -2945,52 +2951,6 @@ define([
                         } else {
                             condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
                         }
-
-                        var calculateCondorcet = function() {
-                            var condorcetWinner;                        
-                            var detailedResults;
-                            var condorcetResults = h('span');
-                            var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[0][0];
-    
-                            if (form[uid].condorcetmethod === 'Schulze') {
-                                condorcetWinner = rankedResults[Object.keys(rankedResults).length - 1];
-                                condorcetWinner.join(', ');
-                                condorcetWinner.forEach(function(option) {
-                                    condorcetResults.append(h('span', option));
-                                });
-    
-                                detailedResults = Object.keys(rankedResults).reverse().map(function(result) {
-                                    return rankedResults[result] + ' : ' + result;
-                                });
-                                return [condorcetResults, detailedResults];
-                            } else if (form[uid].condorcetmethod === 'Ranked Pairs') {
-                                var sortedRankDict = showCondorcetWinner(answers, block.opts, uid, form)[0][1];
-                                condorcetWinner = rankedResults[0]; 
-    
-                                detailedResults = Object.keys(sortedRankDict).map(function(result) {
-                                    return result + ' : ' + sortedRankDict[result];
-                                });
-                            }
-                            return [condorcetWinner, detailedResults];
-                        };
-                        
-                        showCondorcetWinner.calculateCondorcet = calculateCondorcet;
-    
-                        var dropdownOpts = ['Schulze', 'Ranked Pairs'];
-    
-                        var options = dropdownOpts.map(function (t) {
-                            return {
-                                tag: 'a',
-                                attributes: {
-                                    'class': 'cp-form-type-value',
-                                    'data-value': t,
-                                    'href': '#',
-                                },
-                                content: t
-                            };
-                        });
-                        return [condorcetResults, detailedResults];
-                    }};
                     
 
                     var dropdownOpts = [Messages.form_condorcetSchulze, Messages.form_condorcetRanked];
@@ -5543,6 +5503,7 @@ define([
     }, andThen);
 
     return {
+
         getWeekDays: getWeekDays, 
         arrayMax: arrayMax,
         getOptionValue: getOptionValue,
@@ -5558,10 +5519,7 @@ define([
         getBlockAnswers: getBlockAnswers,
         removeQuestion: removeQuestion,
         checkCondition: checkCondition,
-
-
         getSectionFromQ: getSectionFromQ, 
-        editTextOptions: editTextOptions
 
   };
 });
