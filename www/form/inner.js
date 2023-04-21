@@ -2926,11 +2926,12 @@ define([
 
                     if (Object.keys(listOfLists).length !== 0) {
                         console.log("ANSWES", JSON.stringify(_answers))
-                        console.log("OPTS", opts)
+                        console.log("OPTS", JSON.stringify(opts))
                         console.log("UID", uid)
                         console.log("FORM", JSON.stringify(form))
-                        console.log("OPT ARR", optionArray)
-                        console.log("LIST OF LISTS", listOfLists)
+                        console.log("OPT ARR", JSON.stringify(optionArray))
+                        console.log("LIST OF LISTS", JSON.stringify(listOfLists))
+                        console.log(JSON.stringify(Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists)))
                         return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
                     }
                 };
@@ -2951,6 +2952,17 @@ define([
                         } else {
                             condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
                         }
+
+                        var detailedResults = Object.keys(rankedResults).sort(function(a,b) { return a - b; }).reverse().map(function(result) {
+                            if (rankedResults[result].length > 1) {
+                                return rankedResults[result].join(', ') + ' : ' + result;
+                            } else {
+                                return rankedResults[result] + ' : ' + result;
+                            }
+                        });
+                        return [condorcetResults, detailedResults];
+                    }};
+
                     
 
                     var dropdownOpts = [Messages.form_condorcetSchulze, Messages.form_condorcetRanked];
@@ -5497,10 +5509,10 @@ define([
 
     };
 
-    Framework.create({
-        toolbarContainer: '#cp-toolbar',
-        contentContainer: '#cp-app-form-editor',
-    }, andThen);
+    // Framework.create({
+    //     toolbarContainer: '#cp-toolbar',
+    //     contentContainer: '#cp-app-form-editor',
+    // }, andThen);
 
     return {
 
