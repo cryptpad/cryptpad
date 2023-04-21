@@ -20,10 +20,13 @@ define([
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'less!/customize/src/less2/pages/page-assert.less',
 ], function ($, Hyperjson, Sortify, Drive, /*Test,*/ Hash, Util, Thumb, Wire, Flat, MediaTag, Block, ApiConfig, Assertions, h, Messages, Form, Condorcet) {
+    
+    // NOTE: This page will only run correctly if the Framework.create block at the bottom of '../form/inner.js' is commented out.
+    
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
     var Nacl = window.nacl;
-
+    
     var assert = Assertions();
 
     var HJSON_list = [
