@@ -306,6 +306,11 @@
             &:empty::before {
               content: "\200b";
             }
+            input#kanban-edit { // XXX DB: does not affect new cards created with enter
+                margin: 0;
+                padding: 0;
+                height: auto;
+            }
         }
         &.kanban-item-hidden {
             display: none;
@@ -366,6 +371,9 @@
 
             #kanban-edit {
                 font-weight: bold;
+                margin: 0;
+                padding: 0;
+                height: auto;
             }
         }
         footer {
