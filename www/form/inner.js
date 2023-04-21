@@ -4794,7 +4794,6 @@ define([
                         refreshEndDate();
                     });
                     var confirmContent = h('div', [
-                        h('div', Messages.form_setEnd),
                         h('div.cp-form-input-block', [datePicker, save, cancel]),
                     ]);
                     $button.after(confirmContent);

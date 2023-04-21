@@ -1282,6 +1282,17 @@
             .cp-form-setting-title {
                 color: @cryptpad_color_link;
             }
+            .cp-form-status-container {
+                .cp-form-input-block {
+                    display: flex;
+                    .flatpickr-input { // expiration date picker
+                        margin: 0 10px 0 0;
+                    }
+                    & > * {
+                        margin-right: 10px;
+                    }
+                }
+            }
         }
     }
     & > .flatpickr-calendar {
