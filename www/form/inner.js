@@ -5509,10 +5509,10 @@ define([
 
     };
 
-    // Framework.create({
-    //     toolbarContainer: '#cp-toolbar',
-    //     contentContainer: '#cp-app-form-editor',
-    // }, andThen);
+    Framework.create({
+        toolbarContainer: '#cp-toolbar',
+        contentContainer: '#cp-app-form-editor',
+    }, andThen);
 
     return {
 
@@ -5532,6 +5532,7 @@ define([
         removeQuestion: removeQuestion,
         checkCondition: checkCondition,
         getSectionFromQ: getSectionFromQ, 
+        
 
   };
 });
