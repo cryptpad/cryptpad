@@ -95,6 +95,7 @@ define([
             'cp-settings-code-brackets',
             'cp-settings-code-font-size',
             'cp-settings-code-spellcheck',
+            'cp-settings-code-max-width',
         ],
         'kanban': [ // Msg.settings_cat_kanban
             'cp-settings-kanban-tags',
@@ -1562,6 +1563,62 @@ define([
             if (e) { return void console.error(e); }
             if (typeof(val) !== 'number') {
                 $input.val(12);
+            } else {
+                $input.val(val);
+            }
+        });
+        return $div;
+    };
+
+    create['code-max-width'] = function () {
+        var key = 'hardWrapMaxWidth';
+        var hardWrapMaxWidthEnabledKey = `${key}Enabled`;
+        var defaultInitialMaxWidth = 60;
+
+        var $div = $('<div>', {
+            'class': 'cp-settings-code-max-width cp-sidebarlayout-element'
+        });
+
+        $('<label>').text(Messages.settings_codeMaxWidth).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_codeMaxWidthDescription).appendTo($div);
+
+        var $container = $('<span>', {
+            'class': 'cp-sidebarlayout-input-block'
+        }).appendTo($div);
+
+        var $cbox = $(UI.createCheckbox('cp-settings-code-max-width'));
+        $cbox.appendTo($container);
+
+        var $input = $('<input>', {
+            'min': defaultInitialMaxWidth,
+            type: 'number',
+        })
+        .on('change', function () {
+            var val = parseInt($input.val());
+            if (!isNaN(val) && typeof (val) !== 'number') { return; }
+            common.setAttribute(['codemirror', key], val);
+        }).appendTo($container);
+
+        $cbox.find('input').change(
+            function () {
+                // If enable hard wrap max width is enabled, then disabled=false
+                // otherwise, disabled=true 
+                $input.attr('disabled', !this.checked);
+                common.setAttribute(['codemirror', hardWrapMaxWidthEnabledKey], this.checked);
+            }
+        );
+
+        common.getAttribute(['codemirror', hardWrapMaxWidthEnabledKey], function (e, val) {
+            if (e) { return void console.error(e); }
+            $cbox.find('input').prop("checked", val);
+            $input.attr("disabled", !val);
+        });
+
+        common.getAttribute(['codemirror', key], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (typeof (val) !== 'number') {
+                $input.val(defaultInitialMaxWidth);
             } else {
                 $input.val(val);
             }

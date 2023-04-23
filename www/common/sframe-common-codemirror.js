@@ -9,6 +9,7 @@ define([
     '/common/common-util.js',
     '/common/text-cursor.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    'cm/addon/wrap/hardwrap',
 ], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
@@ -138,6 +139,54 @@ define([
         });
 
         return text.trim();
+    };
+
+    module.mkMaxWidthSettings = function (editor, metadataMgr) {
+        var updateMaxWidthSettings = editor.updateSettings = function () {
+            if (!metadataMgr) { return; }
+            var data = metadataMgr.getPrivateData().settings;
+            data = data.codemirror || {};
+
+            var maxWidth = data['hardWrapMaxWidth'];
+
+            maxWidth = typeof (maxWidth) === 'number' ? maxWidth : 60;
+            editor.setOption('maxWidth', maxWidth);
+        };
+        metadataMgr.onChangeLazy(updateMaxWidthSettings);
+        updateMaxWidthSettings();
+    };
+
+    /**
+     * Wraps a text based on column set by user in setting.
+     * For example, if the number of characters exceed the value set by user,
+     * then it will wrap the text such that its within the character set by user 
+     */
+    module.wrapParagraph = function (editor, CodeMirror, metadataMgr) {
+        var wait, options = { column: 60 }, changing = false;
+        var data = metadataMgr.getPrivateData().settings;
+
+        /**
+         * Need to ensure that the codemirror is not a null object 
+         */
+        if (data.codemirror) {
+            var column = data.codemirror.hardWrapMaxWidth;
+            var hardWrapEnabled = data.codemirror.hardWrapMaxWidthEnabled;
+            options.column = typeof(column) === 'number' && !isNaN(column) ? column : 60; 
+
+            if (hardWrapEnabled) {
+                editor.on('change', (cm, change) => {
+                    if (changing) { return; }
+        
+                    clearTimeout(wait);
+        
+                    wait = setTimeout(function () {
+                        changing = true;
+                        cm.wrapParagraphsInRange(change.from, CodeMirror.CodeMirror.changeEnd(change), options);
+                        changing = false;
+                    }, 200);
+                });
+            }
+        }
     };
 
     module.mkIndentSettings = function (editor, metadataMgr) {
@@ -511,6 +560,14 @@ define([
             module.mkIndentSettings(editor, metadataMgr);
         };
 
+        exp.mkMaxWidthSettings = function (metadataMgr) {
+            module.mkMaxWidthSettings(editor, metadataMgr);
+        };
+
+        exp.wrapParagraph = function (CodeMirror, metadataMgr) {
+            module.wrapParagraph(editor, CodeMirror, metadataMgr);
+        };
+
         exp.getCursor = function () {
             var doc = canonicalize(editor.getValue());
             var cursor = {};
@@ -598,4 +655,3 @@ define([
 
     return module;
 });
-

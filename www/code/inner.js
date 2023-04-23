@@ -41,6 +41,7 @@ define([
     'cm/addon/fold/markdown-fold',
     'cm/addon/fold/comment-fold',
     'cm/addon/display/placeholder',
+    'cm/addon/wrap/hardwrap',
 
     'css!/customize/src/print.css',
     'less!/code/app-code.less'
@@ -452,6 +453,9 @@ define([
         evModeChange.reg(markdownTb.modeChange);
 
         CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
+        CodeMirror.mkMaxWidthSettings(framework._.cpNfInner.metadataMgr);
+        CodeMirror.wrapParagraph(CodeMirror, framework._.cpNfInner.metadataMgr);
+
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
         mkFilePicker(framework, editor, evModeChange);
 
