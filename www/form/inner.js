@@ -83,6 +83,7 @@ define([
     Messages.form_showDetails = "Details";
     Messages.form_condorcetExtendedDisplay = "Number of matches won by each candidate: ";
     Messages.form_noCondorcetWinner = "No winner";
+    Messages.form_type_date = "Date";
 
     var APP = window.APP = {
         blocks: {}
@@ -2887,6 +2888,7 @@ define([
                     answers: answers
                 });
                 
+            
                 var showCondorcetWinner = function(answers, opts, uid, form) {
                 
                     var _answers = parseAnswers(answers);
@@ -2903,19 +2905,22 @@ define([
                         }
                         
                     });
-
-                    if (Object.keys(listOfLists).length !== 0) {
-                        return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
-                    }
+                    try {
+                        if (Object.keys(listOfLists).length !== 0) {
+                            return Condorcet.showCondorcetWinner(_answers, uid, form, optionArray, listOfLists);
+                        }
+                    } catch (e) { 
+                        console.error(e);
+                        return undefined;}
+                    
                 };
 
                 var condorcetWinnerDiv = h('div.cp-form-block-content');
                 
-
+                
                 if (type === "sort" && summary && showCondorcetWinner(answers, block.opts, uid, form) !== undefined) {
                     var calculateCondorcet = function() {
                     var condorcetResults = h('span');
-                    if (showCondorcetWinner(answers, block.opts, uid, form) !== undefined) {
                         var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[1];
                         var condorcetWinner = showCondorcetWinner(answers, block.opts, uid, form)[0];
                         if (condorcetWinner.length > 1) {
@@ -2934,7 +2939,7 @@ define([
                             }
                         });
                         return [condorcetResults, detailedResults];
-                    }};
+                };
                     
 
                     var dropdownOpts = [Messages.form_condorcetSchulze, Messages.form_condorcetRanked];
@@ -2995,7 +3000,6 @@ define([
                     
                 }
                     
-
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 //Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
                 return h('div.cp-form-block', [

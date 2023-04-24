@@ -24,7 +24,7 @@ define([], function () {
         return result;
     };
 
-    Condorcet.showCondorcetWinner = function(_answers, opts, uid, form, optionArray, listOfLists) {
+    Condorcet.showCondorcetWinner = function(_answers, uid, form, optionArray, listOfLists) {
         
         var comparePairs = function() {
 
