@@ -810,10 +810,11 @@ define([
                 var isTop = $el.attr('data-top');
                 var boardId = $el.closest('.kanban-board').attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item new-item'});
+                var $text = $('<div>', {'class': 'kanban-item-text'}).appendTo($item);
                 if (isTop) {
                     $item.addClass('item-top');
                 }
-                var $input = getInput().val(name).appendTo($item);
+                var $input = getInput().val(name).appendTo($text);
                 kanban.addForm(boardId, $item[0], isTop);
                 $input.focus();
                 setTimeout(function () {
