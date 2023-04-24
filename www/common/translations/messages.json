@@ -1216,7 +1216,6 @@
     "form_type_textarea": "Paragraph",
     "form_type_radio": "Choice",
     "form_type_multiradio": "Choice Grid",
-    "form_type_date": "Date",
     "form_type_checkbox": "Checkbox",
     "form_type_multicheck": "Checkbox Grid",
     "form_type_poll": "Poll",
