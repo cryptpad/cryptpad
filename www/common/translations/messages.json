@@ -1585,5 +1585,6 @@
     "form_showCondorcetWinner": "winner: ",
     "form_showDetails": "Details",
     "form_condorcetExtendedDisplay": "Number of matches won by each candidate: ",
-    "form_noCondorcetWinner": "No winner"
+    "form_noCondorcetWinner": "No winner",
+    "form_type_date": "Date"
 }
