@@ -6,19 +6,17 @@ define([
     // if an AppConfig.defaultDarkTheme variable is added to application_config.js and set to true, this sets the theme to dark by default irrespective of browser settings
     var checkDefaultDarkTheme = function () {
         if (AppConfig.defaultDarkTheme) {
-            return os = 'dark';
-        } else {
-            var isDarkOS = function () {
-                try {
-                    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-                } catch (e) { return false; }
-            };
-            return os = isDarkOS() ? 'dark' : 'light';
+            return 'dark';
         }
-    }; 
+        var isDarkOS = function () {
+            try {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches;
+            } catch (e) { return false; }
+        };
+        return isDarkOS() ? 'dark' : 'light';
+    };
+    var os = checkDefaultDarkTheme();
 
-    var os = checkDefaultDarkTheme()
-    
     try {
         var flush = window.CryptPad_flushCache = function () {
             Object.keys(localStorage).forEach(function (k) {
