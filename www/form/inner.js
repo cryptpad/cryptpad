@@ -117,29 +117,29 @@ define([
         var evOnSave = Util.mkEvent();
 
         var maxLength, getLengthVal;
-        if (opts.maxLength) {
-            var lengthInput = h('input', {
-                type:"number",
-                value: opts.maxLength,
-                min: 100,
-                max: 5000
-            });
-            maxLength = h('div.cp-form-edit-max-options', [
-                h('span', Messages.form_editMaxLength),
-                lengthInput
-            ]);
-            getLengthVal = function () {
-                var val = Number($(lengthInput).val()) || 1000;
-                if (val < 1) { val = 1; }
-                if (val > 5000) { val = 5000; }
-                return val;
-            };
+        // if (opts.maxLength) {
+        //     var lengthInput = h('input', {
+        //         type:"number",
+        //         value: opts.maxLength,
+        //         min: 100,
+        //         max: 5000
+        //     });
+        //     maxLength = h('div.cp-form-edit-max-options', [
+        //         h('span', Messages.form_editMaxLength),
+        //         lengthInput
+        //     ]);
+        //     getLengthVal = function () {
+        //         var val = Number($(lengthInput).val()) || 1000;
+        //         if (val < 1) { val = 1; }
+        //         if (val > 5000) { val = 5000; }
+        //         return val;
+        //     };
 
-            var $l = $(lengthInput).on('input', Util.throttle(function () {
-                $l.val(getLengthVal());
-                evOnSave.fire();
-            }, 500));
-        }
+        //     var $l = $(lengthInput).on('input', Util.throttle(function () {
+        //         $l.val(getLengthVal());
+        //         evOnSave.fire();
+        //     }, 500));
+        // }
 
         var type, typeSelect;
         if (opts.type) {
@@ -166,12 +166,12 @@ define([
             };
             typeSelect = UIElements.createDropdown(dropdownConfig);
             typeSelect.setValue(opts.type);
-
             type = h('div.cp-form-edit-type', [
                 h('span', Messages.form_textType),
                 typeSelect[0]
             ]);
             typeSelect.onChange.reg(evOnSave.fire);
+            
         }
 
         setCursorGetter(function () {
@@ -181,8 +181,10 @@ define([
         var getSaveRes = function () {
             return {
                 maxLength: getLengthVal ? getLengthVal() : undefined,
+                required: opts.required ? true : false,
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
+            
         };
 
         evOnSave.reg(function () {
@@ -1628,10 +1630,11 @@ define([
                 // Messages.form_input_ph_email.form_input_ph_url
                 var tag = h('input', {
                     type: opts.type,
+                    step: "any",
                     placeholder: Messages['form_input_ph_'+opts.type] || ''
                 });
                 var $tag = $(tag);
-                $tag.on('change keypress', Util.throttle(function () {
+                $tag.on('change keypress keydown', Util.throttle(function () {
                     evOnChange.fire();
                 }, 500));
                 var cursorGetter;
@@ -4536,13 +4539,85 @@ define([
 
             // End date / Closed state
             var endDateContainer = h('div.cp-form-status-container');
+            
+            var maxResponseInput = h('input', {type: "number"})
+            var maxResponseContainer = h('div.cp-form-status-container', maxResponseInput);
+            var $maxResponse = $(maxResponseContainer)
             var endDateStr = h('div');
             var $endDate = $(endDateContainer);
             var $endDateStr = $(endDateStr);
+            console.log("CONTENT", content.answers)
+            var setMaxResponses = function() {
+                // $endDate.empty();
+
+                var maxResponse = content.answers.maxResponses;
+                // console.log("EDNDATE", endDate)
+
+                // var date = new Date(endDate).toLocaleString();
+                // var now = +new Date();
+                var text = Messages.form_isOpen;
+                var buttonTxt = "Set number of max responses";
+                // if (endDate <= now) {
+                //     text = Messages._getKey('form_isClosed', [date]);
+                //     buttonTxt = Messages.form_open;
+                // } else if (endDate > now) {
+                //     text = Messages._getKey('form_willClose', [date]);
+                //     buttonTxt = Messages.form_removeEnd;
+                // }
+
+                // $endDateStr.text(text);
+
+                var button = h('button.btn.btn-secondary', buttonTxt);
+
+                var $button = $(button).click(function () {
+                    // $button.attr('disabled', 'disabled');
+                    // // If there is an end date, remove it
+                    // if (endDate) {
+                    //     delete content.answers.endDate;
+                    //     framework.localChange();
+                    //     refreshEndDate();
+                    //     return;
+                    // }
+                    // Otherwise add it
+                    var maxResponseInput = h('input', {type: "number"})
+                    var $maxResponseInput  = $(maxResponseInput)
+                    
+                    var save = h('button.btn.btn-primary', Messages.settings_save);
+                    $(save).click(function () {
+                        if (maxResponseInput.value === '') {
+                            return void refreshEndDate();
+                        }
+                        content.answers.maxResponses = maxResponseInput.value
+                        framework.localChange();
+                        $maxResponseInput.hide()
+                        // framework._.cpNfInner.chainpad.onSettle(function () {
+                        //     setMaxResponses();
+                        // });
+                    });
+                    var cancel = h('button.btn.btn-danger', h('i.fa.fa-times.nomargin'));
+                    $(cancel).click(function () {
+                        setMaxResponses();
+                    });
+                    var confirmContent = h('div', [
+                        h('div', "Set max"),
+                        h('div.cp-form-input-block', [maxResponseInput, save, cancel]),
+                    ]);
+                    $button.after(confirmContent);
+                    $button.remove();
+                });
+
+                $maxResponse.append(h('div.cp-form-status', text));
+                $maxResponse.append(h('div.cp-form-actions', button));
+
+            }
+
+            setMaxResponses()
+            console.log("MAXXX", content.answers.maxResponses)
             var refreshEndDate = function () {
                 $endDate.empty();
 
                 var endDate = content.answers.endDate;
+                console.log("EDNDATE", endDate)
                 var date = new Date(endDate).toLocaleString();
                 var now = +new Date();
                 var text = Messages.form_isOpen;
@@ -4674,6 +4749,7 @@ define([
                     h('span', Messages.form_settingsButton)
                 ]),
                 endDateContainer,
+                maxResponseContainer,
                 anonContainer,
                 notifContainer,
                 resultsType,
