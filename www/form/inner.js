@@ -140,7 +140,6 @@ define([
                 h('span', Messages.form_editMaxLength),
                 lengthInput
             ]);
-            //YY
             getLengthVal = function () {
                 var val = Number($(lengthInput).val()) || 1000;
                 if (val < 1) { val = 1; }
@@ -1177,7 +1176,6 @@ define([
                 var form = content.form;
                 var framework = APP.framework;
                 var tmp = data.tmp;
-                //YY
                 var getConditionsValues = function () {
                     var order = getFullOrder(content);
                     var blockIdx = order.indexOf(uid);
@@ -2047,27 +2045,6 @@ define([
                 evOnChange.fire();
             }, 500));
 
-            ret = {
-                tag: tag,
-                isEmpty: function () { return !$tag.val().trim(); },
-                getValue: function () {
-                    var invalid = $tag.is(':invalid');
-                    if (invalid) { return; }
-                    return $tag.val();
-                    
-                },
-                setValue: function (val) { $tag.val(val); },
-                setEditable: function (state) {
-                    if (state) { $tag.removeAttr('disabled'); }
-                    else { $tag.attr('disabled', 'disabled'); }
-                },
-                edit: function (cb) {
-
-                    return editDateOptions(cb);
-                },
-                reset: function () { $tag.val(''); }
-            }
-
             return {
                 tag: tag,
                 isEmpty: function () { return !$tag.val().trim(); },
@@ -2703,8 +2680,6 @@ define([
         return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     };
 
-    getDay(new Date(1681202916647))
-
     var ONE_DAY = 1000 *  60 * 60 * 24;
 
     var getDayArray = function (a, b) {
@@ -2925,13 +2900,6 @@ define([
                     });
 
                     if (Object.keys(listOfLists).length !== 0) {
-                        console.log("ANSWES", JSON.stringify(_answers))
-                        console.log("OPTS", JSON.stringify(opts))
-                        console.log("UID", uid)
-                        console.log("FORM", JSON.stringify(form))
-                        console.log("OPT ARR", JSON.stringify(optionArray))
-                        console.log("LIST OF LISTS", JSON.stringify(listOfLists))
-                        console.log(JSON.stringify(Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists)))
                         return Condorcet.showCondorcetWinner(_answers, opts, uid, form, optionArray, listOfLists);
                     }
                 };
@@ -3437,18 +3405,6 @@ define([
             return results[uid];
         };
         var w = block.opts.when;
-        var resultt = !w.length || w.some(function (rules) {
-            return rules.every(function (rule) {
-                var res = findResult(rule.q);
-                // Checkbox
-                if (Array.isArray(res)) {
-                    var idx = res.indexOf(rule.v);
-                    return rule.is ? idx !== -1 : idx === -1;
-                }
-                // Radio
-                return rule.is ? res === rule.v : res !== rule.v;
-            });
-        });
         return !w.length || w.some(function (rules) {
             return rules.every(function (rule) {
                 var res = findResult(rule.q);
@@ -4945,7 +4901,6 @@ define([
                 colorTheme
             ];
         };
-        //YY
         var checkIntegrity = function (getter) {
             if (!content.order || !content.form) { return; }
             var changed = false;
