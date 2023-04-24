@@ -1579,9 +1579,12 @@
     "form_anonymized": "Réponses anonymisées",
     "form_settingsButton": "Réglages Formulaire",
     "form_editable_on": "Une seule fois et éditer",
-    "form_showCondorcetWinner": "gagnant : ",
+    "form_showCondorcetWinner": "gagnant·e : ",
     "form_showDetails": "Détails",
-    "form_noCondorcetWinner": "Pas de gagnant",
-    "form_condorcetExtendedDisplay": "Nombre de matchs gagnés par chaque candidat : ",
-    "form_showCondorcetMethod": "Méthode de Condorcet"
+    "form_noCondorcetWinner": "Pas de gagnant·e",
+    "form_condorcetExtendedDisplay": "Nombre de matchs gagnés par chaque candidat·e : ",
+    "form_showCondorcetMethod": "Méthode de Condorcet",
+    "form_condorcetSchulze": "Schulze",
+    "form_condorcetRanked": "Rangement des paires",
+    "form_type_date": "Date"
 }
