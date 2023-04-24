@@ -3010,9 +3010,6 @@ define([
         show(answers);
 
 
-        renderResults.show = show;
-
-
         if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
         var $s = $(switchMode).click(function () {
@@ -3331,7 +3328,6 @@ define([
     var getFormResults = function () {
         if (!Array.isArray(APP.formBlocks)) { return; }
         var results = {};
-        var seen = [];
         APP.formBlocks.some(function (data) {
             if (!data.getValue) { return; }
             results[data.uid] = data.getValue();
