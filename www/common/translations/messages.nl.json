@@ -536,7 +536,7 @@
     "calendar_month_last": "laatste dag",
     "calendar_nth_4": "vierde",
     "form_exportJSON": "Exporteer naar JSON",
-    "calendar_rec_every_date": "Elke",
+    "calendar_rec_every_date": "Elke {0}",
     "calendar_rec_warn_update": "De herhalingsregel voor deze afspraak is gewijzigd. Toekomstige afspraken zullen worden vervangen.",
     "calendar_rec_warn_delall": "Deze afspraak zal niet langer worden herhaald. De eerste afspraak op {0} zal worden bewaard, alle anderen zullen worden verwijderd.",
     "calendar_rec_warn_del": "Deze afspraak zal niet langer worden herhaald. Toekomstige afspraken zullen worden verwijderd.",
