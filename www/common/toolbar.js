@@ -764,6 +764,10 @@ MessengerUI, Messages, Pages) {
             $input.val(inputVal);
             $input.show();
             $input.focus();
+            if (inputVal === $input.attr('placeholder')) {
+                // Placeholder is the default name, select text to make editing easier
+                $input.select();
+            }
             $pencilIcon.hide();
             $saveIcon.show();
         };
