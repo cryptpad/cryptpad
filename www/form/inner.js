@@ -2900,105 +2900,116 @@ define([
     
                     var listOfLists = [];
                     Object.keys(_answers).forEach(function(a) {
-                        if (_answers[a].msg[uid] !== undefined) {
+                        if (_answers[a].msg[uid]) {
                             listOfLists.push(_answers[a].msg[uid]);
-                        }
-                        
+                        }                
                     });
                     try {
-                        if (Object.keys(listOfLists).length !== 0) {
+                        if (Array.isArray(Object.keys(listOfLists))) {
                             return Condorcet.showCondorcetWinner(_answers, uid, form, optionArray, listOfLists);
-                        }
+                        } 
                     } catch (e) { 
                         console.error(e);
-                        return undefined;}
+                        return;}
                     
                 };
 
                 var condorcetWinnerDiv = h('div.cp-form-block-content');
                 
-                
-                if (type === "sort" && summary && showCondorcetWinner(answers, block.opts, uid, form) !== undefined) {
-                    var calculateCondorcet = function() {
-                    var condorcetResults = h('span');
-                        var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[1];
-                        var condorcetWinner = showCondorcetWinner(answers, block.opts, uid, form)[0];
-                        if (condorcetWinner.length > 1) {
-                            condorcetResults.append(h('span', condorcetWinner.join(', ')));
-                        } else if (condorcetWinner.length === 1 ) { 
-                            condorcetResults.append(h('span', condorcetWinner));
-                        } else {
-                            condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
-                        }
-
-                        var detailedResults = Object.keys(rankedResults).sort(function(a,b) { return a - b; }).reverse().map(function(result) {
-                            if (rankedResults[result].length > 1) {
-                                return rankedResults[result].join(', ') + ' : ' + result;
+                form[uid].condorcetmethod = 'schulze';
+                try {
+                    if (type === "sort" && summary && showCondorcetWinner(answers, block.opts, uid, form)[0] && showCondorcetWinner(answers, block.opts, uid, form)[1]) {
+                        var calculateCondorcet = function() {
+                            var condorcetResults = h('span');
+                            var condorcetWinner = showCondorcetWinner(answers, block.opts, uid, form)[0];
+                            var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[1];
+                            if (condorcetWinner.length > 1) {
+                                condorcetResults.append(h('span', condorcetWinner.join(', ')));
+                            } else if (condorcetWinner.length === 1 ) { 
+                                condorcetResults.append(h('span', condorcetWinner));
                             } else {
-                                return rankedResults[result] + ' : ' + result;
+                                condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
+                            }
+                            var detailedResults = rankedResults.reverse().map(function(result) {
+                                if (result.length > 1) {
+                                    return result[1].join(', ') + ' : ' + result[0];
+                                } else {
+                                    return result[1] + ' : ' + result[0];
+                                }
+                            });
+                            return [condorcetResults, detailedResults];
+                        };
+                        
+                        var dropdownOpts = [Messages.form_condorcetSchulze, Messages.form_condorcetRanked];
+    
+                        var options = dropdownOpts.map(function (t) {
+                            return {
+                                tag: 'a',
+                                attributes: {
+                                    'class': 'cp-form-type-value',
+                                    'data-value': t,
+                                    'href': '#',
+                                },
+                                content: t
+                            };
+                        });
+                        var dropdownConfig = {
+                            text: '', // Button initial text
+                            options: options, 
+                            isSelect: true,
+                            caretDown: true,
+                            buttonCls: 'btn btn-secondary'
+                        };
+                        var typeSelect = UIElements.createDropdown(dropdownConfig);
+    
+                        typeSelect.setValue(dropdownOpts[0]);
+                        
+                        var methodOptions = {0: 'schulze', 1: 'ranked'};
+                        var optionIndex = dropdownOpts.indexOf(typeSelect.getValue());
+                        
+                        form[uid].condorcetmethod = methodOptions[optionIndex];
+    
+                        var method = h('div.cp-dropdown-container', typeSelect[0]);
+    
+                        var evOnSave = Util.mkEvent();
+                        typeSelect.onChange.reg(evOnSave.fire);
+                        var $typeSelect = $(typeSelect);
+    
+                        var $selector = $typeSelect.find('a');
+                        
+                        var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
+                        condorcetWinnerDiv = h('div.cp-form-edit-type');
+    
+                        var detailsDiv = h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
+    
+                        $selector.click(function () {
+                            optionIndex = dropdownOpts.indexOf($(this).attr('data-value'));
+                            form[uid].condorcetmethod = methodOptions[optionIndex];
+                            try {
+                                $('#cW').replaceWith(h('span', { id: 'cW'}, calculateCondorcet()[0]));
+                            } catch (err) {
+                                console.error(err);
+                            }
+                            try {
+                                $('#dD').replaceWith(h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
+                            } catch (err) {
+                                console.error(err);
                             }
                         });
-                        return [condorcetResults, detailedResults];
-                };
-                    
-
-                    var dropdownOpts = [Messages.form_condorcetSchulze, Messages.form_condorcetRanked];
-
-                    var options = dropdownOpts.map(function (t) {
-                        return {
-                            tag: 'a',
-                            attributes: {
-                                'class': 'cp-form-type-value',
-                                'data-value': t,
-                                'href': '#',
-                            },
-                            content: t
-                        };
-                    });
-                    var dropdownConfig = {
-                        text: '', // Button initial text
-                        options: options, 
-                        isSelect: true,
-                        caretDown: true,
-                        buttonCls: 'btn btn-secondary'
-                    };
-                    var typeSelect = UIElements.createDropdown(dropdownConfig);
-
-                    typeSelect.setValue(dropdownOpts[0]);
-                    
-                    var methodOptions = {0: 'schulze', 1: 'ranked'};
-                    var optionIndex = dropdownOpts.indexOf(typeSelect.getValue());
-                    
-                    form[uid].condorcetmethod = methodOptions[optionIndex];
-
-                    var method = h('div.cp-dropdown-container', typeSelect[0]);
-
-                    var evOnSave = Util.mkEvent();
-                    typeSelect.onChange.reg(evOnSave.fire);
-                    var $typeSelect = $(typeSelect);
-
-                    var $selector = $typeSelect.find('a');
-                    
-                    var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
-                    condorcetWinnerDiv = h('div.cp-form-edit-type');
-
-                    var detailsDiv = h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
-
-                    $selector.click(function () {
-                        optionIndex = dropdownOpts.indexOf($(this).attr('data-value'));
-                        form[uid].condorcetmethod = methodOptions[optionIndex];
-                        $('#cW').replaceWith(h('span', { id: 'cW'}, calculateCondorcet()[0]));
-                        $('#dD').replaceWith(h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', '))));
-                    });
-                                        
-                    condorcetWinnerDiv.append(h('div.cp-form-result-details', [
-                        h('span', Messages.form_showCondorcetMethod),
-                        method,
-                        h('span', Messages.form_showCondorcetWinner, condorcetWinner),
-                        detailsDiv
-                    ]));
-                    
+                                            
+                        condorcetWinnerDiv.append(h('div.cp-form-result-details', [
+                            h('span', Messages.form_showCondorcetMethod),
+                            method,
+                            h('span', Messages.form_showCondorcetWinner, condorcetWinner),
+                            detailsDiv
+                        ]));
+                        
+                    }
+                } catch (err) {
+                    console.error(err);
+                    return;
                 }
+                
                     
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 //Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section

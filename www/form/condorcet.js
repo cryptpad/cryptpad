@@ -7,7 +7,7 @@ define([], function () {
 
         var result = [];
 
-        function p(t, i) {
+        var generatePermutations = function (t, i) {
             if (t.length === size) {
                 result.push(t);
                 result.push(t.slice().reverse());
@@ -16,11 +16,11 @@ define([], function () {
             if (i >= array.length) {
                 return;
             }
-            p(t.concat(array[i]), i + 1);
-            p(t, i + 1);
-        }
+            generatePermutations(t.concat(array[i]), i + 1);
+            generatePermutations(t, i + 1);
+        };
 
-        p([], 0);
+        generatePermutations([], 0);
         return result;
     };
 
@@ -43,7 +43,9 @@ define([], function () {
             //Adds winner of each pairwise comparison to path
             optionArray.forEach(function(option1) {
                 optionArray.forEach(function(option2){
-                    if (option1 !== option2) {
+                    if (option1 === option2) {
+                        return;
+                    } else {
                         var key1 = [option1, option2].join();
                         var key2 = [option2, option1].join();
                         if (pairDict[key1] > pairDict[key2]) {
@@ -66,20 +68,24 @@ define([], function () {
                 //Iterates through paths between two options comparing the weakest edge to current score
                 optionArray.forEach(function(option1) {
                     optionArray.forEach(function(option2) {
-                        if (option1 !== option2) {
+                        if (option1 === option2) {
+                            return;
+                        } else {
                             optionArray.forEach(function(option3){
-                                if (option1 !== option3 && option2 !== option3) {
+                                if (option1 === option3 || option2 === option3) {
+                                    return;
+                                } else {
                                     var key1 = [option2, option3].join();
                                     var key2 = [option2, option1].join();
                                     var key3 = [option1, option3].join();
                                     var score;
-                                    if (pathDictionary[key1] === undefined) {
+                                    if (!pathDictionary[key1]) {
                                         score = 0;
                                     } else {
                                         score = pathDictionary[key1];
                                     }
                                     var path1;
-                                    if (pathDictionary[key2] !== undefined) {
+                                    if (pathDictionary[key2]) {
                                         path1 = pathDictionary[key2]; 
                                     } else {
                                         path1 = 0;
@@ -160,15 +166,23 @@ define([], function () {
                     }
                 });
 
+                var sortedRankedResults = [];
+                Object.keys(rankedResults).map(Number).sort(function(a, b) {
+                    return a - b;
+                  }).forEach(function(score) {
+                    sortedRankedResults.push([score, rankedResults[score]]);
+                });
+
+
                 if (winnersArray.length !== 0) {
                     winner = winnersArray;
                 } else if (winnersArray.length === 0 && Object.keys(rankedResults).length === 1) {
                     winner = [];
                 } else {
-                    winner = rankedResults[0];
+                    var maxScore = Math.max.apply(null, Object.keys(rankedResults));
+                    winner = rankedResults[maxScore];
                 }
-                
-                return [winner, rankedResults];
+                return [winner, sortedRankedResults];
             };
             return(calculateWinner());
         };
@@ -180,32 +194,36 @@ define([], function () {
             //'Locks' pairwise comparisons which do not create a beatpath cycle
             var pathDictionary = comparePairs(listOfLists, pairs);
 
-            var items = Object.keys(pathDictionary).sort().map(function(key) {
+            var items = Object.keys(pathDictionary).map(function(key) {
                 return [key, pathDictionary[key]];
             });
-            var sortedItems = {};
+            var itemsDict = {};
             Object.values(items).forEach(function(value) {
-                if (Object.keys(sortedItems).includes(value[1].toString())) {
-                    sortedItems[value[1]].push(value[0]);
+                if (Object.keys(itemsDict).includes(value[1].toString())) {
+                    itemsDict[value[1]].push(value[0]);
                 } else {
-                    sortedItems[value[1]] = [];
-                    sortedItems[value[1]].push(value[0]);
+                    itemsDict[value[1]] = [];
+                    itemsDict[value[1]].push(value[0]);
                 }
                 
+            });
+
+            var sortedArray = [];
+            Object.keys(itemsDict).map(Number).sort(function(a, b) {
+                return a - b;
+              }).forEach(function(score) {
+                sortedArray.push([score, itemsDict[score]]);
             });
 
             var rankingDict = {};
             var winning = [];
             var losing = [];
-
-            Object.values(sortedItems).forEach(function(v) {
-                v.forEach(function(val){
-                    winning.push(val.split(',')[0]);
-                    losing.push(val.split(',')[1]);
+            sortedArray.forEach(function(arr) {
+                arr[1].forEach(function(pair) {
+                    winning.push(pair.split(',')[0]);
+                    losing.push(pair.split(',')[1]);
                 });
             });
-
-
             optionArray.forEach(function(option){
                 rankingDict[option] = 0;
             });
@@ -216,7 +234,7 @@ define([], function () {
                     rankingArray .push(pair);
                 }
             });
-            var winner;
+            
             if (rankingArray.length <= 1) {
                 optionArray.forEach(function(option){
                     if (winning.includes(option)) {
@@ -237,7 +255,7 @@ define([], function () {
             }
             });
 
-            var rankedKeys = Object.keys(rankedResults).sort().map(function(key) {
+            var rankedKeys = Object.keys(rankedResults).map(function(key) {
                 return [key, rankedResults[key]];
             });
             
@@ -258,18 +276,18 @@ define([], function () {
                 }
             });
 
+            var winner;
             if (finalRankingArray.length > 1) {
                 var maxScore = Math.max.apply(null, Object.keys(rankedResults));
                 winner = rankedResults[maxScore];
-            } else if (Object.keys(sortedItems).length === 0) {
+            } else if (sortedArray.length === 0) {
                 winner = [];
             } else {
-                var index = Array.apply(null, Array(Object.keys(sortedItems).length-1)).map(function (_, i) { return i; });
-                index.forEach(function(i) {
-                    pairs = Object.values(sortedItems).reverse()[i];
-                    pairs.forEach(function(pair) {
-                        var valIndex = winning.indexOf(pair.split(',')[1]);
-                        winning.splice(valIndex, 1);
+                var topScoring = sortedArray.slice(-1);
+                topScoring.forEach(function(pair) {
+                    pair[1].forEach(function(p) {
+                        var index = winning.indexOf(p.split(',')[1]);
+                        winning.splice(index, 1);
                     });
                 });
 
@@ -285,10 +303,15 @@ define([], function () {
                 } else {
                     winner = winnerArray;
                 }
-                
             }
 
-            return [winner, rankedResults];
+            var sortedRankedResults = [];
+            Object.keys(rankedResults).map(Number).sort(function(a, b) {
+                return a - b;
+              }).forEach(function(score) {
+                sortedRankedResults.push([score, rankedResults[score]]);
+            });
+            return [winner, sortedRankedResults];
     
         };
     
@@ -309,4 +332,3 @@ define([], function () {
 
     return Condorcet;
 });
-
