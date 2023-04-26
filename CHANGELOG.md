@@ -53,7 +53,7 @@ This release updates OnlyOffice applications to version 7.3.3. It improves the F
 
 ## Update notes
 
-Our `5.2.0` release introduced some changes to the Nginx configuration. If you are not already running `5.2.0` we recommend following the upgrade notes for that version first, and then updating to `5.2.1`
+Due to changes in the Nginx configuration we recommend upgrading to version `5.2.0` or `5.2.1` before upgrading to this version `5.3`
 
 To do so:
 
@@ -62,13 +62,12 @@ To do so:
 
 ```bash
 git fetch origin --tags
-git checkout 5.2.1
+git checkout 5.3
 ```
 
-1. Install the latest dependencies with `bower update`
-2. Restart your server
-3. Review your instance's checkup page to ensure that you are passing all tests
-4. 
+1. Restart your server
+2. Review your instance's checkup page to ensure that you are passing all tests
+   
 # 5.2.1
 
 ## Goals
