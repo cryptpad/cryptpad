@@ -1,3 +1,74 @@
+# 5.3
+
+## Goals
+
+This release updates OnlyOffice applications to version 7.3.3. It improves the Form application and other areas of CryptPad with minor features and bug fixes. 
+
+## Features
+
+- OnlyOffice applications (Sheet, Document, Presentation)
+  - Upgrade to version 7.3.3.19
+
+- Forms
+  - New question type: Date [[#811]](https://github.com/xwiki-labs/cryptpad/issues/811)
+  - Add Condorcet voting results to ordered list responses
+
+- Default dark theme switch [[#759]](https://github.com/xwiki-labs/cryptpad/issues/759): set dar ktheme as the default for the instance in `application_config.js`
+
+- New FreeBSD rc.d init script
+
+## Improvements
+
+- Auto-select document name on edit if it's still the default [thanks to [piemonkey](https://github.com/piemonkey)]
+
+- Forms
+  - Clarify button text to "Copy Public Link" [[#937]](https://github.com/xwiki-labs/cryptpad/issues/937)
+  - Clarify text on the document creation screen so that "Expiration date" (date at which the document will be destroyed) is not confused with the _closing date_ of the form [user feedback]
+  - Decimals are now allowed in text questions with type "number" [[Forum]](https://forum.cryptpad.org/d/88-decimals-in-number-type-text-field)
+
+- Rich Text
+  - Move width-toggle button out of the way of the text [[#957]](https://github.com/xwiki-labs/cryptpad/issues/957)
+
+- Deployment
+  - Systemd: Removed outdated logging directives and implemented sandboxing and other hardening best practices
+  - Nginx: Invert settings to forbid remote embedding by default
+
+- Removed unused dev dependencies
+
+## Bug Fixes
+
+- Forms and Kanban
+  - Fixed spacing issues with input fields
+
+- Forms
+  - Fixed ways to bypass "required" questions [[#1007](https://github.com/xwiki-labs/cryptpad/issues/1007) [#1014](https://github.com/xwiki-labs/cryptpad/issues/1014)]
+  - Fix missing notifications for responses
+  - Send response notifications to all owners
+
+- Rich Text
+  - Fix scroll issues when clicking on the table of contents 
+  - Fix double notification for mention + reply in a comment
+
+- Fix issues with deprecated cache 
+
+## Update notes
+
+Our `5.2.0` release introduced some changes to the Nginx configuration. If you are not already running `5.2.0` we recommend following the upgrade notes for that version first, and then updating to `5.2.1`
+
+To do so:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 5.2.1
+```
+
+1. Install the latest dependencies with `bower update`
+2. Restart your server
+3. Review your instance's checkup page to ensure that you are passing all tests
+4. 
 # 5.2.1
 
 ## Goals
