@@ -25,20 +25,39 @@ define([], function () {
     };
 
     Condorcet.showCondorcetWinner = function(_answers, uid, form, optionArray, listOfLists) {
-        
-        var comparePairs = function() {
+        // _answers not needed
+        // uid and form can be replaced by "method"
+        // listOfLists represents responses
 
+        // For each pair, get the stronger direction (A to B or B to A) and its weight
+        var comparePairs = function () {
             var pairs = getPermutations(optionArray, 2);
             var pairDict = {};
-            pairs.forEach(function (pair) {                        
+            pairs.forEach(function (pair) {
                 pairDict[pair] = 0;
                 listOfLists.forEach(function(optionList) {
-                    if (optionList.indexOf(pair[0]) < optionList.indexOf(pair[1])) {
-                        pairDict[pair] ++;
-                    }
+                    var idx1 = optionList.indexOf(pair[0]);
+                    var idx2 = optionList.indexOf(pair[1]);
+                    if (idx1 === -1) { idx1 = Infinity; }
+                    if (idx2 === -1) { idx2 = Infinity; }
+                    if (idx1 < idx2) { pairDict[pair] ++; }
                 });
             });
 
+            var pathDictionary = {};
+            //Adds winner of each pairwise comparison to path
+            pairs.forEach(function (pair) {
+                var key1 = [pair[0], pair[1]].join();
+                var key2 = [pair[1], pair[0]].join();
+                if (pairDict[key1] > pairDict[key2]) {
+                    pathDictionary[key1] = pairDict[key1] - pairDict[key2];
+                } else if (pairDict[key2] > pairDict[key1]) {
+                    pathDictionary[key2] = pairDict[key2] - pairDict[key1];
+                }
+
+            });
+
+            /*
             var pathDictionary = {};
             //Adds winner of each pairwise comparison to path
             optionArray.forEach(function(option1) {
@@ -49,18 +68,19 @@ define([], function () {
                         var key1 = [option1, option2].join();
                         var key2 = [option2, option1].join();
                         if (pairDict[key1] > pairDict[key2]) {
-                            pathDictionary[key1] = pairDict[key1]; 
+                            pathDictionary[key1] = pairDict[key1];
                         } else if (pairDict[key2] > pairDict[key1]) {
                             pathDictionary[key2] = pairDict[key2];
                         }
                     }
                 });
             });
+            */
             return pathDictionary;
         };
-    
+
         var schulzeMethod = function(optionArray) {
-    
+
             var findWeakestPath = function(optionArray) {
 
                 var pathDictionary = comparePairs(optionArray);
@@ -86,13 +106,13 @@ define([], function () {
                                     }
                                     var path1;
                                     if (pathDictionary[key2]) {
-                                        path1 = pathDictionary[key2]; 
+                                        path1 = pathDictionary[key2];
                                     } else {
                                         path1 = 0;
                                     }
                                     var path2;
                                     if (pathDictionary[key3]) {
-                                        path2 = pathDictionary[key3]; 
+                                        path2 = pathDictionary[key3];
                                     } else {
                                         path2 = 0;
                                     }
@@ -108,9 +128,9 @@ define([], function () {
 
                 return pathDictionary;
             };
-    
+
             var calculateWinner = function() {
-    
+
                 var pathDictionary = findWeakestPath(optionArray);
 
                 //Calculate scores for each option and select winner
@@ -186,11 +206,11 @@ define([], function () {
             };
             return(calculateWinner());
         };
-    
+
         var rankedPairsMethod = function (optionArray, listOfLists) {
 
             var pairs = getPermutations(optionArray, 2);
-            
+
             //'Locks' pairwise comparisons which do not create a beatpath cycle
             var pathDictionary = comparePairs(listOfLists, pairs);
 
@@ -205,7 +225,7 @@ define([], function () {
                     itemsDict[value[1]] = [];
                     itemsDict[value[1]].push(value[0]);
                 }
-                
+
             });
 
             var sortedArray = [];
@@ -228,13 +248,13 @@ define([], function () {
                 rankingDict[option] = 0;
             });
 
-            var rankingArray = [];  
+            var rankingArray = [];
             Object.values(rankingDict).forEach(function(pair) {
                 if (!rankingArray .includes(pair)) {
                     rankingArray .push(pair);
                 }
             });
-            
+
             if (rankingArray.length <= 1) {
                 optionArray.forEach(function(option){
                     if (winning.includes(option)) {
@@ -258,7 +278,7 @@ define([], function () {
             var rankedKeys = Object.keys(rankedResults).map(function(key) {
                 return [key, rankedResults[key]];
             });
-            
+
             var finalsortedItems = {};
             Object.values(rankedKeys).forEach(function(value){
                 if (Object.keys(finalsortedItems).includes(value[1].toString())) {
@@ -266,7 +286,7 @@ define([], function () {
                 } else {
                     finalsortedItems[value[1]] = [];
                     finalsortedItems[value[1]].push(value[0]);
-                } 
+                }
             });
 
             var finalRankingArray = [];
@@ -312,9 +332,9 @@ define([], function () {
                 sortedRankedResults.push([score, rankedResults[score]]);
             });
             return [winner, sortedRankedResults];
-    
+
         };
-    
+
         var pickMethod = function(optionArray, listOfLists, _answers, uid){
             var condorcetWinner = [];
             var schulzeWinner = schulzeMethod(optionArray, listOfLists, _answers, uid);

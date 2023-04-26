@@ -72,10 +72,10 @@ define([
     ChainPad,
     Share, Access, Properties,
     Flatpickr,
-    Sortable 
+    Sortable
     )
-{   
-    
+{
+
     Messages.form_showCondorcetMethod = "Condorcet method"; //XXX;
     Messages.form_condorcetSchulze = "Schulze";
     Messages.form_condorcetRanked = "Ranked Pairs";
@@ -2037,7 +2037,7 @@ define([
             opts = Util.clone(TYPES.date.defaultOpts);
 
             var tag = h('input');
-                
+
             Flatpickr(tag, {
                         enableTime: true,
                         time_24hr: is24h,
@@ -2057,7 +2057,7 @@ define([
                     var invalid = $tag.is(':invalid');
                     if (invalid) { return; }
                     return $tag.val();
-                    
+
                 },
                 setValue: function (val) { $tag.val(val); },
                 setEditable: function (state) {
@@ -2380,7 +2380,7 @@ define([
                         results.push(barRow(res, c[res], max, showBars));
                     });
                 });
-                
+
                 return h('div.cp-charts.cp-bar-table', results);
             },
             exportCSV: function (answer, form) {
@@ -2506,7 +2506,7 @@ define([
                         sortNode(toSort);
                         reorder();
                     },
-                    
+
                 };
 
             },
@@ -2870,10 +2870,10 @@ define([
 
         var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
         $controls.hide().append(switchMode);
-        
+
 
         var show = function (answers, header) {
-            
+
             var order = getFullOrder(content);
             var elements = order.map(function (uid) {
                 var block = form[uid];
@@ -2887,35 +2887,36 @@ define([
                     content: content,
                     answers: answers
                 });
-                
-            
+
+
                 var showCondorcetWinner = function(answers, opts, uid, form) {
-                
+
                     var _answers = parseAnswers(answers);
-    
+
                     var optionArray = [];
                     opts.values.forEach(function (option) {
                         optionArray.push(option.v);
                     });
-    
+
                     var listOfLists = [];
                     Object.keys(_answers).forEach(function(a) {
                         if (_answers[a].msg[uid]) {
                             listOfLists.push(_answers[a].msg[uid]);
-                        }                
+                        }
                     });
                     try {
                         if (Array.isArray(Object.keys(listOfLists))) {
+                            console.error(_answers, uid, form, optionArray, listOfLists);
                             return Condorcet.showCondorcetWinner(_answers, uid, form, optionArray, listOfLists);
-                        } 
-                    } catch (e) { 
+                        }
+                    } catch (e) {
                         console.error(e);
                         return;}
-                    
+
                 };
 
                 var condorcetWinnerDiv = h('div.cp-form-block-content');
-                
+
                 form[uid].condorcetmethod = 'schulze';
                 try {
                     if (type === "sort" && summary && showCondorcetWinner(answers, block.opts, uid, form)[0] && showCondorcetWinner(answers, block.opts, uid, form)[1]) {
@@ -2925,7 +2926,7 @@ define([
                             var rankedResults = showCondorcetWinner(answers, block.opts, uid, form)[1];
                             if (condorcetWinner.length > 1) {
                                 condorcetResults.append(h('span', condorcetWinner.join(', ')));
-                            } else if (condorcetWinner.length === 1 ) { 
+                            } else if (condorcetWinner.length === 1 ) {
                                 condorcetResults.append(h('span', condorcetWinner));
                             } else {
                                 condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
@@ -2939,9 +2940,9 @@ define([
                             });
                             return [condorcetResults, detailedResults];
                         };
-                        
+
                         var dropdownOpts = [Messages.form_condorcetSchulze, Messages.form_condorcetRanked];
-    
+
                         var options = dropdownOpts.map(function (t) {
                             return {
                                 tag: 'a',
@@ -2955,33 +2956,33 @@ define([
                         });
                         var dropdownConfig = {
                             text: '', // Button initial text
-                            options: options, 
+                            options: options,
                             isSelect: true,
                             caretDown: true,
                             buttonCls: 'btn btn-secondary'
                         };
                         var typeSelect = UIElements.createDropdown(dropdownConfig);
-    
+
                         typeSelect.setValue(dropdownOpts[0]);
-                        
+
                         var methodOptions = {0: 'schulze', 1: 'ranked'};
                         var optionIndex = dropdownOpts.indexOf(typeSelect.getValue());
-                        
+
                         form[uid].condorcetmethod = methodOptions[optionIndex];
-    
+
                         var method = h('div.cp-dropdown-container', typeSelect[0]);
-    
+
                         var evOnSave = Util.mkEvent();
                         typeSelect.onChange.reg(evOnSave.fire);
                         var $typeSelect = $(typeSelect);
-    
+
                         var $selector = $typeSelect.find('a');
-                        
+
                         var condorcetWinner = h('span', { id: 'cW'}, calculateCondorcet()[0]);
                         condorcetWinnerDiv = h('div.cp-form-edit-type');
-    
+
                         var detailsDiv = h('details', h('summary', Messages.form_showDetails), {id: 'dD'}, Messages.form_condorcetExtendedDisplay, h('div', calculateCondorcet()[1].join(', ')));
-    
+
                         $selector.click(function () {
                             optionIndex = dropdownOpts.indexOf($(this).attr('data-value'));
                             form[uid].condorcetmethod = methodOptions[optionIndex];
@@ -2996,21 +2997,21 @@ define([
                                 console.error(err);
                             }
                         });
-                                            
+
                         condorcetWinnerDiv.append(h('div.cp-form-result-details', [
                             h('span', Messages.form_showCondorcetMethod),
                             method,
                             h('span', Messages.form_showCondorcetWinner, condorcetWinner),
                             detailsDiv
                         ]));
-                        
+
                     }
                 } catch (err) {
                     console.error(err);
                     return;
                 }
-                
-                    
+
+
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 //Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
                 return h('div.cp-form-block', [
@@ -3027,7 +3028,7 @@ define([
             if (header) { $results.prepend(header); }
         };
         show(answers);
-        
+
 
         if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
@@ -3775,7 +3776,7 @@ define([
             });
         }
 
-        
+
         var getFormCreator = function (uid, inSection) {
             if (!APP.isEditor) { return; }
             var full = !uid;
@@ -3908,7 +3909,7 @@ define([
                 uid: uid,
                 tmp: temp && temp[uid]
             });
-            
+
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -4057,8 +4058,8 @@ define([
                         model.icon.cloneNode(),
                         h('span', Messages['form_type_'+type])
                     ]);
-                
-                    
+
+
                 // Values
                 if (data.edit) {
                     var edit = h('button.btn.btn-default.cp-form-edit-button', [
