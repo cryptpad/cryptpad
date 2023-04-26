@@ -1,4 +1,4 @@
-# 5.3
+# 5.3.0
 
 ## Goals
 
@@ -22,12 +22,12 @@ This release updates OnlyOffice applications to version 7.3.3. It improves the F
 - Auto-select document name on edit if it's still the default [thanks to [piemonkey](https://github.com/piemonkey)]
 
 - Forms
-  - Clarify button text to "Copy Public Link" [[#937]](https://github.com/xwiki-labs/cryptpad/issues/937)
+  - Clarify button text to "Copy Public Link" [[#937](https://github.com/xwiki-labs/cryptpad/issues/937)]
   - Clarify text on the document creation screen so that "Expiration date" (date at which the document will be destroyed) is not confused with the _closing date_ of the form [user feedback]
   - Decimals are now allowed in text questions with type "number" [[Forum]](https://forum.cryptpad.org/d/88-decimals-in-number-type-text-field)
 
 - Rich Text
-  - Move width-toggle button out of the way of the text [[#957]](https://github.com/xwiki-labs/cryptpad/issues/957)
+  - Move width-toggle button out of the way of the text [[#957](https://github.com/xwiki-labs/cryptpad/issues/957)]
 
 - Deployment
   - Systemd: Removed outdated logging directives and implemented sandboxing and other hardening best practices
@@ -53,9 +53,9 @@ This release updates OnlyOffice applications to version 7.3.3. It improves the F
 
 ## Update notes
 
-Due to changes in the Nginx configuration we recommend upgrading to version `5.2.0` or `5.2.1` before upgrading to this version `5.3`
+If you are upgrading from a version older than `5.2.0` please read the upgrade notes of all versions between yours and `5.3.0` to avoid configuration issues.
 
-To do so:
+To upgrade:
 
 1. Stop your server
 2. Get the latest code with git
