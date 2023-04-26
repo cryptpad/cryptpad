@@ -2968,8 +2968,9 @@ define([
                         buttonCls: 'btn btn-secondary'
                     };
                     var typeSelect = UIElements.createDropdown(dropdownConfig);
-
                     typeSelect.setValue(condorcetMethod);
+                    var evOnChange = Util.mkEvent();
+                    typeSelect.onChange.reg(evOnChange.fire);
 
                     var method = h('div.cp-dropdown-container', typeSelect[0]);
 
@@ -2989,7 +2990,7 @@ define([
                         ]);
                     }
 
-                    $selector.click(function () {
+                    evOnChange.reg(function () {
                         condorcetMethod = typeSelect.getValue();
                         var condorcetResult = calculateCondorcet();
                         if (!condorcetResult) {
