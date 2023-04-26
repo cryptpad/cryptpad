@@ -10,7 +10,7 @@
   "PE.ApplicationController.criticalErrorTitle": "錯誤",
   "PE.ApplicationController.downloadErrorText": "下載失敗",
   "PE.ApplicationController.downloadTextText": "下載簡報中...",
-  "PE.ApplicationController.errorAccessDeny": "您嘗試進行未被授權的動作。<br> 請聯繫您的文件伺服器主機的管理者。",
+  "PE.ApplicationController.errorAccessDeny": "您嘗試進行未被授權的動作<br> 請聯繫您的文件伺服器主機的管理者。",
   "PE.ApplicationController.errorDefaultMessage": "錯誤編號：%1",
   "PE.ApplicationController.errorFilePassProtect": "該文件受密碼保護，無法打開。",
   "PE.ApplicationController.errorFileSizeExceed": "此檔案超過這一主機限制的大小<br> 進一步資訊，請聯絡您的文件服務主機的管理者。",

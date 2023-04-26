@@ -5,7 +5,6 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="The description of the search and replace functions in Spreadsheet Editor" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -15,11 +14,11 @@
             <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
         </div>
 		<h1>Las funciones de búsqueda y sustitución</h1>
-			<p>Para buscar los caracteres, palabras o frases usadas en la hoja de cálculo actual, haga clic en el icono <span class="icon icon-searchicon"></span> situado en la barra lateral izquierda o use la combinación de teclas <em>Ctrl+F</em>.</p>
-            <p>Si quiere buscar/reemplazar valores dentro de un área en la hoja actual, seleccione el rango de celdas necesario y haga clic en el icono <span class="icon icon-searchicon"></span>.</p>
+			<p>Para buscar los caracteres, palabras o frases usadas en la hoja de cálculo actual, haga clic en el icono <img alt="Icono Buscar" src="../images/searchicon.png" /> situado en la barra lateral izquierda o use la combinación de teclas <em>Ctrl+F</em>.</p>
+            <p>Si quiere buscar/reemplazar valores dentro de un área en la hoja actual, seleccione el rango de celdas necesario y haga clic en el icono <img alt="Icono Buscar" src="../images/searchicon.png" />.</p>
 			<p>Se abrirá la ventana <b>Encontrar y reemplazar</b>:</p><img alt="Ventana de búsqueda y sustitución" src="../images/search_window.png" /><ol>
 			<li>Introduzca su consulta en el campo correspondiente.</li>
-			<li>Especifique las opciones de búsqueda haciendo clic en el icono <div class = "icon icon-advanced_settings_icon"></div> de al lado del campo de entrada de datos:<ul>
+			<li>Especifique las opciones de búsqueda haciendo clic en el icono <img alt="Icono Buscar opciones" src="../images/advanced_settings_icon.png" /> de al lado del campo de entrada de datos:<ul>
 				<li><b>Sensible a mayúsculas y minúsculas</b> - se usa para encontrar solo las ocurrencias que están escritas manteniendo mayúsculas y minúsculas como en su consulta (por ejemplo si su consulta es 'Editor' y se ha seleccionado esta opción, las palabras como 'editor' o 'EDITOR' etc. no se encontrarán).</li>
                 <li><b>Todo el contenido de celda</b> - se usa para encontrar solo las celdas que no contienen cualquier otros caracteres aparte de unos especificados en su consulta (ej. si su consulta es '56' y la opción está seleccionada, las celdas con '0.56' o '156' etc. no se encontrarán).</li>
                 <li><b>Resaltar resultados</b> - se usa para resaltar todos los acaecimientos encontrados a la vez. Para desactivar esta opción y quitar el resaltado haga clic en esta opción de nuevo.</li>
@@ -28,7 +27,7 @@
 				<li><b>Buscar en</b> - se usa para especificar si quiere buscar <b>Valor</b> de las celdas o las <b>Formulas</b> dentro de las mismas.</li>
 			</ul>
 			</li>
-			<li>Pulse uno de los botones de flecha a la derecha. Se realizará la búsqueda en el principio de la hoja de cálculo (si usted pulsa el botón <div class = "icon icon-searchupbutton"></div>) o al final de la hoja de cálculo (si usted pulsa el botón <div class = "icon icon-searchdownbutton"></div>) de la posición actual.</li>
+			<li>Pulse uno de los botones de flecha a la derecha. Se realizará la búsqueda en el principio de la hoja de cálculo (si usted pulsa el botón <img alt="Botón búsqueda arriba" src="../images/searchupbutton.png" />) o al final de la hoja de cálculo (si usted pulsa el botón <img alt="Botón búsqueda abajo" src="../images/searchdownbutton.png" />) de la posición actual.</li>
 			</ol>
 			<p>La primera ocurrencia de los caracteres requeridos en la dirección seleccionada será resaltada. Si no es la palabra que usted busca, pulse el botón seleccionado una ves más para encontrar la siguiente ocurrencia de los caracteres introducidos.</p> 
 			<p><b>Para reemplazar</b> una o más ocurrencias de los caracteres encontrados, haga clic en el enlace <b>Reemplazar</b> que aparece debajo del campo de entrada de datos o utilice la combinación de teclas <em>Ctrl+H</em>. Se cambiará la ventana <b>Encontrar y reemplazar</b>:</p><img alt="Ventana de búsqueda y sustitución" src="../images/search_replace_window.png" /><ol>

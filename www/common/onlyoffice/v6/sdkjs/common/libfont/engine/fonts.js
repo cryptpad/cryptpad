@@ -107,7 +107,7 @@ else
 		if (undefined === start)
 			start = 0;
 		if (undefined === len)
-			len = buffer.length - start;
+			len = buffer.length;
 
 		var result = "";
 		var index  = start;
@@ -207,27 +207,6 @@ else
 			outputData[outputIndex++] = 0;
 
 		return new Uint8Array(tmpStrings, 0, outputIndex);
-	};
-
-	function StringPointer(pointer, len)
-	{
-		this.ptr = pointer;
-		this.length = len;
-	}
-	StringPointer.prototype.free = function()
-	{
-		if (0 !== this.ptr)
-			Module["_free"](this.ptr);
-	};
-
-	String.prototype.toUtf8Pointer = function(isNoEndNull) {
-		var tmp = this.toUtf8(isNoEndNull);
-		var pointer = Module["_malloc"](tmp.length);
-		if (0 == pointer)
-			return null;
-
-		Module["HEAP8"].set(tmp, pointer);
-		return new StringPointer(pointer, tmp.length);		
 	};
 
 })();

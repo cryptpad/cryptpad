@@ -5,7 +5,6 @@
 		<meta charset="utf-8" />
         <meta name="description" content="Create and edit pivot tables. Apply filters, change the appearance of pivot tables in a spreadsheet." />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -22,22 +21,22 @@
                 <li>Prepare the source data set you want to use for creating a pivot table. It should include column headers. The data set should not contain empty rows or columns.</li>
                 <li>Select any cell within the source data range.</li>
                 <li>
-                    Switch to the <b>Pivot Table</b> tab of the top toolbar and click the <b>Insert Table</b> <div class = "icon icon-insert_pivot"></div> icon.
-                    <p>If you want to create a pivot table on the base of a <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">formatted table</a>, you can also use the <span class="icon icon-insertpivot"></span> <b>Insert pivot table</b> option on the <b>Table settings</b> tab of the right sidebar.</p>
+                    Switch to the <b>Pivot Table</b> tab of the top toolbar and click the <b>Insert Table</b> <img alt="Insert Table icon" src="../images/insert_pivot.png" /> icon.
+                    <p>If you want to create a pivot table on the base of a <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">formatted table</a>, you can also use the <img alt="Insert pivot table" src="../images/insertpivot.png" /> <b>Insert pivot table</b> option on the <b>Table settings</b> tab of the right sidebar.</p>
                 </li>
                 <li>
                     The <b>Create Pivot Table</b> window will appear.
                     <p><img alt="Create Pivot Table window" src="../images/create_pivot.png" /></p>
                     <ul>
                         <li>
-                            The <b>Source data range</b> is already specified. In this case, all data from the source data range will be used. If you want to change the data range (e.g. to include only a part of source data), click the <div class = "icon icon-changerange"></div> icon. In the <b>Select Data Range</b> window, enter the necessary data range in the following format: <em>Sheet1!$A$1:$E$10</em>. You can also select the necessary cell range on the sheet using the mouse. When ready, click <b>OK</b>.
+                            The <b>Source data range</b> is already specified. In this case, all data from the source data range will be used. If you want to change the data range (e.g. to include only a part of source data), click the <img alt="Select data icon" src="../images/changerange.png" /> icon. In the <b>Select Data Range</b> window, enter the necessary data range in the following format: <em>Sheet1!$A$1:$E$10</em>. You can also select the necessary cell range on the sheet using the mouse. When ready, click <b>OK</b>.
                         </li>
                         <li>
                             Specify where you want to place the pivot table.
                             <ul>
                                 <li>The <b>New worksheet</b> option is selected by default. It allows you to place the pivot table in a new worksheet.</li>
                                 <li>
-                                    You can also select the <b>Existing worksheet</b> option and choose a certain cell. In this case, the selected cell will be the upper right cell of the created pivot table. To select a cell, click the <div class = "icon icon-changerange"></div> icon.
+                                    You can also select the <b>Existing worksheet</b> option and choose a certain cell. In this case, the selected cell will be the upper right cell of the created pivot table. To select a cell, click the <img alt="Select data icon" src="../images/changerange.png" /> icon.
                                     <p><img alt="Select Data Range window" src="../images/pivot_selectdata2.png" /></p>
                                     <p>In the <b>Select Data Range</b> window, enter the cell address in the following format: <em>Sheet1!$G$2</em>. You can also click the necessary cell in the sheet. When ready, click <b>OK</b>. </p>
                                 </li>
@@ -48,7 +47,7 @@
                 </li>
             </ol>
             <p>An empty pivot table will be inserted in the selected location.</p>
-            <p>The <b>Pivot table settings</b> tab on the right sidebar will be opened. You can hide or display this tab by clicking the <span class="icon icon-pivot_settings"></span> icon.</p>
+            <p>The <b>Pivot table settings</b> tab on the right sidebar will be opened. You can hide or display this tab by clicking the <img alt="Pivot table settings icon" src="../images/pivot_settings.png" /> icon.</p>
             <p><img alt="Pivot table settings tab" src="../images/right_pivot.png" /></p>
 
             <h4>Select fields to display</h4>
@@ -60,7 +59,7 @@
             <p>Below you can see some examples of using the <b>Filters</b>, <b>Columns</b>, <b>Rows</b>, and <b>Values</b> sections.</p>
             <ul>
                 <li>
-                    If you add a field to the <b>Filters</b> section, a separate filter will be added above the pivot table. It will be applied to the entire pivot table. If you click the drop-down arrow <div class = "icon icon-dropdownarrow"></div> in the added filter, you'll see the values from the selected field. When you uncheck some values in the filter option window and click <b>OK</b>, the unchecked values will not be displayed in the pivot table.
+                    If you add a field to the <b>Filters</b> section, a separate filter will be added above the pivot table. It will be applied to the entire pivot table. If you click the drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> in the added filter, you'll see the values from the selected field. When you uncheck some values in the filter option window and click <b>OK</b>, the unchecked values will not be displayed in the pivot table.
                     <p><img alt="Pivot Filters" src="../images/pivot_filter_field.png" /></p>
                 </li>
                 <li>
@@ -208,8 +207,8 @@
                     <p class="note"><b>Note</b>: the similar settings are also available in the pivot table advanced settings window in the <b>Grand Totals</b> section of the <b>Name and Layout</b> tab.</p>
                 </li>
             </ul>
-            <p>The <span class = "icon icon-pivotselecticon"></span> <b>Select</b> button allows you to select the entire pivot table.</p>
-            <p>If you change the data in your source data set, select the pivot table and click the <span class="icon icon-pivot_refresh"></span> <b>Refresh</b> button to update the pivot table.</p>
+            <p>The <img alt="Select Pivot Table icon" src="../images/pivotselecticon.png" /> <b>Select</b> button allows you to select the entire pivot table.</p>
+            <p>If you change the data in your source data set, select the pivot table and click the <img alt="Refresh Pivot Table icon" src="../images/pivot_refresh.png" /> <b>Refresh</b> button to update the pivot table.</p>
 
             <h3>Change the style of pivot tables</h3>
             <p>You can change the appearance of pivot tables in a spreadsheet using the style editing tools available on the top toolbar.</p>
@@ -230,7 +229,7 @@
             <h3>Filter, sort and add slicers in pivot tables</h3>
             <p>You can filter pivot tables by labels or values and use the additional sort parameters.</p>
             <h4>Filtering</h4>
-            <p>Click the drop-down arrow <span class="icon icon-dropdownarrow"></span> in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table. The <b>Filter</b> option list will open:</p>
+            <p>Click the drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table. The <b>Filter</b> option list will open:</p>
             <p><img alt="Filter window" src="../images/pivot_filterwindow.png" /></p>
             <p>Adjust the filter parameters. You can proceed in one of the following ways: select the data to display or filter the data by certain criteria.</p>
             <ul>
@@ -266,10 +265,10 @@
                     <p>The first drop-down list allows choosing if you wish to display the highest (<b>Top</b>) or the lowest (<b>Bottom</b>) values. The second field allows specifying how many entries from the list or which percent of the overall entries number you want to display (you can enter a number from 1 to 500). The third drop-down list allows setting the units of measure: <b>Item</b>, <b>Percent</b>, or <b>Sum</b>. The fourth drop-down list displays the selected field name. Once the necessary parameters are set, click <b>OK</b> to apply the filter.</p>
                 </li>
             </ul>
-            <p>The <b>Filter</b> <span class="icon icon-filterbutton"></span> button will appear in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table. It means that the filter is applied. <!--The number of filtered records will be displayed at the status bar (e.g. <em>25 of 80 records filtered</em>).--></p>
+            <p>The <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> button will appear in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table. It means that the filter is applied. <!--The number of filtered records will be displayed at the status bar (e.g. <em>25 of 80 records filtered</em>).--></p>
 
             <h4>Sorting</h4>
-            <p>You can sort your pivot table data using the <b>sort</b> options. Click the drop-down arrow <span class="icon icon-dropdownarrow"></span> in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table and then select <b>Sort Lowest to Highest</b> or <b>Sort Highest to Lowest</b> option from the submenu.</p>
+            <p>You can sort your pivot table data using the <b>sort</b> options. Click the drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table and then select <b>Sort Lowest to Highest</b> or <b>Sort Highest to Lowest</b> option from the submenu.</p>
             <p>The <b>More Sort Options</b> option allows you to open the <b>Sort</b> window where you can select the necessary sorting order - <em>Ascending</em> or <em>Descending</em> - and then select a certain field you want to sort.</p>
             <p><img alt="Pivot table sort options" src="../images/pivot_sort.png" /></p>
 
@@ -294,12 +293,11 @@
                         <li>The <em>Report filter fields per column</em> option allows you to select the number of filters to go in each column. The default value is set to <em>0</em>. You can set the necessary numeric value.</li>
                     </ul>
                 </li>
-                <li>The <b>Show field headers for rows and columns</b> option allows you to choose if you want to display field headers in your pivot table. The option is enabled by default. Uncheck it to hide field headers from your pivot table.</li>
-                <li>The <b>Autofit column widths on update</b> option allows you to enable/disable automatic adjusting of the column widths. The option is enabled by default.</li>
+                <li>The <b>Field Headers</b> section allows you to choose if you want to display field headers in your pivot table. The <em>Show field headers for rows and columns</em> option is selected by default. Uncheck it to hide field headers from your pivot table.</li>
             </ul>
             <p><img alt="Pivot table advanced settings" src="../images/pivot_advanced2.png" /></p>
             <p>The <b>Data Source</b> tab allows you to change the data you wish to use to create the pivot table.</p>
-            <p>Check the selected <b>Data Range</b> and modify it, if necessary. To do that, click the <span class="icon icon-changerange"></span> icon. </p>
+            <p>Check the selected <b>Data Range</b> and modify it, if necessary. To do that, click the <img alt="Source data range icon" src="../images/changerange.png" /> icon. </p>
             <p><img alt="Select Data Range window" src="../images/pivot_selectdata.png" /></p>
             <p>In the <b>Select Data Range</b> window, enter the necessary data range in the following format: <em>Sheet1!$A$1:$E$10</em>. You can also select the necessary cell range in the sheet using the mouse. When ready, click <b>OK</b>.</p>
             <p><img alt="Pivot table advanced settings" src="../images/pivot_advanced3.png" /></p>
@@ -307,7 +305,7 @@
             <h3>Delete a pivot table</h3>
             <p>To delete a pivot table,</p>
             <ol>
-                <li>Select the entire pivot table using the <div class = "icon icon-pivotselecticon"></div> <b>Select</b> button on the top toolbar.</li>
+                <li>Select the entire pivot table using the <img alt="Select Pivot Table icon" src="../images/pivotselecticon.png" /> <b>Select</b> button on the top toolbar.</li>
                 <li>Press the <b>Delete</b> key.</li>
             </ol>
         </div>

@@ -4,7 +4,6 @@
   "common.view.modals.txtHeight": "Вышыня",
   "common.view.modals.txtShare": "Падзяліцца спасылкай",
   "common.view.modals.txtWidth": "Шырыня",
-  "common.view.SearchBar.textFind": "Пошук",
   "DE.ApplicationController.convertationErrorText": "Пераўтварыць не атрымалася.",
   "DE.ApplicationController.convertationTimeoutText": "Час чакання пераўтварэння сышоў.",
   "DE.ApplicationController.criticalErrorTitle": "Памылка",
@@ -26,7 +25,6 @@
   "DE.ApplicationController.scriptLoadError": "Занадта павольнае злучэнне, не ўсе кампаненты атрымалася загрузіць. Калі ласка, абнавіце старонку.",
   "DE.ApplicationController.textAnonymous": "Ананімны карыстальнік",
   "DE.ApplicationController.textClear": "Ачысціць усе палі",
-  "DE.ApplicationController.textCtrl": "Ctrl",
   "DE.ApplicationController.textGotIt": "Добра",
   "DE.ApplicationController.textGuest": "Госць",
   "DE.ApplicationController.textLoadingDocument": "Загрузка дакумента",
@@ -47,7 +45,6 @@
   "DE.ApplicationView.txtEmbed": "Убудаваць",
   "DE.ApplicationView.txtFileLocation": "Перайсці да дакументаў",
   "DE.ApplicationView.txtFullScreen": "Поўнаэкранны рэжым",
-  "DE.ApplicationView.txtPrint": "Друкаванне",
-  "DE.ApplicationView.txtSearch": "Пошук",
+  "DE.ApplicationView.txtPrint": "Друк",
   "DE.ApplicationView.txtShare": "Падзяліцца"
 }

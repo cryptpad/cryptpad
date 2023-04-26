@@ -10,7 +10,7 @@
   "SSE.ApplicationController.criticalErrorTitle": "错误",
   "SSE.ApplicationController.downloadErrorText": "下载失败",
   "SSE.ApplicationController.downloadTextText": "电子表格下载中...",
-  "SSE.ApplicationController.errorAccessDeny": "您正在尝试执行您没有权限的操作。<br>请联系您的文档服务器管理员。",
+  "SSE.ApplicationController.errorAccessDeny": "您正在尝试执行您没有权限的操作。<br>请联系您的文档服务器管理员.",
   "SSE.ApplicationController.errorDefaultMessage": "错误代码：%1",
   "SSE.ApplicationController.errorFilePassProtect": "该文档受密码保护，无法被打开。",
   "SSE.ApplicationController.errorFileSizeExceed": "文件大小超出了为服务器设置的限制.<br>有关详细信息，请与文档服务器管理员联系。",

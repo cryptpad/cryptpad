@@ -1,5 +1,4 @@
-﻿@import "../scroll.css";
-body
+﻿body
 {
 font-family: Arial, Helvetica, "Helvetica Neue", sans-serif;
 font-size: 12px;
@@ -11,7 +10,6 @@ background: #fff;
 text-align: center;
 vertical-align: middle;
 }
-
 
 .cross-reference td{
 text-align: center;
@@ -122,31 +120,14 @@ width: 80%;
 }
 
 .note
-{   background: #F4F4F4;
-    font-size: 11px;
-    padding: 10px 20px 10px 37px;
-    width: 90%;
-    margin: 10px 0;
-    line-height: 1em;
-    min-height: 14px;
-}
-
-.note:before {
-    width: 18px;
-    height: 18px;
-    background: #83888D;
-    font-weight: 900;
-    content: "!";
-    text-align: center;
-    font-size: 16px;
-    border-radius: 50%;
-    color: white;
-    display: inline-block;
-    line-height: 18px;
-    float: left;
-    position: relative;
-    left: -20px;
-    top: -3px;
+{
+background: #F4F4F4 url(images/help.png) no-repeat 7px 5px;
+font-size: 11px;
+padding: 10px 20px 10px 37px;
+width: 90%;
+margin: 10px 0;
+line-height: 1em;
+min-height: 14px;
 }
 
 hr

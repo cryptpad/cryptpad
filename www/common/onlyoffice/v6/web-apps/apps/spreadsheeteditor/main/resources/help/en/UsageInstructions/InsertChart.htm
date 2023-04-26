@@ -5,7 +5,6 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Add a chart to your spreadsheet and adjust its position, size and properties" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -17,12 +16,12 @@
             <h1>Insert charts</h1>
             <h3>Insert a chart</h3>
             <p>To insert a chart in the <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>,</p>
-            <ol>
-                <li>Select the cell range that contain the data you wish to use for the chart.</li>
-                <li>Switch to the <b>Insert</b> tab of the top toolbar.</li>
-                <li>Click the <div class="icon icon-chart"></div> <b>Chart</b> icon on the top toolbar.</li>
+			<ol>
+				<li>Select the cell range that contain the data you wish to use for the chart,</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
+                <li>Click the <img alt="Chart icon" src="../images/chart.png" /> <b>Chart</b> icon on the top toolbar,</li>
                 <li>
-                    Select the needed chart type from the available ones:
+                    select the needed chart type from the available ones:
                     <details class="details-example">
                         <summary>Column Charts</summary>
                         <ul>
@@ -100,48 +99,30 @@
                 </li>
             </ol>
             <p>After that the chart will be added to the worksheet. </p>
-            <p class="note"><b>Note</b>: <b>ONLYOFFICE Spreadsheet Editor</b> supports the following types of charts that were created with third-party editors: <b>Pyramid</b>, <b>Bar (Pyramid)</b>, <b>Horizontal/Vertical Cylinders</b>, <b>Horizontal/Vertical Cones</b>. You can open the file containing such a chart and modify it using the available chart editing tools.</p>
             <h3>Adjust the chart settings</h3>
             <p>Now you can change the settings of the inserted chart. To change the chart type,</p>
             <ol>
-                <li>Select the chart with the mouse.</li>
+                <li>select the chart with the mouse,</li>
                 <li>
-                    Click the <b>Chart settings</b> <div class="icon icon-chartsettingsicon"></div> icon on the right sidebar.
+                    click the <b>Chart settings</b> <img alt="Chart settings icon" src="../images/chartsettingsicon.png" /> icon on the right sidebar,
                     <p><img alt="Chart Settings Right-Side Panel window" src="../images/chartsettings.png" /></p>
                 </li>
-                <li>Open the <b>Style</b> drop-down list below and select the style which suits you best.</li>
-                <li>Open the <b>Change type</b> drop-down list and select the type you need.</li>
-                <li>Click the <b>Switch row/column</b> option to change the positioning of chart rows and columns.</li>
+                <li>open the <b>Style</b> drop-down list below and select the style which suits you best.</li>
+                <li>open the <b>Change type</b> drop-down list and select the type you need.
             </ol>
             <p>The selected chart type and style will be changed.</p>
-            <p>Additionally, <b>3D Rotation</b> settings are available for 3D charts:</p>
-            <p><img class="floatleft" alt="Chart Settings tab" src="../../../../../../common/main/resources/help/en/images/right_chart_3d.png" /></p>
-            <ul style="margin-left: 280px;">
-                <li><b>X rotation</b> - set the required value for the X axis rotation using the keyboard or via the <em>Left</em> and <em>Right</em> arrows to the right.</li>
-                <li><b>Y rotation</b> - set the required value for the Y axis rotation using the keyboard or via the <em>Up</em> and <em>Down</em> arrows to the right.</li>
-                <li><b>Perspective</b> - set the required value for depth rotation using the keyboard or via the <em>Narrow field of view</em> and <em>Widen field of view</em> arrows to the right.</li>
-                <li><b>Right Angle Axis</b> - is used to set the right angle axis view.</li>
-                <li><b>Autoscale</b> - check this box to autoscale the depth and height values of the chart, or uncheck this box to set the depth and height values manually.</li>
-                <li><b>Depth (% of base)</b> - set the required depth value using the keyboard or via the arrows.</li>
-                <li><b>Height (% of base)</b> - set the required height value using the keyboard or via the arrows.</li>
-                <li>
-                    <b>Default Rotation</b> - set the 3D parameters to their default.
-                    <p class="note">Please note that you cannot edit each element of the chart; the settings will be applied to the chart as a whole.</p>
-                </li>
-            </ul>
-            <hr />
             <p>To edit chart data:</p>
             <ol>
                 <li>Click the <b>Select Data</b> button on the right-side panel.</li>
                 <li>
                     Use the <b>Chart Data</b> dialog to manage <b>Chart Data Range</b>, <b>Legend Entries (Series)</b>, <b>Horizontal (Category) Axis Label</b> and <b>Switch Row/Column</b>.
-                    <p><img alt="Chart Data window" src="../../../../../../common/main/resources/help/en/images/chartdata.png" /></p>
+                    <p><img alt="Chart Data window" src="../images/chartdata.png" /></p>
                     <ul>
                         <li>
                             <b>Chart Data Range</b> - select data for your chart.
                             <ul>
                                 <li>
-                                    Click the <div class="icon icon-changerange"></div> icon on the right of the <b>Chart data range</b> box to select data range.
+                                    Click the <img alt="Source data range icon" src="../images/changerange.png" /> icon on the right of the <b>Chart data range</b> box to select data range.
                                     <p><img alt="Select Data Range window" src="../images/pivot_selectdata.png" /></p>
                                 </li>
                             </ul>
@@ -151,8 +132,8 @@
                             <ul>
                                 <li>In <b>Legend Entries (Series)</b>, click <b>Add</b> button.</li>
                                 <li>
-                                    In <b>Edit Series</b>, type a new legend entry or click the <div class="icon icon-changerange"></div> icon on the right of the <b>Select name</b> box.
-                                    <p><img alt="Edit Series window" src="../../../../../../common/main/resources/help/en/images/editseries.png" /></p>
+                                    In <b>Edit Series</b>, type a new legend entry or click the <img alt="Source data range icon" src="../images/changerange.png" /> icon on the right of the <b>Select name</b> box.
+                                    <p><img alt="Edit Series window" src="../images/editseries.png" /></p>
                                 </li>
                             </ul>
                         </li>
@@ -161,7 +142,7 @@
                             <ul>
                                 <li><b>In Horizontal (Category) Axis Labels</b>, click <b>Edit</b>.</li>
                                 <li>
-                                    In <b>Axis label range</b>, type the labels you want to add or click the <div class="icon icon-changerange"></div> icon on the right of the <b>Axis label range</b> box to select data range.
+                                    In <b>Axis label range</b>, type the labels you want to add or click the <img alt="Source data range icon" src="../images/changerange.png" /> icon on the right of the <b>Axis label range</b> box to select data range.
                                     <p><img alt="Axis Labels window" src="../images/axislabels.png" /></p>
                                 </li>
                             </ul>
@@ -172,7 +153,7 @@
                 <li>Click <b>OK</b> button to apply the changes and close the window.</li>
             </ol>
             <p>Click <b>Show Advanced Settings</b> to change other settings such as <b>Layout</b>, <b>Vertical Axis</b>, <b>Secondary Vertical Axis</b>, <b>Horizontal Axis</b>, <b>Secondary Horizontal Axis</b>, <b>Cell Snapping</b> and <b>Alternative Text</b>.</p>
-            <p><img alt="Chart - Advanced Settings window" src="../../../../../../common/main/resources/help/en/images/chartsettings_layout.png" /></p>
+            <p><img alt="Chart - Advanced Settings window" src="../images/chartsettings_layout.png" /></p>
             <p>The <b>Layout</b> tab allows you to change the layout of chart elements.</p>
             <ul>
                 <li>
@@ -199,7 +180,7 @@
                     Specify the <b>Data Labels</b> (i.e. text labels that represent exact values of data points) parameters:<br />
                     <ul>
                         <li>
-                            Specify the <b>Data Labels</b> position relative to the data points  by selecting the necessary option from the drop-down list. The available options vary depending on the selected chart type.
+                            specify the <b>Data Labels</b> position relative to the data points  by selecting the necessary option from the drop-down list. The available options vary depending on the selected chart type.
                             <ul>
                                 <li>For <b>Column/Bar</b> charts, you can choose the following options: <b>None</b>, <b>Center</b>, <b>Inner Bottom</b>, <b>Inner Top</b>, <b>Outer Top</b>.</li>
                                 <li>For <b>Line/XY (Scatter)/Stock</b> charts, you can choose the following options: <b>None</b>, <b>Center</b>, <b>Left</b>, <b>Right</b>, <b>Top</b>, <b>Bottom</b>.</li>
@@ -207,8 +188,8 @@
                                 <li>For <b>Area</b> charts as well as for <b>3D</b> <b>Column</b>, <b>Line</b> and <b>Bar</b> charts, you can choose the following options: <b>None</b>, <b>Center</b>.</li>
                             </ul>
                         </li>
-                        <li>Select the data you wish to include into your labels checking the corresponding boxes: <b>Series Name</b>, <b>Category Name</b>, <b>Value</b>,</li>
-                        <li>Enter a character (comma, semicolon etc.) you wish to use for separating several labels into the <b>Data Labels Separator</b> entry field.</li>
+                        <li>select the data you wish to include into your labels checking the corresponding boxes: <b>Series Name</b>, <b>Category Name</b>, <b>Value</b>,</li>
+                        <li>enter a character (comma, semicolon etc.) you wish to use for separating several labels into the <b>Data Labels Separator</b> entry field.</li>
                     </ul>
                 </li>
                 <li><b>Lines</b> - is used to choose a line style for <b>Line/XY (Scatter) charts</b>. You can choose one of the following options: <b>Straight</b> to use straight lines between data points, <b>Smooth</b> to use smooth curves between data points, or <b>None</b> to not display lines.</li>
@@ -217,13 +198,13 @@
                     <p class="note"><b>Note</b>: the <b>Lines</b> and <b>Markers</b> options are available for <b>Line charts</b> and <b>XY (Scatter) charts</b> only.</p>
                 </li>
             </ul>
-            <p><img alt="Chart - Advanced Settings window" src="../../../../../../common/main/resources/help/en/images/chartsettings_verticalaxis.png" /></p>
+            <p><img alt="Chart - Advanced Settings window" src="../images/chartsettings_verticalaxis.png" /></p>
             <p>The <b>Vertical Axis</b> tab allows you to change the parameters of the vertical axis also referred to as the values axis or y-axis which displays numeric values. Note that the vertical axis will be the category axis which displays text labels for the <b>Bar charts</b>, therefore in this case the <b>Vertical Axis</b> tab options will correspond to the ones described in the next section. For the <b>XY (Scatter) charts</b>, both axes are value axes.</p>
             <p class="note"><b>Note</b>: the <b>Axis Settings</b> and <b>Gridlines</b> sections will be disabled for <b>Pie charts</b> since charts of this type have no axes and gridlines.</p>
             <ul>
-                <li>Select <b>Hide</b> to hide vertical axis in the chart, leave it unchecked to have vertical axis displayed.</li>
+                <li> select <b>Hide</b> to hide vertical axis in the chart, leave it unchecked to have vertical axis displayed.</li>
                 <li>
-                    Specify <b>Title</b> orientation by selecting the necessary option from the drop-down list:
+                    specify <b>Title</b> orientation by selecting the necessary option from the drop-down list:
                     <ul>
                         <li><b>None</b> to not display a vertical axis title</li>
                         <li><b>Rotated</b> to display the title from bottom to top to the left of the vertical axis,</li>
@@ -278,17 +259,17 @@
                 </li>
             </ul>
             <p>
-                <img alt="Chart - Advanced Settings window" src="../../../../../../common/main/resources/help/en/images/chartsettings_secondaryaxis1.png" />
+                <img alt="Chart - Advanced Settings window" src="../images/chartsettings_secondaryaxis1.png" />
             </p>
             <p class="note"><b>Note</b>: Secondary axes are supported in Combo charts only.</p>
             <p><b>Secondary axes</b> are useful in Combo charts when data series vary considerably or mixed types of data are used to plot a chart. Secondary Axes make it easier to read and understand a combo chart.</p>
-            <p>The <b>Secondary Vertical /Horizontal Axis</b> tab appears when you choose an appropriate data series for a combo chart. All the settings and options on the <b>Secondary Vertical/Horizontal Axis</b> tab are the same as the settings on the Vertical/Horizontal Axis. For a detailed description of the <b>Vertical/Horizontal Axis</b> options, see description above/below.</p>
-            <p><img alt="Chart - Advanced Settings window" src="../../../../../../common/main/resources/help/en/images/chartsettings_horizontalaxis.png" /></p>
+            <p> The <b>Secondary Vertical /Horizontal Axis</b> tab appears when you choose an appropriate data series for a combo chart. All the settings and options on the <b>Secondary Vertical/Horizontal Axis</b> tab are the same as the settings on the Vertical/Horizontal Axis. For a detailed description of the <b>Vertical/Horizontal Axis</b> options, see description above/below.</p>
+            <p><img alt="Chart - Advanced Settings window" src="../images/chartsettings_horizontalaxis.png" /></p>
             <p>The <b>Horizontal Axis</b> tab allows you to change the parameters of the horizontal axis also referred to as the categories axis or x-axis which displays text labels. Note that the horizontal axis will be the value axis which displays numeric values for the <b>Bar charts</b>, therefore in this case the <b>Horizontal Axis</b> tab options will correspond to the ones described in the previous section. For the <b>XY (Scatter) charts</b>, both axes are value axes.</p>
             <ul>
-                <li>Select <b>Hide</b> to hide horizontal axis in the chart, leave it unchecked to have horizontal axis displayed.</li>
+                <li> select <b>Hide</b> to hide horizontal axis in the chart, leave it unchecked to have horizontal axis displayed.</li>
                 <li>
-                    Specify <b>Title</b> orientation by selecting the necessary option from the drop-down list:
+                    specify <b>Title</b> orientation by selecting the necessary option from the drop-down list:
                     <ul>
                         <li><b>None</b> when you don’t want to display a horizontal axis title,</li>
                         <li><b>No Overlay</b>  to display the title below the horizontal axis,</li>
@@ -347,19 +328,19 @@
             <h3>Edit chart elements</h3>
             <p>To edit the chart <b>Title</b>, select the default text with the mouse and type in your own one instead.</p>
             <p>To change the font formatting within text elements, such as the chart title, axes titles, legend entries, data labels etc., select the necessary text element by left-clicking it. Then use icons on the <b>Home</b> tab of the top toolbar to change the font <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">type, style, size, or color</a>.</p>
-            <p>When the chart is selected, the <b>Shape settings</b> <span class="icon icon-shape_settings_icon"></span> icon is also available on the right, since the shape is used as a background for the chart. You can click this icon to open the <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Shape Settings</a> tab on the right sidebar and adjust the shape <b>Fill</b> and <b>Stroke</b>. Note that you cannot change the shape type.</p>
+            <p>When the chart is selected, the <b>Shape settings</b> <img alt="Shape settings icon" src="../images/shape_settings_icon.png" /> icon is also available on the right, since the shape is used as a background for the chart. You can click this icon to open the <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Shape Settings</a> tab on the right sidebar and adjust the shape <b>Fill</b> and <b>Stroke</b>. Note that you cannot change the shape type.</p>
             <p>
                 Using the <b>Shape Settings</b> tab on the right panel you can not only adjust the chart area itself, but also change the chart elements, such as the <em>plot area</em>, <em>data series</em>, <em>chart title</em>, <em>legend</em>, etc. and apply different fill types to them. Select the chart element by clicking it with the left mouse button and choose the preferred fill type: <em>solid color</em>, <em>gradient</em>, <em>texture</em> or <em>picture</em>, <em>pattern</em>. Specify the fill parameters and set the <em>Opacity</em> level if necessary.
                 When you select a vertical or horizontal axis or gridlines, the stroke settings are only available on the <b>Shape Settings</b> tab: <em>color</em>, <em>width</em> and <em>type</em>. For more details on how to work with shape colors, fills and stroke, please refer to <a href="../UsageInstructions/InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">this page</a>.
             </p>
             <p class="note"><b>Note</b>: the <b>Show shadow</b> option is also available on the <b>Shape settings</b> tab, but it is disabled for chart elements.</p>
-            <p>If you need to resize chart elements, left-click to select the needed element and drag one of 8 white squares <span class="icon icon-resize_square"></span> located along the perimeter of the element.</p>
-            <p><span class="big big-resizeelement"></span></p>
-            <p>To change the position of the element, left-click on it, make sure your cursor changed to <span class="icon icon-arrow"></span>, hold the left mouse button and drag the element to the needed position.</p>
-            <p><span class="big big-moveelement"></span></p>
+            <p>If you need to resize chart elements, left-click to select the needed element and drag one of 8 white squares <img alt="Square icon" src="../images/resize_square.png" /> located along the perimeter of the element.</p>
+            <p><img alt="Resize chart elements" src="../images/resizeelement.png" /></p>
+            <p>To change the position of the element, left-click on it, make sure your cursor changed to <img alt="Arrow" src="../images/arrow.png" />, hold the left mouse button and drag the element to the needed position.</p>
+            <p><img alt="Move chart elements" src="../images/moveelement.png" /></p>
             <p>To delete a chart element, select it by left-clicking and press the <b>Delete</b> key on the keyboard.</p>
             <p>You can also rotate 3D charts using the mouse. Left-click within the plot area and hold the mouse button. Drag the cursor without releasing the mouse button to change the 3D chart orientation.</p>
-            <p><img alt="3D chart" src="../../../../../../common/main/resources/help/en/images/3dchart.png" /></p>
+            <p><img alt="3D chart" src="../images/3dchart.png" /></p>
             <p>If necessary, you can <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change the chart size and position</a>.</p>
             <p>To delete the inserted chart, click it and press the <b>Delete</b> key.</p>
             <h3>Assign a Macro to a Chart</h3>

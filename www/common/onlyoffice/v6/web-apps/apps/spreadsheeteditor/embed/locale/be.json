@@ -4,7 +4,6 @@
   "common.view.modals.txtHeight": "Вышыня",
   "common.view.modals.txtShare": "Падзяліцца спасылкай",
   "common.view.modals.txtWidth": "Шырыня",
-  "common.view.SearchBar.textFind": "Пошук",
   "SSE.ApplicationController.convertationErrorText": "Пераўтварыць не атрымалася.",
   "SSE.ApplicationController.convertationTimeoutText": "Час чакання пераўтварэння сышоў.",
   "SSE.ApplicationController.criticalErrorTitle": "Памылка",
@@ -34,7 +33,6 @@
   "SSE.ApplicationView.txtEmbed": "Убудаваць",
   "SSE.ApplicationView.txtFileLocation": "Перайсці да дакументаў",
   "SSE.ApplicationView.txtFullScreen": "Поўнаэкранны рэжым",
-  "SSE.ApplicationView.txtPrint": "Друкаванне",
-  "SSE.ApplicationView.txtSearch": "Пошук",
+  "SSE.ApplicationView.txtPrint": "Друк",
   "SSE.ApplicationView.txtShare": "Падзяліцца"
 }

@@ -5,7 +5,6 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Fügen Sie Ihrer Tabelle eine Sparkline hinzu" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -17,14 +16,14 @@
             <h1>Sparklines einfügen</h1>
             <h3>Sparklines verwenden</h3>
             <p>Sparkline ist ein kleines Diagramm, das in eine Zelle passt, um Trends oder Datenvariationen darzustellen. Sparklines haben im Vergleich zu normalen Diagrammen eine eingeschränkte Funktionalität, sind jedoch ein hervorragendes Werkzeug, um Ihre Daten schnell zu analysieren und eine prägnante visuelle Darstellung zu erstellen. Die Größe der Sparkline hängt von der Größe der Zelle ab. Ändern Sie die Zellenbreite und -länge, um die Größe anzupassen. Nachdem Sie eine Sparkline hinzugefügt haben, können Sie weiterhin Text eingeben oder bedingte Formatierungen in die Zelle einfügen. ONLYOFFICE <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"> <b>Tabellenkalkulation</b></a> bietet drei Arten von Sparklines:</p>
-            <p><div class = "big big-sparklines_types"></div> </p>
+            <p><img alt="Sparkline Typen" src="../images/sparklines_types.png" /> </p>
             <ul>
                 <li><b>Spalte</b> ist einem <b>Spaltendiagramm</b> ähnlich.</li>
                 <li><b>Linie</b> ist einem <b>Liniendiagramm</b> ähnlich.</li>
                 <li><b>Gewinn/Verlust</b> ist zum Darstellen von Daten geeignet, die sowohl positive als auch negative Werte enthalten.</li>
             </ul>
             <h3>Sparklines einfügen</h3>
-            <p>Um ein <b>Sparkline</b>-Diagramm einzufügen, wählen Sie den Datenbereich aus, der in die Sparkline aufgenommen werden soll, oder klicken Sie auf eine leere Zelle, um sie zu platzieren, gehen Sie zur Registerkarte <b>Einfügen</b> und klicken Sie auf die Schaltfläche <b>Sparkline</b> <span class="icon icon-sparklines_button"></span> in der oberen Symbolleiste. Wählen Sie eine Sparkline, die Ihrem Zweck dient. Das Fenster <b>Sparklines erstellen</b> wird geöffnet. Klicken Sie auf das Symbol <b>Daten auswählen</b>, um den Datenbereich und die Position der Sparkline anzugeben. Klicken Sie zur Bestätigung auf <b>OK</b></p>
+            <p>Um ein <b>Sparkline</b>-Diagramm einzufügen, wählen Sie den Datenbereich aus, der in die Sparkline aufgenommen werden soll, oder klicken Sie auf eine leere Zelle, um sie zu platzieren, gehen Sie zur Registerkarte <b>Einfügen</b> und klicken Sie auf die Schaltfläche <b>Sparkline</b> <img alt="Sparkline Schaltfläche" src="../images/sparklines_button.png" /> in der oberen Symbolleiste. Wählen Sie eine Sparkline, die Ihrem Zweck dient. Das Fenster <b>Sparklines erstellen</b> wird geöffnet. Klicken Sie auf das Symbol <b>Daten auswählen</b>, um den Datenbereich und die Position der Sparkline anzugeben. Klicken Sie zur Bestätigung auf <b>OK</b></p>
 			<p><img alt="Fenster - Sparkline erstellen" src="../images/createsparkline_window.png" /></p>
             <h3>Sparklines bearbeiten und formatieren</h3>
             <p>Nachdem Sie eine Sparkline eingefügt haben, können Sie sie anpassen und bearbeiten. Klicken Sie auf die Zelle mit einer Sparkline, um die Registerkarte <b>Sparkline Einstellungen</b> in der rechten Seitenleiste zu aktivieren.</p>
@@ -77,11 +76,14 @@
                         <li>
                             <b>Minimal-/Maximalwert</b>
                             <ul>
-                                <li><b>Automatisch für jeden</b> – diese Option ist standardmäßig ausgewählt. Es ermöglicht Ihnen, für jede Sparkline eigene minimale/maximale Werte zu verwenden. Die minimalen/maximalen Werte werden den separaten Datenreihen entnommen, die verwendet werden, um jede Sparkline darzustellen. Der Höchstwert für jede Sparkline befindet sich oben in der Zelle und der Mindestwert befindet sich unten.
-                                    <p><span class="big big-autoforeach"></span></p>
+                                <li>
+                                    <b>Automatisch für jeden</b> – diese Option ist standardmäßig ausgewählt. Es ermöglicht Ihnen, für jede Sparkline eigene minimale/maximale Werte zu verwenden. Die minimalen/maximalen Werte werden den separaten Datenreihen entnommen, die verwendet werden, um jede Sparkline darzustellen. Der Höchstwert für jede Sparkline befindet sich oben in der Zelle und der Mindestwert befindet sich unten.
+                                    <p><img alt="Automatisch für jeden" src="../images/autoforeach.png" /></p>
                                 </li>
-                                <li><b>Das Gleiche für alle</b> - mit dieser Option können Sie denselben Mindest-/Höchstwert für die gesamte Sparkline-Gruppe verwenden. Die minimalen/maximalen Werte werden aus dem gesamten Datenbereich entnommen, der zum Zeichnen der Sparkline-Gruppe verwendet wird. Die maximalen/minimalen Werte für jede Sparkline werden relativ zum höchsten/niedrigsten Wert innerhalb des Bereichs skaliert. Wenn Sie diese Option auswählen, ist es einfacher, mehrere Sparklines zu vergleichen.
-                                    <p><span class="big big-sameforall"></span></p></li>
+                                <li>
+                                    <b>Das Gleiche für alle</b> - mit dieser Option können Sie denselben Mindest-/Höchstwert für die gesamte Sparkline-Gruppe verwenden. Die minimalen/maximalen Werte werden aus dem gesamten Datenbereich entnommen, der zum Zeichnen der Sparkline-Gruppe verwendet wird. Die maximalen/minimalen Werte für jede Sparkline werden relativ zum höchsten/niedrigsten Wert innerhalb des Bereichs skaliert. Wenn Sie diese Option auswählen, ist es einfacher, mehrere Sparklines zu vergleichen.
+                                    <p><img alt="Das Gleiche für alle" src="../images/sameforall.png" /></p>
+                                </li>
                                 <li><b>Fixiert</b> - Mit dieser Option können Sie einen benutzerdefinierten Mindest-/Höchstwert festlegen. Die Werte, die niedriger oder höher als die angegebenen Wert sind, werden in den Sparklines nicht angezeigt.</li>
                             </ul>
                         </li>

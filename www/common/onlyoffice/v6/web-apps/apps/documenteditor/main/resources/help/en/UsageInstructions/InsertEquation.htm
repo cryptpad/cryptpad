@@ -5,7 +5,6 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Insert equations and mathematical symbols." />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -19,36 +18,29 @@
             <h3>Add a new equation</h3>
             <p>To insert an equation from the gallery,</p>
 			<ol>
-				<li>put the cursor within the necessary line,</li>
+				<li>put the cursor within the necessary line ,</li>
                 <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
-				<li>click the arrow next to the <div class = "icon icon-insertequationicon"></div> <b>Equation</b> icon on the top toolbar,</li>
-                <li>
-                    select the required equation category in the toolbar above the inserted equation,
-                    <p>or</p>
-                    <p>in the opened drop-down list select the equation category you need.</p>
-                    <p>The following categories are currently available: <em>Symbols</em>, <em>Fractions</em>, <em>Scripts</em>, <em>Radicals</em>, <em>Integrals</em>, <em>Large Operators</em>, <em>Brackets</em>, <em>Functions</em>, <em>Accents</em>, <em>Limits and Logarithms</em>, <em>Operators</em>, <em>Matrices</em>,</p>
-                </li>
-                <li>click the <b>Equation Settings</b> symbol in the toolbar above the inserted equation to access more settings, e.g., <em>Unicode</em> or <em>LaTeX</em>, <em>Professional</em> or <em>Linear</em>, and <em>Change to Inline</em>,</li>
+				<li>click the arrow next to the <img alt="Equation icon" src="../images/insertequationicon.png" /> <b>Equation</b> icon on the top toolbar,</li>
+				<li>in the opened drop-down list select the equation category you need. The following categories are currently available: <em>Symbols</em>, <em>Fractions</em>, <em>Scripts</em>, <em>Radicals</em>, <em>Integrals</em>, <em>Large Operators</em>, <em>Brackets</em>, <em>Functions</em>, <em>Accents</em>, <em>Limits and Logarithms</em>, <em>Operators</em>, <em>Matrices</em>,</li>
                 <li>click the certain symbol/equation in the corresponding set of templates.</li>
 			</ol>
-            <p><img alt="equation toolbar" src="../images/equationtoolbar.png" /></p>
-            <p>The selected symbol/equation box will be inserted at the cursor position. If the selected line is empty, the equation will be centered. To align such an equation to the left or to the right, click on the equation box and use the <span class = "icon icon-alignleft"></span> or <span class = "icon icon-alignright"></span> icon on the <b>Home</b> tab of the top toolbar.</p>
-            <div class = "icon icon-insertedequation"></div>
-            <p>Each equation template represents a set of slots. A slot is a position for each element that makes up the equation. An empty slot (also called as a placeholder) has a dotted outline <span class = "icon icon-equationplaceholder"></span>. You need to fill in all the placeholders specifying the necessary values.</p>
+            <p>The selected symbol/equation box will be inserted at the cursor position. If the selected line is empty, the equation will be centered. To align such an equation to the left or to the right, click on the equation box and use the <img alt="Align Left icon" src="../images/alignleft.png" /> or <img alt="Align Right icon" src="../images/alignright.png" /> icon on the <b>Home</b> tab of the top toolbar.</p>
+            <img alt="Inserted Equation" src="../images/insertedequation.png" />
+            <p>Each equation template represents a set of slots. A slot is a position for each element that makes up the equation. An empty slot (also called as a placeholder) has a dotted outline <img alt="Equation Placeholder" src="../images/equationplaceholder.png" />. You need to fill in all the placeholders specifying the necessary values.</p>
             <p class="note"><b>Note</b>: to start creating an equation, you can also use the <b>Alt + =</b> keyboard shortcut.</p>
             <p>It's also possible to add a caption to the equation. To learn more on how to work with captions for equations, please refer to <a href="../UsageInstructions/AddCaption.htm" onclick="onhyperlinkclick(this)">this article</a>.</p>
             <h3>Enter values</h3>
             <p>The <b>insertion point</b> specifies where the next character will appear. To position the insertion point precisely, click within the placeholder and use the keyboard arrows to move the insertion point by one character left/right or one line up/down.</p>
             <p>If you need to create a new placeholder below the slot with the insertion point within the selected template, press <b>Enter</b>.</p>
-            <div class = "big big-newslot"></div>
+            <img alt="Edited Equation" src="../images/newslot.png" />
             <p>Once the insertion point is positioned, you can fill in the placeholder:
             <ul>
                 <li>enter the desired numeric/literal value using the keyboard,</li>
-                <li>insert a special character using the <b>Symbols</b> palette from the <div class = "icon icon-insertequationicon"></div> <b>Equation</b> menu on the <b>Insert</b> tab of the top toolbar or typing them from the keyboard (see the <a href="../UsageInstructions/MathAutoCorrect.htm" onclick="onhyperlinkclick(this)"><b>Math AutoСorrect</b></a> option description),</li>
+                <li>insert a special character using the <b>Symbols</b> palette from the <img alt="Equation icon" src="../images/insertequationicon.png" /> <b>Equation</b> menu on the <b>Insert</b> tab of the top toolbar or typing them from the keyboard (see the <a href="../UsageInstructions/MathAutoCorrect.htm" onclick="onhyperlinkclick(this)"><b>Math AutoСorrect</b></a> option description),</li>
                 <li>add another equation template from the palette to create a complex nested equation. The size of the primary equation will be automatically adjusted to fit its content. The size of the nested equation elements depends on the primary equation placeholder size, but it cannot be smaller than the sub-subscript size.</li>                
             </ul>
             </p>
-            <p><div class = "big big-nestedfraction"></div></p>
+            <p><img alt="Edited Equation" src="../images/nestedfraction.png" /></p>
             <p>To add some new equation elements you can also use the <b>right-click menu options</b>:</p>
             <ul>
                 <li>To add a new argument that goes before or after the existing one within <em>Brackets</em>, you can right-click on the existing argument and select the <b>Insert argument before/after</b> option from the menu.</li>
@@ -59,9 +51,9 @@
             <p>When entering the values of the mathematical expressions, you do not need to use <b>Spacebar</b> as the spaces between the characters and signs of operations are set automatically.</p>
             <p>If the equation is too long and does not fit a single line, automatic line breaking occurs while typing. You can also insert a line break in a specific position by right-clicking on a mathematical operator and selecting the <b>Insert manual break</b> option from the menu. The selected operator will start a new line. Once the manual line break is added, you can press the <b>Tab</b> key to align the new line to any math operator of the previous line. To delete the added manual line break, right-click on the mathematical operator that starts a new line and select the <b>Delete manual break</b> option.</p>
             <h3>Format equations</h3>
-            <p>To increase or decrease the equation <b>font size</b>, click anywhere within the equation box and use the <span class = "icon icon-larger"></span> and <span class = "icon icon-smaller"></span> buttons on the <b>Home</b> tab of the top toolbar or select the necessary font size from the list. All the equation elements will change correspondingly.</p>
+            <p>To increase or decrease the equation <b>font size</b>, click anywhere within the equation box and use the <img alt="Increment font size" src="../images/larger.png" /> and <img alt="Decrement font size" src="../images/smaller.png" /> buttons on the <b>Home</b> tab of the top toolbar or select the necessary font size from the list. All the equation elements will change correspondingly.</p>
             <p>The letters within the equation are italicized by default. If necessary, you can change the <b>font style</b> (<em>bold, italic, strikeout</em>) or <b>color</b> for a whole equation or its part. The <em>underlined</em> style can be applied to the entire equation only, not to individual characters. Select the necessary part of the equation by clicking and dragging it. The selected part will be highlighted in blue. Then use the necessary buttons on the <b>Home</b> tab of the top toolbar to format the selected part. For example, you can remove the italic format for ordinary words that are not variables or constants.</p>
-            <div class = "big big-formatastext"></div>
+            <img alt="Edited Equation" src="../images/formatastext.png" />
             <p>To modify some equation elements, you can also use the <b>right-click menu options</b>:</p>
             <ul><li>To change the <em>Fractions</em> format, you can right-click on a fraction and select the <b>Change to skewed/linear/stacked fraction</b> option from the menu (the available options differ depending on the selected fraction type). <!--The <b>Remove/Add fraction bar</b> option is also available for stacked fractions.--></li>
                 <li>To change the <em>Scripts</em> position relating to text, you can right-click on the equation that includes scripts and select the <b>Scripts before/after text</b> option from the menu.</li>
@@ -86,7 +78,7 @@
             <p>To delete a part of the equation, select it by dragging the mouse or holding down the <b>Shift</b> key and using the arrow buttons, then press the <b>Delete</b> key on the keyboard.</p>
             <p>A slot can only be deleted together with the template it belongs to.</p>
             <p>To delete the entire equation, select it completely by dragging the mouse or double-clicking on the equation box and press the <b>Delete</b> key on the keyboard.</p>
-            <div class = "icon icon-deleteequation"></div>
+            <img alt="Delete Equation" src="../images/deleteequation.png" />
             <p>To delete some equation elements, you can also use the <b>right-click menu options</b>:</p>
             <ul>
                 <li>To delete a <em>Radical</em>, you can right-click on it and select the <b>Delete radical</b> option from the menu.</li>

@@ -26,7 +26,6 @@
   "DE.ApplicationController.scriptLoadError": "De verbinding is te langzaam, sommige componenten konden niet geladen worden. Laad de pagina opnieuw.",
   "DE.ApplicationController.textAnonymous": "Anoniem",
   "DE.ApplicationController.textClear": "Wis Alle Velden",
-  "DE.ApplicationController.textCtrl": "Ctrl",
   "DE.ApplicationController.textGotIt": "OK",
   "DE.ApplicationController.textGuest": "Gast",
   "DE.ApplicationController.textLoadingDocument": "Document wordt geladen",
@@ -48,6 +47,5 @@
   "DE.ApplicationView.txtFileLocation": "Open bestandslocatie",
   "DE.ApplicationView.txtFullScreen": "Volledig scherm",
   "DE.ApplicationView.txtPrint": "Afdrukken",
-  "DE.ApplicationView.txtSearch": "Zoeken",
   "DE.ApplicationView.txtShare": "Delen"
 }

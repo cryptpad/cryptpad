@@ -10,7 +10,7 @@
   "SSE.ApplicationController.criticalErrorTitle": "錯誤",
   "SSE.ApplicationController.downloadErrorText": "下載失敗",
   "SSE.ApplicationController.downloadTextText": "下載電子表格中...",
-  "SSE.ApplicationController.errorAccessDeny": "您嘗試進行未被授權的動作。<br> 請聯繫您的文件伺服器主機的管理者。",
+  "SSE.ApplicationController.errorAccessDeny": "您嘗試進行未被授權的動作<br> 請聯繫您的文件伺服器主機的管理者。",
   "SSE.ApplicationController.errorDefaultMessage": "錯誤編號：%1",
   "SSE.ApplicationController.errorFilePassProtect": "該文件受密碼保護，無法打開。",
   "SSE.ApplicationController.errorFileSizeExceed": "此檔案超過這一主機限制的大小<br> 進一步資訊，請聯絡您的文件服務主機的管理者。",

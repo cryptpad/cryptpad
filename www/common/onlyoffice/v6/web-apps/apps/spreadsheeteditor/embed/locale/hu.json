@@ -22,7 +22,7 @@
   "SSE.ApplicationController.notcriticalErrorTitle": "Figyelmeztetés",
   "SSE.ApplicationController.openErrorText": "Hiba történt a fájl megnyitása során.",
   "SSE.ApplicationController.scriptLoadError": "A kapcsolat túl lassú, néhány komponens nem töltődött be. Frissítse az oldalt.",
-  "SSE.ApplicationController.textAnonymous": "Névtelen",
+  "SSE.ApplicationController.textAnonymous": "Anonim",
   "SSE.ApplicationController.textGuest": "Vendég",
   "SSE.ApplicationController.textLoadingDocument": "Munkafüzet betöltése",
   "SSE.ApplicationController.textOf": "-nak/-nek a ",

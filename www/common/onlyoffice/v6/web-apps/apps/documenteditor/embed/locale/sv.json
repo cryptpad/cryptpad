@@ -4,7 +4,6 @@
   "common.view.modals.txtHeight": "Höjd",
   "common.view.modals.txtShare": "Dela länk",
   "common.view.modals.txtWidth": "Bredd",
-  "common.view.SearchBar.textFind": "Sök",
   "DE.ApplicationController.convertationErrorText": "Fel vid konvertering",
   "DE.ApplicationController.convertationTimeoutText": "Konverteringstiden har överskridits.",
   "DE.ApplicationController.criticalErrorTitle": "Fel",
@@ -26,7 +25,6 @@
   "DE.ApplicationController.scriptLoadError": "Anslutningen är för långsam, vissa av komponenterna kunde inte laddas. Vänligen ladda om sidan.",
   "DE.ApplicationController.textAnonymous": "Anonym",
   "DE.ApplicationController.textClear": "Rensa alla fält",
-  "DE.ApplicationController.textCtrl": "Ctrl",
   "DE.ApplicationController.textGotIt": "Uppfattat",
   "DE.ApplicationController.textGuest": "Gäst",
   "DE.ApplicationController.textLoadingDocument": "Laddar dokument",
@@ -48,6 +46,5 @@
   "DE.ApplicationView.txtFileLocation": "Öppna filens plats",
   "DE.ApplicationView.txtFullScreen": "Helskärm",
   "DE.ApplicationView.txtPrint": "Skriv ut",
-  "DE.ApplicationView.txtSearch": "Sök",
   "DE.ApplicationView.txtShare": "Dela"
 }

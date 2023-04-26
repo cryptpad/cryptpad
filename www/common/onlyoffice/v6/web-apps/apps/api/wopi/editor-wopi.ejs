@@ -262,7 +262,7 @@ div {
 			var config = {
 				"width": "100%",
 				"height": "100%",
-				"type": queryParams.embed==="1" ? "embedded" : "desktop",
+				"type": "desktop",
 				"documentType": documentType,
 				"token": token,
 				"document": {
@@ -302,7 +302,7 @@ div {
                         "uiTheme": queryParams.thm==="1" ? "default-light" : (queryParams.thm==="2" ? "default-dark" : undefined)
 					},
                     "coEditing": {
-                        "mode": userAuth.mode !== "view" ? "fast" : "strict",
+                        "mode": "fast",
                         "change": false
                     },
                     "wopi": {
@@ -312,7 +312,7 @@ div {
 				"events": {
                     "onAppReady": onAppReady,
                     "onDocumentStateChange": fileInfo.EditNotificationPostMessage ? onDocumentStateChange : undefined,
-                    'onRequestEditRights': fileInfo.EditModePostMessage || (fileInfo.HostEditUrl && !fileInfo.UserCanNotWriteRelative) ? onRequestEditRights : undefined,
+                    'onRequestEditRights': fileInfo.EditModePostMessage || fileInfo.HostEditUrl ? onRequestEditRights : undefined,
                     "onError": onError,
                     "onRequestClose": fileInfo.ClosePostMessage || fileInfo.CloseUrl ? onRequestClose : undefined,
                     "onRequestRename": fileInfo.SupportsRename && fileInfo.UserCanRename ? onRequestRename : undefined,

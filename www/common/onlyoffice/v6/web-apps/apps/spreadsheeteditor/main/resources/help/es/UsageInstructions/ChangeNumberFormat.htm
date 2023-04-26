@@ -5,7 +5,6 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Change the number format to display the numbers in the most convenient way" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -24,13 +23,12 @@
 						<li><b>General</b> - se usa para mostrar datos introducidos como números sin formato de un modo compacto sin ningún signo adicional,</li>
 						<li><b>Número</b> - se usa para mostrar los números con 0-30 dígitos después de un punto decimal donde un separador de miles se añade entre cada grupo de tres dígitos antes del punto decimal,</li><!--<li><b>Integer</b> - is used to display the numbers as an integer,</li>--><li><b>Exponencial</b> - se usa para mantener cortos a los números convirtiéndoles en una cadena de tipo <em>d.dddE+ddd</em> o <em>d.dddE-ddd</em> donde cada <em>d</em> es un dígito del 0 a 9,</li>
                         <li><b>Financiero</b> - se usa para mostrar valores monetarios con el símbolo de moneda por defecto y dos sitios de decimales. Para usar otro símbolo de moneda u otro número para los sitios decimales, sigue las <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">instrucciones de más abajo</a>. A diferencia del formato <b>Moneda</b>, el formato <b>Financiero</b> alinea los símbolos de moneda a la parte izquierda de la celda, representa a los valores cero como un guión y los valores negativos de muestran en paréntesis.<p><img alt="Formatos de números de contabilidad y moneda" src="../images/accounting_currency.png" /></p>
-                            <p class="note"><b>Nota</b>: para poder aplicar de forma rápida el formato <b>Financiero</b> a los datos seleccionados, también puede hacer clic en el icono <span class="icon icon-accountingstyle"></span> <b>Estilo financiero</b> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccionar el símbolo de moneda necesario: uno de los símbolos de moneda siguientes: <b>&#36;</b> Dolar, <b>&amp;euro;</b> Euro, <b>&amp;libra</b> Libra, <b>₽</b> Rublo, <b>&amp;yen</b> Yen.</p>
+                            <p class="note"><b>Nota</b>: para poder aplicar de forma rápida el formato <b>Financiero</b> a los datos seleccionados, también puede hacer clic en el icono <img alt="Icono Estilo financiero" src="../images/accountingstyle.png" /> <b>Estilo financiero</b> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccionar el símbolo de moneda necesario: uno de los símbolos de moneda siguientes: <b>&#36;</b> Dolar, <b>&amp;euro;</b> Euro, <b>&amp;libra</b> Libra, <b>₽</b> Rublo, <b>&amp;yen</b> Yen.</p>
                         </li>
                         <li><b>Moneda</b> - se usa para mostrar valores monetarios con los símbolos de moneda por defecto y dos lugares de decimales. Para usar otro símbolo de moneda u otro número para los sitios decimales, sigue las <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">instrucciones de más abajo</a>. A diferencia del formato <b>Financiero</b>, en el formato <b>Moneda</b> el símbolo de moneda se coloca antes del primer dígito, los valores negativos se muestran con el signo negativo (-).</li>
 						<li><b>Fecha</b> - se usa para mostrar fechas<!--. You can select one of the following date formats: <em>MM-dd-yy</em>, <em>MM-dd-yyyy</em>, <em>dd-MM-yy</em>, <em>dd-MM-yyyy</em>, <em>dd-MMM-yyyy</em>, <em>dd-MMM</em>, <em>MMM-yy</em>-->,</li>
 						<li><b>Hora</b> - se usa para mostrar la hora<!--. You can select one of the following time formats: <em>HH:mm</em>, <em>HH:MM:ss</em>, <em>hh:mm tt</em>, <em>hh:mm:ss tt</em>, <em>[h]:mm:ss</em>-->,</li>
-						<li><b>Porcentaje</b> - se usa para mostrar datos como un porcentaje acompañado por el signo <b>%</b>,
-                        <p class="note"><b>Nota</b>: para aplicar de forma rápida el formato porcentual a sus datos, también puede usar el icono <b>Estilo porcentaje</b> <span class="icon icon-percentstyle"></span> en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p>
+						<li><b>Porcentaje</b> - se usa para mostrar datos como un porcentaje acompañado por el signo <b>%</b>,<p class="note"><b>Nota</b>: para aplicar de forma rápida el formato porcentual a sus datos, también puede usar el icono <b>Estilo porcentaje</b> <img alt="Icono Estilo porcentaje" src="../images/percentstyle.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p>
 						</li>
                         <li><b>Fracción</b> - se usa para mostrar los números como fracciones comunes en vez de en decimales.</li>
 						<li><b>Texto</b> - se usa para mostrar los valores numéricos como texto simple y con la mejor precisión posible.</li>
@@ -38,8 +36,8 @@
 					</ul>
 				</li>
 				<li>cambie el número de posiciones decimales, si es necesario:<ul>
-				        <li>use el icono <b>Aumentar decimales</b> <div class = "icon icon-increasedecimal"></div> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior para mostrar más dígitos después del punto decimal,</li>
-				        <li>use el icono <b>Disminuir decimales</b> <div class = "icon icon-decreasedecimal"></div> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior para mostrar menos dígitos después del punto decimal.</li>
+				        <li>use el icono <b>Aumentar decimales</b> <img alt="Icono Aumentar decimales" src="../images/increasedecimal.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior para mostrar más dígitos después del punto decimal,</li>
+				        <li>use el icono <b>Disminuir decimales</b> <img alt="Icono Disminuir decimales" src="../images/decreasedecimal.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior para mostrar menos dígitos después del punto decimal.</li>
 				    </ul>
 				 </li>
 			</ol>

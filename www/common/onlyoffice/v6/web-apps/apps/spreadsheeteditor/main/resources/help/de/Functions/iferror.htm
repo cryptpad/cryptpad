@@ -3,9 +3,8 @@
 	<head>
 		<title>WENNFEHLER-Funktion</title>
 		<meta charset="utf-8" />
-		<meta name="description" content="Erfahren Sie, wie Sie die WENNFEHLER-Formel in Excel-Tabellen und kompatiblen Dateien in ONLYOFFICE verwenden." />
+		<meta name="description" content="" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -19,11 +18,10 @@
 			<p>Die Formelsyntax der Funktion <b>WENNFEHLER</b> ist:</p> 
 			<p style="text-indent: 150px;"><b><em>WENNFEHLER(Wert;Wert_falls_Fehler)</em></b></p> 
 			<p><b><em>Wert</em></b> und <b><em>Wert_falls_Fehler</em></b> werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
-			<h2>Wie funktioniert WENNFEHLER</h2>
 			<p>Anwendung der Funktion <b>WENNFEHLER</b>:</p>
 			<ol>
 			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
-			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <div class = "icon icon-insertfunction"></div> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <div class = "icon icon-function"></div> auf der Formelleiste.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
 			<li>Wählen Sie die Funktionsgruppe <b>Logisch</b> aus der Liste aus.</li>
 			<li>Klicken Sie auf die Funktion <b>WENNFEHLER</b>.</li>
 			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
@@ -31,8 +29,10 @@
 			</ol>
 			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
 			<p><em>Beispiel:</em></p>
-			<p>Sie haben eine Liste des verfügbaren Artikelbestands und den Gesamtwert. Um den Stückpreis zu erfahren, verwenden wir die Funktion <b>WENNFEHLER</b>, um zu sehen, ob Fehler aufgetreten sind. Die Argumente lauten wie folgt: <em>Wert</em> = <b>B2/A2</b>, <em>Wert_falls_Fehler</em> = <b>"Nicht verrätig"</b>. Die Formel im ersten Argument enthält keine Fehler für die Zellen C2:C9 und C11:C14, sodass die Funktion das Ergebnis der Berechnung zurückgibt. Bei C10 und C11 ist es jedoch umgekehrt, da die Formel versucht, durch Null zu teilen, daher erhalten wir als Ergebnis <em>"Nicht verrätig"</em>.</></p>
-			<img class="gif" alt="WENNFEHLER-Funktion gif" src="../images/iferror_function.gif" />
+			<p>Es gibt 2 Argumente: <em>Wert</em> = <b>A1/B1</b>, <em>Wert_falls_Fehler</em> = <b>„Fehler&quot;</b>; <b>A1</b> ist gleich <b>12</b> und <b>B1</b> ist gleich <b>3</b>. Die Formel im ersten Argument hat keinen Fehler. Also gibt die Funktion das Ergebnis der Berechnung zurück.</p>
+			<p style="text-indent: 150px;"><img alt="WENNFEHLER-Funktion: Kein Fehler" src="../images/noerror.png" /></p>
+			<p>Ändert man <b>B1</b> von <b>3</b> zu <b>0</b>, gibt die Funktion <b>Fehler</b> zurück, da es nicht möglich ist durch Null zu teilen.</p>
+			<p style="text-indent: 150px;"><img alt="WENNFEHLER-Funktion: Fehler" src="../images/iferror.png" /></p>
 		</div>
 	</body>
 </html>

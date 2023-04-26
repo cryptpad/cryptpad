@@ -32,14 +32,9 @@
   "Common.UI.Calendar.textShortTuesday": "út",
   "Common.UI.Calendar.textShortWednesday": "st",
   "Common.UI.Calendar.textYears": "roky",
-  "Common.UI.SearchBar.textFind": "Najít",
-  "Common.UI.SearchBar.tipCloseSearch": "Zavřít hledání",
-  "Common.UI.SearchBar.tipNextResult": "Následující",
-  "Common.UI.SearchBar.tipPreviousResult": "Předchozí",
   "Common.UI.Themes.txtThemeClassicLight": "Standartní světlost",
   "Common.UI.Themes.txtThemeDark": "Tmavé",
   "Common.UI.Themes.txtThemeLight": "Světlé",
-  "Common.UI.Themes.txtThemeSystem": "Stejné jako systémové",
   "Common.UI.Window.cancelButtonText": "Zrušit",
   "Common.UI.Window.closeButtonText": "Zavřít",
   "Common.UI.Window.noButtonText": "Ne",
@@ -171,7 +166,6 @@
   "DE.Views.ApplicationView.txtFileLocation": "Otevřít umístění souboru",
   "DE.Views.ApplicationView.txtFullScreen": "Na celou obrazovku",
   "DE.Views.ApplicationView.txtPrint": "Tisk",
-  "DE.Views.ApplicationView.txtSearch": "Hledat",
   "DE.Views.ApplicationView.txtShare": "Sdílet",
   "DE.Views.ApplicationView.txtTheme": "Vzhled prostředí"
 }

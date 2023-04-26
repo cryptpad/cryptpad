@@ -5,7 +5,6 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Add a table to your presentation and adjust its properties" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -20,7 +19,7 @@
 			<ol>
 				<li>seleccione la diapositiva donde usted quiere añadir una tabla,</li>
                 <li>cambie a la pestaña <b>Insertar</b> en la barra de herramientas superior,</li>
-				<li>Haga clic en el icono <div class = "icon icon-inserttable"></div> <b>Tabla</b> en la barra de herramientas superior,</li>
+				<li>Haga clic en el icono <img alt="Icono tabla" src="../images/inserttable.png" /> <b>Tabla</b> en la barra de herramientas superior,</li>
 				<li>seleccione la opción para crear una tabla:<ul>
 						<li><p>o una tabla con un número de celdas predefinido (máximo de 10 por 8 celdas)</p>
 						<p>Si usted quiere añadir una tabla de forma rápida, seleccione el número de filas (8 máximo) y columnas (10 máximo).</p></li>
@@ -30,12 +29,12 @@
 				</li>
 				<li>una vez que la tabla se ha añadido, usted puede cambiar sus parámetros y posición.</li>
 			</ol>
-            <p>Para cambiar el tamaño de una tabla, arrastre las manijas <span class="icon icon-resize_square"></span> situadas en sus bordes hasta que la tabla alcance el tamaño necesario.</p>
-            <p><span class="big big-resizetable"></span></p>
-            <p>También se puede modificar manualmente el ancho de una columna determinada o la altura de una línea. Mueva el cursor del ratón sobre el borde derecho de la columna para que el cursor se convierta en la flecha bidireccional. <span class="icon icon-changecolumnwidth"></span> y arrastre el borde hacia la izquierda o hacia la derecha para establecer el ancho necesario. Para cambiar la anchura de una sola columna de forma manual, mueva el cursor del ratón sobre el borde inferior de la fila hasta que el cursor cambie a una flecha con doble sentido <span class="icon icon-changerowheight"></span> y arrástrelo hacia arriba o hacia abajo.</p>
+            <p>Para cambiar el tamaño de una tabla, arrastre las manijas <img alt="Icono cuadrado" src="../images/resize_square.png" /> situadas en sus bordes hasta que la tabla alcance el tamaño necesario.</p>
+            <p><img alt="Cambie de tamaño a la tabla" src="../images/resizetable.png" /></p>
+            <p>También se puede modificar manualmente el ancho de una columna determinada o la altura de una línea. Mueva el cursor del ratón sobre el borde derecho de la columna para que el cursor se convierta en la flecha bidireccional. <img alt="El cursor del ratón cuando cambia el ancho de la columna" src="../images/changecolumnwidth.png" /> y arrastre el borde hacia la izquierda o hacia la derecha para establecer el ancho necesario. Para cambiar la anchura de una sola columna de forma manual, mueva el cursor del ratón sobre el borde inferior de la fila hasta que el cursor cambie a una flecha con doble sentido <img alt="El cursor del ratón cuando cambia el ancho de la columna" src="../images/changerowheight.png" /> y arrástrelo hacia arriba o hacia abajo.</p>
 			<p>Usted puede especificar <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">posición de tabla</a> arrastrándola verticalmente o horizontalmente.</p>
 			<hr />
-            <h3>Ajustes de tablas</h3><img class="floatleft"alt="Pestaña Ajustes de tablas" src="../images/tablesettingstab.png" /><p>Es posible cambiar la mayoría de las propiedades de la tabla y también su estructura usando la derecha barra lateral. Para activarla haga clic en la tabla y elija el icono <span class="icon icon-table_settings_icon"></span> <b>Ajustes de tabla</b> a la derecha.</p>
+            <h3>Ajustes de tablas</h3><img class="floatleft"alt="Pestaña Ajustes de tablas" src="../images/tablesettingstab.png" /><p>Es posible cambiar la mayoría de las propiedades de la tabla y también su estructura usando la derecha barra lateral. Para activarla haga clic en la tabla y elija el icono <img alt="Icono Ajustes de tabla" src="../images/table_settings_icon.png" /> <b>Ajustes de tabla</b> a la derecha.</p>
 			<p>Las secciones <b>Filas</b> y <b>Columnas</b> en la parte superior le permiten seleccionar ciertas filas/columnas aplicando algún formato a ellas, o rellenar filas/columnas con los colores de fondo distintos para poder distinguirlas de forma clara. Las siguientes opciones están disponibles:</p>
 			<ul style="margin-left: 280px;">
 				<li><b>Encabezado</b> - resalta la fila superior de la tabla dándole un formato especial.</li>
@@ -46,15 +45,14 @@
 				<li><b>Con bandas</b> - activa el color de fondo diferente para las columnas pares y impares.</li>
 			</ul>
 			<p>La sección <b>Seleccionar de plantilla</b> le permite elegir uno de los estilos de tablas predefinidos. Cada plantilla combina ciertos parámetros de formato: color de fondo, estilo de bordes, bandas de fila/columna, etc. El conjunto de plantillas varía dependiendo de las opciones marcadas en la secciones <b>Filas</b> y/o <b>Columnas</b> de arriba, las plantillas serán mostradas de manera diferente. Por ejemplo, si marca la opción <b>Encabezado</b> en la sección <b>Filas</b> y la opción <b>Con bandas</b> en la sección <b>Columnas</b>, en la lista habrá solo plantillas que coinciden con su solicitud:</p>
-			<p><span class="big big-templateslist"></span></p>
+			<p><img alt="Lista de plantillas" src="../images/templateslist.png" /></p>
 			<p>La sección <b>Estilo de bordes</b> le permite cambiar el formato aplicado que corresponde a la plantilla seleccionada. Usted puede seleccionar toda la tabla o varias celdas para cambiar el formato y establecer todos los parámetros manualmente.</p>
 			<ul>
-				<li>Parámetros de <b>Borde</b> - establezca el ancho del borde usando la lista <div class = "big big-bordersize"></div> (o elija la opción <b>Sin bordes</b>), seleccione el <b>Color</b> en las paletas disponibles y determine la forma en la que quiere aplicar este ajuste para mostrarlos en celdas pulsando los iconos:
-                <p><span class="big big-bordertype"></span></p>
+				<li>Parámetros de <b>Borde</b> - establezca el ancho del borde usando la lista <img alt="Lista de tamaño de borde" src="../images/bordersize.png" /> (o elija la opción <b>Sin bordes</b>), seleccione el <b>Color</b> en las paletas disponibles y determine la forma en la que quiere aplicar este ajuste para mostrarlos en celdas pulsando los iconos:<p><img alt="Iconos Tipo de Borde" src="../images/bordertype.png" /></p>
 				</li>
 				<li><b>Color de fondo</b> - seleccione el color de fondo dentro de las celdas seleccionadas.</li>
 			</ul>
-			<p>La sección <span class="icon icon-rowsandcolumns"></span> <b>Filas y columnas</b>  le permite realizar las operaciones siguientes:</p>
+			<p>La sección <img alt="Filas y columnas" src="../images/rowsandcolumns.png" /> <b>Filas y columnas</b>  le permite realizar las operaciones siguientes:</p>
 			<ul>
 				<li><b>Seleccionar</b> una fila, columna, celda (depende de la posición del cursor), o toda la tabla.</li>
 				<li><b>Insertar</b> una nueva fila arriba o debajo de la fila seleccionada y también una nueva columna a la izquierda o a la derecha de la columna seleccionada.</li>

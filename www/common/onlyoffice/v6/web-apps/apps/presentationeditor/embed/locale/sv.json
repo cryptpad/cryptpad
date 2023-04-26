@@ -4,7 +4,6 @@
   "common.view.modals.txtHeight": "Höjd",
   "common.view.modals.txtShare": "Delningslänk",
   "common.view.modals.txtWidth": "Bredd",
-  "common.view.SearchBar.textFind": "Sök",
   "PE.ApplicationController.convertationErrorText": "Fel vid konvertering",
   "PE.ApplicationController.convertationTimeoutText": "Konverteringstiden har överskridits.",
   "PE.ApplicationController.criticalErrorTitle": "Fel",
@@ -35,6 +34,5 @@
   "PE.ApplicationView.txtFileLocation": "Gå till filens plats",
   "PE.ApplicationView.txtFullScreen": "Fullskärm",
   "PE.ApplicationView.txtPrint": "Skriva ut",
-  "PE.ApplicationView.txtSearch": "Sök",
   "PE.ApplicationView.txtShare": "Dela"
 }

@@ -5,7 +5,6 @@
 		<meta charset="utf-8" />
         <meta name="description" content="Ajouter des formules dans les cellules du tableau pour effectuer des calculs simples" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
-		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
         <script type="text/javascript" src="../callback.js"></script>
         <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
@@ -16,13 +15,12 @@
         </div>
 			<h1>Utiliser des formules dans les tableaux</h1>
             <h3>Insérer une formule</h3>
-			<p>Dans l'<a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Éditeur de Documents</b></a>, vous pouvez effectuer des calculs simples sur les données des cellules de table en ajoutant des formules. Pour insérer une formule dans une cellule du tableau,</p>
+			<p>Dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, vous pouvez effectuer des calculs simples sur les données des cellules de table en ajoutant des formules. Pour insérer une formule dans une cellule du tableau,</p>
 			<ol>
 				<li>placez le curseur dans la cellule où vous voulez afficher le résultat,</li>
                 <li>cliquez sur le bouton <b>Ajouter une formule</b> dans la barre latérale de droite,</li>
-				<li>dans la fenêtre <b>Paramètres de formule</b> qui s'ouvre, saisissez la formule nécessaire dans la zone <b>Formule</b>.
-                    <p>Vous pouvez saisir une formule manuellement à l'aide des opérateurs mathématiques courants (+, -, *, /), par exemple <em>=A1*B2</em> ou utiliser la liste déroulante <b>Coller une fonction</b> pour sélectionner une des fonctions intégrées, par exemple <em>=PRODUIT(A1,B2)</em>.</p>
-                <p><img alt="Ajouter une formule" src="../images/formula_settings.png" /></p>
+				<li>dans la fenêtre <b>Paramètres de formule</b> qui s'ouvre, saisissez la formule nécessaire dans la zone <b>Formule</b>.<p>Vous pouvez saisir une formule manuellement à l'aide des opérateurs mathématiques courants (+, -, *, /), par exemple <em>=A1*B2</em> ou utiliser la liste déroulante <b>Coller une fonction</b> pour sélectionner une des fonctions intégrées, par exemple <em>=PRODUIT(A1,B2)</em>.</p>
+                <p><img alt="Ajouter une formule" src="../images/formula_settings.png" /></p>					
 				</li>
                 <li>spécifier manuellement les arguments nécessaires entre parenthèses dans le champ <b>Formule</b>. Si la fonction nécessite plusieurs arguments, ils doivent être séparés par des virgules.</li>
                 <li>utilisez la liste déroulante <b>Format de nombre</b> si vous voulez afficher le résultat dans un certain format numérique,</li>
@@ -97,12 +95,6 @@
                     <td>=FAUX<br />Renvoie 0</td>
                 </tr>
                 <tr>
-                    <td>Logique</td>
-                    <td>SI(logical_test, value_if_true, value_if_false)</td>
-                    <td>La fonction est utilisée pour vérifier l'expression logique et retourne une valeur si l'argument est VRAI ou une autre si l'argument est FAUX.</td>
-                    <td>=SI(3&gt;1,1,0)<br />Renvoie 1</td>
-                </tr>
-                <tr>
                     <td>Mathématique</td>
                     <td>ENT(nombre)</td>
                     <td>La fonction est utilisée pour analyser et retourner la partie entière du nombre spécifié.</td>
@@ -153,7 +145,7 @@
                 <tr>
                     <td>Mathématique</td>
                     <td>SIGNE(number)</td>
-                    <td>La fonction est utilisée pour renvoyer le signe d'un nombre. Si le nombre est positif, la fonction renvoie <b>1</b>. Si le nombre est négatif, la fonction renvoie <b>-1</b>. Si le nombre est <b>0</b>, la fonction renvoie <b>0</b>.</td>
+                    <td>La fonction est utilisée pour renvoyer le signe d’un nombre. Si le nombre est positif, la fonction renvoie <b>1</b>. Si le nombre est négatif, la fonction renvoie <b>-1</b>. Si le nombre est <b>0</b>, la fonction renvoie <b>0</b>.</td>
                     <td>=SIGNE(-12)<br />Renvoie -1</td>
                 </tr>
                 <tr>
@@ -168,7 +160,7 @@
                     <td>La fonction renvoie 1 (VRAI) et n'exige <b>aucun</b> argument.</td>
                     <td>=VRAI<br />Renvoie 1</td>
                 </tr>
-            </table>
+            </table>             
 		</div>
 	</body>
 </html>

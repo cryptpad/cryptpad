@@ -32,10 +32,6 @@
   "Common.UI.Calendar.textShortTuesday": "Ter",
   "Common.UI.Calendar.textShortWednesday": "mi.",
   "Common.UI.Calendar.textYears": "Anos",
-  "Common.UI.SearchBar.textFind": "Atopar",
-  "Common.UI.SearchBar.tipCloseSearch": "Pechar busca",
-  "Common.UI.SearchBar.tipNextResult": "Seguinte resultado",
-  "Common.UI.SearchBar.tipPreviousResult": "Anterior resultado",
   "Common.UI.Themes.txtThemeClassicLight": "Clásico claro",
   "Common.UI.Themes.txtThemeDark": "Escuro",
   "Common.UI.Themes.txtThemeLight": "Claro",
@@ -170,7 +166,6 @@
   "DE.Views.ApplicationView.txtFileLocation": "Abrir ubicación do ficheiro",
   "DE.Views.ApplicationView.txtFullScreen": "Pantalla completa",
   "DE.Views.ApplicationView.txtPrint": "Imprimir",
-  "DE.Views.ApplicationView.txtSearch": "Buscar",
   "DE.Views.ApplicationView.txtShare": "Compartir",
   "DE.Views.ApplicationView.txtTheme": "Tema da interface"
 }

@@ -10,7 +10,7 @@
   "DE.ApplicationController.criticalErrorTitle": "錯誤",
   "DE.ApplicationController.downloadErrorText": "下載失敗",
   "DE.ApplicationController.downloadTextText": "文件下載中...",
-  "DE.ApplicationController.errorAccessDeny": "您嘗試進行未被授權的動作。<br> 請聯繫您的文件主機(Document Server)的管理者。",
+  "DE.ApplicationController.errorAccessDeny": "您嘗試進行未被授權的動作<br> 請聯繫您的文件主機(Document Server)的管理者。",
   "DE.ApplicationController.errorDefaultMessage": "錯誤編號：%1",
   "DE.ApplicationController.errorEditingDownloadas": "在處理文件檔期間發生錯誤。<br>使用“下載為...”選項將文件備份副本儲存到硬碟。",
   "DE.ApplicationController.errorFilePassProtect": "該文件受密碼保護，無法打開。",

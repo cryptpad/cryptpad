@@ -4,7 +4,6 @@
   "common.view.modals.txtHeight": "Højde",
   "common.view.modals.txtShare": "Del link",
   "common.view.modals.txtWidth": "Bredde",
-  "common.view.SearchBar.textFind": "Find",
   "PE.ApplicationController.convertationErrorText": "Konvertering fejlede.",
   "PE.ApplicationController.convertationTimeoutText": "Konverteringstidsfrist er overskredet",
   "PE.ApplicationController.criticalErrorTitle": "Fejl",
@@ -17,7 +16,7 @@
   "PE.ApplicationController.errorForceSave": "Der skete en fejl under gemning af filen. Brug venligst 'Download som' for at gemme filen på din computers harddisk eller prøv igen senere.",
   "PE.ApplicationController.errorLoadingFont": "Skrifttyper er ikke indlæst.<br>Kontakt din dokument server administrator.",
   "PE.ApplicationController.errorTokenExpire": "Dokumentets sikkerhedstoken er udløbet.<br>Kontakt venligst din Document Server administrator. ",
-  "PE.ApplicationController.errorUpdateVersionOnDisconnect": "Internetforbindelsen er blevet genoprettet og filversionen er blevet ændret.<br>Før du kan fortsætte arbejdet, skal du hente filen eller kopiere indholdet for at sikre, at intet vil blive tabt - og derefter genindlæse denne side.",
+  "PE.ApplicationController.errorUpdateVersionOnDisconnect": "Internetforbindelsen er blevet genoprettet, og filversionen er blevet ændret.<br>Før du kan fortsætte arbejdet, skal du hente filen eller kopiere indholdet for at sikre, at intet vil blive tabt - og derefter genindlæse denne side.",
   "PE.ApplicationController.errorUserDrop": "Der kan ikke opnås adgang til filen lige nu. ",
   "PE.ApplicationController.notcriticalErrorTitle": "Advarsel",
   "PE.ApplicationController.openErrorText": "Der skete en fejl under åbningen af filen",
@@ -35,6 +34,5 @@
   "PE.ApplicationView.txtFileLocation": "Åben filplacering",
   "PE.ApplicationView.txtFullScreen": "Fuld skærm",
   "PE.ApplicationView.txtPrint": "Udskriv",
-  "PE.ApplicationView.txtSearch": "Søg",
   "PE.ApplicationView.txtShare": "Del"
 }
