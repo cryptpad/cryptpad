@@ -41,8 +41,6 @@ define([], function () {
                 });
             });
 
-            /*
-            // XXX to test
             var pathDictionary = {};
             //Adds winner of each pairwise comparison to path
             pairs.forEach(function (pair) {
@@ -53,25 +51,6 @@ define([], function () {
                 } else if (pairDict[key2] > pairDict[key1]) {
                     pathDictionary[key2] = pairDict[key2] - pairDict[key1];
                 }
-            });
-            */
-
-            var pathDictionary = {};
-            //Adds winner of each pairwise comparison to path
-            optionArray.forEach(function(option1) {
-                optionArray.forEach(function(option2){
-                    if (option1 === option2) {
-                        return;
-                    } else {
-                        var key1 = [option1, option2].join();
-                        var key2 = [option2, option1].join();
-                        if (pairDict[key1] > pairDict[key2]) {
-                            pathDictionary[key1] = pairDict[key1];
-                        } else if (pairDict[key2] > pairDict[key1]) {
-                            pathDictionary[key2] = pairDict[key2];
-                        }
-                    }
-                });
             });
             return pathDictionary;
         };
@@ -184,7 +163,7 @@ define([], function () {
                 });
 
                 var sortedRankedResults = [];
-                Object.keys(rankedResults).map(Number).sort().forEach(function(score) {
+                Object.keys(rankedResults).map(Number).sort(function(a, b){return a - b;}).forEach(function(score) {
                     sortedRankedResults.push([score, rankedResults[score]]);
                 });
 
@@ -204,8 +183,6 @@ define([], function () {
 
         var rankedPairsMethod = function (optionArray) {
 
-            var pairs = getPermutations(optionArray, 2);
-
             //'Locks' pairwise comparisons which do not create a beatpath cycle
             var pathDictionary = comparePairs();
 
@@ -214,7 +191,7 @@ define([], function () {
             });
             var itemsDict = {};
             Object.values(items).forEach(function(value) {
-                if (Object.keys(itemsDict).includes(value[1].toString())) {
+                if (itemsDict[value[1]]) {
                     itemsDict[value[1]].push(value[0]);
                 } else {
                     itemsDict[value[1]] = [];
@@ -224,7 +201,7 @@ define([], function () {
             });
 
             var sortedArray = [];
-            Object.keys(itemsDict).map(Number).sort().forEach(function(score) {
+            Object.keys(itemsDict).map(Number).sort(function(a, b){return a - b;}).forEach(function(score) {
                 sortedArray.push([score, itemsDict[score]]);
             });
 
@@ -318,7 +295,7 @@ define([], function () {
             }
 
             var sortedRankedResults = [];
-            Object.keys(rankedResults).map(Number).sort().forEach(function(score) {
+            Object.keys(rankedResults).map(Number).sort(function(a, b){return a - b;}).forEach(function(score) {
                 sortedRankedResults.push([score, rankedResults[score]]);
             });
             return [winner, sortedRankedResults];

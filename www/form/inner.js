@@ -76,7 +76,7 @@ define([
     )
 {
 
-    Messages.form_showCondorcetMethod = "Condorcet method"; //XXX;
+    Messages.form_showCondorcetMethod = "Condorcet method"; // XXX;
     Messages.form_condorcetSchulze = "Schulze";
     Messages.form_condorcetRanked = "Ranked Pairs";
     Messages.form_showCondorcetWinner = "winner: ";
@@ -2921,6 +2921,7 @@ define([
                     var calculateCondorcet = function() {
                         var condorcetResults = h('span');
                         var c = showCondorcetWinner(answers, block.opts, condorcetMethod, uid);
+                        if (!c) { return; }
                         var condorcetWinner = c[0];
                         var rankedResults = c[1];
                         if (!condorcetWinner || !condorcetResults) { return; }
@@ -2974,9 +2975,6 @@ define([
 
                     var method = h('div.cp-dropdown-container', typeSelect[0]);
 
-                    var $typeSelect = $(typeSelect);
-                    var $selector = $typeSelect.find('a');
-
                     condorcetWinnerDiv = h('div.cp-form-edit-type');
                     var detailsContainer, condorcetWinner;
 
@@ -2991,11 +2989,11 @@ define([
                     }
 
                     evOnChange.reg(function () {
+                        $('#cp-condorcet-winner').empty();
+                        $('#cp-condorcet-details').empty();
                         condorcetMethod = typeSelect.getValue();
                         var condorcetResult = calculateCondorcet();
-                        if (!condorcetResult) {
-                            $('#cp-condorcet-winner').empty();
-                            $('#cp-condorcet-details').empty();
+                        if (!condorcetResult || !condorcetResult[0] || !condorcetResult[1]) {
                             return;
                         }
                         $('#cp-condorcet-winner').replaceWith(h('span#cp-condorcet-winner', condorcetResult[0]));
