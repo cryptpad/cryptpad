@@ -166,12 +166,12 @@ define([
             };
             typeSelect = UIElements.createDropdown(dropdownConfig);
             typeSelect.setValue(opts.type);
-
             type = h('div.cp-form-edit-type', [
                 h('span', Messages.form_textType),
                 typeSelect[0]
             ]);
             typeSelect.onChange.reg(evOnSave.fire);
+            
         }
 
         setCursorGetter(function () {
@@ -181,8 +181,10 @@ define([
         var getSaveRes = function () {
             return {
                 maxLength: getLengthVal ? getLengthVal() : undefined,
+                required: opts.required ? true : false,
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
+            
         };
 
         evOnSave.reg(function () {
@@ -1628,10 +1630,11 @@ define([
                 // Messages.form_input_ph_email.form_input_ph_url
                 var tag = h('input', {
                     type: opts.type,
+                    step: "any",
                     placeholder: Messages['form_input_ph_'+opts.type] || ''
                 });
                 var $tag = $(tag);
-                $tag.on('change keypress', Util.throttle(function () {
+                $tag.on('change keypress keydown', Util.throttle(function () {
                     evOnChange.fire();
                 }, 500));
                 var cursorGetter;
@@ -4539,6 +4542,7 @@ define([
             var endDateStr = h('div');
             var $endDate = $(endDateContainer);
             var $endDateStr = $(endDateStr);
+        
             var refreshEndDate = function () {
                 $endDate.empty();
 
