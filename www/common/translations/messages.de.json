@@ -23,7 +23,7 @@
     "onLogout": "Du bist ausgeloggt. {0}Klicke hier{1}, um dich wieder einzuloggen,<br>oder drücke Esc, um dein Dokument schreibgeschützt zu öffnen.",
     "padNotPinned": "Dieses Dokument wird nach 3 Monaten ohne Aktivität auslaufen. {0}Logge dich ein{1} oder {2}registriere dich{3}, um das Auslaufen zu verhindern.",
     "anonymousStoreDisabled": "Der Administrator dieser CryptPad-Instanz hat die Verwendung des Speichers für Gäste deaktiviert. Logge dich ein, um dein persönliches CryptDrive zu verwenden.",
-    "expiredError": "Dieses Dokument ist abgelaufen und nicht mehr verfügbar.",
+    "expiredError": "Dieses Dokument hat sein Zerstörungsdatum erreicht und ist nicht mehr verfügbar.",
     "deletedError": "Dieses Dokument wurde gelöscht und ist nicht mehr verfügbar.",
     "inactiveError": "Dieses Dokument ist wegen Inaktivität gelöscht worden. Drücke Esc, um ein neues Dokument zu erstellen.",
     "chainpadError": "Ein kritischer Fehler ist beim Aktualisieren deines Inhalts aufgetreten. Diese Seite ist schreibgeschützt, damit du sicherstellen kannst, dass kein Inhalt verloren geht.<br>Drücke Esc, um das Dokument schreibgeschützt zu öffnen oder lade es neu, um die Bearbeitung fortzusetzen.",
@@ -544,7 +544,7 @@
     "creation_create": "Erstellen",
     "creation_owners": "Eigentümer",
     "creation_noOwner": "Kein Eigentümer",
-    "creation_expiration": "Ablaufdatum",
+    "creation_expiration": "Zerstörungsdatum",
     "creation_passwordValue": "Passwort",
     "creation_newPadModalDescription": "Klicke auf einen Dokument-Typ, um das entsprechende Dokument zu erstellen. Du kannst auch die <b>Tab</b>-Taste für die Auswahl und die <b>Enter</b>-Taste zum Bestätigen benutzen.",
     "password_info": "Das Dokument, das du öffnen möchtest, existiert nicht mehr oder ist mit einem neuen Passwort geschützt. Gib das richtige Passwort ein, um den Inhalt anzuzeigen.",
@@ -1072,7 +1072,7 @@
     "access_offline": "Du bist offline. Verwaltung von Zugriffsrechten ist nicht verfügbar.",
     "share_noContactsOffline": "Du bist offline. Kontakte sind nicht verfügbar.",
     "offlineError": "Die Seite kann nicht angezeigt werden, da die aktuellen Daten nicht synchronisiert werden konnten. Das Laden wird fortgesetzt, wenn die Verbindung wiederhergestellt ist.",
-    "creation_expiresIn": "Läuft ab in",
+    "creation_expiresIn": "Wird zerstört in:",
     "register_notes_title": "Wichtige Hinweise",
     "creation_helperText": "In Dokumentation öffnen",
     "register_warning_note": "Aufgrund der Verschlüsselung in CryptPad können die Administratoren des Dienstes deine Daten nicht wiederherstellen, falls du deinen Benutzernamen und/oder dein Passwort vergessen solltest. Bitte speichere diese an einem sicheren Ort.",
@@ -1585,5 +1585,6 @@
     "form_showCondorcetWinner": "Sieger: ",
     "form_noCondorcetWinner": "Kein Sieger",
     "form_type_date": "Datum",
-    "form_showDetails": "Details"
+    "form_showDetails": "Details",
+    "form_condorcetExtendedDisplay": "Anzahl der von jedem Kandidaten gewonnenen Vergleiche: "
 }
