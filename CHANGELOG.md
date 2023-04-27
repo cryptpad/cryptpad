@@ -6,14 +6,13 @@ This release updates OnlyOffice applications to version 7.3.3. It improves the F
 
 ## Features
 
-- OnlyOffice applications (Sheet, Document, Presentation)
-  - Upgrade to version 7.1
+- Upgrade OnlyOffice applications (Sheet, Document, Presentation) to version 7.1
 
 - Forms
   - New question type: Date [[#811](https://github.com/xwiki-labs/cryptpad/issues/811)]
   - Add Condorcet voting results to ordered list responses
 
-- Default dark theme switch [[#759](https://github.com/xwiki-labs/cryptpad/issues/759)]: set dar ktheme as the default for the instance in `application_config.js`
+- Default dark theme switch [[#759](https://github.com/xwiki-labs/cryptpad/issues/759)]: set dark theme as the default for the instance in `application_config.js`
 
 - New FreeBSD rc.d init script
 
