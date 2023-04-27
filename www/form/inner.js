@@ -76,15 +76,6 @@ define([
     )
 {
 
-    Messages.form_showCondorcetMethod = "Condorcet method"; // XXX;
-    Messages.form_condorcetSchulze = "Schulze";
-    Messages.form_condorcetRanked = "Ranked Pairs";
-    Messages.form_showCondorcetWinner = "winner: ";
-    Messages.form_showDetails = "Details";
-    Messages.form_condorcetExtendedDisplay = "Number of matches won by each candidate: ";
-    Messages.form_noCondorcetWinner = "No winner";
-    Messages.form_type_date = "Date";
-
     var APP = window.APP = {
         blocks: {}
     };
