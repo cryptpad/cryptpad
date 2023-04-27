@@ -3012,7 +3012,7 @@ define([
 
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
-//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
+//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section.form_type_date
                 return h('div.cp-form-block', [
                     h('div.cp-form-block-type', [
                         TYPES[type].icon.cloneNode(),
