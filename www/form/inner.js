@@ -173,7 +173,6 @@ define([
                 typeSelect[0]
             ]);
             typeSelect.onChange.reg(evOnSave.fire);
-            
         }
 
         setCursorGetter(function () {
@@ -186,7 +185,6 @@ define([
                 required: opts.required ? true : false,
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
-            
         };
 
         evOnSave.reg(function () {
@@ -2024,74 +2022,77 @@ define([
             icon: h('i.cptools.cptools-form-grid-radio')
         },
         date: {
-        defaultOpts: {
-            type: 'date',
-        },
-        get: function (opts, a, n, evOnChange) {
-            opts = Util.clone(TYPES.date.defaultOpts);
+            defaultOpts: {
+                type: 'date',
+            },
+            get: function (opts, a, n, evOnChange) {
+                opts = Util.clone(TYPES.date.defaultOpts);
 
-            var tag = h('input');
+                var tag = h('input');
 
-            Flatpickr(tag, {
-                        enableTime: true,
-                        time_24hr: is24h,
-                        dateFormat: dateFormat,
-                    });
+                var picker = Flatpickr(tag, {
+                    enableTime: true,
+                    time_24hr: is24h,
+                    dateFormat: dateFormat,
+                });
 
-            var $tag = $(tag);
-            $tag.on('change keypress', Util.throttle(function () {
-                evOnChange.fire();
-            }, 500));
+                var $tag = $(tag);
+                $tag.on('change keypress', Util.throttle(function () {
+                    evOnChange.fire();
+                }, 500));
 
 
-            return {
-                tag: tag,
-                isEmpty: function () { return !$tag.val().trim(); },
-                getValue: function () {
-                    var invalid = $tag.is(':invalid');
-                    if (invalid) { return; }
-                    return $tag.val();
+                return {
+                    tag: tag,
+                    isEmpty: function () { return !$tag.val().trim(); },
+                    getValue: function () {
+                        var d = picker.parseDate(tag.value);
+                        return +d;
+                    },
+                    setValue: function (val) {
+                        picker.setDate(new Date(val), false);
+                    },
+                    setEditable: function (state) {
+                        if (state) { $tag.removeAttr('disabled'); }
+                        else { $tag.attr('disabled', 'disabled'); }
+                    },
+                    edit: function (cb) {
 
-                },
-                setValue: function (val) { $tag.val(val); },
-                setEditable: function (state) {
-                    if (state) { $tag.removeAttr('disabled'); }
-                    else { $tag.attr('disabled', 'disabled'); }
-                },
-                edit: function (cb) {
+                        return editDateOptions(cb);
+                    },
+                    reset: function () { $tag.val(''); }
+                };
+            },
+            printResults: function (answers, uid) { // results text
+                var results = [];
+                var empty = 0;
 
-                    return editDateOptions(cb);
-                },
-                reset: function () { $tag.val(''); }
-            };
-        },
-        printResults: function (answers, uid) { // results text
-            var results = [];
-            var empty = 0;
-            var tally = {};
+                var isEmpty = function (answer) {
+                    return !answer;
+                };
 
-            var isEmpty = function (answer) {
-                return !answer || !answer.trim();
-            };
-
-            Object.keys(answers).forEach(function (author) {
-                var obj = answers[author];
-                var answer = obj.msg[uid];
-                if (isEmpty(answer)) { return empty++; }
-                Util.inc(tally, answer);
-            });
-
-            //if (max < 2) { // there are no duplicates, so just return text
-                results.push(getEmpty(empty));
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
-                    if (!answer || !answer.trim()) { return empty++; }
+                    if (isEmpty(answer)) { return empty++; }
+                });
+                results.push(getEmpty(empty));
+
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = Flatpickr.formatDate(new Date(obj.msg[uid]), dateFormat);
+                    if (isEmpty(answer)) { return empty++; }
                     results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
                 });
                 return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
+            },
+            exportCSV: function (answer, form) {
+                if (answer === false) { return [form.q]; }
+                return answer ? [new Date(answer).toISOString()]
+                              : [''];
+            },
+            icon: h('i.cp-calendar-active.fa.fa-calendar')
         },
-        icon: h('i.cp-calendar-active.fa.fa-calendar')},
         checkbox: {
             compatible: ['radio', 'checkbox', 'sort'],
             defaultOpts: {
