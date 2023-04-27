@@ -1349,6 +1349,8 @@ define([
                 type: "saveChanges",
                 changes: parseChanges(JSON.stringify(aRes)),
                 changesIndex: ooChannel.cpIndex || 0,
+                startSaveChanges: true,
+                endSaveChanges: true,
                 locks: getUserLock(getId(), true),
                 excelAdditionalInfo: null
             };
