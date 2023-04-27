@@ -95,7 +95,7 @@ define([
         return h('a', attrs, [icon, text]);
     };
 
-    Pages.versionString = "5.2.1";
+    Pages.versionString = "5.3";
 
     var customURLs = Pages.customURLs = {};
     (function () {
