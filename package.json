@@ -33,6 +33,10 @@
     "jshint": "^2.13.4",
     "lesshint": "6.3.7"
   },
+  "overrides": {
+    "glob-parent": "5.1.2",
+    "set-value": "4.0.1"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "DEV=1 node server.js",
