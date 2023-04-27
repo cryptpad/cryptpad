@@ -1163,7 +1163,7 @@
     "calendar_loc": "Posizione",
     "calendar_allDay": "Tutto il giorno",
     "reminder_missed": "<b>{0}</b> ha avuto luogo il {1}",
-    "reminder_inProgress": "<b>{0}</b> iniziò il {0}",
+    "reminder_inProgress": "<b>{0}</b> iniziò il {1}",
     "reminder_minutes": "<b>{0}</b> inizierà fra {1} minuti",
     "reminder_date": "<b>{0}</b> alle {1}",
     "settings_notifCalendarTitle": "Notifiche del calendario",
