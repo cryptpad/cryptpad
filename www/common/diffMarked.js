@@ -180,7 +180,7 @@ define([
             renderer: restrictedMd ? restrictedRenderer : renderer,
         });
         noHeadingId = noId;
-        var r = Marked(md, {
+        var r = Marked.parse(md, {
             sanitize: sanitize,
             headerIds: !noId,
             gfm: true,

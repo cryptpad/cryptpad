@@ -479,7 +479,7 @@ define([
         });
     };
     var refreshDescription = function (data) {
-        var val = Marked(data.description || "");
+        var val = Marked.parse(data.description || "");
         APP.$description.html(val);
         APP.$description.off('click');
         APP.$description.click(function (e) {

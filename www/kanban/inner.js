@@ -15,7 +15,6 @@ define([
     '/common/text-cursor.js',
     '/common/diffMarked.js',
     '/components/chainpad/chainpad.dist.js',
-    '/components/marked/marked.min.js',
     'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',
@@ -49,7 +48,6 @@ define([
     TextCursor,
     DiffMd,
     ChainPad,
-    Marked,
     CodeMirror,
     jKanban,
     Export)
