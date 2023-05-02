@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Funzione IFERROR</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Funzione IFERROR</h1>
+			<p>La funzione <b>IFERROR</b> è una delle funzioni logiche. Si usa per per verificare se si è verificato un errore nella formula nel primo argomento. La funzione restituisce il risultato della formula se non c'è nessun errore, o value_if_error se c'è un errore.</p>
+			<p>La sintassi della funzione <b>IFERROR</b> è:</p> 
+			<p style="text-indent: 150px;"><b><em>IFERROR(value, value_if_error,)</em></b></p> 
+			<p>dove <b><em>value</em></b> e <b><em>value_if_error</em></b> sono i valori inseriti a mano o inclusi nella cella alla quale fate riferimento.</p>
+			<p>Per applicare la funzione <b>IFERROR</b>,</p>
+			<ol>
+			<li>selezionate la cella dove desiderate visualizzare il risultato,</li>
+			<li>cliccate sull'icona <b>Inserisci funzione</b> <img alt="Inserisci funzione" src="../images/insertfunction.png" /> sulla barra degli strumenti superiore,
+				<br />o cliccate con il tasto destro del mouse sulla cella scelta e selezionate l'opzione <b>Inserisci funzione</b> dal menu contestuale,
+				<br />o cliccate sull'icona <img alt="Funzione" src="../images/function.png" /> prima della barra della formula,
+			</li>
+			<li>selezionate il gruppo di funzioni <b>Logiche</b> dall'elenco,</li>
+			<li>cliccate sulla funzione <b>IFERROR</b>,</li>
+			<li>inserite gli argomenti richiesti separati da virgola,</li>
+			<li>premete il tasto <b>Enter</b>.</li>
+			</ol>
+			<p>Il risultato sarà visualizzato nella cella scelta.</p>
+			<p><em>Esempio:</em></p>
+			<p>Ci sono due argomenti: <em>value</em> = <b>A1/B1</b>, <em>value_if_error</em> = <b>"error"</b>, dove <b>A1</b> è <b>12</b>, <b>B1</b> è <b>3</b>. La formula nel primo argomento non contiene errori. Allora la funzione restituisce il risultato del calcolo.</p>
+			<p style="text-indent: 150px;"><img alt="Funzione IFERROR: senza errore" src="../images/noerror.png" /></p>
+			<p>Se cambiamo il valore <b>B1</b> da <b>3</b> a <b>0</b>, come la divisione per zero non è possibile, la funzione restituisce un <b>errore</b>:</p>
+			<p style="text-indent: 150px;"><img alt="Funzione IFERROR: con errore" src="../images/iferror.png" /></p>
+		</div>
+	</body>
+</html>

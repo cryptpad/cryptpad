@@ -6,6 +6,7 @@ define([
     '/common/sframe-app-framework.js',
     '/common/toolbar.js',
     '/form/export.js',
+    '/form/condorcet.js',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
@@ -52,6 +53,7 @@ define([
     Framework,
     Toolbar,
     Exporter,
+    Condorcet,
     nThen,
     SFCommon,
     Util,
@@ -73,6 +75,7 @@ define([
     Sortable
     )
 {
+
     var APP = window.APP = {
         blocks: {}
     };
@@ -140,7 +143,6 @@ define([
                 evOnSave.fire();
             }, 500));
         }
-
         var type, typeSelect;
         if (opts.type) {
             // Messages.form_text_text.form_text_number.form_text_url.form_text_email
@@ -166,7 +168,6 @@ define([
             };
             typeSelect = UIElements.createDropdown(dropdownConfig);
             typeSelect.setValue(opts.type);
-
             type = h('div.cp-form-edit-type', [
                 h('span', Messages.form_textType),
                 typeSelect[0]
@@ -181,6 +182,7 @@ define([
         var getSaveRes = function () {
             return {
                 maxLength: getLengthVal ? getLengthVal() : undefined,
+                required: opts.required ? true : false,
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
         };
@@ -199,6 +201,15 @@ define([
             saveAndCancel
         ];
     };
+
+    var editDateOptions = function (cb) {
+        var saveAndCancel = saveAndCancelOptions(cb);
+
+        return [
+            saveAndCancel
+        ];
+    };
+
     var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
         var evOnSave = Util.mkEvent();
 
@@ -648,7 +659,6 @@ define([
             if (typeSelect) {
                 res.type = typeSelect.getValue();
             }
-
             return res;
         };
 
@@ -1628,10 +1638,11 @@ define([
                 // Messages.form_input_ph_email.form_input_ph_url
                 var tag = h('input', {
                     type: opts.type,
+                    step: "any",
                     placeholder: Messages['form_input_ph_'+opts.type] || ''
                 });
                 var $tag = $(tag);
-                $tag.on('change keypress', Util.throttle(function () {
+                $tag.on('change keypress keydown', Util.throttle(function () {
                     evOnChange.fire();
                 }, 500));
                 var cursorGetter;
@@ -2009,6 +2020,78 @@ define([
                 });
             },
             icon: h('i.cptools.cptools-form-grid-radio')
+        },
+        date: {
+            defaultOpts: {
+                type: 'date',
+            },
+            get: function (opts, a, n, evOnChange) {
+                opts = Util.clone(TYPES.date.defaultOpts);
+
+                var tag = h('input');
+
+                var picker = Flatpickr(tag, {
+                    enableTime: true,
+                    time_24hr: is24h,
+                    dateFormat: dateFormat,
+                });
+
+                var $tag = $(tag);
+                $tag.on('change keypress', Util.throttle(function () {
+                    evOnChange.fire();
+                }, 500));
+
+
+                return {
+                    tag: tag,
+                    isEmpty: function () { return !$tag.val().trim(); },
+                    getValue: function () {
+                        var d = picker.parseDate(tag.value);
+                        return +d;
+                    },
+                    setValue: function (val) {
+                        picker.setDate(new Date(val), false);
+                    },
+                    setEditable: function (state) {
+                        if (state) { $tag.removeAttr('disabled'); }
+                        else { $tag.attr('disabled', 'disabled'); }
+                    },
+                    edit: function (cb) {
+
+                        return editDateOptions(cb);
+                    },
+                    reset: function () { $tag.val(''); }
+                };
+            },
+            printResults: function (answers, uid) { // results text
+                var results = [];
+                var empty = 0;
+
+                var isEmpty = function (answer) {
+                    return !answer;
+                };
+
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = obj.msg[uid];
+                    if (isEmpty(answer)) { return empty++; }
+                });
+                results.push(getEmpty(empty));
+
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = Flatpickr.formatDate(new Date(obj.msg[uid]), dateFormat);
+                    if (isEmpty(answer)) { return empty++; }
+                    results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
+                });
+                return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
+            },
+            exportCSV: function (answer, form) {
+                if (answer === false) { return [form.q]; }
+                return answer ? [new Date(answer).toISOString()]
+                              : [''];
+            },
+            icon: h('i.cp-calendar-active.fa.fa-calendar')
         },
         checkbox: {
             compatible: ['radio', 'checkbox', 'sort'],
@@ -2417,7 +2500,8 @@ define([
                         });
                         sortNode(toSort);
                         reorder();
-                    }
+                    },
+
                 };
 
             },
@@ -2439,7 +2523,6 @@ define([
                         Util.inc(count, el, score);
                     });
                 });
-
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-charts.cp-bar-table', rendered);
             },
@@ -2783,7 +2866,9 @@ define([
         var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
         $controls.hide().append(switchMode);
 
+
         var show = function (answers, header) {
+
             var order = getFullOrder(content);
             var elements = order.map(function (uid) {
                 var block = form[uid];
@@ -2798,9 +2883,137 @@ define([
                     answers: answers
                 });
 
-                var q = h('div.cp-form-block-question', block.q || Messages.form_default);
 
-//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
+                var showCondorcetWinner = function(answers, opts, condorcetMethod, uid) {
+
+                    var _answers = parseAnswers(answers);
+
+                    var optionArray = [];
+                    opts.values.forEach(function (option) {
+                        optionArray.push(option.v);
+                    });
+
+                    var listOfLists = [];
+                    Object.keys(_answers).forEach(function(a) {
+                        if (_answers[a].msg[uid]) {
+                            listOfLists.push(_answers[a].msg[uid]);
+                        }
+                    });
+                    try {
+                        if (listOfLists.length) {
+                            return Condorcet.showCondorcetWinner(condorcetMethod, optionArray, listOfLists);
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        return [];
+                    }
+                };
+
+                var condorcetWinnerDiv = h('div.cp-form-block-content');
+                var condorcetMethod = 'schulze';
+                try {
+                if (type === "sort" && summary) {
+                    var calculateCondorcet = function() {
+                        var condorcetResults = h('span');
+                        var c = showCondorcetWinner(answers, block.opts, condorcetMethod, uid);
+                        if (!c) { return; }
+                        var condorcetWinner = c[0];
+                        var rankedResults = c[1];
+                        if (!condorcetWinner || !condorcetResults) { return; }
+                        if (condorcetWinner.length > 1) {
+                            condorcetResults.append(h('span', condorcetWinner.join(', ')));
+                        } else if (condorcetWinner.length === 1 ) {
+                            condorcetResults.append(h('span', condorcetWinner));
+                        } else {
+                            condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
+                        }
+                        var detailedResults = rankedResults.reverse().map(function(result) {
+                            if (result.length > 1) {
+                                return result[1].join(', ') + ' : ' + result[0];
+                            } else {
+                                return result[1] + ' : ' + result[0];
+                            }
+                        });
+                        return [condorcetResults, detailedResults];
+                    };
+
+                    var dropdownOpts = [{
+                        key: 'schulze',
+                        str: Messages.form_condorcetSchulze
+                    }, {
+                        key: 'ranked',
+                        str: Messages.form_condorcetRanked
+                    }];
+
+                    var options = dropdownOpts.map(function (t) {
+                        return {
+                            tag: 'a',
+                            attributes: {
+                                'class': 'cp-form-type-value',
+                                'data-value': t.key,
+                                'href': '#',
+                            },
+                            content: t.str
+                        };
+                    });
+                    var dropdownConfig = {
+                        text: '', // Button initial text
+                        options: options,
+                        isSelect: true,
+                        caretDown: true,
+                        buttonCls: 'btn btn-secondary'
+                    };
+                    var typeSelect = UIElements.createDropdown(dropdownConfig);
+                    typeSelect.setValue(condorcetMethod);
+                    var evOnChange = Util.mkEvent();
+                    typeSelect.onChange.reg(evOnChange.fire);
+
+                    var method = h('div.cp-dropdown-container', typeSelect[0]);
+
+                    condorcetWinnerDiv = h('div.cp-form-edit-type');
+                    var detailsContainer, condorcetWinner;
+
+                    var condorcetResult = calculateCondorcet();
+                    if (condorcetResult) {
+                        condorcetWinner = h('span#cp-condorcet-winner', condorcetResult[0]);
+                        detailsContainer = h('details#cp-condorcet-details', [
+                            h('summary', Messages.form_showDetails),
+                            Messages.form_condorcetExtendedDisplay,
+                            h('div', condorcetResult[1].join(', '))
+                        ]);
+                    }
+
+                    evOnChange.reg(function () {
+                        $('#cp-condorcet-winner').empty();
+                        $('#cp-condorcet-details').empty();
+                        condorcetMethod = typeSelect.getValue();
+                        var condorcetResult = calculateCondorcet();
+                        if (!condorcetResult || !condorcetResult[0] || !condorcetResult[1]) {
+                            return;
+                        }
+                        $('#cp-condorcet-winner').replaceWith(h('span#cp-condorcet-winner', condorcetResult[0]));
+                        $('#cp-condorcet-details').replaceWith(h('details#cp-condorcet-details', [
+                            h('summary', Messages.form_showDetails),
+                            Messages.form_condorcetExtendedDisplay,
+                            h('div', condorcetResult[1].join(', '))
+                        ]));
+                    });
+
+                    condorcetWinnerDiv.append(h('div.cp-form-result-details', [
+                        h('span', Messages.form_showCondorcetMethod),
+                        method,
+                        h('span', Messages.form_showCondorcetWinner, condorcetWinner),
+                        detailsContainer
+                    ]));
+
+                }
+                } catch (err) {
+                    console.error(err);
+                }
+
+
+                var q = h('div.cp-form-block-question', block.q || Messages.form_default);
+//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section.form_type_date
                 return h('div.cp-form-block', [
                     h('div.cp-form-block-type', [
                         TYPES[type].icon.cloneNode(),
@@ -2808,12 +3021,14 @@ define([
                     ]),
                     q,
                     h('div.cp-form-block-content', print),
+                    condorcetWinnerDiv,
                 ]);
             });
             $results.empty().append(elements);
             if (header) { $results.prepend(header); }
         };
         show(answers);
+
 
         if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
@@ -3460,7 +3675,6 @@ define([
                     if (!data.isEmpty) { return; }
                     if (!block) { return; }
                     if (!block.opts || !block.opts.required) { return; }
-
                     // Don't require questions that are in a hidden section
                     var section = getSectionFromQ(content, uid);
                     if (section.uid) {
@@ -3695,6 +3909,7 @@ define([
                 uid: uid,
                 tmp: temp && temp[uid]
             });
+
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -3763,6 +3978,7 @@ define([
             if (APP.isEditor && type === "section") {
                 data.editing = true;
             }
+
 
             var changeType;
             if (editable) {
@@ -3842,6 +4058,7 @@ define([
                         model.icon.cloneNode(),
                         h('span', Messages['form_type_'+type])
                     ]);
+
 
                 // Values
                 if (data.edit) {
@@ -4038,7 +4255,7 @@ define([
         $container.empty().append(_content);
 
 
-// XXX Delete key form_updateMsg
+// XXX Delete translation key form_updateMsg
         if (editable) {
             var responseMsg = h('div.cp-form-response-msg-container');
             var $responseMsg = $(responseMsg).appendTo($container);
@@ -4539,6 +4756,7 @@ define([
             var endDateStr = h('div');
             var $endDate = $(endDateContainer);
             var $endDateStr = $(endDateStr);
+        
             var refreshEndDate = function () {
                 $endDate.empty();
 
@@ -4593,7 +4811,6 @@ define([
                         refreshEndDate();
                     });
                     var confirmContent = h('div', [
-                        h('div', Messages.form_setEnd),
                         h('div.cp-form-input-block', [datePicker, save, cancel]),
                     ]);
                     $button.after(confirmContent);

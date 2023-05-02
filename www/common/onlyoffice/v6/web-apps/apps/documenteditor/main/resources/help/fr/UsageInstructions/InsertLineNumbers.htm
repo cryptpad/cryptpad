@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Insérer des numéros de ligne</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Insérer des numéros de ligne dans Document Editor" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Insérer des numéros de ligne</h1>
+        <p><a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>ONLYOFFICE Document Editor</b></a> peut automatiquement compter les lignes dans votre document. Cette fonction est utile lorsque vous devez faire référence à des lignes spécifiques dans un document, comme un contrat juridique ou un code de script. Pour ajouter la numérotation de ligne dans un document, utiliser la fonction <img alt="L'icône Numéros de ligne" src="../images/linenumbers_icon.png" /> <B>Numéros de ligne</B>. Veuillez noter que le texte ajouté aux objets tels que les tableaux, les zones de texte, les graphiques, les en-têtes/pieds de page etc n'est pas inclus dans la numérotation consécutive. Tous ces objets comptent pour une ligne.</p>
+        <h2>Ajouter des numéros de ligne</h2>
+        <ol>
+            <li>Accédez à l'onglet <b>Disposition</b> dans la barre d'outils en haut et appuyez sur l'icône  <img alt="L'icône Numéros de ligne" src="../images/linenumbers_icon.png" /><b>Numéros de ligne</b>.</li>
+            <li>
+                Pour une configuration rapide, sélectionnez les paramètres appropriés dans la liste déroulante:
+                <ul>
+                    <li><b>Continue</b> - pour une numérotation consécutive dans l'ensemble du document.</li>
+                    <li><b>Restaurer</b> <B>chaque page </B>- pour commencer la numérotation consécutive sur chaque page.</li>
+                    <li><b>Restaurer</b> <B>chaque section</B> - pour commencer la numérotation consécutive sur chaque section du document. Veuillez consulter <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">ce guide</a> pour en savoir plus sur le sauts de sections.</li>
+                    <li><b>Supprimer pour le paragraphe actif</b> - pour supprimer la numérotation de ligne du paragraphe actuel. Cliquez avec le bouton gauche de la souris et sélectionnez les paragraphes pour lesquels on veut supprimer les numéros de ligne avant d'opter pour cette option.</li>
+                </ul>
+            </li>
+            <li>
+                Configurez les paramètres avancés si vous en avez besoin. Cliquez sur <B>Paramètres de la numérotation de ligne</B> dans le menu déroulant<B> <B>Numéros de ligne</B>.</B> Cochez la case<B> Ajouter la numérotation des lignes</B> pour ajouter des numéros de ligne au document et pour accéder aux paramètres avancées:
+                <p><img alt="La fenêtre Numéros de lignes." src="../images/linenumbers_window.png" /></p>
+                <ul>
+                    <li><b>Commencer par</b> - spécifiez à quelle ligne la numérotation doit commencer. Par défaut, il démarre à 1.</li>
+                    <li><b>À partir du texte</b> - saisissez les valeurs de l'espace situé entre le texte et le numéro de ligne. Les unités de distance sont affichées en cm. Le paramètre par défaut est <B>Auto</B>.</li>
+                    <li><b>Compter par</b> - spécifiez la valeur de variable si celle-ci n' augmente pas à 1, c'est-à-dire numéroter chaque ligne ou seulement une sur deux, une sur 3, une sur 4, une sur 5 etc. Saisissez une valeur numérique. Par défaut, il démarre à 1.</li>
+                    <li><b>Restaurer</b> <B>chaque page </B>- pour commencer la numérotation consécutive sur chaque page.</li>
+                    <li><b>Restaurer</b> <B>chaque section</B> - pour commencer la numérotation consécutive sur chaque section du document.</li>
+                    <li><b>Continue</b> - pour une numérotation consécutive dans l'ensemble du document.</li>
+                    <li>Dans la liste déroulante<B> Appliquer les modifications à</B> sélectionnez la partie du document à laquelle vous souhaitez ajouter des numéros de lignes. Choisissez parmi les options suivantes: <B>À cette section</B> pour ajouter des numéros de ligne à la section du document spécifiée; <B>A partir de ce point</B> pour ajouter des numéros de ligne à partir du point où votre curseur est placé; <B>A tout le document</B> pour ajouter des numéros de ligne à tout ce document. Par défaut, le paramètre est <B>A tout le document</B>.</li>
+                    <li>Cliquez sur <B>OK </B>pour appliquer les modifications.</li>
+                </ul>
+            </li>
+        </ol>
+        <h2>Supprimer les numéros de ligne</h2>
+        <p>Pour supprimer les numéros de ligne,</p>
+        <ol>
+            <li>accédez à l'onglet <b>Disposition</b> dans la barre d'outils en haut et appuyez sur l'icône <img alt="L'icône Numéros de ligne" src="../images/linenumbers_icon.png" /> <b>Numéros de ligne</b>.</li>
+            <li>sélectionnez l'option <B>Aucune</B> dans le menu déroulant ou appuyez sur <B>Paramètres de numérotation des lignes </B>et décochez la case <B>Ajouter la numérotation de ligne</B> dans la boîte de dialogue <B>Numéros de ligne</B>.</li>
+        </ol>
+    </div>
+</body>
+</html>

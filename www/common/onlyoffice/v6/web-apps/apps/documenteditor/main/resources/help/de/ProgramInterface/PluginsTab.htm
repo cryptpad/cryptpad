@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Registerkarte Plugins</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Einführung in die Benutzeroberfläche des Dokumenteneditors – die Registerkarte «Plugins»" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Registerkarte Plugins</h1>
+            <p>Die Registerkarte <b>Plugins</b> im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> ermöglicht den Zugriff auf erweiterte Bearbeitungsfunktionen mit verfügbaren Komponenten von Drittanbietern. Unter dieser Registerkarte können Sie auch Makros festlegen, um Routinevorgänge zu vereinfachen.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Dialogbox Online-Dokumenteneditor:</p>
+                <p><img alt="Registerkarte Plug-ins" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Dialogbox Desktop-Dokumenteneditor:</p>
+                <p><img alt="Registerkarte Plugins" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">Durch Anklicken der Schaltfläche <b>Einstellungen</b> öffnet sich das Fenster, in dem Sie alle installierten Plugins finden und verwalten sowie eigene Plugins hinzufügen können.</p>
+            <p>Durch Anklicken der Schaltfläche <b>Makros</b> öffnet sich ein Fenster in dem Sie Ihre eigenen Makros erstellen und ausführen können. Um mehr über Makros zu erfahren, lesen Sie bitte unsere <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">API-Dokumentation</a>.</p>
+            <p>Derzeit stehen standardmäßig folgende Plugins zur Verfügung:</p>		
+            <ul>
+                <li class="desktopDocumentFeatures"><b>Senden</b> erlaubt das versenden des Dokumentes durch das Standard Desktop Email Programm (nur in der <em>Desktop-Version</em> verfügbar).</li>
+                <li><a href="../UsageInstructions/HighlightedCode.htm" onclick="onhyperlinkclick(this)">Code hervorheben</a> - Hervorhebung der Syntax des Codes durch Auswahl der erforderlichen Sprache, des Stils, der Hintergrundfarbe.</li>
+                <li><a href="../UsageInstructions/OCR.htm" onclick="onhyperlinkclick(this)">OCR</a> ermöglicht es, in einem Bild enthaltene Texte zu erkennen und es in den Dokumenttext einzufügen.</li>
+                <li><a href="../UsageInstructions/PhotoEditor.htm" onclick="onhyperlinkclick(this)">Foto-Editor</a> - Bearbeitung von Bildern: schneiden, umlegen, rotieren, Linien und Formen zeichnen, Symbole und Text einfügen, eine Bildmaske laden und verschiedene Filter anwenden, wie zum Beispiel Graustufe, Invertiert, Blur, Schärfen, Emboss, usw.</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/Speech.htm" onclick="onhyperlinkclick(this)">Rede</a> ermöglicht es, ausgewählten Text in Sprache zu konvertieren.</li>
+                <li><a href="../UsageInstructions/Thesaurus.htm" onclick="onhyperlinkclick(this)">Thesaurus</a> erlaubt es, nach Synonymen und Antonymen eines Wortes zu suchen und es durch das ausgewählte Wort zu ersetzen.</li>
+                <li>
+                    <a href="../UsageInstructions/Translator.htm" onclick="onhyperlinkclick(this)">Übersetzer</a> erlaubt es, den ausgewählten Textabschnitten in andere Sprachen zu übersetzen.
+                    <p class="note">Dieses Plugin funktioniert nicht im Internet Explorer.</p>
+                </li>
+                <li><a href="../UsageInstructions/YouTube.htm" onclick="onhyperlinkclick(this)">YouTube</a> erlaubt es, YouTube-Videos in Ihr Dokument einzubetten.</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#Mendeley_block" onclick="onhyperlinkclick(this)">Mendeley</a> ermöglicht die Verwaltung von Forschungsarbeiten und die Erstellung von Bibliografien für wissenschaftliche Artikel (nur in der <em>Online-Version</em> verfügbar).</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#Zotero_block" onclick="onhyperlinkclick(this)">Zotero</a> erlaubt es, die bibliografischen Daten und zugehöriges Forschungsmaterial zu verwalten (nur in der <em>Online-Version</em> verfügbar).</li>
+                <li class="onlineDocumentFeatures"><a href="../UsageInstructions/InsertReferences.htm#EasyBib_block" onclick="onhyperlinkclick(this)">EasyBib</a> hilft beim Suchen und Einfügen verwandter Bücher, Zeitschriftenartikel und Websites (nur in der <em>Online-Version</em> verfügbar).</li>
+</ul>
+            <p class="onlineDocumentFeatures">Die Plugins <b>WordPress</b> und <b>EasyBib</b> können verwendet werden, wenn Sie die entsprechenden Dienste in Ihren Portaleinstellungen einrichten. Sie können die folgenden Anleitungen für die <a target="_blank" href="https://helpcenter.onlyoffice.com/server/windows/community/authorization-keys.aspx" onclick="onhyperlinkclick(this)">Serverversion</a> oder <a target="_blank" href="https://helpcenter.onlyoffice.com/tipstricks/authorization-keys-saas.aspx" onclick="onhyperlinkclick(this)">für die SaaS-Version</a> verwenden.</p>
+            <p>Um mehr über Plugins zu erfahren, lesen Sie bitte unsere <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">API-Dokumentation</a>. Alle derzeit als Open-Source verfügbaren Plugin-Beispiele sind auf <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a> verfügbar.</p>
+		</div>
+	</body>
+</html>

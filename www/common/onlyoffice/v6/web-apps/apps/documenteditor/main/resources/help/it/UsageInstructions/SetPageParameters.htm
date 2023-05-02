@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Set page parameters</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Set page parameters: change page orientation and size, adjust margins and insert columns" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Set page parameters</h1>
+            <p>To change page layout, i.e. set page orientation and size, adjust margins and insert columns, use the corresponding icons at the <b>Layout</b> tab of the top toolbar.</p>
+            <p class="note"><b>Note</b>: all these parameters are applied to the entire document. If you need to set different page margins, orientation, size, or column number for the separate parts of your document, please refer to <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">this page</a>.</p>
+            <h3 id="orientation">Page Orientation</h3>
+            <p>Change the current orientation type clicking the <img alt="Orientation icon" src="../images/orientation.png" /> <b>Orientation</b> icon. The default orientation type is <b>Portrait</b> that can be switched to <b>Album</b>.</p>
+            <h3 id="size">Page Size</h3>
+            <p>Change the default A4 format clicking the <img alt="Size icon" src="../images/pagesize.png" /> <b>Size</b> icon and selecting the needed one from the list. The available preset sizes are:</p>
+            <ul>
+                <li>US Letter (21,59cm x 27,94cm)</li>
+                <li>US Legal (21,59cm x 35,56cm)</li>
+                <li>A4 (21cm x 29,7cm)</li>
+                <li>A5 (14,81cm x 20,99cm)</li>
+                <li>B5 (17,6cm x 25,01cm)</li>
+                <li>Envelope #10 (10,48cm x 24,13cm)</li>
+                <li>Envelope DL (11,01cm x 22,01cm)</li>
+                <li>Tabloid (27,94cm x 43,17cm)</li>
+                <li>AЗ (29,7cm x 42,01cm)</li>
+                <li>Tabloid Oversize (30,48cm x 45,71cm)</li>
+                <li>ROC 16K (19,68cm x 27,3cm)</li>
+                <li>Envelope Choukei 3 (11,99cm x 23,49cm)</li>
+                <li>Super B/A3 (33,02cm x 48,25cm)</li>
+            </ul>
+            <p>You can also set a special page size by selecting the <b>Custom Page Size</b> option from the list. The <b>Page Size</b> window will open where you'll be able to select the necessary <b>Preset</b> (US Letter, US Legal, A4, A5, B5, Envelope #10, Envelope DL, Tabloid, AЗ, Tabloid Oversize, ROC 16K, Envelope Choukei 3, Super B/A3, A0, A1, A2, A6) or set custom <b>Width</b> and <b>Height</b> values. Enter your new values into the entry fields or adjust the existing values using arrow buttons. When ready, click <b>OK</b> to apply the changes.</p>
+            <p><img alt="Custom Page Size" src="../images/custompagesize.png" /></p>
+            <h3 id="margins">Page Margins</h3>
+            <p>Change default margins, i.e. the blank space between the left, right, top and bottom page edges and the paragraph text, clicking the <img alt="Margins icon" src="../images/pagemargins.png" /> <b>Margins</b> icon and selecting one of the available presets: <b>Normal</b>, <b>US Normal</b>, <b>Narrow</b>, <b>Moderate</b>, <b>Wide</b>. You can also use the <b>Custom Margins</b> option to set your own values in the <b>Margins</b> window that opens. Enter the necessary <b>Top</b>, <b>Bottom</b>, <b>Left</b> and <b>Right</b> page margin values into the entry fields or adjust the existing values using arrow buttons.</p>
+            <p><img alt="Custom Margins" src="../images/custommargins.png" /></p>
+            <p><b>Gutter position</b> is used to set up additional space on the left or top of the document. Gutter option might come in handy to make sure bookbinding does not cover text. In <b>Margins</b> window enter the necessary gutter position into the entry fields and choose where it should be placed in.</p>
+            <p class="note"><b>Note</b>: Gutter position function cannot be used when <b>Mirror margins</b> option is checked.</p>
+            <p>In <b>Multiple pages</b> drop-down menu choose <b>Mirror margins</b> option to to set up facing pages for double-sided documents. With this option checked, <b>Left</b> and <b>Right</b> margins turn into <b>Inside</b> and <b>Outside</b> margins respectively.</p>
+            <p>In <b>Orientation</b> drop-down menu choose from <b>Portrait</b> and <b>Landscape</b> options.</p>
+            <p>All applied changes to the document will be displayed in the <b>Preview</b> window.</p>
+            <p>When ready, click <b>OK</b>. The custom margins will be applied to the current document and the <b>Last Custom</b> option with the specified parameters will appear in the <img alt="Margins icon" src="../images/pagemargins.png" /> <b>Margins</b> list so that you can apply them to some other documents.</p></p>
+            <p>You can also change the margins manually by dragging the border between the grey and white areas on the rulers (the grey areas of the rulers indicate page margins):</p>
+            <p><img alt="Margins Adjustment" src="../images/margins.png" /></p>
+            <h3 id="columns">Columns</h3>
+            <p>Apply a multi-column layout clicking the <img alt="Columns icon" src="../images/insertcolumns.png" /> <b>Columns</b> icon and selecting the necessary column type from the drop-down list. The following options are available:</p>
+            <ul>
+                <li><b>Two</b> <img alt="Two columns icon" src="../images/twocolumns.png" /> - to add two columns of the same width,</li>
+                <li><b>Three</b> <img alt="Three columns icon" src="../images/threecolumns.png" /> - to add three columns of the same width,</li>
+                <li><b>Left</b> <img alt="Left column icon" src="../images/leftcolumn.png" /> - to add two columns: a narrow column on the left and a wide column on the right,</li>
+                <li><b>Right</b> <img alt="Right column icon" src="../images/rightcolumn.png" /> - to add two columns: a narrow column on the right and a wide column on the left.</li>
+            </ul>
+            <p>If you want to adjust column settings, select the <b>Custom Columns</b> option from the list. The <b>Columns</b> window will open where you'll be able to set necessary <b>Number of columns</b> (it's possible to add up to 12 columns) and <b>Spacing between columns</b>. Enter your new values into the entry fields or adjust the existing values using arrow buttons. Check the <b>Column divider</b> box to add a vertical line between the columns. When ready, click <b>OK</b> to apply the changes.</p>
+            <p><img alt="Custom Columns" src="../images/customcolumns.png" /></p>
+            <p>To exactly specify where a new column should start, place the cursor before the text that you want to move into the new column, click the <img alt="Breaks icon" src="../images/pagebreak1.png" /> <b>Breaks</b> icon at the top toolbar and then select the <b>Insert Column Break</b> option. The text will be moved to the next column.</p>
+            <p>Added column breaks are indicated in your document by a dotted line: <img alt="Column break" src="../images/columnbreak.png" />. If you do not see the inserted column breaks, click the <img alt="Nonprinting Characters icon" src="../images/nonprintingcharacters.png" /> icon at the <b>Home</b> tab of the top toolbar to display them. To remove a column break select it with the mouse and press the <b>Delete</b> key.</p>
+            <p>To manually change the column width and spacing, you can use the horizontal ruler.</p>
+            <p><img alt="Column spacing" src="../images/columnspacing.png" /></p>
+            <p>To cancel columns and return to a regular single-column layout, click the <img alt="Columns icon" src="../images/insertcolumns.png" /> <b>Columns</b> icon at the top toolbar and select the <b>One</b> <img alt="One column icon" src="../images/onecolumn.png" /> option from the list.</p>
+        </div>
+	</body>
+</html>

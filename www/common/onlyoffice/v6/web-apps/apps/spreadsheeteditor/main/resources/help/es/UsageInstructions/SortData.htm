@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ordene y filtre sus datos</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Sort your data in ascending or descending order in a spreadsheet" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Ordene y filtre sus datos</h1>
+			<h3>Ordene datos</h3>
+			<p>Usted puede ordenar de forma rápida sus datos en una hoja de cálculo usando las opciones disponibles:</p>
+			<ul>
+			<li><b>Ascendente</b> se usa para ordenar sus datos de forma ascendente - por orden alfabético desde A hasta Z o del número más pequeño al más grande par datos numéricos.</li>
+			<li><b>Descendiente</b> se usa para ordenar sus datos de forma descendente - por orden alfabético desde Z hasta A o del número mas grande al más pequeño para datos numéricos.</li>
+			</ul>
+			<p>Para ordenar sus datos,</p>
+			<ol>
+				<li>seleccione un rango de celdas que quiere ordenar (puede seleccionar una sola celda  en un rango para ordenar el rango entero),</li>
+				<li>pulse el icono <b>Clasificar en orden ascendente</b> <img alt="Icono Clasificar en orden ascendente" src="../images/sortatoz.png" /> en la  pestaña de <b>Inicio</b> en la barra de herramientas superior para ordenar sus datos en orden ascendente, <br />O<br /> pulse el icono <b>Clasificar en orden descendiente</b> <img alt="Icono Clasificar en orden descendiente" src="../images/sortztoa.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior para ordenar sus datos en orden descendiente.</li>
+			</ol>
+            <p class="note"><b>Nota</b>: si selecciona una sola columna/fila dentro de un rango de celdas o una parte de la columna/fila, se le preguntará si quiere expandir la selección para incluir celdas contiguas o solo ordenar los datos seleccionados.</p>
+			<p>También puede ordenar sus datos usando las opciones en el <b>menú contextual</b>. Haga clic derecho en el rango de celdas seleccionado, seleccione la opción <b>Ordenar</b> del menú y luego seleccione la opción <b>Ascendente</b> o <b>Descendente</b> del submenú.</p>
+            <p>También es posible ordenar los datos por color usando el menú contextual:</p>
+            <ol>
+                <li>haga clic derecho en una celda que tenga el color con el que quiere ordenar sus datos,</li>
+                <li>seleccione la opción <b>Ordenar</b> en el menú.</li>
+                <li>seleccione la opción necesaria en el submenú:<ul>
+                        <li><b>Color de celda seleccionado encima</b> - para mostrar las entradas con el mismo color de fondo de celda encima de la columna,</li>
+                        <li><b>Color de letra seleccionado encima</b> - para mostrar las entradas con el mismo color de fondo de letra encima de la columna,</li>
+                    </ul>
+                </li>
+            </ol>            
+                        
+			<h3 id="filter">Filtre datos</h3>
+			<p>Para mostrar solo las filas que cumplen ciertos criterios y ocultar las demás, use la opción <b>Filtro</b>.</p><b>Para activar un filtro,</b><ol>
+                <li>seleccione un rango de celdas con datos que quiere filtrar (puede seleccionar una sola celda  en un rango para filtrar el rango entero),</li>
+                <li>Haga clic en el icono <b>Filtro</b> <img alt="Icono Filtro" src="../images/sortandfilter.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior.<p>La flecha de despliegue <img alt="Flecha de despliegue" src="../images/dropdownarrow.png" /> aparecerá en la primera celda de cada columna del rango seleccionado. Esto significa que la opción de filtro está activada.</p>
+                </li>
+            </ol>
+            <p><b>Para activar un filtro,</b></p>
+            <ol>
+                <li>Haga clic en el flecha de despliegue <img alt="Flecha de despliegue" src="../images/dropdownarrow.png" />. La lista de opciones <b>Filtro</b> se abrirá:<p><img alt="Ventana de filtro" src="../images/filterwindow.png" /></p>
+                </li>
+                <li>
+                <p>Ajuste los parámetros de filtro. Puede proceder de tres formas distintas: seleccione los datos para mostrar, filtre los datos usando criterios o filtre los datos por color.</p>
+                    <ul>
+                        <li><b>Seleccione los datos para mostrar</b><p>Des verifique las casillas al lado de los datos que quiere ocultar. Para su conveniencia, todos los datos dentro de la opción <b>Filtro</b> se ordenan de manera ascendente.</p>
+                            <p class="note"><b>Nota</b>: la opción <b>{Espacios}</b> corresponde a las celdas vacías. Está disponible si el rango de celdas seleccionado contiene por lo menos una сelda vacía.</p>
+                            <p>Para facilitar el proceso, use el campo de búsqueda en la parte superior. Introduzca su consulta, total o de forma parcial, en el campo <!--and press the Enter key--> - los valores que incluyen estos caracteres se mostraran en la lista inferior. Las siguientes dos opciones también estarán disponibles:</p>
+                            <ul>
+                                <li><b>Seleccione Todos los resultados de Búsqueda</b> - está verificado por defecto. Permite seleccionar todos los valores correspondientes a su consulta en la lista.</li>
+                                <li><b>Añadir selección actual al filtro</b> - si verifica este cuadro, los valores seleccionados no se ocultarán cuando aplique el filtro.</li>
+                            </ul>
+                            <p>Después de que seleccione todos los datos necesarios, haga clic en el botón <b>OK</b> en la lista de opciones <b>Filtro</b> para aplicar el filtro.</p>
+                        </li>
+                        <li><b>Filtre los datos usando criterios</b><p>Dependiendo de los datos contenidos en la columna seleccionada, puede elegir entre las opciones de <b>Filtro de números</b> o <b>Filtro de texto</b> en la parte derecha en la lista de opciones <b>Filtro</b>, y luego seleccionar una de las opciones del submenú:</p>
+                            <ul>
+                                <li>Para el <b>Filtro de números</b> las siguientes opciones están disponibles: <em>Iguales...</em>, <em>No se iguala a...</em>, <em>Mayor que...</em>, <em>Mayor que o igual a...</em>, <em>Menor que...</em>, <em>Menor que o igual a...</em>, <em>Entre</em>, <em>Top 10</em>, <em>Por encima de la media</em>, <em>Por debajo de la media</em>, <em>Filtro personalizado...</em>.</li>
+                                <li>Para el <b>Filtro de texto</b> las siguientes opciones están disponibles: <em>Iguak...</em>, <em>No es igual...</em>, <em>Comienza con...</em>, <em>No comienza con...</em>, <em>Termina con...</em>, <em>No termina con...</em>, <em>Contiene...</em>, <em>No contiene...</em>, <em>Filtro personalizado...</em>.</li>
+                            </ul>
+                            <p>Después de seleccionar una de las opciones de arriba, (a parte de <em>Top 10</em> y <em>Por encima/debajo de la media</em>), la ventana de <b>Filtro personalizado</b> se abrirá. Los criterios correspondientes se seleccionarán en la lista desplegable superior. Introduzca el valor necesario en el campo correspondiente de la derecha.</p>
+                            <p>Para añadir un criterio más, use el botón <b>Y</b> si necesita que los datos satisfagan los dos criterios o haga clic en el botón <b>O</b> si tanto uno como los dos criterios pueden satisfacerse. Luego seleccione el segundo criterio de la lista despegable inferior e introduzca el valor necesario en la parte derecha.</p>
+                            <p>Haga clic en <b>OK</b> para aplicar el filtro.</p>
+                            <p><img alt="Ventana de filtro personalizado" src="../images/customfilterwindow.png" /></p>
+                            <p>Si elije la opción <em>Filtro Personalizado...</em> de la lista de opciones <b>Filtro número/texto</b>, el primer criterio no se selecciona de forma automática, puede ajustarlo usted mismo.</p>
+                            <p>Si elije la opción <em>Top 10</em> de la lista de opciones <b>Filtro números</b>, una nueva venta se abrirá:</p>
+                            <p><img alt="Ventana Top 10 Filtro automático" src="../images/topten.png" /></p>
+                            <p>La primera lista despegable permite elegir si quiere mostrar los valores más altos  (<b>Top</b>) o más bajos  (<b>Bajos</b>) . El segundo campo permite especificar cuantas entradas de la lista o que porcentaje de todas las entradas quiere mostrar (puede introducir un número del 1 al 500). La tercera lista despegable permite configurar unidades de medida: <b>Elemento</b> o <b>Porcentaje</b>. Una vez que los parámetros necesarios se ajustan, haga clic en <b>OK</b> para aplicar el filtro.</p>
+                            <p>Si elije la opción <em>Por encima/debajo de la media</em> de la lista de opciones <b>Filtro números</b>, el filtro se aplicará de forma inmediata.</p>
+                        </li>
+                        <li><b>Filtre los datos por color</b><p>Si el rango de celdas que quiere filtrar tiene algunas celdas</p>
+                            <ul>
+                                <li><b>Filtrar según el color de las celdas</b> - para mostrar solo las entradas que tengan un cierto color de fondo en la celda y ocultar las demás.</li>
+                                <li><b>Filtrar según el color de la letra</b> - para mostrar solo las entradas que tengan un cierto color de letra en la celda y ocultar las demás.</li>
+                            </ul>
+                            <p>Cuando selecciona la opción necesaria, una paleta que contiene colores usados en la celda seleccionada se abrirá. Elija uno de los colores para aplicar el filtro.</p>
+                            <p><img alt="Filtre los datos por color" src="../images/filterbycolor.png" /></p>
+                        </li>
+                    </ul>
+                    <p>El botón <b>Filtro</b> <img alt="Icono filtro" src="../images/filterbutton.png" /> aparecerá en la primera celda de la columna. Esto significa que la opción de filtro está activada. El número de archivos filtrados se mostrará en la barra de estado (ejemplo, <em>25 de 80 archivos filtrados</em>).</p>
+                    <p class="note"><b>Nota</b>: cuando se aplica el filtro, las filas que se han filtrado ya no se pueden modificar cuando las auto rellene, formatee, o elimine el contenido visible. Dicha acción afecta solo a las filas visibles, las filas que están ocultas por el filtro no cambian. Cuando copie y pegue los datos filtrados, solo las filas visibles pueden ser copiadas y pegadas. Esto no es equivalente a las filas que se ocultan de forma manual, las cuales son afectas por acciones parecidas.</p>
+                </li>
+			</ol>
+            <h3>Organizar datos filtrados</h3>
+            <p>Puede ajustar el <b>orden de organización</b> de los datos que ha hecho disponibles o a los que ha aplicado el filtro. Haga clic en el flecha de despliegue <img alt="Flecha de despliegue" src="../images/dropdownarrow.png" /> o el botón <b>Filtro</b> <img alt="Botón Filtro" src="../images/filterbutton.png" /> y seleccione una de las opciones en la listas de opciones  <b>Filtro</b>:</p>
+                <ul>
+                    <li><b>Del más pequeño al más grande</b> - permite organizar sus datos de forma ascendente, mostrando el valor más pequeño al principio de la columna,</li>
+                    <li><b>Del más grande al más pequeño</b> - permite organizar sus datos de forma descendiente, mostrando el valor más grande  al principio de la columna,</li>
+                    <li><b>Organizar por color de celda</b> - permite seleccionar uno de los colores y mostrar las entradas con el mismo color de fondo de celda al principio de la columna,</li>
+                    <li><b>Organizar por color de letra</b> - permite seleccionar uno de los colores y mostrar las entradas con el mismo color de letra de celda al principio de la columna.</li>
+                </ul>
+                <p>Las dos últimas opciones se pueden usar si el rango de celda que quiere organizar contiene algunas celdas que ha formateado y cambiado el color de fondo y de letra (manualmente o usando estilos pre definidos).</p>
+            <p>La dirección de la organización se indicará con una flecha en los botones de filtro.</p>
+            <ul>
+                <li>si los datos se organizan de forma ascendente, la flecha de despliegue en la primera celda de la columna se verá así: <img alt="Flecha de despliegue" src="../images/lowesttohighest.png" /> y el botón <b>Filtro</b> se verá de la siguiente forma: <img alt="Botón Filtro" src="../images/lowesttohighest1.png" />.</li>
+                <li>si los datos se organizan de forma descendiente, la flecha de despliegue en la primera celda de la columna se verá así: <img alt="Flecha de despliegue" src="../images/highesttolowest.png" /> y el botón <b>Filtro</b> se verá de la siguiente forma: <img alt="Botón Filtro" src="../images/highesttolowest1.png" />.</li>
+            </ul>
+            <p>También puede ordenar sus datos usando las opciones en el menú contextual.</p>
+            <ol>
+                <li>haga clic derecho en una celda que tenga el color con el que quiere ordenar sus datos,</li>
+                <li>seleccione la opción <b>Ordenar</b> en el menú.</li>
+                <li>seleccione la opción necesaria en el submenú:<ul>
+                        <li><b>Color de celda seleccionado encima</b> - para mostrar las entradas con el mismo color de fondo de celda encima de la columna,</li>
+                        <li><b>Color de letra seleccionado encima</b> - para mostrar las entradas con el mismo color de fondo de letra encima de la columna,</li>
+                    </ul>
+                </li>
+            </ol>
+            <h3>Filtre seleccionando contenido de celdas</h3>
+            <p>También puede filtrar sus datos de las celdas seleccionadas usando las opciones en el menú <b>contextual</b>. Haga clic derecho en una celda, seleccione la opción <b>Filtro</b> del menú y luego seleccione una de las siguientes opciones:</p>
+			<ul>
+                <li><b>Filtrar con el valor de las celdas seleccionadas</b> - para mostrar solo las entradas con el mismo valor que la celda seleccionada.</li>
+                <li><b>Filtrar según el color de las celdas</b> - para mostrar solo las entradas que tengan el mismo color de fondo que la celda seleccionada.</li>
+                <li><b>Filtrar según el color de la letra</b> - para mostrar solo las entradas que tengan el mismo color de letra que la celda.</li>
+            </ul>
+            <h3 id="tabletemplate">Formatear como Plantilla de tabla</h3>
+			<p>Para facilitar el trabajo con sus datos, el <b>Editor de hoja de cálculo</b> le permite aplicar una plantilla de tabla a un rango de celdas seleccionado de forma automática, lo que hace que el filtro esté disponible. Para hacerlo,</p>
+			<ol>
+				<li>seleccione un rango de celdas que tiene que formatear,</li>
+				<li>pulse el icono <b>Formatear como Plantilla de tabla</b> <img alt="Formatear como plantilla de tabla" src="../images/tabletemplate.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</li>
+				<li>Seleccione la plantilla que necesita en la galería,</li>
+				<li>en la ventana abierta verifique el rango de celdas que quiere formatear como una tabla,</li>
+				<li>verifique el <b>Título</b> si quiere que los encabezados de la tabla se incluyan en el rango de celdas seleccionado, si no, la fila de encabezados se añadirá en la parte superior mientras que el rango de celdas se mueve una fila más abajo,</li>
+				<li>haga clic en el botón <b>OK</b> para aplicar la plantilla seleccionada.</li>
+			</ol>
+			<p>La plantilla se aplicará al rango de celdas seccionado y usted será capaz de editar los encabezados de la tabla y aplicar el filtro para trabajar con sus datos.</p>
+            <p class="note"><b>Nota</b>: una vez que crea una tabla con nuevo formato, un <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">nombre por defecto</a> (<em>Tabla1</em>, <em>Tabla2</em> etc.) se asignará de forma automática a la tabla. Puede cambiar este nombre y hacerlo más significativo y usarlo para más trabajos.</p> 
+            <p>Si introduce un nuevo valor en una celda debajo de la última fila de la tabla (si la tabla no tiene la fila Total) o en una celda a la derecha de la última columna de la tabla, la tabla formateada se ampliará automáticamente para incluir una nueva fila o columna. Si no desea desglosar la tabla, haga clic en el botón  <img alt="Pegado Especial" src="../images/pastespecialbutton.png" /> que aparece y seleccione la opción <b>Deshacer autoexpansión de tabla</b>. Una vez deshecha esta acción, la opción <b>Rehacer autoexpansión de tabla</b> estará disponible en este menú.</p>
+            <p><img alt="Deshacer autoexpansión de tabla" src="../images/undoautoexpansion.png" /></p>
+            <p>Varios ajustes de tabla pueden cambiarse usando la pestaña <b>Ajustes de tabla</b> en el panel lateral derecho que se abrirá si selecciona al menos una celda dentro de una tabla con el ratón y pulsa el icono <b>Ajustes de tabla</b> <img alt="Icono Ajustes de tabla" src="../images/table_settings_icon.png" /> a la derecha.</p>
+            <p><img alt="Pestaña Ajustes de tablas" src="../images/tablesettingstab.png" /></p>
+            <p>Las secciones <b>Filas</b> y <b>Columnas</b> le permiten a usted destacar ciertas filas/columnas aplicando algún formato a ellas, o rellenar filas/columnas con colores diferentes para distinguirlas claramente. Las siguientes opciones están disponibles:</p>
+            <ul>
+                <li><b>Encabezado</b> - permite mostrar la fila de encabezado.</li>
+                <li><b>Total</b> - añade la fila de <b>Resumen</b> en la parte inferior de la tabla.</li>
+                <li><b>Con bandas</b> - activa el color de fondo diferente para las filas impares y pares.</li>
+                <li><b>Botón Filtro</b> - permite mostrar las flechas de despliegue <img alt="Flecha de despliegue" src="../images/dropdownarrow.png" /> en las celdas de fila de encabezado. Esta opción solo está disponible cuando la opción <b>Encabezado</b> está seleccionada.</li>
+                <li><b>Primero</b> - resalta la columna del extremo izquierdo de la tabla dándole un formato especial.</li>
+                <li><b>Último</b> - resalta la columna del extremo derecho de la tabla dándole un formato especial.</li>
+                <li><b>Con bandas</b> - activa el color de fondo diferente para las columnas pares e impares.</li>
+            </ul>
+            <p>La sección <b>Seleccionar de plantilla</b> le permite elegir uno de los estilos de tablas predefinidos. Cada plantilla combina ciertos parámetros de formato: color de fondo, estilo de bordes, bandas de fila/columna etc. El conjunto de plantillas varía dependiendo de las opciones marcadas en la secciones <b>Filas</b> y/o <b>Columnas</b> de arriba. Por ejemplo, si marca la opción <b>Encabezado</b> en la sección <b>Filas</b> y la opción <b>Con bandas</b> en la sección <b>Columnas</b>, en la lista habrá solo plantillas que coinciden con su solicitud:</p>
+            <p><img alt="Lista de plantillas" src="../images/templateslist.png" /></p>
+            <p>Si desea borrar el estilo de tabla actual (color de fondo, bordes, etc.) sin eliminar la propia tabla, aplique la plantilla <b>Ninguno</b> de la lista de plantillas:</p>
+            <p><img alt="Ninguna plantilla" src="../images/nonetemplate.png" /></p>
+            <p>La sección <b>Cambiar de tamaño a tablas</b> permite cambiar el formato de la tabla a la que se aplica. Haga clic en el botón <b>Datos seleccionados</b> - una ventana nueva se abrirá. Cambie el enlace del rango de celdas en el campo de entrada o seleccione el rango de celdas necesario en la hoja de cálculo con el ratón y luego haga clic en <b>OK</b>.</p>
+            <p><img alt="Cambie de tamaño a la tabla" src="../images/resizetable.png" /></p>
+            <p>La sección <b>Filas y columnas</b> <img alt="Filas y columnas" src="../images/rowsandcolumns.png" /> le permite realizar las operaciones siguientes:</p>
+            <ul>
+                <li><b>Seleccionar</b> una fila, columna, todos los datos de columnas excluyendo la fila de encabezado, o toda la tabla incluyendo la fila de encabezado.</li>
+                <li><b>Insertar</b> una nueva fila arriba o debajo de la fila seleccionada y también una nueva columna a la izquierda o a la derecha de la columna seleccionada.</li>
+                <li><b>Borrar</b> una fila, columna (depende de la posición del cursor o de la selección), o toda la tabla.</li>
+            </ul>
+            <p class="note"><b>Nota</b>: las opciones de la sección <b>Filas y columnas</b> también están disponibles en el <b>menú contextual</b>.</p>
+            <p>El botón <b>Convertir a un rango</b> se puede usar si quiere transformar la tabla en un rango de datos regular eliminando el filtro pero preservando el estilo de la tabla (por ejemplo los colores de la celda y de la letra). Una vez que aplique esta opción la pestaña <b>Ajustes de tablas</b> en la barra lateral derecha no estará disponible.</p>
+            <p>Para cambiar los ajustes avanzados de la tabla use el enlace <b>Mostrar ajustes avanzados</b> en la barra lateral derecha. Se abrirá la ventana con propiedades:</p>
+            <p><img alt="Tabla - ajustes avanzados" src="../images/tableadvancedsettings.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información de la forma.</p>
+            <h3>Filtro volver a aplicar</h3>
+            <p>Si los datos filtrados se han cambiado, puede actualizar el filtro para mostrar un resultado actualizado:</p>
+            <ol>
+                <li>pulse el icono <b>Filtro</b> <img alt="Botón Filtro" src="../images/filterbutton.png" /> en la primera celda de la columna que contiene datos filtrados,</li>
+                <li>seleccione la opción <b>Volver a aplicar</b> en la lista de opciones <b>Filtro</b> que se abre.</li>
+            </ol>
+            <p>También puede hacer clic derecho en un celda dentro de la columna que contiene datos filtrados y seleccionar la opción <b>Volver a aplicar</b> del menú contextual.</p>
+            <h3>Limpie filtro</h3>
+			<p>Para limpiar el filtro,</p>
+            <ol>
+                <li>pulse el icono <b>Filtro</b> <img alt="Botón Filtro" src="../images/filterbutton.png" /> en la primera celda de la columna que contiene datos filtrados,</li>
+                <li>seleccione la opción <b>Limpiar</b> en la lista de opciones <b>Filtro</b> que se abre.</li>
+            </ol>
+            <p>También puede proceder de la manera siguiente:</p>
+				<ol>
+					<li>seleccione el rango de celdas que contiene datos filtrados,</li>
+					<li>haga clic en el icono <b>Limpiar Filtro</b> <img alt="Icono limpiar filtro" src="../images/clearfilter.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</li>
+				</ol>
+            <p>El filtro permanecerá sin estar disponible, pero todos los parámetros de filtro aplicados se eliminarán, y los botones de <b>Filtro</b> <img alt="Botón filtro" src="../images/filterbutton.png" /> en las primeras celdas de las columnas cambiarán a flechas de despliegue <img alt="Flecha de despliegue" src="../images/dropdownarrow.png" />.</p>
+            <h3>Eliminar filtro</h3>
+            <p>Para eliminar filtro,</p>
+            <ol>
+                <li>seleccione el rango de celdas que contiene datos filtrados,</li>
+                <li>pulse el icono <b>Filtro</b> <img alt="Icono Filtro" src="../images/sortandfilter.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</li>
+            </ol>
+            <p>El filtro estará desactivado y las flechas de despliegue <img alt="Flecha de despliegue" src="../images/dropdownarrow.png" /> desaparecerán de las primeras celdas de las columnas.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Appliquer des transitions</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Ajouter des effets d'animation entre deux diapositives" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Appliquer des transitions</h1>
+			<p>Une <B>transition</B> est un effet d'animation qui apparaît entre deux diapositives quand une diapositive avance vers la suivante pendant la démonstration. Dans <a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a>, vous pouvez appliquer une même transition à toutes les diapositives ou à de différentes transitions à chaque diapositive séparée et régler leurs propriétés.</p>
+			<p>Pour appliquer une transition à une seule diapositive ou à plusieurs diapositives sélectionnées:</p>
+			<p><img class="floatleft"alt="Slide settings tab" src="../images/slidesettingstab.png" /></p>
+			<ol style="margin-left: 280px;">
+				<li>Sélectionnez une diapositive nécessaire (ou plusieurs diapositives de la liste) à laquelle vous voulez appliquer une transition. L'onglet <B>Paramètres de la diapositive</B> sera activé sur la barre latérale droite. Pour l'ouvrir, cliquez sur l'icône <B>Paramètres de la diapositive</B> <img alt="Paramètres de la diapositive" src="../images/slide_settings_icon.png" /> à droite. Vous pouvez également cliquer avec le bouton droit sur une diapositive dans la zone d'édition de diapositives et sélectionner l'option <B>Paramètres de diapositive</B> dans le menu contextuel.
+				</li>
+				<li>Sélectionnez une transition de la liste déroulante <B>Effet</B>.
+				<p>Les transitions disponibles sont les suivantes: <I>Fondu</I>, <I>Expulsion</I>, <I>Effacement</I>, <I>Diviser</I>, <I>Découvrir</I>, <I>Couvrir</I>, <I>Horloge</I>, <I>Zoom</I>.</p>
+				</li>
+				<li>Dans la liste déroulante, sélectionnez l'un des effets disponibles. Ces types servent à définir le mode d'apparition de l'effet. Par exemple, si vous appliquez l'effet <I>Zoom</I>, vous pouvez sélectionner une des options suivantes: <I>Zoom avant</I>, <I>Zoom arrière</I> ou <I>Zoom et rotation</I>.</li>
+				<li>Spécifiez la durée de la transition Dans le champ <B>Durée</B>, sélectionnez la valeur appropriée mesurée en secondes.</li>
+				<li>Cliquez sur le bouton <B>Aperçu</B> pour visualiser la diapositive avec la transition appliquée dans la zone d'édition.</li>
+				<li>Précisez combien de temps la diapositive doit être affichée avant d'avancer vers une autre:
+				    <ul>
+				    <li><B>Démarrer en cliquant</B> &ndash; cochez cette case si vous ne voulez pas limiter le temps de l'affichage de la diapositive sélectionnée. La diapositive n'avance vers une autre qu'après un clic de la souris.</li>
+				    <li><B>Retard </B>&ndash; utilisez cette option si vous voulez préciser le temps de l'affichage d'une diapositive avant son avancement vers une autre. Cochez cette case et saisissez la valeur appropriée, mesurée en secondes.
+				    <p class="note"><B>Remarque</B>: si vous ne cochez que la case <B>Retard</B>, les diapositives avancent automatiquement avec un intervalle de temps indiqué. Si vous cochez les deux cases <B>Démarrer en cliquant</B> et <B>Retard</B> et précisez la valeur de temps nécessaire, l'avancement des diapositives se fait aussi automatiquement, mais vous aurez la possibilité de cliquer sur la diapositive pour vous avancer vers une autre.</p>
+				    </li>
+				    </ul>
+				</li>
+			</ol>
+			<p><B>Pour appliquer une transition à toutes les diapositives</B> de la présentation : procédez de la manière décrite ci-dessus et cliquez sur le bouton <B>Appliquer à toutes les diapositives</B>.</p>
+			<p><B>Pour supprimer une transition</B>: sélectionnez une diapositive nécessaire, accédez au panneau de configuration de la diapositive et choisissez l'option <B>Aucun</B> dans la section <B>Effet</B>.</p>
+			<p><B>Pour supprimer toutes les transitions</B>: sélectionnez une diapositive, choisissez l'option <B>Aucun</B> de la section <B>Effet</B> et appuyez sur <B>Appliquer à toutes les diapositives</B>.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction AGREGAT</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction AGREGAT</h1>
+			<p>La fonction <b>AGREGAT</b> est l'une des fonctions mathématiques et trigonométriques. Cette fonction est utilisée pour renvoyer un agrégat dans une liste ou une base de données. La fonction <b>AGREGAT</b> peut appliquer différentes fonctions d'agrégat à une liste ou une base de données avec l'option d'ignorer les lignes cachées et les valeurs d'erreur.</p>
+			<p>La syntaxe de la fonction <b>AGREGAT</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>AGREGAT(function_num, options, ref1 [, ref2], ...)</em></b></p> 
+			<p><em>où</em></p> 
+			<p style="text-indent: 50px;"><b><em>function_num</em></b> est une valeur numérique qui spécifie quelle fonction utiliser. Les valeurs possibles sont listées dans le tableau ci-dessous.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>function_num<br /></b></td>
+                    <td><b>Fonction</b></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">MOYENNE</a></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">NB</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">NBVAL</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><a href="../Functions/product.htm" onclick="onhyperlinkclick(this)">PRODUIT</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><a href="../Functions/stdev-s.htm" onclick="onhyperlinkclick(this)">ECARTYPE.STANDARD</a></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td><a href="../Functions/stdev-p.htm" onclick="onhyperlinkclick(this)">ECARTYPE.PEARSON</a></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SOMME</a></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td><a href="../Functions/var-s.htm" onclick="onhyperlinkclick(this)">VAR.S</a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td><a href="../Functions/var-p.htm" onclick="onhyperlinkclick(this)">VAR.P.N</a></td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td><a href="../Functions/median.htm" onclick="onhyperlinkclick(this)">MEDIANE</a></td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td><a href="../Functions/mode-sngl.htm" onclick="onhyperlinkclick(this)">MODE.SIMPLE</a></td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td><a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">GRANDE.VALEUR</a></td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td><a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">PETITE.VALEUR</a></td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td><a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">CENTILE.INCLURE</a></td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td><a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">QUARTILE.INCLURE</a></td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td><a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">CENTILE.EXCLURE</a></td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td><a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">QUARTILE.EXCLURE</a></td>
+                </tr>
+            </table> 
+			<p style="text-indent: 50px;"><b><em>options</em></b> est une valeur numérique qui spécifie quelles valeurs doivent être ignorées. Les valeurs possibles sont listées dans le tableau ci-dessous.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Valeur numérique<br /></b></td>
+                    <td><b>Comportement</b></td>
+                </tr>
+                <tr>
+                    <td>0 ou omise</td>
+                    <td>Ignorer les fonctions <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">SOUS.TOTAL</a> et AGREGAT imbriquées</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Ignorer les lignes cachées, les fonctions <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">SOUS.TOTAL</a> et AGREGAT imbriquées</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Ignorer les valeurs d'erreur, les fonctions <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">SOUS.TOTAL</a> et AGREGAT imbriquées</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Ignorer les lignes cachées, les valeurs d'erreur, les fonctions <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">SOUS.TOTAL</a> et AGREGAT imbriquées</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Ne rien ignorer</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Ignorer les lignes cachées</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Ignorer les valeurs d'erreur</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Ignorer les lignes cachées et les valeurs d'erreur</td>
+                </tr>
+            </table>
+            <p style="text-indent: 50px;"><b><em>ref1(2)</em></b> est une liste de jusqu'à 253 valeurs numériques ou une référence à la plage de cellules contenant les valeurs pour lesquelles vous voulez la valeur agrégée.</p>
+            <p class="note"><b>Remarque :</b> si vous souhaitez utiliser l'une des fonctions suivantes : <a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">GRANDE.VALEUR</a>, <a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">PETITE.VALEUR</a>, <a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">CENTILE.INCLURE</a>, <a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">QUARTILE.INCLURE</a>, <a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">CENTILE.EXCLURE</a> ou <a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">QUARTILE.EXCLURE</a>, <b><em>ref1</em></b> doit être une référence à la plage de cellules et <b><em>ref2</em></b> doit être le deuxième argument requis pour ces fonctions (<b><em>k</em></b> ou <b><em>quart</em></b>).</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Fonction<br /></b></td>
+                    <td><b>Syntaxe</b></td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">GRANDE.VALEUR</a></td>
+                    <td>GRANDE.VALEUR(matrice, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">PETITE.VALEUR</a></td>
+                    <td>PETITE.VALEUR(matrice, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">CENTILE.INCLURE</a></td>
+                    <td>CENTILE.INCLURE(matrice, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">QUARTILE.INCLURE</a></td>
+                    <td>QUARTILE.INCLURE(matrice, quart)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">CENTILE.EXCLURE</a></td>
+                    <td>CENTILE.EXCLURE(matrice, k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">QUARTILE.EXCLURE</a></td>
+                    <td>QUARTILE.EXCLURE(matrice, quart)</td>
+                </tr>
+            </table>
+            <p>Pour appliquer la fonction <b>AGREGAT</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnctionnction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonctionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Maths et trigonométrie</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>AGREGAT</b>,</li>
+			<li>insérez les arguments nécessaires en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+            <p>La figure ci-dessous affiche le résultat renvoyé par la fonction <b>AGREGAT</b> lorsque la fonction <b>SOMME</b> est appliquée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction AGREGAT" src="../images/aggregate.png" /></p>
+            <p>La figure ci-dessous affiche le résultat renvoyé par la fonction <b>AGREGAT</b> lorsque la fonction <b>GRANDE.VALEUR</b> est appliquée, <b><em>ref1</em></b> est une référence à la plage de cellules et <b><em>k</em></b> est égal à 2. La fonction renvoie la deuxième plus grande valeur dans les cellules A1-A4.</p>
+            <p style="text-indent: 150px;"><img alt="Fonction AGREGAT" src="../images/aggregate2.png" /></p>
+		</div>
+	</body>
+</html>

@@ -295,9 +295,6 @@
                 font-size: 12px;
             }
         }
-        &.new-item {
-            padding: 10px;
-        }
         .kanban-item-text {
             .tools_unselectable();
             cursor: text;
@@ -305,6 +302,11 @@
             flex: 1;
             &:empty::before {
               content: "\200b";
+            }
+            input#kanban-edit {
+                margin: 0;
+                padding: 0;
+                height: auto;
             }
         }
         &.kanban-item-hidden {
@@ -366,6 +368,9 @@
 
             #kanban-edit {
                 font-weight: bold;
+                margin: 0;
+                padding: 0;
+                height: auto;
             }
         }
         footer {

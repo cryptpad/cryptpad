@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Dokumente vergleichen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Anweisungen für Vergleichen und Zusammenführen von zwei Dokumenten" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Die Dokumente vergleichen</h1>
+        <p class="note"><b>Hinweis</b>: Diese Option steht zur Verfügung nur in der <b>kommerziellen</b> <em>Online-Version</em> im <b>Dokument Server</b> v. <b>5.5</b> und höher.</p>
+        <p>Wenn Sie zwei Dokumente vergleichen und zusammenführen wollen,verwenden Sie das Tool <b>Vergleichen</b> im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a>. Sie können die Unterschiede zwischen zwei Dokumenten anzeigen und die Dokumente zusammenführen, wo Sie die Änderungen einzeln oder alle gleichzeitig akzeptieren können.</p>
+        <p>Nach dem Vergleichen und Zusammenführen von zwei Dokumenten wird das Ergebnis als neue Version der Originaldatei <!-- (in der <em>Online-Version</em> der Editoren)--> im Portal gespeichert. <!--Wenn Sie in der Desktop-Version die Schaltfläche <b>Speichern</b> anklicken, wird das Dialogfenster angezeigt, in dem Sie aufgefordert werden, eine neue Datei zu speichern.--></p>
+        <p>Wenn Sie die verglichenen Dokumente nicht zusammenführen wollen, können Sie alle Änderungen ablehnen, sodass das Originaldokument unverändert bleibt.</p>
+        
+        <h3 id="choosedocument">Wählen Sie ein Dokument zum Vergleichen aus</h3>
+        <p>Öffnen Sie das Originaldokument und wählen Sie ein Dokument zum Vergleichen aus, um die zwei Dokumente zu vergleichen:</p>
+        <ol>
+            <li>öffnen Sie die Registerkarte <b>Zusammenarbeit</b> und klicken Sie die Schaltfläche <img alt="Vergleichen Schaltfläche" src="../images/comparebutton.png" /> <b>Vergleichen</b> an,</li>
+            <li>
+                wählen Sie einer der zwei Optionen aus, um das Dokument hochzuladen:
+                <ul>
+                    <li>die Option <b>Dokument aus Datei</b> öffnet das Standarddialogfenster für Dateiauswahl. Finden Sie die gewünschte <em>.docx</em> Datei und klicken Sie die Schaltfläche <b>Öffnen</b> an.</li>
+                    <li>
+                        die Option <b>Dokument aus URL</b> öffnet das Fenster, wo Sie die Datei-URL zum anderen Online-Speicher eingeben können (z.B., Nextcloud). Die URL muss <b>direkt zum Datei-Herunterladen sein</b>. Wenn die URL eingegeben ist, klicken Sie <b>OK</b> an.
+                    <p class="note">
+                        <b>Hinweis</b>: Die direkte URL lässt die Datei herunterladen, ohne diese Datei im Browser zu öffnen. Z.B., im Nextcloud kann man die direkte URL so erhalten: Finden Sie die gewünschte Datei in der Dateiliste, wählen Sie die Option <b>Details</b> im Menü aus. Klicken Sie die Option <b>Direkte URL kopieren (nur für die Benutzer, die den Zugriff auf diese Datei haben</b>) rechts auf dem Detailspanel an. Lesen Sie die entsprechende Servicedokumentation, um zu lernen, wie kann man eine direkte URL in anderen Online-Services erhalten.
+                    </p>
+                    </li>
+                    <li class="onlineDocumentFeatures"> die Option <b>Dokument aus dem Speicher</b> <!--(steht zur Verfügung nur in der <em>Online-Version</em>)--> öffnet das <b>Datei-Speicher-Auswahlfenster</b>. Da finden Sie alle <em>.docx</em> Dateien, die Sie auf dem Online-Speicher haben. Sie können im Modul <b>Dokumente</b> durch das Menü links navigieren. Wählen Sie die gewünschte <em>.docx</em> Datei aus und klicken Sie <b>OK</b> an.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>Wenn das zweite Dokument zum Vergleichen ausgewählt wird, wird der Vergleichsprozess gestartet und das Dokument wird angezeigt, als ob er im <b>Überarbeitungsmodus</b> geöffnet ist. Alle Änderungen werden hervorgehoben und Sie können die Änderungen Stück für Stück oder alle gleichzeitig sehen, navigieren, übernehmen oder ablehnen. Sie können auch den Anueogemodus ändern und sehen, wie das Dokument vor, während und nach dem Vergleichprozess aussieht.</p>
+
+        <h3 id="displaymode">Wählen Sie den Anzeigemodus für die Änderungen aus</h3>
+        <p>Klicken Sie auf die <img alt="Anzeigemodus Schaltfläche" src="../images/review_displaymode.png" /> Schaltfläche <b>Anzeigemodus</b> nach oben und wählen Sie einen der Modi aus:</p>
+        <ul>
+            <li>
+                <b>Markup</b> - diese Option ist standardmäßig. Verwenden Sie sie, um das Dokument <b>während des Vergleichsprozesses</b> anzuzeigen. Im diesen Modus können Sie das Dokument sehen sowie bearbeiten.
+                <p><img alt="Dokumente Vergleichen - Markup" src="../images/compare_markup.png" /></p>
+            </li>
+            <li>
+                <b>Endgültig</b> - der Modus zeigt das Dokument an, als ob alle Änderungen übernommen sind, nämlich <b>nach dem Vergleichsprozess</b>. Diese Option nimmt alle Änderungen nicht, sie zeigt nur das Dokument an, als ob die Änderungen schon übernommen sind. Im diesen Modus können Sie das Dokument nicht bearbeiten.
+                <p><img alt="Dokumente Vergleichen - Endgültig" src="../images/compare_final.png" /></p>
+            </li>
+            <li>
+                <b>Original</b> - der Modus zeigt das Originaldokument an, nämlich <b>vor dem Vergleichsprozess</b>, als ob alle Änderungen abgelehnt sind. Diese Option lehnt alle Änderungen nicht ab, sie zeigt nur das Dokument an, als ob die Änderungen nicht übernommen sind. Im diesen Modus können Sie das Dokument nicht bearbeiten.
+                <p><img alt="Dokumente Vergleichen - Original" src="../images/compare_original.png" /></p>
+            </li>
+        </ul>
+
+        <h3 id="managechanges">Änderungen übernehmen oder ablehnen</h3>
+        <p>Verwenden Sie die Schaltflächen <img alt="Zur vorherigen Änderung Schaltfläche" src="../images/review_previous.png" /> <b>Zur vorherigen Änderung</b> und <img alt="Zur nächsten Änderung Schaltfläche" src="../images/review_next.png" /> <b>Zur nächsten Änderung</b>, um die Änderungen zu navigieren.</p>
+        <p>Um die Änderungen zu übernehmen oder abzulehnen:</p>
+        <ul>
+            <li>klicken Sie auf die Schaltfläche <img alt="Übernehmen Schaltfläche" src="../images/review_accepttoptoolbar.png" /> <b>Annehmen</b> nach oben oder</li>
+            <li>klicken Sie den Abwärtspfeil unter der Schaltfläche <b>Annehmen</b> an und wählen Sie die Option <b>Aktuelle Änderungen annehmen</b> aus (die Änderung wird übernommen und Sie übergehen zur nächsten Änderung) oder</li>
+            <li>klicken Sie die Schaltfläche <b>Annehmen</b> <img alt="Annehmen Schaltfläche" src="../images/review_accept.png" /> im Pop-Up-Fenster an.</li>
+        </ul>
+        <p>Um alle Änderungen anzunehmen, klicken Sie den Abwärtspfeil unter der Schaltfläche <img alt="Annehmen Schaltfläche" src="../images/review_accepttoptoolbar.png" /> <b>Annehmen</b> an und wählen Sie die Option <b>Alle Änderungen annehmen</b> aus.</p>
+        <p>Um die aktuelle Änderung abzulehnen:</p>
+        <ul>
+            <li>klicken Sie die Schaltfläche <img alt="Ablehnen Schaltfläche" src="../images/review_rejecttoptoolbar.png" /> <b>Ablehnen</b> an oder</li>
+            <li>klicken Sie den Abwärtspfeil unter der Schaltfläche <b>Ablehnen</b> an und wählen Sie die Option <b>Aktuelle Änderung ablehnen</b> aus (die Änderung wird abgelehnt und Sie übergehen zur nächsten Änderung) oder</li>
+            <li>klicken Sie die Schaltfläche <b>Ablehnen</b> <img alt="Ablehnen Schaltfläche" src="../images/review_reject.png" /> im Pop-Up-Fenster an.</li>
+        </ul>
+        <p>Um alle Änderungen abzulehnen, klicken Sie den Abwärtspfeil unter der Schaltfläche <img alt="Ablehnen Schaltfläche" src="../images/review_rejecttoptoolbar.png" /> <b>Ablehnen</b> an und wählen Sie die Option <b>Alle Änderungen ablehnen</b> aus.</p>
+
+        <h3 id="comparisonnotes">Zusatzinformation für die Vergleich-Option</h3>
+        <h5>Die Vergleichsmethode</h5>
+        <p>In den Dokumenten werden nur die <b>Wörter</b> verglichen. Falls das Wort eine Änderung hat (z.B. eine Buchstabe ist abgelöst oder verändert), werden das ganze Wort als eine Änderung angezeigt.</p>
+        <p>Das folgende Bild zeigt den Fall, in dem das Originaldokument das Wort "Symbole" enthält und das Vergleichsdokument das Wort "Symbol" enthält.</p>
+        <p><img alt="Dokumente Vergleichen - Methode" src="../images/compare_method.png" /></p>
+
+        <h5>Urheberschaft des Dokuments</h5>
+        <p>Wenn der Vergleichsprozess gestartet wird, wird das zweite Dokument zum Vergleichen hochgeladen und mit dem aktuellen verglichen.</p>
+        <ul>
+            <li>Wenn das hochgeladene Dokument Daten enthält, die nicht im Originaldokument enthalten sind, werden die Daten als hinzugefügt markiert.</li>
+            <li>Wenn das Originaldokument einige Daten enthält, die nicht im hochgeladenen Dokument enthalten sind, werden die Daten als gelöscht markiert.</li>
+        </ul>
+        <p>Wenn der Autor des Originaldokuments und des hochgeladenen Dokuments dieselbe Person ist, ist der Prüfer derselbe Benutzer. Sein/Ihr Name wird in der Sprechblase angezeigt.</p>
+        <p>Wenn die Autoren von zwei Dokumenten unterschiedliche Benutzer sind, ist der Autor des zweiten zum Vergleich hochgeladenen Dokuments der Autor der hinzugefügten / entfernten Änderungen.</p>
+        
+        <h5>Die nachverfolgten Änderungen im verglichenen Dokument</h5>
+        <p>Wenn das Originaldokument einige Änderungen enthält, die im Überprüfungsmodus vorgenommen wurden, werden diese im Vergleichsprozess übernommen. Wenn Sie das zweite Dokument zum Vergleich auswählen, wird die entsprechende Warnmeldung angezeigt.</p>
+        <p>In diesem Fall enthält das Dokument im <b>Originalanzeigemodus</b> keine Änderungen.</p>
+    </div>
+</body>
+</html>

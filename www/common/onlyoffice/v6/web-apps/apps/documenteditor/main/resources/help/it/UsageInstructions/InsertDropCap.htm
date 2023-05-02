@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Inserire un capolettera</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Insert a drop cap and adjust its frame properties to make your document look more expressive." />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Inserire un capolettera</h1>
+        <p>Un <b>Capolettera</b> è la prima lettera di un paragrafo che è molto più grande di altre e occupa diverse righe di altezza.</p>
+        <p>Per aggiungere un capolettera,</p>
+        <ol>
+            <li>posizionare il cursore all'interno del paragrafo necessario,</li>
+            <li>passare alla scheda <b>Inserisci</b> della barra degli strumenti superiore,</li>
+            <li>fare clic sull'icona <img alt="Capolettera" src="../images/insert_dropcap_icon.png" /> <b>Capolettera</b> nella barra degli strumenti superiore,</li>
+            <li>
+                nell'elenco a discesa aperto selezionare l'opzione desiderata:
+                <ul>
+                    <li><b>Nel Testo</b> <img alt="Capolettera - Nel Testo" src="../images/dropcap_text.png" /> - per posizionare il capolettera all'interno del paragrafo.</li>
+                    <li><b>Nel Margine</b> <img alt="Capolettera - Nel Margine" src="../images/dropcap_margin.png" /> - per posizionare il capolettera nel margine sinistro.</li>
+                </ul>
+            </li>
+        </ol>
+        <p><img class="floatleft" alt="Capolettera - Esempio" src="../images/dropcap_example.png" /> Il primo carattere del paragrafo selezionato verrà trasformato in un capolettera. Se si ha bisogno che il capolettera includa altri caratteri, aggiungerli manualmente: selezionare il capolettera e digitare le altre lettere di cui si ha bisogno.</p>
+        <p>Per regolare l'aspetto del capolettera (ad esempio la dimensione del carattere, il tipo, lo stile della decorazione o il colore), selezionate la lettera e utilizzate le icone corrispondenti nella scheda <b>Home</b> della barra degli strumenti superiore.</p>
+        <p>Quando il capolettera è selezionato, è circondato da una <b>cornice</b> (un contenitore utilizzato per posizionare il capolettera sulla pagina). È possibile modificare rapidamente le dimensioni della cornice trascinandone i bordi o la posizione utilizzando l'icona <img alt="Freccia" src="../images/arrow.png" /> visualizzata dopo aver posizionato il cursore del mouse sulla cornice.</p>
+        <p>Per eliminare il capolettera aggiunto, selezionarlo, fare clic sull'icona <img alt="Capolettera" src="../images/insert_dropcap_icon.png" /> <b>Capolettera</b> nella scheda <b>Inserisci</b> della barra degli strumenti superiore e scegliere l'opzione <b>Nessuno</b> <img alt="Capolettera - Nessuno" src="../images/dropcap_none.png" /> dall'elenco a discesa.</p>
+        <hr />
+        <p>Per regolare i parametri del capolettera aggiunto, selezionarlo, fare clic sull'icona <img alt="Capolettera" src="../images/insert_dropcap_icon.png" /> <b>Capolettera</b> nella scheda <b>Inserisci</b> della barra degli strumenti superiore e scegliere l'opzione <b>Impostazioni capolettera</b> dall'elenco a discesa. Si aprirà la finestra <b>Capolettera - Impostazioni avanzate</b>:</p>
+        <p><img alt="Capolettera - Impostazioni avanzate" src="../images/dropcap_properties_1.png" /></p>
+        <p>La scheda <b>Capolettera</b> consente di impostare i seguenti parametri:</p>
+        <ul>
+            <li><b>Posizione</b> - viene utilizzato per modificare il posizionamento del capolettera. Selezionare l'opzione <b>Nel testo</b> o <b>Nel margine</b> oppure fare clic su <b>Nessuno</b> per eliminare il capolettera.</li>
+            <li><b>Font</b> - consente di selezionare uno dei font dall'elenco di quelli disponibili.</li>
+            <li><b>Altezza in righe</b> - viene utilizzato per specificare il numero di righe su cui il capolettera deve estendersi. È possibile selezionare un valore compreso tra 1 e 10.</li>
+            <li><b>Distanza dal testo</b> - viene utilizzato per specificare la quantità di spazio tra il testo del paragrafo e il bordo destro della cornice che circonda il capolettera.</li>
+        </ul>
+        <p><img alt="Capolettera - Impostazioni avanzate" src="../images/dropcap_properties_2.png" /></p>
+        <p>La scheda <b>Bordi e riempimento</b> consente di aggiungere un bordo intorno al capolettera e di regolarne i parametri. Essi sono i seguenti:</p>
+        <ul>
+            <li>Parametri del <b>bordo</b> (dimensioni, colore e presenza o assenza) - impostare le dimensioni del bordo, selezionare il colore e scegliere i bordi (superiore, inferiore, sinistra, destra o la loro combinazione) a cui si desidera applicare queste impostazioni.</li>
+            <li><b>Colore sfondo</b> - scegliere il colore per lo sfondo del capolettera.</li>
+        </ul>
+        <p><img alt="Capolettera - Impostazioni avanzate" src="../images/dropcap_properties_3.png" /></p>
+        <p>La scheda <b>Margini</b> consente di impostare la distanza tra il capolettera e i bordi <b>Superiore</b>, <b>Inferiore</b>, <b>Sinistra</b> e <b>Destra</b> intorno ad esso (se i bordi sono stati aggiunti in precedenza).</p>
+        <hr />
+        <p>Una volta aggiunto il capolettera, puoi anche modificare i parametri della <b>cornice</b>. Per accedervi, fare clic con il tasto destro all'interno della cornice e selezionare <b>Impostazioni avanzate della cornice</b> dal menu. Si aprirà la finestra <b>Cornice - Impostazioni avanzate</b>:</p>
+        <p><img alt="Impostazioni avanzate della cornice" src="../images/frame_properties_1.png" /></p>
+        <p>La scheda <b>Cornice</b> permette di impostare i seguenti parametri:</p>
+        <ul>
+            <li><b>Posizione</b> -  consente di selezionare lo stile <b>In linea</b> o <b>Dinamica</b>. In alternativa, è possibile fare clic su <b>Nessuno</b> per eliminare la cornice.</li>
+            <li><b>Larghezza</b> e <b>Altezza</b> - vengono utilizzati per modificare le dimensioni della cornice. L'opzione <b>Auto</b> consente di regolare automaticamente le dimensioni della cornice per adattarle al capolettera. L'opzione <b>Esatta</b> consente di specificare valori fissi.  L'opzione <b>Minima</b> viene utilizzata per impostare il valore di altezza minima (se si modifica la dimensione del capolettera, l'altezza del riquadro cambia di conseguenza, ma non può essere inferiore al valore specificato).</li>
+            <li>I parametri <b>orizzontali</b> vengono utilizzati per impostare la <b>posizione</b> esatta della cornice nelle unità di misura selezionate <b>rispetto a</b> un margine, pagina o colonna, oppure per allineare la cornice (a sinistra, al centro o a destra) <b>rispetto a</b> uno di questi punti di riferimento. È inoltre possibile impostare la <b>distanza orizzontale dal testo</b>, ovvero la quantità di spazio tra i bordi della cornice verticale e il testo del paragrafo.</li>
+            <li>I parametri <b>verticali</b> vengono utilizzati per impostare la <b>posizione</b> esatta della cornice nelle unità di misura selezionate <b>rispetto a</b> un margine, pagina o paragrafo, oppure per allineare la cornice (in alto, al centro o in basso) <b>rispetto a</b> uno di questi punti di riferimento. È inoltre possibile impostare la <b>distanza verticale dal testo</b>, ovvero la quantità di spazio tra i bordi della cornice orizzontale e il testo del paragrafo.</li>
+            <li><b>Sposta col testo</b> - controlla che la cornice si sposti mentre il paragrafo a cui è ancorata si sposta.</li>
+        </ul>
+        <!--<img alt="Impostazioni avanzate della cornice" src="../images/Frame_properties_2.png" />-->
+        <p>Le schede <b>Bordi e Riempimento</b> e <b>Margini</b> consentono di impostare solo gli stessi parametri delle schede con lo stesso nome nella finestra <b>Capolettera - Impostazioni avanzate</b>.</p>
+        <!--<img alt="Impostazioni avanzate della cornice" src="../images/Frame_properties_3.png" />
+        <p>La scheda <b>Margini</b> consentono di impostare solo gli stessi parametri delle schede con lo stesso nome nella finestra <b>Capolettera - Impostazioni avanzate</b>.</p>-->
+    </div>
+</body>
+</html>

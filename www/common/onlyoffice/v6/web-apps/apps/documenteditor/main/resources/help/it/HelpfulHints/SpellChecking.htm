@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Spell-checking</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Spell check the text in your language while editing a document" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Spell-checking</h1>
+			<p><b>Document Editor</b> allows you to check the spelling of your text in a certain language and correct mistakes while editing. In the <em>desktop version</em>, it's also possible to add words into a custom dictionary which is common for all three editors.</p>
+			<p>First of all, <b>choose a language</b> for your document. Click the <img alt="Set Document Language icon" src="../images/document_language.png" /> <b>Set Document Language</b> icon at the status bar. In the window that appears, select the necessary language and click <b>OK</b>. The selected language will be applied to the whole document. </p>
+			<p><img alt="Set Document Language window" src="../images/document_language_window.png" /></p>
+			<p>To <b>choose a different language</b> for any piece of text within the document, select the necessary text passage with the mouse and use the <img alt="Spell-checking - Text Language selector" src="../images/spellchecking_language.png" /> menu at the status bar.</p>
+			<p>To <b>enable</b> the spell checking option, you can:</p>
+            <ul>
+                <li>click the <img alt="Spell checking deactivated icon" src="../images/spellcheckdeactivated.png" /> <b>Spell checking</b> icon at the status bar, or</li>
+                <li>open the <b>File</b> tab of the top toolbar, select the <b>Advanced Settings...</b> option, check the <b>Turn on spell checking option</b> box and click the <b>Apply</b> button.</li>
+            </ul>
+            <p>Incorrectly spelled words will be underlined by a red line.</p>
+			<p>Right click on the necessary word to activate the menu and:</p>
+			<ul>
+			<li>choose one of the suggested similar words spelled correctly to replace the misspelled word with the suggested one. If too many variants are found, the <b>More variants...</b> option appears in the menu;</li>
+			<li>use the <b>Ignore</b> option to skip just that word and remove underlining or <b>Ignore All</b> to skip all the identical words repeated in the text;</li>
+            <li>if the current word is missed in the dictionary, you can add it to the custom dictionary. This word will not be treated as a mistake next time. This option is available in the <em>desktop version</em>.</li>
+			<li>select a different language for this word.</li>
+			</ul>  
+            <p><img alt="Spell-checking" src="../images/spellchecking.png" /></p>
+            <p>To <b>disable</b> the spell checking option, you can:</p>
+            <ul>
+                <li>click the <img alt="Spell checking activated icon" src="../images/spellcheckactivated.png" /> <b>Spell checking</b> icon at the status bar, or</li>
+                <li>open the <b>File</b> tab of the top toolbar, select the <b>Advanced Settings...</b> option, uncheck the <b>Turn on spell checking option</b> box and click the <b>Apply</b> button.</li>
+            </ul>
+		</div>
+	</body>
+</html>

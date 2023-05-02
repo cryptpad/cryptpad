@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>WORKDAY.INTL Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>WORKDAY.INTL Function</h1>
+			<p>The <b>WORKDAY.INTL</b> function is one of the date and time functions. It is used to return the date before or after a specified number of workdays with custom weekend parameters; weekend parameters indicate which and how many days are weekend days.</p>
+			<p>The <b>WORKDAY.INTL</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>WORKDAY.INTL(start_date, days, [, weekend], [, holidays])</em></b></p> 
+			<p><em>where</em></p> 
+			<p style="text-indent: 50px;"><b><em>start_date</em></b> is the first date of the period entered using the <a href="Date.htm" onclick="onhyperlinkclick(this)">Date</a> function or other date and time function.</p>
+			<p style="text-indent: 50px;"><b><em>days</em></b> is a number of workdays before or after <b><em>start_date</em></b>. If the <b><em>days</em></b> has the negative sign, the function will return the date which comes before the specified <b>start_date</b>. If the <b><em>days</em></b> has the positive sign, the function will return the date which follows after the specified <b>start_date</b>.</p>
+            <p style="text-indent: 50px;"><b><em>weekend</em></b> is an optional argument, a number or a string that specifies which days to consider weekends. The possible numbers are listed in the table below.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Number</b></td>
+                    <td><b>Weekend days</b></td>
+                </tr>
+                <tr>
+                    <td>1 or omitted</td>
+                    <td>Saturday, Sunday</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Sunday, Monday</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Monday, Tuesday</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Tuesday, Wednesday</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Wednesday, Thursday</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Thursday, Friday</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Friday, Saturday</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>Sunday only</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>Monday only</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>Tuesday only</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>Wednesday only</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>Thursday only</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>Friday only</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>Saturday only</td>
+                </tr>
+            </table>
+            <p style="text-indent: 50px;">A string that specifies weekend days must contain 7 characters. Each character represents a day of the week, starting from Monday. 0 represents a workday, 1 represents a weekend day. E.g. <em>"0000011"</em> specifies that weekend days are Saturday and Sunday. The string <em>"1111111"</em> is not valid.</p>
+            <p style="text-indent: 50px;"><b><em>holidays</em></b> is an optional argument that specifies which dates in addition to <b><em>weekend</em></b> are nonworking. You can enter them using the <a href="Date.htm" onclick="onhyperlinkclick(this)">Date</a> function or other date and time function or specify a reference to a range of cells containing dates.</p>
+			<p>To apply the <b>WORKDAY.INTL</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Date and time</b> function group from the list,</li>
+			<li>click the <b>WORKDAY.INTL</b> function,</li>
+			<li>enter the required arguments separating them by commas,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="WORKDAY.INTL Function" src="../images/workday-intl.png" /></p>
+		</div>
+	</body>
+</html>

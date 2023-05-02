@@ -229,7 +229,7 @@ appIndexesToBuild.forEach(function (app) {
 
     write(built, `./www/${app}/index.html`);
 
-    // XXX preloading version for inner.html
+    // TODO preloading version for inner.html
 });
 
 var instance;

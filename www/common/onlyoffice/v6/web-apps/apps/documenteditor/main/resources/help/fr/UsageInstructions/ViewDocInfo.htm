@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Afficher les informations sur le document</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Afficher le titre, l'auteur, l'emplacement, la date de création du document, les permissions d'afficher ou de modifier le document et les statistiques" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Afficher les informations sur le document</h1>
+			<p>Pour accéder aux informations détaillées sur le document actuellement édité dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, cliquez sur l'onglet <B>Fichier</B> de la barre d'outils supérieure et sélectionnez l'option <B>Descriptif du document....</B></p>
+			<h3>Informations générales</h3>
+            <p>Le descriptif du document comprend l'ensemble des propriétés d'un document.  Certains de ces paramètres sont mis à jour automatiquement mais les autres peuvent être modifiés.</p>
+            <ul>
+                <li class ="onlineDocumentFeatures"><b>Emplacement</b> - le dossier dans le module <b>Documents</b> où le fichier est stocké. <B>Propriétaire</B> - le nom de l'utilisateur qui a créé le fichier. <B>Chargé</B> - la date et l'heure quand le fichier a été créé. Ces paramètres ne sont disponibles que sous la <I>version en ligne</I>.</li>
+                <li><b>Statistiques</b> - le nombre de pages, paragraphes, mots, symboles, symboles avec des espaces.</li>
+                <li><b>Titre</b>, <b>sujet</b>, <b>commentaire</b> - ces paramètres facilitent la classification des documents.  Vos pouvez saisir l'information nécessaire dans les champs appropriés.</li>
+                <li><B>Dernière modification</B> - la date et l'heure quand le fichier a été modifié la dernière fois.</li>
+                <li><B>Dernière modification par</B> - le nom de l'utilisateur qui a apporté la dernière modification au document. Cette option est disponible pour édition collaborative du document quand plusieurs utilisateurs travaillent sur un même document.</li>
+                <li><B>Application</B> - l'application dans laquelle on a créé le document.</li>
+                <li><B>Auteur</B> - la personne qui a créé le fichier. Saisissez le nom approprié dans ce champ. Appuyez sur la touche <I>Entrée</I> pour ajouter un nouveau champ et spécifier encore un auteur.</li>
+            </ul>
+            <p>Si vous avez modifié les paramètres du fichier, cliquez sur <B>Appliquer</B> pour enregistrer les modifications.</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note"><b>Remarque</b>: Les Éditeurs en ligne vous permettent de modifier le titre du document directement à partir de l'interface de l'éditeur. Pour ce faire, cliquez sur l'onglet <B>Fichier</B> de la barre d'outils supérieure et sélectionnez l'option <B>Renommer...</B>, puis entrez le <B>Nom de fichier</B> voulu dans la nouvelle fenêtre qui s'ouvre et cliquez sur <B>OK</B>.</p>
+            </div>  
+                <div class="onlineDocumentFeatures">
+                    <h3>Informations d'autorisation</h3>
+                    <p>Dans la <I>version en ligne</I>, vous pouvez consulter les informations sur les permissions des fichiers stockés dans le cloud.</p>
+                    <p class="note"><B>Remarque</B>: cette option n'est disponible que pour les utilisateurs disposant des autorisations en <B>Lecture seule</B>.</p>
+                    <p>Pour savoir qui a le droit d'afficher ou de modifier le document, sélectionnez l'option <B>Droits d'accès...</B> dans la barre latérale de gauche.</p>
+                    <p>Vous pouvez également changer les droits d'accès actuels en cliquant sur le bouton <B>Changer les droits d'accès</B> dans la section <B>Personnes qui ont des droits</B>.</p>
+                    <h3>Historique des versions</h3>
+                    <p>Dans la <I>version en ligne</I>, vous pouvez consulter l'historique des versions des fichiers stockés dans le cloud.</p>
+                    <p class="note"><B>Remarque</B>: cette option n'est disponible que pour les utilisateurs disposant des autorisations en <B>Lecture seule</B>.</p>
+                    <p>Pour afficher toutes les modifications apportées à ce document, sélectionnez l'option <B>Historique des versions</B> dans la barre latérale de gauche. Il est également possible d'ouvrir l'historique des versions à l'aide de l'icône <img alt="L'icône Historique des versions" src="../images/versionhistoryicon.png" /> <B>Historique des versions</B> de l'onglet <B>Collaboration</B> de la barre d'outils supérieure. Vous verrez la liste des versions de ce document (changements majeurs) et des révisions (modifications mineures) avec l'indication de l'auteur de chaque version/révision et la date et l'heure de création. Pour les versions de document, le numéro de version est également spécifié (par exemple <I>ver.</I><em> 2</em>). Pour savoir exactement quels changements ont été apportés à chaque version/révision, vous pouvez voir celle qui vous intéresse en cliquant dessus dans la barre latérale de gauche. Les modifications apportées par l'auteur de la version/révision sont marquées avec la couleur qui est affichée à côté du nom de l'auteur dans la barre latérale gauche. Vous pouvez utiliser le lien <B>Restaurer</B> sous la version/révision sélectionnée pour la restaurer. <!--To hide the list of the revisions within a certain version, use the <img alt="Collapse icon" src="../images/collapse.png" /> icon next to the version. To display revisions again, use the <img alt="Expand icon" src="../images/expand.png" /> icon.--> </p>
+                    <p><img alt="Historique des versions" src="../images/versionhistory.png" /></p>
+                    <p>Pour revenir à la version actuelle du document, utilisez l'option <B>Fermer l'historique</B> en haut de la liste des versions.</p>
+                </div>
+                <p>Pour fermer l'onglet <B>Fichier </B>et reprendre le travail sur votre document, sélectionnez l'option <B>Retour au document</B>.</p>
+            </div>
+	</body>
+</html>

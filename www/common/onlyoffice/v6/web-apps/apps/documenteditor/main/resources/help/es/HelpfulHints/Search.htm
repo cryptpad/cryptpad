@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función "Encontrar y Reemplazar"</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the document search and replace function in Document Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Función "Encontrar y Reemplazar"</h1>
+			<p>Para encontrar unos carácteres necesarios, palabras o frases usados en el documento que Usted está editando en este momento, haga clic en el icono <img alt="Icono Buscar" src="../images/searchicon.png" /> situado en la barra lateral izquierda.</p>
+			<p>Se abrirá la ventana <b>Encontrar y reemplazar</b>:</p>
+            <p><img alt="Ventana de búsqueda" src="../images/search_window.png" /></p>
+			<ol>
+			<li>Introduzca su consulta en el campo correspondiente.</li>
+			<li>Especifique los parámetros de búsqueda al hacer clic en el icono <img alt="Icono Buscar opciones" src="../images/search_options.png" /> y marcar las opciones necesarias:<ul>
+			<li><b>Sensible a mayúsculas y minúsculas</b> - se usa para encontrar solo las ocurrencias que están escritas manteniendo mayúsculas y minúsculas como en su consulta (por ejemplo si su consulta es 'Editor' y se ha seleccionado esta opción, las palabras como 'editor' o 'EDITOR' etc. no se encontrarán). Para desactivar esta opción haga clic en él de nuevo.</li>
+			<li><b>Resaltar resultados</b> - se usa para resaltar todos los acaecimientos encontrados a la vez. Para desactivar esta opción y quitar el resaltado haga clic en esta opción de nuevo.</li>
+			</ul>
+			</li>			
+			<li>Haga clic en uno de los <b>botones con flechas</b> en la esquina inferior derecha de la pantalla. La búsqueda será realizada hacia al principio del documento (si Usted pulse el botón <img alt="botón de flecha" src="../images/searchupbutton.png" />) o hacia al final del documento (si Usted pulse el botón <img alt="botón de flecha" src="../images/searchdownbutton.png" />) desde la posición actual.<p class="note"><b>Nota</b>: cuando la opción <b>Resaltar resultados</b> es activada, use estos botones para navegar por los resultados resaltados.</p>
+			</li>
+			</ol>
+			<p>Primer acaecimiento de los carácteres requeridos en la dirección selecionada será resaltado en la página. Si no es la palabra que está buscando, pulse el botón elegido una ves más para encontrar la siguiente ocurrencia de los caracteres introducidos.</p> 
+			<p><b>Para reemplazar</b> una o unas ocurrencias de los caracteres encontrados pulse el enlace <b>Reemplazar</b> debajo del campo de entrada de datos. Se cambiará la ventana <b>Encontrar y reemplazar</b>:</p>
+            <p><img alt="Ventana de búsqueda" src="../images/search_replace_window.png" /></p>
+			<ol>
+			<li>Introduzca el texto de sustitución en el campo apropiado debajo.</li>			
+			<li>Pulse el botón <b>Reemplazar</b> para reemplazar la ocurrencia actualmente seleccionada o el botón <b>Reemplazar todo</b> para reemplazar todas las ocurrencias encontradas.</li>
+			</ol>
+            <p>Para esconder el campo de sustitución haga clic en el enlace <b>Esconder Sustitución</b>.</p>
+		</div>
+	</body>
+</html>

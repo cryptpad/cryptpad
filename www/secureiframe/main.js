@@ -28,7 +28,7 @@ define([
             };
             window.rc = requireConfig;
             window.apiconf = ApiConfig;
-            // XXX extra sandboxing features are temporarily disabled as I suspect this is the cause of a regression in Safari
+            // FIXME extra sandboxing features are temporarily disabled as I suspect this is the cause of a regression in Safari
             $('#sbox-secure-iframe')/*.attr('sandbox', 'allow-scripts allow-popups allow-modals')*/.attr('src',
                 ApiConfig.httpSafeOrigin + '/secureiframe/inner.html?' + requireConfig.urlArgs +
                     '#' + encodeURIComponent(JSON.stringify(req)));

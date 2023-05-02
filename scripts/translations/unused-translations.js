@@ -32,6 +32,7 @@ var grep = function (pattern, cb) {
         'www/common/onlyoffice/v2b*',
         'www/common/onlyoffice/v4*',
         'www/common/onlyoffice/v5*',
+        'www/common/onlyoffice/v6*',
         'www/common/onlyoffice/x2t/*',
         //'www/common/onlyoffice/build/*',
         'www/lib/*',

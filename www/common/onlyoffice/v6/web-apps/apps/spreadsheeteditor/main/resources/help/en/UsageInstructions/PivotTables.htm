@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create and edit pivot tables</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Create and edit pivot tables. Apply filters, change the appearance of pivot tables in a spreadsheet." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Create and edit pivot tables</h1>
+            <p>Pivot tables allow you to group and arrange data of large data sets to get summarized information. In the <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> you can reorganize data in many different ways to display only the necessary information and focus on important aspects.</p>
+            <h3>Create a new pivot table</h3>
+            <p>To create a pivot table,</p>
+            <ol>
+                <li>Prepare the source data set you want to use for creating a pivot table. It should include column headers. The data set should not contain empty rows or columns.</li>
+                <li>Select any cell within the source data range.</li>
+                <li>
+                    Switch to the <b>Pivot Table</b> tab of the top toolbar and click the <b>Insert Table</b> <img alt="Insert Table icon" src="../images/insert_pivot.png" /> icon.
+                    <p>If you want to create a pivot table on the base of a <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">formatted table</a>, you can also use the <img alt="Insert pivot table" src="../images/insertpivot.png" /> <b>Insert pivot table</b> option on the <b>Table settings</b> tab of the right sidebar.</p>
+                </li>
+                <li>
+                    The <b>Create Pivot Table</b> window will appear.
+                    <p><img alt="Create Pivot Table window" src="../images/create_pivot.png" /></p>
+                    <ul>
+                        <li>
+                            The <b>Source data range</b> is already specified. In this case, all data from the source data range will be used. If you want to change the data range (e.g. to include only a part of source data), click the <img alt="Select data icon" src="../images/changerange.png" /> icon. In the <b>Select Data Range</b> window, enter the necessary data range in the following format: <em>Sheet1!$A$1:$E$10</em>. You can also select the necessary cell range on the sheet using the mouse. When ready, click <b>OK</b>.
+                        </li>
+                        <li>
+                            Specify where you want to place the pivot table.
+                            <ul>
+                                <li>The <b>New worksheet</b> option is selected by default. It allows you to place the pivot table in a new worksheet.</li>
+                                <li>
+                                    You can also select the <b>Existing worksheet</b> option and choose a certain cell. In this case, the selected cell will be the upper right cell of the created pivot table. To select a cell, click the <img alt="Select data icon" src="../images/changerange.png" /> icon.
+                                    <p><img alt="Select Data Range window" src="../images/pivot_selectdata2.png" /></p>
+                                    <p>In the <b>Select Data Range</b> window, enter the cell address in the following format: <em>Sheet1!$G$2</em>. You can also click the necessary cell in the sheet. When ready, click <b>OK</b>. </p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>When you select the pivot table location, click <b>OK</b> in the <b>Create Table</b> window.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>An empty pivot table will be inserted in the selected location.</p>
+            <p>The <b>Pivot table settings</b> tab on the right sidebar will be opened. You can hide or display this tab by clicking the <img alt="Pivot table settings icon" src="../images/pivot_settings.png" /> icon.</p>
+            <p><img alt="Pivot table settings tab" src="../images/right_pivot.png" /></p>
+
+            <h4>Select fields to display</h4>
+            <p>The <b>Select Fields</b> section contains the fields named according to the column headers in your source data set. Each field contains values from the corresponding column of the source table. The following four sections are available below: <b>Filters</b>, <b>Columns</b>, <b>Rows</b>, and <b>Values</b>.</p>
+            <p>Check the fields you want to display in the pivot table. When you check a field, it will be added to one of the available sections on the right sidebar depending on the data type and will be displayed in the pivot table. Fields containing text values will be added to the <b>Rows</b> section; fields containing numeric values will be added to the <b>Values</b> section.</p>
+            <p>You can simply drag fields to the necessary section as well as drag the fields between sections to quickly reorganize your pivot table. To remove a field from the current section, drag it out of this section.</p>
+            <p>In order to add a field to the necessary section, it's also possible to click the black arrow to the right of a field in the <b>Select Fields</b> section and choose the necessary option from the menu: <b>Add to Filters</b>, <b>Add to Rows</b>, <b>Add to Columns</b>, <b>Add to Values</b>.</p>
+            <p><img alt="Pivot table settings tab" src="../images/pivot_selectfields.png" /></p>
+            <p>Below you can see some examples of using the <b>Filters</b>, <b>Columns</b>, <b>Rows</b>, and <b>Values</b> sections.</p>
+            <ul>
+                <li>
+                    If you add a field to the <b>Filters</b> section, a separate filter will be added above the pivot table. It will be applied to the entire pivot table. If you click the drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> in the added filter, you'll see the values from the selected field. When you uncheck some values in the filter option window and click <b>OK</b>, the unchecked values will not be displayed in the pivot table.
+                    <p><img alt="Pivot Filters" src="../images/pivot_filter_field.png" /></p>
+                </li>
+                <li>
+                    If you add a field to the <b>Columns</b> section, the pivot table will contain a number of columns equal to the number of values from the selected field. The <b>Grand Total</b> column will also be added.
+                    <p><img alt="Pivot Columns" src="../images/pivot_columns.png" /></p>
+                </li>
+                <li>
+                    If you add a field to the <b>Rows</b> section, the pivot table will contain a number of rows equal to the number of values from the selected field. The <b>Grand Total</b> row will also be added.
+                    <p><img alt="Pivot Rows" src="../images/pivot_rows.png" /></p>
+                </li>
+                <li>
+                    If you add a field to the <b>Values</b> section, the pivot table will display the summation value for all numeric values from the selected field. If the field contains text values, the count of values will be displayed. The function used to calculate the summation value can be changed in the field settings.
+                    <p><img alt="Pivot Values" src="../images/pivot_values.png" /></p>
+                </li>
+            </ul>
+
+            <h4>Rearrange fields and adjust their properties</h4>
+            <p>Once the fields are added to the necessary sections, you can manage them to change the layout and format of the pivot table. Click the black arrow to the right of a field within the <b>Filters</b>, <b>Columns</b>, <b>Rows</b>, or <b>Values</b> sections to access the field context menu.</p>
+            <p><img alt="Pivot table menu" src="../images/pivot_menu.png" /></p>
+            <p>It allows you to:</p>
+            <ul>
+                <li><b>Move</b> the selected field <b>Up</b>, <b>Down</b>, to the <b>Beginning</b>, or to the <b>End</b> of the current section if you have added more than one field to the current section.</li>
+                <li><b>Move</b> the selected field to a different section - to <b>Filters</b>, <b>Columns</b>, <b>Rows</b>, or <b>Values</b>. The option that corresponds to the current section will be disabled.</li>
+                <li><b>Remove</b> the selected field from the current section.</li>
+                <li>Adjust the selected field <b>settings</b>.</li>
+            </ul>
+            <p>The <b>Filters, Columns</b>, and <b>Rows field settings</b> look similarly:</p>
+            <p><img alt="Pivot table Filters field settings" src="../images/pivot_filter_field_layout.png" /></p>
+            <p>The <b>Layout</b> tab contains the following options:</p>
+            <ul>
+                <li>The <b>Source name</b> option allows you to view the field name corresponding to the column header from the source data set.</li>
+                <li>The <b>Custom name</b> option allows you to change the name of the selected field displayed in the pivot table.</li>
+                <li>
+                    The <b>Report Form</b> section allows you to change the way the selected field is displayed in the pivot table:
+                    <ul>
+                        <li>
+                            Choose the necessary layout for the selected field in the pivot table:
+                            <ul>
+                                <li>
+                                    The <b>Tabular</b> form displays one column for each field and provides space for field headers.
+                                    <!--<p><img alt="Pivot table Tabular form" src="../images/pivot_tabular.png" /></p>-->
+                                </li>
+                                <li>
+                                    The <b>Outline</b> form displays one column for each field and provides space for field headers. It also allows you to display subtotals at the top of groups.
+                                    <!--<p><img alt="Pivot table Outline form" src="../images/pivot_outline.png" /></p>-->
+                                </li>
+                                <li>
+                                    The <b>Compact</b> form displays items from different row section fields in a single column.
+                                    <!--<p><img alt="Pivot table Compact form" src="../images/pivot_compact.png" /></p>-->
+                                </li>
+                            </ul>
+                        </li>
+                        <li>The <b>Repeat items labels at each row</b> option allows you to visually group rows or columns together if you have multiple fields in the tabular form.</li>
+                        <li>The <b>Insert blank rows after each item</b> option allows you to add blank lines after items of the selected field.</li>
+                        <li>The <b>Show subtotals</b> option allows you to choose if you want to display subtotals for the selected field. You can select one of the options: <em>Show at top of group</em> or <em>Show at bottom of group</em>.</li>
+                        <li>The <b>Show items with no data</b> option allows you to show or hide blank items in the selected field.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Pivot table Filters field settings" src="../images/pivot_filter_field_subtotals.png" /></p>
+            <p>The <b>Subtotals</b> tab allows you to choose <b>Functions for Subtotals</b>. Check the necessary functions in the list: <em>Sum</em>, <em>Count</em>, <em>Average</em>, <em>Max</em>, <em>Min</em>, <em>Product</em>, <em>Count Numbers</em>, <em>StdDev</em>, <em>StdDevp</em>, <em>Var</em>, <em>Varp</em>.</p>
+            <p><b>Values field settings</b></p>
+            <p><img alt="Pivot table Values field settings" src="../images/pivot_values_field_settings.png" /></p>
+            <ul>
+                <li>The <b>Source name</b> option allows you to view the field name corresponding to the column header from the source data set.</li>
+                <li>The <b>Custom name</b> option allows you to change the name of the selected field displayed in the pivot table.</li>
+                <li>The <b>Summarize value field by</b> list allows you to choose the function used to calculate the summation value for all values from this field. By default, <em>Sum</em> is used for numeric values, <em>Count</em> is used for text values. The available functions are <em>Sum</em>, <em>Count</em>, <em>Average</em>, <em>Max</em>, <em>Min</em>, <em>Product</em>, <em>Count Numbers</em>, <em>StdDev</em>, <em>StdDevp</em>, <em>Var</em>, <em>Varp</em>.</li>
+            </ul>
+
+            <h3>Group and ungroup data</h3>
+            <p>Data in pivot tables can be grouped according to custom requirements. Grouping is available for dates and basic numbers.</p>
+            <h4>Grouping dates</h4>
+            <p>To group dates, create a pivot table incorporating a set of needed dates. Right click any cell in a pivot table with a date, choose the <b>Group</b> option in the pop-up menu, and set the needed parameters in the opened window.</p>
+            <p><img alt="group dates" src="../images/group_dates.png" /></p>
+            <ul>
+                <li><b>Starting at</b> - the first date in the source data is chosen by default. To change it, enter the needed date in this field. Deactivate this box to ignore the starting point.</li>
+                <li><b>Ending at</b> -  the last date in the source data is chosen by default. To change it, enter the needed date in this field. Deactivate this box to ignore the ending point.</li>
+                <li><b>By</b> - the <b>Seconds</b>, <b>Minutes</b>, and <b>Hours</b> options group the data according to the time given in the source data. The <b>Months</b> option eliminates days and leaves months only. The <b>Quarters</b> option operates at a condition: four months constitute a quarter, thus providing <em>Qtr1</em>, <em>Qtr2</em>, etc. The <b>Years</b> option groups dates as per years given in the source data. Combine the options to achieve the needed result.</li>
+                <li><b>Number of days</b> - set the required value to determine a date range.</li>
+                <li>Click <b>OK</b> when finished.</li>
+            </ul>
+            <h4>Grouping numbers</h4>
+            <p>To group numbers, create a pivot table incorporating a set of needed numbers. Right click any cell in a pivot table with a number, choose the <b>Group</b> option in the pop-up menu, and set the needed parameters in the opened window.</p>
+            <p><img alt="group numbers" src="../images/group_numbers.png" /></p>
+            <ul>
+                <li><b>Starting at</b> - the smallest number in the source data is chosen by default. To change it, enter the needed number in this field. Deactivate this box to ignore the smallest number.</li>
+                <li><b>Ending at</b> - the largest number in the source data is chosen by default. To change it, enter the needed number in this field. Deactivate this box to ignore the largest number.</li>
+                <li><b>By</b> - set the required interval for grouping numbers. E.g., <em>“2”</em> will group the set of numbers from 1 through 10 as <em>“1-2”</em>, <em>“3-4”</em>, etc.</li>
+                <li>Click <b>OK</b> when finished.</li>
+            </ul>
+            <h4>Ungrouping data</h4>
+            <p>To ungroup previously grouped data,</p>
+            <ol>
+                <li>right-click any cell that is in the group,</li>
+                <li>select the <b>Ungroup</b> option in the context menu.</li>
+            </ol>
+
+            <h3>Change the appearance of pivot tables</h3>
+            <p>You can use options available on the top toolbar to adjust the way your pivot table is displayed. These options are applied to the entire pivot table.</p>
+            <p>Select at least one cell within the pivot table with the mouse to activate the editing tools on the top toolbar.</p>
+            <p><img alt="Pivot table toop toolbar" src="../images/pivot_top.png" /></p>
+            <ul>
+                <li>
+                    The <b>Report Layout</b> drop-down list allows you to choose the necessary layout for your pivot table:
+                    <ul>
+                        <li>
+                            <em>Show in Compact Form</em> - allows you to display items from different row section fields in a single column.
+                            <p><img alt="Pivot table Compact form" src="../images/pivot_compact.png" /></p>
+                        </li>
+                        <li>
+                            <em>Show in Outline Form</em> - allows you to display the pivot table in the classic pivot table style. It displays one column for each field and provides space for field headers. It also allows you to display subtotals at the top of groups.
+                            <p><img alt="Pivot table Outline form" src="../images/pivot_outline.png" /></p>
+                        </li>
+                        <li>
+                            <em>Show in Tabular Form</em> - allows you to display the pivot table in a traditional table format. It displays one column for each field and provides space for field headers.
+                            <p><img alt="Pivot table Tabular form" src="../images/pivot_tabular.png" /></p>
+                        </li>
+                        <li><em>Repeat All Item Labels</em> - allows you to visually group rows or columns together if you have multiple fields in the tabular form.</li>
+                        <li><em>Don't Repeat All Item Labels</em> - allows you to hide item labels if you have multiple fields in the tabular form.</li>
+                    </ul>
+                </li>
+                <li>
+                    The <b>Blank Rows</b> drop-down list allows you to choose if you want to display blank lines after items:
+                    <ul>
+                        <li><em>Insert Blank Line after Each Item</em> - allows you to add blank lines after items.</li>
+                        <li><em>Remove Blank Line after Each Item</em> - allows you to remove the added blank lines.</li>
+                    </ul>
+                </li>
+                <li>
+                    The <b>Subtotals</b> drop-down list allows you to choose if you want to display subtotals in the pivot table:
+                    <ul>
+                        <li><em>Don't Show Subtotals</em> - allows you to hide subtotals for all items.</li>
+                        <li><em>Show all Subtotals at Bottom of Group</em> - allows you to display subtotals below the subtotaled rows.</li>
+                        <li><em>Show all Subtotals at Top of Group</em> - allows you to display subtotals above the subtotaled rows.</li>
+                    </ul>
+                </li>
+                <li>
+                    The <b>Grand Totals</b> drop-down list allows you to choose if you want to display grand totals in the pivot table:
+                    <ul>
+                        <li><em>Off for Rows and Columns</em> - allows you to hide grand totals for both rows and columns.</li>
+                        <li><em>On for Rows and Columns</em> - allows you to display grand totals for both rows and columns.</li>
+                        <li><em>On for Rows Only</em> - allows you to display grand totals for rows only.</li>
+                        <li><em>On for Columns Only</em> - allows you to display grand totals for columns only.</li>
+                    </ul>
+                    <p class="note"><b>Note</b>: the similar settings are also available in the pivot table advanced settings window in the <b>Grand Totals</b> section of the <b>Name and Layout</b> tab.</p>
+                </li>
+            </ul>
+            <p>The <img alt="Select Pivot Table icon" src="../images/pivotselecticon.png" /> <b>Select</b> button allows you to select the entire pivot table.</p>
+            <p>If you change the data in your source data set, select the pivot table and click the <img alt="Refresh Pivot Table icon" src="../images/pivot_refresh.png" /> <b>Refresh</b> button to update the pivot table.</p>
+
+            <h3>Change the style of pivot tables</h3>
+            <p>You can change the appearance of pivot tables in a spreadsheet using the style editing tools available on the top toolbar.</p>
+            <p>Select at least one cell within the pivot table with the mouse to activate the editing tools on the top toolbar.</p>
+            <p><img alt="Pivot Table tab" src="../images/pivottoptoolbar.png" /></p>
+            <p>The rows and columns options allow you to emphasize certain rows/columns applying specific formatting to them, or highlight different rows/columns with different background colors to clearly distinguish them. The following options are available:</p>
+            <ul>
+                <li><b>Row Headers</b> - allows you to highlight the row headers with special formatting.</li>
+                <li><b>Column Headers</b> - allows you to highlight the column headers with special formatting.</li>
+                <li><b>Banded Rows</b> - enables the background color alternation for odd and even rows.</li>
+                <li><b>Banded Columns</b> - enables the background color alternation for odd and even columns.</li>
+            </ul>
+            <p>
+                The template list allows you to choose one of the predefined pivot table styles. Each template combines certain formatting parameters, such as a background color, border style, row/column banding, etc.
+                Depending on the options checked for rows and columns, the templates set will be displayed differently. For example, if you've checked the <b>Row Headers</b> and <b>Banded Columns</b> options, the displayed templates list will include only templates with the row headers highlighted and banded columns enabled.
+            </p>
+
+            <h3>Filter, sort and add slicers in pivot tables</h3>
+            <p>You can filter pivot tables by labels or values and use the additional sort parameters.</p>
+            <h4>Filtering</h4>
+            <p>Click the drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table. The <b>Filter</b> option list will open:</p>
+            <p><img alt="Filter window" src="../images/pivot_filterwindow.png" /></p>
+            <p>Adjust the filter parameters. You can proceed in one of the following ways: select the data to display or filter the data by certain criteria.</p>
+            <ul>
+                <li>
+                    <b>Select the data to display</b>
+                    <p>Uncheck the boxes near the data you need to hide. For your convenience, all the data within the <b>Filter</b> option list are sorted in ascending order.</p>
+                    <p class="note"><b>Note</b>: the <b>(blank)</b> checkbox corresponds to the empty cells. It is available if the selected cell range contains at least one empty cell.</p>
+                    <p>To facilitate the process, make use of the search field on the top. Enter your query, entirely or partially, in the field - the values that include these characters will be displayed in the list below. The following two options will be also available:</p>
+                    <ul>
+                        <li><b>Select All Search Results</b> - is checked by default. It allows selecting all the values that correspond to your query in the list.</li>
+                        <li><b>Add current selection to filter</b> - if you check this box, the selected values will not be hidden when you apply the filter.</li>
+                    </ul>
+                    <p>After you select all the necessary data, click the <b>OK</b> button in the <b>Filter</b> option list to apply the filter.</p>
+                </li>
+                <li>
+                    <b>Filter data by certain criteria</b>
+                    <p>You can choose either the <b>Label filter</b> or the <b>Value filter</b> option on the right side of the <b>Filter</b> options list, and then select one of the options from the submenu:</p>
+                    <ul>
+                        <li>
+                            For the <b>Label filter</b> the following options are available:
+                            <ul>
+                                <li>For texts: <em>Equals...</em>, <em>Does not equal...</em>, <em>Begins with...</em>, <em>Does not begin with...</em>, <em>Ends with...</em>, <em>Does not end with...</em>, <em>Contains...</em>, <em>Does not contain...</em></li>
+                                <li>For numbers: <em>Greater than...</em>, <em>Greater than or equal to...</em>, <em>Less than...</em>, <em>Less than or equal to...</em>, <em>Between</em>, <em>Not between</em>.</li>
+                            </ul>
+                        </li>
+                        <li>For the <b>Value filter</b> the following options are available: <em>Equals...</em>, <em>Does not equal...</em>, <em>Greater than...</em>, <em>Greater than or equal to...</em>, <em>Less than...</em>, <em>Less than or equal to...</em>, <em>Between</em>, <em>Not between</em>, <em>Top 10</em>.</li>
+                    </ul>
+                    <p>After you select one of the above options (apart from <em>Top 10</em>), the <b>Label/Value Filter</b> window will open. The corresponding field and criterion will be selected in the first and second drop-down lists. Enter the necessary value in the field on the right.</p>
+                    <p>Click <b>OK</b> to apply the filter.</p>
+                    <p><img alt="Value Filter window" src="../images/pivot_filter.png" /></p>
+                    <p>If you choose the <em>Top 10</em> option from the <b>Value filter</b> option list, a new window will open:</p>
+                    <p><img alt="Top 10 AutoFilter window" src="../images/pivot_topten.png" /></p>
+                    <p>The first drop-down list allows choosing if you wish to display the highest (<b>Top</b>) or the lowest (<b>Bottom</b>) values. The second field allows specifying how many entries from the list or which percent of the overall entries number you want to display (you can enter a number from 1 to 500). The third drop-down list allows setting the units of measure: <b>Item</b>, <b>Percent</b>, or <b>Sum</b>. The fourth drop-down list displays the selected field name. Once the necessary parameters are set, click <b>OK</b> to apply the filter.</p>
+                </li>
+            </ul>
+            <p>The <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> button will appear in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table. It means that the filter is applied. <!--The number of filtered records will be displayed at the status bar (e.g. <em>25 of 80 records filtered</em>).--></p>
+
+            <h4>Sorting</h4>
+            <p>You can sort your pivot table data using the <b>sort</b> options. Click the drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> in the <b>Row Labels</b> or <b>Column Labels</b> of the pivot table and then select <b>Sort Lowest to Highest</b> or <b>Sort Highest to Lowest</b> option from the submenu.</p>
+            <p>The <b>More Sort Options</b> option allows you to open the <b>Sort</b> window where you can select the necessary sorting order - <em>Ascending</em> or <em>Descending</em> - and then select a certain field you want to sort.</p>
+            <p><img alt="Pivot table sort options" src="../images/pivot_sort.png" /></p>
+
+            <h4>Adding slicers</h4>
+            <p>You can add slicers to filter data easier by displaying only what is needed. To learn more about slicers, please read the <a href="Slicers.htm" onclick="onhyperlinkclick(this)">guide on creating slicers</a>.</p>
+
+            <h3>Adjust pivot table advanced settings</h3>
+            <p id="pivot_advanced">To change the <b>advanced settings</b> of the pivot table, use the <b>Show advanced settings</b> link on the right sidebar. The 'Pivot Table - Advanced Settings' window will open:</p>
+            <p><img alt="Pivot table advanced settings" src="../images/pivot_advanced.png" /></p>
+            <p>The <b>Name and Layout</b> tab allows you to change the pivot table common properties.</p>
+            <ul>
+                <li>The <b>Name</b> option allows you to change the pivot table name.</li>
+                <li>
+                    The <b>Grand Totals</b> section allows you to choose if you want to display grand totals in the pivot table. The <em>Show for rows</em> and <em>Show for columns</em> options are checked by default. You can uncheck either one of them or both these options to hide the corresponding grand totals from your pivot table.
+                    <p class="note"><b>Note</b>: the similar settings are available on the top toolbar in the <b>Grand Totals</b> menu.</p>
+                </li>
+                <li>
+                    The <b>Display fields in report filter area</b> section allows you to adjust the report filters which appear when you add fields to the <b>Filters</b> section:
+                    <ul>
+                        <li>The <em>Down, then over</em> option is used for column arrangement. It allows you to show the report filters across the column.</li>
+                        <li>The <em>Over, then down</em> option is used for row arrangement. It allows you to show the report filters across the row.</li>
+                        <li>The <em>Report filter fields per column</em> option allows you to select the number of filters to go in each column. The default value is set to <em>0</em>. You can set the necessary numeric value.</li>
+                    </ul>
+                </li>
+                <li>The <b>Field Headers</b> section allows you to choose if you want to display field headers in your pivot table. The <em>Show field headers for rows and columns</em> option is selected by default. Uncheck it to hide field headers from your pivot table.</li>
+            </ul>
+            <p><img alt="Pivot table advanced settings" src="../images/pivot_advanced2.png" /></p>
+            <p>The <b>Data Source</b> tab allows you to change the data you wish to use to create the pivot table.</p>
+            <p>Check the selected <b>Data Range</b> and modify it, if necessary. To do that, click the <img alt="Source data range icon" src="../images/changerange.png" /> icon. </p>
+            <p><img alt="Select Data Range window" src="../images/pivot_selectdata.png" /></p>
+            <p>In the <b>Select Data Range</b> window, enter the necessary data range in the following format: <em>Sheet1!$A$1:$E$10</em>. You can also select the necessary cell range in the sheet using the mouse. When ready, click <b>OK</b>.</p>
+            <p><img alt="Pivot table advanced settings" src="../images/pivot_advanced3.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows specifying the <b>Title</b> and the <b>Description</b> which will be read to people with vision or cognitive impairments to help them better understand what information the pivot table contains.</p>
+            <h3>Delete a pivot table</h3>
+            <p>To delete a pivot table,</p>
+            <ol>
+                <li>Select the entire pivot table using the <img alt="Select Pivot Table icon" src="../images/pivotselecticon.png" /> <b>Select</b> button on the top toolbar.</li>
+                <li>Press the <b>Delete</b> key.</li>
+            </ol>
+        </div>
+	</body>
+</html>

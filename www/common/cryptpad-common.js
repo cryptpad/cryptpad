@@ -219,10 +219,12 @@ define([
             var n = Nthen;
             var nacl, theirs;
             n = n(function (waitFor) {
-                require(['/components/tweetnacl/nacl-fast.min.js'], waitFor(function () {
+                require([
+                    '/api/broadcast?'+ (+new Date()),
+                    '/components/tweetnacl/nacl-fast.min.js'
+                ], waitFor(function (Broadcast) {
                     nacl = window.nacl;
-                    var s = new Uint8Array(32);
-                    theirs = nacl.box.keyPair.fromSecretKey(s);
+                    theirs = nacl.util.decodeBase64(Broadcast.curvePublic);
                 }));
             }).nThen;
             var toDelete = [];
@@ -236,7 +238,7 @@ define([
                     var curve = answer.curvePrivate;
                     var mySecret = nacl.util.decodeBase64(curve);
                     var nonce = nacl.randomBytes(24);
-                    var proofBytes = nacl.box(h, nonce, theirs.publicKey, mySecret);
+                    var proofBytes = nacl.box(h, nonce, theirs, mySecret);
                     var proof = nacl.util.encodeBase64(nonce) +'|'+ nacl.util.encodeBase64(proofBytes);
                     var lineData = {
                         channel: data.channel,

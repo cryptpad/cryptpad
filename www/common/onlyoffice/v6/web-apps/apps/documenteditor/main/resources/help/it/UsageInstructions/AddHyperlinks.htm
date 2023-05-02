@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Aggiungere collegamenti ipertestuali</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Add hyperlinks to a word or text fragment leading to an external website" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Aggiungere collegamenti ipertestuali</h1>
+        <p>Per aggiungere un collegamento ipertestuale,</p>
+        <ol>
+            <li>posizionare il cursore nella posizione in cui verrà aggiunto un collegamento ipertestuale,</li>
+            <li>passare alla scheda <b>Inserisci</b> o <b>Riferimenti</b> della barra degli strumenti superiore,</li>
+            <li>fare clic sull'icona <img alt="Collegamento ipertestuale" src="../images/addhyperlink.png" /> <b>Collegamento ipertestuale</b> nella barra degli strumenti superiore,</li>
+            <li>
+                dopo di che apparirà la finestra <b>Impostazioni collegamento ipertestuale</b> in cui è possibile specificare i parametri del collegamento ipertestuale:
+                <ul>
+                    <li>
+                        Selezionare il tipo di link che si desidera inserire:
+                        <p>Utilizzare l'opzione <b>Collegamento esterno</b> e immettere un URL nel formato <em>http://www.example.com</em> nel campo sottostante <b>Collega a</b> se è necessario aggiungere un collegamento ipertestuale che conduce a un sito Web esterno.</p>
+                        <p><img alt="Impostazioni collegamento ipertestuale" src="../images/hyperlinkwindow.png" /></p>
+                        <p>Utilizzare l'opzione <b>Inserisci nel documento</b> e selezionare una delle <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">intestazioni</a> esistenti nel testo del documento o uno dei <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">segnalibri</a> aggiunti in precedenza se è necessario aggiungere un collegamento ipertestuale che porta a una determinata posizione nello stesso documento.</p>
+                        <p><img alt="Impostazioni collegamento ipertestuale" src="../images/hyperlinkwindow1.png" /></p>
+                    </li>
+                    <li><b>Visualizza</b> - inserire un testo che sarà cliccabile e porterà all'indirizzo specificato nel campo superiore.</li>
+                    <li><b>Testo del Seggerimento</b> - enter a text that will become visible in a small pop-up window that provides a brief note or label pertaining to the hyperlink being pointed to.</li>
+                </ul>
+            </li>
+            <li>Fare clic sul pulsante <b>OK</b>.</li>
+        </ol>
+        <p>Per aggiungere un collegamento ipertestuale, è anche possibile utilizzare la combinazione di tasti <b>Ctrl+K</b> o fare clic con il pulsante destro del mouse nella posizione in cui verrà aggiunto un collegamento ipertestuale e selezionare l'opzione <b>Collegamento ipertestuale</b> nel menu di scelta rapida.</p>
+        <p class="note">
+            <b>Nota</b>: è anche possibile selezionare un carattere, una parola, una combinazione di parole, un passaggio di testo con il mouse o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">utilizzando la tastiera</a> e
+            quindi aprire la finestra <b>Impostazioni collegamento ipertestuale</b> come descritto sopra.  In questo caso, il campo <b>Visualizza</b> verrà compilato con il frammento di testo selezionato.
+        </p>
+        <p>
+            Passando il cursore sul collegamento ipertestuale aggiunto, verrà visualizzato il suggerimento contenente il testo specificato.
+            È possibile seguire il collegamento premendo il tasto <b>CTRL</b> e facendo clic sul collegamento nel documento.
+        </p>
+        <p>Per modificare o eliminare il collegamento ipertestuale aggiunto, fare clic con il pulsante destro del mouse, selezionare l'opzione <b>Collegamento ipertestuale</b> e quindi l'azione che si desidera eseguire - <b>Modifica collegamento ipertestuale</b> o <b>Elimina collegamento ipertestuale</b>.</p>
+    </div>
+</body>
+</html>
