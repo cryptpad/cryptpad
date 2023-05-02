@@ -63,7 +63,8 @@
   },
   "overrides": {
     "glob-parent": "5.1.2",
-    "set-value": "4.0.1"
+    "set-value": "4.0.1",
+    "jquery": "3.6.0"
   },
   "scripts": {
     "install:components": "node scripts/copy-components.js",
