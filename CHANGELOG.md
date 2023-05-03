@@ -2,7 +2,7 @@
 
 ## Goals
 
-This release updates OnlyOffice applications to version 7.3.3. It improves the Form application and other areas of CryptPad with minor features and bug fixes. 
+This release updates OnlyOffice applications to version 7.1 It improves the Form application and other areas of CryptPad with minor features and bug fixes. 
 
 ## Features
 
