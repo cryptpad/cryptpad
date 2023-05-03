@@ -179,6 +179,10 @@ define([
 @cp-config-bg-alert: ${Config.bgAlert};
 @cp-config-color-brand: ${Config.colorBrand};
 @cp-config-text: ${Config.textColor};
+@cp-config-dark-theme-bg-body: ${Config.darkThemeBgBody};
+@cp-config-dark-theme-bg-alert: ${Config.darkThemeBgAlert};
+@cp-config-dark-theme-color-brand: ${Config.darkThemeColorBrand};
+@cp-config-dark-theme-text: ${Config.darkThemeTextColor};
             @import (multiple) "${url}" ;`, {}, function(err, css) {
                 if (err) { return void cb(err); }
                 cb(undefined, css.css);

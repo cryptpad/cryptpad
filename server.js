@@ -246,6 +246,10 @@ var serveConfig = makeRouteCache(function () {
             bgAlert:Env.bgAlert,
             colorBrand:Env.colorBrand,
             textColor:Env.textColor,
+            darkThemeBgBody: Env.darkThemeBgBody,
+            darkThemeBgAlert:Env.darkThemeBgAlert,
+            darkThemeColorBrand:Env.darkThemeColorBrand,
+            darkThemeTextColor:Env.darkThemeTextColor,
             accounts_api: Env.accounts_api,
         }, null, '\t'),
         '});'
@@ -347,27 +351,27 @@ function pathjoin() {
         var part = parts[i];
         // Remove leading and trailing slashes
         // Also remove "." segments
-        if (!part || part === ".") continue;
+        if (!part || part === ".") { continue; }
         // Interpret ".." to pop the last segment
-        if (part === "..") newParts.pop();
+        if (part === "..") { newParts.pop(); }
         // Push new path segments.
-        else newParts.push(part);
+        else { newParts.push(part); }
     }
     // Preserve the initial slash if there was one.
-    if (parts[0] === "") newParts.unshift("");
+    if (parts[0] === "") { newParts.unshift(""); }
     // Turn back into a single string path.
     return newParts.join("/") || (newParts.length ? "/" : ".");
 }
 
 function getMimetype(filePath) {
-    extension = filePath.split(".").pop();
-    if (extension == "png") {
+    var extension = filePath.split(".").pop();
+    if (extension === "png") {
         return("image/png");
     }
-    if (extension == "jpg" || extension == "jpeg") {
+    if (extension === "jpg" || extension === "jpeg") {
         return("image/jpeg");
     }
-    if (extension == "svg") {
+    if (extension === "svg") {
         return("image/svg+xml");
     }
     return("unknown");
@@ -377,7 +381,7 @@ function sendDefaultOrConfig(req,res,configName, defaultFile) {
     if ( configName in config) {
         // I should test if the file exists
         // I use it :
-        res.setHeader('Content-Type', getMimetype(config[configName]))
+        res.setHeader('Content-Type', getMimetype(config[configName]));
         res.sendFile(config[configName]);
     } else {
         res.setHeader('Content-Type', getMimetype(defaultFile));
@@ -392,7 +396,7 @@ app.get('/look/cplogo', function (req, res) {
 
 app.get('/look/logo', function(req,res) {
     sendDefaultOrConfig(req,res,"logoPath", pathjoin(Env.paths.blob,"/../customize.dist/CryptPad_logo.svg"));
-})
+});
 
 app.get('/look/greylogo', function (req, res) {
     sendDefaultOrConfig(req,res,"greyLogoPath", pathjoin(Env.paths.blob,"/../customize.dist/CryptPad_logo_grey.svg"));

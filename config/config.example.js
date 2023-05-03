@@ -27,7 +27,8 @@
  * For administrators, there public keys  must be put in separate variables :
  *   CPADMIN1, CPADMIN2, CPADMIN3, CPADMIN4
  */
-require('dotenv').config()
+
+require('dotenv').config();
 //console.log("Entering config.js"); // remove this after you've confirmed it is working
 
 module.exports = {
@@ -248,6 +249,12 @@ module.exports = {
      */
     logPath: './data/logs',
 
+    /* To customize the different logos, you can provide their path
+    * logoPath : central logo on home page - svg, jpg, jpeg, png
+    *  greyLogoPath : grey logo - svg, jpg, jpeg or png
+    *  favIconPath : favicon (png)
+    */
+
     /* =====================
      *       Debugging
      * ===================== */
@@ -295,6 +302,17 @@ module.exports = {
      *
      */
     installMethod: 'unspecified',
+
+    /* Background color for body and background color for alert
+    */
+   bgBody: "#eeeeee",
+   bgAlert: "#ffffff",
+   colorBrand: "#0087FF",
+   textColor: "#424242",
+   darkThemeBgBody: "#212121",
+   darkThemeBgAlert: "#424242",
+   darkThemeColorBrand: "#0087FF",
+   darkThemeTextColor: "#EEEEEE",
 };
 
 // A variable may be defined in the env variables but not in the default
@@ -304,7 +322,8 @@ const varArray =[ "httpUnsafeOrigin", "httpSafeOrigin","httpAddress", "httpPort"
     "disableIntegratedEviction", "maxUploadSize","premiumUploadSize", "filePath",
     "archivePath", "pinPath", "taskPath", "blockPath", "blobPath", "blobStagingPath",
     "decreePath", "logPath", "logToStdout", "logLevel", "logFeedback", "verbose",
-    "installMethod" ];
+    "installMethod", "logoPath", "greyLogoPath", "favIconPath", "bgBody", "bgAlert", "colorBrand",
+    "textColor" , "darkThemeBgBody", "darkThemeBgAlert", "darkThemeColorBrand", "darkThemeTextColor"];
 
 // Variables that must be converted to an array
 const numberVarArray = [ "httpPort", "httpSafePort", "maxWorkers", "inactiveTime", "archiveRetentionTime",
@@ -315,7 +334,7 @@ varArray.forEach(function(key,i) {
     // I need to find the corresponding ENV variables
 	// httpPort => envName is CPHTTPPORT
     const envName = "CP"+key.toUpperCase();
-    //console.log("processing ", key);
+    //console.log("config.js - processing ", key);
     if ( envName in process.env ) {
         // Includes ecmascript 2016, beware
         if (numberVarArray.includes(key)) {
@@ -323,12 +342,16 @@ varArray.forEach(function(key,i) {
             module.exports[key]=Number(process.env[envName]);
         } else if (booleanVarArray.includes(key)) {
             //console.log("Boolean case for ",envName);
-            module.exports[key]= (process.env[envName]?.toLowerCase?.() === 'true');
+            module.exports[key]=false;
+            if (process.env[envName].toLowerCase() === 'true') {
+                module.exports[key]=true;
+            }
+            module.exports[key]= (process.env[envName].toLowerCase() === 'true');
         } else {
             module.exports[key] = process.env[envName];
         }
     }
-})
+});
 
 // I need a special process for adminKeys
 // each admin must be put in a separate variable : CPADMIN1, CPADMIN2, CPADMIN3, CPADMIN4

@@ -26,7 +26,8 @@
 }
 
 // Colors
-@cryptpad_color_brand: #0087FF;
+//@cryptpad_color_brand: #0087FF;
+@cryptpad_color_brand: @cp-config-dark-theme-color-brand;
 @cryptpad_color_brand_300: lighten(@cryptpad_color_brand, 30%);
 @cryptpad_color_brand_fade: fade(@cryptpad_color_brand, 75%);
 @cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
@@ -47,7 +48,8 @@
 @cryptpad_color_grey_950: #121212;
 @cryptpad_color_black: #000;
 
-@cryptpad_text_col: @cryptpad_color_grey_200;
+//@cryptpad_text_col: @cryptpad_color_grey_200;
+@cryptpad_text_col: @cp-config-dark-theme-text;
 @cryptpad_text_col_inv: @cryptpad_color_grey_900;
 
 @cryptpad_ui_shadow: 0px 0px 5px 1px #00000030;
@@ -119,7 +121,8 @@
 @cp_messenger-online: @cryptpad_color_light_green;
 
 // Alertify
-@cp_alertify-bg: @cryptpad_color_grey_800;
+//@cp_alertify-bg: @cryptpad_color_grey_800;
+@cp_alertify-bg: @cp-config-dark-theme-bg-alert;
 @cp_alertify-fg: lighten(@cryptpad_color_brand, 30%);
 @cp_alertify-hover: fade(@cp_alertify-fg, 25%);
 @cp_alertify-overlay: fade(@cryptpad_color_grey_900, 50%);
@@ -261,7 +264,8 @@
 @cp_help-link: @cryptpad_color_link;
 
 // Static pages
-@cp_static-bg: @cryptpad_color_grey_900;
+//@cp_static-bg: @cryptpad_color_grey_900;
+@cp_static-bg: @cp-config-dark-theme-bg-body;
 @cp_static-fg: @cryptpad_text_col;
 @cp_static-link: @cryptpad_color_brand_300;
 @cp_static-title: @cryptpad_color_brand;
