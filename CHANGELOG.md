@@ -63,7 +63,7 @@ To upgrade:
 
 ```bash
 git fetch origin --tags
-git checkout 5.3
+git checkout 5.3.0
 ```
 
 1. Restart your server
