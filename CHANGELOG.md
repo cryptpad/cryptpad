@@ -50,7 +50,7 @@ This release updates OnlyOffice applications to version 7.3.3. It improves the F
 
 - Fix issues with deprecated cache 
 
-- Fix bug in drive storage quota calculation
+- Fix bug that kept certain documents from being "pinned" to the drive. This could lead them to be deleted for inactivity even though they were stored in the drive. Note that storage quotas may increase as a result
 
 ## Update notes
 
