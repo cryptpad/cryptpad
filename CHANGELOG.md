@@ -23,7 +23,7 @@ This release updates OnlyOffice applications to version 7.3.3. It improves the F
 - Forms
   - Clarify button text to "Copy Public Link" [[#937](https://github.com/xwiki-labs/cryptpad/issues/937)]
   - Clarify text on the document creation screen so that "Expiration date" (date at which the document will be destroyed) is not confused with the _closing date_ of the form [user feedback]
-  - Decimals are now allowed in text questions with type "number" [[Forum]](https://forum.cryptpad.org/d/88-decimals-in-number-type-text-field)
+  - Decimals are now allowed in text questions with type "number" [[Forum](https://forum.cryptpad.org/d/88-decimals-in-number-type-text-field)]
 
 - Rich Text
   - Move width-toggle button out of the way of the text [[#957](https://github.com/xwiki-labs/cryptpad/issues/957)]
@@ -49,6 +49,8 @@ This release updates OnlyOffice applications to version 7.3.3. It improves the F
   - Fix double notification for mention + reply in a comment
 
 - Fix issues with deprecated cache 
+
+- Fix bug in drive storage quota calculation
 
 ## Update notes
 
