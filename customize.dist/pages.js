@@ -158,7 +158,7 @@ define([
                 h('a', {href:"https://cryptpad.org"}, [
                     h('div.cp-logo-foot', [
                         h('img', {
-                            src: '/customize/CryptPad_logo.svg',
+                            src: '/look/cplogo',
                             "aria-hidden": true,
                             alt: ''
                         }),
@@ -214,7 +214,7 @@ define([
         var homeLink = h('a.nav-item.nav-link.cp-back-home' /* .navbar-brand */, { href: '/index.html' }, [
             h('i.fa.fa-arrow-left'),
             h('img', {
-                src: '/customize/CryptPad_logo.svg',
+                src: '/look/cplogo',
                 "aria-hidden": true,
                 alt: ''
             }),

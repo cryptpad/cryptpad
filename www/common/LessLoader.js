@@ -165,7 +165,21 @@ define([
 
     var loadLess = function (url, cb) {
         getLessEngine(function (less) {
-            less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
+            /* There should be 2 ways to do depending of the customization */
+            /* I should create a set of default variable (basically the color theme) */
+            /* which is then used in the theme */
+            /* So the full colortheme could be directly in the configuration */
+            console.log("LessLoader.js - Config : ", Config);
+            console.log("LessLoader.js - Config.bgBody : ", Config.bgBody);
+            console.log("LessLoader.js - Config.bgAlert : ", Config.bgAlert);
+            console.log("LessLoader.js - Config.colorBrand : ", Config.colorBrand);
+            console.log("LessLoader.js - Config.textColor : ", Config.textColor);
+            // less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
+            less.render(`@cp-config-bg-body: ${Config.bgBody};
+@cp-config-bg-alert: ${Config.bgAlert};
+@cp-config-color-brand: ${Config.colorBrand};
+@cp-config-text: ${Config.textColor};
+            @import (multiple) "${url}" ;`, {}, function(err, css) {
                 if (err) { return void cb(err); }
                 cb(undefined, css.css);
             }, window.less);

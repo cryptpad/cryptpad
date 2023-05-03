@@ -242,6 +242,10 @@ var serveConfig = makeRouteCache(function () {
             fileHost: Env.fileHost,
             shouldUpdateNode: Env.shouldUpdateNode || undefined,
             listMyInstance: Env.listMyInstance,
+            bgBody: Env.bgBody,
+            bgAlert:Env.bgAlert,
+            colorBrand:Env.colorBrand,
+            textColor:Env.textColor,
             accounts_api: Env.accounts_api,
         }, null, '\t'),
         '});'
@@ -329,6 +333,73 @@ app.get('/api/profiling', function (req, res) {
     res.send(JSON.stringify({
         bytesWritten: Env.bytesWritten,
     }));
+});
+
+function pathjoin() {
+    // Split the inputs into a list of path commands.
+    var parts = [];
+    for (var i = 0, l = arguments.length; i < l; i++) {
+        parts = parts.concat(arguments[i].split("/"));
+    }
+    // Interpret the path commands to get the new resolved path.
+    var newParts = [];
+    for (i = 0, l = parts.length; i < l; i++) {
+        var part = parts[i];
+        // Remove leading and trailing slashes
+        // Also remove "." segments
+        if (!part || part === ".") continue;
+        // Interpret ".." to pop the last segment
+        if (part === "..") newParts.pop();
+        // Push new path segments.
+        else newParts.push(part);
+    }
+    // Preserve the initial slash if there was one.
+    if (parts[0] === "") newParts.unshift("");
+    // Turn back into a single string path.
+    return newParts.join("/") || (newParts.length ? "/" : ".");
+}
+
+function getMimetype(filePath) {
+    extension = filePath.split(".").pop();
+    if (extension == "png") {
+        return("image/png");
+    }
+    if (extension == "jpg" || extension == "jpeg") {
+        return("image/jpeg");
+    }
+    if (extension == "svg") {
+        return("image/svg+xml");
+    }
+    return("unknown");
+}
+
+function sendDefaultOrConfig(req,res,configName, defaultFile) {
+    if ( configName in config) {
+        // I should test if the file exists
+        // I use it :
+        res.setHeader('Content-Type', getMimetype(config[configName]))
+        res.sendFile(config[configName]);
+    } else {
+        res.setHeader('Content-Type', getMimetype(defaultFile));
+        res.sendFile(defaultFile);
+    }
+}
+
+app.get('/look/cplogo', function (req, res) {
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.sendFile(pathjoin(Env.paths.blob,"/../customize.dist/CryptPad_logo.svg"));
+});
+
+app.get('/look/logo', function(req,res) {
+    sendDefaultOrConfig(req,res,"logoPath", pathjoin(Env.paths.blob,"/../customize.dist/CryptPad_logo.svg"));
+})
+
+app.get('/look/greylogo', function (req, res) {
+    sendDefaultOrConfig(req,res,"greyLogoPath", pathjoin(Env.paths.blob,"/../customize.dist/CryptPad_logo_grey.svg"));
+});
+
+app.get('/look/favicon', function (req, res) {
+    sendDefaultOrConfig(req,res,"favIconPath", pathjoin(Env.paths.blob,"/../customize.dist/main-favicon.png"));
 });
 
 app.use(function (req, res) {
