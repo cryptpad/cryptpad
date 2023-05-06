@@ -487,5 +487,32 @@
             overflow-x: auto;
         }
     }
+    // XXX this might not be the best place for this.
+    // I just put it next to other "share" styles
+    // --Aaron
+    #cp-qr-container {
+        position: relative;
+        background-color: white;
+        display: inline-flex;
+        padding: @alertify_padding-base;
+        border-radius: @variables_radius_L;
+        #cp-qr-blocker {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            border-radius: @variables_radius_L;
+
+            margin: -@alertify_padding-base;
+            padding-top: @alertify_padding-base * 2;
+            text-align: center;
+
+            background: @cryptpad_color_brand;
+            color: @cryptpad_text_col;
+            font-weight: bold;
+            &.hidden {
+                opacity: 0;
+            }
+        }
+    }
 }
 
