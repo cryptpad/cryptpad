@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Change paragraph indents</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change paragraph indents: the first line offset from the left part of the page as well as the paragraph offset from the left and right sides of the page" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Change paragraph indents</h1>
+            <p>In the <a href="https://www.onlyoffice.com/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, you can change the first line offset from the left side of the page as well as the paragraph offset from the left and right sides of the page.</p>
+			<p>To do that,</p>
+			<ul>
+				<li>set the necessary parameters on the right sidebar <b>Paragraph settings</b> in the <b>Indents</b> section:
+					<ul>
+						<li><b>Left</b> - set the paragraph offset from the <b>left</b> side of the page specifying the necessary numeric value,</li>
+						<li><b>Right</b> - set the paragraph offset from the <b>right</b> side of the page specifying the necessary numeric value,</li>
+						<li><b>Special</b> - set an indent for the <b>first line</b> of the paragraph: select the corresponding menu item (<b>(none)</b>, <b>First line</b>, <b>Hanging</b>) and change the default numeric value specified for <b>First Line</b> or <b>Hanging</b>,</li>
+					</ul>
+				</li>
+			</ul>
+			<p><img alt="indents - right panel" src="../images/indents_right_panel.png" /></p>
+			<p>or</p>
+			<ol>
+				<li>place the cursor within the required paragraph, or select several paragraphs with the mouse or the whole text by pressing the <b>Ctrl+A</b> key combination,</li>
+				<li>click the right mouse button and select the <b>Paragraph Advanced Settings</b> option from the menu or use the <b>Show advanced settings</b> link on the right sidebar,</li>
+				<li>in the opened <b>Paragraph - Advanced Settings</b> window, switch to the <b>Indents &amp; Spacing</b> tab and set the necessary parameters in the <b>Indents</b> section (the parameters’ description is given above),</li>
+				<li>click the <b>OK</b> button.
+					<p><img alt="Paragraph Advanced Settings - Indents &amp; Spacing" src="../images/paradvsettings_indents.png" /></p>
+				</li>
+			</ol>
+			<p>To quickly change the paragraph offset from the left side of the page, you can also use the corresponding icons on the <b>Home</b> tab of the top toolbar: <b>Decrease indent</b> <img alt="Decrease indent" src="../images/decreaseindent.png" /> and <b>Increase indent</b> <img alt="Increase indent" src="../images/increaseindent.png" />.</p>
+			<p>You can also use the horizontal <b>ruler</b> to set indents.</p>
+			<img alt="Ruler - Indent markers" src="../images/indents_ruler.png" />
+			<p>Select the necessary paragraph(s) and drag the indent markers along the ruler.</p>
+			<ul>
+			<li>The <b>First Line Indent</b> marker <img alt="First Line Indent marker" src="../images/firstline_indent.png" /> is used to set an offset from the left side of the page for the first line of the paragraph.</li>
+			<li>The <b>Hanging Indent</b> marker <img alt="Hanging Indent marker" src="../images/hanging.png" /> is used to set an offset from the left side of the page for the second line and all the subsequent lines of the paragraph.</li>
+			<li>The <b>Left Indent</b> marker <img alt="Left Indent marker" src="../images/leftindent.png" /> is used to set an offset for the entire paragraph from the left side of the page.</li>
+			<li>The <b>Right Indent</b> marker <img alt="Right Indent marker" src="../images/right_indent.png" /> is used to set a paragraph offset from the right side of the page.</li>
+			</ul>
+		</div>
+	</body>
+</html>

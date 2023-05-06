@@ -1212,7 +1212,7 @@ define([
                     var data = userObject.getFileData(fileId);
                     if (!data) { return; }
                     // Don't pin pads owned by someone else
-                    if (_ownedByOther(Env, data.owners)) { return; }
+                    //if (_ownedByOther(Env, data.owners)) { return; } // XXX 
                     // Pin onlyoffice checkpoints
                     if (data.lastVersion) {
                         var otherChan = Hash.hrefToHexChannelId(data.lastVersion);

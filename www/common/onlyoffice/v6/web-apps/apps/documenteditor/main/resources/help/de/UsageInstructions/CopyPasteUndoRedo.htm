@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Textpassagen kopieren/einfügen, Vorgänge rückgängig machen/wiederholen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Perform the basic operations with the document text: copy, paste, undo, redo" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Textpassagen kopieren/einfügen, Vorgänge rückgängig machen/wiederholen</h1>
+            <h3>Zwischenablage verwenden</h3>
+			<p>Um Textpassagen und eingefügte Objekte (AutoFormen, Bilder, Diagramme) innerhalb des aktuellen Dokuments auszuschneiden im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a>, zu kopieren und einzufügen, verwenden Sie die entsprechenden Optionen aus dem Rechtsklickmenü oder die Symbole, die auf jeder Registerkarte der oberen Symbolleiste verfügbar sind:</p>
+			<ul>
+                <li><b>Ausschneiden</b> - wählen Sie eine Textpassage oder ein Objekt aus und nutzen Sie die Option <b>Ausschneiden</b> im Rechtsklickmenü, um die Auswahl zu löschen und in der Zwischenablage des Rechners zu speichern. <span class="onlineDocumentFeatures">Die ausgeschnittenen Daten können später an einer anderen Stelle im selben Dokument wieder eingefügt werden.</span></li>
+				<li><b>Kopieren</b> – wählen Sie eine Textpassage oder ein Objekt aus und nutzen Sie die Option <b>Kopieren</b> im Rechtsklickmenü oder das Symbol <b>Kopieren</b> <img alt="Kopieren" src="../images/copy.png" /> in der oberen Symbolleiste, um die Auswahl in der Zwischenablage des Rechners zu speichern. <span class="onlineDocumentFeatures">Die kopierten Daten können später an einer anderen Stelle im selben Dokument wieder eingefügt werden.</span></li>
+				<li><b>Einfügen</b> – platzieren Sie den Cursor an der Stelle im Dokument, an der Sie den zuvor kopierten Text/das Objekt einfügen möchten und wählen Sie im Rechtsklickmenü die Option <b>Einfügen</b> oder klicken Sie in der oberen Symbolleiste auf <b>Einfügen</b> <img alt="Einfügen" src="../images/paste.png" />. Der Text/das Objekt wird an der aktuellen Cursorposition eingefügt. <span class="onlineDocumentFeatures">Die Daten können vorher aus demselben Dokument kopiert werden oder auch aus einem anderen Dokument oder Programm oder von einer Webseite.</span></li>			
+			</ul>
+            <p><span class="onlineDocumentFeatures">In der <em>Online-Version</em> können nur die folgenden Tastenkombinationen zum Kopieren oder Einfügen von Daten aus/in ein anderes Dokument oder ein anderes Programm verwendet werden.</span> <span class="desktopDocumentFeatures">In der <em>Desktop-Version</em> können sowohl die entsprechenden Schaltflächen/Menüoptionen als auch Tastenkombinationen für alle Kopier-/Einfügevorgänge verwendet werden:</span></p>
+            <ul>
+                <li><b>STRG+X</b> - Ausschneiden;</li>
+                <li><b>STRG+C</b> - Kopieren;</li>
+                <li><b>STRG+V</b> - Einfügen.</li>
+            </ul>
+			<p class="note"><b>Hinweis</b>: Anstatt Text innerhalb desselben Dokuments auszuschneiden und einzufügen, können Sie die erforderliche Textpassage einfach auswählen und an die gewünschte Position ziehen und ablegen.</p>
+            <h3>Inhalte einfügen mit Optionen</h3>
+            <p>Nachdem der kopierte Text eingefügt wurde, erscheint neben der eingefügten Textpassage das Menü <b>Einfügeoptionen</b> <img alt="Einfügen mit Sonderoptionen" src="../images/pastespecialbutton.png" />. Klicken Sie auf diese Schaltfläche, um die gewünschte Einfügeoption auszuwählen.</p>
+            <p>Zum Einfügen von Textsegmenten oder Text in Verbindung mit AutoFormen sind folgende Optionen verfügbar:</p>
+            <ul>
+                <li><em>Ursprüngliche Formatierung beibehalten</em> - der kopierte Text wird in Originalformatierung eingefügt.</li>
+                <li><em>Nur den Text übernehmen</em> - der kopierte Text wird in an die vorhandene Formatierung angepasst.</li>
+            </ul>
+            <p>Wenn Sie die kopierte Tabelle in eine vorhandene Tabelle einfügen, sind die folgenden Optionen verfügbar:</p>
+            <ul>
+                <li><em>Zellen überschreiben</em> - vorhandenen Tabelleninhalt durch die eingefügten Daten ersetzen. Diese Option ist standardmäßig ausgewählt.</li>
+                <li><em>Geschachtelt</em> die kopierte Tabelle wird als geschachtelte Tabelle in die ausgewählte Zelle der vorhandenen Tabelle eingefügt.</li>
+                <li><em>Nur den Text übernehmen</em> - die Tabelleninhalte werden als Textwerte eingefügt, die durch das Tabulatorzeichen getrennt sind.</li>
+            </ul>
+            <h3>Vorgänge rückgängig machen/wiederholen</h3>
+			<p>Verwenden Sie die entsprechenden Symbole, um Vorgänge rückgängig zu machen/zu wiederholen oder nutzen Sie die entsprechenden Tastenkombinationen:</p>
+            <ul>
+                <li><b>Rückgängig</b> – klicken Sie im linken Teil der Kopfzeile des Editors auf das Symbol <b>Rückgängig</b> <img alt="Rückgängig machen" src="../images/undo.png" /> oder verwenden Sie die Tastenkombination <b>STRG+Z</b>, um die zuletzt durchgeführte Aktion rückgängig zu machen.</li>
+                <li><b>Wiederholen</b> – klicken Sie im linken Teil der Kopfzeile des Editors auf das Symbol <b>Wiederholen</b> <img alt="Wiederholen" src="../images/redo.png" /> oder verwenden Sie die Tastenkombination <b>STRG+Y</b>, um die zuletzt durchgeführte Aktion zu wiederholen.</li>
+            </ul>
+            <p class="note"><b>Hinweis</b>: Wenn Sie ein Dokument im Modus <b>Schnell</b> gemeinsam bearbeiten, ist die Option letzten rückgängig gemachten Vorgang <b>wiederherstellen</b> nicht verfügbar.</p>
+		</div>
+	</body>
+</html>

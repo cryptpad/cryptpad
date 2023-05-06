@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función SI.ERROR</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función SI.ERROR</h1>
+			<p>La función <b>SI.ERROR</b> es una función lógica. Se usa para aprobar si hay algún error en la fórmula en el primer argumento.  La función devolverá el resultado de la fórmula si no hay ningún error, o el valor_si_error si hay alguno.</p>
+			<p>La sintaxis de la función <b>SI.ERROR</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>SI.ERROR(valor, valor_si_error,)</em></b></p> 
+			<p>donde <b><em>valor</em></b> y <b><em>valor_si_error</em></b> son valores introducidos a mano o incluidos en la celda a la que usted hace referencia. </p>
+			<p>Para aplicar la función <b>SI.ERROR</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione grupo de funciones <b>Lógico</b> en la lista,</li>
+			<li>haga clic en la función <b>SI.ERROR</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p><em>Por ejemplo:</em></p>
+			<p>Hay dos argumentos: <em>valor</em> = <b>A1/B1</b>, <em>valor_si_error</em> = <b>"error"</b>, donde <b>A1</b> es <b>12</b>, <b>B1</b> es <b>3</b>.  La fórmula en el primer argumento no contiene ningún error. Así que la función devuelve el resultado del cálculo.</p>
+			<p style="text-indent: 150px;"><img alt="Función SI.ERROR: no error " src="../images/noerror.png" /></p>
+			<p>Si cambiamos el valor de <b>B1</b> de <b>3</b> a <b>0</b>, ya que la división entre cero es imposible, la función devolverá <b>error</b>:</p>
+			<p style="text-indent: 150px;"><img alt="Función SI.ERROR: si error " src="../images/iferror.png" /></p>
+		</div>
+	</body>
+</html>

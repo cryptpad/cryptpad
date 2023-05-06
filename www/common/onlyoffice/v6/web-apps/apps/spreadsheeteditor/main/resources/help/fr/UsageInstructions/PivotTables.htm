@@ -1,0 +1,309 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer et éditer les tableaux croisés dynamiques</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Créer et modifier les tableaux croisés dynamiques. Filtrer, modifier l'aspect des  tableaux croisés dynamiques dans un classeur." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Créer et éditer les tableaux croisés dynamiques</h1>
+            <p>Les tableaux croisés dynamiques vous permet de grouper et organiser de vastes ensembles de données pour présenter des données de synthèse. Dans <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> vous pouvez réorganiser les données de plusieurs façons pour n'afficher que les informations importantes et pour se concentrer uniquement sur les aspects importants.</p>
+            <h3>Créer un nouveau tableau croisé dynamique</h3>
+            <p>Pour créer un tableau croisé dynamique,</p>
+            <ol>
+                <li>Préparez l'ensemble de données sources à partir duquel vous voulez créer un tableau croisé dynamique. Ceux-ci doivent comprendre les en-têtes. L'ensemble de données ne peut pas comprendre les lignes ou les colonnes vides.</li>
+                <li>Sélectionnez une cellule appartenant à la plage de données sources.</li>
+                <li>
+                    Passez à l'onglet <b>Tableau croisé dynamique</b> dans la barre d'outils supérieure et cliquez sur l'icône <b><b>Insérer un tableau</b></b> <img alt="L'icône Insérer un tableau" src="../images/insert_pivot.png" /> .
+                    <p>Si vous voulez créer un tableau croisé dynamique basé sur <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">une tableau mis en forme</a>, vous pouvez aussi utiliser l'option <img alt="Insérer un tableau croisé dynamique" src="../images/insertpivot.png" /> <b><b>Insérer un tableau</b> <b>croisé</b></b> <b>dynamique</b> sous l'onglet <b>Paramètres du tableau </b>dans la barre latérale droite.</p>
+                </li>
+                <li>
+                    Une fenêtre <b>Créer un tableau croisé dynamique</b> apparaîtra.
+                    <p><img alt="Fenêtre Créer un tableau croisé dynamique" src="../images/create_pivot.png" /></p>
+                    <ul>
+                        <li>
+                            La <b>Ligne de données de la source</b> est déjà spécifié. Dans ce cas, toutes le données sources sont utilisées. Si vous voulez modifier la plage de données (par exemple, à inclure seulement une part de données), cliquez sur l'icône <img alt="L'icône Sélectionner des données" src="../images/changerange.png" /> . Dans la fenêtre <b>Sélectionner une plage de données</b>, saisissez la plage de données appropriée sous le format suivant: <em>Sheet1!$A$1:$E$10</em>. Vous pouvez aussi sélectionner la plage de cellules qui vous convient avec la souris. Cliquez <b>OK</b> pour confirmer.
+                        </li>
+                        <li>
+                            Choisissez l'emplacement du tableau croisé dynamique<b></b>.
+                            <ul>
+                                <li>La valeur par défaut est <b>Nouvelle feuille de calcul</b>. Votre tableau croisé dynamique sera créé dans une feuille de calcul nouvelle.<b><b>  </b></b></li>
+                                <li>
+                                    Vous pouvez également sélectionner l'élément <b>Feuille de calcul existante</b> et choisir la cellule. Dans ce cas, c'est la cellule supérieure droite du tableau croisé dynamique créé. Pour sélectionner la cellule, cliquez sur l'icône <img alt="L'icône Sélectionner des données" src="../images/changerange.png" /> .
+                                    <p><img alt="La fenêtre Sélectionner une plage de données" src="../images/pivot_selectdata2.png" /></p>
+                                    <p>Dans la fenêtre <b>Sélectionner une plage de données</b>, saisissez l'adresse de la cellule sous le format suivant: <em>Sheet1!$G$2</em>. Vous pouvez également sélectionner la cellule nécessaire dans votre feuille. Cliquez <b>OK</b> pour confirmer. </p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Une fois l'emplacement du tableau croisé dynamique est choisi, cliquez sur <b>OK</b> dans la fenêtre <b>Créer un tableau</b> <b>croisé dynamique</b>.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Le tableau croisé dynamique vide est inséré selon l'emplacement choisi.</p>
+            <p>L'onglet <b>Paramètres du tableau croisé dynamique</b> s'ouvre sur la barre latérale droite. Cliquez sur l'icône <img alt="L'onglet Paramètres du tableau croisé dynamique" src="../images/pivot_settings.png" /> pour masquer ou afficher cet onglet.</p>
+            <p><img alt="L'onglet Paramètres du tableau croisé dynamique" src="../images/right_pivot.png" /></p>
+
+            <h4>Sélectionner les champs à afficher</h4>
+            <p>La section <b>Sélectionner les champs</b> à afficher comprend les champs dénommés comme les en-têtes de colonnes dans l'ensemble de votre données sources. Chaque champ contient les valeurs de la colonne correspondante du tableau source. Les sections disponibles: <b>Filtres</b>, <b>Colonnes</b>, <b>Lignes</b> et <b>Valeurs</b>.</p>
+            <p>Pour afficher un champ à votre tableau croisé dynamique, activez la case à cocher du nom de champ. Lorsque vous activez une case à cocher, le champ correspondant à cette case est ajouté à une des sections disponibles sur la barre latérale droite en fonction du type de données et est affiché dans le tableau croisé dynamique. Les champs de type texte sont ajoutés à <b>Lignes</b>;  les champs numériques sont ajoutés à <b>Valeurs</b>.</p>
+            <p>Faites glisser les champs directement dans les sections voulues ou faites glisser les champs d'une section dans l'autre pour les réorganiser dans votre tableau croisé dynamique rapidement. Pour supprimer un champ dans une section, faites-le glisser en dehors de cette section.</p>
+            <p>Pour ajouter un champ à une section, on peut aussi cliquer sur la flèche noire à droite du champ et choisir l'option appropriée dans le menu de la section <b>Sélectionner les champs</b>: <b>Déplacer vers les filtres, Déplacer vers les lignes, Déplacer vers les colonnes, Déplacer vers les valeurs</b>.</p>
+            <p><img alt="L'onglet Paramètres du tableau croisé dynamique" src="../images/pivot_selectfields.png" /></p>
+            <p>Ci-dessous, vous pouvez découvrir quelques exemples d'utilisation des sections <b>Filtres, Colonnes, Lignes et Valeurs.</b></p>
+            <ul>
+                <li>
+                    Lorsque un champ est ajouté à <b>Filtres</b>, un filtre de rapport apparaisse au-dessus du tableau croisé dynamique. Celui-ci est appliqué au tableau croisé dynamique entier. Si vous cliquer sur la flèche <img alt="Flèche déroulante" src="../images/dropdownarrow.png" /> de filtre ajouté, vous pouvez voir toutes les valeurs du champ choisi. Lorsque vous désactivez quelques valeurs parmi les options de filtre et appuyez sur <b>OK</b>, celles-ci ne sont pas affichées dans le tableau croisé dynamique.
+                    <p><img alt="Filtres du tableau croisé dynamique" src="../images/pivot_filter_field.png" /></p>
+                </li>
+                <li>
+                    Quand vous ajoutez un champ à <b>Colonnes</b>, le nombre de colonnes dans le tableau croisé dynamique correspond au nombre de valeurs du champ choisi. La colonne <b>Total général</b> est aussi ajoutée.
+                    <p><img alt="Colonnes du tableau croisé dynamique" src="../images/pivot_columns.png" /></p>
+                </li>
+                <li>
+                    Quand vous ajoutez un champ à <b>Lignes</b>, le nombre de lignes dans le tableau croisé dynamique correspond au nombre de valeurs du champ choisi. La ligne <b>Total général</b> est aussi ajoutée.
+                    <p><img alt="Lignes du tableau croisé dynamique" src="../images/pivot_rows.png" /></p>
+                </li>
+                <li>
+                    Quand vous ajoutez un champ à <b>Valeurs</b>, le tableau croisé dynamique affiche la somme de toutes les valeurs numériques du champ choisi. Si votre champ contient des valeurs texte, la somme ne s'affiche pas. Vous pouvez choisir une autre fonction de synthèse dans les paramètres du champ.
+                    <p><img alt="Valeurs du tableau croisé dynamique" src="../images/pivot_values.png" /></p>
+                </li>
+            </ul>
+
+            <h4>Réorganiser les champs et configurer les paramètres</h4>
+            <p>Une foi les champs ajoutés aux sections appropriées, vous pouvez les gérer pour modifier la mise en page et la mise en forme du tableau croisé dynamique. Cliquez sur la flèche noire à droit du champ dans les sections <b>Filtres, Colonnes, Lignes et Valeurs</b> pour afficher le menu contextuel du champ.</p>
+            <p><img alt="Menu du tableau croisé dynamique" src="../images/pivot_menu.png" /></p>
+            <p>Ce menu vous permet:</p>
+            <ul>
+                <li><b>Déplacer</b> le champ sélectionné: <b>Monter</b>, <b>Descendre</b>, <b>Aller au début</b>, ou <b>Déplacer vers le fin </b>de la section actuelle si vous avez ajouté plusieurs champs.</li>
+                <li><b>Déplacer </b>le champ vers une autre section - <b>Filtres</b>, <b>Colonnes</b>, <b>Lignes</b> ou <b>Valeurs</b>. L'option déjà appliquée à la section actuelle sera désactivée.</li>
+                <li><b>Supprimer</b> <b>le champ</b> sélectionné de la section actuelle.</li>
+                <li>Configurer les <b>paramètres</b> du champ choisi.</li>
+            </ul>
+            <p>Les options <b>Filtres, Colonnes, Lignes et Valeurs semblent similaires:</b></p>
+            <p><img alt="Les options des Filtres du tableau croisé dynamique" src="../images/pivot_filter_field_layout.png" /></p>
+            <p>L'onglet<b> Disposition</b> comprend les options suivantes:</p>
+            <ul>
+                <li>L'option <b>Nom de source</b> vous permet de visualiser le nom du champ tel qu'il apparait à l'en-tête de colonne dans l'ensemble de données sources.</li>
+                <li>L'option <b>Nom</b> vous permet de changer le nom du champ choisi à afficher dans le tableau croisé dynamique.</li>
+                <li>
+                    L'option <b>Formulaire de rapport</b> vous permet de modifier la présentation du champ choisi dans le tableau croisé dynamique:
+                    <ul>
+                        <li>
+                            Utiliser l'un des formulaires disponibles à présenter le champ choisi dans le tableau croisé dynamique.
+                            <ul>
+                                <li>
+                                    <b><b>Formulaire</b> Tabulaire</b> affiche une colonne par champ et fournit de l'espace pour les en-têtes de champ. <!--<p><img alt="Pivot table Tabular form" src="../images/pivot_tabular.png" /></p>-->
+                                </li>
+                                <li>
+                                    <b><b>Formulaire</b> Contour</b> affiche une colonne par champ et fournit de l'espace pour les en-têtes de champ. Ce formulaire permet aussi d'afficher les sous-totaux en haut de chaque groupe. <!--<p><img alt="Pivot table Outline form" src="../images/pivot_outline.png" /></p>-->
+                                </li>
+                                <li>
+                                    <b>Formulaire Compact</b> affiche les éléments de champs de section de ligne différents dans une colonne. <!--<p><img alt="Pivot table Compact form" src="../images/pivot_compact.png" /></p>-->
+                                </li>
+                            </ul>
+                        </li>
+                        <li><b>Répéter les étiquettes des éléments sur chaque ligne</b> permet de grouper visuellement des lignes ou des colonnes pour plusieurs champs affichés sous forme tabulaire.</li>
+                        <li><b>Insérer une ligne vide après chaque élément</b> permet d'insérer une ligne vide après les éléments du champ choisi.</li>
+                        <li><b>Afficher les sous-totaux</b> permet d'afficher ou de ne pas afficher les sous-totaux pour le champ choisi. Vous pouvez choisir parmi les options suivantes: <em>Afficher en haut du groupe</em> ou <em>Afficher en bas du groupe</em>.</li>
+                        <li><b>Afficher les éléments sans données</b> permet d'afficher ou de masquer les éléments de ligne qui ne contiennent pas de valeurs dans le champ choisi.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Les options des Filtres du tableau croisé dynamique" src="../images/pivot_filter_field_subtotals.png" /></p>
+            <p>Sous l'onglet <b>Sous-totaux</b> vous pouvez choisir les <b>Fonctions pour sous-totaux</b>. Cochez une des fonctions disponibles dans la liste: <em>Somme</em>, <em>Total</em>, <em>Moyenne</em>, <em>Max</em>, <em>Min</em>, <em>Produit</em>, <em>Chiffres</em>, <em>Écartype </em>, <em>StdDevp</em>, <em>Var</em>, <em>Varp</em>.</p>
+            <p><b>Paramètres du champ Valeurs</b></p>
+            <p><img alt="Les options de Valeurs du tableau croisé dynamique" src="../images/pivot_values_field_settings.png" /></p>
+            <ul>
+                <li>L'option <b>Nom de source</b> vous permet de visualiser le nom du champ tel qu'il apparait à l'en-tête de colonne dans l'ensemble de données sources.</li>
+                <li>L'option <b>Nom</b> vous permet de changer le nom du champ choisi à afficher dans le tableau croisé dynamique.</li>
+                <li><b>Résumer les valeurs du champ par</b> permet de choisir la fonction à utiliser pour calculer la somme des valeurs pour toutes les valeurs de ce champ. Par défaut, <em>la fonction Somme</em> est utilisée pour les champs de valeurs numériques, <em>et la fonction Total</em> est utilisée pour les valeurs de texte. Les fonctions disponibles: <em>Somme</em>, <em>Total</em>, <em>Moyenne</em>, <em>Max</em>, <em>Min</em>, <em>Produit</em>, <em>Chiffres</em>, <em>Écartype </em>, <em>StdDevp</em>, <em>Var</em>, <em>Varp</em>.</li>
+            </ul>
+
+            <h3>Grouper et dissocier des données</h3>
+            <p>Il est possible de grouper les données d'un tableau croisé dynamique selon des critères personnalisés. La fonctionnalité de groupage est disponible pour les dates et les nombres simples.</p>
+            <h4>Grouper les dates</h4>
+            <p>Pour grouper les dates, créez un tableau croisé dynamique comprenant l'ensemble de dates en question. Cliquez avec le bouton droit sur l'une des cellules comprenant une date dans le tableau croisé dynamique, choisissez l'option <b>Grouper</b> dans le menu contextuel et configurez les paramètres appropriés dans la fenêtre qui s'affiche.</p>
+            <p><img alt="Grouper les dates" src="../images/group_dates.png" /></p>
+            <ul>
+                <li><b>Commence à</b> - la première date des données sources est définie par défaut. Pour la modifier, saisissez la date appropriée dans ce champ-là. Désactivez cette option pour ignorer le début.</li>
+                <li><b>Fin à</b> - la dernière date des données sources est définie par défaut. Pour la modifier, saisissez la date appropriée dans ce champ-là. Désactivez cette option pour ignorer le fin.</li>
+                <li><b>Par</b> - on peut grouper les dates par <b>Secondes</b>, <b>Minutes</b> et <b>Heures</b> selon l'heure spécifiée dans les données sources. L'option <b>Mois</b> enlève les jours et maintient uniquement les mois. L'option <b>Quartiers</b> fonctionne à la condition que quatre mois est un quartier, alors on fournit <em>Qtr1</em>, <em>Qtr2</em>, etc. L'option <b>Années</b> groupe les dates selon les années spécifiées dans les données source. Vous pouvez combiner plusieurs options pour obtenir le résultat souhaité, </li>
+                <li><b>Nombre de jours</b> sert à définir la valeur appropriée pour spécifier une certaine période.</li>
+                <li>Cliquez sur <b>OK</b> pour valider.</li>
+            </ul>
+            <h4>Grouper des nombres</h4>
+            <p>Pour grouper les nombres, créez un tableau croisé dynamique comprenant l'ensemble de nombres en question. Cliquez avec le bouton droit sur l'une des cellules comprenant un nombre dans le tableau croisé dynamique, choisissez l'option <b>Grouper</b> dans le menu contextuel et configurez les paramètres appropriés dans la fenêtre qui s'affiche.</p>
+            <p><img alt="Grouper des nombres" src="../images/group_numbers.png" /></p>
+            <ul>
+                <li><b>Commence à</b> - le plus petit nombre des données sources est définie par défaut. Pour le modifier, saisissez le nombre approprié dans ce champ-là. Désactivez cette option pour ignorer le plus petit nombre.</li>
+                <li><b>Fin à</b> - le plus grand nombre des données sources est définie par défaut. Pour le modifier, saisissez le nombre approprié dans ce champ-là. Désactivez cette option pour ignorer le plus grand nombre.</li>
+                <li><b>Par</b> - définissez l'intervalle pour grouper des numéros: Ex., <em>&ldquo;2&rdquo;</em> va grouper l'ensemble de numéros de 1 à 10 comme <em>&ldquo;1-2&rdquo;</em>, <em>&ldquo;3-4&rdquo;</em>, etc.</li>
+                <li>Cliquez sur <b>OK</b> pour valider.</li>
+            </ul>
+            <h4>Dissocier des données</h4>
+            <p>Pour dissocier des données groupées,</p>
+            <ol>
+                <li>cliquez avec le bouton droit sur une cellule du groupe,</li>
+                <li>sélectionnez l'option <b>Dissocier</b> dans le menu contextuel.</li>
+            </ol>
+
+            <h3>Modifier la disposition d'un tableau croisé dynamique</h3>
+            <p>Vous pouvez utiliser les options disponibles dans la barre d'outils supérieure pour modifier le format du  tableau croisé dynamique. Ces paramètres sont appliquées au tableau croisé dynamique entier.</p>
+            <p>Sélectionnez au moins une cellule dans le tableau croisé dynamique avec la souris pour activer les outils d'édition dans la barre d'outils supérieure.</p>
+            <p><img alt="La barre d'outils du tableau croisé dynamique" src="../images/pivot_top.png" /></p>
+            <ul>
+                <li>
+                    Dans la liste déroulante<b> Mise en page du rapport</b> choisissez la forme à afficher pour votre tableau croisé dynamique.
+                    <ul>
+                        <li>
+                            <em>Afficher sous forme compacte</em> - pour afficher les éléments de champs de section de ligne différents dans une colonne.
+                            <p><img alt="Forme compacte du tableau croisé dynamique" src="../images/pivot_compact.png" /></p>
+                        </li>
+                        <li>
+                            <em>Afficher sous forme de plan</em> - pour présenter les données dans le style de tableau croisé dynamique classique. Cette forme affiche une colonne par champ et fournit de l'espace pour les en-têtes de champ. Elle permet aussi d'afficher les sous-totaux en haut de chaque groupe.
+                            <p><img alt="Forme  hiérarchique du tableau croisé dynamique" src="../images/pivot_outline.png" /></p>
+                        </li>
+                        <li>
+                            <em>Afficher sous forme de tableau</em> - pour présenter les données dans un format de tableau traditionnel. Cette forme affiche une colonne par champ et fournit de l'espace pour les en-têtes de champ.
+                            <p><img alt="Forme tabulaire du tableau croisé dynamique" src="../images/pivot_tabular.png" /></p>
+                        </li>
+                        <li><em><b>Répéter les étiquettes de tous les éléments</b></em> -  permet de grouper visuellement des lignes ou des colonnes pour plusieurs champs affichés sous forme tabulaire.</li>
+                        <li><em><b>Ne pas répéter toutes les étiquettes d'élément</b>s</em> -  permet de masquer les étiquettes d'élément pour plusieurs champs affichés sous forme tabulaire.</li>
+                    </ul>
+                </li>
+                <li>
+                    La liste déroulante <b>Lignes vides</b> permet d'afficher les lignes vides après chaque élément:
+                    <ul>
+                        <li><em>Insérer une ligne vide après chaque élément</em> - permet d'insérer une ligne vide après les éléments.</li>
+                        <li><em>Supprimer la ligne vide après chaque élément</em> - permet de supprimer les lignes vides ajoutées.</li>
+                    </ul>
+                </li>
+                <li>
+                    La liste déroulante <b>Sous-totaux</b> permet d'afficher ou de ne pas afficher les sous-totaux dans le tableau croisé dynamique.
+                    <ul>
+                        <li><em>Ne pas afficher les sous-totaux</em> - permet de masquer les sou-totaux pour tous éléments.</li>
+                        <li><em>Afficher les sous-totaux au bas du groupe</em> - permet d'afficher les sous-totaux au-dessous des lignes résumées.</li>
+                        <li><em>Afficher les sous-totaux en haut du groupe</em> - permet d'afficher les sous-totaux au-dessus des lignes résumées.</li>
+                    </ul>
+                </li>
+                <li>
+                    La liste déroulante <b>Grands Totaux</b> permet d'afficher ou de ne pas afficher les totaux généraux dans le tableau croisé dynamique.
+                    <ul>
+                        <li><em>Désactivé pour les lignes et les colonnes</em> - permet de masquer les totaux généraux pour les lignes et les colonnes.</li>
+                        <li><em>Activé pour les lignes et les colonnes</em> - permet d'afficher les totaux généraux pour les lignes et les colonnes.</li>
+                        <li><em>Activé pour les lignes uniquement</em> - permet d'afficher les totaux généraux seulement pour les lignes.</li>
+                        <li><em>Activé pour les colonnes uniquement</em> - permet d'afficher les totaux généraux seulement pour les colonnes.</li>
+                    </ul>
+                    <p class="note"><b>Remarque</b>: les options similaires sont aussi disponibles parmi les paramètres avancés du tableau croisé dynamique dans la section <b>Grand </b><b>totaux </b>sous l'onglet <b>Nom et disposition</b>.</p>
+                </li>
+            </ul>
+            <p>Le bouton <img alt="L'icône Sélectionner tableau croisé dynamique complet" src="../images/pivotselecticon.png" /> <b>Sélectionner </b><b>tableau croisé dynamique complet</b> permet de sélectionner le tableau croisé dynamique entier.</p>
+            <p>Quand vous avez modifié l'ensemble de données sources, sélectionnez le tableau croisé dynamique et cliquez sur le bouton <img alt="L'icône Actualiser tableau croisé dynamique" src="../images/pivot_refresh.png" /> <b>Actualiser</b> pour mettre à jour le tableau croisé dynamique.</p>
+
+            <h3>Modifier le style d'un tableau croisé dynamique</h3>
+            <p>Vous pouvez modifier la présentation du tableau croisé dynamique dans une feuille de calcul en utilisant les outils d'édition dans la barre d'outils supérieure.</p>
+            <p>Sélectionnez au moins une cellule dans le tableau croisé dynamique avec la souris pour activer les outils d'édition dans la barre d'outils supérieure.</p>
+            <p><img alt="L'onglet Tableau croisé dynamique" src="../images/pivottoptoolbar.png" /></p>
+            <p>Les sections lignes et colonnes en haut vous permettent de mettre en évidence certaines lignes/colonnes en leur appliquant une mise en forme spécifique ou de mettre en évidence différentes lignes/colonnes avec les différentes couleurs d'arrière-plan pour les distinguer clairement. Les options suivantes sont disponibles:</p>
+            <ul>
+                <li><b>En-têtes de ligne</b> - permet de mettre en évidence les en-têtes de ligne avec un formatage spécial.</li>
+                <li><b>En-têtes de colonne</b> - permet de mettre en évidence les en-têtes de colonne avec un formatage spécial.</li>
+                <li><b>Lignes en bandes</b> - permet l'alternance des couleurs d'arrière-plan pour les lignes paires et impaires.</li>
+                <li><b>Colonnes en bandes </b> - permet l'alternance des couleurs d'arrière-plan pour les colonnes paires et impaires..</li>
+            </ul>
+            <p>
+                La liste des modèles vous permet de choisir l'un des styles de tableaux croisés prédéfinis. Chaque modèle combine certains paramètres de formatage, tels qu'une couleur d'arrière-plan, un style de bordure, des lignes/colonnes en bandes, etc. Selon les options cochées dans les sections lignes et/ou colonnes, l'ensemble de modèles sera affiché différemment. Par exemple, si vous avez coché les options<b> En-têtes de ligne</b> et <b>Colonnes en bandes</b>, la liste des modèles affichés inclurait uniquement les modèles avec la ligne d'en-tête et les colonnes en bandes activées.
+            </p>
+
+            <h3>Filtrer, trier et insérer des segments dans des tableaux croisées dynamiques</h3>
+            <p>Vous pouvez filtrez les tableaux croisé dynamique par étiquettes ou valeurs aussi que utiliser les options de tri supplémentaires.</p>
+            <h4>Filtrage</h4>
+            <p>Cliquez sur la flèche déroulante dans <img alt="Flèche déroulante" src="../images/dropdownarrow.png" /> <b>Étiquettes de lignes</b> ou <b>Étiquettes de colonnes</b> du tableau croisé dynamique. La liste des options de Filtrage s'affiche:</p>
+            <p><img alt="La fenêtre de Filtrage" src="../images/pivot_filterwindow.png" /></p>
+            <p>Configurez les paramètres du filtre. Procédez d'une des manières suivantes: sélectionnez les données à afficher ou filtrez les données selon certains critères.</p>
+            <ul>
+                <li>
+                    <b>Sélectionner les données à afficher</b>
+                    <p>Décochez les cases des données que vous souhaitez masquer. A votre convenance, toutes les données dans la liste des options de <b>Filtrage</b> sont triées par ordre croissant.</p>
+                    <p class="note"><b>Remarque</b>: la case à cocher <b>(vide) </b>correspond aux cellules vides. Celle-ci est disponible quand il y a au moins une cellule vide dans la plage de cellules.</p>
+                    <p>Pour faciliter la procédure, utilisez le champ de recherche en haut. Taper votre requête partiellement ou entièrement dans le champ, les valeurs qui comprennent ces caractères-ci, s'affichent dans la liste ci-dessous. Ces deux options suivantes sont aussi disponibles:</p>
+                    <ul>
+                        <li><b>Sélectionner tous les résultats de la recherche </b> - cochée par défaut. Permet de sélectionner toutes les valeurs correspondant à la requête.</li>
+                        <li><b>Ajouter le sélection actuelle au filtre </b> - si vous cochez cette case, les valeurs sélectionnées ne seront pas masquées lorsque vous appliquerez le filtre.</li>
+                    </ul>
+                    <p>Après avoir sélectionné toutes les données nécessaires, cliquez sur le bouton <b>OK</b> dans la liste des options de <b>Filtrage</b> pour appliquer le filtre.</p>
+                </li>
+                <li>
+                    <b>Filtrer les données selon certains critères</b>
+                    <p>En fonction des données contenues dans la colonne sélectionnée, vous pouvez choisir le <b>Filtre étiquette</b> ou le <b>Filtre de</b> <b>valeur </b>dans la partie droite de la liste d'options de Filtrage, puis sélectionner l'une des options dans le sous-menu:</p>
+                    <ul>
+                        <li>
+                            Pour le <b>Filtre <b>étiquette</b></b> les options suivantes sont disponibles:
+                            <ul>
+                                <li>Pour texte: <em>Équivaut à...</em>, <em>N'est pas égal à...</em>, <em>Commence par...</em>, <em>Ne pas commencer par...</em>, <em>Se termine par...</em>, <em>Ne se termine pas avec...</em>, <em>Contient...</em>, <em>Ne contient pas...</em></li>
+                                <li>Pour nombres: <em>Plus grand que...</em>, <em>Plus grand ou égal à...</em>, <em>Moins que...</em>, <em>Moins que ou égal à...</em>, <em>Entre</em>, <em>Pas entre</em>.</li>
+                            </ul>
+                        </li>
+                        <li>Pour le <b>Filtre de valeur</b>, les options suivantes sont disponibles: Équivaut à..., N'est pas égal à..., <em>Plus grand que...</em>, <em>Plus grand ou égal à...</em>, <em>Moins que...</em>, <em>Moins que ou égal à...</em>, <em>Entre</em>, <em>Pas entre</em>, <em>Les 10 premiers</em>.</li>
+                    </ul>
+                    <p>Après avoir sélectionné l'une des options ci-dessus (à l'exception des options  <em>Les 10 premiers</em>), la fenêtre <b>Filtre étiquette/de valeur</b> s'ouvre. Le critère correspondant sera sélectionné dans la première ou secondaire liste déroulante. Spécifiez la valeur nécessaire dans le champ situé à droite.</p>
+                    <p>Cliquez sur <b>OK </b>pour appliquer le filtre.</p>
+                    <p><img alt="Fenêtre Filtre numérique" src="../images/pivot_filter.png" /></p>
+                    <p>Si vous choisissez l'option <em>Les 10 premiers</em> dans la liste des options de <b>Filtre de valeur</b>, une nouvelle fenêtre s'ouvrira:</p>
+                    <p><img alt="Fenêtre Filtre 10 premiers." src="../images/pivot_topten.png" /></p>
+                    <p>La première liste déroulante permet de choisir si vous souhaitez afficher les valeurs les plus élevées <b>(Haut)</b> ou les plus basses<b> (Bas)</b>. La deuxième permet de spécifier le nombre d'entrées dans la liste ou le pourcentage du nombre total des entrées que vous souhaitez afficher (vous pouvez entrer un nombre compris entre 1 et 500). La troisième liste déroulante permet de définir des unités de mesure: <b>Élément</b>, <b>P</b><b>our cent</b> ou <b>Somme</b>. La quatrième liste déroulante affiche le nom du champ choisi. Une fois les paramètres nécessaires définis, cliquez sur<b> OK </b>pour appliquer le filtre.</p>
+                </li>
+            </ul>
+            <p>Le bouton de <b>Filtrage</b> <img alt="Bouton Filtrage" src="../images/filterbutton.png" /> s'affiche dans <b>Étiquettes de lignes</b> ou <b>Étiquettes de colonnes</b> du tableau croisé dynamique. Cela signifie que le filtre est appliqué. <!--The number of filtered records will be displayed at the status bar (e.g. <em>25 of 80 records filtered</em>).--></p>
+
+            <h4>Tri</h4>
+            <p>Vous pouvez effectuer le tri des données du tableau croisé dynamique en utilisant les options de <b>tri</b>. Cliquez sur la flèche  <img alt="Flèche déroulante" src="../images/dropdownarrow.png" /> de la liste déroulante dans <b>Étiquettes de lignes</b> ou <b>Étiquettes de colonnes</b> du tableau croisé dynamique et sélectionnez <b>Trier du plus bas au plus élevé</b> ou <b>Trier du plus élevé au plus bas</b> dans le sous-menu.</p>
+            <p>Les Options de tri supplémentaires vous permettent d'ouvrir la fenêtre et choisir une option de tri: <em>Ordre croissant</em> ou <em>Ordre décroissant</em>, et puis spécifier le champ à trier.</p>
+            <p><img alt="Options de tri tableau croisé dynamique" src="../images/pivot_sort.png" /></p>
+
+            <h4>Insérer des segments</h4>
+            <p>Vous pouvez insérer des segments pour filtrer facilement les données et sélectionner les éléments que vous voulez afficher. Pour en savoir plus sur les segments, veuillez consulter le <a href="Slicers.htm" onclick="onhyperlinkclick(this)">guide de création des segments</a>.</p>
+
+            <h3>Configurer les paramètres avancés du tableau croisé dynamique</h3>
+            <p id="pivot_advanced">Pour configurer les paramètres avancés du tableau croisé dynamique, cliquez sur le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite. La fenêtre Tableau croisé dynamique - Paramètres avancés, s'ouvre:</p>
+            <p><img alt="Paramètres avancés du tableau croisé dynamique" src="../images/pivot_advanced.png" /></p>
+            <p>Sous l'onglet <b>Nom et disposition</b> vous pouvez configurer les paramètres communs du tableau croisé dynamique.</p>
+            <ul>
+                <li>L'option <b>Nom</b> permet de modifier le nom du tableau croisé dynamique.</li>
+                <li>
+                    La section <b>Grands</b> <b>Totaux</b> permet d'afficher ou de ne pas afficher les totaux généraux dans le tableau croisé dynamique. Les options <em>Afficher pour les lignes</em> et <em>Afficher pour les colonnes</em> sont activées par défaut. Vous pouvez les désactiver toutes les deux ou décocher la case appropriée pour masquer les certains grand totaux du tableau croisé dynamique.
+                    <p class="note"><b>Remarque</b>: les options similaires sont aussi disponibles sur le menu <b>Grands Totaux</b> dans la barre d'outils en haut.</p>
+                </li>
+                <li>
+                    La section <b>Afficher les champs dans la zone de filtre du rapport </b> permet de configurer les filtres dans la section <b>Filtres</b> quand vous les y ajoutez:
+                    <ul>
+                        <li>L'option <em>Vers le bas, puis à droite</em> s'utilise pour organiser les colonnes. Celle-ci vous permet d'afficher des filtres du rapport pour la colonne.</li>
+                        <li>L'option <em>À droite, puis vers le bas</em> s'utilise pour organiser les lignes. Celle-ci vous permet d'afficher des filtres du rapport pour la ligne.</li>
+                        <li>L'option <em><b>Afficher les champs</b> de filtre de rapport par colonne</em> sélectionnez le nombre de filtres à afficher pour chaque colonne. La valeur par défaut est <em>0</em>. Vous pouvez régler la valeur numérique.</li>
+                    </ul>
+                </li>
+                <li>La section <b>En-têtes des champs</b> permet d'afficher ou de ne pas afficher les en-têtes de champ dans le tableau croisé dynamique. L'option <em>Afficher les en-têtes des champs pour les lignes et les colonnes</em> est activée par défaut. Décochez-la pour masquer les en-têtes de champ du tableau croisé dynamique.</li>
+            </ul>
+            <p><img alt="Paramètres avancés du tableau croisé dynamique" src="../images/pivot_advanced2.png" /></p>
+            <p>Sous l'onglet <b>La source de données</b> vous pouvez modifier les données à utiliser pour créer le tableau croisé dynamique.</p>
+            <p>Vérifiez la <b>Plage de données</b> et modifiez-la si nécessaire. Pour ce faire, cliquez sur l'icône <img alt="Plage de données source" src="../images/changerange.png" /> . </p>
+            <p><img alt="La fenêtre Sélectionner une plage de données" src="../images/pivot_selectdata.png" /></p>
+            <p>Dans la fenêtre <b>Sélectionner une plage de données</b>, saisissez la plage de données appropriée sous le format suivant: <em>Sheet1!$A$1:$E$10</em>. Vous pouvez aussi sélectionner la plage de cellules qui vous convient avec la souris. Cliquez <b>OK</b> pour confirmer.</p>
+            <p><img alt="Paramètres avancés du tableau croisé dynamique" src="../images/pivot_advanced3.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information du tableau croisé dynamique.</p>
+            <h3>Supprimer le tableau croisé dynamique</h3>
+            <p>Pour supprimer un tableau croisé dynamique,</p>
+            <ol>
+                <li>sélectionnez le tableau croisé dynamique entier en utilisant le bouton <b> <img alt="L'icône Sélectionner tableau croisé dynamique complet" src="../images/pivotselecticon.png" /> </b>Sélectionner dans la barre d'outils supérieure.</li>
+                <li>Appuyez sur la touche de <b>Suppression</b>.</li>
+            </ol>
+        </div>
+	</body>
+</html>

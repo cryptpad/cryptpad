@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "5.2.1",
+  "version": "5.3.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -35,9 +35,11 @@
   },
   "devDependencies": {
     "jshint": "^2.13.4",
-    "less": "3.7.1",
-    "lesshint": "6.3.7",
-    "selenium-webdriver": "^3.6.0"
+    "lesshint": "6.3.7"
+  },
+  "overrides": {
+    "glob-parent": "5.1.2",
+    "set-value": "4.0.1"
   },
   "scripts": {
     "start": "node server.js",

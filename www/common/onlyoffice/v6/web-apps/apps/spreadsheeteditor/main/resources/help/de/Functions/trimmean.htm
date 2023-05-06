@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>GESTUTZTMITTEL-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>GESTUTZTMITTEL-Funktion</h1>
+			<p>Die Funktion <b>GESTUTZTMITTEL</b> gehört zur Gruppe der statistischen Funktionen. Sie gibt den Mittelwert einer Datengruppe zurück, ohne die Randwerte zu berücksichtigen. <b>GESTUTZTMITTEL</b> berechnet den Mittelwert einer Teilmenge der Datenpunkte, die darauf basiert, dass entsprechend des jeweils angegebenen Prozentsatzes die kleinsten und größten Werte der ursprünglichen Datenpunkte ausgeschlossen werden.</p>
+			<p>Die Formelsyntax der Funktion <b>GESTUTZTMITTEL</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>GESTUTZTMITTEL(Matrix;Prozent)</em></b></p> 
+            <p><em>Dabei gilt:</em></p>
+            <p style="text-indent: 50px;"><b><em>Matrix</em></b> ist eine Matrix oder Gruppe von Werten, die ohne ihre Ausreißer gemittelt wird.</p>
+            <p style="text-indent: 50px;"><b><em>Prozent</em></b> ist der Prozentsatz der Datenpunkte, die nicht in die Bewertung eingehen sollen. Ein nummerischer Wert, der größer gleich 0 ist und kleiner als 1. Die Anzahl der ausgeschlossenen Datenpunkte wird auf das nächste Vielfache von 2 abgerundet. Beispiel: <b><em>Matrix</em></b> umfasst 30 Datenpunkte und <b><em>Prozent</em></b> ist 0,1, dann ist 10 Prozent von 30 Punkten 3 (auszuschließende Punkte). Dieser Wert wird auf 2 abgerundet, so dass von jedem Ende des Datensatzes 1 Punkt abgeschnitten wird: Den kleinsten und den größten Wert der Datenmenge.</p>
+            <p>Die nummerischen Werte werden manuell eingegeben oder sind in die Zelle eingeschlossen, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktion <b>GESTUTZTMITTEL</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Statistische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>GESTUTZTMITTEL</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas oder wählen Sie den Zellenbereich mit der Maus aus.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="GESTUTZTMITTEL-Funktion" src="../images/trimmean.png" /></p>
+		</div>
+	</body>
+</html>

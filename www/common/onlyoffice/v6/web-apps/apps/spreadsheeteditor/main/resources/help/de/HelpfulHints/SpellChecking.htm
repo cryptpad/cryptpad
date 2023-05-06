@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rechtschreibprüfung</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Prüfen Sie die Rechtschreibung des Arbeitsblatts" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Rechtschreibprüfung</h1>
+        <p>Der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabelleneditor</b></a> kann die Rechtschreibung des Textes in einer bestimmten Sprache überprüfen und Fehler beim Bearbeiten korrigieren. In der <em>Desktop-Version</em> können Sie auch Wörter in ein benutzerdefiniertes Wörterbuch einfügen, das für alle drei Editoren gemeinsam ist.</p>
+        <p>Klicken Sie die Schaltfläche <img alt="Rechtschreibprüfung Symbol" src="../images/spellcheckdeactivated.png" /> <b>Rechtschreibprüfung</b> in der linken Randleiste an, um das Rechtschreibprüfungspanel zu öffnen.</p>
+            <p><img alt="Rechtschreibprüfung Panel" src="../images/spellchecking_panel.png" /></p>
+            <p>Die obere linke Zelle hat den falschgeschriebenen Textwert, der automatisch in dem aktiven Arbeitsblatt ausgewählt ist. Das erste falsch geschriebene Wort wird in dem Rechtschreibprüfungsfeld angezeigt. Die Wörter mit der rechten Rechtschreibung werden im Feld nach unten angezeigt.</p>
+            <p>Verwenden Sie die Schaltfläche <img alt="Zum nächsten Wort wechseln" src="../images/go_to_the_next_word.png" /> <b>Zum nächsten Wort wechseln</b>, um zum nächsten falsch geschriebenen Wort zu übergehen.</p>
+            <h5>Falsh geschriebene Wörter ersetzen</h5>
+            <p>Um das falsch geschriebene Wort mit dem korrekt geschriebenen Wort zu <b>ersetzen</b>, wählen Sie das korrekt geschriebene Wort aus der Liste aus und verwenden Sie die Option <b>Ändern</b>:</p>
+            <ul>
+                <li>klicken Sie die Schaltfläche <b>Ändern</b> an, oder</li>
+                <li>klicken Sie den Abwärtspfeil neben der Schaltfläche <b>Ändern</b> an und wählen Sie die Option <b>Ändern</b> aus.</li>
+            </ul>
+            <p>Das aktive Wort wird ersetzt und Sie können zum nächsten falsch geschriebenen Wort wechseln.</p>
+            <p>Um alle identischen falsch geschriebenen Wörter im Arbeitsblatt scnhell zu ersetzen, klicken Sie den Abwärtspfeil neben der Schaltfläche <b>Ändern</b> an und wählen Sie die Option <b>Alles ändern</b> aus.</p>
+            <h5>Wörter ignorieren</h5>
+            <p>Um das aktive Wort zu ignorieren:</p>
+            <ul>
+                <li>klicken Sie die Schaltfläche <b>Ignorieren</b> an, oder</li>
+                <li>klicken Sie den Abwärtspfeil neben der Schaltfläche <b>Ignorieren</b> an und wählen Sie die Option <b>Ignorieren</b> aus.</li>
+            </ul>
+            <p>Das aktive Wort wird ignoriert und Sie können zum nächsten falsch geschriebenen Wort wechseln.</p>
+            <p>Um alle identischen falsch geschriebenen Wörter im Arbeitsblatt zu ignorieren, klicken Sie den Abwärtspfeil neben der Schaltfläche <b>Ignorieren</b> an und wählen Sie die Option <b>Alles ignorieren</b> aus.</p>         
+            <p>Falls das aktive Wort im Wörterbuch fehlt, können Sie es manuell mithilfe der Schaltfläche <b>Hinzufügen</b> zu dem benutzerdefinierten Wörterbuch hinfügen. Dieses Wort wird kein Fehler mehr. Diese Option steht nur in der <em>Desktop-Version</em> zur Verfügung.</p>
+            <p>Die aktive <b>Sprache des Wörterbuchs</b> ist nach unten angezeigt. Sie können sie ändern.</p>
+            <p>Wenn Sie alle Wörter auf dem Arbeitsblatt überprüfen, wird die Meldung <b>Die Rechtschreibprüfung wurde abgeschlossen</b> auf dem Panel angezeigt.</p>			
+            <p>Um das Panel zu schließen, klicken Sie die Schaltfläche <img alt="Rechtschreibprüfung Symbol" src="../images/spellcheckactivated.png" /> <b>Rechtschreibprüfung</b> in der linken Randleiste an.</p>
+            <h5>Die Einstellungen für die Rechtschreibprüfung konfigurieren</h5>
+            <p>Um die Einstellungen der Rechtschreibprüfung zu ändern, öffnen Sie die erweiterten Einstellungen des Tabelleneditors (die Registerkarte <b>Datei</b> -> <b>Erweiterte Einstellungen</b>) und öffnen Sie den Abschnitt <b>Rechtschreibprüfung</b>. Hier können Sie die folgenden Einstellungen konfigurieren:</p> 
+            <p><img alt="Einstellungen der Rechtschreibprüfung" src="../images/spellchecking_settings.png" /></p>
+            <ul>
+                <li><b>Sprache des Wörterbuchs</b> - wählen Sie eine der verfügbaren Sprachen aus der Liste aus. Die <b>Wörterbuchsprache</b> in der Rechtschreibprüfung wird geändert.</li>
+                <li><b>Wörter in GROSSBUCHSTABEN ignorieren</b> - aktivieren Sie diese Option, um in Großbuchstaben geschriebene Wörter zu ignorieren, z.B. Akronyme wie <em>SMB</em>.</li>
+                <li><b>Wörter mit Zahlen ignorieren</b> - aktivieren Sie diese Option, um Wörter mit Zahlen zu ignorieren, z.B. Akronyme wie <em>B2B</em>.</li>
+                <li><b>Autokorrektur</b> wird verwendet, um automatisch ein Wort oder Symbol zu ersetzen, das in das Feld <b>Ersetzen:</b> eingegeben oder aus der Liste durch ein neues Wort oder Symbol ausgewählt wurde, das im Feld <b>Nach:</b> angezeigt wird.</li>
+            </ul>
+            <p>Um die Änderungen anzunehmen, klicken Sie die Schaltfläche <b>Anwenden</b> an.</p>           
+		</div>
+	</body>
+</html>

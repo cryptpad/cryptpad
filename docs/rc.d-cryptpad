@@ -1,0 +1,37 @@
+!/bin/sh
+# $FreeBSD$
+# PROVIDE: cryptpad
+# REQUIRE: DAEMON nginx
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="cryptpad"
+start_cmd="start"
+stop_cmd="stop"
+rcvar=cryptpad_enable
+
+pidfile="/var/run/${name}.pid"
+
+desc="CryptPad Service"
+
+load_rc_config ${name}
+
+start() {
+
+/bin/mkdir -p /var/run/cryptpad
+/usr/sbin/chown cryptpad:cryptpad /var/run/cryptpad
+
+/usr/bin/su cryptpad -c "export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:~/bin && cd /home/cryptpad/cryptpad && /usr/sbin/daemon -T ${name} -P /var/run/cryptpad/${name}_supervisor.pid -p  /var/run/cryptpad/${name}.pid -f -S -r /usr/local/bin/node server"
+
+}
+
+stop() {
+
+/bin/kill -9 `cat /var/run/cryptpad/${name}_supervisor.pid`
+/bin/kill -15 `cat /var/run/cryptpad/${name}.pid`
+
+}
+
+run_rc_command "$1"
+

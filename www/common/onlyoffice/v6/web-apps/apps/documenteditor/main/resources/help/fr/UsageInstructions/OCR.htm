@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Extraction du texte incrusté dans l'image</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Description de l'extension OCR pour les éditeurs ONLYOFFICE permettant d'extraire les textes incrustés dans des images et les insérer dans un document" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Extraction du texte incrusté dans l'image</h1>
+        <p>En utilisant ONLYOFFICE <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> vous pouvez extraire du texte incrusté dans des images (.png .jpg) et l'insérer dans votre document.</p>
+        <ol>
+            <li>Accédez à votre document et placez le curseur à l'endroit où le texte doit être inséré.</li>
+            <li>Passez à l'onglet <b>Modules complémentaires</b> et choisissez <img alt="L'icône de l'extension OCR" src="../images/ocr.png" /> <b>OCR</b> dans le menu.</li>
+            <li>Appuyez sur <B>Charger fichier</B> et choisissez l'image.</li>
+            <li>Sélectionnez la langue à reconnaître de la liste déroulante <B>Choisir la langue</B>.</li>
+            <li>Appuyez sur <B>Reconnaître</B>.</li>
+            <li>Appuyez sur <B>Insérer le texte</B>.</li>
+        </ol>
+        <p>Vérifiez les erreurs et la mise en page.</p>
+        <img class="gif" alt="Gif de l'extension OCR" src="../images/ocr_plugin.gif" width="600" />
+    </div>
+</body>
+</html>

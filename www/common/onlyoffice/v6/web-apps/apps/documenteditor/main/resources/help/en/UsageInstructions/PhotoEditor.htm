@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit an image</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The description of Photo Editor plugin for ONLYOFFICE editors, which allows to edit images" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Edit an image</h1>
+        <p>ONLYOFFICE <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> comes with a very powerful <b>photo editor</b>, that allows you to adjust the image with filters and make all kinds of annotations.</p>
+        <ol>
+            <li>Select an image in your document.</li>
+            <li>
+                Switch to the <b>Plugins</b> tab and choose <img alt="Photo Editor plugin icon" src="../images/photoeditor.png" /> <b>Photo Editor</b>.<br />
+                You are now in the editing environment.
+                <ul>
+                    <li>Below the image you will find the following checkboxes and slider filters:
+                    <ul>
+                        <li><b>Grayscale</b>, <b>Sepia</b>, <b>Sepia 2</b>, <b>Blur</b>, <b>Emboss</b>, <b>Invert</b>, <b>Sharpen</b>;</li>
+                        <li><b>Remove White</b> (<em>Threshold</em>, <em>Distance</em>), <b>Gradient transparency</b>, <b>Brightness</b>, <b>Noise</b>, <b>Pixelate</b>, <b>Color Filter</b>;</li>
+                        <li><b>Tint</b>, <b>Multiply</b>, <b>Blend</b>.</li>
+                    </ul>
+                    </li>
+                    <li>
+                        To the left of the filters you will find buttons for
+                        <ul>
+                            <li><b>Undo</b>, <b>Redo</b> and <b>Resetting</b>;</li>
+                            <li><b>Delete</b>, <b>Delete all</b>;</li>
+                            <li><b>Crop</b> (<em>Custom</em>, <em>Square</em>, <em>3:2</em>, <em>4:3</em>, <em>5:4</em>, <em>7:5</em>, <em>16:9</em>);</li>
+                            <li><b>Flip</b> (<em>Flip X</em>, <em>Flip Y</em>, <em>Reset</em>);</li>
+                            <li><b>Rotate</b> (<em>30 degree</em>, <em>-30 degree</em>,<em>Manual rotation slider</em>);</li>
+                            <li><b>Draw</b> (<em>Free</em>, <em>Straight</em>, <em>Color</em>, <em>Size slider</em>);</li>
+                            <li><b>Shape</b> (<em>Rectangle</em>, <em>Circle</em>, <em>Triangle</em>, <em>Fill</em>, <em>Stroke</em>, <em>Stroke size</em>);</li>
+                            <li><b>Icon</b> (<em>Arrows</em>, <em>Stars</em>, <em>Polygon</em>, <em>Location</em>, <em>Heart</em>, <em>Bubble</em>, <em>Custom icon</em>, <em>Color</em>);</li>
+                            <li><b>Text</b> (<em>Bold</em>, <em>Italic</em>, <em>Underline</em>, <em>Left</em>, <em>Center</em>, <em>Right</em>, <em>Color</em>, <em>Text size</em>);</li>
+                            <li><b>Mask</b>.</li>
+                        </ul>
+                    </li>
+                </ul>
+                Feel free to try all of these and remember you can always undo them.<br />
+            <li>
+                When finished, click the <b>OK</b> button.
+            </li>
+        </ol>
+        <p>The edited picture is now included in the document.</p>
+        <img class="gif" alt="Image plugin gif" src="../images/image_plugin.gif" width="600" />
+    </div>
+</body>
+</html>

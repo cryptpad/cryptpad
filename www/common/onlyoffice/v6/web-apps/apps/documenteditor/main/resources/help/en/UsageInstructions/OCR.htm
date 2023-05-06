@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Extract text from an image</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The description of OCR plugin for ONLYOFFICE editors, which allows to extract text from an image and insert it into documents" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Extract text from an image</h1>
+        <p>With ONLYOFFICE <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> you can extract text from an image (.png .jpg) and insert it in your document.</p>
+        <ol>
+            <li>Open your document and place the cursor on the spot where you want to insert the text.</li>
+            <li>Switch to the <b>Plugins</b> tab and choose <img alt="OCR plugin icon" src="../images/ocr.png" /> <b>OCR</b> from the menu.</li>
+            <li>Click <b>Load File</b> and select the image.</li>
+            <li>Choose the recognition language from the <b>Choose Language</b> pull-down menu.</li>
+            <li>Click <b>Recognize</b>.</li>
+            <li>Click <b>Insert text</b>.</li>
+        </ol>
+        <p>You should check the inserted text for errors and layout.</p>
+        <img class="gif" alt="OCR plugin gif" src="../images/ocr_plugin.gif" width="600" />
+    </div>
+</body>
+</html>

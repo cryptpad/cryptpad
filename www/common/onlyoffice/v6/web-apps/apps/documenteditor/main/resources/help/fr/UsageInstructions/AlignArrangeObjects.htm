@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Aligner et organiser des objets sur une page</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Aligner et organiser des zones de texte, des formes automatiques, des images et des graphiques sur une page." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Aligner et organiser des objets sur une page</h1>
+			<p>Dans <a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, les <b>formes automatiques</b>, les <b>images</b>, les <b>graphiques</b> ou les <b>zones de texte</b> ajoutés peuvent être alignés, regroupés et ordonnésr sur une page. Pour effectuer une de ces actions, sélectionnez d'abord un ou plusieurs objets sur la page. Pour sélectionner plusieurs objets, maintenez la touche <b>Ctrl</b> enfoncée et cliquez avec le bouton gauche sur les objets nécessaires. Pour sélectionner une zone de texte, cliquez sur son bord, pas sur le texte à l'intérieur. Après quoi vous pouvez utiliser soit les icônes de l'onglet <b>Mise en page</b> de la barre d'outils supérieure décrites ci-après soit les options similaires du menu contextuel.</p>
+			<h3>Aligner des objets</h3>
+            <p>Pour <b>aligner</b> <em>deux ou plusieurs</em> objets sélectionnés,</p>
+			    <ol>
+                    <li>cliquez sur l'icône <img alt="icône Aligner" src="../images/align_toptoolbar.png" /> <b>Aligner</b> située dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez une des options disponibles :<ul>
+                            <li><b>Aligner sur la page</b> pour aligner les objets par rapport aux bords de la page,</li>
+                            <li><b>Aligner sur la marge</b> pour aligner les objets par rapport aux bords de la marge,</li>
+                            <li><b>Aligner les objets sélectionnés</b> (cette option est sélectionnée par défaut) pour aligner les objets les uns par rapport aux autres,</li>
+                        </ul>
+                    </li>
+                    <li>Cliquez à nouveau sur l'icône <img alt="icône Aligner" src="../images/align_toptoolbar.png" /> <b>Aligner</b> et sélectionnez le type d'alignement nécessaire dans la liste :<ul>
+                            <li><b>Aligner à gauche</b> <img alt="icône Aligner à gauche" src="../images/alignobjectleft.png" /> - pour aligner les objets horizontalement par le bord gauche de l'objet le plus à gauche / bord gauche de la page / marge gauche de la page,</li>
+                            <li><b>Aligner au centre</b> <img alt="icône Aligner au centre" src="../images/alignobjectcenter.png" /> - pour aligner les objets horizontalement par leur centre/centre de la page/centre de l'espace entre les marges gauche et droite de la page,</li>
+                            <li><b>Aligner à droite</b> <img alt="icône Aligner à droite" src="../images/alignobjectright.png" /> - pour aligner les objets horizontalement par le bord droit de l'objet le plus à droite / bord droit de la page / marge droite de la page,</li>
+                            <li><b>Aligner en haut</b> <img alt="icône Aligner en haut" src="../images/alignobjecttop.png" /> - pour aligner les objets verticalement par le bord supérieur de l'objet le plus haut/bord supérieur de la page / marge supérieure de la page,</li>
+                            <li><b>Aligner au milieu</b> <img alt="icône Aligner au milieu" src="../images/alignobjectmiddle.png" /> - pour aligner les objets verticalement par leur milieu/milieu de la page/milieu de l'espace entre les marges de la page supérieure et de la page inférieure,</li>
+                            <li><b>Aligner en bas</b> <img alt="icône Aligner en bas" src="../images/alignobjectbottom.png" /> - pour aligner les objets verticalement par le bord inférieur de l'objet le plus bas/bord inférieur de la page/bord inférieur de la page.</li>
+                        </ul>
+                    </li>
+                </ol>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés, choisir l'option <b>Aligner</b> dans le menu contextuel, puis utiliser une des options d’alignement disponibles.</p>
+            <p>Si vous voulez aligner un objet unique, il peut être aligné par rapport aux bords de la page ou aux marges de la page. L'option <b>Aligner sur la marge</b> est sélectionnée par défaut dans ce cas.</p>
+            <h3>Distribuer des objets</h3>
+            <p>Pour <b>distribuer</b> horizontalement ou verticalement <em>trois objets sélectionnés ou plus</em> de façon à ce que la même distance apparaisse entre eux,</p>
+            <ol>
+                <li>Cliquez sur l'icône <img alt="icône Aligner" src="../images/align_toptoolbar.png" /> <b>Aligner</b> située dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez une des options disponibles :<ul>
+                        <li><b>Aligner sur la page</b> pour répartir les objets entre les bords de la page,</li>
+                        <li><b>Aligner sur la marge</b> pour répartir les objets entre les marges de la page,</li>
+                        <li><b>Aligner les objets sélectionnés</b> (cette option est sélectionnée par défaut) pour distribuer les objets entre les deux objets les plus externes sélectionnés,</li>
+                    </ul>
+                </li>
+                <li>Cliquez à nouveau sur l'icône <img alt="icône Aligner" src="../images/align_toptoolbar.png" /> <b>Aligner</b> et sélectionnez le type de distribution nécessaire dans la liste :<ul>
+                        <li><b>Distribuer horizontalement</b> <img alt="icône Distribuer horizontalement" src="../images/distributehorizontally.png" /> - pour répartir uniformément les objets entre les bords gauche et droit des objets sélectionnés/bords gauche et droit de la page/marges gauche et droite de la page<!--to align the selected objects by their centers (from right to left edges) to the horizontal center of the page-->.</li>
+                        <li><b>Distribuer verticalement</b> <img alt="icône Distribuer verticalement" src="../images/distributevertically.png" /> - pour répartir uniformément les objets entre les objets les plus en haut et les objets les plus bas sélectionnés/bords supérieur et inférieur de la page/marges de la page/bord supérieur et inférieur de la page<!--to align the selected objects by their centers (from top to bottom edges) to the vertical center of the page-->.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés, choisir l'option <b>Aligner</b> dans le menu contextuel, puis utiliser une des options de distribution disponibles.</p>
+            <p class="note"><b>Remarque </b>: les options de distribution sont désactivées si vous sélectionnez moins de trois objets.</p>
+            <h3>Grouper plusieurs objets</h3>
+            <p>Pour <b>grouper</b> <em>deux ou plusieurs</em> objets sélectionnés ou les <b>dissocier</b>, cliquez sur la flèche à côté de l'icône <img alt="icône Grouper" src="../images/group_toptoolbar.png" /> <b>Grouper</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez l'option nécessaire depuis la liste :</p>
+            <ul>
+                <li><b>Grouper</b> <img alt="icône Grouper" src="../images/group.png" /> - pour combiner plusieurs objets de sorte que vous puissiez les faire pivoter, déplacer, redimensionner, aligner, organiser, copier, coller, mettre en forme simultanément comme un objet unique.</li>
+                <li><b>Dissocier</b> <img alt="icône Dissocier" src="../images/ungroup.png" /> - pour dissocier le groupe sélectionné d'objets préalablement combinés.</li>
+            </ul>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés, choisir l'option <b>Ordonner</b> dans le menu contextuel, puis utiliser l'option <b>Grouper</b> ou <b>Dissocier</b>.</p>
+            <p class="note"><b>Remarque</b>: l'option <b>Grouper</b> est désactivée si vous sélectionnez moins de deux objets. L'option <b>Dissocier</b> n'est disponible que lorsqu'un groupe des objets précédemment joints est sélectionné.</p>
+            <h3>Organiser plusieurs objets</h3>
+            <p>Pour <b>organiser</b> les objets sélectionnés (c'est à dire pour modifier leur ordre lorsque plusieurs objets se chevauchent), vous pouvez utiliser les icônes <img alt="icône Avancer d'un plan" src="../images/bringforward_toptoolbar.png" /> <b>Avancer</b> et <img alt="icône Reculer d'un plan" src="../images/sendbackward_toptoolbar.png" /> <b>Reculer</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionner le type d'arrangement nécessaire dans la liste.</p>
+			<p>Pour déplacer un ou plusieurs objets sélectionnés vers l'avant, cliquez sur la flèche en regard de l'icône <img alt="icône Avancer d'un plan" src="../images/bringforward_toptoolbar.png" /> <b>Avancer</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez le type d'arrangement nécessaire dans la liste :</p>
+            <ul>
+                <li><b>Mettre au premier plan</b> <img alt="icône Mettre au premier plan" src="../images/bringtofront.png" /> - pour déplacer les objets devant tous les autres objets,</li>
+                <li><b>Avancer</b> <img alt="icône Avancer d'un plan" src="../images/bringforward.png" /> - pour déplacer les objets d'un niveau en avant par rapport à d'autres objets.</li>
+            </ul>
+            <p>Pour déplacer un ou plusieurs objets sélectionnés vers l'arrière, cliquez sur la flèche en regard de l'icône <img alt="icône Reculer d'un plan" src="../images/sendbackward_toptoolbar.png" /> <b>Reculer</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez le type d'arrangement nécessaire dans la liste :</p>
+            <ul>
+                <li><b>Mettre en arrière-plan</b> <img alt="icône Mettre en arrière-plan" src="../images/sendtoback.png" /> - pour déplacer les objets derrière tous les autres objets,</li>
+                <li><b>Reculer</b> <img alt="icône Mettre en arrière-plan" src="../images/sendbackward.png" /> - pour déplacer les objets d'un niveau en arrière par rapport à d'autres objets.</li>
+            </ul>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés, choisir l'option <b>Organiser</b> dans le menu contextuel, puis utiliser une des options de rangement disponibles.</p>
+		</div>
+	</body>
+</html>

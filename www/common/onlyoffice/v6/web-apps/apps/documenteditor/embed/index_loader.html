@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Documents</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="../../../apps/documenteditor/embed/resources/css/app-all.css" rel="stylesheet">
+
+    <!-- splash -->
+
+    <style type="text/css">
+        .loadmask {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            border: none;
+            background-color: #f4f4f4;
+            z-index: 20002;
+        }
+
+        .loader-page {
+            width: 100%;
+            height: 170px;
+            bottom: 42%;
+            position: absolute;
+            text-align: center;
+            line-height: 10px;
+        }
+
+        .loader-logo {
+            max-height: 160px;
+            margin-bottom: 10px;
+        }
+
+        .loader-page-romb {
+            width: 40px;
+            display: inline-block;
+        }
+
+        .loader-page-text {
+            width: 100%;
+            bottom: 42%;
+            position: absolute;
+            text-align: center;
+            color: #888;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            line-height: 20px;
+        }
+
+        .loader-page-text-loading {
+            font-size: 14px;
+        }
+
+        .loader-page-text-customer {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .romb {
+            width: 40px;
+            height: 40px;
+            -webkit-transform: rotate(135deg) skew(20deg, 20deg);
+            -moz-transform: rotate(135deg) skew(20deg, 20deg);
+            -ms-transform: rotate(135deg) skew(20deg, 20deg);
+            -o-transform: rotate(135deg) skew(20deg, 20deg);
+            position: absolute;
+            background: red;
+            border-radius: 6px;
+            -webkit-animation: movedown 3s infinite ease;
+            -moz-animation: movedown 3s infinite ease;
+            -ms-animation: movedown 3s infinite ease;
+            -o-animation: movedown 3s infinite ease;
+            animation: movedown 3s infinite ease;
+        }
+
+        #blue {
+            z-index: 3;
+            background: #55bce6;
+            -webkit-animation-name: blue;
+            -moz-animation-name: blue;
+            -ms-animation-name: blue;
+            -o-animation-name: blue;
+            animation-name: blue;
+        }
+
+        #red {
+            z-index:1;
+            background: #de7a59;
+            -webkit-animation-name: red;
+            -moz-animation-name: red;
+            -ms-animation-name: red;
+            -o-animation-name: red;
+            animation-name: red;
+        }
+
+        #green {
+            z-index: 2;
+            background: #a1cb5c;
+            -webkit-animation-name: green;
+            -moz-animation-name: green;
+            -ms-animation-name: green;
+            -o-animation-name: green;
+            animation-name: green;
+        }
+
+        @-webkit-keyframes red {
+              0%    { top:120px; background: #de7a59; }
+             10%    { top:120px; background: #F2CBBF; }
+             14%    { background: #f4f4f4; top:120px; }
+             15%    { background: #f4f4f4; top:0;}
+             20%    { background: #E6E4E4; }
+             30%    { background: #D2D2D2; }
+             40%    { top:120px; }
+            100%    { top:120px; background: #de7a59; }
+        }
+
+        @keyframes red {
+              0%    { top:120px; background: #de7a59; }
+             10%    { top:120px; background: #F2CBBF; }
+             14%    { background: #f4f4f4; top:120px; }
+             15%    { background: #f4f4f4; top:0; }
+             20%    { background: #E6E4E4; }
+             30%    { background: #D2D2D2; }
+             40%    { top:120px; }
+            100%    { top:120px; background: #de7a59; }
+        }
+
+        @-webkit-keyframes green {
+              0%    { top:110px; background: #a1cb5c; opacity:1; }
+             10%    { top:110px; background: #CBE0AC; opacity:1; }
+             14%    { background: #f4f4f4; top:110px; opacity:1; }
+             15%    { background: #f4f4f4; top:0; opacity:1; }
+             20%    { background: #f4f4f4; top:0; opacity:0; }
+             25%    { background: #EFEFEF; top:0; opacity:1; }
+             30%    { background:#E6E4E4; }
+             70%    { top:110px; }
+            100%    { top:110px; background: #a1cb5c; }
+        }
+
+        @keyframes green {
+              0%    { top:110px; background: #a1cb5c; opacity:1; }
+             10%    { top:110px; background: #CBE0AC; opacity:1; }
+             14%    { background: #f4f4f4; top:110px; opacity:1; }
+             15%    { background: #f4f4f4; top:0; opacity:1; }
+             20%    { background: #f4f4f4; top:0; opacity:0; }
+             25%    { background: #EFEFEF; top:0; opacity:1; }
+             30%    { background:#E6E4E4; }
+             70%    { top:110px; }
+            100%    { top:110px; background: #a1cb5c; }
+        }
+
+        @-webkit-keyframes blue {
+              0%    { top:100px; background: #55bce6; opacity:1; }
+             10%    { top:100px; background: #BFE8F8; opacity:1; }
+             14%    { background: #f4f4f4; top:100px; opacity:1; }
+             15%    { background: #f4f4f4; top:0; opacity:1; }
+             20%    { background: #f4f4f4; top:0; opacity:0; }
+             25%    { background: #f4f4f4; top:0; opacity:0; }
+             45%    { background: #EFEFEF; top:0; opacity:0.2; }
+            100%    { top:100px; background: #55bce6; }
+        }
+
+        @keyframes blue {
+              0%    { top:100px; background: #55bce6; opacity:1; }
+             10%    { top:100px; background: #BFE8F8; opacity:1; }
+             14%    { background: #f4f4f4; top:100px; opacity:1; }
+             15%    { background: #f4f4f4; top:0; opacity:1; }
+             20%    { background: #f4f4f4; top:0; opacity:0; }
+             25%    { background: #fff; top:0; opacity:0; }
+             45%    { background: #EFEFEF; top:0; opacity:0.2; }
+            100%    { top:100px; background: #55bce6; }
+        }
+    </style>
+
+    <!--[if lt IE 9]>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body class="embed-body">
+
+       <script>
+            var  userAgent = navigator.userAgent.toLowerCase(),
+                check = function(regex){ return regex.test(userAgent); };
+            if (!check(/opera/) && (check(/msie/) || check(/trident/))) {
+                var m = /msie (\d+\.\d+)/.exec(userAgent);
+                if (m && parseFloat(m[1]) < 10.0) {
+                    document.write(
+                        '<div id="id-error-mask" class="errormask">',
+                            '<div class="error-body" align="center">',
+                                '<div id="id-error-mask-title" class="title">Your browser is not supported.</div>',
+                                '<div id="id-error-mask-text">Sorry, ONLYOFFICE Document is currently only supported in the latest versions of the Chrome, Firefox, Safari or Internet Explorer web browsers.</div>',
+                            '</div>',
+                        '</div>'
+                    );
+                }
+            }
+
+            function getUrlParams() {
+                var e,
+                    a = /\+/g,  // Regex for replacing addition symbol with a space
+                    r = /([^&=]+)=?([^&]*)/g,
+                    d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+                    q = window.location.search.substring(1),
+                    urlParams = {};
+
+                while (e = r.exec(q))
+                    urlParams[d(e[1])] = d(e[2]);
+
+                return urlParams;
+            }
+
+            function encodeUrlParam(str) {
+                return str.replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+            }
+
+            var params = getUrlParams(),
+                lang = (params["lang"] || 'en').split(/[\-\_]/)[0],
+                customer = params["customer"] ? ('<div class="loader-page-text-customer">' + encodeUrlParam(params["customer"]) + '</div>') : '',
+                margin = (customer !== '') ? 50 : 20,
+                loading = 'Loading...',
+                logo = params["logo"] ? ((params["logo"] !== 'none') ? ('<img src="' + encodeUrlParam(params["logo"]) + '" class="loader-logo" />') : '') : null;
+
+            window.frameEditorId = params["frameEditorId"];
+            window.parentOrigin = params["parentOrigin"];
+
+            if ( lang == 'de')      loading = 'Ladevorgang...';
+            else if ( lang == 'es') loading = 'Cargando...';
+            else if ( lang == 'fr') loading = 'Chargement en cours...';
+            else if ( lang == 'it') loading = 'Caricamento in corso...';
+            else if ( lang == 'pt') loading = 'Carregando...';
+            else if ( lang == 'ru') loading = 'Загрузка...';
+            else if ( lang == 'sl') loading = 'Nalaganje...';
+            else if ( lang == 'tr') loading = 'Yükleniyor...';
+            else if ( lang == 'bg') loading = 'Зареждане...';
+            else if ( lang == 'cs') loading = 'Nahrávám...';
+            else if ( lang == 'hu') loading = 'Betöltés...';
+            else if ( lang == 'ja') loading = '読み込み中...';
+            else if ( lang == 'ko') loading = '로드 중...';
+            else if ( lang == 'lv') loading = 'Ieladēšana ...';
+            else if ( lang == 'nl') loading = 'Laden...';
+            else if ( lang == 'pl') loading = 'Ładowanie...';
+            else if ( lang == 'sk') loading = 'Nahrávam...';
+            else if ( lang == 'uk') loading = 'Завантаження...';
+            else if ( lang == 'vi') loading = 'Đang tải...';
+            else if ( lang == 'zh') loading = '加载中...';
+
+            document.write(
+                '<div id="loading-mask" class="loadmask">' +
+                    '<div class="loader-page" style="margin-bottom: ' + margin + 'px;' + ((logo!==null) ? 'height: auto;' : '') + '">' +
+                        ((logo!==null) ? logo :
+                        '<div class="loader-page-romb">' +
+                            '<div class="romb" id="blue"></div>' +
+                            '<div class="romb" id="green"></div>' +
+                            '<div class="romb" id="red"></div>' +
+                        '</div>') +
+                    '</div>' +
+                    '<div class="loader-page-text">' +  customer +
+                    '<div class="loader-page-text-loading">' + loading + '</div>' +
+                    '</div>' +
+                '</div>');
+        </script>
+
+      <div id="editor_sdk" class="viewer" style="overflow: hidden;" tabindex="-1"></div>
+
+      <div class="overlay-controls" style="margin-left: -32px">
+          <ul class="left">
+              <li id="id-btn-zoom-in"><button class="overlay svg-icon zoom-up"></button></li>
+              <li id="id-btn-zoom-out"><button class="overlay svg-icon zoom-down"></button></li>
+          </ul>
+      </div>
+
+      <div class="toolbar" id="toolbar">
+          <div class="group left">
+              <div class="margin-right-large"><a id="header-logo" class="brand-logo" href="http://www.onlyoffice.com/" target="_blank"></a></div>
+              <button id="id-btn-prev-field" class="control-btn svg-icon arrow-up margin-right-small"></button><!--
+              --><button id="id-btn-next-field" class="control-btn has-caption margin-right-large"><span class="btn-icon svg-icon arrow-down"></span><span class="caption"></span></button><!--
+              --><button id="id-btn-clear-fields" class="control-btn has-caption"><span class="btn-icon svg-icon clear-style"></span><span class="caption"></span></button>
+          </div>
+          <div class="group center">
+              <span id="title-doc-name"></span>
+          </div>
+          <div class="group right">
+              <div id="id-pages" class="item margin-right-small" style="vertical-align: middle;"><input id="page-number" class="form-control input-xs masked" type="text" value="0"><span class="text" id="pages" tabindex="-1">of 0</span></div>
+              <div id="id-submit-group" style="display: inline-block;"><button id="id-btn-submit" class="control-btn has-caption margin-right-small margin-left-small colored"><span class="caption"></span></button></div>
+              <div id="box-tools" class="dropdown">
+                  <button class="control-btn svg-icon more-vertical"></button>
+              </div>
+          </div>
+      </div>
+
+      <div class="modal fade error" id="id-critical-error-dialog" tabindex="-1" role="dialog">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h4 id="id-critical-error-title"></h4>
+                  </div>
+                  <div class="modal-body">
+                      <p id="id-critical-error-message"></p>
+                  </div>
+                  <div class="modal-footer">
+                      <button id="id-critical-error-close" class="btn btn-sm btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="hyperlink-tooltip" data-toggle="tooltip" title="" style="display:none;"></div>
+
+      <!--vendor-->
+      <script type="text/javascript" src="../../../vendor/jquery/jquery.min.js"></script>
+      <script type="text/javascript" src="../../../vendor/jquery/jquery.browser.min.js"></script>
+      <script type="text/javascript" src="../../../vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="../../../vendor/sockjs/sockjs.min.js"></script>
+      <script type="text/javascript" src="../../../vendor/xregexp/xregexp-all-min.js"></script>
+
+      <!--sdk-->
+      <script type="text/javascript" src="../../../../sdkjs/common/AllFonts.js"></script>
+      <script type="text/javascript" src="../../../../sdkjs/word/sdk-all-min.js"></script>
+
+      <!--application-->
+      <script type="text/javascript" src="../../../apps/documenteditor/embed/app-all.js"></script>
+      <script type="text/javascript">
+          var isBrowserSupported = function() {
+              return  ($.browser.msie     && parseFloat($.browser.version) > 9)     ||
+                      ($.browser.chrome   && parseFloat($.browser.version) > 7)     ||
+                      ($.browser.safari   && parseFloat($.browser.version) > 4)     ||
+                      ($.browser.opera    && parseFloat($.browser.version) > 10.4)  ||
+                      ($.browser.mozilla  && parseFloat($.browser.version) > 3.9);
+          };
+
+          if (!isBrowserSupported()){
+              document.write(
+                  '<div id="id-error-mask" class="errormask">',
+                      '<div class="error-body" align="center">',
+                          '<div id="id-error-mask-title" class="title">Your browser is not supported.</div>',
+                          '<div id="id-error-mask-text">Sorry, ONLYOFFICE Document is currently only supported in the latest versions of the Chrome, Firefox, Safari or Internet Explorer web browsers.</div>',
+                      '</div>',
+                  '</div>'
+              );
+          }
+      </script>
+  </body>
+</html>

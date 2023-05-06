@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>WVERWEIS-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>WVERWEIS-Funktion</h1>
+			<p>Die Funktion <b>WVERWEIS</b> gehört zur Gruppe der Nachschlage- und Verweisfunktionen. Sie sucht in der obersten Zeile einer Tabelle oder einer Matrix (Array) nach Werten und gibt dann in der gleichen Spalte einen Wert aus einer Zeile zurück, die Sie in der Tabelle oder Matrix angeben.</p>
+			<p>Die Formelsyntax der Funktion <b>WVERWEIS</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>WVERWEIS(Suchkriterium;Matrix;Zeilenindex;[Bereich_Verweis])</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+				<p style="text-indent: 50px;"><b><em>Suchkriterium</em></b> ist der Wert nach dem gesucht wird.</p> 
+				<p style="text-indent: 50px;"><b><em>Matrix</em></b> sind zwei oder mehr Spalten die in aufsteigender Reihenfolge sortiert sind.</p> 
+				<p style="text-indent: 50px;"><b><em>Zeilenindex</em></b> ist eine Zeilennummer in der <b><em>Matrix</em></b>, ein numerischer Wert der größer oder gleich 1 ist, aber kleiner als die Gesamtanzahl der Spalten in <b>Matrix</b>.</p>
+			<p style="text-indent: 50px;">Das Argument <b><em>Bereich_Verweis</em></b> ist optional. Es handelt sich um einen Wahrheitswert. WAHR oder FALSCH. Geben Sie FALSCH an, um eine genaue Übereinstimmung des Rückgabewerts zu finden. Geben Sie WAHR ein, um eine ungefähre Übereinstimmung zu finden; wenn keine genaue Übereinstimmung mit dem <b><em>Suchkriterium</em></b> vorliegt, wählt die Funktion den nächstgrößeren Wert aus, der kleiner ist als <b><em>Suchkriterium</em></b>. Fehlt das Argument, findet die Funktion eine genaue Übereinstimmung.</p>
+			<p class="note"><b>Hinweis</b>: Ist für <b><em>Übereinstimmung</em></b> FALSCH festgelegt, aber es wird keine exakte Übereinstimmung gefunden wird, gibt die Funktion den Fehler <b>#NV</b> zurück.</p>
+			<p>Anwendung der Funktion <b>WVERWEIS</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Nachschlage- und Verweisfunktionen</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>WVERWEIS</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="WVERWEIS-Funktion" src="../images/hlookup.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Change color scheme</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Learn how to change color scheme for a document" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Change color scheme</h1>
+        <p>Le combinazioni di colori vengono applicate all'intero documento. Vengono utilizzati per modificare rapidamente l'aspetto del documento, poiché definiscono la tavolozza <b>Temi Colori</b> per gli elementi del documento <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">font</a>, <a href="../UsageInstructions/BackgroundColor.htm" onclick="onhyperlinkclick(this)">sfondo</a>, <a href="../UsageInstructions/InsertTables.htm" onclick="onhyperlinkclick(this)">tabelle</a>, <a href="../UsageInstructions/InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">forme automatiche</a>, <a href="../UsageInstructions/InsertCharts.htm" onclick="onhyperlinkclick(this)">grafici</a>). Se hai applicato alcuni <b>Tema Colori</b> agli elementi del documento e poi hai selezionato una <b>combinazione di colori</b>, diversa, i colori applicati nel documento cambieranno di conseguenza.</p>
+        <p>Per modificare una combinazione di colori, fai clic sulla freccia verso il basso accanto all'icona <b>Cambia combinazione di colori</b> <img alt="Cambia combinazione di colori " src="../images/changecolorscheme.png" /> nella scheda <b>Home</b> della barra degli strumenti in alto e seleziona la combinazione di colori necessaria tra quelle disponibili: <b>Office</b>, <b>Scala di grigi</b>, <b>Apice</b>, <b>Aspetto</b>, <b>Civico</b>, <b>Concorso</b>, <b>Equità</b>, <b>Flow</b>, <b>Fonderia</b>, <b>Mediana</b>, <b>Metro</b>, <b>Modulo</b>, <b>Odulent</b>, <b>Oriel</b>, <b>Origine</b>, <b>Carta</b>, <b>Solstizio</b>, <b>Technic</b>, <b>Trek</b>, <b>Urbana</b>, <b>Verve</b>.  La combinazione di colori selezionata verrà evidenziata nell'elenco.</p>
+        <p><img alt="Color Schemes" src="../images/colorscheme.png" /></p>
+        <p>Dopo aver selezionato la combinazione di colori preferita, è possibile selezionare i colori in una finestra tavolozze colori che corrisponde all'elemento del documento a cui si desidera applicare il colore. Per la maggior parte degli elementi del documento, è possibile accedere alla finestra delle tavolozze dei colori facendo clic sulla casella colorata nella barra laterale destra quando viene selezionato l'elemento necessario. Per il carattere, questa finestra può essere aperta usando la freccia verso il basso accanto all'icona <b>Colore carattere</b> <img alt="Font color" src="../images/fontcolor.png" /> nella scheda <b>Home</b> della barra degli strumenti in alto. Sono disponibili le seguenti tavolozze:</p>
+        <p><img alt="Palette" src="../images/palette.png" /></p>
+        <ul>
+            <li><b>Tema Colori</b> -  i colori che corrispondono alla combinazione di colori selezionata del documento.</li>
+            <li><b>Colori Standard</b> - i colori predefiniti impostati. La combinazione di colori selezionata non li influenza.</li>
+            <li>
+                <b>Colori personalizzati</b> -  fai clic su questa voce se non è disponibile il colore desiderato nelle tavolozze a disposizione. Seleziona la gamma dei colori desiderata spostando il cursore verticale del colore e poi imposta il colore specifico trascinando il selettore colore all'interno del grande campo quadrato del colore. Dopo aver selezionato un colore con il selettore colori, i valori di colore RGB e sRGB appropriati verranno visualizzati nei campi a destra. È inoltre possibile specificare un colore sulla base del modello di colore RGB inserendo i valori numerici necessari nei campi <b>R</b>, <b>G</b>, <b>B</b>  (rosso, verde, blu) o immettendo il codice esadecimale sRGB nel campo contrassegnato dal segno <b>#</b>. Il colore selezionato apparirà in anteprima nella casella <b>Nuova</b>. Se l'oggetto è stato precedentemente riempito con un qualsiasi colore personalizzato, questo colore verrà visualizzato nella casella <b>Corrente</b> , in modo da poter confrontare i colori originali con quelli modificati. Quando hai definito il colore, fai clic sul pulsante <b>Aggiungi</b>:
+                <p><img alt="Palette - Custom Color" src="../images/palette_custom.png" /></p>
+                <p>Il colore personalizzato verrà applicato all'elemento selezionato e aggiunto alla tavolozza <b> Colori personalizzati</b>.</p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

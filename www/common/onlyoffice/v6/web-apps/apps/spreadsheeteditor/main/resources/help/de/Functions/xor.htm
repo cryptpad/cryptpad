@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>XODER-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>XODER-Funktion</h1>
+			<p>Die Funktion <b>XODER</b> gehört zur Gruppe der logischen Funktionen. Sie gibt ein logisches &quot;Ausschließliches Oder&quot; aller Argumente zurück. Wenn die Anzahl von Eingaben mit dem Ergebnis WAHR ungerade ist, gibt die Funktion WAHR zurück und wenn die Anzahl von Eingaben mit dem Ergebnis WAHR gerade ist, gibt die Funktion FALSCH zurück.</p>
+			<p>Die Formelsyntax der Funktion <b>XODER</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>XODER(Wahrheitswert1;[Wahrheitswert2];...)</em></b></p> 
+			<p><b><em>Wahrheitswert1; Wahrheitswert2;...</em></b> ist ein Wert ist, der manuell eingegeben wird oder in die Zelle eingeschlossen ist, auf die Sie Bezug nehmen.</p>
+			<p>Anwendung der Funktion <b>XODER</b>.</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Logisch</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>XODER</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.<p class="note"><b>Hinweis</b>: Sie können bis zu <b>265</b> logischen Werten eingeben.</p>
+			</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p><em>Beispiel:</em></p>
+			<p>Es gibt 2 Argumente: <em>Wahrheitswert1</em> = <b>1&gt;0</b>, <em>Wahrheitswert2</em> = <b>2&gt;0</b>. Die Anzahl der Eingaben mit dem Wert <b>WAHR</b> ist gerade, also gibt die Funktion <b>FALSCH</b> zurück.</p>
+			<p style="text-indent: 150px;"><img alt="XODER-Funktion FALSCH" src="../images/xorfalse.png" /></p>
+			<p>Es gibt 2 Argumente: <em>Wahrheitswert2</em> = <b>1&gt;0</b>, <em>Wahrheitswert2</em> = <b>2&gt;0</b>. Die Anzahl der Eingaben mit dem Wert <b>WAHR</b> ist ungerade, also gibt die Funktion <b>WAHR</b> zurück.</p>
+			<p style="text-indent: 150px;"><img alt="XODER-Funktion WAHR" src="../images/xortrue.png" /></p>
+		</div>
+	</body>
+</html>

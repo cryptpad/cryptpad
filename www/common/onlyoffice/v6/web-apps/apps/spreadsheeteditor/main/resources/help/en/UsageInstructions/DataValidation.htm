@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Data validation</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Set data validation parameters to control further spreadsheet editing" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Data validation</h1>
+        <p>ONLYOFFICE <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> offers a <b>data validation</b> feature that controls the parameters of the information entered in cells by users.</p>
+        <p>To access the data validation feature, choose a cell, a range of cells, or a whole spreadsheet you want to apply the feature to, open the <b>Data</b> tab, and click the <b>Data Validation</b> icon on the top toolbar. The opened <b>Data Validation</b> window contains three tabs: <em>Settings</em>, <em>Input Message</em>, and <em>Error Alert</em>.</p>
+        <h2>Settings</h2>
+        <p>The <b>Settings</b> section allows you to specify the type of data that can be entered:</p>
+        <p class="note"><b>Note</b>: Check the <b>Apply these changes to all other cells with the same settings</b> box to use the same settings to the selected range of cells or a whole worksheet.</p>
+        <p><img alt="Data validation - settings window" src="../images/dataval_settings.png" /></p>
+        <ul>
+            <li>
+                choose the required option in the <b>Allow</b> menu:
+                <ul>
+                    <li><b>Any value</b>: no limitations on information type.</li>
+                    <li><b>Whole number</b>: only whole numbers are allowed.</li>
+                    <li><b>Decimal</b>: only numbers with a decimal point are allowed.</li>
+                    <li>
+                        <b>List</b>: only options from the drop-down list you created are allowed. Uncheck the <b>Show drop-down list in cell</b> box to hide the drop-down arrow.
+                        <p><img alt="List - settings" src="../images/dataval_list.png" /></p>
+                    </li>
+                    <li><b>Date</b>: only cells with the date format are allowed.</li>
+                    <li><b>Time</b>: only cells with the time format are allowed.</li>
+                    <li><b>Text length</b>: sets the characters limit.</li>
+                    <li><b>Other</b>: sets the necessary validation parameter given as a formula.</li>
+                </ul>
+                <p class="note"><b>Note</b>: Check the <b>Apply these changes to all other cells with the same settings</b> box to use the same settings to the selected range of cells or a whole worksheet.</p>
+            </li>
+            <li>
+                specify a validation condition in the <b>Data</b> menu:
+                <ul>
+                    <li><b>between</b>: the data in cells should be within the range set by the validation rule.</li>
+                    <li><b>not between</b>: the data in cells should not be within the range set by the validation rule.</li>
+                    <li><b>equals</b>: the data in cells should be equal to the value set by the validation rule.</li>
+                    <li><b>does not equal</b>: the data in cells should not be equal to the value set by the validation rule.</li>
+                    <li><b>greater than</b>: the data in cells should exceed the values set by the validation rule.</li>
+                    <li><b>less than</b>: the data in cells should be less than the values set by the validation rule.</li>
+                    <li><b>greater than or equal to</b>: the data in cells should exceed or be equal to the value set by the validation rule.</li>
+                    <li><b>less than or equal to</b>: the data in cells should be less than or equal to the value set by the validation rule.</li>
+                </ul>
+            </li>
+            <li>
+                create a validation rule depending on the allowed information type:
+                <div class="tg-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Validation condition</th>
+                                <th>Validation rule</th>
+                                <th>Description</th>
+                                <th>Availability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="3">Between / not between</td>
+                                <td>Minimum / Maximum</td>
+                                <td>Sets the value range</td>
+                                <td>Whole number / Decimal / Text length</td>
+                            </tr>
+                            <tr>
+                                <td>Start date / End date</td>
+                                <td>Sets the date range</td>
+                                <td>Date</td>
+                            </tr>
+                            <tr>
+                                <td>Start time / End time</td>
+                                <td>Sets the time period</td>
+                                <td>Time</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="4"> <br> <br>Equals / does not equal</td>
+                                <td>Compare to</td>
+                                <td>Sets the value for comparison</td>
+                                <td>Whole number / Decimal</td>
+                            </tr>
+                            <tr>
+                                <td>Date</td>
+                                <td>Sets the date for comparison</td>
+                                <td>Date</td>
+                            </tr>
+                            <tr>
+                                <td>Elapsed time</td>
+                                <td>Sets the time for comparison</td>
+                                <td>Time</td>
+                            </tr>
+                            <tr>
+                                <td>Length</td>
+                                <td>Sets the text length value for comparison</td>
+                                <td>Text length</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">Greater than / greater than or equal to</td>
+                                <td>Minimum</td>
+                                <td>Sets the lower limit</td>
+                                <td>Whole number / Decimal / Text length</td>
+                            </tr>
+                            <tr>
+                                <td>Start date</td>
+                                <td>Sets the starting date</td>
+                                <td>Date</td>
+                            </tr>
+                            <tr>
+                                <td>Start time</td>
+                                <td>Sets the starting time</td>
+                                <td>Time</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3">Less than / less than or equal to</td>
+                                <td>Maximum </td>
+                                <td>Sets the higher limit</td>
+                                <td>Whole number / Decimal / Text length</td>
+                            </tr>
+                            <tr>
+                                <td>End date</td>
+                                <td>Sets the ending date</td>
+                                <td>Date</td>
+                            </tr>
+                            <tr>
+                                <td>End time</td>
+                                <td>Sets the ending time</td>
+                                <td>Time </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                As well as:
+                <ul>
+                    <li><b>Source</b>: provide the source of information for the <em>List</em> information type.</li>
+                    <li><b>Formula</b>: enter the required formula to create a custom validation rule for the <em>Other</em> information type.</li>
+                </ul>
+            </li>
+        </ul>
+        <h2>Input Message</h2>
+        <p>The <b>Input Message</b> section allows you to create a customized message displayed when a user hovers their mouse pointer over the cell.</p>
+        <p><img alt="Data validation - input message settings" src="../images/dataval_inputmessage.png" /></p>
+        <ul>
+            <li>Specify the <b>Title</b> and the body of your <b>Input Message</b>.</li>
+            <li>Uncheck the <b>Show input message when cell is selected</b> to disable the display of the message. Leave it to display the message.</li>
+        </ul>
+        <p><img alt="Input message - example" src="../images/dataval_inputmessage_example.png" /></p>
+        <h2>Error Alert</h2>
+        <p>The <b>Error Alert</b> section allows you to specify the message displayed when the data given by users does not meet the validation rules.</p>
+        <p><img alt="Data validation - error alert settings" src="../images/dataval_erroralert.png" /></p>
+        <ul>
+            <li><b>Style</b>: choose one of the available presets, <em>Stop</em>, <em>Alert</em>, or <em>Message</em>.</li>
+            <li><b>Title</b>: specify the title of the alert message.</li>
+            <li><b>Error Message</b>: enter the text of the alert message.</li>
+            <li>Uncheck the <b>Show error alert after invalid data is entered</b> box to disable the display of the alert message.</li>
+        </ul>
+        <p><img alt="Error alert - example" src="../images/dataval_erroralert_example.png" /></p>
+    </div>
+</body>
+</html>

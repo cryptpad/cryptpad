@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>IFS Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>IFS Function</h1>
+			<p>The <b>IFS</b> function is one of the logical functions. It checks whether one or more conditions are met and returns a value that corresponds to the first TRUE condition.</p>
+			<p>The <b>IFS</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>IFS(logical_test1, value_if_true1, [logical_test2, value_if_true2], ...)</em></b></p> 
+			<p><em>where</em></p>
+            <p style="text-indent: 50px;"><b><em>logical_test1</em></b> is the first condition to be evaluated to TRUE or FALSE.</p>
+            <p style="text-indent: 50px;"><b><em>value_if_true1</em></b> is the value that returns if the <b><em>logical_test1</em></b> is TRUE.</p>
+            <p style="text-indent: 50px;"><b><em>logical_test2, value_if_true2, ...</em></b> are additional conditions and values to return. These arguments are optional. You can check up to 127 conditions.</p>
+            <p>The values can be entered manually or included into the cell you make reference to.</p>
+            <p>To apply the <b>IFS</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert function</b> <img alt="Insert function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Logical</b> function group from the list,</li>
+			<li>click the <b>IFS</b> function,</li>
+			<li>enter the required arguments separating them by commas,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p><em>For example:</em></p>
+			<p>There are the following arguments: <em>logical_test1</em> = <b>A1&lt;100</b>, <em>value_if_true1</em> = <b>1</b>, <em>logical_test2</em> = <b>A1&gt;100</b>, <em>value_if_true2</em> = <b>2</b>, where <b>A1</b> is <b>120</b>. The second logical expression is <b>TRUE</b>. So the function returns <b>2</b>.</p>
+			<p style="text-indent: 150px;"><img alt="IFS Function" src="../images/ifs.png" /></p>
+		</div>
+	</body>
+</html>

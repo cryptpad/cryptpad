@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create slicers for tables</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Create slicers for formatted tables and pivot tables to quickly filter the data." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Create slicers for tables</h1>
+            <h3>Create a new slicer</h3>
+			<p>Once you create a new <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">formatted table</a> in the <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> or a <a href="PivotTables.htm" onclick="onhyperlinkclick(this)">pivot table</a>, you can create slicers to quickly filter the data. To do that,</p>
+			<ol>
+				<li>select at least one cell within the table with the mouse and click the <b>Table settings</b> <img alt="Table settings icon" src="../images/table_settings_icon.png" /> icon on the right.</li>
+				<li>click the <img alt="Insert slicer" src="../images/insertslicer.png" /> <b>Insert slicer</b> option on the <b>Table settings</b> tab of the right sidebar. Alternatively, you can switch to the <b>Insert</b> tab of the top toolbar and click the <img alt="Insert slicer" src="../images/slicer_icon.png" /> <b>Slicer</b> button. The <b>Insert Slicers</b> window will be opened:
+                <p><img alt="Insert Slicers" src="../images/insertslicer_window.png" /></p>
+                </li>
+				<li>check the required columns in the <b>Insert Slicers</b> window.</li>
+				<li>click the <b>OK</b> button.</li>
+			</ol>
+            <p>A slicer will be added for each of the selected columns. If you add several slicers, they will overlap each other. Once the slicer is added, you can <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change its size and position</a> as well as its settings.</p>
+            <p><img alt="Slicer" src="../images/slicer.png" /></p>
+            <p>A slicer contains buttons that you can click to filter the table. The buttons corresponding to empty cells are marked with the <em>(blank)</em> label. When you click a slicer button, other buttons will be unselected, and the corresponding column in the source table will be filtered to only display the selected item:</p>
+            <p><img alt="Slicer" src="../images/slicer_filter.png" /></p>
+            <p>If you have added several slicers, the changes made in one slicer can affect the items from another slicer. When one or more filters are applied to a slicer, items with no data can appear in a different slicer (with a lighter color):</p>
+            <p><img alt="Slicer - items with no data" src="../images/slicer_nodata.png" /></p>
+            <p>You can adjust the way to display items with no data in the slicer settings.</p>
+            <p>To select multiple slicer buttons, use the <img alt="Multi-Select icon" src="../images/multiselect.png" /> <b>Multi-Select</b> icon in the upper right corner of the slicer or press <em>Alt+S</em>. Select necessary slicer buttons clicking them one by one.</p>
+            <p>To clear the slicer filter, use the <img alt="Clear Filter icon" src="../images/slicer_clearfilter.png" /> <b>Clear Filter</b> icon in the upper right corner of the slicer or press <em>Alt+C</em>.</p>
+            
+            <h3>Edit slicers</h3>
+            <p>Some of the slicer settings can be changed using the <b>Slicer settings</b> tab of the right sidebar that will open if you select the slicer with the mouse.</p>
+            <p>You can hide or display this tab by clicking the <img alt="Slicer settings icon" src="../images/slicer_settings.png" /> icon on the right.</p>
+            <p><img alt="Slicer settings tab" src="../images/right_slicer.png" /></p>
+            <h4>Change the slicer size and position</h4>
+            <p>The <b>Width</b> and <b>Height</b> options allow you to change the width and/or height of the slicer. If the <b>Constant proportions</b> <img alt="Constant proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original slicer aspect ratio.</p>
+            <p>The <b>Position</b> section allows you to change the <b>Horizontal</b> and/or <b>Vertical</b> slicer position.</p>
+            <p>The <b>Disable resizing or moving</b> option allows you to prevent the slicer from being moved or resized. When this option is checked, the <b>Width</b>, <b>Height</b>, <b>Position</b>, and <b>Buttons</b> options are disabled.</p>            
+            <h4>Change the slicer layout and style</h4>
+            <p>The <b>Buttons</b> section allows you to specify the necessary number of <b>Columns</b> and set the <b>Width</b> and <b>Height</b> of the buttons. By default, a slicer contains one column. If your items contain short text, you can change the column number to 2 or more:</p>
+            <p><img alt="Slicer - two columns" src="../images/slicer_columns.png" /></p>
+            <p>If you increase the button width, the slicer width will change correspondingly. If you increase the button height, the scroll bar will be added to the slicer:</p>
+            <p><img alt="Slicer - scroll bar" src="../images/slicer_scroll.png" /></p>
+            <p>The <b>Style</b> section allows you to choose one of the predefined slicer styles.</p>
+                        
+            <h4>Apply sorting and filtering parameters</h4>
+            <ul>
+                <li><b>Ascending (A to Z)</b> is used to sort the data in ascending order - from A to Z alphabetically or from the smallest to the largest number for numerical data.</li>
+                <li><b>Descending (Z to A)</b> is used to sort the data in descending order - from Z to A alphabetically or from the largest to the smallest for numerical data.</li>
+            </ul>
+            <p>The <b>Hide items with no data</b> option allows you to hide items with no data from the slicer. When this option is checked, the <b>Visually indicate items with no data</b> and <b>Show items with no data last</b> options are disabled.</p>
+            <p>When the <b>Hide items with no data</b> option is unchecked, you can use the following options:</p>
+            <ul>
+                <li>The <b>Visually indicate items with no data</b> option allows you to display items with no data with different formatting (with a lighter color). If you uncheck this option, all items will be displayed with the same formatting.</li>
+                <li>The <b>Show items with no data last</b> option allows you to display items with no data at the end of the list. If you uncheck this option, all items will be displayed in the same order as in the source table.</li>
+            </ul>
+                        
+            <h3>Adjust advanced slicer settings</h3>
+            <p>To change the advanced slicer properties, use the <b>Show advanced settings</b> link on the right sidebar. The 'Slicer - Advanced Settings' window will open:</p>
+            <p><img alt="Slicer - Advanced Settings" src="../images/slicer_properties.png" /></p>
+            <p>The <b>Style &amp; Size</b> tab contains the following parameters:</p>
+            <ul>
+                <li>The <b>Header</b> option allows you to change the slicer header. Uncheck the <b>Display header</b> option if you do not want to display the slicer header.</li>
+                <li>The <b>Style</b> section allows you to choose one of the predefined slicer styles.</li>
+                <li>The <b>Width</b> and <b>Height</b> options allow you to change the width and/or height of the slicer. If the <b>Constant proportions</b> <img alt="Constant proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original slicer aspect ratio.</li>
+                <li>The <b>Buttons</b> section allows you to specify the necessary number of <b>Columns</b> and set the <b>Height</b> of the buttons.</li>
+            </ul>
+            <p><img alt="Slicer - Advanced Settings" src="../images/slicer_properties2.png" /></p>
+            <p>The <b>Sorting &amp; Filtering</b> tab contains the following parameters:</p>
+            <ul>
+                <li><b>Ascending (A to Z)</b> is used to sort the data in ascending order - from A to Z alphabetically or from the smallest to the largest number for numerical data.</li>
+                <li><b>Descending (Z to A)</b> is used to sort the data in descending order - from Z to A alphabetically or from the largest to the smallest for numerical data.</li>
+            </ul>
+            <p>The <b>Hide items with no data</b> option allows you to hide items with no data from the slicer. When this option is checked, the <b>Visually indicate items with no data</b> and <b>Show items with no data last</b> options are disabled.</p>
+            <p>When the <b>Hide items with no data</b> option is unchecked, you can use the following options:</p>
+            <ul>
+                <li>The <b>Visually indicate items with no data</b> option allows you to display items with no data with different formatting (with a lighter color).</li>
+                <li>The <b>Show items with no data last</b> option allows you to display items with no data at the end of the list.</li>
+            </ul>
+            <p><img alt="Slicer - Advanced Settings" src="../images/slicer_properties3.png" /></p>
+            <p>The <b>References</b> tab contains the following parameters:</p>
+            <ul>
+                <li>The <b>Source name</b> option allows you to view the field name corresponding to the column header from the source data set.</li>
+                <li>The <b>Name to use in formulas</b> option allows you to view the slicer name which is displayed in the <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)"><b>Name manager</b></a>. </li>
+                <li>The <b>Name</b> option allows you to set a custom name for a slicer to make it more meaningful and understandable.</li>
+            </ul>
+            <p><img alt="Slicer - Advanced Settings" src="../images/slicer_properties4.png" /></p>
+            <p>The <b>Cell Snapping</b> tab contains the following parameters:</p>
+            <ul>
+                <li><b>Move and size with cells</b> - this option allows you to snap the slicer to the cell behind it. If the cell moves (e.g. if you insert or delete some rows/columns), the slicer will be moved together with the cell. If you increase or decrease the width or height of the cell, the slicer will change its size as well.</li>
+                <li><b>Move but don't size with cells</b> - this option allows you to snap the slicer to the cell behind it preventing the slicer from being resized. If the cell moves, the slicer will be moved together with the cell, but if you change the cell size, the slicer dimensions remain unchanged.</li>
+                <li><b>Don't move or size with cells</b> - this option allows you to prevent the slicer from being moved or resized if the cell position or size was changed.</li>
+            </ul>
+            <p><img alt="Slicer - Advanced Settings" src="../images/slicer_properties5.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows you to specify the <b>Title</b> and the <b>Description</b> which will be read to people with vision or cognitive impairments to help them better understand what information the slicer contains.</p>
+            
+            <h3>Delete a slicer</h3>
+            <p>To delete a slicer,</p>
+            <ol>
+                <li>Select the slicer by clicking it.</li>
+                <li>Press the <b>Delete</b> key.</li>
+            </ol>
+		</div>
+	</body>
+</html>

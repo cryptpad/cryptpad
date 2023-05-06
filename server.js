@@ -60,7 +60,7 @@ nThen(function (w) {
             message: "CryptPad is customizable, see customize.dist/readme.md for details",
         });
     }));
-}).nThen(function () {
+}).nThen(function (w) {
     // check that a valid origin was provided in the config
     try {
         var url = new URL('', Env.httpUnsafeOrigin).href;
@@ -80,7 +80,6 @@ nThen(function (w) {
         });
         process.exit(1);
     }
-}).nThen(function (w) {
     Env.httpServer = Http.createServer(app);
     Env.httpServer.listen(Env.websocketPort, 'localhost', w(function () {
         Env.Log.info('WEBSOCKET_LISTENING', {
