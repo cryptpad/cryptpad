@@ -48,9 +48,6 @@ define([
         obj.nonce = randomToken();
         var href = new URL('/api/auth/', API_ORIGIN);
         var txid, date;
-
-        var responseBody;
-
         nThen(function (w) {
             // Tell the server we want to do some action
             postData(href, obj, w((err, data) => {

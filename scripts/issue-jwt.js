@@ -1,3 +1,4 @@
+/* globals process */
 const jwt = require("jsonwebtoken");
 const Sessions = require("../lib/storage/sessions.js");
 

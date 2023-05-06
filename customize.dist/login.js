@@ -252,7 +252,7 @@ define([
                         // ask again until your number of tries are exhausted
                         if (err) {
                             console.error(err);
-                            console.log("Normal failure. Asking again...")
+                            console.log("Normal failure. Asking again...");
                             return void ask();
                         }
                         if (!response || !response.bearer) {
