@@ -3,6 +3,7 @@ var factory = function () {
     var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
+    var sendCredentials = window.sendCredentials || false; // XXX find a logical place to infer whether this should be set
 
     // Save a blob on the file system
     var saveFile = function (blob, url, fileName) {
@@ -244,7 +245,7 @@ var factory = function () {
         var check = function () {
             var xhr = new XMLHttpRequest();
             xhr.open("HEAD", src);
-            xhr.withCredentials = true;
+            if (sendCredentials) { xhr.withCredentials = true; }
             xhr.onerror = function () { return void cb("XHR_ERROR"); };
             xhr.onreadystatechange = function() {
                 if (this.readyState === this.DONE) {
@@ -277,7 +278,7 @@ var factory = function () {
         var fetch = function () {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
-            xhr.withCredentials = true;
+            if (sendCredentials) { xhr.withCredentials = true; }
             xhr.responseType = 'arraybuffer';
 
             var progress = function (offset) {
@@ -389,7 +390,7 @@ var factory = function () {
         var fetch = function () {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
-            xhr.withCredentials = true;
+            if (sendCredentials) { xhr.withCredentials = true; }
             xhr.setRequestHeader('Range', 'bytes=0-1');
             xhr.responseType = 'arraybuffer';
 
@@ -402,7 +403,7 @@ var factory = function () {
                 var xhr2 = new XMLHttpRequest();
 
                 xhr2.open("GET", src, true);
-                xhr2.withCredentials = true;
+                if (sendCredentials) { xhr2.withCredentials = true; }
                 xhr2.setRequestHeader('Range', 'bytes=2-' + (size + 2));
                 xhr2.responseType = 'arraybuffer';
                 xhr2.onload = function () {

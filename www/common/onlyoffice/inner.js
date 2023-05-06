@@ -685,6 +685,7 @@ define([
             var key = secret.keys && secret.keys.cryptKey;
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
+            if (window.sendCredentials) { xhr.withCredentials = true; }
             xhr.responseType = 'arraybuffer';
             xhr.onload = function () {
                 if (/^4/.test('' + this.status)) {
@@ -848,6 +849,10 @@ define([
                 lastCpHash: getLastCp().hash
             }, function (err, obj) {
                 if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+                // XXX an error loading a checkpoint was ignored, causing a sheet
+                // to load incorrectly. There's a risk of a new checkpoint being created
+                // with the resulting (incorrect) state. Errors like this should be reported
+                // to the user so they realize something is wrong.
             });
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
