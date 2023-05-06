@@ -83,7 +83,7 @@ define([
             postData(href, obj2, w((err, data) => {
                 if (err) {
                     w.abort();
-                    console.err(err);
+                    console.error(err);
                     // there might be more info here
                     if (data) { console.error(data); }
                     return void cb("RESPONSE_REJECTED");
