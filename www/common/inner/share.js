@@ -490,27 +490,29 @@ define([
     };
 
     var getQRCode = function (link) {
-        var div = h('div');
-        /*var code =*/ new window.QRCode(div, link);
-        return div;
+        var blocker = h('div#cp-qr-blocker', Messages.share_toggleQR);
+        var $blocker = $(blocker).click(function () {
+            $blocker.toggleClass("hidden");
+        });
+
+        var qrDiv = h('div');
+
+        var container = h('div#cp-qr-container', [
+            blocker,
+            h('div#cp-qr-link-preview', qrDiv),
+        ]);
+
+        new window.QRCode(qrDiv, link);
+        return container;
     };
 
+    Messages.share_toggleQR = "Click to toggle QR code visibility"; // XXX
     var getQRTab = function (Env, data, opts, _cb) {
         var qr = getQRCode(opts.getLinkValue());
 
-        var container = h('span#cp-qr-container', [
-            h('div#cp-qr-link-preview', qr),
-        ]);
-
         var link = h('div.cp-share-modal', [
-            container,
+            h('span#cp-qr-target', qr),
         ]);
-
-        $(container).css({
-            'background-color': 'white',
-            display: 'inline-flex',
-            padding: '5px',
-        });
 
         var buttons = [
             makeCancelButton(),
@@ -722,7 +724,7 @@ define([
             return $rights.parent().find('#cp-embed-link-preview');
         };
         var getQR = function () {
-            return $rights.parent().find('#cp-qr-container');
+            return $rights.parent().find('#cp-qr-target');
         };
 
         // update values for link and embed preview when radio btns change
@@ -786,6 +788,8 @@ define([
         return $rights;
     };
 
+    Messages.share_QRCategory = "QR"; // XXX
+
     // In the share modal, tabs need to share data between themselves.
     // To do so we're using "opts" to store data and functions
     Share.getShareModal = function (common, opts, cb) {
@@ -846,9 +850,8 @@ define([
             active: !contactsActive,
         }, {
             getTab: getQRTab,
-            title: "QR", // XXX
+            title: Messages.share_QRCategory,
             icon: 'fa fa-qrcode',
-            active: true,
         }];
         if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
@@ -1046,6 +1049,7 @@ define([
             active: !hasFriends,
         }];
 
+        // XXX add QR code generation for files
         if (ApiConfig.enableEmbedding) {
             tabs.push({
                 getTab: getFileEmbedTab,
