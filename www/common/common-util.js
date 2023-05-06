@@ -312,6 +312,35 @@
         if (!/^[a-f0-9]{48}$/.test(cacheKey)) { cacheKey = undefined; }
         return cacheKey;
     };
+
+
+    Util.getBlock = function (src, opt, cb) {
+        var CB = Util.once(Util.mkAsync(cb));
+
+        var headers = {};
+
+        if (typeof(opt.bearer) === 'string' && opt.bearer) {
+            headers.authorization = `Bearer ${opt.bearer}`;
+        }
+
+
+        fetch(src, {
+            method: 'GET',
+            credentials: 'include',
+            headers: headers,
+        }).then(response => {
+            if (response.ok) {
+                // TODO this should probably be returned as an arraybuffer or something rather than a promise
+                // this is resulting in some code duplication
+                return void CB(void 0, response);
+            }
+            CB(response.status);
+        }).catch(error => {
+            CB(error);
+        });
+    };
+
+
     Util.fetch = function (src, cb, progress, cache) {
         var CB = Util.once(Util.mkAsync(cb));
 

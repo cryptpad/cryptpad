@@ -2483,6 +2483,7 @@ define([
             }
 
         }).nThen(function (waitFor) {
+            // if a block URL is present then the user is probably logged in with a modern account
             var blockHash = LocalStore.getBlockHash();
             if (blockHash) {
                 console.debug("Block hash is present");
@@ -2492,28 +2493,64 @@ define([
                     console.error("Failed to parse blockHash");
                     console.log(parsed);
                     return;
-                } else {
-                    //console.log(parsed);
                 }
-                Util.fetch(parsed.href, waitFor(function (err, arraybuffer) {
-                    if (err) { return void console.log(err); }
 
-                    // use the results to load your user hash and
-                    // put your userhash into localStorage
-                    try {
-                        var block_info = Block.decrypt(arraybuffer, parsed.keys);
-                        if (!block_info) {
-                            console.error("Failed to decrypt !");
-                            return;
-                        }
-                        userHash = block_info[Constants.userHashKey];
-                        if (!userHash || userHash !== LocalStore.getUserHash()) {
-                            return void requestLogin();
-                        }
-                    } catch (e) {
-                        console.error(e);
-                        return void console.error("failed to decrypt or decode block content");
+                // they might also have a "session token", which is a JWT.
+                // this indicates that their login block is protected with 2FA
+                var sessionToken = LocalStore.getSessionToken() || undefined;
+
+                var done = waitFor();
+
+                // request the login block, providing credentials if available
+                Util.getBlock(parsed.href, {
+                    bearer: sessionToken,
+                }, waitFor((err, response) => {
+                    if (err === 401) {
+                        // a 401 error indicates insufficient authentication
+                        // either their JWT is invalid, or they didn't provide one
+                        // when it was expected. Log them out and redirect them to
+                        // the login page, where they will be able to authenticate
+                        // and request a new JWT
+                        waitFor.abort();
+                        return void LocalStore.logout(function () {
+                            requestLogin();
+                        });
                     }
+
+                    if (err) {
+                        // TODO
+                        // it seems wrong that errors here aren't reported or handled
+                        // but it's consistent with other failure cases in the rest of this process
+                        // that probably justifies some more thorough review.
+                        // In particular, it should not be possible to be "half-logged-in"
+                        // behaving like a guest after trying to authenticate as a registered user
+                        return void console.error(err);
+                    }
+
+                    // if no errors occurred then we can try to convert the response
+                    // to an arraybuffer and decrypt its payload
+                    response.arrayBuffer().then(arraybuffer => {
+                        arraybuffer = new Uint8Array(arraybuffer);
+                        // use the results to load your user hash and
+                        // put your userhash into localStorage
+                        try {
+                            var block_info = Block.decrypt(arraybuffer, parsed.keys);
+                            if (!block_info) {
+                                console.error("Failed to decrypt !");
+                                return;
+                            }
+                            userHash = block_info[Constants.userHashKey];
+                            if (!userHash || userHash !== LocalStore.getUserHash()) {
+                                return void LocalStore.logout(function () {
+                                    requestLogin();
+                                });
+                            }
+                        } catch (e) {
+                            console.error(e);
+                            return void console.error("failed to decrypt or decode block content");
+                        }
+                        done();
+                    });
                 }));
             }
         }).nThen(function (waitFor) {

@@ -76,6 +76,14 @@ define([
         safeSet(Constants.blockHashKey, hash);
     };
 
+    LocalStore.getSessionToken = function () {
+        return localStorage[Constants.sessionJWT];
+    };
+
+    LocalStore.setSessionToken = function (token) {
+        safeSet(Constants.sessionJWT, token);
+    };
+
     LocalStore.getAccountName = function () {
         return localStorage[Constants.userNameKey];
     };
@@ -121,6 +129,7 @@ define([
             Constants.userNameKey,
             Constants.userHashKey,
             Constants.blockHashKey,
+            Constants.sessionJWT,
             'loginToken',
             'plan',
         ].forEach(function (k) {
