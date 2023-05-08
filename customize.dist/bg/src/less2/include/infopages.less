@@ -1,0 +1,305 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./font.less";
+
+@infopages-radius: 5px;
+@infopages-radius-L: 10px;
+
+.infopages_link () {
+    text-decoration: none;
+    color: @cryptpad_color_link;
+    cursor: pointer;
+    display: inline-flex;
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+.cp-shadow() {
+    box-shadow: 0px 0px 20px 0px @cp_shadow-color;
+}
+
+.infopages_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+body.html {
+    .font_main();
+    @infopages_infobar-height: 64px;
+    @infopages_padding: 32px;
+
+    // Basic setup for info pages, this should be used at the global level
+    // background-color: @cp_static-bg;
+    background: @cp_static-bg if(@cp-show-bg-image, url(@cp-bg-image) repeat,);
+    color: @cp_static-fg;
+    a {
+        color: @cp_static-link;
+        &:visited { color: darken(@cp_static-link, 5%); }
+    }
+    a:hover {
+        opacity: 1;
+    }
+    border: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    font-family: @colortheme_font;
+
+    #cp-main {
+        display: flex;
+        flex-flow: column;
+        min-height: 100vh;
+        & > .cp-container {
+            flex: 1;
+        }
+    }
+
+    .cp-container {
+        font-size: 16px;
+        padding-top: @infopages_padding;
+        padding-bottom: @infopages_padding;
+        min-height: 75vh;
+        max-width: 1200px;
+        h1 {
+            font-size: 3em;
+            margin-bottom: 0.5em;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-top: 20px;
+            margin-bottom: 0.5em;
+        }
+        h3 {
+            font-size: 1.5em;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        img {
+            &.left {
+                float: left;
+            }
+            max-width: 100%;
+            margin-top: 20px;
+        }
+        .cp-page-title {
+            h1 {
+                font-family: "IBM Plex Mono";
+                color: @cp_static-title;
+                margin: 50px auto;
+            }
+        }
+        p {
+            a {
+                text-decoration: underline;
+            }
+        }
+        .row.cp-page-section {
+            margin: 50px 0px;
+            a {
+                text-decoration: underline;
+            }
+            .small-logo {
+                max-width: 40%;
+            }
+        }
+        img.cp-shadow {
+            .cp-shadow();
+        }
+        img.cp-img-invert {
+            filter: @cp_static-img-invert-filter;
+        }
+
+        button {
+            outline: none;
+            background-color: @cp_buttons-primary;
+            color: @cp_buttons-primary-text;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            border-radius: @infopages-radius;
+            cursor: pointer;
+            &:hover, &:focus {
+                background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
+            }
+        }
+        button.cp-secondary {
+            background-color: @cp_buttons-cancel;
+            color: @cp_buttons-fg;
+            border: 1px solid @cp_buttons-fg;
+        }
+
+        .form-group {
+            // & > * {
+            //     margin-bottom: 0.5em;
+            // }
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .checkbox-container {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                label {
+                    margin: 0;
+                }
+                input {
+                    margin-right: 0.5em;
+                }
+            }
+        }
+    }
+    footer {
+        background-color: @cp_static-footer;
+        align-self: normal; // override align-items:center from parent in index.html
+        box-shadow: inset 0px 7px 15px -7px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+        flex-wrap: wrap;
+        .cp-footer-left, .cp-footer-center, .cp-footer-right {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            a {
+                margin-right: 10px;
+            }
+        }
+
+        .cp-logo-foot {
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            padding: 10px;
+            img {
+                max-height: 40px;
+                margin-right: 10px;
+            }
+            .logo-font {
+                display: block;
+                font-family: "IBM Plex Mono";
+                font-size: 1.5rem;
+                color: @cryptpad_text_col;
+                height: 40px;
+            }
+
+        }
+
+        .cp-logo-btns {
+            padding: 10px;
+            a {
+                background-color: @cryptpad_color_link;
+                color: @cryptpad_text_col_inv;
+                border-radius: @infopages-radius;
+                padding: 0.5em 0.7em;
+                white-space: nowrap;
+                display: inline-block;
+                i {
+                    margin-right: 5px;
+                }
+                &:hover {
+                    background-color: @cp_static-card-bg;
+                    color: @cryptpad_text_col;
+                    text-decoration: none;
+                }
+            }
+
+        }
+
+        .cp-footer-language {
+            padding: 10px;
+            margin-right: 10px;
+            i {
+                font-size: 1.3em;
+                margin-right: 5px;
+            }
+            select {
+                min-width: 0;
+                background-color: @cp_static-card-bg;
+                color: @cryptpad_text_col;
+                border: 0px;
+                border-radius: @infopages-radius;
+                padding: 0.5em 0.7em;
+            }
+        }
+        .cp-footer-version {
+            padding: 10px;
+            font-family: 'IBM Plex Mono';
+        }
+        // .cp-version-footer {
+        //     background-color: @cp_static-footer;
+        //     display: flex;
+        //     flex-flow: column;
+        //     align-items: center;
+        //     padding: 0.5em;
+        //     border-top: 1px solid @cp_static-footer-border;
+        //     select {
+        //         min-width: 0;
+        //         margin-bottom: 10px;
+        //     }
+        // }
+    }
+
+    // navigation top bar
+    .navbar {
+        width: 100%;
+        color: @cp_static-topbar-fg;
+        justify-content: flex-end;
+        .navbar-brand {
+            display: block;
+            height: 50px;
+            width: 250px;
+            font-family: "IBM Plex Mono";
+            font-size: 1.8em;
+            img {
+                max-width: 40px;
+                margin-right: 10px;
+            }
+            @media (max-width: 326px) {
+                width: 180px;
+            }
+            margin-right: 0;
+        }
+        a {
+            //border: 2px solid transparent;
+            white-space: nowrap;
+            color: @cp_static-title;
+            background-color: @cp_static-card-bg;
+            border-radius: @infopages-radius;
+        }
+        .nav-link {
+            padding: 0.5em 0.7em;
+            margin: 5px;
+            color: @cp_static-link;
+            display: inline-block;
+            img {
+                max-height: 30px;
+                margin-right: 10px;
+            }
+            &.cp-back-home {
+                margin-right: auto;
+            }
+            &:hover {
+                color: @cryptpad_text_col;
+            }
+            i {
+                margin-right: 5px;
+            }
+        }
+        .cp-register-btn {
+            background-color: @cp_static-topbar-fg;
+            color: @cp_static-bg;
+            display: inline-block;
+            &:hover {
+                background-color: @cp_static-card-bg;
+                color: @cryptpad_text_col;
+            }
+        }
+        button:focus {
+            outline: none;
+        }
+        .navbar-toggler {
+            margin-top: 10px;
+            color: @cp_static-topbar-fg;
+        }
+    }
+}
+

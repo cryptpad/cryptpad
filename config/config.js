@@ -1,3 +1,21 @@
+/* Project CryptPad
+Copyright (C) 2016-2023  XWiki SAS (contact@xwiki.com) &
+                         Arnaud Laprevote (arnaud.laprevote@gmail.com)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* globals process */
 /* globals module */
 
 /*  DISCLAIMER:
@@ -29,6 +47,8 @@
  */
 
 require('dotenv').config();
+const Fs = require('fs');
+var Path = require("path");
 //console.log("Entering config.js"); // remove this after you've confirmed it is working
 
 module.exports = {
@@ -313,6 +333,15 @@ module.exports = {
    darkThemeBgAlert: "#424242",
    darkThemeColorBrand: "#0087FF",
    darkThemeTextColor: "#EEEEEE",
+   /* Background image variable */
+   showBgImage: false,
+   bgImage:"/customize/images/background/bg.jpg",
+   darkBgImage:"/customize/images/background/bg-dark.jpg",
+   /* Nav button background */
+   navButtonBgColor: "#fff",
+   darkNavButtonBgColor: "424242",
+   /* Look directory */
+   lookDir: "default",
 };
 
 // A variable may be defined in the env variables but not in the default
@@ -323,14 +352,15 @@ const varArray =[ "httpUnsafeOrigin", "httpSafeOrigin","httpAddress", "httpPort"
     "archivePath", "pinPath", "taskPath", "blockPath", "blobPath", "blobStagingPath",
     "decreePath", "logPath", "logToStdout", "logLevel", "logFeedback", "verbose",
     "installMethod", "logoPath", "greyLogoPath", "favIconPath", "bgBody", "bgAlert", "colorBrand",
-    "textColor" , "darkThemeBgBody", "darkThemeBgAlert", "darkThemeColorBrand", "darkThemeTextColor"];
+    "textColor" , "darkThemeBgBody", "darkThemeBgAlert", "darkThemeColorBrand", "darkThemeTextColor",
+    "showBgImage", "bgImage", "darkBgImage", "navButtonBgColor", "darkNavButtonBgColor", "lookDir"];
 
 // Variables that must be converted to an array
 const numberVarArray = [ "httpPort", "httpSafePort", "maxWorkers", "inactiveTime", "archiveRetentionTime",
    "accountRetentionTime", "maxUploadSize", "premiumUploadSize"];
 // Variables that must be converted to a boolean
-const booleanVarArray = [ "disableIntegratedEviction", "logToStdout", "logFeedback", "verbose" ];
-varArray.forEach(function(key,i) {
+const booleanVarArray = [ "disableIntegratedEviction", "logToStdout", "logFeedback", "verbose", "showBgImage"];
+varArray.forEach(function(key) {
     // I need to find the corresponding ENV variables
 	// httpPort => envName is CPHTTPPORT
     const envName = "CP"+key.toUpperCase();
@@ -347,6 +377,18 @@ varArray.forEach(function(key,i) {
                 module.exports[key]=true;
             }
             module.exports[key]= (process.env[envName].toLowerCase() === 'true');
+        } else if ( key === 'lookDir' ) {
+            console.log("config.js - lookDir case");
+            var testDir = Path.resolve("customize.dist",process.env[envName])
+            // I have to check that it exists in the directory, else, just using default
+            if (Fs.existsSync(testDir)) {
+                console.log("config.js - found dir : ",testDir);
+                module.exports[key] = process.env[envName]
+            } else {
+                console.log("config.js - could not find dir : ",testDir);
+                console.log("using default","");
+                module.exports[key] = "default"
+            }
         } else {
             module.exports[key] = process.env[envName];
         }
@@ -368,4 +410,4 @@ if (foundAnAdmin) {
     module.exports["adminKeys"] = adminKeys;
 }
 
-//console.log("config.js - module.exports :",module.exports);
+console.log("config.js - module.exports :",module.exports);

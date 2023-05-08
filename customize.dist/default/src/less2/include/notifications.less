@@ -1,0 +1,93 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./avatar.less";
+
+.notifications_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    @notif-height: 50px;
+    .cp-notifications-container {
+        max-width: 300px;
+        width: 300px;
+        display: flex;
+        flex-flow: column;
+        & hr {
+            margin: 0px !important;
+        }
+        .cp-notification {
+            min-height: @notif-height;
+            display: flex;
+            .cp-broadcast {
+                display: flex;
+                font-size: 30px;
+                align-items: center;
+                padding: 0 5px;
+                color: @cp_dropdown-fg;
+                &.preview:not(.fa-calendar) {
+                    color: @cryptpad_color_red;
+                }
+            }
+            .cp-reminder, .cp-avatar {
+                cursor: pointer;
+                &:hover {
+                    background-color: @cp_dropdown-bg-hover;
+                }
+            }
+            .cp-avatar {
+                .avatar_main(30px);
+                padding: 0 5px;
+            }
+            .cp-notification-content {
+                flex: 1;
+                align-items: stretch;
+                min-width: 0;
+                p {
+                    word-break: break-word;
+                }
+                &.cp-clickable {
+                    cursor: pointer;
+                    &:hover {
+                        background-color: @cp_dropdown-bg-hover;
+                    }
+                }
+            }
+            .cp-notification-dismiss {
+                color: @cp_dropdown-fg;
+                width: 25px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                &:hover {
+                    background-color: @cp_dropdown-bg-hover;
+                }
+            }
+        }
+    }
+    .cp-notifications-gotoapp {
+        p {
+            padding: 10px 0 !important;
+            text-align: center !important;
+            font-weight: bold;
+            cursor: pointer;
+            &:hover {
+                background-color: @cp_dropdown-bg-hover;
+            }
+        }
+    }
+    .cp-notifications-requestedit-verified {
+        display: flex;
+        align-items: center;
+        &> span.cp-avatar {
+            .avatar_main(30px);
+        }
+        &> span {
+            margin-right: 10px;
+        }
+        &> p {
+            margin: 0;
+        }
+    }
+}
+
+

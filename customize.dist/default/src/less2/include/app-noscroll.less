@@ -1,0 +1,41 @@
+@import (reference) "./colortheme-all.less";
+
+.app-noscroll_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .cp-app-noscroll {
+        scrollbar-color: @scrollbar_color;
+        * {
+            scrollbar-width: thin;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: @cp_scrollbar-fg;
+            width: 6px;
+            height: 6px;
+        }
+        height: 100%;
+        width: 100%;
+        padding: 0px;
+        margin: 0px;
+        overflow: hidden;
+        box-sizing: border-box;
+        position: relative;
+        border: 0;
+        body {
+            height: 100%;
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            box-sizing: border-box;
+            position: relative;
+            border: 0;
+        }
+    }
+}
+

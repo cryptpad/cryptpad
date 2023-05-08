@@ -1,0 +1,388 @@
+@import (reference) './avatar.less';
+@import (reference) "./colortheme-all.less";
+
+.messenger_vars (
+    @bg-color: @cp_messenger-bg,
+) {
+    @msg-color: @cryptpad_text_col;
+    @msg-color-hover: contrast(@msg-color, lighten(@msg-color, 10%), darken(@msg-color, 10%));
+    @msg-bg-color: @bg-color;
+    @invert: @bg-color;
+    @msg-bg-color-light: contrast(@invert, lighten(@bg-color, 5%), darken(@bg-color, 5%));
+    @msg-bg-color-lighter: contrast(@invert, lighten(@bg-color, 10%), darken(@bg-color, 10%));
+    @msg-bg-color-dark: fade(@cp_messenger-fg, 10%);
+    @msg-bg-color-darker: contrast(@bg-color, lighten(@bg-color, 10%), darken(@bg-color, 10%));
+};
+.messenger_main(
+    @bg-color: @cp_messenger-bg,
+) {
+    --LessLoader_require: LessLoader_currentFile();
+    .messenger_vars(@bg-color);
+    --msg-color: @msg-color;
+    --msg-bg-color: @msg-bg-color;
+    --msg-bg-color-light: @msg-bg-color-light;
+    --msg-bg-color-lighter: @msg-bg-color-lighter;
+    --msg-bg-color-dark: @msg-bg-color-dark;
+    --msg-bg-color-darker: @msg-bg-color-darker;
+};
+& {
+    @keyframes notif {
+        0% {
+            background: fade(@cp_messenger-notif, 10%);
+        }
+        50% {
+            background: fade(@cp_messenger-notif, 30%);
+        }
+        100% {
+            background: fade(@cp_messenger-notif, 10%);
+        }
+    }
+
+    .messenger_vars();
+    @button-border: 2px;
+    @room-height: 48px;
+
+    #cp-app-contacts-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 0;
+        color: @cp_messenger-fg;
+        &.ready {
+            background-size: cover;
+            background-position: center;
+        }
+    }
+
+    span.cp-app-contacts-spinner {
+        display: none;
+    }
+
+    .cp-app-contacts-initializing {
+        span.cp-app-contacts-spinner {
+            color: @cp_messenger-fg;
+            display: block;
+        }
+        .cp-app-contacts-info {
+            display: none;
+        }
+        #cp-app-contacts-friendlist,
+        #cp-app-contacts-messaging {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    #cp-app-contacts-friendlist {
+        width: 200px;
+        height: 100%;
+        background-color: @msg-bg-color;
+        background-color: var(--msg-bg-color);
+        color: @msg-color;
+        color: var(--msg-color);
+        overflow-y: auto;
+        display: flex;
+        flex-flow: column;
+        .cp-app-contacts-friend {
+            background-color: @msg-bg-color-dark;
+            background-color: var(--msg-bg-color-dark);
+            padding: 5px;
+            margin: 10px;
+            margin-bottom: 0;
+            cursor: pointer;
+            position: relative;
+            height: @room-height;
+            .cp-app-contacts-right-col {
+                margin-left: 5px;
+                display: flex;
+                flex-flow: column;
+                flex: 1;
+                min-width: 0;
+                .cp-app-contacts-name {
+                    white-space: nowrap;
+                }
+                .cp-app-contacts-icons {
+                    text-align: right;
+                    & > span:hover {
+                        color: @msg-color-hover;
+                    }
+                }
+            }
+            &:hover {
+                background-color: @msg-bg-color-darker;
+                background-color: var(--msg-bg-color-darker);
+            }
+            &.cp-app-contacts-notify {
+                animation: notif 2s ease-in-out infinite;
+            }
+        }
+        .cp-app-contacts-remove {
+            cursor: pointer;
+            width: 20px;
+            text-align: center;
+            &:hover {
+                color: @msg-color-hover;
+            }
+        }
+
+        .cp-app-contacts-category {
+            display: flex;
+            flex-flow: column;
+            flex-grow: 0;
+            flex-shrink: 0;
+            .cp-app-contacts-category-title {
+                order: 1;
+                font-size: 18px;
+                margin: 0px 5px;
+                text-align: center;
+                background-color: @msg-bg-color-dark;
+                background-color: var(--msg-bg-color-dark);
+                font-weight: bold;
+                height: 22px;
+                line-height: 22px;
+            }
+            .cp-app-contacts-category-content {
+                order: 2;
+                display: flex;
+                flex-flow: column-reverse;
+                padding-bottom: 10px;
+                &:empty {
+                    display: none;
+                    & ~ .cp-app-contacts-category-title {
+                        display: none;
+                    }
+                }
+            }
+            .cp-app-contacts-muted-button {
+                margin: 10px;
+                border: 0;
+                display: none;
+                order: 3;
+                .fa-bell-slash {
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+
+    .cp-contacts-muted-table {
+        .cp-contacts-muted-user {
+            margin-bottom: 5px;
+            .cp-avatar {
+                margin-right: 10px;
+            }
+            button {
+                margin-right: 0px;
+            }
+        }
+    }
+
+    #cp-app-contacts-container.cp-app-contacts-inapp {
+        #cp-app-contacts-friendlist {
+            display: none;
+        }
+    }
+
+    #cp-app-contacts-friendlist .cp-app-contacts-friend, #cp-app-contacts-messaging .cp-avatar {
+        .avatar_main(30px);
+        &.cp-avatar {
+            display: flex;
+        }
+        cursor: pointer;
+        color: @msg-color;
+        media-tag {
+            img {
+                color: #000;
+            }
+        }
+        media-tag, .cp-avatar-default {
+            //margin-right: 5px;
+            flex-shrink: 0;
+            z-index: 1;
+            margin: 4px;
+        }
+        .cp-app-contacts-status {
+            display: inline-block;
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: 0;
+            right: 0;
+            border-bottom-left-radius: 100%;
+
+            &.cp-app-contacts-online {
+                background-color: @cp_messenger-online;
+            }
+            &.cp-app-contacts-offline {
+                display: none;
+            }
+        }
+    }
+
+    #cp-app-contacts-messaging {
+        flex: 1;
+        height: 100%;
+        background-color: @msg-bg-color-light;
+        background-color: var(--msg-bg-color-light);
+        min-width: 0;
+
+        .cp-app-contacts-info {
+            padding: 20px;
+        }
+        .cp-app-contacts-header {
+            background-color: @msg-bg-color-dark;
+            background-color: var(--msg-bg-color-dark);
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+
+            .hover () {
+                height: 100%;
+                line-height: 30px;
+                padding: 10px;
+                &:hover {
+                    background-color: @msg-bg-color-darker;
+                    background-color: var(--msg-color-darker);
+                }
+            }
+
+            .cp-avatar,
+            .cp-app-contacts-right-col {
+                 flex: 1 1 auto;
+            }
+            .cp-app-contacts-remove-history {
+                .hover;
+            }
+            .cp-avatar {
+                margin: 10px;
+            }
+            .cp-app-contacts-more-history {
+                //display: none;
+                .hover;
+                &.cp-app-contacts-faded {
+                    color: @cryptpad_text_col;
+                }
+            }
+
+            .cp-app-contacts-header-title {
+                padding: 10px;
+                flex: 1;
+            }
+        }
+        .cp-app-contacts-tips {
+            margin: 1em;
+            background-color: @msg-bg-color-dark;
+            background-color: var(--msg-bg-color-dark);
+            font-size: 14px;
+            padding: 10px;
+            position: relative;
+            .cp-app-contacts-tips-close {
+                cursor: pointer;
+                position: absolute;
+                top: 2px;
+                right: 2px;
+            }
+        }
+        .cp-app-contacts-chat {
+            height: 100%;
+            display: flex;
+            flex-flow: column;
+            .cp-app-contacts-messages {
+                padding: 0 20px;
+                margin: 10px 0;
+                flex: 1;
+                overflow-x: auto;
+                .cp-app-contacts-message {
+                    display: flex;
+                    flex-wrap: wrap;
+                    & > div {
+                        padding: 0 10px;
+                    }
+                    .cp-app-contacts-content {
+                        overflow: hidden;
+                        word-wrap: break-word;
+                        &> * {
+                            margin: 0;
+                        }
+                        flex: 1;
+                        min-width: 70%;
+                        position: relative;
+                    }
+                    .cp-app-contacts-date {
+                        display: none;
+                        font-style: italic;
+                    }
+                    .cp-app-contacts-sender {
+                        margin-top: 10px;
+                        font-weight: bold;
+                        background-color: rgba(0,0,0,0.1);
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+                    }
+                    .cp-app-contacts-time {
+                        display: none;
+                        font-size: 0.8em;
+                        align-items: center;
+                        color: @msg-color;
+                        font-weight: bold;
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        bottom: 0;
+                        background: rgba(0,0,0,0.3);
+                        border-top-left-radius: 50%;
+                        border-bottom-left-radius: 50%;
+                        padding: 0 10px;
+                    }
+                    &:hover {
+                        .cp-app-contacts-time {
+                            display: flex;
+                        }
+                    }
+                }
+            }
+        }
+        .cp-app-contacts-input {
+            background-color: @msg-bg-color-lighter;
+            background-color: var(--msg-bg-color-lighter);
+            height: auto;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5%;
+            textarea {
+                margin: 5px 0;
+                padding: 5px 10px;
+                border: none;
+                height: 54px; // 2 lines (22px height) + 2 margins (5px)
+                flex: 1;
+                background-color: @cp_forms-bg;
+                color: @cp_forms-fg;
+                resize: none;
+                overflow-y: auto;
+                .tools_placeholder-color();
+                &[disabled="true"] {
+                    .tools_placeholder-color();
+                }
+            }
+            button {
+                height: 54px !important;
+                border-radius: 0;
+                border: none;
+                color: @cp_messenger-fg;
+                background-color: @msg-bg-color-darker;
+                background-color: var(--msg-bg-color-darker);
+                &:hover {
+                    background-color: @msg-bg-color-dark;
+                    background-color: var(--msg-bg-color-dark);
+                }
+            }
+        }
+    }
+}

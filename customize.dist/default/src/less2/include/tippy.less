@@ -1,0 +1,32 @@
+@import (reference) './colortheme-all.less';
+@import (reference) './variables.less';
+
+.tippy_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .tippy-tooltip.cryptpad-theme {
+        background-color: @cp_tooltip-bg;
+        border-radius: @variables_radius;
+        color: @cp_tooltip-fg;
+        overflow-wrap: break-word;
+        [x-circle] {
+            background-color: unset;
+        }
+    }
+    .tippy-popper {
+        @arrow-color: @cp_tooltip-bg !important;
+        &[x-placement^='top'] .tippy-arrow {
+          border-top-color: @arrow-color;
+        }
+        &[x-placement^='bottom'] .tippy-arrow {
+          border-bottom-color: @arrow-color;
+        }
+        &[x-placement^='left'] .tippy-arrow {
+          border-left-color: @arrow-color;
+        }
+        &[x-placement^='right'] .tippy-arrow {
+          border-right-color: @arrow-color;
+        }
+    }
+}

@@ -1,0 +1,491 @@
+
+@import (reference) "./colortheme-all.less";
+@import (reference) "./browser.less";
+@import (reference) "./variables.less";
+@import (reference) "./avatar.less";
+@import (reference) "./tools.less";
+
+.alertify_main() {
+    --LessLoader_require: LessLoader_currentFile();
+};
+& {
+    @max-z-index: 2147483647;
+
+    @alertify-light-bg: fade(@cp_alertify-fg, 25%);
+
+    @alertify_padding-base: @variables_padding;
+    @alertify_box-shadow: @variables_shadow;
+
+    // Logs to show that something has happened
+    // These show only once
+
+
+    .alertify-logs {
+        z-index: 100001; // alertify logs should be in front of alertify modals
+        @media print {
+            visibility: hidden;
+        }
+        > * {
+            padding: @alertify_padding-base @alertify_padding-base * 4;
+            color: @cp_alertify-log-fg;
+
+            font-family: @colortheme_font;
+            font-size: large;
+
+            box-shadow: @alertify_box-shadow;
+            &, &.default {
+                // FIXME
+                background: @cp_alertify-log-bg;
+            }
+            &.error {
+                font-weight: bold;
+                background: @cp_alertify-warn-bg;
+            }
+            &.success {
+                background: @cp_alertify-log-bg;
+            }
+        }
+    }
+
+    .alertify {
+        position: fixed;
+        background-color: @cp_alertify-overlay;
+        color: @cp_alertify-fg;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100000; // alertify container
+        outline: none;
+        font: @colortheme_app-font;
+
+        .cp-checkmark {
+            color: @cryptpad_text_col;
+        }
+
+        .cp-admin-message {
+            color: @cryptpad_text_col;
+        }
+
+        .cp-inline-alert-text {
+            flex: 1;
+        }
+
+        &.forefront {
+            z-index: @max-z-index; // alertify max forefront
+        }
+
+        .message {
+            h1, h2, h3, h4, h5, h6 {
+                color: @cp_alertify-fg;
+            }
+        }
+
+        h1, h2, h3 {
+            margin-top: 0;
+        }
+
+        &.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        &, &.show {
+            box-sizing: border-box;
+            transition: all .33s cubic-bezier(.25, .8, .25, 1);
+        }
+
+        &, * {
+            box-sizing: border-box;
+        }
+
+        .dialog {
+            padding: 12px;
+/*
+            div.tokenfield {
+                .token {
+                    //border: 1px solid red;
+                    //color: red;
+                }
+
+                color: @colortheme_light-base;
+                background-color: @cp_alertify-bg;
+
+                input[id$="tokenfield"][type="text"].token-input {
+                    background-color: @cp_alertify-bg !important;
+                }
+            }*/
+        }
+
+        .dialog {
+            & > div {
+                background-color: @cp_alertify-bg;
+                border-radius: @variables_radius_L;
+                &.half {
+                    width: 50%;
+                    max-width: 50%;
+                    @media (max-width: @browser_media-medium-screen) {
+                        width: 100%;
+                    }
+                }
+                display: flex;
+                flex-flow: column;
+            }
+
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            max-height: 100%;
+            display: flex;
+
+            > * {
+                width: 100%;
+                min-width: 260px;
+                max-width: 500px;
+                margin: 0 auto;
+                text-align: left;
+                background: @cp_alertify-bg;
+                box-shadow: @alertify_box-shadow;
+                &.wide {
+                    max-width: 850px;
+                }
+            }
+
+            .msg {
+                padding: @alertify_padding-base;
+                margin-bottom: @alertify_padding-base;
+                margin: 0;
+                overflow: auto;
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                a {
+                    color: @cryptpad_text_col;
+                    text-decoration: underline;
+                }
+                pre.cp-link-preview {
+                    color: @cryptpad_text_col;
+                }
+                .cp-info-menu-container {
+                    .logo-block {
+                        text-align: center;
+                        h6 {
+                            font-family: "IBM Plex Mono";
+                            font-size: 30px;
+                            margin-top: 5px;
+                        }
+                        img {
+                            max-width: 100px;
+                        }
+                    }
+                }
+                .cp-dropdown-content {
+                    a {
+                        text-decoration: none;
+                    }
+                }
+            }
+            .cp-alertify-type-container {
+                overflow: visible !important;
+            }
+            .alertify-tabs {
+                max-height: 100%;
+                display: flex;
+                flex-flow: column;
+                padding: @alertify_padding-base;
+                .alertify-tabs-titles {
+                    height: 40px;
+                    display: flex;
+                    border-bottom: 1px solid @cp_alertify-fg;
+                    margin-bottom: 10px;
+                    box-sizing: content-box;
+                    .alertify-tabs-title {
+                        .tools_unselectable();
+                        font-size: 20px;
+                        height: 40px;
+                        line-height: 40px;
+                        box-sizing: border-box;
+                        padding: 0 15px;
+                        cursor: pointer;
+                        border-top-left-radius: @variables_radius;
+                        border-top-right-radius: @variables_radius;
+                        &:not(.disabled):hover {
+                            background-color: @cp_alertify-hover;
+                        }
+                        &.disabled {
+                            color: @cp_alertify-disable-border;
+                            cursor: not-allowed;
+                        }
+                        &:not(.alertify-tabs-active) {
+                            @media (max-width: @browser_media-medium-screen) {
+                                .tab-title-text {
+                                    display: none;
+                                }
+                            }
+                        }
+                    }
+                    span.alertify-tabs-active {
+                        background-color: @cp_alertify-fg !important;
+                        color: @cp_alertify-bg;
+                        cursor: default;
+                    }
+                }
+                .alertify-tabs-contents {
+                    flex: 1 1 auto;
+                    min-height: 0;
+                    & > div {
+                        max-height: 100%;
+                        display: none;
+                        overflow: auto;
+                    }
+                    & > div.alertify-tabs-content-active {
+                        display: block;
+                        &.cp-share-columns {
+                            display: flex;
+                        }
+                    }
+                }
+            }
+
+            input {
+                .tools_placeholder-color();
+            }
+
+            span.cp-password-container {
+                display: flex;
+                align-items: center;
+                margin-bottom: 15px;
+                justify-content: space-between;
+                & > * {
+                    margin-bottom: 0 !important;
+                }
+                button {
+                    margin: 0 !important;
+                }
+            }
+
+            .fa-question-circle { // help links to Docs
+                color: @cp_alertify-fg;
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+
+            input[type="checkbox"], input[type="radio"] {
+                width: auto;
+                padding: 0;
+                margin-right: 0.5em;
+                margin-top: 1px;
+                margin-bottom: 5px;
+                vertical-align: middle;
+                & + label {
+                    margin-bottom: 0;
+                    margin-right: 2em;
+                }
+            }
+
+            input:not(.form-control), textarea {
+                margin-bottom: 15px;
+            }
+
+            button:not('.pure-button') {
+                display: inline-block;
+                position: relative;
+                margin: 6px 8px;
+                min-height: 36px;
+                min-width: 88px;
+            }
+
+            nav {
+                padding: @alertify_padding-base;
+                text-align: right;
+                button, div.cp-button-confirm {
+                    margin: 0px !important;
+                    &:not(:first-child):not(.left) {
+                        margin-left: @alertify_padding-base !important;
+                      }
+                    &.left {
+                        float: left;
+                    }
+                }
+                div.cp-button-confirm {
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+
+    .alertify-logs {
+
+        position: fixed;
+        z-index: 100001; // alertify logs (just in front of alertify modals
+
+        &.bottom, &:not(.top) {
+            bottom: 16px;
+            /* // Bottom left placement. Default. Use for transitions.
+            &.left, &:not(.right) {
+                > * {
+
+                }
+            }
+            // Top right placement
+            &.right {
+                > * {
+
+                }
+            }*/
+        }
+
+        // All left positions.
+        &.left, &:not(.right) {
+            left: 16px;
+            > * {
+                float: left;
+                transform: translate3d(0, 0, 0);
+                height: auto;
+
+                &.show {
+                    left: 0;
+                }
+                &, &.hide {
+                    left: -110%;
+                }
+            }
+        }
+
+        &.right {
+            right: 16px;
+            > * {
+                float: right;
+                transform: translate3d(0, 0, 0);
+                &.show {
+                    right: 0;
+                    opacity: 1;
+                }
+                &, &.hide {
+                    right: -110%;
+                    opacity: 0;
+                }
+            }
+        }
+
+        &.top {
+            top: 0;
+            /* // Top left placement, use for transitions.
+            &.left, &:not(.right) {
+                > * {
+
+                }
+            }
+            // Top right placement, use for transitions
+            &.right {
+                > * {
+
+                }
+            }*/
+        }
+
+        > * {
+            box-sizing: border-box;
+            transition: all .4s cubic-bezier(.25, .8, .25, 1);
+            position: relative;
+            clear: both;
+            backface-visibility: hidden;
+            perspective: 1000;
+
+            & {
+                max-height: 0;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            &.show {
+                margin-top: @alertify_padding-base;
+                opacity: 1;
+                max-height: 1000px;
+                padding: @alertify_padding-base;
+                pointer-events: auto;
+            }
+        }
+    }
+    div.wide {
+        .cp-share-columns {
+            display: flex;
+            flex-flow: row;
+            @media screen and (max-width: (@browser_media-medium-screen)) {
+                flex-flow: column;
+            }
+
+            & > .cp-share-column {
+                width: 50%;
+                @media screen and (max-width: (@browser_media-medium-screen)) {
+                    width: unset;
+                }
+                //padding: 0 10px;
+                position: relative;
+                &.contains-nav {
+                    nav {
+                        position: relative;
+                        bottom: 0;
+                        right: 0;
+                        button {
+                            margin: 0 !important;
+                            &:not(:first-child) {
+                                margin-left: 8px !important;
+                                margin-top: 6px !important;
+                            }
+                        }
+                    }
+                }
+                &:first-child {
+                    margin-right: @alertify_padding-base;
+                    @media screen and (max-width: (@browser_media-medium-screen)) {
+                        margin: 0 0 @alertify_padding-base 0;
+                    }
+                }
+                &:last-child {
+                    margin-left: @alertify_padding-base;
+                    @media screen and (max-width: (@browser_media-medium-screen)) {
+                        margin: 0px;
+                    }
+                }
+            }
+            & > .cp-share-column-mid {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                @media screen and (max-width: (@browser_media-medium-screen)) {
+                    margin-bottom: @alertify_padding-base;
+                }
+                button {
+                    width: 50px;
+                    margin: 0;
+                    min-width: 0;
+                    font-size: 18px !important;
+                    @media screen and (max-width: (@browser_media-medium-screen)) {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+        .cp-ownership {
+            & > label {
+                font-weight: bold;
+            }
+        }
+    }
+    .cp-share-column {
+        .cp-usergrid-grid {
+            max-height: 225px;
+            overflow-x: auto;
+        }
+    }
+}
+

@@ -1,0 +1,214 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./password-input.less";
+@import (reference) "./forms.less";
+@import (reference) "./tools.less";
+
+#cp-loading {
+    @font-face {
+      font-family: 'Open Sans';
+      src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot');
+      src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+           url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.woff') format('woff'),
+           url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.ttf') format('truetype'),
+           url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular') format('svg');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    .password_main();
+    .forms_main();
+    visibility: visible;
+    position: fixed;
+    z-index: 10000000;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: @cp_loading-bg;
+    color: @cp_loading-fg;
+    font-size: 1.3em;
+    line-height: 120%;
+    opacity: 1;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
+    &.cp-loading-transparent {
+        background-color: fade(@cp_loading-bg, 70%);
+    }
+    &.cp-loading-hidden {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.75s, visibility 0s 0.75s;
+    }
+    .cp-loading-logo {
+        height: 300px;
+        width: 300px;
+        margin-top: 50px;
+        flex: 0 1 auto;
+        min-height: 0;
+        text-align: center;
+    }
+    .cp-loading-logo img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    .cp-loading-container {
+        width: 700px;
+        max-width: 90vw;
+        height: 236px;
+        max-height: calc(100vh - 20px);
+        margin: 50px;
+        flex-shrink: 0;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+    }
+    .cp-loading-cryptofist {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 90vw;
+        max-height: 300px;
+        width: auto;
+        height: auto;
+        margin-bottom: 2em;
+    }
+
+    @media screen and (max-width: 500px) {
+        font-size: 16px !important;
+        .cp-loading-container {
+            height: 206px;
+        }
+    }
+    @media screen and (max-height: 700px) {
+        font-size: 16px !important;
+        .cp-loading-container {
+            height: 206px;
+        }
+    }
+    @media screen and (max-height: 500px) {
+        .cp-loading-logo {
+            display: none;
+        }
+    }
+    #cp-loading-message {
+        background: @cp_loading-msg-bg;
+        padding: 20px;
+        width: 100%;
+        border-radius: @variables_radius;
+        color: @cp_loading-fg;
+        text-align: left;
+        display: none;
+        a {
+            color: @cp_loading-link;
+        }
+    }
+
+    #cp-loading-password-prompt {
+        p.cp-password-error {
+            color: @cp_loading-error-fg;
+            background: @cp_loading-error-bg;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+        .cp-password-form {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            .cp-password-container {
+                flex-shrink: 1;
+                min-width: 0;
+            }
+            .cp-password-reveal {
+                padding: 0px 24px;
+            }
+        }
+        .cp-password-input {
+            font-size: 16px;
+        }
+        .tools_placeholder-color();
+    }
+
+    p.cp-password-info {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    .cp-loading-spinner-container {
+        position: relative;
+        height: 80px;
+        margin-bottom: 50px;
+    }
+    .cp-loading-progress {
+        width: 100%;
+        text-align: center;
+        p {
+            margin: 5px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .cp-loading-progress-list {
+            text-align: left;
+            display: inline-block;
+            margin-bottom: 50px;
+            max-width: 100%;
+            ul {
+                list-style: none;
+                padding-left: 0;
+                margin: 0;
+            }
+            li {
+                padding: 0px 5px;
+                .tools_unselectable();
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                i {
+                    width: 22px;
+                }
+                span {
+                    margin-left: 10px;
+                    &.percent {
+                        position: absolute;
+                    }
+                }
+            }
+        }
+
+        .cp-loading-progress-bar {
+            height: 24px;
+            background: @cp_loading-progress-bg;
+            border: 1px solid @cp_loading-progress-bar-bg;
+            border-radius: @variables_radius;
+        }
+        .cp-loading-progress-bar-value {
+            height: 100%;
+            background: @cp_loading-progress-bar-bg;
+        }
+
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(1800deg);
+        }
+    }
+
+    .cp-spinner {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 80px;
+        height: 80px;
+        border: 11px solid @cp_loading-spinner;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin infinite 3s;
+        animation-timing-function: cubic-bezier(.6,0.15,0.4,0.85);
+    }
+
+}

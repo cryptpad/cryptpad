@@ -1,0 +1,163 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+@import (reference) "./avatar.less";
+@import (reference) "./tools.less";
+
+.comments_main() {
+    overflow-y: auto;
+    color: @cp_comments-fg;
+
+    &:empty {
+        display: none !important;
+    }
+
+    &.cp-comments-readonly {
+        .cp-comment-actions {
+            display: none !important;
+        }
+        .cp-comment-form {
+            display: none !important;
+        }
+        .cp-comment-edit {
+            display: none !important;
+        }
+
+    }
+
+    .cp-comment-reply {
+        margin-left: 30px;
+    }
+    .cp-comment-deleted {
+        background-color: @cp_comments-bg;
+        font-size: 14px;
+        padding: 5px;
+    }
+
+
+    .cp-comment-form {
+        &:not(:last-child) {
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+    }
+    .cp-comment-form-input {
+        .avatar_main(40px);
+        .cp-avatar {
+            border: 1px solid transparent;
+        }
+        display: flex;
+        align-items: flex-start;
+        div.cp-textarea {
+            flex: 1;
+            min-height: 52px; // 22px per line + 8 (padding+border)
+            height: unset !important;
+            max-height: 140px; // 6 lines
+            padding: 3px 5px;
+            user-select: text;
+            -webkit-user-select: text; // fix for iOS (can't type in contenteditable if user-select none)
+        }
+        margin-bottom: 5px;
+    }
+    .cp-comment-form-actions {
+        text-align: right;
+        margin-left: -30px;
+        button:not(:last-child) {
+            margin-right: 5px;
+        }
+    }
+
+    .cp-comment-container {
+        outline: none;
+        &:not(:focus) {
+            cursor: pointer;
+            .tools_unselectable();
+        }
+        //&:not(:last-child) {
+        //    margin-bottom: 10px;
+        //}
+        .cp-comment-form {
+            margin-top: 5px;
+        }
+        padding: 5px;
+        &:nth-child(2) {
+            margin-top: 10px;
+        };
+        &:last-child {
+            margin-bottom: 10px;
+        }
+    }
+    .cp-comment {
+        &:not(:first-child) {
+            margin-top: 5px;
+        }
+    }
+    .cp-comment-header {
+        height: 40px;
+        align-items: center;
+        display: flex;
+        background-color: @cp_comments-bg;
+        position: relative;
+        padding: 5px;
+        border-top-left-radius: @variables_radius;
+        border-top-right-radius: @variables_radius;
+        box-sizing: content-box;
+        .avatar_main(40px);
+        .cp-comment-metadata {
+            flex: 1;
+            display: flex;
+            flex-flow: column;
+            margin-left: 5px;
+            .cp-comment-time {
+                font-size: 13px;
+                color: @cp_comments-header;
+            }
+        }
+        .cp-comment-edit {
+            cursor: pointer;
+            outline: none;
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            &:hover {
+                color: lighten(@cryptpad_text_col, 10%);
+            }
+        }
+    }
+    .cp-comment-content {
+        background-color: @cp_comments-bg;
+        padding: 0px 5px 5px 5px;
+        border-bottom-left-radius: @variables_radius;
+        border-bottom-right-radius: @variables_radius;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+    .cp-comment-edited {
+        background-color: @cp_comments-bg;
+        font-size: 13px;
+        color: @cp_comments-header;
+        padding: 0 5px;
+    }
+    .cp-comment-actions {
+        display: none;
+        text-align: right;
+        margin-top: 5px;
+        button {
+            margin-bottom: 0 !important;
+        }
+        button:not(:last-child) {
+            margin-right: 5px;
+        }
+    }
+    .cp-comment-active {
+        background-color: rgba(0,0,0,0.2);
+        border-radius: @variables_radius;
+        .cp-comment-actions {
+            display: block;
+        }
+    }
+}
+

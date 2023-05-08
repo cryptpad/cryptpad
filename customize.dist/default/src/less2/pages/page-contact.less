@@ -1,0 +1,95 @@
+@import (reference) "../include/infopages.less";
+@import (reference) "../include/colortheme-all.less";
+
+&.cp-page-contact {
+    .infopages_main();
+
+    .fa {
+        padding-right: 0.25em;
+    }
+
+    .cp-container {
+
+        .cp-iconCont {
+            text-align: center;
+            &.align-items-center {
+                justify-content: center;
+            }
+            h4 {
+                margin-top: 1.5em;
+                margin-bottom: 1.5em;
+            }
+            p.center {
+                text-align: center;
+            }
+            div {
+                a.card {
+                    .cp-shadow();
+                    border-radius: @infopages-radius-L;
+                    margin-bottom: 1em;
+                    border: 0;
+                    background-color: @cp_static-card-bg;
+                    &:hover, &:focus {
+                        text-decoration: none;
+                        color: @cryptpad_text_col;
+                        background-color: @cryptpad_color_brand_fadest;
+                    }
+                    @media (max-width: 1200px) and (min-width: 769px) {
+                        min-height: 139px;
+                    }
+                    @media (max-width: 768px) and (min-width: 576px) {
+                        min-height: 164px;
+                    }
+                    @media (max-width: 496px) {
+                        min-height: 140px;
+                    }
+                    @media (max-width: 335px) {
+                        min-height: 162px;
+                    }
+                    img {
+                        width: 80px;
+                        margin-bottom: 10px;
+                    }
+                    p {
+                        display: flex;
+                        flex-flow: column;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0;
+                        height: 100%;
+                        font-size: 1.3em;
+                    }
+                }
+                a.card-small {
+                    .cp-shadow();
+                    border-radius: @infopages-radius-L;
+                    display: inline-block;
+                    background-color: @cp_static-card-bg;
+                    margin: 15px;
+                    .card-body {
+                        padding: 10px;
+                        p {
+                            display: flex;
+                            flex-flow: row;
+                            justify-content: center;
+                            align-items: center;
+                            margin: 0;
+                            height: 100%;
+                            font-size: 1.3em;
+                        }
+                    }
+                    img {
+                        width: 40px;
+                        margin: 0 10px 0 0;
+                    }
+                    &:hover, &:focus {
+                        text-decoration: none;
+                        color: @cryptpad_text_col;
+                        background-color: @cryptpad_color_brand_fadest;
+                    }
+                }
+            }
+        }
+    }
+}
+

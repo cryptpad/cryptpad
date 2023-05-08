@@ -1,0 +1,143 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+
+.corner_main() {
+    --LessLoader_require: LessLoader_currentFile();
+};
+& {
+    @corner-bg: @cp_corner-bg;
+    @corner-fg: @cp_corner-fg;
+    @corner-text: @cp_corner-text;
+    @corner-bg-alt: darken(@corner-bg, 10%);
+    @corner-fg-alt: darken(@corner-fg, 10%);
+
+
+    @keyframes appear {
+        0% {
+            transform: scale(0.1);
+        }
+        100% {
+            transform: scale(1.0);
+        }
+    }
+    @keyframes minimize {
+        0% {
+            transform: scale(1.0);
+        }
+        100% {
+            transform: scale(0.1);
+        }
+    }
+
+    .cp-corner-container {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        width: 350px;
+        padding: 10px;
+        background-color: fade(@corner-bg, 95%);
+        color: @corner-text;
+        z-index: 9999;
+        transform-origin: bottom right;
+        animation: appear 0.8s ease-in-out;
+        border: 1px solid @corner-fg;
+        border-radius: @variables_radius;
+        box-shadow: 0 0 10px 0 @cp_shadow-color;
+
+        &.cp-corner-alt {
+            background-color: fade(@corner-bg, 95%);
+            color: @corner-fg;
+            border-color: @corner-fg;
+        }
+
+        h1, h2, h3 {
+            font-size: 1.5em;
+        }
+
+        .cp-corner-filler {
+            float: left;
+            clear: left;
+            height: 21px;
+        }
+        &.cp-corner-big {
+            width: 500px;
+            max-width: 95%;
+        }
+
+        .cp-corner-dontshow {
+            cursor: pointer;
+            .fa {
+                margin-right: 0.3em;
+                font-size: 1.1em;
+            }
+            &:hover {
+                color: @corner-fg-alt;
+
+            }
+        }
+        &.cp-corner-alt {
+            .cp-corner-dontshow {
+                display: inline-block;
+                color: @corner-text;
+                &:hover {
+                    color: @corner-fg;
+                }
+            }
+        }
+
+        .cp-corner-actions {
+            min-height: 30px;
+            margin: 10px auto;
+            display: block;
+            text-align: right;
+        }
+        .cp-corner-footer {
+            font-size: 0.8em;
+        }
+        .cp-corner-footer, .cp-corner-text {
+            a {
+                color: @corner-fg;
+                text-decoration: underline;
+                &:hover {
+                    color: @corner-fg-alt;
+                }
+            }
+        }
+        &.cp-corner-alt a {
+            color: @corner-text;
+            &:hover {
+                color: @corner-fg;
+            }
+        }
+
+        button {
+        padding: 5px;
+            color: @corner-fg;
+            &:not(:first-child) {
+                margin-left: 10px;
+            }
+            text-transform: uppercase;
+            border: 1px solid @corner-fg;
+            border-radius: @variables_radius;
+            .fa, .cptools {
+                margin-right: 0.3em;
+            }
+            &.cp-corner-primary {
+                background-color: @corner-fg;
+                color: @corner-bg;
+                &:hover {
+                    background-color: @corner-fg-alt;
+                    border-color: @corner-fg-alt;
+                }
+            }
+            &.cp-corner-cancel {
+                background-color: @corner-bg;
+                color: @corner-fg;
+                &:hover {
+                    background-color: @corner-bg-alt;
+                }
+            }
+        }
+    }
+}
+

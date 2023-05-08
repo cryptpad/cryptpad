@@ -1,3 +1,20 @@
+/* Project CryptPad
+Copyright (C) 2016-2023  XWiki SAS (contact@xwiki.com) &
+                         Arnaud Laprevote (arnaud.laprevote@gmail.com)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 /*
     globals process
 */
@@ -172,11 +189,12 @@ app.use("/block", Express.static(Env.paths.block, {
     maxAge: "0d",
 }));
 
-app.use("/customize", Express.static(Path.resolve('customize')));
-app.use("/customize", Express.static(Path.resolve('customize.dist')));
-app.use("/customize.dist", Express.static(Path.resolve('customize.dist')));
-app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize')));
-app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize.dist')));
+//app.use("/customize", Express.static(Path.resolve('customize')));
+app.use("/customize", Express.static(Path.resolve('customize.dist',Env.lookDir)));
+console.log('LOOK DIR IS', {path:Path.resolve('customize.dist',Env.lookDir)});
+app.use("/customize.dist", Express.static(Path.resolve('customize.dist',Env.lookDir)));
+//app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize')));
+app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize.dist',Env.lookDir)));
 
 // if dev mode: never cache
 var cacheString = function () {
@@ -250,6 +268,11 @@ var serveConfig = makeRouteCache(function () {
             darkThemeBgAlert:Env.darkThemeBgAlert,
             darkThemeColorBrand:Env.darkThemeColorBrand,
             darkThemeTextColor:Env.darkThemeTextColor,
+            showBgImage:Env.showBgImage,
+            bgImage:Env.bgImage,
+            darkBgImage:Env.darkBgImage,
+            navButtonBgColor:Env.navButtonBgColor,
+            darkNavButtonBgColor:Env.darkNavButtonBgColor,
             accounts_api: Env.accounts_api,
         }, null, '\t'),
         '});'

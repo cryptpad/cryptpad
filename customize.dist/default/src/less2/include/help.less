@@ -1,0 +1,51 @@
+@import (reference) "./colortheme-all.less";
+
+.help_main () {
+    --LessLoader_require: LessLoader_currentFile();
+};
+& {
+    .cp-help-container {
+
+        position: relative;
+        background-color: @cp_help-bg;
+        max-height: 50%;
+        overflow-y: auto;
+        &.cp-help-hidden {
+            display: none;
+        }
+
+        .cp-help-close {
+            position: absolute;
+            color: @cryptpad_text_col;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+        .cp-help-text {
+            color: @cp_help-fg;
+            margin: 0;
+            padding: 5px 15px;
+            a {
+                color: @cp_help-link;
+                text-decoration: underline;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            h2 {
+                font-size: 18px;
+            }
+            h3 {
+                font-size: 16px;
+            }
+            ul, ol, p, h1, h2, h3 { margin: 0; }
+            &.cp-help-small {
+                ul {
+                    display: none;
+                }
+                cursor: pointer;
+            }
+        }
+    }
+}
+

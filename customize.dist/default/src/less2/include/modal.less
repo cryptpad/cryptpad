@@ -1,0 +1,96 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+
+.modal_base() {
+    font-family: @colortheme_font;
+
+    background-color: @cp_alertify-bg;
+    color: @cp_alertify-fg;
+    box-shadow: @variables_shadow;
+
+    a {
+        color: @cryptpad_color_link;
+
+        &:visited {
+            color: @cryptpad_color_link;
+        }
+    }
+}
+
+.modal_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .cp-modal-container {
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+
+        z-index: 100000; //Z modal container
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: @cp_alertify-overlay;
+
+        .cp-modal {
+            background-color: @cp_alertify-bg;
+            color: @cp_alertify-fg;
+            box-shadow: @variables_shadow;
+            border-radius: @variables_radius;
+
+            padding: @variables_padding;
+            padding-top: @variables_padding * 2;
+
+            position: relative;
+            //top: 15vh; bottom: 15vh;
+            //left: 10vw; right: 10vw;
+            width: 90vw;
+            max-height: 95vh;
+
+            overflow: auto;
+
+            font-family: @colortheme_font;
+            text-align: center;
+
+            & > p {
+                margin-bottom: 1em;
+            }
+
+            & > p:not(.cp-modal-form) {
+                text-align: left;
+                margin-right: 30px;
+            }
+
+            .cp-modal-form {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+            }
+
+            input:not(.tui-full-calendar-content):not(.numInput) {
+                padding: 8px 12px;
+                margin: 1em;
+                width: 300px;
+                &[type="text"] {
+                    width: auto;
+                }
+            }
+
+            .cp-modal-close {
+                text-shadow: none;
+                color: inherit;
+
+                position: absolute;
+                top: 0;
+                right: 0;
+                margin: @variables_padding;
+                cursor: pointer;
+            }
+        }
+    }
+}
+

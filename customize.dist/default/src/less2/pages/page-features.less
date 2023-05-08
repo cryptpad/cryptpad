@@ -1,0 +1,112 @@
+@import (reference) "../include/infopages.less";
+@import (reference) "../include/colortheme-all.less";
+
+&.cp-page-features {
+    .infopages_main();
+
+    .cp-features-register {
+        text-align: center;
+        padding: 20px;
+    }
+    .cp-features-register-button {
+        font-size: 20px;
+        color: @cryptpad_color_white;
+        background: @cryptpad_color_brand;
+        border-radius: 0;
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    .cp-features-web {
+        .card {
+            .cp-shadow();
+            border: none;
+            background-color: @cp_static-card-bg;
+            border-radius: @infopages-radius;
+            .title-card {
+                background-color: @cryptpad_color_brand;
+                padding: 20px;
+                border-radius: @infopages-radius @infopages-radius 0 0;
+            }
+            .card-body, .title-card {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-flow: column;
+                padding: 12px;
+                h3 {
+                    margin: 0;
+                }
+                &.cp-pricing {
+                    div {
+                        font-size: 1.2em;
+                        color: @cp_static-link;
+                        a {
+                            text-decoration: underline;
+                        }
+                        &:first-child {
+                            font-weight: bold;
+                        }
+                        &:last-child {
+                            font-size: 1em;
+                        }
+                    }
+                }
+                &:last-child {
+                    border-top: 1px solid fade(@cryptpad_text_col, 30%);
+                }
+            }
+        }
+        h3 {
+            color: @cryptpad_color_white;
+        }
+        .list-group {
+            li {
+                display: flex;
+                padding-left: 0;
+                padding-right: 5px;
+            }
+            div {
+                &.cp-check {
+                    width: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    &:before {
+                        content: "\f00c";
+                        font-family: "FontAwesome";
+                        font-size: 14px;
+                        color: @cryptpad_color_brand;
+                    }
+                }
+                &.cp-content {
+                    flex: 1;
+                    display: flex;
+                    flex-flow: column;
+                }
+                &.cp-feature {
+                    font-weight: bold;
+                }
+            }
+        }
+        div.cp-note {
+            font-size: 0.8em;
+        }
+        .list-group-item {
+            background-color: transparent;
+            &:first-child {
+                border-top: 1px solid fade(@cryptpad_text_col, 30%);
+            }
+            &:not(:last-child) {
+                border-bottom: 1px solid fade(@cryptpad_text_col, 30%);
+            }
+        }
+    }
+
+    .cp-regis-user {
+        @media (max-width:575px) {
+            margin-top: 3em;
+        }
+    }
+}
+

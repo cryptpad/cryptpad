@@ -1,0 +1,285 @@
+@import (reference) "./tools.less";
+
+.markdown_main() {
+    hr {
+        border-top: 1px solid @cp_markdown-border;
+    }
+    blockquote {
+        background: @cp_markdown-bg;
+        padding: 10px;
+        border-left: 2px solid @cp_markdown-border;
+        padding-right: 0;
+        p { margin: 0; }
+        blockquote { margin: 0; }
+        & > *:not(:last-child) {
+            margin-bottom: 10px !important;
+        }
+    }
+
+    // fix silly spacing around sublists in "loose lists"
+    :is(ul, ol) li > p {
+        & + :is(ul, ol) {
+            margin-bottom: 1rem;
+        }
+    }
+
+    // TOC
+    div.cp-md-toc {
+        background: @cp_markdown-bg;
+        padding: 20px;
+        * {
+            margin: 5px;
+            margin-right: 0;
+        }
+        max-width: 100%;
+        min-width: 200px;
+        white-space: nowrap;
+
+        & > p {
+            &.cp-md-toc-1 {
+                margin-left: 0;
+            }
+            &.cp-md-toc-2 {
+                margin-left: 25px;
+            }
+            &.cp-md-toc-3 {
+                margin-left: 50px;
+            }
+            &.cp-md-toc-4 {
+                margin-left: 75px;
+            }
+            &.cp-md-toc-5 {
+                margin-left: 100px;
+            }
+            &.cp-md-toc-6 {
+                margin-left: 125px;
+            }
+            margin: 0;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
+.mediatag_cryptpad() {
+    media-tag {
+        &:empty {
+            display: none !important;
+        }
+        cursor: pointer;
+        * {
+            max-width: 100%;
+        }
+        iframe[src$=".pdf"] {
+            width: 100%;
+            height: 80vh;
+            max-height: 90vh;
+        }
+        button.mediatag-download-btn {
+            flex-flow: column;
+            & > span {
+                display: flex;
+                line-height: 1.5;
+                align-items: center;
+                &.mediatag-download-name b {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+        button.btn-default {
+            display: inline-flex;
+            max-width: 250px;
+            min-height: 38px;
+            justify-content: center;
+            .fa {
+                margin-right: 5px;
+            }
+            b {
+                margin-left: 5px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+    media-tag:empty {
+        width: 100px;
+        height: 100px;
+        display: inline-block;
+        border: 1px solid @cp_markdown-border;
+    }
+}
+
+.markdown_extensions() {
+    pre.mermaid {
+        &[mermaid-source^="gantt"] svg {
+            g.tick {
+                text {
+                    fill: @cp_markdown-block-fg;
+                }
+                line {
+                    stroke: fade(@cp_markdown-block-fg, 50%);
+                }
+            }
+            text {
+                &.taskText {
+                    &[class*="doneText"], &[class*="activeText"] {
+                        fill: #444 !important; // XXX PR to mermaid or find a suitable variable
+                    }
+                }
+                &.titleText {
+                    fill: @cp_markdown-block-fg;
+                }
+                &.taskTextOutside0, &.taskTextOutside1, &.taskTextOutside2, &.taskTextOutside3 {
+                    fill: @cp_markdown-block-fg !important;
+                    &.doneCritText1 {
+                        fill: @cp_markdown-block-fg !important;
+                    }
+                }
+            }
+        }
+        &[mermaid-source^="pie"] {
+            g.legend text, text.pieTitleText {
+                fill: @cp_markdown-block-fg;
+            }
+            g.legend rect {
+                stroke: @cryptpad_text_col !important;
+                stroke-width: 1px;
+            }
+            .pieCircle {
+                stroke: @cryptpad_text_col;
+            }
+            text.slice {
+                fill: @cryptpad_text_col;
+            }
+        }
+        &[mermaid-source^="erDiagram"] {
+            rect.er:not(.relationshipLabelBox) {
+                fill: #ECECFF;
+            }
+            g text.er {
+                fill: #333;
+            }
+        }
+    }
+    pre.markmap {
+        border: 1px solid @cp_markdown-border;
+        svg {
+           color: @cp_markdown-block-fg;
+            height: 400px;
+        }
+    }
+
+    pre.mathjax {
+        padding: 5px;
+        color: @cryptpad_text_col;
+        background-color: @cp_markdown-block-bg;
+    }
+
+    div.plain-text-reader {
+        background: @cp_markdown-block-bg;
+        padding: 10px;
+        color: @cp_markdown-block-fg;
+        text-align: left;
+    }
+
+    div.cp-inline-img-warning {
+        display: inline-block;
+        padding: 10px;
+        color: @cryptpad_text_col;
+        background-color: @cryptpad_color_red_fader;
+        border: 1px solid @cryptpad_color_red;
+        .cp-inline-img {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .cp-alt-txt {
+            margin-left: 10px;
+            font-family: monospace;
+            font-size: 0.8em;
+            color: fade(@cryptpad_text_col, 90%);
+        }
+        a {
+            color: @cryptpad_text_col;
+            font-size: 0.8em;
+            &.cp-remote-img::before { // .fa.fa-question-circle
+                font-family: FontAwesome;
+                //content: "\f08e\00a0";
+                content: "\f08e\00a0\00a0";
+            }
+            &.cp-learn-more::before { // .fa.fa-external-link
+                font-family: FontAwesome;
+                content: "\f059\00a0";
+                //content: "\f059\00a0\00a0";
+            }
+        }
+    }
+}
+
+.markdown_cryptpad() {
+    word-wrap: break-word;
+
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: bold;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid @cp_markdown-border;
+    }
+    li {
+        min-height: 22px;
+    }
+    .todo-list-item {
+        list-style: none;
+        position: relative;
+        .fa {
+            position: absolute;
+            margin-left: -17px;
+            margin-top: 4px;
+        }
+    }
+
+    .mediatag_cryptpad();
+
+    pre[data-plugin] {
+        svg {
+            max-width: 100%;
+            cursor: pointer;
+            .tools_unselectable();
+        }
+    }
+
+    .markdown_extensions();
+}
+
+.markdown_preformatted-code () {
+    pre > code {
+        display: block;
+        position: relative;
+        width: 100%;
+        margin: auto;
+        padding: 5px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        color: @cp_markdown-block-fg;
+        background-color: @cp_markdown-block-bg;
+    }
+}
+
+.markdown_gfm-table () {
+    table {
+        border-collapse: collapse;
+        tr {
+            th {
+                padding: 15px;
+            }
+            td {
+                padding: 3px;
+            }
+            th, td {
+                border: 1px solid @cp_markdown-border;
+            }
+        }
+    }
+}
+

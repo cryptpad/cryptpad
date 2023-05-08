@@ -1,0 +1,26 @@
+@import (reference) "./unselectable.less";
+@import (reference) "./variables.less";
+@import (reference) "./colortheme-all.less";
+
+.leftside-menu-category_main() {
+    .unselectable_make();
+    padding: 5px;
+    margin: 10px 0;
+    cursor: pointer;
+    height: @variables_bar-height;
+    border-radius: @variables_radius;
+    background-color: @cp_sidebar-left-item-bg;
+    .fa, .cptools {
+        display: inline-flex;
+        justify-content: center;
+        margin-right: 5px;
+        min-width: 20px;
+    }
+    &:hover {
+        background: @cryptpad_text_col_inv;
+    }
+    &.cp-leftside-active {
+        background: @cp_sidebar-left-active;
+        color: @cp_sidebar-left-active-fg;
+    }
+}

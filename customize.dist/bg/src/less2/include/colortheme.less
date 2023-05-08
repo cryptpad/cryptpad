@@ -1,3 +1,6 @@
+@cp-show-bg-image: @cp-config-show-bg-image;
+@cp-bg-image: @cp-config-bg-image;
+
 @colortheme_font: 'Open Sans', 'Helvetica Neue', sans-serif;
 @colortheme_app-font-size: 16px;
 @colortheme_app-font-size-small: 13px;
@@ -28,6 +31,7 @@
 // Colors
 //@cryptpad_color_brand: #0087FF;
 @cryptpad_color_brand: @cp-config-color-brand;
+//@cryptpad_color_brand: #FF0000;
 @cryptpad_color_brand_300: lighten(@cryptpad_color_brand, 30%);
 @cryptpad_color_brand_fade: fade(@cryptpad_color_brand, 75%);
 @cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
@@ -49,7 +53,8 @@
 @cryptpad_color_black: #000;
 
 //@cryptpad_text_col:@cryptpad_color_grey_800;
-@cryptpad_text_col: @cp-config-text;
+@cryptpad_text_col: @cp-config-text-color;
+//@cryptpad_text_col: #002121;
 @cryptpad_text_col_inv: @cryptpad_color_grey_50;
 
 @cryptpad_ui_shadow: 0px 0px 5px 1px #00000030;
@@ -122,6 +127,7 @@
 // Alertify
 //@cp_alertify-bg: @cryptpad_color_white;
 @cp_alertify-bg: @cp-config-bg-alert;
+//@cp_alertify-bg: #FFEEEE;
 @cp_alertify-fg: @cryptpad_color_brand;
 @cp_alertify-hover: fade(@cp_alertify-fg, 25%);
 @cp_alertify-overlay: fade(@cryptpad_text_col, 50%);
@@ -265,13 +271,15 @@
 // Static pages
 //@cp_static-bg: @cryptpad_color_grey_200;
 @cp_static-bg: @cp-config-bg-body;
+//@cp_static-bg: #202000;
 @cp_static-fg: @cryptpad_text_col;
 @cp_static-link: @cryptpad_color_brand;
 @cp_static-title: @cryptpad_color_brand;
 @cp_static-footer: fade(@cryptpad_color_brand_300, 30%);
 @cp_static-footer-border: @cryptpad_color_white;
 @cp_static-topbar-fg: @cryptpad_color_brand;
-@cp_static-card-bg: @cryptpad_color_white;
+//@cp_static-card-bg: @cryptpad_color_white;
+@cp_static-card-bg: @cp-config-nav-button-bg-color;
 @cp_static-danger: fade(@cryptpad_color_red, 30%);
 @cp_static-img-invert-filter: none;
 

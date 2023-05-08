@@ -1,0 +1,111 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./tools.less";
+@import (reference) "./variables.less";
+
+.tokenfield_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    ul.ui-autocomplete {
+        z-index: 100001; // alertify + 1
+    }
+    .tokenfield {
+        .tools_unselectable();
+        display: flex;
+        flex-wrap: wrap;
+        height: auto;
+        min-height: 34px;
+        padding-bottom: 0px;
+        background-color: unset;
+        border: none;
+        margin: 0 10px;
+        padding: 0;
+        width: ~"calc(100% - 20px)";
+        span.tokenfield-empty {
+            font-size: 14px;
+            font-style: italic;
+            color: lighten(@cryptpad_text_col, 10%);
+        }
+        .cp-tokenfield-container {
+            width: 100%;
+        }
+        .cp-tokenfield-form {
+            display: flex;
+            width: 100%;
+            input {
+                flex: 1;
+                min-width: 0 !important;
+            }
+            button {
+                // no radius in input + button combo
+                // input .token-input is styled at the bottom of this file
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+            }
+        }
+        .token {
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            background-color: @cp_token-bg;
+            white-space: nowrap;
+            margin: 2px 0;
+            margin-right: 5px;
+            height: 24px;
+            border-radius: @variables_radius;
+            vertical-align: middle;
+            cursor: default;
+            color: @cp_token-fg;
+
+            &:hover {
+                background-color: @cp_token-bg-hover;
+            }
+            &.invalid {
+                background: none;
+                border: 1px solid transparent;
+                border-radius: 0;
+                border-bottom: 1px dotted @cp_token-invalid;
+            }
+            .token-label {
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding-left: 4px;
+                vertical-align: middle;
+            }
+            .close {
+                opacity: 1;
+                font-family: Arial;
+                display: inline-block;
+                text-decoration: none !important;
+                line-height: 1.49em;
+                font-size: 1.1em;
+                margin-left: 5px;
+                float: none;
+                height: 100%;
+                vertical-align: middle;
+                padding-right: 4px;
+                color: @cp_token-fg;
+                &:hover {
+                    color: contrast(@cp_token-fg, darken(@cp_token-fg, 10%), lighten(@cp_token-fg, 10%));
+                }
+            }
+        }
+        .token-input {
+            flex: 1;
+            border: 0;
+            padding: 0;
+            margin: 0 !important; // Override alertify
+            box-shadow: none;
+            max-width: 100%;
+            width: 100%;
+            min-width: 100% !important;
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
+            &:focus {
+                outline: 0;
+                box-shadow: none;
+            }
+        }
+    }
+}

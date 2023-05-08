@@ -1,0 +1,19 @@
+.font_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+
+@font-face {
+    font-family: 'IBM Plex Mono';
+    font-style: normal;
+    font-weight: 500;
+    src: url("/customize/fonts/IBMPlexMono-Medium.woff2") format("woff2"), url("/customize/fonts/IBMPlexMono-Medium.woff") format("woff"); }
+
+
+// Fonts need to go on the global scope
+@font-tools {
+    font-family: CryptPadTools;
+    src: url("/customize/fonts/cryptpadtools.ttf");
+}
+
+@import (once) '/customize/fonts/open-sans.less';
+

@@ -1,0 +1,1013 @@
+@import (reference) "./browser.less";
+@import (reference) './leftside-menu.less';
+@import (reference) "./tools.less";
+@import (reference) "./limit-bar.less";
+@import (reference) "./tokenfield.less";
+@import (reference) "./dropdown.less";
+
+.drive_main() {
+    --LessLoader_require: LessLoader_currentFile();
+};
+&.cp-body-drive {
+    .limit-bar_main();
+    .tokenfield_main();
+
+    @colortheme_drive-bg-active: lighten(@colortheme_static_apps[default], 20%);
+
+    /* Background */
+    background: @cp_static-bg if(@cp-show-bg-image, url(@cp-bg-image) repeat,);
+
+    /* PAGE */
+
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    min-height: auto;
+
+    .cp-unselectable {
+        .tools_unselectable();
+    }
+
+    /* local mixins */
+    @drive_icon-margin: 10px;
+    .drive_fileIcon {
+        li {
+            display: inline-block;
+            margin: @drive_icon-margin;
+            width: 140px;
+            height: 140px;
+            text-align: center;
+            vertical-align: top;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border: 1px solid transparent;
+
+            &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-selected-tmp) {
+                border: 1px solid @cp_drive-icon-border;
+            }
+            .cp-app-drive-element-name {
+                width: 100%;
+                height: 24px;
+                margin: 0;
+                display: inline-block;
+                font-size: 14px;
+                //align-items: center;
+                //justify-content: center;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                word-wrap: break-word;
+            }
+            .cp-app-drive-element-truncated {
+                display: block;
+                position: absolute;
+                bottom: 0px;
+                left: 0; right: 0;
+                text-align: center;
+            }
+            img.cp-app-drive-content-icon {
+                height: 48px;
+                max-height: none;
+                max-width: none;
+                margin: 8px 0;
+            }
+            .fa, .cptools {
+                display: block;
+                margin: auto;
+                font-size: 64px;
+                margin: 18px 0;
+                text-align: center;
+                &.listonly {
+                    display: none;
+                }
+            }
+
+            &.cp-app-hidden {
+                display: none !important;
+            }
+            &.cp-app-disabled {
+                cursor: not-allowed !important;
+                .fa, .cptools { cursor: not-allowed !important; }
+                opacity: 0.5;
+            }
+        }
+    }
+
+    img.cp-app-drive-icon {
+        max-width: 20px;
+        max-height: 16px;
+    }
+
+    .cp-app-drive-container {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        flex-flow: row;
+        min-height: 0;
+        min-width: 0;
+        @media screen and (max-width: @browser_media-medium-screen) {
+            display: block;
+            overflow-y: auto;
+            #cp-app-drive-toolbar {
+                .path .element {
+                    display: none;
+                }
+            }
+            #cp-app-drive-tree {
+                resize: none;
+                width: 100% !important;
+                min-width: unset;
+                max-width: unset;
+                max-height: unset;
+                .cp-app-drive-tree-category {
+                    margin-top: 0.5em;
+                }
+                .cp-splitter {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    div:focus {
+        outline: none;
+    }
+
+    .fa {
+        font-family: FontAwesome;
+    }
+    .cptools {
+        font-family: cptools;
+    }
+
+    ul {
+        list-style: none;
+        padding-left: 0px; // Remove the default padding
+    }
+
+    li {
+        padding: 0px 5px;
+        .tools_unselectable();
+    }
+
+    .cp-app-drive-element-restricted {
+        color: @cp_drive-header-fg;
+    }
+
+    .cp-app-drive-element-droppable {
+        //background-color: @cp_drive-droppable-bg;
+        color: @cp_drive-droppable-fg;
+    }
+
+    .cp-app-drive-element-selected {
+        //background: @cp_drive-selected-bg !important;
+        color: @cp_drive-selected-fg;
+        .fa-minus-square-o, .fa-plus-square-o {
+            color: @cp_sidebar-left-fg;
+        }
+        .cptools {
+            color: @cp_drive-selected-fg;
+        }
+        &.cp-app-drive-element-active {
+            //background: @cp_drive-selected-bg !important;
+            color: @cryptpad_text_col !important;
+        }
+    }
+
+    .cp-app-drive-element-selected-tmp {
+        //background: @cp_drive-selection-bg;
+        color: @cp_drive-selection-fg;
+        .fa-minus-square-o, .fa-plus-square-o {
+            color: @cp_sidebar-left-fg;
+        }
+    }
+
+    .cp-app-drive-color-picker {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        .cp-app-drive-color-picker-color {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            display: inline-block;
+            cursor: pointer;
+            .cp-app-drive-icon-folder {
+                position: absolute;
+                font-size: 50px;
+            }
+            .cptools-folder-no-color {
+                color: @cryptpad_color_grey_500;
+            }
+            .fa-check {
+                position: absolute;
+                top: 40%; left: 35%;
+                color: transparent;
+            }
+            &.cp-app-drive-current-color > .fa-check {
+                color: @cryptpad_color_grey_900;
+            }
+        }
+    }
+
+
+    #cp-app-drive-search {
+        display: inline-flex;
+        align-items: center;
+        max-width: 400px;
+        font-size: 30px;
+        margin: 15px;
+        input {
+            background: transparent;
+            color: @cp_drive-fg;
+            .tools_placeholder-color();
+            outline-width: 0px;
+            border-radius: 0;
+            width: 100%;
+            border: 0;
+            border-bottom: 3px solid @cp_drive-fg;
+            margin: 0 5px;
+            flex: 1;
+            min-width: 0;
+            &:focus {
+                outline-width: 0px;
+            }
+            &.cp-app-drive-search-active {
+                & ~ .cp-app-drive-search-cancel {
+                    visibility: visible;
+                }
+            }
+        }
+        .cp-app-drive-search-cancel {
+            visibility: hidden;
+            cursor: pointer;
+        }
+        .cp-app-drive-tree-search-icon, .cp-app-drive-search-cancel {
+            color: @cp_drive-fg;
+        }
+    }
+    .cp-app-drive-search-spinner {
+        display: inline-flex;
+        color: @cp_drive-fg;
+        font-size: 40px;
+        align-items: center;
+        justify-content: center;
+    }
+    .cp-app-drive-search-noresult {
+        font-size: 30px;
+        padding: 15px;
+        font-style: italic;
+        color: fade(@cryptpad_text_col, 80%);
+    }
+
+
+    /* TREE */
+
+
+    #cp-app-drive-tree {
+        font-size: @colortheme_app-font-size;
+        //border-right: 1px solid #ccc;
+        box-sizing: border-box;
+        //background: @cp_sidebar-left-bg;
+        overflow: auto;
+        width: auto;
+        white-space: nowrap;
+        max-width: 500px;
+        min-width: 200px;
+        padding: 10px 0px 0px 0px;
+        color: @cp_sidebar-left-fg;
+        display: flex;
+        flex-flow: column;
+        max-height: 100%;
+        position: relative;
+        .cp-app-drive-tree-categories-container {
+            flex: 1;
+            overflow: auto;
+            padding: 0px 5px;
+        }
+        img.cp-app-drive-icon {
+            margin-bottom: 3px;
+            margin-left: -2px;
+        }
+        .cp-app-drive-tree-docs {
+            margin-top: 15px;
+            //padding: 0 0 0 20px;
+            padding: 0;
+            //background-color: @cp_sidebar-left-item-bg;
+            border-radius: @variables_radius;
+            cursor: auto;
+            &li, li {
+                padding: 0;
+                &.cp-app-drive-element-collapsed ul {
+                    display: none;
+                }
+                input {
+                    flex: 1;
+                    min-width: 0;
+                    padding: 0 10px;
+                    border: 0;
+                    height: auto;
+                }
+                & > span.cp-app-drive-element-row {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    .leftside-menu-category_main();
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    margin-left: -5px;
+                    padding-left: 5px;
+                    .fa, .cptools {
+                        display: inline-block;
+                        min-width: 0;
+                        width: 20px;
+                        margin-right: 0px;
+                        z-index: 99;
+                    }
+                    .cp-app-drive-element {
+                        flex: 1;
+                        min-width: 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+        }
+        span.cp-app-drive-element {
+            cursor: pointer;
+        }
+        .cp-app-drive-tree-category {
+            margin: 0;
+            margin-top: 10px;
+            //background-color: @cp_sidebar-left-item-bg;
+            border-radius: @variables_radius;
+            box-shadow: @cryptpad_ui_shadow;
+            .cp-app-drive-tree-root {
+                .fa-trash-o {
+                    padding-left: 2px;
+                }
+            }
+            li {
+                padding: 0;
+                .cp-app-drive-element-row {
+                    display: block;
+                    padding-left: 20px;
+                    .leftside-menu-category_main();
+                    margin: 0;
+                }
+            }
+        }
+        .cp-app-drive-tree-category:last-child {
+            margin-bottom: 20px;
+        }
+        .cp-limit-container {
+            margin-top: 5px;
+        }
+        .fa.cp-app-drive-icon-expcol {
+            margin-left: -10px;
+            font-size: 14px;
+            position: absolute;
+            left: -17px;
+            top: 11px;
+            width: 11px !important;
+            height: 11px !important;
+            //background-color: @cp_sidebar-left-item-bg;
+            padding: 0;
+            margin: 0;
+            z-index: 10;
+            cursor: default;
+            &:before {
+                position: relative;
+                top: -1px;
+            }
+        }
+        .cp-app-drive-tree-docs {
+            box-shadow: @cryptpad_ui_shadow;
+
+            .cp-app-drive-element-row {
+                &.cp-leftside-active {
+                    .cp-app-drive-icon-expcol {
+                        color: @cryptpad_text_col; // +/- expand icon for folders
+                    }
+                }
+            }
+            .cp-app-drive-tree-root > .cp-app-drive-element-row {
+                margin-left: 0px;
+                &.cp-app-drive-element-active {
+                    .cp-app-drive-icon-expcol {
+                        color: @cp_sidebar-left-active-fg; // +/- expand icon for drive
+                    }
+                }
+            }
+            .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-expcol {
+                position: relative;
+                top: 0;
+                left: -10px;
+                background-color: transparent;
+            }
+            .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-folder {
+                margin-left: -5px;
+            }
+            .cp-app-drive-tree-root {
+                &> .cp-app-drive-element-row {
+                    padding-left: 15px;
+                }
+                &> ul {
+                    padding-left: 30px;
+                }
+            }
+        }
+
+        // Expand/collapse lines
+        .cp-app-drive-tree-docs ul {
+            margin: 0px 0px 0px 10px;
+            list-style: none;
+            padding-left: 10px;
+            li {
+                position: relative;
+                &:before {
+                    position: absolute;
+                    left: -12px;
+                    top: -10px;
+                    content: '';
+                    display: block;
+                    border-left: 1px solid @cp_drive-tree-branch;
+                    height: ~"calc(1em + 11px)";
+                    border-bottom: 1px solid @cp_drive-tree-branch;
+                    width: 15px;
+                }
+                &:after {
+                    position: absolute;
+                    left: -12px;
+                    bottom: -7px;
+                    content: '';
+                    display: block;
+                    border-left: 1px solid @cp_drive-tree-branch;
+                    height: 100%;
+                }
+                &.cp-app-drive-tree-root {
+                    margin: 0px 0px 0px -10px;
+                    &:before {
+                        display: none;
+                    }
+                    &:after {
+                        display: none;
+                    }
+                }
+                &:last-child:after {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    /* CONTENT */
+    #cp-app-drive-content-container {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+        min-width: 0;
+        position: relative;
+        .cp-splitter {
+            position: absolute;
+            height: 100%;
+            width: 8px;
+            top: 0;
+            left: 0;
+            cursor: col-resize;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            &:hover {
+                border-left: 1px solid @cryptpad_text_col;
+            }
+            i {
+                color: @cryptpad_text_col;
+                font-size: 1.6rem;
+            }
+        }
+        &.cp-app-drive-readonly { // applied to offline drive (not read-only shared folders)
+            #cp-app-drive-content-folder {
+                opacity: 0.5;
+            }
+
+            // background: contrast(@cp_sidebar-right-bg, darken(@cp_sidebar-right-bg, 10%), lighten(@cp_sidebar-right-bg, 10%));
+        }
+    }
+    #cp-app-drive-content {
+        box-sizing: border-box;
+        //background: @cp_sidebar-right-bg;
+        color: @cp_sidebar-right-fg;
+        padding-top: 10px;
+        overflow-y: auto;
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+        position: relative;
+        .cp-app-drive-content-select-box {
+            display: none;
+            //background-color: @cp_drive-selection-overlay;
+            position: absolute;
+            z-index: 50;
+        }
+        h1 {
+            padding-left: 10px;
+            margin-top: 10px;
+        }
+        .cp-app-drive-content-info-box {
+            order: 10;
+            line-height: 2em;
+            padding: 0.25em 0.75em;
+            margin: 1em;
+            //background: @cp_drive-infobox-bg;
+            color: @cp_drive-infobox-fg;
+            border-radius: @variables_radius;
+            cursor: default;
+            a {
+                color: @cryptpad_color_link;
+                text-decoration: underline;
+            }
+            span {
+                cursor: pointer;
+                float: right;
+                margin-top: 0.5em;
+            }
+        }
+        li {
+            cursor: default;
+            &:not(.cp-app-drive-element-header) {
+                &:hover {
+                    &:not(.-cp-app-drive-element-selected, .cp-app-drive-element-selected-tmp) {
+                        //background-color: @cp_drive-icon-hover;
+                    }
+                }
+            }
+        }
+        #cp-app-drive-content-folder {
+            order: 20;
+            li {
+                &.cp-app-drive-search-result {
+                    display: flex;
+                    height: 2 * @variables_bar-height;
+                    .cp-app-drive-search-path {
+                        .cp-app-drive-path-inner {
+                            display: flex;
+                            flex-flow: row-reverse wrap-reverse;
+                            justify-content: flex-end;
+                            .cp-app-drive-path-element {
+                                flex-shrink: 0;
+                                display: inline-block;
+                                margin-right: 5px;
+                                white-space: normal;
+                                word-wrap: break-word;
+                                max-width: 100%;
+                            }
+                            .cp-app-drive-path-clickable {
+                                cursor: pointer;
+                                &:hover {
+                                    color: @cp_drive-fg;
+                                }
+                            }
+                        }
+                        font-size: 12px;
+                        line-height: 16px;
+                        color: @cp_drive-header-fg;
+                    }
+                }
+                &.cp-app-drive-tags-list {
+                    width: 100%;
+                    table {
+                        margin: 10px;
+                        width: ~"calc(100% - 100px)";
+                        table-layout: fixed;
+                        td, th {
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+                }
+                &.cp-app-drive-element-separator {
+                    text-align: left;
+                    font-weight: bold;
+                    margin-top: 0;
+                }
+            }
+        }
+        .cp-app-drive-element {
+            .cp-app-drive-element-truncated { display: none; }
+        }
+
+        .cp-app-drive-new-ghost {
+            cursor: pointer;
+            opacity: 0.5;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            display: inline-flex;
+            &:hover {
+                opacity: 0.7;
+            }
+            .fa, .cptools {
+                cursor: pointer;
+            }
+        }
+        div.cp-app-drive-content-grid {
+            padding: 1em;
+            ul {
+                margin: -(@drive_icon-margin);
+            }
+            .drive_fileIcon;
+            li {
+                border-radius: @variables_radius;
+                &.cp-app-drive-element {
+                    position: relative;
+                }
+                &.cp-app-drive-element-separator {
+                    display: block;
+                    height: auto;
+                    width: auto;
+                    border: none !important;
+                }
+                input {
+                    width: 100%;
+                    margin: 0;
+                    padding: 0;
+                    border-radius: 0;
+                    border: 1px solid transparent;
+                    font-size: 14px;
+                    height: auto;
+                }
+                .cp-app-drive-element-state {
+                    position: absolute;
+                    top: 3px;
+                    right: 3px;
+                    .fa, .cptools {
+                        margin: 0;
+                        font-size: 18px;
+                    }
+                }
+                .cp-app-drive-element-thumbnail {
+                    max-width: 100px;
+                    max-height: 100px;
+                    //background: @cp_drive-thumb-bg;
+                    & ~ .fa, & ~ .cptools {
+                        display: inline;
+                        font-size: 17px;
+                        position: absolute;
+                        top: 3px;
+                        left: 3px;
+                        margin: 0;
+                    }
+                }
+            }
+            .cp-app-drive-new-ghost {
+                flex-flow: column;
+                .fa, .cptools {
+                    font-size: 90px;
+                    margin-top: 5px;
+                    margin-bottom: 0;
+                }
+            }
+            .cp-app-drive-element-list {
+                display: none;
+            }
+        }
+
+        div.cp-app-drive-content-list {
+            .cp-app-drive-element-grid {
+                display: none;
+            }
+            // Make it act as a table!
+            .cp-app-drive-new-ghost {
+                padding: 0 5px;
+                margin-top: 20px;
+            }
+            padding-left: 10px;
+            ul {
+                width: 100%;
+            }
+            li {
+                display: flex;
+                border-radius: @variables_radius;
+                input {
+                    border: 1px solid transparent;
+                    margin: 0;
+                    padding: 0 4px;
+                    flex: 1;
+                    min-width: 0;
+                    height: auto;
+                }
+
+                &> span {
+                    padding: 0 5px;
+                    display: inline-block;
+                    white-space: nowrap;
+                    &:first-child, &.cp-icon {
+                        min-width: 20px;
+                        text-align: center;
+                        font-size: 18px;
+                        line-height: 32px;
+                        padding: 0;
+                    }
+                    &.cp-app-drive-element-name {
+                        flex: 1;
+                        min-width: 0;
+                        text-align: left;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                    &.cp-app-drive-element-state {
+                        min-width: 40px;
+                        text-align: right;
+                        display: flex;
+                        align-items: center;
+                        justify-content: end;
+                        height: @variables_bar-height;
+                        .fa, .cptools {
+                            &:not(:last-child) {
+                                margin-right: 2px;
+                            }
+                        }
+                    }
+                    &.cp-app-drive-element-list {
+                        width: 120px;
+                    }
+                    &.cp-app-drive-element-sort {
+                        display: none;
+                        .dropdown_main();
+                        .cp-dropdown-content a {
+                            display: block !important;
+                            .sortdesc {
+                                order: 2;
+                            }
+                        }
+                        button {
+                            color: inherit;
+                            background: none;
+                            border: none;
+                            .fa {
+                                margin-right: 5px;
+                            }
+                        }
+                    }
+                }
+                &:not(.cp-app-drive-element-header) {
+                    height: @variables_bar-height;
+                    line-height: @variables_bar-height;
+                }
+                &.cp-app-drive-element-separator {
+                    position: relative;
+                    height: 1.5 * @variables_bar-height;
+                    line-height: 1.5 * @variables_bar-height;
+                    span {
+                        line-height: 1.5 * @variables_bar-height;
+                        position: absolute;
+                    }
+                }
+                &.cp-app-drive-element-header {
+                    cursor: default;
+                    color: @cp_drive-header-fg;
+                    span {
+                        &:not(.fa):not(.cptools) {
+                            text-align: left;
+                        }
+                        &.sortasc, &.sortdesc {
+                            margin-right: 3px;
+                        }
+                    }
+                    &> span {
+                        padding: 14px 5px;
+                        border-radius: @variables_radius;
+                        &.cp-app-drive-sort-clickable {
+                            cursor: pointer;
+                            &:hover {
+                                background: @cp_drive-icon-hover;
+                            }
+                        }
+                    }
+                    .cp-app-drive-element-state {
+                        display: none !important;
+                    }
+                }
+            }
+            .cp-app-drive-element {
+                span {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    box-sizing: border-box;
+                }
+            }
+            @media screen and (max-width: 840px) {
+                .cp-app-drive-element-type, .cp-app-drive-element-filler {
+                    display: none !important;
+                }
+                .cp-app-drive-element-sort {
+                    display: block !important;
+                }
+            }
+
+            @media screen and (max-width: 740px) {
+                .cp-app-drive-element-folders, .cp-app-drive-element-ctime {
+                    display: none !important;
+                }
+            }
+
+            @media screen and (max-width: 670px) {
+                .cp-app-drive-element-files, .cp-app-drive-element-atime {
+                    display: none !important;
+                }
+                .cp-app-drive-element-header .cp-app-drive-element-state {
+                    display: none !important;
+                }
+            }
+        }
+
+        & > .cp-app-drive-path {
+            order: 1;
+            width: 100%;
+            height: @variables_bar-height;
+            line-height: @variables_bar-height;
+            cursor: default;
+            width: auto;
+            overflow: hidden;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 50px;
+            max-width: 100%;
+            text-align: left;
+            display: flex;
+            flex-direction: row;
+
+            .cp-app-drive-path-inner {
+                display: flex;
+                flex-flow: row-reverse;
+                flex-grow: 1;
+                justify-content: flex-end;
+                padding-left: 10px;
+                .cp-app-drive-path-element {
+                    .tools_unselectable();
+                    display: inline-block;
+                    flex-shrink: 0;
+                    max-width: 100%;
+                    height: @variables_bar-height;
+                    line-height: @variables_bar-height;
+                    font-size: @colortheme_app-font-size;
+                    padding: 0 5px;
+                    border: 0;
+                    color: @cp_drive-fg;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    transition: all 0.15s;
+
+                    &:first-child {
+                        flex-shrink: 1;
+                    }
+
+                    &.cp-app-drive-path-separator {
+                        color: @cp_drive-header-fg;
+                        cursor: default;
+                    }
+
+                    &.cp-app-drive-path-collapse {
+                        position: relative;
+                    }
+
+                    &.cp-app-drive-element-droppable {
+                        //background-color: @cp_drive-droppable-bg;
+                        color: @cp_drive-droppable-fg;
+                    }
+                    &.cp-app-drive-path-clickable {
+                        cursor: pointer;
+                        &:hover {
+                            &:not(.cp-app-drive-path-separator) {
+                                text-decoration: underline;
+                            }
+                            & ~ .cp-app-drive-path-element:not(.cp-app-drive-path-separator) {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #cp-app-drive-content-folder {
+        padding-right: 10px;
+        flex: 1;
+    }
+
+    #cp-app-drive-new-ghost-dialog.cp-modal-container {
+        .drive_fileIcon;
+
+        li:not(.cp-app-drive-element-selected):hover {
+            background: @cp_drive-icon-hover;
+        }
+        .cp-modal {
+            display: flex;
+            flex-flow: column;
+            li, li .fa, li .cptools {
+                cursor: pointer;
+                border-radius: @variables_radius;
+            }
+            &> p {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            &> div {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-content: center;
+                flex: 1;
+                .cp-app-drive-new-upload {
+                    break-after: always;
+                    page-break-after: always;
+                }
+            }
+        }
+
+        .cp-app-drive-new-name {
+            color: @cp_drive-fg;
+            white-space: nowrap;
+        }
+
+        @media screen and (max-width: @browser_media-medium-screen),
+               screen and (max-height: @browser_media-medium-screen) {
+            .cp-modal {
+                & > p {
+                    display: none;
+                }
+                & > div {
+                    li {
+                        height: 40px;
+                        width: 90%;
+                        display: flex;
+                        align-items: center;
+                        align-content: unset;
+                        .fa, .cptools {
+                            font-size: 32px;
+                            min-width: 50px;
+                        }
+                        .cp-app-drive-new-name {
+                            height: auto;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    .cp-toolbar-bottom {
+        .cp-toolbar-bottom-left {
+            @drive-light: lighten(@cryptpad_color_brand, 30%);
+            .cp-app-drive-toolbar-new {
+                border-radius: @variables_radius;
+                color: @cryptpad_color_grey_900;
+                border-color: @drive-light;
+                background-color: @drive-light;
+                &:hover {
+                    background-color: fade(@drive-light, 80%);
+                }
+            }
+        }
+        .cp-toolbar-bottom-right {
+            .fa-history { order: 50; }
+            // .fa-list, .fa-th-large,
+            .cp-app-drive-viewmode-button {
+                order: 25;
+                i {
+                    margin-right: 0;
+                }
+            }
+            #cp-app-drive-toolbar-context-mobile, #cp-app-drive-toolbar-contextbuttons { order: 0; }
+            #cp-app-drive-toolbar-context-mobile {
+                .fa { margin: 0 !important; }
+            }
+            #cp-app-drive-toolbar-contextbuttons {
+                height: @variables_bar-height;
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+
+    .cp-app-drive-button {
+        order: 15;
+        margin: 0 1em;
+    }
+
+}
+

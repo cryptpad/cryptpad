@@ -1,0 +1,105 @@
+.charts_main() {
+
+    // basic functional things
+    table.cp-charts.column {
+        box-sizing: border-box;
+        display: flex;
+        height: 100%;
+        overflow-x: auto;
+        tbody {
+            height: 100%;
+            display: flex;
+            align-items: stretch;
+            min-width: 100%;
+
+            tr {
+                position: relative;
+                display: flex;
+                justify-content: flex-start;
+
+                flex-direction: row;
+                flex-shrink: 1;
+                flex-grow: 1;
+                justify-content: flex-start;
+
+                align-items: flex-end;
+
+                td {
+                    display: flex;
+                    height: calc(100% * var(--size));
+                    align-items: flex-start;
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+
+    // styles
+    table.cp-charts.column {
+        //border: 1px solid white;
+        tbody {
+            tr {
+                max-width: 30px;
+
+                td {
+                    min-width: 3px;
+                    border: 1px solid @cryptpad_color_brand;
+                    background: @cryptpad_color_brand;
+                    margin: 1px;
+                }
+            }
+        }
+    }
+
+    .cp-charts-cell {
+        border: 1px solid @cp_form-border;
+        display: table-cell;
+        padding: 5px 10px;
+        background: @cp_form-bg2;
+    }
+
+   .cp-form-results-type-radio {
+        .cp-form-results-type-multiradio-data {
+            display: flex;
+            flex-flow: column;
+        }
+        .cp-form-results-type-radio-data {
+            display: table-row;
+            border: 1px solid @cp_form-border;
+            & > span {
+                .cp-charts-cell();
+            }
+        }
+    }
+
+    .cp-charts.cp-bar-table, .cp-charts.cp-text-table {
+        display: table;
+        width: 100%;
+        .cp-charts-row {
+            display: table-row;
+            border: 1px solid @cp_form-border;
+            &.full {
+                display: flex;
+                flex-flow: column;
+            }
+
+            & > span {
+                .cp-charts-cell();
+                display: table-cell;
+                &.cp-value {
+                    min-width: 200px;
+                }
+                &.cp-bar-container {
+                    width: 99%;
+                    padding: 0px;
+                    position: relative;
+                    .cp-bar {
+                        position: absolute;
+                        background: @cryptpad_color_brand;
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+}

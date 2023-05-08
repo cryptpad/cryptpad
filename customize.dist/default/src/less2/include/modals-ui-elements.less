@@ -1,0 +1,314 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+@import (reference) "./browser.less";
+@import (reference) "./markdown.less";
+
+.modals-ui-elements_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .cp-spacer {
+        height: @variables_padding;
+    }
+    // Share modal
+    .msg.cp-inline-radio-group {
+        overflow: unset !important;
+        padding: 0px @variables_padding;
+        .radio-group {
+            display: flex;
+            flex-direction: row;
+            &:not(:last-child) {
+                margin-bottom: 8px;
+            }
+            .cp-radio {
+                margin-right: 30px;
+            }
+            @media (max-width: @browser_media-medium-screen) {
+                flex-direction: column;
+                &:not(:last-child) {
+                    margin-bottom: 0px;
+                }
+                .cp-radio {
+                    margin: 0 0 5px 0;
+                }
+            }
+        }
+    }
+
+    // Properties modal
+    .cp-app-prop {
+        margin-bottom: 10px;
+        .cp-app-prop-size-container {
+            height: 20px;
+            background-color: @cryptpad_color_brand;
+            border-radius: @variables_radius;
+            margin: 10px 0;
+            padding: 0;
+            div {
+                height: 20px;
+                margin: 0;
+                padding: 0;
+                background-color: @cryptpad_color_grey_500;
+                border-top-left-radius: @variables_radius;
+                border-bottom-left-radius: @variables_radius;
+            }
+        }
+        .cp-app-prop-size-legend {
+            display: flex;
+            margin: 10px 0;
+            & > div {
+                display: flex;
+                align-items: center;
+                flex-basis: 50%;
+                margin: 0;
+                padding: 0;
+            }
+            .cp-app-prop-history-size-color, .cp-app-prop-contents-size-color {
+                display: inline-block;
+                height: 20px;
+                width: 20px;
+                margin-right: 10px;
+                border-radius: @variables_radius;
+            }
+            .cp-app-prop-history-size-color {
+                background-color: @cryptpad_color_grey_500;
+            }
+            .cp-app-prop-contents-size-color {
+                background-color: @cryptpad_color_brand;
+            }
+        }
+    }
+
+    .cp-app-prop-content {
+        color: @cryptpad_text_col;
+    }
+
+    // Access modal
+    button.cp-access-add {
+        i {
+            margin-right: 0px !important;
+        }
+        i.fa-arrow-left {
+            display: inline;
+            @media (max-width: @browser_media-medium-screen) {
+                display: none;
+            }
+        }
+        i.fa-arrow-up {
+            display: none;
+            @media (max-width: @browser_media-medium-screen) {
+                display: inline;
+            }
+        }
+    }
+
+    .cp-overlay-container {
+        position: relative;
+        .cp-overlay {
+            position: absolute;
+            background-color: @cp_access-overlay;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    }
+
+    .cp-access-margin-right {
+        margin-right: 5px !important;
+    }
+
+    // teams invite modal
+    .cp-teams-invite-block {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        &.cp-teams-invite-role {
+            .cp-radio:not(:first-child) {
+                margin-left: 10px;
+            }
+        }
+        .cp-teams-help {
+            text-decoration: none !important;
+        }
+    }
+    .cp-teams-invite-message {
+        resize: none;
+    }
+    .cp-teams-invite-alert {
+        margin: 10px 0px 0px 0px !important;
+    }
+    .cp-teams-invite-spinner {
+        font-size: 1.2em;
+        .fa {
+            margin-right: 10px;;
+        }
+    }
+    .cp-teams-help {
+        margin-left: 10px;
+    }
+
+    .cp-snapshots-modal {
+        & > input:last-child {
+            margin-bottom: 0 !important;
+        }
+    }
+    .cp-snapshots-container {
+        @snapshot_spacing: 10px;
+        display: flex;
+        flex-flow: column;
+        color: @cryptpad_text_col;
+        margin-bottom: @snapshot_spacing;
+        max-height: 245px;
+        overflow: auto;
+        outline: none;
+        .cp-snapshot-spinner {
+            min-height: 90px;
+            text-align: center;
+        }
+        .cp-snapshot-element {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+            outline: none;
+            border-radius: @variables_radius;
+            & > i {
+                margin-left: @snapshot_spacing;
+                text-align: center;
+            }
+            .cp-snapshot-title {
+                margin-left: @snapshot_spacing;
+                display: flex;
+                flex-flow: column;
+                flex: 1;
+                min-width: 0;
+                span {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .cp-snapshot-time {
+                    font-size: 12px;
+                }
+            }
+            .cp-snapshot-buttons {
+                margin-left: @snapshot_spacing;
+                display: none;
+                align-items: flex-start;
+                margin-bottom: -3px;
+                .cp-button-confirm {
+                    margin-right: @snapshot_spacing;
+                }
+                button {
+                    margin-right: @snapshot_spacing;
+                }
+            }
+            &:hover, &:focus, &:focus-within {
+                .cp-snapshot-buttons {
+                    display: flex;
+                }
+                background-color: @cp_snapshots-hover;
+            }
+        }
+    }
+
+    // mediatag preview
+    #cp-mediatag-preview-modal {
+        .cp-modal {
+            display: flex;
+            justify-content: center;
+            .cp-mediatag-container {
+                width: 100%;
+                flex: 1;
+                min-width: 0;
+                overflow: auto;
+                .mediatag_cryptpad();
+                media-tag {
+                    & > * {
+                        max-width: 100%;
+                        max-height: 100%;
+                    }
+                    video, iframe {
+                        margin-bottom: -5px;
+                    }
+                    button {
+                        line-height: 1.5;
+                    }
+                    img {
+                        align-self: center;
+                    }
+                    & > iframe {
+                        width: 100%;
+                        height: 100%;
+                        min-height: 75vh;
+                    }
+                    & > .plain-text-reader {
+                        white-space: pre-wrap;
+                        text-align: left;
+                        word-break: break-word;
+                        color: @cryptpad_text_col;
+                        padding: 5px;
+                    }
+                }
+                .markdown_extensions();
+                pre.mermaid {
+                    overflow: unset;
+                    margin-bottom: 0;
+                }
+                pre.markmap {
+                    margin-bottom: 0;
+                    max-height: 100%;
+                    overflow: hidden;
+                    display: flex;
+                    flex-flow: column;
+                    svg {
+                        flex: 1;
+                        color: @cp_markdown-block-fg;
+                    }
+                }
+                .cp-spinner {
+                    border-color: @cryptpad_color_brand;
+                    border-top-color: transparent;
+                }
+            }
+            .cp-mediatag-control {
+                align-self: center;
+                .fa {
+                    margin: 10px;
+                    cursor: pointer;
+                }
+            }
+            .cp-mediatag-outer {
+                display: flex;
+                height: 100%;
+                width: 100%;
+                align-items: center;
+            }
+        }
+    }
+    #cp-upload-preview-container {
+        max-width: 100%;
+        max-height: 300px;
+        overflow: auto;
+        margin-bottom: 15px;
+        // FIXME these styles yield weird results for tall, thin images
+        // maybe img { object-fit: contain; } or scale-down are options
+        // but they have problems too
+        media-tag {
+            max-width: 100%;
+            iframe {
+                // pdfs don't take the full width unless we tell them to
+                width: 100%;
+            }
+            & > * {
+                max-width: 100%;
+            }
+        }
+    }
+    input#cp-app-drive-link-url {
+        &.cp-input-invalid {
+            border: 2px solid @cryptpad_color_red;
+            color: @cp_form-invalid;
+        }
+    }
+}

@@ -1,0 +1,84 @@
+.app-print_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .cp-app-print {
+        // Current scope is <html>
+        @media print {
+            height: auto;
+            max-height: none;
+            overflow: visible;
+            display: block;
+            // Slide app
+            body.cp-app-slide {
+                display: block;
+                .CodeMirror, #cme_toolbox {
+                    display: none;
+                }
+                * {
+                    visibility: hidden;
+                    max-height: none;
+                }
+                .cp-app-slide-viewer #cp-app-slide-print {
+                    display: block;
+                    visibility: visible;
+                    * {
+                        visibility: visible;
+                    }
+                }
+                .cp-app-slide-viewer #cp-app-slide-modal {
+                    display: none !important;
+                }
+                .cp-app-slide-viewer {
+                    flex: 1 !important;
+                    overflow: visible !important;
+                }
+                .cp-toolbar-userlist-drawer {
+                    display: none !important;
+                }
+                #cp-app-slide-editor {
+                    height: auto;
+                    display: block;
+                }
+            }
+            // Code app
+            body.cp-app-code {
+                display: block;
+                height: auto;
+                * {
+                    visibility: hidden;
+                    height: auto;
+                    max-height: none;
+                }
+                .cp-toolbar-userlist-drawer {
+                    display: none;
+                }
+                #cme_toolbox {
+                    display: none;
+                }
+                #cp-app-code-editor {
+                    display: block;
+                    #cp-app-code-container {
+                        display: none;
+                    }
+                    #cp-app-code-preview {
+                        display: block;
+                        #cp-app-code-print {
+                            font-size: 20px;
+                            display: block;
+                            overflow: visible !important;
+                            width: 100%;
+                            visibility: visible;
+                            * { visibility: visible; }
+                            pre { border: none; }
+                        }
+                        #cp-app-code-preview-content {
+                            display: none !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

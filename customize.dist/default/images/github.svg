@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0.1 (1.0.1+r73)"
+   sodipodi:docname="github.svg"
+   xml:space="preserve"
+   style="enable-background:new 0 0 24 24;"
+   viewBox="0 0 24 24"
+   y="0px"
+   x="0px"
+   id="Layer_1"
+   version="1.1"><metadata
+   id="metadata2740"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs2738" /><sodipodi:namedview
+   inkscape:current-layer="Layer_1"
+   inkscape:window-maximized="0"
+   inkscape:window-y="10"
+   inkscape:window-x="10"
+   inkscape:cy="13.410098"
+   inkscape:cx="6.7851327"
+   inkscape:zoom="27.125"
+   showgrid="false"
+   id="namedview2736"
+   inkscape:window-height="1036"
+   inkscape:window-width="1900"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   guidetolerance="10"
+   gridtolerance="10"
+   objecttolerance="10"
+   borderopacity="1"
+   bordercolor="#666666"
+   pagecolor="#ffffff"
+   inkscape:document-rotation="0" />
+<style
+   id="style2725"
+   type="text/css">
+	.st0{fill:url(#Shape_1_);}
+</style>
+<g
+   style="fill:#0087ff;fill-opacity:1"
+   id="Octicons">
+	<g
+   style="fill:#0087ff;fill-opacity:1"
+   id="mark-github">
+		<linearGradient
+   y2="12"
+   x2="22.9819"
+   y1="12"
+   x1="1.0181"
+   gradientUnits="userSpaceOnUse"
+   id="Shape_1_">
+			<stop
+   id="stop2727"
+   style="stop-color:#4592C4"
+   offset="0" />
+			<stop
+   id="stop2729"
+   style="stop-color:#545ACD"
+   offset="1" />
+		</linearGradient>
+		<path
+   style="fill:#0087ff;fill-opacity:1"
+   d="M12,1.3c-6.1,0-11,4.9-11,11c0,4.9,3.1,9,7.5,10.4c0.5,0.1,0.8-0.2,0.8-0.5c0-0.3,0-1.1,0-2    c-2.8,0.5-3.5-0.7-3.7-1.3c-0.1-0.3-0.7-1.3-1.1-1.6c-0.4-0.2-0.9-0.7,0-0.7c0.9,0,1.5,0.8,1.7,1.1c1,1.7,2.6,1.2,3.2,0.9    c0.1-0.7,0.4-1.2,0.7-1.5c-2.4-0.3-5-1.2-5-5.4c0-1.2,0.4-2.2,1.1-3C6,8.5,5.7,7.3,6.3,5.8c0,0,0.9-0.3,3,1.1    c0.9-0.2,1.8-0.4,2.7-0.4c0.9,0,1.9,0.1,2.7,0.4c2.1-1.4,3-1.1,3-1.1c0.6,1.5,0.2,2.6,0.1,2.9c0.7,0.8,1.1,1.7,1.1,3    c0,4.2-2.6,5.1-5,5.4c0.4,0.3,0.7,1,0.7,2c0,1.5,0,2.6,0,3c0,0.3,0.2,0.6,0.8,0.5c4.3-1.5,7.5-5.6,7.5-10.4    C23,6.2,18.1,1.3,12,1.3L12,1.3z"
+   class="st0"
+   id="Shape" />
+	</g>
+</g>
+</svg>

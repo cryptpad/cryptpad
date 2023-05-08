@@ -1,0 +1,126 @@
+@import (reference) "../include/infopages.less";
+@import (reference) "../include/colortheme-all.less";
+@import (reference) "../include/alertify.less";
+@import (reference) "../include/checkmark.less";
+@import (reference) "../include/forms.less";
+
+&.cp-page-register {
+    .infopages_main();
+    .forms_main();
+
+    .alertify_main();
+    .checkmark_main(20px);
+
+    .cp-container {
+        .form-group {
+            .cp-register-instance {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            #register {
+                &.btn {
+                    padding: .5rem .5rem;
+                }
+                margin-top: 16px;
+                font-size: 1.25em;
+                min-width: 30%;
+            }
+        }
+        padding-bottom: 3em;
+        min-height: 5vh;
+    }
+    .alertify {
+        // workaround for alertify making empty p
+        p:empty {
+            display: none;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        @media screen and (max-width: 600px) {
+            nav .btn-danger {
+                line-height: inherit;
+            }
+        }
+
+    }
+    .cp-restricted-registration {
+        text-align: center !important;
+    }
+
+    .cp-register-det {
+        #data {
+
+            p {
+                li {
+                    margin-bottom: 1em;
+                }
+                .fa {
+                    padding-right: 10px;
+                }
+            }
+            h3 {
+                font-weight: 700;
+                margin-bottom: 1em;
+            }
+        }
+        .cp-reg-form {
+            img {
+                margin-top: 0px;
+                position: relative;
+                z-index: 0;
+            }
+        }
+        #userForm {
+            padding: 15px;
+            background-color: @cp_static-card-bg;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 100px;
+            border-radius: @infopages-radius-L;
+            .cp-shadow();
+            .form-control {
+                border-radius: @infopages-radius;
+                color: @cryptpad_text_col;
+                background-color: @cp_forms-bg;
+                margin-bottom: 10px;
+                &:focus {
+                    border-color: @cryptpad_color_brand;
+                }
+                .tools_placeholder-color();
+            }
+            .checkbox-container {
+                color: @cryptpad_text_col;
+            }
+            button#register {
+                margin-top: 10px;
+            }
+        }
+
+        .cp-register-notes {
+            ul.cp-notes-list {
+                list-style: none;
+                margin-left: 0;
+                padding-left: 30px;
+                position: relative;
+                li {
+                    margin-bottom: 10px;
+                    &::before {
+                        position: absolute;
+                        left: 0;
+                        font-family: "FontAwesome";
+                        content: "\f071";
+                    }
+                    .red {
+                        background-color: @cp_static-danger;
+                    }
+                }
+            }
+        }
+    }
+}
+

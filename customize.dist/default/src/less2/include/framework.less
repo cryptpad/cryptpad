@@ -1,0 +1,90 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./toolbar.less";
+@import (reference) './fileupload.less';
+@import (reference) './alertify.less';
+@import (reference) './corner.less';
+@import (reference) './contextmenu.less';
+@import (reference) './tokenfield.less';
+@import (reference) './creation.less';
+@import (reference) './tippy.less';
+@import (reference) "./checkmark.less";
+@import (reference) "./password-input.less";
+@import (reference) './font.less';
+@import (reference) "./app-print.less";
+@import (reference) "./app-noscroll.less";
+@import (reference) "./messenger.less";
+@import (reference) "./cursor.less";
+@import (reference) "./usergrid.less";
+@import (reference) "./mentions.less";
+@import (reference) "./forms.less";
+@import (reference) "./modals-ui-elements.less";
+
+.framework_main(
+    @bg-color: @colortheme_apps[default]
+) {
+    --LessLoader_require: LessLoader_currentFile();
+    // Set the HTML style for the apps which shouldn't have a body scrollbar
+    .app-noscroll_main();
+
+    // Set the HTML style for printing slides
+    .app-print_main();
+
+    .font_main();
+
+    .toolbar_main(
+        @bg-color: @bg-color,
+    );
+    .alertify_main();
+    .modals-ui-elements_main();
+    .corner_main();
+    .contextmenu_main();
+    .fileupload_main();
+    .tokenfield_main();
+    .tippy_main();
+    .checkmark_main(20px);
+    .password_main();
+    .messenger_main(
+        @bg-color: @cp_messenger-bg
+    );
+    .cursor_main();
+    .usergrid_main();
+    .forms_main();
+    .mentions_main();
+    .creation_main(
+        @bg-color: @bg-color,
+    );
+    font: @colortheme_app-font;
+};
+
+.framework_min_main(
+    @bg-color: @colortheme_static_apps[default]
+) {
+    --LessLoader_require: LessLoader_currentFile();
+    // Set the HTML style for the apps which shouldn't have a body scrollbar
+    .app-noscroll_main();
+
+    // Set the HTML style for printing slides
+    .app-print_main();
+
+    .font_main();
+
+    .toolbar_main(
+        @bg-color: @bg-color,
+    );
+    .fileupload_main();
+    .alertify_main();
+    .modals-ui-elements_main();
+    .corner_main();
+    .contextmenu_main();
+    .tippy_main();
+    .checkmark_main(20px);
+    .password_main();
+    .usergrid_main();
+    .forms_main();
+    font: @colortheme_app-font;
+}
+
+& {
+    body.cp-readonly .cp-hidden-if-readonly { display: none !important; }
+}
+

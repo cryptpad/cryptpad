@@ -1,0 +1,108 @@
+@import (reference) "./colortheme-all.less";
+.support_main () {
+    @ticket-bg: @cp_support-bg;
+    @msg-bg: @cp_support-msg-bg;
+    @fromme-bg: @cp_support-header-bg;
+    .cp-support-form-container {
+        div {
+            margin-bottom: 10px;
+        }
+        [type="text"] {
+            width: @sidebar_button-width;
+            margin-bottom: 10px;
+        }
+        hr {
+            border-color: @msg-bg;
+        }
+        textarea {
+            width: 2*@sidebar_button-width;
+            max-width: 90%;
+            padding: 10px 15px;
+            height: 300px;
+        }
+    }
+    .cp-support-attachments {
+        display: flex;
+        .fa {
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        &> span {
+            border: 1px solid @fromme-bg;
+            margin-right: 5px;
+            padding: 10px;
+        }
+    }
+    .cp-support-container {
+        .cp-support-list-ticket {
+            display: flex;
+            flex-flow: column;
+            background-color: @ticket-bg;
+            padding: 10px;
+            width: 1200px;
+            max-width: 90%;
+            margin: 5px auto;
+            border-radius: @variables_radius;
+            .cp-support-list-message {
+                background-color: @msg-bg;
+                padding: 5px 5px;
+                border-radius: @variables_radius;
+                .cp-support-fromme {
+                    background-color: @fromme-bg;
+                }
+                .cp-support-showdata {
+                    cursor: pointer;
+                    background-color: @fromme-bg;
+                    .cp-support-message-data {
+                        display: none;
+                        cursor: default;
+                    }
+                }
+                .cp-support-message-time {
+                    float: right;
+                }
+                pre {
+                    color: @cp_support-msg-fg;
+                    margin-bottom: 0;
+                    white-space: pre-wrap;
+                    &.cp-support-message-content {
+                        margin-top: 10px;
+                        margin-bottom: 10px;
+                    }
+                }
+            }
+            .cp-support-list-actions {
+                display: flex;
+                order: 3;
+                margin-top: 5px;
+                .cp-support-hide {
+                    display: none;
+                }
+            }
+            .cp-support-form-container {
+                order: 2;
+            }
+            &.cp-support-list-closed {
+                .cp-support-list-actions {
+                    display: flex !important;
+                    .cp-support-answer, .cp-support-close {
+                        display: none;
+                    }
+                    .cp-support-hide {
+                        display: inline;
+                    }
+                }
+                .cp-support-form-container {
+                    display: none;
+                }
+            }
+            button {
+                margin-left: 2px;
+                margin-right: 5px;
+            }
+        }
+    }
+}
+
+
+

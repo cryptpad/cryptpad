@@ -1,0 +1,220 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./tools.less";
+@import (reference) "./variables.less";
+
+.checkmark_vars(
+    @size: 20px
+) {
+    @checkmark-size: @size;
+    @checkmark-width: round(@size / 8);
+    @checkmark-dim1: round(@size / 3);
+    @checkmark-dim2: round(2 * @size / 3);
+    @checkmark-top: round(@size / 12) - 1;
+    @checkmark-radio-size: @checkmark-dim1 * 3;
+}
+
+.checkmark_main(@size: 20px) {
+    --LessLoader_require: LessLoader_currentFile();
+    .checkmark_vars(@size);
+    --checkmark-size: @checkmark-size;
+    --checkmark-width: @checkmark-width;
+    --checkmark-dim1: @checkmark-dim1;
+    --checkmark-dim2: @checkmark-dim2;
+    --checkmark-top: @checkmark-top;
+    --checkmark-radio-size: @checkmark-radio-size;
+}
+& {
+    @cp_checkmark-back0: @cp_forms-bg;
+    @cp_checkmark-back0-active: @cp_forms-disabled;
+    @cp_checkmark-back1: @cp_forms-border;
+    @cp_checkmark-col1: @cp_forms-bg;
+    @cp_checkmark-back2: @cp_forms-bg;
+    @cp_checkmark-col2: @cp_forms-border;
+    @cp_checkmark-disabled: @cp_forms-disabled;
+
+    .checkmark_vars();
+    // <label.cp-checkmark><input><span.cp-checkmark-mark></span>Text</label>
+    .cp-checkmark {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        position: relative;
+        .tools_unselectable();
+        .cp-checkmark-mark {
+            border-radius: @variables_radius;
+        }
+
+        & > a {
+            margin-left: 0.25em;
+        }
+
+        &.cp-checkmark-secondary {
+            .cp-checkmark-mark {
+                &:after {
+                    border-color: @cp_checkmark-col2;
+                }
+            }
+            input {
+                &:checked ~ .cp-checkmark-mark {
+                    background-color: @cp_checkmark-back2;
+                    border-color: @cp_checkmark-back2;
+                }
+                &:disabled ~ .cp-checkmark-mark {
+                    background-color: @cp_checkmark-disabled;
+                }
+                &:disabled ~ .cp-checkmark-label {
+                    color: @cp_checkmark-disabled;
+                }
+            }
+        }
+        &:hover .cp-checkmark-mark {
+            background-color: @cp_checkmark-back0-active;
+        }
+
+        input {
+            display: none;
+            &:checked ~ .cp-checkmark-mark {
+                background-color: @cp_checkmark-back1;
+                border-color: @cp_checkmark-back1;
+                &:after {
+                    display: block;
+                }
+            }
+            &:disabled ~ .cp-checkmark-mark {
+                background-color: @cp_checkmark-disabled;
+            }
+            &:disabled ~ .cp-checkmark-label {
+                color: @cp_checkmark-disabled;
+            }
+        }
+
+        .cp-checkmark-label {
+            cursor: default;
+            &:empty {
+                display: none;
+            }
+        }
+        .cp-checkmark-mark {
+            margin-right: 10px;
+            position: relative;
+            height: @checkmark-size;
+            height: var(--checkmark-size);
+            width: @checkmark-size;
+            width: var(--checkmark-size);
+            background-color: @cp_checkmark-back0;
+            display: flex;
+            justify-content: center;
+            border: 1px solid @cp_checkmark-disabled;
+            flex-shrink: 0;
+            &:after {
+                content: "";
+                display: none;
+                margin-top: @checkmark-top;
+                margin-top: var(--checkmark-top);
+                width: @checkmark-dim1;
+                width: var(--checkmark-dim1);
+                height: @checkmark-dim2;
+                height: var(--checkmark-dim2);
+                transform: rotate(45deg);
+                border: solid @cp_checkmark-col1;
+                border-width: 0 @checkmark-width @checkmark-width 0;
+                border-width: 0 var(--checkmark-width) var(--checkmark-width) 0;
+                position: absolute;
+                box-sizing: border-box;
+            }
+            &:focus {
+                box-shadow: 0px 0px 5px @cp_checkmark-back1;
+                outline: none;
+            }
+        }
+
+    }
+
+    .cp-radio {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        &.cp-radio-secondary {
+            .cp-radio-mark {
+                &:after {
+                    border-color: @cp_checkmark-col2;
+                }
+            }
+            input {
+                &:checked ~ .cp-radio-mark {
+                    background-color: @cp_checkmark-back2;
+                }
+                &:disabled ~ .cp-checkmark-mark {
+                    background-color: @cp_checkmark-disabled;
+                }
+                &:disabled ~ .cp-checkmark-label {
+                    color: @cp_checkmark-disabled;
+                }
+            }
+        }
+        &:hover .cp-radio-mark {
+            background-color: @cp_checkmark-back0-active;
+        }
+
+        input {
+            display: none;
+            &:checked ~ .cp-radio-mark {
+                background-color: @cp_checkmark-back1;
+                border-color: @cp_checkmark-back1;
+                &:after {
+                    display: block;
+                }
+            }
+            &:disabled ~ .cp-checkmark-mark {
+                background-color: @cp_checkmark-disabled;
+            }
+            &:disabled ~ .cp-checkmark-label {
+                color: @cp_checkmark-disabled;
+            }
+        }
+
+        .cp-checkmark-label {
+            cursor: default;
+            &:empty {
+                display: none;
+            }
+        }
+
+        .cp-radio-mark {
+            margin-right: 10px;
+            position: relative;
+            height: @checkmark-radio-size;
+            height: var(--checkmark-radio-size);
+            width: @checkmark-radio-size;
+            width: var(--checkmark-radio-size);
+            background-color: @cp_checkmark-back0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid @cp_checkmark-disabled;
+            flex-shrink: 0;
+            &:after {
+                display: none;
+                content: "";
+                border-radius: 50%;
+                background: @cp_checkmark-back0;
+                width: @checkmark-dim1;
+                width: var(--checkmark-dim1);
+                height: @checkmark-dim1;
+                height: var(--checkmark-dim1);
+            }
+            &:focus {
+                box-shadow: 0px 0px 5px @cp_checkmark-back1;
+                outline: none;
+            }
+        }
+
+    }
+}

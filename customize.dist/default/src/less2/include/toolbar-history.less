@@ -1,0 +1,293 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+
+.history_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .cp-toolbar-history {
+
+        @history_lineBg: @cp_history-line-bg;
+        @history_userBg1: @cp_history-bg1;
+        @history_userBg2: @cp_history-bg2;
+        @pos-color: @cp_history-fg;
+        @fill-width: 40px;
+
+        display: none;
+        width: 100%;
+        padding: 10px 0 0;
+        align-items: center;
+        justify-content: center;
+        color: @cp_history-fg;
+        * {
+            font: @colortheme_app-font;
+        }
+
+
+        @media screen and (max-width: 870px) {
+            flex-flow: column;
+            .cp-toolbar-history-actions {
+                width: 100%;
+                .cp-history-actions-first {
+                    margin-right: 0 !important;
+                }
+            }
+            .cp-toolbar-history-timeline {
+                width: ~"calc(100% - 20px)";
+                margin-right: 10px !important;
+            }
+        }
+
+        @media screen and (max-height: 500px) {
+            padding-top: 0px;
+            .cp-history-timeline-line {
+                display: none !important;
+            }
+            .cp-toolbar-history-timeline {
+                width: 100% !important;
+                margin: 0 !important;
+            }
+            .cp-history-timeline-actions {
+                margin-left: 0 !important;
+            }
+        }
+
+        &.cp-history-init {
+            padding: 0;
+            height: 32px;
+        }
+
+        .cp-toolbar-history-timeline {
+            display: flex;
+            flex-flow: column;
+            flex: 1;
+            margin-left: 10px;
+            margin-right: @fill-width;
+            .cp-history-timeline-time {
+                font-size: 12px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1;
+                min-width: 0;
+                text-align: center;
+            }
+            .cp-history-timeline-version {
+                font-size: 12px;
+                margin-right: 10px;
+            }
+        }
+        .cp-toolbar-history-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 39px;
+            align-self: baseline;
+            margin-right: 5px;
+            .cp-history-actions-first {
+                margin-right: @fill-width;
+            }
+            button {
+                margin: 0 5px;
+                border: 1px solid @cp_toolbar-fg;
+                background-color: @cp_toolbar-bg;
+                color: @cp_toolbar-fg;
+                border-radius: @variables_radius;
+                text-transform: uppercase;
+                display: inline-flex;
+                align-items: center;
+                .fa:not(:last-child) {
+                    margin-right: 5px;
+                }
+                &:hover {
+                    // XXX DB: check hover in light/dark themes
+                    background-color: fade(@cp_toolbar-fg, 30%);
+                }
+                &:disabled {
+                    cursor: not-allowed !important;
+                    opacity: 0.6;
+                    &:hover, &:active {
+                        background-color: transparent;
+                    }
+                }
+            }
+        }
+
+        &.cp-history-drive {
+            .cp-history-timeline-container {
+                height: 20px !important;
+            }
+            .cp-history-timeline-users {
+                display: none !important;
+            }
+            .cp-history-timeline-legend {
+                display: none !important;
+            }
+            .cp-history-timeline-pos {
+                height: 18px !important;
+            }
+            .cp-toolbar-history-loadmore {
+                font-size: 10px !important;
+            }
+            .cp-history-timeline-actions {
+                margin-left: 21px !important;
+            }
+            .cp-toolbar-history-actions {
+                align-items: baseline !important;
+            }
+        }
+        &.cp-smallpatch {
+            .cp-history-snapshot {
+                border: none !important;
+                width: 2px !important;
+                background: @pos-color;
+            }
+            .cp-history-timeline-pos {
+                border-right: none;
+                border-left: none;
+                width: 2px !important;
+                background: @pos-color;
+                &:before {
+                    left: -6px;
+                }
+            }
+        }
+        &.cp-history-oo {
+            .cp-history-timeline-container {
+                height: 20px !important;
+                .cp-history-timeline-pos {
+                    height: 20px !important;
+                }
+            }
+            .cp-history-timeline-actions {
+                margin-left: 0 !important;
+            }
+        }
+        .cp-history-timeline-line {
+            display: flex;
+            .cp-history-timeline-legend {
+                display: flex;
+                flex-flow: column;
+                justify-content: space-around;
+                align-items: center;
+                margin-right: 4px;
+            }
+            .cp-history-timeline-loadmore {
+                width: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                button {
+                    padding: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: @history_lineBg;
+                    margin-right: 1px;
+                    .fa-refresh {
+                        font-size: 13px;
+                    }
+                }
+            }
+            .cp-history-timeline-container {
+                flex: 1;
+                position: relative;
+                background-color: @history_lineBg;
+                height: 39px;
+            }
+            .cp-history-timeline-bar {
+                display: flex;
+                flex-flow: column;
+                padding: 1px;
+                & > span {
+                    height: 18px;
+                    display: flex;
+                }
+                .cp-history-timeline-users {
+                    margin-bottom: 1px;
+                    .cp-history-bar-el {
+                        background-color: @history_userBg1;
+                        &:nth-child(2n) {
+                            background-color: @history_userBg2;
+                        }
+                    }
+                }
+                .cp-history-timeline-user {
+                    .cp-history-bar-el {
+                        background-color: @history_userBg2;
+                        &:nth-child(2n) {
+                            background-color: @history_userBg1;
+                        }
+                    }
+                }
+                .cp-history-snapshots {
+                    position: absolute;
+                    left: 1px;
+                    right: 1px;
+                    top: 1px;
+                    bottom: 1px;
+                    cursor: pointer;
+                    .cp-history-snapshot {
+                        position: absolute;
+                        border: 2px solid @cryptpad_text_col;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+            }
+        }
+        .cp-history-timeline-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 5px 0px 5px 40px;
+            button {
+                width: 50px;
+                color: @cp_toolbar-fg;
+                border-radius: @variables_radius;
+                .fa:first-child:not(:last-child) {
+                    margin-right: 5px;
+                }
+                &:disabled {
+                    cursor: not-allowed !important;
+                    opacity: 0.6;
+                    &:hover, &:active {
+                        background-color: transparent;
+                    }
+                }
+            }
+            .cp-history-timeline-version:empty {
+                display: none;
+            }
+            .cp-history-timeline-time:empty {
+                display: none;
+            }
+            .cp-history-timeline-next {
+                button:last-child {
+                    margin-right: 0;
+                }
+            }
+            .cp-history-timeline-prev {
+                button:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+
+        .cp-history-timeline-pos {
+            //width: 2px;
+            border: 2px solid @cryptpad_text_col;
+            height: 37px;
+            //background: @pos-color;
+            position: absolute;
+            &:before {
+                top: -17px;
+                font-size: 24px;
+                position: absolute;
+                left: ~"calc(50% - 6px)";
+            }
+        }
+    }
+}
+

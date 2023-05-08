@@ -1,0 +1,76 @@
+@import (reference) "./tools.less";
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+.avatar_vars(
+    @width: 30px
+) {
+    @avatar-width: @width;
+    @avatar-font-size: @width / 1.8;
+    // scale animal avatar to be somewhat larger, because:
+    // 1. emojis are wider than most latin characters
+    // 2. they should occupy the width of two average characters
+    @avatar-font-size-animal: @avatar-font-size * (6/5);
+}
+.avatar_main(@width: 30px) {
+    --LessLoader_require: LessLoader_currentFile();
+    .avatar_vars(@width);
+    --avatar-width: @avatar-width;
+    --avatar-font-size: @avatar-font-size;
+}
+& {
+    .avatar_vars();
+    &.cp-avatar {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        border-radius: @variables_radius;
+        .cp-avatar-default, media-tag {
+            display: inline-flex;
+
+            width: @avatar-width;
+            width: var(--avatar-width);
+
+            height: @avatar-width;
+            height: var(--avatar-width);
+            border-radius: @variables_radius;
+
+
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-sizing: content-box;
+        }
+        .cp-avatar-default {
+            .tools_unselectable();
+            background: @cp_avatar-bg;
+            color: @cp_avatar-fg;
+            font-size: @avatar-font-size;
+            font-size: var(--avatar-font-size);
+            .animal {
+                font-size: @avatar-font-size-animal;
+            }
+        }
+        media-tag {
+            min-height: @avatar-width;
+            min-height: var(--avatar-width);
+
+            min-width: @avatar-width;
+            min-width: var(--avatar-width);
+
+            max-height: @avatar-width;
+            max-height: var(--avatar-width);
+
+            max-width: @avatar-width;
+            max-width: var(--avatar-width);
+            img {
+                min-width: 100%;
+                min-height: 100%;
+                max-width: none;
+                max-height: none; // To override 'media-tag img' in slide.less
+            }
+        }
+    }
+}
+

@@ -1,0 +1,135 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./avatar.less";
+@import (reference) "./tools.less";
+@import (reference) "./variables.less";
+
+.usergrid_main() {
+    --LessLoader_require: LessLoader_currentFile();
+};
+& {
+
+    .cp-usergrid-container {
+        margin-bottom: 12px !important; // even when last child of .msg
+        .cp-usergrid-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -3px;
+            margin-bottom: 6px;
+            max-height: 130px;
+            overflow-y: auto;
+            @media screen and (max-height: 515px) {
+                max-height: unset; // remove double scrollbar
+            }
+        }
+        &.cp-usergrid-empty {
+            .cp-usergrid-grid, .cp-usergrid-filter {
+                display: none;
+            }
+        }
+        .cp-usergrid-filter {
+            display: flex;
+            input {
+                flex: 1;
+                min-width: 0;
+                margin: 0;
+                margin-bottom: 0 !important;
+                height: 38px;
+                .tools_placeholder-color();
+            }
+            margin-bottom: 10px;
+            &:empty {
+                margin: 0;
+                display: none;
+            }
+            button:last-child {
+                margin-right: 0px !important;
+            }
+        }
+        .cp-usergrid-user {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            border-radius: @variables_radius;
+            margin: 3px !important;
+            cursor: default;
+            transition: order 0.5s, background-color 0.5s;
+            margin-top: 1px;
+            .tools_unselectable();
+
+            &.cp-selected {
+                background-color: @cp_usergrid-selected-bg;
+                color: @cp_usergrid-selected-fg;
+                order: -1 !important;
+                .cp-usergrid-avatar {
+                    media-tag, .cp-avatar-default {
+                        opacity: 0.7;
+                    }
+                }
+            }
+            .cp-usergrid-user-avatar {
+                min-height: 40px;
+            }
+
+            .cp-usergrid-user-name {
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                width: 100%;
+                text-align: center;
+                line-height: 20px;
+                flex: 1;
+            }
+
+            &:not(.large) {
+                .avatar_main(40px);
+            }
+            &.large {
+                .avatar_main(25px);
+                width: 145px;
+                height: 35px;
+                flex-flow: row;
+                margin: 3px;
+                flex-basis: calc(33.3333333% - 6px);
+                flex-shrink: 1;
+                min-width: 0;
+                .cp-usergrid-user-name {
+                    margin-left: 5px;
+                    text-align: left;
+                    line-height: 150%;
+                    color: @cp_usergrid-fg;
+                }
+            }
+            &.cp-selected {
+                .cp-usergrid-user-name {
+                    color: @cp_usergrid-selected-fg;
+                }
+            }
+            .fa-times {
+                padding-left: 5px;
+                cursor: pointer;
+                height: 100%;
+                line-height: 25px;
+                color: @cp_usergrid-fg;
+                &:hover {
+                    color: lighten(@cp_usergrid-fg, 10%);
+                }
+            }
+        }
+        &.list {
+            .cp-usergrid-user {
+                width: auto;
+                max-width: calc(100% - 6px);
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                display: inline-flex;
+                flex: unset;
+            }
+        }
+    }
+}
+

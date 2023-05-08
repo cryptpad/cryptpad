@@ -1,3 +1,20 @@
+/* Project CryptPad
+Copyright (C) 2016-2023  XWiki SAS (contact@xwiki.com) &
+                         Arnaud Laprevote (arnaud.laprevote@gmail.com)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 /*@flow*/
 /*::
 const define = (x:any, y:any) => {};
@@ -169,12 +186,41 @@ define([
             /* I should create a set of default variable (basically the color theme) */
             /* which is then used in the theme */
             /* So the full colortheme could be directly in the configuration */
-            console.log("LessLoader.js - Config : ", Config);
-            console.log("LessLoader.js - Config.bgBody : ", Config.bgBody);
-            console.log("LessLoader.js - Config.bgAlert : ", Config.bgAlert);
-            console.log("LessLoader.js - Config.colorBrand : ", Config.colorBrand);
-            console.log("LessLoader.js - Config.textColor : ", Config.textColor);
-            // less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
+            console.log("LessLoader.js - getLessEngine - Config : ",Config);
+            var showConfigVariableArray = ["bgBody", "bgAlert", "colorBrand", "textColor", "darkThemeBgBody",
+                                       "darkThemeBgAlert", "darkThemeColorBrand", "darkThemeTextColor",
+                                       "showBgImage", "bgImage", "darkBgImage", 'navButtonBgColor', 'darkNavButtonBgColor'];
+            
+            var lessVariableArray = [];
+            var lessStringHeader = "";
+            for ( var i = 0; i < showConfigVariableArray.length; i++) {
+                var currentVar = showConfigVariableArray[i];
+                var value = currentVar.replace(/([A-Z])/g,"-$1");
+                lessVariableArray.push("cp-config-"+value.toLowerCase());
+                lessStringHeader += `@cp-config-${value.toLowerCase()}: ${Config[currentVar]};
+`;
+                console.log("LessLoader.js - "+showConfigVariableArray[i] + " : ", Config[currentVar]);
+            }
+            lessStringHeader +=`@import (multiple) "${url}" ;`
+            console.log("LessLoader.js - lessStringHeader : ",lessStringHeader);
+            less.render(lessStringHeader, {}, function(err, css) {
+                if (err) { return void cb(err); }
+                cb(undefined, css.css);
+            }, window.less);
+        });
+            /*console.log(`@cp-config-bg-body: ${Config.bgBody};
+@cp-config-bg-alert: ${Config.bgAlert};
+@cp-config-color-brand: ${Config.colorBrand};
+@cp-config-text: ${Config.textColor};
+@cp-config-dark-theme-bg-body: ${Config.darkThemeBgBody};
+@cp-config-dark-theme-bg-alert: ${Config.darkThemeBgAlert};
+@cp-config-dark-theme-color-brand: ${Config.darkThemeColorBrand};
+@cp-config-dark-theme-text: ${Config.darkThemeTextColor};
+@cp-config-show-bg-image: ${Config.showBgImage};
+@cp-config-bg-image: ${Config.bgImage};
+@cp-config-dark-bg-image: ${Config.darkBgImage};
+            @import (multiple) "${url}" ;`,"");
+
             less.render(`@cp-config-bg-body: ${Config.bgBody};
 @cp-config-bg-alert: ${Config.bgAlert};
 @cp-config-color-brand: ${Config.colorBrand};
@@ -183,11 +229,14 @@ define([
 @cp-config-dark-theme-bg-alert: ${Config.darkThemeBgAlert};
 @cp-config-dark-theme-color-brand: ${Config.darkThemeColorBrand};
 @cp-config-dark-theme-text: ${Config.darkThemeTextColor};
+@cp-config-show-bg-image: ${Config.showBgImage};
+@cp-config-bg-image: ${Config.bgImage};
+@cp-config-dark-bg-image: ${Config.darkBgImage};
             @import (multiple) "${url}" ;`, {}, function(err, css) {
                 if (err) { return void cb(err); }
                 cb(undefined, css.css);
             }, window.less);
-        });
+        });*/
     };
 
     var loadSubmodulesAndInject = function (css, url, cb, stack) {

@@ -1,0 +1,74 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+
+.limit-bar_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .cp-limit-container {
+        @colortheme_green: #5cb85c;
+        display: inline-flex;
+        flex-flow: column;
+        width: 100%;
+        margin: 20px 0px;
+        .cp-limit-bar {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+            margin: 5px;
+            box-sizing: border-box;
+            background: @cp-limit-bar-bg;
+            position: relative;
+            text-align: center;
+            width: ~"calc(100% - 10px)";
+            height: 10px;
+            overflow: hidden;
+            border-radius: @variables_radius;
+            .cp-limit-usage {
+                height: 10px;
+                display: inline-block;
+                background: blue;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 1; // .usage
+                &.cp-limit-usage-normal {
+                    background: @cp-limit-bar-normal;
+                }
+                &.cp-limit-usage-warning {
+                    background: @cp-limit-bar-warning;
+                }
+                &.cp-limit-usage-above {
+                    background: @cp-limit-bar-above;
+                }
+            }
+        }
+
+        .cp-limit-usage-text {
+            color: @cp_limit-fg;
+            margin-left: 5px;
+            z-index: 2; // .usageText
+            font-size: @colortheme_app-font-size-small;
+        }
+        .cp-limit-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            justify-content: space-evenly;
+            a {
+                height: 25px;
+                display: inline-flex;
+                align-items: center;
+                min-width: 150px;
+                margin: 3px 5px;
+                width: 50%;
+                padding-top: 0;
+                padding-bottom: 0;
+                justify-content: center;
+                flex: 1;
+                border-radius: @variables_radius;
+            }
+        }
+    }
+}

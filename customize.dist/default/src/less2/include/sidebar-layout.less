@@ -1,0 +1,159 @@
+@import (reference) "/customize/src/less2/include/colortheme-all.less";
+@import (reference) "/customize/src/less2/include/leftside-menu.less";
+@import (reference) "/customize/src/less2/include/browser.less";
+
+@sidebar_button-width: 400px;
+
+.sidebar-layout_main() {
+    --LessLoader_require: LessLoader_currentFile();
+
+    // This is way too broad to put in the global scope
+    input[type="text"], input[type="password"] {
+        padding-left: 10px;
+    }
+}
+& {
+    #cp-sidebarlayout-container {
+        font-size: 16px;
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        #cp-sidebarlayout-leftside {
+            color: @cp_sidebar-left-fg;
+            width: 250px;
+            background: @cp_sidebar-left-bg;
+            display: flex;
+            flex-flow: column;
+            padding: 0px 5px;
+            .cp-sidebarlayout-categories {
+                flex: 1;
+                .cp-sidebarlayout-category {
+                    display: flex;
+                    align-items: center;
+                    .leftside-menu-category_main();
+                    box-shadow: @cryptpad_ui_shadow;
+                }
+            }
+            &.cp-leftside-narrow {
+                transition: width 0.2s;
+                width: 55px;
+                .cp-sidebarlayout-category {
+                    display: flex;
+                    max-width: 100%;
+                    align-items: center;
+                    .fa, .cptools {
+                        margin-right: 0;
+                        flex: 0;
+                    }
+                    span.cp-sidebarlayout-category-name {
+                        padding-left: 5px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        min-width: 0;
+                        display: none;
+                    }
+                }
+                &:hover {
+                    transition: width 0.5s;
+                    width: 250px;
+                    .cp-sidebarlayout-category {
+                        span.cp-sidebarlayout-category-name {
+                            display: inline;
+                        }
+                    }
+                }
+            }
+        }
+        #cp-sidebarlayout-rightside {
+            flex: 1;
+            padding: 5px 20px;
+            background: @cp_sidebar-right-bg;
+            color: @cp_sidebar-right-fg;
+            overflow: auto;
+
+            // Following rules are only in settings
+            .cp-sidebarlayout-element {
+                pre {
+                    color: @cryptpad_text_col;
+                }
+                label:not(.noTitle), .label {
+                    display: block;
+                    font-weight: bold;
+                    margin-bottom: 0;
+                }
+                .cp-sidebarlayout-description {
+                    display: block;
+                    color: @cp_sidebar-hint;
+                    margin-bottom: 5px;
+                    p {
+                        margin-bottom: 0;
+                    }
+                }
+                label.noTitle {
+                    display: inline-flex;
+                    .fa {
+                        margin-left: 10px;
+                    }
+                }
+                margin-bottom: 20px;
+            }
+            [type="text"], [type="password"], button {
+                vertical-align: middle;
+                min-width: 40px;
+                height: 40px;
+                box-sizing: border-box;
+            }
+            .cp-sidebarlayout-input-block {
+                display: inline-flex;
+                width: @sidebar_button-width;
+                max-width: 100%;
+                input {
+                    flex: 1;
+                    //border-radius: 0.25em 0 0 0.25em;
+                    border: 1px solid @cryptpad_color_grey_500;
+                    border-right: 0px;
+                    border-top-right-radius: 0px;
+                    border-bottom-right-radius: 0px;
+                }
+                button {
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    border-left: 0px;
+                    height: 40px;
+                    margin: 0 !important;
+                }
+            }
+            &>div {
+                margin: 10px 0;
+            }
+            button.btn {
+                margin: 0 5px 0 0;
+            }
+            span.cp-password-container {
+                margin-bottom: 1px;
+            }
+        }
+        @media screen and (max-width: @browser_media-medium-screen) {
+            flex-flow: column;
+            overflow: auto;
+            #cp-sidebarlayout-leftside {
+                width: 100% !important; // Override "narrow" mode
+                padding-bottom: 20px;
+                .cp-sidebarlayout-categories {
+                    .cp-sidebarlayout-category {
+                        margin: 0;
+                        span.cp-sidebar-layout-category-name {
+                            display: inline !important; // override "narrow" mode
+                        }
+                    }
+                }
+            }
+            #cp-sidebarlayout-rightside {
+                overflow: unset;
+            }
+        }
+    }
+}
+
+

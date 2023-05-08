@@ -1,0 +1,52 @@
+.icons_main() {
+    li {
+        display: inline-block;
+        margin: 10px 10px;
+        width: 140px;
+        height: 140px;
+        text-align: center;
+        vertical-align: top;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border: 1px solid transparent;
+        border-radius: @variables_radius;
+
+        .cp-icons-name {
+            width: 100%;
+            height: 24px;
+            margin: 0;
+            display: inline-block;
+            //align-items: center;
+            //justify-content: center;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            word-wrap: break-word;
+            color: @cp_drive-fg;
+        }
+        &.cp-icons-element-selected {
+            background: @cp_drive-icon-hover;
+            color: @cp_drive-fg;
+        }
+        .fa, .cptools {
+            display: block;
+            font-size: 64px;
+            margin: 18px 0;
+            text-align: center;
+            &.listonly {
+                display: none;
+            }
+        }
+
+        &.cp-app-hidden {
+            display: none !important;
+        }
+        &.cp-app-disabled {
+            cursor: not-allowed !important;
+            .fa, .cptools { cursor: not-allowed !important; }
+            opacity: 0.5;
+        }
+    }
+}

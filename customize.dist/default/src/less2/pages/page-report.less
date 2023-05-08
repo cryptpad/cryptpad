@@ -1,0 +1,29 @@
+@import (reference) "../include/colortheme-all.less";
+@import (reference) "../include/font.less";
+//@import (reference) "../include/forms.less";
+@import (reference) "../include/alertify.less";
+
+html, body {
+    .font_main();
+    .alertify_main();
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    background-color: @cp_static-bg !important;
+    color: @cryptpad_text_col;
+    font-family: "IBM Plex Mono";
+
+    #cp-report, #cp-report-ui {
+        max-width: 900px;
+        margin: auto;
+        padding: 15px;
+    }
+    #cp-report {
+        border: 1px solid @cryptpad_text_col;
+    }
+    #cp-report-ui {
+        text-align: right;
+    }
+}
+
+

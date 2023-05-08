@@ -1,0 +1,401 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+@import (reference) "./tools.less";
+
+.forms_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+
+& {
+    @alertify_padding-base: @variables_padding;
+
+    input:not(.numInput):not(.form-control):not([type="checkbox"]), textarea, div.cp-textarea {
+        // background-color: @alertify-input-fg;
+        color: @cp_forms-fg;
+        background-color: @cp_forms-bg;
+        border: 1px solid @cp_forms-border;
+        border-radius: @variables_radius;
+        font-size: 100%;
+        padding: @alertify_padding-base;
+        &:not(.tui-full-calendar-content) {
+            width: 100%;
+        }
+        &.tui-full-calendar-content {
+            font-size: @colortheme_app-font-size;
+        }
+        &[readonly] {
+            background-color: @cp_forms-readonly;
+            border-color: @cp_forms-readonly-border;
+            color: @cp_forms-fg;
+        }
+        .tools_placeholder-color();
+    }
+
+    input:not(.form-control) {
+        height: @variables_input-height;
+    }
+
+    div.cp-alertify-type {
+        display: flex;
+        input {
+            margin: 0 !important;
+            flex: 1;
+            border-radius: @variables_radius 0 0 @variables_radius !important;
+            min-width: 0;
+        }
+        span {
+            button {
+                margin: 0;
+                height: 100%;
+                margin-left: -1px;
+                text-transform: unset !important;
+                border-radius: 0 @variables_radius @variables_radius 0;
+            }
+        }
+    }
+
+    textarea, div.cp-textarea {
+        padding: 8px;
+        &[readonly] {
+            overflow: hidden;
+            resize: none;
+        }
+    }
+    div.cp-textarea {
+        height: 60px;
+        width: 100%;
+        cursor: text;
+        outline: none;
+        white-space: pre-wrap;
+        overflow-y: auto;
+        word-break: break-word;
+        resize: vertical;
+    }
+
+    div.cp-button-confirm {
+        display: inline-block;
+        &.new {
+            vertical-align: top;
+            button {
+                height: 35px;
+            }
+        }
+        button {
+            margin: 0 !important;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+        .cp-button-timer {
+            height: 3px;
+            & > div {
+                height: 100%;
+                border-bottom-left-radius: 3px;
+                border-bottom-right-radius: 3px;
+                background-color: @cp_buttons-default-color;
+                &.btn-primary, &.btn-secondary {
+                    background-color: @cp_buttons-primary;
+                }
+                &.danger, &.btn-danger, &.danger-alt, &.btn-danger-alt {
+                    background-color: @cp_buttons-red;
+                }
+            }
+        }
+    }
+    button.cp-button-confirm-placeholder:not(.new) {
+        margin-bottom: 3px !important;
+    }
+
+    button.btn {
+
+        background-color: @cp_buttons-cancel;
+        box-sizing: border-box;
+        outline: 0;
+        align-items: center;
+        padding: 0 6px;
+        line-height: 36px;
+        white-space: nowrap;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 14px;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: @variables_radius;
+        transition: none;
+
+        i, .fa, .cptools {
+            &:not(.nomargin) {
+                margin-right: 5px;
+            }
+        }
+
+        color: @cp_buttons-fg;
+        border: 1px solid @cp_buttons-fg;
+
+        &.no-margin {
+            margin: 0;
+        }
+        &.small {
+            line-height: initial;
+            padding: 5px;
+            height: auto !important;
+        }
+
+        &:hover, &:not(:disabled):not(.disabled):active, &:focus {
+            color: @cp_buttons-fg;
+            border: 1px solid @cp_buttons-fg;
+            background-color: @cp_buttons-hover;
+        }
+
+        &.btn-default {
+            border-color: @cp_buttons-default-border;
+            color: @cp_buttons-default-color;
+            &:hover, &:not(:disabled):active, &:focus {
+                border-color: @cp_buttons-default-border;
+                color: @cp_buttons-default-color;
+                background-color: @cp_buttons-default;
+            }
+        }
+
+        &.danger, &.btn-danger {
+            background-color: @cp_buttons-red;
+            border-color: @cp_buttons-red-border;
+            color: @cp_buttons-red-color;
+            &:hover, &:not(:disabled):active, &:focus {
+                border-color: @cp_buttons-red-border;
+                color: @cp_buttons-red-color;
+                background-color: contrast(@cp_buttons-red-color, darken(@cp_buttons-red, 10%), lighten(@cp_buttons-red, 10%));
+            }
+        }
+
+        &.danger-alt, &.btn-danger-alt, &.btn-danger-outline {
+            border-color: @cp_buttons-red;
+            color: @cp_buttons-red-text;
+            &:hover, &:not(:disabled):active, &:focus {
+                border-color: @cp_buttons-red;
+                color: @cp_buttons-red-color;
+                background-color: @cp_buttons-red;
+            }
+        }
+
+        &.primary, &.btn-primary, &.btn-success {
+            background-color: @cp_buttons-primary;
+            color: @cp_buttons-primary-text;
+            border-color: @cp_buttons-primary-border;
+            font-weight: bold;
+            &:hover, &:not(:disabled):active, &:focus {
+                color: @cp_buttons-primary-text;
+                border-color: @cp_buttons-primary-border;
+                background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
+            }
+        }
+
+        &.btn-light {
+            border-color: @cryptpad_text_col;
+            color: @cryptpad_text_col;
+            background-color: transparent;
+            &:hover, &:not(:disabled):active, &:focus {
+                border-color: @cryptpad_text_col;
+                color: @cryptpad_text_col;
+                background-color: fade(@cryptpad_text_col, 10%);
+            }
+        }
+
+        &.cancel, &.btn-cancel {
+            border-color: @cp_buttons-cancel-border;
+            color: @cp_buttons-cancel-border;
+            &:hover, &:not(:disabled):active, &:focus {
+                border-color: @cp_buttons-cancel-border;
+                color: @cp_buttons-cancel-border;
+                background-color: fade(@cp_buttons-cancel-border, 25%);
+            }
+        }
+        &.btn-register {
+            margin-top: 10px !important;
+            white-space: normal;
+        }
+
+
+
+        &:focus {
+            //border: 1px dotted @alertify-base;
+            box-shadow: 0px 0px 5px @cp_buttons-primary !important;
+            outline: none;
+        }
+        &::-moz-focus-inner {
+            border: 0;
+        }
+
+        &:disabled {
+            cursor: not-allowed !important;
+            background-color: @cp_buttons-disabled;
+            color: @cp_buttons-disabled-text;
+            border-color: @cp_buttons-disabled-border;
+            &:hover, &:active {
+                background-color: @cp_buttons-disabled;
+            }
+        }
+    }
+    // Bootstrap Alerts
+    body .alert {
+        margin: 0px 0px @alertify_padding-base 0px;
+        font-size: 12px;
+        padding: 5px;
+        border-radius: @variables_radius;
+        i {
+            margin-right: 10px;
+        }
+        &.cp-alert-top {
+            margin-top: @alertify_padding-base;
+        }
+        a {
+            color: @cryptpad_text_col;
+            text-decoration: underline;
+        }
+        &.alert-primary {
+            background-color: fade(@cryptpad_color_brand, 15%);
+            color: @cp_alertify-fg;
+            border-color: @cp_alertify-fg;
+            a {
+                color: @cp_alertify-fg;
+                text-decoration: underline;
+            }
+        }
+        &.alert-warning {
+            background-color: @cp_alerts-warning-bg;
+            color: @cp_alerts-warning-text;
+            border-color: @cp_alerts-warning-fg;
+        }
+        &.alert-danger {
+            background-color: @cp_alerts-danger-bg;
+            color: @cp_alerts-danger-text;
+            border-color: @cp_alerts-danger-fg;
+        }
+        &.alert-info {
+            background-color: @cp_alerts-info-bg;
+            color: @cp_alerts-info-text;
+            border-color: @cp_alerts-info-fg;
+        }
+        &.alert-success {
+            background-color: @cp_alerts-success-bg;
+            color: @cp_alerts-success-text;
+            border-color: @cp_alerts-success-fg;
+        }
+        &.dismissable {
+            display: flex;
+            align-items: center;
+            span.fa-times {
+                font-size: @colortheme_app-font-size;
+                margin-left: 20px;
+                cursor: pointer;
+            }
+        }
+    }
+    .cp-banner {
+        height: @variables_bar-height;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: default;
+        border-radius: @variables_radius;
+        &.cp-banner-danger {
+            background-color: @cp_drive-warnbox-bg;
+            color: @cp_drive-warnbox-fg;
+            border: 1px solid @cp_drive-warnbox-fg;
+        }
+        &.cp-banner-info {
+            background-color: @cp_drive-infobox-bg;
+            color: @cp_drive-infobox-fg;
+        }
+    }
+
+    // Flatpickr
+    body {
+        .flatpickr-calendar {
+            background: @cp_flatpickr-bg;
+            color: @cryptpad_text_col;
+            border-radius: @variables_radius;
+            box-shadow: @variables_shadow;
+            -webkit-box-shadow: @variables_shadow;
+            &.arrowTop::before, &.arrowTop::after {
+                border-bottom: 0;
+            }
+            .flatpickr-months {
+                .flatpickr-month, .flatpickr-months, .flatpickr-next-month,  .flatpickr-prev-month {
+                    color: @cryptpad_text_col;
+                    fill: @cryptpad_text_col;
+                    &:hover {
+                        svg {
+                            fill: @cryptpad_text_col;
+                        }
+                    }
+                    .flatpickr-monthDropdown-month {
+                        background: @cp_flatpickr-bg;
+                    }
+                }
+                .flatpickr-current-month {
+                    span.cur-month:hover {
+                        background: fade(@cryptpad_text_col, 10%);
+                      }
+                    .numInputWrapper span.arrowUp:after {
+                        border-bottom-color: @cryptpad_text_col;
+                    }
+                    .numInputWrapper span.arrowDown:after {
+                        border-top-color: @cryptpad_text_col;
+                    }
+                }
+            }
+            .flatpickr-innerContainer {
+                border-bottom: 0;
+                .flatpickr-weekdays {
+                    span.flatpickr-weekday {
+                        color: @cryptpad_text_col;
+                    }
+                }
+                .flatpickr-days {
+                    border-left: 0;
+                    border-right: 0;
+                    .flatpickr-day {
+                        color: @cryptpad_text_col;
+                        &:hover {
+                            background-color: fade(@cryptpad_text_col, 10%);
+                            border: 0;
+                        }
+                        &.selected {
+                            background: @cp_flatpickr-highlight;
+                            color: @cp_flatpickr-highlight-text;
+                            border: 0;
+                        }
+                    }
+                    .flatpickr-disabled {
+                        color: fade(@cryptpad_text_col, 20%);
+                    }
+                }
+            }
+            .flatpickr-time {
+                border-top: none;
+                .flatpickr-time-separator,  .flatpickr-am-pm {
+                    color: @cryptpad_text_col;
+                }
+                .flatpickr-am-pm {
+                    &:hover {
+                        background-color: fade(@cryptpad_text_col, 10%);
+                    }
+                }
+                .numInputWrapper {
+                    .numInput, .arrowUp, .arrowDown {
+                        color: @cryptpad_text_col;
+                        &:hover, &:focus {
+                            background-color: fade(@cryptpad_text_col, 10%);
+                        }
+                    }
+                    span.arrowDown::after, span.arrowUp::after {
+                        border-top-color: @cryptpad_text_col;
+                        border-bottom-color: @cryptpad_text_col;
+                    }
+                }
+            }
+        }
+    }
+}

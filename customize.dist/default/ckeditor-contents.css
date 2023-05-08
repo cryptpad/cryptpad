@@ -1,0 +1,297 @@
+/*
+Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or http://ckeditor.com/license
+*/
+
+html {
+    scrollbar-color: rgba(0,0,0,0.2) transparent;
+    scrollbar-width: thin;
+}
+body::-webkit-scrollbar {
+    width: 6px;
+    background-color: #FFF !important;
+}
+body::-webkit-scrollbar-thumb {
+    width: 6px;
+    background-color: rgba(0,0,0,0.2) !important;
+}
+html.cp-dark {
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+html.cp-dark ::-webkit-scrollbar {
+    background-color: #222 !important; /* should match the value un pad/inner.js */
+}
+html.cp-dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.2) !important;
+}
+
+
+body
+{
+    /* Font */
+    font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+    font-size: 13px;
+
+    /* Text color */
+    color: inherit;
+
+    /* Remove the background color to make it transparent */
+    background-color: inherit !important;
+
+    margin: 0;
+    padding: 20px;
+}
+
+/* Remove margin-top for the first element */
+body > *:first-child {
+    margin-top: 0;
+}
+
+/* If the magic line is the first element, remove margin-top for the next one */
+body > .non-realtime:first-child + * {
+    margin-top: 0;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding-bottom: 100px;
+    }
+}
+
+.cke_editable
+{
+    font-size: 16px;
+    line-height: 1.6;
+
+    /* Fix for missing scrollbars with RTL texts. (#10488) */
+    word-wrap: break-word;
+}
+
+blockquote
+{
+    font-style: italic;
+    font-family: Georgia, Times, "Times New Roman", serif;
+    padding: 2px 0;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 0;
+}
+
+.cke_contents_ltr blockquote
+{
+    padding-left: 20px;
+    padding-right: 8px;
+    border-left-width: 5px;
+}
+
+.cke_contents_rtl blockquote
+{
+    padding-left: 8px;
+    padding-right: 20px;
+    border-right-width: 5px;
+}
+
+a
+{
+    color: #0782C1;
+}
+
+ol,ul,dl
+{
+    /* IE7: reset rtl list margin. (#7334) */
+    *margin-right: 0px;
+    /* preserved spaces for list items with text direction other than the list. (#6249,#8049)*/
+    padding: 0 40px;
+}
+
+h1,h2,h3,h4,h5,h6
+{
+    font-weight: normal;
+    line-height: 1.2;
+}
+
+hr
+{
+    border: 0px;
+    border-top: 1px solid #ccc;
+}
+
+img.right
+{
+    border: 1px solid #ccc;
+    float: right;
+    margin-left: 15px;
+    padding: 5px;
+}
+
+img.left
+{
+    border: 1px solid #ccc;
+    float: left;
+    margin-right: 15px;
+    padding: 5px;
+}
+
+pre
+{
+    white-space: pre-wrap; /* CSS 2.1 */
+    word-wrap: break-word; /* IE7 */
+    -moz-tab-size: 4;
+    tab-size: 4;
+}
+
+.marker
+{
+    background-color: Yellow;
+}
+
+span[lang]
+{
+    font-style: italic;
+}
+
+figure
+{
+    text-align: center;
+    border: solid 1px #ccc;
+    border-radius: 2px;
+    background: rgba(0,0,0,0.05);
+    padding: 10px;
+    margin: 10px 20px;
+    display: inline-block;
+}
+
+figure > figcaption
+{
+    text-align: center;
+    display: block; /* For IE8 */
+}
+
+a > img {
+    padding: 1px;
+    margin: 1px;
+    border: none;
+    outline: 1px solid #0782C1;
+}
+
+.cp-cursor-position {
+    cursor: default;
+    background-color: red;
+    background-clip: padding-box;
+    padding: 0 1px;
+    border: 2px solid red;
+    border-right-color: transparent !important;
+    border-left-color: transparent !important;
+    margin-left: -3px;
+    margin-right: -3px;
+}
+.cp-cursor-position[data-type="start"] {
+    border-left: none;
+    border-right-width: 4px;
+    margin-right: -5px;
+    margin-left: -1px;
+}
+.cp-cursor-position[data-type="end"] {
+    border-right: none;
+    border-left-width: 4px;
+    margin-left: -5px;
+    margin-right: -1px;
+}
+.cp-cursor-avatar {
+    display: flex;
+    align-items: center;
+}
+.cp-cursor-avatar media-tag {
+    min-height: 32px;
+    max-height: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    margin-right: 10px;
+}
+.cp-cursor-avatar media-tag img {
+    border-radius: 4px;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.cp-link-clicked {
+    position: absolute;
+    background: white;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 3px 8px;
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.cp-link-clicked a {
+    cursor: pointer;
+}
+
+media-tag {
+    display: inline-block;
+}
+media-tag * {
+    width: 100%;
+    height: 100%;
+}
+media-tag button.btn {
+    background-color: #fff;
+    box-sizing: border-box;
+    outline: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 6px;
+    min-height: 36px;
+    line-height: 22px;
+    white-space: nowrap;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 0;
+    transition: none;
+    color: #3F4141;
+    border: 1px solid #3F4141;
+    max-width: 250px;
+}
+media-tag button.mediatag-download-btn {
+    flex-flow: column;
+    min-height: 38px;
+    justify-content: center;
+}
+media-tag button.mediatag-download-btn > span {
+    display: flex;
+    line-height: 1.5;
+    align-items: center;
+    justify-content: center;
+}
+media-tag button.mediatag-download-btn * {
+    width: auto;
+}
+media-tag button.mediatag-download-btn > span.mediatag-download-name {
+    max-width: 100%;
+}
+media-tag button.mediatag-download-btn > span.mediatag-download-name b {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+media-tag button.btn:hover, media-tag button.btn:active, media-tag button.btn:focus {
+    background-color: #ccc;
+}
+media-tag button.btn b {
+    margin-left: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+media-tag button.btn .fa {
+    display: inline;
+    margin-right: 5px;
+    flex: 0;
+}
