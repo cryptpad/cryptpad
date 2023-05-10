@@ -1,8 +1,9 @@
 (function () {
+    console.log("pre-loading.js");
     var logoPath = '/look/logo';
-    if (location.pathname === '/' || location.pathname === '/index.html') {
+    /*if (location.pathname === '/' || location.pathname === '/index.html') {
         logoPath = '/look/logo';
-    }
+    }*/
 
     var elem = document.createElement('div');
     elem.setAttribute('id', 'placeholder');
