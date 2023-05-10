@@ -1,4 +1,5 @@
 .env
+.env.1
 datastore
 tasks
 www/bower_components/*
