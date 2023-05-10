@@ -186,7 +186,7 @@ define([
             /* I should create a set of default variable (basically the color theme) */
             /* which is then used in the theme */
             /* So the full colortheme could be directly in the configuration */
-            console.log("LessLoader.js - getLessEngine - Config : ",Config);
+            //console.log("LessLoader.js - getLessEngine - Config : ",Config);
             var showConfigVariableArray = ["bgBody", "bgAlert", "colorBrand", "textColor", "darkThemeBgBody",
                                        "darkThemeBgAlert", "darkThemeColorBrand", "darkThemeTextColor",
                                        "showBgImage", "bgImage", "darkBgImage", 'navButtonBgColor', 'darkNavButtonBgColor'];
@@ -199,10 +199,10 @@ define([
                 lessVariableArray.push("cp-config-"+value.toLowerCase());
                 lessStringHeader += `@cp-config-${value.toLowerCase()}: ${Config[currentVar]};
 `;
-                console.log("LessLoader.js - "+showConfigVariableArray[i] + " : ", Config[currentVar]);
+                //console.log("LessLoader.js - "+showConfigVariableArray[i] + " : ", Config[currentVar]);
             }
             lessStringHeader +=`@import (multiple) "${url}" ;`
-            console.log("LessLoader.js - lessStringHeader : ",lessStringHeader);
+            //console.log("LessLoader.js - lessStringHeader : ",lessStringHeader);
             less.render(lessStringHeader, {}, function(err, css) {
                 if (err) { return void cb(err); }
                 cb(undefined, css.css);
