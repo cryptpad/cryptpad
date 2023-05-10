@@ -14,6 +14,9 @@
 
     @colortheme_drive-bg-active: lighten(@colortheme_static_apps[default], 20%);
 
+    /* Background */
+    background: @cp_static-bg;
+
     /* PAGE */
 
     display: flex;
@@ -154,12 +157,12 @@
     }
 
     .cp-app-drive-element-droppable {
-        background-color: @cp_drive-droppable-bg;
+        //background-color: @cp_drive-droppable-bg;
         color: @cp_drive-droppable-fg;
     }
 
     .cp-app-drive-element-selected {
-        background: @cp_drive-selected-bg !important;
+        //background: @cp_drive-selected-bg !important;
         color: @cp_drive-selected-fg;
         .fa-minus-square-o, .fa-plus-square-o {
             color: @cp_sidebar-left-fg;
@@ -168,13 +171,13 @@
             color: @cp_drive-selected-fg;
         }
         &.cp-app-drive-element-active {
-            background: @cp_drive-selected-bg !important;
+            //background: @cp_drive-selected-bg !important;
             color: @cryptpad_text_col !important;
         }
     }
 
     .cp-app-drive-element-selected-tmp {
-        background: @cp_drive-selection-bg;
+        //background: @cp_drive-selection-bg;
         color: @cp_drive-selection-fg;
         .fa-minus-square-o, .fa-plus-square-o {
             color: @cp_sidebar-left-fg;
@@ -270,7 +273,7 @@
         font-size: @colortheme_app-font-size;
         //border-right: 1px solid #ccc;
         box-sizing: border-box;
-        background: @cp_sidebar-left-bg;
+        //background: @cp_sidebar-left-bg;
         overflow: auto;
         width: auto;
         white-space: nowrap;
@@ -295,7 +298,7 @@
             margin-top: 15px;
             //padding: 0 0 0 20px;
             padding: 0;
-            background-color: @cp_sidebar-left-item-bg;
+            //background-color: @cp_sidebar-left-item-bg;
             border-radius: @variables_radius;
             cursor: auto;
             &li, li {
@@ -374,7 +377,7 @@
             top: 11px;
             width: 11px !important;
             height: 11px !important;
-            background-color: @cp_sidebar-left-item-bg;
+            //background-color: @cp_sidebar-left-item-bg;
             padding: 0;
             margin: 0;
             z-index: 10;
@@ -499,7 +502,7 @@
     }
     #cp-app-drive-content {
         box-sizing: border-box;
-        background: @cp_sidebar-right-bg;
+        //background: @cp_sidebar-right-bg;
         color: @cp_sidebar-right-fg;
         padding-top: 10px;
         overflow-y: auto;
@@ -509,7 +512,7 @@
         position: relative;
         .cp-app-drive-content-select-box {
             display: none;
-            background-color: @cp_drive-selection-overlay;
+            //background-color: @cp_drive-selection-overlay;
             position: absolute;
             z-index: 50;
         }
@@ -522,7 +525,7 @@
             line-height: 2em;
             padding: 0.25em 0.75em;
             margin: 1em;
-            background: @cp_drive-infobox-bg;
+            //background: @cp_drive-infobox-bg;
             color: @cp_drive-infobox-fg;
             border-radius: @variables_radius;
             cursor: default;

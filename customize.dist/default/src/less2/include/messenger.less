@@ -78,16 +78,18 @@
     #cp-app-contacts-friendlist {
         width: 200px;
         height: 100%;
-        background-color: @msg-bg-color;
-        background-color: var(--msg-bg-color);
+        //background-color: @msg-bg-color;
+        //background-color: var(--msg-bg-color);
+        //background-color: fade(@msg-bg-color, 80%);
         color: @msg-color;
         color: var(--msg-color);
         overflow-y: auto;
         display: flex;
         flex-flow: column;
         .cp-app-contacts-friend {
-            background-color: @msg-bg-color-dark;
-            background-color: var(--msg-bg-color-dark);
+            //background-color: @msg-bg-color-dark;
+            //background-color: var(--msg-bg-color-dark);
+            //background-color: fade(@msg-bg-color-dark, 80%);
             padding: 5px;
             margin: 10px;
             margin-bottom: 0;
@@ -224,8 +226,9 @@
     #cp-app-contacts-messaging {
         flex: 1;
         height: 100%;
-        background-color: @msg-bg-color-light;
-        background-color: var(--msg-bg-color-light);
+        //background-color: @msg-bg-color-light;
+        //background-color: var(--msg-bg-color-light);
+        background-color: fade(white, 10%);
         min-width: 0;
 
         .cp-app-contacts-info {
