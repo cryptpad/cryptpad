@@ -254,19 +254,19 @@ try {
         title: getKey('og_login', [instance]),
     },
     {
-        src: './customize.dist/contact.html',
+        src: './customize.dist/'+config.lookDir+'/contact.html',
         dest: './www/contact.html',
         url: '/contact.html',
         title: getKey('og_contact', [instance]),
     },
     {
-        src: './customize.dist/features.html',
+        src: './customize.dist/'+config.lookDir+'/features.html',
         dest: './www/features.html',
         url: '/features.html',
         title: getKey((config.allow_subscriptions? 'og_pricing': 'og_features'), [instance]),
     },
     {
-        src: './customize.dist/index.html',
+        src: './customize.dist/'+config.lookDir+'/index.html',
         dest: './www/index.html',
         url: '/index.html',
         title: getKey('og_default'),
