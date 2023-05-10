@@ -84,6 +84,7 @@ var getHeaders = function (Env, type) {
 
     if (Env.NO_SANDBOX) { // handles correct configuration for local development
     // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
+        //console.log("server.js - NO_SANDBOX");
         headers["Cross-Origin-Resource-Policy"] = 'cross-origin';
         headers["Cross-Origin-Embedder-Policy"] = 'require-corp';
     }
@@ -173,10 +174,12 @@ app.use(Express.static(Path.resolve('www')));
 // FIXME I think this is a regression caused by a recent PR
 // correct this hack without breaking the contributor's intended behaviour.
 
+// mainPages should be index, contact, features, maintenance - maybe
+// some others may be added in config.js
 var mainPages = config.mainPages || Default.mainPages();
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(Path.resolve('customize')));
-app.get(mainPagePattern, Express.static(Path.resolve('customize.dist')));
+app.get(mainPagePattern, Express.static(Path.resolve('customize.dist',Env.lookDir)));
 
 app.use("/blob", Express.static(Env.paths.blob, {
     maxAge: Env.DEV_MODE? "0d": "365d"
@@ -189,11 +192,10 @@ app.use("/block", Express.static(Env.paths.block, {
     maxAge: "0d",
 }));
 
-//app.use("/customize", Express.static(Path.resolve('customize')));
+app.use("/customize", Express.static(Path.resolve('customize')));
 app.use("/customize", Express.static(Path.resolve('customize.dist',Env.lookDir)));
-console.log('LOOK DIR IS', {path:Path.resolve('customize.dist',Env.lookDir)});
 app.use("/customize.dist", Express.static(Path.resolve('customize.dist',Env.lookDir)));
-//app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize')));
+app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize')));
 app.use(/^\/[^\/]*$/, Express.static(Path.resolve('customize.dist',Env.lookDir)));
 
 // if dev mode: never cache
@@ -362,30 +364,6 @@ app.get('/api/profiling', function (req, res) {
     }));
 });
 
-function pathjoin() {
-    // Split the inputs into a list of path commands.
-    var parts = [];
-    for (var i = 0, l = arguments.length; i < l; i++) {
-        parts = parts.concat(arguments[i].split("/"));
-    }
-    // Interpret the path commands to get the new resolved path.
-    var newParts = [];
-    for (i = 0, l = parts.length; i < l; i++) {
-        var part = parts[i];
-        // Remove leading and trailing slashes
-        // Also remove "." segments
-        if (!part || part === ".") { continue; }
-        // Interpret ".." to pop the last segment
-        if (part === "..") { newParts.pop(); }
-        // Push new path segments.
-        else { newParts.push(part); }
-    }
-    // Preserve the initial slash if there was one.
-    if (parts[0] === "") { newParts.unshift(""); }
-    // Turn back into a single string path.
-    return newParts.join("/") || (newParts.length ? "/" : ".");
-}
-
 function getMimetype(filePath) {
     var extension = filePath.split(".").pop();
     if (extension === "png") {
@@ -400,6 +378,9 @@ function getMimetype(filePath) {
     return("unknown");
 }
 
+/* Send either the default file, or if the configName key is defined
+ * in Env, use this file to send it back.
+ */
 function sendDefaultOrConfig(req,res,configName, defaultFile) {
     if ( configName in config) {
         // I should test if the file exists
@@ -414,19 +395,19 @@ function sendDefaultOrConfig(req,res,configName, defaultFile) {
 
 app.get('/look/cplogo', function (req, res) {
     res.setHeader('Content-Type', 'image/svg+xml');
-    res.sendFile(pathjoin(Env.paths.blob,"/../customize.dist/CryptPad_logo.svg"));
+    res.sendFile(Path.resolve("customize.dist/default","CryptPad_logo.svg"));
 });
 
 app.get('/look/logo', function(req,res) {
-    sendDefaultOrConfig(req,res,"logoPath", pathjoin(Env.paths.blob,"/../customize.dist/CryptPad_logo.svg"));
+    sendDefaultOrConfig(req,res,"logoPath", Path.resolve("customize.dist/default","CryptPad_logo.svg"));
 });
 
 app.get('/look/greylogo', function (req, res) {
-    sendDefaultOrConfig(req,res,"greyLogoPath", pathjoin(Env.paths.blob,"/../customize.dist/CryptPad_logo_grey.svg"));
+    sendDefaultOrConfig(req,res,"greyLogoPath", Path.resolve("customize.dist/default","CryptPad_logo_grey.svg"));
 });
 
 app.get('/look/favicon', function (req, res) {
-    sendDefaultOrConfig(req,res,"favIconPath", pathjoin(Env.paths.blob,"/../customize.dist/main-favicon.png"));
+    sendDefaultOrConfig(req,res,"favIconPath", Path.resolve("customize.dist/default","main-favicon.png"));
 });
 
 app.use(function (req, res) {
@@ -489,6 +470,13 @@ nThen(function (w) {
                 message: `The CryptPad development team recommends using at least NodeJS v16.14.2`,
                 currentVersion: process.version,
             });
+        }
+
+        if (Env.lookDir) {
+            Env.Log.info("CURRENT_LOOK_DIR", {
+                message: 'Current lookDir is :',
+                path: Path.resolve('customize.dist',Env.lookDir),
+            })
         }
 
         if (Env.OFFLINE_MODE) { return; }

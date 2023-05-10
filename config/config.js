@@ -378,15 +378,15 @@ varArray.forEach(function(key) {
             }
             module.exports[key]= (process.env[envName].toLowerCase() === 'true');
         } else if ( key === 'lookDir' ) {
-            console.log("config.js - lookDir case");
+            //console.log("config.js - lookDir case");
             var testDir = Path.resolve("customize.dist",process.env[envName])
             // I have to check that it exists in the directory, else, just using default
             if (Fs.existsSync(testDir)) {
-                console.log("config.js - found dir : ",testDir);
+                //console.log("config.js - found dir : ",testDir);
                 module.exports[key] = process.env[envName]
             } else {
-                console.log("config.js - could not find dir : ",testDir);
-                console.log("using default","");
+                //console.log("config.js - could not find dir : ",testDir);
+                //console.log("using default","");
                 module.exports[key] = "default"
             }
         } else {
@@ -410,4 +410,4 @@ if (foundAnAdmin) {
     module.exports["adminKeys"] = adminKeys;
 }
 
-console.log("config.js - module.exports :",module.exports);
+//console.log("config.js - module.exports :",module.exports);

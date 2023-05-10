@@ -1,61 +1,61 @@
 {
-  "name": "cryptpad",
-  "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "5.3.0",
-  "license": "AGPL-3.0+",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xwiki-labs/cryptpad.git"
-  },
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/cryptpad"
-  },
-  "dependencies": {
-    "@mcrowe/minibloom": "^0.2.0",
-    "chainpad-crypto": "^0.2.5",
-    "chainpad-server": "^5.1.0",
-    "dotenv": "^16.0.3",
-    "express": "~4.18.2",
-    "fs-extra": "^7.0.0",
-    "get-folder-size": "^2.0.1",
-    "netflux-websocket": "^0.1.20",
-    "nthen": "0.1.8",
-    "prompt-confirm": "^2.0.4",
-    "pull-stream": "^3.6.1",
-    "saferphore": "0.0.1",
-    "sortify": "^1.0.4",
-    "stream-to-pull-stream": "^1.7.2",
-    "tweetnacl": "~0.12.2",
-    "ulimit": "0.0.2",
-    "ws": "^3.3.1"
-  },
-  "devDependencies": {
-    "jshint": "^2.13.4",
-    "lesshint": "6.3.7"
-  },
-  "overrides": {
-    "glob-parent": "5.1.2",
-    "set-value": "4.0.1"
-  },
-  "scripts": {
-    "start": "node server.js",
-    "dev": "DEV=1 node server.js",
-    "fresh": "FRESH=1 node server.js",
-    "offline": "FRESH=1 OFFLINE=1 node server.js",
-    "offlinedev": "DEV=1 OFFLINE=1 node server.js",
-    "package": "PACKAGE=1 node server.js",
-    "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
-    "lint:js": "jshint --config .jshintrc --exclude-path .jshintignore .",
-    "lint:server": "jshint --config .jshintrc lib",
-    "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
-    "lint:translations": "node ./scripts/translations/lint-translations.js",
-    "unused-translations": "node ./scripts/translations/unused-translations.js",
-    "test": "node scripts/TestSelenium.js",
-    "test-rpc": "cd scripts/tests && node test-rpc",
-    "evict-inactive": "node scripts/evict-inactive.js",
-    "build": "node scripts/build.js",
-    "clear": "node scripts/clear.js",
-    "installtoken": "node scripts/install.js"
-  }
+    "name": "cryptpad",
+    "description": "realtime collaborative visual editor with zero knowlege server",
+    "version": "5.3.0",
+    "license": "AGPL-3.0+",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/xwiki-labs/cryptpad.git"
+    },
+    "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/cryptpad"
+    },
+    "dependencies": {
+        "@mcrowe/minibloom": "^0.2.0",
+        "chainpad-crypto": "^0.2.5",
+        "chainpad-server": "^5.1.0",
+        "dotenv": "^16.0.3",
+        "express": "~4.18.2",
+        "fs-extra": "^7.0.0",
+        "get-folder-size": "^2.0.1",
+        "netflux-websocket": "^0.1.20",
+        "nthen": "0.1.8",
+        "prompt-confirm": "^2.0.4",
+        "pull-stream": "^3.6.1",
+        "saferphore": "0.0.1",
+        "sortify": "^1.0.4",
+        "stream-to-pull-stream": "^1.7.2",
+        "tweetnacl": "~0.12.2",
+        "ulimit": "0.0.2",
+        "ws": "^3.3.1"
+    },
+    "devDependencies": {
+        "jshint": "^2.13.4",
+        "lesshint": "6.3.7"
+    },
+    "overrides": {
+        "glob-parent": "5.1.2",
+        "set-value": "4.0.1"
+    },
+    "scripts": {
+        "start": "node server.js",
+        "dev": "DEV=1 node server.js",
+        "fresh": "FRESH=1 node server.js",
+        "offline": "FRESH=1 OFFLINE=1 node server.js",
+        "offlinedev": "DEV=1 OFFLINE=1 node server.js",
+        "package": "PACKAGE=1 node server.js",
+        "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+        "lint:js": "jshint --config .jshintrc --exclude-path .jshintignore .",
+        "lint:server": "jshint --config .jshintrc lib",
+        "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+        "lint:translations": "node ./scripts/translations/lint-translations.js",
+        "unused-translations": "node ./scripts/translations/unused-translations.js",
+        "test": "node scripts/TestSelenium.js",
+        "test-rpc": "cd scripts/tests && node test-rpc",
+        "evict-inactive": "node scripts/evict-inactive.js",
+        "build": "node scripts/build.js",
+        "clear": "node scripts/clear.js",
+        "installtoken": "node scripts/install.js"
+    }
 }
