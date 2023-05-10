@@ -16,6 +16,9 @@
         display: flex; // We need this to remove a 3px border at the bottom of the toolbar
     }
 
+    /* Background */
+    background: @cp_static-bg if(@cp-show-bg-image, url(@cp-bg-image) repeat,);
+
     .cp-contacts-muted-table {
         .avatar_main(50px);
         .cp-contacts-muted-user {

@@ -10,6 +10,9 @@
     .limit-bar_main();
     .creation_main();
 
+    /* Background */
+    background: @cp_static-bg if(@cp-show-bg-image, url(@cp-bg-image) repeat,);
+
     display: flex;
     flex-flow: column;
     font: @colortheme_app-font;

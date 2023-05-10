@@ -12,6 +12,9 @@
     display: flex;
     flex-flow: column;
 
+    /* Background */
+    background: @cp_static-bg if(@cp-show-bg-image, url(@cp-bg-image) repeat,);
+
     .cp-toolbar-bottom-mid > div {
         color: @cryptpad_text_col;
         .cp-small { display: none; }
@@ -31,7 +34,8 @@
         }
 
         .tui-full-calendar-layout {
-            background-color: @cp_sidebar-right-bg !important;
+            background-color: if(@cp-show-bg-image, transparent ,@cp_sidebar-right-bg) !important;
+            //background-color: @cp_sidebar-right-bg !important;
             color: @cryptpad_text_col;
             display: flex;
             flex-flow: column;
@@ -98,7 +102,8 @@
                 color: @cryptpad_text_col !important;
             }
                 .tui-full-calendar-month-more {
-                    background-color: @cp_sidebar-right-bg !important;
+                    background-color: if(@cp-show-bg-image, transparent ,@cp_sidebar-right-bg) !important;
+                    //background-color: @cp_sidebar-right-bg !important;
                     color: @cryptpad_text_col;
                     span {
                         color: @cryptpad_text_col !important;
@@ -121,7 +126,8 @@
             }
         }
         .tui-full-calendar-timegrid-timezone {
-            background-color: @cp_sidebar-right-bg !important;
+            background-color: if(@cp-show-bg-image,transparent,@cp_sidebar-right-bg) !important;
+            //background-color: @cp_sidebar-right-bg !important;
             .tui-full-calendar-timegrid-hour {
                 color: @cryptpad_text_col !important;
             }

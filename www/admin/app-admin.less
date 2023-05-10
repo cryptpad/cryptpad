@@ -13,6 +13,9 @@
         display: none !important;
     }
 
+    /* Background */
+    background: @cp_static-bg if(@cp-show-bg-image, url(@cp-bg-image) repeat,);
+
     display: flex;
     flex-flow: column;
     a {
@@ -128,7 +131,8 @@
             color: fade(@cryptpad_text_col, 80%);
             .cp-support-ispremium {
                 padding: 0 5px;
-                background-color: @cp_admin-premium-bg;
+                background-color: if(@cp-show-bg-image, transparent ,@cp_admin-premium-bg);
+                //background-color: @cp_admin-premium-bg;
             }
         }
         &.cp-support-list-closed {
@@ -152,7 +156,8 @@
         }
         .cp-support-list-message {
             .cp-support-showdata {
-                background-color: lighten(@cp_admin-last-bg, 5%);
+                background-color: if(@cp-show-bg-image, transparent ,lighten(@cp_admin-last-bg, 5%));
+                //background-color: lighten(@cp_admin-last-bg, 5%);
             }
             .cp-support-attachments {
                 a {
@@ -162,14 +167,17 @@
             }
             &:last-child:not(.cp-support-fromadmin)  {
                 color: @cp_admin-last-fg;
-                background-color: @cp_admin-last-bg;
+                background-color: if(@cp-show-bg-image, transparent ,@cp_admin-last-bg);
+                //background-color: @cp_admin-last-bg;
             }
 
             &:last-child {
                 &.cp-support-frompremium {
-                    background-color: @cp_admin-premium-bg;
+                    background-color: if(@cp-show-bg-image, transparent ,@cp_admin-premium-bg);
+                    //background-color: @cp_admin-premium-bg;
                     .cp-support-showdata {
-                        background-color: fade(@cp_admin-premium-bg, 10%);
+                        background-color: if(@cp-show-bg-image, transparent ,fade(@cp_admin-premium-bg, 10%));
+                        //background-color: fade(@cp_admin-premium-bg, 10%);
                     }
                 }
             }
@@ -199,10 +207,12 @@
     }
 
     .cp-support-fromadmin {
-        background-color: @cp_admin-isadmin-bg !important;
+        background-color: if(@cp-show-bg-image, transparent ,@cp_admin-isadmin-bg) !important;
+        //background-color: @cp_admin-isadmin-bg !important;
         .cp-support-message-from, .cp-support-showdata {
             color: @cryptpad_text_col;
-            background-color: fade(@cp_admin-isadmin-bg, 10%) !important;
+            background-color: if(@cp-show-bg-image, transparent ,fade(@cp_admin-isadmin-bg, 10%)) !important;
+            //background-color: fade(@cp_admin-isadmin-bg, 10%) !important;
         }
     }
 
@@ -244,7 +254,8 @@
             flex-flow: column;
             align-items: start;
             padding: 10px;
-            background-color: @cp_sidebar-left-bg;
+            background-color: if(@cp-show-bg-image, transparent ,@cp_sidebar-left-bg);
+            //background-color: @cp_sidebar-left-bg;
             color: @cp_sidebar-left-fg;
             p {
                 margin: 0;
@@ -283,7 +294,8 @@
             min-width: 600px;
             tbody {
                 tr {
-                    background-color: @cp_support-msg-bg;
+                    background-color: if(@cp-show-bg-image, transparent ,@cp_support-msg-bg);
+                    //background-color: @cp_support-msg-bg;
                     padding: 5px;
                     td {
                         padding: 5px;
@@ -309,7 +321,8 @@
                 .cp-clickable {
                     cursor: pointer;
                     &:hover {
-                        background-color: @cp_dropdown-bg-hover;
+                        background-color: if(@cp-show-bg-image, transparent ,@cp_dropdown-bg-hover);
+                        //background-color: @cp_dropdown-bg-hover;
                     }
                 }
             }

@@ -51,7 +51,7 @@
             }
         }
         div#cp-sidebarlayout-leftside {
-            background-color: @cp_teams-leftside-bg;
+            background-color: if(@cp-show-bg-image, fade(white, 20%), @cp_teams-leftside-bg);
         }
         div#cp-sidebarlayout-rightside.cp-rightside-drive {
             padding: 0;
