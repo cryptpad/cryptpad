@@ -3181,7 +3181,7 @@ define([
     var getLogo = function () {
         var logo = h('div.cp-form-view-logo', [
             h('img', {
-                src:'/customize/CryptPad_logo_grey.svg?'+ApiConfig.requireConf.urlArgs,
+                src:'/look/greylogo?'+ApiConfig.requireConf.urlArgs,
                 alt:'CryptPad_logo'
             }),
             h('span', 'CryptPad')

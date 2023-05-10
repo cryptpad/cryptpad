@@ -9,7 +9,7 @@ define([
 ], function ($, Config, h, LocalStore, Messages) {
     var urlArgs = Config.requireConf.urlArgs;
     var img = h('img#cp-logo', {
-        src: '/customize/CryptPad_logo_grey.svg?' + urlArgs
+        src: '/look/greylogo?' + urlArgs
     });
 
     var is500 = Boolean(document.querySelector('#five-hundred'));

@@ -1775,7 +1775,7 @@ define([
             attributes: {'class': 'cp-user-menu-logo'},
             content: h('span', [
                 h('img', {
-                    src: '/customize/CryptPad_logo_grey.svg',
+                    src: '/look/greylogo',
                     "aria-hidden": true,
                 }),
                 h('span.cp-user-menu-logo-text', "CryptPad")
