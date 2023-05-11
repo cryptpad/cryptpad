@@ -53,7 +53,9 @@
 
 //@cryptpad_text_col: @cryptpad_color_grey_200;
 @cryptpad_text_col: @cp-config-dark-theme-text-color;
-@cryptpad_text_col_inv: @cryptpad_color_grey_900;
+// AL
+//@cryptpad_text_col_inv: @cryptpad_color_grey_900;
+@cryptpad_text_col_inv: @cryptpad_color_brand;
 
 @cryptpad_ui_shadow: 0px 0px 5px 1px #00000030;
 
@@ -95,7 +97,9 @@
     darken(desaturate(extract(@cp_palette, 7),60%), 60%),
     darken(desaturate(extract(@cp_palette, 8),70%), 60%);
 
-@cryptpad_color_link:@cryptpad_color_brand_300;
+//AL
+//@cryptpad_color_link:@cryptpad_color_brand_300;
+@cryptpad_color_link:@cp-config-dark-theme-bg-alert;
 
 // Premium plans colors
 @cryptpad_color_basic: darken(desaturate(#DDEFFF, 70%), 75%);
@@ -270,7 +274,8 @@
 //@cp_static-bg: @cryptpad_color_grey_900;
 @cp_static-bg: @cp-config-dark-theme-bg-body;
 @cp_static-fg: @cryptpad_text_col;
-@cp_static-link: @cryptpad_color_brand_300;
+//@cp_static-link: @cryptpad_color_brand_300;
+@cp_static-link: @cryptpad_color_brand;
 @cp_static-title: @cryptpad_color_brand;
 @cp_static-footer: fade(@cryptpad_color_brand, 20%);
 @cp_static-footer-border: @cryptpad_color_grey_600;
