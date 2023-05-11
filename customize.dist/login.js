@@ -504,7 +504,12 @@ define([
             // Finally, create the login block for the object you just created.
             var toPublish = {};
 
-            toPublish[Constants.userNameKey] = uname;
+// XXX I did some basic testing and searching and could not find this attribute
+// actually being used anywhere. Including it means either supporting arbitrarily
+// large blocks (a DoS vector) or having registration fail for large usernames.
+// Can someone please double-check that removing this doesn't break anything?
+// --Aaron
+            //toPublish[Constants.userNameKey] = uname;
             toPublish[Constants.userHashKey] = userHash;
             toPublish.edPublic = RT.proxy.edPublic;
 
