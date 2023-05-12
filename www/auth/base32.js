@@ -1,3 +1,4 @@
+/* jshint esversion: 7 */
 define([], function () {
     // Based on https://gist.github.com/bellbind/871b145110c458e83077a718aef9fa0e
 
@@ -42,7 +43,7 @@ define([], function () {
     }
     function b32d(bs) {
         const len = bs.length;
-        if (len === 0) return new Uint8Array([]);
+        if (len === 0) { return new Uint8Array([]); }
         //console.assert(len % 8 === 0, len);
         const pad = len - bs.indexOf("="), rem = b32pad.indexOf(pad);
         //console.assert(rem >= 0, pad);

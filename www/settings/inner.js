@@ -15,6 +15,7 @@ define([
     '/common/make-backup.js',
     '/common/common-feedback.js',
     '/common/common-constants.js',
+    '/customize.dist/login.js',
 
     '/common/jscolor.js',
     '/bower_components/file-saver/FileSaver.min.js',
@@ -37,7 +38,8 @@ define([
     ApiConfig,
     Backup,
     Feedback,
-    Constants
+    Constants,
+    Login
 ) {
     var saveAs = window.saveAs;
     var APP = window.APP = {};
@@ -46,6 +48,17 @@ define([
     var metadataMgr;
     var privateData;
     var sframeChan;
+
+    Messages.settings_totpTitle = "TOTP"; // XXX
+    Messages.settings_cat_access = "Security"; // XXX
+    Messages.settings_totp_enable = "Enable TOTP"; // XXX
+    Messages.settings_totp_disable = "Disable TOTP"; // XXX
+    Messages.settings_totp_generate = "Generate secret"; // XXX
+    Messages.settings_totp_code = "OTP code"; // XXX
+    Messages.settings_totp_code_invalid = "Invalid OTP code"; // XXX
+
+    Messages.settings_totp_tuto = "Scan this QR code with a authenticator application. Obtain a valid authentication code and confirm before it expires."; // XXX
+    Messages.settings_totp_confirm = "Enable TOTP with this secret"; // XXX
 
     var categories = {
         'account': [ // Msg.settings_cat_account
@@ -56,6 +69,10 @@ define([
             'cp-settings-mediatag-size',
             'cp-settings-change-password',
             'cp-settings-delete'
+        ],
+        'access': [ // Msg.settings_cat_access // XXX
+            // XXX add password change and account deletion here?
+            'cp-settings-totp'
         ],
         'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
@@ -776,6 +793,238 @@ define([
 
         cb($inputBlock);
     }, true);
+
+
+    // Account access
+
+    var drawTotp = function (content, enabled) {
+        var $content = $(content).empty();
+        if (enabled) {
+            (function () {
+            var disable = h('button.btn.btn-danger', Messages.settings_totp_disable);
+            var OTPEntry, pwInput;
+            $content.append(h('div', [
+                h('p', pwInput = h('input', {
+                    type: 'password',
+                    placeholder: Messages.login_password,
+                })),
+                OTPEntry = h('input', {
+                    placeholder: Messages.settings_totp_code
+                }),
+                disable
+            ]));
+            var $b = $(disable);
+            var $OTPEntry = $(OTPEntry);
+            UI.confirmButton(disable, {
+                classes: 'btn-danger',
+                multiple: true
+            }, function () {
+                $b.attr('disabled', 'disabled');
+                var name = privateData.accountName;
+                var password = $(pwInput).val();
+
+                // scrypt locks up the UI before the DOM has a chance
+                // to update (displaying logs, etc.), so do a set timeout
+                setTimeout(function () {
+                Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
+                    var result = Login.allocateBytes(bytes);
+                    sframeChan.query("Q_SETTINGS_CHECK_BLOCK", {
+                        blockHash: result.blockHash,
+                    }, function (err, obj) {
+                        if (!obj || !obj.correct) {
+                            UI.warn(Messages.login_noSuchUser);
+                            $b.removeAttr('disabled');
+                            return;
+                        }
+                        var blockKeys = result.blockKeys;
+                        var code = $OTPEntry.val();
+                        sframeChan.query("Q_SETTINGS_TOTP_REVOKE", {
+                            key: blockKeys.sign,
+                            data: {
+                                command: 'TOTP_REVOKE',
+                                code: code,
+                            }
+                        }, function (err, obj) {
+                            $OTPEntry.val("");
+                            if (err || !obj || !obj.success) {
+                                $b.removeAttr('disabled');
+                                return void UI.warn(Messages.settings_totp_code_invalid);
+                            }
+                            drawTotp(content, false);
+                        }, {raw: true});
+                    });
+                });
+                }, 1000);
+            });
+
+            })();
+            return;
+        }
+
+        var button = h('button.btn.btn-primary', Messages.settings_totp_enable);
+        $(button).click(function () {
+            $content.empty();
+            var Base32, Block, QRCode, Nacl;
+            var blockKeys;
+            nThen(function (waitFor) {
+                require([
+                    '/auth/base32.js',
+                    '/common/outer/login-block.js',
+                    '/lib/qrcode.min.js',
+                    '/bower_components/tweetnacl/nacl-fast.min.js',
+                ], waitFor(function (_Base32, _Login, _Block) {
+                    Base32 = _Base32;
+                    Block = _Block;
+                    QRCode = window.QRCode;
+                    Nacl = window.nacl;
+                }));
+            }).nThen(function (waitFor) {
+                var pwInput;
+                var button = h('button.btn.btn-secondary', Messages.ui_confirm);
+                $content.append(h('div', [
+                    h('p', pwInput = h('input', {
+                        type: 'password',
+                        placeholder: Messages.login_password,
+                    })),
+                    button
+                ]));
+                var next = waitFor();
+                var BUSY = false;
+
+                var spinner = UI.makeSpinner($content);
+                var $b = $(button).click(function () {
+                    if (BUSY) { return; }
+
+                    var name = privateData.accountName;
+                    var password = $(pwInput).val();
+
+                    if (!password) { return void UI.warn(Messages.login_noSuchUser); }
+
+                    spinner.spin();
+                    $b.attr('disabled', 'disabled');
+                    BUSY = true;
+
+                    // scrypt locks up the UI before the DOM has a chance
+                    // to update (displaying logs, etc.), so do a set timeout
+                    setTimeout(function () {
+                        Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
+                            var result = Login.allocateBytes(bytes);
+                            sframeChan.query("Q_SETTINGS_CHECK_BLOCK", {
+                                blockHash: result.blockHash,
+                            }, function (err, obj) {
+                                BUSY = false;
+                                if (!obj || !obj.correct) {
+                                    spinner.hide();
+                                    UI.warn(Messages.login_noSuchUser);
+                                    $b.removeAttr('disabled');
+                                    return;
+                                }
+                                spinner.done();
+                                blockKeys = result.blockKeys;
+                                next();
+                            });
+                        });
+                    }, 1000);
+                });
+            }).nThen(function () {
+                var randomSecret = function () {
+                    var U8 = Nacl.randomBytes(20);
+                    return Base32.encode(U8);
+                };
+                $content.empty();
+                var generate = h('button.btn.btn-primary', Messages.settings_totp_generate);
+                var secretContainer = h('div');
+                var $container = $(secretContainer);
+                $content.append(secretContainer, h('p', generate));
+
+                var updateQR = Util.throttle(function (uri, target) {
+                    new QRCode(target, uri);
+                }, 400);
+                var updateURI = function (secret) {
+                    $container.empty();
+
+                    var username = privateData.accountName;
+                    var hostname = new URL(privateData.origin).hostname;
+                    var label = "CryptPad";
+
+                    var uri = `otpauth://totp/${label}:${username}@${hostname}?secret=${secret}`;
+
+                    var qr = h('div');
+                    var uriInput = UI.dialog.selectable(uri);
+                    updateQR(uri, qr);
+
+                    var OTPEntry = h('input', {
+                        placeholder: Messages.settings_totp_code
+                    });
+                    var $OTPEntry = $(OTPEntry);
+
+                    var description = h('p', Messages.settings_totp_tuto);
+                    var confirmOTP = h('button.btn.btn-primary', Messages.settings_totp_confirm);
+                    var $confirmBtn = $(confirmOTP);
+                    var lock = false;
+                    UI.confirmButton(confirmOTP, {
+                        multiple: true
+                    }, function () {
+                        var code = $OTPEntry.val();
+                        if (code.length !== 6 || /\D/.test(code)) {
+                            return void UI.warn(Messages.error); // XXX
+                        }
+                        $confirmBtn.attr('disabled', 'disabled');
+                        lock = true;
+
+                        sframeChan.query("Q_SETTINGS_TOTP_SETUP", {
+                            key: blockKeys.sign,
+                            data: {
+                                command: 'TOTP_SETUP',
+                                secret: secret,
+                                code: code,
+                            }
+                        }, function (err, obj) {
+                            lock = false;
+                            $OTPEntry.val("");
+                            if (err || !obj || !obj.success) {
+                                $confirmBtn.removeAttr('disabled');
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            drawTotp(content, true);
+                        }, {raw: true});
+
+                    });
+
+                    $container.append([
+                        uriInput,
+                        qr,
+                        h('br'),
+                        description,
+                        OTPEntry,
+                        confirmOTP
+                    ]);
+                };
+
+
+                var $g = $(generate).click(function () {
+                    $g.remove();
+                    var secret = randomSecret();
+                    updateURI(secret);
+                });
+            });
+
+        }).appendTo(content);
+    };
+    makeBlock('totp', function (cb) { // Msg.settings_totpTitle
+        if (!common.isLoggedIn()) { return void cb(false); }
+
+        var content = h('div');
+        sframeChan.query('Q_SETTINGS_TOTP_CHECK', {}, function (err, obj) {
+            if (err || !obj || (obj && obj.err === 'NOBLOCK')) { return void cb(false); }
+            var enabled = obj && obj.totp;
+            drawTotp(content, Boolean(enabled));
+            cb(content);
+        });
+    }, true);
+
+
 
     // Security
 

@@ -175,7 +175,7 @@ Note: This must currently be reversed manually (by deleting the mfa config file)
     $deriveKeys.click(function () {
         if (BUSY) { return; }
 
-        var name = $username.val().trim()
+        var name = $username.val().trim();
         var password = $password.val();
 
         if (!name) { return void window.alert("Invalid name"); }
@@ -212,7 +212,7 @@ Note: This must currently be reversed manually (by deleting the mfa config file)
 
     // TOTP app configuration
 
-    var $generateSecret = $('#generate-secret')
+    var $generateSecret = $('#generate-secret');
     var $b32Secret = $('#base32-secret');
 
     var randomSecret = () => {
