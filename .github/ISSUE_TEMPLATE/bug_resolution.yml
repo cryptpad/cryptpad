@@ -2,27 +2,21 @@ name: Bug report
 description: Report a bug, otherwise see the links below
 labels: ["bug"]
 body:
-  - type: checkboxes
+  - type: textarea
+    id: coc
     attributes:
       label: Contribution guidelines
-      description: Please read the code of conduct before proceeding.
-      options:
-        - label: I've read the [code of conduct](https://github.com/xwiki-labs/cryptpad/blob/main/CODE_OF_CONDUCT.md) and wholeheartedly agree
-          required: true
-  - type: checkboxes
+      description: Please read the [code of conduct](https://github.com/xwiki-labs/cryptpad/blob/main/CODE_OF_CONDUCT.md) before proceeding.
+  - type: textarea
     id: terms
     attributes:
-      label: I've found a bug and checked that ...
-      description: Prior to placing the issue, please check following:** *(fill out each checkbox with an `X` once done)*
-      options:
-      - label: I understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
-        required: true
-      - label: I have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
-        required: true
-      - label: I have understood that answers are voluntary and community-driven, and not commercial support.
-        required: true
-      - label: I have verified that my issue has not been already answered in the past. I've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and I also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
-        required: true
+      label: You've found a bug and checked that ...
+      description: Prior to placing the issue, please check following
+      value: |
+      - You understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
+      - You have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
+      - You have understood that answers are voluntary and community-driven, and not commercial support.
+      - You have verified that your issue has not been already answered in the past. You've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and you also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
   - type: textarea
     id: description
     attributes:
@@ -34,8 +28,8 @@ body:
     id: reproduce
     attributes:
       label: Steps to reproduce
-      description: Please describe the steps to reproduce the bug. Screenshots can be added, if helpful.
-      placeholder: |-
+      description: Please describe the steps to reproduce the bug.
+      placeholder: |
         1. ...
         2. ...
         3. ...
