@@ -2,21 +2,21 @@ name: Bug report
 description: Report a bug, otherwise see the links below
 labels: ["bug"]
 body:
-  - type: textarea
+  - type: markdown
     id: coc
     attributes:
-      label: Contribution guidelines
-      description: Please read the [code of conduct](https://github.com/xwiki-labs/cryptpad/blob/main/CODE_OF_CONDUCT.md) before proceeding.
-  - type: textarea
+      value: |
+        # Contribution guidelines
+        Please read the [code of conduct](https://github.com/xwiki-labs/cryptpad/blob/main/CODE_OF_CONDUCT.md) before proceeding.
+  - type: markdown
     id: terms
     attributes:
-      label: You've found a bug and checked that ...
-      description: Prior to placing the issue, please check following
       value: |
-      - You understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
-      - You have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
-      - You have understood that answers are voluntary and community-driven, and not commercial support.
-      - You have verified that your issue has not been already answered in the past. You've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and you also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
+        You've found a bug and checked that ...
+        - You understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
+        - You have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
+        - You have understood that answers are voluntary and community-driven, and not commercial support.
+        - You have verified that your issue has not been already answered in the past. You've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and you also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
   - type: textarea
     id: description
     attributes:
