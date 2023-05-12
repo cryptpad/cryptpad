@@ -14,7 +14,7 @@ var Env = require("./lib/env").create(config);
 
 var app = Express();
 
-var fancyURL = function (domain, path) {
+var fancyURL = (domain, path) =>{
     try {
         if (domain && path) { return new URL(path, domain).href; }
         return new URL(domain);
@@ -29,7 +29,7 @@ var fancyURL = function (domain, path) {
     }
 }());
 
-var applyHeaderMap = function (res, map) {
+var applyHeaderMap = (res, map) => {
     for (let header in map) {
         if (typeof(map[header]) === 'string') { res.setHeader(header, map[header]); }
     }
@@ -41,18 +41,18 @@ var EXEMPT = [
     /^\/unsafeiframe\/inner\.html.*$/,
 ];
 
-var cacheHeaders = function (Env, key, headers) {
+var cacheHeaders = (Env, key, headers) => {
     if (Env.DEV_MODE) { return; }
     Env[key] = headers;
 };
 
-var getHeaders = function (Env, type) {
+var getHeaders = (Env, type) => {
     var key = type + 'HeadersCache';
     if (Env[key]) { return Env[key]; }
 
     var headers = {};
 
-    var custom = config.httpHeaders;
+    let custom = config.httpHeaders;
     // if the admin provided valid http headers then use them
     if (custom && typeof(custom) === 'object' && !Array.isArray(custom)) {
         headers = Util.clone(custom);
@@ -84,7 +84,7 @@ var getHeaders = function (Env, type) {
     return headers;
 };
 
-var setHeaders = function (req, res) {
+var setHeaders = (req, res) =>{
     var type;
     if (EXEMPT.some(regex => regex.test(req.url))) {
         type = 'office';
@@ -102,7 +102,7 @@ var setHeaders = function (req, res) {
 (function () {
 if (!config.logFeedback) { return; }
 
-const logFeedback = function (url) {
+const logFeedback = (url) => {
     url.replace(/\?(.*?)=/, function (all, fb) {
         if (!config.log) { return; }
         config.log.feedback(fb, '');
@@ -183,7 +183,7 @@ var cacheString = function () {
     return (Env.FRESH_KEY? '-' + Env.FRESH_KEY: '') + (Env.DEV_MODE? '-' + (+new Date()): '');
 };
 
-var makeRouteCache = function (template, cacheName) {
+var makeRouteCache = (template, cacheName) => {
     var cleanUp = {};
     var cache = Env[cacheName] = Env[cacheName] || {};
 
