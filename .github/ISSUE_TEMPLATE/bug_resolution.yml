@@ -13,7 +13,7 @@ body:
     attributes:
       value: |
         You've found a bug and checked that ...
-        - You understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
+        - You understand that not following the below instructions will result in immediate closure and/or deletion of your issue.
         - You have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
         - You have understood that answers are voluntary and community-driven, and not commercial support.
         - You have verified that your issue has not been already answered in the past. You've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and you also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
