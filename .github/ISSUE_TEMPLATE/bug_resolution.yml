@@ -21,7 +21,7 @@ body:
     id: description
     attributes:
       label: Description
-      description: Please provide a brief description of the bug in 1-2 sentences. If applicable, add screenshots to help explain your problem. Very useful for bugs in CryptPad UI.
+      value: Please provide a brief description of the bug in 1-2 sentences. If applicable, add screenshots to help explain your problem. Very useful for bugs in CryptPad UI.
     validations:
       required: true
   - type: textarea
