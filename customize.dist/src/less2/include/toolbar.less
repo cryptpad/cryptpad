@@ -373,7 +373,9 @@
         flex-wrap: wrap;
         justify-content: space-between;
 
-        background-color: @toolbar-top-bg;
+        // toolbar should use the background of the body
+        // to take into account the configuration, I remove that
+        //background-color: @toolbar-top-bg;
         color: @toolbar-bg-color;
         color: var(--toolbar-bg-color);
 
