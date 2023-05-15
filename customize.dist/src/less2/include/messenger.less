@@ -78,8 +78,10 @@
     #cp-app-contacts-friendlist {
         width: 200px;
         height: 100%;
-        background-color: @msg-bg-color;
-        background-color: var(--msg-bg-color);
+        // First background configuration
+        // Friendlist is at the bottom left of the contact page
+        background-color: @msg-bg-color-darker;
+        background-color: var(--msg-bg-color-darker);
         color: @msg-color;
         color: var(--msg-color);
         overflow-y: auto;
@@ -221,6 +223,7 @@
         }
     }
 
+    // central/bottom/right central zone of contact app
     #cp-app-contacts-messaging {
         flex: 1;
         height: 100%;
