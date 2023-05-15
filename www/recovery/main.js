@@ -50,13 +50,10 @@ define([
         };
         var totpStepInfo = function (cls) {
             $step1.hide();
-            $step2.hide();
             $stepInfo.find('.alert').toggleClass('cp-hidden', true);
             $stepInfo.find(cls).toggleClass('cp-hidden', false);
             $stepInfo.show();
         };
-
-        $step2.show(); // XXX debug
 
         var addProof = function (blockKeys) {
             var pub = blockKeys.sign.publicKey;
