@@ -171,7 +171,8 @@ define([
             /* So the full colortheme could be directly in the configuration */
             /* From bgBody in Env.js, I create cp-config-bg-body. */
             var showConfigVariableArray = ["bgBody", "darkBgBody", "bgAlert", "darkBgAlert",
-                "brandColor", "darkBrandColor", "textColor", "darkTextColor",  ];
+                "brandColor", "darkBrandColor", "textColor", "darkTextColor", "navBgColor",
+                "darkNavBgColor"];
             
             var lessVariableArray = [];
             var lessStringHeader = "";

@@ -324,6 +324,12 @@ module.exports = {
     /* Dark text color */
     darkTextColor: "#EEEEEE",
 
+    /* home navigation background color */
+    navBgColor: "#FFF",
+
+    /* dark theme home navigation background color */
+    darkNavBgColor: "#424242",
+
 };
 
 // A variable may be defined in the env variables but not in the default
@@ -334,7 +340,7 @@ const varArray =[ "httpUnsafeOrigin", "httpSafeOrigin","httpAddress", "httpPort"
     "archivePath", "pinPath", "taskPath", "blockPath", "blobPath", "blobStagingPath",
     "decreePath", "logPath", "logToStdout", "logLevel", "logFeedback", "verbose",
     "installMethod", "bgBody", "darkBgBody", "bgAlert", "darkBgAlert", "brandColor",
-    "darkBrandColor", "textColor", "darkTextColor", ];
+    "darkBrandColor", "textColor", "darkTextColor", "navBgColor", "darkNavBgColor", ];
 
 // Variables that must be converted to an array
 const numberVarArray = [ "httpPort", "httpSafePort", "maxWorkers", "inactiveTime", "archiveRetentionTime",
