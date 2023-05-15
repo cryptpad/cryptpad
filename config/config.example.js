@@ -295,6 +295,15 @@ module.exports = {
      *
      */
     installMethod: 'unspecified',
+
+    /* =====================
+     *       Look 
+     * ===================== */
+
+    /* Default background color */
+    bgBody: "#EEEEEE"
+
+
 };
 
 // A variable may be defined in the env variables but not in the default
@@ -304,7 +313,7 @@ const varArray =[ "httpUnsafeOrigin", "httpSafeOrigin","httpAddress", "httpPort"
     "disableIntegratedEviction", "maxUploadSize","premiumUploadSize", "filePath",
     "archivePath", "pinPath", "taskPath", "blockPath", "blobPath", "blobStagingPath",
     "decreePath", "logPath", "logToStdout", "logLevel", "logFeedback", "verbose",
-    "installMethod" ];
+    "installMethod", "bgBody" ];
 
 // Variables that must be converted to an array
 const numberVarArray = [ "httpPort", "httpSafePort", "maxWorkers", "inactiveTime", "archiveRetentionTime",

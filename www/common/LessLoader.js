@@ -165,11 +165,35 @@ define([
 
     var loadLess = function (url, cb) {
         getLessEngine(function (less) {
-            less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
+            /* There should be 2 ways to do depending of the customization */
+            /* I should create a set of default variable (basically the color theme) */
+            /* which is then used in the theme */
+            /* So the full colortheme could be directly in the configuration */
+            /* From bgBody in Env.js, I create cp-config-bg-body. */
+            var showConfigVariableArray = ["bgBody", ];
+            
+            var lessVariableArray = [];
+            var lessStringHeader = "";
+            for ( var i = 0; i < showConfigVariableArray.length; i++) {
+                var currentVar = showConfigVariableArray[i];
+                var value = currentVar.replace(/([A-Z])/g,"-$1");
+                lessVariableArray.push("cp-config-"+value.toLowerCase());
+                lessStringHeader += `@cp-config-${value.toLowerCase()}: ${Config[currentVar]};
+`;
+            }
+            lessStringHeader +=`@import (multiple) "${url}" ;`
+            console.log("LessLoader.js - lessStringHeader : ",lessStringHeader);
+            less.render(lessStringHeader, {}, function(err, css) {
                 if (err) { return void cb(err); }
                 cb(undefined, css.css);
             }, window.less);
         });
+        /* To be cleaned - original code without graphic configuration */
+        /*    less.render('@import (multiple) "' + url + '";', {}, function(err, css) {
+                if (err) { return void cb(err); }
+                cb(undefined, css.css);
+            }, window.less);
+        });*/
     };
 
     var loadSubmodulesAndInject = function (css, url, cb, stack) {

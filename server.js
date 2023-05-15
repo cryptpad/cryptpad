@@ -218,9 +218,31 @@ var makeRouteCache = function (template, cacheName) {
 };
 
 var serveConfig = makeRouteCache(function () {
+
+    //console.log("server.js - sending serveConfig");
+    var toSend ={
+        requireConf: {
+            waitSeconds: 600,
+            urlArgs: 'ver=' + Env.version + cacheString(),
+        },
+        removeDonateButton: (Env.removeDonateButton === true),
+        allowSubscriptions: (Env.allowSubscriptions === true),
+        shouldUpdateNode: Env.shouldUpdateNode || undefined,
+    };
+    var envVariableArray = ["websocketPath", "httpUnsafeOrigin", "adminEmail",
+        "inactiveTime", "supportMailbox", "defaultStorageLimit", "maxUploadSize",
+        "premiumUploadSize", "restrictRegistration", "httpSafeOrigin", "enableEmbedding",
+        "fileHost", "listMyInstance", "accounts_api", "bgBody" ];
+
+    for ( var i = 0; i < envVariableArray.length; i++) {
+        var currentVarName = envVariableArray[i];
+        toSend[currentVarName] = Env[currentVarName];
+    }
+    //console.log("server.js - serveConfig - toSend : ",toSend);
     return [
         'define(function(){',
-        'return ' + JSON.stringify({
+        'return ' + JSON.stringify(toSend, null, '\t'),
+/*        'return ' + JSON.stringify({
             requireConf: {
                 waitSeconds: 600,
                 urlArgs: 'ver=' + Env.version + cacheString(),
@@ -243,7 +265,7 @@ var serveConfig = makeRouteCache(function () {
             shouldUpdateNode: Env.shouldUpdateNode || undefined,
             listMyInstance: Env.listMyInstance,
             accounts_api: Env.accounts_api,
-        }, null, '\t'),
+        }, null, '\t'),*/
         '});'
     ].join(';\n');
 }, 'configCache');
