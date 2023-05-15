@@ -232,7 +232,8 @@ var serveConfig = makeRouteCache(function () {
     var envVariableArray = ["websocketPath", "httpUnsafeOrigin", "adminEmail",
         "inactiveTime", "supportMailbox", "defaultStorageLimit", "maxUploadSize",
         "premiumUploadSize", "restrictRegistration", "httpSafeOrigin", "enableEmbedding",
-        "fileHost", "listMyInstance", "accounts_api", "bgBody", "darkBgBody", "bgAlert", ];
+        "fileHost", "listMyInstance", "accounts_api", "bgBody", "darkBgBody", "bgAlert",
+        "darkBgAlert",  ];
 
     for ( var i = 0; i < envVariableArray.length; i++) {
         var currentVarName = envVariableArray[i];

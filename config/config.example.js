@@ -309,6 +309,9 @@ module.exports = {
     /* Default alert background color */
     bgAlert: "#fff",
 
+    /* Default dark alert background color */
+    darkBgAlert: "#424242",
+
 };
 
 // A variable may be defined in the env variables but not in the default
@@ -318,7 +321,7 @@ const varArray =[ "httpUnsafeOrigin", "httpSafeOrigin","httpAddress", "httpPort"
     "disableIntegratedEviction", "maxUploadSize","premiumUploadSize", "filePath",
     "archivePath", "pinPath", "taskPath", "blockPath", "blobPath", "blobStagingPath",
     "decreePath", "logPath", "logToStdout", "logLevel", "logFeedback", "verbose",
-    "installMethod", "bgBody", "darkBgBody", "bgAlert", ];
+    "installMethod", "bgBody", "darkBgBody", "bgAlert", "darkBgAlert", ];
 
 // Variables that must be converted to an array
 const numberVarArray = [ "httpPort", "httpSafePort", "maxWorkers", "inactiveTime", "archiveRetentionTime",
