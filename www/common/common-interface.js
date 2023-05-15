@@ -985,6 +985,7 @@ define([
             todo();
         }
 
+        $('html').toggleClass('cp-loading-noscroll', true);
         // Remove the inner placeholder (iframe)
         $('#placeholder').remove();
     };
@@ -1004,6 +1005,7 @@ define([
         $loading.find('.cp-loading-progress').remove(); // Remove the progress list
         setTimeout(cb, 750);
         $('head > link[href^="/customize/src/pre-loading.css"]').remove();
+        $('html').toggleClass('cp-loading-noscroll', false);
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
@@ -1044,6 +1046,7 @@ define([
             $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
                 if (e.which === 27) {
                     $loading.hide();
+                    $('html').toggleClass('cp-loading-noscroll', false);
                     if (typeof(exitable) === "function") { exitable(); }
                 }
             });

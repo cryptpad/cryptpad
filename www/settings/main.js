@@ -79,7 +79,6 @@ define([
                 ], function (ServerCommand) {
                     ServerCommand(obj.key, obj.data, function (err, response) {
                         cb({ success: Boolean(!err && response && response.bearer) });
-                        console.log(response);
                         if (response && response.bearer) {
                             Utils.LocalStore.setSessionToken(response.bearer);
                         }
@@ -92,7 +91,6 @@ define([
                 ], function (ServerCommand) {
                     ServerCommand(obj.key, obj.data, function (err, response) {
                         cb({ success: Boolean(!err && response && response.success) });
-                        console.error(response);
                         if (response && response.success) {
                             Utils.LocalStore.setSessionToken('');
                         }

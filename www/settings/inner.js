@@ -60,6 +60,9 @@ define([
     Messages.settings_totp_tuto = "Scan this QR code with a authenticator application. Obtain a valid authentication code and confirm before it expires."; // XXX
     Messages.settings_totp_confirm = "Enable TOTP with this secret"; // XXX
 
+    Messages.settings_totp_recovery_header = "Recovery code";
+    Messages.settings_totp_recovery = "If you lose access to your authenticator app, you may lock yourselves out of your CryptPad account. <strong>To prevent this, please store the following recovery secret key.</strong> You'll be able to use it to disable the multi-factor authentication. Do not share this key.";
+
     var categories = {
         'account': [ // Msg.settings_cat_account
             'cp-settings-own-drive',
@@ -864,17 +867,15 @@ define([
         var button = h('button.btn.btn-primary', Messages.settings_totp_enable);
         $(button).click(function () {
             $content.empty();
-            var Base32, Block, QRCode, Nacl;
+            var Base32, QRCode, Nacl;
             var blockKeys;
             nThen(function (waitFor) {
                 require([
                     '/auth/base32.js',
-                    '/common/outer/login-block.js',
                     '/lib/qrcode.min.js',
                     '/bower_components/tweetnacl/nacl-fast.min.js',
-                ], waitFor(function (_Base32, _Login, _Block) {
+                ], waitFor(function (_Base32) {
                     Base32 = _Base32;
-                    Block = _Block;
                     QRCode = window.QRCode;
                     Nacl = window.nacl;
                 }));
@@ -943,6 +944,7 @@ define([
                 var updateURI = function (secret) {
                     $container.empty();
 
+                    var recoverySecret = Nacl.util.encodeBase64(Nacl.randomBytes(24));
                     var username = privateData.accountName;
                     var hostname = new URL(privateData.origin).hostname;
                     var label = "CryptPad";
@@ -972,13 +974,16 @@ define([
                         $confirmBtn.attr('disabled', 'disabled');
                         lock = true;
 
+                        var data = {
+                            command: 'TOTP_SETUP',
+                            secret: secret,
+                            contact: "secret:" + recoverySecret, // XXX add other recovery options
+                            code: code,
+                        };
+
                         sframeChan.query("Q_SETTINGS_TOTP_SETUP", {
                             key: blockKeys.sign,
-                            data: {
-                                command: 'TOTP_SETUP',
-                                secret: secret,
-                                code: code,
-                            }
+                            data: data
                         }, function (err, obj) {
                             lock = false;
                             $OTPEntry.val("");
@@ -992,11 +997,18 @@ define([
 
                     });
 
+                    var recoveryBlock = h('div.alert.alert-danger', [
+                        h('h3', Messages.settings_totp_recovery_header),
+                        UI.setHTML(h('p'), Messages.settings_totp_recovery),
+                        UI.dialog.selectable(recoverySecret)
+                    ]);
+
                     $container.append([
                         uriInput,
                         qr,
                         h('br'),
                         description,
+                        recoveryBlock,
                         OTPEntry,
                         confirmOTP
                     ]);
