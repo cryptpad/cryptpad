@@ -232,13 +232,13 @@ var serveConfig = makeRouteCache(function () {
     var envVariableArray = ["websocketPath", "httpUnsafeOrigin", "adminEmail",
         "inactiveTime", "supportMailbox", "defaultStorageLimit", "maxUploadSize",
         "premiumUploadSize", "restrictRegistration", "httpSafeOrigin", "enableEmbedding",
-        "fileHost", "listMyInstance", "accounts_api", "bgBody", "darkBgBody", ];
+        "fileHost", "listMyInstance", "accounts_api", "bgBody", "darkBgBody", "bgAlert", ];
 
     for ( var i = 0; i < envVariableArray.length; i++) {
         var currentVarName = envVariableArray[i];
         toSend[currentVarName] = Env[currentVarName];
     }
-    console.log("server.js - serveConfig - toSend[darkBgBody] : ",toSend["darkBgBody"]);
+//console.log("server.js - serveConfig - toSend[bgAlert] : ",toSend["bgAlert"]);
     return [
         'define(function(){',
         'return ' + JSON.stringify(toSend, null, '\t'),
