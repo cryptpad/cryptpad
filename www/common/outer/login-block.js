@@ -133,7 +133,7 @@ define([
         // 'block/' here is hardcoded because it's hardcoded on the server
         // if we want to make CryptPad work in server subfolders, we'll need
         // to update this path derivation
-        return (ApiConfig.fileHost || window.location.origin)
+        return (ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin || window.location.origin)
             + '/block/' + publicKey.slice(0, 2) + '/' +  publicKey;
     };
 
