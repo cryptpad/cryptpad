@@ -112,7 +112,7 @@ Msg.recovery_totp_disabled = "Multi-factor authentication is already disabled fo
                                 Msg._getKey('recovery_totp_beta', [Config.adminEmail])) : undefined,
                             h('label', Msg.recovery_totp_proof),
                             h('textarea.cp-recover-email', {readonly: 'readonly'}),
-                            h('button.btn.btn-secondary', Msg.copyToClipboard),
+                            h('button.btn.btn-secondary#totpcopyproof', Msg.copyToClipboard),
                         ]),
                     ]),
                     h('div.cp-recovery-step.step-info', { style: 'display: none;' }, [

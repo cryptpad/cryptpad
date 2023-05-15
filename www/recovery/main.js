@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
+    '/common/clipboard.js',
     '/common/outer/local-store.js',
     '/common/outer/login-block.js',
     '/common/outer/http-command.js',
@@ -18,7 +19,7 @@ define([
 
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Sortify, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback,
-    LocalStore, Block, ServerCommand) {
+    Clipboard, LocalStore, Block, ServerCommand) {
     if (window.top !== window) { return; }
 
     var Messages = Cryptpad.Messages;
@@ -35,6 +36,7 @@ define([
         var $uname = $('#username');
         var $passwd = $('#password');
         var $recoveryKey = $('#totprecovery');
+        var $copyProof = $('#totpcopyproof');
 
         var $step1 = $('.cp-recovery-step.step1');
         var $step2 = $('.cp-recovery-step.step2');
@@ -55,6 +57,7 @@ define([
             $stepInfo.show();
         };
 
+        var proofStr;
         var addProof = function (blockKeys) {
             var pub = blockKeys.sign.publicKey;
             var sec = blockKeys.sign.secretKey;
@@ -65,8 +68,18 @@ define([
             };
             var proof = Nacl.sign.detached(Nacl.util.decodeUTF8(Sortify(toSign)), sec);
             toSign.proof = Nacl.util.encodeBase64(proof);
-            $totpProof.html(JSON.stringify(toSign, 0, 2));
+            proofStr = JSON.stringify(toSign, 0, 2);
+            $totpProof.html(proofStr);
         };
+
+        $copyProof.click(function () {
+            if (!proofStr) { return; }
+            if (Clipboard.copy.multiline(proofStr)) {
+                UI.log(Messages.genericCopySuccess);
+            } else {
+                UI.warn(Messages.error);
+            }
+        });
 
         var revokeTOTP = function (blockKeys) {
             var recoveryKey = $recoveryKey.val().trim();
