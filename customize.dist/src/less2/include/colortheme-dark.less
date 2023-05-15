@@ -101,7 +101,8 @@
 @scrollbar_color: @cp_scrollbar-fg transparent;
 
 // Loading screen
-@cp_loading-bg: @cryptpad_color_grey_900;
+//@cp_loading-bg: @cryptpad_color_grey_900;
+@cp_loading-bg: @cp-config-dark-bg-body;
 @cp_loading-fg: @cryptpad_text_col;
 @cp_loading-msg-bg: @cryptpad_color_grey_700;
 @cp_loading-link: @cryptpad_color_brand_300;
@@ -112,7 +113,8 @@
 @cp_loading-spinner: @cryptpad_color_grey_600;
 
 // Chat
-@cp_messenger-bg: @cryptpad_color_grey_900;
+//@cp_messenger-bg: @cryptpad_color_grey_900;
+@cp_messenger-bg: @cp-config-dark-bg-body;
 @cp_messenger-fg: @cryptpad_text_col;
 @cp_messenger-notif: @cryptpad_color_black;
 @cp_messenger-friend: @cryptpad_color_black;
@@ -171,17 +173,24 @@
 @cp_buttons-cancel-border: @cryptpad_color_grey_400;
 
 // Sidebar layout
-@cp_sidebar-left-bg: @cryptpad_color_grey_900;
+//@cp_sidebar-left-bg: @cryptpad_color_grey_900;
+// To take into account the configured backgroung
+//@cp_sidebar-left-bg: lighten(@cp-config-dark-bg-body,2%);
+@cp_sidebar-left-bg: transparent;
 @cp_sidebar-left-fg: @cryptpad_text_col;
 @cp_sidebar-left-item-bg: @cryptpad_color_grey_800;
-@cp_sidebar-right-bg: @cryptpad_color_grey_900;
+// To take into account the configured backgroung
+//@cp_sidebar-right-bg: @cryptpad_color_grey_900;
+@cp_sidebar-right-bg: transparent;
+//@cp_sidebar-right-bg: darken(@cp-config-dark-bg-body,2%);
 @cp_sidebar-right-fg: @cryptpad_text_col;
 @cp_sidebar-left-active: @cryptpad_color_grey_400;
 @cp_sidebar-left-active-fg: @cryptpad_color_grey_900;
 @cp_sidebar-hint: fade(@cryptpad_text_col, 80%);
 
 // Drive
-@cp_drive-bg: @cp_sidebar-right-bg;
+//@cp_drive-bg: @cp_sidebar-right-bg;
+@cp_drive-bg: @cp-config-dark-bg-body;
 @cp_drive-fg: @cp_sidebar-right-fg;
 @cp_drive-header-fg: fade(@cryptpad_text_col, 70%);
 @cp_drive-icon-hover: fade(@cryptpad_text_col, 5%);
@@ -261,7 +270,8 @@
 @cp_help-link: @cryptpad_color_link;
 
 // Static pages
-@cp_static-bg: @cryptpad_color_grey_900;
+//@cp_static-bg: @cryptpad_color_grey_900;
+@cp_static-bg: @cp-config-dark-bg-body;
 @cp_static-fg: @cryptpad_text_col;
 @cp_static-link: @cryptpad_color_brand_300;
 @cp_static-title: @cryptpad_color_brand;

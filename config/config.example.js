@@ -301,8 +301,10 @@ module.exports = {
      * ===================== */
 
     /* Default background color */
-    bgBody: "#EEEEEE"
+    bgBody: "#EEEEEE",
 
+    /* Default dark background color */
+    darkBgBody: "#212121",
 
 };
 
@@ -313,7 +315,7 @@ const varArray =[ "httpUnsafeOrigin", "httpSafeOrigin","httpAddress", "httpPort"
     "disableIntegratedEviction", "maxUploadSize","premiumUploadSize", "filePath",
     "archivePath", "pinPath", "taskPath", "blockPath", "blobPath", "blobStagingPath",
     "decreePath", "logPath", "logToStdout", "logLevel", "logFeedback", "verbose",
-    "installMethod", "bgBody" ];
+    "installMethod", "bgBody", "darkBgBody", ];
 
 // Variables that must be converted to an array
 const numberVarArray = [ "httpPort", "httpSafePort", "maxWorkers", "inactiveTime", "archiveRetentionTime",
