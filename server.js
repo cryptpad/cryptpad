@@ -233,7 +233,7 @@ var serveConfig = makeRouteCache(function () {
         "inactiveTime", "supportMailbox", "defaultStorageLimit", "maxUploadSize",
         "premiumUploadSize", "restrictRegistration", "httpSafeOrigin", "enableEmbedding",
         "fileHost", "listMyInstance", "accounts_api", "bgBody", "darkBgBody", "bgAlert",
-        "darkBgAlert", "brandColor",   ];
+        "darkBgAlert", "brandColor", "darkBrandColor",  ];
 
     for ( var i = 0; i < envVariableArray.length; i++) {
         var currentVarName = envVariableArray[i];
