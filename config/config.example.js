@@ -18,6 +18,18 @@
     to accept donations via our opencollective page: https://opencollective.com/cryptpad
 
 */
+
+/* The goal of this version of config.js is to avoid any modification of
+ * javascript files. Hence, the configuration should be either put in
+ * environment variables or in a .env file. To get the name of the variable
+ * it is the capitalized version of the variable with CP before. So CPHTTPUNSAFEORIGIN, 
+ * CPHTTPPORT, ....
+ * For administrators, there public keys  must be put in separate variables :
+ *   CPADMIN1, CPADMIN2, CPADMIN3, CPADMIN4
+ */
+
+require('dotenv').config()
+
 module.exports = {
 /*  CryptPad is designed to serve its content over two domains.
  *  Account passwords and cryptographic content is handled on the 'main' domain,
@@ -284,3 +296,51 @@ module.exports = {
      */
     installMethod: 'unspecified',
 };
+
+// A variable may be defined in the env variables but not in the default
+// Then I need to loop on all the keys
+const varArray =[ "httpUnsafeOrigin", "httpSafeOrigin","httpAddress", "httpPort", "httpSafePort",
+    "maxWorkers", "adminKeys", "inactiveTime", "archiveRetentionTime", "accountRetentionTime",
+    "disableIntegratedEviction", "maxUploadSize","premiumUploadSize", "filePath",
+    "archivePath", "pinPath", "taskPath", "blockPath", "blobPath", "blobStagingPath",
+    "decreePath", "logPath", "logToStdout", "logLevel", "logFeedback", "verbose",
+    "installMethod" ];
+
+// Variables that must be converted to an array
+const numberVarArray = [ "httpPort", "httpSafePort", "maxWorkers", "inactiveTime", "archiveRetentionTime",
+   "accountRetentionTime", "maxUploadSize", "premiumUploadSize"];
+// Variables that must be converted to a boolean
+const booleanVarArray = [ "disableIntegratedEviction", "logToStdout", "logFeedback", "verbose" ];
+varArray.forEach(function(key,i) {
+    // I need to find the corresponding ENV variables
+	// httpPort => envName is CPHTTPPORT
+    const envName = "CP"+key.toUpperCase();
+    //console.log("processing ", key);
+    if ( envName in process.env ) {
+        // Includes ecmascript 2016, beware
+        if (numberVarArray.includes(key)) {
+            //console.log("Number case for ",envName);
+            module.exports[key]=Number(process.env[envName]);
+        } else if (booleanVarArray.includes(key)) {
+            //console.log("Boolean case for ",envName);
+            module.exports[key]= (process.env[envName]?.toLowerCase?.() === 'true');
+        } else {
+            module.exports[key] = process.env[envName];
+        }
+    }
+})
+
+// I need a special process for adminKeys
+// each admin must be put in a separate variable : CPADMIN1, CPADMIN2, CPADMIN3, CPADMIN4
+// Then I create the adminKeys array
+var indice=1;
+var adminKeys =[];
+var foundAnAdmin = false;
+while ("CPADMIN"+(indice.toString()) in process.env) {
+        foundAnAdmin = true;
+        adminKeys.push(process.env["CPADMIN"+(indice.toString())]);
+        indice = indice + 1;
+}
+if (foundAnAdmin) {
+    module.exports["adminKeys"] = adminKeys;
+}
