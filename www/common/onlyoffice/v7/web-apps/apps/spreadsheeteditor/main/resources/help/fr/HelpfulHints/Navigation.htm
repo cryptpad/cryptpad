@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Paramètres d'affichage et outils de navigation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Description des paramètres d'affichage et des outils de navigation : les boutons de navigation à travers de feuille de calcul, les onglets, les barres de défilement, le zoom." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Paramètres d'affichage et outils de navigation</h1>
+            <p>Pour vous aider à afficher et sélectionner des cellules dans un grand classeur, l'éditeur des feuilles de calcul <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> propose plusieurs outils de navigation: les barres de défilement, les boutons de défilement, les onglets de classeur et le zoom.</p>
+            <h3>Régler les paramètres d'affichage</h3>
+            <p>
+                Pour régler les paramètres d'affichage par défaut et définir le mode le plus pratique pour travailler sur une feuille de calcul, passez à l'onglet <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Affichage</a>. Les options disponibles sont les suivantes:
+            </p>
+            <ul>
+                <li><b>Afficher une feuille</b> permet configurer les paramètres d'affichage de feuille. Pour en savoir plus sur des droits d'accès, veuillez consulter <a href="../UsageInstructions/SheetView.htm" onclick="onhyperlinkclick(this)">cet article</a>.</li>
+                <li><b>Zoom</b> - sert à définir la valeur de zoom de 50% à 200% en sélectionnant de la liste des options disponibles.</li>
+                <li><b>Thème d'interface</b> - sélectionnez l'une des thèmes d'interface disponibles dans la liste déroulante: <em>Identique à système</em>, <em>Claire</em>, <em>Classique claire</em>, <em>Sombre</em>, <em>Contraste élevé sombre</em>.</li>
+                <li><b>Figer les volets</b> - fige toutes les lignes au-dessus de la cellule active et toutes les colonnes à gauche de la cellule active afin qu'elles restent visibles lorsque vous faites défiler la feuille vers la droite ou vers le bas. Pour débloquer les volets, cliquez à nouveau sur cette option ou cliquez avec le bouton droit n'importe où dans la feuille de calcul et sélectionnez l'option <b>Libérer les volets</b> dans le menu.</li>
+                <li><b>Masquer la barre de formule</b> une fois désactivé, sert à masquer la barre au-dessous de la barre d'outils supérieure, utilisée pour saisir et réviser la formule et son contenu. Pour afficher la <b>Barre de formule</b> masquée cliquez sur cette option encore une fois. La <b>Barre de formule</b> est développée d'une ligne quand vous faites glisser le bas de la zone de formule pour l'élargir.</li>
+                <li><b>En-têtes</b> une fois désactivé, sert à masquer les en-têtes des colonnes en haut et les en-têtes des lignes à gauche de la feuille de calcul. Pour afficher les <b>En-têtes</b> masqués, cliquez sur cette option encore une fois.</li>
+                <li><b>Quadrillage</b> une fois désactivé, sert à masquer les lignes autour des cellules. Pour afficher le <b>Quadrillage</b> masqué cliquez sur cette option encore une fois.</li>
+                <li><b>Afficher les zéros</b> permet d'afficher <b>0</b> lors de la saisie dans une cellule. Décochez cette case pour désactiver cette option.</li>
+                <li>
+                    <b>Toujours afficher la barre d'outils</b> - une fois désactivé, la barre d'outils supérieure comportant toutes les commandes sont masquée mais tous les onglets restent visibles.
+                    <p class="note">Vous pouvez également double-cliquer sur un onglet pour masquer la barre d'outils supérieure ou l'afficher à nouveau.</p>
+                </li>
+                <li><b>Combiner la barre de la feuille et la barre d'état</b> sert à afficher des outils de navigation dans la feuille de calcul et la barre d'état sur une seule ligne. Par défaut, cette option est activée. Une fois désactivée, la barre d'état s'affichera sur deux lignes.</li>
+                <li><b>Panneau gauche</b> - une fois désactivé, le panneau gauche comportant les onglets <b>Rechercher</b>, <b>Commentaires</b>et autres onglets sera masqué. Pour afficher le panneau gauche, cochez cette case.</li>
+                <li><b>Panneau droit</b> - une fois désactivé, le panneau droit comportant les options de configurations des <b>Paramètres</b> sera masqué. Pour afficher le panneau droit, cochez cette case.</li>
+            </ul>
+            <p>La barre latérale sur la droite est réduite par défaut. Pour l'agrandir, sélectionnez un objet (par exemple, image, graphique, forme) et cliquez sur l'icône de l'onglet actuellement activé sur la droite. Pour réduire la barre latérale sur la droite, cliquez à nouveau sur l'icône.</p>
+            <p>Vous pouvez également modifier la taille du panneau <b>Commentaires</b> <span class="onlineDocumentFeatures">ou <b>Chat</b></span> ouvert en utilisant un simple glisser-déposer : placez le curseur de la souris sur le bord gauche de la barre latérale. Quand il se transforme dans la flèche bidirectionnelle, faites glisser le bord à droite pour augmenter la largeur de la barre latérale. Pour rétablir sa largeur originale faites glisser le bord à gauche.</p>
+            <h3>Utiliser les outils de navigation</h3>
+            <p>Pour naviguer à travers votre classeur, utilisez les outils suivants:</p>
+            <p>Utilisez la touche <b>Tab</b> sur votre clavier pour vous déplacer à droite de la cellule sélectionnée.</p>
+            <p>Les <b>barres de défilement</b> (horizontale et verticale) servent à faire défiler la feuille de calcul actuelle vers le haut /le bas et vers la gauche/la droite. Pour naviguer dans une feuille de calcul à l'aide des barres de défilement:</p>
+            <ul>
+                <li>cliquez sur la flèche vers le haut/bas ou vers la droite/gauche sur la barre de défilement;</li>
+                <li>faites glisser la case de défilement;</li>
+                <li>faites tourner la molette pour vous déplacer verticalement;</li>
+                <li>utilisez la combinaison de touches <b>Maj</b> + molette de défilement de la souris pour vous déplacer horizontalement;</li>
+                <li>cliquez n'importe où à gauche/à droite ou en haut/en bas de la case de défilement sur la barre de défilement.</li>
+            </ul>
+            <p>Vous pouvez également utiliser la <b>molette de la souris</b> pour faire défiler votre feuille de calcul vers le haut ou vers le bas.</p>
+            <p>Les boutons de <b>Navigation des feuilles</b> sont situés dans le coin inférieur gauche et servent à faire défiler la liste de feuilles vers la droite/gauche et à naviguer parmi les onglets des feuilles.</p>
+            <ul>
+                <li>cliquez sur <b>Faire défiler la liste des feuilles à gauche</b> <div class = "icon icon-previoussheet"></div> pour pour faire défiler la liste des feuilles de calcul du classeur actuel vers la gauche;</li>
+                <li>cliquez sur <b>Faire défiler la liste des feuilles à droite</b> <div class = "icon icon-nextsheet"></div> pour pour faire défiler la liste des feuilles de calcul du classeur actuel vers la droite;</li>
+            </ul>
+            <p>Utilisez <span class="icon icon-addworksheet"></span> sur la barre d'état pour ajouter une nouvelle feuille de calcul.</p>
+            <p>Pour sélectionner une feuille de calcul nécessaire:</p>
+            <ul>
+                <li>
+                    cliquez sur <div class = "icon icon-list_worksheets"></div> le bouton sur la barre d'état pour ouvrir la liste des feuilles de calcul et sélectionner la feuille de calcul nécessaire. L'état de la feuille s'affiche aussi dans la liste des feuilles de calcul,
+                    <p><img alt="Liste des feuilles de calcul" src="../images/sheetlist.png" /></p>
+                    <p>ou</p>
+                    <p>cliquez sur <b>l'onglet de la feuille</b> approprié à côté du bouton <span class="icon icon-list_worksheets"></span>.</p>
+                    <p>
+                        Les boutons <b>Zoom</b> sont situés en bas à droite et servent à faire un zoom avant ou un zoom arrière. Pour modifier la valeur de zoom sélectionnée en pourcentage, cliquez dessus et sélectionnez l'une des options de zoom disponibles dans la liste (50% / 75% / 100% / 125% / 150% / 175% / 200% / 300% / 400% / 500%) ou utilisez les boutons <b>Zoom avant</b> <span class="icon icon-zoomin"></span> ou <b>Zoom arrière</b> <span class="icon icon-zoomout"></span>. Les options de zoom sont également disponibles sous l'onglet <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Affichage</a>.
+                    </p>
+                </li>
+            </ul>
+        </div>
+	</body>
+</html>

@@ -1,0 +1,315 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pivot-Tabellen erstellen und bearbeiten</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Pivot-Tabellen erstellen und bearbeiten. Filter verwenden, die Darstellung der Pivot-Tabellen ändern." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Pivot-Tabellen erstellen und bearbeiten</h1>
+            <p>Mit Pivot-Tabellen können Sie große Datenmengen gruppieren und anordnen, um zusammengefasste Informationen zu erhalten. In der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> können Sie Daten neu organisieren, um nur die erforderliche Information anzuzeigen und sich auf wichtige Aspekte zu konzentrieren.</p>
+            <h3>Eine neue Pivot-Tabelle erstellen</h3>
+            <p>Um eine Pivot-Tabelle zu erstellen,</p>
+            <ol>
+                <li>Bereiten Sie den Quelldatensatz vor, den Sie zum Erstellen einer Pivot-Tabelle verwenden möchten. Er sollte Spaltenkopfzeilen enthalten. Der Datensatz sollte keine leeren Zeilen oder Spalten enthalten.</li>
+                <li>Wählen Sie eine Zelle im Datenquelle-Bereich aus.</li>
+                <li>
+                    Öffnen Sie die Registerkarte <b>Pivot-Tabelle</b> in der oberen Symbolleiste und klicken Sie die Schaltfläche <b>Tabelle einfügen</b> <div class = "icon icon-insert_pivot"></div> an.
+                    <p>Wenn Sie eine Pivot-Tabelle auf der Basis einer <a href="FormattedTables.htm" onclick="onhyperlinkclick(this)">formatierten Tabelle</a> erstellen möchten, verwenden Sie die Option <span class="icon icon-insertpivot"></span> <b>Pivot-Tabelle einfügen</b> im Menü <b>Tabelle-Einstellungen</b> in der rechten Randleiste.</p>
+                </li>
+                <li>
+                    Das Fenster <b>Pivot-Tabelle erstellen</b> wird geöffnet.
+                    <p><img alt="Pivot-Tabelle erstellen - Fenster" src="../images/create_pivot.png" /></p>
+                    <ul>
+                        <li>
+                            Die Option <b>Datenquelle-Bereich</b> wird schon konfiguriert. Alle Daten aus dem ausgewählten Datenquelle-Bereich werden verwendet. Wenn Sie den Bereich ändern möchten (z.B., nur einen Teil der Datenquelle enthalten), klicken Sie die Schaltfläche <div class = "icon icon-changerange"></div> an. Im Fenster <b>Datenbereich auswählen</b> geben Sie den Datenbereich im nachfolgenden Format ein: <em>Sheet1!$A$1:$E$10</em>. Sie können auch den gewünschten Datenbereich per Maus auswählen. Klicken Sie auf <b>OK</b>.
+                        </li>
+                        <li>
+                            Wählen Sie die Stelle für die Pivot-Tabelle aus.
+                            <ul>
+                                <li>Die Option <b>Neues Arbeitsblatt</b> ist standardmäßig markiert. Die Pivot-Tabelle wird auf einem neuen Arbeitsblatt erstellt.</li>
+                                <li>
+                                    Die Option <b>Existierendes Arbeitsblatt</b> fordert eine Auswahl der bestimmten Zelle. Die ausgewählte Zelle befindet sich in der oberen rechten Ecke der erstellten Pivot-Tabelle. Um eine Zelle auszuwählen, klicken Sie die Schaltfläche <div class = "icon icon-changerange"></div> an.
+                                    <p><img alt="Datenbereich auswählen - Fenster" src="../images/pivot_selectdata2.png" /></p>
+                                    <p>Im Fenster <b>Datenbereich auswählen</b> geben Sie die Zelladresse im nachfolgenden Format ein: <em>Sheet1!$G$2</em>. Sie können auch die gewünschte Zelle per Maus auswählen. Klicken Sie auf <b>OK</b>.</p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Wenn Sie die Position für die Pivot-Tabelle ausgewählt haben, klicken Sie auf <b>OK</b> im Fenster <b>Pivot-Tabelle erstellen</b>.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Eine leere Pivot-Tabelle wird an der ausgewählten Position eingefügt.</p>
+            <p>Die Registerkarte <b>Pivot-Tabelle Einstellungen</b> wird in der rechten Randleiste geöffnet. Sie können diese Registerkarte mithilfe der Schaltfläche <span class="icon icon-pivot_settings"></span> ein-/ausblenden.</p>
+            <p><img alt="Pivot table settings tab" src="../images/right_pivot.png" /></p>
+
+            <h4>Die Felder zur Ansicht auswählen</h4>
+            <p>Der Abschnitt <b>Felder auswählen</b> enthält die Felder, die gemäß den Spaltenüberschriften in Ihrem Quelldatensatz benannt sind. Jedes Feld enthält Werte aus der entsprechenden Spalte der Quelltabelle. Die folgenden vier Abschnitte stehen zur Verfügung: <b>Filter</b>, <b>Spalten</b>, <b>Zeilen</b> und <b>Werte</b>.</p>
+            <p>Markieren Sie die Felder, die in der Pivot-Tabelle angezeigt werden sollen. Wenn Sie ein Feld markieren, wird es je nach Datentyp zu einem der verfügbaren Abschnitte in der rechten Randleiste hinzugefügt und in der Pivot-Tabelle angezeigt. Felder mit Textwerten werden dem Abschnitt <b>Zeilen</b> hinzugefügt. Felder mit numerischen Werten werden dem Abschnitt <b>Werte</b> hinzugefügt.</p>
+            <p>Sie können Felder in den erforderlichen Abschnitt ziehen sowie die Felder zwischen Abschnitten ziehen, um Ihre Pivot-Tabelle schnell neu zu organisieren. Um ein Feld aus dem aktuellen Abschnitt zu entfernen, ziehen Sie es aus diesem Abschnitt heraus.</p>
+            <p>Um dem erforderlichen Abschnitt ein Feld hinzuzufügen, können Sie auch auf den schwarzen Pfeil rechts neben einem Feld im Abschnitt <b>Felder auswählen</b> klicken und die erforderliche Option aus dem Menü auswählen: <b>Zu Filtern hinzufügen</b>, <b>Zu Zeilen hinzufügen</b>, <b>Zu Spalten hinzufügen</b>, <b>Zu Werten hinzufügen</b>.</p>
+            <p><img alt="Pivot-Tabelle Einstellungen - Registerkarte" src="../images/pivot_selectfields.png" /></p>
+            <p>Unten sehen Sie einige Beispiele für die Verwendung der Abschnitte <b>Filter</b>, <b>Spalten</b>, <b>Zeilen</b> und <b>Werte</b>.</p>
+            <ul>
+                <li>
+                    Wenn Sie ein Feld dem Abschnitt <b>Filter</b> hunzufügen, wird ein gesonderter Filter oberhalb der Pivot-Tabelle erstellt. Der Filter wird für die ganze Pivot-Tabelle verwendet. Klicken Sie den Abwärtspfeil <div class = "icon icon-dropdownarrow"></div> im erstellten Filter an, um die Werte aus dem ausgewählten Feld anzuzeigen. Wenn einige der Werten im Filter-Fenster demarkiert werden, klicken Sie auf <b>OK</b>, um die demarkierten Werte in der Pivot-Tabelle nicht anzuzeigen.
+                    <p><img alt="Pivot Filter" src="../images/pivot_filter_field.png" /></p>
+                </li>
+                <li>
+                    Wenn Sie ein Feld dem Abschnitt <b>Spalten</b> hinzufügen, wird die Pivot-Tabelle die Anzahl der Spalten enthalten, die dem eingegebenen Wert entspricht. Die Spalte <b>Gesamtsumme</b> wird auch eingefügt.
+                    <p><img alt="Pivot Spalten" src="../images/pivot_columns.png" /></p>
+                </li>
+                <li>
+                    Wenn Sie ein Feld dem Abschnitt <b>Zeile</b> hinzufügen, wird die Pivot-Tabelle die Anzahl der Zeilen enthalten, die dem eingegebenen Wert entspricht. Die Zeile <b>Gesamtsumme</b> wird auch eingefügt.
+                    <p><img alt="Pivot Zeile" src="../images/pivot_rows.png" /></p>
+                </li>
+                <li>
+                    Wenn Sie ein Feld dem Abschnitt <b>Werte</b> hinzufügen, zeogt die Pivot-Table die Gesamtsumme für alle numerischen Werte im ausgewählten Feld an. Wenn das Feld Textwerte enthält, wird die Anzahlt der Werte angezeigt. Die Finktion für die Gesamtsumme kann man in den Feldeinstellungen ändern.
+                    <p><img alt="Pivot Werte" src="../images/pivot_values.png" /></p>
+                </li>
+            </ul>
+
+            <h4>Die Felder reorganisieren und anpassen</h4>
+            <p>Wenn die Felder hinzugefügt sind, ändern Sie das Layout und die Formatierung der Pivot-Tabelle. Klicken Sie den schwarzen Abwärtspfeil neben dem Feld mit den Abschnitten <b>Filter</b>, <b>Spalten</b>, <b>Zeilen</b> oder <b>Werte</b> an, um das Kontextmenü zu öffnen.</p>
+            <p><img alt="Pivot-Tabelle Menü" src="../images/pivot_menu.png" /></p>
+            <p>Das Menü hat die folgenden Optionen:</p>
+            <ul>
+                <li>Das ausgewählte Feld <b>Nach oben</b>, <b>Nach unten</b>, <b>Zum Anfang</b>, <b>Zum Ende</b> <b>bewegen und verschieben</b>, wenn es mehr als ein Feld gibt.</li>
+                <li>Das ausgewählte Feld zum anderen Abschnitt <b>bewegen</b>: <b>Zu Filter</b>, <b>Zu Zeilen</b>, <b>Zu Spalten</b>, <b>Zu Werten</b>. Die Option, die dem aktiven Abschnitt entspricht, wird deaktiviert.</li>
+                <li>Das ausgewählte Feld aus dem aktiven Abschnitt <b>Entfernen</b>.</li>
+                <li>Die <b>Feldeinstellungen</b> konfigurieren.</li>
+            </ul>
+            <p>Die Einstellungen für die <b>Filter, Spalten</b> und <b>Zeilen</b> sehen gleich aus:</p>
+            <p><img alt="Pivot-Tabelle - Filter - Feldeinstellungen" src="../images/pivot_filter_field_layout.png" /></p>
+            <p>Der Abschnitt <b>Layout</b> enthält die folgenden Einstellungen:</p>
+            <ul>
+                <li>Die Option <b>Quellenname</b> zeigt den Feldnamen an, der der Spaltenüberschrift aus dem Datenquelle entspricht.</li>
+                <li>Die Option <b>Benutzerdefinierter Name</b> ändert den Namen des aktiven Felds, der in der Pivot-Tabelle angezeigt ist.</li>
+                <li>
+                    Der Abschnitt <b>Berichtsformular</b> ändert den Anzeigemodus des aktiven Felds in der Pivot-Tabelle:
+                    <ul>
+                        <li>
+                            Wählen Sie das gewünschte Layout für das aktive Feld in der Pivot-Tabelle aus:
+                            <ul>
+                                <li>
+                                    Der Modus <b>Tabular</b> zeigt eine Spalte für jedes Feld an und erstellt Raum für die Feldüberschriften.
+                                    <!--<p><img alt="Pivot-Tabelle Tabular Modus" src="../images/pivot_tabular.png" /></p>-->
+                                </li>
+                                <li>
+                                    Der Modus <b>Gliederung</b> zeigt eine Spalte für jedes Feld an und erstellt Raum für die Feldüberschriften. Die Option zeigt auch Zwischensumme nach oben an.
+                                    <!--<p><img alt="Pivot-Tabelle Gliederung Modus" src="../images/pivot_outline.png" /></p>-->
+                                </li>
+                                <li>
+                                    Der Modus <b>Kompakt</b> zeigt Elemente aus verschiedenen Zeilen in einer Spalte an.
+                                    <!--<p><img alt="Pivot-Tabelle Kompakt Modus" src="../images/pivot_compact.png" /></p>-->
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Die Option <b>Die Überschriften auf jeder Zeile wiederholen</b> gruppiert die Zeilen oder die Spalten zusammen, wenn es viele Felder im Tabular-Modus gibt.</li>
+                        <li>Die Option <b>Leere Zeilen nach jedem Element einfügen</b> fügt leere Reihe nach den Elementen im aktiven Feld ein.</li>
+                        <li>Die Option <b>Zwischensummen anzeigen</b> ist für die Zwischensummen der ausgewähltenen Felder verantwortlich. Sie können eine der Optionen auswählen: <em>Oben in der Gruppe anzeigen</em> oder <em>Am Ende der Gruppe anzeigen</em>.</li>
+                        <li>Die Option <b>Elemente ohne Daten anzeigen</b> blendet die leeren Elemente im aktiven Feld aus-/ein.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Pivot-Tabelle - Filter - Feldeinstellungen" src="../images/pivot_filter_field_subtotals.png" /></p>
+            <p>Der Abschnitt <b>Zwischensumme</b> hat die <b>Funktionen für Zwischensummem</b>. Markieren Sie die gewünschten Funktionen in der Liste: <em>Summe</em>, <em>Anzahl</em>, <em>MITTELWERT</em>, <em>Max</em>, <em>Min</em>, <em>Produkt</em>, <em>Zähle Zahlen</em>, <em>StdDev</em>, <em>StdDevp</em>, <em>Var</em>, <em>Varp</em>.</p>
+            <p><b>Feldeinstellungen - Werte</b></p>
+            <p><img alt="Pivot-Tabelle - Werte - Feldeinstellungen" src="../images/pivot_values_field_settings.png" /></p>
+            <ul>
+                <li>Die Option <b>Quellenname</b> zeigt den Feldnamen an, der der Spaltenüberschrift aus dem Datenquelle entspricht.</li>
+                <li>Die Option <b>Benutzerdefinierter Name</b> ändert den Namen des aktiven Felds, der in der Pivot-Tabelle angezeigt ist.</li>
+                <li>In der Liste <b>Wert zusammenfassen nach</b> können Sie die Funktion auswählen, nach der der Summierungswert für alle Werte aus diesem Feld berechnet wird. Standardmäßig wird <em>Summe</em> für numerische Werte und <em>Anzahl</em> für Textwerte verwendet. Die verfügbaren Funktionen sind <em>Summe</em>, <em>Anzahl</em>, <em>MITTELWERT</em>, <em>Max</em>, <em>Min</em>, <em>Produkt</em>.</li>
+            </ul>
+
+            <h3>Daten gruppieren und Gruppierung aufheben</h3>
+            <p>Daten in Pivot-Tabellen können nach benutzerdefinierten Anforderungen gruppiert werden. Für Daten und Nummern ist eine Gruppierung verfügbar.</p>
+            <h4>Daten gruppieren</h4>
+            <p>Erstellen Sie zum Gruppieren von Daten eine Pivot-Tabelle mit einer Reihe erforderlicher Daten. Klicken Sie mit der rechten Maustaste auf eine Zelle in einer Pivot-Tabelle mit einem Datum, wählen Sie im Pop-Up-Menü die Option <b>Gruppieren</b> und legen Sie im geöffneten Fenster die erforderlichen Parameter fest.</p>
+            <p><img alt="Daten gruppieren" src="../images/group_dates.png" /></p>
+            <ul>
+                <li><b>Starten</b> - Das erste Datum in den Quelldaten ist standardmäßig ausgewählt. Geben Sie zum Ändern das gewünschte Datum in dieses Feld ein. Deaktivieren Sie dieses Feld, um den Startpunkt zu ignorieren.</li>
+                <li><b>Beenden</b> - Das letzte Datum in den Quelldaten ist standardmäßig ausgewählt. Geben Sie zum Ändern das gewünschte Datum in dieses Feld ein. Deaktivieren Sie dieses Feld, um den Endpunkt zu ignorieren.</li>
+                <li><b>nach</b> - Die Optionen <em>Sekunden</em>, <em>Minuten</em> und <em>Stunden</em> gruppieren die Daten gemäß der in den Quelldaten angegebenen Zeit. Die Option <em>Monate</em> eliminiert Tage und lässt nur Monate übrig. Die Option <em>Quartale</em> wird unter folgenden Bedingungen ausgeführt: Vier Monate bilden ein Quartal und stellen somit <em>Qtr1</em>, <em>Qtr2</em> usw. bereit. Die Option <em>Jahre</em> entspricht den in den Quelldaten angegebenen Jahren. Kombinieren Sie die Optionen, um das gewünschte Ergebnis zu erzielen.</li>
+                <li><b>Anzahl der Tage</b> - Stellen Sie den erforderlichen Wert ein, um einen Datumsbereich zu bestimmen.</li>
+                <li>Klicken Sie auf <b>OK</b>, wenn Sie bereit sind.</li>
+            </ul>
+            <h4>Nummer gruppieren</h4>
+            <p>Erstellen Sie zum Gruppieren von Nummern eine Pivot-Tabelle mit einer Reihe erforderlicher Nummern. Klicken Sie mit der rechten Maustaste auf eine Zelle in einer Pivot-Tabelle mit einer Zahl, wählen Sie im Pop-Up-Menü die Option <b>Gruppieren</b> und legen Sie im geöffneten Fenster die erforderlichen Parameter fest.</p>
+            <p><img alt="Nummern gruppieren" src="../images/group_numbers.png" /></p>
+            <ul>
+                <li><b>Starten</b> - Die kleinste Nummer in den Quelldaten ist standardmäßig ausgewählt. Geben Sie zum Ändern die gewünschte Nummer in dieses Feld ein. Deaktivieren Sie dieses Feld, um die kleinste Nummer zu ignorieren.</li>
+                <li><b>Beenden</b> - Die größte Nummer in den Quelldaten ist standardmäßig ausgewählt. Geben Sie zum Ändern die gewünschte Nummer in dieses Feld ein. Deaktivieren Sie dieses Feld, um die größte Nummer zu ignorieren.</li>
+                <li><b>nach</b> - Stellt das erforderliche Intervall für die Gruppierung von Nummern ein. Zum Beispiel, <em>"2"</em> gruppiert die Nummern von 1 bis 10 als <em>"1-2"</em>, <em>"3-4"</em> usw.</li>
+                <li>Klicken Sie auf <b>OK</b>, wenn Sie bereit sind.</li>
+            </ul>
+            <h4>Gruppierung von Daten aufheben</h4>
+            <p>Um zuvor gruppierte Daten aufzuheben,</p>
+            <ol>
+                <li>klicken Sie mit der rechten Maustaste auf eine beliebige Zelle in der Gruppe,</li>
+                <li>wählen Sie im Kontextmenü die Option <b>Gruppierung aufheben</b>.</li>
+            </ol>
+
+            <h3>Darstellung der Pivot-Tabellen ändern</h3>
+            <p>Verwenden Sie die Optionen aus der oberen Symbolleiste, um die Darstellung der Pivot-Tabellen zu konfigurieren. Diese Optionen sind für die ganze Tabelle verwendet.</p>
+            <p>Wählen Sie mindestens eine Zelle in der Pivot-Tabelle per Mausklik aus, um die Optionen der Bearbeitung zu aktivieren.</p>
+            <p><img alt="Pivot-Tabelle - Obere Symbolleiste" src="../images/pivot_top.png" /></p>
+            <ul>
+                <li>
+                    Wählen Sie das gewünschte Layout für die Pivot-Tabelle in der Drop-Down Liste <b>Berichtslayout</b> aus:
+                    <ul>
+                        <li>
+                            <em>In Kurzformat anzeigen</em> - die Elemente aus verschieden Zeilen in einer Spalte anzeigen.
+                            <p><img alt="Pivot-Tabelle - Kurzformat" src="../images/pivot_compact.png" /></p>
+                        </li>
+                        <li>
+                            <em>In Gliederungsformat anzeigen</em> - die Pivot-Tabelle im klassischen Pivot-Tabellen-Format anzeigen: jede Spalte für jedes Feld, erstellte Räume für Feldüberschrifte. Die Zwischensummen sind nach oben angezeigt.
+                            <p><img alt="Pivot-Tabelle - Gliederungsformat" src="../images/pivot_outline.png" /></p>
+                        </li>
+                        <li>
+                            <em>In Tabellenformat anzeigen</em> - die Pivot-Tabelle als eine standardmaßige Tabelle anzeigen: jede Spalte für jedes Feld, erstellte Räume für Feldüberschrifte.
+                            <p><img alt="Pivot-Tabelle - Tabellenformat" src="../images/pivot_tabular.png" /></p>
+                        </li>
+                        <li><em>Alle Elementnamen wiederholen</em> - Zeilen oder Spalten visuell gruppieren, wenn Sie mehrere Felder in Tabellenform haben.</li>
+                        <li><em>Alle Elementnamen nicht wiederholen</em> - Elementnamen ausblenden, wenn Sie mehrere Felder in der Tabellenform haben.</li>
+                    </ul>
+                </li>
+                <li>
+                    Wählen Sie den gewünschten Anzeigemodus für die leeren Zeilen in der Drop-Down Liste <b>Leere Zeilen</b> aus:
+                    <ul>
+                        <li><em>Nach jedem Element eine Leerzeile einfügen</em> - fügen Sie die leeren Zeilen nach Elementen ein.</li>
+                        <li><em>Leere Zeilen nach jedem Element entfernen</em> - entfernen Sie die eingefügten Zeilen.</li>
+                    </ul>
+                </li>
+                <li>
+                    Wählen Sie den gewünschten Anzeigemodus für die Zwischensummen in der Drop-Down Liste <b>Teilergebnisse</b> aus:
+                    <ul>
+                        <li><em>Keine Zwischensummen anzeigen</em> - blenden Sie die Zwischensummen aus.</li>
+                        <li><em>Alle Teilergebnisse unten in der Gruppe anzeigen</em> - die Zwischensummen werden unten angezeigt.</li>
+                        <li><em>Alle Teilergebnisse oben in der Gruppe anzeigen</em> - die Zwischensummen werden oben angezeigt.</li>
+                    </ul>
+                </li>
+                <li>
+                    Wählen Sie den gewünschten Anzeigemodus für die Gesamtergebnisse in der Drop-Down Liste <b>Gesamtergebnisse ein- oder ausblenden</b> aus:
+                    <ul>
+                        <li><em>Für Zeilen und Spalten deaktiviert</em> - die Gesamtergebnisse für die Spalten und Zeilen ausblenden.</li>
+                        <li><em>Für Zeilen und Spalten aktiviert</em> - die Gesamtergebnisse für die Spalten und Zeilen anzeigen.</li>
+                        <li><em>Nur für Zeilen aktiviert</em> - die Gesamtergebnisse nur für die Zeilen anzeigen.</li>
+                        <li><em>Nur für Spalten aktiviert</em> - die Gesamtergebnisse nur für die Spalten anzeigen.</li>
+                    </ul>
+                    <p class="note">Diese Einstellungen befinden sich auch im Fenster für die erweiterten Einstellungen der Pivot-Tabellen im Abschnitt <b>Gesamtergebnisse</b> in der Registerkarte <b>Name und Layout</b>.</p>
+                </li>
+            </ul>
+            <p>Die Schaltfläche <span class="icon icon-pivotselecticon"></span> <b>Auswählen</b> wählt die ganze Pivot-Tabelle aus.</p>
+            <p>Wenn Sie die Daten in der Datenquelle ändern, wählen Sie die Pivot-Tabelle aus und klicken Sie die Schaltfläche <span class="icon icon-pivot_refresh"></span> <b>Aktualisieren</b> an, um die Pivot-Tabelle zu aktualisieren.</p>
+
+            <h3>Den Stil der Pivot-Tabellen ändern</h3>
+            <p>Sie können die Darstellung von Pivot-Tabellen mithilfe der in der oberen Symbolleiste verfügbaren Stilbearbeitungswerkzeuge ändern.</p>
+            <p>Wählen Sie mindestens eine Zelle per Maus in der Pivot-Tabelle aus, um die Bearbeitungswerkzeuge in der oberen Symbolleiste zu aktivieren.</p>
+            <p><img alt="Pivot-Tabelle Registerkarte" src="../images/pivottoptoolbar.png" /></p>
+            <p>Mit den Optionen für Zeilen und Spalten können Sie bestimmte Zeilen / Spalten hervorheben, eine bestimmte Formatierung anwenden, oder verschiedene Zeilen / Spalten mit unterschiedlichen Hintergrundfarben hervorheben, um sie klar zu unterscheiden. Folgende Optionen stehen zur Verfügung:</p>
+            <ul>
+                <li><b>Zeilenüberschriften</b> - die Zeilenüberschriften mit einer speziellen Formatierung hervorheben.</li>
+                <li><b>Spaltenüberschriften</b> - die Spaltenüberschriften mit einer speziellen Formatierung hervorheben.</li>
+                <li><b>Verbundene Zeilen</b> - aktiviert den Hintergrundfarbwechsel für ungerade und gerade Zeilen.</li>
+                <li><b>Verbundene Spalten</b> - aktiviert den Hintergrundfarbwechsel für ungerade und gerade Spalten.</li>
+            </ul>
+            <p>
+                In der Vorlagenliste können Sie einen der vordefinierten Pivot-Tabellenstile auswählen. Jede Vorlage enthält bestimmte Formatierungsparameter wie Hintergrundfarbe, Rahmenstil, Zeilen- / Spaltenstreifen usw.
+                Abhängig von den für Zeilen und Spalten aktivierten Optionen werden die Vorlagen unterschiedlich angezeigt. Wenn Sie beispielsweise die Optionen <b>Zeilenüberschriften</b> und <b>Verbundene Spalten</b> aktiviert haben, enthält die angezeigte Vorlagenliste nur Vorlagen, bei denen die Zeilenüberschriften hervorgehoben und die verbundenen Spalten aktiviert sind.
+            </p>
+
+            <h3>Pivot-Tabellen filtern und sortieren</h3>
+            <p>Sie können Pivot-Tabellen nach Beschriftungen oder Werten filtern und die zusätzlichen Sortierparameter verwenden.</p>
+            <h4>Filtern</h4>
+            <p>Klicken Sie auf den Dropdown-Pfeil <span class="icon icon-dropdownarrow"></span> in den Spaltenbeschriftungen <b>Zeilen</b> oder <b>Spalten</b> in der Pivot-Tabelle. Die Optionsliste <b>Filter</b> wird geöffnet:</p>
+            <p><img alt="Filterfenster" src="../images/pivot_filterwindow.png" /></p>
+            <p>Passen Sie die Filterparameter an. Sie können auf eine der folgenden Arten vorgehen: Wählen Sie die Daten aus, die angezeigt werden sollen, oder filtern Sie die Daten nach bestimmten Kriterien.</p>
+            <ul>
+                <li>
+                    <b>Wählen Sie die anzuzeigenden Daten aus</b>
+                    <p>Deaktivieren Sie die Kontrollkästchen neben den Daten, die Sie ausblenden möchten. Zur Vereinfachung werden alle Daten in der Optionsliste <b>Filter</b> in aufsteigender Reihenfolge sortiert.</p>
+                    <p class="note">Das Kontrollkästchen <b>(leer)</b> entspricht den leeren Zellen. Es ist verfügbar, wenn der ausgewählte Zellbereich mindestens eine leere Zelle enthält.</p>
+                    <p>Verwenden Sie das Suchfeld oben, um den Vorgang zu vereinfachen. Geben Sie Ihre Abfrage ganz oder teilweise in das Feld ein. Die Werte, die diese Zeichen enthalten, werden in der folgenden Liste angezeigt. Die folgenden zwei Optionen sind ebenfalls verfügbar:</p>
+                    <ul>
+                        <li><b>Alle Suchergebnisse auswählen</b> ist standardmäßig aktiviert. Hier können Sie alle Werte auswählen, die Ihrer Angabe in der Liste entsprechen.</li>
+                        <li><b>Dem Filter die aktuelle Auswahl hinzufügen</b>. Wenn Sie dieses Kontrollkästchen aktivieren, werden die ausgewählten Werte beim Anwenden des Filters nicht ausgeblendet.</li>
+                    </ul>
+                    <p>Nachdem Sie alle erforderlichen Daten ausgewählt haben, klicken Sie in der Optionsliste <b>Filter</b> auf die Schaltfläche <b>OK</b>, um den Filter anzuwenden.</p>
+                </li>
+            <li>
+                <b>Filtern Sie Daten nach bestimmten Kriterien</b>
+            <p>Sie können entweder die Option <b>Beschriftungsfilter</b> oder die Option <b>Wertefilter</b> auf der rechten Seite der Optionsliste <b>Filter</b> auswählen und dann auf eine der Optionen aus dem Menü klicken:</p>
+            <ul>
+                <li>
+                    Für den <b>Beschriftungsfilter</b> stehen folgende Optionen zur Verfügung:
+                    <ul>
+                        <li>Für Texte: <em>Entspricht...</em>, <em>Ist nicht gleich...</em>, <em>Beginnt mit ...</em>, <em>Beginnt nicht mit...</em>, <em>Endet mit...</em>, <em>Endet nicht mit...</em>, <em>Enthält... </em>, <em>Enthält kein/keine...</em>.</li>
+                        <li>Für Zahlen: <em>Größer als ...</em>, <em>Größer als oder gleich...</em>, <em>Kleiner als...</em>, <em>Kleiner als oder gleich...</em>, <em>Zwischen</em>, <em>Nicht zwischen</em>.</li>
+                    </ul>
+                </li>
+                <li>Für den <b>Wertefilter</b> stehen folgende Optionen zur Verfügung: <em>Entspricht...</em>, <em>Ist nicht gleich...</em>, <em>Größer als...</em>, <em>Größer als oder gleich...</em>, <em>Kleiner als...</em>, <em>Kleiner als oder gleich...</em>, <em>Zwischen</em>, <em>Nicht zwischen</em>, <em>Erste 10</em>.</li>
+            </ul>
+                    <p>Nachdem Sie eine der oben genannten Optionen ausgewählt haben (außer <em>Erste 10</em>), wird das Fenster <b>Beschriftungsfilter/Wertefilter</b> geöffnet. Das entsprechende Feld und Kriterium wird in der ersten und zweiten Dropdown-Liste ausgewählt. Geben Sie den erforderlichen Wert in das Feld rechts ein.</p>
+                    <p>Klicken Sie auf <b>OK</b>, um den Filter anzuwenden.</p>
+                    <p><img alt="Wertfilterfenster" src="../images/pivot_filter.png" /></p>
+                    <p>Wenn Sie die Option <em>Erste 10</em> aus der Optionsliste <b>Wertefilter</b> auswählen, wird ein neues Fenster geöffnet:</p>
+                    <p><img alt="Erste 10 AutoFilter-Fenster" src="../images/pivot_topten.png" /></p>
+                    <p>In der ersten Dropdown-Liste können Sie auswählen, ob Sie den höchsten (<b>Oben</b>) oder den niedrigsten (<b>Unten</b>) Wert anzeigen möchten. Im zweiten Feld können Sie angeben, wie viele Einträge aus der Liste oder wie viel Prozent der Gesamtzahl der Einträge angezeigt werden sollen (Sie können eine Zahl zwischen 1 und 500 eingeben). In der dritten Dropdown-Liste können Sie die Maßeinheiten festlegen: <b>Element</b> oder <b>Prozent</b>. In der vierten Dropdown-Liste wird der ausgewählte Feldname angezeigt. Sobald die erforderlichen Parameter festgelegt sind, klicken Sie auf <b>OK</b>, um den Filter anzuwenden.</p>
+                </li>
+            </ul>
+            <p>Die Schaltfläche <b>Filter</b> <span class="icon icon-filterbutton"></span> wird in den <b>Zeilenbeschriftungen</b> oder <b>Spaltenbeschriftungen</b> der Pivot-Tabelle angezeigt. Dies bedeutet, dass der Filter angewendet wird. <!-- Die Anzahl der gefilterten Datensätze wird in der Statusleiste angezeigt (z.B. <em>25 von 80 gefilterten Datensätzen</em>).--></p>
+
+            <h4>Sortierung</h4>
+            <p>Sie können die Pivot-Tabellendaten <b>sortieren</b>. Klicken Sie auf den Dropdown-Pfeil <span class="icon icon-dropdownarrow"></span> in den <b>Zeilenbeschriftungen</b> oder <b>Spaltenbeschriftungen</b> der Pivot-Tabelle und wählen Sie dann im Menü die Option <b>Aufsteigend sortieren</b> oder <b>Absteigend sortieren</b> aus.</p>
+            <p>Mit der Option <b>Mehr Sortierungsoptionen</b> können Sie das Fenster <b>Sortieren</b> öffnen, in dem Sie die erforderliche Sortierreihenfolge auswählen können - <em>Aufsteigend</em> oder <em>Absteigend</em> - und wählen Sie dann ein bestimmtes Feld aus, das Sie sortieren möchten.</p>
+            <p><img alt="Sortierungsoptionen für Pivot-Tabellen" src="../images/pivot_sort.png" /></p>
+
+            <h4>Datenschnitte einfügen</h4>
+            <p>Sie können Datenschnitte hinzufügen, um die Daten einfacher zu filtern, indem Sie nur das anzeigen, was benötigt wird. Um mehr über Datenschnitte zu erfahren, lesen Sie bitte <a href="Slicers.htm" onclick="onhyperlinkclick(this)">diese Anelitung</a>.</p>
+
+            <h3>Erweiterte Einstellungen der Pivot-Tabelle konfigurieren</h3>
+            <p id="pivot_advanced">Verwenden Sie den Link <b>Erweiterte Einstellungen anzeigen</b> in der rechten Randleiste, um die <b>erweiterten Einstellungen</b> der Pivot-Tabelle zu ändern. Das Fenster 'Pivot-Tabelle - Erweiterte Einstellungen' wird geöffnet:</p>
+            <p><img alt="Pivot-Tabelle - Erweiterte Einstellungen" src="../images/pivot_advanced.png" /></p>
+            <p>Der Abschnitt <b>Name und Layout</b> ändert die gemeinsamen Eigenschaften der Pivot-Tabelle.</p>
+            <ul>
+                <li>Die Option <b>Name</b> ändert den Namen der Pivot-Tabelle.</li>
+                <li>
+                    Der Abschnitt <b>Gesamtsummen</b> ändert den Anzeigemodus der Gesamtsummen in der Pivot-Tabelle. Die Optionen <em>Für Zeilen anzeigen</em> und <em>Für Spalten anzeigen</em> werden standardmäßig aktiviert. Sie können eine oder beide Optionen deaktivieren, um die entsprechenden Gesamtsummen auszublenden.
+                    <p class="note"><b>Hinweis</b>: Diese Einstellungen können Sie auch in der oberen Symbolleiste im Menü <b>Gesamtergebnisse</b> konfigurieren.</p>
+                </li>
+                <li>
+                    Der Abschnitt <b>Felder in Bericht Filter anzeigen</b> passt die Berichtsfilter an, die angezeigt werden, wenn Sie dem Abschnitt <b>Filter</b> Felder hinzufügen:
+                    <ul>
+                        <li>Die Option <em>Runter, dann über</em> ist für die Spaltenbearbeitung verwendet. Die Berichtsfilter werden in der Spalte angezeigt.</li>
+                        <li>Die Option <em>Über, dann runter</em> ist für die Zeilenbearbeitung verwendet. Die Berichtsfilter werden in der Zeile angezeigt.</li>
+                        <li>Die Option <em>Berichtsfilterfelder pro Spalte</em> lässt die Anzahl der Filter in jeder Spalte auswählen. Der Standardwert ist <em>0</em>. Sie können den erforderlichen numerischen Wert einstellen.</li>
+                    </ul>
+                </li>
+                <li>Mit der Option <b>Die Feldkopfzeilen für Zeilen und Spalten anzeigen</b> können Sie auswählen, ob Sie Feldkopfzeilen in Ihrer Pivot-Tabelle anzeigen möchten. Die Option ist standardmäßig aktiviert. Deaktivieren Sie es, um Feldkopfzeilen aus Ihrer Pivot-Tabelle auszublenden.</li>
+                <li>Mit der Option <b>Autofit column widths on update</b> können Sie die automatische Anpassung der Spaltenbreiten aktivieren/deaktivieren. Die Option ist standardmäßig aktiviert.</li>
+            </ul>
+            <p><img alt="Pivot-Tabelle Erweiterte Einstellungen" src="../images/pivot_advanced2.png" /></p>
+            <p>Der Abschnitt <b>Datenquelle</b> ändert die verwendeten Daten für die Pivot-Tabelle.</p>
+            <p>Prüfen Sie den <b>Datenbereich</b> und ändern Sie ihn gegebenfalls. Um den Datenbereich zu ändern, klicken Sie die Schaltfläche <span class="icon icon-changerange"></span> an.</p>
+            <p><img alt="Datenbereich auswählen Symbol" src="../images/pivot_selectdata.png" /></p>
+            <p>Im Fenster <b>Datenbereich auswählen</b> geben Sie den gewünschten Datenbereich im nachfolgenden Format ein: <em>Sheet1!$A$1:$E$10</em> oder verwenden Sie die Maus. Klicken Sie auf <b>OK</b>.</p>
+            <p><img alt="Pivot-Tabelle Erweiterte Einstellungen" src="../images/pivot_advanced3.png" /></p>
+            <p>Der Abschnitt <b>Alternativer Text</b> konfiguriert den <b>Titel</b> und die <b>Beschreibung</b>. Diese Optionen sind für die Benutzer mit Seh- oder kognitiven Beeinträchtigungen verfügbar, damit sie besser verstehen, welche Informationen die Pivot-Tabelle enthält.</p>
+            <h3>Eine Pivot-Tabelle löschen</h3>
+            <p>Um eine Pivot-Tabelle zu löschen,</p>
+            <ol>
+                <li>Wählen Sie die ganze Pivot-Tabelle mithilfe der Schaltfläche <div class = "icon icon-pivotselecticon"></div> <b>Auswählen</b> in der oberen Symbolleiste aus.</li>
+                <li>Drucken Sie die <b>Entfernen</b>-Taste.</li>
+            </ol>
+        </div>
+	</body>
+</html>

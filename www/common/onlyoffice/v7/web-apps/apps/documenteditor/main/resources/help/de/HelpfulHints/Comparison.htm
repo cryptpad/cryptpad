@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Dokumente vergleichen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tipps zur gemeinsamen Bearbeitung" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Dokumente vergleichen</h1>
+        <p>Der <a href="https://www.onlyoffice.com/de/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> ermöglicht es Ihnen, einen konstanten teamweiten Ansatz für den Arbeitsablauf beizubehalten: Sie können die Dateien und Ordner <a href="https://helpcenter.onlyoffice.com/de/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">freigeben</a>; an Dokumenten in Echtzeit <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">zusammenarbeiten</a>; direkt im Editor <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">kommunizieren</a>; bestimmte Teile Ihrer Dokumente, die zusätzliche Eingaben Dritter erfordern, <a href="../HelpfulHints/Commenting.htm" onclick="onhyperlinkclick(this)">kommentieren</a>; <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">Dokumentversionen</a> für zukünftige Verwendung speichern; Dokumente <a href="../HelpfulHints/Review.htm" onclick="onhyperlinkclick(this)">überprüfen</a> und Ihre Änderungen hinzufügen, ohne die Datei tatsächlich zu bearbeiten.</p>
+        <p>Wenn Sie zwei Dokumente vergleichen und zusammenführen müssen, bietet Ihnen der <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> die Dokument-<b>Vergleichsfunktion</b>. Es ermöglicht, die Unterschiede zwischen zwei Dokumenten anzuzeigen und die Dokumente zusammenzuführen, indem die Änderungen einzeln oder alle auf einmal akzeptiert werden.</p>
+        <p>Nach dem Vergleichen und Zusammenführen zweier Dokumente wird das Ergebnis als neue Version der Originaldatei im Portal gespeichert<!-- (in the <em>online version</em> of editors)-->. <!--In the desktop version, when you click the <b>Save</b> button, the dialog window will appear where you will be suggested to save a new file.--></p>
+        <p>Wenn Sie die zu vergleichenden Dokumente nicht zusammenführen müssen, können Sie alle Änderungen verwerfen, sodass das Originaldokument unverändert bleibt.</p>
+
+        <h3 id="choosedocument">Dokument zum Vergleich auswählen</h3>
+        <p>Um zwei Dokumente zu vergleichen, öffnen Sie das Originaldokument, das Sie vergleichen möchten, und wählen Sie das zweite Dokument zum Vergleich aus:</p>
+        <ol>
+            <li>Wechseln Sie in der oberen Symbolleiste zur Registerkarte <b>Zusammenarbeit</b> und klicken Sie auf die Schaltfläche <div class = "icon icon-comparebutton"></div> <b>Vergleichen</b>.</li>
+            <li>
+                Wählen Sie eine der folgenden Optionen, um das Dokument zu laden:
+                <ul>
+                    <li>die Option <b>Dokument aus Datei</b> öffnet das Standarddialogfenster für Dateiauswahl. Finden Sie die gewünschte <em>.docx</em> Datei und klicken Sie die Schaltfläche <b>Öffnen</b> an.</li>
+                    <li>
+                        Die Option <b>Dokument aus URL</b> öffnet das Fenster, in dem Sie einen Link zu der Datei eingeben können, die in einem Webspeicher eines Drittanbieters (z. B. Nextcloud) gespeichert ist, wenn Sie entsprechende Zugriffsrechte darauf haben. Der Link muss ein <b>direkter Link zum Herunterladen der Datei</b> sein. Wenn der Link angegeben ist, klicken Sie auf die Schaltfläche <b>OK</b>.
+                        <p class="note">Die direkte URL lässt die Datei herunterladen, ohne diese Datei im Browser zu öffnen. Z.B., im Nextcloud kann man die direkte URL so erhalten: Finden Sie die gewünschte Datei in der Dateiliste, wählen Sie die Option <b>Details</b> im Menü aus. Klicken Sie die Option <b>Direkte URL kopieren (nur für die Benutzer, die den Zugriff auf diese Datei haben</b>) rechts auf dem Detailspanel an. Lesen Sie die entsprechende Servicedokumentation, um zu lernen, wie kann man eine direkte URL in anderen Online-Services erhalten.</p>
+                    </li>
+                    <li class="onlineDocumentFeatures"> Die Option <b>Dokument aus Speicher</b> <!--(available in the <em>online version</em> only)--> öffnet das Fenster <b>Datenquelle auswählen</b>. Es zeigt die Liste aller auf Ihrem Portal gespeicherten <em>.docx</em>-Dokumente an, für die Sie entsprechende Zugriffsrechte haben. Um durch die Abschnitte des Moduls <b>Dokumente</b> zu navigieren, verwenden Sie das Menü im linken Teil des Fensters. Wählen Sie das erforderliche <em>.docx</em>-Dokument aus und klicken Sie auf die Schaltfläche <b>OK</b>.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>Wenn das zweite zu vergleichende Dokument ausgewählt wird, beginnt der Vergleichsprozess und das Dokument sieht so aus, als ob es im Modus <b>Review</b> geöffnet ist. Alle Änderungen werden mit einer Farbe hervorgehoben, und Sie können die Änderungen anzeigen, zwischen ihnen navigieren, die Änderungen einzeln oder alle auf einmal annehmen oder ablehnen. Es ist auch möglich, den Anzeigemodus zu ändern und zu sehen, wie das Dokument vor dem Vergleich, während des Vergleichs oder nach dem Vergleich aussieht, wenn Sie alle Änderungen annehmen.</p>
+
+        <h3 id="displaymode">Den Anzeigemodus für die Änderungen auswählen</h3>
+        <p>Klicken Sie auf die Schaltfläche <b>Anzeigemodus</b> <span class = "icon icon-review_displaymode"></span> in der oberen Symbolleiste und wählen Sie einen der verfügbaren Modi aus der Liste aus:</p>
+        <ul>
+            <li>
+                <b>Markup</b> - diese Option ist standardmäßig. Verwenden Sie sie, um das Dokument <b>während des Vergleichsprozesses</b> anzuzeigen. Im diesen Modus können Sie das Dokument sehen sowie bearbeiten.
+                <p><img alt="Compare documents - Markup" src="../images/compare_markup.png" /></p>
+            </li>
+            <li>
+                <b>Endgültig</b> - der Modus zeigt das Dokument an, als ob alle Änderungen übernommen sind, nämlich <b>nach dem Vergleichsprozess</b>. Diese Option nimmt alle Änderungen nicht, sie zeigt nur das Dokument an, als ob die Änderungen schon übernommen sind. Im diesen Modus können Sie das Dokument nicht bearbeiten.
+                <p><img alt="Compare documents - Final" src="../images/compare_final.png" /></p>
+            </li>
+            <li>
+                <b>Original</b> - der Modus zeigt das Originaldokument an, nämlich <b>vor dem Vergleichsprozess</b>, als ob alle Änderungen abgelehnt sind. Diese Option lehnt alle Änderungen nicht ab, sie zeigt nur das Dokument an, als ob die Änderungen nicht übernommen sind. Im diesen Modus können Sie das Dokument nicht bearbeiten.
+                <p><img alt="Compare documents - Original" src="../images/compare_original.png" /></p>
+            </li>
+        </ul>
+
+        <h3 id="managechanges">Änderungen annehmen oder ablehnen</h3>
+        <p>Verwenden Sie die Schaltflächen <span class = "icon icon-review_previous"></span> <b>Zur vorherigen Änderung</b> und <span class = "icon icon-review_next"></span> <b>Zur nächsten Änderung</b> in der oberen Symbolleiste, um die Änderungen zu navigieren.</p>
+        <p>Um die aktuell ausgewählte Änderung zu akzeptieren, können Sie:</p>
+        <ul>
+            <li>Klicken Sie auf die Schaltfläche <div class = "icon icon-review_accepttoptoolbar"></div> <b>Annehmen</b> in der oberen Symbolleiste, oder</li>
+            <li>Klicken Sie den Abwärtspfeil unter der Schaltfläche <b>Annehmen</b> an und wählen Sie die Option <b>Aktuelle Änderungen annehmen</b> aus (die Änderung wird angenommen und Sie übergehen zur nächsten Änderung) oder</li>
+            <li>Klicken Sie die Schaltfläche <b>Annehmen</b> <div class = "icon icon-review_accept"></div> im Pop-Up-Fenster an.</li>
+        </ul>
+        <p>Um alle Änderungen anzunehmen, klicken Sie den Abwärtspfeil unter der Schaltfläche <span class = "icon icon-review_accepttoptoolbar"></span> <b>Annehmen</b> an und wählen Sie die Option <b>Alle Änderungen annehmen</b> aus.</p>
+        <p>Um die aktuelle Änderung abzulehnen:</p>
+        <ul>
+            <li>Klicken Sie die Schaltfläche <div class = "icon icon-review_rejecttoptoolbar"></div> <b>Ablehnen</b> in der oberen Symbolleiste, oder</li>
+            <li>klicken Sie den Abwärtspfeil unter der Schaltfläche <b>Ablehnen</b> an und wählen Sie die Option <b>Aktuelle Änderung ablehnen</b> aus (die Änderung wird abgelehnt und Sie übergehen zur nächsten Änderung) oder</li>
+            <li>Лlicken Sie die Schaltfläche <b>Ablehnen</b> <div class = "icon icon-review_reject"></div> im Pop-Up-Fenster an.</li>
+        </ul>
+        <p>Um alle Änderungen abzulehnen, klicken Sie den Abwärtspfeil unter der Schaltfläche <span class = "icon icon-review_rejecttoptoolbar"></span> <b>Ablehnen</b> an und wählen Sie die Option <b>Alle Änderungen ablehnen</b> aus.</p>
+
+        <h3 id="comparisonnotes">Zusatzinformation für die Vergleich-Funktion</h3>
+        <h4>Die Vergleichsmethode</h4>
+        <p>Dokumente werden <b>wortweise</b> verglichen. Wenn ein Wort eine Änderung von mindestens einem Zeichen enthält (z. B. wenn ein Zeichen entfernt oder ersetzt wurde), wird die Differenz im Ergebnis als Änderung des gesamten Wortes und nicht des Zeichens angezeigt.</p>
+        <p>Das folgende Bild zeigt den Fall, dass die Originaldatei das Wort „Symbole“ und das Vergleichsdokument das Wort „Symbol“ enthält.</p>
+        <p><img alt="Compare documents - method" src="../images/compare_method.png" /></p>
+
+        <h4>Urheberschaft des Dokuments</h4>
+        <p>Wenn der Vergleichsprozess gestartet wird, wird das zweite Dokument zum Vergleichen hochgeladen und mit dem aktuellen verglichen.</p>
+        <ul>
+            <li>Wenn das geladene Dokument einige Daten enthält, die nicht im Originaldokument enthalten sind, werden die Daten als von einem Überprüfer hinzugefügt markiert.</li>
+            <li>Wenn das Originaldokument einige Daten enthält, die nicht im geladenen Dokument enthalten sind, werden die Daten von einem Überprüfer als gelöscht markiert.</li>
+        </ul>
+        <p>Wenn die Autoren des Originaldokuments und des geladenen Dokuments dieselbe Person sind, ist der Überprüfer derselbe Benutzer. Sein/ihr Name wird in der Änderungssprechblase angezeigt.</p>
+        <p>Wenn die Autoren zweier Dateien unterschiedliche Benutzer sind, dann ist der Autor der zweiten zum Vergleich geladenen Datei der Autor der hinzugefügten/entfernten Änderungen.</p>
+
+        <h4>Die nachverfolgten Änderungen im verglichenen Dokument</h4>
+        <p>Wenn das Originaldokument einige Änderungen enthält, die im Modus "Review" vorgenommen wurden, werden diese im Vergleichsprozess übernommen. Wenn Sie das zweite Dokument zum Vergleich auswählen, wird die entsprechende Warnmeldung angezeigt.</p>
+        <p>In diesem Fall enthält das Dokument im <b>Originalanzeigemodus</b> keine Änderungen.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Effectuer des appels audio et vidéo</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="La description du plug-in Jitsi pour les éditeurs ONLYOFFICE, qui permet d'effectuer des appels audio et vidéo immédiatement à partir de l'Éditeur de Documents." />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Effectuer des appels audio et vidéo</h1>
+        <p>Les appels audio et vidéo sont disponibles immédiatement à partir de l'<a href="https://www.onlyoffice.com/fr/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Éditeur de Documents ONLYOFFICE</b></a> à l'aide du plug-in Jitsi. Jitsi offre les fonctionnalités de vidéoconférence sécurisées et faciles à déployer.</p>
+        <p class="note">Remarque : Plug-in Jitsi n'est pas installé par défaut, il est à installer manuellement. Veuillez consulter l'article correspondant pour trouver le guide d'installation manuelle <a href="https://api.onlyoffice.com/plugin/installation/cloud">Adding plugins to ONLYOFFICE Cloud</a> ou <a href="https://helpcenter.onlyoffice.com/fr/installation/docs-add-plugin.aspx">Ajouter de nouveaux modules complémentaires aux éditeurs de serveur</a></p>
+        <ol>
+            <li>Passez à l'onglet <b>Modules complémentaires</b> et cliquez sur l'icône <b>Jitsi</b> dans la barre d'outils supérieure.</li>
+            <li>
+                Remplissez les champs en bas de la barre latérale gauche avant de démarrer un appel :
+                <p><b>Domaine</b> - saisissez le nom du domaine si vous souhaitez connecter votre domaine.</p>
+                <p><b>Nom de la chambre</b> - saisissez le nom de la salle de réunion. Ce champ est obligatoire et un appel ne peut pas être démarré lorsque vous le quittez.</p>
+            </li>
+            <li>Cliquez sur le bouton <b>Lancer</b> pour ouvrir <b>Jitsi Meet iframe</b>.</li>
+            <li>Saisissez votre nom et autorisez l'accès de la caméra et du microphone à votre navigateur.
+            <li>Si vous souhaitez fermer Jitsi Meet iframe, cliquez sur le bouton <b>Arrêter</b> en bas à gauche.</li>
+            <li>Cliquez sur le bouton <b>Rejoindre la réunion</b> afin de démarrer un appel avec un audio ou cliquez sur la flèche pour rejoindre sans audio.</li>
+        </ol>
+        <img class="gif" alt="Youtube plugin gif" src="../../images/jitsi_plugin.gif" width="600" />
+        <p>Les éléments d'interface <b>Jitsi Meet iframe</b> avant le début de la réunion :</p>
+        <p>
+            <div class = "icon icon-jitsi_micro"></div>
+            <b>Les paramètres audio et Couper le son/Activer</b>
+        </p>
+        <ul>
+            <li>Cliquez sur la flèche pour accéder à l'aperçu des paramètres audio.</li>
+            <li>Cliquez sur le microphone afin de couper le son ou activer votre microphone.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_camera"></div>
+            <b>Paramètres vidéo et Lancer/Arrêter</b>
+        </p>
+        <ul>
+            <li>Cliquez sur la flèche pour accéder à l'aperçu vidéo.</li>
+            <li>Cliquez sur la caméra pour lancer ou arrêter votre vidéo.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_invite"></div>
+            <b>Inviter des personnes</b>
+        </p>
+        <ul>
+            <li>Cliquez sur ce bouton pour inviter plus de personnes à participer à la réunion.</li>
+            <li>
+                Partagez la réunion en copiant le lien de la réunion ou <br>
+                Partagez l'invitation à une réunion en la copiant ou via votre e-mail par défaut, Google, Outlook ou Yahoo.
+            </li>
+            <li>Intégrez la réunion en copiant le lien.</li>
+            <li>Utilisez l'un des numéros disponibles d'appel pour rejoindre la réunion.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_background"></div>
+            <b>Sélectionner l'arrière-plan</b>
+        </p>
+        <ul>
+            <li>Sélectionnez ou ajoutez un arrière-plan virtuel pour votre réunion.</li>
+            <li>Partagez votre bureau en choisissant l'option appropriée : <b>Écran</b>,<b> Fenêtre</b> ou <b>Onglet</b>.</li>
+        </ul>
+        <p>
+            <div class = "icon-jitsi_settings"></div>
+            <b>Paramètres</b>
+        </p>
+        <p>Configurez les paramètres avancés qui sont organisés dans les catégories suivantes :</p>
+        <ul>
+            <li><b>Appareils</b> pour configurer vos microphone, caméra et sortie audio et jouer un son de test.</li>
+            <li><b>Profil</b> pour configurer votre nom à afficher et votre e-mail Gravatar, masquer ou afficher l'auto-affichage.</li>
+            <li><b>Calendrier</b> pour intégrer votre calendrier Google ou Microsoft.</li>
+            <li><b>Sons</b> pour sélectionner les actions pour jouer le son.</li>
+            <li><b>Plus</b> pour configurer certaines options supplémentaires : activer ou désactiver l'écran de pré-réunion et les raccourcis clavier, configurer une langue et une fréquence d'images de partage de bureau.</li>
+        </ul>
+        <p>
+            Éléments de l'interface qui apparaissent lors d'une vidéoconférence :
+        </p>
+        <img alt="Jitsi Conference" src="../images/jitsi_conference.png" />
+        <p>Cliquez sur la flèche latérale à droite pour afficher les miniatures des participants en haut.</p>
+        <p>
+            <img alt="Jitsi Timer" src="../images/jitsi_timer.png" />
+            Le minuteur en haut de l'iframe affiche la durée de la réunion.
+        </p>
+        <p>
+            <div class = "icon icon-jitsi_openchat"></div>
+            <b>Ouvrir un chat</b>
+        </p>
+        <ul>
+            <li>Saisissez un message texte ou créez un sondage.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_participants"></div>
+            <b>Participants</b>
+        </p>
+        <ul>
+            <li>Affichez la liste des participants à la réunion, invitez plus de participants et recherchez un participant.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_more"></div>
+            <b>Plus d'actions</b>
+        </p>
+        <ul>
+            <li>Trouvez une gamme d'options pour utiliser toutes les fonctionnalités disponibles de Jitsi au maximum. Parcourez les options pour les voir.</li>
+        </ul>
+        <details class="details-example">
+            <summary>Options disponibles,</summary>
+            <ul>
+                <li>Démarrer le partage d'écran</li>
+                <li>Inviter des personnes</li>
+                <li>Entrer/Quitter la vue en mosaïques</li>
+                <li>Paramètres de performance pour ajuster la qualité</li>
+                <li>Afficher en plein écran</li>
+                <li>
+                    Options de sécurité
+                    <ul>
+                        <li><b>Mode Lobby</b> pour que les participants rejoignent la réunion après l'accord du modérateur ;</li>
+                        <li><b>Ajouter un mode de mot de passe</b> pour que les participants rejoignent la réunion à l'aide d'un mot de passe ;</li>
+                        <li><b>Chiffrement de bout en bout</b> est une méthode expérimentale pour effectuer des appels sécurisés (attention aux restrictions telles que la désactivation des services fournis du côté serveur et l'utilisation de navigateurs prenant en charge les flux d'insertion).</li>
+                    </ul>
+                </li>
+                <li>Lancer le flux en direct</li>
+                <li>Couper le son pour tout le monde</li>
+                <li>Désactiver toutes les caméras</li>
+                <li>Partager la vidéo</li>
+                <li>Sélectionner l'arrière-plan</li>
+                <li>Statistiques des orateurs</li>
+                <li>Paramètres</li>
+                <li>Afficher les raccourcis</li>
+                <li>Intégrer la réunion</li>
+                <li>Laisser un commentaire</li>
+                <li>Aide</li>
+            </ul>
+        </details>
+        <p>
+            <div class = "icon icon-jitsi_leave"></div>
+            <b>Quitter la réunion</b>
+        </p>
+        <ul>
+            <li>Cliquez dessus lorsque vous souhaitez mettre fin à un appel.</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -5,7 +5,7 @@ define([
 ], function (ApiConfig, nThen, Util) {
     var X2T = {};
 
-    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v6';
+    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v7';
     var debug = function (str) {
         if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);
@@ -62,7 +62,6 @@ define([
             // Perform the x2t conversion
             require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
                 var x2t = window.Module;
-                x2t.run();
                 if (x2tInitialized) {
                     debug("x2t runtime already initialized");
                     return void x2tReady.reg(function () {
@@ -199,8 +198,8 @@ define([
                         + "<m_sThemeDir>/working/themes</m_sThemeDir>"
                         + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
                         + pdfData
-                        + getFromId(inputFormat)
-                        + getToId(outputFormat)
+                        // + getFromId(inputFormat)
+                        // + getToId(outputFormat)
                         + "<m_bIsNoBase64>false</m_bIsNoBase64>"
                         + "</TaskQueueDataConvert>";
 
@@ -209,7 +208,7 @@ define([
             x2t.FS.writeFile('/working/params.xml', params);
             try {
                 // running conversion
-                x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
+                x2t.ccall("main1", "number", ["string"], ["/working/params.xml"]);
             } catch (e) {
                 console.error(e);
                 return "";

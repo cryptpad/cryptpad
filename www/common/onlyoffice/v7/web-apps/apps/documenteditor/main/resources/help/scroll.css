@@ -1,0 +1,116 @@
+html{
+    overflow: scroll;
+    scrollbar-track-color:  #eee;
+    scrollbar-face-color: #f7f7f7;
+    scrollbar-highlight-color: #eee;
+    scrollbar-darkshadow-color: #cbcbcb;
+    scrollbar-arrow-color:  #adadad;
+    scrollbar-color: #f7f7f7 #eee;
+}
+
+::-webkit-scrollbar {
+    height: 14px;
+    width: 14px;
+    background: #eee;
+}
+
+::-webkit-scrollbar-corner {
+    background: #eee;
+}
+
+/* thimb*/
+::-webkit-scrollbar-thumb {
+    box-shadow: inset 0px 0px 0px 1px #cbcbcb;
+    background: #f7f7f7;
+    -webkit-border-radius: 0.1ex;
+    border: #eee 1px solid;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #c0c0c0;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+::-webkit-scrollbar-thumb:active {
+    background: #adadad;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+::-webkit-scrollbar-thumb:vertical
+{
+    border-width: 0 2px 0 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='13px' width='4px' fill='rgb(192,192,192)'%3E%3Crect width = '4' height = '1' x='0' y='0'/%3E%3Crect width = '4' height = '1' x='0' y='2'/%3E%3Crect width = '4' height = '1' x='0' y='4'/%3E%3Crect width = '4' height = '1' x='0' y='6'/%3E%3Crect width = '4' height = '1' x='0' y='8'/%3E%3Crect width = '4' height = '1' x='0' y='10'/%3E%3Crect width = '4' height = '1' x='0' y='12'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-thumb:vertical:hover, ::-webkit-scrollbar-thumb:vertical:active
+{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='13px'  width='4px' fill='rgb(236,236,236)'%3E%3Crect width = '4' height = '1' x='0' y='0'/%3E%3Crect width = '4' height = '1' x='0' y='2'/%3E%3Crect width = '4' height = '1' x='0' y='4'/%3E%3Crect width = '4' height = '1' x='0' y='6'/%3E%3Crect width = '4' height = '1' x='0' y='8'/%3E%3Crect width = '4' height = '1' x='0' y='10'/%3E%3Crect width = '4' height = '1' x='0' y='12'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-thumb:horizontal
+{
+    border-width: 0 0 2px 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13px' height='4px' fill='rgb(192,192,192)'%3E%3Crect width = '1' height = '4' y='0' x='0'/%3E%3Crect width = '1' height = '4' y='0' x='2'/%3E%3Crect width = '1' height = '4' y='0' x='4'/%3E%3Crect width = '1' height = '4' y='0' x='6'/%3E%3Crect width = '1' height = '4' y='0' x='8'/%3E%3Crect width = '1' height = '4' y='0' x='10'/%3E%3Crect width = '1' height = '4' y='0' x='12'/%3E%3C/svg%3E");
+}
+::-webkit-scrollbar-thumb:horizontal:hover, ::-webkit-scrollbar-thumb:horizontal:active
+{
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13px' height='4px' fill='rgb(236,236,236)'%3E%3Crect width = '1' height = '4' y='0' x='0'/%3E%3Crect width = '1' height = '4' y='0' x='2'/%3E%3Crect width = '1' height = '4' y='0' x='4'/%3E%3Crect width = '1' height = '4' y='0' x='6'/%3E%3Crect width = '1' height = '4' y='0' x='8'/%3E%3Crect width = '1' height = '4' y='0' x='10'/%3E%3Crect width = '1' height = '4' y='0' x='12'/%3E%3C/svg%3E");
+}
+
+/* buttons*/
+::-webkit-scrollbar-button:single-button {
+    height: 14px;
+    width: 14px;
+    box-shadow: inset 0px 0px 0px 1px #cbcbcb;
+    border: #eee 1px solid;
+    background-color: #f7f7f7;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+::-webkit-scrollbar-button:single-button:hover {
+    background-color: #c0c0c0;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+::-webkit-scrollbar-button:single-button:active {
+    background-color: #adadad;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+::-webkit-scrollbar-button:single-button:vertical {
+    border-right-width: 2px;
+    border-left-width: 0;
+}
+
+::-webkit-scrollbar-button:single-button:horizontal {
+    border-bottom-width: 2px;
+    border-top-width: 0px;
+}
+::-webkit-scrollbar-button:single-button:vertical:decrement{
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4px' fill='rgb(173, 173, 173)'><polygon points='4,0 0,4 8,4'/></svg>");
+}
+::-webkit-scrollbar-button:single-button:vertical:decrement:hover, ::-webkit-scrollbar-button:single-button:vertical:decrement:active{
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4px' fill='rgb(247, 247, 247)'><polygon points='4,0 0,4 8,4'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:vertical:increment{
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4px' fill='rgb(173, 173, 173)'><polygon points='4,4 0,0 8,0'/></svg>");
+}
+::-webkit-scrollbar-button:single-button:vertical:increment:hover, ::-webkit-scrollbar-button:single-button:vertical:increment:active{
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4px' fill='rgb(247, 274, 247)'><polygon points='4,4 0,0 8,0'/></svg>");
+}
+
+::-webkit-scrollbar-button:single-button:horizontal:increment{
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='8px' fill='rgb(173, 173, 173)'><polygon points='0,0 0,8 4,4'/></svg>");
+}
+::-webkit-scrollbar-button:single-button:horizontal:increment:hover, ::-webkit-scrollbar-button:single-button:horizontal:increment:active{
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='8px' fill='rgb(247, 247, 247)'><polygon points='0,0 0,8 4,4'/></svg>");
+}
+::-webkit-scrollbar-button:single-button:horizontal:decrement{
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='8px' fill='rgb(173, 173, 173)'><polygon points='0,4 4,8 4,0'/></svg>");
+}
+::-webkit-scrollbar-button:single-button:horizontal:decrement:hover, ::-webkit-scrollbar-button:single-button:horizontal:decrement:active {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='8px' fill='rgb(247, 247, 247)'><polygon points='0,4 4,8 4,0'/></svg>");
+}

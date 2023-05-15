@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Modificare i rientri del paragrafo</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change paragraph indents: the first line offset from the left part of the page as well as the paragraph offset from the left and right sides of the page" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Modificare i rientri del paragrafo</h1>
+			<p>Nell'Editor documenti, è possibile modificare l'offset della prima riga dalla parte sinistra della pagina e l'offset del paragrafo dai lati sinistro e destro della pagina.</p>
+			<p>Per farlo,</p>
+			<ol>
+				<li>posiziona il cursore all'interno del paragrafo che ti interessa o seleziona diversi paragrafi con il mouse o tutto il testo nel documento premendo la combinazione di tasti <b>Ctrl+A</b>,</li>
+				<li>fai clic con il pulsante destro del mouse e seleziona l'opzione <b>Impostazioni avanzate del paragrafo</b> dal menu o utilizza il collegamento <b>Mostra impostazioni avanzate</b> nella barra laterale destra,</li>
+				<li>nella finestra <b>Paragrafo - Impostazioni avanzate</b> aperta, passare alla scheda <b>Rientri e spaziatura</b> e impostare i parametri necessari nella sezione <b>Rientri</b>: 
+                    <ul>                        
+                        <li><b>A sinistra</b>  - imposta l'offset del paragrafo dal lato <b>sinistro</b> della pagina specificando il valore numerico necessario,</li>
+                        <li><b>A destra</b> -  imposta l'offset del paragrafo dal lato <b>destro</b> della pagina specificando il valore numerico necessario,</li>
+                        <li><b>Speciale</b> - imposta un rientro per la prima riga del paragrafo: seleziona la voce di menu corrispondente (<b>(nssuno)</b>, <b>Prima riga</b>, <b>Sporgente</b>) e modifica il valore numerico predefinito specificato per <b>Prima riga</b> o <b>Sospensione</b>,</li>
+                    </ul>
+                </li>
+				<li>fare clic sul pulsante <b>OK</b>.
+					<p><img alt="Paragraph Advanced Settings - Indents &amp; Spacing" src="../images/paradvsettings_indents.png" /></p>
+				</li>
+			</ol>
+			<p>Per modificare rapidamente l'offset del paragrafo dal lato sinistro della pagina, è anche possibile utilizzare le rispettive icone nella scheda <b>Home</b> della barra degli strumenti superiore: <b>Riduci rientro</b> <span class = "icon icon-decreaseindent"></span> e <b>Aumenta rientro</b> <span class = "icon icon-increaseindent"></span>.</p>
+			<p>È inoltre possibile utilizzare il <b>righello</b> orizzontale per impostare i rientri.</p>
+			<div class = "big big-indents_ruler"></div>
+			<p>Selezionate i paragrafi necessari e trascinate gli indicatori di rientro lungo il righello.</p>
+			<ul>
+			<li>L'indicatore <b>Rientro prima riga</b> <div class = "icon icon-firstline_indent"></div> viene utilizzato per impostare l'offset dal lato sinistro della pagina per la prima riga del paragrafo.</li>
+			<li>L'indicatore <b>Rientro sporgente</b> <div class = "icon icon-hanging"></div> viene utilizzato per impostare l'offset dal lato sinistro della pagina per la seconda riga e tutte le righe successive del paragrafo.</li>
+            <li>L'indicatore <b> Rientro sinistro</b> <div class = "icon icon-leftindent"></div> viene utilizzato per impostare l'intero offset del paragrafo dal lato sinistro della pagina.</li>
+			<li>L'indicatore <b>Rientro destro</b> <div class = "icon icon-right_indent"></div> viene utilizzato per impostare l'offset del paragrafo dal lato destro della pagina.</li>
+			</ul>
+		</div>
+	</body>
+</html>

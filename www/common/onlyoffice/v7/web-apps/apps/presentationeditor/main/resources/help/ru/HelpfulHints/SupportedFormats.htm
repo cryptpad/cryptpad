@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Поддерживаемые форматы электронных презентаций</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Список форматов презентаций, которые поддерживает онлайн-редактор презентаций" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Поддерживаемые форматы электронных презентаций</h1>
+        <p>
+            Презентация - это серия слайдов, которые могут содержать различные типы контента, такие как изображения, файлы мультимедиа, текст, эффекты и т.д.
+            <b>Редактор презентаций</b> работает со следующими форматами презентаций.
+        </p>
+        <p class="note">При загрузке или открытии файла на редактирование он будет сконвертирован в формат Office Open XML (PPTX). Это делается для ускорения обработки файла и повышения совместимости.</p>
+        <p>Следующая таблица содержит форматы, которые можно открыть на просмотр и/или редактирование.</p>
+        <table>
+            <tr>
+                <td><b>Форматы</b></td>
+                <td><b>Описание</b></td>
+                <td>Просмотр в исходном формате</td>
+                <td>Просмотр после конвертации в OOXML</td>
+                <td>Редактирование в исходном формате</td>
+                <td>Редактирование после конвертации в OOXML</td>
+            </tr>
+            <tr>
+                <td>ODP</td>
+                <td>OpenDocument Presentation<br />Формат файлов, который представляет презентации, созданные приложением Impress, входящим в состав пакетов офисных приложений на базе OpenOffice</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>OTP</td>
+                <td>OpenDocument Presentation Template<br />Формат текстовых файлов OpenDocument для шаблонов презентаций. Шаблон OTP содержит настройки форматирования, стили и т.д. и может использоваться для создания множества презентаций со схожим форматированием</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>POTX</td>
+                <td>PowerPoint Open XML Document Template<br /> разработанный компанией Microsoft формат файлов на основе XML, сжатых по технологии ZIP. Предназначен для шаблонов презентаций. Шаблон POTX содержит настройки форматирования, стили и т.д. и может использоваться для создания множества презентаций со схожим форматированием</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>PPSX</td>
+                <td>Microsoft PowerPoint Slide Show<br />Формат файлов презентаций, используемый для воспроизведения слайд-шоу</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>PPT</td>
+                <td>Формат файлов, используемый программой Microsoft PowerPoint</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>PPTX</td>
+                <td>Office Open XML Presentation<br />разработанный компанией Microsoft формат файлов на основе XML, сжатых по технологии ZIP. Предназначен для представления электронных таблиц, диаграмм, презентаций и текстовых документов</td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+            </tr>
+        </table>
+        <p>Следующая таблица содержит форматы, в которые можно скачать презентацию из меню <b>Файл</b> -> <b>Скачать как</b>.</p>
+        <table>
+            <tr>
+                <td><b>Исходный формат</b></td>
+                <td><b>Можно скачать как</b></td>
+            </tr>
+            <tr>
+                <td>ODP</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>OTP</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>POTX</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>PPSX</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>PPT</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>PPTX</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+        </table>
+        <p>Вы также можете обратиться к матрице конвертации на сайте <a href="https://api.onlyoffice.com/editors/conversionapi#presentation-matrix" target="_blank" onclick="onhyperlinkclick(this)"><b>api.onlyoffice.com</b></a>, чтобы узнать о возможности конвертации презентаций в самые известные форматы файлов.</p>
+    </div>
+</body>
+</html>

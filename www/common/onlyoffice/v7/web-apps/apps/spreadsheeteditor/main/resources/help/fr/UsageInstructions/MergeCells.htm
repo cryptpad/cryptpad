@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fusionner les cellules</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fusionner certaines cellules en une seule et fractionner la cellule précédemment fusionnée" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+				<h1>Fusionner les cellules</h1>
+						<p>Lorsque vous avez besoin de fusionner des cellules afin de mieux positionner votre texte (par exemple, le nom du tableau ou un long fragment de texte dans le tableau), utilisez l'outil <b>Fusionner</b> du <b>Tableur ONLYOFFICE</b>.</p>
+					
+			<h3>Type 1. Fusionner et centrer</h3>
+					<ol>
+						<li>
+							Cliquez sur la cellule au début de la plage nécessaire, maintenez le bouton gauche de la souris et faites glisser jusqu'à ce que vous sélectionniez la plage de cellules dont vous avez besoin.
+							<p><img alt="select cell range" src="../images/select_cell_range.png" /></p>
+							<p class="note">Les cellules sélectionnées <b>doivent</b> être adjacentes. Seulement les données de la <b>cellule supérieure gauche de la plage sélectionnée</b> seront conservées dans la cellule fusionnée. Les données des autres cellules de la plage sélectionnée seront supprimées.</p>
+						</li>
+						<li>
+							Passez à l'onglet <b>Accueil</b> et cliquez sur l'icône <b>Fusionner et centrer</b> <div class = "icon icon-merge"></div>.
+							<p><img alt="merge and center - result" src="../images/merge_and_center.png" /></p>
+						</li>
+					</ol>
+
+			<h3>Type 2. Fusionner</h3>
+					<ol>
+						<li>
+							Cliquez sur la cellule au début de la plage nécessaire, maintenez le bouton gauche de la souris et faites glisser jusqu'à ce que vous sélectionniez la plage de cellules dont vous avez besoin.
+							<p><img alt="select cell range" src="../images/select_cell_range_type2.png" /></p>
+						</li>
+						<li>
+							Passez à l'onglet <b>Accueil</b> et cliquez sur la flèche à côté de l'icône <b>Fusionner et centrer</b> <div class = "icon icon-merge"></div> pour ouvrir un menu déroulant.
+							<p><img alt="merge and center - menu" src="../images/merge_across_menu.png" /></p>
+						</li>
+						<li>
+							Choisissez l'option <b>Fusionner</b> pour aligner le texte à gauche et conserver les lignes sans les fusionner.
+							<p><img alt="merge across" src="../images/merge_across.png" /></p>
+						</li>
+					</ol>
+
+			<h3>Type 3. Fusionner les cellules</h3>
+					<ol>
+						<li>
+							Cliquez sur la cellule au début de la plage nécessaire, maintenez le bouton gauche de la souris et faites glisser jusqu'à ce que vous sélectionniez la plage de cellules dont vous avez besoin.
+							<p><img alt="select cell range" src="../images/select_cell_range.png" /></p>
+						</li>
+						<li>
+							Passez à l'onglet <b>Accueil</b> et cliquez sur la flèche à côté de l'icône <b>Fusionner et centrer</b> <div class = "icon icon-merge"></div> pour ouvrir un menu déroulant.
+							<p><img alt="merge cells - menu" src="../images/merge_menu.png" /></p>
+						</li>
+						<li>Choisissez l'option <b>Fusionner les cellules</b> pour conserver l'alignement préréglé.</li>
+					</ol>
+
+			<h3>Annuler fusion des cellules</h3>
+					<ol>
+						<li>
+							Cliquez sur la zone fusionnée.
+							<p><img alt="merged area" src="../images/merged_area.png" /></p>
+						</li>
+						<li>
+							Passez à l'onglet <b>Accueil</b> et cliquez sur la flèche à côté de l'icône <b>Fusionner et centrer</b> <div class = "icon icon-merge"></div> pour ouvrir un menu déroulant.
+							<p><img alt="unmerge" src="../images/unmerge.png" /></p>
+						</li>
+						<li>Choisissez l'option <b>Annuler fusion des cellules</b> pour ramener les cellules à leur état d'origine.</li>
+					</ol>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,606 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Créer des formulaires à remplir</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Créer des formulaires à remplir pour améliorer l'expérience de travail avec des formulaires interactifs" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+
+        <h1>Créer des formulaires à remplir</h1>
+        <p>ONLYOFFICE Document Editor permet de créer plus facilement des formulaires à remplir dans votre document, par ex. les projets de contrats ou les enquêtes.</p>
+        <p><b>Modèle de formulaire</b> fournit un ensemble d'outils pour créer des formulaires à remplir au format DOCXF. Sauvegardez le formulaire résultant au format <b>DOCXF</b> et vous aurez un modèle de formulaire modifiable que vous pourrez réviser ou travailler à plusieurs. Pour créer un formulaire à remplir et restreindre la modification du formulaire par d'autres utilisateurs, sauvegardez-le au format <b>OFORM</b> . Pour en savoir plus, veuillez consulter les <a href="../UsageInstructions/FillingOutForm.htm">instructions pour remplir un formulaire</a> .</p>
+        <p class="note">Les formats <b>DOCXF</b> et <b>OFORM</b> sont de nouveaux formats <b>ONLYOFFICE</b> permettant de créer des modèles de formulaires et de remplir les formulaires: Optez pour les versions <b>ONLYOFFICE Document Editor</b> en ligne ou de bureau pour utiliser pleinement tous les fonctionnalités et les options liées aux formulaires.</p>
+        <p>Vous pouvez sauvegarder tout fichier <b>DOCX</b> existant au format <b>DOCXF</b> pour l'utiliser en tant que Modèle de formulaire. Passez à l'onglet <b>Fichier</b>, cliquez sur <b>Télécharger comme...</b> ou <b>Enregistrer sous...</b> sur le panneau latéral gauche et sélectionnez l'icône  <b>DOCXF</b>. Vous pouvez maintenant utiliser toutes les fonctionnalités d'édition d'un formulaire.</p>
+        <p>Ce ne sont pas seulement des champs de formulaire qu'on peut modifier dans un fichier <b>DOCXF</b>, il vous est toujours possible d'ajouter, de modifier et de mettre en forme du texte et d'utiliser d'autres fonctionnalités de <b>Document Editor</b> .</p>
+        <p>Les formulaires à remplir peuvent être réalisés en utilisant des objets modifiables afin d'assurer une cohérence globale du document final et d'améliorer l'expérience de travail avec des formulaires interactifs.</p>
+        <p>Actuellement, vous pouvez ajouter <em>un champ texte</em>, <em>une zone de liste déroulante</em>, <em>une liste déroulante</em>, <em>une case à cocher</em>, <em>un bouton radio</em>, définir les zones désignées pour des <em>images</em> et ajouter les zones destinées à <em>l'adresse email</em>, <em>le numéro de téléphone</em>, <em>la date et l'heure</em>, <em>le code postal</em>, <em>la carte bancaire</em> et les champs <em>complexes</em>. Vous pouvez accéder à ces fonctionnalités sous l'onglet <b>Formulaires</b> qui n'est disponible qu'avec des fichiers <b>DOCXF</b>.</p>
+
+        <h2 id="textfield">Créer un champ texte</h2>
+        <p>Les <em>Champs texte</em> sont les champs de texte brut, aucun objet ne peut être ajouté.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un champ texte,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-text_field_icon"></div> l'icône <b>Champ texte</b>
+                        <p>ou</p>
+                        <p>cliquez sur la flèche à côté de l'icône <span class="icon icon-text_field_icon"></span> <b>Champ texte</b> et sélectionnez le champ à insérer <b>champ texte en ligne</b> ou <b>champ texte fixe</b>. Pour en savoir plus sur les champs fixes, veuillez consulter la section <b>Taille de champ fixe</b> ci-dessous.</p>
+                    </li>
+                </ol>
+                <p><img alt="champ de texte ajouté" src="../images/text_field_inserted.png" /></p>
+                <p>Un champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="text_field_settings">
+                    <img alt="paramètres champ de texte" src="../images/text_field_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: une clé à grouper les champs afin de les remplir simultanément. Pour créer une nouvelle clé, saisissez le nom de celle-là et appuyez sur <b>Entrée</b>, ensuite attribuez cette clé à chaque champ texte en choisissant de la liste déroulante. Message <em>Champs connectés</em>:<em> 2/3/...</em> s'affiche. Pour dissocier les champs, cliquez sur <b>Déconnexion</b>.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans le champ de saisie. Le texte par défaut est <em>Votre texte ici</em>.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le champ texte. <br /> <img alt="Conseil ajouté" src="../images/text_field_tip.png" />
+                        </li>
+                        <li>
+                            <b>Format</b>: définissez le format du champ texte, c-à-d les caractères sont autorisés en fonction du format défini: <em>Aucun</em>, <em>Chiffres</em>, <em>Lettres</em>, <em>Masque arbitraire</em> (le texte doit correspondre au masque personnalisé, par ex., (999) 999 99 99), <em>Expression régulière</em> (le texte doit correspondre à l'expression régulière).
+                            <p>Lorsque vous sélectionnez <em>Masque arbitraire</em> ou <em>Expression régulière</em>, un champ supplémentaire apparaît au-dessous du champ <b>Format</b>.</p>
+                        </li>
+                        <li><b>Symboles autorisés</b>: saisissez les symboles qui sont autorisés dans ce champ.</li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ. Lors de l'activation de cette option, les options <b>Ajuster automatiquement</b> et <b>Champ de saisie à plusieurs lignes</b> deviennent aussi disponibles.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Ajuster automatiquement</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour ajuster automatiquement la police en fonction de la taille du champ.</li>
+                        <li><b>Champ de saisie à plusieurs lignes</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour créer un champ à plusieurs lignes, sinon le champ va contenir une seule ligne de texte.</li>
+                        <li><b>Limite de caractères</b>: le nombre de caractères n'est pas limité par défaut. Activez cette option pour indiquer le nombre maximum de caractères dans le champ à droite.</li>
+                        <li>
+                            <b>Peigne de caractères</b>: configurer l'aspect général pour une présentation claire et équilibré. Laissez cette case décoché pour garder les paramètres par défaut ou activez cette option pour configurer les paramètres suivants:
+                            <ul>
+                                <li><b>Largeur de cellule</b>: définissez la largeur en sélectionnant <em>Automatique</em> (la largeur est redimentionnée automatiquement), <em>Au moins</em> (la largeur doit être au moins égale à la valeur définie) ou <em>Exactement</em> (la largeur doit être égale à la valeur définie). Le texte sera justifié selon les paramètres.</li>
+                            </ul>
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures du champ texte ajouté. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan du champ texte ajouté. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre ce champ obligatoire de remplir.</li>
+                    </ul>
+                </div>
+                <p><img alt="peigne de caractères" src="../images/comb_of_characters.png" /></p>
+                <p>Cliquez sur le champ texte ajouté et <a href="../UsageInstructions/FontTypeSizeColor.htm">réglez le type, la taille et la couleur de la police</a>, appliquez <a href="../UsageInstructions/DecorationStyles.htm">les styles de décoration</a> et <a href="../UsageInstructions/FormattingPresets.htm">les styles de mise en forme</a>. La mise en forme sera appliquée à l'ensemble du texte dans le champ.</p>
+            </details>
+        </div>
+
+
+        <h2 id="combobox">Créer une zone de liste déroulante</h2>
+        <p>La <em>Zone de liste déroulante</em> comporte une liste déroulante avec un ensemble de choix modifiables.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter une zone de liste déroulante,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-combo_box_icon"></div> l'icône <b>Zone de liste déroulante</b>.
+                    </li>
+                </ol>
+                <p><img alt="Zone de liste déroulante ajoutée" src="../images/combo_box_inserted.png" /></p>
+                <p>Le champ de formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="combo_box_settings">
+                    <img alt="Paramètres de la zone de liste déroulante" src="../images/combo_box_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: une clé à grouper les zones de liste déroulante afin de les remplir simultanément. Pour créer une nouvelle clé, saisissez le nom de celle-là et appuyez sur <b>Entrée</b>, ensuite attribuez cette clé à chaque zone de liste déroulante. Choisissez la clé de la liste déroulante. Message <em>Champs connectés</em>:<em> 2/3/...</em> s'affiche. Pour dissocier les champs, cliquez sur <b>Déconnexion</b>.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans zone de liste déroulante. Le texte par défaut est <em>Choisir un élément</em>.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le champ du formulaire. <br /> <img alt="Conseil ajouté" src="../images/combo_box_tip.png" />
+                        </li>
+                        <li><b>Options de valeur:</b> ajoutez <div class="icon icon-combo_add_values"></div> de nouvelles valeurs, supprimez <div class="icon icon-combo_delete_values"></div> ou déplacez des valeurs vers le haut <div class="icon icon-combo_values_up"></div> et <div class="icon icon-combo_values_down"></div> vers le bas dans la liste.</li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures de la zone de liste déroulante ajoutée. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan de la zone de liste déroulante ajoutée. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre la zone de liste déroulante obligatoire de remplir.</li>
+                    </ul>
+                </div>
+                <p>Cliquez sur la flèche dans la partie droite de la <b>Zone de liste déroulante</b> ajoutée pour accéder à la liste d'éléments disponibles et choisir un élément approprié. Lorsque vous avez choisi un élément, vous pouvez modifier le texte affiché  partiellement ou entièrement ou le remplacer du texte.</p>
+                <p><img alt="La zone de liste déroulante ouverte" src="../images/combo_box_opened.png" /></p>
+                <p>Vous pouvez changer le style, la couleur et la taille de la police. Cliquez sur la zone de liste déroulante et suivez les <a href="../UsageInstructions/FontTypeSizeColor.htm">instructions</a>. La mise en forme sera appliquée à l'ensemble du texte dans le champ.</p>
+            </details>
+        </div>
+
+
+        <h2 id="dropdownlist">Créer une liste déroulante</h2>
+        <p>La <em>Liste déroulante</em> comporte une liste déroulante avec un ensemble de choix non modifiable.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter une liste déroulante,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-dropdown_list_icon"></div> l'icône <b>Liste déroulante</b>.
+                    </li>
+                </ol>
+                <p><img alt="Liste déroulante ajoutée" src="../images/combo_box_inserted.png" /></p>
+                <p>Le champ de formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="dropdown_list_settings">
+                    <img alt="Paramètres de la liste déroulante" src="../images/dropdown_list_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: une clé à grouper les listes déroulantes afin de les remplir simultanément. Pour créer une nouvelle clé, saisissez le titre de celle-là et appuyez sur <b>Entrée</b>, ensuite attribuez cette clé aux champs du formulaire en choisissant de la liste déroulante. Message <em>Champs connectés</em>:<em> 2/3/...</em> s'affiche. Pour dissocier les champs, cliquez sur <b>Déconnexion</b>.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans la liste déroulante. Le texte par défaut est <em>Choisir un élément</em>.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le champ du formulaire. <br /> <img alt="Conseil ajouté" src="../images/combo_box_tip.png" />
+                        </li>
+                        <li><b>Options de valeur:</b> ajoutez <div class="icon icon-combo_add_values"></div> de nouvelles valeurs, supprimez <div class="icon icon-combo_delete_values"></div> ou déplacez des valeurs vers le haut <div class="icon icon-combo_values_up"></div> et <div class="icon icon-combo_values_down"></div> vers le bas dans la liste.</li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures de la liste déroulante ajoutée. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan de la liste déroulante ajoutée. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre la liste déroulante obligatoire de remplir.</li>
+                    </ul>
+                </div>
+                <p>Cliquez sur la flèche dans la partie droite de la <b>Liste déroulante</b> ajoutée pour accéder à la liste d'éléments disponibles et choisir un élément approprié.</p>
+                <p><img alt="Paramètres de la liste déroulante" src="../images/dropdown_list_opened.png" /></p>
+            </details>
+        </div>
+
+
+        <h2 id="checkbox">Créer une case à cocher</h2>
+        <p>La <em>Case à cocher</em> fournit plusieurs options permettant à l'utilisateur de sélectionner autant de cases à cocher que nécessaire. Cases à cocher sont utilisées indépendamment, alors chaque case peut être coché et ou décoché.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour insérer une case à cocher,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-checkbox_icon"></div> l'icône <b>Case à cocher</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-checkbox_inserted"></span></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="checkbox_settings">
+                    <img alt="Paramètres de case à cocher" src="../images/checkbox_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: une clé à grouper les cases à cocher afin de les remplir simultanément. Pour créer une nouvelle clé, saisissez le titre de celle-là et appuyez sur <b>Entrée</b>, ensuite attribuez cette clé aux champs du formulaire en choisissant de la liste déroulante. Message <em>Champs connectés</em>:<em> 2/3/...</em> s'affiche. Pour dissocier les champs, cliquez sur <b>Déconnexion</b>.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur la case à cocher. <br /> <img alt="Conseil ajouté" src="../images/checkbox_tip.png" />
+                        </li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures de la case à cocher ajoutée. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan de la case à cocher ajoutée. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre cette case à cocher obligatoire de remplir.</li>
+                    </ul>
+                </div>
+                <p>Cliquez sur la case pour la cocher.</p>
+                <p><span class="big big-checkbox_checked"></span></p>
+            </details>
+        </div>
+
+
+        <h2 id="radiobutton">Créer un bouton radio</h2>
+        <p>Le <em>Bouton radio</em> fournit plusieurs options permettant à l'utilisateur de choisir une seule option parmi plusieurs possibles. Boutons radio sont utilisés en groupe, alors on ne peut pas choisir plusieurs boutons de la même groupe.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un bouton radio,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-radio_button_icon"></div> l'icône du bouton radio
+                    </li>
+                </ol>
+                <p><span class="big big-radio_button_inserted"></span></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="radio_button_settings">
+                    <img alt="Paramètres su bouton radio" src="../images/radio_button_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé de groupe</b>: pour créer un nouveau groupe de boutons radio, saisissez le nom du groupe et appuyez sur <b>Entrée</b>, ensuite attribuez chaque bouton radio au groupe approprié.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le bouton radio. <br /> <img alt="Conseil ajouté" src="../images/radio_button_tip.png" />
+                        </li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures du bouton radio ajouté. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan du bouton radio ajouté. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre le bouton radio ajouté obligatoire de remplir.</li>
+                    </ul>
+                </div>
+                <p>Cliquez sur le bouton radio pour le choisir.</p>
+                <p><span class="big big-radio_button_checked"></span></p>
+            </details>
+        </div>
+
+
+        <h2 id="image">Créer un champ image</h2>
+        <p>Le champ <em>Image</em> est le champ du formulaire permettant d'insérer une image selon des limites définies, c-à-d, la position et la taille de l'image.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un champ d'image,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-image"></div> l'icône <b>Image</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-image_form_inserted"></span></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="image_form_settings">
+                    <img alt="Paramètres du champ image" src="../images/image_form_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: une clé à grouper les images afin de les remplir simultanément. Pour créer une nouvelle clé, saisissez le nom de celle-là et appuyez sur <b>Entrée</b>, ensuite attribuez cette clé aux champs du formulaire en choisissant de la liste déroulante. Message <em>Champs connectés</em>:<em> 2/3/...</em> s'affiche. Pour dissocier les champs, cliquez sur <b>Déconnexion</b>.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans le champ d'image. Le texte par défaut est <em>Cliquer pour télécharger l'image</em>.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur la bordure inférieure de l'image.
+                        </li>
+                        <li><b>Mise à l'échelle</b>: cliquez sur la liste déroulante et sélectionnez l'option de dimensionnement de l'image appropriée: <b>Toujours</b>, <b>Jamais</b>, lorsque <b>L'image semble trop grande</b> ou <b>L'image semble trop petite</b>. L'image sélectionnée sera redimensionnée dans le champ en fonction de l'option choisie.</li>
+                        <li><b>Verrouiller les proportions</b>: cochez cette case pour maintenir le rapport d'aspect de l'image sans la déformer. Lors de l'activation de cette option, faites glisser le curseur vertical ou horizontal pour positionner l'image à en dedans du champ ajouté. Si la case n'est pas cochée, les curseurs de positionnement ne sont pas activés.</li>
+                        <li><b>Sélectionnez une image</b>: cliquez sur ce bouton pour télécharger une image <b>Depuis un fichier</b>, <b>À partir d'une URL</b> ou <b>À partir de l'espace de stockage</b>.</li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures du champ image ajouté. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan du champ image ajouté. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre ce champ image obligatoire de remplir.</li>
+                    </ul>
+                </div>
+                <p>Pour remplacer une image, cliquez sur l'icône d'image <span class="icon icon-image"></span> au-dessus de la bordure de champ image et sélectionnez une autre image.</p>
+                <p>Pour paramétrer l'image, accédez à l'onglet <b>Paramètres de l'image</b> sur la barre latérale droite. Pour en savoir plus, veuillez consulter les instructions sur <a href="../UsageInstructions/InsertImages.htm">paramètres d'image</a>.</p>
+            </details>
+        </div>
+
+        <h2 id="emailaddress">Créer un champ adresse e-mail</h2>
+        <p>Le champ <em>Adresse e-mail</em> sert à saisir une adresse e-mail suivant l'expression régulière \S+@\S+\.\S+.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un champ adresse e-mail,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-email_address_icon"></div> l'icône <b>Adresse e-mail</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-email_address_inserted"></span></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="email_address_settings">
+                    <img alt="paramètres de l' adresse e-mail" src="../images/email_address_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: pour créer un nouveau groupe d'adresses e-mail, saisissez le nom du groupe et appuyez sur <b>Entrée</b>, ensuite attribuez chaque champ adresse e-mail au groupe approprié.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans le champ d'adresse e-mail. Le texte par défaut est <em>user_name@email.com</em>.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le champ adresse e-mail. <br /> <img alt="Conseil ajouté" src="../images/email_address_tip.png" />
+                        </li>
+                        <li><b>Format</b>: définissez le format du champ, c-à-d <em>Aucun</em>, <em>Chiffres</em>, <em>Lettres</em>, <em>Masque arbitraire</em> ou <em>Expression régulière</em>. Le format par défaut est <em>Expression régulière</em> afin de conserver le format d'adresse e-mail <code>\S+@\S+\.\S+</code>.</li>
+                        <li><b>Symboles autorisés</b>: saisissez les symboles qui sont autorisés dans le champ adresse e-mail.</li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ. Lors de l'activation de cette option, les options <b>Ajuster automatiquement</b> et <b>Champ de saisie à plusieurs lignes</b> deviennent aussi disponibles.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Ajuster automatiquement</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour ajuster automatiquement la police en fonction de la taille du champ.</li>
+                        <li><b>Champ de saisie à plusieurs lignes</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour créer un champ à plusieurs lignes, sinon le champ va contenir une seule ligne de texte.</li>
+                        <li><b>Limite de caractères</b>: le nombre de caractères n'est pas limité par défaut. Activez cette option pour indiquer le nombre maximum de caractères dans le champ à droite.</li>
+                        <li>
+                            <b>Peigne de caractères</b>: configurer l'aspect général pour une présentation claire et équilibré dans le champ adresse e-mail. Laissez cette case décoché pour garder les paramètres par défaut ou activez cette option pour configurer les paramètres suivants:
+                            <ul>
+                                <li><b>Largeur de cellule</b>: définissez la largeur en sélectionnant <em>Automatique</em> (la largeur est redimentionnée automatiquement), <em>Au moins</em> (la largeur doit être au moins égale à la valeur définie) ou <em>Exactement</em> (la largeur doit être égale à la valeur définie). Le texte sera justifié selon les paramètres.</li>
+                            </ul>
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures du champ adresse e-mail ajouté. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan du champ adresse e-mail ajouté. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre le champ d'adresse e-mail obligatoire de remplir.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="phonenumber">Créer un champ numéro de téléphone</h2>
+        <p>Le champ <em>Numéro de téléphone</em> sert à saisir le numéro de téléphone selon le masque arbitraire défini par l'auteur du formulaire. Par défaut, c'est <code>(999)999-9999</code>.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un champ numéro de téléphone,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-phone_number_icon"></div> l'icône <b>Numéro de téléphone</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-phone_number_inserted"></span></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="phone_number_settings">
+                    <img alt="paramètres du numéro de téléphone" src="../images/phone_number_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: pour créer un nouveau groupe de numéros de téléphones, saisissez le nom du groupe et appuyez sur <b>Entrée</b>, ensuite attribuez chaque numéro de téléphone au groupe approprié.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans le champ numéro de téléphone. Le texte par défaut est <em>(999)999-9999</em>.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le champ numéro de téléphone. <br /> <img alt="Conseil ajouté" src="../images/phone_number_tip.png" />
+                        </li>
+                        <li><b>Format</b>: définissez le format du champ, c-à-d <em>Aucun</em>, <em>Chiffres</em>, <em>Lettres</em>, <em>Masque arbitraire</em> ou <em>Expression régulière</em>. Le format par défaut est <em>Masque arbitraire</em> Pour modifier le format, saisissez le masque approprié dans le champ au-dessous.</li>
+                        <li><b>Symboles autorisés</b>: saisissez les symboles qui sont autorisés dans le champ numéro de téléphone.</li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ. Lors de l'activation de cette option, les options <b>Ajuster automatiquement</b> et <b>Champ de saisie à plusieurs lignes</b> deviennent aussi disponibles.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Ajuster automatiquement</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour ajuster automatiquement la police en fonction de la taille du champ.</li>
+                        <li><b>Champ de saisie à plusieurs lignes</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour créer un champ à plusieurs lignes, sinon le champ va contenir une seule ligne de texte.</li>
+                        <li><b>Limite de caractères</b>: le nombre de caractères n'est pas limité par défaut. Activez cette option pour indiquer le nombre maximum de caractères dans le champ à droite.</li>
+                        <li>
+                            <b>Peigne de caractères</b>: configurer l'aspect général pour une présentation claire et équilibré dans le champ numéro de téléphone. Laissez cette case décoché pour garder les paramètres par défaut ou activez cette option pour configurer les paramètres suivants:
+                            <ul>
+                                <li><b>Largeur de cellule</b>: définissez la largeur en sélectionnant <em>Automatique</em> (la largeur est redimentionnée automatiquement), <em>Au moins</em> (la largeur doit être au moins égale à la valeur définie) ou <em>Exactement</em> (la largeur doit être égale à la valeur définie). Le texte sera justifié selon les paramètres.</li>
+                            </ul>
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures du champ numéro de téléphone ajouté. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan du champ numéro de téléphone ajouté. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre le champ numéro de téléphone ajouté obligatoire de remplir.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="datetime">Créer un champ Date et heure</h2>
+        <p>Le champ <em>Date et heure</em> sert à insérer la date. Par défaut, le format de date est DD-MM-YYYY.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un champ date et heure,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-date_time_icon"></div> l'icône <b>Date et heure</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-date_time_inserted"></span></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Pour saisir une date, cliquez sur la flèche dans le champ et sélectionnez la date appropriée dans le calendrier. <!--The <b>Form Settings</b> menu will open to the right.--></p>
+                <!--<div id="phone_number_settings">
+        <img alt="phone number settings" src="../images/phone_number_settings.png" />
+        <ul>
+            <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+            <li><b>Key</b>: to create a new group of phone numbers, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each phone number.</li>
+            <li><b>Placeholder</b>: type in the text to be displayed in the inserted phone number form field; <em>“(999)999-9999”</em> is set by default.</li>
+            <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+            <li>
+                <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the phone number field.
+                <br /> <img alt="tip inserted" src="../images/phone_number_tip.png" />
+            </li>
+            <li><b>Format</b>: choose the content format of the field, i.e., <em>None</em>, <em>Digits</em>, <em>Letters</em>, <em>Arbitrary Mask</em> or <em>Regular Expression</em>. The field is set to <em>Arbitrary Mask</em> by default. To change its format, type in the required mask into the field below.</li>
+            <li><b>Allowed Symbols</b>: type in the symbols that are allowed in the phone number field.</li>
+            <li>
+                <b>Fixed size field</b>: check this box to create a field with a fixed size. When this option is enabled, you can also use the <b>AutoFit</b> and/or <b>Multiline field</b> settings.<br />
+                A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+            </li>
+            <li><b>AutoFit</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to automatically fit the font size to the field size.</li>
+            <li><b>Multiline field</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to create a form field with multiple lines, otherwise, the text will occupy a single line.</li>
+            <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+            <li>
+                <b>Comb of characters</b>: spread the text evenly within the inserted phone number field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                <ul>
+                    <li><b>Cell width</b>: choose whether the width value should be <em>Auto</em> (width is calculated automatically), <em>At least</em> (width is no less than the value given manually), or <em>Exactly</em> (width corresponds to the value given manually). The text within will be justified accordingly.</li>
+                </ul>
+            </li>
+            <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted phone number field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+            <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted phone number field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+            <li><b>Required</b>: check this box to make the phone number field a necessary one to fill in.</li>
+        </ul>
+    </div>--></details>
+        </div>
+
+        <h2 id="zipcode">Créer un champ code postal</h2>
+        <p>Le champ <em>Code postal</em> sert à saisir le code postal selon le masque arbitraire défini par l'auteur du formulaire. Par défaut, c'est <code>99999-9999</code>.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un champ code postal,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-zip_code_icon"></div> l'icône <b>Code postal</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-zip_code_inserted"></span></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="zip_code_settings">
+                    <img alt="paramètres du code postal" src="../images/zip_code_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: pour créer un nouveau groupe de numéros de téléphones, saisissez le nom du groupe et appuyez sur <b>Entrée</b>, ensuite attribuez chaque numéro de téléphone au groupe approprié.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans le champ code postal. Le texte par défaut est 99999-9999.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le champ code postal. <br /> <img alt="Conseil ajouté" src="../images/zip_code_tip.png" />
+                        </li>
+                        <li><b>Format</b>: définissez le format du champ, c-à-d <em>Aucun</em>, <em>Chiffres</em>, <em>Lettres</em>, <em>Masque arbitraire</em> ou <em>Expression régulière</em>. Le format par défaut est <em>Masque arbitraire</em> Pour modifier le format, saisissez le masque approprié dans le champ au-dessous.</li>
+                        <li><b>Symboles autorisés</b>: saisissez les symboles qui sont autorisés dans le champ code postal.</li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ. Lors de l'activation de cette option, les options <b>Ajuster automatiquement</b> et <b>Champ de saisie à plusieurs lignes</b> deviennent aussi disponibles.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Ajuster automatiquement</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour ajuster automatiquement la police en fonction de la taille du champ.</li>
+                        <li><b>Champ de saisie à plusieurs lignes</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour créer un champ à plusieurs lignes, sinon le champ va contenir une seule ligne de texte.</li>
+                        <li><b>Limite de caractères</b>: le nombre de caractères n'est pas limité par défaut. Activez cette option pour indiquer le nombre maximum de caractères dans le champ à droite.</li>
+                        <li>
+                            <b>Peigne de caractères</b>: configurer l'aspect général pour une présentation claire et équilibré dans le champ code postal. Laissez cette case décoché pour garder les paramètres par défaut ou activez cette option pour configurer les paramètres suivants:
+                            <ul>
+                                <li><b>Largeur de cellule</b>: définissez la largeur en sélectionnant <em>Automatique</em> (la largeur est redimentionnée automatiquement), <em>Au moins</em> (la largeur doit être au moins égale à la valeur définie) ou <em>Exactement</em> (la largeur doit être égale à la valeur définie). Le texte sera justifié selon les paramètres.</li>
+                            </ul>
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures du champ code postal ajouté. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône  <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan du champ code postal ajouté. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre le champ code postal ajouté obligatoire de remplir.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="creditcard">Créer un champ carte bancaire</h2>
+        <p>Le champ <em>Carte bancaire</em> sert à saisir le numéro de carte la bancaire selon le masque arbitraire défini par l'auteur du formulaire. Par défaut, c'est <code>9999-9999-9999-9999</code>.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un champ numéro de carte la bancaire,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-credit_card_icon"></div> l'icône <b>Carte bancaire</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-credit_card_inserted"></span></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="credit_card_settings">
+                    <img alt="paramètres carte bancaire" src="../images/credit_card_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: pour créer un nouveau groupe de numéros des cartes bancaires, saisissez le nom du groupe et appuyez sur <b>Entrée</b>, ensuite attribuez chaque champ numéro de carte la bancaire au groupe approprié.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans le champ numéro de la carte la bancaire. Le texte par défaut est 9999-9999-9999-9999.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le champ numéro de la carte la bancaire. <br /> <img alt="Conseil ajouté" src="../images/credit_card_tip.png" />
+                        </li>
+                        <li><b>Format</b>: définissez le format du champ, c-à-d <em>Aucun</em>, <em>Chiffres</em>, <em>Lettres</em>, <em>Masque arbitraire</em> ou <em>Expression régulière</em>. Le format par défaut est <em>Masque arbitraire</em> Pour modifier le format, saisissez le masque approprié dans le champ au-dessous.</li>
+                        <li><b>Symboles autorisés</b>: saisissez les symboles qui sont autorisés dans le champ numéro de la carte la bancaire.</li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ. Lors de l'activation de cette option, les options <b>Ajuster automatiquement</b> et <b>Champ de saisie à plusieurs lignes</b> deviennent aussi disponibles.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Ajuster automatiquement</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour ajuster automatiquement la police en fonction de la taille du champ.</li>
+                        <li><b>Champ de saisie à plusieurs lignes</b>: il est possible d'activer cette option lors de l'activation de l'option <b>Taille de champ fixe</b>, cochez cette case pour créer un champ à plusieurs lignes, sinon le champ va contenir une seule ligne de texte.</li>
+                        <li><b>Limite de caractères</b>: le nombre de caractères n'est pas limité par défaut. Activez cette option pour indiquer le nombre maximum de caractères dans le champ à droite.</li>
+                        <li>
+                            <b>Peigne de caractères</b>: configurer l'aspect général pour une présentation claire et équilibré dans le champ numéro de la carte la bancaire. Laissez cette case décoché pour garder les paramètres par défaut ou activez cette option pour configurer les paramètres suivants:
+                            <ul>
+                                <li><b>Largeur de cellule</b>: définissez la largeur en sélectionnant <em>Automatique</em> (la largeur est redimentionnée automatiquement), <em>Au moins</em> (la largeur doit être au moins égale à la valeur définie) ou <em>Exactement</em> (la largeur doit être égale à la valeur définie). Le texte sera justifié selon les paramètres.</li>
+                            </ul>
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures du champ numéro de la carte la bancaire ajouté. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan du champ numéro de la carte la bancaire ajouté. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre le champ numéro de la carte la bancaire ajouté obligatoire de remplir.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="complexfield">Créer un champ complexe</h2>
+        <p>Un champ complexe peut combiner plusieurs champs, par ex. le champ texte et le champ liste déroulante. Vous pouvez combiner les champs selon vos besoins.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour ajouter un champ complexe,</summary>
+                <ol>
+                    <li>positionnez le point d'insertion à la ligne du texte où vous souhaitez ajouter un champ,</li>
+                    <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure,</li>
+                    <li>
+                        cliquez sur <div class="icon icon-complex_field_icon"></div> l'icône <b>Champ complexe</b>.
+                    </li>
+                </ol>
+                <p><img alt="champ complexe ajouté" src="../images/complex_field_inserted.png"></p>
+                <p>Le champ du formulaire apparaîtra à la point d'insertion de la ligne de texte existante. Le menu <b>Paramètres du formulaire</b> s'affiche à droite.</p>
+                <div id="complex_field_settings">
+                    <img alt="paramètres champ complexe" src="../images/complex_field_settings.png" />
+                    <ul>
+                        <li><b>Qui doit remplir ce champ?</b>: sélectionnez le rôle dans la liste déroulante pour affecter les utilisateurs au groupe d'utilisateurs qui ont accès à ce champ. Pour en savoir plus sur l'affectation des utilisateurs aux rôles, veuillez consulter l'article <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Gérer des rôles</a> de ce guide-ci.</li>
+                        <li><b>Clé</b>: pour créer un nouveau groupe de champs complexes, saisissez le nom du groupe et appuyez sur <b>Entrée</b>, ensuite attribuez chaque champ complexe au groupe approprié.</li>
+                        <li><b>Espace réservé</b>: saisissez le texte à afficher dans le champ complexe. Le texte par défaut est <em>Votre texte ici</em>.</li>
+                        <li><b>Tag</b>: saisissez le texte à afficher en tant que tag pour l'utilisation interne, c-à-d à afficher aux co-éditeurs uniquement.</li>
+                        <li>
+                            <b>Conseil</b>: saisissez le texte à afficher quand l'utilisateur fait passer la souris sur le champ complexe. <br /> <img alt="Conseil ajouté" src="../images/complex_field_tip.png" />
+                        </li>
+                        <li>
+                            <b>Taille de champ fixe</b>: activez cette option pour fixer la taille du champ.<br /> Un champ de taille fixe ressemble à une forme automatique. Vous pouvez définir le style d'habillage et ajuster son position.
+                        </li>
+                        <li><b>Couleur de bordure</b>: cliquez sur l'icône <div class="icon icon-nofill"></div>  pour définir la couleur des bordures du champ complexe ajouté. Sélectionnez la couleur appropriée des bordures dans la palette. Le cas échéant, vous pouvez <b>ajouter une couleur personnalisée</b>.</li>
+                        <li><b>Couleur d'arrière plan</b>: cliquez sur l'icône <div class="icon icon-nofill"></div> pour choisir la couleur d'arrière-plan du champ complexe ajouté. Sélectionnez la couleur appropriée de la palette <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou <b>ajoutez une nouvelle couleur personnalisée</b>, le cas échéant.</li>
+                        <li><b>Obligatoire</b>: cochez cette case pour rendre ce champ complexe obligatoire de remplir.</li>
+                    </ul>
+                    <p>Pour ajouter plusieurs champs au champ complexe, cliquez dessous et sélectionnez le champ approprié de la barre d'outils supérieure sous l'onglet <b>Formulaire</b>. pour en savoir plus sur chaque champ, veuillez consulter les sections appropriées ci-dessus.</p>
+                    <p class="note">Veuillez noter qu'on ne peut pas ajouter  le champ image dans un champ complexe.</p>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="managing_roles">Gérer des rôles</h2>
+        <p>Vous pouvez créer de nouveaux rôles pour permettre aux utilisateurs de remplir les champs du formulaire.</p>
+        <div class="forms">
+            <details class="details-example"><summary>Pour gérer les rôles,</summary>
+                <div id="managing_roles">
+                    <img alt="gérer des rôles" src="../images/managing_roles.png" />
+                    <ul>
+                        <li>passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure.</li>
+                        <li>cliquez sur <div class="icon icon-sharingicon"></div> l'icône <b>Gérer les rôles</b>,</li>
+                        <li>
+                            cliquez sur le bouton <b>Nouveau</b> pour ajouter un nouveau rôle.
+                            <p><img alt="nouveau rôle" src="../images/edit_role.png" /></p>
+                        </li>
+                        <li>saisissez le nom de rôle et sélectionnez la couleur, le cas échéant. Vous pouvez également ajouter la couleur personnalisée en cliquant sur l'option appropriée dans le menu,</li>
+                        <li>cliquez sur <b>OK</b> pour ajouter un nouveau rôle.</li>
+                        <li>définissez l'ordre dans lequel on va recevoir et signer le document à l'aide de <div class="icon icon-role_up"></div> et <div class="icon icon-role_down"></div> boutons,</li>
+                        <li>utilisez le boutons <b>Modifier</b> et <b>Supprimer</b> pour modifier et supprimer les rôles,</li>
+                        <li>cliquez sur <b>Fermer</b> pour revenir à l'édition du formulaire.</li>
+                    </ul>
+                    <p>Lors du sauvegarde du formulaire au format .oform, vous pouvez afficher tous les rôles du formulaire.</p>
+                </div>
+
+            </details>
+        </div>
+
+        <!--<h2>Highlight forms</h2>
+        <p>You can highlight inserted form fields with a certain color.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To highlight fields,</summary>
+                <div id="highlight_settings">
+                    <img alt="highlight settings" src="../images/highlight_settings.png" />
+                    <ul>
+                        <li>open the <b>Highlight Settings</b> on the <b>Forms</b> tab of the top toolbar,</li>
+                        <li>choose a color from the <b>Standard Colors</b>. You can also <b>add a new custom color</b>,</li>
+                        <li>to remove previously applied color highlighting, use the <b>No highlighting</b> option.</li>
+                    </ul>
+                </div>
+                <p>The selected highlight options will be applied to all form fields in the document.</p>
+                <p class="note">The form field border is only visible when the field is selected. The borders do not appear on a printed version.</p>
+            </details>
+        </div>-->
+
+        <h2>Afficher l'aperçu du formulaire</h2>
+        <p class="note">
+            <b>Remarque</b>: Les options de modification ne sont pas disponibles lorsque vous activez le mode <b>Aperçu du formulaire</b>.
+        </p>
+        <p>Cliquez sur le bouton <b>Aperçu du formulaire</b> <span class="icon icon-view_form_icon"></span> sous l'onglet <b>Formulaire</b> de la barre d'outils supérieure, pour afficher un aperçu du formulaire sur un document.</p>
+        <p><img alt="Aperçu du formulaire actif" src="../images/view_form_active2.png" /></p>
+        <p>Vous pouvez afficher l'aperçu du formulaire à travers le regard de chaque rôle créé pour le formulaire. Pour ce faire, cliquez sur la flèche au-dessous du bouton <span class="icon icon-view_form_icon"></span> <b>Aperçu du formulaire</b> et sélectionnez le rôle approprié.</p>
+        <p><img alt="aperçu du formulaire" src="../images/view_form_role.png" /></p>
+        <p>Pour quitter le mode d'aperçu, cliquer sur la même icône encore une fois.</p>
+
+        <h2>Déplacer les champs du formulaire</h2>
+        <p>Il est possible de déplacer les champs du formulaire vers un autre emplacement du document: cliquez sur le bouton à gauche de la bordure de contrôle et faites la glisser vers un autre emplacement sans relâcher le bouton de la souris.</p>
+        <p><img alt="Déplacer les champs du formulaire" src="../images/moving_form_fields.png" /></p>
+        <p>Vous pouvez également copier et coller les champs du formulaire: sélectionnez le champ approprié et appuyez sur le raccourci <b>Ctrl+C/Ctrl+V.</b></p>
+
+        <h2>Rendre un champ de formulaire obligatoire</h2>
+        <p>Pour <b>rendre un champ de formulaire obligatoire</b>, activez l'option <b>Obligatoire</b>. La bordure des champs obligatoires est marquée d'un trait rouge.<!--The form cannot be submitted until all required fields are filled in.--></p>
+
+        <h2>Verrouiller les champs du formulaire</h2>
+        <p>Pour <b>empêcher toute la modification ultérieure</b> des champs du formulaire, cliquez sur l'icône <b>Verrou</b> <span class="icon icon-lock_form_icon"></span>. La fonctionnalité de remplissage reste disponible.</p>
+
+        <h2>Effacer les champs remplis dans un formulaire</h2>
+        <p>Pour effacer tous les champs remplis et supprimer toutes informations, cliquez sur le bouton <b>Effacer tous les champs</b> <span class="icon icon-clear_fields_icon"></span> sous l'onglet <b>Formulaires</b> de la barre d'outils supérieure. Il est possible d'effacer les champs remplis uniquement en mode de remplissage du formulaire.</p>
+
+        <h2>Naviguer, afficher et enregistrer un formulaire</h2>
+        <p><img alt="Panneau de remplissage formulaire" src="../images/fill_form.png" /></p>
+        <p>Passez à l'onglet <b>Formulaires</b> de la barre d'outils supérieure.</p>
+        <p>Naviguez entre les champs du formulaire en utilisant les boutons <b>Champ précédent</b> <span class="icon icon-previous_field_icon"></span> et <b>Champ suivant</b> <span class="icon icon-next_field_icon"></span> de la barre d'outil supérieure.</p>
+        <p>Une fois terminé, cliquez sur le bouton <b>Enregistrer sous oform</b> <span class="icon icon-save_form_icon"></span> de la barre d'outils supérieure pour enregistrer le formulaire au format <b>OFORM</b> prêt à remplir. Vous pouvez sauvegarder autant de formulaires au format <b>OFORM</b> que vous le souhaitez.</p>
+        <!--<p>To clear all fields and reset the form, click the <div class = "icon icon-clear_fields_icon"></div> <b>Clear fields</b> button at the top toolbar.</p>
+        <p>When you are finished, click the <div class = "icon icon-submit_form_icon"></div> <b>Submit</b> button at the top toolbar to send the form for further processing. Please note that this action cannot be undone.</p>
+    <p class="note">If you are using the server version of ONLYOFFICE Docs, the presence of the <b>Submit</b> button depends on the configuration. Read <a href="https://api.onlyoffice.com/editors/config/editor/customization">this article</a> to learn more.</p>-->
+        <h2>Supprimer les champs du formulaire</h2>
+        <p>Pour supprimer un champ du formulaire et garder tous son contenu, sélectionnez-le et cliquez sur l'icône <b>Supprimer</b> <span class="icon icon-combo_delete_values"></span> (assurez-vous que le champ n'est pas verrouillé) ou appuyez sur la touche <b>Supprimer</b> du clavier.</p>
+    </div>
+</body>
+</html>

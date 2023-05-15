@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Commentaires</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Astuces sur la collaboration" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Commentaires</h1>
+            <p><a target="_blank" href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" onclick="onhyperlinkclick(this)"><b>Tableur</b></a> permet de gérer le flux de travail continu par l'ensemble de l'équipe : <a href="https://helpcenter.onlyoffice.com/fr/userguides/groups-guides-documents-share-documents.aspx">partager</a> des fichiers et dossiers, <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">collaborer</a> sur feuilles de calcul en temps réel, <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">communiquer</a> directement depuis l'éditeur, sauvegarder des <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">versions de la feuille de calcul</a> pour une utilisation ultérieure.</p>
+            <p>Dans le <b>Tableur</b> vous pouvez laisser les commentaires pour le contenu de feuilles de calcul sans le modifier. Contrairement au <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">messages de chat</a>, les commentaires sont stockés jusqu'à ce que vous décidiez de les supprimer.</p>
+            <h3>Laisser et répondre aux commentaires</h3>
+            <p>Pour laisser un commentaire :</p>
+            <ol>
+                <li>sélectionnez la cellule où vous pensez qu'il y a une erreur ou un problème,</li>
+                <li>
+                    passez à l'onglet <b>Insertion</b> ou <b>Collaboration</b> sur la barre d'outils supérieure et cliquer sur le <div class = "icon icon-comment_toptoolbar"></div> bouton <b>Commentaires</b> ou<br />
+                    utilisez l'icône Commentaires <div class = "icon icon-commentsicon"></div> sur la barre latérale de gauche pour ouvrir le panneau <b>Commentaires </b>et cliquez sur le lien <b>Ajouter un commentaire au document</b> ou<br />
+                    cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Ajouter un commentaire</b> dans le menu contextuel,
+                </li>
+                <li>saisissez le texte nécessaire,</li>
+                <li>cliquez sur le bouton <b>Ajouter commentaire/Ajouter</b>.</li>
+            </ol>
+            <p>Si vous utilisez le mode de co-édition <b>Strict</b>, les nouveaux commentaires ajoutés par d'autres utilisateurs ne seront visibles qu'après un clic sur l'icône <span class="icon icon-saveupdate"></span> dans le coin supérieur gauche de la barre supérieure.</p>
+            <p>Pour afficher le commentaire, cliquez sur la cellule. Tout utilisateur peut répondre au commentaire ajouté en posant une question ou en faisant référence au travail qu'il/elle a fait. Pour ce faire, utilisez le lien <b>Ajouter une réponse</b>, saisissez le texte de votre réponse dans le champ de saisie et appuyez sur le bouton <b>Répondre</b>.</p>
+            <h3>Désactiver l'affichage des commentaires</h3>
+            <p>Le commentaire sera affiché sur le panneau à gauche. Le triangle orange apparaîtra dans le coin supérieur droit de la cellule que vous avez commentée. Si vous souhaitez désactiver cette fonctionnalité,</p>
+            <ul>
+                <li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+                <li>sélectionnez l'option <b>Paramètres avancés...</b>,</li>
+                <li>décochez la case <b>Activer l'affichage de commentaires</b>.</li>
+            </ul>
+            <p>Dans ce cas, les cellules commentées ne seront marquées que si vous cliquez sur l'icône Commentaires <span class="icon icon-commentsicon"></span>.</p>
+            <h3>Gérer les commentaires</h3>
+            <p>Vous pouvez gérer les commentaires ajoutés en utilisant les icônes de la bulle de commentaire ou sur le panneau gauche <b>Commentaires</b> :</p>
+            <ul>
+                <li>
+                    trier les commentaires ajoutés en cliquant sur l'icône <div class = "icon icon-sortcommentsicon"></div> :
+                    <ul>
+                        <li>par date : <b>Plus récent</b> ou <b>Plus ancien</b>.</li>
+                        <li>par auteur : <b>Auteur de A à Z</b> ou <b>Auteur de Z à A</b>.</li>
+                        <li>
+                            par groupe : Tout ou sélectionnez un groupe de la liste. Cette option de trie n'est disponible que si votre version prend en charge cette fonctionnalité.
+                            <p><img alt="Trier commentaires" src="../images/sortcomments.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+                <li>modifier le commentaire actuel en cliquant sur <div class = "icon icon-editcommenticon"></div> l'icône,</li>
+                <li>supprimer le commentaire actuel en cliquant sur <div class = "icon icon-deletecommenticon"></div> l'icône,</li>
+                <li>fermer la discussion actuelle en cliquant sur <div class = "icon icon-resolveicon"></div> l'icône si la tâche ou le problème décrit dans votre commentaire est résolu, après quoi la discussion ouverte par votre commentaire reçoit le statut résolu. Pour l'ouvrir à nouveau, cliquez sur l'icône <div class = "icon icon-resolvedicon"></div>. Si vous souhaitez masquer les commentaires résolus, cliquez sur l'onglet <b>Fichier</b> dans la barre d'outils supérieure, sélectionnez l'option <b>Paramètres avancés...</b>, décochez la case <b>Activer l'affichage des commentaires résolus</b> puis cliquez sur <b>Appliquer</b>. Dans ce cas, les commentaires résolus ne seront mis en évidence que si vous cliquez sur  <div class = "icon icon-commentsicon"></div> l'icône.</li>
+                <li>si vous souhaitez gérer plusieurs commentaires à la fois, ouvrez le menu contextuel <b>Résoudre</b> sous l'onglet <b>Collaboration</b>. Sélectionnez l'une des options disponibles : <b>résoudre les commentaires actuels</b>, <b>marquer mes commentaires comme résolus</b> ou <b>marquer tous les commentaires comme résolus</b> dans la feuille de calcul.</li>
+            </ul>
+            <h3>Ajouter les mentions</h3>
+            <p class="note">Ce n'est qu'au contenu d'une feuille de calcul que vous pouvez ajouter des mentions et pas à la feuille de calcul elle-même.</p>
+            <p>Lorsque vous ajoutez un commentaire sur lequel vous voulez attirer l'attention d'une personne, vous pouvez utiliser la fonction de <b>mentions</b> et envoyer une notification par courrier électronique ou <b>Chat</b>.</p>
+            <p>Pour ajouter une mention,</p>
+            <ol>
+                <li>Saisissez "+" ou "@" n'importe où dans votre commentaire, alors la liste de tous les utilisateurs du portail s'affichera. Pour faire la recherche plus rapide, tapez le prénom approprié dans le champ de saisie, la liste propose les suggestions au cours de la frappe.</li>
+                <li>Puis sélectionnez le nom souhaité dans la liste. Si la personne mentionnée n'a pas l'autorisation d'ouvrir ce fichier, la fenêtre <b>Paramètres de partage</b> va apparaître. Par défaut, un document est partagé en <b>Lecture seule</b>. <a href="https://helpcenter.onlyoffice.com/fr/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">Modifiez la permission, le cas échéant</a>.</li>
+                <li>Cliquez sur <b>OK</b>.</li>
+            </ol>
+            <p>La personne mentionnée recevra une notification par courrier électronique informant que son nom est mentionné dans un commentaire. La personne recevra encore une notification lorsque un fichier commenté est partagé.</p>
+            <h3>Supprimer des commentaires</h3>
+            <p>Pour supprimer les commentaires,</p>
+            <ol>
+                <li>cliquez sur le bouton <div class = "icon icon-removecomment_toptoolbar"></div> <b>Supprimer</b> sous l'onglet <b>Collaboration</b> dans la barre d'outils supérieure,</li>
+                <li>
+                    sélectionnez l'option convenable du menu :
+                    <ul>
+                        <li><b>Supprimer les commentaires actuels </b>à supprimer la sélection du moment. Toutes les réponses qui déjà ont été ajoutées seront supprimés aussi.</li>
+                        <li><b>Supprimer mes commentaires</b> à supprimer vos commentaire et laisser les commentaires d'autres. Toutes les réponses qui déjà ont été ajoutées à vos commentaires seront supprimés aussi.</li>
+                        <li><b>Supprimer tous les commentaires</b> sert à supprimer tous les commentaires du document.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Pour fermer le panneau avec les commentaires, cliquez sur l'icône "Commentaires" <span class="icon icon-commentsicon"></span> de la barre latérale de gauche encore une fois.</p>
+        </div>
+	</body>
+</html>

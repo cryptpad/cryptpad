@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Vérification de l'orthographe</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Vérifiez l'orthographe du texte dans votre langue lors de l'édition d'une feuille de calcul" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Vérification de l'orthographe</h1>
+			<p><a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tableur</b></a> vous permet de vérifier l'orthographe du texte dans une certaine langue et de corriger les erreurs lors de l'édition. Dans la <em>version de bureau</em>, il est également possible d'ajouter des mots dans un dictionnaire personnalisé qui est commun aux trois éditeurs.</p>
+			<p class="note">À partir de la <b>version 6.3</b>, les éditeurs ONLYOFFICE prennent en charge l'interface <b>SharedWorker</b> pour un meilleur fonctionnement en évitant une utilisation élevée de la mémoire. Si votre navigateur ne prend pas en charge SharedWorker, alors c'est seulement <b>Worker</b> qui sera actif. Pour en savoir plus sur SharedWorker, veuillez consulter <a href="https://javascript.plainenglish.io/introduction-to-shared-workers-533d9abe9de3">cette page</a>.</p>
+            <p>Cliquez sur l'icône <span class="icon icon-spellcheckdeactivated"></span> <b>Vérification de l'orthographe</b> dans la barre latérale gauche pour ouvrir le panneau de vérification orthographique.</p>
+            <p><img alt="Le panneau Vérification de l'orthographe" src="../images/spellchecking_panel.png" /></p>
+            <p>La cellule supérieure gauche qui contient une valeur de texte mal orthographiée sera automatiquement sélectionnée dans la feuille de calcul actuelle. Le premier mot contenant une erreur sera affiché dans le champ de vérification orthographique, et les mots similaires avec une orthographe correcte apparaîtront dans le champ en-dessous.</p>
+            <p>Utilisez le bouton <span class="icon icon-go_to_the_next_word"></span> <b>Passer au mot suivant</b> pour naviguer entre les mots dont l'orthographe est erronée.</p>
+            <h3>Remplacer les mots mal orthographiés</h3>
+            <p>Pour <b>remplacer</b> le mot sélectionné qui est actuellement mal orthographié par celui suggéré, choisissez l'un des mots similaires suggérés dont l'orthographe est correcte, et utilisez l'option <b>Modification </b> :</p>
+            <ul>
+                <li>cliquez sur le bouton <b>Modification</b>, ou</li>
+                <li>cliquez sur la flèche vers le bas à côté du bouton <b>Modification</b> et sélectionnez l'option <b>Modification</b></li>
+            </ul>
+            <p>Le mot actuel sera remplacé et vous passerez au mot suivant mal orthographié.</p>
+            <p>Pour remplacer rapidement tous les mots identiques répétés sur la feuille de calcul, cliquez sur la flèche vers le bas à côté du bouton <b>Modification</b> et sélectionnez l'option <b>Changer tout</b>.</p>
+            <h3>Ignorer des mots</h3>
+            <p>Pour passer le mot actuel :</p>
+            <ul>
+                <li>cliquez sur le bouton <b>Ignorer</b>, ou</li>
+                <li>cliquez sur la flèche vers le bas à côté du bouton <b>Ignorer</b> et sélectionnez l'option <b>Ignorer</b>.</li>
+            </ul>
+            <p>Le mot actuel sera ignoré et vous passerez au mot suivant mal orthographié.</p>
+            <p>Pour ignorer tous les mots identiques répétés sur la feuille de calcul, cliquez sur la flèche vers le bas à côté du bouton <b>Ignorer</b> et sélectionnez l'option <b>Ignorer tout</b>.</p>
+            <p>Si le mot actuel manque dans le dictionnaire, vous pouvez l'ajouter au dictionnaire personnalisé à l'aide du bouton <b>Ajouter au dictionnaire</b> dans le panneau de vérification de l'orthographe. Ce mot ne sera pas traité comme une erreur la prochaine fois. Cette option est disponible dans la <em>version de bureau</em>.</p>
+            <p>La <b>Langue du dictionnaire</b> utilisée pour la vérification de l'orthographe s'affiche dans la liste ci-dessous. Vous pouvez le modifier si nécessaire.</p>
+            <p>Une fois que vous avez vérifié tous les mots de la feuille de calcul, le message <b>La vérification de l'orthographe est terminée</b> s'affiche dans le panneau de vérification de l'orthographe.</p>
+            <p>Pour fermer le panneau de vérification de l'orthographe, cliquez sur l'icône de <span class="icon icon-spellcheckactivated"></span> <b>Vérification de l'orthographe</b> dans la barre latérale gauche.</p>
+            <h3>Modifier les paramètres de vérification de l'orthographe</h3>
+            <p>Pour modifier les paramètres de vérification de l'orthographe, accédez aux paramètres avancés de l'éditeur de feuille de calcul (onglet <b>Fichier</b> -> <b>Paramètres avancés</b>...) et passez à l'onglet <b>Vérification de l'orthographe</b>. Ici, vous pouvez régler les paramètres suivants :</p>
+            <p><img alt="Paramètres de vérification de l'orthographe" src="../images/spellchecking_settings.png" /></p>
+            <ul>
+                <li><b>Langue du dictionnaire</b> - sélectionnez l'une des langues disponibles dans la liste. La <b>Langue du dictionnaire</b> dans le panneau de vérification de l'orthographe sera modifiée en conséquence.</li>
+                <li><b>Ignorer les mots en MAJUSCULES</b> - cochez cette option pour ignorer les mots écrits en majuscules, par exemple des acronymes comme <em>SMB</em>.</li>
+                <li><b>Ignorer les mots contenant des chiffres</b> - cochez cette option pour ignorer les mots contenant des chiffres, p.e. des acronymes comme <em>B2B</em>.</li>
+                <li><b>Vérification</b> sert à remplacer automatiquement le mot ou le symbole saisi dans le champ <b>Remplacer</b> ou choisi de la liste par un nouveau mot ou symbole du champ <b>Par</b>.</li>
+            </ul>
+            <p>Pour sauvegarder les changements que vous avez faits, cliquez sur le bouton <b>Appliquer</b>.</p>
+		</div>
+	</body>
+</html>

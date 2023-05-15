@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Arbeitsmappe schützen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Schutz der Arbeitsmappenstruktur und Kontrolle der Arbeitsmappenmanipulationen des Benutzers" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Arbeitsmappe schützen</h1>
+			<p>Mit der Option <b>Arbeitsmappe schützen</b> können Sie die Arbeitsmappenstruktur schützen und die Manipulationen der Arbeitsmappe durch Benutzer verwalten, sodass niemand ausgeblendete Arbeitsblätter anzeigen, hinzufügen, verschieben, löschen, ausblenden und umbenennen kann. Sie können die Arbeitsmappe mit oder ohne Kennwort schützen. Wenn Sie kein Kennwort verwenden, kann jeder den Schutz der Arbeitsmappe aufheben.</p>
+			<p>Um die Arbeitsmappe zu schützen,</p>
+			<ol>
+				<li>Gehen Sie zur Registerkarte <b>Schutz</b> und klicken Sie in der oberen Symbolleiste auf die Schaltfläche <b>Arbeitsmappe schützen</b>.
+				</li>			
+				<li>
+					Geben Sie im geöffneten Fenster <b>Arbeitsmappenstruktur schützen</b> das Kennwort ein und bestätigen Sie es, wenn Sie ein Kennwort festlegen möchten, um den Schutz dieser Arbeitsmappe aufzuheben.
+					<p><img alt="Arbeitsmappenstruktur schützen" src="../images/protect_workbook.png" /></p>
+				</li>
+				<li>
+					Klicken Sie auf die Schaltfläche <b>Schützen</b>, um den Schutz mit oder ohne Kennwort zu aktivieren.
+					<p class="note">Das Kennwort kann nicht wiederhergestellt werden, wenn Sie es verlieren oder vergessen. Bitte bewahren Sie es an einem sicheren Ort auf.</p>
+					<p>Die Schaltfläche <b>Arbeitsmappe schützen</b> in der oberen Symbolleiste bleibt hervorgehoben, sobald die Arbeitsmappe geschützt ist.</p>
+					<p><img alt="Arbeitsmappe schützen - hervorheben" src="../images/protectworkbook_highlighted.png" /></p>
+				</li>
+				<li>Um den Schutz der Arbeitsmappe aufzuheben,
+					<ul>
+						<li>klicken Sie bei einer kennwortgeschützten Arbeitsmappe auf die Schaltfläche <b>Arbeitsmappe schützen</b> in der oberen Symbolleiste, geben Sie das Kennwort in das Pop-Up-Fenster <b>Arbeitsmappe entschützen</b> ein und klicken Sie auf <b>OK</b>.
+							<p><img alt="Arbeitsmappe entschützen" src="../images/unprotect_workbook.png" /></p>
+						</li>
+						<li>mit einer ohne Kennwort geschützten Arbeitsmappe klicken Sie einfach auf die Schaltfläche <b>Arbeitsmappe schützen</b> in der oberen Symbolleiste.</li>
+					</ul>
+				</ol>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>ONLYOFFICE Document Viewer</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Die Beschreibung der Navigationstools von ONLYOFFICE Document Viewer" />
+        <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>ONLYOFFICE Document Viewer</h1>
+            <p>Sie können den <b>ONLYOFFICE Document Viewer</b> verwenden, um PDF, XPS, DjVu-Dateien zu öffnen und darin zu navigieren.</p>
+            <p>Mit dem <b>ONLYOFFICE Document Viewer</b> können Sie:</p>
+            <ul>
+                <li>PDF, XPS, DjVu-Dateien anzeigen,</li>
+                <li>Anmerkungen mit dem Chat-Tool hinzufügen,</li>
+                <li>durch Dateien mithilfe des Inhaltsnavigationsfelds und der Seitenminiaturansichten navigieren,</li>
+                <li>die Tools "Auswählen" und "Hand" verwenden,</li>
+                <li>Dateien drucken und herunterladen,</li>
+                <li>interne und externe Links verwenden,</li>
+                <li>
+                    auf die erweiterten Einstellungen des Editors zugreifen und die folgenden Dokumentinformationen über die Registerkarte <b>Datei</b> oder <b>Ansicht</b> anzeigen:
+                    <ul>
+                        <li class="onlineDocumentFeatures"><b>Speicherort</b> (nur in der <em>Online-Version</em> verfügbar) - der Ordner im Modul <b>Dokumente</b>, in dem die Datei gespeichert ist.</li>
+                        <li class="onlineDocumentFeatures"><b>Besitzer</b> (nur in der <em>Online-Version</em> verfügbar) - der Name des Benutzers, der die Datei erstellt hat.</li>
+                        <li class="onlineDocumentFeatures"><b>Hochgeladen</b> (nur in der <em>Online-Version</em> verfügbar) - Datum und Uhrzeit, wann die Datei in das Portal hochgeladen wurde.</li>
+                        <li><b>Statistiken</b> - die Anzahl der Seiten, Absätze, Wörter, Symbole, Symbole mit Leerzeichen.</li>
+                        <li><b>Seitengröße</b> - die Größe der Seiten in der Datei.</li>
+                        <li><b>Zuletzt geändert</b> - Datum und Uhrzeit der letzten Änderung des Dokuments.</li>
+                        <li><b>Erstellt</b> - Datum und Uhrzeit der Erstellung des Dokuments.</li>
+                        <li><b>Anwendung</b> - die Anwendung, mit der das Dokument erstellt wurde.</li>
+                        <li><b>Verfasser</b> - die Person, die das Dokument erstellt hat.</li>
+                        <li><b>PDF-Ersteller</b> - die Anwendung, die zum Konvertieren des Dokuments in PDF verwendet wird.</li>
+                        <li><b>PDF-Version</b> - die Version der PDF-Datei.</li>
+                        <li><b>PDF mit Tags</b> - zeigt an, ob die PDF-Datei Tags enthält.</li>
+                        <li><b>Scnhelle Web-Anzeige</b> - zeigt an, ob die schnelle Webansicht für das Dokument aktiviert wurde.</li>
+                    </ul>
+                </li>
+                <li>die folgenden Plugins verwenden:
+                    <ul>
+                        <li>Plugins, die in der Desktop-Version verfügbar sind: <b>Übersetzer</b>, <b>Senden</b>, <b>Thesaurus</b>.</li>
+                        <li>Plugins, die in der Online-Version verfügbar sind: <b>Controls example</b>, <b>Get and paste html</b>, <b>Telegram</b>, <b>Typograf</b>, <b>Count words</b>, <b>Rede</b>, <b>Thesaurus</b>, <b>Übersetzer</b>.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Die Benutzeroberfläche des <b>ONLYOFFICE Document Viewer</b>:</p>
+            <p><img alt="ONLYOFFICE Document Viewer" src="../images/pdfviewer.png" /></p>
+            <ol>
+                <li>
+                    Die obere Symbolleiste zeigt die Registerkarten <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Datei</a>, <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Ansicht</a> und <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Plugins</a> und die folgenden Symbole an:
+                    <p><span class="icon icon-print"></span> <b>Drucken</b> ermöglicht das Ausdrucken einer Datei;</p>
+                    <p><span class="icon icon-downloadicon"></span> <b>Herunterladen</b> ermöglicht das Herunterladen einer Datei auf Ihren Computer;</p>
+                    <p><span class="icon icon-access_rights"></span><b>Freigeben</b> (nur in der <em>Online-Version</em> verfügbar) ermöglicht es Ihnen, die Benutzer zu verwalten, die Zugriff auf die Datei direkt vom Dokument aus haben: Laden Sie neue Benutzer ein und erteilen Sie ihnen Berechtigungen zum Bearbeiten, Lesen, Kommentieren, Ausfüllen von Formularen oder Überprüfen des Dokuments, oder verweigern Sie einigen Benutzern die Zugriffsrechte auf die Datei;</p>
+                    <p><span class="icon icon-gotodocuments"></span> <b>Dateispeicherort öffnen</b> in der <em>Desktop-Version</em> ermöglicht das Öffnen des Ordners, in dem die Datei gespeichert ist, im Fenster <b>Datei-Explorer</b>. In der <em>Online-Version</em> ermöglicht es das Öffnen des Ordners des Moduls <b>Dokumente</b>, in dem die Datei gespeichert ist, in einem neuen Browser-Tab;</p>
+                    <p><span class="icon icon-favorites_icon"></span> <b>Als Favorit kennzeichnen / Aus Favoriten entfernen</b>. Klicken Sie auf den leeren Stern, um eine Datei zu den Favoriten hinzuzufügen, damit sie leichter zu finden ist, oder klicken Sie auf den gefüllten Stern, um die Datei aus den Favoriten zu entfernen. Die hinzugefügte Datei ist nur eine Verknüpfung, sodass die Datei selbst an ihrem ursprünglichen Speicherort gespeichert bleibt. Durch das Löschen einer Datei aus den Favoriten wird die Datei nicht von ihrem ursprünglichen Speicherort entfernt;</p>
+                    <p><span class="icon icon-usericon"></span> <b>Benutzer</b> zeigt den Namen des Benutzers an, wenn Sie den Mauszeiger darüber bewegen.</p>
+                    <p><span class="icon icon-search_icon_header"></span> <b>Suchen</b> - ermöglicht das Durchsuchen des Dokuments nach einem bestimmten Wort oder Symbol usw.</p>
+                </li>
+                <li>Die <b>Statusleiste</b> am unteren Rand des <b>ONLYOFFICE Document Viewer</b>-Fensters zeigt die Seitenzahl und die Hintergrundstatusbenachrichtigungen an. Sie enthält auch die folgenden Tools:
+                    <p><span class="icon icon-selectiontool"></span> Mit dem <b>Auswählungstool</b> können Sie Text oder Objekte in einer Datei auswählen.</p>
+                    <p><span class="icon icon-handtool"></span> Mit dem Tool <b>Hand</b> können Sie die Seite ziehen und scrollen.</p>
+                    <p><span class="icon icon-fitpage"></span> Mit dem Tool <b>Seite anpassen</b> können Sie die Seite so skalieren, dass der Bildschirm die ganze Seite anzeigt.</p>
+                    <p><span class="icon icon-fitwidth"></span> Mit dem Tool <b>Breite anpassen</b> können Sie die Seite so skalieren, dass sie an die Breite des Bildschirms angepasst wird.</p>
+                    <p><img alt="Zoom" src="../images/zoomadjusting.png" /> Mit dem Tool <a href="../HelpfulHints/Navigation.htm#navigationtools" onclick="onhyperlinkclick(this)"><b>Zoom</b></a> können Sie die Seite vergrößern und verkleinern.</p>
+                </li>
+                <li>
+                    Die <b>linke Seitenleiste</b> enthält die folgenden Symbole:
+                    <ul>
+                        <li><div class = "icon icon-searchicon"></div> - ermöglicht die Verwendung des Tools <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Suchen und Ersetzen</a>,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-chaticon"></div> - (nur in der <em>Online-Version</em> verfügbar) ermöglicht das Öffnen des <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">Chat</a>-Panels,</li>
+                        <li>
+                            <div class = "icon icon-navigationicon"></div> - ermöglicht das Öffnen des Bereichs <b>Überschriften</b>, der die Liste aller Überschriften mit den entsprechenden Ebenen anzeigt. Klicken Sie auf die Überschrift, um direkt zu einer bestimmten Seite zu springen.
+                            <p><img alt="NavigationPanel" src="../images/navigationpanel_viewer.png" />
+                            <p>Klicken Sie auf das Symbol <b>Einstellungen</b> rechts neben dem Bereich <b>Überschriften</b> und verwenden Sie eine der verfügbaren Optionen aus dem Menü:</p>
+                            <ul>
+                                <li><b>Alle ausklappen</b> - um alle Überschriftenebenen im <b>Überschriften</b>-Panel zu erweitern.</li>
+                                <li><b>Alle einklappen</b> - um alle Überschriftenebenen außer <em>Ebene 1</em> im <b>Überschriften</b>-Panel auszublenden.</li>
+                                <li><b>Auf Ebene erweitern</b> - um die Überschriftenstruktur auf die ausgewählte Ebene zu erweitern. Z.B. wenn Sie <em>Ebene 3</em> auswählen, werden die Ebenen 1, 2 und 3 erweitert, während Ebene 4 und alle darunter liegenden Ebenen reduziert werden.</li>
+                                <li><b>Schriftgröße</b> – um die Schriftgröße des Textes im <b>Überschriften</b>-Panel anzupassen, indem Sie eine der verfügbaren Voreinstellungen auswählen: <em>Klein</em>, <em>Mittelgroß</em> und <em>Groß</em>.</li>
+                                <li><b>Lange Überschriften umbrechen</b> – um lange Überschriften umzubrechen.</li>
+                            </ul>
+                            <p>Um separate Überschriftenebenen manuell zu erweitern oder zu reduzieren, verwenden Sie die Pfeile links neben den Überschriften.</p>
+                            <p>Klicken Sie zum Schließen des Panels <b>Überschriften</b> auf das Symbol <span class = "icon icon-navigationicon"></span> <b>Überschriften</b> in der linken Seitenleiste noch einmal.</p>
+                        </li>
+                        <li>
+                            <div class = "icon icon-pagethumbnails"></div> - ermöglicht die Anzeige von Seiten-Thumbnails für eine schnelle Navigation. Klicken Sie auf <div class = "icon icon-search_options"></div> im Bereich <b>Miniaturansichten</b>, um auf <b>Thumbnail-Einstellungen</b> zuzugreifen:
+                            <p><img alt="Miniaturansichten Einstellungen" src="../images/pagethumbnails_settings.png" /></p>
+                            <ul>
+                                <li>Ziehen Sie den Schieberegler, um die Größe der Miniaturansicht festzulegen.</li>
+                                <li>Die Option <b>Sichtbaren Teil der Seite hervorheben</b> ist standardmäßig aktiv, um den auf dem Bildschirm angezeigten Bereich anzuzeigen. Klicken Sie darauf, um diese Option zu deaktivieren.</li>
+                            </ul>
+                            <p>Klicken Sie zum Schließen des Panels <b>Miniaturansichten</b> auf das Symbol <span class = "icon icon-pagethumbnails"></span> <b>Miniaturansichten</b> in der linken Seitenleiste noch einmal.</p>
+                        </li>
+                        <li><div class = "icon icon-feedbackicon"></div> - kontaktieren Sie unser Support-Team,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-abouticon"></div> - (nur in der <em>Online-Version</em> verfügbar) ermöglicht das Anzeigen von Informationen über das Programm.</li>
+                    </ul>
+                </li>
+            </ol>            
+        </div>
+	</body>
+</html>

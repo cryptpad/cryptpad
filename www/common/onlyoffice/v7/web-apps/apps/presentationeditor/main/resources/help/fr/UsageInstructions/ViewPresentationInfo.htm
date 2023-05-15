@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Afficher les informations sur la présentation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Afficher le titre, l'auteur, l'emplacement, la date de création, les permissions d'affichage et modification d'une présentation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Afficher les informations sur la présentation</h1>
+			<p>Pour accéder aux informations détaillées sur la présentation actuellement modifiée dans l'<a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Éditeur de Présentations</b></a>, cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Descriptif</b>.</p>
+            <h3>Informations générales</h3>
+            <p>L'information sur la présentation comprend le titre de la présentation et l'application avec laquelle la présentation a été créée. Certains de ces paramètres sont mis à jour automatiquement mais les autres peuvent être modifiés.</p>
+            <ul>
+                <li class="onlineDocumentFeatures"><b>Emplacement</b> - le dossier dans le module <b>Documents</b> où le fichier est stocké. <b>Propriétaire</b> - le nom de l'utilisateur qui a créé le fichier. <b>Chargé</b> - la date et l'heure quand le fichier a été créé. Ces paramètres ne sont disponibles que sous la <em>version en ligne</em>.</li>
+                <li><b>Titre</b>, <b>sujet</b>, <b>commentaire</b> - ces paramètres facilitent la classification des documents. Vos pouvez saisir l'information nécessaire dans les champs appropriés.</li>
+                <li><b>Dernière modification</b> - la date et l'heure quand le fichier a été modifié la dernière fois.</li>
+                <li><b>Dernière modification par</b> - le nom de l'utilisateur qui a apporté la dernière modification à la présentation quand plusieurs utilisateurs travaillent sur un même document. </li>
+                <li><b>Application</b> - l'application dans laquelle on a créé la présentation.</li>
+                <li><b>Auteur</b> - la personne qui a créé le fichier. Saisissez le nom approprié dans ce champ. Appuyez sur la touche <em>Entrée</em> pour ajouter un nouveau champ et spécifier encore un auteur.</li>
+            </ul>
+            <p>Si vous avez modifié les paramètres du fichier, cliquez sur <b>Appliquer</b> pour enregistrer les modifications.</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note"><b>Remarque</b> : Les éditeurs en ligne vous permettent de modifier le titre de la présentation directement à partir de l'interface de l'éditeur. Pour ce faire, cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Renommer...</b>, puis entrez le <b>Nom de fichier</b> voulu dans la nouvelle fenêtre qui s'ouvre et cliquez sur <b>OK</b>.</p>
+            </div>
+            <div class="onlineDocumentFeatures">
+            <h3>Informations d'autorisation</h3>
+            <p>Dans la <em>version en ligne</em>, vous pouvez consulter les informations sur les permissions des fichiers stockés dans le cloud.</p>
+            <p class="note"><b>Remarque</b> : cette option n'est pas disponible pour les utilisateurs disposant des autorisations en <b>Lecture seule</b>.</p>
+            <p>Pour savoir qui a le droit d'afficher ou de modifier le document, sélectionnez l'option <b>Droits d'accès...</b> dans la barre latérale de gauche.</p>
+			<p>Vous pouvez également changer les droits d'accès actuels en cliquant sur le bouton <b>Changer les droits d'accès</b> dans la section <b>Personnes qui ont des droits</b>.</p>
+            <h3>Historique des versions </h3>
+            <p>Dans la <em>version en ligne</em>, il est possible d'afficher l'historique des fichiers stockés dans le nuage.</p>
+            <p class="note">Cette option n'est pas disponible pour les utilisateurs qui ont accès en <b>Lecture seule</b>.</p>
+            <p>Pour afficher toutes les modifications qui ont été apportées à la présentation, sélectionnez l'option <b>Historique des versions</b> sur la barre latérale gauche. Il est également possible de parcourir l'historique des versions en utilisant l'icône <span class="icon icon-versionhistoryicon"></span> <b>Historique des versions</b> sous l'onglet <b>Collaboration</b> de la barre d'outils supérieure. Vous voyez la liste des versions (modifications majeures) et des révisions (modifications mineures) de la présentation, le nom de la personne ayant modifié la présentation, la date et l'heure de la modification. Pour les versions de présentations, le numéro de la version s'affiche aussi (par ex. <em>ver. 2</em>). Pour afficher les modifications apportées à chaque version/révision, cliquez sur la version/révision appropriée sur la barre latérale gauche. Les modifications apportées par chaque auteur apparaissent dans la couleur associée à son nom qui s'affiche à côté de chaque nom sur la barre latérale gauche. Vous pouvez utiliser l'option <b>Restaurer</b> au-dessous de la version sélectionnée pour la restaurer. <!--Pour masquer la liste de révisions dans une version, utilisez l'icône <img alt="Collapse icon" src="../images/collapse.png" /> à côté de la version. Pour afficher de nouveau les révisions, utilisez l'icône <img alt="Expand icon" src="../images/expand.png" />.--> </p>
+            <p><img alt="Version History" src="../images/versionhistory.png" /></p>
+            <p>Pour revenir à la version actuelle de la présentation, utilisez l'option <b>Fermer l'historique</b> en haut de la liste des versions.</p>
+            </div>
+			<p>Pour fermer l'onglet <b>Fichier </b>et reprendre le travail sur votre présentation, sélectionnez l'option <b>Fermer le menu</b>.</p>
+		</div>
+	</body>
+</html>
