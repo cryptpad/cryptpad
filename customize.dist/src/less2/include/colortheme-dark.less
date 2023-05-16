@@ -186,14 +186,16 @@
 // To take into account the configured backgroung
 //@cp_sidebar-left-bg: transparent;
 //@cp_sidebar-left-bg: lighten(@cp-config-dark-bg-body,2%);
-@cp_sidebar-left-bg: contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 10%), darken(@cp-config-dark-bg-body, 10%));
+//@cp_sidebar-left-bg: contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 10%), darken(@cp-config-dark-bg-body, 10%));
+@cp_sidebar-left-bg: if(@show-bg-image, #ffffff20, contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 10%), darken(@cp-config-dark-bg-body, 10%)));
 @cp_sidebar-left-fg: @cryptpad_text_col;
 @cp_sidebar-left-item-bg: @cryptpad_color_grey_800;
 // To take into account the configured backgroung
 //@cp_sidebar-right-bg: @cryptpad_color_grey_900;
 //@cp_sidebar-right-bg: transparent;
 //@cp_sidebar-right-bg: darken(@cp-config-dark-bg-body,2%);
-@cp_sidebar-right-bg: contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 5%), darken(@cp-config-dark-bg-body, 5%));
+//@cp_sidebar-right-bg: contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 5%), darken(@cp-config-dark-bg-body, 5%));
+@cp_sidebar-right-bg:  if(@show-bg-image, #ffffff20, contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 5%), darken(@cp-config-dark-bg-body, 5%)));
 @cp_sidebar-right-fg: @cryptpad_text_col;
 @cp_sidebar-left-active: @cryptpad_color_grey_400;
 @cp_sidebar-left-active-fg: @cryptpad_color_grey_900;
