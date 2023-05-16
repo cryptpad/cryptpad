@@ -9,7 +9,8 @@
     @cp-profile-is-your-friend: @cp_profile-hint;
 
     /* Background */
-    background: @cp_static-bg;
+    //background: @cp_static-bg;
+    background: @cp-config-bg-body if(@show-bg-image, url(@bg-image) repeat, );
 
     display: flex;
     flex-flow: column;

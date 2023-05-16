@@ -183,13 +183,13 @@
 
 // Sidebar layout
 //@cp_sidebar-left-bg: @cryptpad_color_white;
-@cp_sidebar-left-bg: transparent;
-@cp_sidebar-left-bg: contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 91%), darken(@cp-config-dark-bg-body, 91%));
+//@cp_sidebar-left-bg: transparent;
+@cp_sidebar-left-bg: if(@show-bg-image, #ffffff20, contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 91%), darken(@cp-config-dark-bg-body, 91%)));
 @cp_sidebar-left-fg: @cryptpad_text_col;
 @cp_sidebar-left-item-bg: @cryptpad_color_grey_200;
 //@cp_sidebar-right-bg: @cryptpad_color_white;
 //@cp_sidebar-right-bg: transparent;
-@cp_sidebar-right-bg: contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 89%), darken(@cp-config-dark-bg-body, 89%));
+@cp_sidebar-right-bg: if(@show-bg-image, #ffffff20, contrast(@cp-config-dark-bg-body, lighten(@cp-config-dark-bg-body, 89%), darken(@cp-config-dark-bg-body, 89%)));
 @cp_sidebar-right-fg: @cryptpad_text_col;
 @cp_sidebar-left-active: @cryptpad_color_grey_700;
 @cp_sidebar-left-active-fg: @cryptpad_color_grey_200;
