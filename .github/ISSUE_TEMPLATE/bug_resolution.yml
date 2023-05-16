@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         # Contribution guidelines
-        Please read the [code of conduct](https://github.com/xwiki-labs/cryptpad/blob/main/CODE_OF_CONDUCT.md) before proceeding.
+        Please read the [code of conduct](https://github.com/cryptpad/cryptpad/blob/main/CODE_OF_CONDUCT.md) before proceeding.
   - type: markdown
     id: terms
     attributes:
@@ -16,7 +16,7 @@ body:
         - You understand that not following the below instructions will result in immediate closure and/or deletion of your issue.
         - You have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
         - You have understood that answers are voluntary and community-driven, and not commercial support.
-        - You have verified that your issue has not been already answered in the past. You've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and you also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
+        - You have verified that your issue has not been already answered in the past. You've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and you also checked [previous issues](https://github.com/cryptpad/cryptpad/issues).
   - type: textarea
     id: description
     attributes:
