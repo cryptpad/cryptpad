@@ -2976,7 +2976,7 @@ define([
         if (!APP.instanceStatus.updateAvailable) { return; }
         var $div = makeBlock('update-available', true);
 
-        var updateURL = 'https://github.com/xwiki-labs/cryptpad/releases/latest';
+        var updateURL = 'https://github.com/cryptpad/cryptpad/releases/latest';
         if (typeof(APP.instanceStatus.updateAvailable) === 'string') {
             updateURL = APP.instanceStatus.updateAvailable;
         }
