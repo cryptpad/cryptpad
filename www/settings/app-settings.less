@@ -11,7 +11,8 @@
     .creation_main();
 
     /* Background */
-    background: @cp_static-bg;
+    //background: @cp_static-bg;
+    background: @cp_static-bg if(@show-bg-image, url(@bg-image) repeat, );
 
     display: flex;
     flex-flow: column;
