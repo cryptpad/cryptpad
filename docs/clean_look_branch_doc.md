@@ -35,3 +35,48 @@ Well it changes nothing, the values are stored in the Config object and that's a
 
 Administrators are put in an array in config.js, then we use CPADMIN1, CPADMIN2, .... to configure the different administrators.
 
+# Configuration of colors
+
+The different colors that can be configured are the following :
+* background color (CPBGBODY, CPDARKBGBODY),
+* background color of app list on the home page (on the right/center), it is also used for about modal window background (CPBGALERT, CPDARKBGALERT),
+* brand color (used on the home page for the text under the logo) (CPBRANDCOLOR, CPDARKBRANDCOLOR),
+* text color (used as the text in the sub text in the home page, the text of the navigation button, ...) (CPTEXTCOLOR, CPDARKTEXTCOLOR),
+* background color of navigation buttons (CPNAVBGCOLOR, CPDARKNAVBGCOLOR).
+
+Between parenthesis, you have the name of the corresponding environment variables. An example of a .env file is the following :
+
+    # System configuration
+    CPHTTPUNSAFEORIGIN="http://localhost:8082"
+    CPHTTPPORT=8082
+    CPLOGTOSTDOUT="true"
+    CPADMIN1="[laparn@localhost:8082/Cd6bwTvMZRtBK4PpmrMk116upbvc6lBm+flehErLf3U=]"
+    
+    # Light theme configuration
+    CPBGBODY="#FFF0FF"
+    CPBGALERT="#F0F0FF"
+    CPBRANDCOLOR="#F78D1E"
+    CPTEXTCOLOR="#430047"
+    CPNAVBGCOLOR="#FFF"
+    
+    # Dark theme configuration
+    CPDARKBGBODY="#210021"
+    CPDARKBGALERT="#111111C0"
+    CPDARKBRANDCOLOR="#F78D1E"
+    CPDARKTEXTCOLOR="#FFF0DC"
+    CPDARKNAVBGCOLOR="#F78D1E"
+
+# Configuration of background
+
+It is also possible to configure 2 background images, one for the light theme and one for the dark theme. 
+
+To display the image as background, the environment variable CPSHOWBGIMAGE should be set to "yes". The image can be put in the t directory cryptpad/customize.dist/images/background. The urls should be put in the environment variables CPBGIMAGE (light theme) and CPDARKBGIMAGE (dark theme).
+
+    CPSHOWBGIMAGE="true"
+    CPBGIMAGE="/customize/images/background/bg.jpg"
+    CPDARKBGIMAGE="/customize/images/background/bg-dark.jpg"
+
+As for all background images, they should be heavily compressed. I use pictures with a size of 1920x1280. Jpeg is mandatory. A maximal size of 300kB should be used, the smaller, the better.
+
+With just CPSHOWIMAGE to "true", the default images in 
+customize.dist/images/background/bg.jpg and customize.dist/images/background/bg-dark.jpg will be used.
