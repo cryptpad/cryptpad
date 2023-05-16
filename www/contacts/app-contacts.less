@@ -12,7 +12,8 @@
     flex-flow: column;
 
     /* Background */
-    background: @cp_static-bg;
+    //background: @cp_static-bg;
+    background: @cp_static-bg if(@show-bg-image, url(@bg-image) repeat, );
 
     #cp-toolbar {
         display: flex; // We need this to remove a 3px border at the bottom of the toolbar

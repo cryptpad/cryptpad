@@ -8,10 +8,15 @@
     @msg-color-hover: contrast(@msg-color, lighten(@msg-color, 10%), darken(@msg-color, 10%));
     @msg-bg-color: @bg-color;
     @invert: @bg-color;
-    @msg-bg-color-light: contrast(@invert, lighten(@bg-color, 5%), darken(@bg-color, 5%));
-    @msg-bg-color-lighter: contrast(@invert, lighten(@bg-color, 10%), darken(@bg-color, 10%));
-    @msg-bg-color-dark: fade(@cp_messenger-fg, 10%);
-    @msg-bg-color-darker: contrast(@bg-color, lighten(@bg-color, 10%), darken(@bg-color, 10%));
+
+    //@msg-bg-color-light: contrast(@invert, lighten(@bg-color, 5%), darken(@bg-color, 5%));
+    @msg-bg-color-light: if(@show-bg-image, #ffffff20, contrast(@invert, lighten(@bg-color, 5%), darken(@bg-color, 5%)));
+    //@msg-bg-color-lighter: contrast(@invert, lighten(@bg-color, 10%), darken(@bg-color, 10%));
+    @msg-bg-color-lighter: if(@show-bg-image, #ffffff30,contrast(@invert, lighten(@bg-color, 10%), darken(@bg-color, 10%)));
+    //@msg-bg-color-dark: fade(@cp_messenger-fg, 10%);
+    @msg-bg-color-dark: if(@show-bg-image, #00000020,fade(@cp_messenger-fg, 10%));
+    //@msg-bg-color-darker: contrast(@bg-color, lighten(@bg-color, 10%), darken(@bg-color, 10%));
+    @msg-bg-color-darker: if(@show-bg-image, #ffffff30,contrast(@bg-color, lighten(@bg-color, 10%), darken(@bg-color, 10%)));
 };
 .messenger_main(
     @bg-color: @cp_messenger-bg,
