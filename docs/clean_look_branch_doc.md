@@ -70,13 +70,13 @@ Between parenthesis, you have the name of the corresponding environment variable
 
 It is also possible to configure 2 background images, one for the light theme and one for the dark theme. 
 
-To display the image as background, the environment variable CPSHOWBGIMAGE should be set to "yes". The image can be put in the t directory cryptpad/customize.dist/images/background. The urls should be put in the environment variables CPBGIMAGE (light theme) and CPDARKBGIMAGE (dark theme).
+To display the image as background, the environment variable CPSHOWBGIMAGE should be set to "yes". The image can be put in the directory cryptpad/customize.dist/images/background. The urls should be put in the environment variables CPBGIMAGE (light theme) and CPDARKBGIMAGE (dark theme).
 
     CPSHOWBGIMAGE="true"
     CPBGIMAGE="/customize/images/background/bg.jpg"
     CPDARKBGIMAGE="/customize/images/background/bg-dark.jpg"
 
-As for all background images, they should be heavily compressed. I use pictures with a size of 1920x1280. Jpeg is mandatory. A maximal size of 300kB should be used, the smaller, the better.
+As for all background images, they should be heavily compressed. I use pictures with a size of 1920x1280. Either svg or jpeg are mandatory. A maximal size of 300kB should be used, the smaller, the better.
 
 With just CPSHOWIMAGE to "true", the default images in 
 customize.dist/images/background/bg.jpg and customize.dist/images/background/bg-dark.jpg will be used.
