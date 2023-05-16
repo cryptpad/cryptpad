@@ -26,7 +26,8 @@ body.html {
     @infopages_padding: 32px;
 
     // Basic setup for info pages, this should be used at the global level
-    background-color: @cp_static-bg;
+    //background-color: @cp_static-bg;
+    background: @cp_static-bg if(@show-bg-image, url(@bg-image) repeat, );
     color: @cp_static-fg;
     a {
         color: @cp_static-link;

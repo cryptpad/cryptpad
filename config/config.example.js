@@ -330,6 +330,13 @@ module.exports = {
     /* dark theme home navigation background color */
     darkNavBgColor: "#424242",
 
+    /* =====================
+     *     Background
+     * ===================== */
+    showBgImage: false,
+    bgImage: "/customize/images/bg/bg.jpg",
+    darkBgImage: "/customize/images/bg/bg-dark.jpg",
+
 };
 
 // A variable may be defined in the env variables but not in the default
@@ -340,13 +347,15 @@ const varArray =[ "httpUnsafeOrigin", "httpSafeOrigin","httpAddress", "httpPort"
     "archivePath", "pinPath", "taskPath", "blockPath", "blobPath", "blobStagingPath",
     "decreePath", "logPath", "logToStdout", "logLevel", "logFeedback", "verbose",
     "installMethod", "bgBody", "darkBgBody", "bgAlert", "darkBgAlert", "brandColor",
-    "darkBrandColor", "textColor", "darkTextColor", "navBgColor", "darkNavBgColor", ];
+    "darkBrandColor", "textColor", "darkTextColor", "navBgColor", "darkNavBgColor",
+    "showBgImage", "bgImage", "darkBgImage", ];
 
 // Variables that must be converted to an array
 const numberVarArray = [ "httpPort", "httpSafePort", "maxWorkers", "inactiveTime", "archiveRetentionTime",
    "accountRetentionTime", "maxUploadSize", "premiumUploadSize"];
 // Variables that must be converted to a boolean
-const booleanVarArray = [ "disableIntegratedEviction", "logToStdout", "logFeedback", "verbose" ];
+const booleanVarArray = [ "disableIntegratedEviction", "logToStdout", "logFeedback", "verbose",
+    "showBgImage", ];
 varArray.forEach(function(key,i) {
     // I need to find the corresponding ENV variables
 	// httpPort => envName is CPHTTPPORT

@@ -172,7 +172,7 @@ define([
             /* From bgBody in Env.js, I create cp-config-bg-body. */
             var showConfigVariableArray = ["bgBody", "darkBgBody", "bgAlert", "darkBgAlert",
                 "brandColor", "darkBrandColor", "textColor", "darkTextColor", "navBgColor",
-                "darkNavBgColor"];
+                "darkNavBgColor", "showBgImage", "bgImage", "darkBgImage", ];
             
             var lessVariableArray = [];
             var lessStringHeader = "";

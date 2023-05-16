@@ -234,13 +234,13 @@ var serveConfig = makeRouteCache(function () {
         "premiumUploadSize", "restrictRegistration", "httpSafeOrigin", "enableEmbedding",
         "fileHost", "listMyInstance", "accounts_api", "bgBody", "darkBgBody", "bgAlert",
         "darkBgAlert", "brandColor", "darkBrandColor", "textColor", "darkTextColor", 
-        "navBgColor", "darkNavBgColor", ];
+        "navBgColor", "darkNavBgColor", "showBgImage", "bgImage", "darkBgImage", ];
 
     for ( var i = 0; i < envVariableArray.length; i++) {
         var currentVarName = envVariableArray[i];
         toSend[currentVarName] = Env[currentVarName];
     }
-//console.log("server.js - serveConfig - toSend[bgAlert] : ",toSend["bgAlert"]);
+    //console.log("server.js - serveConfig - toSend[bgImage] : ",toSend["bgImage"]);
     return [
         'define(function(){',
         'return ' + JSON.stringify(toSend, null, '\t'),

@@ -25,7 +25,8 @@
         .tools_unselectable();
     }
 
-    background: @cp_static-bg;
+    //background: @cp_static-bg;
+    background: @cp-config-bg-body if(@show-bg-image, url(@bg-image) repeat, );
 
     /* local mixins */
     @drive_icon-margin: 10px;
