@@ -125,7 +125,7 @@
     "chainpadError": "Errore larri bat gertatu da zure edukia eguneratzean. Orrialde hau irakurtzeko moduan dago zure lana galduko ez duzula ziurtatzeko.<br>Sakatu Esc dokumentua ikusten jarraitzeko, edo kargatu berriro editatzen saiatzeko.",
     "inactiveError": "Dokumentu hau ezabatu da aktibitate faltagatik. Sakatu Esc dokumentu berri bat sortzeko.",
     "deletedError": "Dokumentu hau ezabatu da eta ezin ezingo da gehiago erabili.",
-    "expiredError": "Dokumentu hau iraungitze-datara iritsi da eta ezin izango da gehiago erabili.",
+    "expiredError": "Dokumentu hau suntsitze datara iritsi da eta jada ez dago erabilgarri.",
     "anonymousStoreDisabled": "CryptPad instantzia honen administratzaileak gonbidatuek gordetzea galarazi du. Hasi saioa zure CryptDrive propiora sartzeko.",
     "padNotPinnedVariable": "Dokumentu hau {4} egun barru iraungiko da aktibitaterik ez badago, {0}saioa hasi{1} edo {2}erregistratu{3} mantentzeko.",
     "padNotPinned": "Dokumentu hau 3 hilabete barru iraungiko da aktibitaterik ez badu, {0}saioa hasi{1} edo {2}erregistratu{3} mantentzeko.",
@@ -554,7 +554,7 @@
     "password_info": "Irekitzen saiatzen ari zaren dokumentua jada ez dago edo pasahitz berri batekin babestuta dago. Sartu pasahitz zuzena edukira sartzeko.",
     "creation_newPadModalDescription": "Egin klik aplikazio batean dokumentu berri bat sortzeko. <b>Tab</b> ere sakatu dezakezu aplikazioa hautatzeko eta sakatu <b>Sartu</b> berresteko.",
     "creation_passwordValue": "Pasahitza",
-    "creation_expiration": "Iraungitze data",
+    "creation_expiration": "Suntsitze data",
     "creation_noOwner": "Jaberik gabe",
     "creation_owners": "Jabeak",
     "creation_create": "Sortu",
@@ -1578,5 +1578,13 @@
     "form_settingsButton": "Inprimakiaren ezarpenak",
     "team_linkUsesInfinite": "(erabilera mugagabea)",
     "team_linkUses": "({0}tik {1} geratzen dira)",
-    "form_exportJSON": "Esportatu JSONra"
+    "form_exportJSON": "Esportatu JSONra",
+    "form_showCondorcetMethod": "Condorcet metodoa",
+    "form_condorcetSchulze": "Schulze",
+    "form_condorcetRanked": "Sailkaturiko pareak",
+    "form_condorcetExtendedDisplay": "Hautagai bakoitzak irabazitako partida kopurua: ",
+    "form_noCondorcetWinner": "Irabazlerik ez",
+    "form_type_date": "Data",
+    "form_showDetails": "Xehetasunak",
+    "form_showCondorcetWinner": "irabazlea: "
 }
