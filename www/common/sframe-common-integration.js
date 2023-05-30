@@ -3,7 +3,14 @@ define([
 ], function (Util) {
     var module = {};
 
-    module.create = function (Common, onLocal, chainpad, saveHandler, toolbar) {
+    module.create = function (
+        Common,
+        onLocal,
+        chainpad,
+        saveHandler,
+        unsavedChangesHandler,
+        toolbar) {
+
         var exp = {};
         var metadataMgr = Common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -12,6 +19,9 @@ define([
         if (!config.autosave) { return; }
         if (typeof(saveHandler) !== "function") {
             throw new Error("Incorrect save handler");
+        }
+        if (typeof(unsavedChangesHandler) !== "function") {
+            throw new Error("Incorrect unsaves changes handler");
         }
 
         var debug = console.warn;
@@ -37,6 +47,13 @@ define([
         var SETTLE_TO = 3000;
         var SAVE_TO = Math.min((BASE_TIMER / 2), 10000);
 
+        const setStateChanged = function(newValue) {
+            if (state.changed == newValue) {
+                return;
+            }
+            state.changed = newValue;
+            unsavedChangesHandler(state.changed, function() {});
+        }
         var requestSave = function () {}; // placeholder
         var saved = function () {}; // placeholder;
         var save = function (id) {
@@ -84,7 +101,7 @@ define([
                 clearTimeout(saveTo);
                 clearTimeout(onSettleTo);
 
-                state.changed = false;
+                setStateChanged(false);
                 saveTo = setTimeout(function () {
                     // They weren't able to save in time, try ourselves
                     var id = state.other;
@@ -149,7 +166,7 @@ define([
                 }
                 state.me = true;
                 state.lastTmp = +new Date();
-                state.changed = false;
+                setStateChanged(false);
                 cb(true);
             });
         };
@@ -177,7 +194,7 @@ define([
         };
 
         exp.changed = function () {
-            state.changed = true;
+            setStateChanged(true);
 
             var timeSinceLastSave = +new Date() - state.last; // in ms
             var to = autosaveTimer - timeSinceLastSave; //  negative if we can save

@@ -117,6 +117,9 @@ define([
         var reload = function (data) {
             chan.send('RELOAD', data);
         };
+        var onHasUnsavedChanges = function (unsavedChanges, cb) {
+            chan.send('HAS_UNSAVED_CHANGES', unsavedChanges, cb);
+        };
 
         chan.on('START', function (data) {
             console.warn('INNER START', data);
@@ -133,7 +136,8 @@ define([
                 },
                 utils: {
                     save: save,
-                    reload: reload
+                    reload: reload,
+                    onHasUnsavedChanges: onHasUnsavedChanges
                 }
             };
             require(['/common/sframe-app-outer.js'], function () {
