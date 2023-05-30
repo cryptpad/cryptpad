@@ -1946,6 +1946,11 @@ define([
                         cfg.integrationUtils.save(obj, cb);
                     }
                 });
+                sframeChan.on('Q_INTEGRATION_HAS_UNSAVED_CHANGES', function (obj, cb) {
+                    if (cfg.integrationUtils && cfg.integrationUtils.onHasUnsavedChanges) {
+                        cfg.integrationUtils.onHasUnsavedChanges(obj, cb);
+                    }
+                });
                 integrationSave = function (cb) {
                     sframeChan.query('Q_INTEGRATION_NEEDSAVE', null, cb);
                 };

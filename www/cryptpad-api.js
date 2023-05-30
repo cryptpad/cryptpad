@@ -158,6 +158,10 @@
                     document.getElementById('cryptpad-editor').remove();
                     makeIframe(config);
                 });
+                chan.on('HAS_UNSAVED_CHANGES', function(unsavedChanges, cb) {
+                    config.events.onHasUnsavedChanges(unsavedChanges);
+                    cb();
+                });
 
             });
             });
@@ -197,7 +201,8 @@
 
                 if (!config) { return reject('Missing args: no data provided'); }
                 if(['document.url', 'document.fileType', 'documentType',
-                    'events.onSave', 'events.onNewKey'].some(function (k) {
+                    'events.onSave', 'events.onHasUnsavedChanges',
+                    'events.onNewKey'].some(function (k) {
                     var s = k.split('.');
                     var c = config;
                     return s.some(function (key) {

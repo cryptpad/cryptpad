@@ -638,8 +638,12 @@ define([
                             upload(syncBlob);
                         }
                     };
+                    const integrationHasUnsavedChanges = function(unsavedChanges, cb) {
+                        sframeChan.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
+                    };
                     var inte = common.createIntegration(onLocal, cpNfInner.chainpad,
-                                                        integrationSave, toolbar);
+                                                        integrationSave, integrationHasUnsavedChanges,
+                                                        toolbar);
                     if (inte) {
                         integration = true;
                         evIntegrationSave.reg(function () {
