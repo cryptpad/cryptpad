@@ -8,8 +8,7 @@ define([
         onLocal,
         chainpad,
         saveHandler,
-        unsavedChangesHandler,
-        toolbar) {
+        unsavedChangesHandler) {
 
         var exp = {};
         var metadataMgr = Common.getMetadataMgr();
@@ -27,8 +26,6 @@ define([
         var debug = console.warn;
         //debug = function () {};
         var execCommand = function () {}; // placeholder
-
-        toolbar = toolbar; // XXX Use custom "spinner" in toolbar to show what's saved in Nextcloud
 
         var state = {
             changed: false,
@@ -48,12 +45,12 @@ define([
         var SAVE_TO = Math.min((BASE_TIMER / 2), 10000);
 
         const setStateChanged = function(newValue) {
-            if (state.changed == newValue) {
+            if (state.changed === newValue) {
                 return;
             }
             state.changed = newValue;
             unsavedChangesHandler(state.changed, function() {});
-        }
+        };
         var requestSave = function () {}; // placeholder
         var saved = function () {}; // placeholder;
         var save = function (id) {
