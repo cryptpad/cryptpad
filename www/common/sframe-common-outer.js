@@ -683,7 +683,7 @@ define([
                         feedbackAllowed: Utils.Feedback.state,
                         prefersDriveRedirect: Utils.LocalStore.getDriveRedirectPreference(),
                         isPresent: parsed.hashData && parsed.hashData.present,
-                        isEmbed: parsed.hashData && parsed.hashData.embed,
+                        isEmbed: parsed.hashData && parsed.hashData.embed || cfg.integration,
                         isTop: window.top === window,
                         canEdit: Boolean(hashes && hashes.editHash),
                         oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password
