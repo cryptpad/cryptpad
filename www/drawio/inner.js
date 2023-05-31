@@ -31,9 +31,10 @@ define([
             drawioFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
         };
 
+        const jsonContentAsXML = (content) => x2js.json2xml_str(content);
         var onDrawioInit = function(data) {
             drawIoInitalized = true;
-            var xmlStr = x2js.json2xml_str(lastContent);
+            var xmlStr = jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'load',
                 xml: xmlStr,
@@ -41,9 +42,13 @@ define([
             });
         };
 
+        const xmlAsJsonContent = (xml) => {
+            var decompressedXml = decompressDrawioXml(xml);
+            return x2js.xml_str2json(decompressedXml);
+        };
+
         var onDrawioChange = function(newXml) {
-            var newXml = decompressDrawioXml(newXml);
-            var newJson = x2js.xml_str2json(newXml);
+            var newJson = xmlAsJsonContent(newXml);
             if (!deepEqual(lastContent, newJson)) {
                 lastContent = newJson;
                 framework.localChange();
@@ -75,7 +80,7 @@ define([
         // This is the function from which you will receive updates from CryptPad
         framework.onContentUpdate(function (newContent) {
             lastContent = newContent;
-            var xmlStr = x2js.json2xml_str(newContent);
+            var xmlStr = jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'merge',
                 xml: xmlStr,
@@ -92,6 +97,20 @@ define([
         // This is called when the history is synced. "onContentUpdate" has already been called with the full content and the loading screen is being removed.
         framework.onReady(function (newPad) {
         });
+
+        framework.setFileImporter(
+            {accept: ['.drawio',  'application/x-drawio']},
+            (content) => {
+                return xmlAsJsonContent(content);
+            }
+        );
+
+        framework.setFileExporter(
+            '.drawio',
+            () => {
+                return new Blob([jsonContentAsXML(lastContent)], {type: 'application/x-drawio'});
+            }
+        );
 
         // starting the CryptPad framework
         framework.start();
