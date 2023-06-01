@@ -3,7 +3,9 @@ const Fse = require("fs-extra");
 const Path = require("path");
 
 const componentsPath = Path.join("www", "components");
+const oldComponentsPath = Path.join("www", "bower_components");
 Fse.mkdirpSync(componentsPath);
+Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
 
 [
     "alertify.js",
@@ -28,7 +30,6 @@ Fse.mkdirpSync(componentsPath);
     "mathjax",
     "open-sans-fontface",
     "tweetnacl",
-    "rangy",
     "require-css",
     "requirejs",
     "requirejs-plugins",
