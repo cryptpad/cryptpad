@@ -1379,5 +1379,21 @@
     "ui_restore": "Restaurar",
     "ui_archive": "Arquivar",
     "ui_undefined": "desconhecido",
-    "admin_documentType": "Tipo"
+    "admin_documentType": "Tipo",
+    "admin_cat_broadcast": "Transmitir",
+    "support_cat_abuse": "Reportar abuso",
+    "support_cat_debugging": "Data de depuração",
+    "admin_jurisdictionTitle": "Localização da hospedagem",
+    "support_cat_drives": "Drive ou equipe",
+    "support_cat_document": "Documento",
+    "form_editMaxLength": "Máximo de caracteres",
+    "upload_modal_alt": "Texto alternativo",
+    "admin_limitPlan": "Plano: {0}",
+    "admin_archiveNote": "Anotação",
+    "footer_source": "Código fonte",
+    "info_termsFlavour": "<a>Termos de serviço</a> para esta instância",
+    "info_sourceFlavour": "<a>Código fonte</a> para o CryptPad",
+    "bounce_confirm": "Você está prestes a sair: {0}\n\nVocê tem certeza de que deseja visitar \"{1}\"?",
+    "todo_move": "Sua lista de afazeres está no kanban <b>{0}</b> no seu Drive.",
+    "admin_jurisdictionHint": "O país onde os dados criptografados desta instância estão hospedados"
 }

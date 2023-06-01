@@ -3738,7 +3738,7 @@ define([
         });
         $body.addClass('cp-form-palette-'+color);
 
-        $container.attr('class', 'cp-form-creator-content');
+        $container.attr('class', 'cp-form-creator-content'+(APP.isEditor? ' cp-form-iseditor': ''));
 
         if (APP.isClosed && content.answers.privateKey && !APP.isEditor && !APP.hasAnswered) {
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -5035,7 +5035,7 @@ define([
                 fillerContainer = h('div.cp-form-filler-container');
             }
 
-            var contentContainer = h('div.cp-form-creator-content');
+            var contentContainer = h('div.cp-form-creator-content' + (APP.isEditor ? '.cp-form-iseditor' : ''));
             var resultsContainer = h('div.cp-form-creator-results');
             var answeredContainer = h('div.cp-form-creator-answered', {
                 style: 'display: none;'

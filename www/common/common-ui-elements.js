@@ -1700,7 +1700,7 @@ define([
         var origin = priv.origin;
 
         // TODO link to the most recent changelog/release notes
-        // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
+        // https://github.com/cryptpad/cryptpad/releases/latest/ ?
 
         var template = function (line, link) {
             if (!line || !link) { return; }
