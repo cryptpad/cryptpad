@@ -100,7 +100,7 @@ define([
     var customURLs = Pages.customURLs = {};
     (function () {
         var defaultURLs = {
-            source: 'https://github.com/xwiki-labs/cryptpad',
+            source: 'https://github.com/cryptpad/cryptpad',
         };
         var l = Msg._getLanguage();
         ['imprint', 'privacy', 'terms', 'roadmap', 'source'].forEach(function (k) {

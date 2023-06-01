@@ -2,7 +2,7 @@ So you want to write a realtime collaborative application?
 
 This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoratative document**.
 
-[XWiki-Labs](https://labs.xwiki.com/) has published an open source suite (called [CryptPad](https://github.com/xwiki-labs/cryptpad)) of collaborative editors  which employ end to end encryption.
+[XWiki-Labs](https://labs.xwiki.com/) has published an open source suite (called [CryptPad](https://github.com/cryptpad/cryptpad)) of collaborative editors  which employ end to end encryption.
 This guide will refer to the techniques used in the prototypes developed therein.
 
 Let's start with an overview of the components involved.
@@ -76,10 +76,10 @@ Chainpad can handle out of order messages, but it performs best when its message
 By architecting your system such that all clients send to a server which then relays to other clients, you guarantee that a particular chain of patches is consistent between the participants of your session.
 
 CryptPad is capable of using a variety of data stores.
-Which data store your instance employs can be [easily configured](https://github.com/xwiki-labs/cryptpad/blob/master/config.example.js).
+Which data store your instance employs can be [easily configured](https://github.com/cryptpad/cryptpad/blob/master/config.example.js).
 
 You simply need to write an adaptor which conforms to a simple API.
-The documentation for writing such an adaptor, and the complete list of implemented adaptors, is available [here](https://github.com/xwiki-labs/cryptpad/tree/master/storage).
+The documentation for writing such an adaptor, and the complete list of implemented adaptors, is available [here](https://github.com/cryptpad/cryptpad/tree/master/storage).
 
 Whether you decide to use a single server, or distribute messages across a network of entities, the body which stores the **Authoratative Document** will be referred to as the **History Keeper** for the purposes of this guide.
 
