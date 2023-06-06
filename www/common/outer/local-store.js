@@ -118,7 +118,7 @@ define([
     LocalStore.login = function (userHash, blockHash, name, cb) {
         if (!userHash && !blockHash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
-        if (userHash) { LocalStore.setUserHash(userHas); }
+        if (userHash) { LocalStore.setUserHash(userHash); }
         if (blockHash) { LocalStore.setBlockHash(blockHash); }
         safeSet(Constants.userNameKey, name);
         if (cb) { cb(); }

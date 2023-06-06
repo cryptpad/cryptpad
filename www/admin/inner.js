@@ -1290,7 +1290,7 @@ define([
 
         var msg = Nacl.util.decodeUTF8(Sortify(clone));
         var sig = Nacl.util.decodeBase64(json.proof);
-        var pub = Nacl.util.decodeBase64(json.blockId)
+        var pub = Nacl.util.decodeBase64(json.blockId);
         return Nacl.sign.detached.verify(msg, sig, pub);
     };
 
