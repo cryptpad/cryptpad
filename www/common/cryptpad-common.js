@@ -2546,7 +2546,7 @@ define([
                                 return;
                             }
                             userHash = block_info[Constants.userHashKey];
-                            if (!userHash || userHash !== LocalStore.getUserHash()) {
+                            if (!userHash) {
                                 return void LocalStore.logout(function () {
                                     requestLogin();
                                 });

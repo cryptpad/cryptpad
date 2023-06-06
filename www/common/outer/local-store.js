@@ -115,11 +115,11 @@ define([
         safeSet(Constants.isPremiumKey, Boolean(bool));
     };
 
-    LocalStore.login = function (hash, name, cb) {
-        if (!hash) { throw new Error('expected a user hash'); }
+    LocalStore.login = function (userHash, blockHash, name, cb) {
+        if (!userHash && !blockHash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
-        hash = Hash.serializeHash(hash);
-        safeSet(Constants.userHashKey, hash);
+        if (userHash) { LocalStore.setUserHash(userHas); }
+        if (blockHash) { LocalStore.setBlockHash(blockHash); }
         safeSet(Constants.userNameKey, name);
         if (cb) { cb(); }
     };

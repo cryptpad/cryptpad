@@ -362,7 +362,7 @@ define([
                     Realtime.whenRealtimeSyncs(rt.realtime, function () {
                         // the following stages are there to initialize a new drive
                         // if you are registering
-                        LocalStore.login(res.userHash, res.userName, function () {
+                        LocalStore.login(res.userHash, undefined, res.userName, function () {
                             setTimeout(function () { cb(void 0, res); });
                         });
                     });
@@ -435,7 +435,6 @@ define([
                 }
 
                 if (!isRegister && !isProxyEmpty(rt.proxy)) {
-                    LocalStore.setBlockHash(blockHash);
                     waitFor.abort();
                     if (shouldImport) {
                         setMergeAnonDrive();
@@ -449,7 +448,7 @@ define([
                     if (res.TOTP_token && res.TOTP_token.bearer) {
                         LocalStore.setSessionToken(res.TOTP_token.bearer);
                     }
-                    return void LocalStore.login(userHash, uname, function () {
+                    return void LocalStore.login(undefined, blockHash, uname, function () {
                         cb(void 0, res);
                     });
                 }
@@ -527,8 +526,7 @@ define([
                 }
 
                 console.log("blockInfo available at:", blockHash);
-                LocalStore.setBlockHash(blockHash);
-                LocalStore.login(userHash, uname, function () {
+                LocalStore.login(undefined, blockHash, uname, function () {
                     cb(void 0, res);
                 });
             }));
@@ -633,11 +631,9 @@ define([
                                             proxy[Constants.displayNameKey] = uname;
                                         }
 
-                                        if (result.blockHash) {
-                                            LocalStore.setBlockHash(result.blockHash);
-                                        }
-
-                                        LocalStore.login(result.userHash, result.userName, function () {
+                                        var block = result.blockHash;
+                                        var user = block ? undefined : result.userHash;
+                                        LocalStore.login(user, block, result.userName, function () {
                                             setTimeout(function () { proceed(result); });
                                         });
                                     });
