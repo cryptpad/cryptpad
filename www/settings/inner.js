@@ -951,7 +951,7 @@ define([
 
                     var uri = `otpauth://totp/${label}:${username}@${hostname}?secret=${secret}`;
 
-                    var qr = h('div');
+                    var qr = h('div.cp-settings-qr');
                     var uriInput = UI.dialog.selectable(uri);
                     updateQR(uri, qr);
 

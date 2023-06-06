@@ -135,7 +135,7 @@ define([
         Exports.mergeAnonDrive = 1;
     };
 
-    Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, cb) {
+    Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, onOTP, cb) {
         if (typeof(cb) !== 'function') { return; }
 
         // Usernames are all lowercase. No going back on this one
@@ -173,23 +173,19 @@ define([
             // determine where a block for your set of keys would be stored
             blockUrl = Block.getBlockUrl(res.opt.blockKeys);
 
-            var TOTP_prompt = function (cb) {
-                // XXX This should use nice UI elements integrated into
-                // the loading screen. window.prompt is here for prototyping only
-                var code = window.prompt('Enter TOTP');
-                if (!code) {
-                    return void cb("INVALID_TOTP");
-                }
-                ServerCommand(res.opt.blockKeys.sign, {
-                    command: 'TOTP_VALIDATE',
-                    code: code,
-                    // TODO optionally allow the user to specify a lifetime for this session?
-                    // this will require a little bit of server work
-                    // and more UI/UX:
-                    // ie. just a simple "remember me" checkbox?
-                    // allow them to specify a lifetime for the session?
-                    // "log me out after one day"?
-                }, cb);
+            var TOTP_prompt = function (err, cb) {
+                onOTP(err, function (code) {
+                    ServerCommand(res.opt.blockKeys.sign, {
+                        command: 'TOTP_VALIDATE',
+                        code: code,
+                        // TODO optionally allow the user to specify a lifetime for this session?
+                        // this will require a little bit of server work
+                        // and more UI/UX:
+                        // ie. just a simple "remember me" checkbox?
+                        // allow them to specify a lifetime for the session?
+                        // "log me out after one day"?
+                    }, cb);
+                });
             };
 
             var done = waitFor();
@@ -248,7 +244,7 @@ define([
                         return void cb('TOTP_ATTEMPTS_EXHAUSTED');
                     }
                     tries--;
-                    TOTP_prompt(function (err, response) {
+                    TOTP_prompt(tries !== 2, function (err, response) {
                         // ask again until your number of tries are exhausted
                         if (err) {
                             console.error(err);
@@ -558,7 +554,7 @@ define([
     };
 
     var hashing;
-    Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, testing, test) {
+    Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, onOTP, testing, test) {
         if (hashing) { return void console.log("hashing is already in progress"); }
         hashing = true;
 
@@ -583,7 +579,7 @@ define([
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {
-                Exports.loginOrRegister(uname, passwd, isRegister, shouldImport, function (err, result) {
+                Exports.loginOrRegister(uname, passwd, isRegister, shouldImport, onOTP, function (err, result) {
                     var proxy;
                     if (result) { proxy = result.proxy; }
 
