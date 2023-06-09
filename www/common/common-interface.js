@@ -1506,5 +1506,44 @@ define([
         });
     };
 
+    Messages.settings_otp_code = "OTP code"; // XXX KEY ALREADY ADDED IN www/settings/inner.js
+    Messages.loading_enter_otp = "This account is protected with MFA. Please enter your OTP code."; // XXX
+    Messages.settings_otp_invalid = "Invalid OTP code";
+
+
+    UI.getOTPScreen = function (cb, exitable, err) {
+        var btn, input;
+        var error;
+        if (err) {
+            error = h('p.cp-password-error', Messages.settings_otp_invalid);
+        }
+        var block = h('div#cp-loading-password-prompt', [
+            error,
+            h('p.cp-password-info', Messages.loading_enter_otp),
+            h('p.cp-password-form', [
+                input = h('input', {
+                    placeholder: Messages.settings_otp_code,
+                    autocomplete: 'off',
+                    autocorrect: 'off',
+                    autocapitalize: 'off',
+                    spellcheck: false,
+                }),
+                btn = h('button.btn.btn-primary', Messages.ui_confirm)
+            ])
+        ]);
+        var $input = $(input);
+        var $btn = $(btn).click(function () {
+            var val = $input.val();
+            if (!val) { return void UI.getOTPScreen(cb, exitable, 'INVALID_CODE'); }
+            cb(val);
+        });
+        $(input).on('keydown', function (e) {
+            if (e.which !== 13) { return; } // enter
+            $btn.click();
+        });
+        UI.errorLoadingScreen(block, false, exitable);
+
+    };
+
     return UI;
 });

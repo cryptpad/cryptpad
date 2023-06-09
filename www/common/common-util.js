@@ -334,7 +334,16 @@
                 // this is resulting in some code duplication
                 return void CB(void 0, response);
             }
-            CB(response.status);
+            if (response.status === 401) {
+                response.json().then((data) => {
+                    CB(401, data);
+                }).catch(() => {
+                    CB(401);
+                });
+
+                return;
+            }
+            CB(response.status, response);
         }).catch(error => {
             CB(error);
         });

@@ -174,7 +174,7 @@ define([
             blockUrl = Block.getBlockUrl(res.opt.blockKeys);
 
             var TOTP_prompt = function (err, cb) {
-                onOTP(err, function (code) {
+                onOTP(function (code) {
                     ServerCommand(res.opt.blockKeys.sign, {
                         command: 'TOTP_VALIDATE',
                         code: code,
@@ -185,7 +185,7 @@ define([
                         // allow them to specify a lifetime for the session?
                         // "log me out after one day"?
                     }, cb);
-                });
+                }, false, err);
             };
 
             var done = waitFor();
@@ -508,8 +508,10 @@ define([
             toPublish[Constants.userHashKey] = userHash;
             toPublish.edPublic = RT.proxy.edPublic;
 
-            var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
-            rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
+            Block.writeLoginBlock({
+                blockKeys: blockKeys,
+                content: toPublish
+            }, waitFor(function (e) {
                 if (e) {
                     console.error(e);
                     waitFor.abort();

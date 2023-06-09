@@ -12,12 +12,14 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
     '/common/outer/login-block.js',
+    '/common/common-credential.js',
+    '/customize/login.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            AppConfig, Nthen) {
+            Cred, Login, AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -613,18 +615,6 @@ define([
         postMessage("UPLOAD_CHUNK", {teamId: teamId, chunk: data}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
-        });
-    };
-
-    common.writeLoginBlock = function (data, cb) {
-        postMessage('WRITE_LOGIN_BLOCK', data, function (obj) {
-            cb(obj);
-        });
-    };
-
-    common.removeLoginBlock = function (data, cb) {
-        postMessage('REMOVE_LOGIN_BLOCK', data, function (obj) {
-            cb(obj);
         });
     };
 
@@ -1892,80 +1882,29 @@ define([
         });
     };
 
-
-    var getBlockKeys = function (data, cb) {
-        var accountName = LocalStore.getAccountName();
-        var password = data.password;
-        var Cred, Block, Login;
-        var blockKeys;
-
-        var hash = LocalStore.getUserHash();
-        if (!hash) { return void cb({ error: 'E_NOT_LOGGED_IN' }); }
-        var blockHash = LocalStore.getBlockHash();
-
-        Nthen(function (waitFor) {
-            require([
-                '/common/common-credential.js',
-                '/common/outer/login-block.js',
-                '/customize/login.js'
-            ], waitFor(function (_Cred, _Block, _Login) {
-                Cred = _Cred;
-                Block = _Block;
-                Login = _Login;
-            }));
-        }).nThen(function (waitFor) {
-            // confirm that the provided password is correct
-            Cred.deriveFromPassphrase(accountName, password, Login.requiredBytes,
-                                      waitFor(function (bytes) {
-                var allocated = Login.allocateBytes(bytes);
-                blockKeys = allocated.blockKeys;
-                if (blockHash) {
-                    if (blockHash !== allocated.blockHash) {
-                        // incorrect password
-                        console.log("provided password did not yield the correct blockHash");
-                        waitFor.abort();
-                        return void cb({ error: 'INVALID_PASSWORD', });
-                    }
-                } else {
-                    // otherwise they're a legacy user, and we should check against the User_hash
-                    if (hash !== allocated.userHash) {
-                        // incorrect password
-                        console.log("provided password did not yield the correct userHash");
-                        waitFor.abort();
-                        return void cb({ error: 'INVALID_PASSWORD', });
-                    }
-                }
-            }));
-        }).nThen(function () {
-            cb({
-                Cred: Cred,
-                Block: Block,
-                Login: Login,
-                blockKeys: blockKeys
-            });
-        });
-    };
     common.deleteAccount = function (data, cb) {
         data = data || {};
 
-        // Confirm that the provided password is corrct and get the block keys
-        getBlockKeys(data, function (obj) {
-            if (obj && obj.error) { return void cb(obj); }
-            var blockKeys = obj.blockKeys;
-            var removeData = obj.Block.remove(blockKeys);
+        var bytes = data.bytes; // From Scrypt
+        var auth = data.auth; // MFA data
 
-            postMessage("DELETE_ACCOUNT", {
-                keys: Block.keysToRPCFormat(blockKeys),
-                removeData: removeData
-            }, function (obj) {
-                if (obj.state) {
-                    Feedback.send('DELETE_ACCOUNT_AUTOMATIC');
-                } else {
-                    Feedback.send('DELETE_ACCOUNT_MANUAL');
-                }
-                cb(obj);
-            });
-        });
+        var allocated = Login.allocateBytes(bytes);
+        var blockKeys = allocated.blockKeys;
+
+        postMessage("DELETE_ACCOUNT", {
+            keys: blockKeys,
+            auth: auth
+        }, function (obj) {
+            if (obj.state) {
+                Feedback.send('DELETE_ACCOUNT_AUTOMATIC');
+            } else {
+                Feedback.send('DELETE_ACCOUNT_MANUAL');
+            }
+            cb(obj);
+        }, {raw: true});
+    };
+    common.removeOwnedPads = function (data, cb) {
+        postMessage("REMOVE_OWNED_PADS", data, cb);
     };
     common.changeUserPassword = function (Crypt, edPublic, data, cb) {
         if (!edPublic) {
@@ -1973,36 +1912,28 @@ define([
                 error: 'E_NOT_LOGGED_IN'
             });
         }
-        var accountName = LocalStore.getAccountName();
-        var hash = LocalStore.getUserHash();
+        var hash = common.userHash;
         if (!hash) {
             return void cb({
                 error: 'E_NOT_LOGGED_IN'
             });
         }
 
-        var password = data.password; // To remove your old block
-        var newPassword = data.newPassword; // To create your new block
+        var oldBytes = data.oldBytes; // From Scrypt
+        var newBytes = data.newBytes; // From Scrypt
         var secret = Hash.getSecrets('drive', hash);
-        var newHash, newHref, newSecret, blockKeys;
+        var newHash, newHref, newSecret;
         var oldIsOwned = false;
 
         var blockHash = LocalStore.getBlockHash();
-        var oldBlockKeys;
 
-        var Cred, Block, Login;
+        var oldAllocated = Login.allocateBytes(oldBytes);
+        var newAllocated = Login.allocateBytes(newBytes);
+        var oldBlockKeys = oldAllocated.blockKeys;
+        var blockKeys = newAllocated.blockKeys;
+        var auth = data.auth;
+
         Nthen(function (waitFor) {
-            getBlockKeys(data, waitFor(function (obj) {
-                if (obj && obj.error) {
-                    waitFor.abort();
-                    return void cb(obj);
-                }
-                oldBlockKeys = obj.blockKeys;
-                Cred = obj.Cred;
-                Login = obj.Login;
-                Block = obj.Block;
-            }));
-        }).nThen(function (waitFor) {
             // Check if our drive is already owned
             console.log("checking if old drive is owned");
             common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
@@ -2010,6 +1941,17 @@ define([
                 if (obj.owners && Array.isArray(obj.owners) &&
                     obj.owners.indexOf(edPublic) !== -1) {
                     oldIsOwned = true;
+                }
+            }));
+        }).nThen(function (waitFor) {
+            Block.checkRights({
+                auth: auth,
+                blockKeys: oldBlockKeys,
+            }, waitFor(function (err) {
+                if (err) {
+                    waitFor.abort();
+                    console.error(err);
+                    return void cb({ error: 'INVALID_CODE' });
                 }
             }));
         }).nThen(function (waitFor) {
@@ -2041,18 +1983,12 @@ define([
                 }), optsPut);
             }));
         }).nThen(function (waitFor) {
-            // Drive content copied: get the new block location
-            console.log("deriving new credentials from passphrase");
-            Cred.deriveFromPassphrase(accountName, newPassword, Login.requiredBytes, waitFor(function (bytes) {
-                var allocated = Login.allocateBytes(bytes);
-                blockKeys = allocated.blockKeys;
-            }));
-        }).nThen(function (waitFor) {
             var blockUrl = Block.getBlockUrl(blockKeys);
-            // Check whether there is a block at that location
+            // Check whether there is a block at that new location
             Util.fetch(blockUrl, waitFor(function (err, block) {
                 // If there is no block or the block is invalid, continue.
-                if (err) {
+                // error 401 means protected block
+                if (err && err !== 401) {
                     console.log("no block found");
                     return;
                 }
@@ -2069,30 +2005,31 @@ define([
             }));
         }).nThen(function (waitFor) {
             // Write the new login block
-            var temp = {
+            var content = {
                 User_hash: newHash,
                 edPublic: edPublic,
             };
-
-            var content = Block.serialize(JSON.stringify(temp), blockKeys);
-            console.error("OLD AND NEW BLOCK KEYS", oldBlockKeys, blockKeys);
-            content.registrationProof = Block.proveAncestor(oldBlockKeys);
-
-            console.log("writing new login block");
-
-            var data = {
-                keys: Block.keysToRPCFormat(blockKeys),
-                content: content,
-            };
-            common.writeLoginBlock(data, waitFor(function (obj) {
-                if (obj && obj.error) {
+            Block.writeLoginBlock({
+                auth: auth,
+                blockKeys: blockKeys,
+                oldBlockKeys: oldBlockKeys,
+                content: content
+            }, waitFor(function (err, data) {
+                if (err) {
                     waitFor.abort();
-                    return void cb(obj);
+                    return void cb({error: err});
+                }
+                if (data && data.bearer) {
+                    LocalStore.setSessionToken(data.bearer);
                 }
             }));
+
         }).nThen(function (waitFor) {
             var blockUrl = Block.getBlockUrl(blockKeys);
-            Util.fetch(blockUrl, waitFor(function (err /* block */) {
+            var sessionToken = LocalStore.getSessionToken() || undefined;
+            Util.getBlock(blockUrl, {
+                bearer: sessionToken,
+            }, waitFor((err) => {
                 if (err) {
                     console.error(err);
                     waitFor.abort();
@@ -2111,53 +2048,49 @@ define([
             common.pinPads([newSecret.channel], waitFor());
         }).nThen(function (waitFor) {
             // Remove block hash
-            if (blockHash) {
-                console.log('removing old login block');
-                var data = {
-                    keys: Block.keysToRPCFormat(oldBlockKeys), // { edPrivate, edPublic }
-                    content: Block.remove(oldBlockKeys),
-                };
-                common.removeLoginBlock(data, waitFor(function (obj) {
-                    if (obj && obj.error) { return void console.error(obj.error); }
-                }));
-            }
+            if (!blockHash) { return; }
+            console.log('removing old login block');
+            Block.removeLoginBlock({
+                auth: auth,
+                blockKeys: oldBlockKeys,
+            }, waitFor(function (err) {
+                if (err) { return void console.error(err); }
+            }));
         }).nThen(function (waitFor) {
-            if (oldIsOwned) {
-                console.log('removing old drive');
-                common.removeOwnedChannel({
-                    channel: secret.channel,
-                    teamId: null,
-                    force: true
-                }, waitFor(function (obj) {
-                    if (obj && obj.error) {
-                        // Deal with it as if it was not owned
-                        oldIsOwned = false;
-                        return;
-                    }
-                    common.logoutFromAll(waitFor(function () {
-                        postMessage("DISCONNECT");
-                    }));
+            if (!oldIsOwned) { return; }
+            console.log('removing old drive');
+            common.removeOwnedChannel({
+                channel: secret.channel,
+                teamId: null,
+                force: true
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    // Deal with it as if it was not owned
+                    oldIsOwned = false;
+                    return;
+                }
+                common.logoutFromAll(waitFor(function () {
+                    postMessage("DISCONNECT");
                 }));
-            }
+            }));
         }).nThen(function (waitFor) {
-            if (!oldIsOwned) {
-                console.error('deprecating old drive.');
-                postMessage("SET", {
-                    teamId: data.teamId,
-                    key: [Constants.deprecatedKey],
-                    value: true
-                }, waitFor(function (obj) {
-                    if (obj && obj.error) {
-                        console.error(obj.error);
-                    }
-                    common.logoutFromAll(waitFor(function () {
-                        postMessage("DISCONNECT");
-                    }));
+            if (oldIsOwned) { return; }
+            console.error('deprecating old drive.');
+            postMessage("SET", {
+                teamId: data.teamId,
+                key: [Constants.deprecatedKey],
+                value: true
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    console.error(obj.error);
+                }
+                common.logoutFromAll(waitFor(function () {
+                    postMessage("DISCONNECT");
                 }));
-            }
+            }));
         }).nThen(function () {
             // We have the new drive, with the new login block
-            var feedbackKey = (password === newPassword)?
+            var feedbackKey = (data.password === data.newPassword)?
                 'OWNED_DRIVE_MIGRATION': 'PASSWORD_CHANGED';
 
             Feedback.send(feedbackKey, undefined, function () {

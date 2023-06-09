@@ -54,14 +54,17 @@ define([
     Messages.settings_totp_enable = "Enable TOTP"; // XXX
     Messages.settings_totp_disable = "Disable TOTP"; // XXX
     Messages.settings_totp_generate = "Generate secret"; // XXX
-    Messages.settings_totp_code = "OTP code"; // XXX
-    Messages.settings_totp_code_invalid = "Invalid OTP code"; // XXX
+    Messages.settings_otp_code = "OTP code"; // XXX
+    Messages.settings_otp_invalid = "Invalid OTP code"; // XXX
 
     Messages.settings_totp_tuto = "Scan this QR code with a authenticator application. Obtain a valid authentication code and confirm before it expires."; // XXX
     Messages.settings_totp_confirm = "Enable TOTP with this secret"; // XXX
 
     Messages.settings_totp_recovery_header = "Recovery code";
     Messages.settings_totp_recovery = "If you lose access to your authenticator app, you may lock yourselves out of your CryptPad account. <strong>To prevent this, please store the following recovery secret key.</strong> You'll be able to use it to disable the multi-factor authentication. Do not share this key.";
+
+    Messages.settings_removeOwnedButton = "Destroy documents";
+    Messages.settings_removeOwnedText = "Please wait while your document are being destroyed...";
 
     var categories = {
         'account': [ // Msg.settings_cat_account
@@ -70,12 +73,12 @@ define([
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-mediatag-size',
-            'cp-settings-change-password',
-            'cp-settings-delete'
         ],
         'access': [ // Msg.settings_cat_access // XXX
-            // XXX add password change and account deletion here?
-            'cp-settings-totp'
+            'cp-settings-totp',
+            'cp-settings-remove-owned',
+            'cp-settings-change-password',
+            'cp-settings-delete'
         ],
         'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
@@ -497,6 +500,40 @@ define([
         });
     }, true);
 
+    var deriveBytes = function (name, password, cb) {
+        Cred.deriveFromPassphrase(name, password, Login.requiredBytes, cb);
+    };
+
+    makeBlock('remove-owned', function(cb) { // Msg.settings_removeOwnedHint, .settings_removeOwnedTitle
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        var button = h('button.btn.btn-danger', Messages.settings_removeOwnedButton);
+        var form = h('div', [
+            button
+        ]);
+        var $button = $(button);
+
+        UI.confirmButton(button, {
+            classes: 'btn-danger',
+            multiple: true
+        }, function() {
+            UI.addLoadingScreen({
+                hideTips: true,
+                loadingText: Messages.settings_removeOwnedText
+            });
+            sframeChan.query("Q_SETTINGS_REMOVE_OWNED_PADS", {}, function (err, data) {
+                UI.removeLoadingScreen();
+                $button.prop('disabled', '');
+                if (data && data.error) {
+                    console.error(data.error);
+                    return void UI.warn(Messages.error);
+                }
+                UI.log(Messages.success);
+            });
+        });
+
+        cb(form);
+    }, true);
     makeBlock('delete', function(cb) { // Msg.settings_deleteHint, .settings_deleteTitle
         if (!common.isLoggedIn()) { return cb(false); }
 
@@ -510,7 +547,6 @@ define([
         ]);
         var $form = $(form);
         var $button = $(button);
-        var spinner = UI.makeSpinner($form);
 
         UI.confirmButton(button, {
             classes: 'btn-danger',
@@ -548,36 +584,81 @@ define([
                 if (!password) {
                     return void UI.warn(Messages.error);
                 }
-                spinner.spin();
-                sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
-                    password: password
-                }, function(err, data) {
-                    if (data && data.error) {
-                        spinner.hide();
-                        $button.prop('disabled', '');
-                        if (data.error === 'INVALID_PASSWORD') {
-                            return void UI.warn(Messages.drive_sfPasswordError);
-                        }
-                        console.error(data.error);
-                        return void UI.warn(Messages.error);
-                    }
-                    // Owned drive
-                    if (data.state === true) {
-                        return void sframeChan.query('Q_SETTINGS_LOGOUT_PROPERLY', null, function() {
-                            UI.alert(Messages.settings_deleted, function() {
-                                common.gotoURL('/');
-                            });
-                            spinner.done();
+
+                UI.addLoadingScreen({
+                    hideTips: true,
+                    loadingText: Messages.settings_deleteTitle
+                });
+                setTimeout(function () {
+                    var name = privateData.accountName;
+                    var bytes;
+                    var auth = {};
+                    nThen(function (w) {
+                        deriveBytes(name, password, w(function (_bytes) {
+                            bytes = _bytes;
+                        }));
+                    }).nThen(function (w) {
+                        var result = Login.allocateBytes(bytes);
+                        sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
+                            blockHash: result.blockHash,
+                            userHash: result.userHash,
+                        }, w(function (err, obj) {
+                            if (!obj || !obj.correct) {
+                                UI.warn(Messages.login_noSuchUser);
+                                w.abort();
+                                UI.removeLoadingScreen();
+                            }
+                        }));
+                    }).nThen(function (w) {
+                        // CHECK MFA
+                        sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, w(function (err, obj) {
+                            // No block? no need for a code
+                            if (err || !obj || (obj && obj.err === 'NOBLOCK')
+                                    || !obj.mfa) { return; }
+                            auth.type = obj.type;
+
+                            if (auth.type === 'TOTP') {
+                                UI.getOTPScreen(w(function (val) {
+                                    UI.addLoadingScreen({ loadingText: Messages.settings_deleteTitle });
+                                    auth.data = val;
+                                }), function () {
+                                    w.abort(); // On exit OTP screen
+                                });
+                            }
+                        }));
+                    }).nThen(function () {
+                        sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
+                            bytes: bytes,
+                            auth: auth
+                        }, function(err, data) {
+                            UI.removeLoadingScreen();
+                            if (data && data.error) {
+                                $button.prop('disabled', '');
+                                if (data.error === 'INVALID_PASSWORD') {
+                                    return void UI.warn(Messages.drive_sfPasswordError);
+                                }
+                                if (data.error === 'INVALID_CODE') {
+                                    return void UI.warn(Messages.settings_otp_invalid);
+                                }
+                                return void UI.warn(Messages.error);
+                            }
+                            // Owned drive
+                            if (data.state === true) {
+                                return void sframeChan.query('Q_SETTINGS_LOGOUT_PROPERLY', null, function() {
+                                    UI.alert(Messages.settings_deleted, function() {
+                                        common.gotoURL('/');
+                                    });
+                                });
+                            }
+                            // Not owned drive
+                            var msg = h('div.cp-app-settings-delete-alert', [
+                                h('p', Messages.settings_deleteModal),
+                                h('pre', JSON.stringify(data, 0, 2))
+                            ]);
+                            UI.alert(msg);
+                            $button.prop('disabled', '');
                         });
-                    }
-                    // Not owned drive
-                    var msg = h('div.cp-app-settings-delete-alert', [
-                        h('p', Messages.settings_deleteModal),
-                        h('pre', JSON.stringify(data, 0, 2))
-                    ]);
-                    UI.alert(msg);
-                    spinner.hide();
-                    $button.prop('disabled', '');
+                    });
                 });
             });
         });
@@ -596,7 +677,6 @@ define([
             .append(Messages.settings_changePasswordHint).appendTo($div);
 
         // var publicKey = privateData.edPublic;
-
         var form = h('div', [
             UI.passwordInput({
                 id: 'cp-settings-change-password-current',
@@ -621,7 +701,7 @@ define([
             sframeChan.query('Q_CHANGE_USER_PASSWORD', data, function(err, obj) {
                 if (err || obj.error) { return void cb({ error: err || obj.error }); }
                 cb(obj);
-            });
+            }, {raw: true});
         };
 
         var todo = function() {
@@ -650,19 +730,69 @@ define([
                 function(yes) {
                     if (!yes) { return; }
 
-                    UI.addLoadingScreen({
-                        hideTips: true,
-                        loadingText: Messages.settings_changePasswordPending,
-                    });
-                    updateBlock({
-                        password: oldPassword,
-                        newPassword: newPassword
-                    }, function(obj) {
-                        UI.removeLoadingScreen();
-                        if (obj && obj.error) {
-                            // TODO more specific error message?
-                            UI.alert(Messages.settings_changePasswordError);
-                        }
+                    UI.addLoadingScreen({ loadingText: Messages.settings_changePasswordPending });
+                    // We're going to derive the bytes in inner in order to ask for the possible
+                    // OTP code after the Scrypt execution. This will make it less likely to
+                    // have the OTP code expire.
+                    setTimeout(function () {
+                        var oldBytes, newBytes;
+                        var auth = {};
+                        nThen(function (w) {
+                            var name = privateData.accountName;
+                            deriveBytes(name, oldPassword, w(function (bytes) {
+                                oldBytes = bytes;
+                            }));
+                            deriveBytes(name, newPassword, w(function (bytes) {
+                                newBytes = bytes;
+                            }));
+                        }).nThen(function (w) {
+                            var result = Login.allocateBytes(oldBytes);
+                            sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
+                                blockHash: result.blockHash,
+                                userHash: result.userHash,
+                            }, w(function (err, obj) {
+                                if (!obj || !obj.correct) {
+                                    UI.warn(Messages.login_noSuchUser);
+                                    w.abort();
+                                    UI.removeLoadingScreen();
+                                }
+                            }));
+                        }).nThen(function (w) {
+                            // CHECK MFA
+                            sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, w(function (err, obj) {
+                                // No block? no need for a code
+                                if (err || !obj || (obj && obj.err === 'NOBLOCK')
+                                        || !obj.mfa) { return; }
+                                auth.type = obj.type;
+
+                                if (auth.type === 'TOTP') {
+                                    UI.getOTPScreen(w(function (val) {
+                                        auth.data = val;
+                                        UI.addLoadingScreen({ loadingText: Messages.settings_changePasswordPending });
+                                    }), function () {
+                                        w.abort(); // On exit OTP screen
+                                    });
+                                }
+                            }));
+                        }).nThen(function () {
+                            updateBlock({
+                                password: oldPassword,
+                                newPassword: newPassword,
+                                oldBytes: oldBytes,
+                                newBytes: newBytes,
+                                auth: auth
+                            }, function(obj) {
+                                UI.removeLoadingScreen();
+                                if (obj && obj.error) {
+                                    if (obj.error === 'INVALID_CODE') {
+                                        return void UI.warn(Messages.settings_otp_invalid);
+                                    }
+                                    // TODO more specific error message?
+                                    console.error(obj.error);
+                                    UI.alert(Messages.settings_changePasswordError);
+                                }
+                            });
+                        });
                     });
                 }, {
                     ok: Messages.register_writtenPassword,
@@ -812,7 +942,7 @@ define([
                     placeholder: Messages.login_password,
                 })),
                 OTPEntry = h('input', {
-                    placeholder: Messages.settings_totp_code
+                    placeholder: Messages.settings_otp_code
                 }),
                 disable
             ]));
@@ -831,7 +961,7 @@ define([
                 setTimeout(function () {
                 Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
                     var result = Login.allocateBytes(bytes);
-                    sframeChan.query("Q_SETTINGS_CHECK_BLOCK", {
+                    sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
                         blockHash: result.blockHash,
                     }, function (err, obj) {
                         if (!obj || !obj.correct) {
@@ -851,7 +981,7 @@ define([
                             $OTPEntry.val("");
                             if (err || !obj || !obj.success) {
                                 $b.removeAttr('disabled');
-                                return void UI.warn(Messages.settings_totp_code_invalid);
+                                return void UI.warn(Messages.settings_otp_invalid);
                             }
                             drawTotp(content, false);
                         }, {raw: true});
@@ -910,7 +1040,7 @@ define([
                     setTimeout(function () {
                         Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
                             var result = Login.allocateBytes(bytes);
-                            sframeChan.query("Q_SETTINGS_CHECK_BLOCK", {
+                            sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
                                 blockHash: result.blockHash,
                             }, function (err, obj) {
                                 BUSY = false;
@@ -956,7 +1086,7 @@ define([
                     updateQR(uri, qr);
 
                     var OTPEntry = h('input', {
-                        placeholder: Messages.settings_totp_code
+                        placeholder: Messages.settings_otp_code
                     });
                     var $OTPEntry = $(OTPEntry);
 
@@ -1028,9 +1158,9 @@ define([
         if (!common.isLoggedIn()) { return void cb(false); }
 
         var content = h('div');
-        sframeChan.query('Q_SETTINGS_TOTP_CHECK', {}, function (err, obj) {
+        sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, function (err, obj) {
             if (err || !obj || (obj && obj.err === 'NOBLOCK')) { return void cb(false); }
-            var enabled = obj && obj.totp;
+            var enabled = obj && obj.mfa && obj.type === 'TOTP';
             drawTotp(content, Boolean(enabled));
             cb(content);
         });
