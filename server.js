@@ -97,7 +97,7 @@ var setHeaders = function (req, res) {
     } else if (/^\/api\/(broadcast|config)/.test(req.url)) {
         type = 'api';
     } else if (/^\/bower_components\/drawio\/src\/main\/webapp\/index.html.*$/.test(req.url)) {
-        type = 'drawio'
+        type = 'drawio';
     } else {
         type = 'standard';
     }
