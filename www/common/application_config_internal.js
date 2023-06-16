@@ -192,6 +192,7 @@ define(function() {
         poll: 'cptools-poll',
         form: 'cptools-poll',
         whiteboard: 'cptools-whiteboard',
+        drawio: 'cptools-diagram',
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
         calendar: 'fa-calendar',
