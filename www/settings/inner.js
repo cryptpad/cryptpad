@@ -49,19 +49,27 @@ define([
     var privateData;
     var sframeChan;
 
-    Messages.settings_totpTitle = "TOTP"; // XXX
+    Messages.settings_mfaTitle = "Two-Factor Authentication (2FA)"; // XXX
+    Messages.settings_mfaHint = "Protect your account..."; // XXX
     Messages.settings_cat_access = "Security"; // XXX
-    Messages.settings_totp_enable = "Enable TOTP"; // XXX
-    Messages.settings_totp_disable = "Disable TOTP"; // XXX
-    Messages.settings_totp_generate = "Generate secret"; // XXX
-    Messages.settings_otp_code = "OTP code"; // XXX
+    Messages.done = "Done";
+    Messages.continue = "Continue";
+    Messages.mfa_setup_label = "To enable 2FA, please begin by entering your account password"; // XXX
+    Messages.mfa_setup_button = "Begin 2FA setup"; // XXX
+    Messages.mfa_revoke_label = "To disable 2FA, please begin by entering your account password"; // XXX
+    Messages.mfa_revoke_button = "Start disable 2FA"; // XXX
+    Messages.mfa_revoke_code = "Please enter your verification code";
+    Messages.mfa_status_on = "2FA is active on this account";
+    Messages.mfa_status_off = "2FA is not active on this account";
+    Messages.mfa_recovery_title = "Save this recovery code now";
+    Messages.mfa_recovery_hint = "If you loose access to your authenticator...........";
+    Messages.mfa_recovery_warning = "This code will not be shown again...........";
+    Messages.mfa_enable = "Enable 2FA";
+    Messages.mfa_disable = "Disable 2FA";
+
+    Messages.settings_otp_code = "Verification code"; // XXX
     Messages.settings_otp_invalid = "Invalid OTP code"; // XXX
-
-    Messages.settings_totp_tuto = "Scan this QR code with a authenticator application. Obtain a valid authentication code and confirm before it expires."; // XXX
-    Messages.settings_totp_confirm = "Enable TOTP with this secret"; // XXX
-
-    Messages.settings_totp_recovery_header = "Recovery code";
-    Messages.settings_totp_recovery = "If you lose access to your authenticator app, you may lock yourselves out of your CryptPad account. <strong>To prevent this, please store the following recovery secret key.</strong> You'll be able to use it to disable the multi-factor authentication. Do not share this key.";
+    Messages.settings_otp_tuto = "Please scan this QR code with your authenticator app and paste the verification code to confirm.";
 
     Messages.settings_removeOwnedButton = "Destroy documents";
     Messages.settings_removeOwnedText = "Please wait while your document are being destroyed...";
@@ -75,7 +83,7 @@ define([
             'cp-settings-mediatag-size',
         ],
         'access': [ // Msg.settings_cat_access // XXX
-            'cp-settings-totp',
+            'cp-settings-mfa',
             'cp-settings-remove-owned',
             'cp-settings-change-password',
             'cp-settings-delete'
@@ -930,46 +938,76 @@ define([
 
     // Account access
 
-    var drawTotp = function (content, enabled) {
+    var drawMfa = function (content, enabled) {
         var $content = $(content).empty();
+        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status', [
+            h('i.fa' + (enabled ? '.fa-check' : '.fa-times')),
+            h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
+        ]));
         if (enabled) {
             (function () {
-            var disable = h('button.btn.btn-danger', Messages.settings_totp_disable);
-            var OTPEntry, pwInput;
-            $content.append(h('div', [
-                h('p', pwInput = h('input', {
+            var button = h('button.btn.btn-danger', Messages.mfa_revoke_button);
+            var $mfaRevokeBtn = $(button);
+            var pwInput;
+            var pwContainer = h('div.cp-password-container', [
+                h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_label),
+                pwInput = h('input#cp-mfa-password', {
                     type: 'password',
                     placeholder: Messages.login_password,
-                })),
-                OTPEntry = h('input', {
-                    placeholder: Messages.settings_otp_code
                 }),
-                disable
-            ]));
-            var $b = $(disable);
-            var $OTPEntry = $(OTPEntry);
-            UI.confirmButton(disable, {
-                classes: 'btn-danger',
-                multiple: true
-            }, function () {
-                $b.attr('disabled', 'disabled');
+                button
+            ]);
+            $content.append(pwContainer);
+
+            var spinner = UI.makeSpinner($mfaRevokeBtn);
+            $mfaRevokeBtn.click(function () {
                 var name = privateData.accountName;
                 var password = $(pwInput).val();
+                if (!password) { return void UI.warn(Messages.login_noSuchUser); }
 
-                // scrypt locks up the UI before the DOM has a chance
-                // to update (displaying logs, etc.), so do a set timeout
-                setTimeout(function () {
-                Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
-                    var result = Login.allocateBytes(bytes);
-                    sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
-                        blockHash: result.blockHash,
-                    }, function (err, obj) {
-                        if (!obj || !obj.correct) {
-                            UI.warn(Messages.login_noSuchUser);
-                            $b.removeAttr('disabled');
-                            return;
-                        }
-                        var blockKeys = result.blockKeys;
+                spinner.spin();
+                $(pwInput).prop('disabled', 'disabled');
+                $mfaRevokeBtn.prop('disabled', 'disabled');
+                var blockKeys;
+
+                nThen(function (waitFor) {
+                    var next = waitFor();
+                    // scrypt locks up the UI before the DOM has a chance
+                    // to update (displaying logs, etc.), so do a set timeout
+                    setTimeout(function () {
+                    Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
+                        var result = Login.allocateBytes(bytes);
+                        sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
+                            blockHash: result.blockHash,
+                        }, function (err, obj) {
+                            if (!obj || !obj.correct) {
+                                spinner.hide();
+                                UI.warn(Messages.login_noSuchUser);
+                                $mfaRevokeBtn.removeAttr('disabled');
+                                $(pwInput).removeAttr('disabled');
+                                waitFor.abort();
+                                return;
+                            }
+                            spinner.done();
+                            blockKeys = result.blockKeys;
+                            next();
+                        });
+                    });
+                    }, 100);
+                }).nThen(function () {
+                    $(pwContainer).remove();
+                    var OTPEntry;
+                    var disable = h('button.btn.btn-danger', Messages.mfa_disable);
+                    $content.append(h('div.cp-password-container', [
+                        h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_code),
+                        OTPEntry = h('input', {
+                            placeholder: Messages.settings_otp_code
+                        }),
+                        disable
+                    ]));
+                    var $OTPEntry = $(OTPEntry);
+                    var $d = $(disable).click(function () {
+                        $d.prop('disabled', 'disabled');
                         var code = $OTPEntry.val();
                         sframeChan.query("Q_SETTINGS_TOTP_REVOKE", {
                             key: blockKeys.sign,
@@ -980,25 +1018,44 @@ define([
                         }, function (err, obj) {
                             $OTPEntry.val("");
                             if (err || !obj || !obj.success) {
-                                $b.removeAttr('disabled');
+                                $d.removeAttr('disabled');
                                 return void UI.warn(Messages.settings_otp_invalid);
                             }
-                            drawTotp(content, false);
+                            drawMfa(content, false);
                         }, {raw: true});
+
                     });
                 });
-                }, 1000);
             });
 
             })();
             return;
         }
 
-        var button = h('button.btn.btn-primary', Messages.settings_totp_enable);
+        var button = h('button.btn.btn-primary', Messages.mfa_setup_button);
+        var $mfaSetupBtn = $(button);
+        var pwInput;
+        $content.append(h('div.cp-password-container', [
+            h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_setup_label),
+            pwInput = h('input#cp-mfa-password', {
+                type: 'password',
+                placeholder: Messages.login_password,
+            }),
+            button
+        ]));
+        var spinner = UI.makeSpinner($mfaSetupBtn);
         $(button).click(function () {
-            $content.empty();
+            var name = privateData.accountName;
+            var password = $(pwInput).val();
+            if (!password) { return void UI.warn(Messages.login_noSuchUser); }
+
+            spinner.spin();
+            $(pwInput).prop('disabled', 'disabled');
+            $mfaSetupBtn.prop('disabled', 'disabled');
+
             var Base32, QRCode, Nacl;
             var blockKeys;
+            var recoverySecret;
             nThen(function (waitFor) {
                 require([
                     '/auth/base32.js',
@@ -1010,52 +1067,58 @@ define([
                     Nacl = window.nacl;
                 }));
             }).nThen(function (waitFor) {
-                var pwInput;
-                var button = h('button.btn.btn-secondary', Messages.ui_confirm);
-                $content.append(h('div', [
-                    h('p', pwInput = h('input', {
-                        type: 'password',
-                        placeholder: Messages.login_password,
-                    })),
-                    button
-                ]));
                 var next = waitFor();
-                var BUSY = false;
-
-                var spinner = UI.makeSpinner($content);
-                var $b = $(button).click(function () {
-                    if (BUSY) { return; }
-
-                    var name = privateData.accountName;
-                    var password = $(pwInput).val();
-
-                    if (!password) { return void UI.warn(Messages.login_noSuchUser); }
-
-                    spinner.spin();
-                    $b.attr('disabled', 'disabled');
-                    BUSY = true;
-
-                    // scrypt locks up the UI before the DOM has a chance
-                    // to update (displaying logs, etc.), so do a set timeout
-                    setTimeout(function () {
-                        Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
-                            var result = Login.allocateBytes(bytes);
-                            sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
-                                blockHash: result.blockHash,
-                            }, function (err, obj) {
-                                BUSY = false;
-                                if (!obj || !obj.correct) {
-                                    spinner.hide();
-                                    UI.warn(Messages.login_noSuchUser);
-                                    $b.removeAttr('disabled');
-                                    return;
-                                }
-                                spinner.done();
-                                blockKeys = result.blockKeys;
-                                next();
-                            });
+                // scrypt locks up the UI before the DOM has a chance
+                // to update (displaying logs, etc.), so do a set timeout
+                setTimeout(function () {
+                    Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
+                        var result = Login.allocateBytes(bytes);
+                        sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
+                            blockHash: result.blockHash,
+                        }, function (err, obj) {
+                            if (!obj || !obj.correct) {
+                                spinner.hide();
+                                UI.warn(Messages.login_noSuchUser);
+                                $mfaSetupBtn.removeAttr('disabled');
+                                $(pwInput).removeAttr('disabled');
+                                waitFor.abort();
+                                return;
+                            }
+                            spinner.done();
+                            blockKeys = result.blockKeys;
+                            next();
                         });
-                    }, 1000);
+                    });
+                }, 100);
+            }).nThen(function (waitFor) {
+                $content.empty();
+                var next = waitFor();
+                recoverySecret = Nacl.util.encodeBase64(Nacl.randomBytes(24));
+                var button = h('button.btn.btn-primary', [
+                    h('i.fa.fa-check'),
+                    h('span', Messages.done)
+                ]);
+                $content.append(h('div.alert.alert-danger', [
+                    h('h2', Messages.mfa_recovery_title),
+                    h('p', Messages.mfa_recovery_hint),
+                    h('p', Messages.mfa_recovery_warning),
+                    h('div.cp-password-container', [
+                        UI.dialog.selectable(recoverySecret),
+                        button
+                    ])
+                ]));
+
+                var nextButton = h('button.btn.btn-primary', {
+                    'disabled': 'disabled'
+                }, Messages.continue);
+                $(nextButton).click(function () {
+                    next();
+                }).appendTo($content);
+
+                $(button).click(function () {
+                    $content.find('.alert-danger').removeClass('alert-danger').addClass('alert-success');
+                    $(button).prop('disabled', 'disabled');
+                    $(nextButton).removeAttr('disabled');
                 });
             }).nThen(function () {
                 var randomSecret = function () {
@@ -1063,18 +1126,11 @@ define([
                     return Base32.encode(U8);
                 };
                 $content.empty();
-                var generate = h('button.btn.btn-primary', Messages.settings_totp_generate);
-                var secretContainer = h('div');
-                var $container = $(secretContainer);
-                $content.append(secretContainer, h('p', generate));
 
-                var updateQR = Util.throttle(function (uri, target) {
+                var updateQR = Util.mkAsync(function (uri, target) {
                     new QRCode(target, uri);
-                }, 400);
+                });
                 var updateURI = function (secret) {
-                    $container.empty();
-
-                    var recoverySecret = Nacl.util.encodeBase64(Nacl.randomBytes(24));
                     var username = privateData.accountName;
                     var hostname = new URL(privateData.origin).hostname;
                     var label = "CryptPad";
@@ -1090,8 +1146,11 @@ define([
                     });
                     var $OTPEntry = $(OTPEntry);
 
-                    var description = h('p', Messages.settings_totp_tuto);
-                    var confirmOTP = h('button.btn.btn-primary', Messages.settings_totp_confirm);
+                    var description = h('p.cp-settings-mfa-hint', Messages.settings_otp_tuto);
+                    var confirmOTP = h('button.btn.btn-primary', [
+                        h('i.fa.fa-check'),
+                        h('span', Messages.mfa_enable)
+                    ]);
                     var $confirmBtn = $(confirmOTP);
                     var lock = false;
                     UI.confirmButton(confirmOTP, {
@@ -1099,7 +1158,7 @@ define([
                     }, function () {
                         var code = $OTPEntry.val();
                         if (code.length !== 6 || /\D/.test(code)) {
-                            return void UI.warn(Messages.error); // XXX
+                            return void UI.warn(Messages.settings_otp_invalid);
                         }
                         $confirmBtn.attr('disabled', 'disabled');
                         lock = true;
@@ -1107,7 +1166,7 @@ define([
                         var data = {
                             command: 'TOTP_SETUP',
                             secret: secret,
-                            contact: "secret:" + recoverySecret, // XXX add other recovery options
+                            contact: "secret:" + recoverySecret, // TODO other recovery options
                             code: code,
                         };
 
@@ -1122,46 +1181,39 @@ define([
                                 console.error(err);
                                 return void UI.warn(Messages.error);
                             }
-                            drawTotp(content, true);
+                            drawMfa(content, true);
                         }, {raw: true});
 
                     });
 
-                    var recoveryBlock = h('div.alert.alert-danger', [
-                        h('h3', Messages.settings_totp_recovery_header),
-                        UI.setHTML(h('p'), Messages.settings_totp_recovery),
-                        UI.dialog.selectable(recoverySecret)
-                    ]);
-
-                    $container.append([
-                        uriInput,
-                        qr,
-                        h('br'),
+                    $content.append([
                         description,
-                        recoveryBlock,
-                        OTPEntry,
-                        confirmOTP
+                        h('div.cp-settings-qr-container', [
+                            qr,
+                            h('div.cp-settings-qr-code', [
+                                OTPEntry,
+                                h('br'),
+                                confirmOTP
+                            ])
+                        ]),
+                        uriInput
                     ]);
                 };
 
-
-                var $g = $(generate).click(function () {
-                    $g.remove();
-                    var secret = randomSecret();
-                    updateURI(secret);
-                });
+                var secret = randomSecret();
+                updateURI(secret);
             });
 
-        }).appendTo(content);
+        });
     };
-    makeBlock('totp', function (cb) { // Msg.settings_totpTitle
+    makeBlock('mfa', function (cb) { // Msg.settings_mfaTitle, Msg.settings_mfaHint
         if (!common.isLoggedIn()) { return void cb(false); }
 
         var content = h('div');
         sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, function (err, obj) {
             if (err || !obj || (obj && obj.err === 'NOBLOCK')) { return void cb(false); }
             var enabled = obj && obj.mfa && obj.type === 'TOTP';
-            drawTotp(content, Boolean(enabled));
+            drawMfa(content, Boolean(enabled));
             cb(content);
         });
     }, true);

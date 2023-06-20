@@ -35,27 +35,35 @@ define([
         // text and password input fields
         var $uname = $('#username');
         var $passwd = $('#password');
-        var $recoveryKey = $('#totprecovery');
-        var $copyProof = $('#totpcopyproof');
+        var $recoveryKey = $('#mfarecovery');
+        var $copyProof = $('#mfacopyproof');
 
         var $step1 = $('.cp-recovery-step.step1');
         var $step2 = $('.cp-recovery-step.step2');
         var $stepInfo = $('.cp-recovery-step.step-info');
-        var $totpProof = $('textarea.cp-recover-email');
+        var $mfaProof = $('textarea.cp-recover-email');
+        var $forgot = $('.cp-recovery-forgot');
+        var $alt = $('.cp-recovery-alt');
 
         [ $uname, $passwd]
         .some(function ($el) { if (!$el.val()) { $el.focus(); return true; } });
 
-        var totpStep2 = function () {
+        var mfaStep2 = function () {
             $step1.hide();
             $step2.show();
         };
-        var totpStepInfo = function (cls) {
+        var mfaStepInfo = function (cls) {
             $step1.hide();
             $stepInfo.find('.alert').toggleClass('cp-hidden', true);
             $stepInfo.find(cls).toggleClass('cp-hidden', false);
             $stepInfo.show();
         };
+
+        $forgot.click(function () {
+            $alt.toggle();
+            if ($alt.is(':visible')) { $forgot.find('i').attr('class', 'fa fa-caret-down'); }
+            else { $forgot.find('i').attr('class', 'fa fa-caret-right'); }
+        });
 
         var proofStr;
         var addProof = function (blockKeys) {
@@ -69,7 +77,7 @@ define([
             var proof = Nacl.sign.detached(Nacl.util.decodeUTF8(Sortify(toSign)), sec);
             toSign.proof = Nacl.util.encodeBase64(proof);
             proofStr = JSON.stringify(toSign, 0, 2);
-            $totpProof.html(proofStr);
+            $mfaProof.html(proofStr);
         };
 
         $copyProof.click(function () {
@@ -81,7 +89,9 @@ define([
             }
         });
 
-        var revokeTOTP = function (blockKeys) {
+        var blockKeys, blockHash, uname;
+
+        var revokeTOTP = function () {
             var recoveryKey = $recoveryKey.val().trim();
             if (!recoveryKey || recoveryKey.length !== 32) {
                 return void UI.warn(Messages.error); // XXX error message?
@@ -96,38 +106,40 @@ define([
                     return void UI.warn(Messages.error);
                 }
                 // XXX redirect to login?
-                return void UI.log(Messages.ui_success);
+                UI.log(Messages.ui_success);
+                LocalStore.login(undefined, blockHash, uname, function () {
+                    Login.redirect();
+                });
             });
         };
 
         var $recoverLogin = $('button#cp-recover-login');
         var $recoverConfirm = $('button#cp-recover');
-        var blockKeys;
         $recoverLogin.click(function () {
             UI.addLoadingScreen({
                 loadingText: Messages.login_hashing
             });
-            var name = $uname.val();
+            uname = $uname.val();
             var pw = $passwd.val();
             setTimeout(function () {
-                Login.Cred.deriveFromPassphrase(name, pw, Login.requiredBytes, function (bytes) {
+                Login.Cred.deriveFromPassphrase(uname, pw, Login.requiredBytes, function (bytes) {
                     var result = Login.allocateBytes(bytes);
-                    var blockHash = result.blockHash;
+                    blockHash = result.blockHash;
                     var parsed = Block.parseBlockHash(blockHash);
                     addProof(result.blockKeys);
                     blockKeys = result.blockKeys;
                     Util.getBlock(parsed.href, {}, function (err, v) {
                         UI.removeLoadingScreen();
                         if (v && !err) {
-                            return totpStepInfo('.disabled');
+                            return mfaStepInfo('.disabled');
                         }
                         if (err === 401) {
-                            return totpStep2(result.blockKeys);
+                            return mfaStep2(result.blockKeys);
                         }
                         if (err === 404) {
                             return $step1.find('.wrong-cred').toggleClass('cp-hidden', false);
                         }
-                        totpStepInfo('.unknown-error');
+                        mfaStepInfo('.unknown-error');
                     });
                 });
             }, 100);
@@ -137,8 +149,7 @@ define([
             multiple: true
         }, function () {
             if (!blockKeys) { return; }
-            // XXX disable TOTP automatically
-            revokeTOTP(blockKeys);
+            revokeTOTP();
         });
 
     });

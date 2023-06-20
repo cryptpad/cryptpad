@@ -1507,8 +1507,10 @@ define([
     };
 
     Messages.settings_otp_code = "OTP code"; // XXX KEY ALREADY ADDED IN www/settings/inner.js
-    Messages.loading_enter_otp = "This account is protected with MFA. Please enter your OTP code."; // XXX
-    Messages.settings_otp_invalid = "Invalid OTP code";
+    Messages.settings_otp_invalid = "Invalid OTP code"; // Same
+
+    Messages.loading_enter_otp = "This account is protected with Two-Factor Authentication. Please enter your verification code."; // XXX
+    Messages.loading_recover = 'Unable to get a code? <a href="/recovery/">Recover your account</a>';
 
 
     UI.getOTPScreen = function (cb, exitable, err) {
@@ -1529,7 +1531,8 @@ define([
                     spellcheck: false,
                 }),
                 btn = h('button.btn.btn-primary', Messages.ui_confirm)
-            ])
+            ]),
+            UI.setHTML(h('p.cp-password-recovery'), Messages.loading_recover)
         ]);
         var $input = $(input);
         var $btn = $(btn).click(function () {
