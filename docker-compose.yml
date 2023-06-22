@@ -3,12 +3,13 @@ version: '3.8'
 
 services:
   cryptpad:
-    image: "crytpad/cryptpad:latest"
+    image: "crytpad/cryptpad:testing"
     hostname: cryptpad
 
     environment:
       - CPAD_MAIN_DOMAIN=example.com
       - CPAD_SANDBOX_DOMAIN=sandbox.example.com
+      - CPAD_ADMIN_EMAIL=username@example.com
 
     volumes:
       - ./data/blob:/cryptpad/blob
