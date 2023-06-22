@@ -38,8 +38,7 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 WORKDIR /cryptpad
 
 # Create directories
-RUN mkdir blob block customize data datastore \
-    && chown cryptpad:cryptpad blob block customize data datastore
+RUN mkdir blob block customize data datastore
 
 # Volumes for data persistence
 VOLUME /cryptpad/blob
