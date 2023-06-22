@@ -193,12 +193,7 @@ define(function() {
         poll: 'cptools-poll',
         form: 'cptools-poll',
         whiteboard: 'cptools-whiteboard',
-<<<<<<< HEAD
         diagram: 'cptools-diagram',
-||||||| c94666efb
-=======
-        drawio: 'cptools-diagram',
->>>>>>> origin/drawio-bower
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
         calendar: 'fa-calendar',
