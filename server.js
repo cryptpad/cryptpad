@@ -64,8 +64,8 @@ var getHeaders = function (Env, type) {
     var csp;
     if (type === 'office') {
         csp = Default.padContentSecurity(Env);
-    } else if (type === 'drawio') {
-        csp = Default.drawioContentSecurity(Env);
+    } else if (type === 'diagram') {
+        csp = Default.diagramContentSecurity(Env);
     } else {
         csp = Default.contentSecurity(Env);
     }
@@ -97,7 +97,7 @@ var setHeaders = function (req, res) {
     } else if (/^\/api\/(broadcast|config)/.test(req.url)) {
         type = 'api';
     } else if (/^\/bower_components\/drawio\/src\/main\/webapp\/index.html.*$/.test(req.url)) {
-        type = 'drawio';
+        type = 'diagram';
     } else {
         type = 'standard';
     }

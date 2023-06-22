@@ -5,8 +5,8 @@ define([
     '/bower_components/pako/dist/pako.min.js',
     '/bower_components/js-base64/base64.js',
     '/bower_components/x2js/xml2json.min.js',
-    'less!/drawio/app.less',
-    'css!/drawio/drawio.css',
+    'less!/diagram/app-diagram.less',
+    'css!/diagram/drawio.css',
 ], function (
     Framework,
     Messages,
@@ -56,7 +56,7 @@ define([
     // This is the main initialization loop
     var onFrameworkReady = function (framework) {
         var EMPTY_DRAWIO = "<mxfile type=\"embed\"><diagram id=\"bWoO5ACGZIaXrIiKNTKd\" name=\"Page-1\"><mxGraphModel dx=\"1259\" dy=\"718\" grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"827\" pageHeight=\"1169\" math=\"0\" shadow=\"0\"><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/></root></mxGraphModel></diagram></mxfile>";
-        var drawioFrame = document.querySelector('#cp-app-drawio-content');
+        var drawioFrame = document.querySelector('#cp-app-diagram-content');
         var x2js = new X2JS();
         var lastContent = x2js.xml_str2json(EMPTY_DRAWIO);
         var drawIoInitalized = false;
@@ -192,7 +192,7 @@ define([
     // Framework initialization
     Framework.create({
         toolbarContainer: '#cme_toolbox',
-        contentContainer: '#cp-app-drawio-editor',
+        contentContainer: '#cp-app-diagram-editor',
         // validateContent: validateXml,
     }, function (framework) {
         onFrameworkReady(framework);
