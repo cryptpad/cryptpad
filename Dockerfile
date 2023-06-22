@@ -31,6 +31,9 @@ RUN addgroup -g 4001 -S cryptpad \
 COPY --from=build --chown=cryptpad /cryptpad /cryptpad
 USER cryptpad
 
+# Copy docker-entrypoint.sh script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
 # Set workdir to cryptpad
 WORKDIR /cryptpad
 
