@@ -3,16 +3,16 @@ define([
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
     '/bower_components/pako/dist/pako.min.js',
-    '/bower_components/js-base64/base64.js',
-    '/bower_components/x2js/xml2json.min.js',
+    '/bower_components/x2js/x2js.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
 ], function (
     Framework,
     Messages,
     pako,
-    base64,
     X2JS) {
+    const Nacl = window.nacl;
 
     // As described here: https://drawio-app.com/extracting-the-xml-from-mxfiles/
     const decompressDrawioXml = function(xmlDocStr) {
@@ -36,7 +36,7 @@ define([
         diagrams.forEach(function(diagram) {
             if (diagram.firstChild && diagram.firstChild.nodeType === TEXT_NODE)  {
                 const innerText = diagram.firstChild.nodeValue;
-                const bin = base64.toUint8Array(innerText);
+                const bin = Nacl.util.decodeBase64(innerText);
                 const xmlUrlStr = pako.inflateRaw(bin, {to: 'string'});
                 const xmlStr = decodeURIComponent(xmlUrlStr);
                 const diagramDoc = parser.parseFromString(xmlStr, "application/xml");
@@ -58,7 +58,7 @@ define([
         var EMPTY_DRAWIO = "<mxfile type=\"embed\"><diagram id=\"bWoO5ACGZIaXrIiKNTKd\" name=\"Page-1\"><mxGraphModel dx=\"1259\" dy=\"718\" grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"827\" pageHeight=\"1169\" math=\"0\" shadow=\"0\"><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/></root></mxGraphModel></diagram></mxfile>";
         var drawioFrame = document.querySelector('#cp-app-diagram-content');
         var x2js = new X2JS();
-        var lastContent = x2js.xml_str2json(EMPTY_DRAWIO);
+        var lastContent = x2js.xml2js(EMPTY_DRAWIO);
         var drawIoInitalized = false;
 
         var postMessageToDrawio = function(msg) {
@@ -71,7 +71,7 @@ define([
             drawioFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
         };
 
-        const jsonContentAsXML = (content) => x2js.json2xml_str(content);
+        const jsonContentAsXML = (content) => x2js.js2xml(content);
 
         var onDrawioInit = function() {
             drawIoInitalized = true;
@@ -85,7 +85,7 @@ define([
 
         const xmlAsJsonContent = (xml) => {
             var decompressedXml = decompressDrawioXml(xml);
-            return x2js.xml_str2json(decompressedXml);
+            return x2js.xml2js(decompressedXml);
         };
 
         var onDrawioChange = function(newXml) {
