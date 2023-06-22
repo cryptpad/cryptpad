@@ -51,5 +51,7 @@ VOLUME /cryptpad/datastore
 # Ports
 EXPOSE 3000 3001
 
+ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
+
 # Run cryptpad on startup
 CMD ["npm", "start"]
