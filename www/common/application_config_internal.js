@@ -13,6 +13,7 @@ define(function() {
      */
     AppConfig.availablePadTypes = ['drive', 'teams', 'sheet', 'doc', 'presentation', 'pad', 'kanban', 'code', 'form', 'poll', 'whiteboard',
                                 'file', 'contacts', 'slide', 'convert', 'diagram'];
+
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
      * listed here by default can't work without a user account.
@@ -192,7 +193,12 @@ define(function() {
         poll: 'cptools-poll',
         form: 'cptools-poll',
         whiteboard: 'cptools-whiteboard',
+<<<<<<< HEAD
         diagram: 'cptools-diagram',
+||||||| c94666efb
+=======
+        drawio: 'cptools-diagram',
+>>>>>>> origin/drawio-bower
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
         calendar: 'fa-calendar',
