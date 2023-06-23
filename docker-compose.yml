@@ -9,7 +9,6 @@ services:
     environment:
       - CPAD_MAIN_DOMAIN=example.com
       - CPAD_SANDBOX_DOMAIN=sandbox.example.com
-      - CPAD_ADMIN_EMAIL=username@example.com
       - CPAD_CONF=/cryptpad/config/config.js
 
     volumes:
