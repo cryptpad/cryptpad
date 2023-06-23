@@ -22,4 +22,5 @@ block/
 logs/
 privileged.conf
 config/config.js
+config/sso.js
 *.sh

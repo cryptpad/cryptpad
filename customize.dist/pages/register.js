@@ -79,7 +79,8 @@ define([
                             UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                         ]),
                         termsCheck,
-                        h('button#register', Msg.login_register)
+                        h('button#register', Msg.login_register),
+                        Config.sso ? h('div.cp-register-sso') : undefined
                     ])
                 ]),
             ])

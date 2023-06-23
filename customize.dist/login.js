@@ -43,6 +43,39 @@ define([
         setRedirectTo();
     }
 
+    Exports.ssoRegister = function (provider, cb) {
+        var keys = Nacl.sign.keyPair();
+        localStorage.CP_sso_auth = JSON.stringify({
+            s: Nacl.util.encodeBase64(keys.secretKey),
+            p: Nacl.util.encodeBase64(keys.publicKey)
+        });
+        ServerCommand(keys, {
+            command: 'SSO_AUTH',
+            provider: provider,
+            register: true
+        }, cb);
+    };
+    Exports.ssoRegisterCb = function () {
+        var b64Keys = Util.tryParse(localStorage.CP_sso_auth);
+        if (!b64Keys) {
+            throw new Error("MISSING_SIGNATURE_KEYS");
+        }
+        var keys = {
+            secretKey: Nacl.util.decodeBase64(b64Keys.s),
+            publicKey: Nacl.util.decodeBase64(b64Keys.p)
+        };
+        ServerCommand(keys, {
+            command: 'SSO_AUTH_CB',
+            url: window.location.href
+        }, function (err, data) {
+            delete localStorage.CP_sso_auth;
+            if (data && data.state) { window.location.href = '/register/'; }
+        });
+    };
+    Exports.ssoLogin = function () {
+
+    };
+
     var allocateBytes = Exports.allocateBytes = function (bytes) {
         var dispense = Cred.dispenser(bytes);
 

@@ -38,6 +38,8 @@ define([
                                 undefined:
                                 h('button#register.cp-secondary', Msg.login_register)
                             ),
+                            h('button.login', Msg.login_login),
+                            h('br'),
                             h('button.login', Msg.login_login)
                         ])
                     ]),
