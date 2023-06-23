@@ -1,8 +1,8 @@
 # Multistage build to reduce image size and increase security
-FROM node:lts-alpine AS build
+FROM node:lts-slim AS build
 
 # Install requirements to clone repository and install deps
-RUN apk add --no-cache git
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -yq git
 RUN npm install -g bower
 
 # Create folder for cryptpad
@@ -13,7 +13,7 @@ WORKDIR /cryptpad
 COPY . /cryptpad
 
 RUN sed -i "s@//httpAddress: '::'@httpAddress: '0.0.0.0'@" /cryptpad/config/config.example.js
-RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker-alpine'@" /cryptpad/config/config.example.js
+RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker'@" /cryptpad/config/config.example.js
 
 # Install dependencies
 RUN npm install --production \
@@ -21,18 +21,18 @@ RUN npm install --production \
     && bower install --allow-root
 
 # Create actual cryptpad image
-FROM node:lts-alpine
+FROM node:lts-slim
 
 # Create user and group for cryptpad so it does not run as root
-RUN addgroup -g 4001 -S cryptpad \
-    && adduser -u 4001 -S -D -g 4001 -H -h /cryptpad cryptpad
+RUN groupadd cryptpad -g 4001
+RUN useradd cryptpad -u 4001 -g 4001 -d /cryptpad
 
 # Copy cryptpad with installed modules
 COPY --from=build --chown=cryptpad /cryptpad /cryptpad
 USER cryptpad
 
 # Copy docker-entrypoint.sh script
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY --chown=cryptpad docker-entrypoint.sh /cryptpad/docker-entrypoint.sh
 
 # Set workdir to cryptpad
 WORKDIR /cryptpad
@@ -47,10 +47,11 @@ VOLUME /cryptpad/customize
 VOLUME /cryptpad/data
 VOLUME /cryptpad/datastore
 
+ENTRYPOINT ["/bin/bash", "/cryptpad/docker-entrypoint.sh"]
+
 # Ports
 EXPOSE 3000 3001
 
-ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
-
 # Run cryptpad on startup
 CMD ["npm", "start"]
+
