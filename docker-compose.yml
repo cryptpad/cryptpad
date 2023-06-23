@@ -3,13 +3,14 @@ version: '3.8'
 
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:testing"
+    image: "cryptpad/cryptpad:latest"
     hostname: cryptpad
 
     environment:
       - CPAD_MAIN_DOMAIN=example.com
       - CPAD_SANDBOX_DOMAIN=sandbox.example.com
       - CPAD_ADMIN_EMAIL=username@example.com
+      - CPAD_CONF=/cryptpad/config/config.js
 
     volumes:
       - ./data/blob:/cryptpad/blob
@@ -17,7 +18,6 @@ services:
       - ./customize:/cryptpad/customize
       - ./data/data:/cryptpad/data
       - ./data/files:/cryptpad/datastore
-      - ./data/config.js:/cryptpad/config/config.js
 
     ports:
       - "3000:3000"
