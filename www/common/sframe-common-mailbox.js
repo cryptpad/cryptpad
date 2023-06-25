@@ -271,7 +271,11 @@ define([
                     messages.push({
                         type: type,
                         content: {
-                            msg: data.message,
+                            msg: Object.assign(data.message, {
+                                content: Object.assign(data.message.content, {
+                                   title: data.message.content.data.title,
+                                }),
+                            }),
                             time: data.time,
                             hash: data.hash
                         }

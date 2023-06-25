@@ -3599,7 +3599,7 @@ define([
                     send: true,
                     anon: true,
                     query: "FORM_RESPONSE",
-                    msgData: { channel: priv.channel }
+                    msgData: { channel: priv.channel, title: framework._.title.title || framework._.title.defaultTitle },
                 }, function (err, obj) {
                     if (err || !obj || !obj.state) { return console.error('ENOTIFY'); }
                 });
@@ -4756,7 +4756,7 @@ define([
             var endDateStr = h('div');
             var $endDate = $(endDateContainer);
             var $endDateStr = $(endDateStr);
-        
+
             var refreshEndDate = function () {
                 $endDate.empty();
 
