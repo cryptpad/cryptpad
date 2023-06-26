@@ -83,9 +83,24 @@ define([
             });
         };
 
+        const numbersToNumbers = function(o) {
+            const type = typeof o;
+
+            if (type === "object") {
+                for (const key in o) {
+                    o[key] = numbersToNumbers(o[key]);
+                }
+                return o;
+            } else if (type === 'string' && o.match(/^[+-]?(0|(([1-9]\d*)(\.\d+)?))$/)) {
+                return parseFloat(o, 10);
+            } else {
+                return o;
+            }
+        }
+
         const xmlAsJsonContent = (xml) => {
             var decompressedXml = decompressDrawioXml(xml);
-            return x2js.xml2js(decompressedXml);
+            return numbersToNumbers(x2js.xml2js(decompressedXml));
         };
 
         var onDrawioChange = function(newXml) {
