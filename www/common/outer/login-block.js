@@ -165,9 +165,7 @@ define([
         const { blockKeys, auth } = data;
 
         var command = 'MFA_CHECK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_CHECK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         ServerCommand(blockKeys.sign, {
             command: command,
@@ -175,15 +173,14 @@ define([
         }, cb);
     };
     Block.writeLoginBlock = function (data, cb) {
-        const { content, blockKeys, oldBlockKeys, auth } = data;
+        const { content, blockKeys, oldBlockKeys, auth, pw } = data;
 
         var command = 'WRITE_BLOCK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_WRITE_BLOCK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         var block = Block.serialize(JSON.stringify(content), blockKeys);
         block.auth = auth && auth.data;
+        block.hasPassword = pw;
         block.registrationProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
 
         ServerCommand(blockKeys.sign, {
@@ -195,9 +192,7 @@ define([
         const { blockKeys, auth } = data;
 
         var command = 'REMOVE_BLOCK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_REMOVE_BLOCK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         ServerCommand(blockKeys.sign, {
             command: command,

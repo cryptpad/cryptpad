@@ -1,0 +1,29 @@
+@import (reference) "../include/infopages.less";
+@import (reference) "../include/colortheme-all.less";
+@import (reference) "../include/alertify.less";
+@import (reference) "../include/forms.less";
+
+&.cp-page-ssoauth {
+    .infopages_main();
+    .forms_main();
+
+    .alertify_main();
+
+    div.cp-ssoauth-pw {
+        display: none;
+    }
+
+    &.cp-regsiter {
+        .login {
+            display: none;
+        }
+    }
+    &.cp-login {
+        .register {
+            display: none;
+        }
+    }
+
+}
+
+

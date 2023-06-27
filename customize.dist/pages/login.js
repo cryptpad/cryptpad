@@ -39,9 +39,8 @@ define([
                                 h('button#register.cp-secondary', Msg.login_register)
                             ),
                             h('button.login', Msg.login_login),
-                            h('br'),
-                            h('button.login', Msg.login_login)
-                        ])
+                        ]),
+                        Config.sso ? h('div.cp-login-sso') : undefined
                     ]),
                     h('div.col-md-3')
                 ]),

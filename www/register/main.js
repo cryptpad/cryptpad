@@ -62,13 +62,11 @@ define([
                 var $b = $(b).click(function () {
                     console.log('sso register click:', name);
                     $b.prop('disabled', 'disabled');
-                    Login.ssoRegister(name, function (err, data) {
-                        console.error(err, data);
+                    Login.ssoAuth(name, function (err, data) {
                         if (data.url) {
                             window.location.href = data.url;
                         }
                     });
-                    // XXX Server command
                 });
                 return b;
             });
@@ -152,7 +150,8 @@ define([
             function (yes) {
                 if (!yes) { return; }
 
-                Login.loginOrRegisterUI(uname, passwd, true, shouldImport, false /*Test.testing*/, function () {
+                Login.loginOrRegisterUI(uname, passwd, true, shouldImport,
+                    UI.getOTPScreen, false /*Test.testing*/, function () {
                     if (test) {
                         localStorage.clear();
                         test.pass();
