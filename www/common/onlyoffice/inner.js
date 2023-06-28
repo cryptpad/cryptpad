@@ -2849,6 +2849,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);
+            
+            var $copy = common.createButton('copy', true);
+            toolbar.$drawer.append($copy);
         };
 
         var noCache = false; // Prevent reload loops
