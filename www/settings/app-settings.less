@@ -27,6 +27,7 @@
 
     #cp-sidebarlayout-container {
         #cp-sidebarlayout-rightside {
+
             input[type="checkbox"] {
                 vertical-align: middle;
                 margin-right: 5px;
@@ -87,12 +88,25 @@
             }
 
             .cp-password-container {
+                .cp-password-input{
+                    margin-top:0.5rem;
+                }
                 [type="password"], [type="text"] {
-                    width: @sidebar_button-width;
+                    //width: @sidebar_button-width;
                     flex: unset;
                 }
                 button {
+                    margin-top:0;
                     margin-left: 10px;
+                }
+            }
+            @media (max-width: 840px) {
+
+                .cp-password-container {
+                    button {
+                        margin-top: 10px;
+                        margin-left: 0;
+                    }
                 }
             }
             .cp-settings-drive-backup {
@@ -111,6 +125,15 @@
                     }
                     margin: 10px 20px 20px 0;
                 }
+                @media(max-width:750px){
+                    .cp-settings-qr {
+                        img {
+                            max-width:80%;
+                        }
+
+                        margin: 0 0 1rem;
+                    }
+                }
             }
             .cp-settings-mfa-hint {
                 color: @cp_sidebar-hint;
@@ -124,6 +147,9 @@
             .cp-settings-mfa {
                 .cp-password-container {
                     flex-wrap: wrap;
+                    gap:0.5rem;
+
+                    justify-content:flex-start;
                     input {
                         flex-shrink: 1;
                         max-width: 400px;
@@ -145,6 +171,23 @@
                             margin-top: 10px
                         }
                     }
+                    .cp-settings-qr-code,.cp-button-confirm{
+                        display:flex;
+                        flex-direction:column;
+                        button{
+                            margin-top:0;
+                            margin-bottom:1rem;
+                        }
+                    }
+                }
+                @media(max-width:750px){
+                    .cp-settings-qr-container {
+                        flex-direction:column-reverse;
+                        align-items:flex-start;
+                    }
+                }
+                .fa.fa-check{
+                    color:white;
                 }
             }
         }

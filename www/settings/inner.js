@@ -691,7 +691,6 @@ define([
                 placeholder: Messages.settings_changePasswordCurrent,
                 autocomplete: 'current-password',
             }, true),
-            h('br'),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new',
                 placeholder: Messages.settings_changePasswordNew
@@ -1139,6 +1138,7 @@ define([
 
                     var qr = h('div.cp-settings-qr');
                     var uriInput = UI.dialog.selectable(uri);
+
                     updateQR(uri, qr);
 
                     var OTPEntry = h('input', {

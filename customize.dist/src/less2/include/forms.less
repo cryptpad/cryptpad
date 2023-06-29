@@ -24,6 +24,7 @@
             font-size: @colortheme_app-font-size;
         }
         &[readonly] {
+            //margin-top:1rem;
             background-color: @cp_forms-readonly;
             border-color: @cp_forms-readonly-border;
             color: @cp_forms-fg;
@@ -101,12 +102,12 @@
             }
         }
     }
-    button.cp-button-confirm-placeholder:not(.new) {
-        margin-bottom: 3px !important;
-    }
+    //button.cp-button-confirm-placeholder:not(.new) {
+    //    margin-bottom: 3px !important;
+    //}
 
     button.btn {
-
+        margin-top:0.5rem;
         background-color: @cp_buttons-cancel;
         box-sizing: border-box;
         outline: 0;
@@ -117,6 +118,7 @@
         text-align: center;
         text-transform: uppercase;
         font-size: 14px;
+        font-weight:bold;
         text-decoration: none;
         cursor: pointer;
         border-radius: @variables_radius;
