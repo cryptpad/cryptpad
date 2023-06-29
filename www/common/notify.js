@@ -87,6 +87,21 @@ define(['/api/config'], function (ApiConfig) {
             fav.setAttribute(k, attrs[k]);
         });
         document.head.appendChild(fav);
+        
+        var faviconLink = document.createElement('link');
+        attrs.href = attrs.href.replaceAll(".png", ".ico")
+        console.debug("ATTRS", attrs.href)
+        attrs.id = 'favicon-ico'
+        attrs.type = 'image/x-icon'
+        
+        delete attrs['data-main-favicon'];
+        delete attrs['data-alt-favicon'];
+        
+        Object.keys(attrs).forEach(function (k) {
+            faviconLink.setAttribute(k, attrs[k]);
+        });
+        
+        document.head.appendChild(faviconLink);
     };
 
     if (document && !document.getElementById('favicon')) { createFavicon(); }
