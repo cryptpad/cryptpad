@@ -8,8 +8,8 @@ define([
     '/common/outer/mailbox.js',
     '/customize/messages.js',
     '/common/common-realtime.js',
-    '/bower_components/nthen/index.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/nthen/index.js',
+    '/components/chainpad-crypto/crypto.js',
 ], function (AppConfig, Feedback, Hash, Util, Messaging, Crypt, Mailbox, Messages, Realtime, nThen, Crypto) {
     // Start migration check
     // Versions:

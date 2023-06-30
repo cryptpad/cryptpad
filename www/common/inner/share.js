@@ -10,7 +10,7 @@ define([
     '/common/hyperscript.js',
     '/common/clipboard.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/customize/pages.js',
 ], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen, Pages) {

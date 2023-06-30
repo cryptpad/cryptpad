@@ -2,7 +2,7 @@ define([
     '/common/common-messaging.js',
     '/common/common-hash.js',
     '/common/common-util.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
 ], function (Messaging, Hash, Util, Crypto) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)

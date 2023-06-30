@@ -5,7 +5,7 @@ define([
     '/common/outer/sharedfolder.js',
     '/customize/messages.js',
     '/common/common-feedback.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function (UserObject, Util, Hash, SF, Messages, Feedback, nThen) {
 
 

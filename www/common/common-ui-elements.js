@@ -13,7 +13,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/customize/pages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/inner/invitation.js',
     '/common/visible.js',
 

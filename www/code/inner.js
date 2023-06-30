@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/common/diffMarked.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/common/sframe-app-framework.js',
