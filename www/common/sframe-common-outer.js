@@ -1350,7 +1350,7 @@ define([
                     channel: secret.channel,
                     href: currentPad.href,
                     password: password,
-                    title: currentTitle + " (copy)",
+                    title: currentTitle
                 };
                 var obj = { d: data };
                 var href = window.location.pathname;
