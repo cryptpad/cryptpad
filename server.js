@@ -61,9 +61,15 @@ var getHeaders = function (Env, type) {
         headers = Default.httpHeaders(Env);
     }
 
-    headers['Content-Security-Policy'] = type === 'office'?
-        Default.padContentSecurity(Env):
-        Default.contentSecurity(Env);
+    var csp;
+    if (type === 'office') {
+        csp = Default.padContentSecurity(Env);
+    } else if (type === 'diagram') {
+        csp = Default.diagramContentSecurity(Env);
+    } else {
+        csp = Default.contentSecurity(Env);
+    }
+    headers['Content-Security-Policy'] = csp;
 
     if (Env.NO_SANDBOX) { // handles correct configuration for local development
     // https://stackoverflow.com/questions/11531121/add-duplicate-http-response-headers-in-nodejs
@@ -90,6 +96,8 @@ var setHeaders = function (req, res) {
         type = 'office';
     } else if (/^\/api\/(broadcast|config)/.test(req.url)) {
         type = 'api';
+    } else if (/^\/components\/drawio\/src\/main\/webapp\/index.html.*$/.test(req.url)) {
+        type = 'diagram';
     } else {
         type = 'standard';
     }
@@ -163,6 +171,10 @@ app.get(mainPagePattern, Express.static(Path.resolve('customize.dist')));
 
 app.use("/blob", Express.static(Env.paths.blob, {
     maxAge: Env.DEV_MODE? "0d": "365d"
+}));
+
+app.head("/datastore", Express.static(Env.paths.data, {
+    maxAge: "0d"
 }));
 app.use("/datastore", Express.static(Env.paths.data, {
     maxAge: "0d"

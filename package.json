@@ -35,7 +35,7 @@
     "chainpad": "^5.2.6",
     "chainpad-listmap": "^1.0.0",
     "chainpad-netflux": "^1.0.0",
-    "ckeditor": "^4.12.1",
+    "ckeditor": "npm:ckeditor4@^4.14.1",
     "codemirror": "^5.19.0",
     "components-font-awesome": "^4.6.3",
     "croppie": "^2.5.0",
@@ -54,7 +54,10 @@
     "requirejs": "2.3.5",
     "requirejs-plugins": "^1.0.2",
     "scrypt-async": "1.2.0",
-    "sortablejs": "^1.6.0"
+    "sortablejs": "^1.6.0",
+    "drawio": "cryptpad/drawio-npm#npm",
+    "pako": "^2.1.0",
+    "x2js": "^3.4.4"
   },
   "devDependencies": {
     "jshint": "^2.13.4",

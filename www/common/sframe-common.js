@@ -11,6 +11,7 @@ define([
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-cursor.js',
+    '/common/sframe-common-integration.js',
     '/common/sframe-common-mailbox.js',
     '/common/inner/cache.js',
     '/common/inner/common-mediatag.js',
@@ -41,6 +42,7 @@ define([
     File,
     CodeMirror,
     Cursor,
+    Integration,
     Mailbox,
     Cache,
     MT,
@@ -130,6 +132,9 @@ define([
 
     // Cursor
     funcs.createCursor = callWithCommon(Cursor.create);
+
+    // Integration
+    funcs.createIntegration = callWithCommon(Integration.create);
 
     // Files
     funcs.uploadFile = callWithCommon(File.uploadFile);
@@ -391,6 +396,22 @@ define([
         });
     };
 
+    funcs.openIntegrationChannel = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        var channel = md.integration;
+        if (typeof(channel) !== 'string' || channel.length !== Hash.ephemeralChannelLength) {
+            channel = Hash.createChannelId(true); // true indicates that it's an ephemeral channel
+        }
+        if (md.integration !== channel) {
+            md.integration = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        ctx.sframeChan.query('Q_INTEGRATION_OPENCHANNEL', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
+
     // CodeMirror
     funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);
 
@@ -426,6 +447,9 @@ define([
     funcs.handleNewFile = function (waitFor, config) {
         if (window.__CRYPTPAD_TEST__) { return; }
         var priv = ctx.metadataMgr.getPrivateData();
+        if (priv.isNewFile && priv.initialState) {
+            return void setTimeout(waitFor());
+        }
         if (priv.isNewFile) {
             var c = (priv.settings.general && priv.settings.general.creation) || {};
             // If this is a new file but we have a hash in the URL and pad creation screen is

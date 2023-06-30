@@ -136,6 +136,7 @@ var appIndexesToBuild = [
     'form',
     'poll',
     'whiteboard',
+    'diagram',
     'slide',
     'file',
     'calendar',

@@ -14,6 +14,7 @@ define([
     '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
+    '/common/outer/integration.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
     '/common/outer/profile.js',
@@ -33,7 +34,7 @@ define([
     '/components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
-             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
+             SF, Cursor, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
@@ -2472,6 +2473,9 @@ define([
                 store.modules['cursor'].leavePad(chanId);
             } catch (e) { console.error(e); }
             try {
+                store.modules['integration'].leavePad(chanId);
+            } catch (e) { console.error(e); }
+            try {
                 store.onlyoffice.leavePad(chanId);
             } catch (e) { console.error(e); }
 
@@ -2795,6 +2799,7 @@ define([
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
                 loadUniversal(Cursor, 'cursor', waitFor);
+                loadUniversal(Integration, 'integration', waitFor);
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
@@ -3110,6 +3115,7 @@ define([
                 // To be able to use all the features inside the pad, we need to
                 // initialize the chat (messenger) and the cursor modules.
                 loadUniversal(Cursor, 'cursor', function () {});
+                loadUniversal(Integration, 'integration', function () {});
                 loadUniversal(Messenger, 'messenger', function () {});
                 store.messenger = store.modules['messenger'];
 
@@ -3198,7 +3204,9 @@ define([
 
             // First tab, no user hash, no anon hash and this app doesn't need a drive
             // ==> don't create a drive
-            if (data.noDrive && !data.userHash && !data.anonHash) {
+            // Or "neverDrive" (integration into another platform?)
+            // ==> don't create a drive
+            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // if we can't properly initialize the noDrive mode, use normal mode
