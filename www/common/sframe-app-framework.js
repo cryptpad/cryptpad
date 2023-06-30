@@ -108,11 +108,13 @@ define([
         var contentGetter = function () { return UNINITIALIZED; };
         var cursorGetter;
         var normalize0 = function (x) { return x; };
+        var EMPTY = {};
 
         var normalize = function (x) {
             x = normalize0(x);
             if (Array.isArray(x)) {
                 var outa = Array.prototype.slice.call(x);
+                EMPTY = [];
                 if (typeof(outa[outa.length-1].metadata) === 'object') { outa.pop(); }
                 return outa;
             } else if (typeof(x) === 'object') {
@@ -239,7 +241,7 @@ define([
             var sNew = JSONSortify(newContent);
             if (sNew === JSONSortify(oldContent)) { return; }
             try {
-                if (sNew !== JSONSortify(normalize(oldContent || {}))) {
+                if (integration && sNew !== JSONSortify(normalize(oldContent || EMPTY))) {
                     evIntegrationSave.fire();
                 }
                 evContentUpdate.fire(newContent, waitFor);
