@@ -946,6 +946,7 @@ define([
         if (enabled) {
             (function () {
             var button = h('button.btn.btn-danger', Messages.mfa_revoke_button);
+            button.classList.add('disable-button');
             var $mfaRevokeBtn = $(button);
             var pwInput;
             var pwContainer = h('div.cp-password-container', [
@@ -1188,6 +1189,7 @@ define([
 
                     $content.append([
                         description,
+                        uriInput,
                         h('div.cp-settings-qr-container', [
                             qr,
                             h('div.cp-settings-qr-code', [
@@ -1195,8 +1197,7 @@ define([
                                 h('br'),
                                 confirmOTP
                             ])
-                        ]),
-                        uriInput
+                        ])
                     ]);
                 };
 
