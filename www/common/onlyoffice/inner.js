@@ -241,6 +241,11 @@ define([
                 type = APP.downloadType;
                 title = "download";
             }
+            if(title === "" && APP.startWithTemplate) {
+                var copyTitle = Messages._getKey('copy_title', [APP.startWithTemplate.content.metadata.title]);
+                common.getMetadataMgr().updateTitle(copyTitle);
+                title = copyTitle
+            }
             var file = {};
             switch(type) {
                 case 'doc':
