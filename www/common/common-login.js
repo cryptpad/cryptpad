@@ -297,7 +297,7 @@ define([
             register: isRegister,
             uname: uname
         };
-        if (ssoAuth && ssoAuth.name) { res.uname = ssoAuth.name; }
+        if (ssoAuth && ssoAuth.name) { uname = res.uname = ssoAuth.name; }
 
         var RT, blockKeys, blockUrl;
 
