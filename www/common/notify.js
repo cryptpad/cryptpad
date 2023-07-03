@@ -74,7 +74,6 @@ define(['/api/config'], function (ApiConfig) {
             return void console.error('document is not available in this context');
         }
         console.debug("creating favicon");
-        var fav = document.createElement('link');
         var attrs = {
             id: 'favicon',
             type: 'image/png',
@@ -83,25 +82,30 @@ define(['/api/config'], function (ApiConfig) {
             'data-alt-favicon': DEFAULT_ALT,
             href: DEFAULT_MAIN,
         };
-        Object.keys(attrs).forEach(function (k) {
-            fav.setAttribute(k, attrs[k]);
-        });
-        document.head.appendChild(fav);
+        if(!document.getElementById("favicon")) {
+            var fav = document.createElement('link');
+            Object.keys(attrs).forEach(function (k) {
+                fav.setAttribute(k, attrs[k]);
+            });
+            document.head.appendChild(fav);
+        }
         
-        var faviconLink = document.createElement('link');
-        attrs.href = attrs.href.replaceAll(".png", ".ico")
-        console.debug("ATTRS", attrs.href)
-        attrs.id = 'favicon-ico'
-        attrs.type = 'image/x-icon'
-        
-        delete attrs['data-main-favicon'];
-        delete attrs['data-alt-favicon'];
-        
-        Object.keys(attrs).forEach(function (k) {
-            faviconLink.setAttribute(k, attrs[k]);
-        });
-        
-        document.head.appendChild(faviconLink);
+        if(!document.getElementById("favicon-ico")) {
+            var faviconLink = document.createElement('link');
+            attrs.href = attrs.href.replaceAll(".png", ".ico")
+            console.debug("ATTRS", attrs.href)
+            attrs.id = 'favicon-ico'
+            attrs.type = 'image/x-icon'
+            
+            delete attrs['data-main-favicon'];
+            delete attrs['data-alt-favicon'];
+            
+            Object.keys(attrs).forEach(function (k) {
+                faviconLink.setAttribute(k, attrs[k]);
+            });
+            
+            document.head.appendChild(faviconLink);
+        }
     };
 
     if (document && !document.getElementById('favicon')) { createFavicon(); }
