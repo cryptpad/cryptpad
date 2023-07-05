@@ -1,0 +1,47 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+
+.tree_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+
+    .cp-tree {
+        color: @cryptpad_text_col;
+
+        li.cp-tree-line {
+            margin-left: 1em;
+        }
+
+        .cp-tree-line-container {
+            display: flex;
+            align-items: center;
+            height: 2em;
+
+            &.cp-tree-leaf {
+                margin-left: 2.0em;
+            }
+
+            i.cp-tree-carret {
+                font-size: 2em;
+                width: 1em;
+            }
+
+            i.cp-tree-icon {
+                font-size: 1.5em;
+                width: 1.5em;
+            }
+        }
+
+        .cp-tree-line-selectable {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+
+            &.cp-tree-selected {
+                background-color: @cp_drive-selected-bg;
+            }
+        }
+    }
+
+}
