@@ -695,7 +695,7 @@ To update from 4.9.0 to 4.10.0:
 
 ## Features
 
-As noted above, web standards and the browsers that implement them are constantly changing. Web applications like CryptPad which use new and advanced browser features are particularly prone to regressions even when we use browser features exactly as intended and advertized. The "Features" section of each release's notes typically highlights visible things, like clickable buttons or improvements to the interface. This point is included as a reminder that _regular maintenance is at least as important to an open-source software project_, even though it gets little attention and far less funding. The funding bodies that have generously supported our work typically award grants for research and the development of novel features, but we are sorely in need of increased support to allow us the flexibility to deal with unanticipated problems as they arise. If you are fortunate enough to have some disposable income and value the work that keeps CryptPad functional we would greatly appreciate a one-time or recurring donation to [our OpenCollative campaign](https://opencollective.com/cryptpad/contribute).
+As noted above, web standards and the browsers that implement them are constantly changing. Web applications like CryptPad which use new and advanced browser features are particularly prone to regressions even when we use browser features exactly as intended and advertised. The "Features" section of each release's notes typically highlights visible things, like clickable buttons or improvements to the interface. This point is included as a reminder that _regular maintenance is at least as important to an open-source software project_, even though it gets little attention and far less funding. The funding bodies that have generously supported our work typically award grants for research and the development of novel features, but we are sorely in need of increased support to allow us the flexibility to deal with unanticipated problems as they arise. If you are fortunate enough to have some disposable income and value the work that keeps CryptPad functional we would greatly appreciate a one-time or recurring donation to [our OpenCollative campaign](https://opencollective.com/cryptpad/contribute).
 
 * This release coincided the yearly seminar of [XWiki (our parent organization)](https://www.xwiki.com) which always features a day-long hackathon. This year our team was joined by [@aemi-dev](https://github.com/aemi-dev) who has been working as an intern within XWiki's product team. Together we worked on adding some data visualization to our recently introduced _Form_ app. The improvements include a timeline to visualize how many responses were submitted to the form during each day and bar charts for a variety of question types to complement the existing tally of results. There's still more work to be done in this direction, but we established some useful foundations during our relatively short session.
 * Frequent users of small screens will be pleased to hear that CryptPad's app toolbar now includes a button to collapse the upper segment of the toolbar which includes CryptPad's logo, the current document's title, status indicator (saved, editing, disconnected, etc.), and the user administration menu.
@@ -1258,7 +1258,7 @@ Finally, the "rebrand" part of this release:
 
 ## Bug fixes
 
-* We found andd fixed a regression in the slide app which caused newly created documents to be initialized without a title.
+* We found and fixed a regression in the slide app which caused newly created documents to be initialized without a title.
 * Thanks to a helpful user-report we were able to identify an issue in our rich text editor's _comments_ system that prevented iOS users from typing.
 
 # ZyzomysPedunculatus' revenge (3.25.1)
@@ -1485,7 +1485,7 @@ Up until now the configuration file found in `cryptpad/config/config.js` has bee
 
 We've started by making it possible to update storage settings from the _User storage_ section of the admin panel. Administrators can now update the default storage limit for users registered on the instance from the default quota of 50MB. It's also possible to allocate storage limits to particular users on the basis of their _Public Signing Key_, which can be found at the top of the _Accounts_ section on the settings page.  
 
-Storage limits configured in this way will supercede those set via the server's config file, such that any modifications to a quota already set in the file will be ignored once you have modified or removed that user's quota via the admin panel. Admins are also able to view the parameters of all existing custom quotas loaded from either source.  
+Storage limits configured in this way will supersede those set via the server's config file, such that any modifications to a quota already set in the file will be ignored once you have modified or removed that user's quota via the admin panel. Admins are also able to view the parameters of all existing custom quotas loaded from either source.  
 
 ### How to update
 
@@ -1578,7 +1578,7 @@ If you're only reading this for instructions on how to update your instance from
 * We've corrected a minor server issue in which it would respond to requests to destroy non-existent files with an E_NO_OWNERS error, rather than an ENOENT (doesn't exist) error. The client code interpreted this as the file existing without them having the rights to delete it, rather than realizing that it no longer existed. This made it more difficult to remove files from your drive since destruction would fail rather than be interpreted as unnecessary.
 * We now guard against race conditions in our internal _write-queue_ library, preventing a rare occurrence of a type error triggered by unknown circumstances.
 * We discovered that Firefox had enabled (by default) half of the functionality required to export sheets to an XLSX format. We interpreted the presence of this feature as sufficient cause to display XLSX as an export option, even though the export would fail if you tried to use it. The second half of the required functionality is available in Firefox, but requires specific HTTP headers to be sent by our server. We're currently testing the configuration parameters and expect to make XLSX export available on CryptPad.fr very soon, along with an update to our recommended configuration which would enable it on other instances.
-* Lastly, we discovered an incompatibility betweeen our "safe links" behaviour and the process of redirecting users to log in or register to access specific functionality. Users that were redirected from pads accessed with safe links were redirected to that safe link whether or not they had imported the pad's keys into their newly created drive. This could result in a temporary loss of access to the pad, even though its credentials were still stored within their browser. We've corrected the redirect process to preserve the full document credentials for after you have logged in.
+* Lastly, we discovered an incompatibility between our "safe links" behaviour and the process of redirecting users to log in or register to access specific functionality. Users that were redirected from pads accessed with safe links were redirected to that safe link whether or not they had imported the pad's keys into their newly created drive. This could result in a temporary loss of access to the pad, even though its credentials were still stored within their browser. We've corrected the redirect process to preserve the full document credentials for after you have logged in.
 
 # UplandMoa's revenge (3.20.1)
 
@@ -1878,7 +1878,7 @@ To update from **3.16.0** to **3.17.0**:
 * A race condition in our server which was introduced when we started validating cryptographic signatures in child processes made it such that incoming messages could be written to the database in a different order than they were received. We implemented a per-channel queue which should now guarantee their ordering.
 * It used to be that an error in the process of creating a thumbnail for an encrypted file upload would prevent the file upload from completing (and prevent future uploads in that session). We've added some guards to catch these errors and handle them appropriately, closing [#540](https://github.com/cryptpad/cryptpad/issues/540).
 * CryptPad builds some CSS on the client because the source files (written in LESS) are smaller than the produced CSS. This results in faster load times for users with slow network connections. We identified and fixed bug in the loader which caused some files to be included in the compiled output multiple times, resulting in faster load times.
-* We addressed a minor bug in the drive's item sorting logic which was triggered when displaying inverse sortings.
+* We addressed a minor bug in the drive's item sorting logic which was triggered when displaying inverse sorting.
 * Our last release introduced a set of custom styles for the mermaidjs integration in our code editor and featured one style which was not applied consistently across the wide variety of elements that could appear in mermaid graphs. As such, we've reverted the style (a color change in mermaid `graph` charts).
 * In the process of implementing comments in our rich text editor we realized that there were some bugs in our cursor recovery code (used to maintain your cursor position when multiple people are typing in the same document). We made some small patches to address a few very specific edge cases, but it's possible the improvements will have a broader effect with cursors in other situations.
 * We caught (and fixed) a few regressions in the _access_ and _properties_ modals that were introduced in the previous release.
@@ -2000,7 +2000,7 @@ We're very happy to announce a major update to our kanban application! We've mad
 * tags on cards and the ability to filter cards by tags at the top of the application
 * indicators to show if a card is being modified by another user while you are editing it
 * the ability to toggle between an 'overview mode' which hides everything but your cards titles and a full mode which shows everything
-* vertical scrolling for very tall columns, and horizontal scrolling for columns that don't fit on your screen (intead of reflowing to the next line)
+* vertical scrolling for very tall columns, and horizontal scrolling for columns that don't fit on your screen (instead of reflowing to the next line)
 * a smaller palette of pre-chosen colors for cards and boards instead of a color-picker, to make it easier to choose matching colors for tasks
 * the ability to drag cards and boards to the trash instead of having to click a small X and confirm their deletion
 
@@ -2496,7 +2496,7 @@ This is a pretty basic release:
 * The "pad creation modal" (Ctrl+E) is now working everywhere in the drive.
 * We've fixed the share button for unregistered users (https://github.com/cryptpad/cryptpad/issues/457).
 * We've fixed an issue with newly created kanban items replacing existing ones.
-* Transfering/offering pad ownership from a team to yourself is now working properly.
+* Transferring/offering pad ownership from a team to yourself is now working properly.
 
 # Dodo release (v3.3.0)
 
@@ -2688,7 +2688,7 @@ During this development period we performed an extensive audit of our existing f
     * this allows users with view-only access rights to send you a message to request edit rights
     * the same functionality is offered for older pads if you happen to know the mailbox address for an owner listed in the "owners" field
   * it was already possible to delegate access to a friend via the "share modal", but we now support a special message type for templates so that the pad will be stored as a template in the receiving user's drive (if accepted)
-  * the "availability" tab of the "properties" modal for any particalar pad now shows the display name of the pad's owner if they are your friend. Additionally we now support displaying multiple owners rather than just "yourself" or "somebody else"
+  * the "availability" tab of the "properties" modal for any particular pad now shows the display name of the pad's owner if they are your friend. Additionally we now support displaying multiple owners rather than just "yourself" or "somebody else"
 * File and CryptDrive workflows
   * we now support folder upload in any browser offering the required APIs
   * it's now possible to export files and folders (as zips) directly from your CryptDrive
@@ -2926,7 +2926,7 @@ For this release cycle we decided to fix some deep bugs and reduce the likelihoo
   * run the migration to optimize for expiring channels:
     * From your CryptPad source directory, run `node scripts/migrations/migrate-tasks-v1.js`
 * Administrators who want to restrict the translation languages available on their server can do so by defining an array of available language codes.
-  * In your `cryptpad/customize/application_config.js`, define an array containing the langauges you want:
+  * In your `cryptpad/customize/application_config.js`, define an array containing the languages you want:
     * for Example: `AppConfig.availableLanguages = ['en', 'de', 'fr']`
 * Finally, some administrators requested the ability to remove any references to our crowdfunding campaign. CryptPad is open-source, so naturally this was already possible, but we've made it easier.
   * In your `cryptpad/customize/application_config.js`, set `AppConfig.disableCrowdfundingMessages = true`.
@@ -3195,7 +3195,7 @@ This work was done over a short period, and we're releasing it now so that users
 * Characters inserted into rich text pads were sometimes dropped due to a race condition between CKEditor and ChainPad, but this asynchronous behaviour has been resolved. As such the editor should be much more reliable.
 * Deleting chat history from the server now removes it from your chat interface and that of remote messengers, where it previously would require a reload of the interface to see the correct chat history.
 * We now correctly set owners of a shared chat channel such that either chat participant in a one-to-one room can delete the history.
-* If you request history with a `lastKnownHash` which is not in the history, the server informs you that it is not there via a direct message. Clients fall back to a classic full retreival of the history. Previously this would fail, and print a message to the server's stdout.
+* If you request history with a `lastKnownHash` which is not in the history, the server informs you that it is not there via a direct message. Clients fall back to a classic full retrieval of the history. Previously this would fail, and print a message to the server's stdout.
 * Firefox users may have noticed that when they clicked the dropdown menus for styles in the CKEditor toolbar, their scrollbar would jump to the top of the document. Their scroll position is now preserved in cases where it would previously have been disrupted.
 
 # Manatee release (v2.12.0)
@@ -3232,7 +3232,7 @@ This release continued the work on better customization features for community i
 ## Update notes
 
 * This is a simple release. Just download the latest commits and update your cache-busting string.
-* Customized instances may require additionnal changes in order to make customization easier to maintain in the future.
+* Customized instances may require additional changes in order to make customization easier to maintain in the future.
   * The static pages content (home page, FAQ, contact, privacy, etc.) has been moved from `./customize.dist/pages.js` to a `./customize.dist/pages/` directory, containing one file per page. This new structure allows administrators to override only some pages instead of all the pages at once.
   * To override a page, just make a copy of its .js file from `./customize.dist/pages` to a `./customize/pages` and make your changes.
 
@@ -3282,7 +3282,7 @@ Simply change the text assigned to `home_host` with a blurb about your own organ
 
 * We've updated our features page to indicate what users get by purchasing a premium account. You can visit our accounts page directly from this list with the click of a button.
 * We've updated our home page to explain more about what CryptPad is.
-* As mentioned above, we've made all of our translation files overrideable.
+* As mentioned above, we've made all of our translation files overridable.
 * We've made it easier to get your data out of CryptPad, by implementing a complete export of your CryptDrive's content as a zip file. This feature is available on the _settings page_.
 * Shared folders now support password protection.
 
@@ -3422,7 +3422,7 @@ While we will still be unable to help you if you have forgotten your password, t
 ### Features
 
 * v2.5.0 introduces support for what we have called _modern users_.
-  * New registrations will use the new APIs that we've built to facillitate the ability to change your account password.
+  * New registrations will use the new APIs that we've built to facilitate the ability to change your account password.
   * _Legacy registrations_ will continue to function as they always have.
   * Changing your password (via the settings page) will migrate old user accounts to the new system.
   * We'll publish a blog post in the coming weeks to explain in depth how this functionality is implemented.
@@ -3578,7 +3578,7 @@ We wanted to update CryptPad's appearance once more, adopting the colors from ou
 
 ## Update notes
 
-This release coincides with the introduction of new APIs in ChainPad, so we recommend that adminstrators update their clientside dependencies by running `bower update`.  
+This release coincides with the introduction of new APIs in ChainPad, so we recommend that administrators update their clientside dependencies by running `bower update`.  
 
 As recent updates have updated serverside dependencies, we also recommend that you run `npm update` and _restart your server_.  
 

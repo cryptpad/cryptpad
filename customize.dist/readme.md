@@ -21,5 +21,5 @@ to pull from (and make pull requests to (!) the git repository.
 * `/share/` implements an iframe RPC which allows multiple domains to access the same localStorage
 * `/src/` contains source files for html and css (in the form of html templates and .less stylesheets)
 
-All other content which is placed in this directory will be referencable at the `/customize/`
+All other content which is placed in this directory will be referenceable at the `/customize/`
 URL location.

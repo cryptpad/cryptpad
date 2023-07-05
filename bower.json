@@ -4,7 +4,7 @@
   "authors": [
     "Caleb James DeLisle <cjd@cjdns.fr>"
   ],
-  "description": "realtime collaborative visual editor with zero knowlege server",
+  "description": "realtime collaborative visual editor with zero knowledge server",
   "main": "www/index.html",
   "moduleType": [
     "node"
