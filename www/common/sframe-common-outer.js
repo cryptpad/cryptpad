@@ -1152,6 +1152,12 @@ define([
                     Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
                 });
 
+                sframeChan.on('Q_GET_FOLDERS_LIST', function (data, cb) {
+                    Cryptpad.getFoldersList(cb);
+                });
+
+
+
                 sframeChan.on('Q_DELETE_OWNED', function (data, cb) {
                     Cryptpad.userObjectCommand({
                         cmd: 'deleteOwned',
@@ -1728,11 +1734,6 @@ define([
                     });
                 });
             });
-
-            sframeChan.on('Q_GET_FOLDERS_LIST', function (data, cb) {
-                Cryptpad.getFoldersList(cb);
-            });
-
 
             sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {
                 Cryptpad.changeUserPassword(Cryptget, edPublic, data, cb);

@@ -342,72 +342,10 @@ define([
                 ])
             ];
 
-            var defaultPath = 'Drive/Images/Example';
+            var defaultPath = 'Drive'; // XXX
             defaultPath.split('/').forEach(function(folder) {
                 breadcrumbContent.push(h('li.breadcrumb-item', folder));
             });
-
-            var drives =
-            [
-                {
-                  name: "drive",
-                  pathName: "root",
-                  isShared: false,
-                  children: [
-                    {
-                      name: "Folder 1",
-                      pathName: "Folder 1",
-                      isShared: false,
-                      children: [
-                        {
-                          name: "Subfolder1",
-                          pathName: "Subfolder1",
-                          isShared: false,
-                          children: []
-                        },
-                        {
-                          name: "Subfolder2",
-                          pathName: "Subfolder2",
-                          isShared: false,
-                                                                   children: []
-                        }
-                      ]
-                    },
-                    {
-                      name: "Shared Folder",
-                      pathName: ["id675478998765", "root"],
-                      isShared: true,
-                      children: [
-                        {
-                          name: "SubFolderInSharedFolder",
-                          pathName: "SubFolderInSharedFolder",
-                          isShared: false,
-                                                                   children: []
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  name: "teamID1",
-                  isShared: false,
-                  pathName: "teamID1",
-                  children: [
-                    {
-                      name: "FolderA",
-                      pathName: "FolderA",
-                      isShared: false,
-                                                               children: []
-                    },
-                    {
-                      name: "FolderB",
-                      pathName: "FolderB",
-                      isShared: false,
-                                                               children: []
-                    }
-                  ]
-                }
-            ];
 
             let pathContainer;
 
@@ -460,9 +398,10 @@ define([
             });
 
             // Tree initializer
+            var selectedPath = false;
             $content.find('button').click(function() {
                 $(this).hide();
-                
+
                 // Just remove the breadcrumb
                 var $container = $(pathContainer);
                 $container.empty();
@@ -476,9 +415,8 @@ define([
                     $container.append($tree);
 
                     var $selection = false;
-                    var selectedPath = false;
 
-                    var createTreeLine = function ($parent, item, parentPath) {
+                    var createTreeLine = function ($parent, item, parentPath, itemTeamId) {
                         var isOpen = false;
 
                         var $line = $('<li class="cp-tree-line">');
@@ -528,7 +466,7 @@ define([
                             var $ul = $('<ul>').hide();
                             $line.append($ul);
                             item.children.forEach(function (child) {
-                                createTreeLine($ul, child, itemPath);
+                                createTreeLine($ul, child, itemPath, itemTeamId);
                             });
                         }
 
@@ -539,13 +477,14 @@ define([
                             }
                             $selection = $selectable;
                             selectedPath = itemPath;
+                            teamId = itemTeamId;
                             console.log(itemPath.join('/'));
                         });
-                    }
+                    };
 
                     drives.forEach(function (item) {
-                        createTreeLine($tree, item, []);
-                    })
+                        createTreeLine($tree, item, [], item.teamId);
+                    });
                 });
             });
 
@@ -573,6 +512,7 @@ define([
                     password: password,
                     owned: owned,
                     forceSave: forceSave,
+                    path: selectedPath || undefined,
                     alt: alt,
                 });
             });
@@ -700,6 +640,9 @@ define([
                         owned = obj.owned;
                         forceSave = obj.forceSave;
                         alt = obj.alt;
+                        if (obj.path) {
+                            e.path = obj.path;
+                        }
                         finish();
                     }, preview);
                 }
