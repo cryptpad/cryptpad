@@ -471,6 +471,12 @@ define([
                         }
 
                         $selectable.click(function() {
+                            if ($selection === $selectable) {
+                                $selection.removeClass('cp-tree-selected');
+                                selectedPath = false;
+                                teamId = config.teamId;
+                                return;
+                            }
                             $selectable.addClass('cp-tree-selected');
                             if ($selection) {
                                 $selection.removeClass('cp-tree-selected');
@@ -478,7 +484,6 @@ define([
                             $selection = $selectable;
                             selectedPath = itemPath;
                             teamId = itemTeamId;
-                            console.log(itemPath.join('/'));
                         });
                     };
 
