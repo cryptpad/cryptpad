@@ -1135,7 +1135,7 @@ To update from 4.1.0 to 4.2.0:
 * Server administrators can now refresh the _performance_ table on the admin panel without reloading the page.
 * We've begun working on a _checkup_ page for CryptPad to help administrators identify and fix common misconfigurations of the platform. It's still in a very basic state, but we hope to to make it a core part of the server installation guide that is under development.
 * The kanban app now supports import like the rest of our apps and rejects content of any file-type other than JSON.
-* We've dropped support for a very old migration that handled user accounts that had not been accessed fo several years. This should make everyone else's account slightly faster.
+* We've dropped support for a very old migration that handled user accounts that had not been accessed for several years. This should make everyone else's account slightly faster.
 
 ## Bug fixes
 
