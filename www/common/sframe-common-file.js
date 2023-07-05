@@ -336,11 +336,6 @@ define([
 
             var manualStore = createManualStore();
 
-/*
-            common.getFoldersList(function (tree) {
-                console.warn(tree);
-            });
-*/
             var breadcrumbContent = [
                 h('li.breadcrumb-item', [
                     h('i.fa.fa-folder')
@@ -471,82 +466,87 @@ define([
                 // Just remove the breadcrumb
                 var $container = $(pathContainer);
                 $container.empty();
-                
-                // ... and here we go!
-                var $tree = $('<ul class="cp-tree">');
-                $container.append($tree);
 
-                var $selection = false;
-                var selectedPath = false;
+                // And now we load the drives' tree
+                common.getFoldersList(function (drives) {
+                    console.warn(drives);
 
-                var createTreeLine = function ($parent, item, parentPath) {
-                    var isOpen = false;
-                    
-                    var $line = $('<li class="cp-tree-line">');
-                    $parent.append($line);
+                    // ... and here we go!
+                    var $tree = $('<ul class="cp-tree">');
+                    $container.append($tree);
 
-                    var $lineContainer = $('<span class="cp-tree-line-container">');
-                    $line.append($lineContainer);
+                    var $selection = false;
+                    var selectedPath = false;
 
-                    var itemPath = parentPath.slice();
-                    if (Array.isArray(item.pathName)) {
-                        Array.prototype.push.apply(itemPath, item.pathName);
-                    } else {
-                        itemPath.push(item.pathName);
-                    }
+                    var createTreeLine = function ($parent, item, parentPath) {
+                        var isOpen = false;
 
-                    if (item.children.length > 0) {
-                        var $carret = $('<i class="fa fa-angle-right cp-tree-carret"></i>');
-                        $lineContainer.append($carret);
+                        var $line = $('<li class="cp-tree-line">');
+                        $parent.append($line);
 
-                        // Open / Close the branch
-                        $carret.click(function() {
-                            isOpen = !isOpen;
-                            $carret.removeClass(isOpen ? 'fa-angle-right' : 'fa-angle-down');
-                            $carret.addClass(isOpen ? 'fa-angle-down' : 'fa-angle-right');
-                            if (isOpen) {
-                                $line.find('> ul').show();
-                            } else {
-                                $line.find('> ul').hide();
-                            }
-                        });
+                        var $lineContainer = $('<span class="cp-tree-line-container">');
+                        $line.append($lineContainer);
 
-                    } else {
-                        $lineContainer.addClass('cp-tree-leaf');
-                    }
-
-                    var $selectable = $('<span class="cp-tree-line-selectable">');
-                    $lineContainer.append($selectable);
-
-                    var $icon = $('<i class="cptools cp-tree-icon"></i>');
-                    $icon.addClass(item.isShared ? 'cptools-shared-folder' : 'cptools-folder');
-                    $selectable.append($icon);
-                    var $folderName = $('<span>').text(item.name);
-                    $selectable.append($folderName);
-                    
-                    // Create the children nodes
-                    if (item.children.length > 0) {
-                        var $ul = $('<ul>').hide();
-                        $line.append($ul);
-                        item.children.forEach(function (child) {
-                            createTreeLine($ul, child, itemPath);
-                        });
-                    }
-
-                    $selectable.click(function() {
-                        $selectable.addClass('cp-tree-selected');
-                        if ($selection) {
-                            $selection.removeClass('cp-tree-selected');
+                        var itemPath = parentPath.slice();
+                        if (Array.isArray(item.pathName)) {
+                            Array.prototype.push.apply(itemPath, item.pathName);
+                        } else {
+                            itemPath.push(item.pathName);
                         }
-                        $selection = $selectable;
-                        selectedPath = itemPath;
-                        console.log(itemPath.join('/'));
-                    });
-                }
 
-                drives.forEach(function (item) {
-                    createTreeLine($tree, item, []);
-                })
+                        if (item.children.length > 0) {
+                            var $carret = $('<i class="fa fa-angle-right cp-tree-carret"></i>');
+                            $lineContainer.append($carret);
+
+                            // Open / Close the branch
+                            $carret.click(function() {
+                                isOpen = !isOpen;
+                                $carret.removeClass(isOpen ? 'fa-angle-right' : 'fa-angle-down');
+                                $carret.addClass(isOpen ? 'fa-angle-down' : 'fa-angle-right');
+                                if (isOpen) {
+                                    $line.find('> ul').show();
+                                } else {
+                                    $line.find('> ul').hide();
+                                }
+                            });
+
+                        } else {
+                            $lineContainer.addClass('cp-tree-leaf');
+                        }
+
+                        var $selectable = $('<span class="cp-tree-line-selectable">');
+                        $lineContainer.append($selectable);
+
+                        var $icon = $('<i class="cptools cp-tree-icon"></i>');
+                        $icon.addClass(item.isShared ? 'cptools-shared-folder' : 'cptools-folder');
+                        $selectable.append($icon);
+                        var $folderName = $('<span>').text(item.name);
+                        $selectable.append($folderName);
+
+                        // Create the children nodes
+                        if (item.children.length > 0) {
+                            var $ul = $('<ul>').hide();
+                            $line.append($ul);
+                            item.children.forEach(function (child) {
+                                createTreeLine($ul, child, itemPath);
+                            });
+                        }
+
+                        $selectable.click(function() {
+                            $selectable.addClass('cp-tree-selected');
+                            if ($selection) {
+                                $selection.removeClass('cp-tree-selected');
+                            }
+                            $selection = $selectable;
+                            selectedPath = itemPath;
+                            console.log(itemPath.join('/'));
+                        });
+                    }
+
+                    drives.forEach(function (item) {
+                        createTreeLine($tree, item, []);
+                    })
+                });
             });
 
             UI.confirm(content, function (yes) {
