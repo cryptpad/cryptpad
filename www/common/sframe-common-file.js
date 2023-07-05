@@ -533,13 +533,18 @@ define([
                         }
 
                         $selectable.click(function() {
+                            if ($selection === $selectable) {
+                                $selection.removeClass('cp-tree-selected');
+                                selectedPath = false;
+                                teamId = config.teamId;
+                                return;
+                            }
                             $selectable.addClass('cp-tree-selected');
                             if ($selection) {
                                 $selection.removeClass('cp-tree-selected');
                             }
                             $selection = $selectable;
                             selectedPath = itemPath;
-                            console.log(itemPath.join('/'));
                         });
                     }
 
