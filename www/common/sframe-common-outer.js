@@ -1729,6 +1729,11 @@ define([
                 });
             });
 
+            sframeChan.on('Q_GET_FOLDERS_LIST', function (data, cb) {
+                Cryptpad.getFoldersList(cb);
+            });
+
+
             sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {
                 Cryptpad.changeUserPassword(Cryptget, edPublic, data, cb);
             });

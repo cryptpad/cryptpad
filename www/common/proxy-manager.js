@@ -1301,6 +1301,27 @@ define([
         });
     };
 
+    var getTree = function (Env) {
+        var tree = {};
+        Env.user.userObject.getTree(tree);
+        var findShared = function (obj) {
+            Object.keys(obj).forEach(function (key) {
+                var el = obj[key];
+                if (typeof(el) === "object") { return findShared(el); }
+                if (!Env.folders[el]) { return; }
+                var d = getSharedFolderData(Env, el);
+                var t = obj[key] = {};
+                Env.folders[el].userObject.getTree(t);
+                t[Util.uid()] = {
+                    sf: true,
+                    title: d.title
+                };
+            });
+        };
+        findShared(tree);
+        return tree;
+    };
+
     var create = function (proxy, data, uoConfig) {
         var Env = {
             pinPads: data.pin,
@@ -1354,6 +1375,7 @@ define([
             getTagsList: callWithEnv(getTagsList),
             getSecureFilesList: callWithEnv(getSecureFilesList),
             getSharedFolderData: callWithEnv(getSharedFolderData),
+            getTree: callWithEnv(getTree),
             // Store
             getChannelsList: callWithEnv(getChannelsList),
             addPad: callWithEnv(addPad),

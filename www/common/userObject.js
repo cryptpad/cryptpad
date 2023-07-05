@@ -770,6 +770,19 @@ define([
             }).map(function (k) { return Number(k); });
         };
 
+        // Get tree with folders only
+        exp.getTree = function (tree, root) {
+            root = root || files[ROOT];
+            for (var e in root) {
+                if (isSharedFolder(root[e])) {
+                    tree[e] = root[e];
+                } else if (isFolder(root[e])) {
+                    tree[e] = {};
+                    exp.getTree(tree[e], root[e]);
+                }
+            }
+        };
+
         /**
          * OPERATIONS
          */

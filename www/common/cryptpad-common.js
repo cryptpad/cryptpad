@@ -901,6 +901,10 @@ define([
         });
     };
 
+    common.getFoldersList = function (cb) {
+        postMessage('GET_FOLDERS_LIST', null, cb);
+    };
+
     var fixPadMetadata = function (parsed, copy) {
         var meta;
         if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {

@@ -522,6 +522,12 @@ define([
         });
     };
 
+    funcs.getFoldersList = function (cb) {
+        ctx.sframeChan.query('Q_GET_FOLDERS_LIST', null, function (err, data) {
+            cb(data);
+        });
+    };
+
     // href is optional here: if not provided, we use the href of the current tab
     funcs.getPadAttribute = function (key, cb, href) {
         ctx.sframeChan.query('Q_GET_PAD_ATTRIBUTE', {

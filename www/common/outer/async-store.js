@@ -1328,6 +1328,21 @@ define([
             cb(list);
         };
 
+        Store.getFoldersList = function (clientId, data, cb) {
+            var all = {};
+            var teamModule = store.modules['team'];
+            var allTeams = teamModule.getTeamsData();
+            getAllStores().forEach(function (s) {
+                var key = "MyDrive"; // XXX
+                if (s.id) {
+                    if (allTeams[s.id]) { key = allTeams[s.id].name; }
+                    else { return; }
+                }
+                all[key] = s.manager.getTree(cb);
+            });
+            cb(all);
+        };
+
         // Get the first pad we can find in any of our drives and return its file data
         // NOTE: This is currently only used for template: this won't search inside shared folders
         Store.getPadData = function (clientId, id, cb) {

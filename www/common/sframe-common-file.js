@@ -336,6 +336,10 @@ define([
 
             var manualStore = createManualStore();
 
+            common.getFoldersList(function (tree) {
+                console.warn(tree);
+            });
+
             // Ask for name, password and owner
             var content = h('div', [
                 h('h4', Messages.upload_modal_title),
