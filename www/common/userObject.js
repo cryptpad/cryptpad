@@ -776,7 +776,7 @@ define([
             root = root || files[ROOT];
             for (var e in root) {
                 if (isSharedFolder(root[e])) {
-                    tree.push(root[e]);
+                    tree.push(`${root[e]}|${e}`);
                 } else if (isFolder(root[e])) {
                     tree.push({
                         name: e,

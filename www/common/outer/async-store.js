@@ -1341,6 +1341,7 @@ define([
                 all.push({
                     isShared: false,
                     name: name,
+                    teamId: s.id,
                     pathName: 'root',
                     children: s.manager.getTree()
                 });

@@ -1306,13 +1306,16 @@ define([
         var findShared = function (arr) {
             arr.forEach(function (el, i) {
                 if (typeof(el) === "object") { return findShared(el.children); }
-                if (!Env.folders[el]) { return; }
-                var d = getSharedFolderData(Env, el);
+                var sfArr = el.split('|');
+                var sfId = sfArr[0];
+                var sfPath = sfArr[1];
+                if (!Env.folders[sfId]) { return; }
+                var d = getSharedFolderData(Env, sfId);
                 arr[i] = {
                     isShared: true,
                     name: d.title,
-                    pathName: [el, Env.user.userObject.ROOT],
-                    children: Env.folders[el].userObject.getTree()
+                    pathName: [sfPath, Env.user.userObject.ROOT],
+                    children: Env.folders[sfId].userObject.getTree()
                 };
             });
         };
