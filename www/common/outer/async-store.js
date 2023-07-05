@@ -1329,16 +1329,21 @@ define([
         };
 
         Store.getFoldersList = function (clientId, data, cb) {
-            var all = {};
+            var all = [];
             var teamModule = store.modules['team'];
             var allTeams = teamModule.getTeamsData();
             getAllStores().forEach(function (s) {
-                var key = "MyDrive"; // XXX
+                var name = "MyDrive"; // XXX
                 if (s.id) {
-                    if (allTeams[s.id]) { key = allTeams[s.id].name; }
+                    if (allTeams[s.id]) { name = allTeams[s.id].name; }
                     else { return; }
                 }
-                all[key] = s.manager.getTree(cb);
+                all.push({
+                    isShared: false,
+                    name: name,
+                    pathName: 'root',
+                    children: s.manager.getTree()
+                });
             });
             cb(all);
         };

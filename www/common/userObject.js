@@ -771,16 +771,22 @@ define([
         };
 
         // Get tree with folders only
-        exp.getTree = function (tree, root) {
+        exp.getTree = function (root) {
+            var tree = [];
             root = root || files[ROOT];
             for (var e in root) {
                 if (isSharedFolder(root[e])) {
-                    tree[e] = root[e];
+                    tree.push(root[e]);
                 } else if (isFolder(root[e])) {
-                    tree[e] = {};
-                    exp.getTree(tree[e], root[e]);
+                    tree.push({
+                        name: e,
+                        pathName: e,
+                        isShared: false,
+                        children: exp.getTree(root[e])
+                    });
                 }
             }
+            return tree;
         };
 
         /**

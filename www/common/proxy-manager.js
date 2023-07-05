@@ -1302,19 +1302,17 @@ define([
     };
 
     var getTree = function (Env) {
-        var tree = {};
-        Env.user.userObject.getTree(tree);
-        var findShared = function (obj) {
-            Object.keys(obj).forEach(function (key) {
-                var el = obj[key];
-                if (typeof(el) === "object") { return findShared(el); }
+        var tree = Env.user.userObject.getTree();
+        var findShared = function (arr) {
+            arr.forEach(function (el, i) {
+                if (typeof(el) === "object") { return findShared(el.children); }
                 if (!Env.folders[el]) { return; }
                 var d = getSharedFolderData(Env, el);
-                var t = obj[key] = {};
-                Env.folders[el].userObject.getTree(t);
-                t[Util.uid()] = {
-                    sf: true,
-                    title: d.title
+                arr[i] = {
+                    isShared: true,
+                    name: d.title,
+                    pathName: [el, Env.user.userObject.ROOT],
+                    children: Env.folders[el].userObject.getTree()
                 };
             });
         };
