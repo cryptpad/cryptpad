@@ -336,9 +336,85 @@ define([
 
             var manualStore = createManualStore();
 
+/*
             common.getFoldersList(function (tree) {
                 console.warn(tree);
             });
+*/
+            var breadcrumbContent = [
+                h('li.breadcrumb-item', [
+                    h('i.fa.fa-folder')
+                ])
+            ];
+
+            var defaultPath = 'Drive/Images/Example';
+            defaultPath.split('/').forEach(function(folder) {
+                breadcrumbContent.push(h('li.breadcrumb-item', folder));
+            });
+
+            var drives =
+            [
+                {
+                  name: "drive",
+                  pathName: "root",
+                  isShared: false,
+                  children: [
+                    {
+                      name: "Folder 1",
+                      pathName: "Folder 1",
+                      isShared: false,
+                      children: [
+                        {
+                          name: "Subfolder1",
+                          pathName: "Subfolder1",
+                          isShared: false,
+                          children: []
+                        },
+                        {
+                          name: "Subfolder2",
+                          pathName: "Subfolder2",
+                          isShared: false,
+                                                                   children: []
+                        }
+                      ]
+                    },
+                    {
+                      name: "Shared Folder",
+                      pathName: ["id675478998765", "root"],
+                      isShared: true,
+                      children: [
+                        {
+                          name: "SubFolderInSharedFolder",
+                          pathName: "SubFolderInSharedFolder",
+                          isShared: false,
+                                                                   children: []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  name: "teamID1",
+                  isShared: false,
+                  pathName: "teamID1",
+                  children: [
+                    {
+                      name: "FolderA",
+                      pathName: "FolderA",
+                      isShared: false,
+                                                               children: []
+                    },
+                    {
+                      name: "FolderB",
+                      pathName: "FolderB",
+                      isShared: false,
+                                                               children: []
+                    }
+                  ]
+                }
+            ];
+
+            let pathContainer;
 
             // Ask for name, password and owner
             var content = h('div', [
@@ -359,7 +435,23 @@ define([
                     UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, modalState.owned),
                     createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                 ]),
-                manualStore
+                manualStore,
+                h('div', {
+                    style: 'display:flex;'
+                    },[
+                    pathContainer = h('div', {
+                        'aria-label': 'breadcrumb',
+                        style: 'display:inline-flex;flex-grow:1;align-items:center;justify-content:space-between;padding:0;'
+                    }, [
+                        h('ol.breadcrumb', {
+                            style: 'width:100%;margin:0;'
+                        }, breadcrumbContent)
+                    ]),
+                    h('button.btn.btn-primary', [
+                        h('i.fa.fa-folder'),
+                        h('span', 'Choose')
+                    ])
+                ])
             ]);
 
             var $content = $(content);
@@ -370,6 +462,91 @@ define([
                 } else {
                     $(content).find('#cp-upload-store').prop('disabled', false);
                 }
+            });
+
+            // Tree initializer
+            $content.find('button').click(function() {
+                $(this).hide();
+                
+                // Just remove the breadcrumb
+                var $container = $(pathContainer);
+                $container.empty();
+                
+                // ... and here we go!
+                var $tree = $('<ul class="cp-tree">');
+                $container.append($tree);
+
+                var $selection = false;
+                var selectedPath = false;
+
+                var createTreeLine = function ($parent, item, parentPath) {
+                    var isOpen = false;
+                    
+                    var $line = $('<li class="cp-tree-line">');
+                    $parent.append($line);
+
+                    var $lineContainer = $('<span class="cp-tree-line-container">');
+                    $line.append($lineContainer);
+
+                    var itemPath = parentPath.slice();
+                    if (Array.isArray(item.pathName)) {
+                        Array.prototype.push.apply(itemPath, item.pathName);
+                    } else {
+                        itemPath.push(item.pathName);
+                    }
+
+                    if (item.children.length > 0) {
+                        var $carret = $('<i class="fa fa-angle-right cp-tree-carret"></i>');
+                        $lineContainer.append($carret);
+
+                        // Open / Close the branch
+                        $carret.click(function() {
+                            isOpen = !isOpen;
+                            $carret.removeClass(isOpen ? 'fa-angle-right' : 'fa-angle-down');
+                            $carret.addClass(isOpen ? 'fa-angle-down' : 'fa-angle-right');
+                            if (isOpen) {
+                                $line.find('> ul').show();
+                            } else {
+                                $line.find('> ul').hide();
+                            }
+                        });
+
+                    } else {
+                        $lineContainer.addClass('cp-tree-leaf');
+                    }
+
+                    var $selectable = $('<span class="cp-tree-line-selectable">');
+                    $lineContainer.append($selectable);
+
+                    var $icon = $('<i class="cptools cp-tree-icon"></i>');
+                    $icon.addClass(item.isShared ? 'cptools-shared-folder' : 'cptools-folder');
+                    $selectable.append($icon);
+                    var $folderName = $('<span>').text(item.name);
+                    $selectable.append($folderName);
+                    
+                    // Create the children nodes
+                    if (item.children.length > 0) {
+                        var $ul = $('<ul>').hide();
+                        $line.append($ul);
+                        item.children.forEach(function (child) {
+                            createTreeLine($ul, child, itemPath);
+                        });
+                    }
+
+                    $selectable.click(function() {
+                        $selectable.addClass('cp-tree-selected');
+                        if ($selection) {
+                            $selection.removeClass('cp-tree-selected');
+                        }
+                        $selection = $selectable;
+                        selectedPath = itemPath;
+                        console.log(itemPath.join('/'));
+                    });
+                }
+
+                drives.forEach(function (item) {
+                    createTreeLine($tree, item, []);
+                })
             });
 
             UI.confirm(content, function (yes) {
