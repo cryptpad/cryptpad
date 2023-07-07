@@ -1,15 +1,15 @@
 # Multistage build to reduce image size and increase security
 FROM node:lts-slim AS build
 
-# Install requirements to clone repository and install deps
+# Install requirements for dependencies management
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -yq git
 RUN npm install -g bower
 
-# Create folder for cryptpad
+# Create folder for CryptPad
 RUN mkdir /cryptpad
 WORKDIR /cryptpad
 
-# Get cryptpad from repository submodule
+# Copy CryptPad source code to the container
 COPY . /cryptpad
 
 RUN sed -i "s@//httpAddress: '::'@httpAddress: '0.0.0.0'@" /cryptpad/config/config.example.js
@@ -20,10 +20,10 @@ RUN npm install --production \
     && npm install -g bower \
     && bower install --allow-root
 
-# Create actual cryptpad image
+# Create actual CryptPad image
 FROM node:lts-slim
 
-# Create user and group for cryptpad so it does not run as root
+# Create user and group for CryptPad so it does not run as root
 RUN groupadd cryptpad -g 4001
 RUN useradd cryptpad -u 4001 -g 4001 -d /cryptpad
 
