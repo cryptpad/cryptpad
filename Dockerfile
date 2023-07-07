@@ -1,10 +1,6 @@
 # Multistage build to reduce image size and increase security
 FROM node:lts-slim AS build
 
-# Install requirements for dependencies management
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt install -yq git
-RUN npm install -g bower
-
 # Create folder for CryptPad
 RUN mkdir /cryptpad
 WORKDIR /cryptpad
@@ -54,4 +50,3 @@ EXPOSE 3000 3001
 
 # Run cryptpad on startup
 CMD ["npm", "start"]
-
