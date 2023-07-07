@@ -22,7 +22,9 @@ The most recent version and all past release notes can be found [here](https://g
 
 ## Setup using Docker
 
-See [CryptPad-Docker](https://github.com/xwiki-labs/cryptpad-docker) repository for details on how to get up-and-running with CryptPad in Docker. This repository is maintained by the community and not officially supported.
+You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files at the root of this repository. We also publish every release on [Docker Hub](https://hub.docker.com/r/cryptpad/cryptpad) as AMD64 & ARM64 official images. 
+
+Previously, Docker images were community maintained, had their own repository and weren't official supported. We changed that with v5.4.0 during July 2023. Thanks to @promasu for all the work on the community images.
 
 # Security
 
