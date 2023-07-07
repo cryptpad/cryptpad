@@ -7,8 +7,8 @@ services:
     hostname: cryptpad
 
     environment:
-      - CPAD_MAIN_DOMAIN=example.com
-      - CPAD_SANDBOX_DOMAIN=sandbox.example.com
+      - CPAD_MAIN_DOMAIN=https://your-main-domain.com
+      - CPAD_SANDBOX_DOMAIN=https://your-sandbox-domain.com
       - CPAD_CONF=/cryptpad/config/config.js
 
     volumes:
