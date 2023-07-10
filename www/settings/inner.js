@@ -939,10 +939,11 @@ define([
 
     var drawMfa = function (content, enabled) {
         var $content = $(content).empty();
-        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status', [
+        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status' + (enabled ? '.enabled' : '.disabled'), [
             h('i.fa' + (enabled ? '.fa-check' : '.fa-times')),
             h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
         ]));
+
         if (enabled) {
             (function () {
             var button = h('button.btn', Messages.mfa_revoke_button);
