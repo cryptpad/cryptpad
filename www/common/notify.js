@@ -92,10 +92,9 @@ define(['/api/config'], function (ApiConfig) {
         
         if(!document.getElementById("favicon-ico")) {
             var faviconLink = document.createElement('link');
-            attrs.href = attrs.href.replaceAll(".png", ".ico")
-            console.debug("ATTRS", attrs.href)
-            attrs.id = 'favicon-ico'
-            attrs.type = 'image/x-icon'
+            attrs.href = attrs.href.replaceAll(".png", ".ico");
+            attrs.id = 'favicon-ico';
+            attrs.type = 'image/x-icon';
             
             delete attrs['data-main-favicon'];
             delete attrs['data-alt-favicon'];
