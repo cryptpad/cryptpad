@@ -242,7 +242,8 @@ define([
                 title = "download";
             }
             if(title === "" && APP.startWithTemplate) {
-                var copyTitle = Messages._getKey('copy_title', [APP.startWithTemplate.content.metadata.title]);
+                var metadata = APP.startWithTemplate.content.metadata;
+                var copyTitle = Messages._getKey('copy_title', [metadata.title || metadata.defaultTitle]);
                 common.getMetadataMgr().updateTitle(copyTitle);
                 title = copyTitle;
             }
