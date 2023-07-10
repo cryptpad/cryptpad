@@ -475,12 +475,16 @@ proxy.mailboxes = {
                         console.log(e);
                     }
                 }
-                ctx.emit('HISTORY', {
-                    txid: txid,
-                    time: _msg[5],
-                    message: message,
-                    hash: _msg[4].slice(0,64)
-                }, [req.cId]);
+                var hash = _msg[4].slice(0,64);
+                Handlers.add(ctx, req.box, { hash, msg: message }, function (dismissed) {
+                    if (dismissed) { return; } // XXX
+                    ctx.emit('HISTORY', {
+                        txid: txid,
+                        time: _msg[5],
+                        message: message,
+                        hash: hash
+                    }, [req.cId]);
+                });
             } else if (type === 'HISTORY_RANGE_END') {
                 ctx.emit('HISTORY', {
                     txid: txid,
