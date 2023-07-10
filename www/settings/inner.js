@@ -945,7 +945,7 @@ define([
         ]));
         if (enabled) {
             (function () {
-            var button = h('button.btn.btn-danger', Messages.mfa_revoke_button);
+            var button = h('button.btn', Messages.mfa_revoke_button);
             button.classList.add('disable-button');
             var $mfaRevokeBtn = $(button);
             var pwInput;
@@ -997,7 +997,7 @@ define([
                 }).nThen(function () {
                     $(pwContainer).remove();
                     var OTPEntry;
-                    var disable = h('button.btn.btn-danger', Messages.mfa_disable);
+                    var disable = h('button.btn.disable-button', Messages.mfa_disable);
                     $content.append(h('div.cp-password-container', [
                         h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_code),
                         OTPEntry = h('input', {
