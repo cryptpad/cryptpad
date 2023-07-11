@@ -372,13 +372,13 @@ proxy.mailboxes = {
                     hash: hash
                 };
                 var notify = box.ready;
-                Handlers.add(ctx, box, message, function (dismissed, toDismiss) {
+                Handlers.add(ctx, box, message, function (dismissed, toDismiss, invalid) {
                     if (toDismiss) { // List of other messages to remove
                         dismiss(ctx, toDismiss, '', function () {
                             console.log('Notification handled automatically');
                         });
                     }
-                    if (dismissed) { // This message should be removed
+                    if (invalid || dismissed) { // This message should be removed
                         dismiss(ctx, {
                             type: type,
                             hash: hash
@@ -476,8 +476,13 @@ proxy.mailboxes = {
                     }
                 }
                 var hash = _msg[4].slice(0,64);
-                Handlers.add(ctx, req.box, { hash, msg: message }, function (dismissed) {
-                    if (dismissed) { return; } // XXX
+                Handlers.add(ctx, req.box, {
+                    hash,
+                    msg: message
+                }, function (dismissed, toDismiss, invalid) {
+                    // Show dismissed messages, hide invalid messages
+                    // Invalid: no content or impersonation attempt
+                    if (invalid) { return; }
                     ctx.emit('HISTORY', {
                         txid: txid,
                         time: _msg[5],
