@@ -3,7 +3,7 @@ version: '3.8'
 
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:latest"
+    image: "cryptpad/cryptpad:version-5.4.0"
     hostname: cryptpad
 
     environment:
