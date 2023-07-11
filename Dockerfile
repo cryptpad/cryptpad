@@ -13,8 +13,7 @@ RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker'@" /cryptpad/c
 
 # Install dependencies
 RUN npm install --production \
-    && npm install -g bower \
-    && bower install --allow-root
+    && npm run install:components
 
 # Create actual CryptPad image
 FROM node:lts-slim
