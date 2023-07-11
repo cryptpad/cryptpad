@@ -1155,14 +1155,13 @@ define([
                     ]);
                     var $confirmBtn = $(confirmOTP);
                     var lock = false;
-                    UI.confirmButton(confirmOTP, {
-                        multiple: true
-                    }, function () {
+
+                    confirmOTP.addEventListener('click', function () {
                         var code = $OTPEntry.val();
                         if (code.length !== 6 || /\D/.test(code)) {
                             return void UI.warn(Messages.settings_otp_invalid);
                         }
-                        $confirmBtn.attr('disabled', 'disabled');
+                        confirmOTP.disabled = true;
                         lock = true;
 
                         var data = {
@@ -1179,13 +1178,12 @@ define([
                             lock = false;
                             $OTPEntry.val("");
                             if (err || !obj || !obj.success) {
-                                $confirmBtn.removeAttr('disabled');
+                                confirmOTP.disabled = false;
                                 console.error(err);
                                 return void UI.warn(Messages.error);
                             }
                             drawMfa(content, true);
-                        }, {raw: true});
-
+                        }, { raw: true });
                     });
 
                     $content.append([
@@ -1201,6 +1199,7 @@ define([
                         ])
                     ]);
                 };
+
 
                 var secret = randomSecret();
                 updateURI(secret);
