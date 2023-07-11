@@ -86,13 +86,13 @@
                 }
             }
 
-            .cp-settings-change-password, .cp-settings-own-drive, .cp-settings-delete {
+            .cp-password-container {
                 [type="password"], [type="text"] {
                     width: @sidebar_button-width;
                     flex: unset;
                 }
                 button {
-                    margin-top: 5px;
+                    margin-left: 10px;
                 }
             }
             .cp-settings-drive-backup {
@@ -101,6 +101,50 @@
                         margin-right: 5px;
                     }
                     margin-right: 5px;
+                }
+            }
+            .cp-settings-mfa {
+                .cp-settings-qr {
+                    img {
+                        border: 10px solid white;
+                        border-radius: 10px;
+                    }
+                    margin: 10px 20px 20px 0;
+                }
+            }
+            .cp-settings-mfa-hint {
+                color: @cp_sidebar-hint;
+            }
+            .cp-settings-mfa-status {
+                & > i {
+                    margin-right: 5px;
+                }
+                margin: 1em 0;
+            }
+            .cp-settings-mfa {
+                .cp-password-container {
+                    flex-wrap: wrap;
+                    input {
+                        flex-shrink: 1;
+                        max-width: 400px;
+                    }
+                    label {
+                        width: 100%;
+                        font-weight: unset;
+                        margin-bottom: 5px;
+                    }
+                }
+                .cp-settings-qr-container {
+                    display: flex;
+                    align-items: center;
+                    .cp-settings-qr-code {
+                        input {
+                            max-width: 250px;
+                        }
+                        button {
+                            margin-top: 10px
+                        }
+                    }
                 }
             }
         }

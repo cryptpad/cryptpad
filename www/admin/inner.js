@@ -15,6 +15,7 @@ define([
     '/common/common-signing-keys.js',
     '/support/ui.js',
     '/common/clipboard.js',
+    'json.sortify',
 
     '/lib/datepicker/flatpickr.js',
     '/components/tweetnacl/nacl-fast.min.js',
@@ -40,6 +41,7 @@ define([
     Keys,
     Support,
     Clipboard,
+    Sortify,
     Flatpickr
     )
 {
@@ -75,6 +77,7 @@ define([
             'cp-admin-account-metadata',
             'cp-admin-document-metadata',
             'cp-admin-block-metadata',
+            'cp-admin-totp-recovery',
         ],
         'stats': [ // Msg.admin_cat_stats
             'cp-admin-refresh-stats',
@@ -1071,6 +1074,7 @@ define([
                 }
                 data.live = res[0].live;
                 data.archived = res[0].archived;
+                data.totp = res[0].totp;
             }));
         }).nThen(function () {
             try {
@@ -1093,6 +1097,9 @@ define([
         row(Messages.admin_blockKey, h('code', data.key));
         row(Messages.admin_blockAvailable, localizeState(data.live));
         row(Messages.admin_blockArchived, localizeState(data.archived));
+
+        row(Messages.admin_totpEnabled, localizeState(data.totp.enabled));
+        row(Messages.admin_totpRecoveryMethod, data.totp.recovery); // XXX localize?
 
         if (data.live) {
             var archiveButton = danger(Messages.ui_archive, function () {
@@ -1220,6 +1227,152 @@ define([
                     return UI.warn(Messages.error);
                 }
                 var table = renderBlockData(data);
+                results.innerHTML = '';
+                results.appendChild(table);
+            });
+        });
+
+        return $div;
+    };
+
+    Messages.admin_totpEnabled = "TOTP is enabled"; // XXX
+    Messages.admin_totpRecoveryMethod = "TOTP recovery method"; // XXX
+    Messages.admin_totpFailed = "Signature verification failed";
+    Messages.admin_totpCheck = "Signature verification success";
+    Messages.admin_totpDisable = "Disable TOTP for this account";
+    Messages.admin_totpDisableButton = "Disable";
+
+    var renderTOTPData  = function (data) {
+        var tableObj = makeMetadataTable('cp-block-stats');
+        var row = tableObj.row;
+
+        row(Messages.admin_generatedAt, maybeDate(data.generated));
+        row(Messages.admin_blockKey, h('code', data.key));
+        row(Messages.admin_blockAvailable, localizeState(data.live));
+
+        if (!data.live || !data.totp) { return tableObj.table; }
+
+        row(Messages.admin_totpCheck, localizeState(data.totpCheck));
+
+        if (!data.totpCheck) { return tableObj.table; }
+
+        row(Messages.admin_totpEnabled, localizeState(Boolean(data.totp.enabled)));
+        if (data.totp && data.totp.enabled) {
+            row(Messages.admin_totpRecoveryMethod, data.totp.recovery); // XXX localize?
+        }
+
+        if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }
+
+        // TOTP is enabled and the signature is correct: display "disable TOTP" button
+        var disableButton = h('button.btn.btn-danger', Messages.admin_totpDisableButton);
+        UI.confirmButton(disableButton, { classes: 'btn-danger' }, function () {
+            sframeCommand('DISABLE_MFA', data.key, (err, res) => {
+                if (err) {
+                    console.error(err);
+                    return void UI.warn(Messages.error);
+                }
+                if (!Array.isArray(res) || !res[0] || !res[0].success) {
+                    return UI.warn(Messages.error);
+                }
+                UI.log(Messages.ui_success);
+            });
+
+
+        });
+        row(Messages.admin_totpDisable, disableButton);
+
+        return tableObj.table;
+    };
+
+    var checkTOTPRequest = function (json) {
+        var clone = Util.clone(json);
+        delete clone.proof;
+
+        var msg = Nacl.util.decodeUTF8(Sortify(clone));
+        var sig = Nacl.util.decodeBase64(json.proof);
+        var pub = Nacl.util.decodeBase64(json.blockId);
+        return Nacl.sign.detached.verify(msg, sig, pub);
+    };
+
+    create['totp-recovery'] = function () {
+        var key = 'totp-recovery';
+        // XXX translation keys
+        var $div = makeBlock(key, true); // Msg.admin_totpRecoveryHint.totpRecoveryTitle
+
+        var textarea = h('textarea', {});
+        var $input = $(textarea);
+
+        var box = h('div.cp-admin-setter', [
+            textarea,
+        ]);
+
+        $div.find('.cp-sidebarlayout-description').after(box);
+
+        var results = h('span');
+        $div.append(results);
+        var $btn = $div.find('.btn');
+        $btn.text(Messages.ui_generateReport);
+        disable($btn);
+
+        var pending = false;
+        var getInputState = function () {
+            var val = $input.val().trim();
+            var state = {
+                pending: pending,
+                value: undefined,
+                key: '',
+            };
+
+            var json;
+            try { json = JSON.parse(val); } catch (err) { }
+/*
+Example
+{
+  "intent": "Disable TOTP",
+  "date": "2023-05-15T15:38:40.916Z",
+  "blockId": "+0PdpTuQi9/O2qjoJ8FLcvPEwChLfDWJrYXyPdVGzOo=",
+  "proof": "iDcHy6+ymiyWzK/oYNPQ1ItFNCiTmmJuAyYmcEXNha2U1nUxyBWAf0o7ZXWhygS6XI5BLrjH+DDcbWitfO3bCg=="
+}
+*/
+
+            if (!json || json.intent !== "Disable TOTP" || !json.blockId || json.blockId.length !== 44 ||
+                !json.date || !json.proof) { return state; }
+
+            state.value = json;
+            state.key = json.blockId.replace(/\//g, '-');
+            return state;
+        };
+        var setInterfaceState = function () {
+            var state = getInputState();
+            var all = [$btn, $input];
+
+            if (state.pending) {
+                all.forEach(disable);
+            } else {
+                all.forEach(enable);
+            }
+        };
+
+        setInterfaceState();
+        $btn.click(function () {
+            if (pending) { return; }
+            var state = getInputState();
+            if (!state.value) { return; }
+            pending = true;
+            setInterfaceState();
+            getBlockData(state.key, (err, data) => {
+                pending = false;
+                setInterfaceState();
+                console.warn(data);
+                if (err || !data) {
+                    results.innerHTML = '';
+                    console.log(err, data);
+                    return UI.warn(Messages.error);
+                }
+                var check = checkTOTPRequest(state.value);
+                if (!check) { UI.warn(Messages.admin_totpFailed); }
+                data.totpCheck = check;
+                var table = renderTOTPData(data);
                 results.innerHTML = '';
                 results.appendChild(table);
             });

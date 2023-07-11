@@ -70,6 +70,55 @@ define([
             sframeChan.on('Q_SETTINGS_IMPORT_LOCAL', function (data, cb) {
                 Cryptpad.mergeAnonDrive(cb);
             });
+            sframeChan.on('Q_SETTINGS_CHECK_PASSWORD', function (data, cb) {
+                var blockHash = Utils.LocalStore.getBlockHash();
+                var userHash = Utils.LocalStore.getUserHash();
+                var correct = (blockHash && blockHash === data.blockHash) ||
+                              (!blockHash && userHash === data.userHash);
+                cb({correct: correct});
+            });
+            sframeChan.on('Q_SETTINGS_TOTP_SETUP', function (obj, cb) {
+                require([
+                    '/common/outer/http-command.js',
+                ], function (ServerCommand) {
+                    ServerCommand(obj.key, obj.data, function (err, response) {
+                        cb({ success: Boolean(!err && response && response.bearer) });
+                        if (response && response.bearer) {
+                            Utils.LocalStore.setSessionToken(response.bearer);
+                        }
+                    });
+                });
+            });
+            sframeChan.on('Q_SETTINGS_TOTP_REVOKE', function (obj, cb) {
+                require([
+                    '/common/outer/http-command.js',
+                ], function (ServerCommand) {
+                    ServerCommand(obj.key, obj.data, function (err, response) {
+                        cb({ success: Boolean(!err && response && response.success) });
+                        if (response && response.success) {
+                            Utils.LocalStore.setSessionToken('');
+                        }
+                    });
+                });
+            });
+            sframeChan.on('Q_SETTINGS_MFA_CHECK', function (obj, cb) {
+                require([
+                    '/common/outer/login-block.js',
+                ], function (Block) {
+                    var blockHash = Utils.LocalStore.getBlockHash();
+                    if (!blockHash) { return void cb({ err: 'NOBLOCK' }); }
+                    var parsed = Block.parseBlockHash(blockHash);
+                    Utils.Util.getBlock(parsed.href, {}, function (err, data) {
+                        cb({
+                            mfa: err === 401,
+                            type: data && data.method
+                        });
+                    });
+                });
+            });
+            sframeChan.on('Q_SETTINGS_REMOVE_OWNED_PADS', function (data, cb) {
+                Cryptpad.removeOwnedPads(data, cb);
+            });
             sframeChan.on('Q_SETTINGS_DELETE_ACCOUNT', function (data, cb) {
                 Cryptpad.deleteAccount(data, cb);
             });

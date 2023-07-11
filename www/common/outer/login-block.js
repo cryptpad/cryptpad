@@ -1,8 +1,9 @@
 define([
     '/common/common-util.js',
     '/api/config',
+    '/common/outer/http-command.js',
     '/components/tweetnacl/nacl-fast.min.js',
-], function (Util, ApiConfig) {
+], function (Util, ApiConfig, ServerCommand) {
     var Nacl = window.nacl;
 
     var Block = {};
@@ -113,17 +114,6 @@ define([
         }
     };
 
-    Block.remove = function (keys) {
-        // sign the hash of the text 'DELETE_BLOCK'
-        var sig = Nacl.sign.detached(Nacl.hash(
-            Nacl.util.decodeUTF8('DELETE_BLOCK')), keys.sign.secretKey);
-
-        return {
-            publicKey: Nacl.util.encodeBase64(keys.sign.publicKey),
-            signature: Nacl.util.encodeBase64(sig),
-        };
-    };
-
     var urlSafeB64 = function (u8) {
         return Nacl.util.encodeBase64(u8).replace(/\//g, '-');
     };
@@ -133,7 +123,7 @@ define([
         // 'block/' here is hardcoded because it's hardcoded on the server
         // if we want to make CryptPad work in server subfolders, we'll need
         // to update this path derivation
-        return (ApiConfig.fileHost || window.location.origin)
+        return (ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin || window.location.origin)
             + '/block/' + publicKey.slice(0, 2) + '/' +  publicKey;
     };
 
@@ -168,6 +158,51 @@ define([
             console.error(e);
             return;
         }
+    };
+
+    Block.checkRights = function (data, _cb) {
+        const cb = Util.mkAsync(_cb);
+        const { blockKeys, auth } = data;
+
+        var command = 'MFA_CHECK';
+        if (auth && auth.type === 'TOTP') {
+            command = 'TOTP_CHECK';
+        }
+
+        ServerCommand(blockKeys.sign, {
+            command: command,
+            auth: auth && auth.data
+        }, cb);
+    };
+    Block.writeLoginBlock = function (data, cb) {
+        const { content, blockKeys, oldBlockKeys, auth } = data;
+
+        var command = 'WRITE_BLOCK';
+        if (auth && auth.type === 'TOTP') {
+            command = 'TOTP_WRITE_BLOCK';
+        }
+
+        var block = Block.serialize(JSON.stringify(content), blockKeys);
+        block.auth = auth && auth.data;
+        block.registrationProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+
+        ServerCommand(blockKeys.sign, {
+            command: command,
+            content: block
+        }, cb);
+    };
+    Block.removeLoginBlock = function (data, cb) {
+        const { blockKeys, auth } = data;
+
+        var command = 'REMOVE_BLOCK';
+        if (auth && auth.type === 'TOTP') {
+            command = 'TOTP_REMOVE_BLOCK';
+        }
+
+        ServerCommand(blockKeys.sign, {
+            command: command,
+            auth: auth && auth.data
+        }, cb);
     };
 
     return Block;

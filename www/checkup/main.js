@@ -12,6 +12,7 @@ define([
     '/common/common-util.js',
     '/common/pinpad.js',
     '/common/outer/network-config.js',
+    '/common/outer/login-block.js',
     '/customize/pages.js',
     '/checkup/checkup-tools.js',
     '/customize/application_config.js',
@@ -21,7 +22,7 @@ define([
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig, Pages, Tools, AppConfig) {
+            NetConfig, Block, Pages, Tools, AppConfig) {
     window.CHECKUP_MAIN_LOADED = true;
 
     var Assert = Assertions();
@@ -306,9 +307,8 @@ define([
 
         var opt = Login.allocateBytes(bytes);
 
+        var blockKeys = opt.blockKeys;
         var blockUrl = Login.Block.getBlockUrl(opt.blockKeys);
-        var blockRequest = Login.Block.serialize("{}", opt.blockKeys);
-        var removeRequest = Login.Block.remove(opt.blockKeys);
         console.warn('Testing block URL (%s). One 404 is normal.', blockUrl);
 
         var userHash = '/2/drive/edit/000000000000000000000000';
@@ -319,7 +319,7 @@ define([
         var RT, rpc, exists, restricted;
 
         nThen(function (waitFor) {
-            Util.fetch(blockUrl, waitFor(function (err) {
+            Util.getBlock(blockUrl, {}, waitFor(function (err) {
                 if (err) { return; } // No block found
                 exists = true;
             }));
@@ -345,19 +345,12 @@ define([
                 rt.realtime.onSettle(waitFor());
             }));
         }).nThen(function (waitFor) {
-            // Init RPC
-            Pinpad.create(RT.network, RT.proxy, waitFor(function (e, _rpc) {
-                if (e) {
-                    waitFor.abort();
-                    console.error("Can't initialize RPC", e); // INVALID_KEYS
-                    return void cb(false);
-                }
-                rpc = _rpc;
-            }));
-        }).nThen(function (waitFor) {
             // Write block
             if (exists) { return; }
-            rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
+            Block.writeLoginBlock({
+                blockKeys: blockKeys,
+                content: {}
+            }, waitFor(function (e) {
                 // we should tolerate restricted registration
                 // and proceed to clean up after any data we've created
                 if (e === 'E_RESTRICTED') {
@@ -373,7 +366,7 @@ define([
         }).nThen(function (waitFor) {
             if (restricted) { return; }
             // Read block
-            Util.fetch(blockUrl, waitFor(function (e) {
+            Util.getBlock(blockUrl, {}, waitFor(function (e) {
                 if (e) {
                     waitFor.abort();
                     console.error("Can't read login block", e);
@@ -382,14 +375,25 @@ define([
             }));
         }).nThen(function (waitFor) {
             // Remove block
-            rpc.removeLoginBlock(removeRequest, waitFor(function (e) {
+            Block.removeLoginBlock({
+                blockKeys: blockKeys,
+            }, waitFor(function (e) {
                 if (restricted) { return; } // an ENOENT is expected in the case of restricted registration, but we call this anyway to clean up any mess from previous tests.
                 if (e) {
                     waitFor.abort();
                     console.error("Can't remove login block", e);
-                    console.error(blockRequest);
                     return void cb(false);
                 }
+            }));
+        }).nThen(function (waitFor) {
+            // Init RPC
+            Pinpad.create(RT.network, RT.proxy, waitFor(function (e, _rpc) {
+                if (e) {
+                    waitFor.abort();
+                    console.error("Can't initialize RPC", e); // INVALID_KEYS
+                    return void cb(false);
+                }
+                rpc = _rpc;
             }));
         }).nThen(function (waitFor) {
             rpc.removeOwnedChannel(secret.channel, waitFor(function (e) {
@@ -913,7 +917,7 @@ define([
         'child-src': '',
         'frame-src': '',
         'script-src': '',
-        'connect-src': "This rule restricts which URLs can be loaded by scripts. Overly permissive settings can allow users to be tracking using external resources, while overly restrictive settings may block pages from loading entirely.",
+        'connect-src': " This rule restricts which URLs can be loaded by scripts. Overly permissive settings can allow users to be tracked using external resources, while overly restrictive settings may block pages from loading entirely.",
         'img-src': '',
         'media-src': '',
         'worker-src': '',
@@ -1091,12 +1095,14 @@ define([
         });
     };
 
-    assert(function (cb, msg) {
-        var header = 'Access-Control-Allow-Origin';
-        var url = new URL('/', trimmedUnsafe).href;
-        Tools.common_xhr(url, function (xhr) {
-            var raw = xhr.getResponseHeader(header);
-            checkAllowedOrigins(raw, url, msg, cb);
+    ['/', '/blob/placeholder.txt', '/block/placeholder.txt'].forEach(relativeURL => {
+        assert(function (cb, msg) {
+            var header = 'Access-Control-Allow-Origin';
+            var url = new URL(relativeURL, trimmedUnsafe).href;
+            Tools.common_xhr(url, function (xhr) {
+                var raw = xhr.getResponseHeader(header);
+                checkAllowedOrigins(raw, url, msg, cb);
+            });
         });
     });
 
@@ -1172,6 +1178,45 @@ define([
         Tools.common_xhr('/customize/messages.js?ver=' +(+new Date()), function (xhr) {
             var raw = xhr.getResponseHeader(header);
             cb(/max\-age=\d+$/.test(raw) || raw);
+        });
+    });
+
+    var COMMONLY_DUPLICATED_HEADERS = [
+        'X-Content-Type-Options',
+        'Access-Control-Allow-Origin',
+        'Permissions-Policy',
+        'X-XSS-Protection',
+    ];
+
+    ['/', '/blob/placeholder.txt', '/block/placeholder.txt'].forEach(relativeURL => {
+        assert(function (cb, msg) {
+            var url = new URL(relativeURL, trimmedUnsafe).href;
+            Tools.common_xhr(url, xhr => {
+                var span = h('span', h('p', '// XXX DEBUGGING DUPLICATED HEADERS'));
+
+                var duplicated = false;
+                var pre = [];
+                COMMONLY_DUPLICATED_HEADERS.forEach(h => {
+                    var value = xhr.getResponseHeader(h);
+                    if (/,/.test(value)) {
+                        pre.push(`${h}: ${value}`);
+                        duplicated = true;
+                    }
+                });
+                if (duplicated) {
+                    span.appendChild(h('pre', pre.join('\n')));
+                }
+
+                // none of the headers should include a comma
+                // as that indicates they are duplicated
+                if (!duplicated) { return void cb(true); }
+
+                msg.appendChild(span);
+                cb({
+                    duplicated,
+                    url,
+                });
+            });
         });
     });
 

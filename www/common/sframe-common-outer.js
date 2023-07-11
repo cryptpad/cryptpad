@@ -1750,14 +1750,6 @@ define([
                 Cryptpad.changeUserPassword(Cryptget, edPublic, data, cb);
             });
 
-            sframeChan.on('Q_WRITE_LOGIN_BLOCK', function (data, cb) {
-                Cryptpad.writeLoginBlock(data, cb);
-            });
-
-            sframeChan.on('Q_REMOVE_LOGIN_BLOCK', function (data, cb) {
-                Cryptpad.removeLoginBlock(data, cb);
-            });
-
             // It seems we have performance issues when we open and close a lot of channels over
             // the same network, maybe a memory leak. To fix this, we kill and create a new
             // network every 30 cryptget calls (1 call = 1 channel)

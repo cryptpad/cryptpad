@@ -3,7 +3,10 @@ var factory = function (AppConfig, Scrypt) {
     var Cred = {};
 
     Cred.MINIMUM_PASSWORD_LENGTH = typeof(AppConfig.minimumPasswordLength) === 'number'?
-        AppConfig.minimumPasswordLength: 8;
+        AppConfig.minimumPasswordLength: 8; // TODO 14 or higher is a decent default for 2023
+
+    Cred.MINIMUM_NAME_LENGTH = 1;
+    Cred.MAXIMUM_NAME_LENGTH = 64;
 
     // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
     Cred.isEmail = function (email) {
@@ -19,8 +22,12 @@ var factory = function (AppConfig, Scrypt) {
         return typeof(x) === 'string';
     };
 
+    // Maximum username length is enforced at registration time
+    // rather than in this function
+    // in order to maintain backwards compatibility with accounts
+    // that might have already registered with a longer name.
     Cred.isValidUsername = function (name) {
-        return !!(name && isString(name));
+        return !!(isString(name) && name.length >= Cred.MINIMUM_NAME_LENGTH);
     };
 
     Cred.isValidPassword = function (passwd) {

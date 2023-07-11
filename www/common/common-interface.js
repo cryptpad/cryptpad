@@ -985,6 +985,7 @@ define([
             todo();
         }
 
+        $('html').toggleClass('cp-loading-noscroll', true);
         // Remove the inner placeholder (iframe)
         $('#placeholder').remove();
     };
@@ -1004,6 +1005,7 @@ define([
         $loading.find('.cp-loading-progress').remove(); // Remove the progress list
         setTimeout(cb, 750);
         $('head > link[href^="/customize/src/pre-loading.css"]').remove();
+        $('html').toggleClass('cp-loading-noscroll', false);
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
@@ -1044,6 +1046,7 @@ define([
             $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
                 if (e.which === 27) {
                     $loading.hide();
+                    $('html').toggleClass('cp-loading-noscroll', false);
                     if (typeof(exitable) === "function") { exitable(); }
                 }
             });
@@ -1488,6 +1491,61 @@ define([
                 $content.blur();
             }
         });
+    };
+
+/*  QR code generation is synchronous once the library is loaded
+    so this could be syncronous if we load the library separately. */
+    UI.createQRCode = function (data, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb || Util.noop));
+        require(['/lib/qrcode.min.js'], function () {
+            var div = h('div');
+            /*var code =*/ new window.QRCode(div, data);
+            cb(void 0, div);
+        }, function (err) {
+            cb(err);
+        });
+    };
+
+    Messages.settings_otp_code = "OTP code"; // XXX KEY ALREADY ADDED IN www/settings/inner.js
+    Messages.settings_otp_invalid = "Invalid OTP code"; // Same
+
+    Messages.loading_enter_otp = "This account is protected with Two-Factor Authentication. Please enter your verification code."; // XXX
+    Messages.loading_recover = 'Unable to get a code? <a href="/recovery/">Recover your account</a>';
+
+
+    UI.getOTPScreen = function (cb, exitable, err) {
+        var btn, input;
+        var error;
+        if (err) {
+            error = h('p.cp-password-error', Messages.settings_otp_invalid);
+        }
+        var block = h('div#cp-loading-password-prompt', [
+            error,
+            h('p.cp-password-info', Messages.loading_enter_otp),
+            h('p.cp-password-form', [
+                input = h('input', {
+                    placeholder: Messages.settings_otp_code,
+                    autocomplete: 'off',
+                    autocorrect: 'off',
+                    autocapitalize: 'off',
+                    spellcheck: false,
+                }),
+                btn = h('button.btn.btn-primary', Messages.ui_confirm)
+            ]),
+            UI.setHTML(h('p.cp-password-recovery'), Messages.loading_recover)
+        ]);
+        var $input = $(input);
+        var $btn = $(btn).click(function () {
+            var val = $input.val();
+            if (!val) { return void UI.getOTPScreen(cb, exitable, 'INVALID_CODE'); }
+            cb(val);
+        });
+        $(input).on('keydown', function (e) {
+            if (e.which !== 13) { return; } // enter
+            $btn.click();
+        });
+        UI.errorLoadingScreen(block, false, exitable);
+
     };
 
     return UI;

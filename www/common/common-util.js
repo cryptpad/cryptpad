@@ -161,6 +161,7 @@
             },
             expect: expect,
             handle: handle,
+            _pending: pending,
         };
     };
 
@@ -186,6 +187,14 @@
     Util.uid = function () {
         return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
             .toString(32).replace(/\./g, '');
+    };
+
+    Util.guid = function (map) {
+        var id = Util.uid();
+        // the guid (globally unique id) is valid if it does already exist in the map
+        if (typeof(map[id]) === 'undefined') { return id; }
+        // otherwise try again
+        return Util.guid(map);
     };
 
     Util.fixHTML = function (str) {
@@ -303,6 +312,44 @@
         if (!/^[a-f0-9]{48}$/.test(cacheKey)) { cacheKey = undefined; }
         return cacheKey;
     };
+
+
+    Util.getBlock = function (src, opt, cb) {
+        var CB = Util.once(Util.mkAsync(cb));
+
+        var headers = {};
+
+        if (typeof(opt.bearer) === 'string' && opt.bearer) {
+            headers.authorization = `Bearer ${opt.bearer}`;
+        }
+
+
+        fetch(src, {
+            method: 'GET',
+            credentials: 'include',
+            headers: headers,
+        }).then(response => {
+            if (response.ok) {
+                // TODO this should probably be returned as an arraybuffer or something rather than a promise
+                // this is resulting in some code duplication
+                return void CB(void 0, response);
+            }
+            if (response.status === 401) {
+                response.json().then((data) => {
+                    CB(401, data);
+                }).catch(() => {
+                    CB(401);
+                });
+
+                return;
+            }
+            CB(response.status, response);
+        }).catch(error => {
+            CB(error);
+        });
+    };
+
+
     Util.fetch = function (src, cb, progress, cache) {
         var CB = Util.once(Util.mkAsync(cb));
 

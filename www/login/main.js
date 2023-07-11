@@ -49,7 +49,8 @@ define([
             var shouldImport = $checkImport[0].checked;
             var uname = $uname.val();
             var passwd = $passwd.val();
-            Login.loginOrRegisterUI(uname, passwd, false, shouldImport, /*Test.testing */ false, function () {
+            Login.loginOrRegisterUI(uname, passwd, false, shouldImport,
+                UI.getOTPScreen, /*Test.testing */ false, function () {
                 /*
                 if (test) {
                     localStorage.clear();
