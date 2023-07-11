@@ -8,7 +8,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/text-cursor.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
@@ -485,7 +485,7 @@ define([
                 $toolbarContainer.find('#language-mode').val('text');
             }
             // return the mode so that the code editor can decide how to display the new content
-            return { content: content, mode: mode };
+            return { content: content, highlightMode: mode, authormarks: {} };
         };
 
         exp.setValueAndCursor = function (oldDoc, remoteDoc) {

@@ -8,7 +8,7 @@ define([
     '/common/outer/local-store.js',
     //'/common/test.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
     if (window.top !== window) { return; }
     $(function () {

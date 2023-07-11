@@ -11,11 +11,11 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/media-tag.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/file-saver/FileSaver.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, nThen, MT) {
     var Nacl = window.nacl;
     var module = {};

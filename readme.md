@@ -18,7 +18,7 @@ Configuring CryptPad for production requires a little more work, but the process
 
 ## Current version
 
-The most recent version and all past release notes can be found [here](https://github.com/xwiki-labs/cryptpad/releases/).
+The most recent version and all past release notes can be found [here](https://github.com/cryptpad/cryptpad/releases/).
 
 ## Setup using Docker
 

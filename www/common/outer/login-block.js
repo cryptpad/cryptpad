@@ -1,7 +1,7 @@
 define([
     '/common/common-util.js',
     '/api/config',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (Util, ApiConfig) {
     var Nacl = window.nacl;
 

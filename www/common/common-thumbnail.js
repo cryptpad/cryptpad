@@ -4,7 +4,7 @@ define([
     '/common/visible.js',
     '/common/common-hash.js',
     '/common/media-tag.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function ($, Util, Visible, Hash, MediaTag) {
     var Nacl = window.nacl;
     var Thumb = {
@@ -239,7 +239,7 @@ define([
             });
         };
         if (window.html2canvas) { return void todo(); }
-        require(['/bower_components/html2canvas/build/html2canvas.min.js'], todo);
+        require(['/components/html2canvas/build/html2canvas.min.js'], todo);
     };
 
     Thumb.initPadThumbnails = function (common, opts) {

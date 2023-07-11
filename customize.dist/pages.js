@@ -95,12 +95,12 @@ define([
         return h('a', attrs, [icon, text]);
     };
 
-    Pages.versionString = "5.3.0";
+    Pages.versionString = "5.4.0";
 
     var customURLs = Pages.customURLs = {};
     (function () {
         var defaultURLs = {
-            source: 'https://github.com/xwiki-labs/cryptpad',
+            source: 'https://github.com/cryptpad/cryptpad',
         };
         var l = Msg._getLanguage();
         ['imprint', 'privacy', 'terms', 'roadmap', 'source'].forEach(function (k) {

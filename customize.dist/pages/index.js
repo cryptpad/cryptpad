@@ -43,7 +43,7 @@ define([
                 [ 'kanban', Msg.type.kanban],
                 [ 'code', Msg.type.code],
                 [ 'form', Msg.type.form],
-                [ 'whiteboard', Msg.type.whiteboard],
+                [ 'diagram', Msg.type.diagram],
                 [ 'slide', Msg.type.slide]
             ].filter(function (x) {
                 return isAvailableType(x[0]);

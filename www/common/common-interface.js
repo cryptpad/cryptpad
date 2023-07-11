@@ -14,14 +14,14 @@ define([
     '/common/common-hash.js',
     '/common/common-notifier.js',
     '/customize/application_config.js',
-    '/bower_components/alertifyjs/dist/js/alertify.js',
+    '/components/alertify.js/dist/js/alertify.js',
     '/lib/tippy/tippy.min.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
     //'/common/test.js',
 
     '/lib/jquery-ui/jquery-ui.min.js', // autocomplete widget
-    '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
+    '/components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/lib/tippy/tippy.css',
     'css!/lib/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,

@@ -2,9 +2,9 @@ define([
     'jquery',
     '/api/config',
     '/customize/application_config.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
@@ -17,11 +17,11 @@ define([
     '/common/clipboard.js',
 
     '/lib/datepicker/flatpickr.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/admin/app-admin.less',
 ], function (
     $,
@@ -2976,7 +2976,7 @@ define([
         if (!APP.instanceStatus.updateAvailable) { return; }
         var $div = makeBlock('update-available', true);
 
-        var updateURL = 'https://github.com/xwiki-labs/cryptpad/releases/latest';
+        var updateURL = 'https://github.com/cryptpad/cryptpad/releases/latest';
         if (typeof(APP.instanceStatus.updateAvailable) === 'string') {
             updateURL = APP.instanceStatus.updateAvailable;
         }

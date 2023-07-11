@@ -14,7 +14,7 @@ define([
     '/common/outer/login-block.js',
 
     '/customize/application_config.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             AppConfig, Nthen) {
@@ -221,7 +221,7 @@ define([
             n = n(function (waitFor) {
                 require([
                     '/api/broadcast?'+ (+new Date()),
-                    '/bower_components/tweetnacl/nacl-fast.min.js'
+                    '/components/tweetnacl/nacl-fast.min.js'
                 ], waitFor(function (Broadcast) {
                     nacl = window.nacl;
                     theirs = nacl.util.decodeBase64(Broadcast.curvePublic);
@@ -1563,7 +1563,7 @@ define([
                 '/file/file-crypto.js',
                 '/common/media-tag.js',
                 '/common/outer/upload.js',
-                '/bower_components/tweetnacl/nacl-fast.min.js'
+                '/components/tweetnacl/nacl-fast.min.js'
             ], waitFor(function (_FileCrypto, _MT, _Upload) {
                 FileCrypto = _FileCrypto;
                 MediaTag = _MT;
@@ -1704,7 +1704,7 @@ define([
 
             require([
                 '/common/cryptget.js',
-                '/bower_components/chainpad-crypto/crypto.js',
+                '/components/chainpad-crypto/crypto.js',
             ], waitFor(function (_Crypt, _Crypto) {
                 Crypt = _Crypt;
                 Crypto = _Crypto;
@@ -2529,6 +2529,7 @@ define([
                 form_seed: localStorage.CP_formSeed,
                 cache: rdyCfg.cache,
                 noDrive: rdyCfg.noDrive,
+                neverDrive: rdyCfg.neverDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
                 lastVisit: Number(localStorage.lastVisit) || undefined

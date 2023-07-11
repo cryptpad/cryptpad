@@ -1311,7 +1311,7 @@
     "admin_support_last": "アップデートした日時: ",
     "admin_support_first": "作成日時: ",
     "contacts_confirmCancel": "<b>{0}</b>との連絡先リクエストをキャンセルしてよろしいですか？",
-    "history_trimPrompt": "このドキュメントは{0}の履歴があり、読み込みを遅くしている恐れがあります。必要でない場合は、履歴の削除を検討してください。",
+    "history_trimPrompt": "このドキュメントは{0}の履歴があるため、読み込みが遅くなっている可能性があります。必要でない場合は、履歴の削除を検討してください。",
     "reminder_date": "<b>{0}</b>が{1}にあります",
     "calendar_more": "あと{0}個",
     "reminder_time": "<b>{0}</b>が今日の{1}にあります",
@@ -1337,7 +1337,7 @@
     "toolbar_collapse": "ツールバーをたたむ",
     "toolbar_expand": "ツールバーを広げる",
     "form_preview": "フォームをプレビュー",
-    "form_geturl": "リンクをコピー",
+    "form_geturl": "公開リンクをコピー",
     "form_viewAnswer": "回答を表示",
     "form_editAnswer": "回答を編集",
     "form_preview_button": "プレビュー",
@@ -1578,5 +1578,8 @@
     "calendar_rec_monthly_pick": "日付",
     "calendar_str_filter_monthday": "月の日付：{0}",
     "calendar_str_filter_yearday": "年の日付：{0}",
-    "calendar_str_day": "{0}に"
+    "calendar_str_day": "{0}に",
+    "form_showCondorcetWinner": "勝者： ",
+    "form_showDetails": "詳細",
+    "form_type_date": "日付"
 }
