@@ -1413,8 +1413,8 @@ define([
 */
                 Ckeditor.dom.element.prototype.setHtml = function(a){
                     if (/callFunction/.test(a)) {
-                        a = a.replace(/on(mousedown|blur|keydown|focus|click|dragstart|mouseover|mouseout)/g, function (value) {
-                            return 'o' + value;
+                        a = a.replace(/[^o]on(mousedown|blur|keydown|focus|click|dragstart|mouseover|mouseout)/g, function (value) {
+                            return value.slice(0,1) + 'o' + value.slice(1);
                         });
                     }
                     this.$.innerHTML = a;
