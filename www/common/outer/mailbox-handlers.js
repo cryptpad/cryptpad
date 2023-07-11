@@ -806,7 +806,7 @@ define([
                     hash: 'string'
                 }
              */
-            if (!data.msg) { return void cb(true); }
+            if (!data.msg) { return void cb(null, null, true); }
 
             // Check if the request is valid (sent by the correct user)
             var myCurve = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
@@ -816,7 +816,7 @@ define([
             // except if the author is ourselves.
             if (curve && data.msg.author !== curve && data.msg.author !== myCurve) {
                 console.error('blocked');
-                return void cb(true);
+                return void cb(null, null, true);
             }
 
             var type = data.msg.type;
