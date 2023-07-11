@@ -110,7 +110,7 @@ define(['jquery'], function ($) {
                         var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
                         var reg2 = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'",]+)'?(,'([A-Za-z0-9 ]+)')?, this\);/;
                         var match = attr.match(reg);
-                        var lastArg = undefined;
+                        var lastArg;
                         if (!match) {
                             match = attr.match(reg2);
                             if (!match) { return; }
