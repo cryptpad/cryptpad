@@ -72,8 +72,10 @@ define([
     Messages.settings_otp_invalid = "Invalid OTP code"; // XXX
     Messages.settings_otp_tuto = "Please scan this QR code with your authenticator app and paste the verification code to confirm.";
 
+    Messages.settings_removeOwnedTitle = "Destroy all owned documents"; // XXX
     Messages.settings_removeOwnedButton = "Destroy documents";
     Messages.settings_removeOwnedText = "Please wait while your document are being destroyed...";
+    Messages.settings_removeOwnedHint = "All documents where you are the sole owner will be permanently destroyed"
 
     var categories = {
         'account': [ // Msg.settings_cat_account
@@ -88,10 +90,10 @@ define([
             'cp-settings-logout-everywhere',
             'cp-settings-mfa',
             'cp-settings-change-password',
-            'cp-settings-remove-owned',
             'cp-settings-safe-links',
             'cp-settings-userfeedback',
             'cp-settings-cache',
+            'cp-settings-remove-owned'
         ],
         'style': [ // Msg.settings_cat_style
             'cp-settings-colortheme',
@@ -514,7 +516,10 @@ define([
     makeBlock('remove-owned', function(cb) { // Msg.settings_removeOwnedHint, .settings_removeOwnedTitle
         if (!common.isLoggedIn()) { return cb(false); }
 
-        var button = h('button.btn.btn-danger', Messages.settings_removeOwnedButton);
+        var button = h('button.btn.btn-danger', [
+            h('i.cptools.cptools-destroy'),
+            Messages.settings_removeOwnedButton
+        ]);
         var form = h('div', [
             button
         ]);
