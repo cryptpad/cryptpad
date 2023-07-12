@@ -3,7 +3,6 @@
 ## Required vars
 # CPAD_MAIN_DOMAIN
 # CPAD_SANDBOX_DOMAIN
-# CPAD_ADMIN_EMAIL
 # CPAD_CONF
 
 set -e
