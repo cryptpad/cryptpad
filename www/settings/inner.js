@@ -51,7 +51,8 @@ define([
 
     Messages.settings_mfaTitle = "Two-Factor Authentication (2FA)"; // XXX
     Messages.settings_mfaHint = "Protect your account..."; // XXX
-    Messages.settings_cat_access = "Security"; // XXX
+    // Messages.settings_cat_access = "Security"; // XXX
+    Messages.settings_cat_security = "Security & Privacy"; // XXX EXISTING KEY TO CHANGE
     Messages.done = "Done";
     Messages.continue = "Continue";
     Messages.mfa_setup_label = "To enable 2FA, please begin by entering your account password"; // XXX
@@ -81,16 +82,13 @@ define([
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-mediatag-size',
-        ],
-        'access': [ // Msg.settings_cat_access // XXX
-            'cp-settings-mfa',
-            'cp-settings-remove-owned',
-            'cp-settings-change-password',
             'cp-settings-delete'
         ],
         'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
-            'cp-settings-autostore',
+            'cp-settings-mfa',
+            'cp-settings-change-password',
+            'cp-settings-remove-owned',
             'cp-settings-safe-links',
             'cp-settings-userfeedback',
             'cp-settings-cache',
@@ -102,6 +100,7 @@ define([
         'drive': [
             'cp-settings-redirect',
             'cp-settings-resettips',
+            'cp-settings-autostore',
             'cp-settings-drive-duplicate',
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
