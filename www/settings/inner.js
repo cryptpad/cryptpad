@@ -53,6 +53,7 @@ define([
     Messages.settings_mfaHint = "Protect your account..."; // XXX
     // Messages.settings_cat_access = "Security"; // XXX
     Messages.settings_cat_security = "Security & Privacy"; // XXX EXISTING KEY TO CHANGE
+    Messages.login_noSuchUser = "Invalid username or password";  // XXX EXISTING KEY TO CHANGE
     Messages.done = "Done";
     Messages.continue = "Continue";
     Messages.mfa_setup_label = "To enable 2FA, please begin by entering your account password"; // XXX
