@@ -49,11 +49,14 @@ define([
     var privateData;
     var sframeChan;
 
+    // XXX EXISTING KEYS TO CHANGE
+    Messages.settings_cat_security = "Security & Privacy";
+    Messages.login_noSuchUser = "Invalid username or password";
+
+    // NEW KEYS
     Messages.settings_mfaTitle = "Two-Factor Authentication (2FA)"; // XXX
-    Messages.settings_mfaHint = "Protect your account..."; // XXX
+    Messages.settings_mfaHint = "Protect your account with an additional verification code provided by an authenticator app of your choice "; // XXX
     // Messages.settings_cat_access = "Security"; // XXX
-    Messages.settings_cat_security = "Security & Privacy"; // XXX EXISTING KEY TO CHANGE
-    Messages.login_noSuchUser = "Invalid username or password";  // XXX EXISTING KEY TO CHANGE
     Messages.done = "Done";
     Messages.continue = "Continue";
     Messages.mfa_setup_label = "To enable 2FA, please begin by entering your account password"; // XXX
@@ -64,8 +67,8 @@ define([
     Messages.mfa_status_on = "2FA is active on this account";
     Messages.mfa_status_off = "2FA is not active on this account";
     Messages.mfa_recovery_title = "Save this recovery code now";
-    Messages.mfa_recovery_hint = "If you loose access to your authenticator...........";
-    Messages.mfa_recovery_warning = "This code will not be shown again...........";
+    Messages.mfa_recovery_hint = "If you loose access to your authenticator app you may be locked out of your CryptPad account. This recovery code can be used to disable 2FA and let you back in. ";
+    Messages.mfa_recovery_warning = "This code will not be shown again, please save it in a safe space now and do not share it with anyone.";
     Messages.mfa_enable = "Enable 2FA";
     Messages.mfa_disable = "Disable 2FA";
 

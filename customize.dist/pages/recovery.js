@@ -18,7 +18,7 @@ Msg.continue = "Continue"; // XXX also in settings
 Msg.recovery_forgot = 'Forgot recovery code';
 Msg.recovery_forgot_text = 'Please copy the following information and <a href="mailto:{0}">email it</a> to your instance administrators';
 
-Msg.recovery_mfa_wrong = "Invalid username or password";
+Msg.recovery_mfa_wrong = "Invalid username or password"; // XXX USE MODIFIED login_noSuchUser (see settings)
 Msg.recovery_mfa_error = "Unknown error. Please reload and try again.";
 Msg.recovery_mfa_disabled = "Multi-factor authentication is already disabled for this account.";
 
