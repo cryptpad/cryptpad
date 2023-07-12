@@ -58,12 +58,12 @@
 @cryptpad_color_red_fade: fade(@cryptpad_color_red, 50%);
 @cryptpad_color_red_fader: fade(@cryptpad_color_red, 15%);
 @cryptpad_color_warn_red: @cryptpad_color_red_fade;
-@cryptpad_color_dark_red: #AD0C00;
+@cryptpad_color_dark_red: #9e0000;
+@cryptpad_color_mid_red: #FF8880;
 @cryptpad_color_light_red: #FFD4D4;
 @cryptpad_color_light_red_fade: fade(@cryptpad_color_light_red, 75%);
 @cryptpad_color_orange: #f49842;
-@cryptpad_color_green: #2C632C;
-//@cryptpad_color_green: #5cb85c;
+@cryptpad_color_green: #5cb85c;
 @cryptpad_color_green_fade: fade(@cryptpad_color_green, 50%);
 @cryptpad_color_light_green: #c5ffa8;
 @cryptpad_color_light_green_fade: fade(@cryptpad_color_light_green, 20%);
@@ -179,6 +179,10 @@
 @cp_sidebar-left-active: @cryptpad_color_grey_700;
 @cp_sidebar-left-active-fg: @cryptpad_color_grey_200;
 @cp_sidebar-hint: @cryptpad_color_grey_600;
+
+// Settings
+@cp_settings_enabled: extract(@cp_palette-dark, 4);
+@cp_settings_disabled: @cryptpad_color_dark_red;
 
 // Drive
 @cp_drive-bg: @cp_sidebar-right-bg;
