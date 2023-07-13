@@ -16,7 +16,8 @@
         "teams": "Equips",
         "form": "Formulari",
         "presentation": "Presentació",
-        "doc": "Document"
+        "doc": "Document",
+        "diagram": "Diagrama"
     },
     "common_connectionLost": "<b>S'ha perdut la connexió amb el servidor</b><br>Fins que la connexió no torni, esteu en mode només de lectura.",
     "typeError": "Aquest document no és compatible amb l'aplicació seleccionada",
@@ -320,7 +321,7 @@
     "login_password": "Contrasenya",
     "login_confirm": "Confirmeu la contrasenya",
     "login_hashing": "Realitzant la funció resum a la contrasenya, pot portar una bona estona.",
-    "login_noSuchUser": "El nom d'usuari o la contrasenya no són vàlids. Torneu-ho a provar o registreu-vos",
+    "login_noSuchUser": "El nom d'usuari o la contrasenya no són vàlids",
     "login_invalUser": "Cal introduir el nom d'usuari",
     "login_invalPass": "Cal introduir la contrasenya",
     "login_unhandledError": "Hi ha hagut un error inesperat :(",
