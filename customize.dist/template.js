@@ -41,11 +41,19 @@ $(function () {
         });
     }).nThen(function () {
         require([
+            '/api/config',
+            '/common/common-util.js',
+            'optional!/api/instance',
             'less!/customize/src/less2/pages/page-' + pageName + '.less',
             'css!/components/bootstrap/dist/css/bootstrap.min.css',
             'css!/customize/fonts/cptools/style.css'
-        ], function () {
+        ], function (ApiConfig, Util, Instance) {
             var $main = $(infoPage());
+            var titleSuffix = (Util.find(Instance, ['name','default']) || '').trim();
+            if (!titleSuffix || titleSuffix === ApiConfig.httpUnsafeOrigin) {
+                titleSuffix = window.location.hostname;
+            }
+            document.title = document.title + ' - ' + titleSuffix;
 
             $('#placeholder').remove();
 

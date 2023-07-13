@@ -150,9 +150,11 @@ define([
                 '/customize/application_config.js',
                 //'/common/test.js',
                 '/common/userObject.js',
+                'optional!/api/instance'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
-            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject) {
+            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject,
+            _Instance) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -173,6 +175,7 @@ define([
                 Utils.UserObject = _UserObject;
                 Utils.Notify = _Notify;
                 Utils.currentPad = currentPad;
+                Utils.Instance = _Instance;
                 AppConfig = _AppConfig;
                 //Test = _Test;
 
@@ -1228,13 +1231,17 @@ define([
 
             var currentTitle;
             var currentTabTitle;
+            var titleSuffix = (Utils.Util.find(Utils, ['Instance','name','default']) || '').trim();
+            if (!titleSuffix || titleSuffix === ApiConfig.httpUnsafeOrigin) {
+                titleSuffix = window.location.hostname;
+            }
             var setDocumentTitle = function () {
                 if (!currentTabTitle) {
                     document.title = currentTitle || 'CryptPad';
                     return;
                 }
                 var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
-                document.title = title;
+                document.title = title + ' - ' + titleSuffix;
             };
 
             var setPadTitle = function (data, cb) {

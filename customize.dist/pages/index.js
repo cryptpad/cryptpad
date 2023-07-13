@@ -35,6 +35,7 @@ define([
     };
 
     return function () {
+        document.title = Msg.homePage;
         var icons = [
                 [ 'sheet', Msg.type.sheet],
                 [ 'doc', Msg.type.doc],
