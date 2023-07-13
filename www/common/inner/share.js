@@ -848,10 +848,12 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
+        /* XXX QR-code tab
         }, {
             getTab: getQRTab,
             title: Messages.share_QRCategory,
             icon: 'fa fa-qrcode',
+        */
         }];
         if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
