@@ -62,7 +62,7 @@ define([
     Messages.mfa_setup_label = "To enable 2FA, please begin by entering your account password"; // XXX
     Messages.mfa_setup_button = "Begin 2FA setup"; // XXX
     Messages.mfa_revoke_label = "To disable 2FA, please begin by entering your account password"; // XXX
-    Messages.mfa_revoke_button = "Start disable 2FA"; // XXX
+    Messages.mfa_revoke_button = "Confirm disable 2FA"; // XXX
     Messages.mfa_revoke_code = "Please enter your verification code";
     Messages.mfa_status_on = "2FA is active on this account";
     Messages.mfa_status_off = "2FA is not active on this account";
@@ -954,7 +954,7 @@ define([
 
         if (enabled) {
             (function () {
-            var button = h('button.btn', Messages.mfa_revoke_button);
+            var button = h('button.btn', Messages.mfa_disable);
             button.classList.add('disable-button');
             var $mfaRevokeBtn = $(button);
             var pwInput;
@@ -1006,7 +1006,7 @@ define([
                 }).nThen(function () {
                     $(pwContainer).remove();
                     var OTPEntry;
-                    var disable = h('button.btn.disable-button', Messages.mfa_disable);
+                    var disable = h('button.btn.disable-button', Messages.mfa_revoke_button);
                     $content.append(h('div.cp-password-container', [
                         h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_code),
                         OTPEntry = h('input', {
