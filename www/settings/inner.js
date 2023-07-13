@@ -49,9 +49,14 @@ define([
     var privateData;
     var sframeChan;
 
+    // XXX EXISTING KEYS TO CHANGE
+    Messages.settings_cat_security = "Security & Privacy";
+    Messages.login_noSuchUser = "Invalid username or password";
+
+    // NEW KEYS
     Messages.settings_mfaTitle = "Two-Factor Authentication (2FA)"; // XXX
-    Messages.settings_mfaHint = "Protect your account..."; // XXX
-    Messages.settings_cat_access = "Security"; // XXX
+    Messages.settings_mfaHint = "Protect your account with an additional verification code provided by an authenticator app of your choice "; // XXX
+    // Messages.settings_cat_access = "Security"; // XXX
     Messages.done = "Done";
     Messages.continue = "Continue";
     Messages.mfa_setup_label = "To enable 2FA, please begin by entering your account password"; // XXX
@@ -62,8 +67,8 @@ define([
     Messages.mfa_status_on = "2FA is active on this account";
     Messages.mfa_status_off = "2FA is not active on this account";
     Messages.mfa_recovery_title = "Save this recovery code now";
-    Messages.mfa_recovery_hint = "If you loose access to your authenticator...........";
-    Messages.mfa_recovery_warning = "This code will not be shown again...........";
+    Messages.mfa_recovery_hint = "If you loose access to your authenticator app you may be locked out of your CryptPad account. This recovery code can be used to disable 2FA and let you back in. ";
+    Messages.mfa_recovery_warning = "This code will not be shown again, please save it in a safe space now and do not share it with anyone.";
     Messages.mfa_enable = "Enable 2FA";
     Messages.mfa_disable = "Disable 2FA";
 
@@ -71,8 +76,10 @@ define([
     Messages.settings_otp_invalid = "Invalid OTP code"; // XXX
     Messages.settings_otp_tuto = "Please scan this QR code with your authenticator app and paste the verification code to confirm.";
 
+    Messages.settings_removeOwnedTitle = "Destroy all owned documents"; // XXX
     Messages.settings_removeOwnedButton = "Destroy documents";
     Messages.settings_removeOwnedText = "Please wait while your document are being destroyed...";
+    Messages.settings_removeOwnedHint = "All documents where you are the sole owner will be permanently destroyed"
 
     var categories = {
         'account': [ // Msg.settings_cat_account
@@ -81,19 +88,16 @@ define([
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-mediatag-size',
-        ],
-        'access': [ // Msg.settings_cat_access // XXX
-            'cp-settings-mfa',
-            'cp-settings-remove-owned',
-            'cp-settings-change-password',
             'cp-settings-delete'
         ],
         'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
-            'cp-settings-autostore',
+            'cp-settings-mfa',
+            'cp-settings-change-password',
             'cp-settings-safe-links',
             'cp-settings-userfeedback',
             'cp-settings-cache',
+            'cp-settings-remove-owned'
         ],
         'style': [ // Msg.settings_cat_style
             'cp-settings-colortheme',
@@ -102,6 +106,7 @@ define([
         'drive': [
             'cp-settings-redirect',
             'cp-settings-resettips',
+            'cp-settings-autostore',
             'cp-settings-drive-duplicate',
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
@@ -515,7 +520,10 @@ define([
     makeBlock('remove-owned', function(cb) { // Msg.settings_removeOwnedHint, .settings_removeOwnedTitle
         if (!common.isLoggedIn()) { return cb(false); }
 
-        var button = h('button.btn.btn-danger', Messages.settings_removeOwnedButton);
+        var button = h('button.btn.btn-danger', [
+            h('i.cptools.cptools-destroy'),
+            Messages.settings_removeOwnedButton
+        ]);
         var form = h('div', [
             button
         ]);
@@ -691,7 +699,6 @@ define([
                 placeholder: Messages.settings_changePasswordCurrent,
                 autocomplete: 'current-password',
             }, true),
-            h('br'),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new',
                 placeholder: Messages.settings_changePasswordNew
@@ -940,13 +947,15 @@ define([
 
     var drawMfa = function (content, enabled) {
         var $content = $(content).empty();
-        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status', [
+        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status' + (enabled ? '.enabled' : '.disabled'), [
             h('i.fa' + (enabled ? '.fa-check' : '.fa-times')),
             h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
         ]));
+
         if (enabled) {
             (function () {
-            var button = h('button.btn.btn-danger', Messages.mfa_revoke_button);
+            var button = h('button.btn', Messages.mfa_revoke_button);
+            button.classList.add('disable-button');
             var $mfaRevokeBtn = $(button);
             var pwInput;
             var pwContainer = h('div.cp-password-container', [
@@ -997,7 +1006,7 @@ define([
                 }).nThen(function () {
                     $(pwContainer).remove();
                     var OTPEntry;
-                    var disable = h('button.btn.btn-danger', Messages.mfa_disable);
+                    var disable = h('button.btn.disable-button', Messages.mfa_disable);
                     $content.append(h('div.cp-password-container', [
                         h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_code),
                         OTPEntry = h('input', {
@@ -1139,6 +1148,7 @@ define([
 
                     var qr = h('div.cp-settings-qr');
                     var uriInput = UI.dialog.selectable(uri);
+
                     updateQR(uri, qr);
 
                     var OTPEntry = h('input', {
@@ -1153,14 +1163,13 @@ define([
                     ]);
                     var $confirmBtn = $(confirmOTP);
                     var lock = false;
-                    UI.confirmButton(confirmOTP, {
-                        multiple: true
-                    }, function () {
+
+                    confirmOTP.addEventListener('click', function () {
                         var code = $OTPEntry.val();
                         if (code.length !== 6 || /\D/.test(code)) {
                             return void UI.warn(Messages.settings_otp_invalid);
                         }
-                        $confirmBtn.attr('disabled', 'disabled');
+                        confirmOTP.disabled = true;
                         lock = true;
 
                         var data = {
@@ -1177,17 +1186,17 @@ define([
                             lock = false;
                             $OTPEntry.val("");
                             if (err || !obj || !obj.success) {
-                                $confirmBtn.removeAttr('disabled');
+                                confirmOTP.disabled = false;
                                 console.error(err);
                                 return void UI.warn(Messages.error);
                             }
                             drawMfa(content, true);
-                        }, {raw: true});
-
+                        }, { raw: true });
                     });
 
                     $content.append([
                         description,
+                        uriInput,
                         h('div.cp-settings-qr-container', [
                             qr,
                             h('div.cp-settings-qr-code', [
@@ -1195,10 +1204,10 @@ define([
                                 h('br'),
                                 confirmOTP
                             ])
-                        ]),
-                        uriInput
+                        ])
                     ]);
                 };
+
 
                 var secret = randomSecret();
                 updateURI(secret);

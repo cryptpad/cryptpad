@@ -16,9 +16,8 @@ Msg.mfa_disable = "Disable 2FA"; // XXX also in settings
 Msg.continue = "Continue"; // XXX also in settings
 
 Msg.recovery_forgot = 'Forgot recovery code';
-Msg.recovery_forgot_text = 'Please copy the following information and <a href="mailto:{0}">email it</a> toyour instance administrators';
+Msg.recovery_forgot_text = 'Please copy the following information and <a href="mailto:{0}">email it</a> to your instance administrators';
 
-Msg.recovery_mfa_wrong = "Invalid username or password";
 Msg.recovery_mfa_error = "Unknown error. Please reload and try again.";
 Msg.recovery_mfa_disabled = "Multi-factor authentication is already disabled for this account.";
 
@@ -43,7 +42,7 @@ Msg.recovery_mfa_disabled = "Multi-factor authentication is already disabled for
                 h('div#userForm.form-group.hidden.col-md-6', [
                     h('div.cp-recovery-step.step1', [
                         h('p', Msg.recovery_mfa_description),
-                        h('div.alert.alert-danger.wrong-cred.cp-hidden', Msg.recovery_mfa_wrong),
+                        h('div.alert.alert-danger.wrong-cred.cp-hidden', Msg.login_noSuchUser),
                         h('input.form-control#username', {
                             type: 'text',
                             autocomplete: 'off',
