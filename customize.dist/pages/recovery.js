@@ -7,20 +7,6 @@ define([
     '/customize/pages.js'
 ], function (Config, $, h, UI, Msg, Pages) {
 
-Msg.recovery_header = "Account recovery"; // XXX
-Msg.recovery_mfa_description = "If you have lost access to your Two-Factor Authentication method you can disable 2FA for your account using your recovery code. Please start by entering your login and password:";
-Msg.recovery_mfa_secret = "Please enter your recovery code to disable 2FA for your account:";
-Msg.recovery_mfa_secret_ph = "Recovery code";
-
-Msg.mfa_disable = "Disable 2FA"; // XXX also in settings
-Msg.continue = "Continue"; // XXX also in settings
-
-Msg.recovery_forgot = 'Forgot recovery code';
-Msg.recovery_forgot_text = 'Please copy the following information and <a href="mailto:{0}">email it</a> to your instance administrators';
-
-Msg.recovery_mfa_error = "Unknown error. Please reload and try again.";
-Msg.recovery_mfa_disabled = "Multi-factor authentication is already disabled for this account.";
-
     return function () {
         document.title = Msg.recovery_header;
 

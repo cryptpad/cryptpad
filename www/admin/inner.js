@@ -1235,13 +1235,6 @@ define([
         return $div;
     };
 
-    Messages.admin_totpEnabled = "TOTP is enabled"; // XXX
-    Messages.admin_totpRecoveryMethod = "TOTP recovery method"; // XXX
-    Messages.admin_totpFailed = "Signature verification failed";
-    Messages.admin_totpCheck = "Signature verification success";
-    Messages.admin_totpDisable = "Disable TOTP for this account";
-    Messages.admin_totpDisableButton = "Disable";
-
     var renderTOTPData  = function (data) {
         var tableObj = makeMetadataTable('cp-block-stats');
         var row = tableObj.row;
@@ -1311,7 +1304,7 @@ define([
         var results = h('span');
         $div.append(results);
         var $btn = $div.find('.btn');
-        $btn.text(Messages.ui_generateReport);
+        $btn.text(Messages.admin_totpDisable);
         disable($btn);
 
         var pending = false;

@@ -49,37 +49,6 @@ define([
     var privateData;
     var sframeChan;
 
-    // XXX EXISTING KEYS TO CHANGE
-    Messages.settings_cat_security = "Security & Privacy";
-    Messages.login_noSuchUser = "Invalid username or password";
-
-    // NEW KEYS
-    Messages.settings_mfaTitle = "Two-Factor Authentication (2FA)"; // XXX
-    Messages.settings_mfaHint = "Protect your account with an additional verification code provided by an authenticator app of your choice "; // XXX
-    // Messages.settings_cat_access = "Security"; // XXX
-    Messages.done = "Done";
-    Messages.continue = "Continue";
-    Messages.mfa_setup_label = "To enable 2FA, please begin by entering your account password"; // XXX
-    Messages.mfa_setup_button = "Begin 2FA setup"; // XXX
-    Messages.mfa_revoke_label = "To disable 2FA, please begin by entering your account password"; // XXX
-    Messages.mfa_revoke_button = "Confirm disable 2FA"; // XXX
-    Messages.mfa_revoke_code = "Please enter your verification code";
-    Messages.mfa_status_on = "2FA is active on this account";
-    Messages.mfa_status_off = "2FA is not active on this account";
-    Messages.mfa_recovery_title = "Save this recovery code now";
-    Messages.mfa_recovery_hint = "If you loose access to your authenticator app you may be locked out of your CryptPad account. This recovery code can be used to disable 2FA and let you back in. ";
-    Messages.mfa_recovery_warning = "This code will not be shown again, please save it in a safe space now and do not share it with anyone.";
-    Messages.mfa_enable = "Enable 2FA";
-    Messages.mfa_disable = "Disable 2FA";
-
-    Messages.settings_otp_code = "Verification code"; // XXX
-    Messages.settings_otp_invalid = "Invalid OTP code"; // XXX
-    Messages.settings_otp_tuto = "Please scan this QR code with your authenticator app and paste the verification code to confirm.";
-
-    Messages.settings_removeOwnedTitle = "Destroy all owned documents"; // XXX
-    Messages.settings_removeOwnedButton = "Destroy documents";
-    Messages.settings_removeOwnedText = "Please wait while your document are being destroyed...";
-    Messages.settings_removeOwnedHint = "All documents where you are the sole owner will be permanently destroyed"
 
     var categories = {
         'account': [ // Msg.settings_cat_account

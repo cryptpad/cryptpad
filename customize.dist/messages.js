@@ -105,8 +105,6 @@ define(req, function(AppConfig, Default, Language) {
         extend(messages, Language);
     }
 
-    messages.type.diagram = "Diagram";  // XXX
-
     messages._languages = map;
     messages._languageUsed = language;
 
