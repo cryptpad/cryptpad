@@ -1611,12 +1611,20 @@
     "settings_removeOwnedButton": "Destroy owned documents",
     "settings_removeOwnedText": "Please wait while your document are being destroyed...",
     "settings_removeOwnedHint": "All documents where you are the sole owner will be permanently destroyed",
-    "recovery_header": "Account recovery",
+    "recovery_header": "2FA recovery",
     "recovery_mfa_description": "If you have lost access to your Two-Factor Authentication method you can disable 2FA for your account using your recovery code. Please start by entering your login and password:",
     "recovery_mfa_secret": "Please enter your recovery code to disable 2FA for your account:",
     "ery_mfa_secret_ph": "Recovery code",
     "recovery_forgot": "Forgot recovery code",
     "recovery_forgot_text": "Please copy the following information and <a href=\"mailto:{0}\">email it</a> to your instance administrators",
     "recovery_mfa_error": "Unknown error. Please reload and try again.",
-    "recovery_mfa_disabled": "Multi-factor authentication is already disabled for this account."
+    "recovery_mfa_disabled": "Multi-factor authentication is already disabled for this account.",
+    "admin_totpRecoveryTitle": "2FA Recovery",
+    "admin_totpRecoveryHint": "Users can copy recovery data on the 2FA recovery page /recovery/ and email it to the instance administrators. Paste recovery data below to disable 2FA for an account",
+    "admin_totpEnabled": "2FA is enabled",
+    "admin_totpRecoveryMethod": "2FA recovery method",
+    "admin_totpFailed": "Signature verification failed",
+    "admin_totpCheck": "Signature verification success",
+    "admin_totpDisable": "Disable 2FA for this account",
+    "admin_totpDisableButton": "Disable"
 }
