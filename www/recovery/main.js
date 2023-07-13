@@ -144,12 +144,10 @@ define([
             }, 100);
         });
 
-        UI.confirmButton($recoverConfirm[0], {
-            multiple: true
-        }, function () {
+        $recoverConfirm[0].onclick = function () {
             if (!blockKeys) { return; }
             revokeTOTP();
-        });
+        };
 
     });
 });
