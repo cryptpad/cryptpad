@@ -170,7 +170,7 @@ var processLang = function (map, lang, primary) {
 
                 console.log();
             }
-            //if (mismatchedTags.length) { console.log(mismatchedTags); } // XXX
+            //if (mismatchedTags.length) { console.log(mismatchedTags); } // TODO
         }
     });
 };

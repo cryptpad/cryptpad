@@ -2447,8 +2447,8 @@ define([
                         // the login page, where they will be able to authenticate
                         // and request a new JWT
 
-                        // XXX We may only require them to provid a new TOTP code here
-                        // instead of redirecting them to the login page
+                        // TODO Re-authenticate without user password? We'd need another way
+                        // to send the OTP code to the server
 
                         waitFor.abort();
                         return void LocalStore.logout(function () {

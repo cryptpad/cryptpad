@@ -848,13 +848,11 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
-        /* XXX QR-code tab
-        }, {
+        }, window.CP_DEV_MODE ? { // XXX enable for all
             getTab: getQRTab,
             title: Messages.share_QRCategory,
             icon: 'fa fa-qrcode',
-        */
-        }];
+        } : undefined].filter(Boolean);
         if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
                 getTab: getEmbedTab,

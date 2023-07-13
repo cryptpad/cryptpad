@@ -154,7 +154,7 @@ nThen(function (w) {
     };
 
     var broadcast = (command, data, cb) => {
-        cb = cb; // XXX nThen/concurrency
+        cb = cb; // TODO nThen/concurrency
         for (const worker of Object.values(Cluster.workers)) {
             sendCommand(worker, command, data /*, cb */);
         }
@@ -187,7 +187,7 @@ nThen(function (w) {
         });
     }
     if (Env.OFFLINE_MODE) { return; }
-    //if (Env.websocketPath) { return; } // XXX
+    if (Env.websocketPath) { return; }
 
     require("./lib/api").create(Env);
 });

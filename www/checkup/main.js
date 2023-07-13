@@ -1192,7 +1192,7 @@ define([
         assert(function (cb, msg) {
             var url = new URL(relativeURL, trimmedUnsafe).href;
             Tools.common_xhr(url, xhr => {
-                var span = h('span', h('p', '// XXX DEBUGGING DUPLICATED HEADERS'));
+                var span = h('span', h('p', '// DEBUGGING DUPLICATED HEADERS'));
 
                 var duplicated = false;
                 var pre = [];
@@ -1270,7 +1270,7 @@ define([
 
     // check if they provide legal data
     assert(function (cb, msg) {
-        if (true) { return void cb(true); } // XXX stubbed while we determine whether this is necessary
+        if (true) { return void cb(true); } // FIXME stubbed while we determine whether this is necessary
         if (ApiConfig.restrictRegistration) { return void cb(true); }
 
         var url = Pages.customURLs.imprint;

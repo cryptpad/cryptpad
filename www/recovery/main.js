@@ -94,7 +94,7 @@ define([
         var revokeTOTP = function () {
             var recoveryKey = $recoveryKey.val().trim();
             if (!recoveryKey || recoveryKey.length !== 32) {
-                return void UI.warn(Messages.error); // XXX error message?
+                return void UI.warn(Messages.error);
             }
             ServerCommand(blockKeys.sign, {
                 command: 'TOTP_REVOKE',
@@ -105,7 +105,6 @@ define([
                     console.error(err, response);
                     return void UI.warn(Messages.error);
                 }
-                // XXX redirect to login?
                 UI.log(Messages.ui_success);
                 LocalStore.login(undefined, blockHash, uname, function () {
                     Login.redirect();

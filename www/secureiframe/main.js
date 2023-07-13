@@ -108,6 +108,7 @@ define([
                             propChannels: config.data.getPropChannels(),
                             isTemplate: isTemplate,
                             file: config.data.file,
+                            devMode: localStorage.CryptPad_dev === '1',
                             secureIframe: true,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }

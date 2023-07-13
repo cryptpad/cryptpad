@@ -69,8 +69,6 @@ define([
         var chan = makeChan();
 
         var isNew = false;
-        // Make a HEAD request to the servre to check if a file exists in datastore
-        // XXX update nginx config
         var checkSession = function (oldKey, cb) {
             var channel = Hash.hrefToHexChannelId(Hash.hashToHref(oldKey));
             var prefix = channel.slice(0,2);

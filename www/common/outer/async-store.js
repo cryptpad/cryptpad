@@ -739,7 +739,6 @@ define([
                         list.push(m.channel);
                     });
                 }
-                // XXX calendars
             } else {
                 list = store.manager.getChannelsList('owned');
                 /*
