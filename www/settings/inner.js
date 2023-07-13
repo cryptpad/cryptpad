@@ -1161,7 +1161,6 @@ define([
                         h('i.fa.fa-check'),
                         h('span', Messages.mfa_enable)
                     ]);
-                    var $confirmBtn = $(confirmOTP);
                     var lock = false;
 
                     confirmOTP.addEventListener('click', function () {
