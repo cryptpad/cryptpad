@@ -316,7 +316,7 @@
     "login_password": "Passwort",
     "login_confirm": "Passwort bestätigen",
     "login_hashing": "Dein Passwort wird gerade durchgerechnet, das kann etwas dauern.",
-    "login_noSuchUser": "Ungültiger Benutzername oder Passwort. Versuche es erneut oder registriere dich",
+    "login_noSuchUser": "Ungültiger Benutzername oder Passwort",
     "login_invalUser": "Der Benutzername darf nicht leer sein",
     "login_invalPass": "Das Passwort darf nicht leer sein",
     "login_unhandledError": "Ein unerwarteter Fehler ist aufgetreten :(",
