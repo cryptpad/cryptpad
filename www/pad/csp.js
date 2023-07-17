@@ -34,7 +34,7 @@ define(['jquery'], function ($) {
             var attr = $(el).attr('oon'+e.type);
             if (!attr) { return; }
             if (['blur', 'dragstart'].indexOf(e.type) !== -1) { return false; }
-            var reg = /CKEDITOR.tools.callFunction\(([0-9]+),(this|event)\);return false;/;
+            var reg = /CKEDITOR.tools.callFunction\(([0-9]+),(this|event)\);.*/;
             var m = attr.match(reg);
             if (!m) { return; }
             var f = m[1];
@@ -107,8 +107,8 @@ define(['jquery'], function ($) {
                         if (e.type === 'dragstart') { return false; }
                         var attr = $(e.currentTarget).attr('oon'+e.type);
                         if (!attr) { return; }
-                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
-                        var reg2 = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'",]+)'?(,'([A-Za-z0-9 ]+)')?, this\);/;
+                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([^']+)')?\);/;
+                        var reg2 = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'",]+)'?(,'([^']+)')?, this\);/;
                         var match = attr.match(reg);
                         var lastArg;
                         if (!match) {

@@ -1506,12 +1506,6 @@ define([
         });
     };
 
-    Messages.settings_otp_code = "OTP code"; // XXX KEY ALREADY ADDED IN www/settings/inner.js
-    Messages.settings_otp_invalid = "Invalid OTP code"; // Same
-
-    Messages.loading_enter_otp = "This account is protected with Two-Factor Authentication. Please enter your verification code."; // XXX
-    Messages.loading_recover = 'Unable to get a code? <a href="/recovery/">Recover your account</a>';
-
 
     UI.getOTPScreen = function (cb, exitable, err) {
         var btn, input;

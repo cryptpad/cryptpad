@@ -34,7 +34,7 @@ define([
         var diagrams = doc.querySelectorAll('diagram');
 
         diagrams.forEach(function(diagram) {
-            if (diagram.firstChild && diagram.firstChild.nodeType === TEXT_NODE)  {
+            if (diagram.childNodes.length == 1 && diagram.firstChild && diagram.firstChild.nodeType === TEXT_NODE)  {
                 const innerText = diagram.firstChild.nodeValue;
                 const bin = Nacl.util.decodeBase64(innerText);
                 const xmlUrlStr = pako.inflateRaw(bin, {to: 'string'});
