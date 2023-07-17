@@ -48,7 +48,6 @@ define([
 
         var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
         var br = function () { return h('br'); };
-        Messages.register_nameTooLong = "Usernames must be shorter than {0} characters"; // XXX
 
         var registerClick = function () {
             var uname = $uname.val().trim();
