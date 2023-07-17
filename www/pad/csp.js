@@ -34,7 +34,7 @@ define(['jquery'], function ($) {
             var attr = $(el).attr('oon'+e.type);
             if (!attr) { return; }
             if (['blur', 'dragstart'].indexOf(e.type) !== -1) { return false; }
-            var reg = /CKEDITOR.tools.callFunction\(([0-9]+),(this|event)\);return false;/;
+            var reg = /CKEDITOR.tools.callFunction\(([0-9]+),(this|event)\);.*/;
             var m = attr.match(reg);
             if (!m) { return; }
             var f = m[1];
