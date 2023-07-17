@@ -1614,5 +1614,6 @@
     "recovery_header": "2FA-Wiederherstellung",
     "mfa_revoke_code": "Bitte gib den Verifizierungscode ein",
     "recovery_mfa_error": "Unbekannter Fehler. Bitte neu laden und erneut versuchen.",
-    "recovery_mfa_disabled": "Multi-Faktor-Authentifizierung ist für diesen Account bereits deaktiviert."
+    "recovery_mfa_disabled": "Multi-Faktor-Authentifizierung ist für diesen Account bereits deaktiviert.",
+    "recovery_mfa_secret_ph": "Wiederherstellungscode"
 }
