@@ -379,8 +379,7 @@ define([
 
     makeBlock('cache', function (cb) { // Msg.settings_cacheHint, .settings_cacheTitle
         var store = window.cryptpadStore;
-
-        var $cbox = $(UI.createCheckbox('cp-settings-cache',
+        var $cbox = $(UI.createCheckbox('cp-settings-cache-1',
             Messages.settings_cacheCheckbox,
             false, { label: { class: 'noTitle' } }));
         var spinner = UI.makeSpinner($cbox);
@@ -2069,7 +2068,7 @@ define([
 
     makeBlock('notif-calendar', function(cb) { // Msg.settings_notifCalendarHint, .settings_notifCalendarTitle
 
-        var $cbox = $(UI.createCheckbox('cp-settings-cache',
+        var $cbox = $(UI.createCheckbox('cp-settings-cache-2',
             Messages.settings_notifCalendarCheckbox,
             false, { label: { class: 'noTitle' } }));
         var spinner = UI.makeSpinner($cbox);
