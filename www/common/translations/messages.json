@@ -1628,5 +1628,6 @@
     "admin_totpDisableButton": "Disable",
     "register_nameTooLong": "Usernames must be shorter than {0} characters",
     "loading_enter_otp": "This account is protected with Two-Factor Authentication. Please enter your verification code",
-    "loading_recover": "Unable to get a code? <a href=\"/recovery/\">Recover your account</a>"
+    "loading_recover": "Unable to get a code? <a href=\"/recovery/\">Recover your account</a>",
+    "recovery_mfa_secret_ph": "Recovery code"
 }
