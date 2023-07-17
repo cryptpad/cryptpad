@@ -10,7 +10,7 @@ define([
     elem.setAttribute('id', 'cp-loading');
     elem.innerHTML = [
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '">',
+            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '" alt="CryptPad Logo">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
