@@ -23,4 +23,3 @@ block/
 logs/
 privileged.conf
 config/config.js
-*.sh
