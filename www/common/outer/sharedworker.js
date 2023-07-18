@@ -73,7 +73,6 @@ var init = function (client, cb) {
                         });
                     });
                     chan.on('STOPWORKER', function (data, cb) {
-                        console.error('ICI');
                         self.close();
                     });
                     chan.on('CONNECT', function (cfg, cb) {
