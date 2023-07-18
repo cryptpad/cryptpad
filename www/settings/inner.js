@@ -471,6 +471,7 @@ define([
             // browsers try to load iframes from cache if they have the same id as was previously seen
             // this seems to help?
             window.location.hash = '';
+            if (flush && window.CryptPad_flushCacheInner) { window.CryptPad_flushCacheInner(); }
             sframeChan.query('Q_COLORTHEME_CHANGE', {
                 theme: val,
                 flush: flush
