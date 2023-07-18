@@ -148,7 +148,16 @@ define([
         create[key] = function() {
             var $div = $('<div>', { 'class': 'cp-settings-' + key + ' cp-sidebarlayout-element' });
             if (full) {
-                $('<label>').text(Messages['settings_' + safeKey + 'Title'] || key).appendTo($div);
+                if (key === 'mediatag-size') {
+                    $('<label>', {'for': 'automatic-download'})
+                        .text(Messages['settings_' + safeKey + 'Title'] || key)
+                        .appendTo($div);
+                }
+                else{
+                    $('<label>')
+                        .text(Messages['settings_' + safeKey + 'Title'] || key)
+                        .appendTo($div);
+                }
 
                 // if this block's hint needs a special renderer, then create it in SPECIAL_HINTS_HANLDER
                 // otherwise the default will be used
@@ -190,10 +199,12 @@ define([
         if (publicKey) {
             var $key = $('<div>', { 'class': 'cp-sidebarlayout-element' }).appendTo($div);
             var userHref = Hash.getPublicSigningKeyString(privateData.origin, accountName, publicKey);
-            var $pubLabel = $('<span>', { 'class': 'label' })
+            var $pubLabel = $('<label>', { 'class': 'label', 'for': 'publicKey' })
                 .text(Messages.settings_publicSigningKey);
-            $key.append($pubLabel).append(UI.dialog.selectable(userHref));
+            var $pubInput = $('<input>', { 'type': 'text', 'value': userHref, 'id': 'publicKey' });
+            $key.append($pubLabel).append($pubInput);
         }
+
 
         return $div;
     };
@@ -868,6 +879,7 @@ define([
             'min': -1,
             'max': 1000,
             type: 'number',
+            id: 'automatic-download',
         }).appendTo($inputBlock);
 
         var oldVal;
