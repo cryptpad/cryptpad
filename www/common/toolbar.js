@@ -866,7 +866,8 @@ MessengerUI, Messages, Pages) {
         var $aTag = $('<a>', {
             href: href,
             title: buttonTitle,
-            'class': "cp-toolbar-link-logo"
+            'class': "cp-toolbar-link-logo",
+            'aria-label': 'Home button', // XXX
         }).append(UI.getIcon(privateData.app));
 
         var onClick = function (e) {
@@ -1019,7 +1020,6 @@ MessengerUI, Messages, Pages) {
         $userAdmin.find('> button').attr({
             title: Messages.userAccountButton,
             alt: Messages.userAccountButton,
-            'aria-label': Messages.userAccountButton,
         });
 
         return $userAdmin;
