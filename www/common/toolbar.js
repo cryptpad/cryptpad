@@ -1019,6 +1019,7 @@ MessengerUI, Messages, Pages) {
         $userAdmin.find('> button').attr({
             title: Messages.userAccountButton,
             alt: Messages.userAccountButton,
+            'aria-label': Messages.userAccountButton,
         });
 
         return $userAdmin;
@@ -1120,6 +1121,8 @@ MessengerUI, Messages, Pages) {
         var $button = $newPadBlock.find('button');
         $button.attr('title', Messages.notificationsPage);
         $button.addClass('fa fa-bell-o cp-notifications-bell');
+        $button.addClass('fa fa-bell-o cp-notifications-bell');
+        $button.attr('aria-label', 'Notification Bell'); // XXX
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
 

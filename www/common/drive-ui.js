@@ -2693,6 +2693,7 @@ define([
                 gridIcon,
                 listIcon
             ]));
+            $button.attr('aria-label', 'View Mode Button');
             var $gridIcon = $(gridIcon);
             var $listIcon = $(listIcon);
             var showMode = function (mode) {

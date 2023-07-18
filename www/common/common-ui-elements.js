@@ -827,6 +827,7 @@ define([
                 }
                 button = $('<button>', {
                     title: Messages.historyButton,
+                    'aria-label': Messages.historyButton,
                     'class': "fa fa-history cp-toolbar-icon-history",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
                 if (data.histConfig) {
