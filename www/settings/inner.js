@@ -1878,7 +1878,10 @@ define([
         var $div = $('<div>', {
             'class': 'cp-settings-code-indent-unit cp-sidebarlayout-element'
         });
-        $('<label>').text(Messages.settings_codeIndentation).appendTo($div);
+        $('<label>')
+            .text(Messages.settings_codeIndentation)
+            .attr('for', 'indent-unit')
+            .appendTo($div);
 
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input',
@@ -1888,6 +1891,7 @@ define([
             'min': 1,
             'max': 8,
             type: 'number',
+            id: 'indent-unit',
         }).on('change', function() {
             var val = parseInt($input.val());
             if (typeof(val) !== 'number') { return; }
@@ -1973,7 +1977,10 @@ define([
         var $div = $('<div>', {
             'class': 'cp-settings-code-font-size cp-sidebarlayout-element'
         });
-        $('<label>').text(Messages.settings_codeFontSize).appendTo($div);
+        $('<label>')
+            .text(Messages.settings_codeFontSize)
+            .attr('for', 'font-size')
+            .appendTo($div);
 
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input',
@@ -1983,6 +1990,7 @@ define([
             'min': 8,
             'max': 30,
             type: 'number',
+            id: 'font-size',
         }).on('change', function() {
             var val = parseInt($input.val());
             if (typeof(val) !== 'number') { return; }
