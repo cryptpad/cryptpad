@@ -65,7 +65,7 @@ define([
             if (selected === l) { attr.selected = 'selected'; }
             options.push(h('option', attr, languages[l]));
         });
-        var select = h('select', {role: 'listbox', 'label': 'language'}, options);
+        var select = h('select', {role: 'listbox', 'label': 'language','aria-label': 'languages'}, options);
         $(select).change(function () {
             Language.setLanguage($(select).val() || '', null, function () {
                 window.location.reload();
