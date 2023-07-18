@@ -389,6 +389,9 @@ define([
             cb();
         });
     };
+    common.stopWorker = function () {
+        postMessage('STOPWORKER', null, function () {});
+    };
     common.logoutFromAll = function (cb) {
         var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
         localStorage.setItem(Constants.tokenKey, token);
