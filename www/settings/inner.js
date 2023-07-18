@@ -513,7 +513,7 @@ define([
                     console.error(data.error);
                     return void UI.warn(Messages.error);
                 }
-                UI.log(Messages.success);
+                UI.log(Messages.ui_success);
             });
         });
 
