@@ -390,7 +390,7 @@ define([
         });
     };
     common.stopWorker = function () {
-        postMessage('STOPWORKER', null, function () {});
+        postMessage('STOPWORKER');
     };
     common.logoutFromAll = function (cb) {
         var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
@@ -2073,7 +2073,7 @@ define([
                     return;
                 }
                 common.logoutFromAll(waitFor(function () {
-                    postMessage("DISCONNECT");
+                    common.stopWorker();
                 }));
             }));
         }).nThen(function (waitFor) {
@@ -2088,7 +2088,7 @@ define([
                     console.error(obj.error);
                 }
                 common.logoutFromAll(waitFor(function () {
-                    postMessage("DISCONNECT");
+                    common.stopWorker();
                 }));
             }));
         }).nThen(function () {
@@ -2790,7 +2790,7 @@ define([
             });
             LocalStore.onLogout(function () {
                 console.log('onLogout: disconnect');
-                postMessage("DISCONNECT");
+                common.stopWorker();
             });
         }).nThen(function (waitFor) {
             if (common.migrateAnonDrive || sessionStorage.migrateAnonDrive) {

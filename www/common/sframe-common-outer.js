@@ -1343,7 +1343,6 @@ define([
             });
 
             sframeChan.on('Q_LOGOUT', function (data, cb) {
-                Cryptpad.stopWorker();
                 Utils.LocalStore.logout(cb);
             });
 

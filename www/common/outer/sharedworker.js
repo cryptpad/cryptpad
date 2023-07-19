@@ -72,7 +72,7 @@ var init = function (client, cb) {
                             }
                         });
                     });
-                    chan.on('STOPWORKER', function (data, cb) {
+                    chan.on('STOPWORKER', function () {
                         self.close();
                     });
                     chan.on('CONNECT', function (cfg, cb) {

@@ -31,6 +31,7 @@ define([
                 });
             });
             chan.on('STOPWORKER', function (data, cb) {
+                Rpc.queries['DISCONNECT'](clientId, data, cb);
                 cb();
             });
             chan.on('CONNECT', function (cfg, cb) {
