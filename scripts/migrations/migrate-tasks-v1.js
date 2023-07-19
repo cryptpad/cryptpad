@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 yann flory <yann.flory@xwiki.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 var nThen = require("nthen");
 var Tasks = require("../../lib/storage/tasks");
 var Logger = require("../../lib/log");

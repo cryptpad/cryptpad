@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 yann flory <yann.flory@xwiki.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 var Assert = require("assert");
 var Util = require("../../lib/common-util");
 var addIfAbsent = function (A, e) {

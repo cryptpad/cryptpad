@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 yann flory <yann.flory@xwiki.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 var EN = require("../../www/common/translations/messages.json");
 var Util = require("../../www/common/common-util.js");
 var Fs = require("fs");
