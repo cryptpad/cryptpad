@@ -13,7 +13,8 @@ define([
         };
     }
 
-    var ls = window.localStorage;
+    var ls = {};
+    try { ls = window.localStorage; } catch (e) { console.warn(e); }
     window.CryptPad_flushCacheInner = function () {
         Object.keys(ls).forEach(function (k) {
             if (k.indexOf('CRYPTPAD_CACHE|') !== 0 && k.indexOf('LESS_CACHE') !== 0) { return; }
