@@ -2779,7 +2779,7 @@ define([
             }
             // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {
-                if (e.key !== Constants.userHashKey) { return; }
+                if (e.key !== Constants.blockHashKey) { return; }
                 var o = e.oldValue;
                 var n = e.newValue;
                 if (!o && n) {
