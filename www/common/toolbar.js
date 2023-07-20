@@ -1020,6 +1020,7 @@ MessengerUI, Messages, Pages) {
         $userAdmin.find('> button').attr({
             title: Messages.userAccountButton,
             alt: Messages.userAccountButton,
+            'aria-label': Messages.userAccountButton,
         });
 
         return $userAdmin;
