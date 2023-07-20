@@ -1489,14 +1489,17 @@ define([
         if (config.buttonContent) {
             $button = $(h('button', {
                 class: config.buttonCls || '',
+                'aria-label': config.ariaLabel || '',
             }, [
                 h('span.cp-dropdown-button-title', config.buttonContent),
             ]));
         } else {
             $button = $('<button>', {
-                'class': config.buttonCls || ''
+                'class': config.buttonCls || '',
+                'aria-label': config.ariaLabel || '',
             }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
         }
+
 
         if (config.caretDown) {
             $('<span>', {

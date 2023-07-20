@@ -719,7 +719,7 @@ define([
             options: options, // Entries displayed in the menu
             common: common,
             buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions',
-            // 'aria-label': 'settings', // doesn't work
+            ariaLabel: 'Calendar Settings', // XXX
     };
         return UIElements.createDropdown(dropdownConfig)[0];
     };
