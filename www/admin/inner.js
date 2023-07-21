@@ -1292,11 +1292,14 @@ define([
         // XXX translation keys
         var $div = makeBlock(key, true); // Msg.admin_totpRecoveryHint.totpRecoveryTitle
 
-        var textarea = h('textarea', {});
+        var textarea = h('textarea', { id: 'textarea-input' });
         var $input = $(textarea);
 
+        var label = h('label', { for: 'textarea-input' });
+
         var box = h('div.cp-admin-setter', [
-            textarea,
+            label,
+            textarea
         ]);
 
         $div.find('.cp-sidebarlayout-description').after(box);
