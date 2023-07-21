@@ -3107,15 +3107,20 @@ Example
 
         var duration = APP.instanceStatus.profilingWindow;
         if (!isPositiveInteger(duration)) { duration = 10000; }
-        var newDuration = h('input', {type: 'number', min: 0, value: duration});
+        var newDuration = h('input', { type: 'number', min: 0, value: duration, id: 'duration-input' });
         var set = h('button.btn.btn-primary', Messages.admin_setDuration);
+
+        var label = h('label', { for: 'duration-input' }, Messages.ui_ms);
+
         $div.append(h('div', [
-            h('span.cp-admin-bytes-written-duration', Messages.ui_ms),
+            // h('span.cp-admin-bytes-written-duration', Messages.ui_ms),
             h('div.cp-admin-setlimit-form', [
+                label,
                 newDuration,
                 h('nav', [set])
             ])
         ]));
+
 
         UI.confirmButton(set, {
             classes: 'btn-primary',
