@@ -2669,10 +2669,14 @@ Example
                     'data-lang': l,
                     label: {class: 'noTitle'}
                 });
+
+                var label = h('label', { for: 'kanban-body' }, Messages.kanban_body);
+                var textarea = h('textarea', { id: 'kanban-body' });
+
                 $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
                     h('h4', languages[l]),
-                    h('label', Messages.kanban_body),
-                    h('textarea'),
+                    label,
+                    textarea,
                     radio,
                     preview
                 ]));
@@ -2806,8 +2810,8 @@ Example
             }
 
             // Start and end date pickers
-            var start = h('input');
-            var end = h('input');
+            var start = h('input', { id: 'start-input' });
+            var end = h('input', { id: 'end-input' });
             var $start = $(start);
             var $end = $(end);
             var is24h = UIElements.is24h();
@@ -2877,9 +2881,9 @@ Example
 
             $form.empty().append([
                 active,
-                h('label', Messages.broadcast_start),
+                h('label', { for: 'start-input' }, Messages.broadcast_start),
                 start,
-                h('label', Messages.broadcast_end),
+                h('label', { for: 'end-input' }, Messages.broadcast_end),
                 end,
                 h('br'),
                 h('div.cp-broadcast-form-submit', [
@@ -2925,8 +2929,8 @@ Example
             }
 
             // Survey form
-            var label = h('label', Messages.broadcast_surveyURL);
-            var input = h('input');
+            var label = h('label', { for: 'survey-url-input' }, Messages.broadcast_surveyURL);
+            var input = h('input', { id: 'survey-url-input' });
             var $input = $(input);
 
             // Extract form data
