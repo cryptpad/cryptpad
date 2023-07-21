@@ -1476,10 +1476,17 @@ Example
 
         var input = h('input', {
             type: 'email',
-            value: ApiConfig.adminEmail || ''
+            value: ApiConfig.adminEmail || '',
+            id: 'emailInput'
         });
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', input);
+
+        var label = h('label', {
+            for: 'emailInput'
+        });
+
+        var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', [label, input]);
+
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
@@ -1568,9 +1575,15 @@ Example
             type: 'text',
             value: getInstanceString('instanceNotice'),
             placeholder: '',
+            id: 'instance-notice'
         });
+
+        var label = h('label', {
+            for: 'instance-notice'
+        });
+
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setter', input);
+        var innerDiv = h('div.cp-admin-setter', [label,input]);
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
