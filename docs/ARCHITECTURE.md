@@ -1,6 +1,6 @@
 So you want to write a realtime collaborative application?
 
-This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoratative document**.
+This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoritative document**.
 
 [XWiki-Labs](https://labs.xwiki.com/) has published an open source suite (called [CryptPad](https://github.com/cryptpad/cryptpad)) of collaborative editors  which employ end to end encryption.
 This guide will refer to the techniques used in the prototypes developed therein.
@@ -63,11 +63,11 @@ This means that using chainpad, clients can collaborate in realtime while using 
 
 ## Datastore
 
-While it's possible for messages to propogate using a [gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol) and therefore not rely on havinga centralized service for storing messages, it's possible for the members of a gossip network to [Netsplit](https://en.wikipedia.org/wiki/Netsplit).
+While it's possible for messages to propagate using a [gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol) and therefore not rely on havinga centralized service for storing messages, it's possible for the members of a gossip network to [Netsplit](https://en.wikipedia.org/wiki/Netsplit).
 Chainpad currently has no mechanism for resolving such an event.
 
 If a member of a session disconnects (as defined by not responding to a ping with a pong in a specified timeframe) any revisions that they make to their version of a document will be ignored.
-When all connected members of a document have received and integrated a patch into their document, that patch can be considered to be a part of the **Authoratative Document**.
+When all connected members of a document have received and integrated a patch into their document, that patch can be considered to be a part of the **Authoritative Document**.
 
 The simplest way to guarantee that all clients within a session have the same document is to require that they all retrieve their messages from a single entity which is responsible for compiling a history of messages which are received in a particular order, and for distributing those messages in the same order.
 
@@ -81,7 +81,7 @@ Which data store your instance employs can be [easily configured](https://github
 You simply need to write an adaptor which conforms to a simple API.
 The documentation for writing such an adaptor, and the complete list of implemented adaptors, is available [here](https://github.com/cryptpad/cryptpad/tree/master/storage).
 
-Whether you decide to use a single server, or distribute messages across a network of entities, the body which stores the **Authoratative Document** will be referred to as the **History Keeper** for the purposes of this guide.
+Whether you decide to use a single server, or distribute messages across a network of entities, the body which stores the **Authoritative Document** will be referred to as the **History Keeper** for the purposes of this guide.
 
 ## Transport
 
@@ -91,9 +91,9 @@ Since a relay server is indispensable in this model, that server doubles as the 
 
 Provided Chainpad's requirements are fulfilled, however, there are alternative models that we can employ.
 
-1. we must inform the realtime session whether a client is still in the session for the purposes of determining the **Authoratative Document**
+1. we must inform the realtime session whether a client is still in the session for the purposes of determining the **Authoritative Document**
 2. we must guarantee that any client can retrieve the complete history of the chain at any given time
-3. we must guarantee that a client has knowledge of the **Authoratative Document** before we attempt to process any of their messages
+3. we must guarantee that a client has knowledge of the **Authoritative Document** before we attempt to process any of their messages
 
 [Netflux](https://github.com/xwiki-labs/netflux "JavaScript client side API based on WebRTC & WebSocket") is an API which is being developed as a part of the [OpenPaaS::ng Project](http://ng.open-paas.org/).
 It provides an abstraction over transportation details, and ensures that the above requirements can be met.
@@ -122,7 +122,7 @@ If an interface is interactive, which they typically are, then the user will lik
 If the interface is a plain text editor, maintaining the location of the cursor while updating the contents of the editor is not especially difficult.
 The process involves checking where the user's selection is located (possibly a start and end), determining whether the changes to the document occurred before or after those points, and updating the selection boundaries if necessary.
 
-If the interface is a WYSIWYG editor, maintaining the location of the cursor is more difficult, as the number of characters changed in the authoratative document does not correspond directly to the number of characters which the user perceives.
+If the interface is a WYSIWYG editor, maintaining the location of the cursor is more difficult, as the number of characters changed in the authoritative document does not correspond directly to the number of characters which the user perceives.
 It is the application developers' responsibility to infer from the new content where the cursor should be, and to render the modified content in such a way that it does not disrupt user experience.
 In the process of developing its [Realtime CKEditor](https://cryptpad.fr) XWiki Labs discovered that many of the [existing Javascript libraries](https://github.com/Matt-Esch/virtual-dom) for updating a **DOM** are very destructive, and replace elements completely once a difference is detected within the tree (when scanning left to right).
 

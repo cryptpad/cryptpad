@@ -28,7 +28,7 @@ See [CryptPad-Docker](https://github.com/cryptpad/cryptpad-docker) repository fo
 
 CryptPad offers a variety of collaborative tools that encrypt your data in your browser
 before it is sent to the server and your collaborators. In the event that the server is
-compromized the database holds encrypted data that is not of much value to attackers.
+compromised the database holds encrypted data that is not of much value to attackers.
 
 The code which performs the encryption is still loaded from the host server like any
 other web page, so you still need to trust the administrator to keep their server secure
