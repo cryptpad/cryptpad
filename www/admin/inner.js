@@ -1295,7 +1295,7 @@ define([
         var textarea = h('textarea', { id: 'textarea-input' });
         var $input = $(textarea);
 
-        var label = h('label', { for: 'textarea-input' });
+        var label = h('label', { for: 'textarea-input' },"Add here:"); // XXX temporary solution
 
         var box = h('div.cp-admin-setter', [
             label,
@@ -1486,7 +1486,7 @@ Example
 
         var label = h('label', {
             for: 'emailInput'
-        });
+        },'Email:'); // XXX temporary solution
 
         var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', [label, input]);
 
