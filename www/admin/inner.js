@@ -1709,16 +1709,25 @@ Example
         var _limit = APP.instanceStatus.defaultStorageLimit;
         var _limitMB = Util.bytesToMegabytes(_limit);
         var limit = getPrettySize(_limit);
-        var newLimit = h('input', {type: 'number', min: 0, value: _limitMB});
+        var newLimit = h('input', { type: 'number', min: 0, value: _limitMB, id: 'default-limit' });
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
+
+        var newLimit = h('input', { type: 'number', min: 0, value: _limitMB, id: 'default-limit' });
+        var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
+
         $div.append(h('div', [
             h('span.cp-admin-defaultlimit-value', Messages._getKey('admin_limit', [limit])),
             h('div.cp-admin-setlimit-form', [
-                h('label', Messages.admin_defaultLimitMB),
-                newLimit,
+                h('div', [
+                    h('label', { for: 'default-limit' }, 'default limit'), // XXX Messages.admin_defaultLimitMB is empty
+                    newLimit
+                ]),
                 h('nav', [set])
             ])
         ]));
+
+
+
 
         UI.confirmButton(set, {
             classes: 'btn-primary',
@@ -1828,21 +1837,23 @@ Example
         var key = 'setlimit';
         var $div = makeBlock(key); // Msg.admin_setlimitHint, .admin_setlimitTitle
 
-        var user = h('input.cp-setlimit-key');
+        var user = h('input.cp-setlimit-key', { id: 'user-input' });
         var $key = $(user);
-        var limit = h('input.cp-setlimit-quota', {type: 'number', min: 0, value: 0});
-        var note = h('input.cp-setlimit-note');
+        var limit = h('input.cp-setlimit-quota', { type: 'number', min: 0, value: 0, id: 'limit-input' });
+        var note = h('input.cp-setlimit-note', { id: 'note-input' });
         var remove = h('button.btn.btn-danger', Messages.fc_remove);
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
+
         var form = h('div.cp-admin-setlimit-form', [
-            h('label', Messages.admin_limitUser),
+            h('label', { for: 'user-input' }, Messages.admin_limitUser),
             user,
-            h('label', Messages.admin_limitMB),
+            h('label', { for: 'limit-input' }, Messages.admin_limitMB),
             limit,
-            h('label', Messages.admin_limitSetNote),
+            h('label', { for: 'note-input' }, Messages.admin_limitSetNote),
             note,
             h('nav', [set, remove])
         ]);
+
         var $note = $(note);
 
         var getValues = function () {
