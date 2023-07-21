@@ -1741,10 +1741,11 @@ define([
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
         var content = h('div.cp-info-menu-container', [
-            h('div.logo-block', [
-                h('img', {
-                    src: '/customize/CryptPad_logo.svg?' + urlArgs
-                }),
+                h('div.logo-block', [
+                    h('img', {
+                        src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                        alt: 'CryptPad Logo' // XXX
+                    }),
                 h('h6', "CryptPad"),
                 h('span', Pages.versionString)
             ]),
