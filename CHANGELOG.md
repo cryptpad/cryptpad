@@ -23,8 +23,8 @@ Also included are some improvements, dependency updates, and bug fixes
 ## Improvements
 
 - New setting to destroy all documents of which you are the sole owner
-- Settings re-oganization
-- Add favicons in ICO format [[#1068](https://github.com/cryptpad/cryptpad/pull/1068) thanks @lemodevxyz]
+- Settings re-organization
+- Add favicons in ICO format [[#1068](https://github.com/cryptpad/cryptpad/pull/1068) thanks @lemondevxyz]
 
 ## Bugs / issues
 
@@ -70,7 +70,7 @@ To upgrade:
 7. Review your instance's checkup page to ensure that you are passing all tests
 
 
-TODO add the up to date diagram hashes to the nginx config. See example.nginx.conf and https://github.com/cryptpad/cryptpad/commit/00af2c3efb4c155a7a793377aeddcc246d0b1aa2
+TODO add the up to date diagram hashes to the Nginx config. See example.nginx.conf and https://github.com/cryptpad/cryptpad/commit/00af2c3efb4c155a7a793377aeddcc246d0b1aa2
 
 # 5.3.0
 
