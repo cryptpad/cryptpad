@@ -59,6 +59,7 @@ To upgrade:
     - Access-Control-Allow-Credentials header
     - proxy_pass request for /blob/ and /block/ to the node process
     - new port for the websocket
+    - set CSP headers for draw.io, used by the new diagram app
     - see the [full diff](https://github.com/cryptpad/cryptpad/compare/5.4-rc#diff-a97d166145edec9545df5228d500c144bd5ec20db759cf5cc6f90309e963b1ca)
 4. Bower removed
     - To download all dependencies, use `npm install`
@@ -68,9 +69,6 @@ To upgrade:
     - Please run `npm run build` again after upgrading
 6. Restart your server
 7. Review your instance's checkup page to ensure that you are passing all tests
-
-
-TODO add the up to date diagram hashes to the Nginx config. See example.nginx.conf and https://github.com/cryptpad/cryptpad/commit/00af2c3efb4c155a7a793377aeddcc246d0b1aa2
 
 # 5.3.0
 
