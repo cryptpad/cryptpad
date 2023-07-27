@@ -7,8 +7,8 @@ define([
 ], function (h, UI, Msg, Pages, Config) {
     return function () {
         document.title = Msg.login_login;
-        Msg.type_username = "Type your username"; // XXX
-        Msg.type_password = "Type your password"; // XXX
+        Msg.type_username = "Type your username"; // XXX also on register.js
+        Msg.type_password = "Type your password"; // XXX also on register.js
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
