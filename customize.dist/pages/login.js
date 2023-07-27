@@ -36,7 +36,9 @@ define([
                         h('div.extra', [
                             (Config.restrictRegistration?
                                 undefined:
-                                h('button#register.cp-secondary', Msg.login_register)
+                                h('a#register.button.cp-secondary', {
+                                    href: "/register/",
+                                }, Msg.login_register)
                             ),
                             h('button.login', Msg.login_login)
                         ])

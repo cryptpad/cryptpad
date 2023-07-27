@@ -105,7 +105,7 @@ body.html {
             filter: @cp_static-img-invert-filter;
         }
 
-        button {
+        a.button, button {
             outline: none;
             background-color: @cp_buttons-primary;
             color: @cp_buttons-primary-text;
@@ -118,7 +118,7 @@ body.html {
                 background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
             }
         }
-        button.cp-secondary {
+        a.cp-secondary, button.cp-secondary {
             background-color: @cp_buttons-cancel;
             color: @cp_buttons-fg;
             border: 1px solid @cp_buttons-fg;
