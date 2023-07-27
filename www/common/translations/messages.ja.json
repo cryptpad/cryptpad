@@ -1624,5 +1624,8 @@
     "settings_mfaTitle": "二要素認証",
     "form_condorcetSchulze": "シュルツェ",
     "form_noCondorcetWinner": "勝者がありません",
-    "recovery_mfa_secret_ph": "復旧コード"
+    "recovery_mfa_secret_ph": "復旧コード",
+    "register_nameTooLong": "ユーザー名は{0}文字以下にしてください",
+    "loading_recover": "コードを取得できませんか？<a href=\"/recovery/\">アカウントを復旧</a>",
+    "loading_enter_otp": "このアカウントは二要素認証で保護されています。認証コードを入力してください"
 }
