@@ -1,6 +1,6 @@
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/api/config',
     '/common/requireconfig.js',
     '/customize/messages.js',
@@ -15,6 +15,7 @@ define([
         'pad',
         'slide',
         'whiteboard',
+        'integration'
     ].map(function (x) {
         return `/${x}/`;
     });
@@ -130,7 +131,7 @@ define([
             require([
                 '/common/sframe-chainpad-netflux-outer.js',
                 '/common/cryptpad-common.js',
-                '/bower_components/chainpad-crypto/crypto.js',
+                '/components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
                 '/common/outer/worker-channel.js',
                 '/secureiframe/main.js',
@@ -149,9 +150,11 @@ define([
                 '/customize/application_config.js',
                 //'/common/test.js',
                 '/common/userObject.js',
+                'optional!/api/instance'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
-            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject) {
+            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject,
+            _Instance) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -172,6 +175,7 @@ define([
                 Utils.UserObject = _UserObject;
                 Utils.Notify = _Notify;
                 Utils.currentPad = currentPad;
+                Utils.Instance = _Instance;
                 AppConfig = _AppConfig;
                 //Test = _Test;
 
@@ -266,9 +270,10 @@ define([
                 // We're only going to check if a hash exists in the URL or not.
                 Cryptpad.ready(waitFor(), {
                     noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
+                    neverDrive: cfg.integration,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
-                    currentPad: currentPad
+                    currentPad: currentPad,
                 });
 
                 // Remove the login hash if needed
@@ -350,6 +355,13 @@ define([
                         Cryptpad.fromContent = JSON.parse(sessionStorage.CP_formExportSheet);
                     } catch (e) { console.error(e); }
                     delete sessionStorage.CP_formExportSheet;
+                }
+
+                // New integrated pad
+                if (cfg.initialState) {
+                    currentPad.href = cfg.href;
+                    currentPad.hash = cfg.hash;
+                    return void todo();
                 }
 
                 // New pad options
@@ -674,7 +686,7 @@ define([
                         feedbackAllowed: Utils.Feedback.state,
                         prefersDriveRedirect: Utils.LocalStore.getDriveRedirectPreference(),
                         isPresent: parsed.hashData && parsed.hashData.present,
-                        isEmbed: parsed.hashData && parsed.hashData.embed,
+                        isEmbed: parsed.hashData && parsed.hashData.embed || cfg.integration,
                         isTop: window.top === window,
                         canEdit: Boolean(hashes && hashes.editHash),
                         oldVersionHash: parsed.hashData && parsed.hashData.version < 2, // password
@@ -695,7 +707,7 @@ define([
                         fromContent: Cryptpad.fromContent,
                         burnAfterReading: burnAfterReading,
                         storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined),
-                        supportsWasm: Utils.Util.supportsWasm()
+                        supportsWasm: Utils.Util.supportsWasm(),
                     };
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
@@ -716,6 +728,13 @@ define([
                         additionalPriv.isChannelMuted = true;
                     }
 
+                    // Integration
+                    additionalPriv.integration = cfg.integration;
+                    additionalPriv.integrationConfig = cfg.integrationConfig;
+                    additionalPriv.initialState = cfg.initialState instanceof Blob ?
+                                                    cfg.initialState : undefined;
+
+                    // Early access
                     var priv = metaObj.priv;
                     var _plan = typeof(priv.plan) === "undefined" ? Utils.LocalStore.getPremium() : priv.plan;
                     var p = Utils.Util.checkRestrictedApp(parsed.type, AppConfig,
@@ -727,6 +746,7 @@ define([
                         additionalPriv.earlyAccessBlocked = true;
                     }
 
+                    // Safe apps
                     if (isSafe) {
                         additionalPriv.hashes = hashes;
                         additionalPriv.password = password;
@@ -742,7 +762,7 @@ define([
                         Utils.LocalStore.setPremium(metaObj.priv.plan);
                     }
 
-                    sframeChan.event('EV_METADATA_UPDATE', metaObj);
+                    sframeChan.event('EV_METADATA_UPDATE', metaObj, {raw: true});
                 });
             };
             Cryptpad.onMetadataChanged(updateMeta);
@@ -1211,13 +1231,17 @@ define([
 
             var currentTitle;
             var currentTabTitle;
+            var titleSuffix = (Utils.Util.find(Utils, ['Instance','name','default']) || '').trim();
+            if (!titleSuffix || titleSuffix === ApiConfig.httpUnsafeOrigin) {
+                titleSuffix = window.location.hostname;
+            }
             var setDocumentTitle = function () {
                 if (!currentTabTitle) {
                     document.title = currentTitle || 'CryptPad';
                     return;
                 }
                 var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
-                document.title = title;
+                document.title = title + ' - ' + titleSuffix;
             };
 
             var setPadTitle = function (data, cb) {
@@ -1323,7 +1347,10 @@ define([
             });
 
             sframeChan.on('Q_LOGOUT_EVERYWHERE', function (data, cb) {
-                Cryptpad.logoutFromAll(Utils.Util.bake(Utils.LocalStore.logout, cb));
+                Cryptpad.logoutFromAll(Utils.Util.bake(Utils.LocalStore.logout, function () {
+                    Cryptpad.stopWorker();
+                    cb();
+                }));
             });
 
             sframeChan.on('EV_NOTIFY', function (data) {
@@ -1733,14 +1760,6 @@ define([
                 Cryptpad.changeUserPassword(Cryptget, edPublic, data, cb);
             });
 
-            sframeChan.on('Q_WRITE_LOGIN_BLOCK', function (data, cb) {
-                Cryptpad.writeLoginBlock(data, cb);
-            });
-
-            sframeChan.on('Q_REMOVE_LOGIN_BLOCK', function (data, cb) {
-                Cryptpad.removeLoginBlock(data, cb);
-            });
-
             // It seems we have performance issues when we open and close a lot of channels over
             // the same network, maybe a memory leak. To fix this, we kill and create a new
             // network every 30 cryptget calls (1 call = 1 channel)
@@ -1801,6 +1820,18 @@ define([
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
 
+            sframeChan.on('Q_INTEGRATION_OPENCHANNEL', function (data, cb) {
+                Cryptpad.universal.execCommand({
+                    type: 'integration',
+                    data: {
+                        cmd: 'INIT',
+                        data: {
+                            channel: data,
+                            secret: secret
+                        }
+                    }
+                }, cb);
+            });
             sframeChan.on('Q_CURSOR_OPENCHANNEL', function (data, cb) {
                 Cryptpad.universal.execCommand({
                     type: 'cursor',
@@ -1910,6 +1941,23 @@ define([
                 }
             });
 
+            var integrationSave = function () {};
+            if (cfg.integration) {
+                sframeChan.on('Q_INTEGRATION_SAVE', function (obj, cb) {
+                    if (cfg.integrationUtils && cfg.integrationUtils.save) {
+                        cfg.integrationUtils.save(obj, cb);
+                    }
+                });
+                sframeChan.on('Q_INTEGRATION_HAS_UNSAVED_CHANGES', function (obj, cb) {
+                    if (cfg.integrationUtils && cfg.integrationUtils.onHasUnsavedChanges) {
+                        cfg.integrationUtils.onHasUnsavedChanges(obj, cb);
+                    }
+                });
+                integrationSave = function (cb) {
+                    sframeChan.query('Q_INTEGRATION_NEEDSAVE', null, cb);
+                };
+            }
+
             if (cfg.messaging) {
                 sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
                     Cryptpad.universal.execCommand({
@@ -1966,6 +2014,8 @@ define([
                     placeholder.remove();
                 }
 
+
+
                 var replaceHash = function (hash) {
                     // The pad has just been created but is not stored yet. We'll switch
                     // to hidden hash once the pad is stored
@@ -1990,6 +2040,21 @@ define([
                         });
                     });
                 }
+
+                // Make sure we add the validateKey to channel metadata when we don't use
+                // the pad creation screen
+                if (!rtConfig.metadata && secret.keys.validateKey) {
+                    rtConfig.metadata = {
+                        validateKey: secret.keys.validateKey
+                    };
+                }
+                if (cfg.integration) {
+                    rtConfig.metadata = rtConfig.metadata || {};
+                    rtConfig.metadata.selfdestruct = true;
+                }
+
+
+                var ready = false;
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
@@ -2009,6 +2074,24 @@ define([
                         }
                         if (readOnly || cfg.noHash) { return; }
                         replaceHash(Utils.Hash.getEditHashFromKeys(secret));
+                    },
+                    onReady: function () {
+                        ready = true;
+                    },
+                    onError: function () {
+                        if (!cfg.integration) { return; }
+
+                        var reload = function () {
+                            if (cfg.integrationUtils && cfg.integrationUtils.reload) {
+                                cfg.integrationUtils.reload();
+                            }
+                        };
+
+                        // on server crash, try to save to Nextcloud
+                        if (ready) { return integrationSave(reload); }
+
+                        // if error during loading, reload without saving
+                        reload();
                     }
                 };
 
@@ -2017,6 +2100,8 @@ define([
                         Cryptpad.getMetadata(waitFor(function (err, m) {
                             cpNfCfg.owners = [m.priv.edPublic];
                         }));
+                    } else if (isNewFile && !cfg.useCreationScreen && cfg.initialState) {
+                        console.log('new file with initial state provided');
                     } else if (isNewFile && !cfg.useCreationScreen && currentPad.hash) {
                         console.log("new file with hash in the address bar in an app without pcs and which requires owners");
                         sframeChan.onReady(function () {
@@ -2059,6 +2144,9 @@ define([
                 var rtConfig = {
                     metadata: {}
                 };
+
+                if (cfg.integration) { rtConfig.metadata.selfdestruct = true; }
+
                 if (data.team) {
                     Cryptpad.initialTeam = data.team.id;
                 }

@@ -1,5 +1,5 @@
 /* jshint ignore:start */
-importScripts('/bower_components/requirejs/require.js');
+importScripts('/components/requirejs/require.js');
 
 window = self;
 localStorage = {
@@ -28,6 +28,7 @@ require(['/api/config?cb=' + (+new Date()).toString(16)], function (ApiConfig) {
                     if (q === 'CONNECT') { return; }
                     if (q === 'JOIN_PAD') { return; }
                     if (q === 'SEND_PAD_MSG') { return; }
+                    if (q === 'STOPWORKER') { return; }
                     chan.on(q, function (data, cb) {
                         try {
                             Rpc.queries[q](clientId, data, cb);
@@ -37,6 +38,9 @@ require(['/api/config?cb=' + (+new Date()).toString(16)], function (ApiConfig) {
                             console.log(data);
                         }
                     });
+                });
+                chan.on('STOPWORKER', function () {
+                    self.close();
                 });
                 chan.on('CONNECT', function (cfg, cb) {
                     // load Store here, with cfg, and pass a "query" (chan.query)

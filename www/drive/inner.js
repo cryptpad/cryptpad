@@ -7,14 +7,14 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-feedback.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
     '/customize/application_config.js',
     '/customize/messages.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/drive/app-drive.less',
 ], function (
     $,

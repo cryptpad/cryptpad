@@ -20,6 +20,11 @@
 .infopages_main () {
     --LessLoader_require: LessLoader_currentFile();
 }
+
+.cp-loading-noscroll {
+    overflow: hidden;
+}
+
 body.html {
     .font_main();
     @infopages_infobar-height: 64px;
@@ -105,7 +110,7 @@ body.html {
             filter: @cp_static-img-invert-filter;
         }
 
-        a.button, button {
+        button:not(.btn) {
             outline: none;
             background-color: @cp_buttons-primary;
             color: @cp_buttons-primary-text;

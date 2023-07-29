@@ -17,7 +17,7 @@
 define([
     '/common/common-util.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js'
+    '/components/chainpad/chainpad.dist.js'
 ], function (Util, AppConfig, ChainPad) {
     var module = { exports: {} };
 
@@ -88,7 +88,7 @@ define([
             try {
                 l = chainpad.getLag();
             } catch (e) {
-                throw new Error("ChainPad.getLag() does not exist, please `bower update`");
+                throw new Error("ChainPad.getLag() does not exist, please `npm install && npm run install:components`");
             }
             if (l.lag < badStateTimeout) { return; }
             evInfiniteSpinner.fire();

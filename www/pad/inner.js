@@ -2,7 +2,7 @@ require(['/api/config'], function(ApiConfig) {
     // see ckeditor_base.js getUrl()
     window.CKEDITOR_GETURL = function(resource) {
         if (resource.indexOf('/') === 0) {
-            resource = window.CKEDITOR.basePath.replace(/\/bower_components\/.*/, '') + resource;
+            resource = window.CKEDITOR.basePath.replace(/\/components\/.*/, '') + resource;
         } else if (resource.indexOf(':/') === -1) {
             resource = window.CKEDITOR.basePath + resource;
         }
@@ -20,11 +20,11 @@ require(['/api/config'], function(ApiConfig) {
         }
     };
 
-    require(['/bower_components/ckeditor/ckeditor.js']);
+    require(['/components/ckeditor/ckeditor.js']);
 });
 define([
     'jquery',
-    '/bower_components/hyperjson/hyperjson.js',
+    '/components/hyper-json/hyperjson.js',
     '/common/sframe-app-framework.js',
     '/common/cursor.js',
     //'/common/TypingTests.js',
@@ -33,7 +33,7 @@ define([
     '/pad/comments.js',
     '/pad/export.js',
     '/pad/cursor.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/media-tag.js',
     '/api/config',
     '/common/common-hash.js',
@@ -41,16 +41,16 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/hyperscript.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     //'/customize/application_config.js',
     //'/common/test.js',
 
     '/lib/diff-dom/diffDOM.js',
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
     'css!/customize/src/print.css',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/pad/app-pad.less'
 ], function(
     $,
@@ -631,7 +631,7 @@ define([
         var mediaTagMap = {};
         var $contentContainer = $('#cke_1_contents');
         var $html = $('html');
-        var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
+        var $faLink = $html.find('head link[href*="/components/components-font-awesome/css/font-awesome.min.css"]');
         if ($faLink.length) {
             $html.find('iframe').contents().find('head').append($faLink.clone());
         }
@@ -1413,8 +1413,8 @@ define([
 */
                 Ckeditor.dom.element.prototype.setHtml = function(a){
                     if (/callFunction/.test(a)) {
-                        a = a.replace(/on(mousedown|blur|keydown|focus|click|dragstart|mouseover|mouseout)/g, function (value) {
-                            return 'o' + value;
+                        a = a.replace(/[^o]on(mousedown|blur|keydown|focus|click|dragstart|mouseover|mouseout)/g, function (value) {
+                            return value.slice(0,1) + 'o' + value.slice(1);
                         });
                     }
                     this.$.innerHTML = a;
@@ -1430,7 +1430,7 @@ define([
                 var _getPath = Ckeditor.plugins.getPath;
                 Ckeditor.plugins.getPath = function (name) {
                     if (name === 'preview') {
-                        return window.location.origin + "/bower_components/ckeditor/plugins/preview/";
+                        return window.location.origin + "/components/ckeditor/plugins/preview/";
                     }
                     return _getPath(name);
                 };

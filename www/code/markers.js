@@ -2,7 +2,7 @@ define([
     '/common/common-util.js',
     '/common/sframe-common-codemirror.js',
     '/customize/messages.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/common/inner/common-mediatag.js',
     '/common/common-interface.js',
 ], function (Util, SFCodeMirror, Messages, ChainPad, MT, UI) {

@@ -13,7 +13,7 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
@@ -54,6 +54,12 @@ define([
     // trim whitespace surrounding the username since it is otherwise included in key derivation
     // most people won't realize that its presence is significant
             $uname.val(uname);
+            if (uname.length > Cred.MAXIMUM_NAME_LENGTH) {
+                let nameWarning = Messages._getKey('register_nameTooLong', [ Cred.MAXIMUM_NAME_LENGTH ]);
+                return void UI.alert(nameWarning, function () {
+                    registering = false;
+                });
+            }
 
             var passwd = $passwd.val();
             var confirmPassword = $confirm.val();

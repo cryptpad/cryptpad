@@ -14,7 +14,7 @@ define([
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/hyperscript.js',
     '/common/proxy-manager.js',
     '/customize/application_config.js',

@@ -11,7 +11,8 @@
     slide: #e57614;
     poll: #2c9e98;
     form: #2c9e98;
-    whiteboard: #a72ba7;
+    whiteboard: #8f40f5;
+    diagram: #ce3ad3;
     kanban: #8C4;
     sheet: #40865c;
     doc: #5170B5;
@@ -59,6 +60,7 @@
 @cryptpad_color_red_fader: fade(@cryptpad_color_red, 15%);
 @cryptpad_color_warn_red: @cryptpad_color_red_fade;
 @cryptpad_color_dark_red: #9e0000;
+@cryptpad_color_mid_red: #FF8880;
 @cryptpad_color_light_red: #FFD4D4;
 @cryptpad_color_light_red_fade: fade(@cryptpad_color_light_red, 75%);
 @cryptpad_color_orange: #f49842;
@@ -178,6 +180,10 @@
 @cp_sidebar-left-active: @cryptpad_color_grey_700;
 @cp_sidebar-left-active-fg: @cryptpad_color_grey_200;
 @cp_sidebar-hint: @cryptpad_color_grey_600;
+
+// Settings
+@cp_settings_enabled: extract(@cp_palette-dark, 4);
+@cp_settings_disabled: @cryptpad_color_dark_red;
 
 // Drive
 @cp_drive-bg: @cp_sidebar-right-bg;

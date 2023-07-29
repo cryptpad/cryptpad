@@ -5,7 +5,7 @@ define([
     '/common/common-constants.js',
     '/common/outer/userObject.js',
     '/customize/messages.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
 ], function (AppConfig, Util, Hash, Constants, OuterFO, Messages, Crypto) {
     var module = {};
 

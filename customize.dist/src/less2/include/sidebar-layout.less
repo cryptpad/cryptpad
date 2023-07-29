@@ -18,6 +18,11 @@
         display: flex;
         flex: 1;
         min-height: 0;
+        @media(min-width:800px) {
+            #cp-sidebarlayout-leftside {
+                overflow-y: scroll;
+            }
+        }
         #cp-sidebarlayout-leftside {
             color: @cp_sidebar-left-fg;
             width: 250px;
@@ -98,6 +103,9 @@
                 }
                 margin-bottom: 20px;
             }
+            .secret-code {
+                margin-top: 1rem;
+            }
             [type="text"], [type="password"], button {
                 vertical-align: middle;
                 min-width: 40px;
@@ -127,11 +135,11 @@
             &>div {
                 margin: 10px 0;
             }
-            button.btn {
-                margin: 0 5px 0 0;
-            }
+            //button.btn {
+            //    margin: 0 5px 0 0;
+            //}
             span.cp-password-container {
-                margin-bottom: 1px;
+                margin-bottom: 1rem;
             }
         }
         @media screen and (max-width: @browser_media-medium-screen) {

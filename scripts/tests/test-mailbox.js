@@ -1,14 +1,14 @@
 /* globals process */
 
 var Client = require("../../lib/client/");
-var Crypto = require("../../www/bower_components/chainpad-crypto");
+var Crypto = require("../../www/components/chainpad-crypto");
 var Mailbox = Crypto.Mailbox;
 var Nacl = require("tweetnacl/nacl-fast");
 var nThen = require("nthen");
 var Pinpad = require("../../www/common/pinpad");
 var Rpc = require("../../www/common/rpc");
 var Hash = require("../../www/common/common-hash");
-var CpNetflux = require("../../www/bower_components/chainpad-netflux");
+var CpNetflux = require("../../www/components/chainpad-netflux");
 var Util = require("../../lib/common-util");
 
 // you need more than 100 messages in the history, and you need a lastKnownHash between "50" and "length - 50"

@@ -1,6 +1,6 @@
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/api/config',
     'jquery',
     '/common/requireconfig.js',
@@ -108,6 +108,7 @@ define([
                             propChannels: config.data.getPropChannels(),
                             isTemplate: isTemplate,
                             file: config.data.file,
+                            devMode: localStorage.CryptPad_dev === '1',
                             secureIframe: true,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }

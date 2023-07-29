@@ -92,6 +92,19 @@ module.exports = {
  */
     //httpSafePort: 3001,
 
+/*  Websockets need to be exposed on a separate port from the rest of
+ *  the platform's HTTP traffic. Port 3003 is used by default.
+ *  You can change this to a different port if it is in use by a
+ *  different service, but under most circumstances you can leave this
+ *  commented and it will work.
+ *
+ *  In production environments, your reverse proxy (usually NGINX)
+ *  will need to forward websocket traffic (/cryptpad_websocket)
+ *  to this port.
+ *
+ */
+    // websocketPort: 3003,
+
 /*  CryptPad will launch a child process for every core available
  *  in order to perform CPU-intensive tasks in parallel.
  *  Some host environments may have a very large number of cores available

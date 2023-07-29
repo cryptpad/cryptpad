@@ -1,3 +1,9 @@
+# 5.4.0
+
+## Update notes
+
+TODO add the up to date diagram hashes to the nginx config. See example.nginx.conf and https://github.com/cryptpad/cryptpad/commit/00af2c3efb4c155a7a793377aeddcc246d0b1aa2
+
 # 5.3.0
 
 ## Goals
