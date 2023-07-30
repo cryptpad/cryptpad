@@ -141,18 +141,18 @@ define([
             $userlist.css('width', (68 + w)+'px');
         };
         var reorderRooms = function () {
-            var channels = Object.keys(state.channels).sort(function (a, b) {
-                var m1 = state.channels[a].messages.slice(-1)[0];
-                var m2 = state.channels[b].messages.slice(-1)[0];
-                if (!m2) { return !m1 ? 0 : 1; }
-                if (!m1) { return -1; }
-                return m1.time - m2.time;
+            var $container = $(".cp-app-contacts-category-content.cp-contacts-friends");
+            $container.append(function() {
+                return $(this).children().sort(function(a, b) {
+                   a = $(a).attr("data-key");
+                   b = $(b).attr("data-key");
+                   var m1 = state.channels[a].messages.slice(-1)[0];
+                   var m2 = state.channels[b].messages.slice(-1)[0];
+                   if (!m2) { return !m1 ? 0 : 1; }
+                   if (!m1) { return -1; }
+                   return m2.time - m1.time;
+               });
             });
-
-            channels.forEach(function (c, i) {
-                $userlist.find(dataQuery(c)).css('order', i);
-            });
-
             // Make sure the width is correct even if there is a scrollbar
             onResize();
         };
@@ -238,13 +238,15 @@ define([
         markup.chatbox = function (id, data, curvePublic) {
             var moreHistory = h('span.cp-app-contacts-more-history.fa.fa-history', {
                 title: Messages.contacts_fetchHistory,
+                tabindex: "0",
             });
 
             var chan = state.channels[id];
             var displayName = UI.getDisplayName(chan.name || chan.displayName);
 
             var fetching = false;
-            var $moreHistory = $(moreHistory).click(function () {
+            var $moreHistory = $(moreHistory).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) return;
                 if (fetching) { return; }
 
                 // get oldest known message...
@@ -301,10 +303,12 @@ define([
             });
 
             var removeHistory = h('span.cp-app-contacts-remove-history.fa.fa-eraser', {
-                title: Messages.contacts_removeHistoryTitle
+                title: Messages.contacts_removeHistoryTitle,
+                tabindex: "0",
             });
 
-            $(removeHistory).click(function () {
+            $(removeHistory).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) return;
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
 
@@ -518,9 +522,10 @@ define([
             var roomEl = h('div.cp-app-contacts-friend.cp-avatar', {
                 'data-key': id,
                 'data-user': room.isFriendChat ? userlist[0].curvePublic : '',
+                'tabindex': '0',
+                'aria-label': 'Open Chat Room',
             });
-
-
+            
             var curve;
             if (room.isFriendChat) {
                 var __channel = state.channels[id];
@@ -529,14 +534,17 @@ define([
 
             var unmute = h('span.cp-app-contacts-remove.fa.fa-bell.cp-unmute-icon', {
                 title: Messages.contacts_unmute || 'unmute',
-                style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
+                style: (curve && mutedUsers[curve]) ? undefined : 'display: none;',
+                tabindex: "0",
             });
             var mute = h('span.cp-app-contacts-remove.fa.fa-bell-slash.cp-mute-icon', {
                 title: Messages.contacts_mute || 'mute',
-                style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
+                style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined,
+                tabindex: "0",
             });
             var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
-                title: Messages.contacts_remove
+                title: Messages.contacts_remove,
+                tabindex: "0",
             });
             var leaveRoom = h('span.cp-app-contacts-remove.fa.fa-sign-out', {
                 title: Messages.contacts_leaveRoom
@@ -559,11 +567,16 @@ define([
 
             var $room = $(roomEl).click(function () {
                 display(id);
+            }).on('keydown', function(e) {
+                // enter key & the element is the square not the other buttons
+                if(e.which === 13 && e.currentTarget === e.target) display(id);
             }).dblclick(function () {
                 if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
             });
 
-            $(unmute).on('click dblclick', function (e) {
+            $(unmute).on('click dblclick keydown', function (e) {
+                // if it is a key press but not an enter key then stop
+                if(e.type === "keydown" && e.originalEvent.which !== 13) return;
                 e.stopPropagation();
                 var channel = state.channels[id];
                 if (!channel.isFriendChat) { return; }
@@ -573,7 +586,9 @@ define([
                 unmuteUser(curvePublic);
             });
 
-            $(mute).on('click dblclick', function (e) {
+            $(mute).on('click dblclick keydown', function (e) {
+                // if it is a key press but not an enter key then stop
+                if(e.type === "keydown" && e.originalEvent.which !== 13) return;
                 e.stopPropagation();
                 var channel = state.channels[id];
                 if (!channel.isFriendChat) { return; }
@@ -584,7 +599,9 @@ define([
                 muteUser(friend);
             });
 
-            $(remove).click(function (e) {
+            $(remove).on("click keydown", function (e) {
+                // if it is a key press but not an enter key then stop
+                if(e.type === "keydown" && e.originalEvent.which !== 13) return;
                 e.stopPropagation();
                 var channel = state.channels[id];
                 if (!channel.isFriendChat) { return; }
