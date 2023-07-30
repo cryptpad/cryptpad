@@ -1517,10 +1517,14 @@ define([
         };
 
         var setOptions = function (options) {
-            options.forEach(function (o) {
+            options.forEach(function (o, i) {
                 if (!isValidOption(o)) { return; }
                 if (isElement(o)) { return $innerblock.append(o); }
-                var $el = $(h(o.tag, (o.attributes || {})));
+                o.attributes = o.attributes || {}
+                if(o.attributes["tabindex"] === undefined) {
+                    o.attributes["tabindex"] = "0";
+                }
+                var $el = $(h(o.tag, o.attributes));
 
                 if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
                     o.content = [o.content];
@@ -1543,6 +1547,13 @@ define([
                         var close = o.action(e);
                         if (close) { hide(); }
                     });
+                    // support enter key
+                    $el.on('keypress', function(e) {
+                        if(e.which === 13) {
+                            var close = o.action(e);
+                            if(close) { hide(); }
+                        }
+                    })
                 }
             });
         };
