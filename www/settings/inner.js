@@ -2150,7 +2150,8 @@ define([
             }
 
             var $category = $(h('div.cp-sidebarlayout-category', {
-                'data-category': key
+                'data-category': key,
+                'tabindex': '0',
             }, [
                 icon,
                 Messages['settings_cat_' + key] || key,
@@ -2161,7 +2162,8 @@ define([
                 $category.addClass('cp-leftside-active');
             }
 
-            $category.click(function() {
+            $category.on("click keypress", function(e) {
+                if(e.type === 'keypress' && e.originalEvent.which !== 13) { return; }
                 if (!Array.isArray(categories[key]) && categories[key].onClick) {
                     categories[key].onClick();
                     return;
