@@ -237,7 +237,10 @@ define([
         Object.keys(categories).forEach(function (key) {
             if (key === 'admin' && !teamAdmin) { return; }
 
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key}).appendTo($categories);
+            var $category = $('<div>', {
+                'class': 'cp-sidebarlayout-category cp-team-cat-'+key,
+                'tabindex': '0',
+            }).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
             if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
             if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
@@ -252,7 +255,8 @@ define([
                 $category.addClass('cp-leftside-active');
             }
 
-            $category.click(function () {
+            $category.on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
                 if (!Array.isArray(categories[key]) && categories[key].onClick) {
                     categories[key].onClick(common);
                     return;
@@ -469,20 +473,25 @@ define([
                     created++;
                 }
                 if (team.empty) {
-                    var createTeamDiv = h('div.cp-team-list-team.empty'+createCls, [
+                    var createTeamDiv = h('div.cp-team-list-team.empty'+createCls, {
+                        "tabindex": "0",
+                    }, [
                         h('span.cp-team-list-name.empty', Messages.team_listSlot),
                         createBtn
                     ]);
                     list.push(createTeamDiv);
                     if (createCls) {
-                        $(createTeamDiv).click(function () {
+                        $(createTeamDiv).on("click keypress", function (e) {
+                            if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
                             $('div.cp-team-cat-create').click();
                         });
                     }
                     return;
                 }
                 var avatar = h('span.cp-avatar');
-                var teamDiv = h('div.cp-team-list-team', [
+                var teamDiv = h('div.cp-team-list-team', {
+                    "tabindex": "0",
+                }, [
                     h('span.cp-team-list-avatar', avatar),
                     h('span.cp-team-list-name', {
                         title: team.metadata.name
@@ -490,7 +499,8 @@ define([
                 ]);
                 list.push(teamDiv);
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
-                $(teamDiv).click(function () {
+                $(teamDiv).on("click keypress", function (e) {
+                    if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
                     if (team.error) {
                         UI.warn(Messages.error); // FIXME better error message - roster bug, can't load the team for now
                         return;
@@ -532,14 +542,17 @@ define([
         content.push(h('label', Messages.team_createName));
         var input = h('input', {type:'text'});
         content.push(input);
-        var button = h('button.btn.btn-success', Messages.creation_create);
+        var button = h('button.btn.btn-success', {
+            "tabindex": "0",
+        }, Messages.creation_create);
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
         content.push($spinner[0]);
         var state = false;
-        $(button).click(function () {
+        $(button).on("click keypress", function (e) {
+            if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
             if (state) { return; }
             var name = $(input).val();
             if (!name.trim()) { return; }
@@ -740,9 +753,11 @@ define([
         // If they're an admin and I am an owner, I can promote them to owner
         if (!isMe && myRole > theirRole && theirRole === ADMIN && !data.pending) {
             var promoteOwner = h('span.fa.fa-angle-double-up', {
-                title: Messages.team_rosterPromoteOwner
+                title: Messages.team_rosterPromoteOwner,
+                tabindex: "0",
             });
-            $(promoteOwner).click(function () {
+            $(promoteOwner).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return false; }
                 UI.confirm(Messages.team_ownerConfirm, function (yes) {
                     if (!yes) { return; }
                     $(promoteOwner).hide();
@@ -763,13 +778,16 @@ define([
         // If they're a viewer/member and I have a higher role than them, I can promote them to admin
         if (!isMe && myRole >= ADMIN && theirRole < ADMIN && !data.pending) {
             var promote = h('span.fa.fa-angle-double-up', {
-                title: Messages.team_rosterPromote
+                title: Messages.team_rosterPromote,
+                tabindex: "0",
             });
-            $(promote).click(function () {
+            $(promote).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return false; }
                 $(promote).hide();
                 describeUser(common, data.curvePublic, {
                     role: ROLES[theirRole + 1]
                 }, promote);
+                return false;
             });
             $actions.append(promote);
         }
@@ -777,9 +795,11 @@ define([
         // (if they're not already a MEMBER)
         if (myRole >= theirRole && myRole >= ADMIN && theirRole > 0 && !data.pending) {
             var demote = h('span.fa.fa-angle-double-down', {
-                title: Messages.team_rosterDemote
+                title: Messages.team_rosterDemote,
+                tabindex: "0",
             });
-            $(demote).click(function () {
+            $(demote).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return false; }
                 var todo = function () {
                     var role = ROLES[theirRole - 1] || 'VIEWER';
                     $(demote).hide();
@@ -794,6 +814,7 @@ define([
                     });
                 }
                 todo();
+                return false;
             });
             if (!(isMe && myRole === 3 && !otherOwners)) {
                 $actions.append(demote);
@@ -803,9 +824,11 @@ define([
         // Note: we can't remove owners, we have to demote them first
         if (!isMe && myRole >= ADMIN && myRole >= theirRole && theirRole !== ROLES.indexOf('OWNER')) {
             var remove = h('span.fa.fa-times', {
-                title: Messages.team_rosterKick
+                title: Messages.team_rosterKick,
+                tabindex: "0",
             });
-            $(remove).click(function () {
+            $(remove).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return false; }
                 UI.confirm(Messages._getKey('team_kickConfirm', [Util.fixHTML(displayName)]), function (yes) {
                     if (!yes) { return; }
                     APP.module.execCommand('REMOVE_USER', {
@@ -820,6 +843,7 @@ define([
                         redrawRoster(common);
                     });
                 });
+                return false;
             });
             $actions.append(remove);
         }
@@ -833,13 +857,17 @@ define([
         ];
         if (data.inviteChannel) {
             if (data.hash) {
-                var copy = h('span.fa.fa-copy');
-                $(copy).click(function () {
+                var copy = h('span.fa.fa-copy', {
+                    "tabindex": 0,
+                });
+                $(copy).on("click keypress", function (e) {
+                    if(e.type === "keypress" && e.originalEvent.which !== 13) { return false; }
                     var privateData = common.getMetadataMgr().getPrivateData();
                     var origin = privateData.origin;
                     var href = origin + Hash.hashToHref(data.hash, 'teams');
                     var success = Clipboard.copy(href);
                     if (success) { UI.log(Messages.shareSuccess); }
+                    return false;
                 }).prependTo(actions);
             }
             content = [
@@ -848,11 +876,14 @@ define([
                 actions
             ];
         }
-        var div = h('div.cp-team-roster-member', content);
+        var div = h('div.cp-team-roster-member', {
+            "tabindex": 0,
+        }, content);
         if (data.profile) {
-            $(div).dblclick(function (e) {
+            $(div).on("click keypress", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return false; }
                 common.openURL('/profile/#' + data.profile);
             });
         }
@@ -914,7 +945,9 @@ define([
         // If you're an admin or an owner, you can invite your friends to the team
         // TODO and acquaintances later?
         if (me && (me.role === 'ADMIN' || me.role === 'OWNER')) {
-            var invite = h('button.cp-online.btn.btn-primary', Messages.team_inviteButton);
+            var invite = h('button.cp-online.btn.btn-primary', {
+                "tabindex": "0",
+            }, Messages.team_inviteButton);
             var inviteFriends = common.getFriends();
             Object.keys(inviteFriends).forEach(function (curve) {
                 // Keep only friends that are not already in the team and that you can contact
@@ -929,14 +962,18 @@ define([
                 friends: inviteFriends,
                 module: APP.module
             };
-            $(invite).click(function () {
+            $(invite).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
                 UIElements.createInviteTeamModal(inviteCfg);
             });
             $header.append(invite);
         }
 
-        var leave = h('button.cp-online.btn.btn-danger', Messages.team_leaveButton);
-        $(leave).click(function () {
+        var leave = h('button.cp-online.btn.btn-danger', {
+            "tabindex": "0",
+        }, Messages.team_leaveButton);
+        $(leave).on("click keypress", function (e) {
+            if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
             if (me && me.role === 'OWNER') {
                 return void UI.alert(Messages.team_leaveOwner);
             }
@@ -953,9 +990,12 @@ define([
         });
         $header.append(leave);
 
-        var table = h('button.btn.btn-primary', Messages.teams_table);
-        $(table).click(function (e) {
+        var table = h('button.btn.btn-primary', {
+            "tabindex": 0,
+        }, Messages.teams_table);
+        $(table).on("click keypress", function (e) {
             e.stopPropagation();
+            if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
             makePermissions();
         });
         $header.append(table);
@@ -1193,12 +1233,15 @@ define([
 
     makeBlock('delete', function (common, cb, $div) { // Msg.team_deleteHint, .team_deleteTitle
         $div.addClass('cp-online');
-        var deleteTeam = h('button.btn.btn-danger', Messages.team_deleteButton);
+        var deleteTeam = h('button.btn.btn-danger', {
+            "tabindex": "0",
+        }, Messages.team_deleteButton);
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
 
         var deleting = false;
-        $(deleteTeam).click(function () {
+        $(deleteTeam).on("click keypress", function (e) {
+            if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
             if (deleting) { return; }
             UI.confirm(Messages.team_deleteConfirm, function (yes) {
                 if (!yes) { return; }
@@ -1272,7 +1315,9 @@ define([
         var declineButton = h('button.btn.btn-danger', {
             style: 'display: none;'
         }, Messages.friendRequest_decline);
-        var acceptButton = h('button.btn.btn-primary', Messages.team_inviteJoin);
+        var acceptButton = h('button.btn.btn-primary', {
+            "tabindex": "0",
+        }, Messages.team_inviteJoin);
         var inviteDiv = h('div', [
             h('nav', [
                 declineButton,
@@ -1399,13 +1444,19 @@ define([
             var anonLogin, anonRegister;
             $div.append(h('p', Messages.team_invitePleaseLogin));
             $div.append(h('div', [
-                anonLogin = h('button.btn.btn-primary', Messages.login_login),
-                anonRegister = h('button.btn.btn-secondary', Messages.login_register),
+                anonLogin = h('button.btn.btn-primary', {
+                    "tabindex": "0",
+                }, Messages.login_login),
+                anonRegister = h('button.btn.btn-secondary', {
+                    "tabindex": "0",
+                }, Messages.login_register),
             ]));
-            $(anonLogin).click(function () {
+            $(anonLogin).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
                 common.setLoginRedirect('login');
             });
-            $(anonRegister).click(function () {
+            $(anonRegister).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
                 common.setLoginRedirect('register');
             });
             waitFor.abort();
@@ -1417,7 +1468,8 @@ define([
 
             // If there is a password, display the password prompt
             var pwInput = UI.passwordInput();
-            $(acceptButton).click(function () {
+            $(acceptButton).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
                 var val = $(pwInput).find('input').val();
                 if (!val) { return; }
                 process(val);
@@ -1429,7 +1481,8 @@ define([
             waitFor.abort();
         }).nThen(function () {
             // No password, display the invitation proposal
-            $(acceptButton).click(function () {
+            $(acceptButton).on("click keypress", function (e) {
+                if(e.type === "keypress" && e.originalEvent.which !== 13) { return; }
                 process('');
             });
         });
