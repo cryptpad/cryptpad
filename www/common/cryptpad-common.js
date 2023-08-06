@@ -2241,6 +2241,10 @@ define([
         if (!common.hasCSSVariables()) {
             Feedback.send('NO_CSS_VARIABLES');
         }
+        if (typeof(navigator.getEnvironmentIntegrity)) {
+            Feedback.send("WEB_ENVIRONMENT_INTEGRITY");
+        }
+
         Feedback.reportScreenDimensions();
         Feedback.reportLanguage();
     };
