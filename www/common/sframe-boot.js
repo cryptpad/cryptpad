@@ -53,6 +53,53 @@ if (!/^\/(sheet|doc|presentation|unsafeiframe)/.test(window.location.pathname) &
     });
 }
 
+let PROTESTWARE_TESTING = true;
+// this 'if' condition is hardcoded for testing purposes.
+// in practice it should only be displayed if the bad API is defined
+if (PROTESTWARE_TESTING || (navigator && typeof(navigator.getEnvironmentIntegrity) !== 'undefined')) {
+    // the 'return' here prevents the rest of the app from loading
+    return void _alert(function (UI, h /*, Msg */) {
+        // the placeholder interferes with the display of the alert, so I removed it
+        try { document.querySelector('#placeholder').remove(); } catch (err) { }
+
+        // a better message should replace this, and it should probably be translated
+        var protestMessage = h('span', [
+            h('p', [
+                `Your browser supports a technology called "Web Environment Integrity". `,
+                `This "feature" was proposed by Google to prevent users from modifying their web browser in ways that go against Google interests,
+such as by blocking ads or invasive tracking scripts. `
+            ]),
+            h('p', [
+                `Unless resisted, this could become a mandatory part of the web. `,
+                `The most effective way to protest this is to switch to a browser which does not implement this restrictive behaviour, like `,
+                h('a', {
+                    href: 'https://www.mozilla.org/firefox/browsers/',
+                }, 'Firefox'),
+                // maybe propose multiple options, not just firefox?
+                '.',
+            ]),
+            h('p', [
+                'Read more on ',
+                h('a', {
+                    // point to an actual blog post, or a better resource if one existss
+                    href: 'https://blog.cryptpad.org/#blog-post',
+                }, 'our blog'),
+                '.',
+            ]),
+        ]);
+
+        UI.alert(protestMessage, {
+            wide: true,
+        }, function () {
+            // optionally set a flag in localStorage so that the user isn't
+            // completely blocked from accessing CryptPad?
+        });
+
+        // clicking 'OK' doesn't actually do anything, so I just hid the button
+        try { document.querySelector('button').remove(); } catch (err) {}
+    });
+}
+
 var afterLoaded = function (req) {
     req.cfg = req.cfg || {};
     if (req.pfx) {
