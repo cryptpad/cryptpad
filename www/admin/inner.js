@@ -1715,9 +1715,6 @@ Example
         var newLimit = h('input', { type: 'number', min: 0, value: _limitMB, id: 'default-limit' });
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
 
-        var newLimit = h('input', { type: 'number', min: 0, value: _limitMB, id: 'default-limit' });
-        var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
-
         $div.append(h('div', [
             h('span.cp-admin-defaultlimit-value', Messages._getKey('admin_limit', [limit])),
             h('div.cp-admin-setlimit-form', [
