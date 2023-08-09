@@ -714,12 +714,13 @@ define([
                 }
             });
         }
+        Messages.calendarSettings = "Calendar Settings"; // XXX
         var dropdownConfig = {
             text: '',
             options: options, // Entries displayed in the menu
             common: common,
             buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions',
-            ariaLabel: 'Calendar Settings', // XXX
+            ariaLabel: Messages.calendarSettings,
     };
         return UIElements.createDropdown(dropdownConfig)[0];
     };
@@ -1193,14 +1194,13 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         }).appendTo(APP.toolbar.$bottomL);
 
         // Change page
-
         Messages.goLeft = "Left"; // XXX
         Messages.goRight = "Right"; // XXX
         Messages.date = "Date"; // XXX
-        var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft}); // XXX
-        var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight}); // XXX
+        var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft});
+        var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight});
         var goToday = h('button', Messages.calendar_today);
-        var goDate = h('button.fa.fa-calendar',{'aria-label': Messages.date}); // XXX
+        var goDate = h('button.fa.fa-calendar',{'aria-label': Messages.date});
         $(goLeft).click(function () {
             cal.prev();
             updateDateRange();
