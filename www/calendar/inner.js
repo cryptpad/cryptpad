@@ -1193,11 +1193,14 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         }).appendTo(APP.toolbar.$bottomL);
 
         // Change page
-        // XXX
-        var goLeft = h('button.fa.fa-chevron-left',{'aria-label': 'left'}); // XXX
-        var goRight = h('button.fa.fa-chevron-right', {'aria-label': 'right'}); // XXX
+
+        Messages.goLeft = "Left"; // XXX
+        Messages.goRight = "Right"; // XXX
+        Messages.date = "Date"; // XXX
+        var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft}); // XXX
+        var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight}); // XXX
         var goToday = h('button', Messages.calendar_today);
-        var goDate = h('button.fa.fa-calendar',{'aria-label': 'date'}); // XXX
+        var goDate = h('button.fa.fa-calendar',{'aria-label': Messages.date}); // XXX
         $(goLeft).click(function () {
             cal.prev();
             updateDateRange();
