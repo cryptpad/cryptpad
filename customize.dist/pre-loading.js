@@ -1,4 +1,6 @@
-(function () {
+define([
+    '/customize/messages.js'
+], function (Messages) {
 var logoPath = '/customize/CryptPad_logo.svg';
 if (location.pathname === '/' || location.pathname === '/index.html') {
     logoPath = '/customize/CryptPad_logo_hero.svg';
@@ -6,9 +8,10 @@ if (location.pathname === '/' || location.pathname === '/index.html') {
 
 var elem = document.createElement('div');
 elem.setAttribute('id', 'placeholder');
+Messages.label_logo = "CryptPad logo"; // XXX Logo
 elem.innerHTML = [
     '<div class="placeholder-logo-container">',
-        '<img class="placeholder-logo" alt="CryptPad Logo" src="' + logoPath + '">', // XXX
+        '<img class="placeholder-logo" alt="' + Messages.label_logo + '" src="' + logoPath + '">', // XXX
     '</div>',
     '<div class="placeholder-message-container">',
         '<p>Loading...</p>',
@@ -55,4 +58,4 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (e) {}
     }, 3000);
 });
-}());
+});
