@@ -862,12 +862,12 @@ MessengerUI, Messages, Pages) {
 
         var href = toMain ? origin+'/index.html' : origin+'/drive/';
         var buttonTitle = toMain ? Messages.header_homeTitle : Messages.header_logoTitle;
-
+        Messages.homeButton = "Home button"; // XXX
         var $aTag = $('<a>', {
             href: href,
             title: buttonTitle,
             'class': "cp-toolbar-link-logo",
-            'aria-label': 'Home button', // XXX
+            'aria-label': Messages.homeButton,
         }).append(UI.getIcon(privateData.app));
 
         var onClick = function (e) {
@@ -1123,7 +1123,8 @@ MessengerUI, Messages, Pages) {
         $button.attr('title', Messages.notificationsPage);
         $button.addClass('fa fa-bell-o cp-notifications-bell');
         $button.addClass('fa fa-bell-o cp-notifications-bell');
-        $button.attr('aria-label', 'Notification Bell'); // XXX
+        Messages.notificationBell = "Notification Bell"; // XXX
+        $button.attr('aria-label', Messages.notificationBell);
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
 
