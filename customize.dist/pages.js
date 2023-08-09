@@ -56,7 +56,6 @@ define([
     };
 
     var languageSelector = function () {
-        var options = [];
         var languages = Msg._languages;
         var selected = Msg._languageUsed;
         var keys = Object.keys(languages).sort();
