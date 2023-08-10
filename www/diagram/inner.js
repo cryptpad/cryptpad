@@ -188,6 +188,8 @@ define([
 
                 modified: 'unsavedChanges',
                 proto: 'json',
+
+                lang: Messages._languageUsed
             });
 
         window.addEventListener("message", (event) => {

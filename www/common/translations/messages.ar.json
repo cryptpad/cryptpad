@@ -1626,5 +1626,8 @@
     "admin_totpEnabled": "المصادقة الثنائية (2FA) مُمكنة",
     "admin_totpRecoveryMethod": "طريقة استرجاع المصادقة الثنائية (2FA)",
     "admin_totpCheck": "نجاح التحقق من صحة التوقيع",
-    "recovery_mfa_secret_ph": "رمز الإسترجاع"
+    "recovery_mfa_secret_ph": "رمز الإسترجاع",
+    "register_nameTooLong": "يجب أن تكون الأسماء أقصر من {0} أحرف",
+    "loading_enter_otp": "محمي هذا الحساب بالمصادقة الثنائية (2FA). أدخل رمز التحقق",
+    "loading_recover": "غير قابل على إنشاء رمز؟ <a href=\"/recovery/\">إسترجع حسابك</a>"
 }

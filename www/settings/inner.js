@@ -917,7 +917,7 @@ define([
 
     var drawMfa = function (content, enabled) {
         var $content = $(content).empty();
-        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status' + (enabled ? '.enabled' : '.disabled'), [
+        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status' + (enabled ? '.mfa-enabled' : '.mfa-disabled'), [
             h('i.fa' + (enabled ? '.fa-check' : '.fa-times')),
             h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
         ]));
@@ -937,6 +937,11 @@ define([
                 button
             ]);
             $content.append(pwContainer);
+
+            // submit password on enter keyup
+            $(pwInput).on('keyup', e => {
+                if (e.which === 13) { $mfaRevokeBtn.click(); }
+            });
 
             var spinner = UI.makeSpinner($mfaRevokeBtn);
             $mfaRevokeBtn.click(function () {
@@ -1004,6 +1009,11 @@ define([
                         }, {raw: true});
 
                     });
+                    OTPEntry.focus();
+                    // submit OTP on enter keyup
+                    $OTPEntry.on('keyup', e => {
+                        if (e.which === 13) { $d.click(); }
+                    });
                 });
             });
 
@@ -1023,6 +1033,12 @@ define([
             button
         ]));
         var spinner = UI.makeSpinner($mfaSetupBtn);
+
+        // submit password on enter keyup
+        $(pwInput).on('keyup', e => {
+            if (e.which === 13) { $(button).click(); }
+        });
+
         $(button).click(function () {
             var name = privateData.accountName;
             var password = $(pwInput).val();
@@ -1175,6 +1191,11 @@ define([
                             ])
                         ])
                     ]);
+                    OTPEntry.focus();
+                    // submit OTP on enter keyup
+                    $OTPEntry.on('keyup', e => {
+                        if (e.which === 13) { $(confirmOTP).click(); }
+                    });
                 };
 
 

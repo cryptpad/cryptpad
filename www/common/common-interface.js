@@ -1539,6 +1539,8 @@ define([
             $btn.click();
         });
         UI.errorLoadingScreen(block, false, exitable);
+        // set the user's cursor in the OTP input field
+        $(block).find('.cp-password-form input').focus();
 
     };
 
