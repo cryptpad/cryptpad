@@ -4,10 +4,10 @@ define([
     '/common/common-util.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
-    //'/bower_components/chainpad-json-validator/json-ot.js',
+    '/components/nthen/index.js',
+    //'/components/chainpad-json-validator/json-ot.js',
 
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function ($, UI, Util, h, Messages, nThen, ChainPad /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};

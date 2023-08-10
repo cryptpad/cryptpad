@@ -19,6 +19,7 @@ define([
                 if (q === 'CONNECT') { return; }
                 if (q === 'JOIN_PAD') { return; }
                 if (q === 'SEND_PAD_MSG') { return; }
+                if (q === 'STOPWORKER') { return; }
                 chan.on(q, function (data, cb) {
                     try {
                         Rpc.queries[q](clientId, data, cb);
@@ -28,6 +29,10 @@ define([
                         console.log(data);
                     }
                 });
+            });
+            chan.on('STOPWORKER', function (data, cb) {
+                Rpc.queries['DISCONNECT'](clientId, data, cb);
+                cb();
             });
             chan.on('CONNECT', function (cfg, cb) {
                 // load Store here, with cfg, and pass a "query" (chan.query)

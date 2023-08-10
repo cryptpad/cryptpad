@@ -6,11 +6,11 @@ define([
     '/common/outer/cache-store.js',
     '/calendar/recurrence.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     'chainpad-listmap',
     '/lib/datepicker/flatpickr.js',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad-crypto/crypto.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function (Util, Hash, Constants, Realtime, Cache, Rec, Messages, nThen, Listmap, FP, Crypto, ChainPad) {
     var Calendar = {};
 

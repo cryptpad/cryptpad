@@ -1,0 +1,28 @@
+@import (reference) '../../customize/src/less2/include/framework.less';
+
+&.cp-app-openin {
+    .framework_min_main();
+    margin: 0;
+
+    header {
+        height: 100px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        border-bottom: 1px solid white;
+        box-sizing: border-box;
+    }
+
+    & > iframe {
+        position: fixed;
+        top: 100px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: none;
+        width: 100%;
+        height: calc(100% - 100px);
+        box-sizing: border-box;
+    }
+}

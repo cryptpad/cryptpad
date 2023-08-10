@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
@@ -15,11 +15,12 @@ define([
     '/common/make-backup.js',
     '/common/common-feedback.js',
     '/common/common-constants.js',
+    '/customize.dist/login.js',
 
     '/common/jscolor.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    '/components/file-saver/FileSaver.min.js',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/settings/app-settings.less',
 ], function(
     $,
@@ -37,7 +38,8 @@ define([
     ApiConfig,
     Backup,
     Feedback,
-    Constants
+    Constants,
+    Login
 ) {
     var saveAs = window.saveAs;
     var APP = window.APP = {};
@@ -47,6 +49,7 @@ define([
     var privateData;
     var sframeChan;
 
+
     var categories = {
         'account': [ // Msg.settings_cat_account
             'cp-settings-own-drive',
@@ -54,15 +57,16 @@ define([
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-mediatag-size',
-            'cp-settings-change-password',
             'cp-settings-delete'
         ],
         'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
-            'cp-settings-autostore',
+            'cp-settings-mfa',
+            'cp-settings-change-password',
             'cp-settings-safe-links',
             'cp-settings-userfeedback',
             'cp-settings-cache',
+            'cp-settings-remove-owned'
         ],
         'style': [ // Msg.settings_cat_style
             'cp-settings-colortheme',
@@ -71,6 +75,7 @@ define([
         'drive': [
             'cp-settings-redirect',
             'cp-settings-resettips',
+            'cp-settings-autostore',
             'cp-settings-drive-duplicate',
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
@@ -466,6 +471,7 @@ define([
             // browsers try to load iframes from cache if they have the same id as was previously seen
             // this seems to help?
             window.location.hash = '';
+            if (flush && window.CryptPad_flushCacheInner) { window.CryptPad_flushCacheInner(); }
             sframeChan.query('Q_COLORTHEME_CHANGE', {
                 theme: val,
                 flush: flush
@@ -477,6 +483,43 @@ define([
         });
     }, true);
 
+    var deriveBytes = function (name, password, cb) {
+        Cred.deriveFromPassphrase(name, password, Login.requiredBytes, cb);
+    };
+
+    makeBlock('remove-owned', function(cb) { // Msg.settings_removeOwnedHint, .settings_removeOwnedTitle
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        var button = h('button.btn.btn-danger', [
+            h('i.cptools.cptools-destroy'),
+            Messages.settings_removeOwnedButton
+        ]);
+        var form = h('div', [
+            button
+        ]);
+        var $button = $(button);
+
+        UI.confirmButton(button, {
+            classes: 'btn-danger',
+            multiple: true
+        }, function() {
+            UI.addLoadingScreen({
+                hideTips: true,
+                loadingText: Messages.settings_removeOwnedText
+            });
+            sframeChan.query("Q_SETTINGS_REMOVE_OWNED_PADS", {}, function (err, data) {
+                UI.removeLoadingScreen();
+                $button.prop('disabled', '');
+                if (data && data.error) {
+                    console.error(data.error);
+                    return void UI.warn(Messages.error);
+                }
+                UI.log(Messages.ui_success);
+            });
+        });
+
+        cb(form);
+    }, true);
     makeBlock('delete', function(cb) { // Msg.settings_deleteHint, .settings_deleteTitle
         if (!common.isLoggedIn()) { return cb(false); }
 
@@ -490,7 +533,6 @@ define([
         ]);
         var $form = $(form);
         var $button = $(button);
-        var spinner = UI.makeSpinner($form);
 
         UI.confirmButton(button, {
             classes: 'btn-danger',
@@ -528,36 +570,81 @@ define([
                 if (!password) {
                     return void UI.warn(Messages.error);
                 }
-                spinner.spin();
-                sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
-                    password: password
-                }, function(err, data) {
-                    if (data && data.error) {
-                        spinner.hide();
-                        $button.prop('disabled', '');
-                        if (data.error === 'INVALID_PASSWORD') {
-                            return void UI.warn(Messages.drive_sfPasswordError);
-                        }
-                        console.error(data.error);
-                        return void UI.warn(Messages.error);
-                    }
-                    // Owned drive
-                    if (data.state === true) {
-                        return void sframeChan.query('Q_SETTINGS_LOGOUT_PROPERLY', null, function() {
-                            UI.alert(Messages.settings_deleted, function() {
-                                common.gotoURL('/');
-                            });
-                            spinner.done();
+
+                UI.addLoadingScreen({
+                    hideTips: true,
+                    loadingText: Messages.settings_deleteTitle
+                });
+                setTimeout(function () {
+                    var name = privateData.accountName;
+                    var bytes;
+                    var auth = {};
+                    nThen(function (w) {
+                        deriveBytes(name, password, w(function (_bytes) {
+                            bytes = _bytes;
+                        }));
+                    }).nThen(function (w) {
+                        var result = Login.allocateBytes(bytes);
+                        sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
+                            blockHash: result.blockHash,
+                            userHash: result.userHash,
+                        }, w(function (err, obj) {
+                            if (!obj || !obj.correct) {
+                                UI.warn(Messages.login_noSuchUser);
+                                w.abort();
+                                UI.removeLoadingScreen();
+                            }
+                        }));
+                    }).nThen(function (w) {
+                        // CHECK MFA
+                        sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, w(function (err, obj) {
+                            // No block? no need for a code
+                            if (err || !obj || (obj && obj.err === 'NOBLOCK')
+                                    || !obj.mfa) { return; }
+                            auth.type = obj.type;
+
+                            if (auth.type === 'TOTP') {
+                                UI.getOTPScreen(w(function (val) {
+                                    UI.addLoadingScreen({ loadingText: Messages.settings_deleteTitle });
+                                    auth.data = val;
+                                }), function () {
+                                    w.abort(); // On exit OTP screen
+                                });
+                            }
+                        }));
+                    }).nThen(function () {
+                        sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
+                            bytes: bytes,
+                            auth: auth
+                        }, function(err, data) {
+                            UI.removeLoadingScreen();
+                            if (data && data.error) {
+                                $button.prop('disabled', '');
+                                if (data.error === 'INVALID_PASSWORD') {
+                                    return void UI.warn(Messages.drive_sfPasswordError);
+                                }
+                                if (data.error === 'INVALID_CODE') {
+                                    return void UI.warn(Messages.settings_otp_invalid);
+                                }
+                                return void UI.warn(Messages.error);
+                            }
+                            // Owned drive
+                            if (data.state === true) {
+                                return void sframeChan.query('Q_SETTINGS_LOGOUT_PROPERLY', null, function() {
+                                    UI.alert(Messages.settings_deleted, function() {
+                                        common.gotoURL('/');
+                                    });
+                                });
+                            }
+                            // Not owned drive
+                            var msg = h('div.cp-app-settings-delete-alert', [
+                                h('p', Messages.settings_deleteModal),
+                                h('pre', JSON.stringify(data, 0, 2))
+                            ]);
+                            UI.alert(msg);
+                            $button.prop('disabled', '');
                         });
-                    }
-                    // Not owned drive
-                    var msg = h('div.cp-app-settings-delete-alert', [
-                        h('p', Messages.settings_deleteModal),
-                        h('pre', JSON.stringify(data, 0, 2))
-                    ]);
-                    UI.alert(msg);
-                    spinner.hide();
-                    $button.prop('disabled', '');
+                    });
                 });
             });
         });
@@ -576,14 +663,12 @@ define([
             .append(Messages.settings_changePasswordHint).appendTo($div);
 
         // var publicKey = privateData.edPublic;
-
         var form = h('div', [
             UI.passwordInput({
                 id: 'cp-settings-change-password-current',
                 placeholder: Messages.settings_changePasswordCurrent,
                 autocomplete: 'current-password',
             }, true),
-            h('br'),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new',
                 placeholder: Messages.settings_changePasswordNew
@@ -601,7 +686,7 @@ define([
             sframeChan.query('Q_CHANGE_USER_PASSWORD', data, function(err, obj) {
                 if (err || obj.error) { return void cb({ error: err || obj.error }); }
                 cb(obj);
-            });
+            }, {raw: true});
         };
 
         var todo = function() {
@@ -630,19 +715,69 @@ define([
                 function(yes) {
                     if (!yes) { return; }
 
-                    UI.addLoadingScreen({
-                        hideTips: true,
-                        loadingText: Messages.settings_changePasswordPending,
-                    });
-                    updateBlock({
-                        password: oldPassword,
-                        newPassword: newPassword
-                    }, function(obj) {
-                        UI.removeLoadingScreen();
-                        if (obj && obj.error) {
-                            // TODO more specific error message?
-                            UI.alert(Messages.settings_changePasswordError);
-                        }
+                    UI.addLoadingScreen({ loadingText: Messages.settings_changePasswordPending });
+                    // We're going to derive the bytes in inner in order to ask for the possible
+                    // OTP code after the Scrypt execution. This will make it less likely to
+                    // have the OTP code expire.
+                    setTimeout(function () {
+                        var oldBytes, newBytes;
+                        var auth = {};
+                        nThen(function (w) {
+                            var name = privateData.accountName;
+                            deriveBytes(name, oldPassword, w(function (bytes) {
+                                oldBytes = bytes;
+                            }));
+                            deriveBytes(name, newPassword, w(function (bytes) {
+                                newBytes = bytes;
+                            }));
+                        }).nThen(function (w) {
+                            var result = Login.allocateBytes(oldBytes);
+                            sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
+                                blockHash: result.blockHash,
+                                userHash: result.userHash,
+                            }, w(function (err, obj) {
+                                if (!obj || !obj.correct) {
+                                    UI.warn(Messages.login_noSuchUser);
+                                    w.abort();
+                                    UI.removeLoadingScreen();
+                                }
+                            }));
+                        }).nThen(function (w) {
+                            // CHECK MFA
+                            sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, w(function (err, obj) {
+                                // No block? no need for a code
+                                if (err || !obj || (obj && obj.err === 'NOBLOCK')
+                                        || !obj.mfa) { return; }
+                                auth.type = obj.type;
+
+                                if (auth.type === 'TOTP') {
+                                    UI.getOTPScreen(w(function (val) {
+                                        auth.data = val;
+                                        UI.addLoadingScreen({ loadingText: Messages.settings_changePasswordPending });
+                                    }), function () {
+                                        w.abort(); // On exit OTP screen
+                                    });
+                                }
+                            }));
+                        }).nThen(function () {
+                            updateBlock({
+                                password: oldPassword,
+                                newPassword: newPassword,
+                                oldBytes: oldBytes,
+                                newBytes: newBytes,
+                                auth: auth
+                            }, function(obj) {
+                                UI.removeLoadingScreen();
+                                if (obj && obj.error) {
+                                    if (obj.error === 'INVALID_CODE') {
+                                        return void UI.warn(Messages.settings_otp_invalid);
+                                    }
+                                    // TODO more specific error message?
+                                    console.error(obj.error);
+                                    UI.alert(Messages.settings_changePasswordError);
+                                }
+                            });
+                        });
                     });
                 }, {
                     ok: Messages.register_writtenPassword,
@@ -776,6 +911,313 @@ define([
 
         cb($inputBlock);
     }, true);
+
+
+    // Account access
+
+    var drawMfa = function (content, enabled) {
+        var $content = $(content).empty();
+        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status' + (enabled ? '.mfa-enabled' : '.mfa-disabled'), [
+            h('i.fa' + (enabled ? '.fa-check' : '.fa-times')),
+            h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
+        ]));
+
+        if (enabled) {
+            (function () {
+            var button = h('button.btn', Messages.mfa_disable);
+            button.classList.add('disable-button');
+            var $mfaRevokeBtn = $(button);
+            var pwInput;
+            var pwContainer = h('div.cp-password-container', [
+                h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_label),
+                pwInput = h('input#cp-mfa-password', {
+                    type: 'password',
+                    placeholder: Messages.login_password,
+                }),
+                button
+            ]);
+            $content.append(pwContainer);
+
+            // submit password on enter keyup
+            $(pwInput).on('keyup', e => {
+                if (e.which === 13) { $mfaRevokeBtn.click(); }
+            });
+
+            var spinner = UI.makeSpinner($mfaRevokeBtn);
+            $mfaRevokeBtn.click(function () {
+                var name = privateData.accountName;
+                var password = $(pwInput).val();
+                if (!password) { return void UI.warn(Messages.login_noSuchUser); }
+
+                spinner.spin();
+                $(pwInput).prop('disabled', 'disabled');
+                $mfaRevokeBtn.prop('disabled', 'disabled');
+                var blockKeys;
+
+                nThen(function (waitFor) {
+                    var next = waitFor();
+                    // scrypt locks up the UI before the DOM has a chance
+                    // to update (displaying logs, etc.), so do a set timeout
+                    setTimeout(function () {
+                    Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
+                        var result = Login.allocateBytes(bytes);
+                        sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
+                            blockHash: result.blockHash,
+                        }, function (err, obj) {
+                            if (!obj || !obj.correct) {
+                                spinner.hide();
+                                UI.warn(Messages.login_noSuchUser);
+                                $mfaRevokeBtn.removeAttr('disabled');
+                                $(pwInput).removeAttr('disabled');
+                                waitFor.abort();
+                                return;
+                            }
+                            spinner.done();
+                            blockKeys = result.blockKeys;
+                            next();
+                        });
+                    });
+                    }, 100);
+                }).nThen(function () {
+                    $(pwContainer).remove();
+                    var OTPEntry;
+                    var disable = h('button.btn.disable-button', Messages.mfa_revoke_button);
+                    $content.append(h('div.cp-password-container', [
+                        h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_code),
+                        OTPEntry = h('input', {
+                            placeholder: Messages.settings_otp_code
+                        }),
+                        disable
+                    ]));
+                    var $OTPEntry = $(OTPEntry);
+                    var $d = $(disable).click(function () {
+                        $d.prop('disabled', 'disabled');
+                        var code = $OTPEntry.val();
+                        sframeChan.query("Q_SETTINGS_TOTP_REVOKE", {
+                            key: blockKeys.sign,
+                            data: {
+                                command: 'TOTP_REVOKE',
+                                code: code,
+                            }
+                        }, function (err, obj) {
+                            $OTPEntry.val("");
+                            if (err || !obj || !obj.success) {
+                                $d.removeAttr('disabled');
+                                return void UI.warn(Messages.settings_otp_invalid);
+                            }
+                            drawMfa(content, false);
+                        }, {raw: true});
+
+                    });
+                    OTPEntry.focus();
+                    // submit OTP on enter keyup
+                    $OTPEntry.on('keyup', e => {
+                        if (e.which === 13) { $d.click(); }
+                    });
+                });
+            });
+
+            })();
+            return;
+        }
+
+        var button = h('button.btn.btn-primary', Messages.mfa_setup_button);
+        var $mfaSetupBtn = $(button);
+        var pwInput;
+        $content.append(h('div.cp-password-container', [
+            h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_setup_label),
+            pwInput = h('input#cp-mfa-password', {
+                type: 'password',
+                placeholder: Messages.login_password,
+            }),
+            button
+        ]));
+        var spinner = UI.makeSpinner($mfaSetupBtn);
+
+        // submit password on enter keyup
+        $(pwInput).on('keyup', e => {
+            if (e.which === 13) { $(button).click(); }
+        });
+
+        $(button).click(function () {
+            var name = privateData.accountName;
+            var password = $(pwInput).val();
+            if (!password) { return void UI.warn(Messages.login_noSuchUser); }
+
+            spinner.spin();
+            $(pwInput).prop('disabled', 'disabled');
+            $mfaSetupBtn.prop('disabled', 'disabled');
+
+            var Base32, QRCode, Nacl;
+            var blockKeys;
+            var recoverySecret;
+            nThen(function (waitFor) {
+                require([
+                    '/auth/base32.js',
+                    '/lib/qrcode.min.js',
+                    '/components/tweetnacl/nacl-fast.min.js',
+                ], waitFor(function (_Base32) {
+                    Base32 = _Base32;
+                    QRCode = window.QRCode;
+                    Nacl = window.nacl;
+                }));
+            }).nThen(function (waitFor) {
+                var next = waitFor();
+                // scrypt locks up the UI before the DOM has a chance
+                // to update (displaying logs, etc.), so do a set timeout
+                setTimeout(function () {
+                    Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
+                        var result = Login.allocateBytes(bytes);
+                        sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
+                            blockHash: result.blockHash,
+                        }, function (err, obj) {
+                            if (!obj || !obj.correct) {
+                                spinner.hide();
+                                UI.warn(Messages.login_noSuchUser);
+                                $mfaSetupBtn.removeAttr('disabled');
+                                $(pwInput).removeAttr('disabled');
+                                waitFor.abort();
+                                return;
+                            }
+                            spinner.done();
+                            blockKeys = result.blockKeys;
+                            next();
+                        });
+                    });
+                }, 100);
+            }).nThen(function (waitFor) {
+                $content.empty();
+                var next = waitFor();
+                recoverySecret = Nacl.util.encodeBase64(Nacl.randomBytes(24));
+                var button = h('button.btn.btn-primary', [
+                    h('i.fa.fa-check'),
+                    h('span', Messages.done)
+                ]);
+                $content.append(h('div.alert.alert-danger', [
+                    h('h2', Messages.mfa_recovery_title),
+                    h('p', Messages.mfa_recovery_hint),
+                    h('p', Messages.mfa_recovery_warning),
+                    h('div.cp-password-container', [
+                        UI.dialog.selectable(recoverySecret),
+                        button
+                    ])
+                ]));
+
+                var nextButton = h('button.btn.btn-primary', {
+                    'disabled': 'disabled'
+                }, Messages.continue);
+                $(nextButton).click(function () {
+                    next();
+                }).appendTo($content);
+
+                $(button).click(function () {
+                    $content.find('.alert-danger').removeClass('alert-danger').addClass('alert-success');
+                    $(button).prop('disabled', 'disabled');
+                    $(nextButton).removeAttr('disabled');
+                });
+            }).nThen(function () {
+                var randomSecret = function () {
+                    var U8 = Nacl.randomBytes(20);
+                    return Base32.encode(U8);
+                };
+                $content.empty();
+
+                var updateQR = Util.mkAsync(function (uri, target) {
+                    new QRCode(target, uri);
+                });
+                var updateURI = function (secret) {
+                    var username = privateData.accountName;
+                    var hostname = new URL(privateData.origin).hostname;
+                    var label = "CryptPad";
+
+                    var uri = `otpauth://totp/${label}:${username}@${hostname}?secret=${secret}`;
+
+                    var qr = h('div.cp-settings-qr');
+                    var uriInput = UI.dialog.selectable(uri);
+
+                    updateQR(uri, qr);
+
+                    var OTPEntry = h('input', {
+                        placeholder: Messages.settings_otp_code
+                    });
+                    var $OTPEntry = $(OTPEntry);
+
+                    var description = h('p.cp-settings-mfa-hint', Messages.settings_otp_tuto);
+                    var confirmOTP = h('button.btn.btn-primary', [
+                        h('i.fa.fa-check'),
+                        h('span', Messages.mfa_enable)
+                    ]);
+                    var lock = false;
+
+                    confirmOTP.addEventListener('click', function () {
+                        var code = $OTPEntry.val();
+                        if (code.length !== 6 || /\D/.test(code)) {
+                            return void UI.warn(Messages.settings_otp_invalid);
+                        }
+                        confirmOTP.disabled = true;
+                        lock = true;
+
+                        var data = {
+                            command: 'TOTP_SETUP',
+                            secret: secret,
+                            contact: "secret:" + recoverySecret, // TODO other recovery options
+                            code: code,
+                        };
+
+                        sframeChan.query("Q_SETTINGS_TOTP_SETUP", {
+                            key: blockKeys.sign,
+                            data: data
+                        }, function (err, obj) {
+                            lock = false;
+                            $OTPEntry.val("");
+                            if (err || !obj || !obj.success) {
+                                confirmOTP.disabled = false;
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            drawMfa(content, true);
+                        }, { raw: true });
+                    });
+
+                    $content.append([
+                        description,
+                        uriInput,
+                        h('div.cp-settings-qr-container', [
+                            qr,
+                            h('div.cp-settings-qr-code', [
+                                OTPEntry,
+                                h('br'),
+                                confirmOTP
+                            ])
+                        ])
+                    ]);
+                    OTPEntry.focus();
+                    // submit OTP on enter keyup
+                    $OTPEntry.on('keyup', e => {
+                        if (e.which === 13) { $(confirmOTP).click(); }
+                    });
+                };
+
+
+                var secret = randomSecret();
+                updateURI(secret);
+            });
+
+        });
+    };
+    makeBlock('mfa', function (cb) { // Msg.settings_mfaTitle, Msg.settings_mfaHint
+        if (!common.isLoggedIn()) { return void cb(false); }
+
+        var content = h('div');
+        sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, function (err, obj) {
+            if (err || !obj || (obj && obj.err === 'NOBLOCK')) { return void cb(false); }
+            var enabled = obj && obj.mfa && obj.type === 'TOTP';
+            drawMfa(content, Boolean(enabled));
+            cb(content);
+        });
+    }, true);
+
+
 
     // Security
 

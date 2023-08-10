@@ -1,3 +1,75 @@
+# 5.4.0
+
+## Goals
+
+This release introduces two major new features:
+- New Diagram application
+- 2 factor authentication using time-based one-time passwords (TOTP)
+  
+Also included are some improvements, dependency updates, and bug fixes
+
+## Features
+
+- Diagram application: integration of [Draw.io](https://www.drawio.com/) with CryptPad's encrypted real time collaboration [[#1070](https://github.com/cryptpad/cryptpad/pull/1070)]
+  - Introduce a new app color for Diagram and adjust Whiteboard color [[#1059](https://github.com/cryptpad/cryptpad/issues/1059)]
+- New 2 Factor Authentication with TOTP [[#1071](https://github.com/cryptpad/cryptpad/pull/1071)]. To enable for a user account:
+  1. Settings > Security & Privacy
+  2. Enter your password
+  3. Save the recovery code
+  4. Snap the QR code with a 2FA app of your choice
+  5. ✅ 2FA is enabled
+- Docker deployment is now officially supported [[#1064](https://github.com/cryptpad/cryptpad/pull/1064)]
+
+## Improvements
+
+- New setting to destroy all documents of which you are the sole owner
+- Settings re-organization
+- Add favicons in ICO format [[#1068](https://github.com/cryptpad/cryptpad/pull/1068) thanks @lemondevxyz]
+
+## Bugs / issues
+
+- Form
+  - Make Form question text selectable in participant view [[#1046](https://github.com/cryptpad/cryptpad/issues/1046)]
+  - Add form title to archived notifications [[#1065](https://github.com/cryptpad/cryptpad/pull/1065) thanks to @lemondevxyz]
+- Add "make a copy" to office editors [[#1067](https://github.com/cryptpad/cryptpad/pull/1067) thanks to @lemondevxyz]
+- Disable the "protect tab" feature in Sheets as it cannot be integrated in CryptPad [[#1053](https://github.com/cryptpad/cryptpad/issues/1053)]
+
+## Dependencies
+
+- Remove Bower to manage client side dependencies [[#989](https://github.com/cryptpad/cryptpad/pull/989) [#1072](https://github.com/cryptpad/cryptpad/pull/1072) thanks to @Pamplemousse] ⚠️ Please read upgrade notes carefully if you administer an instance
+- Upgrade Mermaid diagrams to 10.2.4 [[#1118](https://github.com/cryptpad/cryptpad/issues/1118)]
+- Upgrade CKeditor to 4.22.1 [[#1119](https://github.com/cryptpad/cryptpad/issues/1119)]
+
+
+## Upgrade notes
+
+⚠️ Please read upgrade notes carefully as this version introduces breaking changes
+
+If you are upgrading from a version older than `5.3.0` please read the upgrade notes of all versions between yours and `5.4.0` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+  ```bash
+  git fetch origin --tags
+  git checkout 5.4.0
+  ```
+3. Major changes to the Nginx config
+    - Access-Control-Allow-Credentials header
+    - proxy_pass request for /blob/ and /block/ to the node process
+    - new port for the websocket
+    - set CSP headers for draw.io, used by the new diagram app
+    - see the [full diff](https://github.com/cryptpad/cryptpad/compare/5.4-rc#diff-a97d166145edec9545df5228d500c144bd5ec20db759cf5cc6f90309e963b1ca)
+4. Bower removed
+    - To download all dependencies, use `npm install`
+    - Then, to copy client-side dependencies, use `npm run install:components`
+    - `www/bower_components` can be removed
+5. If you have previously used the `build` command to enable opengraph preview images
+    - Please run `npm run build` again after upgrading
+6. Restart your server
+7. Review your instance's checkup page to ensure that you are passing all tests
+
 # 5.3.0
 
 ## Goals

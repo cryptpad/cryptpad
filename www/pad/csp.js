@@ -107,13 +107,19 @@ define(['jquery'], function ($) {
                         if (e.type === 'dragstart') { return false; }
                         var attr = $(e.currentTarget).attr('oon'+e.type);
                         if (!attr) { return; }
-                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
+                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([^']+)')?\);/;
+                        var reg2 = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'",]+)'?(,'([^']+)')?, this\);/;
                         var match = attr.match(reg);
-                        if (!match) { return; }
+                        var lastArg;
+                        if (!match) {
+                            match = attr.match(reg2);
+                            if (!match) { return; }
+                            lastArg = this;
+                        }
                         var f = match[1];
                         var el = match[2] !== "null" ? match[2] : null;
                         var s = $iframe.scrollTop();
-                        CKEDITOR.tools.callFunction(Number(f), el, match[4]);
+                        CKEDITOR.tools.callFunction(Number(f), el, match[4], lastArg);
                         $iframe.scrollTop(s);
                     });
 

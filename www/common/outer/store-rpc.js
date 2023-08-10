@@ -24,8 +24,6 @@ define([
             UPLOAD_COMPLETE: Store.uploadComplete,
             UPLOAD_STATUS: Store.uploadStatus,
             UPLOAD_CANCEL: Store.uploadCancel,
-            WRITE_LOGIN_BLOCK: Store.writeLoginBlock,
-            REMOVE_LOGIN_BLOCK: Store.removeLoginBlock,
             PIN_PADS: Store.pinPads,
             UNPIN_PADS: Store.unpinPads,
             GET_DELETED_PADS: Store.getDeletedPads,
@@ -93,6 +91,7 @@ define([
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,
             DELETE_ACCOUNT: Store.deleteAccount,
+            REMOVE_OWNED_PADS: Store.removeOwnedPads,
             // Admin
             ADMIN_RPC: Store.adminRpc,
             ADMIN_ADD_MAILBOX: Store.addAdminMailbox,

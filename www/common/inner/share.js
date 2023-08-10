@@ -10,8 +10,11 @@ define([
     '/common/hyperscript.js',
     '/common/clipboard.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/customize/pages.js',
+
+    '/components/file-saver/FileSaver.min.js',
+    '/lib/qrcode.min.js',
 ], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen, Pages) {
     var Share = {};
@@ -486,6 +489,60 @@ define([
         });
     };
 
+    var getQRCode = function (link) {
+        var blocker = h('div#cp-qr-blocker', Messages.share_toggleQR);
+        var $blocker = $(blocker).click(function () {
+            $blocker.toggleClass("hidden");
+        });
+
+        var qrDiv = h('div');
+
+        var container = h('div#cp-qr-container', [
+            blocker,
+            h('div#cp-qr-link-preview', qrDiv),
+        ]);
+
+        new window.QRCode(qrDiv, link);
+        return container;
+    };
+
+    Messages.share_toggleQR = "Click to toggle QR code visibility"; // XXX
+    var getQRTab = function (Env, data, opts, _cb) {
+        var qr = getQRCode(opts.getLinkValue());
+
+        var link = h('div.cp-share-modal', [
+            h('span#cp-qr-target', qr),
+        ]);
+
+        var buttons = [
+            makeCancelButton(),
+            {
+                className: 'primary cp-bar',
+                name: Messages.share_bar,
+                onClick: function () {
+                    UI.warn("OOPS: NOT IMPLEMENTED"); // XXX
+                    return true;
+                },
+            },
+            {
+                className: 'primary cp-nobar',
+                name: Messages.download_dl,
+                iconClass: '.fa.fa-download',
+                onClick: function () {
+                    qr.querySelector('canvas').toBlob(blob => {
+                        var name = Util.fixFileName((opts.title || 'document') + '-qr.png');
+                        window.saveAs(blob, name);
+                    });
+                },
+            },
+        ];
+
+        return _cb(void 0, {
+            content: link,
+            buttons: buttons,
+        });
+    };
+
     var getEmbedTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
@@ -666,12 +723,17 @@ define([
         var getEmbed = function () {
             return $rights.parent().find('#cp-embed-link-preview');
         };
+        var getQR = function () {
+            return $rights.parent().find('#cp-qr-target');
+        };
 
         // update values for link and embed preview when radio btns change
         $rights.find('input[type="radio"]').on('change', function () {
-            getLink().val(opts.getLinkValue({
+            var link = opts.getLinkValue({
                 embed: Util.isChecked($('.alertify').find('#cp-share-embed'))
-            }));
+            });
+
+            getLink().val(link);
             // Hide or show the burn after reading alert
             if (Util.isChecked($rights.find('#cp-share-bar')) && !opts.burnAfterReadingUrl) {
                 $('.cp-alertify-bar-selected').show();
@@ -681,6 +743,10 @@ define([
                 return;
             }
             getEmbed().val(opts.getEmbedValue());
+
+            var qr = getQRCode(opts.getLinkValue());
+            getQR().html('').append(qr);
+
             // Hide burn after reading button
             $('.alertify').find('.cp-nobar').show();
             $('.alertify').find('.cp-bar').hide();
@@ -721,6 +787,8 @@ define([
 
         return $rights;
     };
+
+    Messages.share_QRCategory = "QR"; // XXX
 
     // In the share modal, tabs need to share data between themselves.
     // To do so we're using "opts" to store data and functions
@@ -780,7 +848,11 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
-        }];
+        }, window.CP_DEV_MODE ? { // XXX enable for all
+            getTab: getQRTab,
+            title: Messages.share_QRCategory,
+            icon: 'fa fa-qrcode',
+        } : undefined].filter(Boolean);
         if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
                 getTab: getEmbedTab,
@@ -977,6 +1049,7 @@ define([
             active: !hasFriends,
         }];
 
+        // XXX add QR code generation for files
         if (ApiConfig.enableEmbedding) {
             tabs.push({
                 getTab: getFileEmbedTab,

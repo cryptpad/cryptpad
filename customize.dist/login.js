@@ -1,25 +1,26 @@
 define([
     'jquery',
     'chainpad-listmap',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/common-util.js',
     '/common/outer/network-config.js',
     '/common/common-credential.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
     '/common/common-interface.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/outer/login-block.js',
     '/common/common-hash.js',
+    '/common/outer/http-command.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
+    '/components/tweetnacl/nacl-fast.min.js',
+    '/components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages, nThen, Block, Hash) {
+            Feedback, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
     var Exports = {
         Cred: Cred,
         Block: Block,
@@ -99,7 +100,6 @@ define([
         opt.channelHex = parsed.channel;
         opt.keys = parsed.keys;
         opt.edPublic = blockInfo.edPublic;
-        opt.User_name = blockInfo.User_name;
         return opt;
     };
 
@@ -135,7 +135,7 @@ define([
         Exports.mergeAnonDrive = 1;
     };
 
-    Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, cb) {
+    Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, onOTP, cb) {
         if (typeof(cb) !== 'function') { return; }
 
         // Usernames are all lowercase. No going back on this one
@@ -173,26 +173,113 @@ define([
             // determine where a block for your set of keys would be stored
             blockUrl = Block.getBlockUrl(res.opt.blockKeys);
 
-            // Check whether there is a block at that location
-            Util.fetch(blockUrl, waitFor(function (err, block) {
-                // if users try to log in or register, we must check
-                // whether there is a block.
+            var TOTP_prompt = function (err, cb) {
+                onOTP(function (code) {
+                    ServerCommand(res.opt.blockKeys.sign, {
+                        command: 'TOTP_VALIDATE',
+                        code: code,
+                        // TODO optionally allow the user to specify a lifetime for this session?
+                        // this will require a little bit of server work
+                        // and more UI/UX:
+                        // ie. just a simple "remember me" checkbox?
+                        // allow them to specify a lifetime for the session?
+                        // "log me out after one day"?
+                    }, cb);
+                }, false, err);
+            };
 
-                // the block is only useful if it can be decrypted, though
-                if (err) {
-                    console.log("no block found");
-                    return;
-                }
+            var done = waitFor();
+            var responseToDecryptedBlock = function (response, cb) {
+                response.arrayBuffer().then(arraybuffer => {
+                    arraybuffer = new Uint8Array(arraybuffer);
+                    var decryptedBlock =  Block.decrypt(arraybuffer, blockKeys);
+                    if (!decryptedBlock) {
+                        console.error("BLOCK DECRYPTION ERROR");
+                        return void cb("BLOCK_DECRYPTION_ERROR");
+                    }
+                    cb(void 0, decryptedBlock);
+                });
+            };
 
-                var decryptedBlock = Block.decrypt(block, blockKeys);
-                if (!decryptedBlock) {
-                    console.error("Found a login block but failed to decrypt");
-                    return;
-                }
+            var TOTP_response;
+            nThen(function (w) {
+                Util.getBlock(blockUrl, {
+                // request the block without credentials
+                }, w(function (err, response) {
+                    if (err === 401) {
+                        return void console.log("Block requires 2FA");
+                    }
 
-                //console.error(decryptedBlock);
-                res.blockInfo = decryptedBlock;
-            }));
+                    // Some other error?
+                    if (err) {
+                        console.error(err);
+                        w.abort();
+                        return void done();
+                    }
+
+                    // If the block was returned without requiring authentication
+                    // then we can abort the subsequent steps of this nested nThen
+                    w.abort();
+
+                    // decrypt the response and continue the normal procedure with its payload
+                    responseToDecryptedBlock(response, function (err, decryptedBlock) {
+                        if (err) {
+                            // if a block was present but you were not able to decrypt it...
+                            console.error(err);
+                            waitFor.abort();
+                            return void cb(err);
+                        }
+                        res.blockInfo = decryptedBlock;
+                        done();
+                    });
+                }));
+            }).nThen(function (w) {
+                // if you're here then you need to request a JWT
+                var done = w();
+                var tries = 3;
+                var ask = function () {
+                    if (!tries) {
+                        w.abort();
+                        waitFor.abort();
+                        return void cb('TOTP_ATTEMPTS_EXHAUSTED');
+                    }
+                    tries--;
+                    TOTP_prompt(tries !== 2, function (err, response) {
+                        // ask again until your number of tries are exhausted
+                        if (err) {
+                            console.error(err);
+                            console.log("Normal failure. Asking again...");
+                            return void ask();
+                        }
+                        if (!response || !response.bearer) {
+                            console.log(response);
+                            console.log("Unexpected failure. No bearer token. Asking again");
+                            return void ask();
+                        }
+                        console.log("Successfully retrieved a bearer token");
+                        res.TOTP_token = TOTP_response = response;
+                        done();
+                    });
+                };
+                ask();
+            }).nThen(function (w) {
+                Util.getBlock(blockUrl, TOTP_response, function (err, response) {
+                    if (err) {
+                        w.abort();
+                        console.error(err);
+                        return void cb('BLOCK_ERROR_3');
+                    }
+
+                    responseToDecryptedBlock(response, function (err, decryptedBlock) {
+                        if (err) {
+                            waitFor.abort();
+                            return void cb(err);
+                        }
+                        res.blockInfo = decryptedBlock;
+                        done();
+                    });
+                });
+            });
         }).nThen(function (waitFor) {
             // we assume that if there is a block, it was created in a valid manner
             // so, just proceed to the next block which handles that stuff
@@ -275,7 +362,7 @@ define([
                     Realtime.whenRealtimeSyncs(rt.realtime, function () {
                         // the following stages are there to initialize a new drive
                         // if you are registering
-                        LocalStore.login(res.userHash, res.userName, function () {
+                        LocalStore.login(res.userHash, undefined, res.userName, function () {
                             setTimeout(function () { cb(void 0, res); });
                         });
                     });
@@ -348,7 +435,6 @@ define([
                 }
 
                 if (!isRegister && !isProxyEmpty(rt.proxy)) {
-                    LocalStore.setBlockHash(blockHash);
                     waitFor.abort();
                     if (shouldImport) {
                         setMergeAnonDrive();
@@ -358,7 +444,11 @@ define([
                     if (l) {
                         localStorage.setItem(LS_LANG, l);
                     }
-                    return void LocalStore.login(userHash, uname, function () {
+
+                    if (res.TOTP_token && res.TOTP_token.bearer) {
+                        LocalStore.setSessionToken(res.TOTP_token.bearer);
+                    }
+                    return void LocalStore.login(undefined, blockHash, uname, function () {
                         cb(void 0, res);
                     });
                 }
@@ -409,12 +499,13 @@ define([
             // Finally, create the login block for the object you just created.
             var toPublish = {};
 
-            toPublish[Constants.userNameKey] = uname;
             toPublish[Constants.userHashKey] = userHash;
             toPublish.edPublic = RT.proxy.edPublic;
 
-            var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
-            rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
+            Block.writeLoginBlock({
+                blockKeys: blockKeys,
+                content: toPublish
+            }, waitFor(function (e) {
                 if (e) {
                     console.error(e);
                     waitFor.abort();
@@ -431,8 +522,7 @@ define([
                 }
 
                 console.log("blockInfo available at:", blockHash);
-                LocalStore.setBlockHash(blockHash);
-                LocalStore.login(userHash, uname, function () {
+                LocalStore.login(undefined, blockHash, uname, function () {
                     cb(void 0, res);
                 });
             }));
@@ -458,7 +548,7 @@ define([
     };
 
     var hashing;
-    Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, testing, test) {
+    Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, onOTP, testing, test) {
         if (hashing) { return void console.log("hashing is already in progress"); }
         hashing = true;
 
@@ -483,7 +573,7 @@ define([
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {
-                Exports.loginOrRegister(uname, passwd, isRegister, shouldImport, function (err, result) {
+                Exports.loginOrRegister(uname, passwd, isRegister, shouldImport, onOTP, function (err, result) {
                     var proxy;
                     if (result) { proxy = result.proxy; }
 
@@ -537,11 +627,9 @@ define([
                                             proxy[Constants.displayNameKey] = uname;
                                         }
 
-                                        if (result.blockHash) {
-                                            LocalStore.setBlockHash(result.blockHash);
-                                        }
-
-                                        LocalStore.login(result.userHash, result.userName, function () {
+                                        var block = result.blockHash;
+                                        var user = block ? undefined : result.userHash;
+                                        LocalStore.login(user, block, result.userName, function () {
                                             setTimeout(function () { proceed(result); });
                                         });
                                     });

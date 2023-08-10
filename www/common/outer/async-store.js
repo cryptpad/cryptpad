@@ -14,6 +14,7 @@ define([
     '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
+    '/common/outer/integration.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
     '/common/outer/profile.js',
@@ -21,20 +22,21 @@ define([
     '/common/outer/messenger.js',
     '/common/outer/history.js',
     '/common/outer/calendar.js',
+    '/common/outer/login-block.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad-crypto/crypto.js',
+    '/components/chainpad/chainpad.dist.js',
     'chainpad-netflux',
     'chainpad-listmap',
     'netflux-client',
-    '/bower_components/nthen/index.js',
-    '/bower_components/saferphore/index.js',
+    '/components/nthen/index.js',
+    '/components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
-             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
-             Calendar, NetConfig, AppConfig,
+             SF, Cursor, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
+             Calendar, Block, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
     var onReadyEvt = Util.mkEvent(true);
@@ -453,38 +455,6 @@ define([
             });
         };
 
-        Store.writeLoginBlock = function (clientId, data, cb) {
-            Pinpad.create(store.network, data && data.keys, function (err, rpc) {
-                if (err) {
-                    return void cb({
-                        error: err,
-                    });
-                }
-                rpc.writeLoginBlock(data && data.content, function (e, res) {
-                    cb({
-                        error: e,
-                        data: res
-                    });
-                });
-            });
-        };
-
-        Store.removeLoginBlock = function (clientId, data, cb) {
-            Pinpad.create(store.network, data && data.keys, function (err, rpc) {
-                if (err) {
-                    return void cb({
-                        error: err,
-                    });
-                }
-                rpc.removeLoginBlock(data && data.content, function (e, res) {
-                    cb({
-                        error: e,
-                        data: res
-                    });
-                });
-            });
-        };
-
         var initRpc = function (clientId, data, cb) {
             if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
@@ -751,43 +721,61 @@ define([
             });
         };
 
-        var getOwnedPads = function () {
-            var list = store.manager.getChannelsList('owned');
-            if (store.proxy.todo) {
-                // No password for todo
-                list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
-            }
-            if (store.proxy.profile && store.proxy.profile.edit) {
-                // No password for profile
-                list.push(Hash.hrefToHexChannelId('/profile/#' + store.proxy.profile.edit, null));
-            }
-            if (store.proxy.mailboxes) {
-                Object.keys(store.proxy.mailboxes || {}).forEach(function (id) {
-                    if (id === 'supportadmin') { return; }
-                    var m = store.proxy.mailboxes[id];
-                    list.push(m.channel);
-                });
-            }
-            if (store.proxy.teams) {
-                Object.keys(store.proxy.teams || {}).forEach(function (id) {
-                    var t = store.proxy.teams[id];
-                    if (t.owner) {
-                        list.push(t.channel);
-                        list.push(t.keys.roster.channel);
-                        list.push(t.keys.chat.channel);
-                    }
-                });
+        var getOwnedPads = function (account) {
+            var list = [];
+            if (account) {
+                if (store.proxy.todo) {
+                    // No password for todo
+                    list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
+                }
+                if (store.proxy.profile && store.proxy.profile.edit) {
+                    // No password for profile
+                    list.push(Hash.hrefToHexChannelId('/profile/#' + store.proxy.profile.edit, null));
+                }
+                if (store.proxy.mailboxes) {
+                    Object.keys(store.proxy.mailboxes || {}).forEach(function (id) {
+                        if (id === 'supportadmin') { return; }
+                        var m = store.proxy.mailboxes[id];
+                        list.push(m.channel);
+                    });
+                }
+            } else {
+                list = store.manager.getChannelsList('owned');
+                /*
+                if (store.proxy.teams) {
+                    Object.keys(store.proxy.teams || {}).forEach(function (id) {
+                        var t = store.proxy.teams[id];
+                        if (t.owner) {
+                            list.push(t.channel);
+                            list.push(t.keys.roster.channel);
+                            list.push(t.keys.chat.channel);
+                        }
+                    });
+                }
+                */
             }
             return list.filter(function (channel) {
                 if (typeof(channel) !== 'string') { return; }
                 return [32, 48].indexOf(channel.length) !== -1;
             });
         };
-        var removeOwnedPads = function (waitFor) {
+        var removeOwnedPads = function (account, waitFor) {
             // Delete owned pads
             var edPublic = Util.find(store, ['proxy', 'edPublic']);
-            var ownedPads = getOwnedPads();
+            var ownedPads = getOwnedPads(account);
             var sem = Saferphore.create(10);
+
+            var deleteChannel = function (c) {
+                // When deleting the whole account, no need to remove from drive
+                if (account) { return; }
+
+                var all = store.manager.findChannel(c);
+                all.forEach(function (d) {
+                    var p = store.manager.findFile(d.id);
+                    store.manager.delete({paths:p});
+                });
+            };
+
             ownedPads.forEach(function (c) {
                 var w = waitFor();
                 sem.take(function (give) {
@@ -805,6 +793,14 @@ define([
                                 return void _w.abort();
                             }
                             var md = obj[0];
+
+                            if (!Object.keys(md || {}).length) {
+                                deleteChannel(c);
+                                give();
+                                w();
+                                return void _w.abort();
+                            }
+
                             var isOwner = md && Array.isArray(md.owners) && md.owners.indexOf(edPublic) !== -1;
                             if (!isOwner) {
                                 give();
@@ -824,7 +820,8 @@ define([
                         }
                         // We're the only owner: delete the pad
                         store.rpc.removeOwnedChannel(c, _w(function (err) {
-                            if (err) { console.error(err); }
+                            if (err) { return void console.error(err); }
+                            deleteChannel(c);
                         }));
                     }).nThen(function () {
                         give();
@@ -834,10 +831,17 @@ define([
             });
         };
 
+        Store.removeOwnedPads = function (clientId, data, cb) {
+            var edPublic = store.proxy.edPublic;
+            if (!edPublic) { return void cb({ error: 'NOT_LOGGED_IN' }); }
+            nThen(function (waitFor) {
+                removeOwnedPads(false, waitFor);
+            }).nThen(cb);
+        };
         Store.deleteAccount = function (clientId, data, cb) {
             var edPublic = store.proxy.edPublic;
-            var removeData = data && data.removeData;
-            var rpcKeys = data && data.keys;
+            var blockKeys = data && data.keys;
+            var auth = data && data.auth;
             Store.anonRpcMsg(clientId, {
                 msg: 'GET_METADATA',
                 data: store.driveChannel
@@ -848,13 +852,22 @@ define([
                     metadata.owners.indexOf(edPublic) !== -1) {
                     var token;
                     nThen(function (waitFor) {
+                        Block.checkRights({
+                            auth: auth,
+                            blockKeys: blockKeys,
+                        }, waitFor(function (err) {
+                            if (err) {
+                                waitFor.abort();
+                                console.error(err);
+                                return void cb({ error: 'INVALID_CODE' });
+                            }
+                        }));
+                    }).nThen(function (waitFor) {
                         self.accountDeletion = clientId;
                         // Log out from other workers
                         var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                         store.proxy[Constants.tokenKey] = token;
                         onSync(null, waitFor());
-                    }).nThen(function (waitFor) {
-                        removeOwnedPads(waitFor);
                     }).nThen(function (waitFor) {
                         // Delete Pin Store
                         store.rpc.removePins(waitFor(function (err) {
@@ -867,16 +880,15 @@ define([
                             force: true
                         }, waitFor());
                     }).nThen(function (waitFor) {
-                        if (!removeData) { return; }
-                        var done = waitFor();
-                        Pinpad.create(store.network, rpcKeys, function (err, rpc) {
-                            if (err) {
-                                console.error(err);
-                                return void done();
-                            }
-                            // Delete the block. Don't abort if it fails, it doesn't leak any data.
-                            rpc.removeLoginBlock(removeData, done);
-                        });
+                        if (!blockKeys) { return; }
+                        Block.removeLoginBlock({
+                            auth: auth,
+                            blockKeys: blockKeys,
+                        }, waitFor(function (err) {
+                            if (err) { console.error(err); }
+                        }));
+                    }).nThen(function (waitFor) {
+                        removeOwnedPads(true, waitFor);
                     }).nThen(function () {
                         // Log out current worker
                         postMessage(clientId, "DELETE_ACCOUNT", token, function () {});
@@ -2472,6 +2484,9 @@ define([
                 store.modules['cursor'].leavePad(chanId);
             } catch (e) { console.error(e); }
             try {
+                store.modules['integration'].leavePad(chanId);
+            } catch (e) { console.error(e); }
+            try {
                 store.onlyoffice.leavePad(chanId);
             } catch (e) { console.error(e); }
 
@@ -2795,6 +2810,7 @@ define([
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
                 loadUniversal(Cursor, 'cursor', waitFor);
+                loadUniversal(Integration, 'integration', waitFor);
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
@@ -2928,7 +2944,7 @@ define([
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
-                Cache: Cache, // ICE drive cache
+                Cache: Cache,
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,
@@ -3110,6 +3126,7 @@ define([
                 // To be able to use all the features inside the pad, we need to
                 // initialize the chat (messenger) and the cursor modules.
                 loadUniversal(Cursor, 'cursor', function () {});
+                loadUniversal(Integration, 'integration', function () {});
                 loadUniversal(Messenger, 'messenger', function () {});
                 store.messenger = store.modules['messenger'];
 
@@ -3198,7 +3215,9 @@ define([
 
             // First tab, no user hash, no anon hash and this app doesn't need a drive
             // ==> don't create a drive
-            if (data.noDrive && !data.userHash && !data.anonHash) {
+            // Or "neverDrive" (integration into another platform?)
+            // ==> don't create a drive
+            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // if we can't properly initialize the noDrive mode, use normal mode

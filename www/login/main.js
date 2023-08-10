@@ -8,7 +8,7 @@ define([
     '/common/outer/local-store.js',
     //'/common/test.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
     if (window.top !== window) { return; }
     $(function () {
@@ -49,7 +49,8 @@ define([
             var shouldImport = $checkImport[0].checked;
             var uname = $uname.val();
             var passwd = $passwd.val();
-            Login.loginOrRegisterUI(uname, passwd, false, shouldImport, /*Test.testing */ false, function () {
+            Login.loginOrRegisterUI(uname, passwd, false, shouldImport,
+                UI.getOTPScreen, /*Test.testing */ false, function () {
                 /*
                 if (test) {
                     localStorage.clear();

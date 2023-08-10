@@ -75,6 +75,10 @@ html, body {
         padding: 5px;
         //font-size: 16px;
         border-radius: @corner;
+
+        max-width: 100%;
+        box-sizing: border-box;
+
         &.cp-danger {
             border: 1px solid @cp_alerts-danger-bg;
             background-color: @cp_alerts-danger-bg;
@@ -85,6 +89,11 @@ html, body {
             background-color: @cp_alerts-warning-bg;
             color: @cp_alerts-warning-text;
         }
+        pre.cp-raw-text {
+            overflow: auto;
+            background-color: #2222;
+        }
+
         code {
             word-break: keep-all;
             font-style: italic;
