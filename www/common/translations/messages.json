@@ -1614,7 +1614,6 @@
     "recovery_header": "2FA recovery",
     "recovery_mfa_description": "If you have lost access to your Two-Factor Authentication method you can disable 2FA for your account using your recovery code. Please start by entering your login and password:",
     "recovery_mfa_secret": "Please enter your recovery code to disable 2FA for your account:",
-    "ery_mfa_secret_ph": "Recovery code",
     "recovery_forgot": "Forgot recovery code",
     "recovery_forgot_text": "Please copy the following information and <a href=\"mailto:{0}\">email it</a> to your instance administrators",
     "recovery_mfa_error": "Unknown error. Please reload and try again.",
@@ -1626,5 +1625,9 @@
     "admin_totpFailed": "Signature verification failed",
     "admin_totpCheck": "Signature verification success",
     "admin_totpDisable": "Disable 2FA for this account",
-    "admin_totpDisableButton": "Disable"
+    "admin_totpDisableButton": "Disable",
+    "register_nameTooLong": "Usernames must be shorter than {0} characters",
+    "loading_enter_otp": "This account is protected with Two-Factor Authentication. Please enter your verification code",
+    "loading_recover": "Unable to get a code? <a href=\"/recovery/\">Recover your account</a>",
+    "recovery_mfa_secret_ph": "Recovery code"
 }

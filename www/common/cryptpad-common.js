@@ -389,6 +389,9 @@ define([
             cb();
         });
     };
+    common.stopWorker = function () {
+        postMessage('STOPWORKER');
+    };
     common.logoutFromAll = function (cb) {
         var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
         localStorage.setItem(Constants.tokenKey, token);
@@ -2070,7 +2073,7 @@ define([
                     return;
                 }
                 common.logoutFromAll(waitFor(function () {
-                    postMessage("DISCONNECT");
+                    common.stopWorker();
                 }));
             }));
         }).nThen(function (waitFor) {
@@ -2085,7 +2088,7 @@ define([
                     console.error(obj.error);
                 }
                 common.logoutFromAll(waitFor(function () {
-                    postMessage("DISCONNECT");
+                    common.stopWorker();
                 }));
             }));
         }).nThen(function () {
@@ -2776,7 +2779,7 @@ define([
             }
             // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {
-                if (e.key !== Constants.userHashKey) { return; }
+                if (e.key !== Constants.blockHashKey) { return; }
                 var o = e.oldValue;
                 var n = e.newValue;
                 if (!o && n) {
@@ -2787,7 +2790,7 @@ define([
             });
             LocalStore.onLogout(function () {
                 console.log('onLogout: disconnect');
-                postMessage("DISCONNECT");
+                common.stopWorker();
             });
         }).nThen(function (waitFor) {
             if (common.migrateAnonDrive || sessionStorage.migrateAnonDrive) {

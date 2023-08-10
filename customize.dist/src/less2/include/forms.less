@@ -54,13 +54,13 @@
             }
         }
     }
-    &.enabled{
-        span, i{
+    &.mfa-enabled {
+        span, i {
             color: @cp_settings_enabled;
         }
     }
-    &.disabled{
-        span, i{
+    &.mfa-disabled {
+        span, i {
             color: @cp_settings_disabled;
         }
     }
@@ -112,9 +112,6 @@
             }
         }
     }
-    //button.cp-button-confirm-placeholder:not(.new) {
-    //    margin-bottom: 3px !important;
-    //}
 
     button.btn {
         background-color: @cp_buttons-cancel;
@@ -127,7 +124,6 @@
         text-align: center;
         text-transform: uppercase;
         font-size: 14px;
-        font-weight:bold;
         text-decoration: none;
         cursor: pointer;
         border-radius: @variables_radius;
@@ -189,11 +185,10 @@
             }
         }
 
-        &.primary, &.btn-primary, &.btn-success, &.disable-button{
+        &.primary, &.btn-primary, &.btn-success, &.disable-button {
             background-color: @cp_buttons-primary;
             color: @cp_buttons-primary-text;
             border-color: @cp_buttons-primary-border;
-            font-weight: bold;
             &:hover, &:not(:disabled):active, &:focus {
                 color: @cp_buttons-primary-text;
                 border-color: @cp_buttons-primary-border;
