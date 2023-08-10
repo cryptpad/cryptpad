@@ -7,6 +7,8 @@ define(['/api/config'], function (ApiConfig) {
 
     var DEFAULT_MAIN = '/customize/favicon/main-favicon' + suffix + '.png?' + ApiConfig.requireConf.urlArgs;
     var DEFAULT_ALT = '/customize/favicon/alt-favicon' + suffix + '.png?' + ApiConfig.requireConf.urlArgs;
+    var DEFAULT_MAIN_ICO = '/customize/favicon/main-favicon' + suffix + '.ico?' + ApiConfig.requireConf.urlArgs;
+    var DEFAULT_ALT_ICO = '/customize/favicon/alt-favicon' + suffix + '.ico?' + ApiConfig.requireConf.urlArgs;
 
     var document = window.document;
 
@@ -89,20 +91,17 @@ define(['/api/config'], function (ApiConfig) {
             });
             document.head.appendChild(fav);
         }
-        
+
         if(!document.getElementById("favicon-ico")) {
             var faviconLink = document.createElement('link');
             attrs.href = attrs.href.replaceAll(".png", ".ico");
             attrs.id = 'favicon-ico';
             attrs.type = 'image/x-icon';
-            
-            delete attrs['data-main-favicon'];
-            delete attrs['data-alt-favicon'];
-            
+
             Object.keys(attrs).forEach(function (k) {
                 faviconLink.setAttribute(k, attrs[k]);
             });
-            
+
             document.head.appendChild(faviconLink);
         }
     };
@@ -116,14 +115,22 @@ define(['/api/config'], function (ApiConfig) {
         var key = '_pendingTabNotification';
 
         var favicon = document.getElementById('favicon');
+        var faviconIco = document.getElementById('favicon-ico');
 
         var main = DEFAULT_MAIN;
         var alt = DEFAULT_ALT;
+        var mainIco = DEFAULT_MAIN_ICO;
+        var altIco = DEFAULT_ALT_ICO;
 
         if (favicon) {
             main = favicon.getAttribute('data-main-favicon') || DEFAULT_MAIN;
             alt = favicon.getAttribute('data-alt-favicon') || DEFAULT_ALT;
             favicon.setAttribute('href', main);
+        }
+        if (faviconIco) {
+            mainIco = faviconIco.getAttribute('data-main-favicon') || DEFAULT_MAIN_ICO;
+            altIco = faviconIco.getAttribute('data-alt-favicon') || DEFAULT_ALT_ICO;
+            faviconIco.setAttribute('href', mainIco);
         }
 
         var cancel = function (pending) {
@@ -132,6 +139,9 @@ define(['/api/config'], function (ApiConfig) {
                 window.clearInterval(Module[key]);
                 if (favicon) {
                     favicon.setAttribute('href', pending? alt : main);
+                }
+                if (faviconIco) {
+                    faviconIco.setAttribute('href', pending? altIco : mainIco);
                 }
 
                 return true;
@@ -144,6 +154,9 @@ define(['/api/config'], function (ApiConfig) {
         var step = function () {
             if (favicon) {
                 favicon.setAttribute('href', favicon.getAttribute('href') === main? alt : main);
+            }
+            if (faviconIco) {
+                faviconIco.setAttribute('href', faviconIco.getAttribute('href') === mainIco? altIco : mainIco);
             }
             --count;
         };

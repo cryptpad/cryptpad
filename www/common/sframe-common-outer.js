@@ -1348,7 +1348,10 @@ define([
             });
 
             sframeChan.on('Q_LOGOUT_EVERYWHERE', function (data, cb) {
-                Cryptpad.logoutFromAll(Utils.Util.bake(Utils.LocalStore.logout, cb));
+                Cryptpad.logoutFromAll(Utils.Util.bake(Utils.LocalStore.logout, function () {
+                    Cryptpad.stopWorker();
+                    cb();
+                }));
             });
 
             sframeChan.on('EV_NOTIFY', function (data) {

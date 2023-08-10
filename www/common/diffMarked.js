@@ -36,7 +36,8 @@ define([
         init: function () {
             require([
                 'mermaid',
-            ], function (_Mermaid) {
+                '/lib/mermaid/mermaid-zenuml.esm.min.js',
+            ], function (_Mermaid, zenuml) {
                 console.debug("loaded mermaid");
                 if (Mermaid.__stubbed) {
                     Mermaid = _Mermaid;
@@ -48,7 +49,7 @@ define([
                     });
                 }
 
-                pluginLoaded.fire();
+                Mermaid.registerExternalDiagrams([zenuml]).then(() => pluginLoaded.fire());
             });
         }
     };

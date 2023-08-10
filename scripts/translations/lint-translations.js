@@ -6,6 +6,7 @@ var simpleTags = [
     '<br>',
     '<a href="/login/">',
     '<a href="/register/">',
+    '<a href="/recovery/">',
 
     // FIXME
     "<a href='#'>",

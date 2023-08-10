@@ -63,11 +63,9 @@ define([
 
         var postMessageToDrawio = function(msg) {
             if (!drawIoInitalized) {
-                console.log('draw.io postMessageToDrawio blocked', msg);
                 return;
             }
 
-            console.log('draw.io postMessageToDrawio', msg);
             drawioFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
         };
 
@@ -190,12 +188,13 @@ define([
 
                 modified: 'unsavedChanges',
                 proto: 'json',
+
+                lang: Messages._languageUsed
             });
 
         window.addEventListener("message", (event) => {
             if (event.source === drawioFrame.contentWindow) {
                 var data = JSON.parse(event.data);
-                console.log('draw.io got message', data);
                 var eventType = data.event;
                 var handler = drawioHandlers[eventType];
                 if (handler) {
