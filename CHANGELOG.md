@@ -3,8 +3,8 @@
 ## Goals
 
 This release introduces two major new features:
-  1. new Diagram application
-  2. 2 factor authentication using time-based one-time passwords (TOTP)
+- New Diagram application
+- 2 factor authentication using time-based one-time passwords (TOTP)
   
 Also included are some improvements, dependency updates, and bug fixes
 
