@@ -8,10 +8,6 @@ define([
 ], function (Config, $, h, UI, Msg, Pages) {
     return function () {
         document.title = Msg.register_header;
-        Msg.type_username = "Type your username"; // XXX
-        Msg.type_password = "Type your password"; // XXX
-        Msg.type_login_confirm = "Type your password again"; // XXX
-
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
 
         var termsLink = Pages.customURLs.terms;
@@ -70,7 +66,7 @@ define([
                                     autocorrect: 'off',
                                     autocapitalize: 'off',
                                     spellcheck: false,
-                                    placeholder: Msg.type_username,
+                                    placeholder: Msg.login_username,
                                     autofocus: true,
                                 }),
                             ]),
@@ -78,14 +74,14 @@ define([
                                 h('label.register-label', { for: 'password' }, Msg.login_password + ':'),
                                 h('input.form-control#password', {
                                     type: 'password',
-                                    placeholder: Msg.type_password,
+                                    placeholder: Msg.login_password,
                                 }),
                             ]),
                             h('div.input-container', [
                                 h('label.register-label', { for: 'password-confirm' }, Msg.login_confirm + ':'),
                                 h('input.form-control#password-confirm', {
                                     type: 'password',
-                                    placeholder: Msg.type_login_confirm,
+                                    placeholder: Msg.login_confirm,
                                 }),
                             ]),
                         ]),
