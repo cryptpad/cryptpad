@@ -7,8 +7,6 @@ define([
 ], function (h, UI, Msg, Pages, Config) {
     return function () {
         document.title = Msg.login_login;
-        Msg.type_username = "Type your username"; // XXX also on register.js
-        Msg.type_password = "Type your password"; // XXX also on register.js
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
@@ -27,7 +25,7 @@ define([
                                     autocorrect: 'off',
                                     autocapitalize: 'off',
                                     spellcheck: false,
-                                    placeholder: Msg.type_username,
+                                    placeholder: Msg.login_username,
                                     autofocus: true,
                                 }),
                             ]),
@@ -36,7 +34,7 @@ define([
                                 h('input.form-control#password', {
                                     type: 'password',
                                     'name': 'password',
-                                    placeholder: Msg.type_password,
+                                    placeholder: Msg.login_password,
                                 }),
                             ]),
                         ]),
