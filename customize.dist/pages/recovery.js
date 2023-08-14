@@ -9,8 +9,6 @@ define([
 
     return function () {
         document.title = Msg.recovery_header;
-        Msg.type_username = "Type your username"; // XXX also on register.js
-        Msg.type_password = "Type your password"; // XXX also on register.js
         var frame = function (content) {
             return [
                 h('div#cp-main', [
@@ -38,7 +36,7 @@ define([
                                     autocorrect: 'off',
                                     autocapitalize: 'off',
                                     spellcheck: false,
-                                    placeholder: Msg.type_username,
+                                    placeholder: Msg.login_username,
                                     autofocus: true,
                                 }),
                             ]),
@@ -46,7 +44,7 @@ define([
                                 h('label.label', {for: 'password'}, Msg.login_password + ':'),
                                 h('input.form-control#password', {
                                     type: 'password',
-                                    placeholder: Msg.type_password,
+                                    placeholder: Msg.login_password,
                                 }),
                             ]),
                         ]),
