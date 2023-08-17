@@ -51,6 +51,8 @@ define([
     Channel,
     X2T)
 {
+    Messages.onlyOffice_title = "OnlyOffice"; // XXX
+    document.title= Messages.onlyOffice_title;
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
     var APP = window.APP = {
