@@ -52,7 +52,7 @@ define([
     jKanban,
     Export)
 {
-
+    document.title = Messages.type.kanban;
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();
