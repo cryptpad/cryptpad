@@ -62,6 +62,7 @@ define([
     Messages,
     CMeditor)
 {
+    document.title = Messages.type.code;
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
