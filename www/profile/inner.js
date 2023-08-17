@@ -49,6 +49,7 @@ define([
     CodeMirror
     )
 {
+    document.title = Messages.profileButton;
     var APP = window.APP = {
         _onRefresh: []
     };
