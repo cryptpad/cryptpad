@@ -75,7 +75,7 @@ define([
     Sortable
     )
 {
-
+    document.title = Messages.type.form;
     var APP = window.APP = {
         blocks: {}
     };
