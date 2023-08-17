@@ -24,6 +24,7 @@ define([
     UI
     )
 {
+    document.title = Messages.contacts_title;
     var APP = {};
 
     var common;
