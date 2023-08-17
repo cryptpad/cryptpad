@@ -75,6 +75,7 @@ define([
     AppConfig,
     Test */
 ) {
+    document.title = Messages.type.pad;
     var DiffDom = window.diffDOM;
 
     var slice = function(coll) {
