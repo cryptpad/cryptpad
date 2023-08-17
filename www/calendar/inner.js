@@ -54,6 +54,7 @@ define([
     Share, Access, Properties
     )
 {
+    document.title = Messages.calendar;
     var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
