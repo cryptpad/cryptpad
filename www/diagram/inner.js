@@ -12,6 +12,7 @@ define([
     Messages,
     pako,
     X2JS) {
+    document.title = Messages.type.diagram;
     const Nacl = window.nacl;
 
     // As described here: https://drawio-app.com/extracting-the-xml-from-mxfiles/
