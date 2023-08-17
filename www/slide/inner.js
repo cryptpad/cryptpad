@@ -59,6 +59,7 @@ define([
     Messages,
     CMeditor)
 {
+    document.title = Messages.type.slide;
     window.CodeMirror = CMeditor;
 
     var SLIDE_BACKCOLOR_ID = "cp-app-slide-toolbar-backcolor";
