@@ -98,6 +98,15 @@ define([
         console.error(err);
     }
 
+    var HTTP_API_URL;
+    if (API_URL) {
+        try {
+            var httpAPI = new URL(API_URL)
+            httpApi.protocol = API_URL.protocol === 'wss' ? 'https' : 'http';
+            HTTP_API_URL = httpApi.origin;
+        } catch (e) {}
+    }
+
     var ACCOUNTS_URL;
     try {
         if (typeof(AppConfig.upgradeURL) === 'string') {
@@ -1001,7 +1010,8 @@ define([
                     'blob:',
                     $outer,
                     $sandbox,
-                    API_URL.origin,
+                    API_URL && API_URL.origin,
+                    (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
                     // support for cryptpad.fr configuration
                     accounts_api,
@@ -1042,6 +1052,7 @@ define([
                     $outer,
                     $sandbox,
                     API_URL.origin,
+                    (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
                     accounts_api,
                     ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
@@ -1095,7 +1106,9 @@ define([
         });
     };
 
-    ['/', '/blob/placeholder.txt', '/block/placeholder.txt'].forEach(relativeURL => {
+    // FIXME Blob and block can't be served for all origins anymore because of "Allow-Credentials"
+    // for advanced authentication features: rempve the tests?
+    ['/'/*, '/blob/placeholder.txt', '/block/placeholder.txt'*/].forEach(relativeURL => {
         assert(function (cb, msg) {
             var header = 'Access-Control-Allow-Origin';
             var url = new URL(relativeURL, trimmedUnsafe).href;
