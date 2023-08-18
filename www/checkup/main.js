@@ -101,7 +101,7 @@ define([
     var HTTP_API_URL;
     if (API_URL) {
         try {
-            var httpApi = new URL(API_URL)
+            var httpApi = new URL(API_URL);
             httpApi.protocol = API_URL.protocol === 'wss:' ? 'https:' : 'http:';
             HTTP_API_URL = httpApi.origin;
         } catch (e) {}
