@@ -359,12 +359,12 @@ define([
             Block.writeLoginBlock({
                 blockKeys: blockKeys,
                 content: {}
-            }, waitFor(function (e) {
+            }, waitFor(function (e, obj) {
                 // we should tolerate restricted registration
                 // and proceed to clean up after any data we've created
-                if (e === 'E_RESTRICTED') {
+                if (e && obj && obj.errorCode === 'E_RESTRICTED') {
                     restricted = true;
-                    return void cb(true);
+                    return;
                 }
                 if (e) {
                     waitFor.abort();
