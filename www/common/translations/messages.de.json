@@ -350,7 +350,7 @@
     "settings_exportTitle": "Dein CryptDrive exportieren",
     "settings_exportDescription": "Bitte warte, während wir deine Dokumente herunterladen und entschlüsseln. Dies kann ein paar Minuten dauern. Wenn das Browserfenster geschlossen wird, wird der Vorgang unterbrochen.",
     "settings_exportFailed": "Wenn der Download eines Dokuments länger als eine Minute dauert, wird dieses Dokument nicht im Export enthalten sein. Für jedes nicht exportierte Dokument wird der entsprechende Link angezeigt.",
-    "settings_exportWarning": "Um eine erhöhte Leistung zu erhalten, empfehlen wir dieses Browserfenster im Vordergrund zu halten.",
+    "settings_exportWarning": "Um eine erhöhte Leistung zu erhalten, empfehlen wir, dieses Browserfenster im Vordergrund zu halten.",
     "settings_exportCancel": "Bist du sicher, dass du den Exportvorgang abbrechen möchtest? Der Vorgang muss das nächste Mal wieder von vorn beginnen.",
     "settings_export_reading": "Dein CryptDrive wird gelesen...",
     "settings_export_download": "Deine Dokumente werden heruntergeladen und entschlüsselt...",
