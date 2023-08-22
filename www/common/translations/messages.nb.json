@@ -809,7 +809,7 @@
     "fm_info_anonymous": "Du er ikke logget inn, så dokumentene dine utløper etter {0} dager. Å tømme nettleserens historie kan få dem til å forsvinne. <br><a href=\"/register/\">Registrer deg</a> (ingen personlig informasjon kreves) eller <a href=\"/login/\">Logg på </a> for å lagre dem i lagringsenheten din på ubestemt tid. <a href=\"#docs\">Les mer om registrerte kontoer</a>.",
     "fm_info_sharedFolder": "Dette er en delt mappe. Du er ikke logget på, så du kan bare få tilgang til den i skrivebeskyttet modus.<br><a href=\"/register/\">Registrer deg</a> eller <a href=\"/login/\">Logg inn</a> for å kunne importere den til din CryptDrive og endre den.",
     "fm_info_owned": "Du er eieren av dokumentene som vises her. Dette betyr at du kan fjerne dem permanent fra serveren når du vil. Hvis du gjør det, andre brukere kunne ikke få tilgang til dem lenger.",
-    "fm_burnThisDrive": "Er du sikker på at du vil fjerne alt som er lagret av CryptPad i nettleseren din? Dette vil fjerne din CryptDrive og historikken fra nettleseren din, men dokumentene dine vil fortsatt eksistere (kryptert) på serveren vår.",
+    "fm_burnThisDrive": "Er du sikker på at du vil fjerne alt som er lagret av CryptPad i nettleseren din?<br>Dette vil fjerne din CryptDrive og historikken fra nettleseren din, men dokumentene dine vil fortsatt eksistere (kryptert) på serveren vår.",
     "fm_padIsOwnedOther": "Dette dokumentet eies av en annen bruker",
     "fm_deletedPads": "Disse dokumentene finnes ikke lenger på serveren, de er fjernet fra din CryptDrive: {0}",
     "calendar_update": "Oppdatering",
