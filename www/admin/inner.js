@@ -2453,17 +2453,17 @@ Example
     // message's hash.
     // If the last BROADCAST_CUSTOM has been deleted by an admin, we can use the most recent
     // message's hash.
-    var checkLastBroadcastHash = function () {
+    var checkLastBroadcastHash = function (cb) {
         var deleted = [];
 
         require(['/api/broadcast?'+ (+new Date())], function (BCast) {
             var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
             common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
-                if (e) { return void console.error(e); }
+                if (e) { console.error(e); return void cb(e); }
 
                 // No history, nothing to change
-                if (!Array.isArray(msgs)) { return; }
-                if (!msgs.length) { return; }
+                if (!Array.isArray(msgs)) { return void cb(); }
+                if (!msgs.length) { return void cb(); }
 
                 var lastHash;
                 var next = false;
@@ -2507,7 +2507,7 @@ Example
                 });
 
                 // If we don't have to bump our lastBroadcastHash, abort
-                if (next) { return; }
+                if (next) { return void cb(); }
 
                 // Otherwise, bump to lastHash
                 console.warn('Updating last broadcast hash to', lastHash);
@@ -2521,6 +2521,7 @@ Example
                         return;
                     }
                     console.log('lastBroadcastHash updated');
+                    if (typeof(cb) === "function") { cb(); }
                 });
             });
         });
@@ -2709,9 +2710,9 @@ Example
                         return UI.warn(Messages.error);
                     }
                     UI.log(Messages.saved);
-                    refresh();
-
-                    checkLastBroadcastHash();
+                    checkLastBroadcastHash(function () {
+                        setTimeout(refresh, 300);
+                    });
                 });
             };
 
@@ -2730,8 +2731,9 @@ Example
                 }, {}, function (err) {
                     if (err) { return UI.warn(Messages.error); }
                     UI.log(Messages.saved);
-                    refresh();
-                    checkLastBroadcastHash();
+                    checkLastBroadcastHash(function () {
+                        setTimeout(refresh, 300);
+                    });
                 });
             });
 
@@ -2831,8 +2833,9 @@ Example
                     }
                     // Maintenance applied, send notification
                     common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function () {
-                        refresh();
-                        checkLastBroadcastHash();
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
                     });
                 });
 
@@ -2928,8 +2931,9 @@ Example
                     common.mailbox.sendTo('BROADCAST_SURVEY', {
                         url: data
                     }, {}, function () {
-                        refresh();
-                        checkLastBroadcastHash();
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
                     });
                 });
 
