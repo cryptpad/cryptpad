@@ -92,6 +92,7 @@ module.exports = {
 /*  httpSafePort allows you to specify an alternative port from which
  *  the node process should serve sandboxed assets. The default value is
  *  that of your httpPort + 1. You probably don't need to change this.
+ *  Setting this to 0 disables this listener.
  *
  */
     //httpSafePort: 3001,
