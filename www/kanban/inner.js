@@ -52,7 +52,9 @@ define([
     jKanban,
     Export)
 {
-    document.title = Messages.type.kanban;
+    Messages.application = "Application"; // XXX
+    Messages.cryptpad_title = "CryptPad"; // XXX
+    document.title = Messages.type.kanban + " " +  Messages.application + " - " + Messages.cryptpad_title;
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();
