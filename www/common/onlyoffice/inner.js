@@ -51,8 +51,6 @@ define([
     Channel,
     X2T)
 {
-    Messages.onlyOffice_title = "OnlyOffice"; // XXX
-    document.title= Messages.onlyOffice_title;
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
     var APP = window.APP = {
@@ -663,17 +661,23 @@ define([
 
         var loadInitDocument = function (type, useNewDefault) {
             var newText;
+            Messages.application = "Application"; // XXX
+            Messages.cryptpad_title = "CryptPad"; // XXX
             switch (type) {
                 case 'sheet' :
+                    document.title = Messages.type.sheet + " " + Messages.application + " - " + Messages.cryptpad_title;
                     newText = EmptyCell(useNewDefault);
                     break;
                 case 'doc':
+                    document.title = Messages.type.doc + " " + Messages.application + " - " + Messages.cryptpad_title;
                     newText = EmptyDoc();
                     break;
                 case 'presentation':
+                    document.title = Messages.type.presentation + " " + Messages.application + " - " + Messages.cryptpad_title;
                     newText = EmptySlide();
                     break;
                 default:
+                    document.title = Messages.application + " - " + Messages.cryptpad_title;
                     newText = '';
             }
             return new Blob([newText], {type: 'text/plain'});
