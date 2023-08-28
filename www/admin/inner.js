@@ -1296,7 +1296,8 @@ define([
         var textarea = h('textarea', { id: 'textarea-input' });
         var $input = $(textarea);
 
-        var label = h('label', { for: 'textarea-input' },"Add here:"); // XXX temporary solution
+        Messages.add_here = "Add here:"; // XXX temporary solution
+        var label = h('label', { for: 'textarea-input' },Messages.add_here);
 
         var box = h('div.cp-admin-setter', [
             label,
@@ -1485,9 +1486,10 @@ Example
         });
         var $input = $(input);
 
+        Messages.email = "Email:"; // XXX temporary solution
         var label = h('label', {
             for: 'emailInput'
-        },'Email:'); // XXX temporary solution
+        },Messages.email);
 
         var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', [label, input]);
 
