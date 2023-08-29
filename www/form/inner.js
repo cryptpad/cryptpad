@@ -608,7 +608,8 @@ define([
             if (v.type === "day") {
                 var dayPickr = $(calendarView).find('input')[0]._flatpickr;
                 values = dayPickr.selectedDates.map(function (date) {
-                    return +date;
+                    return date.toLocaleDateString('EN-CA');
+                    //return +date;
                 });
             } else {
                 $container.find('input').each(function (i, el) {
