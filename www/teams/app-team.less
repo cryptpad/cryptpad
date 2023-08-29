@@ -143,14 +143,14 @@
                     .avatar_main(200px);
                 }
                 .cp-team-list-name {
+                    word-wrap: break-word;
                     min-width: 0;
                     overflow: hidden;
-                    white-space: nowrap;
+                    white-space: pre-wrap;
                     text-overflow: ellipsis;
-                    max-width: 500px;
+                    max-width: 250px;
                     font-size: 25px;
-                    display: inline-flex;
-                    align-items: center;
+                    text-align: center;
                     &.empty {
                         white-space: initial;
                         text-align: center;
