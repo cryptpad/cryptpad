@@ -544,6 +544,10 @@ define([
             if (state) { return; }
             var name = $(input).val();
             if (!name.trim()) { return; }
+            Messages.team_nameTooLong = "Team name is too long"; // XXX
+            if(name.length > 50){
+                return UI.warn(Messages.team_nameTooLong);
+            }
             state = true;
             $spinner.show();
             APP.module.execCommand('CREATE_TEAM', {
