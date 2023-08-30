@@ -237,7 +237,9 @@ define([
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title.toLowerCase(), 'aria-hidden':"true"}, tab.title));
             if (tab.icon) {
-                var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
+                // check which icon it affects
+                // var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
+                let icon = h('i', {class: tab.icon});
                 $(title).prepend(' ').prepend(icon);
             }
             $(title).click(function () {
