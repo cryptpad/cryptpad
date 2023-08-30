@@ -530,8 +530,9 @@ define([
         }
 
         content.push(h('h3', Messages.team_createLabel));
-        content.push(h('label', Messages.team_createName));
-        var input = h('input', {type:'text'});
+        let label = h('label', { for: 'teamName' } , Messages.team_createName);
+        content.push(label);
+        let input = h('input', {type:'text', id:'teamName'});
         content.push(input);
         var button = h('button.btn.btn-success', Messages.creation_create);
         content.push(h('br'));
