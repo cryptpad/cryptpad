@@ -148,7 +148,8 @@
         "kanban": "Kanban",
         "poll": "Inkesta",
         "code": "Kodea",
-        "pad": "Testu aberastua"
+        "pad": "Testu aberastua",
+        "diagram": "Diagrama"
     },
     "userlist_addAsFriendTitle": "Bidali \"{0}\" kontaktu eskaera",
     "profile_viewMyProfile": "Bistaratu nire profila",
@@ -1586,5 +1587,26 @@
     "form_noCondorcetWinner": "Irabazlerik ez",
     "form_type_date": "Data",
     "form_showDetails": "Xehetasunak",
-    "form_showCondorcetWinner": "irabazlea: "
+    "form_showCondorcetWinner": "irabazlea: ",
+    "settings_mfaHint": "Babestu zure kontua zure aukerako autentifikazio-aplikazio batek emandako egiaztapen-kode gehigarri batekin",
+    "done": "Eginda",
+    "continue": "Jarraitu",
+    "mfa_setup_label": "2FA gaitzeko, hasi zure kontuaren pasahitza sartzen",
+    "mfa_setup_button": "Hasi 2FA konfiguratzen",
+    "mfa_revoke_label": "2FA desgaitzeko, hasi zure kontuaren pasahitza sartzen",
+    "mfa_revoke_button": "Berretsi 2FA desgaitzea",
+    "mfa_status_on": "2FA aktibo dago kontu honetan",
+    "mfa_status_off": "2FA ez dago aktibo kontu honetan",
+    "mfa_recovery_title": "Gorde berreskuratze-kode hau orain",
+    "mfa_enable": "Gaitu 2FA",
+    "mfa_disable": "Desgaitu 2FA",
+    "settings_otp_code": "Egiaztapen-kodea",
+    "mfa_revoke_code": "Sartu zure egiaztapen-kodea",
+    "mfa_recovery_hint": "Zure autentifikazio aplikaziorako sarbidea galtzen baduzu, baliteke CryptPad kontutik kanpo gelditzea. Berreskuratzeko kode hau 2FA desgaitzeko eta berriro sartzen uzteko erabil daiteke.",
+    "mfa_recovery_warning": "Kode hau ez da berriro erakutsiko, mesedez gorde ezazu orain leku seguru batean eta ez partekatu inorekin.",
+    "settings_otp_invalid": "Egiaztapen-kode baliogabea",
+    "settings_otp_tuto": "Eskaneatu QR kode hau zure autentifikazio-aplikazioarekin eta idatzi egiaztapen-kodea berresteko.",
+    "settings_removeOwnedTitle": "Suntsitu jabetzako dokumentu guztiak",
+    "settings_removeOwnedButton": "Suntsitu jabetzako dokumentuak",
+    "settings_mfaTitle": "Bi faktoreko autentifikazioa (2FA)"
 }
