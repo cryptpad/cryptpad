@@ -1,3 +1,36 @@
+# 5.4.1
+
+## Goals
+
+This point release aims to fix some deployment related issues that were identified with 5.4.0
+
+## Fixes
+
+- Typo in example Nginx config [[#1184](https://github.com/cryptpad/cryptpad/issues/1184)]
+- Enable port 3003 on Docker [[#1183](https://github.com/cryptpad/cryptpad/issues/1183]
+- Bind websocket to the address specified in the `httpAddress` setting [[#1182](https://github.com/cryptpad/cryptpad/issues/1182) [#1186](https://github.com/cryptpad/cryptpad/issues/1186)]
+- Fix production CSP headers [[#912](https://github.com/cryptpad/cryptpad/pull/912) thanks @superboum]
+- Fix checkup test when registration is restricted [[#1185](https://github.com/cryptpad/cryptpad/issues/1185)]
+- Fix collaboration of Nextcloud integration
+- Fix broadcast settings not applied instantly [[#1189](https://github.com/cryptpad/cryptpad/issues/1189)]
+
+## Upgrade notes
+
+If you are upgrading from a version older than `5.4.0` please read the upgrade notes of all versions between yours and `5.4.0` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 5.4.1
+```
+
+1. Restart your server
+2. Review your instance's checkup page to ensure that you are passing all tests
+
 # 5.4.0
 
 ## Goals

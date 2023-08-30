@@ -235,13 +235,14 @@ define([
 
 
         var getFileType = function () {
-            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var priv = common.getMetadataMgr().getPrivateData();
+            var type = priv.ooType;
             var title = common.getMetadataMgr().getMetadataLazy().title;
             if (APP.downloadType) {
                 type = APP.downloadType;
                 title = "download";
             }
-            if(title === "" && APP.startWithTemplate) {
+            if(title === "" && APP.startWithTemplate && priv.fromFileData) {
                 var metadata = APP.startWithTemplate.content.metadata;
                 var copyTitle = Messages._getKey('copy_title', [metadata.title || metadata.defaultTitle]);
                 common.getMetadataMgr().updateTitle(copyTitle);
