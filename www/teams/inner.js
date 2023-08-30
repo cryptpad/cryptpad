@@ -1051,6 +1051,10 @@ define([
         var todo = function () {
             var newName = $input.val();
             if (!newName.trim()) { return; }
+            Messages.team_nameTooLong = "Team name is too long"; // XXX
+            if(newName.length > 50){
+                return UI.warn(Messages.team_nameTooLong);
+            }
             $spinner.show();
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
