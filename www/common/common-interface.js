@@ -539,7 +539,8 @@ define([
             message,
             dialog.getButtons(opt.buttons, opt.onClose)
         ]);
-
+        frame.style.minHeight='400px';
+        frame.style.overflowY='auto';
         if (opt.forefront) { $(frame).addClass('forefront'); }
         return frame;
     };
