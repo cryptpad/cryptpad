@@ -514,7 +514,7 @@ define([
         });
         return dialog.nav(navs);
     };
-    
+
     dialog.customModal = function (msg, opt) {
         var force = false;
         if (typeof(opt) === 'object') {
@@ -540,8 +540,6 @@ define([
             message,
             dialog.getButtons(opt.buttons, opt.onClose)
         ]);
-        frame.style.minHeight='400px';
-        frame.style.overflowY='auto';
         if (opt.forefront) { $(frame).addClass('forefront'); }
         return frame;
     };
