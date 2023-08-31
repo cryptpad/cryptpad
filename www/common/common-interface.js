@@ -514,6 +514,7 @@ define([
         });
         return dialog.nav(navs);
     };
+    
     dialog.customModal = function (msg, opt) {
         var force = false;
         if (typeof(opt) === 'object') {
