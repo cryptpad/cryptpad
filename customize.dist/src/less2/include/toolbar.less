@@ -439,13 +439,6 @@
                    screen and (max-height: 500px) {
                 flex-wrap: wrap;
                 height: @toolbar_line-height;
-                .cp-pad-not-pinned {
-                    line-height: 32px;
-                    flex: unset;
-                    padding: 0;
-                    align-self: auto;
-                    margin: 0 5px;
-                }
                 .cp-toolbar-top-filler {
                     height: 32px;
                 }
@@ -578,41 +571,6 @@
         position: relative;
         width: 100%;
 
-        .cp-pad-not-pinned {
-            order: 4;
-            flex: 1;
-
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-
-            line-height: @toolbar_top-height;
-            padding: 0;
-            margin: 0 5px;
-            font-size: @colortheme_app-font-size;
-            color: @cp_toolbar-warn;
-            .cp-pnp-msg {
-                padding-left: 5px;
-                font-family: @colortheme_font;
-                font-size: @colortheme_app-font-size;
-                a {
-                    font-size: @colortheme_app-font-size;
-                    font-family: @colortheme_font;
-                    font-weight: bold;
-                    color: @cp_toolbar-warn;
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-                @media screen and (max-width: (@browser_media-not-big)) {
-                    display: none;
-                }
-            }
-            @media screen and (max-width: (@browser_media-not-big)) {
-                overflow: visible;
-                max-width: 20px;
-            }
-        }
         .cp-toolbar-top-filler {
             height: @toolbar_top-height;
             display: inline-block;

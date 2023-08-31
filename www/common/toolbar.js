@@ -61,6 +61,50 @@ MessengerUI, Messages, Pages) {
         return 'cp-toolbar-uid-' + String(Math.random()).substring(2);
     };
 
+    var observeChildren = function ($content) {
+        var reorderDOM = Util.throttle(function ($content, observer) {
+            if (!$content.length) { return; }
+
+            // List all children based on their "order" property
+            var map = {};
+            $content[0].childNodes.forEach((node) => {
+                try {
+                    if (!node.attributes) { return; }
+                    var order = getComputedStyle(node).getPropertyValue("order");
+                    var a = map[order] = map[order] || [];
+                    a.push(node);
+                } catch (e) { console.error(e, node); }
+            });
+
+            // Disconnect the observer while we're reordering to avoid infinite loop
+            observer.disconnect();
+            Object.keys(map).sort(function (a, b) {
+                return Number(a) - Number(b);
+            }).forEach(function (k) {
+                var arr = map[k];
+                // Reorder
+                arr.forEach(function (node) {
+                    $content.append(node);
+                });
+            });
+            observer.start();
+        }, 100);
+
+        let observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length) {
+                    reorderDOM($content, observer);
+                }
+            });
+        });
+        observer.start = function () {
+            observer.observe($content[0], {
+                childList: true
+            });
+        };
+        observer.start();
+    };
+
     var createRealtimeToolbar = function (config) {
         if (!config.$container) { return; }
         var $container = config.$container;
@@ -103,10 +147,7 @@ MessengerUI, Messages, Pages) {
                 h('i.fa.fa-file-o'),
                 h('span.cp-button-name', Messages.toolbar_file)
             ])).appendTo($file).hide();
-            var $drawerContent = $('<div>', {
-                'class': DRAWER_CLS,
-                'tabindex': 1
-            }).hide();
+            var $drawerContent = $(h('div.'+ DRAWER_CLS, {tabindex: 1})).hide();
             UI.createDrawer($drawer, $drawerContent);
         }
 
@@ -776,58 +817,6 @@ MessengerUI, Messages, Pages) {
         return $titleContainer;
     };
 
-    var createUnpinnedWarning0 = function (toolbar, config) {
-        if (true) { return; } // stub this call since it won't make it into the next release
-        if (Common.isLoggedIn()) { return; }
-        var pd = config.metadataMgr.getPrivateData();
-        var o = pd.origin;
-        var cid = pd.channel;
-        Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
-            if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
-            if (x.response[0] === true) {
-                $('.cp-pad-not-pinned').remove();
-                return;
-            }
-
-            if (typeof(ApiConfig.inactiveTime) !== 'number') {
-                $('.cp-pad-not-pinned').remove();
-                return;
-            }
-
-            if ($('.cp-pad-not-pinned').length) { return; }
-            var pnpTitle = Messages._getKey('padNotPinnedVariable', ['','','','', ApiConfig.inactiveTime]);
-            var pnpMsg = Messages._getKey('padNotPinnedVariable', [
-                '<a href="' + o + '/login" class="cp-pnp-login" target="blank" title>',
-                '</a>',
-                '<a href="' + o + '/register" class="cp-pnp-register" target="blank" title>',
-                '</a>',
-                ApiConfig.inactiveTime
-            ]);
-            var $msg = $('<span>', {
-                'class': 'cp-pad-not-pinned'
-            }).append([
-                $('<span>', {'class': 'fa fa-exclamation-triangle', 'title': pnpTitle}),
-                $('<span>', {'class': 'cp-pnp-msg'}).append(pnpMsg)
-            ]);
-            $msg.find('a.cp-pnp-login').click(function (ev) {
-                ev.preventDefault();
-                Common.setLoginRedirect('login');
-            });
-            $msg.find('a.cp-pnp-register').click(function (ev) {
-                ev.preventDefault();
-                Common.setLoginRedirect('register');
-            });
-            $('.cp-toolbar-top').append($msg);
-            //UI.addTooltips();
-        });
-    };
-
-    var createUnpinnedWarning = function (toolbar, config) {
-        config.metadataMgr.onChange(function () {
-            createUnpinnedWarning0(toolbar, config);
-        });
-        createUnpinnedWarning0(toolbar, config);
-    };
 
     var createPageTitle = function (toolbar, config) {
         if (!config.pageTitle) { return; }
@@ -840,9 +829,13 @@ MessengerUI, Messages, Pages) {
         var $hoverable = $('<span>', {'class': 'cp-toolbar-title-hoverable'}).appendTo($titleContainer);
 
         // Buttons
-        $('<span>', {
+        var $b = $('<span>', {
             'class': 'cp-toolbar-title-value cp-toolbar-title-value-page'
         }).appendTo($hoverable).text(config.pageTitle);
+
+        toolbar.updatePageTitle = function (title) {
+            $b.text(title);
+        };
     };
 
     var createLinkToMain = function (toolbar, config) {
@@ -1328,6 +1321,17 @@ MessengerUI, Messages, Pages) {
         toolbar.$drawer = $toolbar.find('.'+Bar.constants.drawer);
         toolbar.$top = $toolbar.find('.'+Bar.constants.top);
         toolbar.$history = $toolbar.find('.'+Bar.constants.history);
+        toolbar.$user = $toolbar.find('.'+Bar.constants.userAdmin);
+
+        observeChildren(toolbar.$drawer);
+        observeChildren(toolbar.$bottomL);
+        observeChildren(toolbar.$bottomM);
+        observeChildren(toolbar.$bottomR);
+        observeChildren(toolbar.$top);
+        observeChildren(toolbar.$user);
+        if (config.$contentContainer) {
+            observeChildren(config.$contentContainer);
+        }
 
         toolbar.$userAdmin = $toolbar.find('.'+Bar.constants.userAdmin);
 
@@ -1342,14 +1346,10 @@ MessengerUI, Messages, Pages) {
         tb['title'] = createTitle;
         tb['pageTitle'] = createPageTitle;
         //tb['request'] = createRequest;
-        tb['lag'] = $.noop;
         tb['spinner'] = createSpinner;
-        tb['state'] = $.noop;
         tb['limit'] = createLimit; // TODO
-        tb['upgrade'] = $.noop;
         tb['newpad'] = createNewPad;
         tb['useradmin'] = createUserAdmin;
-        tb['unpinnedWarning'] = createUnpinnedWarning;
         tb['notifications'] = createNotifications;
         tb['maintenance'] = createMaintenance;
 
@@ -1359,7 +1359,7 @@ MessengerUI, Messages, Pages) {
                 'chat',
                 'collapse',
                 'userlist', 'title', 'useradmin', 'spinner',
-                'newpad', 'share', 'access', 'limit', 'unpinnedWarning',
+                'newpad', 'share', 'access', 'limit',
                 'notifications'
             ], {});
         };
