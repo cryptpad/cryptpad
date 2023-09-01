@@ -1056,11 +1056,15 @@ define([
             if(newName.length > 50){
                 return UI.warn(Messages.team_nameTooLong);
             }
-            $spinner.show();
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
             }, function (obj) {
+                Messages.team_nameAlreadySet = "Team name is already set to "; // XXX
                 if (obj && obj.error) { return void UI.warn(Messages.error); }
+                if (obj.name === newName) {
+                    return void UI.warn(Messages.team_nameAlreadySet + newName);
+                }
+                $spinner.show();
                 var oldName = obj.name;
                 obj.name = newName;
                 APP.module.execCommand('SET_TEAM_METADATA', {
