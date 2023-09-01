@@ -589,7 +589,8 @@ define([
                                 break;
                             case 'INVAL_USER':
                                 UI.removeLoadingScreen(function () {
-                                    UI.alert(Messages.login_invalUser, function () {
+                                    Messages.login_notFilledUser = 'The field Username has not been filled in'; // XXX
+                                    UI.alert(Messages.login_notFilledUser , function () {
                                         hashing = false;
                                         $('#password').focus();
                                     });
@@ -597,7 +598,8 @@ define([
                                 break;
                             case 'INVAL_PASS':
                                 UI.removeLoadingScreen(function () {
-                                    UI.alert(Messages.login_invalPass, function () {
+                                    Messages.login_notFilledPass = 'The field Password has not been filled in'; // XXX
+                                    UI.alert(Messages.login_notFilledPass, function () {
                                         hashing = false;
                                         $('#password').focus();
                                     });
