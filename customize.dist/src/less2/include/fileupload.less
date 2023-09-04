@@ -75,19 +75,22 @@
                 }
             }
             .cp-fileupload-table-progress {
-                min-width: 12em;
-                max-width: 16em;
+                min-width: 20vw;//12em;
+                max-width: 60vw ;//16em;
+                font-size:90%;
                 position: relative;
                 text-align: center;
                 box-sizing: border-box;
             }
             .cp-fileupload-table-progress-container {
                 position: relative;
+                max-width: 60vw;
             }
             .cp-fileupload-table-progressbar {
                 position: absolute;
                 width: 0px;
                 height: 100%;
+                padding:2px;
                 background-color: @cp_upload-progress;
                 z-index: -1; //Z file upload progress container
                 border-radius: @variables_radius;
