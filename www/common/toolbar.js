@@ -82,6 +82,7 @@ MessengerUI, Messages, Pages) {
                 return Number(a) - Number(b);
             }).forEach(function (k) {
                 var arr = map[k];
+                if (!Number(k)) { return; } // No need to "append" if order is 0
                 // Reorder
                 arr.forEach(function (node) {
                     $content.append(node);
