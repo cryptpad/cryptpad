@@ -85,13 +85,17 @@ define([
                 });
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
+            const tabIndexValue = data.content.isDismissible ? undefined : '0';
             notif = h('div.cp-notification', {
                 style: 'order:'+order+';',
                 'data-hash': data.content.hash
             }, [
                 avatar,
-                h('div.cp-notification-content',
-                    h('p', formatData(data)))
+                h('div.cp-notification-content', {
+                    tabindex: tabIndexValue
+                }, [
+                    h('p', formatData(data))
+                ])
             ]);
 
             if (typeof(data.content.getFormatText) === "function") {
@@ -108,16 +112,24 @@ define([
             }
 
             if (data.content.isClickable) {
-                $(notif).find('.cp-notification-content').addClass("cp-clickable")
-                    .click(data.content.handler);
+                $(notif).find('.cp-notification-content').addClass("cp-clickable").on('click keypress', function (event) {
+                    if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                        data.content.handler();
+                    }
+                });
             }
             if (data.content.isDismissible) {
                 var dismissIcon = h('span.fa.fa-times');
                 var dismiss = h('div.cp-notification-dismiss', {
-                    title: Messages.notifications_dismiss
+                    title: Messages.notifications_dismiss,
+                    tabindex: '0'
                 }, dismissIcon);
                 $(dismiss).addClass("cp-clickable")
-                    .click(data.content.dismissHandler);
+                    .on('click keypress', function (event) {
+                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                            data.content.dismissHandler();
+                        }
+                    });
                 $(notif).append(dismiss);
             }
             return notif;
