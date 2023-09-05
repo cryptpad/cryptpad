@@ -363,12 +363,14 @@
         * {
             outline-width: 0;
             &:focus {
-                outline-width: 0;
+                outline-width: 1rem;
+                // color shows on chrome/edge, but not firefox
+                outline-color: grey; // XXX temporary color to change
             }
         }
 
         box-sizing: border-box;
-        padding: 0px;
+        padding: 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -1218,4 +1220,5 @@
         }
     }
 }
+
 
