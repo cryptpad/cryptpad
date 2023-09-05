@@ -1082,15 +1082,18 @@ MessengerUI, Messages, Pages) {
         var metadataMgr = config.metadataMgr;
         var privateData = metadataMgr.getPrivateData();
         if (!privateData.notifications) {
-            var allowNotif = h('div.cp-notifications-gotoapp', h('p', Messages.allowNotifications));
+            var allowNotif = h('div.cp-notifications-gotoapp',{ tabindex: '0' }, h('p', Messages.allowNotifications));
             pads_options.unshift(h("hr"));
             pads_options.unshift(allowNotif);
-            var $allow = $(allowNotif).click(function () {
-                Common.getSframeChannel().event('Q_ASK_NOTIFICATION', null, function (e, allow) {
-                    if (!allow) { return; }
-                    $(allowNotif).remove();
-                });
+            $(allowNotif).on('click keypress', function (event) {
+                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                    Common.getSframeChannel().event('Q_ASK_NOTIFICATION', null, function (e, allow) {
+                        if (!allow) { return; }
+                        $(allowNotif).remove();
+                    });
+                }
             });
+
             var onChange = function () {
                 var privateData = metadataMgr.getPrivateData();
                 if (!privateData.notifications) { return; }
