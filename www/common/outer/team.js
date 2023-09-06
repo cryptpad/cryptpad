@@ -149,7 +149,7 @@ define([
         var list = store.manager.getChannelsList('pin');
 
         var team = ctx.store.proxy.teams[id];
-        list.push(team.channel);
+        list.push(`${team.channel}#drive`);
         var chatChannel = Util.find(team, ['keys', 'chat', 'channel']);
         var membersChannel = Util.find(team, ['keys', 'roster', 'channel']);
         var mailboxChannel = Util.find(team, ['keys', 'mailbox', 'channel']);

@@ -2496,6 +2496,15 @@ define([
                 }));
             }
         }).nThen(function (waitFor) {
+            var blockHash = LocalStore.getBlockHash();
+            var blockId = '';
+            try {
+                var blockPath = (new URL(blockHash)).pathname;
+                var blockSplit = blockPath.split('/');
+                if (blockSplit[1] === 'block') {
+                    blockId = blockSplit[3];
+                }
+            } catch (e) { }
             var cfg = {
                 init: true,
                 userHash: userHash || LocalStore.getUserHash(),
@@ -2508,7 +2517,8 @@ define([
                 neverDrive: rdyCfg.neverDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
-                lastVisit: Number(localStorage.lastVisit) || undefined
+                lastVisit: Number(localStorage.lastVisit) || undefined,
+                blockId: blockId
             };
             common.userHash = userHash;
 

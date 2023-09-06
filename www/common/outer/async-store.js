@@ -203,7 +203,7 @@ define([
         };
 
         var getUserChannelList = function () {
-            var userChannel = store.driveChannel;
+            var userChannel = `${store.driveChannel}#drive`;
             if (!userChannel) { return null; }
 
             // Get the list of pads' channel ID in your drive
@@ -245,6 +245,11 @@ define([
             }
 
             list.push(userChannel);
+
+            if (store.data && store.data.blockId) {
+                //list.push(`${store.data.blockId}#block`); // XXX 5.5.0?
+            }
+
             list.sort();
 
             return list;
