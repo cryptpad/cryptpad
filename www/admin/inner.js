@@ -1718,11 +1718,12 @@ Example
         var newLimit = h('input', { type: 'number', min: 0, value: _limitMB, id: 'default-limit' });
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
 
+        Messages.admin_defaultLimitMB = "Default Limit"; // XXX Messages.admin_defaultLimitMB is empty
         $div.append(h('div', [
             h('span.cp-admin-defaultlimit-value', Messages._getKey('admin_limit', [limit])),
             h('div.cp-admin-setlimit-form', [
                 h('div', [
-                    h('label', { for: 'default-limit' }, 'default limit'), // XXX Messages.admin_defaultLimitMB is empty
+                    h('label', { for: 'default-limit' }, Messages.admin_defaultLimitMB),
                     newLimit
                 ]),
                 h('nav', [set])
