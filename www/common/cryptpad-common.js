@@ -649,15 +649,23 @@ define([
 
         }).nThen(function (waitFor) {
             // If it's not in the cache or it's not a blob, try to get the value from the server
-            postMessage("GET_FILE_SIZE", {channel:channel}, waitFor(function (obj) {
-                if (obj && obj.error) {
-                    // If disconnected, try to get the value from the channel cache (next nThen)
-                    error = obj.error;
-                    return;
-                }
-                waitFor.abort();
-                cb(undefined, obj.size);
-            }));
+            var getSize = () => {
+                postMessage("GET_FILE_SIZE", {channel:channel}, waitFor(function (obj) {
+                    if (obj && obj.error === "ANON_RPC_NOT_READY") { return void setTimeout(waitFor(getSize), 100); }
+
+                    if (obj && obj.error && obj.error.code === 'ENOENT' && obj.error.reason) {
+                        waitFor.abort();
+                        cb(obj.error.reason);
+                    } else if (obj && obj.error) {
+                        // If disconnected, try to get the value from the channel cache (next nThen)
+                        error = obj.error;
+                        return;
+                    }
+                    waitFor.abort();
+                    cb(undefined, obj.size);
+                }));
+            };
+            getSize();
         }).nThen(function () {
             Cache.getChannelCache(channel, function(err, data) {
                 if (err) { return void cb(error); }
@@ -681,7 +689,7 @@ define([
             var error = obj && obj.error;
             if (error) { return void cb(error); }
             if (!obj) { return void cb('ERROR'); }
-            cb (null, obj.isNew);
+            cb (null, obj.isNew, obj.reason);
         }, {timeout: -1});
     };
     // This function is used when we want to open a pad. We first need
@@ -711,7 +719,7 @@ define([
                     } else if (error) {
                         return void cb(error);
                     }
-                    cb(undefined, obj.isNew);
+                    cb(undefined, obj.isNew, obj.reason);
                 }, {timeout: -1});
             };
             isNew();
@@ -1484,7 +1492,8 @@ define([
             // delete the old pad
             common.removeOwnedChannel({
                 channel: oldChannel,
-                teamId: teamId
+                teamId: teamId,
+                reason: 'PASSWORD_CHANGE',
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
@@ -1620,7 +1629,8 @@ define([
             // delete the old pad
             common.removeOwnedChannel({
                 channel: oldChannel,
-                teamId: teamId
+                teamId: teamId,
+                reason: 'PASSWORD_CHANGE'
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();

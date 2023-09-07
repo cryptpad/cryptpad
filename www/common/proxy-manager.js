@@ -71,7 +71,7 @@ define([
     };
 
     // Password may have changed
-    var deprecateProxy = function (Env, id, channel) {
+    var deprecateProxy = function (Env, id, channel, reason) {
         if (Env.folders[id] && Env.folders[id].deleting) {
             // Folder is being deleted by its owner, don't deprecate it
             return;
@@ -85,11 +85,19 @@ define([
             return void Env.Store.refreshDriveUI();
         }
         if (channel) { Env.unpinPads([channel], function () {}); }
-        Env.user.userObject.deprecateSharedFolder(id);
-        removeProxy(Env, id);
-        if (Env.Store && Env.Store.refreshDriveUI) {
-            Env.Store.refreshDriveUI();
+
+        // If it's explicitely a deletion, no need to deprecate, just delete
+        if (reason && reason !== "PASSWORD_CHANGE") {
+            var temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS]);
+            delete temp[id];
+            if (Env.Store && Env.Store.refreshDriveUI) { Env.Store.refreshDriveUI(); }
+            return;
         }
+
+        // It's explicitely a password change, better message in drive: provide the "reason" to the UI
+        Env.user.userObject.deprecateSharedFolder(id, reason);
+        removeProxy(Env, id);
+        if (Env.Store && Env.Store.refreshDriveUI) { Env.Store.refreshDriveUI(); }
     };
 
     var restrictedProxy = function (Env, id) {
@@ -632,17 +640,19 @@ define([
             if (isNew) {
                 return void cb({ error: 'ENOTFOUND' });
             }
+            var newData = Util.clone(data);
             var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
-            data.password = newPassword;
-            data.channel = secret.channel;
+            newData.password = newPassword;
+            newData.channel = secret.channel;
             if (secret.keys.editKeyStr) {
-                data.href = '/drive/#'+Hash.getEditHashFromKeys(secret);
+                newData.href = '/drive/#'+Hash.getEditHashFromKeys(secret);
             }
-            data.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
+            newData.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
+            delete newData.legacy;
             _addSharedFolder(Env, {
                 path: ['root'],
-                folderData: data,
+                folderData: newData,
             }, function () {
                 delete temp[fId];
                 Env.onSync(cb);

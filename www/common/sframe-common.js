@@ -844,6 +844,13 @@ define([
                 UI.errorLoadingScreen(Messages.restrictedError);
             });
 
+            ctx.sframeChan.on("EV_DELETED_ERROR", function (reason) {
+                funcs.onServerError({
+                    type: 'EDELETED',
+                    message: reason
+                });
+            });
+
             ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
                 UI.errorLoadingScreen(Messages.password_error_seed);
             });

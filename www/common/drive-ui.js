@@ -1152,10 +1152,36 @@ define([
 
         var FILTER_BY = "filterBy";
 
+        var refreshDeprecated = function () {
+            if (!APP.passwordModal) { return; }
+            var deprecated = files.sharedFoldersTemp;
+            if (JSONSortify(deprecated) === APP.deprecatedSF) { return; }
+            APP.deprecatedSF = JSONSortify(deprecated);
+            if (typeof (deprecated) === "object" && Object.keys(deprecated).length) {
+                var nt = nThen;
+                Object.keys(deprecated).forEach(function (fId) {
+                    var data = deprecated[fId];
+                    var sfId = manager.user.userObject.getSFIdFromHref(data.href);
+                    if (folders[fId] || sfId) { // This shared folder is already stored in the drive...
+                        return void manager.delete([['sharedFoldersTemp', fId]], function () { });
+                    }
+                    nt = nt(function (waitFor) {
+                        UI.openCustomModal(APP.passwordModal(fId, data, waitFor()));
+                    }).nThen;
+                });
+                nt(function () {
+                    APP.refresh();
+                });
+            }
+
+        };
         var refresh = APP.refresh = function (cb) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
-            APP.displayDirectory(path, undefined, cb);
+            APP.displayDirectory(path, undefined, () => {
+                refreshDeprecated();
+                if (typeof(cb) === "function") { cb(); }
+            });
         };
 
         // `app`: true (force open wiht the app), false (force open in preview),
@@ -5370,9 +5396,13 @@ define([
             });
         }
         */
-        var nt = nThen;
-        var passwordModal = function (fId, data, cb) {
+        APP.passwordModal = function (fId, data, cb) {
             var content = [];
+
+            var legacy = data.legacy; // XXX in legacy mode, it's either deletion or password change
+            legacy = legacy;
+            // XXX when legacy is false, we know it's a password change
+
             var folderName = '<b>'+ (data.lastTitle || Messages.fm_newFolder) +'</b>';
             content.push(UI.setHTML(h('p'), Messages._getKey('drive_sfPassword', [folderName])));
             var newPassword = UI.passwordInput({
@@ -5425,24 +5455,7 @@ define([
                 onClose: cb
             });
         };
-        onConnectEvt.reg(function () {
-            var deprecated = files.sharedFoldersTemp;
-            if (typeof (deprecated) === "object" && Object.keys(deprecated).length) {
-                Object.keys(deprecated).forEach(function (fId) {
-                    var data = deprecated[fId];
-                    var sfId = manager.user.userObject.getSFIdFromHref(data.href);
-                    if (folders[fId] || sfId) { // This shared folder is already stored in the drive...
-                        return void manager.delete([['sharedFoldersTemp', fId]], function () { });
-                    }
-                    nt = nt(function (waitFor) {
-                        UI.openCustomModal(passwordModal(fId, data, waitFor()));
-                    }).nThen;
-                });
-                nt(function () {
-                    refresh();
-                });
-            }
-        });
+        onConnectEvt.reg(refreshDeprecated);
 
         return {
             refresh: refresh,

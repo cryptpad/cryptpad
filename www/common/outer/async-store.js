@@ -365,10 +365,12 @@ define([
             var channel = data;
             var force = false;
             var teamId;
+            var reason;
             if (data && typeof(data) === "object") {
                 channel = data.channel;
                 force = data.force;
                 teamId = data.teamId;
+                reason = data.reason;
             }
 
             if (channel === store.driveChannel && !force) {
@@ -385,7 +387,7 @@ define([
             s.rpc.removeOwnedChannel(channel, function (err) {
                 if (err) { delete myDeletions[channel]; }
                 cb({error:err});
-            });
+            }, reason);
         };
 
         var arePinsSynced = function (cb) {
@@ -512,11 +514,9 @@ define([
             var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
-                if (response && response.length && typeof(response[0]) === 'boolean') {
-                    if (response[0]) { Cache.clearChannel(channelId); }
-                    return void cb({
-                        isNew: response[0]
-                    });
+                if (response && response.length && typeof(response[0]) === 'object') {
+                    if (response[0].isNew) { Cache.clearChannel(channelId); }
+                    return void cb(response[0]);
                 } else {
                     cb({error: 'INVALID_RESPONSE'});
                 }

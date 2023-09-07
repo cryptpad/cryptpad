@@ -469,12 +469,20 @@ define([
                             // `hasChannelHistory` doesn't work for files (not a channel)
                             // `getFileSize` is not adapted to channels because of metadata
                             Cryptpad.getFileSize(currentPad.href, password, function (e, size) {
+                                if (e && e !== "PASSWORD_CHANGE") {
+                                    return sframeChan.event("EV_DELETED_ERROR", e);
+                                }
                                 next(e, size === 0);
                             });
                             return;
                         }
                         // Not a file, so we can use `hasChannelHistory`
-                        Cryptpad.hasChannelHistory(currentPad.href, password, next);
+                        Cryptpad.hasChannelHistory(currentPad.href, password, (e, isNew, reason) => {
+                            if (isNew && reason && reason !== "PASSWORD_CHANGE") {
+                                return sframeChan.event("EV_DELETED_ERROR", reason);
+                            }
+                            next();
+                        });
                     });
                     sframeChan.event("EV_PAD_PASSWORD", cfg);
                 };
@@ -564,20 +572,32 @@ define([
                         // `hasChannelHistory` doesn't work for files (not a channel)
                         // `getFileSize` is not adapted to channels because of metadata
                         Cryptpad.getFileSize(currentPad.href, password, w(function (e, size) {
-                            if (size !== 0) { return void todo(); }
+                            if (e && e !== "PASSWORD_CHANGE") {
+                                sframeChan.event("EV_DELETED_ERROR", e);
+                                waitFor.abort();
+                                return;
+                            }
+                            if (!e && size !== 0) { return void todo(); }
                             // Wrong password or deleted file?
+                            passwordCfg.legacy = !e; // Legacy means we don't know if it's a deletion or pw change
                             askPassword(true, passwordCfg);
                         }));
                         return;
                     }
                     // Not a file, so we can use `hasChannelHistory`
-                    Cryptpad.hasChannelHistory(currentPad.href, password, w(function(e, isNew) {
+                    Cryptpad.hasChannelHistory(currentPad.href, password, w(function(e, isNew, reason) {
                         if (isNew && expire && expire < (+new Date())) {
                             sframeChan.event("EV_EXPIRED_ERROR");
                             waitFor.abort();
                             return;
                         }
                         if (!e && !isNew) { return void todo(); }
+                        // NOTE: Legacy mode ==> no reason may indicate a password change
+                        if (isNew && reason && reason !== "PASSWORD_CHANGE") {
+                            sframeChan.event("EV_DELETED_ERROR", reason);
+                            waitFor.abort();
+                            return;
+                        }
                         if (parsed.hashData.mode === 'view' && (password || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password
                             // password will never work
@@ -586,6 +606,7 @@ define([
                             return;
                         }
                         // Wrong password or deleted file?
+                        passwordCfg.legacy = !reason; // Legacy means we don't know if it's a deletion or pw change
                         askPassword(true, passwordCfg);
                     }));
                 }).nThen(done);
@@ -1915,6 +1936,8 @@ define([
                             // redirect
                             window.location.href = url;
                             document.location.reload();
+                        // XXX XXX XXX TEST TEST TEST
+                        // XXX XXX XXX TEST TEST TEST
                         });
 
                         return;

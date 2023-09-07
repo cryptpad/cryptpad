@@ -2876,6 +2876,15 @@ define([
                 delete autoStoreModal[priv.channel];
             }
 
+            if (err.message && err.message !== "PASSWORD_CHANGE") {
+                UI.errorLoadingScreen(h('div', [
+                    h('p', Messages.deletedError),
+                    h('p', err.message) // XXX custom message for each reason
+                    // XXX reasons: ARCHIVE_OWNED, INACTIVE, MODERATION_ACCOUNT:{reason}, MODERATION_PAD:{reason}
+                ]), Boolean(err.loaded), Boolean(err.loaded));
+                return;
+            }
+
             if (err.ownDeletion) {
                 if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
                 (cb || function () {})();
@@ -2920,6 +2929,12 @@ define([
     UIElements.displayPasswordPrompt = function (common, cfg, isError) {
         var error;
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
+
+// XXX
+if (cfg.legacy) {
+    // XXX Legacy mode: we don't know if pad destroyed or password changed
+}
+
 
         var info = h('p.cp-password-info', Messages.password_info);
         var info_loaded = setHTML(h('p.cp-password-info'), Messages.errorCopy);

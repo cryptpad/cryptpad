@@ -423,7 +423,7 @@ define([
         };
         if (channel) {
             ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, waitFor(function (e, res) {
-                if (res && res.length && typeof(res[0]) === 'boolean' && res[0]) {
+                if (res && res.length && typeof(res[0]) === 'object' && res[0].isNew) {
                     // Channel is empty: remove this team
                     close();
                 }
@@ -431,7 +431,7 @@ define([
         }
         if (roster) {
             ctx.store.anon_rpc.send("IS_NEW_CHANNEL", roster, waitFor(function (e, res) {
-                if (res && res.length && typeof(res[0]) === 'boolean' && res[0]) {
+                if (res && res.length && typeof(res[0]) === 'object' && res[0].isNew) {
                     // Channel is empty: remove this team
                     close();
                 }
