@@ -3122,7 +3122,6 @@ Example
         var label = h('label', { for: 'duration-input' }, Messages.ui_ms);
 
         $div.append(h('div', [
-            // h('span.cp-admin-bytes-written-duration', Messages.ui_ms),
             h('div.cp-admin-setlimit-form', [
                 label,
                 newDuration,
