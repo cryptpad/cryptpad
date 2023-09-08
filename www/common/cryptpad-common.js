@@ -476,6 +476,7 @@ define([
     common.drive.onLog = Util.mkEvent();
     common.drive.onChange = Util.mkEvent();
     common.drive.onRemove = Util.mkEvent();
+    common.drive.onDeleted = Util.mkEvent();
     // Profile
     common.getProfileEditUrl = function (cb) {
         postMessage("GET", { key: ['profile', 'edit'] }, function (obj) {
@@ -2064,6 +2065,7 @@ define([
             if (!blockHash) { return; }
             console.log('removing old login block');
             Block.removeLoginBlock({
+                reason: 'PASSWORD_CHANGE',
                 auth: auth,
                 blockKeys: oldBlockKeys,
             }, waitFor(function (err) {
@@ -2075,7 +2077,8 @@ define([
             common.removeOwnedChannel({
                 channel: secret.channel,
                 teamId: null,
-                force: true
+                force: true,
+                reason: 'PASSWORD_CHANGE'
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     // Deal with it as if it was not owned
@@ -2352,6 +2355,7 @@ define([
         DRIVE_LOG: common.drive.onLog.fire,
         DRIVE_CHANGE: common.drive.onChange.fire,
         DRIVE_REMOVE: common.drive.onRemove.fire,
+        DRIVE_DELETED: common.drive.onDeleted.fire,
         // Account deletion
         DELETE_ACCOUNT: common.startAccountDeletion,
         // Loading
@@ -2467,6 +2471,13 @@ define([
                         return void LocalStore.logout(function () {
                             requestLogin();
                         });
+                    }
+
+                    if (err === 404) {
+                        // Not found: account deleted
+                        waitFor.abort();
+                        f(response || err);
+                        return;
                     }
 
                     if (err) {

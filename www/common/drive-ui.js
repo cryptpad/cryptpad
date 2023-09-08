@@ -5396,15 +5396,14 @@ define([
             });
         }
         */
+        Messages.dph_sf_pw = "Your shared folder {0} is no longer available, it is now protected with a new password. You can remove this folder from your CryptDrive or recover access using the new password."; // XXX PLACEHOLDER
         APP.passwordModal = function (fId, data, cb) {
             var content = [];
 
-            var legacy = data.legacy; // XXX in legacy mode, it's either deletion or password change
-            legacy = legacy;
-            // XXX when legacy is false, we know it's a password change
-
-            var folderName = '<b>'+ (data.lastTitle || Messages.fm_newFolder) +'</b>';
-            content.push(UI.setHTML(h('p'), Messages._getKey('drive_sfPassword', [folderName])));
+            var legacy = data.legacy; // Legacy mode: we don't know if the sf has been destroyed or its password has changed
+            var folderName = '<b>'+ (Util.fixHTML(data.lastTitle) || Messages.fm_newFolder) +'</b>';
+            var pwMsg = legacy ? Messages._getKey('drive_sfPassword', [folderName]) : Messages._getKey('dph_sf_pw', [folderName]);
+            content.push(UI.setHTML(h('p'), pwMsg));
             var newPassword = UI.passwordInput({
                 id: 'cp-app-prop-change-password',
                 placeholder: Messages.settings_changePasswordNew,

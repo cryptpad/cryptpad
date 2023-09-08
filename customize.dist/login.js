@@ -10,6 +10,7 @@ define([
     '/common/common-constants.js',
     '/common/common-interface.js',
     '/common/common-feedback.js',
+    '/common/hyperscript.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
@@ -20,7 +21,7 @@ define([
     '/components/tweetnacl/nacl-fast.min.js',
     '/components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
+            Feedback, h, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
     var Exports = {
         Cred: Cred,
         Block: Block,
@@ -208,6 +209,13 @@ define([
                 }, w(function (err, response) {
                     if (err === 401) {
                         return void console.log("Block requires 2FA");
+                    }
+
+                    if (err === 404 && response && response.reason
+                            && response.reason !== 'PASSWORD_CHANGE') {
+                        waitFor.abort();
+                        w.abort();
+                        return void cb('DELETED_USER', response);
                     }
 
                     // Some other error?
@@ -594,6 +602,12 @@ define([
                                         $('#password').focus();
                                     });
                                 });
+                                break;
+                            case 'DELETED_USER':
+                                if (result.reason === 'PASSWORD_CHANGE') {
+                                    // XXX PLACEHOLDER: account password change login page
+                                }
+                                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(result.reason, true));
                                 break;
                             case 'INVAL_PASS':
                                 UI.removeLoadingScreen(function () {

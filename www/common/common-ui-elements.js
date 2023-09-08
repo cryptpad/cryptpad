@@ -2860,6 +2860,7 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var sframeChan = common.getSframeChannel();
         var msg = err.type;
+        var exitable = Boolean(err.loaded);
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
@@ -2876,12 +2877,13 @@ define([
                 delete autoStoreModal[priv.channel];
             }
 
+            if (err.message && err.drive) {
+                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, true));
+                return;
+            }
             if (err.message && err.message !== "PASSWORD_CHANGE") {
-                UI.errorLoadingScreen(h('div', [
-                    h('p', Messages.deletedError),
-                    h('p', err.message) // XXX custom message for each reason
-                    // XXX reasons: ARCHIVE_OWNED, INACTIVE, MODERATION_ACCOUNT:{reason}, MODERATION_PAD:{reason}
-                ]), Boolean(err.loaded), Boolean(err.loaded));
+                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
+                    exitable, exitable);
                 return;
             }
 
@@ -2930,13 +2932,12 @@ define([
         var error;
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
 
-// XXX
-if (cfg.legacy) {
-    // XXX Legacy mode: we don't know if pad destroyed or password changed
-}
-
-
-        var info = h('p.cp-password-info', Messages.password_info);
+        var pwMsg = UI.getDestroyedPlaceholderMessage('PASSWORD_CHANGE', false);
+        if (cfg.legacy) {
+            // Legacy mode: we don't know if the pad has been destroyed or its password has changed
+            pwMsg = Messages.password_info;
+        }
+        var info = h('p.cp-password-info', pwMsg);
         var info_loaded = setHTML(h('p.cp-password-info'), Messages.errorCopy);
 
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});

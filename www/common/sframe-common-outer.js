@@ -268,7 +268,15 @@ define([
                 // NOTE: Driveless mode should only work for existing pads, but we can't check that
                 // before creating the worker because we need the anon RPC to do so.
                 // We're only going to check if a hash exists in the URL or not.
-                Cryptpad.ready(waitFor(), {
+                Cryptpad.ready(waitFor((err) => {
+                    if (err) {
+                        waitFor.abort();
+                        if (err.code === 404) {
+                            return void sframeChan.event("EV_DRIVE_DELETED", err.reason);
+                        }
+                        sframeChan.event('EV_LOADING_ERROR', 'ACCOUNT');
+                    }
+                }), {
                     noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
                     neverDrive: cfg.integration,
                     driveEvents: cfg.driveEvents,
@@ -799,6 +807,9 @@ define([
 
             //Test.registerOuter(sframeChan);
 
+            Cryptpad.drive.onDeleted.reg(function (message) {
+                sframeChan.event("EV_DRIVE_DELETED", message);
+            });
             Cryptpad.onNewVersionReconnect.reg(function () {
                 sframeChan.event("EV_NEW_VERSION");
             });

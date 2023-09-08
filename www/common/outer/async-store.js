@@ -887,6 +887,7 @@ define([
                     }).nThen(function (waitFor) {
                         if (!blockKeys) { return; }
                         Block.removeLoginBlock({
+                            reason: 'ARCHIVE_OWNED',
                             auth: auth,
                             blockKeys: blockKeys,
                         }, waitFor(function (err) {
@@ -3048,6 +3049,16 @@ define([
                     rt.network.disconnect();
                     rt.realtime.abort();
                     sendDriveEvent('NETWORK_DISCONNECT');
+                }
+            })
+            .on('error', function (info) {
+                if (info.error && info.error === 'EDELETED') {
+                    if (info.message === 'PASSWORD_CHANGE') {
+                        // XXX PLACEHOLDER ?? currently redirected to login page
+                    }
+                    // XXX PLACEHOLDER - logout instead of clear cache?
+                    broadcast([], "DRIVE_DELETED", info.message);
+                    Cache.clear();
                 }
             });
 
