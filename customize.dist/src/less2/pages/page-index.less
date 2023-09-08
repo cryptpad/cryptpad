@@ -38,8 +38,7 @@
         font-weight: 500;
         color: @cryptpad_color_brand;
         font-size: 2.8rem;
-        white-space:pre;
-        overflow-wrap: break-word;
+        overflow-wrap: anywhere;
         word-wrap: break-word;
         word-break: break-word;
 
@@ -87,8 +86,9 @@
         .cp-instance-links {
             padding: 1.3rem;
             a {
-                margin: 1.3rem;
-                margin-left:auto;
+                display: inline-block;
+                margin: 0.5em;
+                white-space: nowrap;
             }
         }
     }
