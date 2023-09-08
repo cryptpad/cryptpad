@@ -44,6 +44,13 @@
             }
             &.success {
                 background: @cp_alertify-log-bg;
+                @media (max-width: 600px)
+                {
+                    font-size: 1em;
+                    max-height: 95px;
+                    max-width: 100%;
+                }
+
             }
         }
     }
@@ -321,12 +328,11 @@
     }
 
     .alertify-logs {
-
+        max-width: 100%;
         position: fixed;
-        z-index: 100001; // alertify logs (just in front of alertify modals
-
+        z-index: 100001; // alertify logs (just in front of alertify modals)
         &.bottom, &:not(.top) {
-            bottom: 16px;
+            bottom: 5px;
             /* // Bottom left placement. Default. Use for transitions.
             &.left, &:not(.right) {
                 > * {
@@ -356,6 +362,10 @@
                     left: -110%;
                 }
             }
+            @media (max-width: 600px){
+                left: 0px;
+            }
+         
         }
 
         &.right {
