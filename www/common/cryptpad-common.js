@@ -2071,6 +2071,7 @@ define([
                 blockKeys: oldBlockKeys,
             }, waitFor(function (err) {
                 if (err) { return void console.error(err); }
+                common.passwordUpdated = true;
             }));
         }).nThen(function (waitFor) {
             if (!oldIsOwned) { return; }
@@ -2086,9 +2087,7 @@ define([
                     oldIsOwned = false;
                     return;
                 }
-                common.logoutFromAll(waitFor(function () {
-                    common.stopWorker();
-                }));
+                common.stopWorker();
             }));
         }).nThen(function (waitFor) {
             if (oldIsOwned) { return; }
@@ -2101,9 +2100,7 @@ define([
                 if (obj && obj.error) {
                     console.error(obj.error);
                 }
-                common.logoutFromAll(waitFor(function () {
-                    common.stopWorker();
-                }));
+                common.stopWorker();
             }));
         }).nThen(function () {
             // We have the new drive, with the new login block
@@ -2280,6 +2277,14 @@ define([
         cb();
     };
 
+    common.storeLogout = function (data) {
+        if (common.passwordUpdated) { return; }
+        LocalStore.logout(function () {
+            common.stopWorker();
+            common.drive.onDeleted.fire(data.reason);
+        });
+    };
+
     var lastPing = +new Date();
     var onPing = function (data, cb) {
         lastPing = +new Date();
@@ -2359,6 +2364,7 @@ define([
         DRIVE_DELETED: common.drive.onDeleted.fire,
         // Account deletion
         DELETE_ACCOUNT: common.startAccountDeletion,
+        LOGOUT: common.storeLogout,
         // Loading
         LOADING_DRIVE: common.loading.onDriveEvent.fire,
         // AutoStore
@@ -2477,8 +2483,9 @@ define([
                     if (err === 404) {
                         // Not found: account deleted
                         waitFor.abort();
-                        f(response || err);
-                        return;
+                        return LocalStore.logout(function () {
+                            f(response || err);
+                        });
                     }
 
                     if (err) {
@@ -2818,6 +2825,9 @@ define([
                     LocalStore.loginReload();
                 } else if (o && !n) {
                     LocalStore.logout();
+                } else if (o && n && o !== n) {
+                    common.passwordUpdated = true;
+                    window.location.reload();
                 }
             });
             LocalStore.onLogout(function () {

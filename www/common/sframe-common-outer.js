@@ -272,6 +272,11 @@ define([
                     if (err) {
                         waitFor.abort();
                         if (err.code === 404) {
+                            sframeChan.on('EV_SET_LOGIN_REDIRECT', function (page) {
+                                var href = Utils.Hash.hashToHref('', page);
+                                var url = Utils.Hash.getNewPadURL(href, { href: currentPad.href });
+                                window.location.href = url;
+                            });
                             return void sframeChan.event("EV_DRIVE_DELETED", err.reason);
                         }
                         sframeChan.event('EV_LOADING_ERROR', 'ACCOUNT');

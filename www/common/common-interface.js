@@ -1042,9 +1042,12 @@ define([
             window.parent.location = href;
         });
         if (exitable) {
+            // XXX if true or function, ALSO add a button to leave
             $(window).focus();
             $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
                 if (e.which === 27) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     $loading.hide();
                     $('html').toggleClass('cp-loading-noscroll', false);
                     if (typeof(exitable) === "function") { exitable(); }

@@ -247,7 +247,7 @@ define([
             list.push(userChannel);
 
             if (store.data && store.data.blockId) {
-                //list.push(`${store.data.blockId}#block`); // XXX 5.5.0?
+                list.push(`${store.data.blockId}#block`); // XXX 5.5.0?
             }
 
             list.sort();
@@ -3053,12 +3053,9 @@ define([
             })
             .on('error', function (info) {
                 if (info.error && info.error === 'EDELETED') {
-                    if (info.message === 'PASSWORD_CHANGE') {
-                        // XXX PLACEHOLDER ?? currently redirected to login page
-                    }
-                    // XXX PLACEHOLDER - logout instead of clear cache?
-                    broadcast([], "DRIVE_DELETED", info.message);
-                    Cache.clear();
+                    broadcast([], "LOGOUT", {
+                        reason: info.message
+                    });
                 }
             });
 

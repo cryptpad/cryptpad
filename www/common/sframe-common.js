@@ -433,7 +433,7 @@ define([
     };
 
     funcs.setLoginRedirect = function (page) {
-        ctx.sframeChan.query('EV_SET_LOGIN_REDIRECT', page);
+        ctx.sframeChan.event('EV_SET_LOGIN_REDIRECT', page);
     };
 
     funcs.isPresentUrl = function (cb) {

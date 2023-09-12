@@ -2878,8 +2878,14 @@ define([
             }
 
             if (err.message && err.drive) {
-                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, true));
-                return;
+                let msg = UI.getDestroyedPlaceholder(err.message, true);
+                return UI.errorLoadingScreen(msg, false, () => {
+                    // When closing error screen
+                    if (err.message === 'PASSWORD_CHANGE') {
+                        return common.setLoginRedirect('login');
+                    }
+                    return common.setLoginRedirect('');
+                });
             }
             if (err.message && err.message !== "PASSWORD_CHANGE") {
                 UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
