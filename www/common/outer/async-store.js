@@ -639,6 +639,7 @@ define([
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
+            return metadata;
         };
 
         Store.onMaintenanceUpdate = function (uid) {
@@ -2726,6 +2727,7 @@ define([
                 loadSharedFolder: loadSharedFolder,
                 settings: proxy.settings,
                 removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
+                store: store,
                 Store: Store
             }, {
                 outer: true,

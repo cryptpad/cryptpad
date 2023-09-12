@@ -70,6 +70,30 @@ define([
         delete Env.folders[id];
     };
 
+    var sendNotification = (Env, sfId, title) => {
+        var mailbox = Env.store.mailbox;
+        if (!mailbox) { return; }
+        var team = Env.cfg.teamId;
+        var box;
+        if (team) {
+            let teams = Env.store.modules['team'].getTeamsData();
+            box = teams[team];
+        } else {
+            let md = Env.Store.getMetadata(null, null, () => {});
+            box = md.user;
+        }
+        mailbox.sendTo('SF_DELETED', {
+            sfId: sfId,
+            team: team,
+            title: title
+        }, {
+            curvePublic: box.curvePublic,
+            channel: box.notifications
+        }, (err) => {
+                console.error(err);
+        });
+    };
+
     // Password may have changed
     var deprecateProxy = function (Env, id, channel, reason) {
         if (Env.folders[id] && Env.folders[id].deleting) {
@@ -88,8 +112,12 @@ define([
 
         // If it's explicitely a deletion, no need to deprecate, just delete
         if (reason && reason !== "PASSWORD_CHANGE") {
-            var temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS]);
+            let temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS]);
+            let title = temp[id] && temp[id].lastTitle;
+            if (title) { sendNotification(Env, id, title); }
+
             delete temp[id];
+
             if (Env.Store && Env.Store.refreshDriveUI) { Env.Store.refreshDriveUI(); }
             return;
         }
@@ -1317,6 +1345,7 @@ define([
             unpinPads: data.unpin,
             onSync: data.onSync,
             Store: data.Store,
+            store: data.store,
             removeOwnedChannel: data.removeOwnedChannel,
             loadSharedFolder: data.loadSharedFolder,
             cfg: uoConfig,

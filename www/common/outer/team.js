@@ -319,8 +319,10 @@ define([
                 }
                 ctx.Store.removeOwnedChannel('', data, cb);
             },
-            Store: ctx.Store
+            Store: ctx.Store,
+            store: ctx.store
         }, {
+            teamId: team.id,
             outer: true,
             edPublic: keys.drive.edPublic,
             loggedIn: true,
