@@ -133,7 +133,21 @@ define([
         }
 
         // instance title
-        var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
+
+        var instanceTitleText = Pages.Instance.name;
+        var instanceTitle;
+        if (window.innerWidth <= 768) { // Adjust the screen width breakpoint as needed
+            var words = instanceTitleText.split(/(\.|:|\/|-| )/); // Split on ., :, or /
+            var elements = words.map(function (word) {
+                if (word === '.' || word === ':' || word === '/') {
+                    return h('span.separator', word); // Apply a class to separators for styling
+                }
+                return h('span', word);
+            });
+            instanceTitle = h('h1.cp-instance-title', elements);
+        } else {
+            instanceTitle = h('h1.cp-instance-title', instanceTitleText);
+        }
 
         // instance location
         var locationBlock;

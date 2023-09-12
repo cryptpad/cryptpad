@@ -38,10 +38,14 @@
         font-weight: 500;
         color: @cryptpad_color_brand;
         font-size: 2.8rem;
-        overflow-wrap: anywhere;
         word-wrap: break-word;
         word-break: break-word;
+        white-space: pre-line;
 
+        span{
+            display: inline-block;
+            white-space: nowrap;
+        }
     }
 
     .cp-home-hero {
