@@ -1952,8 +1952,9 @@ define([
             console.log("checking if old drive is owned");
             common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
                 if (err || obj.error) { return; }
-                if (obj.owners && Array.isArray(obj.owners) &&
-                    obj.owners.indexOf(edPublic) !== -1) {
+                var md = obj[0];
+                if (md && md.owners && Array.isArray(md.owners) &&
+                    md.owners.indexOf(edPublic) !== -1) {
                     oldIsOwned = true;
                 }
             }));
