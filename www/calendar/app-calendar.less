@@ -530,6 +530,14 @@
                 }
                 .cp-dropdown-container {
                     position: initial;
+
+                    .cp-dropdown-content{
+                        @media screen and (max-width: 600px)
+                        {
+                            left: 50%;
+                            min-width: 45%;
+                        }
+                    }
                 }
                 button.cp-calendar-actions {
                     background-color: transparent;
