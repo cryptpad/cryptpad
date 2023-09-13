@@ -894,10 +894,15 @@ define([
 
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 var msg = err;
-                if (err === 'DELETED') {
+                if (err === 'DELETED' || (err && err.type === 'EDELETED')) {
                     // XXX You can still use the current version in read-only mode by pressing Esc.
                     // what if they don't have a keyboard (ie. mobile)
-                    msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
+                    if (err.type && err.message) {
+                        msg = UI.getDestroyedPlaceholderMessage(err.message, false, true);
+                    } else {
+                        msg = Messages.deletedError;
+                    }
+                    msg += '<br>' + Messages.errorRedirectToHome;
                 } else if (err === "INVALID_HASH") {
                     msg = Messages.invalidHashError;
                 } else if (err === 'ACCOUNT') { // block 404 but no placeholder

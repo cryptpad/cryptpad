@@ -1048,9 +1048,11 @@ define([
                 if (e.which === 27) {
                     e.preventDefault();
                     e.stopPropagation();
+                    // Function: call the function (should be a redirect)
+                    if (typeof(exitable) === "function") { return void exitable(); }
+                    // Otherwise remove the loading screen
                     $loading.hide();
                     $('html').toggleClass('cp-loading-noscroll', false);
-                    if (typeof(exitable) === "function") { exitable(); }
                 }
             });
         }
@@ -1549,24 +1551,41 @@ define([
 
     // XXX
     Messages.dph_reason = "Reason: {0}";
+
+    Messages.dph_default = "This content is no longer available"; // default key when custom message not found
+
     Messages.dph_account_destroyed = "This account has been deleted by its owner";
     Messages.dph_account_inactive = "This account has been deleted for inactivity";
     Messages.dph_account_moderated = "This account has been suspended by the moderation team";
     Messages.dph_account_pw = "This account's password has been changed";
+
     Messages.dph_pad_destroyed = "This document has been destroyed by its owner";
     Messages.dph_pad_inactive = "This document has been deleted for inactivity";
     Messages.dph_pad_moderated = "This document has been deleted by the moderation team";
-    Messages.dph_pad_moderated_account = "This document has deleted with its owner's account"; // Keep this key ???
+    Messages.dph_pad_moderated_account = "This document has been deleted with its owner's account"; // Keep this key ???
     Messages.dph_pad_pw = "The document you are trying to open is protected with a new password. Enter the correct password to access the content.";
 
+    Messages.dph_tmp_destroyed = "This template has been destroyed by its owner";
+    Messages.dph_tmp_moderated = "This template has been deleted by the moderation team";
+    Messages.dph_tmp_moderated_account = "This template has been deleted with its owner's account"; // Keep this key ???
+    Messages.dph_tmp_pw = "This template is protected with a new password. Open it from your drive to enter its new password.";
 
-    UI.getDestroyedPlaceholderMessage = (code, isAccount) => {
+
+
+
+    UI.getDestroyedPlaceholderMessage = (code, isAccount, isTemplate) => {
         var account = {
             ARCHIVE_OWNED: Messages.dph_account_destroyed,
             INACTIVE: Messages.dph_account_inactive,
             MODERATION_ACCOUNT: Messages.dph_account_moderated,
             MODERATION_BLOCK: Messages.dph_account_moderated,
             PASSWORD_CHANGE: Messages.dph_account_pw,
+        };
+        var template = {
+            ARCHIVE_OWNED: Messages.dph_tmp_destroyed,
+            MODERATION_PAD: Messages.dph_tmp_moderated,
+            MODERATION_ACCOUNT: Messages.dph_tmp_moderated_account,
+            PASSWORD_CHANGE: Messages.dph_tmp_pw
         };
         var pad = {
             ARCHIVE_OWNED: Messages.dph_pad_destroyed,
@@ -1576,7 +1595,14 @@ define([
             MODERATION_ACCOUNT: Messages.dph_pad_moderated_account,
             PASSWORD_CHANGE: Messages.dph_pad_pw
         };
-        return isAccount ? account[code] : pad[code];
+        var msg = pad[code];
+        if (isAccount) {
+            msg = account[code];
+        } else if (isTemplate) {
+            msg = template[code];
+        }
+        if (!msg) { msg = Messages.dph_default; }
+        return msg;
     };
     UI.getDestroyedPlaceholder = function (reason, isAccount) {
         if (typeof(reason) !== "string") { return; }

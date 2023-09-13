@@ -961,9 +961,9 @@ define([
                 optsPut.accessKeys = keys;
             }));
         }).nThen(function () {
-            Crypt.get(parsed.hash, function (err, val) {
+            Crypt.get(parsed.hash, function (err, val, errData) {
                 if (err) {
-                    return void cb(err);
+                    return void cb(err, errData);
                 }
                 if (!val) {
                     return void cb('ENOENT');
@@ -1005,10 +1005,10 @@ define([
                         optsGet.accessKeys = keys;
                     }));
                 }).nThen(function () {
-                    Crypt.get(parsed.hash, function (err, _val) {
+                    Crypt.get(parsed.hash, function (err, _val, errData) {
                         if (err) {
                             _waitFor.abort();
-                            return void cb(err);
+                            return void cb(err, errData);
                         }
                         try {
                             val = JSON.parse(_val);

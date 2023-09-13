@@ -2264,13 +2264,13 @@ define([
                         // server
                         Cryptpad.useTemplate({
                             href: data.template
-                        }, Cryptget, function (err) {
+                        }, Cryptget, function (err, errData) {
                             if (err) {
                                 // TODO: better messages in case of expired, deleted, etc.?
                                 if (err === 'ERESTRICTED') {
                                     sframeChan.event('EV_RESTRICTED_ERROR');
                                 } else {
-                                    sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                                    sframeChan.query("EV_LOADING_ERROR", errData || 'DELETED');
                                 }
                                 return;
                             }
@@ -2281,13 +2281,13 @@ define([
                     }
                     // if we open a new code from a file
                     if (Cryptpad.fromFileData && !isOO) {
-                        Cryptpad.useFile(Cryptget, function (err) {
+                        Cryptpad.useFile(Cryptget, function (err, errData) {
                             if (err) {
                                 // TODO: better messages in case of expired, deleted, etc.?
                                 if (err === 'ERESTRICTED') {
                                     sframeChan.event('EV_RESTRICTED_ERROR');
                                 } else {
-                                    sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                                    sframeChan.query("EV_LOADING_ERROR", errData || 'DELETED');
                                 }
                                 return;
                             }

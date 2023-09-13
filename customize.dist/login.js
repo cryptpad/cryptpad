@@ -604,9 +604,6 @@ define([
                                 });
                                 break;
                             case 'DELETED_USER':
-                                if (result.reason === 'PASSWORD_CHANGE') {
-                                    // XXX PLACEHOLDER: account password change login page
-                                }
                                 UI.errorLoadingScreen(UI.getDestroyedPlaceholder(result.reason, true));
                                 break;
                             case 'INVAL_PASS':
