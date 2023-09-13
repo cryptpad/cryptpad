@@ -146,6 +146,7 @@ define([
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
+                '/common/outer/login-block.js',
                 '/common/outer/cache-store.js',
                 '/customize/application_config.js',
                 //'/common/test.js',
@@ -153,7 +154,7 @@ define([
                 'optional!/api/instance'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
-            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject,
+            _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
             _Instance) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -176,6 +177,7 @@ define([
                 Utils.Notify = _Notify;
                 Utils.currentPad = currentPad;
                 Utils.Instance = _Instance;
+                Utils.Block = _Block;
                 AppConfig = _AppConfig;
                 //Test = _Test;
 
@@ -386,9 +388,9 @@ define([
                         Cryptpad.initialPath = newPad.p;
                         if (newPad.pw) {
                             try {
-                                var uHash = Utils.LocalStore.getUserHash();
-                                var uSecret = Utils.Hash.getSecrets('drive', uHash);
-                                var uKey = uSecret.keys.cryptKey;
+                                var uHash = Utils.LocalStore.getBlockHash();
+                                var uSecret = Utils.Block.parseBlockHash(uHash);
+                                var uKey = uSecret.keys.symmetric;
                                 newPadPassword = Crypto.decrypt(newPad.pw, uKey);
                             } catch (e) { console.error(e); }
                         }
@@ -1263,6 +1265,43 @@ define([
                         });
                     });
                 });
+
+                sframeChan.on('Q_PASSWORD_CHECK', function (pw, cb) {
+                    Cryptpad.isNewChannel(currentPad.href, pw, function (e, isNew) {
+                        if (isNew === false) {
+                            nThen(function (w) {
+                                // If the pad is stored, update its data
+                                var _secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, pw);
+                                var chan = _secret.channel;
+                                var editH = Utils.Hash.getEditHashFromKeys(_secret);
+                                var viewH = Utils.Hash.getViewHashFromKeys(_secret);
+                                var href = Utils.Hash.hashToHref(editH, parsed.type);
+                                var roHref = Utils.Hash.hashToHref(viewH, parsed.type);
+                                Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('channel', chan, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());
+                            }).nThen(function () {
+                                // Get redirect URL
+                                var uHash = Utils.LocalStore.getBlockHash();
+                                var uSecret = Utils.Block.parseBlockHash(uHash);
+                                var uKey = uSecret.keys.symmetric;
+                                var url = Utils.Hash.getNewPadURL(currentPad.href, {
+                                    pw: Crypto.encrypt(pw, uKey),
+                                    f: 1
+                                });
+                                // redirect
+                                window.location.href = url;
+                                document.location.reload();
+                            });
+
+                            return;
+                        }
+                        cb({
+                            error: e
+                        });
+                    });
+                });
             };
             addCommonRpc(sframeChan, isSafe);
 
@@ -1922,45 +1961,6 @@ define([
                 if (!Utils.Notify.isSupported()) { return void cb(false); }
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
-                });
-            });
-
-            sframeChan.on('Q_PASSWORD_CHECK', function (pw, cb) {
-                Cryptpad.isNewChannel(currentPad.href, pw, function (e, isNew) {
-                    if (isNew === false) {
-                        nThen(function (w) {
-                            // If the pad is stored, update its data
-                            var _secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, pw);
-                            var chan = _secret.channel;
-                            var editH = Utils.Hash.getEditHashFromKeys(_secret);
-                            var viewH = Utils.Hash.getViewHashFromKeys(_secret);
-                            var href = Utils.Hash.hashToHref(editH, parsed.type);
-                            var roHref = Utils.Hash.hashToHref(viewH, parsed.type);
-                            Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
-                            Cryptpad.setPadAttribute('channel', chan, w(), parsed.getUrl());
-                            Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
-                            Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());
-                        }).nThen(function () {
-                            // Get redirect URL
-                            var uHash = Utils.LocalStore.getUserHash();
-                            var uSecret = Utils.Hash.getSecrets('drive', uHash);
-                            var uKey = uSecret.keys.cryptKey;
-                            var url = Utils.Hash.getNewPadURL(currentPad.href, {
-                                pw: Crypto.encrypt(pw, uKey),
-                                f: 1
-                            });
-                            // redirect
-                            window.location.href = url;
-                            document.location.reload();
-                        // XXX XXX XXX TEST TEST TEST
-                        // XXX XXX XXX TEST TEST TEST
-                        });
-
-                        return;
-                    }
-                    cb({
-                        error: e
-                    });
                 });
             });
 

@@ -982,11 +982,17 @@ define([
 
                             if (data.warning) {
                                 return void UI.alert(Messages.properties_passwordWarning, function () {
+                                    if (isNotStored) {
+                                        return sframeChan.query('Q_PASSWORD_CHECK', newPass, () => { common.gotoURL(_href);  });
+                                    }
                                     common.gotoURL(_href);
                                 }, {force: true});
                             }
                             return void UI.alert(UIElements.fixInlineBRs(Messages.properties_passwordSuccess), function () {
                                 if (!isSharedFolder) {
+                                    if (isNotStored) {
+                                        return sframeChan.query('Q_PASSWORD_CHECK', newPass, () => { common.gotoURL(_href);  });
+                                    }
                                     common.gotoURL(_href);
                                 }
                             });
