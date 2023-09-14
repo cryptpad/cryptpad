@@ -3452,7 +3452,7 @@ define([
 
         // Create the ghost icon to add pads/folders
         var createNewPadIcons = function ($block, isInRoot) {
-            var $container = $('<div>');
+            var $container = $('<ul>');
             getNewPadOptions(isInRoot).forEach(function (obj) {
                 if (obj.separator) { return; }
 
