@@ -2783,7 +2783,7 @@ define([
             var content = h('div', [
                 h('h4', Messages.sharedFolders_create),
                 h('label', {for: 'cp-app-drive-sf-name'}, Messages.sharedFolders_create_name),
-                h('input#cp-app-drive-sf-name', {type: 'text', placeholder: Messages.fm_newFolder}),
+                h('input#cp-app-drive-sf-name', {type: 'text', placeholder: Messages.fm_newFolder,tabindex:'1'}),
                 h('label', {for: 'cp-app-drive-sf-password'}, Messages.fm_shareFolderPassword),
                 UI.passwordInput({id: 'cp-app-drive-sf-password'}),
                 h('span', {
@@ -2853,9 +2853,9 @@ define([
             ]);
             var content = h('p', [
                 h('label', {for: 'cp-app-drive-link-name'}, Messages.fm_link_name),
-                name = h('input#cp-app-drive-link-name', { autocomplete: 'off', placeholder: Messages.fm_link_name_placeholder }),
+                name = h('input#cp-app-drive-link-name', { autocomplete: 'off', placeholder: Messages.fm_link_name_placeholder, tabindex:'1'}),
                 h('label', {for: 'cp-app-drive-link-url'}, Messages.fm_link_url),
-                url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url }),
+                url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url,tabindex:'1'}),
                 warning,
             ]);
 
@@ -2928,29 +2928,57 @@ define([
                     refresh();
                 };
                 $block.find('a.cp-app-drive-new-folder, li.cp-app-drive-new-folder')
-                    .click(function () {
-                    manager.addFolder(currentPath, null, onCreated);
-                });
+                    .on('click keypress', function (event) {
+                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                            event.preventDefault();
+                            manager.addFolder(currentPath, null, onCreated);
+                            $block.hide();
+                        }
+                    });
                 if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
                     $block.find('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder')
-                        .click(function () {
-                        addSharedFolderModal(function (obj) {
-                            if (!obj) { return; }
-                            manager.addSharedFolder(currentPath, obj, refresh);
+                        .on('click keypress', function (event) {
+                            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                                event.preventDefault();
+                                addSharedFolderModal(function (obj) {
+                                    if (!obj) { return; }
+                                    manager.addSharedFolder(currentPath, obj, refresh);
+                                });
+                            }
                         });
-                    });
                 }
-                $block.find('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload').click(showUploadFilesModal);
-                $block.find('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload').click(showUploadFolderModal);
-                $block.find('a.cp-app-drive-new-link, li.cp-app-drive-new-link').click(showLinkModal);
+                $block.find('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload')
+                    .on('click keypress', function (event) {
+                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                            event.preventDefault();
+                            showUploadFilesModal();
+                        }
+                    });
+                $block.find('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload')
+                    .on('click keypress', function (event) {
+                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                            event.preventDefault();
+                            showUploadFolderModal();
+                        }
+                    });
+                $block.find('a.cp-app-drive-new-link, li.cp-app-drive-new-link')
+                    .on('click keypress', function (event) {
+                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                            event.preventDefault();
+                            showLinkModal();
+                        }
+                    });
             }
             $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
-                .on('click auxclick', function (e) {
-                e.preventDefault();
-                var type = $(this).attr('data-type') || 'pad';
-                var path = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                openIn(type, path, APP.team);
-            });
+                .on('click auxclick keypress', function (event) {
+                    if (event.type === 'click' || event.type === 'auxclick' || (event.type === 'keypress' && event.which === 13))
+                    {
+                        event.preventDefault();
+                        var type = $(this).attr('data-type') || 'pad';
+                        var path = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
+                        openIn(type, path, APP.team);
+                    }
+                });
         };
         var getNewPadOptions = function (isInRoot) {
             var options = [];
@@ -3451,22 +3479,23 @@ define([
         };
 
         // Create the ghost icon to add pads/folders
-        var createNewPadIcons = function ($block, isInRoot) {
-            var $container = $('<ul>');
-            getNewPadOptions(isInRoot).forEach(function (obj) {
-                if (obj.separator) { return; }
+            var createNewPadIcons = function ($block, isInRoot) {
+                var $container = $('<ul>');
+                getNewPadOptions(isInRoot).forEach(function (obj) {
+                    if (obj.separator) { return; }
 
-                var $element = $('<li>', {
-                    'class': obj.class + ' cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
-                }).prepend(obj.icon).appendTo($container);
-                $element.append($('<span>', { 'class': 'cp-app-drive-new-name' })
-                    .text(obj.name));
+                    var $element = $('<li>', {
+                        'class': obj.class + ' cp-app-drive-element-row ' +
+                                 'cp-app-drive-element-grid',
+                        'tabindex': 1
+                    }).prepend(obj.icon).appendTo($container);
+                    $element.append($('<span>', { 'class': 'cp-app-drive-new-name' })
+                        .text(obj.name));
 
-                if (obj.type) {
-                    $element.attr('data-type', obj.type);
-                }
-            });
+                    if (obj.type) {
+                        $element.attr('data-type', obj.type);
+                    }
+                });
 
             $container.find('.cp-app-drive-element-row').click(function () {
                 $block.hide();

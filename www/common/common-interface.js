@@ -568,9 +568,7 @@ define([
         if (!$blockContainer || !$blockContainer.length) {
             var id = '';
             if (cfg.id) { id = '#'+cfg.id; }
-            $blockContainer = $(h('div.cp-modal-container'+id, {
-                tabindex: 1
-            }));
+            $blockContainer = $(h('div.cp-modal-container'+id, {}));
         }
         var deleted = false;
         var hide = function () {
@@ -873,6 +871,7 @@ define([
         var attributes = merge({
             type: 'password',
             autocomplete: 'new-password', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
+            tabindex: '1',
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
