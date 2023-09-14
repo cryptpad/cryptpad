@@ -40,7 +40,7 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "saferphore",
     "nthen",
     "netflux-websocket",
-    "drawio",
+    "drawio-cp",
     "pako",
     "x2js"
 ].forEach(l => {
