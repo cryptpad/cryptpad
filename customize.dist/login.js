@@ -122,6 +122,9 @@ define([
         .on('ready', function () {
             setTimeout(function () { cb(void 0, rt); });
         })
+        .on('error', function (info) {
+            cb(info.type, {reason: info.message});
+        })
         .on('disconnect', function (info) {
             cb('E_DISCONNECT', info);
         });
@@ -211,10 +214,13 @@ define([
                         return void console.log("Block requires 2FA");
                     }
 
-                    if (err === 404 && response && response.reason
-                            && response.reason !== 'PASSWORD_CHANGE') {
+                    if (err === 404 && response && response.reason) {
                         waitFor.abort();
                         w.abort();
+                        /*
+                        // the following block prevent users from re-using an old password
+                        if (isRegister) { return void cb('HAS_PLACEHOLDER'); }
+                        */
                         return void cb('DELETED_USER', response);
                     }
 
@@ -299,6 +305,7 @@ define([
             loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) {
                     waitFor.abort();
+                    if (err === 'EDELETED') { return void cb('DELETED_USER', rt); }
                     return void cb(err);
                 }
 
@@ -396,6 +403,7 @@ define([
             loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) {
                     waitFor.abort();
+                    if (err === 'EDELETED') { return void cb('DELETED_USER', rt); }
                     return void cb('MODERN_REGISTRATION_INIT');
                 }
 
@@ -603,8 +611,16 @@ define([
                                     });
                                 });
                                 break;
+/*
+                            case 'HAS_PLACEHOLDER':
+                                UI.errorLoadingScreen('UNAVAILABLE', true, true);
+                                break;
+*/
                             case 'DELETED_USER':
-                                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(result.reason, true));
+                                UI.errorLoadingScreen(
+                                    UI.getDestroyedPlaceholder(result.reason, true), true, () => {
+                                        window.location.reload();
+                                    });
                                 break;
                             case 'INVAL_PASS':
                                 UI.removeLoadingScreen(function () {

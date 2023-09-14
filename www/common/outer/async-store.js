@@ -247,7 +247,7 @@ define([
             list.push(userChannel);
 
             if (store.data && store.data.blockId) {
-                list.push(`${store.data.blockId}#block`); // XXX 5.5.0?
+                //list.push(`${store.data.blockId}#block`); // XXX 5.5.0?
             }
 
             list.sort();

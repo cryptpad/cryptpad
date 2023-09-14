@@ -1970,6 +1970,42 @@ define([
                 }
             }));
         }).nThen(function (waitFor) {
+            var blockUrl = Block.getBlockUrl(blockKeys);
+            // Check whether there is a block at that new location
+            Util.getBlock(blockUrl, {}, waitFor(function (err, response) {
+                // If there is no block or the block is invalid, continue.
+                // error 401 means protected block
+
+                /*
+                // the following block prevent users from re-using an old password
+                if (err === 404 && response && response.reason) {
+                    waitFor.abort();
+                    return void cb({
+                        error: 'EDELELED',
+                        reason: response.reason
+                    });
+                }
+                */
+
+                if (err && err !== 401) {
+                    console.log("no block found");
+                    return;
+                }
+
+                response.arrayBuffer().then(waitFor(arraybuffer => {
+                    var block = new Uint8Array(arraybuffer);
+                    var decryptedBlock = Block.decrypt(block, blockKeys);
+                    if (!decryptedBlock) {
+                        console.error("Found a login block but failed to decrypt");
+                        return;
+                    }
+
+                    // If there is already a valid block, abort! We risk overriding another user's data
+                    waitFor.abort();
+                    cb({ error: 'EEXISTS' });
+                }));
+            }));
+        }).nThen(function (waitFor) {
             // Create a new user hash
             // Get the current content, store it in the new user file
             // and make sure the new user drive is owned
@@ -1996,27 +2032,6 @@ define([
                         return void cb({ error: err });
                     }
                 }), optsPut);
-            }));
-        }).nThen(function (waitFor) {
-            var blockUrl = Block.getBlockUrl(blockKeys);
-            // Check whether there is a block at that new location
-            Util.fetch(blockUrl, waitFor(function (err, block) {
-                // If there is no block or the block is invalid, continue.
-                // error 401 means protected block
-                if (err && err !== 401) {
-                    console.log("no block found");
-                    return;
-                }
-
-                var decryptedBlock = Block.decrypt(block, blockKeys);
-                if (!decryptedBlock) {
-                    console.error("Found a login block but failed to decrypt");
-                    return;
-                }
-
-                // If there is already a valid block, abort! We risk overriding another user's data
-                waitFor.abort();
-                cb({ error: 'EEXISTS' });
             }));
         }).nThen(function (waitFor) {
             // Write the new login block
