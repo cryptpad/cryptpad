@@ -3064,7 +3064,7 @@ define([
                 if (obj.separator) { return { tag: 'hr' }; }
                 var newObj = {
                     tag: 'a',
-                    attributes: { 'class': obj.class },
+                    attributes: { 'class': obj.class, href:'#' },
                     content: [ obj.icon, obj.name ]
                 };
                 if (obj.type) {
