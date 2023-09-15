@@ -3140,7 +3140,8 @@ define([
                     tag: 'a',
                     attributes: {
                         'class': 'cp-app-drive-filter-doc',
-                        'data-type': 'link'
+                        'data-type': 'link',
+                        'href': '#'
                     },
                     content: [
                         getIcon('link')[0],
