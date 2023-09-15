@@ -3103,6 +3103,7 @@ define([
                     tag: 'a',
                     attributes: {
                         'class': 'cp-app-drive-rm-filter',
+                        'href': '#'
                     },
                     content: [
                         h('i.fa.fa-times'),
