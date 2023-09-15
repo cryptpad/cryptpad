@@ -1509,7 +1509,7 @@ define([
         }
 
         // Menu
-        var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
+        var $innerblock = $('<ul>', {'class': 'cp-dropdown-content'});
         if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
 
         var hide = function () {
@@ -1605,7 +1605,12 @@ define([
 
             var $c = $container.closest('.cp-toolbar-drawer-content');
             $c.removeClass('cp-dropdown-visible');
-            if (!state) { $c.addClass('cp-dropdown-visible'); }
+            if (!state) {
+                $c.addClass('cp-dropdown-visible');
+                $container.attr('aria-expanded', 'true');
+            } else {
+                $container.attr('aria-expanded', 'false');
+            }
 
             try {
                 $('iframe').each(function (idx, ifrw) {
