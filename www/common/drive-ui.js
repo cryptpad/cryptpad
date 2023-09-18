@@ -4345,9 +4345,12 @@ define([
             $icon.css("color", isSharedFolder ? getFolderColor(path.slice(0, -1)) : getFolderColor(path));
             var $collapse;
             if (collapsable) {
-                $collapse = $expandIcon.clone();
+                $collapse = $expandIcon.clone().attr('tabindex', 0);;
             }
-            var $elementRow = $('<span>', {'class': 'cp-app-drive-element-row'}).append($collapse).append($icon).append($name).click(function (e) {
+            var $elementRow = $('<span>', {'class': 'cp-app-drive-element-row', 'tabindex': 0}).append($collapse).append($icon).append($name).on('click keypress', function (e) {
+                if (e.type === 'keypress' && e.which !== 13) {
+                    return;
+                }
                 e.stopPropagation();
                 if (isSharedFolder && !manager.folders[isSharedFolder]) {
                     UI.warn(Messages.fm_deletedFolder);
@@ -4370,7 +4373,10 @@ define([
             if (draggable) { $elementRow.attr('draggable', true); }
             if (collapsable) {
                 $element.addClass('cp-app-drive-element-collapsed');
-                $collapse.click(function(e) {
+                $collapse.on('click keypress', function(e) {
+                    if (e.type === 'keypress' && e.which !== 13) {
+                        return; // Ignore keypress events that are not Enter (key code 13)
+                    }
                     e.stopPropagation();
                     if ($element.hasClass('cp-app-drive-element-collapsed')) {
                         // It is closed, open it
