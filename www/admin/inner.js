@@ -2813,8 +2813,8 @@ Example
             }
 
             // Start and end date pickers
-            var start = h('input', { id: 'start-input' });
-            var end = h('input', { id: 'end-input' });
+            var start = h('input#cp-admin-start-input');
+            var end = h('input#cp-admin-end-input');
             var $start = $(start);
             var $end = $(end);
             var is24h = UIElements.is24h();
@@ -2885,9 +2885,9 @@ Example
 
             $form.empty().append([
                 active,
-                h('label', { for: 'start-input' }, Messages.broadcast_start),
+                h('label', { for: 'cp-admin-start-input' }, Messages.broadcast_start),
                 start,
-                h('label', { for: 'end-input' }, Messages.broadcast_end),
+                h('label', { for: 'cp-admin-end-input' }, Messages.broadcast_end),
                 end,
                 h('br'),
                 h('div.cp-broadcast-form-submit', [
@@ -2933,8 +2933,8 @@ Example
             }
 
             // Survey form
-            var label = h('label', { for: 'survey-url-input' }, Messages.broadcast_surveyURL);
-            var input = h('input', { id: 'survey-url-input' });
+            var label = h('label', { for: 'cp-admin-survey-url-input' }, Messages.broadcast_surveyURL);
+            var input = h('input#cp-admin-survey-url-input');
             var $input = $(input);
 
             // Extract form data
@@ -3116,10 +3116,10 @@ Example
 
         var duration = APP.instanceStatus.profilingWindow;
         if (!isPositiveInteger(duration)) { duration = 10000; }
-        var newDuration = h('input', { type: 'number', min: 0, value: duration, id: 'duration-input' });
+        var newDuration = h('input#cp-admin-duration-input', { type: 'number', min: 0, value: duration });
         var set = h('button.btn.btn-primary', Messages.admin_setDuration);
 
-        var label = h('label', { for: 'duration-input' }, Messages.ui_ms);
+        var label = h('label', { for: 'cp-admin-duration-input' }, Messages.ui_ms);
 
         $div.append(h('div', [
             h('div.cp-admin-setlimit-form', [
