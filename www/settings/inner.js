@@ -2171,6 +2171,7 @@ define([
             }
 
             var $category = $(h('div.cp-sidebarlayout-category', {
+                'tabindex': 0,
                 'data-category': key
             }, [
                 icon,
@@ -2182,16 +2183,18 @@ define([
                 $category.addClass('cp-leftside-active');
             }
 
-            $category.click(function() {
-                if (!Array.isArray(categories[key]) && categories[key].onClick) {
-                    categories[key].onClick();
-                    return;
+            $category.on('click keypress', function (event) {
+                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                    if (!Array.isArray(categories[key]) && categories[key].onClick) {
+                        categories[key].onClick();
+                        return;
+                    }
+                    active = key;
+                    common.setHash(key);
+                    $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
+                    $category.addClass('cp-leftside-active');
+                    showCategories(categories[key]);
                 }
-                active = key;
-                common.setHash(key);
-                $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
-                $category.addClass('cp-leftside-active');
-                showCategories(categories[key]);
             });
         });
         showCategories(categories[active]);
