@@ -470,20 +470,26 @@ define([
                     created++;
                 }
                 if (team.empty) {
-                    var createTeamDiv = h('div.cp-team-list-team.empty'+createCls, [
+                    var createTeamDiv = h('div.cp-team-list-team.empty'+createCls,{
+                        tabindex: '0'
+                    }, [
                         h('span.cp-team-list-name.empty', Messages.team_listSlot),
                         createBtn
                     ]);
                     list.push(createTeamDiv);
                     if (createCls) {
-                        $(createTeamDiv).click(function () {
-                            $('div.cp-team-cat-create').click();
+                        $(createTeamDiv).on('click keypress', function (event) {
+                            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                                $('div.cp-team-cat-create').click();
+                            }
                         });
                     }
                     return;
                 }
                 var avatar = h('span.cp-avatar');
-                var teamDiv = h('div.cp-team-list-team', [
+                var teamDiv = h('div.cp-team-list-team',{
+                        tabindex: '0'
+                    }, [
                     h('span.cp-team-list-avatar', avatar),
                     h('span.cp-team-list-name', {
                         title: team.metadata.name
@@ -491,12 +497,14 @@ define([
                 ]);
                 list.push(teamDiv);
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
-                $(teamDiv).click(function () {
-                    if (team.error) {
-                        UI.warn(Messages.error); // FIXME better error message - roster bug, can't load the team for now
-                        return;
+                $(teamDiv).on('click keypress', function (event) {
+                    if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                        if (team.error) {
+                            UI.warn(Messages.error); // FIXME better error message - roster bug, can't load the team for now
+                            return;
+                        }
+                        openTeam(common, id, team);
                     }
-                    openTeam(common, id, team);
                 });
             });
             content.push(h('div.cp-team-list-container', list));
