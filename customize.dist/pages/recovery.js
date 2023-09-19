@@ -29,7 +29,7 @@ define([
                         h('div.alert.alert-danger.wrong-cred.cp-hidden', Msg.login_noSuchUser),
                         h('div.big-container', [
                             h('div.input-container', [
-                                h('label.label', {for: 'username'}, Msg.login_username + ':'), // XXX label not visible
+                                h('label.cp-default-label', {for: 'username'}, Msg.login_username), // XXX label not visible
                                 h('input.form-control#username', {
                                     type: 'text',
                                     autocomplete: 'off',
@@ -41,7 +41,7 @@ define([
                                 }),
                             ]),
                             h('div.input-container', [
-                                h('label.label', {for: 'password'}, Msg.login_password + ':'), // XXX label not visible
+                                h('label.cp-default-label', {for: 'password'}, Msg.login_password), // XXX label not visible
                                 h('input.form-control#password', {
                                     type: 'password',
                                     placeholder: Msg.login_password,

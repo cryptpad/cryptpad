@@ -59,7 +59,7 @@ define([
                         ]),
                         h('div.big-container', [
                             h('div.input-container', [
-                                h('label.register-label', { for: 'username' }, Msg.login_username + ':'),
+                                h('label.cp-register-label', { for: 'username' }, Msg.login_username),
                                 h('input.form-control#username', {
                                     type: 'text',
                                     autocomplete: 'off',
@@ -71,14 +71,14 @@ define([
                                 }),
                             ]),
                             h('div.input-container', [
-                                h('label.register-label', { for: 'password' }, Msg.login_password + ':'), // XXX label not visible
+                                h('label.cp-register-label', { for: 'password' }, Msg.login_password), // XXX label not visible
                                 h('input.form-control#password', {
                                     type: 'password',
                                     placeholder: Msg.login_password,
                                 }),
                             ]),
                             h('div.input-container', [
-                                h('label.register-label', { for: 'password-confirm' }, Msg.login_confirm + ':'), // XXX label not visible
+                                h('label.cp-register-label', { for: 'password-confirm' }, Msg.login_confirm), // XXX label not visible
                                 h('input.form-control#password-confirm', {
                                     type: 'password',
                                     placeholder: Msg.login_confirm,

@@ -532,7 +532,7 @@ define([
         content.push(h('h3', Messages.team_createLabel));
         let label = h('label', { for: 'cp-team-name' } , Messages.team_createName);
         content.push(label);
-        let input = h('input', {type:'text', id:'cp-team-name', maxlength:50});
+        let input = h('input#cp-team-name', {type:'text', maxlength:50});
         content.push(input);
         var button = h('button.btn.btn-success', Messages.creation_create);
         content.push(h('br'));
@@ -1057,10 +1057,10 @@ define([
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
             }, function (obj) {
-                Messages.team_nameAlreadySet = "Team name is already set to "; // XXX
+                Messages.team_nameAlreadySet = "Team name is already set to {0}"; // XXX
                 if (obj && obj.error) { return void UI.warn(Messages.error); }
                 if (obj.name === newName) {
-                    return void UI.warn(Messages.team_nameAlreadySet + newName);
+                    return void UI.warn(Messages._getKey('team_nameAlreadySet', [Util.fixHTML(newName)]));
                 }
                 $spinner.show();
                 var oldName = obj.name;

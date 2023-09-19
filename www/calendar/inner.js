@@ -715,13 +715,13 @@ define([
                 }
             });
         }
-        Messages.calendarSettings = "Calendar Settings"; // XXX
+        Messages.calendar_settings = "Calendar Settings"; // XXX
         var dropdownConfig = {
             text: '',
             options: options, // Entries displayed in the menu
             common: common,
             buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions',
-            ariaLabel: Messages.calendarSettings,
+            ariaLabel: Messages.calendar_settings,
     };
         return UIElements.createDropdown(dropdownConfig)[0];
     };
