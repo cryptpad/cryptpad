@@ -4345,7 +4345,7 @@ define([
             $icon.css("color", isSharedFolder ? getFolderColor(path.slice(0, -1)) : getFolderColor(path));
             var $collapse;
             if (collapsable) {
-                $collapse = $expandIcon.clone().attr('tabindex', 0);;
+                $collapse = $expandIcon.clone().attr('tabindex', 0);
             }
             var $elementRow = $('<span>', {'class': 'cp-app-drive-element-row', 'tabindex': 0}).append($collapse).append($icon).append($name).on('click keypress', function (e) {
                 if (e.type === 'keypress' && e.which !== 13) {
