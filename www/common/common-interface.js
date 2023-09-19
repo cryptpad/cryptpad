@@ -509,7 +509,6 @@ define([
                     todo();
                 });
             }
-            if (b.keys && b.keys.length) { $(button).attr('data-keys', JSON.stringify(b.keys)); }
             navs.push(button);
         });
         return dialog.nav(navs);

@@ -4375,7 +4375,7 @@ define([
                 $element.addClass('cp-app-drive-element-collapsed');
                 $collapse.on('click keypress', function(e) {
                     if (e.type === 'keypress' && e.which !== 13) {
-                        return; // Ignore keypress events that are not Enter (key code 13)
+                        return;
                     }
                     e.stopPropagation();
                     if ($element.hasClass('cp-app-drive-element-collapsed')) {
