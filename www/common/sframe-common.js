@@ -995,6 +995,10 @@ define([
                 UI.alert(Messages.chrome68);
             });
 
+            ctx.sframeChan.on('EV_IFRAME_TITLE', function (title) {
+                document.title = title;
+            });
+
             funcs.isPadStored(function (err, val) {
                 if (err || !val) { return; }
                 UIElements.displayCrowdfunding(funcs);

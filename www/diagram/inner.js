@@ -12,9 +12,6 @@ define([
     Messages,
     pako,
     X2JS) {
-    Messages.application = "Application"; // XXX
-    Messages.cryptpad_title = "CryptPad"; // XXX
-    document.title = Messages.type.diagram + " " +  Messages.application + " - " + Messages.cryptpad_title;
     const Nacl = window.nacl;
 
     // As described here: https://drawio-app.com/extracting-the-xml-from-mxfiles/

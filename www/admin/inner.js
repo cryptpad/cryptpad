@@ -45,7 +45,6 @@ define([
     Flatpickr
     )
 {
-    document.title = Messages.adminPage;
     var APP = {
         'instanceStatus': {}
     };

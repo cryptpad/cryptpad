@@ -75,9 +75,6 @@ define([
     AppConfig,
     Test */
 ) {
-    Messages.application = "Application"; // XXX
-    Messages.cryptpad_title = "CryptPad"; // XXX
-    document.title = Messages.type.pad + " " +  Messages.application + " - " + Messages.cryptpad_title;
     var DiffDom = window.diffDOM;
 
     var slice = function(coll) {

@@ -59,9 +59,6 @@ define([
     Messages,
     CMeditor)
 {
-    Messages.application = "Application"; // XXX
-    Messages.cryptpad_title = "CryptPad"; // XXX
-    document.title = Messages.type.slide + " " + Messages.application + " - "  + Messages.cryptpad_title;
     window.CodeMirror = CMeditor;
 
     var SLIDE_BACKCOLOR_ID = "cp-app-slide-toolbar-backcolor";

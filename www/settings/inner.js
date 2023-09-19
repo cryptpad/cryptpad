@@ -41,7 +41,6 @@ define([
     Constants,
     Login
 ) {
-    document.title = Messages.settings_title;
     var saveAs = window.saveAs;
     var APP = window.APP = {};
 

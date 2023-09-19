@@ -31,7 +31,6 @@ define([
     AppConfig,
     Messages)
 {
-    document.title = Messages.settings_cat_drive;
     var APP = {};
     var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
 

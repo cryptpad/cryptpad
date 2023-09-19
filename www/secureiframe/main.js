@@ -187,8 +187,12 @@ define([
             sframeChan.event('EV_REFRESH', data);
             cb();
         };
+        var setTitle = function (title) {
+            sframeChan.event('EV_IFRAME_TITLE', title);
+        };
         return {
-            refresh: refresh
+            refresh: refresh,
+            setTitle: setTitle
         };
     };
     return {

@@ -48,7 +48,6 @@ define([
     Backup,
     Messages)
 {
-    document.title = Messages.type.teams;
     var APP = {
         teams: {}
     };

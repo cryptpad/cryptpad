@@ -2695,7 +2695,7 @@ define([
                 gridIcon,
                 listIcon
             ]));
-            $button.attr('aria-label', 'View Mode Button');
+            $button.attr('aria-label', 'View Mode Button'); // XXX missing key?
             var $gridIcon = $(gridIcon);
             var $listIcon = $(listIcon);
             var showMode = function (mode) {

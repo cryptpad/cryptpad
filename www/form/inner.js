@@ -75,9 +75,6 @@ define([
     Sortable
     )
 {
-    Messages.application = "Application"; // XXX
-    Messages.cryptpad_title = "CryptPad"; // XXX
-    document.title = Messages.type.form + " " + Messages.application + " - " + Messages.cryptpad_title;
     var APP = window.APP = {
         blocks: {}
     };

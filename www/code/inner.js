@@ -62,9 +62,6 @@ define([
     Messages,
     CMeditor)
 {
-    Messages.application = "Application"; // XXX
-    Messages.cryptpad_title = "CryptPad"; // XXX
-    document.title = Messages.type.code + " " + Messages.application + " - " + Messages.cryptpad_title;
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
