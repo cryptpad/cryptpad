@@ -237,7 +237,7 @@ define([
         Object.keys(categories).forEach(function (key) {
             if (key === 'admin' && !teamAdmin) { return; }
 
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key}).appendTo($categories);
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key, 'tabindex': 0}).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
             if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
             if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
@@ -252,7 +252,8 @@ define([
                 $category.addClass('cp-leftside-active');
             }
 
-            $category.click(function () {
+            $category.on('click keypress', function (event) {
+                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                 if (!Array.isArray(categories[key]) && categories[key].onClick) {
                     categories[key].onClick(common);
                     return;
@@ -273,7 +274,7 @@ define([
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
                 $category.addClass('cp-leftside-active');
                 showCategories(categories[key]);
-            });
+            }});
 
             $category.append(h('span.cp-sidebarlayout-category-name', Messages['team_cat_'+key] || key));
         });
