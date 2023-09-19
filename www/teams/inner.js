@@ -530,9 +530,9 @@ define([
         }
 
         content.push(h('h3', Messages.team_createLabel));
-        let label = h('label', { for: 'teamName' } , Messages.team_createName);
+        let label = h('label', { for: 'cp-team-name' } , Messages.team_createName);
         content.push(label);
-        let input = h('input', {type:'text', id:'teamName'});
+        let input = h('input', {type:'text', id:'cp-team-name', maxlength:50});
         content.push(input);
         var button = h('button.btn.btn-success', Messages.creation_create);
         content.push(h('br'));
@@ -546,9 +546,7 @@ define([
             var name = $(input).val();
             if (!name.trim()) { return; }
             Messages.team_nameTooLong = "Team name is too long"; // XXX
-            if(name.length > 50){
-                return UI.warn(Messages.team_nameTooLong);
-            }
+            if(name.length > 50) { return UI.warn(Messages.team_nameTooLong); }
             state = true;
             $spinner.show();
             APP.module.execCommand('CREATE_TEAM', {
