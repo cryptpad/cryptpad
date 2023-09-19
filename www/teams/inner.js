@@ -1028,7 +1028,7 @@ define([
         if (publicKey) {
             var $key = $('<div>', {'class': 'cp-sidebarlayout-element'}).appendTo($div);
             var userHref = Hash.getPublicSigningKeyString(privateData.origin, name, publicKey);
-            var $pubLabel = $('<span>', {'class': 'label'})
+            var $pubLabel = $('<span>', {'class': 'cp-default-label'})
                 .text(Messages.settings_publicSigningKey);
             $key.append($pubLabel).append(UI.dialog.selectable(userHref));
         }

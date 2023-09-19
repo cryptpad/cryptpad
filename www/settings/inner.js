@@ -149,16 +149,7 @@ define([
         create[key] = function() {
             var $div = $('<div>', { 'class': 'cp-settings-' + key + ' cp-sidebarlayout-element' });
             if (full) {
-                if (key === 'mediatag-size') {
-                    $('<label>', {'for': 'automatic-download'})
-                        .text(Messages['settings_' + safeKey + 'Title'] || key)
-                        .appendTo($div);
-                }
-                else{
-                    $('<label>')
-                        .text(Messages['settings_' + safeKey + 'Title'] || key)
-                        .appendTo($div);
-                }
+                $('<label>').text(Messages['settings_' + safeKey + 'Title'] || key).appendTo($div);
 
                 // if this block's hint needs a special renderer, then create it in SPECIAL_HINTS_HANLDER
                 // otherwise the default will be used
@@ -188,7 +179,7 @@ define([
 
         var $account = $('<div>', { 'class': 'cp-sidebarlayout-element' }).appendTo($div);
         var accountName = privateData.accountName;
-        var $label = $('<span>', { 'class': 'label' }).text(Messages.user_accountName);
+        var $label = $('<span>', { 'class': 'cp-default-label' }).text(Messages.user_accountName);
         var $name = $('<span>').text(accountName || '');
         if (!accountName) {
             $label.text('');
@@ -200,7 +191,7 @@ define([
         if (publicKey) {
             var $key = $('<div>', { 'class': 'cp-sidebarlayout-element' }).appendTo($div);
             var userHref = Hash.getPublicSigningKeyString(privateData.origin, accountName, publicKey);
-            var $pubLabel = $('<label>', { 'class': 'label', 'for': 'publicKey' })
+            var $pubLabel = $('<label>', { 'class': 'cp-default-label', 'for': 'publicKey' })
                 .text(Messages.settings_publicSigningKey);
             var $pubInput = $('<input>', { 'type': 'text', 'value': userHref, 'id': 'publicKey' });
             $key.append($pubLabel).append($pubInput);
@@ -300,7 +291,7 @@ define([
     create['autostore'] = function() {
         var $div = $('<div>', { 'class': 'cp-settings-autostore cp-sidebarlayout-element' });
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_autostoreTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_autostoreTitle).appendTo($div);
 
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .append(Messages.settings_autostoreHint).appendTo($div);
@@ -355,7 +346,7 @@ define([
     create['userfeedback'] = function() {
         var $div = $('<div>', { 'class': 'cp-settings-userfeedback cp-sidebarlayout-element' });
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_userFeedbackTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_userFeedbackTitle).appendTo($div);
 
         $div.append(h('span.cp-sidebarlayout-description', [
             Messages.settings_userFeedbackHint1,
@@ -668,7 +659,7 @@ define([
 
         var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element' });
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_changePasswordTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_changePasswordTitle).appendTo($div);
 
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .append(Messages.settings_changePasswordHint).appendTo($div);
@@ -871,18 +862,18 @@ define([
         cb(form);
     }, true);
 
-    makeBlock('mediatag-size', function(cb) { // Msg.settings_mediatagSizeHint, .settings_mediatagSizeTitle
+    makeBlock('mediatag-size', function(cb, $div) { // Msg.settings_mediatagSizeHint, .settings_mediatagSizeTitle
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input-block',
         });
 
         var spinner;
-        var $input = $('<input>', {
+        var $input = $(h('input#cp-automatic-download', {
             'min': -1,
             'max': 1000,
             type: 'number',
-            id: 'automatic-download',
-        }).appendTo($inputBlock);
+        })).appendTo($inputBlock);
+        $div.find('label').attr('for', 'cp-automatic-download');
 
         var oldVal;
 
@@ -1304,7 +1295,7 @@ define([
         if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', { 'class': 'cp-settings-redirect cp-sidebarlayout-element' });
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_driveRedirectTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_driveRedirectTitle).appendTo($div);
 
         $div.append(h('span', {
             class: 'cp-sidebarlayout-description',
@@ -1763,7 +1754,7 @@ define([
         var $div = $('<div>', {
             'class': 'cp-settings-pad-width cp-sidebarlayout-element'
         });
-        $('<span>', { 'class': 'label' }).text(Messages.settings_padWidth).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_padWidth).appendTo($div);
 
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_padWidthHint).appendTo($div);
