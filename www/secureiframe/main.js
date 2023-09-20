@@ -188,6 +188,7 @@ define([
             cb();
         };
         var setTitle = function (title) {
+            if (!sframeChan) { return; }
             sframeChan.event('EV_IFRAME_TITLE', title);
         };
         return {
