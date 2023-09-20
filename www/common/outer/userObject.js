@@ -118,13 +118,14 @@ define([
             cb(null, id);
         };
 
-        exp.deprecateSharedFolder = function (id) {
+        exp.deprecateSharedFolder = function (id, reason) {
             if (readOnly) { return; }
             var data = files[SHARED_FOLDERS][id];
             if (!data) { return; }
             var ro = !data.href || exp.cryptor.decrypt(data.href).indexOf('#') === -1;
             if (!ro) {
-                files[SHARED_FOLDERS_TEMP][id] = JSON.parse(JSON.stringify(data));
+                var obj = files[SHARED_FOLDERS_TEMP][id] = JSON.parse(JSON.stringify(data));
+                obj.legacy = reason !== "PASSWORD_CHANGE";
             }
             var paths = exp.findFile(Number(id));
             exp.delete(paths, null, true);

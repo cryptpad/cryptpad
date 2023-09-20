@@ -316,7 +316,7 @@ define([
             var key = secret.keys && secret.keys.cryptKey;
             MediaTag.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
-                    if (e === 'XHR_ERROR') { return; }
+                    if (/^XHR_ERROR/.test(e)) { return; }
                     return console.error(e);
                 }
                 if (!metadata) { return console.error("NO_METADATA"); }
