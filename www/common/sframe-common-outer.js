@@ -1635,15 +1635,12 @@ define([
                     SecureModal.$iframe = $('<iframe>', {id: 'sbox-secure-iframe'}).appendTo($('body'));
                     SecureModal.modal = SecureIframe.create(config);
                 }
+                setDocumentTitle();
                 if (!cfg.hidden) {
                     SecureModal.modal.refresh(cfg, function () {
                         SecureModal.$iframe.show();
-                        setDocumentTitle();
                     });
                 } else {
-                    SecureModal.modal.refresh(cfg, function () {
-                        setDocumentTitle();
-                    });
                     SecureModal.$iframe.hide();
                     return;
                 }
