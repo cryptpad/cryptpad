@@ -2,7 +2,7 @@
 Description=CryptPad API server
 
 [Service]
-ExecStart=/home/cryptpad/.nvm/versions/node/v19.8.1/bin/node /home/cryptpad/cryptpad/server.js
+ExecStart=/usr/bin/node /home/cryptpad/cryptpad/server.js
 # modify to match the location of your cryptpad repository
 WorkingDirectory=/home/cryptpad/cryptpad
 
