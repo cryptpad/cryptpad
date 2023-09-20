@@ -827,6 +827,7 @@ define([
                 }
                 button = $('<button>', {
                     title: Messages.historyButton,
+                    'aria-label': Messages.historyButton,
                     'class': "fa fa-history cp-toolbar-icon-history",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
                 if (data.histConfig) {
@@ -1488,14 +1489,17 @@ define([
         if (config.buttonContent) {
             $button = $(h('button', {
                 class: config.buttonCls || '',
+                'aria-label': config.ariaLabel || '',
             }, [
                 h('span.cp-dropdown-button-title', config.buttonContent),
             ]));
         } else {
             $button = $('<button>', {
-                'class': config.buttonCls || ''
+                'class': config.buttonCls || '',
+                'aria-label': config.ariaLabel || '',
             }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
         }
+
 
         if (config.caretDown) {
             $('<span>', {
@@ -1736,11 +1740,14 @@ define([
         var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
+    Messages.label_logo = "CryptPad logo"; // XXX Logo
+
         var content = h('div.cp-info-menu-container', [
-            h('div.logo-block', [
-                h('img', {
-                    src: '/customize/CryptPad_logo.svg?' + urlArgs
-                }),
+                h('div.logo-block', [
+                    h('img', {
+                        src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                        alt: Messages.label_logo
+                    }),
                 h('h6', "CryptPad"),
                 h('span', Pages.versionString)
             ]),

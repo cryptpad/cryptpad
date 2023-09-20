@@ -1305,6 +1305,8 @@ define([
             };
             addCommonRpc(sframeChan, isSafe);
 
+            var SecureModal = {};
+
             var currentTitle;
             var currentTabTitle;
             var titleSuffix = (Utils.Util.find(Utils, ['Instance','name','default']) || '').trim();
@@ -1312,12 +1314,16 @@ define([
                 titleSuffix = window.location.hostname;
             }
             var setDocumentTitle = function () {
+                var newTitle;
                 if (!currentTabTitle) {
-                    document.title = currentTitle || 'CryptPad';
-                    return;
+                    newTitle = currentTitle || 'CryptPad';
+                } else {
+                    var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
+                    newTitle = title + ' - ' + titleSuffix;
                 }
-                var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
-                document.title = title + ' - ' + titleSuffix;
+                document.title = newTitle;
+                sframeChan.event('EV_IFRAME_TITLE', newTitle);
+                if (SecureModal.modal) { SecureModal.modal.setTitle(newTitle); }
             };
 
             var setPadTitle = function (data, cb) {
@@ -1588,7 +1594,6 @@ define([
             });
 
             // Secure modal
-            var SecureModal = {};
             // Create or display the iframe and modal
             var getPropChannels = function () {
                 var channels = {};
@@ -1633,8 +1638,12 @@ define([
                 if (!cfg.hidden) {
                     SecureModal.modal.refresh(cfg, function () {
                         SecureModal.$iframe.show();
+                        setDocumentTitle();
                     });
                 } else {
+                    SecureModal.modal.refresh(cfg, function () {
+                        setDocumentTitle();
+                    });
                     SecureModal.$iframe.hide();
                     return;
                 }

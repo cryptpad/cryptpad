@@ -75,7 +75,6 @@ define([
     Sortable
     )
 {
-
     var APP = window.APP = {
         blocks: {}
     };

@@ -52,7 +52,6 @@ define([
     jKanban,
     Export)
 {
-
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();

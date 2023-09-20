@@ -605,7 +605,8 @@ define([
                                 break;
                             case 'INVAL_USER':
                                 UI.removeLoadingScreen(function () {
-                                    UI.alert(Messages.login_invalUser, function () {
+                                    Messages.login_notFilledUser = 'Please fill in a username'; // XXX
+                                    UI.alert(Messages.login_notFilledUser , function () {
                                         hashing = false;
                                         $('#password').focus();
                                     });
@@ -624,7 +625,8 @@ define([
                                 break;
                             case 'INVAL_PASS':
                                 UI.removeLoadingScreen(function () {
-                                    UI.alert(Messages.login_invalPass, function () {
+                                    Messages.login_notFilledPass = 'Please fill in a password'; // XXX
+                                    UI.alert(Messages.login_notFilledPass, function () {
                                         hashing = false;
                                         $('#password').focus();
                                     });

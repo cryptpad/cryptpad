@@ -178,7 +178,7 @@ define([
 
         var $account = $('<div>', { 'class': 'cp-sidebarlayout-element' }).appendTo($div);
         var accountName = privateData.accountName;
-        var $label = $('<span>', { 'class': 'label' }).text(Messages.user_accountName);
+        var $label = $('<span>', { 'class': 'cp-default-label' }).text(Messages.user_accountName);
         var $name = $('<span>').text(accountName || '');
         if (!accountName) {
             $label.text('');
@@ -190,10 +190,12 @@ define([
         if (publicKey) {
             var $key = $('<div>', { 'class': 'cp-sidebarlayout-element' }).appendTo($div);
             var userHref = Hash.getPublicSigningKeyString(privateData.origin, accountName, publicKey);
-            var $pubLabel = $('<span>', { 'class': 'label' })
+            var $pubLabel = $('<label>', { 'class': 'cp-default-label', 'for': 'publicKey' })
                 .text(Messages.settings_publicSigningKey);
-            $key.append($pubLabel).append(UI.dialog.selectable(userHref));
+            var $pubInput = $('<input>', { 'type': 'text', 'value': userHref, 'id': 'publicKey' });
+            $key.append($pubLabel).append($pubInput);
         }
+
 
         return $div;
     };
@@ -288,7 +290,7 @@ define([
     create['autostore'] = function() {
         var $div = $('<div>', { 'class': 'cp-settings-autostore cp-sidebarlayout-element' });
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_autostoreTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_autostoreTitle).appendTo($div);
 
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .append(Messages.settings_autostoreHint).appendTo($div);
@@ -343,7 +345,7 @@ define([
     create['userfeedback'] = function() {
         var $div = $('<div>', { 'class': 'cp-settings-userfeedback cp-sidebarlayout-element' });
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_userFeedbackTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_userFeedbackTitle).appendTo($div);
 
         $div.append(h('span.cp-sidebarlayout-description', [
             Messages.settings_userFeedbackHint1,
@@ -379,8 +381,7 @@ define([
 
     makeBlock('cache', function (cb) { // Msg.settings_cacheHint, .settings_cacheTitle
         var store = window.cryptpadStore;
-
-        var $cbox = $(UI.createCheckbox('cp-settings-cache',
+        var $cbox = $(UI.createCheckbox('cp-settings-cache-1',
             Messages.settings_cacheCheckbox,
             false, { label: { class: 'noTitle' } }));
         var spinner = UI.makeSpinner($cbox);
@@ -657,7 +658,7 @@ define([
 
         var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element' });
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_changePasswordTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_changePasswordTitle).appendTo($div);
 
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .append(Messages.settings_changePasswordHint).appendTo($div);
@@ -860,17 +861,18 @@ define([
         cb(form);
     }, true);
 
-    makeBlock('mediatag-size', function(cb) { // Msg.settings_mediatagSizeHint, .settings_mediatagSizeTitle
+    makeBlock('mediatag-size', function(cb, $div) { // Msg.settings_mediatagSizeHint, .settings_mediatagSizeTitle
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input-block',
         });
 
         var spinner;
-        var $input = $('<input>', {
+        var $input = $(h('input#cp-automatic-download', {
             'min': -1,
             'max': 1000,
             type: 'number',
-        }).appendTo($inputBlock);
+        })).appendTo($inputBlock);
+        $div.find('label').attr('for', 'cp-automatic-download');
 
         var oldVal;
 
@@ -1292,7 +1294,7 @@ define([
         if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', { 'class': 'cp-settings-redirect cp-sidebarlayout-element' });
 
-        $('<span>', { 'class': 'label' }).text(Messages.settings_driveRedirectTitle).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_driveRedirectTitle).appendTo($div);
 
         $div.append(h('span', {
             class: 'cp-sidebarlayout-description',
@@ -1751,7 +1753,7 @@ define([
         var $div = $('<div>', {
             'class': 'cp-settings-pad-width cp-sidebarlayout-element'
         });
-        $('<span>', { 'class': 'label' }).text(Messages.settings_padWidth).appendTo($div);
+        $('<span>', { 'class': 'cp-default-label' }).text(Messages.settings_padWidth).appendTo($div);
 
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_padWidthHint).appendTo($div);
@@ -1889,7 +1891,10 @@ define([
         var $div = $('<div>', {
             'class': 'cp-settings-code-indent-unit cp-sidebarlayout-element'
         });
-        $('<label>').text(Messages.settings_codeIndentation).appendTo($div);
+        $('<label>')
+            .text(Messages.settings_codeIndentation)
+            .attr('for', 'indent-unit')
+            .appendTo($div);
 
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input',
@@ -1899,6 +1904,7 @@ define([
             'min': 1,
             'max': 8,
             type: 'number',
+            id: 'indent-unit',
         }).on('change', function() {
             var val = parseInt($input.val());
             if (typeof(val) !== 'number') { return; }
@@ -1984,7 +1990,10 @@ define([
         var $div = $('<div>', {
             'class': 'cp-settings-code-font-size cp-sidebarlayout-element'
         });
-        $('<label>').text(Messages.settings_codeFontSize).appendTo($div);
+        $('<label>')
+            .text(Messages.settings_codeFontSize)
+            .attr('for', 'font-size')
+            .appendTo($div);
 
         var $inputBlock = $('<div>', {
             'class': 'cp-sidebarlayout-input',
@@ -1994,6 +2003,7 @@ define([
             'min': 8,
             'max': 30,
             type: 'number',
+            id: 'font-size',
         }).on('change', function() {
             var val = parseInt($input.val());
             if (typeof(val) !== 'number') { return; }
@@ -2091,7 +2101,7 @@ define([
 
     makeBlock('notif-calendar', function(cb) { // Msg.settings_notifCalendarHint, .settings_notifCalendarTitle
 
-        var $cbox = $(UI.createCheckbox('cp-settings-cache',
+        var $cbox = $(UI.createCheckbox('cp-settings-cache-2',
             Messages.settings_notifCalendarCheckbox,
             false, { label: { class: 'noTitle' } }));
         var spinner = UI.makeSpinner($cbox);

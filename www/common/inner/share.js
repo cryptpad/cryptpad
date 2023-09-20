@@ -615,7 +615,7 @@ define([
                         label: {style: "display: none;"}
                     }) : undefined;
         var rights = h('div.msg.cp-inline-radio-group', [
-            h('label', Messages.share_linkAccess),
+            h('label',{ for: 'cp-share-editable-true' }, Messages.share_linkAccess),
             h('div.radio-group',[
             UI.createRadio('accessRights', 'cp-share-editable-false',
                             labelView, true, { mark: {tabindex:1} }),
