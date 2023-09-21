@@ -1620,7 +1620,7 @@
     "settings_removeOwnedTitle": "Détruire vos documents",
     "settings_removeOwnedButton": "Détruire les documents",
     "settings_removeOwnedText": "Veuillez patienter pendant que vos documents sont détruits...",
-    "settings_removeOwnedHint": "Tous les documents dont vous êtes l'unique propriétaire seront détruits de manière permanente",
+    "settings_removeOwnedHint": "Tous les documents dont vous êtes l'unique propriétaire seront détruits de manière irréversible",
     "recovery_header": "Récupération 2FA",
     "recovery_mfa_description": "Si vous avez perdu l'accès à votre méthode d'authentification à double-facteur, vous pouvez désactiver 2FA pour votre compte en utilisant le code de récupération. Veuillez commencer par entrer votre nom d'utilisateur·ice et mot de passe :",
     "recovery_mfa_secret": "Veuillez entrer votre code de récupération pour désactiver 2FA sur votre compte :",
