@@ -1,4 +1,5 @@
 @import (reference) "../include/infopages.less";
+@import (reference) "../include/browser.less";
 @import (reference) "../include/colortheme-all.less";
 
 &.cp-page-index {
@@ -31,20 +32,18 @@
         color: @cryptpad_text_col;
     }
 
-
     h1.cp-instance-title {
         text-align: center;
         font-family: "IBM Plex Mono";
         font-weight: 500;
         color: @cryptpad_color_brand;
-        font-size: 2.8rem;
+        font-size: 2.8rem; // Not used
         word-wrap: break-word;
         word-break: break-word;
-        white-space: pre-line;
-
-        span{
-            display: inline-block;
-            white-space: nowrap;
+    }
+    @media screen and (max-width: @browser_media-medium-screen) {
+        &.html h1.cp-instance-title {
+            font-size: 2.5em;
         }
     }
 
