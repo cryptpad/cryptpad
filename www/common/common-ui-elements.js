@@ -2062,7 +2062,7 @@ define([
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
+                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in','tabindex': '0'},
                 content: h('span', Messages.login_login),
                 action: function () {
                     Common.setLoginRedirect('login');
@@ -2071,7 +2071,7 @@ define([
             if (!Config.restrictRegistration) {
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
+                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus','tabindex': '0'},
                     content: h('span', Messages.login_register),
                     action: function () {
                         Common.setLoginRedirect('register');
