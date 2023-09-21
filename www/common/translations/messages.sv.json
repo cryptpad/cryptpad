@@ -1622,5 +1622,12 @@
     "register_nameTooLong": "Användarnamn måste vara kortare än {0} tecken",
     "loading_recover": "Ingen möjlighet att få en kod? <a href=\"/recovery/\">Återställ ditt konto</a>",
     "recovery_mfa_secret_ph": "Återställningskod",
-    "settings_mfaTitle": "Tvåfaktorsautentisering (2FA)"
+    "settings_mfaTitle": "Tvåfaktorsautentisering (2FA)",
+    "form_condorcetSchulze": "Schulze",
+    "form_showCondorcetWinner": "vinnare: ",
+    "form_condorcetRanked": "Rankade par",
+    "form_condorcetExtendedDisplay": "Antalet matcher vunna av varje kandidat: ",
+    "form_noCondorcetWinner": "Ingen vinnare",
+    "form_showCondorcetMethod": "Condorcet-metoden",
+    "admin_totpRecoveryHint": "Användare kan kopiera åsterställningsdata på sidan för 2FA-återställning /recovery/ och e-posta den till instansens administratörer. Klistra in återställningsdata nedan för att avaktivera 2FA för ett konto"
 }
