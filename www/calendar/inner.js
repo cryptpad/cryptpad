@@ -827,8 +827,9 @@ define([
             if (myCalendars.length) {
                 var user = metadataMgr.getUserData();
                 var avatar = h('span.cp-avatar');
+                var uid = user.uid;
                 var name = user.name || Messages.anonymous;
-                common.displayAvatar($(avatar), user.avatar, name);
+                common.displayAvatar($(avatar), user.avatar, name, function(){}, uid);
                 APP.$calendars.append(h('div.cp-calendar-team', [
                     avatar,
                     h('span.cp-name', {title: name}, name)

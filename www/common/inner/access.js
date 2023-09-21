@@ -752,7 +752,8 @@ define([
                 _owners[ed] = {
                     //selected: true,
                     name: user.name,
-                    avatar: user.avatar
+                    avatar: user.avatar,
+                    uid: user.uid
                 };
                 return;
             }
