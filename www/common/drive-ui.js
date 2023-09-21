@@ -3481,23 +3481,22 @@ define([
         };
 
         // Create the ghost icon to add pads/folders
-            var createNewPadIcons = function ($block, isInRoot) {
-                var $container = $('<ul>');
-                getNewPadOptions(isInRoot).forEach(function (obj) {
-                    if (obj.separator) { return; }
+        var createNewPadIcons = function ($block, isInRoot) {
+            var $container = $('<ul>');
+            getNewPadOptions(isInRoot).forEach(function (obj) {
+                if (obj.separator) { return; }
 
-                    var $element = $('<li>', {
-                        'class': obj.class + ' cp-app-drive-element-row ' +
-                                 'cp-app-drive-element-grid',
+                var $element = $('<li>', {
+                    'class': obj.class + ' cp-app-drive-element-row ' +
+                        'cp-app-drive-element-grid',
                         'tabindex': 1
-                    }).prepend(obj.icon).appendTo($container);
-                    $element.append($('<span>', { 'class': 'cp-app-drive-new-name' })
-                        .text(obj.name));
+                }).prepend(obj.icon).appendTo($container);
+                $element.append($('<span>', { 'class': 'cp-app-drive-new-name' }).text(obj.name));
 
-                    if (obj.type) {
-                        $element.attr('data-type', obj.type);
-                    }
-                });
+                if (obj.type) {
+                    $element.attr('data-type', obj.type);
+                }
+            });
 
             $container.find('.cp-app-drive-element-row').click(function () {
                 $block.hide();
