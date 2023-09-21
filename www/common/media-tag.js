@@ -47,6 +47,7 @@ var factory = function () {
             'text/plain',
             'image/png',
             'image/jpeg',
+            'image/webp',
             'image/jpg',
             'image/gif',
             'audio/mpeg',
