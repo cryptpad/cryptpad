@@ -133,7 +133,20 @@ define([
         }
 
         // instance title
-        var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
+
+        var instanceTitleText = Pages.Instance.name;
+        var instanceTitle;
+        var words = instanceTitleText.split(/(\.|:|\/|-| )/); // Split on ., :, /, -, or space
+        var elements = words.map(function (word) {
+             if (word === '.' || word === ':' || word === '/' || word === '-') {
+                return h('span.separator', word); // Apply a class to separators for styling
+            } else if (word.trim() !== '') {
+                return h('span', word);
+            }
+            return ' '; // Preserve spaces as-is
+            });
+            instanceTitle = h('h1.cp-instance-title', elements);
+      
 
         // instance location
         var locationBlock;

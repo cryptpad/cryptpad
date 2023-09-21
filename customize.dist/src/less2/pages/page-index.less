@@ -38,9 +38,14 @@
         font-weight: 500;
         color: @cryptpad_color_brand;
         font-size: 2.8rem;
-        overflow-wrap: break-word;
         word-wrap: break-word;
         word-break: break-word;
+        white-space: pre-line;
+
+        span{
+            display: inline-block;
+            white-space: nowrap;
+        }
     }
 
     .cp-home-hero {
@@ -85,7 +90,9 @@
         .cp-instance-links {
             padding: 1.3rem;
             a {
-                margin: 1.3rem;
+                display: inline-block;
+                margin: 0.5em;
+                white-space: nowrap;
             }
         }
     }
@@ -118,7 +125,7 @@
         .cp-app-grid-apps {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: center;
             padding: 0 0.8rem;
         }
         a {
