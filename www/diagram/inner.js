@@ -170,13 +170,12 @@ define([
 
         drawioFrame.src = '/components/drawio-cp/src/main/webapp/index.html?'
             + new URLSearchParams({
-                // pages: 0,
-                // dev: 1,
                 test: 1,
                 stealth: 1,
                 embed: 1,
                 drafts: 0,
-                plugins: 0,
+                // plugins: 0,
+                p: '/cryptpad.js',
 
                 chrome: framework.isReadOnly() ? 0 : 1,
                 dark: window.CryptPad_theme === "dark" ? 1 : 0,
@@ -185,6 +184,7 @@ define([
                 noSaveBtn: 1,
                 saveAndExit: 0,
                 noExitBtn: 1,
+                browser: 0,
 
                 modified: 'unsavedChanges',
                 proto: 'json',
