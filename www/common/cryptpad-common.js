@@ -2564,7 +2564,7 @@ define([
                 lastVisit: Number(localStorage.lastVisit) || undefined,
                 blockId: blockId
             };
-            common.userHash = userHash;
+            common.userHash = userHash || LocalStore.getUserHash();
 
             // FIXME Backward compatibility
             if (sessionStorage.newPadFileData) {
