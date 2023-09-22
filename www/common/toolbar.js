@@ -722,7 +722,8 @@ MessengerUI, Messages, Pages) {
 
         // Buttons
         var $text = $('<span>', {
-            'class': 'cp-toolbar-title-value'
+            'class': 'cp-toolbar-title-value',
+            tabindex: 0
         }).appendTo($hoverable);
         var $pencilIcon = $('<span>', {
             'class': 'cp-toolbar-title-edit',
@@ -741,7 +742,7 @@ MessengerUI, Messages, Pages) {
             .text('('+Messages.readonly+')'));
         var $input = $('<input>', {
             type: 'text',
-            placeholder: placeholder
+            placeholder: placeholder,
         }).appendTo($hoverable).hide();
         if (config.readOnly !== 1) {
             $text.attr("title", Messages.clickToEdit);
@@ -813,8 +814,16 @@ MessengerUI, Messages, Pages) {
             $pencilIcon.hide();
             $saveIcon.show();
         };
-        $text.on('click', displayInput);
-        $pencilIcon.on('click', displayInput);
+        $text.on('click keypress', function (event) {
+            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                displayInput();
+            }
+        });
+        $pencilIcon.on('click keypress', function (event) {
+            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                displayInput();
+            }
+        });
         return $titleContainer;
     };
 
