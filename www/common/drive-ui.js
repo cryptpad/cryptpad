@@ -2932,7 +2932,6 @@ define([
                         if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                             event.preventDefault();
                             manager.addFolder(currentPath, null, onCreated);
-                            $block.hide();
                         }
                     });
                 if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
