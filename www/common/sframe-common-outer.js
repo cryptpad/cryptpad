@@ -1226,6 +1226,16 @@ define([
                         });
                     });
                 });
+
+                sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
+                    Cryptpad.isOverPinLimit(teamId, function (err, overLimit, data) {
+                        cb({
+                            error: err,
+                            data: data
+                        });
+                    });
+                });
+
             };
             addCommonRpc(sframeChan, isSafe);
 
@@ -1732,15 +1742,6 @@ define([
                         Utils.Cache.clearChannel(chan, waitFor());
                     });
                 }).nThen(cb);
-            });
-
-            sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
-                Cryptpad.isOverPinLimit(teamId, function (err, overLimit, data) {
-                    cb({
-                        error: err,
-                        data: data
-                    });
-                });
             });
 
             sframeChan.on('Q_LANGUAGE_SET', function (data, cb) {
