@@ -571,7 +571,7 @@ Messages.admin_channelPlaceholder = "Destroyed document placeholder";
             var archiveAccountLabel = h('span', [
                 Messages.admin_archiveAccount,
                 h('br'),
-                h('small', Messages.archiveAccountInfo)
+                h('small', Messages.admin_archiveAccountInfo)
             ]);
             row(archiveAccountLabel, danger(Messages.admin_archiveButton, archiveHandler));
 
