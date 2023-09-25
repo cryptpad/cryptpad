@@ -1098,7 +1098,7 @@ define([
         row(Messages.admin_blockAvailable, localizeState(data.live));
         row(Messages.admin_blockArchived, localizeState(data.archived));
 
-        row(Messages.admin_totpEnabled, localizeState(data.totp.enabled));
+        row(Messages.admin_totpEnabled, localizeState(Boolean(data.totp.enabled)));
         row(Messages.admin_totpRecoveryMethod, data.totp.recovery); // XXX localize?
 
         if (data.live) {
