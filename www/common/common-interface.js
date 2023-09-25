@@ -536,7 +536,8 @@ define([
             message = dialog.message(msg);
         }
 
-        var frame = h('div', [
+        var cls = opt.scrollable ? '.cp-alertify-scrollable' : '';
+        var frame = h('div'+cls, [
             message,
             dialog.getButtons(opt.buttons, opt.onClose)
         ]);

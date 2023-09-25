@@ -1765,7 +1765,7 @@ define([
             },
         ];
 
-        var modal = UI.dialog.customModal(content, {buttons: buttons });
+        var modal = UI.dialog.customModal(content, {scrollable: true, buttons: buttons });
         UI.openCustomModal(modal);
     };
 
