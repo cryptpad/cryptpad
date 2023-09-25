@@ -80,6 +80,7 @@ define([
             });
         };
 
+        /*
         var getFormatId = function (ext) {
             // Sheets
             if (ext === 'xlsx') { return 257; }
@@ -111,6 +112,8 @@ define([
             if (!id) { return ''; }
             return '<m_nFormatTo>'+id+'</m_nFormatTo>';
         };
+        var inputFormat = fileName.split('.').pop();
+        */
 
         // Sanitize file names
         var illegalRe = /[\/\?<>\\:\*\|"]/g;
@@ -188,9 +191,6 @@ define([
                     debug("Could not find media content for " + mediaFileName);
                 }
             });
-
-
-            var inputFormat = fileName.split('.').pop();
 
             var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                         + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
