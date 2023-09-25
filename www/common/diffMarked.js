@@ -31,9 +31,15 @@ define([
         "g.grid g.tick line { opacity: 0.25; }" +
         "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
 
+    var onMermaidRunEvt = Util.mkEvent(true);
+    var onMermaidRun = () => {
+        onMermaidRunEvt.fire();
+        onMermaidRunEvt = Util.mkEvent(true);
+    };
     var Mermaid = {
         __stubbed: true,
-        init: function () {
+        run: function (cb) {
+            onMermaidRunEvt.reg(cb);
             require([
                 'mermaid',
                 '/lib/mermaid/mermaid-zenuml.esm.min.js',
@@ -47,6 +53,18 @@ define([
                         theme: (window.CryptPad_theme === 'dark') ? 'dark' : 'default',
                         "themeCSS": mermaidThemeCSS,
                     });
+                    onMermaidRun();
+
+                    var run = Mermaid.run;
+                    var to;
+                    Mermaid.run = (cb) => {
+                        clearTimeout(to);
+                        onMermaidRunEvt.reg(cb);
+                        to = setTimeout(() => {
+                            onMermaidRun();
+                            run();
+                        });
+                    };
                 }
 
                 Mermaid.registerExternalDiagrams([zenuml]).then(() => pluginLoaded.fire());
@@ -504,12 +522,13 @@ define([
         name: 'mermaid',
         attr: 'mermaid-source',
         render: function ($el) {
-            Mermaid.init(undefined, $el);
-            // clickable elements in mermaid don't work well with our sandboxing setup
-            // the function below strips clickable elements but still leaves behind some artifacts
-            // tippy tooltips might still be useful, so they're not removed. It would be
-            // preferable to just support links, but this covers up a rough edge in the meantime
-            removeMermaidClickables($el);
+            Mermaid.run(() => {
+                // clickable elements in mermaid don't work well with our sandboxing setup
+                // the function below strips clickable elements but still leaves behind some artifacts
+                // tippy tooltips might still be useful, so they're not removed. It would be
+                // preferable to just support links, but this covers up a rough edge in the meantime
+                removeMermaidClickables($el);
+            });
         }
     };
 
