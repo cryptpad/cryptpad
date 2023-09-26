@@ -2017,7 +2017,7 @@ Example
         return $div;
     };
 
-    Messages.admin_diskUsageWarning = "Depending on the size of the data stored on your instance, generating this report can consume all the memory available on your server and lead to a crash. Use with caution!";
+    Messages.admin_diskUsageWarning = "Depending on the size of the data stored on your instance, generating this report can consume all the memory available on your server and lead to a crash. Use with caution!"; // XXX
     create['disk-usage'] = function () {
         var key = 'disk-usage';
         var $div = makeBlock(key, true); // Msg.admin_diskUsageHint, .admin_diskUsageTitle, .admin_diskUsageButton
