@@ -3868,6 +3868,8 @@ define([
                 });
             }
 
+            var $fileHeader = getFileListHeader(false);
+            $list.append($fileHeader);
             $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active1Day)));
             filesList.some(function (arr) {
                 var id = arr[0];
