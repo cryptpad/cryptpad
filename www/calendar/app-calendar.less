@@ -113,7 +113,8 @@
                 justify-content: center !important;
                 align-items: center !important;
                 .tui-full-calendar-popup {
-                    width: 540px !important;
+                    width: 540px;
+                    max-width: 100%;
                 }
             }
             #tui-full-calendar-popup-arrow {
@@ -138,15 +139,11 @@
             border-radius: @variables_radius_L;
         }
         .tui-full-calendar-popup-container {
+            min-width: 100%;
             background: @cp_flatpickr-bg;
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
             font-weight: normal;
-            @media screen and (max-width: 600px)
-            {
-                max-width: 100%;
-                margin-left: 80px;
-            }
             .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox) {
                 display: none;
             }
@@ -317,9 +314,11 @@
                         }
                     }
                     span:not(:last-child) {
-                        margin: 0px 5px;
+                        margin: 1px 5px;
+                        display: inline;
                     }
                     .btn-danger-outline {
+                        display: inline-block;
                         margin-right: 0px !important;
                         background-color: transparent;
                         color: @cryptpad_text_col;
