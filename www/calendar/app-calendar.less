@@ -113,11 +113,7 @@
                 justify-content: center !important;
                 align-items: center !important;
                 .tui-full-calendar-popup {
-                    width: 540px;
-                    @media screen and (max-width: 780px)
-                    {
-                        width: 100%;
-                    }
+                    width: 540px !important;
                 }
             }
             #tui-full-calendar-popup-arrow {
@@ -146,9 +142,10 @@
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
             font-weight: normal;
-            @media screen and (max-width: 780px)
+            @media screen and (max-width: 600px)
             {
-                min-width: 100%;
+                max-width: 100%;
+                margin-left: 80px;
             }
             .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox) {
                 display: none;
@@ -194,11 +191,6 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     font: @colortheme_app-font;
-                    @media screen and (max-width: 780px)
-                    {
-                        font-size: 14px;
-                        padding: 6px;
-                    }
                 }
                 input { flex: 1; }
             }
@@ -296,10 +288,6 @@
             * {
                 font-size: @colortheme_app-font-size;
                 font-weight: normal;
-                @media screen and (max-width: 780px)
-                {
-                    font-size: 14px;
-                }
             }
             & > div {
                 display: flex;
