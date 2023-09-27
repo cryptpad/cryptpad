@@ -1151,11 +1151,13 @@ define([
             editor.focus();
         };
         for (var k in actions) {
-            $('<button>', {
+            let $b = $('<button>', {
                 'data-type': k,
                 'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
-            }).click(onClick).appendTo($toolbar);
+            }).click(onClick);
+            if (k === "embed") { $toolbar.prepend($b); }
+            else { $toolbar.append($b); }
         }
         $('<button>', {
             'class': 'pure-button fa fa-question cp-markdown-help',
