@@ -117,6 +117,7 @@ define([
                 var key = Hash.encodeBase64(secret.keys.cryptKey);
                 sframeChan.event("EV_SECURE_ACTION", {
                     type: parsed.type,
+                    fileType: data.fileType,
                     href: data.url,
                     src: src,
                     name: data.name,
@@ -230,7 +231,7 @@ define([
                         if (data.static) { $span.attr('title', Util.fixHTML(data.href)); }
                         $span.click(function () {
                             if (typeof onFilePicked === "function") {
-                                onFilePicked({url: data.href, name: name, static: data.static, password: data.password});
+                                onFilePicked({url: data.href, name: name, static: data.static, password: data.password, fileType: data.fileType});
                             }
                         });
 
