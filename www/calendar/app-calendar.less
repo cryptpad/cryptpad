@@ -30,6 +30,17 @@
             display: none !important;
         }
 
+
+        .tui-full-calendar-confirm {
+            span, i {
+                padding: 0.5rem;
+            }
+            span {
+                padding-left: 0;
+            }
+            width: unset;
+        }
+
         .tui-full-calendar-layout {
             background-color: @cp_sidebar-right-bg !important;
             color: @cryptpad_text_col;
@@ -343,7 +354,10 @@
                 // margin-bottom: 20px;
                 input {
                     width: 80px;
-                    margin-right: 5px;
+                    margin-right: 0.3rem;
+                }
+                .fa-plus{
+                    margin-left:0.3rem;
                 }
             }
         }
@@ -656,5 +670,6 @@
             }
         }
     }
+
 }
 

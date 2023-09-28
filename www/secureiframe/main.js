@@ -4,11 +4,12 @@ define([
     '/api/config',
     'jquery',
     '/common/requireconfig.js',
+    '/common/common-util.js',
     '/customize/messages.js',
-], function (nThen, ApiConfig, $, RequireConfig, Messages) {
+], function (nThen, ApiConfig, $, RequireConfig, Util, Messages) {
     var requireConfig = RequireConfig();
 
-    var ready = false;
+    var readyEvt = Util.mkEvent(true);
 
     var create = function (config) {
         // Loaded in load #2
@@ -169,26 +170,24 @@ define([
                 });
 
                 sframeChan.onReady(function () {
-                    if (ready === true) { return; }
-                    if (typeof ready === "function") {
-                        ready();
-                    }
-                    ready = true;
+                    readyEvt.fire();
                 });
             });
         });
         var refresh = function (data, cb) {
-            if (!ready) {
-                ready = function () {
-                    refresh(data, cb);
-                };
-                return;
-            }
-            sframeChan.event('EV_REFRESH', data);
-            cb();
+            readyEvt.reg(() => {
+                sframeChan.event('EV_REFRESH', data);
+                cb();
+            });
+        };
+        var setTitle = function (title) {
+            readyEvt.reg(() => {
+                sframeChan.event('EV_IFRAME_TITLE', title);
+            });
         };
         return {
-            refresh: refresh
+            refresh: refresh,
+            setTitle: setTitle
         };
     };
     return {

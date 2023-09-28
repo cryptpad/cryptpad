@@ -56,16 +56,16 @@ define([
     };
 
     var languageSelector = function () {
-        var options = [];
         var languages = Msg._languages;
         var selected = Msg._languageUsed;
         var keys = Object.keys(languages).sort();
-        keys.forEach(function (l) {
-            var attr = { value: l, role: 'option'};
+        var options = keys.map(function (l) {
+            var attr = { value: l };
             if (selected === l) { attr.selected = 'selected'; }
-            options.push(h('option', attr, languages[l]));
+            return h('option', attr, languages[l]);
         });
-        var select = h('select', {role: 'listbox', 'label': 'language'}, options);
+        Msg.selectLanguage = "Select a language"; // XXX
+        var select = h('select', { 'aria-label': Msg.selectLanguage }, options);
         $(select).change(function () {
             Language.setLanguage($(select).val() || '', null, function () {
                 window.location.reload();

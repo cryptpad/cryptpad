@@ -1292,11 +1292,15 @@ define([
         // XXX translation keys
         var $div = makeBlock(key, true); // Msg.admin_totpRecoveryHint.totpRecoveryTitle
 
-        var textarea = h('textarea', {});
+        var textarea = h('textarea', { id: 'textarea-input' });
         var $input = $(textarea);
 
+        Messages.add_here = "Add here"; // XXX temporary solution
+        var label = h('label', { for: 'textarea-input' },Messages.add_here);
+
         var box = h('div.cp-admin-setter', [
-            textarea,
+            label,
+            textarea
         ]);
 
         $div.find('.cp-sidebarlayout-description').after(box);
@@ -1476,10 +1480,18 @@ Example
 
         var input = h('input', {
             type: 'email',
-            value: ApiConfig.adminEmail || ''
+            value: ApiConfig.adminEmail || '',
+            id: 'emailInput'
         });
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', input);
+
+        Messages.email = "Email"; // XXX temporary solution
+        var label = h('label', {
+            for: 'emailInput'
+        },Messages.email);
+
+        var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', [label, input]);
+
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
@@ -1568,9 +1580,15 @@ Example
             type: 'text',
             value: getInstanceString('instanceNotice'),
             placeholder: '',
+            id: 'instance-notice'
         });
+
+        var label = h('label', {
+            for: 'instance-notice'
+        });
+
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setter', input);
+        var innerDiv = h('div.cp-admin-setter', [label,input]);
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
@@ -1696,16 +1714,23 @@ Example
         var _limit = APP.instanceStatus.defaultStorageLimit;
         var _limitMB = Util.bytesToMegabytes(_limit);
         var limit = getPrettySize(_limit);
-        var newLimit = h('input', {type: 'number', min: 0, value: _limitMB});
+        var newLimit = h('input', { type: 'number', min: 0, value: _limitMB, id: 'default-limit' });
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
+
+        Messages.admin_defaultLimitMB = "Default Limit"; // XXX Messages.admin_defaultLimitMB is empty
         $div.append(h('div', [
             h('span.cp-admin-defaultlimit-value', Messages._getKey('admin_limit', [limit])),
             h('div.cp-admin-setlimit-form', [
-                h('label', Messages.admin_defaultLimitMB),
-                newLimit,
+                h('div', [
+                    h('label', { for: 'default-limit' }, Messages.admin_defaultLimitMB),
+                    newLimit
+                ]),
                 h('nav', [set])
             ])
         ]));
+
+
+
 
         UI.confirmButton(set, {
             classes: 'btn-primary',
@@ -1815,21 +1840,23 @@ Example
         var key = 'setlimit';
         var $div = makeBlock(key); // Msg.admin_setlimitHint, .admin_setlimitTitle
 
-        var user = h('input.cp-setlimit-key');
+        var user = h('input.cp-setlimit-key', { id: 'user-input' });
         var $key = $(user);
-        var limit = h('input.cp-setlimit-quota', {type: 'number', min: 0, value: 0});
-        var note = h('input.cp-setlimit-note');
+        var limit = h('input.cp-setlimit-quota', { type: 'number', min: 0, value: 0, id: 'limit-input' });
+        var note = h('input.cp-setlimit-note', { id: 'note-input' });
         var remove = h('button.btn.btn-danger', Messages.fc_remove);
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
+
         var form = h('div.cp-admin-setlimit-form', [
-            h('label', Messages.admin_limitUser),
+            h('label', { for: 'user-input' }, Messages.admin_limitUser),
             user,
-            h('label', Messages.admin_limitMB),
+            h('label', { for: 'limit-input' }, Messages.admin_limitMB),
             limit,
-            h('label', Messages.admin_limitSetNote),
+            h('label', { for: 'note-input' }, Messages.admin_limitSetNote),
             note,
             h('nav', [set, remove])
         ]);
+
         var $note = $(note);
 
         var getValues = function () {
@@ -2643,10 +2670,14 @@ Example
                     'data-lang': l,
                     label: {class: 'noTitle'}
                 });
+
+                var label = h('label', { for: 'kanban-body' }, Messages.kanban_body);
+                var textarea = h('textarea', { id: 'kanban-body' });
+
                 $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
                     h('h4', languages[l]),
-                    h('label', Messages.kanban_body),
-                    h('textarea'),
+                    label,
+                    textarea,
                     radio,
                     preview
                 ]));
@@ -2781,8 +2812,8 @@ Example
             }
 
             // Start and end date pickers
-            var start = h('input');
-            var end = h('input');
+            var start = h('input#cp-admin-start-input');
+            var end = h('input#cp-admin-end-input');
             var $start = $(start);
             var $end = $(end);
             var is24h = UIElements.is24h();
@@ -2853,9 +2884,9 @@ Example
 
             $form.empty().append([
                 active,
-                h('label', Messages.broadcast_start),
+                h('label', { for: 'cp-admin-start-input' }, Messages.broadcast_start),
                 start,
-                h('label', Messages.broadcast_end),
+                h('label', { for: 'cp-admin-end-input' }, Messages.broadcast_end),
                 end,
                 h('br'),
                 h('div.cp-broadcast-form-submit', [
@@ -2901,8 +2932,8 @@ Example
             }
 
             // Survey form
-            var label = h('label', Messages.broadcast_surveyURL);
-            var input = h('input');
+            var label = h('label', { for: 'cp-admin-survey-url-input' }, Messages.broadcast_surveyURL);
+            var input = h('input#cp-admin-survey-url-input');
             var $input = $(input);
 
             // Extract form data
@@ -3084,15 +3115,19 @@ Example
 
         var duration = APP.instanceStatus.profilingWindow;
         if (!isPositiveInteger(duration)) { duration = 10000; }
-        var newDuration = h('input', {type: 'number', min: 0, value: duration});
+        var newDuration = h('input#cp-admin-duration-input', { type: 'number', min: 0, value: duration });
         var set = h('button.btn.btn-primary', Messages.admin_setDuration);
+
+        var label = h('label', { for: 'cp-admin-duration-input' }, Messages.ui_ms);
+
         $div.append(h('div', [
-            h('span.cp-admin-bytes-written-duration', Messages.ui_ms),
             h('div.cp-admin-setlimit-form', [
+                label,
                 newDuration,
                 h('nav', [set])
             ])
         ]));
+
 
         UI.confirmButton(set, {
             classes: 'btn-primary',

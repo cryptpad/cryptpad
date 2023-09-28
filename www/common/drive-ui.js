@@ -1490,6 +1490,8 @@ define([
                 $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
             }
             var $button = $driveToolbar.find('#cp-app-drive-toolbar-context-mobile');
+            Messages.context_menu = 'Context menu'; // XXX
+            $button.attr('aria-label', Messages.context_menu);
             if ($button.length) { // mobile
                 if ($li.length !== 1
                     || !$._data($li[0], 'events').contextmenu
@@ -2693,6 +2695,7 @@ define([
                 gridIcon,
                 listIcon
             ]));
+            $button.attr('aria-label', 'View Mode Button'); // XXX missing key?
             var $gridIcon = $(gridIcon);
             var $listIcon = $(listIcon);
             var showMode = function (mode) {
