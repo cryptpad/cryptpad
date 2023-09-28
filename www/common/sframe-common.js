@@ -433,7 +433,11 @@ define([
     };
 
     funcs.setLoginRedirect = function (page) {
-        ctx.sframeChan.query('EV_SET_LOGIN_REDIRECT', page);
+        // We have to logout before redirecting because otherwise Safari might keep
+        // the guest SharedWorker alive
+        funcs.logout(() => {
+            ctx.sframeChan.event('EV_SET_LOGIN_REDIRECT', page);
+        });
     };
 
     funcs.isPresentUrl = function (cb) {
