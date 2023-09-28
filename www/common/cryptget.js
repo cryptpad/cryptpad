@@ -193,6 +193,11 @@ define([
                 finish(Session, void 0, doc);
             });
         };
+
+        config.onChannelError = function (info) {
+            finish(Session, info);
+        };
+
         overwrite(config, opt);
 
         start(Session, config);

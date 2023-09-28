@@ -53,6 +53,20 @@ define([
     var common;
     var sFrameChan;
 
+// XXX
+// TO DELETE
+// Messages.admin_archivePinLog
+// Messages.admin_restoreArchivedPins
+// TO ADD
+Messages.admin_archiveAccount = "Archive this account";
+Messages.admin_archiveAccountInfo = "Including its owned documents";
+Messages.admin_archiveAccountConfirm = "Please specify the reason for archival, this will be shown to the user.";
+Messages.admin_restoreAccount = "Restore this account";
+Messages.admin_accountSuspended = "Account archived by admin";
+Messages.admin_accountReport = "Account archive report";
+Messages.admin_accountReportFull = "Get detailed report";
+Messages.admin_channelPlaceholder = "Destroyed document placeholder";
+
     var categories = {
         'general': [ // Msg.admin_cat_general
             'cp-admin-flush-cache',
@@ -226,6 +240,7 @@ define([
                 data.currentlyOnline = response[0];
             }));
         }).nThen(function (w) {
+            if (!data.first) { return; }
             sframeCommand('GET_USER_QUOTA', key, w((err, response) => {
                 if (err || !response) {
                     return void console.error('quota', err, response);
@@ -236,6 +251,7 @@ define([
                 }
             }));
         }).nThen(function (w) {
+            if (!data.first) { return; }
             // storage used
             sframeCommand('GET_USER_TOTAL_SIZE', key, w((err, response) => {
                 if (err || !Array.isArray(response)) {
@@ -246,6 +262,7 @@ define([
                 }
             }));
         }).nThen(function (w) {
+            if (!data.first) { return; }
             // channels pinned
             // files pinned
             sframeCommand('GET_USER_STORAGE_STATS', key, w((err, response) => {
@@ -268,6 +285,17 @@ define([
                     data.archived = response[0].archived;
                 }
             }));
+        }).nThen(function (w) {
+            if (data.first) { return; }
+            // Account is probably deleted
+            sframeCommand('GET_ACCOUNT_ARCHIVE_STATUS', {key}, w((err, response) => {
+                if (err || !Array.isArray(response) || !response[0]) {
+                    console.error('account status', err, response);
+                } else {
+                    console.info('account status', response);
+                    data.archiveReport = response[0];
+                }
+            }));
         }).nThen(function () {
             //console.log(data);
             try {
@@ -281,6 +309,12 @@ define([
                     if (typeof(val) !== 'number') { return; }
                     data[`${k}_formatted`] = getPrettySize(val);
                 });
+                if (data.archiveReport) {
+                    let formatted = Util.clone(data.archiveReport);
+                    formatted.channels = data.archiveReport.channels.length;
+                    formatted.blobs = data.archiveReport.blobs.length;
+                    data['archiveReport_formatted'] = JSON.stringify(formatted, 0, 2);
+                }
             } catch (err) {
                 console.error(err);
             }
@@ -391,11 +425,13 @@ define([
             ]));
         }
 
-        // First pin activity time
-        row(Messages.admin_firstPinTime, maybeDate(data.first));
+        if (data.first || data.latest) {
+            // First pin activity time
+            row(Messages.admin_firstPinTime, maybeDate(data.first));
 
-        // last pin activity time
-        row(Messages.admin_lastPinTime, maybeDate(data.latest));
+            // last pin activity time
+            row(Messages.admin_lastPinTime, maybeDate(data.latest));
+        }
 
         // currently online
         row(Messages.admin_currentlyOnline, localizeState(data.currentlyOnline));
@@ -407,27 +443,46 @@ define([
         row(Messages.admin_note, data.note || Messages.ui_none);
 
         // storage limit
-        row(Messages.admin_planlimit, getPrettySize(data.limit));
+        if (data.limit) { row(Messages.admin_planlimit, getPrettySize(data.limit)); }
 
         // data stored
-        row(Messages.admin_storageUsage, getPrettySize(data.usage));
+        if (data.usage) { row(Messages.admin_storageUsage, getPrettySize(data.usage)); }
 
         // number of channels
-        row(Messages.admin_channelCount, data.channels);
+        if (typeof(data.channel) === "number") {
+            row(Messages.admin_channelCount, data.channels);
+        }
 
         // number of files pinned
-        row(Messages.admin_fileCount, data.files);
+        if (typeof(data.channel) === "number") {
+            row(Messages.admin_fileCount, data.files);
+        }
 
         row(Messages.admin_pinLogAvailable, localizeState(data.live));
 
         // pin log archived
         row(Messages.admin_pinLogArchived, localizeState(data.archived));
 
+        if (data.archiveReport) {
+            row(Messages.admin_accountSuspended, localizeState(Boolean(data.archiveReport)));
+        }
+        if (data.archiveReport_formatted) {
+            let button, pre;
+            row(Messages.admin_accountReport, h('div', [
+                pre = h('pre', data.archiveReport_formatted),
+                button = primary(Messages.admin_accountReportFull, () => {
+                    $(button).remove();
+                    $(pre).html(JSON.stringify(data.archiveReport, 0, 2));
+                })
+            ]));
+        }
+
+
     // actions
-        if (data.archived && data.live === false) {
-            row(Messages.admin_restoreArchivedPins, primary(Messages.ui_restore, function () {
+        if (data.archived && data.live === false && data.archiveReport) {
+            row(Messages.admin_restoreAccount, primary(Messages.ui_restore, function () {
                 justifyRestorationDialog('', reason => {
-                    sframeCommand('RESTORE_ARCHIVED_PIN_LOG', {
+                    sframeCommand('RESTORE_ACCOUNT', {
                         key: data.key,
                         reason: reason,
                     }, function (err) {
@@ -497,9 +552,10 @@ define([
 
             // archive pin log
             var archiveHandler = () => {
-                justifyArchivalDialog(Messages.admin_archivePinLogConfirm, reason => {
-                    sframeCommand('ARCHIVE_PIN_LOG', {
+                justifyArchivalDialog(Messages.admin_archiveAccountConfirm, reason => {
+                    sframeCommand('ARCHIVE_ACCOUNT', {
                         key: data.key,
+                        block: data.blockId,
                         reason: reason,
                     }, (err /*, response */) => {
                         console.error(err);
@@ -512,7 +568,12 @@ define([
                 });
             };
 
-            row(Messages.admin_archivePinLog, danger(Messages.admin_archiveButton, archiveHandler));
+            var archiveAccountLabel = h('span', [
+                Messages.admin_archiveAccount,
+                h('br'),
+                h('small', Messages.archiveAccountInfo)
+            ]);
+            row(archiveAccountLabel, danger(Messages.admin_archiveButton, archiveHandler));
 
             // archive owned documents
 /* // TODO not implemented
@@ -678,6 +739,7 @@ define([
                 }
                 data.live = res[0].live;
                 data.archived = res[0].archived;
+                data.placeholder = res[0].placeholder;
                 //console.error("get channel status", err, res);
             }));
         }).nThen(function () {
@@ -696,7 +758,6 @@ define([
 
 /* FIXME
     Messages.admin_getFullPinHistory = 'Pin history';
-    Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive.";
     Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)";
     Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored.";
 */
@@ -789,6 +850,11 @@ define([
         if (data.type === 'file') {
             // TODO what to do for files?
 
+        }
+
+        if (data.placeholder) {
+            console.warn('Placeholder code', data.placeholder);
+            row(Messages.admin_channelPlaceholder, UI.getDestroyedPlaceholderMessage(data.placeholder));
         }
 
         if (data.live && data.archived) {
@@ -1075,6 +1141,7 @@ define([
                 data.live = res[0].live;
                 data.archived = res[0].archived;
                 data.totp = res[0].totp;
+                data.placeholder = res[0].placeholder;
             }));
         }).nThen(function () {
             try {
@@ -1119,6 +1186,10 @@ define([
                 });
             });
             row(Messages.admin_archiveBlock, archiveButton);
+        }
+        if (data.placeholder) {
+            console.warn('Placeholder code', data.placeholder);
+            row(Messages.admin_channelPlaceholder, UI.getDestroyedPlaceholderMessage(data.placeholder, true));
         }
         if (data.archived && !data.live) {
             var restoreButton = danger(Messages.ui_restore, function () {

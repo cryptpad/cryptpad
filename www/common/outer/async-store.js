@@ -203,7 +203,7 @@ define([
         };
 
         var getUserChannelList = function () {
-            var userChannel = store.driveChannel;
+            var userChannel = `${store.driveChannel}#drive`;
             if (!userChannel) { return null; }
 
             // Get the list of pads' channel ID in your drive
@@ -245,6 +245,11 @@ define([
             }
 
             list.push(userChannel);
+
+            if (store.data && store.data.blockId) {
+                //list.push(`${store.data.blockId}#block`); // XXX 5.5.0?
+            }
+
             list.sort();
 
             return list;
@@ -360,10 +365,12 @@ define([
             var channel = data;
             var force = false;
             var teamId;
+            var reason;
             if (data && typeof(data) === "object") {
                 channel = data.channel;
                 force = data.force;
                 teamId = data.teamId;
+                reason = data.reason;
             }
 
             if (channel === store.driveChannel && !force) {
@@ -380,7 +387,7 @@ define([
             s.rpc.removeOwnedChannel(channel, function (err) {
                 if (err) { delete myDeletions[channel]; }
                 cb({error:err});
-            });
+            }, reason);
         };
 
         var arePinsSynced = function (cb) {
@@ -507,11 +514,9 @@ define([
             var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
-                if (response && response.length && typeof(response[0]) === 'boolean') {
-                    if (response[0]) { Cache.clearChannel(channelId); }
-                    return void cb({
-                        isNew: response[0]
-                    });
+                if (response && response.length && typeof(response[0]) === 'object') {
+                    if (response[0].isNew) { Cache.clearChannel(channelId); }
+                    return void cb(response[0]);
                 } else {
                     cb({error: 'INVALID_RESPONSE'});
                 }
@@ -634,6 +639,7 @@ define([
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
+            return metadata;
         };
 
         Store.onMaintenanceUpdate = function (uid) {
@@ -882,6 +888,7 @@ define([
                     }).nThen(function (waitFor) {
                         if (!blockKeys) { return; }
                         Block.removeLoginBlock({
+                            reason: 'ARCHIVE_OWNED',
                             auth: auth,
                             blockKeys: blockKeys,
                         }, waitFor(function (err) {
@@ -2720,6 +2727,7 @@ define([
                 loadSharedFolder: loadSharedFolder,
                 settings: proxy.settings,
                 removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
+                store: store,
                 Store: Store
             }, {
                 outer: true,
@@ -3043,6 +3051,13 @@ define([
                     rt.network.disconnect();
                     rt.realtime.abort();
                     sendDriveEvent('NETWORK_DISCONNECT');
+                }
+            })
+            .on('error', function (info) {
+                if (info.error && info.error === 'EDELETED') {
+                    broadcast([], "LOGOUT", {
+                        reason: info.message
+                    });
                 }
             });
 

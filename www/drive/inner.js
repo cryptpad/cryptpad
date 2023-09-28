@@ -57,7 +57,7 @@ define([
                         if (!newObj || !Object.keys(newObj).length) {
                             // Empty anon drive: deleted
                             var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
-                            setTimeout(function () { UI.errorLoadingScreen(msg, false, function () {}); });
+                            setTimeout(function () { UI.errorLoadingScreen(msg, false, true); });
                             APP.newSharedFolder = null;
                         }
                     }

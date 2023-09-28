@@ -794,6 +794,29 @@ define([
         cb(true);
     };
 
+    var sfDeleted = {};
+    handlers['SF_DELETED'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        var teamId = content.team;
+        var sfId = content.sfId;
+
+        if (sfDeleted[sfId]) { return void cb(true); }
+        sfDeleted[sfId] = 1;
+
+        // If it's a team SF, add the team name here
+
+        if (!teamId) { return void cb(false); }
+
+        var team = ctx.store.proxy.teams[teamId];
+        content.teamName = team.metadata && team.metadata.name;
+        cb(false);
+    };
+    removeHandlers['SF_DELETED'] = function (ctx, box, data) {
+        var id = data.content.sfId;
+        delete sfDeleted[id];
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**

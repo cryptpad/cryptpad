@@ -2869,6 +2869,7 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var sframeChan = common.getSframeChannel();
         var msg = err.type;
+        var exitable = Boolean(err.loaded);
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
@@ -2883,6 +2884,22 @@ define([
             if (autoStoreModal[priv.channel]) {
                 autoStoreModal[priv.channel].delete();
                 delete autoStoreModal[priv.channel];
+            }
+
+            if (err.message && err.drive) {
+                let msg = UI.getDestroyedPlaceholder(err.message, true);
+                return UI.errorLoadingScreen(msg, false, () => {
+                    // When closing error screen
+                    if (err.message === 'PASSWORD_CHANGE') {
+                        return common.setLoginRedirect('login');
+                    }
+                    return common.setLoginRedirect('');
+                });
+            }
+            if (err.message && err.message !== "PASSWORD_CHANGE") {
+                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
+                    exitable, exitable);
+                return;
             }
 
             if (err.ownDeletion) {
@@ -2930,7 +2947,12 @@ define([
         var error;
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
 
-        var info = h('p.cp-password-info', Messages.password_info);
+        var pwMsg = UI.getDestroyedPlaceholderMessage('PASSWORD_CHANGE', false);
+        if (cfg.legacy) {
+            // Legacy mode: we don't know if the pad has been destroyed or its password has changed
+            pwMsg = Messages.password_info;
+        }
+        var info = h('p.cp-password-info', pwMsg);
         var info_loaded = setHTML(h('p.cp-password-info'), Messages.errorCopy);
 
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});

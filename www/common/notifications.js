@@ -407,6 +407,28 @@ define([
         }
     };
 
+    handlers['SF_DELETED'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var title = Util.fixHTML(msg.content.title);
+        var teamName = Util.fixHTML(msg.content.teamName);
+
+        Messages.dph_sf_destroyed = "Your shared folder <em>{0}</em> has been destroyed by its owner."; // XXX
+        Messages.dph_sf_destroyed_team= "The shared folder <em>{0}</em> from your team <b>{1}</b> has been destroyed by its owner."; // XXX
+
+        content.getFormatText = function() {
+            if (teamName) {
+                return Messages._getKey('dph_sf_destroyed_team', [title, teamName]);
+            }
+            return Messages._getKey('dph_sf_destroyed', [title]);
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     handlers['MOVE_TODO'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
