@@ -929,6 +929,7 @@ define([
                             });
                         }
 
+                        Messages.access_passwordUsed = "This password has already been used for this pad. It can't be used again."; // XXX NEW
                         var href = data.href;
                         var isNotStored = Boolean(data.isNotStored);
                         sframeChan.query(q, {
@@ -939,8 +940,12 @@ define([
                         }, function (err, data) {
                             $(passwordOk).text(Messages.properties_changePasswordButton);
                             pLocked = false;
-                            if (err || data.error) {
-                                console.error(err || data.error);
+                            err = err || data.error;
+                            if (err) {
+                                if (err === "PASSWORD_ALREADY_USED") {
+                                    return void UI.alert(Messages.access_passwordUsed);
+                                }
+                                console.error(err);
                                 return void UI.alert(Messages.properties_passwordError);
                             }
                             UI.findOKButton().click();

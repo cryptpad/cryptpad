@@ -1452,8 +1452,10 @@ define([
         }).nThen(function (waitFor) {
             optsPut.metadata.restricted = oldMetadata.restricted;
             optsPut.metadata.allowed = oldMetadata.allowed;
+            if (!newPassword) { optsPut.metadata.forcePlaceholder = true; }
             Crypt.put(newHash, cryptgetVal, waitFor(function (err) {
                 if (err) {
+                    if (err === "EDELETED") { err = "PASSWORD_ALREADY_USED"; }
                     waitFor.abort();
                     return void cb({ error: err });
                 }
