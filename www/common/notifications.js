@@ -415,9 +415,6 @@ define([
         var title = Util.fixHTML(msg.content.title);
         var teamName = Util.fixHTML(msg.content.teamName);
 
-        Messages.dph_sf_destroyed = "Your shared folder <em>{0}</em> has been destroyed by its owner."; // XXX
-        Messages.dph_sf_destroyed_team= "The shared folder <em>{0}</em> from your team <b>{1}</b> has been destroyed by its owner."; // XXX
-
         content.getFormatText = function() {
             if (teamName) {
                 return Messages._getKey('dph_sf_destroyed_team', [title, teamName]);

@@ -53,20 +53,6 @@ define([
     var common;
     var sFrameChan;
 
-// XXX
-// TO DELETE
-// Messages.admin_archivePinLog
-// Messages.admin_restoreArchivedPins
-// TO ADD
-Messages.admin_archiveAccount = "Archive this account";
-Messages.admin_archiveAccountInfo = "Including its owned documents";
-Messages.admin_archiveAccountConfirm = "Please specify the reason for archival, this will be shown to the user.";
-Messages.admin_restoreAccount = "Restore this account";
-Messages.admin_accountSuspended = "Account archived by admin";
-Messages.admin_accountReport = "Account archive report";
-Messages.admin_accountReportFull = "Get detailed report";
-Messages.admin_channelPlaceholder = "Destroyed document placeholder";
-
     var categories = {
         'general': [ // Msg.admin_cat_general
             'cp-admin-flush-cache',
@@ -1166,7 +1152,7 @@ Messages.admin_channelPlaceholder = "Destroyed document placeholder";
         row(Messages.admin_blockArchived, localizeState(data.archived));
 
         row(Messages.admin_totpEnabled, localizeState(Boolean(data.totp.enabled)));
-        row(Messages.admin_totpRecoveryMethod, data.totp.recovery); // XXX localize?
+        row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
 
         if (data.live) {
             var archiveButton = danger(Messages.ui_archive, function () {
@@ -1322,7 +1308,7 @@ Messages.admin_channelPlaceholder = "Destroyed document placeholder";
 
         row(Messages.admin_totpEnabled, localizeState(Boolean(data.totp.enabled)));
         if (data.totp && data.totp.enabled) {
-            row(Messages.admin_totpRecoveryMethod, data.totp.recovery); // XXX localize?
+            row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
         }
 
         if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }

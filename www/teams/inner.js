@@ -544,7 +544,6 @@ define([
             if (state) { return; }
             var name = $(input).val();
             if (!name.trim()) { return; }
-            Messages.team_nameTooLong = "Team name is too long"; // XXX
             if(name.length > 50) { return UI.warn(Messages.team_nameTooLong); }
             state = true;
             $spinner.show();
@@ -1049,14 +1048,12 @@ define([
         var todo = function () {
             var newName = $input.val();
             if (!newName.trim()) { return; }
-            Messages.team_nameTooLong = "Team name is too long"; // XXX
             if(newName.length > 50){
                 return UI.warn(Messages.team_nameTooLong);
             }
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
             }, function (obj) {
-                Messages.team_nameAlreadySet = "Team name is already set to {0}"; // XXX
                 if (obj && obj.error) { return void UI.warn(Messages.error); }
                 if (obj.name === newName) {
                     return void UI.warn(Messages._getKey('team_nameAlreadySet', [Util.fixHTML(newName)]));

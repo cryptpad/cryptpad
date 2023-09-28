@@ -4254,8 +4254,6 @@ define([
         if (APP.responseDiv) { $(APP.responseDiv).detach(); }
         $container.empty().append(_content);
 
-
-// XXX Delete translation key form_updateMsg
         if (editable) {
             var responseMsg = h('div.cp-form-response-msg-container');
             var $responseMsg = $(responseMsg).appendTo($container);

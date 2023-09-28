@@ -17,7 +17,7 @@ define([
                         h('div.cp-login-instance', Msg._getKey('login_instance', [ Pages.Instance.name ])),
                         h('div.big-container', [
                             h('div.input-container', [
-                                h('label.cp-default-label', { for: 'name' }, Msg.login_username), // XXX label not visible
+                                h('label.cp-default-label', { for: 'name' }, Msg.login_username),
                                 h('input.form-control#name', {
                                     name: 'name',
                                     type: 'text',
@@ -30,7 +30,7 @@ define([
                                 }),
                             ]),
                             h('div.input-container', [
-                                h('label.cp-default-label', { for: 'password' }, Msg.login_password), // XXX label not visible
+                                h('label.cp-default-label', { for: 'password' }, Msg.login_password),
                                 h('input.form-control#password', {
                                     type: 'password',
                                     'name': 'password',

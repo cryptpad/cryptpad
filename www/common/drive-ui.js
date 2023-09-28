@@ -1516,7 +1516,6 @@ define([
                 $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
             }
             var $button = $driveToolbar.find('#cp-app-drive-toolbar-context-mobile');
-            Messages.context_menu = 'Context menu'; // XXX
             $button.attr('aria-label', Messages.context_menu);
             if ($button.length) { // mobile
                 if ($li.length !== 1
@@ -2721,7 +2720,6 @@ define([
                 gridIcon,
                 listIcon
             ]));
-            Messages.label_viewMode = "Toggle view mode" // XXX
             $button.attr('aria-label', Messages.label_viewMode);
             var $gridIcon = $(gridIcon);
             var $listIcon = $(listIcon);
@@ -5402,7 +5400,6 @@ define([
             });
         }
         */
-        Messages.dph_sf_pw = "Your shared folder {0} is no longer available, it is now protected with a new password. You can remove this folder from your CryptDrive or recover access using the new password."; // XXX PLACEHOLDER
         APP.passwordModal = function (fId, data, cb) {
             var content = [];
 

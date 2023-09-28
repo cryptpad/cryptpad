@@ -71,14 +71,14 @@ define([
                                 }),
                             ]),
                             h('div.input-container', [
-                                h('label.cp-register-label', { for: 'password' }, Msg.login_password), // XXX label not visible
+                                h('label.cp-register-label', { for: 'password' }, Msg.login_password),
                                 h('input.form-control#password', {
                                     type: 'password',
                                     placeholder: Msg.login_password,
                                 }),
                             ]),
                             h('div.input-container', [
-                                h('label.cp-register-label', { for: 'password-confirm' }, Msg.login_confirm), // XXX label not visible
+                                h('label.cp-register-label', { for: 'password-confirm' }, Msg.login_confirm),
                                 h('input.form-control#password-confirm', {
                                     type: 'password',
                                     placeholder: Msg.login_confirm,

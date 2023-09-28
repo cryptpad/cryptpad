@@ -1742,8 +1742,6 @@ define([
         var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
-    Messages.label_logo = "CryptPad logo"; // XXX Logo
-
         var content = h('div.cp-info-menu-container', [
                 h('div.logo-block', [
                     h('img', {

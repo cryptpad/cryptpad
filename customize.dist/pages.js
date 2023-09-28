@@ -64,7 +64,6 @@ define([
             if (selected === l) { attr.selected = 'selected'; }
             return h('option', attr, languages[l]);
         });
-        Msg.selectLanguage = "Select a language"; // XXX
         var select = h('select', { 'aria-label': Msg.selectLanguage }, options);
         $(select).change(function () {
             Language.setLanguage($(select).val() || '', null, function () {

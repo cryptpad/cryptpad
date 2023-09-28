@@ -9,8 +9,6 @@ define([
     var elem = document.createElement('div');
     elem.setAttribute('id', 'cp-loading');
 
-    Messages.label_logo = "CryptPad logo"; // XXX Logo
-
     elem.innerHTML = [
         '<div class="cp-loading-logo">',
             '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '" alt="' + Messages.label_logo + '">',
