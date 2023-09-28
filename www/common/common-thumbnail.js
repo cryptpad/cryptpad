@@ -240,7 +240,7 @@ define([
             });
         };
         if (window.html2canvas) { return void todo(); }
-        require(['/components/html2canvas/build/html2canvas.min.js'], todo);
+        require(['/components/html2canvas/dist/html2canvas.min.js'], todo);
     };
 
     Thumb.initPadThumbnails = function (common, opts) {

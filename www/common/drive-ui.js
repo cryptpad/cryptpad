@@ -2721,7 +2721,8 @@ define([
                 gridIcon,
                 listIcon
             ]));
-            $button.attr('aria-label', 'View Mode Button'); // XXX missing key?
+            Messages.label_viewMode = "Toggle view mode" // XXX
+            $button.attr('aria-label', Messages.label_viewMode);
             var $gridIcon = $(gridIcon);
             var $listIcon = $(listIcon);
             var showMode = function (mode) {

@@ -141,7 +141,7 @@ Messages.admin_channelPlaceholder = "Destroyed document placeholder";
         // Convert to camlCase for translation keys
         var safeKey = keyToCamlCase(key);
         var $div = $('<div>', {'class': 'cp-admin-' + key + ' cp-sidebarlayout-element'});
-        $('<label>').text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
+        $('<label>', {'id': 'cp-admin-' + key}).text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .text(Messages['admin_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
         if (addButton) {
@@ -571,7 +571,7 @@ Messages.admin_channelPlaceholder = "Destroyed document placeholder";
             var archiveAccountLabel = h('span', [
                 Messages.admin_archiveAccount,
                 h('br'),
-                h('small', Messages.archiveAccountInfo)
+                h('small', Messages.admin_archiveAccountInfo)
             ]);
             row(archiveAccountLabel, danger(Messages.admin_archiveButton, archiveHandler));
 
@@ -1360,19 +1360,15 @@ Messages.admin_channelPlaceholder = "Destroyed document placeholder";
 
     create['totp-recovery'] = function () {
         var key = 'totp-recovery';
-        // XXX translation keys
         var $div = makeBlock(key, true); // Msg.admin_totpRecoveryHint.totpRecoveryTitle
 
-        var textarea = h('textarea', { id: 'textarea-input' });
+        var textarea = h('textarea', {
+            id: 'textarea-input',
+            'aria-labelledby': 'cp-admin-totp-recovery'
+        });
         var $input = $(textarea);
 
-        Messages.add_here = "Add here"; // XXX temporary solution
-        var label = h('label', { for: 'textarea-input' },Messages.add_here);
-
-        var box = h('div.cp-admin-setter', [
-            label,
-            textarea
-        ]);
+        var box = h('div.cp-admin-setter', textarea);
 
         $div.find('.cp-sidebarlayout-description').after(box);
 
@@ -1552,16 +1548,11 @@ Example
         var input = h('input', {
             type: 'email',
             value: ApiConfig.adminEmail || '',
-            id: 'emailInput'
+            'aria-labelledby': 'cp-admin-email'
         });
         var $input = $(input);
 
-        Messages.email = "Email"; // XXX temporary solution
-        var label = h('label', {
-            for: 'emailInput'
-        },Messages.email);
-
-        var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', [label, input]);
+        var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', input);
 
         var spinner = UI.makeSpinner($(innerDiv));
 
@@ -1610,6 +1601,7 @@ Example
             type: 'text',
             value: getInstanceString('instanceJurisdiction'),
             placeholder: Messages.owner_unknownUser || '',
+            'aria-labelledby': 'cp-admin-jurisdiction'
         });
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setter', input);
@@ -1651,15 +1643,11 @@ Example
             type: 'text',
             value: getInstanceString('instanceNotice'),
             placeholder: '',
-            id: 'instance-notice'
-        });
-
-        var label = h('label', {
-            for: 'instance-notice'
+            'aria-labelledby': 'cp-admin-notice'
         });
 
         var $input = $(input);
-        var innerDiv = h('div.cp-admin-setter', [label,input]);
+        var innerDiv = h('div.cp-admin-setter', input);
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
@@ -1706,6 +1694,7 @@ Example
             type: 'text',
             value: getInstanceString('instanceName') || ApiConfig.httpUnsafeOrigin || '',
             placeholder: ApiConfig.httpUnsafeOrigin,
+            'aria-labelledby': 'cp-admin-name'
         });
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setter', input);
@@ -1742,6 +1731,7 @@ Example
 
         var textarea = h('textarea.cp-admin-description-text', {
             placeholder: Messages.home_host || '',
+            'aria-labelledby': 'cp-admin-description'
         }, getInstanceString('instanceDescription'));
 
         var $button = $div.find('button').text(Messages.settings_save);
@@ -1785,17 +1775,18 @@ Example
         var _limit = APP.instanceStatus.defaultStorageLimit;
         var _limitMB = Util.bytesToMegabytes(_limit);
         var limit = getPrettySize(_limit);
-        var newLimit = h('input', { type: 'number', min: 0, value: _limitMB, id: 'default-limit' });
+        var newLimit = h('input', {
+            type: 'number',
+            min: 0,
+            value: _limitMB,
+            'aria-labelledby': 'cp-admin-defaultlimit'
+        });
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
 
-        Messages.admin_defaultLimitMB = "Default Limit"; // XXX Messages.admin_defaultLimitMB is empty
         $div.append(h('div', [
             h('span.cp-admin-defaultlimit-value', Messages._getKey('admin_limit', [limit])),
             h('div.cp-admin-setlimit-form', [
-                h('div', [
-                    h('label', { for: 'default-limit' }, Messages.admin_defaultLimitMB),
-                    newLimit
-                ]),
+                newLimit,
                 h('nav', [set])
             ])
         ]));
