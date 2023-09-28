@@ -57,6 +57,9 @@
                         text-overflow: ellipsis;
                         min-width: 0;
                         display: none;
+                        @media screen and (max-width: @browser_media-medium-screen) {
+                            display: inline;
+                        }
                     }
                 }
                 &:hover {
@@ -150,7 +153,7 @@
                 padding-bottom: 20px;
                 .cp-sidebarlayout-categories {
                     .cp-sidebarlayout-category {
-                        margin: 10px 0px;
+                        margin: 0 0 0.5rem 0;
                         span.cp-sidebar-layout-category-name {
                             display: inline !important; // override "narrow" mode
                         }
