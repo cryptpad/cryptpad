@@ -102,7 +102,7 @@ define([
             source: 'https://github.com/cryptpad/cryptpad',
         };
         var l = Msg._getLanguage();
-        ['imprint', 'privacy', 'terms', 'roadmap', 'source'].forEach(function (k) {
+        ['imprint', 'privacy', 'terms', 'status', 'roadmap', 'source'].forEach(function (k) {
             var value = AppConfig[k];
             //console.log('links', k, value);
             if (value === false) { return; }
