@@ -1669,5 +1669,6 @@
     "dph_tmp_moderated_account": "This template was deleted for belonging to a suspended account",
     "dph_tmp_pw": "This template is protected with a new password. Open it from your drive to enter the new password.",
     "access_passwordUsed": "This password has already been used for this document. It cannot be used again.",
-    "status": "Status page"
+    "status": "Status page",
+    "admin_diskUsageWarning": "Use with caution! Depending on the size of the data stored on the instance, generating this report can consume all the memory available on the server and lead to a crash."
 }
