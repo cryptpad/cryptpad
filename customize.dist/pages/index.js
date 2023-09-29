@@ -100,7 +100,6 @@ define([
             }
         };
 
-        Msg.status = "Status page"; // XXX
         var pageLink = function (ref, loc, text) {
             if (!ref) { return; }
             var attrs =  {
