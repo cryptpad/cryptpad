@@ -930,7 +930,6 @@ define([
                             });
                         }
 
-                        Messages.access_passwordUsed = "This password has already been used for this pad. It can't be used again."; // XXX NEW
                         var href = data.href;
                         var isNotStored = Boolean(data.isNotStored);
                         sframeChan.query(q, {
