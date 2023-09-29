@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Daten aus Text-/CSV-Datei erhalten</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Wie kann man Daten aus Text-/CSV-Datei erhalten" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Daten aus Text-/CSV-Datei erhalten</h1>
+			<p>Wenn Sie schnell Daten aus einer .txt/.csv-Datei erhalten und alles richtig in einer Tabelle anordnen müssen, verwenden Sie die Option <b>Daten aus Text-/CSV-Datei erhalten</b>, die auf der Registerkarte <b>Daten</b> verfügbar ist.</p>
+			<h2 id="step1">Schritt 1. Datei importieren</h2>
+			<ol>
+				<li>Klicken Sie auf die Option <b>Aus Text/CSV</b> auf der Registerkarte <b>Daten</b>.</li>
+				<li>Wählen Sie eine der Importoptionen:
+					<ul>
+						<li><b>Daten aus einer Datei erhalten</b>: Finden Sie die benötigte Datei auf Ihrer Festplatte, wählen Sie diese aus und klicken Sie auf <b>Öffnen</b>.</li>
+						<li>
+							<b>Daten aus einer URL erhalten</b>: Fügen Sie den Link zur Datei oder Webseite in das Feld <b>In Daten-URL einfügen</b> ein und klicken Sie auf <b>OK</b>.
+							<p class="note">
+								Ein Link zum Anzeigen oder Bearbeiten einer auf dem ONLYOFFICE-Portal oder in einem Drittspeicher abgelegten Datei kann in diesem Fall nicht verwendet werden. Bitte verwenden Sie den Link, um die Datei <b>herunterzuladen</b>.
+							</p>
+						</li>
+						<li>
+							<b>Datei aus einem lokalen XML erhalten</b>: Suchen Sie die benötigte Datei auf Ihrer Festplatte, wählen Sie sie aus und klicken Sie auf <b>Öffnen</b>.
+							<p class="note">Derzeit wird nur XML Spreadsheet 2003 unterstützt.</p>
+						</li>
+					</ul>
+				</li>
+			</ol>
+			<h2 id="step2">Schritt 2. Einstellungen konfigurieren</h2>
+			<p>Der <b>Textimport-Assistent</b> umfasst vier Abschnitte: <b>Zeichenkodierung</b>, <b>Trennzeichen</b>, <b>Vorschau</b> und <b>Wählen Sie aus, wo diese Daten abgelegt werden soll</b>.</p>
+			<p><img alt="Textimport-Assistent" src="../images/textimport.png" /></p>
+			<ol>
+				<li><b>Zeichenkodierung</b>. Der Parameter ist standardmäßig auf <em>UTF-8</em> eingestellt. Lassen Sie es dabei oder wählen Sie den gewünschten Typ über das Drop-Down-Menü aus.</li>
+				<li>
+					<b>Trennzeichen</b>. Der Parameter legt den Typ des Trennzeichens fest, das verwendet wird, um den Text in verschiedene Zellen zu verteilen. Die verfügbaren Trennzeichen sind <em>Komma</em>, <em>Semikolon</em>, <em>Doppelpunkt</em>, <em>Tabulator</em>, <em>Leerzeichen</em> und <em>Sonstige</em> (manuell eingeben).
+					<p>Klicken Sie auf die Schaltfläche <b>Erweitert</b> rechts, um Einstellungen für numerisch erkannte Daten zu konfigurieren:</p>
+					<p><img alt="Datenimport Erweiterte Einstellungen" src="../images/dataimport_advanced.png" /></p>
+					<ul>
+						<li>Legen Sie ein <b>Dezimaltrennzeichen</b> und ein <b>Tausendertrennzeichen</b> fest. Die Standardtrennzeichen sind <b>„.“</b> für Dezimalstellen und <b>“,</b> für Tausender.</li>
+						<li>
+							Wählen Sie einen <b>Textqualifizierer</b> aus. Ein <b>Textqualifizierer</b> ist ein Zeichen, das verwendet wird, um zu erkennen, wo der Text beginnt und endet, wenn Sie Daten importieren. Die verfügbaren Optionen: <b>(kein)</b>, <b>doppelte Anführungszeichen</b> und <b>einfache Anführungszeichen</b>.
+						</li>
+					</ul>
+				</li>
+				<li><b>Vorshau</b>. Der Abschnitt zeigt, wie der Text in den Tabellenzellen angeordnet wird.</li>
+				<li><b>Wählen Sie aus, wo diese Daten abgelegt werden soll</b>. Geben Sie den gewünschten Bereich in das Feld ein oder wählen Sie einen mit der Schaltfläche <b>Daten auswählen</b> rechts aus.</li>
+				<li>Klicken Sie auf <b>OK</b>, um die Datei zu importieren und den <b>Textimport-Assistenten</b> zu schließen.</li>
+			</ol>
+		</div>
+	</body>
+</html>

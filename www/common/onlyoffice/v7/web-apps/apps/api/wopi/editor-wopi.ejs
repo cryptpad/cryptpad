@@ -1,0 +1,369 @@
+﻿<!DOCTYPE html>
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <!--
+    *
+    * (c) Copyright Ascensio System SIA 2021
+    *
+    * Licensed under the Apache License, Version 2.0 (the "License");
+    * you may not use this file except in compliance with the License.
+    * You may obtain a copy of the License at
+    *
+    *     http://www.apache.org/licenses/LICENSE-2.0
+    *
+    * Unless required by applicable law or agreed to in writing, software
+    * distributed under the License is distributed on an "AS IS" BASIS,
+    * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    * See the License for the specific language governing permissions and
+    * limitations under the License.
+    *
+    -->
+    <title>ONLYOFFICE</title>
+<style type="text/css">
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background: #fff;
+    color: #333;
+    font-family: Arial, Tahoma,sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    height: 100%;
+    margin: 0;
+    overflow-y: hidden;
+    padding: 0;
+    text-decoration: none;
+}
+
+.form {
+    height: 100%;
+}
+
+div {
+    margin: 0;
+    padding: 0;
+}
+
+.app-error-panel {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background-color: #f4f4f4;
+    z-index: 10;
+}
+
+.message-block {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.message-inner {
+    width: 550px;
+    margin: auto;
+    padding: 30px;
+    background-color: #e3e3e3;
+    text-align: center;
+}
+
+.title {
+    font-size: 24px;
+    margin: 0 0 14px;
+}
+
+.text {
+    font-size: 16px;
+}
+
+</style>
+</head>
+<body>
+    <div class="form">
+        <div id="iframeEditor">
+        </div>
+    </div>
+    <script type="text/javascript" src="../../../web-apps/apps/api/documents/api.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        var docEditor;
+        var postMessageOrigin;
+        var lang = "en-US";
+        var startTime;
+        var documentChanged;
+        var sendNotificationTimer;
+        var sessionId;
+        var fileInfo;
+        var insertImageType;
+
+        var innerAlert = function (message) {
+            if (console && console.log)
+                console.log(message);
+        };
+
+        var commandMap = {
+            'Blur_Focus': function (data) {
+                innerAlert('Blur_Focus');
+                docEditor.blurFocus();
+            },
+            'Grab_Focus': function (data) {
+                innerAlert('Grab_Focus');
+                docEditor.grabFocus();
+            },
+            'Action_InsertGraphic': function (data) {
+                data && data.Values && docEditor.insertImage({
+                    "c": insertImageType,
+                    "images": [{ "url": data.Values.url }]
+                });
+            },
+            'Host_PostmessageReady': function (data) {
+                innerAlert('Host_PostmessageReady');
+            }
+        };
+
+        var _postMessage = function(msgId, msgData) {
+            if (window.parent && window.JSON) {
+                msgData = msgData || {};
+                msgData["ui-language"] = lang;
+                msgData["wdUserSession"] = sessionId;
+                var msg = {
+                    "MessageId": msgId,
+                    "SendTime": Date.now(),
+                    "Values": msgData
+                };
+                window.parent.postMessage(window.JSON.stringify(msg), postMessageOrigin);
+            }
+        };
+
+        var _onMessage = function(msg) {
+            if (msg.origin !== postMessageOrigin) return;
+
+            var data = msg.data;
+            if (Object.prototype.toString.apply(data) !== '[object String]' || !window.JSON) {
+                return;
+            }
+
+            var cmd, handler;
+
+            try {
+                cmd = window.JSON.parse(data)
+            } catch(e) {
+                cmd = '';
+            }
+
+            if (cmd) {
+                handler = commandMap[cmd.MessageId];
+                if (handler) {
+                    handler.call(this, cmd);
+                }
+            }
+        };
+
+        var fn = function(e) { _onMessage(e); };
+
+        if (window.attachEvent) {
+            window.attachEvent('onmessage', fn);
+        } else {
+            window.addEventListener('message', fn, false);
+        }
+
+        var onAppReady = function () {
+            _postMessage('App_LoadingStatus', {
+                "DocumentLoadedTime": Date.now() - startTime
+            });
+            innerAlert("App ready");
+        };
+
+        var sendEditNotification = function () {
+            documentChanged && _postMessage('Edit_Notification', {});
+            documentChanged = false;
+        };
+
+        var onDocumentStateChange = function (event) {
+            if (event.data) {
+                documentChanged = true;
+                if (sendNotificationTimer===undefined) {
+                    sendNotificationTimer = setInterval(sendEditNotification, 30000);
+                    sendEditNotification();
+                }
+            }
+        };
+
+        var onRequestRename = function (event) {
+            if (event.data) {
+                _postMessage('File_Rename', {
+                    "NewName": event.data
+                });
+            }
+        };
+
+        var onRequestClose = function () {
+            if (fileInfo.ClosePostMessage)
+                _postMessage('UI_Close', {});
+            else if (fileInfo.CloseUrl)
+                window.parent.location.href = fileInfo.CloseUrl;
+        };
+
+        var onRequestEditRights = function () {
+            if (fileInfo.EditModePostMessage)
+                _postMessage('UI_Edit', {});
+            else if (fileInfo.HostEditUrl)
+                window.open(fileInfo.HostEditUrl, "_blank");
+        };
+
+        var onRequestSharingSettings = function (event) {
+            if (fileInfo.FileSharingPostMessage)
+                _postMessage('UI_Sharing', {});
+            else if (fileInfo.FileSharingUrl)
+                window.open(fileInfo.FileSharingUrl, "_blank");
+        };
+
+       var onRequestHistory = function (event) {
+            if (fileInfo.FileVersionPostMessage)
+                _postMessage('UI_FileVersions', {});
+            else if (fileInfo.FileVersionUrl)
+                window.open(fileInfo.FileVersionUrl, "_blank");
+        };
+
+        var onRequestInsertImage = function (event) {
+            insertImageType = event.data.c;
+            _postMessage('UI_InsertGraphic', {});
+        };
+
+        var onError = function (event) {
+            if (event)
+                innerAlert(event.data);
+        };
+
+        var connectEditor = function () {
+
+            fileInfo = <%- JSON.stringify(fileInfo) %>;
+
+			var key = "<%- key %>";
+            var documentType = "<%- documentType %>";
+			var userAuth = <%- JSON.stringify(userAuth) %>;
+			var token = "<%- token %>";
+			var queryParams = <%- JSON.stringify(queryParams) %>;
+
+            if (!fileInfo.BaseFileName) {
+                showError();
+                return;
+            }
+
+			var fileType = fileInfo.BaseFileName ? fileInfo.BaseFileName.substr(fileInfo.BaseFileName.lastIndexOf('.') + 1) : "";
+			var config = {
+				"width": "100%",
+				"height": "100%",
+				"type": queryParams.embed==="1" ? "embedded" : "desktop",
+				"documentType": documentType,
+				"token": token,
+				"document": {
+					"title": fileInfo.BreadcrumbDocName || fileInfo.BaseFileName,
+					"url": userAuth.wopiSrc,
+					"fileType": fileInfo.FileExtension ? fileInfo.FileExtension.substr(1) : fileType,
+					"key": key,
+                    "info": {
+                        "folder": fileInfo.BreadcrumbFolderName
+                    },
+					"permissions": {
+						"edit": !fileInfo.ReadOnly && fileInfo.UserCanWrite,
+                        "review": (fileInfo.SupportsReviewing===false) ? false : (fileInfo.UserCanReview===false ? false : fileInfo.UserCanReview),
+                        "copy": fileInfo.CopyPasteRestrictions!=="CurrentDocumentOnly" && fileInfo.CopyPasteRestrictions!=="BlockAll",
+                        "print": !fileInfo.DisablePrint && !fileInfo.HidePrintOption
+					}
+				},
+				"editorConfig": {
+					"mode": userAuth.mode,
+					"lang": queryParams.lang || queryParams.ui || "en-US",
+					"region": queryParams.rs,
+					"callbackUrl": JSON.stringify(userAuth),
+					"user": {
+						"id": fileInfo.UserId,
+						"name": fileInfo.IsAnonymousUser ? "" : fileInfo.UserFriendlyName
+					},
+					"customization": {
+						"about": true,
+						"goback": {
+							"url": fileInfo.BreadcrumbFolderUrl
+						},
+                        "customer": {
+                            "name": fileInfo.BreadcrumbBrandName,
+                            "www": fileInfo.BreadcrumbBrandUrl
+                        },
+                        "chat": queryParams.dchat!=="1",
+                        "uiTheme": queryParams.thm==="1" ? "default-light" : (queryParams.thm==="2" ? "default-dark" : undefined)
+					},
+                    "coEditing": {
+                        "mode": userAuth.mode !== "view" ? "fast" : "strict",
+                        "change": false
+                    },
+                    "wopi": {
+                        "FileNameMaxLength": fileInfo.FileNameMaxLength && fileInfo.FileNameMaxLength>0 ? fileInfo.FileNameMaxLength : 250
+                    }
+				},
+				"events": {
+                    "onAppReady": onAppReady,
+                    "onDocumentStateChange": fileInfo.EditNotificationPostMessage ? onDocumentStateChange : undefined,
+                    'onRequestEditRights': fileInfo.EditModePostMessage || (fileInfo.HostEditUrl && !fileInfo.UserCanNotWriteRelative) ? onRequestEditRights : undefined,
+                    "onError": onError,
+                    "onRequestClose": fileInfo.ClosePostMessage || fileInfo.CloseUrl ? onRequestClose : undefined,
+                    "onRequestRename": fileInfo.SupportsRename && fileInfo.UserCanRename ? onRequestRename : undefined,
+                    "onRequestSharingSettings": fileInfo.FileSharingPostMessage || fileInfo.FileSharingUrl ? onRequestSharingSettings : undefined,
+                    "onRequestHistory": fileInfo.FileVersionUrl || fileInfo.FileVersionPostMessage ? onRequestHistory : undefined,
+                    "onRequestInsertImage": fileInfo.EnableInsertRemoteImage ? onRequestInsertImage : undefined
+                }
+			};
+
+            postMessageOrigin = fileInfo.PostMessageOrigin || "*";
+            if (postMessageOrigin && (typeof postMessageOrigin === 'string') && postMessageOrigin.charAt(postMessageOrigin.length-1)=='/')
+                postMessageOrigin = postMessageOrigin.substring(0, postMessageOrigin.length - 1);
+            lang = config.editorConfig.lang;
+            sessionId = userAuth.userSessionId;
+
+            startTime = Date.now();
+            docEditor = new DocsAPI.DocEditor("iframeEditor", config);
+
+            fixSize();
+        };
+
+        var fixSize = function () {
+            var wrapEl = document.getElementsByClassName("form");
+            if (wrapEl.length) {
+                wrapEl[0].style.height = screen.availHeight + "px";
+                window.scrollTo(0, -1);
+                wrapEl[0].style.height = window.innerHeight + "px";
+            }
+        };
+
+        var showError = function(msg, title) {
+            msg = msg || 'Sorry, editor could not be loaded. Please contact your administrator.';
+
+            var newDiv = document.createElement("div");
+            newDiv.className = "app-error-panel";
+            newDiv.innerHTML = '<div class="message-block">' +
+                                    '<div class="message-inner">' +
+                                        (title ? '<div class="title">' + title + '</div>' : '') +
+                                        '<div class="text">' + msg + '</div>' +
+                                    '</div>' +
+                                '</div>';
+            document.body.appendChild(newDiv);
+        };
+
+        if (window.addEventListener) {
+            window.addEventListener("load", connectEditor);
+            window.addEventListener("resize", fixSize);
+        } else if (window.attachEvent) {
+            window.attachEvent("onload", connectEditor);
+            window.attachEvent("onresize", fixSize);
+        }
+    </script>
+</body>
+</html>

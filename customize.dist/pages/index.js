@@ -133,6 +133,7 @@ define([
         }
 
         // instance title
+
         var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
 
         // instance location

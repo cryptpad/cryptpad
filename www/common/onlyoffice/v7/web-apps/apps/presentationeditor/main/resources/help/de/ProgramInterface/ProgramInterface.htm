@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+        <title>Einführung in die Benutzeroberfläche des Präsentationseditors</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Einführung in die Benutzeroberfläche des Präsentationseditors" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Einführung in die Benutzeroberfläche des Präsentationseditor</h1>
+            <p>Der <a target="_blank" href="https://www.onlyoffice.com/de/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a> verfügt über eine Benutzeroberfläche mit Registerkarten, in der Bearbeitungsbefehle nach Funktionalität in Registerkarten gruppiert sind.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Dialogbox Online-Präsentationseditor:</p>
+                <p><img alt="Benutzeroberfläche des Online-Präsentationseditors" src="../images/interface/editorwindow.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Dialogbox Desktop-Präsentationseditor:</p>
+                <p><img alt="Benutzeroberfläche des Desktop-Präsentationseditors" src="../images/interface/desktop_editorwindow.png" /></p>
+            </div>
+            <p>Die Oberfläche des Editors besteht aus folgenden Hauptelementen:</p>
+            <ol>
+                <li>
+                    <p>In der <b>Kopfzeile des Editors</b> werden das Logo, <span class="desktopDocumentFeatures">geöffnete Dokumente</span>, der Name der Präsentation sowie die Menü-Registerkarten angezeigt.</p>
+                    <p>Im linken Bereich der <b>Kopfzeile des Editors</b> finden Sie die Schaltflächen <b>Speichern</b>, <b>Datei drucken</b>, <b>Rückgängig machen</b> und <b>Wiederholen</b>.</p>
+                    <p><span class="big big-leftpart"></span></p>
+                    <p>Im rechten Bereich der <b>Kopfzeile des Editors</b> werden der Benutzername und die folgenden Symbole angezeigt:</p>
+                    <ul>
+                        <li><div class="icon icon-gotodocuments"></div> <b>Dateispeicherort öffnen</b> - <span class="desktopDocumentFeatures">in der <em>Desktop-Version</em> können Sie den Ordner öffnen, in dem die Datei gespeichert ist; nutzen Sie dazu das Fenster <b>Datei-Explorer</b>.</span> <span class="onlineDocumentFeatures"> In der <em>Online-Version</em> haben Sie außerdem die Möglichkeit den Ordner des Moduls <b>Dokumente</b>, in dem die Datei gespeichert ist, in einem neuen Browser-Fenster zu öffnen.</span></li>
+                        <li class="onlineDocumentFeatures"><div class="icon icon-access_rights"></div> <b>Freigeben</b> (nur in der <em>Online-Version</em> verfügbar) - hier können Sie <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">Zugriffsrechte</a> für die in der Cloud gespeicherten Dokumente festlegen.</li>
+                        <li><div class="icon icon-favorites_icon"></div> <b>Als Favorit kennzeichnen</b> - klicken Sie auf den Stern, um eine Datei zu den Favoriten hinzuzufügen, damit Sie sie leichter finden können. Die hinzugefügte Datei ist nur eine Verknüpfung, sodass die Datei selbst am ursprünglichen Speicherort gespeichert bleibt. Durch das Löschen einer Datei aus den Favoriten wird die Datei nicht an ihrem ursprünglichen Speicherort entfernt.</li>
+                        <li><div class="icon icon-search_icon_header"></div> <b>Suchen</b> - ermöglicht das Durchsuchen der Präsentation nach einem bestimmten Wort oder Symbol usw.</li>
+                    </ul>
+                </li>
+                <li>
+                    Abhängig von der ausgewählten Registerkarte werden in der <b>oberen Symbolleiste</b> eine Reihe von Bearbeitungsbefehlen angezeigt. Aktuell stehen die folgenden Registerkarten zur Verfügung: <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Datei</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Startseite</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Einfügen</a>, <a href="../ProgramInterface/TransitionsTab.htm" onclick="onhyperlinkclick(this)">Übergänge</a>, <a href="../ProgramInterface/AnimationTab.htm" onclick="onhyperlinkclick(this)">Animation</a>, <a href="../ProgramInterface/CollaborationTab.htm" onclick="onhyperlinkclick(this)">Zusammenarbeit</a>, <a href="../ProgramInterface/ViewTab.htm">Ansicht</a><span class="desktopDocumentFeatures">, Schützen</span> und <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Plugins</a>.
+                    <p>Die Befehle <span class="icon icon-copy"></span> <b>Kopieren</b>, <span class="icon icon-paste"></span> <b>Einfügen</b>, <span class="icon icon-cut"></span> <b>Ausschneiden</b> und <span class="icon icon-selectall"></span> <b>Alles auswählen</b> stehen unabhängig von der ausgewählten Registerkarte jederzeit im linken Teil der <b>oberen Symbolleiste</b> zur Verfügung.</p>
+                </li>
+                <li>In der <b>Statusleiste</b> am unteren Rand des Editorfensters finden Sie das Symbol für den Beginn der <a href="../UsageInstructions/PreviewPresentation.htm" onclick="onhyperlinkclick(this)">Bildschirmpräsentation</a> sowie diverse <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">Navigationswerkzeuge</a>: z. B. Foliennummer und Zoom. Außerdem werden in der <b>Statusleiste</b> Benachrichtigungen vom System angezeigt (wie beispielsweise „Alle Änderungen wurden gespeichert“, „Verbindung verloren“, wenn keine Verbindung besteht und der Editor versucht, die Verbindung wiederherzustellen usw.) und Sie haben die Möglichkeit, die <a href="../HelpfulHints/SpellChecking.htm" onclick="onhyperlinkclick(this)">Textsprache festzulegen und die Rechtschreibprüfung zu aktivieren</a>.</li>
+                <li>
+                    Die Symbole in der <b>linken Seitenleiste</b>:
+                    <ul>
+                        <li>mithilfe der Funktion <div class="icon icon-searchicon"></div> können Sie den Text <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">suchen und ersetzen</a>,</li>
+                        <li><div class="icon icon-slides"></div> - ermöglicht das Anzeigen von Folien und das Navigieren,</li>
+                        <li><div class="icon icon-commentsicon"></div> öffnet die <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Kommentarfunktion</a>,</li>
+                        <li class="onlineDocumentFeatures"><div class="icon icon-chaticon"></div> - (nur in der <em>Online-Version</em> verfügbar) hier können Sie das <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Chatfenster</a> öffnen,</li>
+                        <li class="onlineDocumentFeatures"><div class="icon icon-feedbackicon"></div> - (nur in der <em>Online-Version</em> verfügbar) kontaktieren Sie under Support-Team,</li>
+                        <li class="onlineDocumentFeatures"><div class="icon icon-about"></div> - (nur in der <em>Online-Version</em> verfügbar) sehen Sie sich die Programminformationen an.</li>
+                    </ul>
+                </li>
+                <li>Über die rechte <b>Randleiste</b> können zusätzliche Parameter von verschiedenen Objekten angepasst werden. Wenn Sie ein bestimmtes Objekt auf der Folie auswählen, wird die entsprechende Schaltfläche auf der rechten Randleiste aktiviert. Um die Randleiste zu erweitern, klicken Sie diese Schaltfläche an.</li>
+                <li>Die horizontale und vertikale <b>Lineale</b>: Sie können dabei Objekte auf einer Folie präzis positionieren und Tabulatoren und Absätze in Textfeldern festlegen.</li>
+                <li>Über den <b>Arbeitsbereich</b> enthält man den Präsentationsinhalt; hier können Sie die Daten eingeben und bearbeiten.</li>
+                <li>Mithilfe der <b>Bildaufleiste</b> rechts können Sie in der Präsentation hoch und runter navigieren.</li>
+            </ol>
+            <p>Zur Vereinfachung können Sie bestimmte Komponenten verbergen und bei Bedarf erneut anzeigen. Weitere Informationen zum Anpassen der Ansichtseinstellungen finden Sie auf <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</p>
+           
+		</div>
+	</body>
+</html>

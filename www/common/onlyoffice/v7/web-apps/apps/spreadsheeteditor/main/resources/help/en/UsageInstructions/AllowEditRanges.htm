@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Allow edit ranges</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Protecting sheets to prevent the unwanted changes and to restrict the editing abilities of other users" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Allow edit ranges</h1>
+			<p>The <b>Allow Edit Ranges</b> option allows you to specify cell ranges a user can work with in a protected sheet. You can allow users to edit specific ranges of locked cells with or without a password. If you don’t use a password, the cell range can be edited.</p>
+			<p>To select a range of locked cells a user will be allowed to change:</p>
+			<ol>
+				<li>
+					Click the <b>Allow Edit Ranges</b> button on the top toolbar. The <b>Allow Users to Edit Ranges</b> window will open.
+					<p><img alt="Edit Ranges" src="../images/editranges.png" /></p>
+				</li>
+				<li>
+					Click the <b>New</b> button in the <b>Allow Users to Edit Ranges</b> window to select and to add a range of cells a user will be allowed to edit.
+					<p><img alt="New Range" src="../images/allowedit_newrange.png" /></p>
+				</li>
+				<li>
+					In the <b>New Range</b> window, type the range <b>Title</b>, and select the range of cells by clicking the <b>Select Range</b> button. <b>Password</b> is optional, so enter and confirm it if you want users to access the editable cell ranges with a password. Click <b>OK</b> to confirm.
+					<p class="note">The password cannot be restored if you lose or forget it. Please keep it in a safe place.</p>
+				</li>
+
+				<li>Click the <b>Protect Sheet</b> button if you are finished, or click <b>OK</b> to save changes and to continue working in the unprotected sheet.</li>
+				<li>
+					If you click the <b>Protect Sheet</b> button, the <b>Protect Sheet</b> window appears for you to select the operations a user will be allowed to perform in order to prevent any unwanted changes. Enter and confirm the password, if you want to set a password to unprotect this sheet.
+					<p><img alt="Protect Sheet" src="../images/protect_sheet.png" /></p>
+					<details class="details-example">
+						<summary>Operations a user may be allowed to perform.</summary>
+						<ul>
+							<li>Select locked cells</li>
+							<li>Select unlocked cells</li>
+							<li>Format cells</li>
+							<li>Format columns</li>
+							<li>Format rows</li>
+							<li>Insert columns</li>
+							<li>Insert rows</li>
+							<li>Insert hyperlink</li>
+							<li>Delete columns</li>
+							<li>Delete rows</li>
+							<li>Sort</li>
+							<li>Use Autofilter</li>
+							<li>Use PivotTable and PivotChart</li>
+							<li>Edit objects</li>
+							<li>Edit scenarios</li>
+						</ul>
+					</details>
+<li>
+					Click the <b>Protect</b> button to enable the protection. The <b>Protect Sheet</b> button stays highlighted when a sheet is protected.
+					<p><img alt="Protect Sheet Highlighted" src="../images/protectsheet_highlighted.png" /></p>
+				</li>
+				<li>
+					When a sheet is not protected, you can still make changes to the allowed ranges. Click the <b>Allow Edit Ranges</b> button to open the <b>Allow Users to Edit Ranges</b> window. Use <b>Edit</b> and <b>Delete</b> buttons to manage the selected ranges of cells. Then click the <b>Protect Sheet button</b> to enable the sheet protection, or click <b>OK</b> to save changes and to continue working in the unprotected sheet.
+					<p><img alt="Edit Ranges" src="../images/alloweditranges_edit.png" /></p>
+				</li>
+				<li>
+					For ranges protected with a password, when someone is trying to edit the selected range of cells, the <b>Unlock Range</b> window appears, where the user is prompted to enter the password.
+					<p><img alt="Unlock Range" src="../images/unlockrange.png" /></p>
+				</li>
+			</ol>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Merge cells</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Merge some cells into one and split the previously merged cell" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+				<h1>Merge cells</h1>
+						<p>If you need to merge cells to position your text better (e.g., the name of the table or a long text fragment within the table), use the <b>Merge</b> tool of <b>ONLYOFFICE Spreadsheet Editor</b>.</p>
+					
+			<h3>Type 1. Merge and Align Center</h3>
+					<ol>
+						<li>
+							Click on the cell at the beginning of the needed range, hold the left mouse button, and drag until you select the cell range you need.
+							<p><img alt="select cell range" src="../images/select_cell_range.png" /></p>
+							<p class="note">The selected cells <b>must</b> be adjacent. Only the data in the <b>upper-left cell of the selected range</b> will remain in the merged cell. Data in other cells of the selected range will be deleted.</p>
+						</li>
+						<li>
+							Go to the <b>Home</b> tab and click on the <b>Merge and center</b> icon <div class = "icon icon-merge"></div>.
+							<p><img alt="merge and center - result" src="../images/merge_and_center.png" /></p>
+						</li>
+					</ol>
+
+			<h3>Type 2. Merge Across</h3>
+					<ol>
+						<li>
+							Click on the cell at the beginning of the needed range, hold the left mouse button, and drag until you select the cell range you need.
+							<p><img alt="select cell range" src="../images/select_cell_range_type2.png" /></p>
+						</li>
+						<li>
+							Go to the <b>Home</b> tab and click on the arrow next to the <b>Merge and center</b> <div class = "icon icon-merge"></div> icon to open a drop-down menu.
+							<p><img alt="merge and center - menu" src="../images/merge_across_menu.png" /></p>
+						</li>
+						<li>
+							Choose the <b>Merge Across</b> option to align the text left and preserve the rows without merging them.
+							<p><img alt="merge across" src="../images/merge_across.png" /></p>
+						</li>
+					</ol>
+
+			<h3>Type 3. Merge Cells</h3>
+					<ol>
+						<li>
+							Click on the cell at the beginning of the needed range, hold the left mouse button, and drag until you select the cell range you need.
+							<p><img alt="select cell range" src="../images/select_cell_range.png" /></p>
+						</li>
+						<li>
+							Go to the <b>Home</b> tab and click on the arrow next to the <b>Merge and center</b> <div class = "icon icon-merge"></div> icon to open a drop-down menu.
+							<p><img alt="merge cells - menu" src="../images/merge_menu.png" /></p>
+						</li>
+						<li>Choose the <b>Merge Cells</b> option to preserve the preset alignment.</li>
+					</ol>
+
+			<h3>Unmerge Cells</h3>
+					<ol>
+						<li>
+							Click on the merged area.
+							<p><img alt="merged area" src="../images/merged_area.png" /></p>
+						</li>
+						<li>
+							Go to the <b>Home</b> tab and click on the arrow next to the <b>Merge and center</b> <div class = "icon icon-merge"></div> icon to open a drop-down menu.
+							<p><img alt="unmerge" src="../images/unmerge.png" /></p>
+						</li>
+						<li>Choose the <b>Unmerge Cells</b> option to bring the cells back to their original state.</li>
+					</ol>
+		</div>
+	</body>
+</html>

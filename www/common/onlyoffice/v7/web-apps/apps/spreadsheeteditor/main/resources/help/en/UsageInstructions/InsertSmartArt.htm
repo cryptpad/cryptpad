@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Insert SmartArt objects</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Insert SmartArt objects" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Insert SmartArt objects</h1>
+            <p><b>SmartArt graphics</b> are used to create a visual representation of a hierarchical structure by choosing a layout that fits best. Insert SmartArt objects or edit the ones added in third-party editors.</p>
+            <p>To <b>insert</b> a SmartArt object,</p>
+            <ol>
+                <li>go to the <b>Insert</b> tab,</li>
+                <li>click the <b>SmartArt</b> button,</li>
+                <li>hover over one of the available layout styles, e.g., <em>List</em> or <em>Process</em>,</li>
+                <li>choose one of the available layout types from the list appeared to the right of the highlighted menu item.</li>
+            </ol>
+            <p>You can <b>customize</b> the SmartArt settings in the right panel:</p>
+            <p class="note">Please note that color, style and form type settings can be customized individually.</p>
+            <img alt="" src="../images/smartart_settings.png" />
+            <ul>
+                <li>
+                    <b>Fill</b> - use this section to select the SmartArt object fill. You can choose the following options:
+                    <ul>
+                        <li>
+                            <b>Color Fill</b> - select this option to specify the solid color to fill the inner space of the selected SmartArt object.
+                            <p><img alt="Color Fill" src="../images/fill_color.png" /></p>
+                        </li>
+                        <li>
+                            <b>Gradient Fill</b> - use this option to fill the shape with two or more fading colors. Customize your gradient fill with no constraints. Click the <b>Shape settings</b> <div class="icon icon-shape_settings_icon"></div> icon to open the <b>Fill</b> menu on the right sidebar:
+                            <p><img alt="Gradient Fill" src="../images/fill_gradient.png" /></p>
+                            <p>Available menu options:</p>
+                            <ul>
+                                <li>
+                                    <b>Style</b> - choose between <b>Linear</b> or <b>Radial</b>:
+                                    <ul>
+                                        <li><b>Linear</b> is used  when you need your colors to flow from left-to-right, top-to-bottom, or at any angle you chose in a single direction. The <b>Direction</b> preview window displays the selected gradient color, click the arrow to choose a preset gradient direction. Use <b>Angle</b> settings for a precise gradient angle.</li>
+                                        <li><b>Radial</b> is used to move from the center as it starts at a single point and emanates outward.</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <b>Gradient Point</b> is a specific point for transition from one color to another.
+                                    <ul>
+                                        <li>Use the <div class="icon icon-addgradientpoint"></div> <b>Add Gradient Point</b> button or slider bar to add a gradient point. You can add up to 10 gradient points. Each next gradient point added will in no way affect the current gradient fill appearance. Use the <div class="icon icon-removegradientpoint"></div> <b>Remove Gradient Point</b> button to delete a certain gradient point.</li>
+                                        <li>Use the slider bar to change the location of the gradient point or specify <b>Position</b> in percentage for precise location.</li>
+                                        <li>To apply a color to a gradient point, click a point on the slider bar, and then click <b>Color</b> to choose the color you want.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <b>Picture or Texture</b> - select this option to use an image or a predefined texture as the SmartArt object background.
+                            <p><img alt="Picture or Texture Fill" src="../images/fill_picture.png" /></p>
+                            <ul>
+                                <li>If you wish to use an image as a background for the SmartArt object, you can add an image <b>From File</b> by selecting it on your computer hard disc drive, <b>From URL</b> by inserting the appropriate URL address into the opened window, or <b>From Storage</b> by selecting the required image stored on your portal.</li>
+                                <li>
+                                    If you wish to use a texture as a background for the SmartArt object, open the <b>From Texture</b> menu and select the necessary texture preset.
+                                    <p>Currently, the following textures are available: canvas, carton, dark fabric, grain, granite, grey paper, knit, leather, brown paper, papyrus, wood.</p>
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                    In case the selected <b>Picture</b> has less or more dimensions than the SmartArt object has, you can choose the <b>Stretch</b> or <b>Tile</b> setting from the dropdown list.
+                                    <p>The <b>Stretch</b> option allows you to adjust the image size to fit the SmartArt object size so that it could fill the space completely.</p>
+                                    <p>The <b>Tile</b> option allows you to display only a part of the bigger image keeping its original dimensions or repeat the smaller image keeping its original dimensions over the SmartArt object surface so that it could fill the space completely.</p>
+                                    <p class="note"><b>Note</b>: any selected <b>Texture</b> preset fills the space completely, but you can apply the <b>Stretch</b> effect if necessary.</p>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <b>Pattern</b> - select this option to fill the SmartArt object with a two-colored design composed of regularly repeated elements.
+                            <p><img alt="Pattern Fill" src="../images/fill_pattern.png" /></p>
+                            <ul>
+                                <li><b>Pattern</b> - select one of the predefined designs from the menu.</li>
+                                <li><b>Foreground color</b> - click this color box to change the color of the pattern elements.</li>
+                                <li><b>Background color</b> - click this color box to change the color of the pattern background.</li>
+                            </ul>
+                        </li>
+                        <li><b>No Fill</b> - select this option if you don't want to use any fill.</li>
+                        <li>
+                            <b>Line</b> - use this section to change the width, color or type of the SmartArt object line.
+                            <ul>
+                                <li>To change the line width, select one of the available options from the <b>Size</b> dropdown list. The available options are: 0.5 pt, 1 pt, 1.5 pt, 2.25 pt, 3 pt, 4.5 pt, 6 pt. Alternatively, select the <b>No Line</b> option if you don't want to use any line.</li>
+                                <li>To change the line <b>color</b>, click on the colored box below and select the necessary color.</li>
+                                <li>To change the line <b>type</b>, select the necessary option from the corresponding dropdown list (a solid line is applied by default, you can change it to one of the available dashed lines).</li>
+                            </ul>
+                        </li>
+                        <li><b>Show shadow</b> - check this box to make the SmartArt object cast a shadow.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Click the <b>Show advanced settings</b> link to open the <a href="../UsageInstructions/InsertAutoshapes.htm#autoshape_advanced" onclick="onhyperlinkclick(this)">advanced settings</a>.</p>
+        </div>
+	</body>
+</html>

@@ -1,0 +1,52 @@
+﻿	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Créer une animation de trajectoire de mouvement</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Description de l'ajout et de la gestion des animations de trajectoire de mouvement pour des objets." />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<script type="text/javascript" src="../callback.js"></script>
+		<script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Créer une animation de trajectoire de mouvement</h1>
+            <p><b>Trajectoires du mouvement</b> font partie de la galerie d'effets d'animation et déterminent le mouvement d'un objet et la trajectoire qu'il suit. Les icônes de la galerie représentent la trajectoire suggérée. La <b>galerie d'animations</b> est disponible dans l'onglet <b>Animation</b> dans la barre d'outils supérieure.</p>
+            <h3 id="applyanimation">Appliquer un effet d'animation de trajectoire de mouvement</h3>
+            <ol>
+                <li>passez à l'onglet <b>Animation</b> dans la barre d'outils supérieure,</li>
+                <li>sélectionnez le texte, l'objet ou l'élément graphique auquel vous souhaitez appliquer un effet d'animation,</li>
+                <li>sélectionnez l'un des modèles de trajectoire de mouvement prédéfinis à partir de la section <b>Trajectoires du mouvement</b> dans la galerie d'animations (<em>Lignes</em>, <em>Arcs</em> etc.) ou choisissez l'option <b>Chemin personnalisé</b> si vous souhaitez créer votre propre chemin.</li>
+            </ol>
+            <p>Vous pouvez apercevoir les effets d'animation sur la diapositive actuelle. Par défaut, les effets d'animation sont lus automatiquement lorsque vous les ajoutez à une diapositive, mais vous pouvez désactiver cette option. Cliquez sur la liste déroulante <b>Aperçu</b> dans l'onglet <b>Animation</b> et sélectionnez l'un des modes de prévisualisation :</p>
+            <ul>
+                <li><b>Aperçu</b> pour afficher un aperçu lorsque vous cliquez sur le bouton <b>Aperçu</b>,</li>
+                <li><b>Aperçu partiel</b> pour afficher un aperçu automatiquement lorsque vous ajoutez une animation à une diapositive ou remplacez une animation existante.</li>
+            </ul>
+
+            <h3>Ajouter un effet d'animation de chemin personnalisé</h3>
+            <p>Pour dessiner un chemin personnalisé,</p>
+            <ol>
+                <li>Cliquez sur l'objet auquel vous souhaitez ajouter une animation de chemin personnalisé.</li>
+                <li>Marquez les points du chemin avec le bouton gauche de la souris. Vous pouvez dessiner une ligne en cliquant une fois sur le bouton gauche de la souris ou maintenir le bouton gauche pour créer n'importe quelle courbe requise.
+                    <p>Le point de départ du chemin sera marqué d'une flèche directionnelle verte, le point d'arrivée sera rouge.</p>
+                <p><div class="big big-custom_path"></div></p></li>
+                <li>Quand tout est prêt, double-cliquez sur le bouton gauche de la souris ou appuyez sur le bouton <b>Esc</b> afin d'arrêter de dessiner votre chemin.</li>
+            </ol>
+
+            <h3>Modifier les points de trajectoire de mouvement</h3>
+            <ol>
+                <li>
+                    Afin de modifier les points de trajectoire de mouvement, sélectionnez l'objet chemin, cliquez sur le bouton droit de la souris pour ouvrir le menu contextuel et choisissez l'option <b>Modifier les points</b>.
+                    <p><div class="big big-edit_points"></div></p>
+                    <p>Faites glisser les carrés <b>noirs</b> pour modifier la direction générale de la trajectoire ; faites glisser les carrés <b>blancs</b> pour modifier la courbe associée au carré noir sélectionné. Appuyez sur <b>Esc</b> ou n'importe où en dehors de l'objet chemin pour quitter le mode d'édition.</p>
+                </li>
+                <li>Vous pouvez mettre à l'échelle la trajectoire de mouvement en cliquant dessus et en faisant glisser les points carrés sur les bordures de l'objet.</li>
+            </ol>
+        </div>
+		</body>
+	</html>

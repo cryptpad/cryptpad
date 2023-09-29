@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bearbeitung der Bereiche erlauben</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Blätter schützen, um unerwünschte Änderungen zu verhindern und die Bearbeitungsmöglichkeiten anderer Benutzer einzuschränken" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Bearbeitung der Bereiche erlauben</h1>
+			<p>Mit der Option <b>Bearbeitung der Bereiche erlauben</b> können Sie Zellbereiche angeben, mit denen ein Benutzer in einem geschützten Blatt arbeiten kann. Sie können Benutzern erlauben, bestimmte Bereiche gesperrter Zellen mit oder ohne Kennwort zu bearbeiten. Wenn Sie kein Kennwort verwenden, kann der Zellbereich bearbeitet werden.</p>
+			<p>Um einen Bereich gesperrter Zellen auszuwählen, den ein Benutzer ändern kann:</p>
+			<ol>
+				<li>
+					Klicken Sie in der oberen Symbolleiste auf die Schaltfläche <b>Bearbeitung der Bereiche erlauben</b>. Das Fenster <b>Den Benutzern Bearbeitung der Bereiche erlauben</b> wird geöffnet.
+					<p><img alt="Bereiche ändern" src="../images/editranges.png" /></p>
+				</li>
+				<li>
+					Klicken Sie im Fenster <b>Den Benutzern Bearbeitung der Bereiche erlauben</b> auf die Schaltfläche <b>Neu</b>, um einen Zellbereich auszuwählen und hinzuzufügen, den ein Benutzer bearbeiten darf.
+					<p><img alt="Neuer Bereich" src="../images/allowedit_newrange.png" /></p>
+				</li>
+				<li>
+					Geben Sie im Fenster <b>Neuer Bereich</b> den Bereich<b>titel</b> ein und wählen Sie den Zellbereich aus, indem Sie auf die Schaltfläche <b>Bereich auswählen</b> klicken. <b>Kennwort</b> ist optional. Geben Sie es also ein und bestätigen Sie es, wenn Sie möchten, dass Benutzer mit einem Kennwort auf die bearbeitbaren Zellbereiche zugreifen. Klicken Sie zur Bestätigung auf <b>OK</b>.
+					<p class="note">Das Kennwort kann nicht wiederhergestellt werden, wenn Sie es verlieren oder vergessen. Bitte bewahren Sie es an einem sicheren Ort auf.</p>
+				</li>
+
+				<li>Klicken Sie auf die Schaltfläche <b>Blatt schützen</b>, wenn Sie fertig sind, oder klicken Sie auf <b>OK</b>, um die Änderungen zu speichern und die Arbeit im ungeschützten Blatt fortzusetzen.</li>
+				<li>
+					Wenn Sie auf die Schaltfläche <b>Blatt schützen</b> klicken, wird das Fenster <b>Blatt schützen</b> angezeigt, in dem Sie die Vorgänge auswählen können, die ein Benutzer ausführen darf, um unerwünschte Änderungen zu verhindern. Geben Sie das Kennwort ein und bestätigen Sie es, wenn Sie ein Kennwort festlegen möchten, um den Schutz dieses Blatts aufzuheben.
+					<p><img alt="Blatt schützen" src="../images/protect_sheet.png" /></p>
+					<details class="details-example">
+						<summary>Operationen, die ein Benutzer ausführen kann.</summary>
+						<ul>
+							<li>Gesperrte Zellen auswählen</li>
+							<li>Entsperrte Zellen auswählen</li>
+							<li>Zellen formatieren</li>
+							<li>Spalten formatieren</li>
+							<li>Zeilen formatieren</li>
+							<li>Spalten einfügen</li>
+							<li>Zeilen einfügen</li>
+							<li>Hyperlink einfügen</li>
+							<li>Spalten löschen</li>
+							<li>Zeilen löschen</li>
+							<li>Sortieren</li>
+							<li>AutoFilter verwenden</li>
+							<li>PivotTable und PivotChart verwenden</li>
+							<li>Objekte bearbeiten</li>
+							<li>Szenarien bearbeiten</li>
+						</ul>
+					</details>
+				<li>
+					Klicken Sie auf die Schaltfläche <b>Schützen</b>, um den Schutz zu aktivieren. Die Schaltfläche <b>Blatt schützen</b> bleibt hervorgehoben, wenn ein Blatt geschützt ist.
+					<p><img alt="Blatt schützen - hervorheben" src="../images/protectsheet_highlighted.png" /></p>
+				</li>
+				<li>
+					Wenn ein Blatt nicht geschützt ist, können Sie dennoch Änderungen an den zulässigen Bereichen vornehmen. Klicken Sie auf die Schaltfläche <b>Bearbeitung der Bereiche erlauben</b>, um das Fenster <b>Den Benutzern Bearbeitung der Bereiche erlauben</b> zu öffnen. Verwenden Sie die Schaltflächen <b>Bearbeiten</b> und <b>Löschen</b>, um die ausgewählten Zellbereiche zu verwalten. Klicken Sie dann auf die Schaltfläche <b>Blatt schützen</b>, um den Blattschutz zu aktivieren, oder klicken Sie auf <b>OK</b>, um die Änderungen zu speichern und die Arbeit im ungeschützten Blatt fortzusetzen.
+					<p><img alt="Bearbeitung der Bereiche" src="../images/alloweditranges_edit.png" /></p>
+				</li>
+				<li>
+					Bei kennwortgeschützten Bereichen wird beim Versuch, den ausgewählten Zellbereich zu bearbeiten, das Fenster <b>Bereich aufsperren</b> angezeigt, in dem der Benutzer zur Eingabe des Kennworts aufgefordert wird.
+					<p><img alt="Bereich aufsperren" src="../images/unlockrange.png" /></p>
+				</li>
+			</ol>
+		</div>
+	</body>
+</html>

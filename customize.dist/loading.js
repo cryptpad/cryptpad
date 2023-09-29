@@ -8,9 +8,10 @@ define([
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');
     elem.setAttribute('id', 'cp-loading');
+
     elem.innerHTML = [
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '">',
+            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '" alt="' + Messages.label_logo + '">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',

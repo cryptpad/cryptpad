@@ -1,0 +1,52 @@
+﻿	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Creating a motion path animation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Describing how to add and manage motion path animations for objects." />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<script type="text/javascript" src="../callback.js"></script>
+		<script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Creating a motion path animation</h1>
+            <p><b>Motion path</b> is a part of the animation gallery effects that determines the movement of an object and the path it follows. The icons in the gallery represent the suggested path. The <b>animation gallery</b> is available on the <b>Animation</b> tab at the top toolbar.</p>
+            <h3 id="applyanimation">Applying a motion path animation effect</h3>
+            <ol>
+                <li>switch to the <b>Animation</b> tab on the top toolbar,</li>
+                <li>select a text, an object or a graphic element you want to apply the animation effect to,</li>
+                <li>select one of the premade motion path patterns from the <b>Motion Paths</b> section in the animations gallery (<em>Lines</em>, <em>Arcs</em>, etc.), or choose the <b>Custom Path</b> option if you want to create a path of your own.</li>
+            </ol>
+            <p>You can preview animation effects on the current slide. By default, animation effects will play automatically when you add them to a slide but you can turn it off. Click the <b>Preview</b> drop-down on the <b>Animation</b> tab, and select a preview mode:</p>
+            <ul>
+                <li><b>Preview</b> to show a preview when you click the <b>Preview</b> button,</li>
+                <li><b>AutoPreview</b> to show a preview automatically when you add an animation to a slide or replace an existing one.</li>
+            </ul>
+
+            <h3>Adding a custom path animation effect</h3> 
+            <p>To draw a custom path,</p> 
+            <ol>
+                <li>Click the object you want to give a custom path animation to.</li>
+                <li>Mark the path points with the left mouse button. One click with a left mouse button will draw a line, while holding the left mouse button allows you to make any curve you want. 
+                    <p>The starting point of the path will be marked with a green directional arrow, the ending point will be a red one.</p>
+                <p><div class="big big-custom_path"></div></p></li>
+                <li>When ready, click the left mouse button twice or press the <b>Esc</b> button to stop drawing your path.</li>
+            </ol>
+
+            <h3>Editing motion path points</h3>
+            <ol>
+                <li>
+                    To edit the motion path points, select the path object, click with the right mouse button to open the context menu and choose the <b>Edit Points</b> option.
+                    <p><div class="big big-edit_points"></div></p>
+                    <p>Drag the <b>black</b> squares to adjust the position of the nodes of the path points; drag the <b>white</b> squares to adjust the direction at the entry and exit points of the node. Press <b>Esc</b> or anywhere outside the path object to exit the editing mode.</p>
+                </li>
+                <li>You can scale the motion path by clicking it and dragging the square points at the edges of the object.</li>
+            </ol>
+        </div>
+		</body>
+	</html>

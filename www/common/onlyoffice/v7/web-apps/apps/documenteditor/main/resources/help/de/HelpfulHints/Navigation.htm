@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ansichtseinstellungen und Navigationswerkzeuge</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Die Beschreibung der Ansichtseinstellungen und Navigationswerkzeuge wie Zoom, Schaltflächen zur vorherigen/nächsten Seite" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Ansichtseinstellungen und Navigationswerkzeuge</h1>
+			<p>Der <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> bietet mehrere Tools, die Ihnen beim Anzeigen und Navigieren durch Ihr Dokument helfen: Zoom, Seitenzahlanzeige usw.</p>
+			<h3>Ansichtseinstellungen anpassen</h3>
+			<p>
+				Um die Standardansichtseinstellungen anzupassen und den bequemsten Modus für die Arbeit mit dem Dokument festzulegen, gehen Sie zur Registerkarte <b>Ansicht</b> und wählen Sie aus, welche Elemente der Benutzeroberfläche ausgeblendet oder angezeigt werden sollen.
+				Auf der Registerkarte <b>Ansicht</b> können Sie die folgenden Optionen auswählen:
+			</p>
+			<ul>
+				<li><b>Überschriften</b>, um die Dokumentkopfzeilen im linken Bereich anzuzeigen.</li>
+				<li><b>Zoom</b>, um den erforderlichen Zoomwert von 50 % bis 500 % aus der Drop-Down-Liste einzustellen.</li>
+				<li><b>Seite anpassen</b>, um die gesamte Dokumentseite an den sichtbaren Teil des Arbeitsbereichs anzupassen.</li>
+				<li><b>An Breite anpassen</b>, um die Seitenbreite des Dokuments an den sichtbaren Teil des Arbeitsbereichs anzupassen.</li>
+				<li><b>Thema der Benutzeroberfläche</b> – wählen Sie eines der verfügbaren Oberflächenthemen aus dem Dropdown-Menü: <em>Wie im System</em>, <em>Hell</em>, <em>Klassisch Hell</em>, <em>Dunkel</em>, <em>Dunkler Kontrast</em>. Wenn das Thema <em>Dunkel</em> oder <em>Dunkler Kontrast</em> aktiviert ist, wird der <b>Dunkles Dokument</b>-Umschalter aktiv; Verwenden Sie ihn, um den Arbeitsbereich auf Weiß oder Dunkelgrau einzustellen.</li>
+				<li>
+					<b>Symbolleiste immer anzeigen</b> – wenn diese Option deaktiviert ist, wird die obere Symbolleiste, die Befehle enthält, ausgeblendet, während die Registerkartennamen sichtbar bleiben.
+					<p class="note">Alternativ können Sie einfach auf eine beliebige Registerkarte doppelklicken, um die obere Symbolleiste auszublenden oder wieder anzuzeigen.</p>
+				</li>
+				<li><b>Statusleiste</b> – wenn diese Option deaktiviert ist, wird die unterste Leiste, in der sich die Schaltflächen <b>Seitenzahlanzeige</b> und <b>Zoom</b> befinden, ausgeblendet. Aktivieren Sie diese Option, um die ausgeblendete <b>Statusleiste</b> anzuzeigen.</li>
+				<li><b>Lineale</b> - wenn diese Option deaktiviert ist, werden die Lineale ausgeblendet, die zum Ausrichten von Text, Grafiken, Tabellen und anderen Elementen in einem Dokument, zum Einrichten von Rändern, Tabstopps und Absatzeinzügen verwendet werden. Um die ausgeblendeten <b>Lineale</b> anzuzeigen, aktivieren Sie diese Option erneut.</li>
+				<li><b>Linkes Bedienfeld</b> - wenn diese Option deaktiviert ist, wird der linke Bereich ausgeblendet, in dem sich die Schaltflächen <b>Suchen</b>, <b>Kommentare</b> usw. befinden. Aktivieren Sie dieses Kontrollkästchen, um das linke Bedienfeld anzuzeigen.</li>
+				<li><b>Rechtes Bedienungsfeld</b> - wenn diese Option deaktiviert ist, wird das rechte Bedienfeld ausgeblendet, in dem sich <b>Einstellungen</b> befinden. Aktivieren Sie dieses Kontrollkästchen, um das rechte Bedienfeld anzuzeigen.</li>
+			</ul>
+			<p>Die rechte Seitenleiste ist standartmäßig verkleinert. Um sie zu erweitern, wählen Sie ein beliebiges Objekt (z. B. Bild, Diagramm, Form) oder eine Textpassage aus und klicken Sie auf das Symbol des aktuell aktivierten Tabs auf der rechten Seite. Um die Seitenleiste wieder zu minimieren, klicken Sie erneut auf das Symbol.</p>
+			<p>
+				Wenn die Felder <b>Kommentare</b> <span class="onlineDocumentFeatures"> oder <b>Chat</b></span> geöffnet sind, wird die Breite der linken Seitenleiste durch einfaches Ziehen und Loslassen angepasst:
+				Bewegen Sie den Mauszeiger über den Rand der linken Seitenleiste, so dass dieser sich in den bidirektionalen Pfeil verwandelt und ziehen Sie den Rand nach rechts, um die Seitenleiste zu erweitern. Um die ursprüngliche Breite wiederherzustellen, ziehen Sie den Rand nach links.
+			</p>
+			<h3 id="navigationtools">Verwendung der Navigationswerkzeuge</h3>
+			<p>Mithilfe der folgenden Werkzeuge können Sie durch Ihr Dokument navigieren:</p>
+			<p>
+				Die <b>Zoom-Funktion</b> befindet sich in der rechten unteren Ecke und dient zum Vergrößern und Verkleinern des aktuellen Dokuments.
+				Um den in Prozent angezeigten aktuellen Zoomwert zu ändern, klicken Sie darauf und wählen Sie eine der verfügbaren Zoomoptionen (50% / 75% / 100% / 125% / 150% / 175% / 200% / 300% / 400% / 500%) aus der Liste
+				oder klicken Sie auf <b>Vergrößern</b> <span class="icon icon-zoomin"></span> oder <b>Verkleinern</b> <span class="icon icon-zoomout"></span>.
+				Klicken Sie auf das Symbol <b>Breite anpassen</b> <span class="icon icon-fitwidth"></span>, um die ganze Seite im Fenster anzuzeigen.
+				Um das ganze Dokument an den sichtbaren Teil des Arbeitsbereichs anzupassen, klicken Sie auf das Symbol <b>Seite anpassen</b> <span class="icon icon-fitpage"></span>.
+				Zoomeinstellungen sind auch auf der Registerkarte <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Ansicht</a> verfügbar.
+			</p>
+			<p>Die <b>Seitenzahlanzeige</b> stellt die aktuelle Seite als Teil aller Seiten im aktuellen Dokument dar (Seite „n“ von „nn“).
+				Klicken Sie auf die Seitenzahlanzeige, um ein Fenster zu öffnen, anschließend können Sie eine Seitenzahl eingeben und direkt zu dieser Seite wechseln.</p>
+			<p>Die <b>Wortzahlanzeige</b> zeigt die Wortzahlstatistik des aktuellen Dokuments.</p>
+		</div>
+	</body>
+</html>

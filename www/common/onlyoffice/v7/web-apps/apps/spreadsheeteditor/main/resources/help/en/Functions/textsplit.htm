@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEXTSPLIT Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>TEXTSPLIT Function</h1>
+			<p>The <b>TEXTSPLIT</b> function is one of the text and data functions. It is used to split text strings through column and row delimiters.</p>
+			<p class="note">Please note that this is an array formula. To learn more, please read the <a href="../UsageInstructions/InsertArrayFormulas.htm" onclick="onhyperlinkclick(this)">Insert array formulas</a> article.</p>
+			<p>The <b>TEXTSPLIT</b> function syntax is:</p>
+			<p style="text-indent: 150px;"><b><em>TEXTSPLIT(text,col_delimiter,[row_delimiter],[ignore_empty], [match_mode], [pad_with])</em></b></p>
+			<p>where</p>
+			<p style="text-indent: 50px;"><b><em>text</em></b> is used to set the text you want to split.</p>
+			<p style="text-indent: 50px;"><b><em>col_delimiter</em></b> is an optional argument. It is used to set the text that marks the point where to split the text across columns.</p>
+			<p style="text-indent: 50px;"><b><em>row_delimiter</em></b> is an optional argument. It is used to set the text that marks the point where to split the text down rows.</p>
+			<p style="text-indent: 50px;"><b><em>ignore_empty</em></b> is an optional argument. It is used to specify <b>FALSE</b> to create an empty cell when two delimiters are consecutive. Defaults to <b>TRUE</b>, which creates an empty cell.</p>
+			<p style="text-indent: 50px;"><b><em>match_mode</em></b> is an optional argument. It is used to search the text for a delimiter match. By default, a case-sensitive match is done.</p>
+			<p style="text-indent: 50px;"><b><em>pad_with</em></b> is used to set the value with which to pad the result. Defaults to #N/A.</p>
+			<p>To apply the <b>TEXTSPLIT</b> function,</p>
+			<ol>
+				<li>select the cell where you wish to display the result,</li>
+				<li>
+					click the <b>Insert function</b> <div class="icon icon-insertfunction"></div> icon situated at the top toolbar,
+					<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+					<br />or click the <div class="icon icon-function"></div> icon situated at the formula bar,
+				</li>
+				<li>select the <b>Text and data</b> function group from the list,</li>
+				<li>click the <b>TEXTSPLIT</b> function,</li>
+				<li>enter the required arguments separating them by commas,</li>
+				<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="TEXTSPLIT Function" src="../images/textsplit.png" /></p>
+		</div>
+	</body>
+</html>

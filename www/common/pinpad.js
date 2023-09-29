@@ -131,12 +131,15 @@ var factory = function (Util, Rpc) {
                 });
             };
 
-            exp.removeOwnedChannel = function (channel, cb) {
+            exp.removeOwnedChannel = function (channel, cb, reason) {
                 if (typeof(channel) !== 'string' || [32,48].indexOf(channel.length) === -1) {
                     console.error('invalid channel to remove', channel);
                     return void cb('INVALID_ARGUMENTS');
                 }
-                rpc.send('REMOVE_OWNED_CHANNEL', channel, function (e, response) {
+                rpc.send('REMOVE_OWNED_CHANNEL', {
+                    channel: channel,
+                    reason: reason
+                }, function (e, response) {
                     if (e) { return void cb(e); }
                     if (response && response.length && response[0] === "OK") {
                         cb();

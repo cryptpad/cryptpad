@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Änderungen nachverfolgen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tipps zur gemeinsamen Bearbeitung" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Änderungen nachverfolgen</h1>
+        <p>Der <a href="https://www.onlyoffice.com/de/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> ermöglicht es Ihnen, einen konstanten teamweiten Ansatz für den Arbeitsablauf beizubehalten: Sie können die Dateien und Ordner <a href="https://helpcenter.onlyoffice.com/de/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">freigeben</a>; an Dokumenten in Echtzeit <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">zusammenarbeiten</a>; direkt im Editor <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">kommunizieren</a>; bestimmte Teile Ihrer Dokumente, die zusätzliche Eingaben Dritter erfordern, <a href="../HelpfulHints/Commenting.htm" onclick="onhyperlinkclick(this)">kommentieren</a>; <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">Dokumentversionen</a> für zukünftige Verwendung speichern; Dokumente <a href="../HelpfulHints/Comparison.htm" onclick="onhyperlinkclick(this)">vergleichen und zusammenführen</a>, um die Verarbeitung und Bearbeitung zu erleichtern.</p>
+        <p>Wenn jemand eine Datei mit den Berechtigungen "Review" für Sie freigibt, müssen Sie die Dokumentfunktion <b>Review</b> anwenden.</p>
+        <p>Im <a href="https://www.onlyoffice.com/de/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> als Überprüfer können Sie die Review-Option verwenden, um das Dokument zu überprüfen, die Sätze, Phrasen und andere Seitenelemente zu ändern, die Rechtschreibung zu korrigieren usw., ohne es tatsächlich zu bearbeiten. Alle Ihre Änderungen werden aufgezeichnet und der Person angezeigt, die Ihnen das Dokument gesendet hat.</p>
+        <p>Wenn Sie die Datei zur Überprüfung senden, müssen Sie alle daran vorgenommenen Änderungen anzeigen und sie entweder annehmen oder ablehnen.</p>
+        <h3>Die Funktion "Änderungen nachverfolgen" aktivieren</h3>
+        <p>Um Änderungen anzuzeigen, die von einem Rezensenten vorgeschlagen wurden, aktivieren Sie die Option <b>Änderungen nachverfolgen</b>:</p>
+        <ul>
+            <li>Klicken Sie in der rechten unteren Statusleiste auf das Symbol <div class = "icon icon-trackchangesstatusbar"></div>, oder</li>
+            <li>
+                Wechseln Sie in der oberen Symbolleiste zur Registerkarte <b>Zusammenarbeit</b> und klicken Sie auf <div class = "icon icon-trackchangestoptoolbar"></div> <b>Änderungen nachverfolgen</b>.
+                <p class="note">Der Überprüfer muss die Option <b>Änderungen nachverfolgen</b> nicht aktivieren. Sie ist standardmäßig aktiviert und kann nicht deaktiviert werden, wenn das Dokument nur mit Zugriffsrechten zum Review freigegeben wird.</p>
+            </li>
+            <li>
+                Im geöffneten Pop-Up-Menü stehen folgende Optionen zur Verfügung:
+                <ul>
+                    <li><b>AKTIVIERT für mich</b>: Das Verfolgen von Änderungen ist nur für den aktuellen Benutzer aktiviert. Die Option bleibt für die aktuelle Bearbeitungssitzung aktiviert, d. h. die Option wird deaktiviert, wenn Sie das Dokument neu laden oder erneut öffnen. Es wird nicht von anderen Benutzern beeinflusst, die die Option für allgemeine Nachverfolgung von Änderungen aktivieren oder deaktivieren.</li>
+                    <li><b>DEAKTIVIERT für mich</b>: Das Verfolgen von Änderungen ist nur für den aktuellen Benutzer deaktiviert. Die Option bleibt für die aktuelle Bearbeitungssitzung deaktiviert. Es wird nicht von anderen Benutzern beeinflusst, die die Option für allgemeine Nachverfolgung von Änderungen aktivieren oder deaktivieren.</li>
+                    <li>
+                        <b>AKTIVIERT für alle</b>: Die Nachverfolgung von Änderungen ist aktiviert und bleibt beim erneuten Laden oder erneuten Öffnen des Dokuments beibehalten (beim erneuten Laden des Dokuments wird die Nachverfolgung für alle Benutzer aktiviert). Wenn ein anderer Benutzer die Option für allgemeine Nachverfolgung von Änderungen in der Datei deaktiviert, wird der Status auf <b>DEAKTIVIERT für alle</b> geändert.
+                        <p><img alt="Verfolgen von Änderungen - Meldung" src="../images/track_changes_alert.png" /></p>
+                    </li>
+                    <li>
+                        <b>DEAKTIVIERT für alle</b> - Die Nachverfolgung von Änderungen ist deaktiviert und bleibt beibehalten, wenn Sie das Dokument neu laden oder erneut öffnen (wenn das Dokument neu geladen wird, ist die Nachverfolgung für alle Benutzer deaktiviert). Wenn ein anderer Benutzer die Option für allgemeine Nachverfolgung von Änderungen in der Datei aktiviert, wird der Status auf <b>AKTIVIERT für alle</b> geändert. Die entsprechende Warnmeldung wird jedem Mitautor angezeigt.
+                        <p><img alt="Verfolgen von Änderungen - Aktiviert" src="../images/track_changes_enabled.png" /></p>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <h3>Änderungen anzeigen</h3>
+        <p>Von einem Benutzer vorgenommene Änderungen werden im Dokumenttext mit einer bestimmten Farbe hervorgehoben. Wenn Sie auf den geänderten Text klicken, öffnet sich eine Sprechblase, die den Benutzernamen, Datum und Uhrzeit der Änderung sowie die Änderungsbeschreibung anzeigt. Die Sprechblase enthält auch Symbole zum Akzeptieren oder Ablehnen der aktuellen Änderung.</p>
+        <p><img alt="Sprechblase" src="../images/review_popup.png" /></p>
+        <p>Wenn Sie einen Textabschnitt per Drag & Drop an eine andere Stelle im Dokument ziehen, wird der Text an einer neuen Position mit der doppelten Linie unterstrichen. Der Text an der ursprünglichen Position wird doppelt gekreuzt. Dies wird als eine einzige Änderung gezählt.</p>
+        <p>Klicken Sie auf den doppelt durchgestrichenen Text an der ursprünglichen Position und verwenden Sie den Pfeil <span class = "icon icon-follow_move"></span> in der Änderungssprechblase, um zur neuen Position des Textes zu wechseln.</p>
+        <p>Klicken Sie an der neuen Position auf den doppelt unterstrichenen Text und verwenden Sie den Pfeil <span class = "icon icon-follow_move"></span> in der Änderungssprechblase, um zur ursprünglichen Position des Textes zu wechseln.</p>
+        <h3 id="displaymode">Anzeigemodus für Änderungen auswählen</h3>
+        <p>Klicken Sie in der oberen Symbolleiste auf das Symbol <span class = "icon icon-review_displaymode"></span> <b>Anzeigemodus</b> und wählen Sie einen der verfügbaren Modi aus der Liste aus:</p>
+        <ul>
+            <li><b>Markup</b>: Diese Option ist standardmäßig ausgewählt. Dieser Modus ermöglicht es, Änderungsvorschläge anzuzeigen und das Dokument zu bearbeiten.</li>
+            <li><b>Einfaches Markup</b>: Dieser Modus ermöglicht sowohl das Anzeigen der vorgeschlagenen Änderungen als auch das Bearbeiten des Dokuments. Änderungen werden nur im Dokumenttext angezeigt, Sprechblasen werden ausgeblendet.</li>
+            <li><b>Endgültig</b>: In diesem Modus werden alle Änderungen so angezeigt, als wären sie angenommen worden. Die Änderungen werden nicht wirklich akzeptiert, die Funktion ermöglicht Ihnen lediglich eine Vorschau, falls alle Änderungen angenommen werden. In diesem Modus kann das Dokument nicht bearbeitet werden.</li>
+            <li><b>Original</b>: In diesem Modus werden alle Änderungen so angezeigt, als wären sie abgelehnt worden. Die Änderungen werden nicht wirklich abgelehnt, die Funktion ermöglicht Ihnen lediglich eine Vorschau, falls alle Änderungen abgelehnt werden. In diesem Modus kann das Dokument nicht bearbeitet werden.</li>
+        </ul>
+        <h3 id="managechanges">Änderungen annehmen oder ablehnen</h3>
+        <p>Über die Schaltflächen <span class = "icon icon-review_previous"></span> <b>Vorherige</b> und <span class = "icon icon-review_next"></span> <b>Nächste</b> in der oberen Symbolleiste können Sie zwischen den Änderungen navigieren.</p>
+        <p>Um die aktuell ausgewählte Änderung anzunehmen:</p>
+        <ul>
+            <li>Klicken Sie auf die Schaltfläche <div class = "icon icon-review_accepttoptoolbar"></div> <b>Annehmen</b> in der oberen Symbolleiste, oder</li>
+            <li>Klicken Sie auf den Abwärtspfeil unter der Schaltfläche <b>Annehmen</b> und wählen Sie die Option <b>Aktuelle Änderung annehmen</b> (in diesem Fall wird die Änderung angenommen und Sie fahren mit der nächsten Änderung fort), oder</li>
+            <li>Klicken Sie auf die Schaltfläche <b>Annehmen</b> <div class = "icon icon-review_accept"></div> der Änderungssprechblase.</li>
+        </ul>
+        <p>Um alle Änderungen sofort anzunehmen, klicken Sie auf den Abwärtspfeil unter der Schaltfläche <span class = "icon icon-review_accepttoptoolbar"></span> <b>Annehmen</b> und wählen Sie die Option <b>Alle Änderungen annehmen</b> aus.</p>
+        <p>Um die aktuell ausgewählte Änderung abzulehnen:</p>
+        <ul>
+            <li>Klicken Sie auf die Schaltfläche <div class = "icon icon-review_rejecttoptoolbar"></div> <b>Ablehnen</b> in der oberen Symbolleiste, oder</li>
+            <li>Klicken Sie auf den Abwärtspfeil unter der Schaltfläche <b>Ablehnen</b> und wählen Sie die Option <b>Aktuelle Änderung ablehnen</b> aus (in diesem Fall wird die Änderung abgelehnt und Sie fahren mit der nächsten verfügbaren Änderung fort), oder</li>
+            <li>Klicken Sie auf die Schaltfläche <b>Ablehnen</b> <div class = "icon icon-review_reject"></div> der Änderungssprechblase.</li>
+        </ul>
+        <p>Um alle Änderungen direkt abzulehnen, klicken Sie auf den Abwärtspfeil unter der Schaltfläche <span class = "icon icon-review_rejecttoptoolbar"></span> <b>Ablehnen</b> und wählen Sie die Option <b>Alle Änderungen ablehnen</b>.</p>
+        <p>Wenn Sie eine Änderung annehmen oder ablehnen müssen, klicken Sie mit der rechten Maustaste darauf und wählen Sie im Kontextmenü <b>Änderung annehmen</b> oder <b>Änderung ablehnen</b>.</p>
+        <p><img alt="Accept/Reject Drop-Down Menü" src="../images/acceptreject_dropdown.png" /></p>
+        <p class="note">Wenn Sie das Dokument überprüfen, stehen Ihnen die Optionen <b>Annehmen</b> und <b>Ablehnen</b> nicht zur Verfügung. Sie können Ihre Änderungen mit dem Symbol <span class = "icon icon-review_delete"></span> innerhalb der Änderungssprechblase löschen.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>View Settings and Navigation Tools</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of view settings and navigation tools such as zoom, previous/next slide buttons" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>View Settings and Navigation Tools</h1>
+			<p>The <a target="_blank" href="https://www.onlyoffice.com/en/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a> offers several tools to help you view and navigate through your presentation: zoom, previous/next slide buttons and slide number indicator.</p>
+			<h3>Adjust the View Settings</h3>
+			<p>
+				To adjust default view settings and set the most convenient mode to work with the presentation, go to the <b><a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">View</a></b> tab.
+				You can select the following options:
+			</p>
+			<ul>
+				<li><b>Zoom</b> - to set the required zoom value from 50% to 500% from the drop-down list.</li>
+				<li><b>Fit to Slide</b> - to fit the whole slide to the visible part of the working area.</li>
+				<li><b>Fit to Width</b> - to fit the slide width to the visible part of the working area.</li>
+				<li><b>Interface Theme</b> - choose one of the available interface themes from the drop-down menu: <em>Same as system</em>, <em>Light</em>, <em>Classic Light</em>, <em>Dark</em>, <em>Contrast Dark</em>.</li>
+				<li><b>Notes</b> - when disabled, hides the notes section below the slide. This section can also be hidden/shown by dragging it with the mouse cursor.</li>
+				<li><b>Rulers</b> - when disabled, hides rulers which are used to set up tab stops and paragraph indents within the text boxes. To show the hidden <b>Rulers</b>, click this option once again.</li>
+				<li><b>Guides</b> – choose the preferred guide type to properly position objects on the slide. The available options are <em>vertical</em>, <em>horizontal</em> and <em>smart guides</em> for better positioning.</li>
+				<li><b>Gridlines</b> – choose the preferred grid <em>size</em> from available templates or set a <em>custom</em> one, and whether to <em>snap objects</em> to grid or not, for better object positioning.</li>
+				<li>
+					<b>Always Show Toolbar</b> - when this option is disabled, the top toolbar that contains commands will be hidden while tab names remain visible.
+					<p class="note">Alternatively, you can just double-click any tab to hide the top toolbar or display it again.</p>
+				</li>
+				<li><b>Status Bar</b> - when disabled, hides the bottommost bar where the <b>Slide Number Indicator</b> and <b>Zoom</b> buttons are located. To show the hidden <b>Status Bar</b>, click this option once again.</li>
+				<li><b>Left Panel</b> - when disabled, hides the left panel where <b>Search</b>, <b>Slides</b>, <b>Comments</b>, etc. buttons are located. To show the left panel, check this box.</li>
+				<li><b>Right Panel</b> - when disabled, hides the right panel where <b>Settings</b> are located. To show the right panel, check this box.</li>
+			</ul>
+			<p>The right sidebar is minimized by default. To expand it, select any object/slide and click the icon of the currently activated tab on the right. To minimize the right sidebar, click the icon once again. The left sidebar width is adjusted by simple drag-and-drop: 
+			move the mouse cursor over the left sidebar border so that it turns into the bidirectional arrow and drag the border to the left to reduce the sidebar width or to the right to extend it.</p>
+			<h3>Use the Navigation Tools</h3>
+			<p>To navigate through your presentation, use the following tools:</p>
+			<p>
+				The <b>Zoom</b> buttons are situated in the right lower corner and are used to zoom in and out the current presentation.
+				To change the currently selected zoom value that is displayed in percent, click it and select one of the available zoom options from the list (50% / 75% / 100% / 125% / 150% / 175% / 200% / 300% / 400% / 500%)
+				or use the <b>Zoom in</b> <span class="icon icon-zoomin"></span> or <b>Zoom out</b> <span class="icon icon-zoomout"></span> buttons.
+				Click the <b>Fit to Width</b> <span class="icon icon-fitwidth"></span> icon to fit the slide width to the visible part of the working area.
+				To fit the whole slide to the visible part of the working area, click the <b>Fit to Slide</b> <span class="icon icon-fitslide"></span> icon.
+				Zoom settings are also available on the <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">View</a> tab.
+			</p>
+			<p class="note">You can set a default zoom value. Switch to the <b>File</b> tab of the top toolbar, go to the <b>Advanced Settings...</b> section, choose the necessary <b>Default Zoom Value</b> from the list and click the <b>Apply</b> button.</p>
+			<p>To go to the previous or next slide when editing the presentation, you can use the <span class="icon icon-previouspage"></span> and <span class="icon icon-nextpage"></span> buttons at the top and bottom of the vertical scroll bar located to the right of the slide.</p>
+			<p>The <b>Slide Number Indicator</b> shows the current slide as a part of all the slides in the current presentation (slide 'n' of 'nn'). 
+			Click this caption to open the window where you can enter the slide number and quickly go to it. If you decide to hide the <b>Status Bar</b>, this tool will become inaccessible.</p>
+			
+			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Documents</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="../../../apps/documenteditor/embed/resources/css/app-all.css" rel="stylesheet">
+
+    <!-- splash -->
+
+    <style type="text/css">
+        .loadmask {
+            left: 0;
+            top: 0;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            border: none;
+            background-color: #f4f4f4;
+            z-index: 10000;
+        }
+
+        .loadmask > .brendpanel {
+            width: 100%;
+            position: absolute;
+            height: 28px;
+            background-color: #F7F7F7;
+            -webkit-box-shadow: inset 0 -1px 0 #dbdbdb, inset 0 1px 0 #FAFAFA;
+            box-shadow: inset 0 -1px 0 #dbdbdb, inset 0 1px 0 #FAFAFA;
+        }
+
+        .loadmask > .brendpanel > div {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .loadmask > .brendpanel .loading-logo {
+            max-width: 200px;
+            height: 20px;
+            margin-left: 10px;
+            text-align: center;
+        }
+
+        .loadmask > .brendpanel .loading-logo > img {
+            display: inline-block;
+            max-width: 100px;
+            max-height: 20px;
+            opacity: 0;
+        }
+        .loadmask > .brendpanel .doc-title {
+            flex-grow: 1;
+        }
+
+        .loadmask > .brendpanel .circle {
+            vertical-align: middle;
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            margin: 4px 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .loadmask > .placeholder {
+            background: #fbfbfb;
+            width: 100%;
+            height: 100%;
+            padding-top: 56px;
+        }
+
+        .loadmask > .placeholder > .line {
+            height: 15px;
+            margin: 30px;
+            background: #e2e2e2;
+            overflow: hidden;
+            position: relative;
+
+            -webkit-animation: flickerAnimation 2s infinite ease-in-out;
+            -moz-animation: flickerAnimation 2s infinite ease-in-out;
+            -o-animation: flickerAnimation 2s infinite ease-in-out;
+            animation: flickerAnimation 2s infinite ease-in-out;
+        }
+
+        @keyframes flickerAnimation {
+            0%   { opacity:0.1; }
+            50%  { opacity:1; }
+            100% { opacity:0.1; }
+        }
+        @-o-keyframes flickerAnimation{
+            0%   { opacity:0.1; }
+            50%  { opacity:1; }
+            100% { opacity:0.1; }
+        }
+        @-moz-keyframes flickerAnimation{
+            0%   { opacity:0.1; }
+            50%  { opacity:1; }
+            100% { opacity:0.1; }
+        }
+        @-webkit-keyframes flickerAnimation{
+            0%   { opacity:0.1; }
+            50%  { opacity:1; }
+            100% { opacity:0.1; }
+        }
+    </style>
+
+    <!--[if lt IE 9]>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body class="embed-body">
+      <div id="loading-mask" class="loadmask"><div class="brendpanel"><div><div class="brand-logo loading-logo"><img src=""></div><div class="doc-title"></div><div class="circle"></div></div></div><div class="placeholder"><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div></div></div>
+
+       <script>
+            var  userAgent = navigator.userAgent.toLowerCase(),
+                check = function(regex){ return regex.test(userAgent); };
+            if (!check(/opera/) && (check(/msie/) || check(/trident/))) {
+                var m = /msie (\d+\.\d+)/.exec(userAgent);
+                if (m && parseFloat(m[1]) < 10.0) {
+                    document.write(
+                        '<div id="id-error-mask" class="errormask">',
+                            '<div class="error-body" align="center">',
+                                '<div id="id-error-mask-title" class="title">Your browser is not supported.</div>',
+                                '<div id="id-error-mask-text">Sorry, ONLYOFFICE Document is currently only supported in the latest versions of the Chrome, Firefox, Safari or Internet Explorer web browsers.</div>',
+                            '</div>',
+                        '</div>'
+                    );
+                }
+            }
+
+            function getUrlParams() {
+                var e,
+                    a = /\+/g,  // Regex for replacing addition symbol with a space
+                    r = /([^&=]+)=?([^&]*)/g,
+                    d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+                    q = window.location.search.substring(1),
+                    urlParams = {};
+
+                while (e = r.exec(q))
+                    urlParams[d(e[1])] = d(e[2]);
+
+                return urlParams;
+            }
+
+            function encodeUrlParam(str) {
+                return str.replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+            }
+
+            var params = getUrlParams(),
+                           lang = (params["lang"] || 'en').split(/[\-\_]/)[0],
+                           logo = params["headerlogo"] ? encodeUrlParam(params["headerlogo"]) : null;
+
+            window.frameEditorId = params["frameEditorId"];
+            window.parentOrigin = params["parentOrigin"];
+            var elem = document.querySelector('.loading-logo');
+            if (elem && logo) {
+                elem.style.backgroundImage= 'none';
+                elem.style.width = 'auto';
+                elem.style.height = 'auto';
+                var img = document.querySelector('.loading-logo img');
+                img && img.setAttribute('src', logo);
+                img.style.opacity = 1;
+            }
+        </script>
+
+      <div id="editor_sdk" class="viewer" style="overflow: hidden;" tabindex="-1"></div>
+
+      <div class="overlay-controls" style="margin-left: -32px">
+          <ul class="left">
+              <li id="id-btn-zoom-in"><button class="overlay svg-icon zoom-up"></button></li>
+              <li id="id-btn-zoom-out"><button class="overlay svg-icon zoom-down"></button></li>
+          </ul>
+      </div>
+
+      <div class="toolbar" id="toolbar">
+          <div class="group left">
+              <div class="margin-right-large"><a id="header-logo" class="brand-logo" href="http://www.onlyoffice.com/" target="_blank"></a></div>
+              <button id="id-btn-prev-field" class="control-btn svg-icon arrow-up margin-right-small"></button><!--
+              --><button id="id-btn-next-field" class="control-btn has-caption margin-right-large"><span class="btn-icon svg-icon arrow-down"></span><span class="caption"></span></button><!--
+              --><button id="id-btn-clear-fields" class="control-btn has-caption"><span class="btn-icon svg-icon clear-style"></span><span class="caption"></span></button>
+          </div>
+          <div class="group center">
+              <span id="title-doc-name"></span>
+          </div>
+          <div class="group right">
+              <div id="id-pages" class="item margin-right-small" style="vertical-align: middle;"><input id="page-number" class="form-control input-xs masked" type="text" value="0"><span class="text" id="pages" tabindex="-1">of 0</span></div>
+              <div id="id-submit-group" style="display: inline-block;"><button id="id-btn-submit" class="control-btn has-caption margin-right-small margin-left-small colored"><span class="caption"></span></button></div>
+              <div id="box-tools" class="dropdown">
+                  <button class="control-btn svg-icon more-vertical"></button>
+              </div>
+          </div>
+      </div>
+
+      <div class="modal fade error" id="id-critical-error-dialog" tabindex="-1" role="dialog">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h4 id="id-critical-error-title"></h4>
+                  </div>
+                  <div class="modal-body">
+                      <p id="id-critical-error-message"></p>
+                  </div>
+                  <div class="modal-footer">
+                      <button id="id-critical-error-close" class="btn btn-sm btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="hyperlink-tooltip" data-toggle="tooltip" title="" style="display:none;"></div>
+
+      <!--vendor-->
+      <script type="text/javascript" src="../../../vendor/jquery/jquery.min.js"></script>
+      <script type="text/javascript" src="../../../vendor/jquery/jquery.browser.min.js"></script>
+      <script type="text/javascript" src="../../../vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="../../../vendor/socketio/socket.io.min.js"></script>
+      <script type="text/javascript" src="../../../vendor/xregexp/xregexp-all-min.js"></script>
+      <script src="../../../vendor/requirejs/require.js"></script>
+      <script>
+          require.config({
+              baseUrl: '../../'
+          });
+      </script>
+
+      <!--sdk-->
+      <script type="text/javascript" src="../../../../sdkjs/common/AllFonts.js"></script>
+      <script type="text/javascript" src="../../../../sdkjs/word/sdk-all-min.js"></script>
+
+      <!--application-->
+      <script type="text/javascript" src="../../../apps/documenteditor/embed/app-all.js"></script>
+      <script type="text/javascript">
+          var isBrowserSupported = function() {
+              return  ($.browser.msie     && parseFloat($.browser.version) > 9)     ||
+                      ($.browser.chrome   && parseFloat($.browser.version) > 7)     ||
+                      ($.browser.safari   && parseFloat($.browser.version) > 4)     ||
+                      ($.browser.opera    && parseFloat($.browser.version) > 10.4)  ||
+                      ($.browser.mozilla  && parseFloat($.browser.version) > 3.9);
+          };
+
+          if (!isBrowserSupported()){
+              document.write(
+                  '<div id="id-error-mask" class="errormask">',
+                      '<div class="error-body" align="center">',
+                          '<div id="id-error-mask-title" class="title">Your browser is not supported.</div>',
+                          '<div id="id-error-mask-text">Sorry, ONLYOFFICE Document is currently only supported in the latest versions of the Chrome, Firefox, Safari or Internet Explorer web browsers.</div>',
+                      '</div>',
+                  '</div>'
+              );
+          }
+      </script>
+  </body>
+</html>

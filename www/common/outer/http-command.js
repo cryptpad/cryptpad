@@ -88,7 +88,7 @@ define([
                     console.error(err);
                     // there might be more info here
                     if (data) { console.error(data); }
-                    return void cb("RESPONSE_REJECTED");
+                    return void cb("RESPONSE_REJECTED", data);
                 }
                 cb(void 0, data);
             }));

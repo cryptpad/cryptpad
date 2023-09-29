@@ -827,6 +827,7 @@ define([
                 }
                 button = $('<button>', {
                     title: Messages.historyButton,
+                    'aria-label': Messages.historyButton,
                     'class': "fa fa-history cp-toolbar-icon-history",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
                 if (data.histConfig) {
@@ -1151,11 +1152,13 @@ define([
             editor.focus();
         };
         for (var k in actions) {
-            $('<button>', {
+            let $b = $('<button>', {
                 'data-type': k,
                 'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
-            }).click(onClick).appendTo($toolbar);
+            }).click(onClick);
+            if (k === "embed") { $toolbar.prepend($b); }
+            else { $toolbar.append($b); }
         }
         $('<button>', {
             'class': 'pure-button fa fa-question cp-markdown-help',
@@ -1488,14 +1491,17 @@ define([
         if (config.buttonContent) {
             $button = $(h('button', {
                 class: config.buttonCls || '',
+                'aria-label': config.ariaLabel || '',
             }, [
                 h('span.cp-dropdown-button-title', config.buttonContent),
             ]));
         } else {
             $button = $('<button>', {
-                'class': config.buttonCls || ''
+                'class': config.buttonCls || '',
+                'aria-label': config.ariaLabel || '',
             }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
         }
+
 
         if (config.caretDown) {
             $('<span>', {
@@ -1737,10 +1743,11 @@ define([
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
         var content = h('div.cp-info-menu-container', [
-            h('div.logo-block', [
-                h('img', {
-                    src: '/customize/CryptPad_logo.svg?' + urlArgs
-                }),
+                h('div.logo-block', [
+                    h('img', {
+                        src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                        alt: Messages.label_logo
+                    }),
                 h('h6', "CryptPad"),
                 h('span', Pages.versionString)
             ]),
@@ -1765,7 +1772,7 @@ define([
             },
         ];
 
-        var modal = UI.dialog.customModal(content, {buttons: buttons });
+        var modal = UI.dialog.customModal(content, {scrollable: true, buttons: buttons });
         UI.openCustomModal(modal);
     };
 
@@ -2860,6 +2867,7 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var sframeChan = common.getSframeChannel();
         var msg = err.type;
+        var exitable = Boolean(err.loaded);
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
@@ -2874,6 +2882,22 @@ define([
             if (autoStoreModal[priv.channel]) {
                 autoStoreModal[priv.channel].delete();
                 delete autoStoreModal[priv.channel];
+            }
+
+            if (err.message && err.drive) {
+                let msg = UI.getDestroyedPlaceholder(err.message, true);
+                return UI.errorLoadingScreen(msg, false, () => {
+                    // When closing error screen
+                    if (err.message === 'PASSWORD_CHANGE') {
+                        return common.setLoginRedirect('login');
+                    }
+                    return common.setLoginRedirect('');
+                });
+            }
+            if (err.message && err.message !== "PASSWORD_CHANGE") {
+                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
+                    exitable, exitable);
+                return;
             }
 
             if (err.ownDeletion) {
@@ -2921,7 +2945,12 @@ define([
         var error;
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
 
-        var info = h('p.cp-password-info', Messages.password_info);
+        var pwMsg = UI.getDestroyedPlaceholderMessage('PASSWORD_CHANGE', false);
+        if (cfg.legacy) {
+            // Legacy mode: we don't know if the pad has been destroyed or its password has changed
+            pwMsg = Messages.password_info;
+        }
+        var info = h('p.cp-password-info', pwMsg);
         var info_loaded = setHTML(h('p.cp-password-info'), Messages.errorCopy);
 
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
