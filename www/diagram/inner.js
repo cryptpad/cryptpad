@@ -150,16 +150,13 @@ define([
                     return void callback("");
                 }
                 try {
-                    FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), async (err, res) => {
+                    FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), (err, res) => {
                         if (err || !res.content) {
                             console.error("Decrypting failed");
                             return void callback("");
                         }
 
-                        try {
-                            const dataUrl = await createDataUrl(data.fileType, res.content);
-                            callback(dataUrl);
-                        } catch (e) {}
+                        createDataUrl(data.fileType, res.content).then(callback);
                     });
                 } catch (e) {
                     console.error(e);
