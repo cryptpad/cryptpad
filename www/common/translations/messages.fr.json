@@ -1667,5 +1667,8 @@
     "dph_tmp_pw": "Ce modèle est protégé par un nouveau mot de passe. Ouvrez le depuis votre drive pour entrer le nouveau mot de passe.",
     "goLeft": "Gauche",
     "goRight": "Droite",
-    "admin_archiveAccountConfirm": "Veuillez spécifier la raison de l'archivage, ce sera affiché à l'utilisateur·ice."
+    "admin_archiveAccountConfirm": "Veuillez spécifier la raison de l'archivage, ce sera affiché à l'utilisateur·ice.",
+    "access_passwordUsed": "Ce mot de passe a déjà été utilisé pour ce document. Il ne peut pas être réutilisé.",
+    "admin_diskUsageWarning": "Utiliser avec prudence ! Suivant la taille du volume de données stockées sur l'instance, générer ce rapport peut consommer toute la mémoire disponible sur le serveur et causer un crash.",
+    "status": "Page de statut"
 }
