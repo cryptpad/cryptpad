@@ -1629,5 +1629,9 @@
     "recovery_forgot": "Wiederherstellungscode vergessen",
     "recovery_forgot_text": "Bitte kopiere die folgenden Informationen und <a href=\"mailto:{0}\">sende sie per E-Mail</a> an die Administratoren deiner Instanz",
     "recovery_mfa_description": "Wenn du den Zugang zu deiner Zwei-Faktor-Authentifizierungsmethode verloren hast, kannst du 2FA für deinen Account mit deinem Wiederherstellungscode deaktivieren. Bitte beginne mit der Eingabe deines Benutzernamens und Passworts:",
-    "recovery_mfa_secret": "Bitte gib deinen Wiederherstellungscode ein, um 2FA für deinen Account zu deaktivieren:"
+    "recovery_mfa_secret": "Bitte gib deinen Wiederherstellungscode ein, um 2FA für deinen Account zu deaktivieren:",
+    "goRight": "Rechts",
+    "calendar_settings": "Kalender-Einstellungen",
+    "goLeft": "Links",
+    "date": "Datum"
 }
