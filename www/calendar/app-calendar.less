@@ -299,12 +299,13 @@
                 display: flex;
                 flex-flow: column;
                 .cp-notif-entry {
+                    display: flex;
                     margin-bottom: 2px;
                     border-radius: @variables_radius;
                     background-color: fade(@cryptpad_text_col, 10%);
                     padding: 0.25rem;
                     .cp-notif-value {
-                        width: 170px;
+                        width: 75%;
                         display: inline-flex;
                         line-height: 30px;
                         vertical-align: middle;
@@ -314,11 +315,10 @@
                         }
                     }
                     span:not(:last-child) {
-                        margin: 1px 5px;
-                        display: inline;
+                        margin: 0px 3px;
                     }
                     .btn-danger-outline {
-                        display: inline-block;
+                        display: block;
                         margin-right: 0px !important;
                         background-color: transparent;
                         color: @cryptpad_text_col;
