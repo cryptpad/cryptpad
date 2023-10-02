@@ -78,7 +78,7 @@ define([
                         )
                     ]),
                     h('div.cp-recovery-step.step-info', {style: 'display: none;'}, [
-                        h('div.alert.alert-info.cp-hidden.disabled', Msg.recovery_mfa_disabled),
+                        h('div.cp-hidden.disabled', Msg.recovery_mfa_disabled),
                         h('div.alert.alert-danger.cp-hidden.unknown-error', Msg.recovery_mfa_error),
                     ]),
                 ]),
