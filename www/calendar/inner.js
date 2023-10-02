@@ -1922,7 +1922,9 @@ APP.recurrenceRule = {
         };
         $(addNotif).click(function () {
             var unit = $block.getValue();
-            var value = $number.val();
+            var val = $number.val();
+            if (val === "") { return void UI.warn(Messages.error); }
+            var value = Number(val);
             addNotification(unit, value);
         });
         oldReminders.forEach(function (minutes) {
@@ -1933,9 +1935,11 @@ APP.recurrenceRule = {
             listContainer,
             h('div.cp-calendar-notif-form', [
                 h('span.cp-notif-label', Messages.calendar_addNotification),
-                number,
-                $block[0],
-                addNotif
+                h('span.cp-calendar-notif-form-buttons', [
+                    number,
+                    $block[0],
+                    addNotif
+                ])
             ])
         ]);
     };
