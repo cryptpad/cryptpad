@@ -58,9 +58,9 @@ meet our strict criteria for safety.
 # Translations
 
 CryptPad can be translated with nothing more than a web browser via our
-[Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/). See the state of the translated languages:
+[Weblate instance](https://weblate.cryptpad.org/projects/cryptpad/app/). See the state of the translated languages:
 
-![](https://weblate.cryptpad.fr/widgets/cryptpad/-/app/multi-auto.svg)
+![](https://weblate.cryptpad.org/widgets/cryptpad/-/app/multi-auto.svg)
 
 More information about this can be found in [our translation guide](/customize.dist/translations/README.md).
 
@@ -68,10 +68,7 @@ More information about this can be found in [our translation guide](/customize.d
 
 The best places to reach the development team and the community are the [CryptPad Forum](https://forum.cryptpad.org) and the [Matrix chat](https://matrix.to/#/#cryptpad:matrix.xwiki.com)
 
-The team is also on social media:
-- Mastodon: [@cryptpad@fosstodon.org](https://fosstodon.org/@cryptpad)
-- Twitter: [@cryptpad](https://twitter.com/cryptpad)
-
+The team is also on the fediverse: [@cryptpad@fosstodon.org](https://fosstodon.org/@cryptpad)
 
 # Team
 
