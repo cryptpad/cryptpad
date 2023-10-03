@@ -1790,8 +1790,8 @@ define([
             var newCrypto = Crypto.createEncryptor(newSecret.keys);
             var oldCrypto = Crypto.createEncryptor(oldSecret.keys);
             var cps = Util.find(cryptgetVal, ['content', 'hashes']);
-            var l = Object.keys(cps).length;
-            var lastCp = l ? cps[l] : {};
+            var cpLength = Object.keys(cps).length;
+            var lastCp = cpLength ? cps[cpLength] : {};
             cryptgetVal.content.hashes = {};
             common.getHistory({
                 channel: oldRtChannel,
@@ -1814,7 +1814,7 @@ define([
                     }
                 });
                 // Update last knwon hash in cryptgetVal
-                if (lastCp) {
+                if (cpLength && newHistory.length) {
                     lastCp.hash = newHistory[0].slice(0, 64);
                     lastCp.index = 50;
                     cryptgetVal.content.hashes[1] =  lastCp;
@@ -1839,6 +1839,7 @@ define([
             // The new rt channel is ready
             // The blob uses its own encryption and doesn't need to be reencrypted
             cryptgetVal.content.channel = newRtChannel;
+            if (!newPassword) { optsPut.metadata.forcePlaceholder = true; }
             Crypt.put(newHash, JSON.stringify(cryptgetVal), waitFor(function (err) {
                 if (err) {
                     waitFor.abort();
