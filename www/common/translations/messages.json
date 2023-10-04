@@ -1660,7 +1660,7 @@
     "dph_pad_inactive": "This document was deleted because of inactivity",
     "dph_pad_moderated": "This document was deleted by the moderation team",
     "dph_pad_moderated_account": "This document was deleted for belonging to a suspended account",
-    "dph_pad_pw": "This document is protected with a new password. Enter the password to access the content",
+    "dph_pad_pw": "This document is protected with a new password",
     "dph_tmp_destroyed": "This template was destroyed by an owner",
     "dph_tmp_moderated": "This template was deleted by the moderation team",
     "dph_tmp_moderated_account": "This template was deleted for belonging to a suspended account",
