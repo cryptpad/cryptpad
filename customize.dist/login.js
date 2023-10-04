@@ -104,7 +104,8 @@ define([
         return opt;
     };
 
-    var loadUserObject = Exports.loadUserObject = function (opt, cb) {
+    var loadUserObject = Exports.loadUserObject = function (opt, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
             channel: opt.channelHex,
