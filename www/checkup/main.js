@@ -320,7 +320,7 @@ define([
         var blockUrl = Login.Block.getBlockUrl(opt.blockKeys);
         console.warn('Testing block URL (%s). One 404 is normal.', blockUrl);
 
-        var userHash = '/2/drive/edit/000000000000000000000000';
+        var userHash = Hash.createRandomHash('drive');
         var secret = Hash.getSecrets('drive', userHash);
         opt.keys = secret.keys;
         opt.channelHex = secret.channel;
