@@ -2865,6 +2865,7 @@ define([
     UIElements.onServerError = function (common, err, toolbar, cb) {
         //if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
+        var viewer = priv.readOnly || err.viewer;
         var sframeChan = common.getSframeChannel();
         var msg = err.type;
         var exitable = Boolean(err.loaded);
@@ -2894,7 +2895,8 @@ define([
                     return common.setLoginRedirect('');
                 });
             }
-            if (err.message && err.message !== "PASSWORD_CHANGE") {
+            if (err.message && (err.message !== "PASSWORD_CHANGE" || viewer)) {
+                // XXX If readonly, tell the viewer that their link won't work with the new password
                 UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
                     exitable, exitable);
                 return;
@@ -2908,7 +2910,7 @@ define([
 
             // View users have the wrong seed, thay can't retireve access directly
             // Version 1 hashes don't support passwords
-            if (!priv.readOnly && !priv.oldVersionHash) {
+            if (!viewer && !priv.oldVersionHash) {
                 sframeChan.event('EV_SHARE_OPEN', {hidden: true}); // Close share modal
                 UIElements.displayPasswordPrompt(common, {
                     fromServerError: true,
@@ -2943,7 +2945,10 @@ define([
 
     UIElements.displayPasswordPrompt = function (common, cfg, isError) {
         var error;
-        if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
+        if (isError) {
+            let msg = isError === 'PASSWORD_CHANGE' ? Messages.drive_sfPasswordError : Messages.password_error;
+            error = setHTML(h('p.cp-password-error'), msg);
+        }
 
         var pwMsg = UI.getDestroyedPlaceholderMessage('PASSWORD_CHANGE', false);
         if (cfg.legacy) {
@@ -2987,8 +2992,16 @@ define([
                 });
             }
             common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
-                if (!data) {
-                    return void UIElements.displayPasswordPrompt(common, cfg, true);
+                data = data || {};
+                if (!data.state && data.view && data.reason === "PASSWORD_CHANGE") {
+                    return UIElements.onServerError(common, {
+                        type: 'EDELETED',
+                        message: data.reason,
+                        viewer: data.view
+                    });
+                }
+                if (!data.state) {
+                    return void UIElements.displayPasswordPrompt(common, cfg, (data && data.reason) || 1);
                 }
             });
         };

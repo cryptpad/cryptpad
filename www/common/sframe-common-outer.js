@@ -432,6 +432,8 @@ define([
                     return void todo();
                 }
 
+                var isViewer = parsed.hashData.mode === 'view';
+
                 // We now need to check if there is a password and if we know the correct password.
                 // We'll use getFileSize and hasChannelHistory to detect incorrect passwords.
 
@@ -459,7 +461,11 @@ define([
                             if (Boolean(isNew)) {
                                 // Ask again in the inner iframe
                                 // We should receive a new Q_PAD_PASSWORD_VALUE
-                                cb(false);
+                                cb({
+                                    state: false,
+                                    view: isViewer,
+                                    reason: e
+                                });
                             } else {
                                 todo();
                                 if (wrongPasswordStored) {
@@ -477,7 +483,9 @@ define([
                                 } else {
                                     correctPassword();
                                 }
-                                cb(true);
+                                cb({
+                                    state: true
+                                });
                             }
                         };
                         if (parsed.type === "file") {
@@ -496,7 +504,7 @@ define([
                             if (isNew && reason && reason !== "PASSWORD_CHANGE") {
                                 return sframeChan.event("EV_DELETED_ERROR", reason);
                             }
-                            next();
+                            next(reason, isNew);
                         });
                     });
                     sframeChan.event("EV_PAD_PASSWORD", cfg);
@@ -608,12 +616,15 @@ define([
                         }
                         if (!e && !isNew) { return void todo(); }
                         // NOTE: Legacy mode ==> no reason may indicate a password change
-                        if (isNew && reason && reason !== "PASSWORD_CHANGE") {
-                            sframeChan.event("EV_DELETED_ERROR", reason);
+                        if (isNew && reason && (reason !== "PASSWORD_CHANGE" || isViewer)) {
+                            sframeChan.event("EV_DELETED_ERROR", {
+                                reason: reason,
+                                viewer: isViewer
+                            });
                             waitFor.abort();
                             return;
                         }
-                        if (parsed.hashData.mode === 'view' && (password || !parsed.hashData.password)) {
+                        if (isViewer && (password || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password
                             // password will never work
                             sframeChan.event("EV_PAD_PASSWORD_ERROR");

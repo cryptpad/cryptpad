@@ -849,9 +849,16 @@ define([
             });
 
             ctx.sframeChan.on("EV_DELETED_ERROR", function (reason) {
+                var obj = reason;
+                var viewer;
+                if (typeof(reason) === "object") {
+                    reason = obj.reason;
+                    viewer = obj.viewer;
+                }
                 funcs.onServerError({
                     type: 'EDELETED',
-                    message: reason
+                    message: reason,
+                    viewer: viewer
                 });
             });
 
