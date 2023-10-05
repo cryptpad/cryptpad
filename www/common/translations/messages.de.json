@@ -1659,7 +1659,7 @@
     "dph_pad_inactive": "Dieses Dokument wurde wegen Inaktivität gelöscht",
     "dph_pad_moderated": "Dieses Dokument wurde vom Moderationsteam gelöscht",
     "dph_pad_moderated_account": "Dieses Dokument wurde gelöscht, weil es zu einem gesperrten Account gehört",
-    "dph_pad_pw": "Dieses Dokument wurde mit einem neuen Passwort geschützt. Gib das Passwort ein, um auf den Inhalt zuzugreifen",
+    "dph_pad_pw": "Dieses Dokument wurde mit einem neuen Passwort geschützt",
     "dph_tmp_destroyed": "Diese Vorlage wurde von einem Eigentümer zerstört",
     "dph_tmp_moderated_account": "Diese Vorlage wurde gelöscht, weil sie zu einem gesperrten Account gehört",
     "dph_tmp_moderated": "Diese Vorlage wurde vom Moderationsteam gelöscht",
