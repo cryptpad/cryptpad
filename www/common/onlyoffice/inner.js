@@ -1353,7 +1353,7 @@ define([
             var oMemory = new w.AscCommon.CMemory();
             var aRes = [];
             patches.forEach(function (item) {
-                editor.GetSheet(0).worksheet.workbook._SerializeHistoryBase64(oMemory, item, aRes);
+                editor.GetSheet(0).worksheet.workbook._SerializeHistory(oMemory, item, aRes);
             });
 
             // Make the patch
@@ -1363,6 +1363,13 @@ define([
                 changesIndex: ooChannel.cpIndex || 0,
                 startSaveChanges: true,
                 endSaveChanges: true,
+                isExcel: true,
+                deleteIndex: null,
+                excelAdditionalInfo: null,
+                unlock: false,
+                releaseLocks: true,
+                reSave: true,
+                isCoAuthoring: true,
                 locks: getUserLock(getId(), true),
                 excelAdditionalInfo: null
             };
