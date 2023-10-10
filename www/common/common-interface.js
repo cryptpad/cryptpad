@@ -920,7 +920,8 @@ define([
             title: text,
             href: href,
             target: "_blank",
-            'data-tippy-placement': "right"
+            'data-tippy-placement': "right",
+            'aria-label': Messages.help_genericMore //TBC XXX
         });
         return q;
     };
