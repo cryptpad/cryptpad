@@ -1196,7 +1196,7 @@ define([
         if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
 
         // Mark properties
-        var markOpts = { tabindex: 0 };
+        var markOpts = { tabindex: 0, role: 'checkbox', 'aria-checked': checked};
         $.extend(markOpts, opts.mark || {});
 
         var input = h('input', inputOpts);
@@ -1219,8 +1219,10 @@ define([
             if (!opts.labelAlt) { return; }
             if ($input.is(':checked') !== checked) {
                 $(label).text(opts.labelAlt);
+                $mark.attr('aria-checked', 'true');
             } else {
                 $(label).text(labelTxt);
+                $mark.attr('aria-checked', 'false');
             }
         });
 
