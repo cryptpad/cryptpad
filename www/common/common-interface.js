@@ -1196,14 +1196,14 @@ define([
         if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
 
         // Mark properties
-        var markOpts = { tabindex: 0, role: 'checkbox', 'aria-checked': checked};
+        var markOpts = { tabindex: 0, role: 'checkbox', 'aria-checked': checked, 'aria-labelledby': inputOpts.id + '-label' };
         $.extend(markOpts, opts.mark || {});
 
         var input = h('input', inputOpts);
         var $input = $(input);
         var mark = h('span.cp-checkmark-mark', markOpts);
         var $mark = $(mark);
-        var label = h('span.cp-checkmark-label', labelTxt);
+        var label = h('span.cp-checkmark-label', {id: inputOpts.id + '-label'}, labelTxt);
 
         $mark.keydown(function (e) {
             if ($input.is(':disabled')) { return; }
