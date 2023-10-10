@@ -127,23 +127,12 @@ define([
             autosave: onDrawioAutosave,
         };
 
-        const createDataUrl = (mimeType, blob) => {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.addEventListener(
-                    "load",
-                    () => {
-                        resolve(reader.result);
-                    },
-                    false
-                );
-
-                const fixedBlob = new Blob([blob], {type: mimeType});
-                reader.readAsDataURL(fixedBlob);
-            });
+        const setBlobType = (blob, mimeType) => {
+            const fixedBlob = new Blob([blob], {type: mimeType});
+            return fixedBlob;
         };
 
-        APP.getImageURL = function(data, callback) {
+        APP.getImage = function(data, callback) {
             Util.fetch(data.src, function (err, u8) {
                 if (err) {
                     console.error(err);
@@ -156,7 +145,7 @@ define([
                             return void callback("");
                         }
 
-                        createDataUrl(data.fileType, res.content).then(callback);
+                        callback(setBlobType(res.content, data.fileType));
                     });
                 } catch (e) {
                     console.error(e);
@@ -174,12 +163,12 @@ define([
                         fileType: ['image/']
                     }
                 }, (data) => {
-                    APP.getImageURL(data, function(url) {
+                    APP.getImage(data, function(blob) {
                         common.setPadAttribute('atime', +new Date(), null, data.href);
                         resolve({
                             name: data.name,
                             fileType: data.fileType,
-                            url: url
+                            blob: blob
                         });
                     });
                 });
