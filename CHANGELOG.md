@@ -1,3 +1,135 @@
+
+# 5.5.0
+
+## Features
+
+- Moderation and content deletion features [#1253](https://github.com/cryptpad/cryptpad/pull/1253)
+  * Moderation
+    * archive an entire account and its owned documents from its public key
+    * restore this entire account if necessary
+  * Placeholder
+    * unavailable documents now provide improved messages communicating the reason they are unavailable:
+      - Deleted by an owner
+      - Deleted by an admin + reason from admin team (user account or document)
+      - Deleted for inactivity (documents not stored in a user drive and inactive)
+      - Protected with a new password (user account or document)
+    * it is no longer possible to re-use an previous password for a password-protected document
+- Only Office upgrade to 7.3.3.60
+  - New version of x2t for document conversions
+
+## Improvements
+
+- Accessibility
+  - Add text labels to elements [#1163](https://github.com/cryptpad/cryptpad/issues/1163), [#1122](https://github.com/cryptpad/cryptpad/issues/1122), [#1123](https://github.com/cryptpad/cryptpad/issues/1123), [#1124](https://github.com/cryptpad/cryptpad/issues/1124), [#1128](https://github.com/cryptpad/cryptpad/issues/1128), [#1129](https://github.com/cryptpad/cryptpad/issues/1129), [#1131](https://github.com/cryptpad/cryptpad/issues/1131), [#1140](https://github.com/cryptpad/cryptpad/issues/1140), [#1150](https://github.com/cryptpad/cryptpad/issues/1150), [#1159](https://github.com/cryptpad/cryptpad/issues/1159), [#1195](https://github.com/cryptpad/cryptpad/issues/1195), [#1194](https://github.com/cryptpad/cryptpad/issues/1194)
+  - Enable zooming and scaling [#1130](https://github.com/cryptpad/cryptpad/issues/1130)
+  - Turn login error message into an instruction [#1207](https://github.com/cryptpad/cryptpad/issues/1207)
+- Mobile usage
+  - Fix the instance links layout on the home-page [#1085](https://github.com/cryptpad/cryptpad/issues/1085)
+  - Display full file upload progress modal [#1086](https://github.com/cryptpad/cryptpad/issues/1086)
+  - Add text to Teams buttons [#1093](https://github.com/cryptpad/cryptpad/issues/1093)
+  - Fix button spacings [#1104](https://github.com/cryptpad/cryptpad/issues/1104), [#1106](https://github.com/cryptpad/cryptpad/issues/1106)
+  - Add even space between category buttons [#1113](https://github.com/cryptpad/cryptpad/pull/1113) thanks to @lemondevxyz
+  - Allow the About panel to be closed [#1088](https://github.com/cryptpad/cryptpad/issues/1088)
+  - Calendar
+    - Display full event edit panel [#1094](https://github.com/cryptpad/cryptpad/issues/1094)
+    - Make menu usable [#971](https://github.com/cryptpad/cryptpad/issues/971)
+  - Kanban
+    - Hide markdown help button instead of breaking the layout [#1117](https://github.com/cryptpad/cryptpad/issues/1117)
+    - Added margin for horizontal scroll [#1039](https://github.com/cryptpad/cryptpad/issues/1039)
+    - Remove margin from cards and columns [#1120](https://github.com/cryptpad/cryptpad/issues/1120)
+
+- Instance admin
+  - Added a warning to `/admin/#stats` about a process that can crash the instance [#1176](https://github.com/cryptpad/cryptpad/issues/1176)
+  - Added a setting to display a status page for the instance [#1172](https://github.com/cryptpad/cryptpad/issues/1172)
+- Replace the "sign up" button on the log-in page with a link [#1164](https://github.com/cryptpad/cryptpad/issues/1164)
+- Add support for Webp images [#1008] thanks @lukasdotcom
+
+## Fixes
+
+- Revert a button spacing regression introduced with 5.4.0 [#1229](https://github.com/cryptpad/cryptpad/pull/1229)
+- Login bug on the new Safari following macOS/iPadOS 14 [#1257](https://github.com/cryptpad/cryptpad/issues/1257)
+- Mermaid diagrams were sometimes displayed over each other in Code documents [#1244](https://github.com/cryptpad/cryptpad/issues/1244)
+- Own responses to a form could not be deleted [#1239](https://github.com/cryptpad/cryptpad/issues/1239)
+- The large attachment button did not look consistent in Forms [#1237](https://github.com/cryptpad/cryptpad/issues/1237)
+- The recent tab in the drive was missing column titles [#1233](https://github.com/cryptpad/cryptpad/issues/1233)
+- An export file type dropdown was hidden inside a popup [#1241](https://github.com/cryptpad/cryptpad/issues/1241)
+- Guest emoji avatars were not displayed constistently [#1188](https://github.com/cryptpad/cryptpad/issues/1188)
+- OnlyOffice document conversions
+  - Fix PDF export from Presentation document [#913](https://github.com/cryptpad/cryptpad/issues/913)
+  - Print sheets with long links [#1032](https://github.com/cryptpad/cryptpad/issues/1032)
+  - Fix some .xlsx imports [#1240](https://github.com/cryptpad/cryptpad/issues/1240)
+
+## Dependencies
+
+- Pin CKEditor to 4.22.1 [#1248](https://github.com/cryptpad/cryptpad/issues/1248)
+- Prevent x2t from being cached [#1278](https://github.com/cryptpad/cryptpad/issues/1278)
+
+## Deployment
+
+We now support Nginx with two configurations (find more information in our [administrator guide](https://docs.cryptpad.org/en/admin_guide/installation.html#install-and-configure-nginx)):
+* New recommended "basic" nginx config for small instances: `example.nginx.conf`
+* Update to the old "advanced" config: `example-advanced.nginx.conf`
+  * Add 2 lines in the "blob|block" section
+```diff
+# Requests for blobs and blocks are now proxied to the API server
+# This simplifies NGINX path configuration in the event they are being hosted in a non-standard location
+# or with odd unexpected permissions. Serving blobs in this manner also means that it will be possible to
+# enforce access control for them, though this is not yet implemented.
+# Access control (via TOTP 2FA) has been added to blocks, so they can be handled with the same directives.
+location ~ ^/(blob|block)/.*$ {
+    if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Origin' "${allowed_origins}";
+        add_header 'Access-Control-Allow-Credentials' true;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range';
+        add_header 'Access-Control-Max-Age' 1728000;
+        add_header 'Content-Type' 'application/octet-stream; charset=utf-8';
+        add_header 'Content-Length' 0;
+        return 204;
+    }
+    # Since we are proxying to the API server these headers can get duplicated
+    # so we hide them
+    proxy_hide_header 'X-Content-Type-Options';
+    proxy_hide_header 'Access-Control-Allow-Origin';
+    proxy_hide_header 'Permissions-Policy';
+    proxy_hide_header 'X-XSS-Protection';
++   proxy_hide_header 'Cross-Origin-Resource-Policy';
++   proxy_hide_header 'Cross-Origin-Embedder-Policy';
+    proxy_pass http://localhost:3000;
+}
+```
+  * Fix DrawIO hash not matching the latest version
+```diff
+    # draw.io uses inline script tags in it's index.html. The hashes are added here.
+    if ($uri ~ ^\/components\/drawio\/src\/main\/webapp\/index.html.*$) {
+-        set $scriptSrc "'self' 'sha256-6zAB96lsBZREqf0sT44BhH1T69sm7HrN34rpMOcWbNo=' 'sha256-6g514VrT/cZFZltSaKxIVNFF46+MFaTSDTPB8WfYK+c=' resource: https://${main_domain}";
++        set $scriptSrc "'self' 'sha256-dLMFD7ijAw6AVaqecS7kbPcFFzkxQ+yeZSsKpOdLxps=' 'sha256-6g514VrT/cZFZltSaKxIVNFF46+MFaTSDTPB8WfYK+c=' resource: https://${main_domain}";
+    }
+```
+
+## Upgrade notes
+
+<div class="alert alert-danger">
+  INPUT NEEDED 
+</div>
+
+If you are upgrading from a version older than `5.4.1` please read the upgrade notes of all versions between yours and `5.4.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 5.5.0
+```
+
+1. Restart your server
+. Review your instance's checkup page to ensure that you are passing all tests
+
+
+
 # 5.4.1
 
 ## Goals
