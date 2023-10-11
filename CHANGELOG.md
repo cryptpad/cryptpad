@@ -43,6 +43,7 @@
   - Added a setting to display a status page for the instance [#1172](https://github.com/cryptpad/cryptpad/issues/1172)
 - Replace the "sign up" button on the log-in page with a link [#1164](https://github.com/cryptpad/cryptpad/issues/1164)
 - Add support for Webp images [#1008] thanks @lukasdotcom
+- improvements and bug fixes for the archival of inactive documents
 
 ## Fixes
 
@@ -50,10 +51,12 @@
 - Login bug on the new Safari following macOS/iPadOS 14 [#1257](https://github.com/cryptpad/cryptpad/issues/1257)
 - Mermaid diagrams were sometimes displayed over each other in Code documents [#1244](https://github.com/cryptpad/cryptpad/issues/1244)
 - Own responses to a form could not be deleted [#1239](https://github.com/cryptpad/cryptpad/issues/1239)
+- Timezone differences caused errors in Forms "date/time" polls
 - The large attachment button did not look consistent in Forms [#1237](https://github.com/cryptpad/cryptpad/issues/1237)
 - The recent tab in the drive was missing column titles [#1233](https://github.com/cryptpad/cryptpad/issues/1233)
 - An export file type dropdown was hidden inside a popup [#1241](https://github.com/cryptpad/cryptpad/issues/1241)
 - Guest emoji avatars were not displayed constistently [#1188](https://github.com/cryptpad/cryptpad/issues/1188)
+- "Early Access" apps were not shown on the instance home page even when active
 - OnlyOffice document conversions
   - Fix PDF export from Presentation document [#913](https://github.com/cryptpad/cryptpad/issues/913)
   - Print sheets with long links [#1032](https://github.com/cryptpad/cryptpad/issues/1032)
@@ -121,10 +124,16 @@ git fetch origin --tags
 git checkout 5.5.0
 ```
 
-1. Restart your server
-. Review your instance's checkup page to ensure that you are passing all tests
+3. Update dependencies
 
+```bash
+npm ci
+npm run install:components
+```
 
+4. Restart your server
+
+5. Review your instance's checkup page to ensure that you are passing all tests
 
 # 5.4.1
 
