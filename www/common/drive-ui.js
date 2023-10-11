@@ -637,7 +637,7 @@ define([
         var $trashTreeContextMenu = $("#cp-app-drive-context-trashtree");
         var $trashContextMenu = $("#cp-app-drive-context-trash");
 
-
+        $content.attr("tabindex", "0");
         var splitter = h('div.cp-splitter', [
             h('i.fa.fa-ellipsis-v')
         ]);
