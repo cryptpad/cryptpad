@@ -1128,6 +1128,15 @@ MessengerUI, Messages, Pages) {
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         var $button = $newPadBlock.find('button');
         $button.attr('title', Messages.notificationsPage);
+        $button.attr('aria-haspopup', 'menu');
+        $button.attr("aria-expanded", "false");
+        $button.click(function() {
+            if ($button.attr("aria-expanded") === "true") {
+                $button.attr("aria-expanded", "false");
+            } else {
+                $button.attr("aria-expanded", "true");
+            }
+        });
         $button.addClass('fa fa-bell-o cp-notifications-bell');
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
