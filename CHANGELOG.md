@@ -109,10 +109,6 @@ location ~ ^/(blob|block)/.*$ {
 
 ## Upgrade notes
 
-<div class="alert alert-danger">
-  INPUT NEEDED 
-</div>
-
 If you are upgrading from a version older than `5.4.1` please read the upgrade notes of all versions between yours and `5.4.1` to avoid configuration issues.
 
 To upgrade:
