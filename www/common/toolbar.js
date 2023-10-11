@@ -869,7 +869,8 @@ MessengerUI, Messages, Pages) {
         var $aTag = $('<a>', {
             href: href,
             title: buttonTitle,
-            'class': "cp-toolbar-link-logo"
+            'class': "cp-toolbar-link-logo",
+            'role': 'button'
         }).append(UI.getIcon(privateData.app));
 
         var onClick = function (e) {
