@@ -1022,9 +1022,17 @@ MessengerUI, Messages, Pages) {
         Common.createUserAdminMenu(userMenuCfg);
         $userAdmin.find('> button').attr({
             title: Messages.userAccountButton,
-            alt: Messages.userAccountButton,
+            class: Messages.userAccountButton,
+            'aria-haspopup': 'menu',
+            'aria-expanded': 'false'
         });
-
+        $userAdmin.find('> button').click(function() {
+            if ($userAdmin.find('> button').attr('aria-expanded') === 'true') {
+                $userAdmin.find('> button').attr('aria-expanded', 'false');
+            } else {
+                $userAdmin.find('> button').attr('aria-expanded', 'true');
+            }
+        });
         return $userAdmin;
     };
 

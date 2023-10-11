@@ -1607,11 +1607,7 @@ define([
             $c.removeClass('cp-dropdown-visible');
             if (!state) {
                 $c.addClass('cp-dropdown-visible');
-                $container.attr('aria-expanded', 'true');
-            } else {
-                $container.attr('aria-expanded', 'false');
             }
-
             try {
                 $('iframe').each(function (idx, ifrw) {
                     $(ifrw).contents().find('.cp-dropdown-content').hide();
