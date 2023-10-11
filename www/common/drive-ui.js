@@ -3191,6 +3191,16 @@ define([
             }
             var $block = UIElements.createDropdown(dropdownConfig);
 
+            $block.find('button').attr('aria-haspopup','menu');
+            $block.find('button').attr('aria-expanded', 'false');
+            $block.find('button').click(function() {
+                if ($block.find('button').attr('aria-expanded') === 'true') {
+                    $block.find('button').attr('aria-expanded', 'false');
+                } else {
+                    $block.find('button').attr('aria-expanded', 'true');
+                }
+            });
+
             // Add style
             if (APP.store[FILTER_BY]) {
                 $block.find('button').addClass('cp-toolbar-button-active');
