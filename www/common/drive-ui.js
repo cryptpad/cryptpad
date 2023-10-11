@@ -3086,6 +3086,15 @@ define([
 
             // Custom style:
             $block.find('button').addClass('cp-app-drive-toolbar-new');
+            $block.find('button').attr('aria-haspopup','menu');
+            $block.find('button').attr('aria-expanded', 'false');
+            $block.find('button').click(function() {
+                if ($block.find('button').attr('aria-expanded') === 'true') {
+                    $block.find('button').attr('aria-expanded', 'false');
+                } else {
+                    $block.find('button').attr('aria-expanded', 'true');
+                }
+            });
 
             addNewPadHandlers($block, isInRoot);
 
