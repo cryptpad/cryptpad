@@ -12,7 +12,7 @@ define([
     '/common/outer/login-block.js',
     '/customize/messages.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (ApiConfig, $, h, Util, Cred, UI, Login, Constants,
         ServerCommand, LocalStore, Block, Messages) {
     if (window.top !== window) { return; }
