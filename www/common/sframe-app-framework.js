@@ -16,6 +16,7 @@ define([
     '/common/inner/snapshots.js',
     '/customize/application_config.js',
     '/components/chainpad/chainpad.dist.js',
+    '/file/file-crypto.js',
     '/common/test.js',
 
     '/components/file-saver/FileSaver.min.js',
@@ -38,7 +39,8 @@ define([
     Feedback,
     Snapshots,
     AppConfig,
-    ChainPad /*,
+    ChainPad,
+    FileCrypto /*,
     /* Test */)
 {
     var SaveAs = window.saveAs;
@@ -64,6 +66,7 @@ define([
     var create = function (options, cb) {
         var evContentUpdate = Util.mkEvent();
         var evIntegrationSave = Util.mkEvent();
+        var evIntegrationInsertImage = Util.mkEvent();
         var evCursorUpdate = Util.mkEvent();
         var evEditableStateChange = Util.mkEvent();
         var evOnReady = Util.mkEvent(true);
@@ -643,6 +646,9 @@ define([
                     const integrationHasUnsavedChanges = function(unsavedChanges, cb) {
                         sframeChan.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
                     };
+                    const integrationOnInsertImage = function(data, cb) {
+                        sframeChan.query('Q_INTEGRATION_ON_INSERT_IMAGE', data, cb, {raw: true});
+                    };
                     var inte = common.createIntegration(onLocal, cpNfInner.chainpad,
                                                         integrationSave, integrationHasUnsavedChanges);
                     if (inte) {
@@ -650,6 +656,7 @@ define([
                         evIntegrationSave.reg(function () {
                             inte.changed();
                         });
+                        evIntegrationInsertImage.reg(integrationOnInsertImage);
                     }
                     if (firstConnection) {
                         sframeChan.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
@@ -1118,6 +1125,58 @@ define([
 
                 // Call this after all of the handlers are setup.
                 start: evStart.fire,
+
+                // Call this, when the user wants to add an image from drive.
+                insertImage: function(data, cb) {  // TODO Move function somwhere else
+                    if (integration) {
+                        evIntegrationInsertImage.fire(data, cb);
+                        return;
+                    }
+
+                    const setBlobType = (blob, mimeType) => {
+                        const fixedBlob = new Blob([blob], {type: mimeType});
+                        return fixedBlob;
+                    };
+
+                    const getImage = function(data, callback) {
+                        Util.fetch(data.src, function (err, u8) {
+                            if (err) {
+                                console.error(err);
+                                return void callback("");
+                            }
+                            try {
+                                FileCrypto.decrypt(u8, nacl.util.decodeBase64(data.key), (err, res) => {
+                                    if (err || !res.content) {
+                                        console.error("Decrypting failed");
+                                        return void callback("");
+                                    }
+
+                                    callback(setBlobType(res.content, data.fileType));
+                                });
+                            } catch (e) {
+                                console.error(e);
+                                callback("");
+                            }
+                        }, void 0, common.getCache());
+                    };
+
+                    common.openFilePicker({
+                        types: ['file'],
+                        where: ['root'],
+                        filter: {
+                            fileType: ['image/', 'application/x-drawio']
+                        }
+                    }, (data) => {
+                        getImage(data, function(blob) {
+                            common.setPadAttribute('atime', +new Date(), null, data.href);
+                            cb({
+                                name: data.name,
+                                fileType: data.fileType,
+                                blob: blob
+                            });
+                        });
+                    });
+                },
 
                 // Determine the internal state of the framework.
                 getState: function () { return state; },

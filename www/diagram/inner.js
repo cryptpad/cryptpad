@@ -4,8 +4,6 @@ define([
     '/customize/messages.js', // translation keys
     '/components/pako/dist/pako.min.js',
     '/components/x2js/x2js.js',
-    '/common/common-util.js',
-    '/file/file-crypto.js',
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
@@ -13,9 +11,7 @@ define([
     Framework,
     Messages,
     pako,
-    X2JS,
-    Util,
-    FileCrypto) {
+    X2JS) {
     const Nacl = window.nacl;
     const APP = window.APP = {};
 
@@ -127,50 +123,11 @@ define([
             autosave: onDrawioAutosave,
         };
 
-        const setBlobType = (blob, mimeType) => {
-            const fixedBlob = new Blob([blob], {type: mimeType});
-            return fixedBlob;
-        };
-
-        APP.getImage = function(data, callback) {
-            Util.fetch(data.src, function (err, u8) {
-                if (err) {
-                    console.error(err);
-                    return void callback("");
-                }
-                try {
-                    FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), (err, res) => {
-                        if (err || !res.content) {
-                            console.error("Decrypting failed");
-                            return void callback("");
-                        }
-
-                        callback(setBlobType(res.content, data.fileType));
-                    });
-                } catch (e) {
-                    console.error(e);
-                    callback("");
-                }
-            }, void 0, common.getCache());
-        };
-
         APP.addImage = function() {
             return new Promise((resolve) => {
-                common.openFilePicker({
-                    types: ['file'],
-                    where: ['root'],
-                    filter: {
-                        fileType: ['image/']
-                    }
-                }, (data) => {
-                    APP.getImage(data, function(blob) {
-                        common.setPadAttribute('atime', +new Date(), null, data.href);
-                        resolve({
-                            name: data.name,
-                            fileType: data.fileType,
-                            blob: blob
-                        });
-                    });
+                framework.insertImage({}, (_, image) => {
+                    console.log('XXX image', image);
+                    resolve(image);
                 });
             });
         };
