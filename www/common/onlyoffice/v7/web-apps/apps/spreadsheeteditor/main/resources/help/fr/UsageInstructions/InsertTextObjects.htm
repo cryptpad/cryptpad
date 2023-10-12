@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des objets textuels</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insérer des objets textuels tels que des zones de texte et des objets Text Art pour attirer l'attention sur une partie spécifique de la feuille de calcul" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des objets textuels</h1>
+            <p>Dans le <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tableur</b></a> pour attirer l'attention sur une partie spécifique de la feuille de calcul, vous pouvez insérer une zone de texte (un cadre rectangulaire qui permet de saisir du texte) ou un objet Text Art (une zone de texte avec un style de police et une couleur prédéfinis permettant d'appliquer certains effets de texte).</p>
+			<h3>Ajouter un objet textuel</h3>
+            <p>Vous pouvez ajouter un objet texte n'importe où sur la feuille de calcul. Pour le faire :</p>
+            <ol>
+                <li>passez à l'onglet Insertion de la barre d'outils supérieure,</li>
+                <li>sélectionnez le type d'objet textuel voulu :
+                <ul>
+                    <li>Pour ajouter une zone de texte, cliquez sur l'icône <div class = "icon icon-inserttexticon"></div> <b>Zone de texte</b> de la barre d'outils supérieure, puis cliquez sur l'emplacement où vous souhaitez insérer la zone de texte, maintenez le bouton de la souris enfoncé et faites glisser la bordure pour définir sa taille. Lorsque vous relâchez le bouton de la souris, le point d'insertion apparaîtra dans la zone de texte ajoutée, vous permettant d'entrer votre texte.
+                        <p class="note"><b>Remarque</b> : il est également possible d'insérer une zone de texte en cliquant sur l'icône <span class="icon icon-insertautoshape"></span> <b>Forme</b> dans la barre d'outils supérieure et en sélectionnant la forme <span class="icon icon-text_autoshape"></span> dans le groupe <b>Formes de base</b>.</p>
+                    </li>
+                    <li>Pour ajouter un objet Text Art, cliquez sur l'icône <span class = "icon icon-inserttextarticon"></span> <b>Text Art</b> dans la barre d'outils supérieure, puis cliquez sur le modèle de style souhaité - l'objet Text Art sera ajouté au centre de la feuille de calcul. Sélectionnez le texte par défaut dans la zone de texte avec la souris et remplacez-le par votre propre texte.</li>
+                </ul>
+                </li>
+                <li>cliquez en dehors de l'objet texte pour appliquer les modifications et revenir à la feuille de calcul.</li>
+            </ol>
+            <p>Le texte dans l'objet textuel fait partie de celui ci (ainsi si vous déplacez ou faites pivoter l'objet textuel, le texte change de position lui aussi).</p>
+            <p>Comme un objet textuel inséré représente un cadre rectangulaire (avec des bordures de zone de texte invisibles par défaut) avec du texte à l'intérieur et que ce cadre est une forme automatique commune, vous pouvez modifier aussi bien les propriétés de forme que de texte.</p>
+            <p>Pour supprimer l'objet textuel ajouté, cliquez sur la bordure de la zone de texte et appuyez sur la touche <b>Suppr</b> du clavier. Le texte dans la zone de texte sera également supprimé.</p>
+            <h3>Mettre en forme une zone de texte</h3>
+            <p>Sélectionnez la zone de texte en cliquant sur sa bordure pour pouvoir modifier ses propriétés. Lorsque la zone de texte est sélectionnée, ses bordures sont affichées en tant que lignes pleines (non pointillées).</p>
+            <p><img alt="Zone de texte sélectionnée" src="../images/textbox_boxselected.png" /></p>
+            <ul>
+                <li>Pour <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">redimensionner, déplacer, faire pivoter</a> la zone de texte manuellement, utilisez les poignées spéciales sur les bords de la forme.</li>
+                <li>Pour modifier <a href="InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">le remplissage</a>, <a href="InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">le contour</a>ou <b>remplacer</b> la boîte rectangulaire par une forme différente, cliquez sur l'icône <a href="InsertAutoshapes.htm#shape_advanced" onclick="onhyperlinkclick(this)">Paramèteres avancés de forme</a>, cliquez sur l'icône <b>Paramètres de forme</b> <div class = "icon icon-shape_settings_icon"></div> dans la barre latérale de droite et utilisez les options correspondantes.</li>
+                <li>Pour <b>organiser</b> les zones de texte par rapport à d'autres objets, <b>aligner plusieurs zones de texte</b> les unes par rapport aux autres, <b>faire pivoter</b> ou <b>retourner</b> une zone de texte, cliquer avec le bouton droit de la souris sur la bordure de la zone de texte et utiliser les options du menu contextuel. Pour en savoir plus sur l'organisation et l'alignement des objets, vous pouvez vous référer à <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">cette page</a>.</li>
+                <li>Pour créer <b>des colonnes de texte</b> dans la zone de texte, cliquez avec le bouton droit sur la bordure de la zone de texte, cliquez ensuite sur l'option <b>Paramètres avancés de forme</b> et passez à l'onglet <a href="../UsageInstructions/InsertAutoshapes.htm#columns" onclick="onhyperlinkclick(this)">Colonnes</a> de la fenêtre <b>Forme - Paramètres avancés</b>.</li>
+            </ul>
+            <h3 id="textbox_textformatting">Mettre en forme le texte dans la zone de texte</h3>
+            <p>Cliquez sur le texte dans la zone de texte pour pouvoir modifier ses propriétés. Lorsque le texte est sélectionné, les bordures de la zone de texte sont affichées en lignes pointillées.</p>
+            <p><img alt="Texte sélectionné" src="../images/textbox_textselected.png" /></p>
+            <p class="note"><b>Remarque</b> : il est également possible de modifier le formatage du texte lorsque la zone de texte (et non le texte lui-même) est sélectionnée. Dans ce cas, toutes les modifications seront appliquées à tout le texte dans la zone de texte. Certaines options de mise en forme de police (type de police, taille, couleur et styles de décoration) peuvent être appliquées séparément à une partie du texte précédemment sélectionnée.</p>
+            <ul>
+                <li>Ajustez les <b>paramètres de mise en forme des polices</b> (modifiez le type de police, la taille, la couleur et l'application des styles de décoration) à l'aide <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">des icônes correspondantes</a> situées dans l'onglet <b>Accueil</b> de la barre d'outils supérieure. Certains paramètres de police supplémentaires peuvent également être modifiés dans l'onglet <b>Police</b> de la fenêtre des propriétés de paragraphe. Pour y accéder, cliquez avec le bouton droit sur le texte dans la zone de texte et sélectionnez l'option<b> Paramètres avancés du paragraphe</b>.</li>
+                <li><b>Alignez le texte horizontalement</b> dans la zone de texte à l'aide <a href="../UsageInstructions/AlignText.htm" onclick="onhyperlinkclick(this)">des icônes correspondantes</a> situées dans l'onglet <b>Accueil</b> de la barre d'outils supérieure ou dans la fenêtre <a href="../UsageInstructions/InsertTextObjects.htm#textadvancedsettings" onclick="onhyperlinkclick(this)">Paragraphe - Paramètres avancés</a>.</li>
+                <li><b>Alignez le texte verticalement</b> dans la zone de texte à l'aide <a href="../UsageInstructions/AlignText.htm" onclick="onhyperlinkclick(this)">des icônes correspondantes</a> situées dans l'onglet <b>Accueil</b> de la barre d'outils supérieure. Pour <b>aligner le texte verticalement</b> dans la zone de texte, cliquez avec le bouton droit sur le texte et choisissez l'une des options disponibles : <b>Aligner en haut</b>, <b>Aligner au centre</b> ou <b>Aligner en bas</b>.</li>
+                <li><b>Faites pivoter</b> le texte dans la zone de texte. Pour ce faire, cliquez avec le bouton droit sur le texte, sélectionnez l'option <b>Direction du texte</b>, puis choisissez l'une des options disponibles : <b>Horizontal</b> (sélectionné par défaut),<b> Rotation du texte vers le bas</b> (définit une direction verticale, de haut en bas) ou<b> Rotation du texte vers le haut</b> (définit une direction verticale, de bas en haut).</li>
+                <li>
+                    Créez une <b>liste à puces</b> ou une <b>liste numérotée</b>. Pour ce faire, cliquez avec le bouton droit sur le texte, sélectionnez l'option <b>Puces et numérotation</b> dans le menu contextuel, puis choisissez l'un des caractères à puce ou des styles de numérotation disponibles.
+                    <p><img alt="Puces et la numérotation" src="../images/bulletsandnumbering.png" /></p>
+                    <p>L'option paramètres de la liste permet d'afficher la fenêtre Paramètres de la liste où on peut configurer les paramètres de la liste appropriée :</p>
+                    <p><img alt="La fenêtre Paramètres de la liste à puces" src="../images/bulletedlistsettings.png" /></p>
+                    <p><b>Type</b> (<b>à</b> <b>puce</b><b>s</b>) - permet de sélectionner le caractère approprié pour les éléments de la liste. Lorsque vous appuyez sur <b>Nouvelle puce</b>, la fenêtre <b>Symbole</b> va apparaître où vous pouvez choisir parmi les caractères disponibles. Veuillez consulter <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)"> cet article </a>pour en savoir plus sur utilisation des symboles.</p>
+                    <p>Lorsque vous cliquez sur l'option <b>Nouvelle image</b>, un nouveau champ <b>Importer</b> s'ouvre dans lequel vous pouvez choisir de nouvelles images pour les puces <em>A partir d'un fichier</em>, <em>A partir d'une URL</em>, ou <em>A partir de l'espace de stockage</em>.</p>
+                    <p><img alt="La fenêtre Paramètres de la liste à puces" src="../images/numberedlistsettings.png" /></p>
+                    <p><b>Type</b> (<b>Numéroté</b>) - permet de sélectionner la mise en forme appropriée des éléments de la liste numérotée.</p>
+                    <ul>
+                        <li><b>Taille</b> - permet d'ajuster la taille des puces/numéros en fonction de la talle actuelle du texte. La taille peut être configuré de 25% à 400%.</li>
+                        <li><b>Couleur</b> -  permet de choisir la couleur des puces/numéros. Vous pouvez choisir une des <em>couleurs de thème</em>, ou des <em>couleurs standard</em> de la palette ou définissez la Couleur personnalisée.</li>
+                        <li><b>Commencer par</b> sert à spécifier le numéro à partir duquel vous voulez commencer la numérotation.</li>
+                    </ul>
+                </li>
+                <li>Insérez <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">un lien hypertexte</a></li>
+                <li>
+                    Définissez <b>l'espacement des lignes et des paragraphes</b> pour le texte multiligne dans la zone de texte à l'aide de l'onglet <b>Paramètres du paragraphe</b> de la barre latérale de droite qui s'ouvre si vous cliquez sur l'icône Paramètres du paragraphe <div class = "icon icon-textsettings"></div> . Spécifiez l'interligne pour les lignes de texte dans le paragraphe ainsi que les marges entre le paragraphe courant et le précédent ou le suivant.
+                    <p><img alt="L'onglet Paramètres du texte" src="../images/textsettingstab.png" /></p>
+                    <ul>
+                        <li><b>Interligne</b> - réglez la hauteur de la ligne pour les lignes de texte dans le paragraphe. Vous pouvez choisir parmi deux options : <b>Multiple</b> (sert à régler l'interligne exprimée en nombre supérieur à 1), <b>Exactement</b> (sert à définir l'interligne fixe). Spécifiez la valeur nécessaire dans le champ situé à droite.</li>
+                        <li>
+                            <b>Espacement de paragraphe</b> - définissez l'espace entre les paragraphes.
+                            <ul>
+                                <li><b>Avant</b> - réglez la taille de l'espace avant le paragraphe.</li>
+                                <li><b>Après</b> - réglez la taille de l'espace après le paragraphe.</li>
+                            </ul>
+                            <p class="note"><b>Remarque</b> : on peut configurer les mêmes paramètres dans la fenêtre <a href="../UsageInstructions/InsertTextObjects.htm#textadvancedsettings" onclick="onhyperlinkclick(this)"><b>Paragraphe - Paramètres avancés</b></a>.</p>
+                        </li>
+                    </ul>
+                </li>
+                </ul>
+                <h3 id="textadvancedsettings">Configurer les paramètres avancés du paragraphe</h3>
+                <p>Modifiez les <b>paramètres avancés</b> du paragraphe (vous pouvez configurer les <b>retraits du paragraphe</b> ou les <b>taquets de tabulation</b> pour le texte multiligne dans la zone de texte et modifier quelques <b>paramètres de mise en forme de la police</b>) Placer le curseur dans le paragraphe de votre choix - l'onglet <b>Paramètres du paragraphe</b> devient actif sur la barre latérale droite. Appuyez sur le lien <b>Afficher les paramètres avancés</b>. Il est également possible de cliquer avec le bouton droit dans la zone de texte et utiliser l'option <b>Paramètres avancés du paragraphe</b> dans le menu contextuel. La fenêtre paramètres du paragraphe s'ouvre :<p/>
+                    <p><img alt="Paramètres du paragraphe - Retraits et espacement" src="../images/textadvancedsettings1.png" /></p>
+                    <p>L'onglet<b> Retrait et emplacement</b> permet de :</p>
+                    <ul>
+                        <li>modifier le type d'alignement du paragraphe,</li>
+                        <li>
+                            modifier les <b>retraits</b> du paragraphe par rapport aux <a href="../UsageInstructions/InsertAutoshapes.htm#internalmargins" onclick="onhyperlinkclick(this)">marges internes</a> de la zone de texte,
+                            <ul>
+                                <li><b>A gauche</b> - spécifiez le décalage du paragraphe de la marge interne <b>gauche</b> de la zone de texte et saisissez la valeur numérique appropriée,</li>
+                                <li><b>A </b><b>droite</b> - spécifiez le décalage du paragraphe de la marge interne <b>droite</b> de la zone de texte et saisissez la valeur numérique appropriée,</li>
+                                <li><b>Spécial</b> - spécifier le retrait de première ligne du paragraphe : sélectionnez l'élément approprié du menu (<b>(aucun)</b>, <b>Première ligne</b>, <b>Suspendu</b>) et modifiez la valeur numérique par défaut pour les options <b>Première ligne</b> ou <b>Suspendu</b>,</li>
+                            </ul>
+                        </li>
+                        <li>modifiez l'<b>interligne</b> du paragraphe.</li>
+                    </ul>
+                    <p><img alt="Paramètres du paragraphe - l'onglet Police" src="../images/textadvancedsettings2.png" /></p>
+                    <p>L'onglet <b>Police</b> comporte les paramètres suivants :</p>
+                    <ul>
+                        <li><b>Barré</b> sert à barrer le texte par la ligne passant par les lettres.</li>
+                        <li><b>Barré double</b> sert à barrer le texte par la ligne double passant par les lettres.</li>
+                        <li>L'option <b>Exposant</b> sert à rendre le texte plus petit et le déplacer vers la partie supérieure de la ligne du texte, comme par exemple dans les fractions.</li>
+                        <li>L'option <b>Indice</b> sert à rendre le texte plus petit et le déplacer vers la partie inférieure de la ligne du texte, comme par exemple dans les formules chimiques.</li>
+                        <li><b>Petites majuscules</b> sert à mettre toutes les lettres en petite majuscule.</li>
+                        <li><b>Majuscules</b> sert à mettre toutes les lettres en majuscule.</li>
+                        <li><b>Espacement des caractères </b>sert à définir l'espace entre les caractères. Augmentez la valeur par défaut pour appliquer l'espacement <b>Étendu</b>, ou diminuez la valeur par défaut pour appliquer l'espacement <b>Condensé</b>. Utilisez les touches fléchées ou entrez la valeur voulue dans la case.
+                        <p>Tous les changements seront affichés dans le champ de prévisualisation ci-dessous.</p>
+                        </li>
+                    </ul>
+                    <p><img alt="Paramètres du paragraphe - l'onglet Tabulation" src="../images/textadvancedsettings3.png" /></p>
+                    <p>L'onglet <b>Tabulation</b> vous permet de changer des taquets de tabulation c'est-à-dire l'emplacement où le curseur s'arrête quand vous appuyez sur la touche <b>Tab</b> du clavier.</p>
+                    <ul>
+                        <li>La tabulation <b>Par défaut</b> est 2.54 cm. Vous pouvez augmenter ou diminuer cette valeur en utilisant les boutons à flèche ou en saisissant la valeur nécessaire dans le champ.</li>
+                        <li><b>Position</b> sert à personnaliser les taquets de tabulation. Saisissez la valeur nécessaire dans ce champ, réglez-la en utilisant les boutons à flèche et cliquez sur le bouton <b>Spécifier</b>. La position du taquet de tabulation personnalisée sera ajoutée à la liste dans le champ au-dessous.</li>
+                        <li>
+                            <b>Alignement</b> sert à définir le type d'alignement pour chaque taquet de tabulation de la liste. Sélectionnez le taquet nécessaire dans la liste, choisissez l'option <b>A gauche</b>, <b>Au centre</b> ou <b>A droite</b> dans la liste déroulante et cliquez sur le bouton <b>Spécifier</b>.
+                            <ul>
+                                <li><b>A gauche</b> - sert à aligner le texte sur le côté gauche du taquet de tabulation ; le texte se déplace à droite du taquet de tabulation quand vous saisissez le texte. </li>
+                                <li><b>Au centre</b> - sert à centrer le texte à l'emplacement du taquet de tabulation. </li>
+                                <li><b>A droite</b> - sert à aligner le texte sur le côté droit du taquet de tabulation ; le texte se déplace à gauche du taquet de tabulation quand vous saisissez le texte. </li>
+                            </ul>
+                            <p>Pour supprimer un taquet de tabulation de la liste sélectionnez-le et cliquez sur le bouton <b>Supprimer</b> ou <b>Supprimer tout</b>.</p>
+                        </li>
+                    </ul>
+             <h3>Affecter une macro à une zone de texte</h3>
+            <p>Pour rendre l'accès à macro plus rapide et facile dans une feuille de calcul, vous pouvez affecter une macro à une zone de texte. Une fois la macro affectée, la zone de texte apparaît ainsi comme un bouton de contrôle et vous pouvez lancer la macro par un clic dessus.</p>
+            <p>Pour affecter une macro :</p>
+            <ul type="circle">
+                <li>
+                    Cliquer avec le bouton droit de la souris sur la zone de texte et sélectionnez l'option <b>Affecter une macro</b> dans le menu déroulant.
+                    <p><img alt="Affecter une macro dans le menu" src="../images/assignmacro_rightclicktextobject.png" /></p>
+                </li>
+                <li>La boîte de dialogue <b>Affecter une macro</b> s'affiche.</li>
+                <li>
+                    Sélectionnez la macro dans la liste ou saisissez le nom et cliquez sur <b>OK</b>.
+                    <p><img alt="Affecter une macro" src="../images/assignmacro.png" /></p>
+                </li>
+            </ul>
+            <h3>Modifier un style Text Art</h3>
+            <p>Sélectionnez un objet texte et cliquez sur l'icône des <b>Paramètres de Text Art</b> <span class="icon icon-textart_settings_icon"></span> dans la barre latérale de droite.</p>
+            <p><img alt="Onglet Paramètres de Text Art" src="../images/right_textart.png" /></p>
+            <ul>
+                <li>Modifiez le style de texte appliqué en sélectionnant un nouveau <b>Modèle</b> dans la galerie. Vous pouvez également modifier le style de base en sélectionnant un type de police différent, une autre taille, etc.</li>
+                <li>Changez <a href="InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">le remplissage</a> et <a href="InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">le contour</a> de police. Les options disponibles sont les mêmes que pour les formes automatiques.</li>
+                <li>Appliquez un effet de texte en sélectionnant le type de transformation de texte voulu dans la galerie <b>Transformation</b>. Vous pouvez ajuster le degré de distorsion du texte en faisant glisser la poignée en forme de diamant rose.</li>
+            </ul>
+            <p><img alt="Transformation de Text Art" src="../images/textart_transformation.png" /></p>
+		</div>
+	</body>
+</html>

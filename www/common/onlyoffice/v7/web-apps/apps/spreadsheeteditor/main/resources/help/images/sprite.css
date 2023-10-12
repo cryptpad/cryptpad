@@ -1,0 +1,1892 @@
+@import "../../../../../common/main/resources/help/images/symbols.css";
+
+.big{
+	background-image: url(../images/big.png);
+	background-repeat: no-repeat;
+	display: inline-block;
+}
+
+.big-iconsets {
+	background-position: 0px 0px;
+	width: 240px;
+	height: 407px;
+}
+
+.big-moving_image {
+	background-position: -240px 0px;
+	width: 420px;
+	height: 293px;
+}
+
+.big-editpoints_example {
+	background-position: 0px -407px;
+	width: 236px;
+	height: 237px;
+}
+
+.big-reshaping {
+	background-position: -236px -407px;
+	width: 147px;
+	height: 162px;
+}
+
+.big-relativereference {
+	background-position: -660px 0px;
+	width: 449px;
+	height: 159px;
+}
+
+.big-maintain_proportions {
+	background-position: -660px -159px;
+	width: 146px;
+	height: 144px;
+}
+
+.big-connectors_moveshape {
+	background-position: -806px -159px;
+	width: 267px;
+	height: 134px;
+}
+
+.big-nestedfraction {
+	background-position: -660px -303px;
+	width: 257px;
+	height: 134px;
+}
+
+.big-formatastext {
+	background-position: -660px -437px;
+	width: 257px;
+	height: 115px;
+}
+
+.big-newslot {
+	background-position: -383px -407px;
+	width: 193px;
+	height: 115px;
+}
+
+.big-colorscales {
+	background-position: -917px -303px;
+	width: 142px;
+	height: 108px;
+}
+
+.big-autoforeach {
+	background-position: -917px -437px;
+	width: 119px;
+	height: 103px;
+}
+
+.big-sameforall {
+	background-position: -240px -293px;
+	width: 119px;
+	height: 103px;
+}
+
+.big-databars_diagrams {
+	background-position: -359px -293px;
+	width: 263px;
+	height: 96px;
+}
+
+.big-autofill {
+	background-position: 0px -644px;
+	width: 195px;
+	height: 96px;
+}
+
+.big-deleteequation {
+	background-position: -195px -644px;
+	width: 193px;
+	height: 96px;
+}
+
+.big-insertedequation {
+	background-position: -388px -644px;
+	width: 193px;
+	height: 96px;
+}
+
+.big-sparklines_types {
+	background-position: -660px -552px;
+	width: 208px;
+	height: 87px;
+}
+
+.big-connectors_firstshape {
+	background-position: -581px -644px;
+	width: 267px;
+	height: 77px;
+}
+
+.big-connectors_secondshape {
+	background-position: 0px -740px;
+	width: 267px;
+	height: 77px;
+}
+
+.big-moveelement {
+	background-position: -868px -552px;
+	width: 188px;
+	height: 60px;
+}
+
+.big-resizeelement {
+	background-position: -236px -569px;
+	width: 188px;
+	height: 60px;
+}
+
+.big-templateslist {
+	background-position: -576px -407px;
+	width: 83px;
+	height: 54px;
+}
+
+.big-nonetemplate {
+	background-position: -1036px -437px;
+	width: 63px;
+	height: 48px;
+}
+
+.big-rightpart {
+	background-position: -383px -522px;
+	width: 173px;
+	height: 30px;
+}
+
+.big-spellchecking_language {
+	background-position: -917px -411px;
+	width: 180px;
+	height: 26px;
+}
+
+.big-fontfamily {
+	background-position: -868px -612px;
+	width: 87px;
+	height: 22px;
+}
+
+.big-pagebreak {
+	background-position: -806px -293px;
+	width: 185px;
+	height: 9px;
+}
+
+.big-sectionbreak {
+	background-position: -240px -396px;
+	width: 200px;
+	height: 8px;
+}
+
+.icon{
+	background-image: url(../images/icons.png);
+	background-repeat: no-repeat;
+	display: inline-block;
+}
+
+.icon-highlight {
+	background-position: 0px 0px;
+	width: 28px;
+	height: 28px;
+}
+
+.icon-photoeditor {
+	background-position: -28px 0px;
+	width: 28px;
+	height: 28px;
+}
+
+.icon-youtube {
+	background-position: 0px -28px;
+	width: 28px;
+	height: 28px;
+}
+
+.icon-thumbnailsettingicon {
+	background-position: -56px 0px;
+	width: 34px;
+	height: 27px;
+}
+
+.icon-translator {
+	background-position: -56px -27px;
+	width: 26px;
+	height: 26px;
+}
+
+.icon-favorites_icon {
+	background-position: -28px -28px;
+	width: 26px;
+	height: 25px;
+}
+
+.icon-conditionalformatting_button {
+	background-position: 0px -56px;
+	width: 32px;
+	height: 24px;
+}
+
+.icon-help {
+	background-position: -32px -56px;
+	width: 24px;
+	height: 24px;
+}
+
+.icon-rainbow_icon {
+	background-position: -56px -56px;
+	width: 24px;
+	height: 24px;
+}
+
+.icon-telegram_icon {
+	background-position: -90px 0px;
+	width: 24px;
+	height: 24px;
+}
+
+.icon-slicer_icon {
+	background-position: -90px -24px;
+	width: 21px;
+	height: 24px;
+}
+
+.icon-arrow {
+	background-position: -90px -48px;
+	width: 23px;
+	height: 23px;
+}
+
+.icon-insert_pivot {
+	background-position: 0px -80px;
+	width: 23px;
+	height: 23px;
+}
+
+.icon-list_worksheets {
+	background-position: -23px -80px;
+	width: 23px;
+	height: 23px;
+}
+
+.icon-fontsize {
+	background-position: -46px -80px;
+	width: 45px;
+	height: 22px;
+}
+
+.icon-rowsandcolumns {
+	background-position: -114px 0px;
+	width: 45px;
+	height: 22px;
+}
+
+.icon-SearchOptions {
+	background-position: -114px -22px;
+	width: 42px;
+	height: 22px;
+}
+
+.icon-verticalalignment {
+	background-position: -114px -44px;
+	width: 33px;
+	height: 22px;
+}
+
+.icon-pastespecialbutton {
+	background-position: -114px -66px;
+	width: 30px;
+	height: 22px;
+}
+
+.icon-sparklines_button {
+	background-position: 0px -103px;
+	width: 28px;
+	height: 22px;
+}
+
+.icon-thesaurus_icon {
+	background-position: -28px -103px;
+	width: 28px;
+	height: 22px;
+}
+
+.icon-addworksheet {
+	background-position: -56px -103px;
+	width: 24px;
+	height: 22px;
+}
+
+.icon-ascendingbutton {
+	background-position: -91px -80px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon-descendingbutton {
+	background-position: -80px -103px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon-go_to_the_next_word {
+	background-position: -102px -103px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon-inserttexticon {
+	background-position: -124px -103px;
+	width: 22px;
+	height: 22px;
+}
+
+.icon-printareabutton {
+	background-position: 0px -125px;
+	width: 20px;
+	height: 22px;
+}
+
+.icon-calculationicon {
+	background-position: -20px -125px;
+	width: 18px;
+	height: 22px;
+}
+
+.icon-coeditingmode {
+	background-position: -38px -125px;
+	width: 18px;
+	height: 22px;
+}
+
+.icon-header_footer_icon {
+	background-position: -56px -125px;
+	width: 18px;
+	height: 22px;
+}
+
+.icon-versionhistoryicon {
+	background-position: -74px -125px;
+	width: 24px;
+	height: 21px;
+}
+
+.icon-pivot_refresh {
+	background-position: -98px -125px;
+	width: 21px;
+	height: 21px;
+}
+
+.icon-selectall {
+	background-position: -119px -125px;
+	width: 27px;
+	height: 20px;
+}
+
+.icon-dataval_icon {
+	background-position: -159px 0px;
+	width: 26px;
+	height: 20px;
+}
+
+.icon-sheetview_icon {
+	background-position: -159px -20px;
+	width: 25px;
+	height: 20px;
+}
+
+.icon-bringforward_toptoolbar {
+	background-position: -159px -40px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-changecolorscheme {
+	background-position: -159px -60px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-constantproportionsactivated {
+	background-position: -159px -80px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-copystyle_selected {
+	background-position: -159px -100px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-group_toptoolbar {
+	background-position: -159px -120px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-image {
+	background-position: 0px -147px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-insertautoshape {
+	background-position: -20px -147px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-insert_symbol_icon {
+	background-position: -40px -147px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-scaletofit {
+	background-position: -60px -147px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-sendbackward_toptoolbar {
+	background-position: -80px -147px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-show_password {
+	background-position: -100px -147px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-vector {
+	background-position: -120px -147px;
+	width: 20px;
+	height: 20px;
+}
+
+.icon-align_toptoolbar {
+	background-position: -140px -147px;
+	width: 19px;
+	height: 20px;
+}
+
+.icon-inserttextarticon {
+	background-position: -159px -147px;
+	width: 16px;
+	height: 20px;
+}
+
+.icon-sortcommentsicon {
+	background-position: -185px 0px;
+	width: 31px;
+	height: 19px;
+}
+
+.icon-chat_toptoolbar {
+	background-position: -185px -19px;
+	width: 24px;
+	height: 19px;
+}
+
+.icon-chart {
+	background-position: -185px -38px;
+	width: 22px;
+	height: 19px;
+}
+
+.icon-comment_toptoolbar {
+	background-position: -185px -57px;
+	width: 22px;
+	height: 19px;
+}
+
+.icon-insertequationicon {
+	background-position: -185px -76px;
+	width: 22px;
+	height: 19px;
+}
+
+.icon-pivotselecticon {
+	background-position: -185px -95px;
+	width: 22px;
+	height: 19px;
+}
+
+.icon-functionicon {
+	background-position: -185px -114px;
+	width: 20px;
+	height: 19px;
+}
+
+.icon-paste_style {
+	background-position: -185px -133px;
+	width: 20px;
+	height: 19px;
+}
+
+.icon-addhyperlink {
+	background-position: 0px -167px;
+	width: 19px;
+	height: 19px;
+}
+
+.icon-hiderulers {
+	background-position: -19px -167px;
+	width: 19px;
+	height: 19px;
+}
+
+.icon-removecomment_toptoolbar {
+	background-position: -144px -66px;
+	width: 15px;
+	height: 19px;
+}
+
+.icon-customsort {
+	background-position: -38px -167px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon-new_icon {
+	background-position: -56px -167px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon-search_advanced {
+	background-position: -74px -167px;
+	width: 18px;
+	height: 18px;
+}
+
+.icon-searchbuttons {
+	background-position: -92px -167px;
+	width: 33px;
+	height: 17px;
+}
+
+.icon-horizontalalignment {
+	background-position: -125px -167px;
+	width: 31px;
+	height: 17px;
+}
+
+.icon-backgroundcolor {
+	background-position: -156px -167px;
+	width: 25px;
+	height: 17px;
+}
+
+.icon-removeduplicates_icon {
+	background-position: -181px -167px;
+	width: 24px;
+	height: 17px;
+}
+
+.icon-table {
+	background-position: 0px -186px;
+	width: 22px;
+	height: 17px;
+}
+
+.icon-changecolumnwidthcursor {
+	background-position: -22px -186px;
+	width: 21px;
+	height: 17px;
+}
+
+.icon-sharingicon {
+	background-position: -43px -186px;
+	width: 21px;
+	height: 17px;
+}
+
+.icon-chaticon_new {
+	background-position: -64px -186px;
+	width: 19px;
+	height: 17px;
+}
+
+.icon-groupicon {
+	background-position: -83px -186px;
+	width: 19px;
+	height: 17px;
+}
+
+.icon-selectdata_icon {
+	background-position: -102px -186px;
+	width: 19px;
+	height: 17px;
+}
+
+.icon-ungroupicon {
+	background-position: -121px -186px;
+	width: 19px;
+	height: 17px;
+}
+
+.icon-search_icon_header {
+	background-position: -140px -186px;
+	width: 17px;
+	height: 17px;
+}
+
+.icon-insertslicer {
+	background-position: -157px -186px;
+	width: 16px;
+	height: 17px;
+}
+
+.icon-slicer_settings {
+	background-position: -173px -186px;
+	width: 16px;
+	height: 17px;
+}
+
+.icon-addgradientpoint {
+	background-position: -147px -44px;
+	width: 12px;
+	height: 17px;
+}
+
+.icon-removegradientpoint {
+	background-position: -146px -103px;
+	width: 12px;
+	height: 17px;
+}
+
+.icon-levelnumbericons {
+	background-position: -216px 0px;
+	width: 48px;
+	height: 16px;
+}
+
+.icon-usersnumber {
+	background-position: -216px -16px;
+	width: 22px;
+	height: 16px;
+}
+
+.icon-close_icon {
+	background-position: -238px -16px;
+	width: 18px;
+	height: 16px;
+}
+
+.icon-saveupdate {
+	background-position: -216px -32px;
+	width: 18px;
+	height: 16px;
+}
+
+.icon-savewhilecoediting {
+	background-position: -234px -32px;
+	width: 17px;
+	height: 16px;
+}
+
+.icon-collapserowsicon {
+	background-position: -216px -48px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-converttorange {
+	background-position: -232px -48px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-dropdownarrow {
+	background-position: -248px -48px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-expandrowsicon {
+	background-position: -216px -64px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-filterbutton {
+	background-position: -232px -64px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-firstlevelicon {
+	background-position: -248px -64px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-highesttolowest {
+	background-position: -216px -80px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-highesttolowest1 {
+	background-position: -232px -80px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-lowesttohighest {
+	background-position: -248px -80px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-lowesttohighest1 {
+	background-position: -216px -96px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-pivot_settings {
+	background-position: -232px -96px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-secondlevelicon {
+	background-position: -248px -96px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-thirdlevelicon {
+	background-position: -216px -112px;
+	width: 16px;
+	height: 16px;
+}
+
+.icon-distributevertically {
+	background-position: -232px -112px;
+	width: 14px;
+	height: 16px;
+}
+
+.icon-textart_settings_icon {
+	background-position: -251px -32px;
+	width: 12px;
+	height: 16px;
+}
+
+.icon-namedrangesicon {
+	background-position: -216px -128px;
+	width: 23px;
+	height: 15px;
+}
+
+.icon-search_options {
+	background-position: -239px -128px;
+	width: 22px;
+	height: 15px;
+}
+
+.icon-access_rights {
+	background-position: -216px -143px;
+	width: 19px;
+	height: 15px;
+}
+
+.icon-chaticon {
+	background-position: -246px -112px;
+	width: 18px;
+	height: 15px;
+}
+
+.icon-gotodocuments {
+	background-position: -235px -143px;
+	width: 18px;
+	height: 15px;
+}
+
+.icon-print {
+	background-position: -216px -158px;
+	width: 17px;
+	height: 15px;
+}
+
+.icon-bgcolor {
+	background-position: -233px -158px;
+	width: 16px;
+	height: 15px;
+}
+
+.icon-about {
+	background-position: -249px -158px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-abouticon {
+	background-position: -216px -173px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-advanced_settings_icon {
+	background-position: -231px -173px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-insertpivot {
+	background-position: -246px -173px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-plus {
+	background-position: -216px -188px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-plus_sheet {
+	background-position: -231px -188px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-save {
+	background-position: -246px -188px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-tabstopcenter {
+	background-position: -185px -152px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-tabstopleft {
+	background-position: -200px -152px;
+	width: 15px;
+	height: 15px;
+}
+
+.icon-feedback {
+	background-position: -114px -88px;
+	width: 14px;
+	height: 15px;
+}
+
+.icon-flipupsidedown {
+	background-position: -128px -88px;
+	width: 14px;
+	height: 15px;
+}
+
+.icon-shapesettings {
+	background-position: -142px -88px;
+	width: 14px;
+	height: 15px;
+}
+
+.icon-file {
+	background-position: -146px -125px;
+	width: 13px;
+	height: 15px;
+}
+
+.icon-back {
+	background-position: -189px -186px;
+	width: 12px;
+	height: 15px;
+}
+
+.icon-fontcolor {
+	background-position: 0px -203px;
+	width: 25px;
+	height: 14px;
+}
+
+.icon-numbering {
+	background-position: -25px -203px;
+	width: 24px;
+	height: 14px;
+}
+
+.icon-spellcheckactivated {
+	background-position: -49px -203px;
+	width: 17px;
+	height: 14px;
+}
+
+.icon-spellcheckdeactivated {
+	background-position: -66px -203px;
+	width: 17px;
+	height: 14px;
+}
+
+.icon-distributehorizontally {
+	background-position: -83px -203px;
+	width: 16px;
+	height: 14px;
+}
+
+.icon-fliplefttoright {
+	background-position: -201px -186px;
+	width: 15px;
+	height: 14px;
+}
+
+.icon-sort {
+	background-position: -99px -203px;
+	width: 15px;
+	height: 14px;
+}
+
+.icon-alignobjectbottom {
+	background-position: -114px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-alignobjectleft {
+	background-position: -128px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-alignobjectright {
+	background-position: -142px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-alignobjecttop {
+	background-position: -156px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-bordercolor {
+	background-position: -170px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-borderwidth {
+	background-position: -184px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-chartsettingsicon {
+	background-position: -198px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-clearicon {
+	background-position: -212px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-commentsicon {
+	background-position: -226px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-deleteicon {
+	background-position: -240px -203px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-function {
+	background-position: 0px -217px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-group {
+	background-position: -14px -217px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-image_settings_icon {
+	background-position: -28px -217px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-searchicon {
+	background-position: -42px -217px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-shape_settings_icon {
+	background-position: -56px -217px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-ungroup {
+	background-position: -70px -217px;
+	width: 14px;
+	height: 14px;
+}
+
+.icon-alignobjectcenter {
+	background-position: -84px -217px;
+	width: 13px;
+	height: 14px;
+}
+
+.icon-copystyle {
+	background-position: -97px -217px;
+	width: 12px;
+	height: 14px;
+}
+
+.icon-gradientslider {
+	background-position: -109px -217px;
+	width: 12px;
+	height: 14px;
+}
+
+.icon-hard {
+	background-position: -253px -143px;
+	width: 9px;
+	height: 14px;
+}
+
+.icon-clear {
+	background-position: -121px -217px;
+	width: 26px;
+	height: 13px;
+}
+
+.icon-outline {
+	background-position: -147px -217px;
+	width: 25px;
+	height: 13px;
+}
+
+.icon-bullets {
+	background-position: -172px -217px;
+	width: 24px;
+	height: 13px;
+}
+
+.icon-insertfunction {
+	background-position: -196px -217px;
+	width: 24px;
+	height: 13px;
+}
+
+.icon-orientation {
+	background-position: -220px -217px;
+	width: 24px;
+	height: 13px;
+}
+
+.icon-insertchart {
+	background-position: 0px -231px;
+	width: 22px;
+	height: 13px;
+}
+
+.icon-insert_dropcap_icon {
+	background-position: -22px -231px;
+	width: 22px;
+	height: 13px;
+}
+
+.icon-pagebreak1 {
+	background-position: -44px -231px;
+	width: 22px;
+	height: 13px;
+}
+
+.icon-headerfooter {
+	background-position: -66px -231px;
+	width: 21px;
+	height: 13px;
+}
+
+.icon-insertcells {
+	background-position: -87px -231px;
+	width: 21px;
+	height: 13px;
+}
+
+.icon-pagesize {
+	background-position: -244px -217px;
+	width: 20px;
+	height: 13px;
+}
+
+.icon-cut {
+	background-position: -108px -231px;
+	width: 16px;
+	height: 13px;
+}
+
+.icon-removeduplicates {
+	background-position: -124px -231px;
+	width: 16px;
+	height: 13px;
+}
+
+.icon-text_autoshape {
+	background-position: -140px -231px;
+	width: 16px;
+	height: 13px;
+}
+
+.icon-changerange {
+	background-position: -156px -231px;
+	width: 15px;
+	height: 13px;
+}
+
+.icon-feedbackicon {
+	background-position: -171px -231px;
+	width: 15px;
+	height: 13px;
+}
+
+.icon-greencircle {
+	background-position: -186px -231px;
+	width: 15px;
+	height: 13px;
+}
+
+.icon-alignobjectmiddle {
+	background-position: -201px -231px;
+	width: 14px;
+	height: 13px;
+}
+
+.icon-clearstyle {
+	background-position: -215px -231px;
+	width: 14px;
+	height: 13px;
+}
+
+.icon-copy {
+	background-position: -229px -231px;
+	width: 14px;
+	height: 13px;
+}
+
+.icon-hyperlink {
+	background-position: -243px -231px;
+	width: 14px;
+	height: 13px;
+}
+
+.icon-multiselect {
+	background-position: 0px -244px;
+	width: 14px;
+	height: 13px;
+}
+
+.icon-paste {
+	background-position: -14px -244px;
+	width: 14px;
+	height: 13px;
+}
+
+.icon-select_all {
+	background-position: -28px -244px;
+	width: 14px;
+	height: 13px;
+}
+
+.icon-wraptext {
+	background-position: -42px -244px;
+	width: 14px;
+	height: 13px;
+}
+
+.icon-allborders {
+	background-position: -56px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-bottomborders {
+	background-position: -69px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-bringforward {
+	background-position: -82px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-bringtofront {
+	background-position: -95px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-document_language {
+	background-position: -108px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-dropcap_margin {
+	background-position: -121px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-dropcap_none {
+	background-position: -134px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-dropcap_text {
+	background-position: -147px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-equationplaceholder {
+	background-position: -160px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-fitpage {
+	background-position: -173px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-fitwidth {
+	background-position: -186px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-insideborders {
+	background-position: -199px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-insidehorizontalborders {
+	background-position: -212px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-insideverticalborders {
+	background-position: -225px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-leftborders {
+	background-position: -238px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-noborders {
+	background-position: -251px -244px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-outsideborders {
+	background-position: -264px 0px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-rightborders {
+	background-position: -264px -13px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-sendbackward {
+	background-position: -264px -26px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-sendtoback {
+	background-position: -264px -39px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-topborders {
+	background-position: -264px -52px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-zoomin {
+	background-position: -264px -65px;
+	width: 13px;
+	height: 13px;
+}
+
+.icon-currencystyle {
+	background-position: -264px -78px;
+	width: 12px;
+	height: 13px;
+}
+
+.icon-editcommenticon {
+	background-position: -264px -91px;
+	width: 12px;
+	height: 13px;
+}
+
+.icon-insertpagenumber {
+	background-position: -264px -104px;
+	width: 12px;
+	height: 13px;
+}
+
+.icon-rotateclockwise {
+	background-position: -264px -117px;
+	width: 12px;
+	height: 13px;
+}
+
+.icon-rotatecounterclockwise {
+	background-position: -264px -130px;
+	width: 12px;
+	height: 13px;
+}
+
+.icon-alignmiddle {
+	background-position: -264px -143px;
+	width: 11px;
+	height: 13px;
+}
+
+.icon-textsettings {
+	background-position: -264px -156px;
+	width: 10px;
+	height: 13px;
+}
+
+.icon-accountingstyle {
+	background-position: 0px -257px;
+	width: 26px;
+	height: 12px;
+}
+
+.icon-cellsettings_rightpanel {
+	background-position: -26px -257px;
+	width: 15px;
+	height: 12px;
+}
+
+.icon-decreasedecimal {
+	background-position: -41px -257px;
+	width: 14px;
+	height: 12px;
+}
+
+.icon-slicer_clearfilter {
+	background-position: -55px -257px;
+	width: 14px;
+	height: 12px;
+}
+
+.icon-increasedecimal {
+	background-position: -264px -169px;
+	width: 13px;
+	height: 12px;
+}
+
+.icon-angleclockwise {
+	background-position: -264px -181px;
+	width: 12px;
+	height: 12px;
+}
+
+.icon-anglecounterclockwise {
+	background-position: -264px -193px;
+	width: 12px;
+	height: 12px;
+}
+
+.icon-circle {
+	background-position: -264px -205px;
+	width: 12px;
+	height: 12px;
+}
+
+.icon-firstsheet {
+	background-position: -264px -217px;
+	width: 12px;
+	height: 12px;
+}
+
+.icon-larger {
+	background-position: -264px -229px;
+	width: 12px;
+	height: 12px;
+}
+
+.icon-nofill {
+	background-position: -264px -241px;
+	width: 12px;
+	height: 12px;
+}
+
+.icon-sup {
+	background-position: -69px -257px;
+	width: 12px;
+	height: 12px;
+}
+
+.icon-deletecommenticon {
+	background-position: -205px -114px;
+	width: 11px;
+	height: 12px;
+}
+
+.icon-selectcolumn_cursor {
+	background-position: -205px -133px;
+	width: 11px;
+	height: 12px;
+}
+
+.icon-tabletemplate {
+	background-position: -81px -257px;
+	width: 26px;
+	height: 11px;
+}
+
+.icon-merge {
+	background-position: -107px -257px;
+	width: 24px;
+	height: 11px;
+}
+
+.icon-subscripticon {
+	background-position: -131px -257px;
+	width: 24px;
+	height: 11px;
+}
+
+.icon-addborders {
+	background-position: -155px -257px;
+	width: 22px;
+	height: 11px;
+}
+
+.icon-deletecells {
+	background-position: -177px -257px;
+	width: 21px;
+	height: 11px;
+}
+
+.icon-linespacing {
+	background-position: -198px -257px;
+	width: 21px;
+	height: 11px;
+}
+
+.icon-nonprintingcharacters {
+	background-position: -219px -257px;
+	width: 20px;
+	height: 11px;
+}
+
+.icon-namedranges {
+	background-position: -239px -257px;
+	width: 16px;
+	height: 11px;
+}
+
+.icon-table_settings_icon {
+	background-position: -255px -257px;
+	width: 16px;
+	height: 11px;
+}
+
+.icon-viewsettingsicon {
+	background-position: -277px 0px;
+	width: 16px;
+	height: 11px;
+}
+
+.icon-sub {
+	background-position: -277px -11px;
+	width: 13px;
+	height: 11px;
+}
+
+.icon-aligncenter {
+	background-position: -277px -22px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-alignleft {
+	background-position: -277px -33px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-alignright {
+	background-position: -277px -44px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-borderstyle {
+	background-position: -277px -55px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-clearfilter {
+	background-position: -277px -66px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-decreasedec {
+	background-position: -277px -77px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-decreaseindent {
+	background-position: -277px -88px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-increasedec {
+	background-position: -277px -99px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-increaseindent {
+	background-position: -277px -110px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-justify {
+	background-position: -277px -121px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-resolvedicon {
+	background-position: -277px -132px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-resolveicon {
+	background-position: -277px -143px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-selecttable_cursor {
+	background-position: -277px -154px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-sortandfilter {
+	background-position: -277px -165px;
+	width: 12px;
+	height: 11px;
+}
+
+.icon-alignbottom {
+	background-position: -277px -176px;
+	width: 11px;
+	height: 11px;
+}
+
+.icon-aligntop {
+	background-position: -277px -187px;
+	width: 11px;
+	height: 11px;
+}
+
+.icon-diagonal_down_border {
+	background-position: -277px -198px;
+	width: 11px;
+	height: 11px;
+}
+
+.icon-diagonal_up_border {
+	background-position: -277px -209px;
+	width: 11px;
+	height: 11px;
+}
+
+.icon-sortatoz {
+	background-position: -277px -220px;
+	width: 11px;
+	height: 11px;
+}
+
+.icon-sortztoa {
+	background-position: -277px -231px;
+	width: 11px;
+	height: 11px;
+}
+
+.icon-percentstyle {
+	background-position: -277px -242px;
+	width: 10px;
+	height: 11px;
+}
+
+.icon-underline {
+	background-position: -277px -253px;
+	width: 10px;
+	height: 11px;
+}
+
+.icon-verticaltext {
+	background-position: -80px -56px;
+	width: 10px;
+	height: 11px;
+}
+
+.icon-zoomout {
+	background-position: -80px -67px;
+	width: 10px;
+	height: 11px;
+}
+
+.icon-rotatedown {
+	background-position: -207px -38px;
+	width: 9px;
+	height: 11px;
+}
+
+.icon-highlightcolor {
+	background-position: 0px -269px;
+	width: 23px;
+	height: 10px;
+}
+
+.icon-navigationicon {
+	background-position: -23px -269px;
+	width: 13px;
+	height: 10px;
+}
+
+.icon-strike {
+	background-position: -36px -269px;
+	width: 12px;
+	height: 10px;
+}
+
+.icon-smaller {
+	background-position: -205px -167px;
+	width: 11px;
+	height: 10px;
+}
+
+.icon-yellowdiamond {
+	background-position: -48px -269px;
+	width: 11px;
+	height: 10px;
+}
+
+.icon-lastsheet {
+	background-position: -175px -147px;
+	width: 10px;
+	height: 10px;
+}
+
+.icon-rotateup {
+	background-position: -207px -57px;
+	width: 9px;
+	height: 10px;
+}
+
+.icon-bold {
+	background-position: -256px -16px;
+	width: 8px;
+	height: 10px;
+}
+
+.icon-nextsheet {
+	background-position: -207px -76px;
+	width: 8px;
+	height: 10px;
+}
+
+.icon-previoussheet {
+	background-position: -207px -95px;
+	width: 8px;
+	height: 10px;
+}
+
+.icon-italic {
+	background-position: -209px -19px;
+	width: 7px;
+	height: 10px;
+}
+
+.icon-redo {
+	background-position: -90px -71px;
+	width: 17px;
+	height: 9px;
+}
+
+.icon-undo {
+	background-position: -59px -269px;
+	width: 17px;
+	height: 9px;
+}
+
+.icon-selectrow_cursor {
+	background-position: -76px -269px;
+	width: 12px;
+	height: 9px;
+}
+
+.icon-horizontaltext {
+	background-position: -175px -157px;
+	width: 10px;
+	height: 9px;
+}
+
+.icon-cellrow {
+	background-position: -207px -67px;
+	width: 9px;
+	height: 9px;
+}
+
+.icon-resize_square {
+	background-position: -207px -86px;
+	width: 9px;
+	height: 9px;
+}
+
+.icon-searchdownbutton {
+	background-position: -88px -269px;
+	width: 14px;
+	height: 8px;
+}
+
+.icon-searchupbutton {
+	background-position: -102px -269px;
+	width: 14px;
+	height: 8px;
+}
+
+.icon-constantproportions {
+	background-position: -116px -269px;
+	width: 13px;
+	height: 8px;
+}
+
+.icon-tabstopcenter_marker {
+	background-position: -129px -269px;
+	width: 12px;
+	height: 8px;
+}
+
+.icon-soft {
+	background-position: -254px -203px;
+	width: 10px;
+	height: 8px;
+}
+
+.icon-tabstopleft_marker {
+	background-position: -207px -49px;
+	width: 8px;
+	height: 8px;
+}
+
+.icon-tabstopright_marker {
+	background-position: -207px -105px;
+	width: 8px;
+	height: 8px;
+}
+
+.icon-redo1 {
+	background-position: -159px -140px;
+	width: 13px;
+	height: 6px;
+}
+
+.icon-undo1 {
+	background-position: -172px -140px;
+	width: 13px;
+	height: 6px;
+}
+
+.icon-nextpage {
+	background-position: -288px -176px;
+	width: 5px;
+	height: 6px;
+}
+
+.icon-previouspage {
+	background-position: -288px -187px;
+	width: 5px;
+	height: 6px;
+}
+
+.icon-tab {
+	background-position: -277px -264px;
+	width: 10px;
+	height: 5px;
+}
+
+.icon-connectionpoint {
+	background-position: -288px -182px;
+	width: 5px;
+	height: 5px;
+}
+
+.icon-nonbreakspace {
+	background-position: -288px -193px;
+	width: 5px;
+	height: 5px;
+}
+
+.icon-square {
+	background-position: -288px -198px;
+	width: 5px;
+	height: 5px;
+}
+
+.icon-space {
+	background-position: -290px -11px;
+	width: 2px;
+	height: 3px;
+}
+

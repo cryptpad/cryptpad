@@ -89,7 +89,7 @@ define([
     };
 
     LocalStore.isLoggedIn = function () {
-        return window.CP_logged_in || typeof getUserHash() === "string";
+        return window.CP_logged_in || typeof LocalStore.getBlockHash() === "string";
     };
 
     LocalStore.getDriveRedirectPreference = function () {

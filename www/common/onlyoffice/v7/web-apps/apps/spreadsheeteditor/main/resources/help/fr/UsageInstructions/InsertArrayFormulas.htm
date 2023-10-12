@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des formules de tableau</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insérer des formules de tableau" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des formules de tableau</h1>
+			<p>L'éditeur des feuilles de calcul <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> permet d'utiliser les formules de tableau. Les formules de tableau assurent la cohérence entre les formules dans une feuille de calcul, puisque vous pouvez saisir une seule formule au lieu de plusieurs formules habituelles, elles simplifient le travail sur une grande quantité de données et permettent de remplir une feuille avec des données, etc.</p>			
+            <p>Vous pouvez saisir des formules et des fonctions incorporées en tant que formules de tableau pour:</p>
+            <ul>
+                <li>effectuer plusieurs calculs à la fois et afficher un seul résultat, ou</li>
+                <li>renvoyer une plage de valeurs affichées dans plusieurs lignes et/ou colonnes.</li>
+            </ul>
+            <p>Il existe également des fonctions désignées qui peuvent renvoyer plusieurs valeurs. Si vous les saisissez en appuyant sur <b>Entrée</b>, elles renvoient une seule valeur.  Si vous sélectionnez une plage de sortie de cellules pour afficher les résultats, ensuite saisissez une fonction en appuyant sur<b> Ctrl + Maj + Entrée</b>, une plage de valeurs sera renvoyée (le nombre de valeurs renvoyées dépend de la taille de la plage de sortie précédemment sélectionnée). La liste ci-dessous contient des liens vers les descriptions détaillées de ces fonctions.</p>
+            <details class="details-example"><summary><b>Fonctions de tableau</b></summary>
+                <ul>
+                    <li><a href="../Functions/cell.htm" onclick="onhyperlinkclick(this)">CELLULE</a></li>
+                    <li><a href="../Functions/chooserows.htm" onclick="onhyperlinkclick(this)">CHOISIRLIGNES</a></li>
+                    <li><a href="../Functions/choosecols.htm" onclick="onhyperlinkclick(this)">CHOISIRCOLS</a></li>
+                    <li><a href="../Functions/column.htm" onclick="onhyperlinkclick(this)">COLONNE</a></li>
+                    <li><a href="../Functions/drop.htm" onclick="onhyperlinkclick(this)">EXCLURE</a></li>
+                    <li><a href="../Functions/formulatext.htm" onclick="onhyperlinkclick(this)">FORMULETEXTE</a></li>
+                    <li><a href="../Functions/frequency.htm" onclick="onhyperlinkclick(this)">FREQUENCE</a></li>
+                    <li><a href="../Functions/growth.htm" onclick="onhyperlinkclick(this)">CROISSANCE</a></li>
+                    <li><a href="../Functions/hstack.htm" onclick="onhyperlinkclick(this)">ASSEMB.H</a></li>
+                    <li><a href="../Functions/hyperlink.htm" onclick="onhyperlinkclick(this)">LIEN_HYPERTEXTE</a></li>
+                    <li><a href="../Functions/indirect.htm" onclick="onhyperlinkclick(this)">INDIRECT</a></li>
+                    <li><a href="../Functions/index.htm" onclick="onhyperlinkclick(this)">INDEX</a></li>
+                    <li><a href="../Functions/isformula.htm" onclick="onhyperlinkclick(this)">ESTFORMULE</a></li>
+                    <li><a href="../Functions/linest.htm" onclick="onhyperlinkclick(this)">DROITEREG</a></li>
+                    <li><a href="../Functions/logest.htm" onclick="onhyperlinkclick(this)">LOGREG</a></li>
+                    <li><a href="../Functions/minverse.htm" onclick="onhyperlinkclick(this)">INVERSEMAT</a></li>
+                    <li><a href="../Functions/mmult.htm" onclick="onhyperlinkclick(this)">PRODUITMAT</a></li>
+                    <li><a href="../Functions/munit.htm" onclick="onhyperlinkclick(this)">MATRICE.UNITAIRE</a></li>
+                    <li><a href="../Functions/offset.htm" onclick="onhyperlinkclick(this)">DECALER</a></li>
+                    <li><a href="../Functions/randarray.htm" onclick="onhyperlinkclick(this)">TABLEAU.ALEA</a></li>
+                    <li><a href="../Functions/row.htm" onclick="onhyperlinkclick(this)">LIGNE</a></li>
+                    <li><a href="../Functions/take.htm" onclick="onhyperlinkclick(this)">PRENDRE</a></li>
+                    <li><a href="../Functions/textsplit.htm" onclick="onhyperlinkclick(this)">FRACTIONNER.TEXTE</a></li>
+                    <li><a href="../Functions/tocol.htm" onclick="onhyperlinkclick(this)">DANSCOL</a></li>
+                    <li><a href="../Functions/torow.htm" onclick="onhyperlinkclick(this)">DANSLIGNE</a></li>
+                    <li><a href="../Functions/transpose.htm" onclick="onhyperlinkclick(this)">TRANSPOSE</a></li>
+                    <li><a href="../Functions/trend.htm" onclick="onhyperlinkclick(this)">TENDANCE</a></li>
+                    <li><a href="../Functions/wrapcols.htm" onclick="onhyperlinkclick(this)">ORGA.COLS</a></li>
+                    <li><a href="../Functions/wraprows.htm" onclick="onhyperlinkclick(this)">ORGA.LIGNES</a></li>
+                    <li><a href="../Functions/unique.htm" onclick="onhyperlinkclick(this)">UNIQUE</a></li>
+                    <li><a href="../Functions/vstack.htm" onclick="onhyperlinkclick(this)">ASSEMB.V</a></li>
+                    <li><a href="../Functions/xlookup.htm" onclick="onhyperlinkclick(this)">RECHERCHEX</a></li>
+                </ul>  
+            </details>
+            <h3>Insérer des formules de tableau</h3>         
+            <p>Pour insérer une formule de tableau,</p>
+			<ol>
+				<li>Sélectionnez une plage de cellules où vous souhaitez afficher les résultats.
+                    <p><img alt="Insérer des formules de tableau" src="../images/array3.png" /></p>
+                </li>
+                <li>Saisissez la formule que vous souhaitez utiliser dans la barre de formule, en spécifiant les arguments nécessaires entre parenthèses <b>()</b>. 
+                    <p><img alt="Insérer des formules de tableau" src="../images/array4.png" /></p>
+                </li>
+				<li>Appuyez sur la combinaison de touches <b>Ctrl + Maj + Entrée</b>.
+                    <p><img alt="Insérer des formules de tableau" src="../images/array5.png" /></p>
+                </li>
+			</ol>
+            <p>Les résultats seront affichés dans la plage de cellules sélectionnée, et la formule dans la barre de formule sera automatiquement placée entre accolades <b>{ }</b> pour indiquer qu'il s'agit d'une formule de tableau.  Par exemple, <b>{=UNIQUE(B2:D6)}</b>.  Les accolades ne peuvent pas être saisies manuellement.</p>
+            <h3>Créer des formules de tableau à cellule unique</h3>
+            <p>L'exemple qui suit permet de montrer le résultat de la formule de tableau affiché dans une seule cellule.  Sélectionnez une cellule, saisissez <em>=SOMME(C2:C11*D2:D11)</em> et appuyez sur <b>Ctrl + Maj + Entrée</b>.</p>
+            <p><img alt="Insérer des formules de tableau" src="../images/array1.png" /></p>
+            <h3>Créer des formules de tableau à plusieurs cellules</h3>
+            <p>L'exemple qui suit permet de montrer le résultat de la formule de tableau affiché dans une plage de cellules.  Sélectionnez une plage de cellules, saisissez <em>=C2:C11*D2:D11</em> et appuyez sur <b>Ctrl + Maj + Entrée</b>.</p>
+            <p><img alt="Insérer des formules de tableau" src="../images/array2.png" /></p>
+            <h3>Modifier des formules de tableau</h3>
+            <p>Chaque fois que vous modifiez une formule de tableau saisie (par exemple, modifiez les arguments), vous avez besoin d'utiliser la combinaison de touches <b>Ctrl + Maj + Entrée</b> afin d'enregistrer les modifications.</p>
+            <p>L'exemple qui suit explique comment développer une formule de tableau plusieurs cellules lorsque vous ajoutez de nouvelles données. Sélectionnez toutes les cellules qui contiennent une formule de tableau, ainsi que les cellules vides à côté des nouvelles données, modifiez les arguments dans la barre de formule afin qu'ils incluent les nouvelles données, ensuite appuyez sur <b>Ctrl + Maj + Entrée</b>.</p>
+            <p><img alt="Modifier des formules de tableau" src="../images/array6.png" /></p>
+            <p>Si vous souhaitez appliquer une formule de tableau à plusieurs cellules dans une plage de cellules plus petite, il vous faut supprimer la formule de tableau actuelle, puis saisir une nouvelle formule de tableau.</p>
+            <p>Une partie de matrice ne peut pas être modifiée ou supprimée.  Si vous essayez de modifier, déplacer ou supprimer une seule cellule dans le tableau ou d'insérer une nouvelle cellule dans le tableau, vous obtenez l'avertissement:  <em>Impossible de modifier une partie de matrice.</em></p>
+            <p>Afin de supprimer une formule de tableau, sélectionnez toutes les cellules avec la formule de tableau et cliquez sur <b>Supprimer</b>.  Vou pouvez également sélectionner une formule de tableau dans la barre de formules, cliquez sur <b>Supprimer</b> et ensuite appuyez sur <b>Ctrl + Maj + Entrée</b>.</p>
+            <details class="details-example"><summary><b>Exemples d'utilisation de formules de tableau</b></summary>
+                <p>Cette section présente quelques exemples d'utilisation des formules de tableau pour accomplir certaines tâches.</p>
+                <p><b>Compter le nombre de caractères dans une plage de cellules</b></p>
+                <p>Vous pouvez utiliser la formule de tableau suivante, en remplaçant la plage de cellules dans l'argument par votre propre plage:  <b>=SOMME(NBCAR(B2:B11))</b>. La fonction <a href="../Functions/len.htm" onclick="onhyperlinkclick(this)">NBCAR</a> permet de calculer la longueur de chaque chaîne de texte dans la plage de cellules.  La fonction <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SOMME</a> permet d'additionner les valeurs.</p>
+                <p><img alt="Insérer des formules de tableau" src="../images/array7.png" /></p>
+                <p>Pour obtenir le nombre moyen de caractères, remplacez <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SOMME</a> par <a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">MOYENNE</a>.</p>
+                <p><b>Trouver la chaîne la plus longue dans une plage de cellules</b></p>
+                <p>Vous pouvez utiliser la formule de tableau suivante, en remplaçant la plage de cellules dans l'argument par votre propre plage:  La fonction NBCAR calcule la longueur de chaque chaîne de texte dans la plage de cellules.  <b>=INDEX(B2:B11,EQUIV(MAX(NBCAR(B2:B11)),NBCAR(B2:B11),0),1)</b>. La fonction <a href="../Functions/len.htm" onclick="onhyperlinkclick(this)">NBCAR</a> permet de calculer la longueur de chaque chaîne de texte dans la plage de cellules.  La fonction <a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a> permet de calculer la plus grande valeur.  La fonction <a href="../Functions/match.htm" onclick="onhyperlinkclick(this)">EQUIV</a> trouve l'adresse de la cellule avec la chaîne la plus longue. La fonction <a href="../Functions/index.htm" onclick="onhyperlinkclick(this)">INDEX</a> retourne la valeur de la cellule trouvée.</p>
+                <p><img alt="Insérer des formules de tableau" src="../images/array8.png" /></p>
+                <p>Pour trouver la chaîne la plus courte, remplacez <a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a> par <a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a>.</p>
+                <p><b>Faire la somme des valeurs à base des conditions</b></p>
+                <p>Pour faire la somme des valeurs supérieures à un nombre spécifié (2 dans cet exemple), vous pouvez utiliser la formule de tableau suivante, en remplaçant les plages de cellules dans les arguments par vos propres plages: <b>=SOMME(IF(C2:C11>2,C2:C11))</b>.  La fonction <a href="../Functions/if.htm" onclick="onhyperlinkclick(this)">SI</a> permet de créer un tableau de valeurs vraies et fausses.  La fonction <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SOMME</a> permet d'ignorer les fausses valeurs et additionne les valeurs vraies.</p>
+                <p><img alt="Insérer des formules de tableau" src="../images/array9.png" /></p>
+            </details>
+		</div>
+	</body>
+</html>

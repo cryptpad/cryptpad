@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Unterstützte Formate elektronischer Präsentationen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The list of presentation formats supported by Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Unterstützte Formate elektronischer Präsentationen</h1>
+			<p>Eine Präsentation besteht aus einer Reihe von Folien, die verschiedene Arten von Inhalten enthalten können z. B. Bilder, Mediendateien, Text, Effekte usw. 
+            Der <a target="_blank" href="https://www.onlyoffice.com/de/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a> unterstützt die folgenden Formate:</p>
+            <p class="note">Beim Hochladen oder Öffnen der Datei für die Bearbeitung wird sie ins Office-Open-XML-Format (PPTX) konvertiert. Dies wird gemacht, um die Dateibearbeitung zu beschleunigen und die Interfunktionsfähigkeit zu erhöhen.</p>
+            <p>Die folgende Tabelle enthält die Formate, die zum Anzeigen und/oder zur Bearbeitung geöffnet werden können.</p>
+            <table>
+                <tr>
+                    <td><b>Formate</b></td>
+                    <td><b>Beschreibung</b></td>
+                    <td>Nativ anzeigen</td>
+                    <td>Anzeigen nach Konvertierung in OOXML</td>
+                    <td>Nativ bearbeiten</td>
+                    <td>Bearbeitung ach Konvertierung in OOXML</td>
+                </tr>
+                <tr>
+                    <td>ODP</td>
+                    <td>OpenDocument Presentation<br />Dateiformat, das mit der Anwendung Impress erstellte Präsentationen darstellt; diese Anwendung ist ein Bestandteil des OpenOffice-Pakets</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>OTP</td>
+                    <td>OpenDocument-Präsentationsvorlage<br />OpenDocument-Dateiformat für Präsentationsvorlagen. Eine OTP-Vorlage enthält Formatierungseinstellungen, Stile usw. und kann zum Erstellen mehrerer Präsentationen mit derselben Formatierung verwendet werden.</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>POTX</td>
+                    <td>PowerPoint Office Open XML Dokumenten-Vorlage<br />Gezipptes, XML-basiertes, von Microsoft für Präsentationsvorlagen entwickeltes Dateiformat. Eine POTX-Vorlage enthält Formatierungseinstellungen, Stile usw. und kann zum Erstellen mehrerer Präsentationen mit derselben Formatierung verwendet werden.</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>PPSX</td>
+                    <td>Microsoft PowerPoint Slide Show<br />Präsentationsdateiformat, das für die Wiedergabe von Slideshows verwendet wird</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>PPT</td>
+                    <td>Dateiformat, das in Microsoft PowerPoint verwendet wird</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                </tr>
+                <tr>
+                    <td>PPTX</td>
+                    <td>Office Open XML Presentation<br />Gezipptes, XML-basiertes, von Microsoft entwickeltes Dateiformat zur Präsentation von Kalkulationstabellen, Diagrammen, Präsentationen und Textverarbeitungsdokumenten</td>
+                    <td>+</td>
+                    <td></td>
+                    <td>+</td>
+                    <td></td>
+                </tr>
+            </table>
+            <p>Die folgende Tabelle enthält die Formate, in denen Sie eine Präsentation über das Menü <b>Datei</b> -> <b>Herunterladen als</b> herunterladen können.</p>
+            <table>
+                <tr>
+                    <td><b>Eingabeformat</b></td>
+                    <td><b>Kann heruntergeladen werden als</b></td>
+                </tr>
+                <tr>
+                    <td>ODP</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>OTP</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>POTX</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>PPSX</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>PPT</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+                <tr>
+                    <td>PPTX</td>
+                    <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+                </tr>
+            </table>
+            <p>Sie können sich auch auf die Conversion-Matrix auf <a href="https://api.onlyoffice.com/editors/conversionapi#presentation-matrix" target="_blank" onclick="onhyperlinkclick(this)"><b>api.onlyoffice.com</b></a> beziehen, um die Möglichkeiten zu sehen, Ihre Präsentationen in die bekanntesten Dateiformate zu konvertieren.</p>
+		</div>
+	</body>
+</html>

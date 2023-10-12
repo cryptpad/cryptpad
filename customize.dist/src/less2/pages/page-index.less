@@ -1,4 +1,5 @@
 @import (reference) "../include/infopages.less";
+@import (reference) "../include/browser.less";
 @import (reference) "../include/colortheme-all.less";
 
 &.cp-page-index {
@@ -31,16 +32,19 @@
         color: @cryptpad_text_col;
     }
 
-
     h1.cp-instance-title {
         text-align: center;
         font-family: "IBM Plex Mono";
         font-weight: 500;
         color: @cryptpad_color_brand;
-        font-size: 2.8rem;
-        overflow-wrap: break-word;
+        font-size: 2.8rem; // Not used
         word-wrap: break-word;
         word-break: break-word;
+    }
+    @media screen and (max-width: @browser_media-medium-screen) {
+        &.html h1.cp-instance-title {
+            font-size: 2.5em;
+        }
     }
 
     .cp-home-hero {
@@ -85,7 +89,9 @@
         .cp-instance-links {
             padding: 1.3rem;
             a {
-                margin: 1.3rem;
+                display: inline-block;
+                margin: 0.5em;
+                white-space: nowrap;
             }
         }
     }
@@ -118,7 +124,7 @@
         .cp-app-grid-apps {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: center;
             padding: 0 0.8rem;
         }
         a {

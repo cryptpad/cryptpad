@@ -20,6 +20,7 @@ define([
         };
         SFCommonO.start({
             cache: true,
+            noDrive: true,
             hash: hash,
             href: href,
             noRealtime: true,

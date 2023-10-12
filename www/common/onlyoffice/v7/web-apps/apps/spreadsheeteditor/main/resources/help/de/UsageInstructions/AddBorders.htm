@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rahmenlinien hinzufügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add borders to your spreadsheet selecting their style" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Rahmenlinien hinzufügen</h1>
+			<h3>Einen Zellenhintergrund hinzufügen</h3>
+			<p>Um einen Zellenhintergrund in der <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> anzuwenden und zu formatieren:</p>
+			<ol>
+				<li>
+					Markieren Sie eine Zelle oder einen Zellbereich mit der Maus oder das gesamte Arbeitsblatt, indem Sie die Tastenkombination <b>Strg+A</b> drücken.
+					<p class="note">Sie können auch mehrere nicht benachbarte Zellen oder Zellbereiche auswählen, indem Sie die <b>Strg</b>-Taste gedrückt halten, während Sie Zellen/Bereiche mit der Maus auswählen.</p>
+				</li>
+				<li>Um eine <em>einfarbige</em> Füllung auf den Zellenhintergrund anzuwenden, klicken Sie auf das Symbol <b>Hintergrundfarbe</b> <div class = "icon icon-backgroundcolor"></div> auf der Registerkarte <b>Startseite</b> der oberen Symbolleiste und wählen Sie die gewünschte Farbe aus.
+				</li>
+				<li>Um andere Füllungstypen zu verwenden, z. B. eine <em>Füllung mit Farbverlauf</em> oder ein <em>Muster</em>, klicken Sie auf das Symbol <b>Zelleneinstellungen</b> <div class = "icon icon-cellsettings_rightpanel"></div> in der rechten Seitenleiste und verwenden Sie den Abschnitt <b>Ausfüllen</b>:
+					<ul>
+						<li>
+							<b>Farbfüllung</b>: Wählen Sie diese Option aus, um die Volltonfarbe anzugeben, mit der Sie die ausgewählten Zellen füllen möchten.
+							<p><img alt="Farbfüllung" src="../images/cell_fill_color.png" /></p>
+							<p id="color">Klicken Sie auf das farbige Kästchen unten und wählen Sie eine der folgenden Paletten aus:</p>
+							<p><img alt="Palette" src="../images/palette.png" /></p>
+							<ul>
+								<li><b>Designfarben</b> - die Farben, die dem ausgewählten Farbschema der Tabelle entsprechen.</li>
+								<li><b>Standardfarben</b> - eine Reihe von Standardfarben. Das gewählte Farbschema wirkt sich nicht auf sie aus.</li>
+								<li>
+									<b>Benutzerdefinierte Farbe</b> - Klicken Sie auf diese Beschriftung, wenn die erforderliche Farbe in den verfügbaren Paletten fehlt. Wählen Sie den gewünschten Farbbereich aus, indem Sie den vertikalen Farbregler bewegen, und stellen Sie eine bestimmte Farbe ein, indem Sie den Farbwähler innerhalb des großen quadratischen Farbfelds ziehen. Sobald Sie eine Farbe mit dem Farbwähler ausgewählt haben, werden die entsprechenden RGB- und sRGB-Farbwerte in den Feldern auf der rechten Seite angezeigt. Sie können eine Farbe auch auf Basis des RGB-Farbmodells definieren, indem Sie die entsprechenden Zahlenwerte in die Felder <b>R</b>, <b>G</b>, <b>B</b> (red , grün, blau) oder geben Sie den sRGB-Hexadezimalcode in das mit dem <b>#</b>-Zeichen gekennzeichnete Feld ein. Die ausgewählte Farbe wird im Vorschaufeld <b>Neu</b> angezeigt. Wenn das Objekt zuvor mit einer benutzerdefinierten Farbe gefüllt wurde, wird diese Farbe im Feld <b>Aktuell</b> angezeigt, sodass Sie die ursprünglichen und geänderten Farben vergleichen können. Wenn die Farbe definiert ist, klicken Sie auf die Schaltfläche <b>Hinzufügen</b>:
+									<p><img alt="Palette - Benutzerdefinierte Farbe" src="../../../../../../common/main/resources/help/en/images/palette_custom.png" /></p>
+									<p>Die benutzerdefinierte Farbe wird auf das ausgewählte Element angewendet und der Palette <b>Benutzerdefinierte Farbe</b> hinzugefügt.</p>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<b>Füllung mit Farbverlauf</b>: Füllen Sie die ausgewählten Zellen mit zwei Farben, die sanft ineinander übergehen.
+							<p><img alt="Füllung mit Farbverlauf" src="../images/cell_fill_gradient.png" /></p>
+							<ul>
+								<li><b>Winkel</b> - geben Sie manuell einen genauen Wert in Grad an, der die Verlaufsrichtung definiert (Farben ändern sich in einer geraden Linie im angegebenen Winkel).</li>
+								<li><b>Richtung</b> - wählen Sie eine vordefinierte Vorlage aus dem Menü. Die folgenden Richtungen sind verfügbar: von oben links nach unten rechts (<em>45&deg;</em>), von oben nach unten (<em>90&deg;</em>), von oben rechts nach unten links (<em>135&deg;</em>), von rechts nach links (<em>180&deg;</em>), von unten rechts nach oben links (<em>225&deg;</em>), von unten nach oben (<em>270&deg;</em>), von links unten nach rechts oben (<em>315&deg;</em>), von links nach rechts (<em>0&deg;</em>).</li>
+								<li>
+									<b>Farbverlauf</b> ist ein spezifischer Punkt für den Übergang von einer Farbe zur anderen.
+									<ul>
+										<li>Verwenden Sie die Schaltfläche <div class = "icon icon-addgradientpoint"></div> <b>Punkt des Farbverlaufs einfügen</b> oder Schieberegler, um einen Verlaufspunkt hinzuzufügen. Sie können bis zu 10 Verlaufspunkte hinzufügen. Jeder nächste hinzugefügte Verlaufspunkt wirkt sich in keiner Weise auf das aktuelle Erscheinungsbild der Verlaufsfüllung aus. Verwenden Sie die Schaltfläche <div class = "icon icon-removegradientpoint"></div> <b>Punkt des Farbverlaufs entfernen</b>, um einen bestimmten Punkt des Farbverlaufs zu löschen.</li>
+										<li>Verwenden Sie den Schieberegler, um die Stellung des Verlaufspunkts zu ändern, oder geben Sie die <b>Stellung</b> in Prozent für eine genaue Stellung an.</li>
+										<li>Um eine Farbe auf einen Verlaufspunkt anzuwenden, klicken Sie auf einen Punkt auf der Schiebereglerleiste und dann auf <b>Farbe</b> , um die gewünschte Farbe auszuwählen.</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<b>Muster</b>: Wählen Sie diese Option, um die ausgewählten Zellen mit einem zweifarbigen Design zu füllen, das aus regelmäßig wiederholten Elementen besteht.
+							<p><img alt="Muster Füllung" src="../images/cell_fill_pattern.png" /></p>
+							<ul>
+								<li><b>Muster</b> - wählen Sie eines der vordefinierten Designs aus dem Menü.</li>
+								<li><b>Vordergrundfarbe</b> - klicken Sie auf dieses Farbfeld, um die Farbe der Musterelemente zu ändern.</li>
+								<li><b>Hintergrundfarbe</b> - klicken Sie auf dieses Farbfeld, um die Farbe des Musterhintergrunds zu ändern.</li>
+							</ul>
+						</li>
+						<li><b>Ohne Füllung</b> - wählen Sie diese Option, wenn Sie keine Füllung verwenden möchten.</li>
+					</ul>
+				</li>
+			</ol>
+
+			<h3 id="cell_borders">Zellgrenzen hinzufügen</h3>
+			<p>Um Rahmen zu einem Arbeitsblatt hinzuzufügen und zu formatieren,</p>
+			<ol>
+				<li>Wählen Sie eine Zelle, einen Zellbereich mit der Maus oder das gesamte Arbeitsblatt aus, indem Sie die Tastenkombination <b>Strg+A</b> drücken.
+					<p class="note">Sie können auch mehrere nicht benachbarte Zellen oder Zellbereiche auswählen, indem Sie die <b>Strg</b>-Taste gedrückt halten, während Sie Zellen/Bereiche mit der Maus auswählen.</p>
+				</li>
+				<li>Klicken Sie auf das Symbol <b>Rahmen</b> <div class = "icon icon-addborders"></div> auf der Registerkarte <b>Startseite</b> der oberen Symbolleiste oder klicken Sie auf das Symbol <b>Zelleneinstellungen</b> <div class = "icon icon-cellsettings_rightpanel"></div> in der rechten Seitenleiste und verwenden Sie den Abschnitt <b>Stil des Rahmens</b>.
+					<p><img alt="Registerkarte Zelleneinstellungen" src="../images/cellsettingstab.png" /></p>
+				</li>
+				<li>Wählen Sie den gewünschten Rahmenstil aus:
+					<ol>
+						<li>Öffnen Sie das Untermenü <b>Rahmenstil</b> <div class = "icon icon-borderstyle"></div> und wählen Sie eine der verfügbaren Optionen.</li>
+						<li>Öffnen Sie das Untermenü <b>Rahmenfarbe</b> <div class = "icon icon-bordercolor"></div> oder nutzen Sie die <b>Farbpalette</b> auf der rechten Seitenleiste und wählen Sie die gewünschte Farbe aus der Palette aus.</li>
+						<li>Wählen Sie eine der verfügbaren Rahmenlinien aus: <b>Rahmenlinie außen</b> <div class = "icon icon-outsideborders"></div>, <b>Alle Rahmenlinien</b> <div class = "icon icon-allborders"></div>, <b>Rahmenlinie oben</b> <div class = "icon icon-topborders"></div>, <b>Rahmenlinie unten</b> <div class = "icon icon-bottomborders"></div>, <b>Rahmenlinie links</b> <div class = "icon icon-leftborders"></div>, <b>Rahmenlinie rechts</b> <div class = "icon icon-rightborders"></div>, <b>Kein Rahmen</b> <div class = "icon icon-noborders"></div>, <b>Rahmenlinien innen</b> <div class = "icon icon-insideborders"></div>, <b>Innere vertikale Rahmenlinien</b> <div class = "icon icon-insideverticalborders"></div>, <b>Innere horizontale Rahmenlinien</b> <div class = "icon icon-insidehorizontalborders"></div>, <b>Diagonale Aufwärtslinie</b> <div class = "icon icon-diagonal_up_border"></div>, <b>Diagonale Abwärtslinie</b> <div class = "icon icon-diagonal_down_border"></div>.</li>
+					</ol>
+				</li>
+			</ol>
+		</div>
+	</body>
+</html>

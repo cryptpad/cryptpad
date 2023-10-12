@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Onglet Affichage</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Introducing the Spreadsheet Editor user interface - View tab" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Onglet Affichage</h1>
+        <p>
+            L'onglet <b>Affichage</b> dans <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> permet de configurer différents paramètres d'affichage de la feuille de calcul en fonction du filtre appliqué et des options d'affichage activées.
+        </p>
+        <div class="onlineDocumentFeatures">
+            <p>L'onglet dans l'éditeur en ligne Spreadsheet Editor:</p>
+            <p><img alt="Onglet Affichage" src="../images/interface/viewtab.png" /></p>
+        </div>
+        <div class="desktopDocumentFeatures">
+            <p>Fenêtre de l'éditeur de bureau Spreadsheet Editor:</p>
+            <p><img alt="Onglet Affichage" src="../images/interface/desktop_viewtab.png" /></p>
+        </div>
+        <p>Les options d'affichage disponibles sous cet onglet:</p>
+        <ul>
+            <li>Afficher une feuille permet configurer <a href="../UsageInstructions/SheetView.htm" onclick="onhyperlinkclick(this)">les paramètres d'affichage de feuille</a>.</li>
+            <li><b>Zoom</b> permet de zoomer et dézoomer sur une feuille de calcul.</li>
+            <li><b>Thème d'interface</b> permet de modifier le thème d'interface en choisissant le thème <b>Identique à système</b>, <b>Clair</b>, <b>Classique clair</b>, <b>Sombre</b> ou <b>Contraste élevé sombre</b>.</li>
+            <li><b>Figer les volets</b> permet de <a target="_blank" href="https://helpcenter.onlyoffice.com/ONLYOFFICE-Editors/Editors-User-Guides/SpreadsheetEditor/Freeze-rows-and-columns.aspx" onclick="onhyperlinkclick(this)">figer et libérer</a> des certains volets ou des lignes et des colonnes.</li>
+        </ul>
+        <p>Les options suivantes permettent de choisir les éléments à afficher ou à cacher. Cachez les cases appropriées aux éléments que vous souhaitez rendre visible:</p>
+        <ul>
+            <li>Barre de formule permet d'afficher la <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">barre de formule</a> au dessus du classeur.</li>
+            <li>E-têtes permet d'afficher <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">des en-têtes</a>, c-à-d des en-têtes des colonnes en haut et des en-têtes des lignes à gauche de la feuille de calcul.</li>
+            <li><b>Quadrillage</b> permet d'afficher <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">les lignes de quadrillage</a>, c-à-d les bordures des cellules.</li>
+            <li><b>Afficher les zéros</b> permet d'afficher 0 lors de la saisie dans une cellule.</li>
+            <li><b>Toujours afficher la barre d'outils</b> permet de rendre visible la barre d'outils supérieure.</li>
+            <li><b>Combiner la barre de la feuille et la barre d'état</b> permet d'afficher des outils de navigation dans la feuille de calcul et la barre d'état sur une seule ligne. Une fois désactivée, la barre d'état s'affichera sur deux lignes.</li>
+            <li><b>Panneau gauche</b> permet de rendre visible le panneau gauche.</li>
+            <li><b>Panneau droit</b> permet de rendre visible le panneau droit.</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -61,7 +61,7 @@ define([
     var CHECKPOINT_INTERVAL = 100;
     var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 6; // version of the .bin, patches and ChainPad formats
+    var NEW_VERSION = 7; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
 
@@ -1353,7 +1353,7 @@ define([
             var oMemory = new w.AscCommon.CMemory();
             var aRes = [];
             patches.forEach(function (item) {
-                editor.GetSheet(0).worksheet.workbook._SerializeHistoryBase64(oMemory, item, aRes);
+                editor.GetSheet(0).worksheet.workbook._SerializeHistory(oMemory, item, aRes);
             });
 
             // Make the patch
@@ -1363,6 +1363,13 @@ define([
                 changesIndex: ooChannel.cpIndex || 0,
                 startSaveChanges: true,
                 endSaveChanges: true,
+                isExcel: true,
+                deleteIndex: null,
+                excelAdditionalInfo: null,
+                unlock: false,
+                releaseLocks: true,
+                reSave: true,
+                isCoAuthoring: true,
                 locks: getUserLock(getId(), true),
                 excelAdditionalInfo: null
             };
@@ -2135,9 +2142,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 return void e.asc_Print({});
             }
             x2tConvertData(data, filename, extension, function (xlsData) {
+                UI.removeModals();
                 if (xlsData) {
                     var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
-                    UI.removeModals();
                     saveAs(blob, finalFilename);
                     return;
                 }
@@ -2974,7 +2981,22 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     readOnly = true;
                 }
-
+            } else if (content && content.version <= 6) {
+                version = 'v6/';
+                APP.migrate = true;
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
+                    content.migration = true;
+                    APP.onLocal();
+                } else {
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
+                    readOnly = true;
+                }
             }
             // NOTE: don't forget to also update the version in 'EV_OOIFRAME_REFRESH'
 

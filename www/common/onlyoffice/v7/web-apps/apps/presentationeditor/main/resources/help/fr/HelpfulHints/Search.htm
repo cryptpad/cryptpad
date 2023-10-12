@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction de recherche</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Description des fonctions de recherche et de remplacement dans l'Éditeur de Présentations" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Fonction de recherche et remplacement</h1>
+		<p>
+            <b>Pour rechercher</b> des caractères, des mots ou des phrases dans l'<a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Éditeur de Présentations</b></a>,
+            cliquez sur l'icône <span class="icon icon-searchicon"></span> située sur la barre latérale gauche, sur l'icône <span class="icon icon-searchicon"></span> située au coin droit en haut ou appuyez sur la combinaison de touches <em>Ctrl+F</em> (<em>Command+F</em> pour MacOS) pour ouvrir le petit panneau Recherche ou sur la combinaison de touches <em>Ctrl+H</em> pour ouvrir le panneau complet Recherche.
+            </p>
+            <p>Un petit panneau <b>Recherche</b> s'affiche au coin droit en haut de la zone de travail.</p>
+            <p><img alt="Petit panneau Recherche" src="../../../../../../common/main/resources/help/fr/images/find_small.png" /></p>
+            <p>Afin d'accéder aux paramètres avancés, cliquez sur l'icône <span class="icon icon-search_advanced"></span>.</p>
+            <p>La fenêtre <b>Rechercher et remplacer</b> s'ouvre :</p>
+            <img alt="Fenêtre Rechercher et remplacer" src="../images/search_window.png" />
+            <ol>
+			    <li>Saisissez votre enquête dans le champ de saisie correspondant <b>Rechercher</b>.</li>
+                <li>Si vous avez besoin de <b>remplacer</b> une ou plusieurs occurrences des caractères saisis, saisissez le texte de remplacement dans le champ de saisie correspondant <b>Remplacer par</b>. Vous pouvez remplacer l'occurrence actuellement sélectionnée ou remplacer toutes les occurrences en cliquant sur les boutons correspondants <b>Remplacer</b> et <b>Remplacer tout</b>.</li>
+                <li>Afin de parcourir les occurrences trouvées, cliquez sur un des boutons à flèche. Le bouton <div class="icon icon-searchdownbutton"></div> affiche l'occurrence suivante, le bouton <div class="icon icon-searchupbutton"></div>) affiche l'occurrence précédente.</li>
+                <li>
+                    Spécifiez les paramètres de recherche en cochant les options nécessaires :
+                    <ul>
+                        <li><b>Sensible à la casse</b> sert à trouver les occurrences saisies de la même casse (par exemple, si votre enquête est 'Editeur' et cette option est sélectionnée, les mots tels que 'éditeur' ou 'EDITEUR' etc. ne seront pas trouvés).</li>
+                        <li><b>Seulement les mots entiers</b> - sert à surligner les mots entiers uniquement.</li>
+                    </ul>
+                </li>
+			</ol>
+			<p>La première diapositive contenant les caractères saisis dans la direction sélectionnée sera activée dans la liste des diapositives et affichée avec les caractères requis dans la zone de travail. Si ce n'est pas la diapositive que vous cherchez, cliquez sur le bouton sélectionné encore une fois pour passer à la diapositive suivante contenant les caractères saisis.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,2922 @@
+.smb{
+	background-image: url(../../../../../common/main/resources/help/images/symbols.png);
+	background-repeat: no-repeat;
+	display: inline-block;
+}
+
+.smb-lmoust {
+	background-position: 0px 0px;
+	width: 12px;
+	height: 22px;
+}
+
+.smb-rmoust {
+	background-position: -12px 0px;
+	width: 11px;
+	height: 22px;
+}
+
+.smb-integral {
+	background-position: -23px 0px;
+	width: 311px;
+	height: 21px;
+}
+
+.smb-eqarray {
+	background-position: 0px -22px;
+	width: 15px;
+	height: 21px;
+}
+
+.smb-left {
+	background-position: -15px -22px;
+	width: 9px;
+	height: 21px;
+}
+
+.smb-right {
+	background-position: -24px -22px;
+	width: 9px;
+	height: 21px;
+}
+
+.smb-close {
+	background-position: -33px -22px;
+	width: 8px;
+	height: 21px;
+}
+
+.smb-vbar {
+	background-position: -41px -22px;
+	width: 4px;
+	height: 21px;
+}
+
+.smb-binomial {
+	background-position: 0px -43px;
+	width: 295px;
+	height: 20px;
+}
+
+.smb-quadratic {
+	background-position: -45px -22px;
+	width: 197px;
+	height: 20px;
+}
+
+.smb-of {
+	background-position: -242px -22px;
+	width: 13px;
+	height: 20px;
+}
+
+.smb-naryand {
+	background-position: -255px -22px;
+	width: 12px;
+	height: 20px;
+}
+
+.smb-open {
+	background-position: -267px -22px;
+	width: 9px;
+	height: 20px;
+}
+
+.smb-iiiint {
+	background-position: -276px -22px;
+	width: 25px;
+	height: 18px;
+}
+
+.smb-oiiint {
+	background-position: -301px -22px;
+	width: 21px;
+	height: 18px;
+}
+
+.smb-iiint {
+	background-position: -295px -43px;
+	width: 20px;
+	height: 18px;
+}
+
+.smb-oiint {
+	background-position: -315px -43px;
+	width: 16px;
+	height: 18px;
+}
+
+.smb-iint {
+	background-position: 0px -63px;
+	width: 15px;
+	height: 18px;
+}
+
+.smb-int {
+	background-position: -322px -22px;
+	width: 10px;
+	height: 18px;
+}
+
+.smb-oint {
+	background-position: -15px -63px;
+	width: 9px;
+	height: 18px;
+}
+
+.smb-limit {
+	background-position: -24px -63px;
+	width: 198px;
+	height: 17px;
+}
+
+.smb-middle {
+	background-position: -222px -63px;
+	width: 18px;
+	height: 17px;
+}
+
+.smb-root {
+	background-position: -240px -63px;
+	width: 18px;
+	height: 17px;
+}
+
+.smb-vmatrix {
+	background-position: -258px -63px;
+	width: 18px;
+	height: 17px;
+}
+
+.smb-sqrt {
+	background-position: -276px -63px;
+	width: 12px;
+	height: 17px;
+}
+
+.smb-coint {
+	background-position: -288px -63px;
+	width: 10px;
+	height: 17px;
+}
+
+.smb-aoint {
+	background-position: -298px -63px;
+	width: 9px;
+	height: 17px;
+}
+
+.smb-end {
+	background-position: -307px -63px;
+	width: 8px;
+	height: 17px;
+}
+
+.smb-identitymatrix {
+	background-position: 0px -81px;
+	width: 202px;
+	height: 16px;
+}
+
+.smb-cases {
+	background-position: -315px -63px;
+	width: 16px;
+	height: 16px;
+}
+
+.smb-cbrt {
+	background-position: -202px -81px;
+	width: 13px;
+	height: 16px;
+}
+
+.smb-qdrt {
+	background-position: -215px -81px;
+	width: 13px;
+	height: 16px;
+}
+
+.smb-jj {
+	background-position: -228px -81px;
+	width: 10px;
+	height: 16px;
+}
+
+.smb-begin {
+	background-position: -238px -81px;
+	width: 8px;
+	height: 16px;
+}
+
+.smb-lbrace {
+	background-position: -246px -81px;
+	width: 8px;
+	height: 16px;
+}
+
+.smb-rbrace {
+	background-position: -254px -81px;
+	width: 8px;
+	height: 16px;
+}
+
+.smb-doublej {
+	background-position: -262px -81px;
+	width: 7px;
+	height: 16px;
+}
+
+.smb-lbrack {
+	background-position: -269px -81px;
+	width: 6px;
+	height: 16px;
+}
+
+.smb-rbrack {
+	background-position: -275px -81px;
+	width: 6px;
+	height: 16px;
+}
+
+.smb-atop {
+	background-position: -281px -81px;
+	width: 4px;
+	height: 16px;
+}
+
+.smb-j {
+	background-position: -285px -81px;
+	width: 26px;
+	height: 15px;
+}
+
+.smb-prime3 {
+	background-position: -311px -81px;
+	width: 21px;
+	height: 15px;
+}
+
+.smb-prime2 {
+	background-position: 0px -97px;
+	width: 18px;
+	height: 15px;
+}
+
+.smb-scriptm2 {
+	background-position: -18px -97px;
+	width: 18px;
+	height: 15px;
+}
+
+.smb-pmatrix {
+	background-position: -36px -97px;
+	width: 16px;
+	height: 15px;
+}
+
+.smb-scripth2 {
+	background-position: -52px -97px;
+	width: 16px;
+	height: 15px;
+}
+
+.smb-frakturr2 {
+	background-position: -68px -97px;
+	width: 15px;
+	height: 15px;
+}
+
+.smb-odot {
+	background-position: -83px -97px;
+	width: 15px;
+	height: 15px;
+}
+
+.smb-ominus {
+	background-position: -98px -97px;
+	width: 15px;
+	height: 15px;
+}
+
+.smb-oplus {
+	background-position: -113px -97px;
+	width: 15px;
+	height: 15px;
+}
+
+.smb-otimes {
+	background-position: -128px -97px;
+	width: 15px;
+	height: 15px;
+}
+
+.smb-amalg {
+	background-position: -143px -97px;
+	width: 14px;
+	height: 15px;
+}
+
+.smb-prod {
+	background-position: -157px -97px;
+	width: 14px;
+	height: 15px;
+}
+
+.smb-re {
+	background-position: -171px -97px;
+	width: 14px;
+	height: 15px;
+}
+
+.smb-scriptf2 {
+	background-position: -185px -97px;
+	width: 14px;
+	height: 15px;
+}
+
+.smb-scripty2 {
+	background-position: -199px -97px;
+	width: 13px;
+	height: 15px;
+}
+
+.smb-doubleq2 {
+	background-position: -212px -97px;
+	width: 12px;
+	height: 15px;
+}
+
+.smb-frakturf2 {
+	background-position: -224px -97px;
+	width: 12px;
+	height: 15px;
+}
+
+.smb-frakturh2 {
+	background-position: -236px -97px;
+	width: 12px;
+	height: 15px;
+}
+
+.smb-frakturi2 {
+	background-position: -248px -97px;
+	width: 12px;
+	height: 15px;
+}
+
+.smb-frakturu2 {
+	background-position: -260px -97px;
+	width: 12px;
+	height: 15px;
+}
+
+.smb-fraktury2 {
+	background-position: -272px -97px;
+	width: 12px;
+	height: 15px;
+}
+
+.smb-psi {
+	background-position: -284px -97px;
+	width: 12px;
+	height: 15px;
+}
+
+.smb-sum {
+	background-position: -296px -97px;
+	width: 12px;
+	height: 15px;
+}
+
+.smb-beta {
+	background-position: -308px -97px;
+	width: 11px;
+	height: 15px;
+}
+
+.smb-ldiv {
+	background-position: -319px -97px;
+	width: 11px;
+	height: 15px;
+}
+
+.smb-phi {
+	background-position: 0px -112px;
+	width: 11px;
+	height: 15px;
+}
+
+.smb-scripte2 {
+	background-position: -11px -112px;
+	width: 11px;
+	height: 15px;
+}
+
+.smb-scriptg2 {
+	background-position: -22px -112px;
+	width: 11px;
+	height: 15px;
+}
+
+.smb-scriptj2 {
+	background-position: -33px -112px;
+	width: 11px;
+	height: 15px;
+}
+
+.smb-frakturz2 {
+	background-position: -44px -112px;
+	width: 10px;
+	height: 15px;
+}
+
+.smb-ldivide {
+	background-position: -54px -112px;
+	width: 10px;
+	height: 15px;
+}
+
+.smb-rangle2 {
+	background-position: -64px -112px;
+	width: 10px;
+	height: 15px;
+}
+
+.smb-scriptf {
+	background-position: -74px -112px;
+	width: 10px;
+	height: 15px;
+}
+
+.smb-setminus {
+	background-position: -84px -112px;
+	width: 10px;
+	height: 15px;
+}
+
+.smb-vphantom {
+	background-position: -94px -112px;
+	width: 10px;
+	height: 15px;
+}
+
+.smb-frakturh {
+	background-position: -104px -112px;
+	width: 9px;
+	height: 15px;
+}
+
+.smb-over {
+	background-position: -113px -112px;
+	width: 9px;
+	height: 15px;
+}
+
+.smb-scriptj {
+	background-position: -122px -112px;
+	width: 9px;
+	height: 15px;
+}
+
+.smb-xi {
+	background-position: -131px -112px;
+	width: 9px;
+	height: 15px;
+}
+
+.smb-zeta {
+	background-position: -140px -112px;
+	width: 9px;
+	height: 15px;
+}
+
+.smb-dsmash {
+	background-position: -149px -112px;
+	width: 8px;
+	height: 15px;
+}
+
+.smb-lbbrack {
+	background-position: -157px -112px;
+	width: 8px;
+	height: 15px;
+}
+
+.smb-norm {
+	background-position: -165px -112px;
+	width: 8px;
+	height: 15px;
+}
+
+.smb-vert2 {
+	background-position: -173px -112px;
+	width: 8px;
+	height: 15px;
+}
+
+.smb-frakturf {
+	background-position: -181px -112px;
+	width: 7px;
+	height: 15px;
+}
+
+.smb-ket {
+	background-position: -188px -112px;
+	width: 7px;
+	height: 15px;
+}
+
+.smb-lfloor {
+	background-position: -195px -112px;
+	width: 7px;
+	height: 15px;
+}
+
+.smb-rangle {
+	background-position: -202px -112px;
+	width: 7px;
+	height: 15px;
+}
+
+.smb-rbrack2 {
+	background-position: -209px -112px;
+	width: 7px;
+	height: 15px;
+}
+
+.smb-langle {
+	background-position: -216px -112px;
+	width: 6px;
+	height: 15px;
+}
+
+.smb-lceil {
+	background-position: -222px -112px;
+	width: 6px;
+	height: 15px;
+}
+
+.smb-rceil {
+	background-position: -228px -112px;
+	width: 6px;
+	height: 15px;
+}
+
+.smb-rfloor {
+	background-position: -234px -112px;
+	width: 6px;
+	height: 15px;
+}
+
+.smb-vert {
+	background-position: -330px -97px;
+	width: 4px;
+	height: 15px;
+}
+
+.smb-degc {
+	background-position: -240px -112px;
+	width: 16px;
+	height: 14px;
+}
+
+.smb-boxdot {
+	background-position: -256px -112px;
+	width: 15px;
+	height: 14px;
+}
+
+.smb-boxminus {
+	background-position: -271px -112px;
+	width: 15px;
+	height: 14px;
+}
+
+.smb-boxplus {
+	background-position: -286px -112px;
+	width: 15px;
+	height: 14px;
+}
+
+.smb-emptyset {
+	background-position: -301px -112px;
+	width: 14px;
+	height: 14px;
+}
+
+.smb-fraktura2 {
+	background-position: -315px -112px;
+	width: 13px;
+	height: 14px;
+}
+
+.smb-frakturn2 {
+	background-position: 0px -127px;
+	width: 13px;
+	height: 14px;
+}
+
+.smb-frakturp2 {
+	background-position: -13px -127px;
+	width: 13px;
+	height: 14px;
+}
+
+.smb-scriptr2 {
+	background-position: -26px -127px;
+	width: 13px;
+	height: 14px;
+}
+
+.smb-frakturg2 {
+	background-position: -39px -127px;
+	width: 12px;
+	height: 14px;
+}
+
+.smb-scriptb2 {
+	background-position: -51px -127px;
+	width: 12px;
+	height: 14px;
+}
+
+.smb-scriptk {
+	background-position: -63px -127px;
+	width: 12px;
+	height: 14px;
+}
+
+.smb-bet {
+	background-position: -75px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-beth {
+	background-position: -86px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-bigcap {
+	background-position: -97px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-bigcup {
+	background-position: -108px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-dalet {
+	background-position: -119px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-daleth {
+	background-position: -130px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-doublec2 {
+	background-position: -141px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-frakturc2 {
+	background-position: -152px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-hbar {
+	background-position: -163px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-wp {
+	background-position: -174px -127px;
+	width: 11px;
+	height: 14px;
+}
+
+.smb-degf {
+	background-position: -185px -127px;
+	width: 10px;
+	height: 14px;
+}
+
+.smb-doublefactorial {
+	background-position: -195px -127px;
+	width: 10px;
+	height: 14px;
+}
+
+.smb-scriptq2 {
+	background-position: -205px -127px;
+	width: 10px;
+	height: 14px;
+}
+
+.smb-frakturb {
+	background-position: -215px -127px;
+	width: 9px;
+	height: 14px;
+}
+
+.smb-frakturg {
+	background-position: -224px -127px;
+	width: 9px;
+	height: 14px;
+}
+
+.smb-updownarrow {
+	background-position: -233px -127px;
+	width: 9px;
+	height: 14px;
+}
+
+.smb-updownarrow2 {
+	background-position: -242px -127px;
+	width: 9px;
+	height: 14px;
+}
+
+.smb-frakturz {
+	background-position: -251px -127px;
+	width: 8px;
+	height: 14px;
+}
+
+.smb-gimel {
+	background-position: -259px -127px;
+	width: 8px;
+	height: 14px;
+}
+
+.smb-scripti2 {
+	background-position: -267px -127px;
+	width: 8px;
+	height: 14px;
+}
+
+.smb-asmash {
+	background-position: -275px -127px;
+	width: 7px;
+	height: 14px;
+}
+
+.smb-doublej2 {
+	background-position: -282px -127px;
+	width: 7px;
+	height: 14px;
+}
+
+.smb-parallel {
+	background-position: -289px -127px;
+	width: 7px;
+	height: 14px;
+}
+
+.smb-script {
+	background-position: -296px -127px;
+	width: 17px;
+	height: 13px;
+}
+
+.smb-frakturm2 {
+	background-position: -313px -127px;
+	width: 16px;
+	height: 13px;
+}
+
+.smb-above {
+	background-position: 0px -141px;
+	width: 14px;
+	height: 13px;
+}
+
+.smb-below {
+	background-position: -14px -141px;
+	width: 14px;
+	height: 13px;
+}
+
+.smb-double {
+	background-position: -28px -141px;
+	width: 14px;
+	height: 13px;
+}
+
+.smb-frakturd2 {
+	background-position: -42px -141px;
+	width: 14px;
+	height: 13px;
+}
+
+.smb-sdiv {
+	background-position: -56px -141px;
+	width: 14px;
+	height: 13px;
+}
+
+.smb-sdivide {
+	background-position: -70px -141px;
+	width: 14px;
+	height: 13px;
+}
+
+.smb-angle {
+	background-position: -84px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-bigodot {
+	background-position: -97px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-bigoplus {
+	background-position: -110px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-bigotimes {
+	background-position: -123px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-doubleh2 {
+	background-position: -136px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-doubler2 {
+	background-position: -149px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-doublez2 {
+	background-position: -162px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-frakturk2 {
+	background-position: -175px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-frakturv2 {
+	background-position: -188px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-heartsuit {
+	background-position: -201px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-mp {
+	background-position: -214px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-scriptb {
+	background-position: -227px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-scripth {
+	background-position: -240px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-scriptl2 {
+	background-position: -253px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-top {
+	background-position: -266px -141px;
+	width: 13px;
+	height: 13px;
+}
+
+.smb-coprod {
+	background-position: -279px -141px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-defeq {
+	background-position: -291px -141px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-doubleg2 {
+	background-position: -303px -141px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-frakturb2 {
+	background-position: -315px -141px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-ge {
+	background-position: 0px -154px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-geq {
+	background-position: -12px -154px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-greaterthanorequalto {
+	background-position: -24px -154px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-minusplus {
+	background-position: -36px -154px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-phantom {
+	background-position: -48px -154px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-plusminus {
+	background-position: -60px -154px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-pm {
+	background-position: -72px -154px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-searrow {
+	background-position: -84px -154px;
+	width: 12px;
+	height: 13px;
+}
+
+.smb-diamondsuit {
+	background-position: -96px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-doublen2 {
+	background-position: -107px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-doublep2 {
+	background-position: -118px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-frakturd {
+	background-position: -129px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-frakture2 {
+	background-position: -140px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-frakturl2 {
+	background-position: -151px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-frakturx2 {
+	background-position: -162px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-im {
+	background-position: -173px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-notelement {
+	background-position: -184px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-preceq {
+	background-position: -195px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-succeq {
+	background-position: -206px -154px;
+	width: 11px;
+	height: 13px;
+}
+
+.smb-biguplus {
+	background-position: -217px -154px;
+	width: 10px;
+	height: 13px;
+}
+
+.smb-notcontain {
+	background-position: -227px -154px;
+	width: 10px;
+	height: 13px;
+}
+
+.smb-notin {
+	background-position: -237px -154px;
+	width: 10px;
+	height: 13px;
+}
+
+.smb-scriptq {
+	background-position: -247px -154px;
+	width: 10px;
+	height: 13px;
+}
+
+.smb-uparrow2 {
+	background-position: -257px -154px;
+	width: 10px;
+	height: 13px;
+}
+
+.smb-downarrow2 {
+	background-position: -267px -154px;
+	width: 9px;
+	height: 13px;
+}
+
+.smb-ell {
+	background-position: -276px -154px;
+	width: 9px;
+	height: 13px;
+}
+
+.smb-scriptl {
+	background-position: -285px -154px;
+	width: 9px;
+	height: 13px;
+}
+
+.smb-uparrow {
+	background-position: -294px -154px;
+	width: 9px;
+	height: 13px;
+}
+
+.smb-doublei {
+	background-position: -327px -141px;
+	width: 7px;
+	height: 13px;
+}
+
+.smb-downarrow {
+	background-position: -303px -154px;
+	width: 7px;
+	height: 13px;
+}
+
+.smb-ii {
+	background-position: -310px -154px;
+	width: 7px;
+	height: 13px;
+}
+
+.smb-smash {
+	background-position: -317px -154px;
+	width: 7px;
+	height: 13px;
+}
+
+.smb-bra {
+	background-position: -328px -112px;
+	width: 5px;
+	height: 13px;
+}
+
+.smb-mid {
+	background-position: -329px -127px;
+	width: 4px;
+	height: 13px;
+}
+
+.smb-doublew2 {
+	background-position: 0px -167px;
+	width: 18px;
+	height: 12px;
+}
+
+.smb-scriptw2 {
+	background-position: -18px -167px;
+	width: 18px;
+	height: 12px;
+}
+
+.smb-scriptn2 {
+	background-position: -36px -167px;
+	width: 17px;
+	height: 12px;
+}
+
+.smb-frakturw2 {
+	background-position: -53px -167px;
+	width: 16px;
+	height: 12px;
+}
+
+.smb-scriptk2 {
+	background-position: -69px -167px;
+	width: 15px;
+	height: 12px;
+}
+
+.smb-scriptx2 {
+	background-position: -84px -167px;
+	width: 15px;
+	height: 12px;
+}
+
+.smb-dd2 {
+	background-position: -99px -167px;
+	width: 14px;
+	height: 12px;
+}
+
+.smb-doublem2 {
+	background-position: -113px -167px;
+	width: 14px;
+	height: 12px;
+}
+
+.smb-lrhar {
+	background-position: -127px -167px;
+	width: 14px;
+	height: 12px;
+}
+
+.smb-psi2 {
+	background-position: -141px -167px;
+	width: 14px;
+	height: 12px;
+}
+
+.smb-scripta2 {
+	background-position: -155px -167px;
+	width: 14px;
+	height: 12px;
+}
+
+.smb-chi2 {
+	background-position: -169px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-doublea2 {
+	background-position: -182px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-doublek2 {
+	background-position: -195px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-doublev2 {
+	background-position: -208px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-eta2 {
+	background-position: -221px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-frakturq2 {
+	background-position: -234px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-frakturs2 {
+	background-position: -247px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-frakturt2 {
+	background-position: -260px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-mu2 {
+	background-position: -273px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-nu2 {
+	background-position: -286px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-phi2 {
+	background-position: -299px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-pi2 {
+	background-position: -312px -167px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-scriptd2 {
+	background-position: 0px -179px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-scriptp2 {
+	background-position: -13px -179px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-scriptu2 {
+	background-position: -26px -179px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-scripty {
+	background-position: -39px -179px;
+	width: 13px;
+	height: 12px;
+}
+
+.smb-chi {
+	background-position: -52px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doubleb2 {
+	background-position: -64px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doubled2 {
+	background-position: -76px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doubleh {
+	background-position: -88px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doublek {
+	background-position: -100px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doubleo2 {
+	background-position: -112px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doublet2 {
+	background-position: -124px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doubleu2 {
+	background-position: -136px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doublex2 {
+	background-position: -148px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-doubley2 {
+	background-position: -160px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-forall {
+	background-position: -172px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-frakturo2 {
+	background-position: -184px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-kappa2 {
+	background-position: -196px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-omega2 {
+	background-position: -208px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-scriptd {
+	background-position: -220px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-scriptp {
+	background-position: -232px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-scriptt2 {
+	background-position: -244px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-scriptv2 {
+	background-position: -256px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-scriptz2 {
+	background-position: -268px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-varphi {
+	background-position: -280px -179px;
+	width: 12px;
+	height: 12px;
+}
+
+.smb-aleph {
+	background-position: -292px -179px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-alpha2 {
+	background-position: -303px -179px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-beta2 {
+	background-position: -314px -179px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-dd {
+	background-position: 0px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-doubleb {
+	background-position: -11px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-doublef2 {
+	background-position: -22px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-doubleg {
+	background-position: -33px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-doublel2 {
+	background-position: -44px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-doublep {
+	background-position: -55px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-doubleq {
+	background-position: -66px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-doubley {
+	background-position: -77px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-epsilon2 {
+	background-position: -88px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-g {
+	background-position: -99px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-gamma2 {
+	background-position: -110px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-inc {
+	background-position: -121px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-lambda2 {
+	background-position: -132px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-o2 {
+	background-position: -143px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-rho2 {
+	background-position: -154px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-scripts2 {
+	background-position: -165px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-sigma2 {
+	background-position: -176px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-tau2 {
+	background-position: -187px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-upsilon2 {
+	background-position: -198px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-xi2 {
+	background-position: -209px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-zeta2 {
+	background-position: -220px -191px;
+	width: 11px;
+	height: 12px;
+}
+
+.smb-bigsqcup {
+	background-position: -324px -154px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-doubled {
+	background-position: -231px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-doublee2 {
+	background-position: -241px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-eta {
+	background-position: -251px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-fraktury {
+	background-position: -261px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-gamma {
+	background-position: -271px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-lambda {
+	background-position: -281px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-nabla {
+	background-position: -291px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-partial {
+	background-position: -301px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-rho {
+	background-position: -311px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-scripto2 {
+	background-position: -321px -191px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-theta2 {
+	background-position: 0px -203px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-vartheta {
+	background-position: -10px -203px;
+	width: 10px;
+	height: 12px;
+}
+
+.smb-delta2 {
+	background-position: -325px -167px;
+	width: 9px;
+	height: 12px;
+}
+
+.smb-doublef {
+	background-position: -325px -179px;
+	width: 9px;
+	height: 12px;
+}
+
+.smb-doubles2 {
+	background-position: -20px -203px;
+	width: 9px;
+	height: 12px;
+}
+
+.smb-jmath {
+	background-position: -29px -203px;
+	width: 9px;
+	height: 12px;
+}
+
+.smb-scripti {
+	background-position: -38px -203px;
+	width: 9px;
+	height: 12px;
+}
+
+.smb-theta {
+	background-position: -47px -203px;
+	width: 9px;
+	height: 12px;
+}
+
+.smb-varrho {
+	background-position: -56px -203px;
+	width: 9px;
+	height: 12px;
+}
+
+.smb-varsigma {
+	background-position: -65px -203px;
+	width: 9px;
+	height: 12px;
+}
+
+.smb-frakturk {
+	background-position: -74px -203px;
+	width: 8px;
+	height: 12px;
+}
+
+.smb-iota2 {
+	background-position: -82px -203px;
+	width: 8px;
+	height: 12px;
+}
+
+.smb-doublei2 {
+	background-position: -90px -203px;
+	width: 7px;
+	height: 12px;
+}
+
+.smb-doublel {
+	background-position: -97px -203px;
+	width: 7px;
+	height: 12px;
+}
+
+.smb-frakturi {
+	background-position: -104px -203px;
+	width: 7px;
+	height: 12px;
+}
+
+.smb-frakturt {
+	background-position: -111px -203px;
+	width: 7px;
+	height: 12px;
+}
+
+.smb-frakturl {
+	background-position: -118px -203px;
+	width: 6px;
+	height: 12px;
+}
+
+.smb-vdots {
+	background-position: -124px -203px;
+	width: 5px;
+	height: 12px;
+}
+
+.smb-hphantom {
+	background-position: -129px -203px;
+	width: 15px;
+	height: 11px;
+}
+
+.smb-gg {
+	background-position: -144px -203px;
+	width: 14px;
+	height: 11px;
+}
+
+.smb-ll {
+	background-position: -158px -203px;
+	width: 14px;
+	height: 11px;
+}
+
+.smb-clubsuit {
+	background-position: -172px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-deltaeq {
+	background-position: -184px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-le {
+	background-position: -196px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-leq {
+	background-position: -208px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-lessthanorequalto {
+	background-position: -220px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-ne {
+	background-position: -232px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-neq {
+	background-position: -244px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-notequal {
+	background-position: -256px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-notgreaterthan {
+	background-position: -268px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-notlessthan {
+	background-position: -280px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-perp {
+	background-position: -292px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-sqsubseteq {
+	background-position: -304px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-subseteq {
+	background-position: -316px -203px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-superseteq {
+	background-position: 0px -215px;
+	width: 12px;
+	height: 11px;
+}
+
+.smb-cong {
+	background-position: -12px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-cup {
+	background-position: -23px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-scriptc2 {
+	background-position: -34px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-scripte {
+	background-position: -45px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-scriptt {
+	background-position: -56px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-scriptz {
+	background-position: -67px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-sqsuperseteq {
+	background-position: -78px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-vee {
+	background-position: -89px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-wedge {
+	background-position: -100px -215px;
+	width: 11px;
+	height: 11px;
+}
+
+.smb-bigvee {
+	background-position: -111px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-bigwedge {
+	background-position: -121px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-bot {
+	background-position: -131px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-cap {
+	background-position: -141px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-dashv {
+	background-position: -151px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-in {
+	background-position: -161px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-mu {
+	background-position: -171px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-nearrow {
+	background-position: -181px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-ni {
+	background-position: -191px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-nwarrow {
+	background-position: -201px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-scriptg {
+	background-position: -211px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-swarrow {
+	background-position: -221px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-vdash {
+	background-position: -231px -215px;
+	width: 10px;
+	height: 11px;
+}
+
+.smb-delta {
+	background-position: -241px -215px;
+	width: 9px;
+	height: 11px;
+}
+
+.smb-doublet {
+	background-position: -250px -215px;
+	width: 9px;
+	height: 11px;
+}
+
+.smb-exists {
+	background-position: -259px -215px;
+	width: 9px;
+	height: 11px;
+}
+
+.smb-frakturp {
+	background-position: -268px -215px;
+	width: 9px;
+	height: 11px;
+}
+
+.smb-frakturq {
+	background-position: -277px -215px;
+	width: 9px;
+	height: 11px;
+}
+
+.smb-wr {
+	background-position: -328px -203px;
+	width: 5px;
+	height: 11px;
+}
+
+.smb-longleftarrow {
+	background-position: -286px -215px;
+	width: 19px;
+	height: 10px;
+}
+
+.smb-longleftrightarrow {
+	background-position: -305px -215px;
+	width: 19px;
+	height: 10px;
+}
+
+.smb-longrightarrow {
+	background-position: 0px -226px;
+	width: 18px;
+	height: 10px;
+}
+
+.smb-leftrightarrow2 {
+	background-position: -18px -226px;
+	width: 16px;
+	height: 10px;
+}
+
+.smb-rightarrow2 {
+	background-position: -34px -226px;
+	width: 15px;
+	height: 10px;
+}
+
+.smb-leftarrow2 {
+	background-position: -49px -226px;
+	width: 14px;
+	height: 10px;
+}
+
+.smb-hookleftarrow {
+	background-position: -63px -226px;
+	width: 13px;
+	height: 10px;
+}
+
+.smb-hookrightarrow {
+	background-position: -76px -226px;
+	width: 13px;
+	height: 10px;
+}
+
+.smb-equiv {
+	background-position: -89px -226px;
+	width: 12px;
+	height: 10px;
+}
+
+.smb-scripta {
+	background-position: -101px -226px;
+	width: 12px;
+	height: 10px;
+}
+
+.smb-approx {
+	background-position: -113px -226px;
+	width: 11px;
+	height: 10px;
+}
+
+.smb-bowtie {
+	background-position: -124px -226px;
+	width: 11px;
+	height: 10px;
+}
+
+.smb-models {
+	background-position: -135px -226px;
+	width: 11px;
+	height: 10px;
+}
+
+.smb-prec {
+	background-position: -146px -226px;
+	width: 11px;
+	height: 10px;
+}
+
+.smb-sqcap {
+	background-position: -157px -226px;
+	width: 11px;
+	height: 10px;
+}
+
+.smb-sqcup {
+	background-position: -168px -226px;
+	width: 11px;
+	height: 10px;
+}
+
+.smb-succ {
+	background-position: -179px -226px;
+	width: 11px;
+	height: 10px;
+}
+
+.smb-times {
+	background-position: -190px -226px;
+	width: 11px;
+	height: 10px;
+}
+
+.smb-frown {
+	background-position: -324px -215px;
+	width: 10px;
+	height: 10px;
+}
+
+.smb-ddots {
+	background-position: -201px -226px;
+	width: 9px;
+	height: 10px;
+}
+
+.smb-frakture {
+	background-position: -210px -226px;
+	width: 9px;
+	height: 10px;
+}
+
+.smb-rddots {
+	background-position: -219px -226px;
+	width: 9px;
+	height: 10px;
+}
+
+.smb-uplus {
+	background-position: -228px -226px;
+	width: 9px;
+	height: 10px;
+}
+
+.smb-break {
+	background-position: -237px -226px;
+	width: 8px;
+	height: 10px;
+}
+
+.smb-frakturc {
+	background-position: -245px -226px;
+	width: 8px;
+	height: 10px;
+}
+
+.smb-frakturx {
+	background-position: -253px -226px;
+	width: 8px;
+	height: 10px;
+}
+
+.smb-spadesuit {
+	background-position: -261px -226px;
+	width: 8px;
+	height: 10px;
+}
+
+.smb-imath {
+	background-position: -269px -226px;
+	width: 5px;
+	height: 10px;
+}
+
+.smb-scriptm {
+	background-position: -274px -226px;
+	width: 18px;
+	height: 9px;
+}
+
+.smb-doublem {
+	background-position: -292px -226px;
+	width: 16px;
+	height: 9px;
+}
+
+.smb-scriptw {
+	background-position: -308px -226px;
+	width: 16px;
+	height: 9px;
+}
+
+.smb-doublew {
+	background-position: 0px -236px;
+	width: 15px;
+	height: 9px;
+}
+
+.smb-leftrightarrow {
+	background-position: -15px -236px;
+	width: 15px;
+	height: 9px;
+}
+
+.smb-arrow {
+	background-position: -30px -236px;
+	width: 14px;
+	height: 9px;
+}
+
+.smb-frakturm {
+	background-position: -44px -236px;
+	width: 14px;
+	height: 9px;
+}
+
+.smb-leftarrow {
+	background-position: -58px -236px;
+	width: 14px;
+	height: 9px;
+}
+
+.smb-mapsto {
+	background-position: -72px -236px;
+	width: 14px;
+	height: 9px;
+}
+
+.smb-rightarrow {
+	background-position: -86px -236px;
+	width: 14px;
+	height: 9px;
+}
+
+.smb-to {
+	background-position: -100px -236px;
+	width: 14px;
+	height: 9px;
+}
+
+.smb-varpi {
+	background-position: -114px -236px;
+	width: 14px;
+	height: 9px;
+}
+
+.smb-frakturw {
+	background-position: -128px -236px;
+	width: 13px;
+	height: 9px;
+}
+
+.smb-gets {
+	background-position: -141px -236px;
+	width: 13px;
+	height: 9px;
+}
+
+.smb-omega {
+	background-position: -154px -236px;
+	width: 13px;
+	height: 9px;
+}
+
+.smb-scriptr {
+	background-position: -167px -236px;
+	width: 13px;
+	height: 9px;
+}
+
+.smb-scriptu {
+	background-position: -180px -236px;
+	width: 13px;
+	height: 9px;
+}
+
+.smb-div {
+	background-position: -193px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-doteq {
+	background-position: -205px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-doublen {
+	background-position: -217px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-doubleu {
+	background-position: -229px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-propto {
+	background-position: -241px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-scriptn {
+	background-position: -253px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-scriptv {
+	background-position: -265px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-subset {
+	background-position: -277px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-superset {
+	background-position: -289px -236px;
+	width: 12px;
+	height: 9px;
+}
+
+.smb-alpha {
+	background-position: -301px -236px;
+	width: 11px;
+	height: 9px;
+}
+
+.smb-doublea {
+	background-position: -312px -236px;
+	width: 11px;
+	height: 9px;
+}
+
+.smb-doublev {
+	background-position: -323px -236px;
+	width: 11px;
+	height: 9px;
+}
+
+.smb-doublex {
+	background-position: 0px -245px;
+	width: 11px;
+	height: 9px;
+}
+
+.smb-pi {
+	background-position: -11px -245px;
+	width: 11px;
+	height: 9px;
+}
+
+.smb-scriptx {
+	background-position: -22px -245px;
+	width: 11px;
+	height: 9px;
+}
+
+.smb-sigma {
+	background-position: -33px -245px;
+	width: 11px;
+	height: 9px;
+}
+
+.smb-doublec {
+	background-position: -324px -226px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-doublee {
+	background-position: -44px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-doubleo {
+	background-position: -54px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-doublez {
+	background-position: -64px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-ee {
+	background-position: -74px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-frakturu {
+	background-position: -84px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-kappa {
+	background-position: -94px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-nu {
+	background-position: -104px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-o {
+	background-position: -114px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-scripts {
+	background-position: -124px -245px;
+	width: 10px;
+	height: 9px;
+}
+
+.smb-box {
+	background-position: -134px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-doubler {
+	background-position: -143px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-doubles {
+	background-position: -152px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-fraktura {
+	background-position: -161px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-frakturn {
+	background-position: -170px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-frakturo {
+	background-position: -179px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-frakturv {
+	background-position: -188px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-matrix {
+	background-position: -197px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-tau {
+	background-position: -206px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-upsilon {
+	background-position: -215px -245px;
+	width: 9px;
+	height: 9px;
+}
+
+.smb-epsilon {
+	background-position: -224px -245px;
+	width: 8px;
+	height: 9px;
+}
+
+.smb-varepsilon {
+	background-position: -232px -245px;
+	width: 8px;
+	height: 9px;
+}
+
+.smb-frakturr {
+	background-position: -240px -245px;
+	width: 7px;
+	height: 9px;
+}
+
+.smb-iota {
+	background-position: -247px -245px;
+	width: 6px;
+	height: 9px;
+}
+
+.smb-hsmash {
+	background-position: -253px -245px;
+	width: 15px;
+	height: 8px;
+}
+
+.smb-colonequal {
+	background-position: -268px -245px;
+	width: 14px;
+	height: 8px;
+}
+
+.smb-infty {
+	background-position: -282px -245px;
+	width: 14px;
+	height: 8px;
+}
+
+.smb-rect {
+	background-position: -296px -245px;
+	width: 14px;
+	height: 8px;
+}
+
+.smb-underline {
+	background-position: -310px -245px;
+	width: 14px;
+	height: 8px;
+}
+
+.smb-asymp {
+	background-position: 0px -254px;
+	width: 12px;
+	height: 8px;
+}
+
+.smb-simeq {
+	background-position: -12px -254px;
+	width: 12px;
+	height: 8px;
+}
+
+.smb-star {
+	background-position: -324px -245px;
+	width: 10px;
+	height: 8px;
+}
+
+.smb-because {
+	background-position: -24px -254px;
+	width: 9px;
+	height: 8px;
+}
+
+.smb-doublecolon {
+	background-position: -33px -254px;
+	width: 9px;
+	height: 8px;
+}
+
+.smb-scripto {
+	background-position: -42px -254px;
+	width: 9px;
+	height: 8px;
+}
+
+.smb-therefore {
+	background-position: -51px -254px;
+	width: 9px;
+	height: 8px;
+}
+
+.smb-ast {
+	background-position: -60px -254px;
+	width: 8px;
+	height: 8px;
+}
+
+.smb-scriptc {
+	background-position: -68px -254px;
+	width: 8px;
+	height: 8px;
+}
+
+.smb-diamond {
+	background-position: -76px -254px;
+	width: 7px;
+	height: 8px;
+}
+
+.smb-frakturs {
+	background-position: -83px -254px;
+	width: 7px;
+	height: 8px;
+}
+
+.smb-ratio {
+	background-position: -90px -254px;
+	width: 5px;
+	height: 8px;
+}
+
+.smb-leftharpoondown {
+	background-position: -95px -254px;
+	width: 15px;
+	height: 7px;
+}
+
+.smb-circ {
+	background-position: -110px -254px;
+	width: 7px;
+	height: 7px;
+}
+
+.smb-overparen {
+	background-position: -117px -254px;
+	width: 16px;
+	height: 6px;
+}
+
+.smb-overshell {
+	background-position: -133px -254px;
+	width: 16px;
+	height: 6px;
+}
+
+.smb-rightharpoondown {
+	background-position: -149px -254px;
+	width: 16px;
+	height: 6px;
+}
+
+.smb-underbrace {
+	background-position: -165px -254px;
+	width: 16px;
+	height: 6px;
+}
+
+.smb-underparen {
+	background-position: -181px -254px;
+	width: 15px;
+	height: 6px;
+}
+
+.smb-leftharpoonup {
+	background-position: -196px -254px;
+	width: 14px;
+	height: 6px;
+}
+
+.smb-rightharpoonup {
+	background-position: -210px -254px;
+	width: 13px;
+	height: 6px;
+}
+
+.smb-lvec {
+	background-position: -223px -254px;
+	width: 11px;
+	height: 6px;
+}
+
+.smb-sim {
+	background-position: -234px -254px;
+	width: 11px;
+	height: 6px;
+}
+
+.smb-tvec {
+	background-position: -245px -254px;
+	width: 11px;
+	height: 6px;
+}
+
+.smb-vec {
+	background-position: -256px -254px;
+	width: 11px;
+	height: 6px;
+}
+
+.smb-pprime {
+	background-position: -267px -254px;
+	width: 8px;
+	height: 6px;
+}
+
+.smb-degree {
+	background-position: -275px -254px;
+	width: 6px;
+	height: 6px;
+}
+
+.smb-prime {
+	background-position: -281px -254px;
+	width: 4px;
+	height: 6px;
+}
+
+.smb-smile {
+	background-position: -285px -254px;
+	width: 16px;
+	height: 5px;
+}
+
+.smb-overbrace {
+	background-position: -301px -254px;
+	width: 15px;
+	height: 5px;
+}
+
+.smb-underbar {
+	background-position: -316px -254px;
+	width: 15px;
+	height: 5px;
+}
+
+.smb-overbracket {
+	background-position: 0px -262px;
+	width: 14px;
+	height: 5px;
+}
+
+.smb-bar2 {
+	background-position: -14px -262px;
+	width: 13px;
+	height: 5px;
+}
+
+.smb-underbracket {
+	background-position: -27px -262px;
+	width: 13px;
+	height: 5px;
+}
+
+.smb-ddddot {
+	background-position: -40px -262px;
+	width: 12px;
+	height: 5px;
+}
+
+.smb-pppprime {
+	background-position: -52px -262px;
+	width: 12px;
+	height: 5px;
+}
+
+.smb-ubar2 {
+	background-position: -64px -262px;
+	width: 12px;
+	height: 5px;
+}
+
+.smb-hvec {
+	background-position: -76px -262px;
+	width: 11px;
+	height: 5px;
+}
+
+.smb-lhvec {
+	background-position: -87px -262px;
+	width: 11px;
+	height: 5px;
+}
+
+.smb-rhvec {
+	background-position: -98px -262px;
+	width: 11px;
+	height: 5px;
+}
+
+.smb-dddot {
+	background-position: -109px -262px;
+	width: 10px;
+	height: 5px;
+}
+
+.smb-ppprime {
+	background-position: -119px -262px;
+	width: 10px;
+	height: 5px;
+}
+
+.smb-hat {
+	background-position: -129px -262px;
+	width: 8px;
+	height: 5px;
+}
+
+.smb-breve {
+	background-position: -137px -262px;
+	width: 7px;
+	height: 5px;
+}
+
+.smb-check {
+	background-position: -144px -262px;
+	width: 7px;
+	height: 5px;
+}
+
+.smb-horizontalellipsis {
+	background-position: -151px -262px;
+	width: 13px;
+	height: 4px;
+}
+
+.smb-cdots {
+	background-position: -164px -262px;
+	width: 12px;
+	height: 4px;
+}
+
+.smb-dots {
+	background-position: -176px -262px;
+	width: 12px;
+	height: 4px;
+}
+
+.smb-ldots {
+	background-position: -188px -262px;
+	width: 12px;
+	height: 4px;
+}
+
+.smb-tilde {
+	background-position: -200px -262px;
+	width: 7px;
+	height: 4px;
+}
+
+.smb-acute {
+	background-position: -207px -262px;
+	width: 6px;
+	height: 4px;
+}
+
+.smb-grave {
+	background-position: -213px -262px;
+	width: 5px;
+	height: 4px;
+}
+
+.smb-bullet {
+	background-position: -218px -262px;
+	width: 4px;
+	height: 4px;
+}
+
+.smb-cdot {
+	background-position: -222px -262px;
+	width: 4px;
+	height: 4px;
+}
+
+.smb-bar {
+	background-position: -226px -262px;
+	width: 12px;
+	height: 3px;
+}
+
+.smb-overbar {
+	background-position: -238px -262px;
+	width: 12px;
+	height: 3px;
+}
+
+.smb-overline {
+	background-position: -250px -262px;
+	width: 12px;
+	height: 3px;
+}
+
+.smb-ubar {
+	background-position: -262px -262px;
+	width: 11px;
+	height: 3px;
+}
+
+.smb-ddot {
+	background-position: -273px -262px;
+	width: 8px;
+	height: 3px;
+}
+
+.smb-dot {
+	background-position: -281px -262px;
+	width: 4px;
+	height: 3px;
+}
+

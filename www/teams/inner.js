@@ -538,8 +538,9 @@ define([
         }
 
         content.push(h('h3', Messages.team_createLabel));
-        content.push(h('label', Messages.team_createName));
-        var input = h('input', {type:'text'});
+        let label = h('label', { for: 'cp-team-name' } , Messages.team_createName);
+        content.push(label);
+        let input = h('input#cp-team-name', {type:'text', maxlength:50});
         content.push(input);
         var button = h('button.btn.btn-success', Messages.creation_create);
         content.push(h('br'));
@@ -552,6 +553,7 @@ define([
             if (state) { return; }
             var name = $(input).val();
             if (!name.trim()) { return; }
+            if(name.length > 50) { return UI.warn(Messages.team_nameTooLong); }
             state = true;
             $spinner.show();
             APP.module.execCommand('CREATE_TEAM', {
@@ -1033,7 +1035,7 @@ define([
         if (publicKey) {
             var $key = $('<div>', {'class': 'cp-sidebarlayout-element'}).appendTo($div);
             var userHref = Hash.getPublicSigningKeyString(privateData.origin, name, publicKey);
-            var $pubLabel = $('<span>', {'class': 'label'})
+            var $pubLabel = $('<span>', {'class': 'cp-default-label'})
                 .text(Messages.settings_publicSigningKey);
             $key.append($pubLabel).append(UI.dialog.selectable(userHref));
         }
@@ -1055,11 +1057,17 @@ define([
         var todo = function () {
             var newName = $input.val();
             if (!newName.trim()) { return; }
-            $spinner.show();
+            if(newName.length > 50){
+                return UI.warn(Messages.team_nameTooLong);
+            }
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
             }, function (obj) {
                 if (obj && obj.error) { return void UI.warn(Messages.error); }
+                if (obj.name === newName) {
+                    return void UI.warn(Messages._getKey('team_nameAlreadySet', [Util.fixHTML(newName)]));
+                }
+                $spinner.show();
                 var oldName = obj.name;
                 obj.name = newName;
                 APP.module.execCommand('SET_TEAM_METADATA', {

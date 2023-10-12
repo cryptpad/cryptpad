@@ -146,6 +146,7 @@ define([
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
+                '/common/outer/login-block.js',
                 '/common/outer/cache-store.js',
                 '/customize/application_config.js',
                 //'/common/test.js',
@@ -153,7 +154,7 @@ define([
                 'optional!/api/instance'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
-            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, /* _Test,*/ _UserObject,
+            _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
             _Instance) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -176,6 +177,7 @@ define([
                 Utils.Notify = _Notify;
                 Utils.currentPad = currentPad;
                 Utils.Instance = _Instance;
+                Utils.Block = _Block;
                 AppConfig = _AppConfig;
                 //Test = _Test;
 
@@ -268,7 +270,20 @@ define([
                 // NOTE: Driveless mode should only work for existing pads, but we can't check that
                 // before creating the worker because we need the anon RPC to do so.
                 // We're only going to check if a hash exists in the URL or not.
-                Cryptpad.ready(waitFor(), {
+                Cryptpad.ready(waitFor((err) => {
+                    if (err) {
+                        waitFor.abort();
+                        if (err.code === 404) {
+                            sframeChan.on('EV_SET_LOGIN_REDIRECT', function (page) {
+                                var href = Utils.Hash.hashToHref('', page);
+                                var url = Utils.Hash.getNewPadURL(href, { href: currentPad.href });
+                                window.location.href = url;
+                            });
+                            return void sframeChan.event("EV_DRIVE_DELETED", err.reason);
+                        }
+                        sframeChan.event('EV_LOADING_ERROR', 'ACCOUNT');
+                    }
+                }), {
                     noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
                     neverDrive: cfg.integration,
                     driveEvents: cfg.driveEvents,
@@ -373,9 +388,9 @@ define([
                         Cryptpad.initialPath = newPad.p;
                         if (newPad.pw) {
                             try {
-                                var uHash = Utils.LocalStore.getUserHash();
-                                var uSecret = Utils.Hash.getSecrets('drive', uHash);
-                                var uKey = uSecret.keys.cryptKey;
+                                var uHash = Utils.LocalStore.getBlockHash();
+                                var uSecret = Utils.Block.parseBlockHash(uHash);
+                                var uKey = uSecret.keys.symmetric;
                                 newPadPassword = Crypto.decrypt(newPad.pw, uKey);
                             } catch (e) { console.error(e); }
                         }
@@ -417,6 +432,8 @@ define([
                     return void todo();
                 }
 
+                var isViewer = parsed.hashData.mode === 'view';
+
                 // We now need to check if there is a password and if we know the correct password.
                 // We'll use getFileSize and hasChannelHistory to detect incorrect passwords.
 
@@ -444,7 +461,11 @@ define([
                             if (Boolean(isNew)) {
                                 // Ask again in the inner iframe
                                 // We should receive a new Q_PAD_PASSWORD_VALUE
-                                cb(false);
+                                cb({
+                                    state: false,
+                                    view: isViewer,
+                                    reason: e
+                                });
                             } else {
                                 todo();
                                 if (wrongPasswordStored) {
@@ -462,19 +483,29 @@ define([
                                 } else {
                                     correctPassword();
                                 }
-                                cb(true);
+                                cb({
+                                    state: true
+                                });
                             }
                         };
                         if (parsed.type === "file") {
                             // `hasChannelHistory` doesn't work for files (not a channel)
                             // `getFileSize` is not adapted to channels because of metadata
                             Cryptpad.getFileSize(currentPad.href, password, function (e, size) {
+                                if (e && e !== "PASSWORD_CHANGE") {
+                                    return sframeChan.event("EV_DELETED_ERROR", e);
+                                }
                                 next(e, size === 0);
                             });
                             return;
                         }
                         // Not a file, so we can use `hasChannelHistory`
-                        Cryptpad.hasChannelHistory(currentPad.href, password, next);
+                        Cryptpad.hasChannelHistory(currentPad.href, password, (e, isNew, reason) => {
+                            if (isNew && reason && reason !== "PASSWORD_CHANGE") {
+                                return sframeChan.event("EV_DELETED_ERROR", reason);
+                            }
+                            next(reason, isNew);
+                        });
                     });
                     sframeChan.event("EV_PAD_PASSWORD", cfg);
                 };
@@ -564,21 +595,36 @@ define([
                         // `hasChannelHistory` doesn't work for files (not a channel)
                         // `getFileSize` is not adapted to channels because of metadata
                         Cryptpad.getFileSize(currentPad.href, password, w(function (e, size) {
-                            if (size !== 0) { return void todo(); }
+                            if (e && e !== "PASSWORD_CHANGE") {
+                                sframeChan.event("EV_DELETED_ERROR", e);
+                                waitFor.abort();
+                                return;
+                            }
+                            if (!e && size !== 0) { return void todo(); }
                             // Wrong password or deleted file?
+                            passwordCfg.legacy = !e; // Legacy means we don't know if it's a deletion or pw change
                             askPassword(true, passwordCfg);
                         }));
                         return;
                     }
                     // Not a file, so we can use `hasChannelHistory`
-                    Cryptpad.hasChannelHistory(currentPad.href, password, w(function(e, isNew) {
+                    Cryptpad.hasChannelHistory(currentPad.href, password, w(function(e, isNew, reason) {
                         if (isNew && expire && expire < (+new Date())) {
                             sframeChan.event("EV_EXPIRED_ERROR");
                             waitFor.abort();
                             return;
                         }
                         if (!e && !isNew) { return void todo(); }
-                        if (parsed.hashData.mode === 'view' && (password || !parsed.hashData.password)) {
+                        // NOTE: Legacy mode ==> no reason may indicate a password change
+                        if (isNew && reason && (reason !== "PASSWORD_CHANGE" || isViewer)) {
+                            sframeChan.event("EV_DELETED_ERROR", {
+                                reason: reason,
+                                viewer: isViewer
+                            });
+                            waitFor.abort();
+                            return;
+                        }
+                        if (isViewer && (password || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password
                             // password will never work
                             sframeChan.event("EV_PAD_PASSWORD_ERROR");
@@ -586,6 +632,7 @@ define([
                             return;
                         }
                         // Wrong password or deleted file?
+                        passwordCfg.legacy = !reason; // Legacy means we don't know if it's a deletion or pw change
                         askPassword(true, passwordCfg);
                     }));
                 }).nThen(done);
@@ -778,6 +825,9 @@ define([
 
             //Test.registerOuter(sframeChan);
 
+            Cryptpad.drive.onDeleted.reg(function (message) {
+                sframeChan.event("EV_DRIVE_DELETED", message);
+            });
             Cryptpad.onNewVersionReconnect.reg(function () {
                 sframeChan.event("EV_NEW_VERSION");
             });
@@ -1226,8 +1276,56 @@ define([
                         });
                     });
                 });
+
+                sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
+                    Cryptpad.isOverPinLimit(teamId, function (err, overLimit, data) {
+                        cb({
+                            error: err,
+                            data: data
+                        });
+                    });
+                });
+
+                sframeChan.on('Q_PASSWORD_CHECK', function (pw, cb) {
+                    Cryptpad.isNewChannel(currentPad.href, pw, function (e, isNew) {
+                        if (isNew === false) {
+                            nThen(function (w) {
+                                // If the pad is stored, update its data
+                                var _secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, pw);
+                                var chan = _secret.channel;
+                                var editH = Utils.Hash.getEditHashFromKeys(_secret);
+                                var viewH = Utils.Hash.getViewHashFromKeys(_secret);
+                                var href = Utils.Hash.hashToHref(editH, parsed.type);
+                                var roHref = Utils.Hash.hashToHref(viewH, parsed.type);
+                                Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('channel', chan, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());
+                            }).nThen(function () {
+                                // Get redirect URL
+                                var uHash = Utils.LocalStore.getBlockHash();
+                                var uSecret = Utils.Block.parseBlockHash(uHash);
+                                var uKey = uSecret.keys.symmetric;
+                                var url = Utils.Hash.getNewPadURL(currentPad.href, {
+                                    pw: Crypto.encrypt(pw, uKey),
+                                    f: 1
+                                });
+                                // redirect
+                                window.location.href = url;
+                                document.location.reload();
+                            });
+
+                            return;
+                        }
+                        cb({
+                            error: e
+                        });
+                    });
+                });
             };
             addCommonRpc(sframeChan, isSafe);
+
+            var SecureModal = {};
 
             var currentTitle;
             var currentTabTitle;
@@ -1236,12 +1334,16 @@ define([
                 titleSuffix = window.location.hostname;
             }
             var setDocumentTitle = function () {
+                var newTitle;
                 if (!currentTabTitle) {
-                    document.title = currentTitle || 'CryptPad';
-                    return;
+                    newTitle = currentTitle || 'CryptPad';
+                } else {
+                    var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
+                    newTitle = title + ' - ' + titleSuffix;
                 }
-                var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
-                document.title = title + ' - ' + titleSuffix;
+                document.title = newTitle;
+                sframeChan.event('EV_IFRAME_TITLE', newTitle);
+                if (SecureModal.modal) { SecureModal.modal.setTitle(newTitle); }
             };
 
             var setPadTitle = function (data, cb) {
@@ -1512,7 +1614,6 @@ define([
             });
 
             // Secure modal
-            var SecureModal = {};
             // Create or display the iframe and modal
             var getPropChannels = function () {
                 var channels = {};
@@ -1554,6 +1655,7 @@ define([
                     SecureModal.$iframe = $('<iframe>', {id: 'sbox-secure-iframe'}).appendTo($('body'));
                     SecureModal.modal = SecureIframe.create(config);
                 }
+                setDocumentTitle();
                 if (!cfg.hidden) {
                     SecureModal.modal.refresh(cfg, function () {
                         SecureModal.$iframe.show();
@@ -1734,15 +1836,6 @@ define([
                 }).nThen(cb);
             });
 
-            sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
-                Cryptpad.isOverPinLimit(teamId, function (err, overLimit, data) {
-                    cb({
-                        error: err,
-                        data: data
-                    });
-                });
-            });
-
             sframeChan.on('Q_LANGUAGE_SET', function (data, cb) {
                 Cryptpad.setLanguage(data, cb);
             });
@@ -1885,43 +1978,6 @@ define([
                 if (!Utils.Notify.isSupported()) { return void cb(false); }
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
-                });
-            });
-
-            sframeChan.on('Q_PASSWORD_CHECK', function (pw, cb) {
-                Cryptpad.isNewChannel(currentPad.href, pw, function (e, isNew) {
-                    if (isNew === false) {
-                        nThen(function (w) {
-                            // If the pad is stored, update its data
-                            var _secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, pw);
-                            var chan = _secret.channel;
-                            var editH = Utils.Hash.getEditHashFromKeys(_secret);
-                            var viewH = Utils.Hash.getViewHashFromKeys(_secret);
-                            var href = Utils.Hash.hashToHref(editH, parsed.type);
-                            var roHref = Utils.Hash.hashToHref(viewH, parsed.type);
-                            Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
-                            Cryptpad.setPadAttribute('channel', chan, w(), parsed.getUrl());
-                            Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
-                            Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());
-                        }).nThen(function () {
-                            // Get redirect URL
-                            var uHash = Utils.LocalStore.getUserHash();
-                            var uSecret = Utils.Hash.getSecrets('drive', uHash);
-                            var uKey = uSecret.keys.cryptKey;
-                            var url = Utils.Hash.getNewPadURL(currentPad.href, {
-                                pw: Crypto.encrypt(pw, uKey),
-                                f: 1
-                            });
-                            // redirect
-                            window.location.href = url;
-                            document.location.reload();
-                        });
-
-                        return;
-                    }
-                    cb({
-                        error: e
-                    });
                 });
             });
 
@@ -2225,13 +2281,13 @@ define([
                         // server
                         Cryptpad.useTemplate({
                             href: data.template
-                        }, Cryptget, function (err) {
+                        }, Cryptget, function (err, errData) {
                             if (err) {
                                 // TODO: better messages in case of expired, deleted, etc.?
                                 if (err === 'ERESTRICTED') {
                                     sframeChan.event('EV_RESTRICTED_ERROR');
                                 } else {
-                                    sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                                    sframeChan.query("EV_LOADING_ERROR", errData || 'DELETED');
                                 }
                                 return;
                             }
@@ -2242,13 +2298,13 @@ define([
                     }
                     // if we open a new code from a file
                     if (Cryptpad.fromFileData && !isOO) {
-                        Cryptpad.useFile(Cryptget, function (err) {
+                        Cryptpad.useFile(Cryptget, function (err, errData) {
                             if (err) {
                                 // TODO: better messages in case of expired, deleted, etc.?
                                 if (err === 'ERESTRICTED') {
                                     sframeChan.event('EV_RESTRICTED_ERROR');
                                 } else {
-                                    sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                                    sframeChan.query("EV_LOADING_ERROR", errData || 'DELETED');
                                 }
                                 return;
                             }

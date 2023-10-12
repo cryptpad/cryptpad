@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <title>Вставка формул массива</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Вставка формул массива" />
+        <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Вставка формул массива</h1>
+        <p>Редактор электронных таблиц позволяет использовать формулы массива. Формулы массива обеспечивают согласованность формул в электронной таблице, так как вместо нескольких обычных формул можно ввести одну формулу массива. Формула массива упрощает работу с большим объемом данных, предоставляет возможность быстро заполнить лист данными и многое другое.</p>			
+            <p>Вы можете вводить формулы и встроенные функции в качестве формулы массива, чтобы:</p>
+            <ul>
+                <li>выполнять несколько вычислений одновременно и отображать один результат, или</li>
+                <li>возвращать диапазон значений, отображаемых в нескольких строках и/или столбцах.</li>
+            </ul>
+            <p>Существуют специально назначенные функции, которые могут возвращать несколько значений. Если ввести их, нажав клавишу <b>Enter</b>, они вернут одно значение. Если выбрать выходной диапазон ячеек для отображения результатов, а затем ввести функцию, нажав <b>Ctrl + Shift + Enter</b>, будет возвращен диапазон значений (количество возвращаемых значений зависит от размера ранее выбранного диапазона). Список ниже содержит ссылки на подробные описания этих функций.</p>
+            <details class="details-example">
+                <summary><b>Формулы массива</b></summary>
+                <ul>
+                    <li><a href="../Functions/take.htm" onclick="onhyperlinkclick(this)">ВЗЯТЬ</a></li>
+                    <li><a href="../Functions/vstack.htm" onclick="onhyperlinkclick(this)">ВСТОЛБИК</a></li>
+                    <li><a href="../Functions/choosecols.htm" onclick="onhyperlinkclick(this)">ВЫБОРСТОЛБЦ</a></li>
+                    <li><a href="../Functions/chooserows.htm" onclick="onhyperlinkclick(this)">ВЫБОРСТРОК</a></li>
+                    <li><a href="../Functions/hyperlink.htm" onclick="onhyperlinkclick(this)">ГИПЕРССЫЛКА</a></li>
+                    <li><a href="../Functions/hstack.htm" onclick="onhyperlinkclick(this)">ГСТОЛБИК</a></li>
+                    <li><a href="../Functions/indirect.htm" onclick="onhyperlinkclick(this)">ДВССЫЛ</a></li>
+                    <li><a href="../Functions/isformula.htm" onclick="onhyperlinkclick(this)">ЕФОРМУЛА</a></li>
+                    <li><a href="../Functions/index.htm" onclick="onhyperlinkclick(this)">ИНДЕКС</a></li>
+                    <li><a href="../Functions/logest.htm" onclick="onhyperlinkclick(this)">ЛГРФПРИБЛ</a></li>
+                    <li><a href="../Functions/linest.htm" onclick="onhyperlinkclick(this)">ЛИНЕЙН</a></li>
+                    <li><a href="../Functions/munit.htm" onclick="onhyperlinkclick(this)">МЕДИН</a></li>
+                    <li><a href="../Functions/minverse.htm" onclick="onhyperlinkclick(this)">МОБР</a></li>
+                    <li><a href="../Functions/mmult.htm" onclick="onhyperlinkclick(this)">МУМНОЖ</a></li>
+                    <li><a href="../Functions/tocol.htm" onclick="onhyperlinkclick(this)">ПОСТОЛБЦ</a></li>
+                    <li><a href="../Functions/torow.htm" onclick="onhyperlinkclick(this)">ПОСТРОК</a></li>
+                    <li><a href="../Functions/xlookup.htm" onclick="onhyperlinkclick(this)">ПРОСМОТРX</a></li>
+                    <li><a href="../Functions/growth.htm" onclick="onhyperlinkclick(this)">РОСТ</a></li>
+                    <li><a href="../Functions/drop.htm" onclick="onhyperlinkclick(this)">СБРОСИТЬ</a></li>
+                    <li><a href="../Functions/wrapcols.htm" onclick="onhyperlinkclick(this)">СВЕРНСТОЛБЦ</a></li>
+                    <li><a href="../Functions/wraprows.htm" onclick="onhyperlinkclick(this)">СВЕРНСТРОК</a></li>
+                    <li><a href="../Functions/randarray.htm" onclick="onhyperlinkclick(this)">СЛУЧМАССИВ</a></li>
+                    <li><a href="../Functions/offset.htm" onclick="onhyperlinkclick(this)">СМЕЩ</a></li>
+                    <li><a href="../Functions/column.htm" onclick="onhyperlinkclick(this)">СТОЛБЕЦ</a></li>
+                    <li><a href="../Functions/row.htm" onclick="onhyperlinkclick(this)">СТРОКА</a></li>
+                    <li><a href="../Functions/textsplit.htm" onclick="onhyperlinkclick(this)">ТЕКСТРАЗД</a></li>
+                    <li><a href="../Functions/trend.htm" onclick="onhyperlinkclick(this)">ТЕНДЕНЦИЯ</a></li>
+                    <li><a href="../Functions/transpose.htm" onclick="onhyperlinkclick(this)">ТРАНСП</a></li>
+                    <li><a href="../Functions/unique.htm" onclick="onhyperlinkclick(this)">УНИК</a></li>
+                    <li><a href="../Functions/formulatext.htm" onclick="onhyperlinkclick(this)">Ф.ТЕКСТ</a></li>
+                    <li><a href="../Functions/frequency.htm" onclick="onhyperlinkclick(this)">ЧАСТОТА</a></li>
+                    <li><a href="../Functions/cell.htm" onclick="onhyperlinkclick(this)">ЯЧЕЙКА</a></li>
+                </ul>  
+            </details>
+            <h3>Вставка формул массива</h3>         
+            <p>Чтобы вставить формулу массива,</p>
+			<ol>
+                <li>
+                    Выберите диапазон ячеек, в которых вы хотите отобразить результаты.
+                    <p><img alt="Вставка формул массива" src="../images/array3.png" /></p>
+                </li>
+                <li>Введите формулу, которую вы хотите использовать, в строке формул и укажите необходимые аргументы в круглых скобках <b>()</b>. 
+                    <p><img alt="Вставка формул массива" src="../images/array4.png" /></p>
+                </li>
+				<li>Нажмите комбинацию клавиш <b>Ctrl + Shift + Enter</b>.
+                    <p><img alt="Вставка формул массива" src="../images/array5.png" /></p>
+                </li>
+			</ol>
+            <p>Результаты будут отображаться в выбранном диапазоне ячеек, а формула в строке формул будет автоматически заключена в фигурные скобки <b>{ }</b>, чтобы указать, что это формула массива. Например, <b>{=УНИК(B2:D6)}</b>. Эти фигурные скобки нельзя вводить вручную.</p>
+            <h3>Создание формулы массива в одной ячейке</h3>
+            <p>В следующем примере показан результат формулы массива, отображаемый в одной ячейке. Выберите ячейку, введите <em>=СУММ(C2:C11*D2:D11)</em> и нажмите <b>Ctrl + Shift + Enter</b>.</p>
+            <p><img alt="Вставка формул массива" src="../images/array1.png" /></p>
+            <h3>Создание формулы массива в нескольких ячейках</h3>
+            <p>В следующем примере показаны результаты формулы массива, отображаемые в диапазоне ячеек. Выберите диапазон ячеек, введите <em>=C2:C11*D2:D11</em> и нажмите <b>Ctrl + Shift + Enter</b>.</p>
+            <p><img alt="Вставка формул массива" src="../images/array2.png" /></p>
+            <h3>Редактирование формулы массива</h3>
+            <p>Каждый раз, когда вы редактируете введенную формулу массива (например, меняете аргументы), вам нужно нажимать комбинацию клавиш <b>Ctrl + Shift + Enter</b>, чтобы сохранить изменения.</p>
+            <p>В следующем примере показано, как расширить формулу массива с несколькими ячейками при добавлении новых данных. Выделите все ячейки, содержащие формулу массива, а также пустые ячейки рядом с новыми данными, отредактируйте аргументы в строке формул, чтобы они включали новые данные, и нажмите <b>Ctrl + Shift + Enter</b>.</p>
+            <p><img alt="Edit array formulas" src="../images/array6.png" /></p>
+            <p>Если вы хотите применить формулу массива с несколькими ячейками к меньшему диапазону ячеек, вам нужно удалить текущую формулу массива, а затем ввести новую формулу массива.</p>
+            <p>Часть массива нельзя изменить или удалить. Если вы попытаетесь изменить, переместить или удалить одну ячейку в массиве или вставить новую ячейку в массив, вы получите следующее предупреждение: <em>Нельзя изменить часть массива</em>.</p>
+            <p>Чтобы удалить формулу массива, выделите все ячейки, содержащие формулу массива, и нажмите  клавишу <b>Delete</b>. Либо выберите формулу массива в строке формул, нажмите <b>Delete</b>, а затем нажмите <b>Ctrl + Shift + Enter</b>.</p>
+            <details class="details-example">
+                <summary><b>Примеры использования формулы массива</b></summary>
+                <p>В этом разделе приведены некоторые примеры того, как использовать формулы массива для выполнения определенных задач.</p>
+                <p><b>Подсчет количества символов в диапазоне ячеек</b></p>
+                <p>Вы можете использовать следующую формулу массива, заменив диапазон ячеек в аргументе на свой собственный: <b>=СУММ(ДЛСТР(B2:B11))</b>. Функция <a href="../Functions/len.htm" onclick="onhyperlinkclick(this)">ДЛСТР</a> вычисляет длину каждой текстовой строки в диапазоне ячеек. Функция <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">СУММ</a> складывает значения.</p>
+                <p><img alt="Использование формул массива" src="../images/array7.png" /></p>
+                <p>Чтобы получить среднее количество символов, замените <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">СУММ</a> на <a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">СРЗНАЧ</a>.</p>
+                <p><b>Нахождение самой длинной строки в диапазоне ячеек</b></p>
+                <p>Вы можете использовать следующую формулу массива, заменив диапазоны ячеек в аргументе на свои собственные: <b>=ИНДЕКС(B2:B11,ПОИСКПОЗ(МАКС(ДЛСТР(B2:B11)),ДЛСТР(B2:B11),0),1)</b>. Функция <a href="../Functions/len.htm" onclick="onhyperlinkclick(this)">ДЛСТР</a> вычисляет длину каждой текстовой строки в диапазоне ячеек. Функция <a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">МАКС</a> вычисляет наибольшее значение. Функция <a href="../Functions/match.htm" onclick="onhyperlinkclick(this)">ПОИСКПОЗ</a> находит адрес ячейки с самой длинной строкой. Функция <a href="../Functions/index.htm" onclick="onhyperlinkclick(this)">ИНДЕКС</a> возвращает значение из найденной ячейки.</p>
+                <p><img alt="Использование формул массива" src="../images/array8.png" /></p>
+                <p>Чтобы найти кратчайшую строку, замените <a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">МАКС</a> на <a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">МИН</a>.</p>
+                <p><b>Сумма значений на основе условий</b></p>
+                <p>Чтобы суммировать значения больше указанного числа (2 в этом примере), вы можете использовать следующую формулу массива, заменив диапазоны ячеек в аргументах своими собственными: <b>=СУММ(ЕСЛИ(C2:C11>2,C2:C11))</b>. Функция <a href="../Functions/if.htm" onclick="onhyperlinkclick(this)">ЕСЛИ</a> создает массив истинных и ложных значений. Функция <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">СУММ</a> игнорирует ложные значения и складывает истинные значения вместе.</p>
+                <p><img alt="Использование формул массива" src="../images/array9.png" /></p>
+            </details>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lecteur de documents ONLYOFFICE</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="La description des outils de navigation du Lecteur de documents ONLYOFFICE" />
+        <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Lecteur de documents ONLYOFFICE</h1>
+            <p>Vous pouvez utiliser <b>Lecteur de documents ONLYOFFICE</b> pour ouvrir et parcourir des fichiers PDF, XPS et DjVu.</p>
+            <p>Le <b>lecteur de documents ONLYOFFICE</b> permet de :</p>
+            <ul>
+                <li>consulter des fichiers PDF, XPS, DjVu,</li>
+                <li>ajouter des annotations à l'aide de chat,</li>
+                <li>parcourir des fichiers à l'aide du panneau de navigation et des vignettes de page,</li>
+                <li>utiliser l'outil de sélection et l'outil Main,</li>
+                <li>imprimer et télécharger des fichiers,</li>
+                <li>utiliser des liens internes et externes,</li>
+                <li>
+                    accéder aux paramètres avancés du fichier dans l'éditeur et consulter le descriptif du document en utilisant l'onglet <b>Fichier</b> et <b>Affichage</b> :
+                    <ul>
+                        <li class="onlineDocumentFeatures"><b>Emplacement</b> (disponible uniquement dans la version <em>en ligne</em>) le dossier dans le module <b>Documents</b> où le fichier est stocké.</li>
+                        <li class="onlineDocumentFeatures"><b>Propriétaire</b> (disponible uniquement dans la version <em>en ligne</em>) - le nom de l'utilisateur qui a créé le fichier.</li>
+                        <li class="onlineDocumentFeatures"><b>Chargé</b> (disponible uniquement dans la version <em>en ligne</em>) - la date et l'heure quand le fichier a été téléchargé.</li>
+                        <li><b>Statistiques</b> - le nombre de pages, paragraphes, mots, symboles, symboles avec des espaces.</li>
+                        <li><b>Taille de la page</b> - la taille des pages dans le fichier.</li>
+                        <li><b>Dernière modification</b> - la date et l'heure quand le fichier a été modifié la dernière fois.</li>
+                        <li><b>Créé</b> - la date et l'heure quand le fichier a été créé.</li>
+                        <li><b>Application</b> - l'application dans laquelle on a créé le document.</li>
+                        <li><b>Auteur</b> - la personne qui a créé le document.</li>
+                        <li><b>Producteur PDF</b> - l'application qu'on a utilisé pour convertir le document en PDF.</li>
+                        <li><b>Version PDF</b> - la version du fichier PDF :</li>
+                        <li><b>PDF marqué</b> - affiche si le fichier PDF comporte des balises.</li>
+                        <li><b>Affichage rapide sur le Web</b> - affiche si l'affichage rapide des pages web a été activé pour ce document.</li>
+                    </ul>
+                </li>
+                <li>utiliser les modules complémentaires
+                    <ul>
+                        <li>Les modules complémentaires disponibles dans la version du bureau : <b>Traducteur</b>, <b>Send</b>, <b>Thésaurus</b>.</li>
+                        <li>Les modules complémentaires disponibles dans la version en ligne : <b>Controls example</b>, <b>Obtenir et coller du html</b>, <b>Telegram</b>, <b>Typograf</b>, <b>Compter les mots et les caractères</b>, <b>Parole</b>, <b>Thésaurus</b>, <b>Traducteur</b>.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>L'interface du <b>Lecteur de documents ONLYOFFICE</b> :</p>
+            <p><img alt="Lecteur de documents ONLYOFFICE" src="../images/pdfviewer.png" /></p>
+            <ol>
+                <li>
+                    La barre d'outils supérieure fournit l'accès aux onglets <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Fichier</a>, <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Affichage</a> et <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Plug-ins</a> et aux icônes suivantes :
+                    <p><span class="icon icon-print"></span> <b>Imprimer</b> permet d'imprimer le fichier ;</p>
+                    <p><span class="icon icon-downloadicon"></span> <b>Télécharger</b> permet de sauvegarder le fichier sur votre ordinateur ;</p>
+                    <p><span class="icon icon-access_rights"></span> <b>Partager</b> (disponible <em>uniquement dans la version en ligne</em>) permet de définir les droits d'accès au fichier directement à partir du document : inviter de nouveaux utilisateurs leur donnant les permissions de <em>modifier</em>, <em>lire</em>, <em>commenter</em>, <em>remplir des formulaires</em> ou <em>réviser</em> le document, ou refuser à certains utilisateurs des droits d'accès au fichier ;</p>
+                    <p><span class="icon icon-gotodocuments"></span> <b>Ouvrir l'emplacement du fichier</b> dans la <em>version de bureau</em>, sert à ouvrir le dossier où le fichier est stocké dans la fenêtre <b>Explorateur de fichiers</b>. Dans la <em>version en ligne</em>, elle permet d'ouvrir le dossier du module <b>Documents</b> où le fichier est stocké dans un nouvel onglet du navigateur ;</p>
+                    <p><span class="icon icon-favorites_icon"></span> <b>Marquer en tant que favori / Enlever des favoris</b> (disponible <em>uniquement dans la version en ligne</em>) cliquez sur l'étoile vide pour ajouter le fichier aux favoris et le retrouver rapidement ou cliquez sur l'étoile remplie pour effacer le fichier des favoris. Ce n'est qu'un fichier de raccourcis car le fichier lui-même est dans l'emplacement de stockage d'origine. Le fichier réel n'est pas supprimé quand vous le supprimez des favoris ;</p>
+                    <p><span class="icon icon-usericon"></span> <b>Utilisateur</b> affiche le nom d'utilisateur lorsque vous placer le curseur de votre souris sur l'icône ;</p>
+                    <p><span class="icon icon-search_icon_header"></span> <b>Recherche</b> - permet de rechercher dans le document un mot ou un symbole particulier, etc.</p>
+                </li>
+                <li>La <b>Barre d'état</b> au bas de la fenêtre du <b>Lecteur de documents ONLYOFFICE</b> contient l'indicateur du numéro de page et affiche certaines notifications des processus d'arrière plan. La barre d'état comporte aussi les outils suivants :
+                    <p><span class="icon icon-selectiontool"></span> <b>Outil de sélection</b> sert à sélectionner du texte dans un fichier.</p>
+                    <p><span class="icon icon-handtool"></span> <b>Outil Main</b> sert à faire glisser et défiler la page.</p>
+                    <p><span class="icon icon-fitpage"></span> <b>Ajuster à la page</b> sert à redimensionner la page pour afficher une page entière sur l'écran.</p>
+                    <p><span class="icon icon-fitwidth"></span> <b>Ajuster à la largeur</b> sert à redimensionner la page pour l'adapter à la largeur de l'écran.</p>
+                    <p><img alt="Zoom" src="../images/zoomadjusting.png" /> <a href="../HelpfulHints/Navigation.htm#navigationtools" onclick="onhyperlinkclick(this)"><b>Outil zoom</b></a> sert à zoomer et dézoomer sur une page.</p>
+                </li>
+                <li>
+                    La <b>barre latérale gauche</b> comporte les icônes suivantes :
+                    <ul>
+                        <li><div class = "icon icon-searchicon"></div> - permet d'utiliser l'outil <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Rechercher et remplacer</a> ,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-chaticon"></div> - (disponible dans la <em>version en ligne</em> seulement) permet d'ouvrir le panneau de <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">Chat</a>,</li>
+                        <li>
+                            <div class = "icon icon-navigationicon"></div> - permet d'ouvrir le panneau de <b>Navigation</b> pour parcourir la liste hiérarchique des titres avec des éléments de navigation imbriqués. Cliquez sur le titre pour passer directement sur la page nécessaire.
+                            <p><img alt="Panneau de navigation" src="../images/navigationpanel_viewer.png" />
+                            <p>Cliquez sur l'icône <b>Paramètres</b> à droite du panneau <b>Titres</b> et utilisez l'une des options disponibles dans le menu :</p>
+                            <ul>
+                                <li><b>Développer tout</b> pour développer tous les niveaux de titres sur le panneau de navigation.</li>
+                                <li><b>Réduire tout</b> pour réduire touts les niveaux de titres sauf le <em>niveau 1</em> sur le panneau de <b>Navigation</b>.</li>
+                                <li><b>Développer jusqu'au niveau</b> pour développer la liste hiérarchique des titres jusqu'au niveau sélectionné. Par ex., si vous sélectionnez le <em>niveau 3</em>, on va développer les niveaux 1, 2 et 3 mais le niveau 4 et tous niveaux inférieurs seront réduits.</li>
+                                <li><b>Taille de la police</b> – pour personnaliser la taille de la police du texte sur le panneau <b>Navigation</b> en choisissant l'un des préréglages disponibles : <em>Petit</em>, <em>Moyen</em> et <em>Grand</em>.</li>
+                                <li><b>Renvoyer à la ligne les longs titres</b> – pour renvoyer à la ligne le texte des longs titres.</li>
+                            </ul>
+                            <p>Pour développer et réduire chaque niveau de titres à part, utilisez la flèche à droit du titre.</p>
+                            <p>Pour fermer le panneau de <b>Navigation</b>, cliquez sur l'icône <span class="icon icon-navigationicon"></span> <b>Navigation</b> sur la barre latérale gauche encore une fois.</p>
+                        </li>
+                        <li>
+                            <div class = "icon icon-pagethumbnails"></div> - sert à afficher les vignettes des pages afin de parcourir rapidement un document. Cliquez sur <div class = "icon icon-search_options"></div> sur le panneau <b>Miniatures des pages</b> pour accéder aux <b>Paramètres des miniatures</b> :
+                            <p><img alt="Paramètres des vignettes des pages" src="../images/pagethumbnails_settings.png" /></p>
+                            <ul>
+                                <li>Faites glisser le curseur pour définir la taille de la vignette,</li>
+                                <li>Par défaut, l'option <b>Mettre en surbrillance la partie visible de la page</b> est active pour indiquer sur la vignette la zone affichée maintenant sur l'écran. Cliquez sur la case à coché pour désactiver cette option.</li>
+                            </ul>
+                            <p>Pour fermer le panneau <b>Miniatures des pages</b>, cliquez sur l'icône <span class="icon icon-pagethumbnails"></span> <b>Miniatures des pages</b> sur la barre latérale gauche encore une fois.</p>
+                        </li>
+                        <li><div class = "icon icon-feedbackicon"></div> - permet de contacter notre équipe d'assistance technique,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-abouticon"></div> - (disponible uniquement dans la version <em>en ligne)</em> permet de visualiser les informations sur le programme.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+	</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "DE.Controllers.ApplicationController.criticalErrorTitle": "Feil",
+  "DE.Controllers.ApplicationController.downloadErrorText": "Nedlasting feilet.",
+  "DE.Controllers.ApplicationController.errorDefaultMessage": "Feilkode: %1",
+  "DE.Controllers.ApplicationController.notcriticalErrorTitle": "Advarsel",
+  "DE.Controllers.ApplicationController.textLoadingDocument": "Laster dokument",
+  "DE.Controllers.ApplicationController.textOf": "av",
+  "DE.Controllers.ApplicationController.txtClose": "Lukk",
+  "DE.Controllers.ApplicationController.unknownErrorText": "Ukjent feil.",
+  "DE.Controllers.ApplicationController.unsupportedBrowserErrorText": "Nettleseren din er ikke støttet.",
+  "DE.Controllers.ApplicationController.waitText": "Vennligst vent...",
+  "DE.Views.ApplicationView.txtDownload": "Last ned",
+  "DE.Views.ApplicationView.txtFullScreen": "Fullskjerm",
+  "DE.Views.ApplicationView.txtPrint": "Skriv ut",
+  "DE.Views.ApplicationView.txtShare": "Del"
+}

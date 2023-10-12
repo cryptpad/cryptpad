@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>SmartArt-Objekte einfügen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="SmartArt-Objekte einfügen" />
+    <link type="text/css" rel="stylesheet" href="../../images/sprite.css" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>SmartArt-Objekte einfügen</h1>
+        <p><b>SmartArt-Grafiken</b> werden verwendet, um eine visuelle Darstellung einer hierarchischen Struktur zu erstellen, indem ein Layout ausgewählt wird, das am besten passt. Fügen Sie SmartArt-Objekte ein oder bearbeiten Sie die in Editoren von Drittanbietern hinzugefügten Objekte.</p>
+        <p>Um ein SmartArt-Objekt <b>einzufügen</b>,</p>
+        <ol>
+            <li>Gehen Sie zur Registerkarte <b>Einfügen</b>.</li>
+            <li>Klicken Sie auf die Schaltfläche <b>SmartArt</b>.</li>
+            <li>Bewegen Sie den Mauszeiger über einen der verfügbaren Layoutstile, z. B. <em>Liste</em> oder <em>Prozess</em>.</li>
+            <li>Wählen Sie einen der verfügbaren Layouttypen aus der Liste, die rechts neben dem hervorgehobenen Menüelement angezeigt wird.</li>
+        </ol>
+        <p>Sie können die SmartArt-Einstellungen im rechten Bereich <b>anpassen</b>:</p>
+        <p class="note">Bitte beachten Sie, dass Farb-, Stil- und Formtypeinstellungen individuell angepasst werden können.</p>
+        <img alt="" src="../images/smartart_settings.png" />
+        <ul>
+            <li>
+                <b>Füllen</b> - Verwenden Sie diesen Abschnitt, um die automatische SmartArt-Objekt-Füllung auszuwählen. Sie können folgende Optionen auswählen:
+                <ul>
+                    <li>
+                        <b>Farbfüllung</b> - Wählen Sie diese Option aus, um die Volltonfarbe anzugeben, mit der Sie den Innenraum des ausgewählten SmartArt-Objektes füllen möchten.
+                        <p><img alt="Einfarbige Füllung" src="../images/fill_color.png" /></p>
+                        <p id="color">Klicken Sie auf das farbige Feld unten und wählen Sie die gewünschte Farbe aus den verfügbaren <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">Farbsätzen</a> aus oder geben Sie eine beliebige Farbe an:</p>
+                    </li>
+                    <li>
+                        <b>Füllung mit Farbverlauf</b> - wählen Sie diese Option, um die Form mit einem sanften Übergang von einer Farbe zu einer anderen zu füllen.
+                        <p><img alt="Füllung mit Farbverlauf" src="../images/fill_gradient.png" /></p>
+                        <p>Die verfügbaren Menüoptionen:</p>
+                        <ul>
+                            <li>
+                                <b>Stil</b> - wählen Sie <b>Linear</b> oder <b>Radial</b> aus:
+                                <ul>
+                                    <li><b>Linear</b> wird verwendet, wenn Ihre Farben von links nach rechts, von oben nach unten oder in einem beliebigen Winkel in eine Richtung fließen sollen. Das Vorschaufenster <b>Richtung</b> zeigt die ausgewählte Verlaufsfarbe an. Klicken Sie auf den Pfeil, um eine voreingestellte Verlaufsrichtung auszuwählen. Verwenden Sie <b>Winkel</b>-Einstellungen für einen präzisen Verlaufswinkel.</li>
+                                    <li><b>Radial</b> wird verwendet, um sich von der Mitte zu bewegen, da die Farbe an einem einzelnen Punkt beginnt und nach außen ausstrahlt.</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <b>Punkt des Farbverlaufs</b> ist ein bestimmter Punkt für den Verlauf von einer Farbe zur anderen.
+                                <ul>
+                                    <li>Verwenden Sie die Schaltfläche <div class="icon icon-addgradientpoint"></div> <b>Punkt des Farbverlaufs einfügen</b> oder den Schieberegler, um einen Punkt des Verlaufs einzufügen. Sie können bis zu 10 Punkte einfügen. Jeder nächste eingefügte Punkt des Farbverlaufs beeinflusst in keiner Weise die aktuelle Darstellung der Farbverlaufsfüllung. Verwenden Sie die Schaltfläche <div class="icon icon-removegradientpoint"></div> <b>Punkt des Farbverlaufs entfernen</b>, um den bestimmten Punkt zu löschen.</li>
+                                    <li>Verwenden Sie den Schieberegler, um die Position des Farbverlaufspunkts zu ändern, oder geben Sie <b>Position</b> in Prozent an, um eine genaue Position zu erhalten.</li>
+                                    <li>Um eine Farbe auf einen Verlaufspunkt anzuwenden, klicken Sie auf einen Punkt im Schieberegler und dann auf <b>Farbe</b>, um die gewünschte Farbe auszuwählen.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <b>Bild oder Textur</b> - Wählen Sie diese Option, um ein Bild oder eine vordefinierte Textur als Formhintergrund zu verwenden.
+                        <p><img alt="Bild- oder Texturfüllung" src="../images/fill_picture.png" /></p>
+                        <ul>
+                            <li>Wenn Sie ein Bild als Hintergrund für die Form verwenden möchten, können Sie ein Bild <b>aus der Datei</b> hinzufügen, indem Sie es auf der Festplatte Ihres Computers auswählen, oder <b>aus der URL</b>, indem Sie die entsprechende URL-Adresse in das geöffnete Fenster einfügen.</li>
+                            <li>
+                                Wenn Sie eine Textur als Hintergrund für die Form verwenden möchten, öffnen Sie das Menü Von Textur und wählen Sie die gewünschte Texturvoreinstellung aus.
+                                <p>Derzeit sind folgende Texturen verfügbar: Leinwand, Karton, dunkler Stoff, Maserung, Granit, graues Papier, Strick, Leder, braunes Papier, Papyrus, Holz.</p>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>
+                                Falls das ausgewählte <b>Bild</b> weniger oder mehr Abmessungen als die automatische Form hat, können Sie die Einstellung <b>Dehnen</b> oder <b>Kacheln</b> aus der Dropdown-Liste auswählen.</p>
+                                <p>Mit der Option <b>Dehnen</b> können Sie die Bildgröße an die Größe der automatischen Form anpassen, sodass sie den Raum vollständig ausfüllen kann.</p>
+                                <p>Mit der Option <b>Kacheln</b> können Sie nur einen Teil des größeren Bilds anzeigen, wobei die ursprünglichen Abmessungen beibehalten werden, oder das kleinere Bild wiederholen, wobei die ursprünglichen Abmessungen über der Oberfläche der automatischen Form beibehalten werden, sodass der Raum vollständig ausgefüllt werden kann.</p>
+                                <p class="note">Jede ausgewählte <b>Texturvoreinstellung</b> füllt den Raum vollständig aus. Sie können jedoch bei Bedarf den <b>Dehnungseffekt</b> anwenden.</p>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <b>Muster</b> - Wählen Sie diese Option, um die Form mit einem zweifarbigen Design zu füllen, das aus regelmäßig wiederholten Elementen besteht.
+                        <p><img alt="Füllungsmuster" src="../images/fill_pattern.png" /></p>
+                        <ul>
+                            <li><b>Muster</b> - Wählen Sie eines der vordefinierten Designs aus dem Menü.</li>
+                            <li><b>Vordergrundfarbe</b> - Klicken Sie auf dieses Farbfeld, um die Farbe der Musterelemente zu ändern.</li>
+                            <li><b>Hintergrundfarbe</b> - Klicken Sie auf dieses Farbfeld, um die Farbe des Musterhintergrunds zu ändern.</li>
+                        </ul>
+                    </li>
+                    <li><b>Keine Füllung</b> - wählen Sie diese Option, wenn Sie keine Füllung verwenden möchten.</li>
+                    <li>
+                        <b>Strich</b> - Verwenden Sie diesen Abschnitt, um die Breite, Farbe oder den Typ des Strichs für das SmartArt-Objekt zu ändern.
+                        <ul>
+                            <li>Um die Strichbreite zu ändern, wählen Sie eine der verfügbaren Optionen aus der Dropdown-Liste <b>Größe</b>. Die verfügbaren Optionen sind: 0,5 pt, 1 pt, 1,5 pt, 2,25 pt, 3 pt, 4,5 pt, 6 pt. Alternativ können Sie die Option Keine Linie auswählen, wenn Sie <b>keinen Strich</b> verwenden möchten.</li>
+                            <li>Um die <b>Strichfarbe</b> zu ändern, klicken Sie auf das farbige Feld unten und <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">wählen Sie die gewünschte Farbe aus</a>.</li>
+                            <li>Um den <b>Strich-Typ</b> zu ändern, wählen Sie die erforderliche Option aus der entsprechenden Dropdown-Liste aus (standardmäßig wird eine durchgezogene Linie angewendet, Sie können sie in eine der verfügbaren gestrichelten Linien ändern).</li>
+                        </ul>
+                    </li>
+                    <li><b>Umbruchstil</b> - verwenden Sie diesen Abschnitt, um einen Textumbruchstil aus den verfügbaren auszuwählen - inline, quadratisch, eng, durch, oben und unten, vorne, hinten (weitere Informationen finden Sie in der Beschreibung der erweiterten Einstellungen unten).</li>
+                    <li><b>Schatten anzeigen</b> - Aktivieren Sie diese Option, um die Form mit Schatten anzuzeigen.</li>
+                </ul>
+                <p>Klicken Sie auf den Link <b>Erweiterte Einstellungen anzeigen</b>, um die <a href="../UsageInstructions/InsertAutoshapes.htm#autoshape_advanced" onclick="onhyperlinkclick(this)">erweiterten Einstellungen</a> zu öffnen.</p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -718,8 +718,9 @@ define([
             text: '',
             options: options, // Entries displayed in the menu
             common: common,
-            buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions'
-        };
+            buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions',
+            ariaLabel: Messages.calendar_settings,
+    };
         return UIElements.createDropdown(dropdownConfig)[0];
     };
     var makeCalendarEntry = function (id, teamId) {
@@ -827,8 +828,9 @@ define([
             if (myCalendars.length) {
                 var user = metadataMgr.getUserData();
                 var avatar = h('span.cp-avatar');
+                var uid = user.uid;
                 var name = user.name || Messages.anonymous;
-                common.displayAvatar($(avatar), user.avatar, name);
+                common.displayAvatar($(avatar), user.avatar, name, function(){}, uid);
                 APP.$calendars.append(h('div.cp-calendar-team', [
                     avatar,
                     h('span.cp-name', {title: name}, name)
@@ -1192,10 +1194,10 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         }).appendTo(APP.toolbar.$bottomL);
 
         // Change page
-        var goLeft = h('button.fa.fa-chevron-left');
-        var goRight = h('button.fa.fa-chevron-right');
+        var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft});
+        var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight});
         var goToday = h('button', Messages.calendar_today);
-        var goDate = h('button.fa.fa-calendar');
+        var goDate = h('button.fa.fa-calendar',{'aria-label': Messages.date});
         $(goLeft).click(function () {
             cal.prev();
             updateDateRange();
@@ -1920,7 +1922,9 @@ APP.recurrenceRule = {
         };
         $(addNotif).click(function () {
             var unit = $block.getValue();
-            var value = $number.val();
+            var val = $number.val();
+            if (val === "") { return void UI.warn(Messages.error); }
+            var value = Number(val);
             addNotification(unit, value);
         });
         oldReminders.forEach(function (minutes) {
@@ -1931,9 +1935,11 @@ APP.recurrenceRule = {
             listContainer,
             h('div.cp-calendar-notif-form', [
                 h('span.cp-notif-label', Messages.calendar_addNotification),
-                number,
-                $block[0],
-                addNotif
+                h('span.cp-calendar-notif-form-buttons', [
+                    number,
+                    $block[0],
+                    addNotif
+                ])
             ])
         ]);
     };

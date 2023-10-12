@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Gérer des feuilles de calcul</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Gérer des feuilles de calcul dans le Tableur : insérer, supprimer, renommer, copier et déplacer." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Gérer des feuilles de calcul</h1>
+			<p>Par défaut, un classeur nouvellement créé contient une feuille de calcul. Le moyen le plus simple d'en ajouter dans le <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tableur</b></a> une est de cliquer sur le bouton Plus <span class="icon icon-plus"></span> situé à la droite des boutons de <b>Navigation de feuille</b> dans le coin inférieur gauche.</p>
+			<p>Une autre façon <b>d'ajouter une nouvelle feuille</b> est :</p>
+			<ol>
+			<li>faites un clic droit sur l'onglet de la feuille de calcul après laquelle vous souhaitez insérer une nouvelle feuille,</li>
+			<li>sélectionnez l'option <b>Insérer</b> depuis le menu contextuel.</li>
+			</ol>
+			<p>Une nouvelle feuille de calcul sera insérée après la feuille sélectionnée.</p>
+			<p><b>Pour activer la feuille requise</b>, utilisez les onglets de la feuille dans le coin inférieur gauche de chaque feuille de calcul.</p>
+			<p class="note"><b>Remarque</b> : pour trouver la feuille que vous cherchez si vous en avez beaucoup, utilisez les boutons de <b>Navigation de feuille</b> situés dans le coin inférieur gauche.</p>
+			<p><b>Pour supprimer une feuille de calcul inutile :</b></p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à supprimer,</li>
+				<li>sélectionnez l'option <b>Supprimer</b> depuis le menu contextuel.</li>
+			</ol>
+			<p>La feuille de calcul sélectionnée sera supprimée à partir du classeur actuel.</p>
+			<p><b>Pour renommer une feuille de calcul :</b></p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à renommer,</li>
+				<li>sélectionnez l'option <b>Renommer</b> depuis le menu contextuel,</li>
+				<li>saisissez le <b>Nom de feuille</b> dans la fenêtre de dialogue et cliquez sur le bouton <b>OK</b>.</li>
+			</ol>
+			<p>Le nom de la feuille de calcul sélectionnée sera modifiée.</p>
+			<p><b>Pour copier une feuille de calcul :</b></p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à copier,</li>
+				<li>sélectionnez l'option <b>Copier</b> depuis le menu contextuel,</li>
+				<li>sélectionnez la feuille de calcul avant laquelle vous souhaitez insérer la copie ou utilisez l'option <b>Copier à la fin</b> pour insérer la feuille de calcul copiée après toutes les feuilles existantes,</li>
+                <li>
+                    cliquez sur le bouton <b>OK</b> pour confirmer votre choix.
+                    <p>ou</p>
+                    <p>maintenez la touche <b>CTRL</b> et faites glisser l'onglet de la feuille vers la droite pour le dupliquer et déplacez la copie à l'emplacement nécessaire.</p>
+                </li>
+			</ol>
+			<p>La feuille de calcul sélectionnée sera copiée et insérée à l'endroit choisi.</p>
+			<p><b>Pour déplacer une feuille de calcul :</b></p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à déplacer,</li>
+				<li>sélectionnez l'option <b>Déplacer</b> depuis le menu contextuel,</li>
+				<li>sélectionnez la feuille de calcul avant laquelle vous souhaitez insérer la feuille de calcul sélectionnée ou utilisez l'option <b>Déplacer à la fin</b> pour déplacer la feuille de calcul sélectionnée après toutes les feuilles existantes,</li>
+				<li>cliquez sur le bouton <b>OK</b> pour confirmer votre choix.</li>
+			</ol>
+			<p>Ou tout simplement <b>faites glisser</b> l'onglet de la feuille de calcul et <b>déposez-le</b> là où vous voulez. La feuille de calcul sélectionnée sera déplacée.</p>
+			<p>Vous pouvez également déplacer une feuille de calcul entre des classeurs manuellement par <b>glisser-déposer</b>. Pour ce faire, sélectionnez la feuille de calcul à déplacer et faites-la glisser vers la barre d'onglets des feuilles dans un autre classeur. Par exemple, vous pouvez glisser une feuille de calcul de l'éditeur en ligne vers l'éditeur de bureau :</p>
+			<p><img alt="Move sheet gif" src="../images/move_sheet.gif" /></p>
+			<p>Dans ce cas-ci, la feuille de calcul dans le classeur d'origine sera <b>supprimée</b>.</p>
+			<p>Si vous avez beaucoup de feuilles de calcul, pour faciliter le travail vous pouvez masquer certains d'entre eux dont vous n'avez pas besoin pour l'instant. Pour ce faire,</p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à copier,</li>
+				<li>sélectionnez l'option <b>Masquer</b> depuis le menu contextuel.</li>
+			</ol>
+			<p><b>Pour afficher l'onglet de la feuille de calcul masquée</b>, faites un clic droit sur n'importe quel onglet de la feuille, ouvrez la liste <b>Masquée</b> et sélectionnez le nom de la feuille de calcul dont l'onglet vous souhaitez afficher.</p>
+			<p>Pour différencier les feuilles, vous pouvez <b>affecter différentes couleurs aux onglets de la feuille</b>. Pour ce faire,</p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à colorer,</li>
+				<li>sélectionnez l'option <b>Couleur d'onglet</b> depuis le menu contextuel,</li>
+				<li>sélectionnez une couleur dans les palettes disponibles.
+					<p><img alt="Palette" src="../images/palette.png" /></p>
+					<ul>
+						<li><b>Couleurs de thème</b> - les couleurs qui correspondent à la palette de couleurs sélectionnée de la feuille de calcul.</li>
+						<li><b>Couleurs standard</b> - le jeu de couleurs par défaut.</li>
+						<li><b>Couleur personnalisée</b> - choisissez cette option si il n'y a pas de couleur nécessaire dans les palettes disponibles. Sélectionnez la gamme de couleurs nécessaire en déplaçant le curseur vertical et définissez la couleur spécifique en faisant glisser le sélecteur de couleur dans le grand champ de couleur carré. Une fois que vous sélectionnez une couleur avec le sélecteur de couleur, les valeurs de couleur appropriées RGB et sRGB seront affichées dans les champs à droite. Vous pouvez également spécifier une couleur sur la base du modèle de couleur RGB en entrant les valeurs numériques nécessaires dans les champs <b>R, G, B</b> (rouge, vert, bleu) ou saisir le code hexadécimal dans le champ sRGB marqué par le signe <b>#</b>. La couleur sélectionnée apparaît dans la case de prévisualisation <b>Nouveau</b>. Si l'objet a déjà été rempli d'une couleur personnalisée, cette couleur sera affichée dans la case <b>Actuel</b> que vous puissiez comparer les couleurs originales et modifiées. Lorsque la couleur est spécifiée, cliquez sur le bouton <b>Ajouter</b> :
+							<p><img alt="Palette - Couleur personnalisée" src="../../../../../../common/main/resources/help/fr/images/palette_custom.png" /></p>
+							<p>La couleur personnalisée sera appliquée à l'onglet sélectionné et sera ajoutée dans la palette <b>Couleur personnalisée</b> du menu.</p>
+						</li>
+					    </ul>
+				    </li>
+			</ol>
+			<p>Vous pouvez travaillez simultanément sur plusieurs feuilles de calcul :</p>
+			<ol>
+				<li>sélectionnez la première feuille à inclure dans le groupe,</li>
+				<li>appuyez et maintenez la touche <em>Shift</em> enfoncée pour choisir plusieurs feuilles adjacentes, ou utilisez la touche <em>Ctrl</em>  pour choisir les feuilles non adjacentes.</li>
+				<li>faites un clic droit sur un des onglets de feuille choisis pour ouvrir le menu contextuel,</li>
+				<li>sélectionnez l'option convenable du menu :
+				<p><img alt="Gérer plusieurs feuilles de calcul" src="../images/severalsheets.png" /></p>
+				<ul>
+					<li><b>Insérer</b> sert à insérer le même nombre de feuilles de calcul vierges que dans le groupe choisi,</li>
+					<li><b>Supprimer</b> sert à supprimer toutes les feuilles sélectionnées à la fois (il n'est pas possible de supprimer toutes les feuilles du classeur car un classeur doit contenir au moins une feuille visible),</li>
+					<li><b>Renommer</b> cette option ne s'applique qu'à chaque feuille individuelle,</li>
+					<li><b>Copier</b> sert à copier toutes les feuilles sélectionnées à la fois et les coller à un endroit précis.</li>
+					<li><b>Déplacer</b> sert à déplacer toutes les feuilles sélectionnées à la fois et les coller à un endroit précis.</li>
+					<li><b>Masquer</b> sert à masquer toutes les feuilles sélectionnées à la fois (il n'est pas possible de masquer toutes les feuilles du classeur car un classeur doit contenir au moins une feuille visible),</li>
+					<li><b>Couleur d'onglet</b> sert à affecter la même couleur à tous les onglets de feuilles à la fois,</li>
+					<li><b>Sélectionner toutes les feuilles</b> sert à sélectionner toutes les feuilles du classeur actuel,</li>
+					<li><b>Dissocier les feuilles</b> sert à dissocier les feuilles sélectionnées.
+						<p class="note">Il est aussi possible de dissocier les feuilles en faisant un double clic sur n'importe quel onglet de feuille du groupe ou en cliquant sur l'onglet de feuille qui ne fait pas partie du groupe.</p>
+					</li>
+				</ul>
+				</li>
+			</ol>
+		</div>
+	</body>
+</html>

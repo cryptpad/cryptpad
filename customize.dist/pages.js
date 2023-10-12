@@ -56,16 +56,15 @@ define([
     };
 
     var languageSelector = function () {
-        var options = [];
         var languages = Msg._languages;
         var selected = Msg._languageUsed;
         var keys = Object.keys(languages).sort();
-        keys.forEach(function (l) {
-            var attr = { value: l, role: 'option'};
+        var options = keys.map(function (l) {
+            var attr = { value: l };
             if (selected === l) { attr.selected = 'selected'; }
-            options.push(h('option', attr, languages[l]));
+            return h('option', attr, languages[l]);
         });
-        var select = h('select', {role: 'listbox', 'label': 'language'}, options);
+        var select = h('select', { 'aria-label': Msg.selectLanguage }, options);
         $(select).change(function () {
             Language.setLanguage($(select).val() || '', null, function () {
                 window.location.reload();
@@ -95,7 +94,7 @@ define([
         return h('a', attrs, [icon, text]);
     };
 
-    Pages.versionString = "5.4.1";
+    Pages.versionString = "5.5.0";
 
     var customURLs = Pages.customURLs = {};
     (function () {
@@ -103,7 +102,7 @@ define([
             source: 'https://github.com/cryptpad/cryptpad',
         };
         var l = Msg._getLanguage();
-        ['imprint', 'privacy', 'terms', 'roadmap', 'source'].forEach(function (k) {
+        ['imprint', 'privacy', 'terms', 'status', 'roadmap', 'source'].forEach(function (k) {
             var value = AppConfig[k];
             //console.log('links', k, value);
             if (value === false) { return; }

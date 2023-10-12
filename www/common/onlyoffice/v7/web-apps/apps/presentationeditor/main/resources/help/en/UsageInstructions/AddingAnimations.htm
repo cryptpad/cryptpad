@@ -1,0 +1,90 @@
+﻿	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Adding animations</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Describing how to add and manage animation effects on a slide." />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<script type="text/javascript" src="../callback.js"></script>
+		<script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Adding animations</h1>
+            <p><b>Animation</b> is a visual effect that allows you to animate text, objects and graphics as to make your presentation more dynamic and emphasize important information. You can control the movement, color and size of the text, objects and graphics.</p>
+            <h3 id="applyanimation">Applying an animation effect</h3>
+            <ol>
+                <li>switch to the <b>Animation</b> tab on the top toolbar,</li>
+                <li>select a text, an object or a graphic element you want to apply the animation effect to,</li>
+                <li>select an <b>Animation</b> effect from the animations gallery,</li>
+                <li>select the animation effect movement direction by clicking <b>Parameters</b> next to the animations gallery. The parameters on the list depend on the effect you apply.</li>
+            </ol>
+            <p>You can preview animation effects on the current slide. By default, animation effects will play automatically when you add them to a slide but you can turn it off. Click the <b>Preview</b> drop-down on the <b>Animation</b> tab, and select a preview mode:</p>
+            <ul>
+                <li><b>Preview</b> to show a preview when you click the <b>Preview</b> button,</li>
+                <li><b>AutoPreview</b> to show a preview automatically when you add an animation to a slide or replace an existing one.</li>
+            </ul>
+
+            <h3>Types of animations</h3>
+            <p>All <b>animation effects</b> are listed in the <b>animations gallery</b>. Click the drop-down arrow to open it. Each <b>animation effect</b> is represented by a star-shaped icon. The animations are grouped according to the point at which they occur:</p>
+            <p><img alt="Animation Gallery" src="../images/animationgallery.png" /></p>
+            <p><b>Entrance</b> effects determine how objects appear on a slide, and are colored green in the gallery.</p>
+            <p><b>Emphasis</b> effects change the size or color of the object to add emphasis on an object and to draw attention of the audience, and are colored yellow or two colored in the gallery.</p>
+            <p><b>Exit</b> effects determine how objects disappear from a slide, and are colored red in the gallery.</p>
+            <p><b>Motion Paths</b> determines the movement of an object and the path it follows. The icons in the gallery represent the suggested path. The <b>Custom Path</b> option is also available. To learn more, please read the <a href="../UsageInstructions/MotionPath.htm" onclick="onhyperlinkclick(this)">following article</a>.</p> 
+            <p>Scroll down the animations gallery to see all effects included in the gallery. If you don’t see the needed animation in the gallery, click the <b>Show More Effects</b> option at the bottom of the gallery.</p>
+            <p><img alt="More Effects" src="../images/moreeffects.png" /></p>
+            <p>Here you will find the full list of the animation effects. Effects are additionally grouped by the visual impact they have on audience.</p>
+            <ul>
+                <li><b>Entrance</b>, <b>Emphasis</b>, and <b>Exit</b> effects are grouped by <b>Basic</b>, <b>Subtle</b>, <b>Moderate</b>, and <b>Exciting</b>.</li>
+                <li><b>Motion Path</b> effects are grouped by <b>Basic</b>, <b>Subtle</b>, and <b>Moderate</b>.</li>
+            </ul>
+            <p><!-- The <b>Preview Effect</b> option is active by default, uncheck it if you don’t want a preview.--></p>
+
+            <h3 id="multipleanimations">Applying Multiple Animations</h3>
+            <p>You can add more than one animation effect to the same object. To add one more animation,</p>
+            <ol>
+                <li>click the <b>Add Animation</b> button on the <b>Animation</b> tab.</li>
+                <li>The list of animation effects will open. Repeat Steps 3 and 4 above for applying an animation.</li>
+            </ol>
+            <p>If you use the <b>Animation gallery</b>, and not the <b>Add Animation</b> button, the first animation effect will substitute for a new one. A small square next to the object shows the sequence numbers of the effects applied.</p>
+            <p>As soon as you add several effects to an object, the <b>Multiple</b> animation icon appears in the animations gallery.</p>
+            <p><img alt="Multiple Effects" src="../images/multipleeffect_icon.png" /></p>
+            <h3 id="animationsorder">Changing the order of the animation effects on a slide</h3>
+            <ol>
+                <li>Click the animation square mark.</li>
+                <li>Сlick <img alt="Move Earlier" src="../images/moveearlier.png" /> or <img alt="Move Later" src="../images/movelater.png" /> arrows on the <b>Animation</b> tab to change the order of appearance on the slide.</li>
+            </ol>
+            <p><img alt="Animations Order" src="../images/multipleanimations_order.png" /></p>
+            <h3 id="timing">Setting animation timing</h3>
+            <p>Use the timing options on the <b>Animation</b> tab to set the <b>start</b>, the <b>duration</b>, the <b>delay</b>, the <b>repetition</b> and the <b>rewind</b> of the animations on a slide.</p>
+            <h4>Animation Start Options</h4>
+            <ul>
+                <li><b>On click</b> – animation starts when you click the slide. This is the default option.</li>
+                <li><b>With previous</b> – animation starts when previous animation effect starts and effects appear simultaneously.</li>
+                <li><b>After previous</b> – animation starts right after the previous animation effect.</li>
+            </ul>
+            <p class="note"><b>Note:</b> animation effects are automatically numbered on a slide. All animations set to <b>With previous</b> and <b>After previous</b> take the number of the animation they are connected to as they will appear automatically.</p>
+            <p><img alt="Animations Numbering" src="../images/animationnumbering.png" /></p>
+            <h4>Animation Trigger Options</h4>
+            <p>Click the <b>Trigger</b> button and select one of the appropriate options:</p>
+            <ul>
+                <li><b>On Click Sequence</b> – to start the next animation in sequence each time you click anywhere on the slide. This is the default option.</li>
+                <li><b>On Click of</b> - to start animation when you click the object that you select from the drop-down list.</li>
+            </ul>
+            <p><img alt="Trigger Options" src="../images/triggeroptions.png" /></p>
+            <h4>Other timing options</h4>
+            <p><img alt="Timing Options" src="../images/timingoptions.png" /></p>
+            <p><b>Duration</b> – use this option to determine how long you want an animation to be displayed. Select one of the available options from the menu, or type in the necessary time value.</p>
+            <p><img alt="Animation Duration" src="../images/animationduration.png" /></p>
+            <p><b>Delay</b> – use this option if you want the selected animation to be displayed within a specified period of time, or if you need a pause between the effects. Use arrows to select the necessary time value, or enter the necessary value measured in seconds.</p>
+            <p><b>Repeat</b> – use this option if you want to display an animation more than once. Click the <b>Repeat</b> box and select one of the available options, or enter your value.</p>
+            <p><img alt="Repeat Animation" src="../images/animationrepeat.png" /></p>
+            <p><b>Rewind</b> – check this box if you want to return the object to its original state when the animation ends.</p>
+        </div>
+		</body>
+	</html>

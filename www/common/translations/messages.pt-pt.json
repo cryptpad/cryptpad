@@ -1037,7 +1037,6 @@
     "form_makeAnon": "Anonimizar as respostas",
     "form_responseMsg": "Esta mensagem será exibida após os participantes enviarem o formulário.",
     "form_addMsg": "Adicionar mensagem de envio",
-    "form_updateMsg": "Atualizar mensagem de envio",
     "toolbar_preview": "Pré-visualização",
     "form_geturl": "Copiar link",
     "form_corruptAnswers": "Este formulário já tem respostas. A alteração deste tipo de pergunta pode invalidar respostas anteriores.",

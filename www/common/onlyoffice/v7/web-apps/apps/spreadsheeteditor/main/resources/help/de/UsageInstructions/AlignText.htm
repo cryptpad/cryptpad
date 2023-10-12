@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Daten in Zellen ausrichten</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Everything that pertains to the data alignment in cells" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Daten in Zellen ausrichten</h1>
+			<p>In der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> sie können Ihre Daten horizontal und vertikal in einer Zelle ausrichten. Wählen Sie dazu eine Zelle oder einen Zellenbereich mit der Maus aus oder das ganze Blatt mithilfe der Tastenkombination <b>STRG+A</b>. Sie können auch mehrere nicht angrenzende Zellen oder Zellbereiche auswählen. Halten Sie dazu die Taste <b>STRG</b> gedrückt und wählen Sie die gewünschten Zellen/Bereiche mit der Maus aus. Führen Sie anschließend einen der folgenden Vorgänge aus. Nutzen Sie dazu die Symbole in der Registerkarte <b>Startseite</b> in der oberen Symbolleiste.</p>
+			<ul>
+				<li>
+					Wählen Sie den horizontalen Ausrichtungstyp, den Sie auf die Daten in der Zelle anwenden möchten.
+					<ul>
+						<li>Klicken Sie auf die Option <b>Linksbündig ausrichten</b> <div class = "icon icon-alignleft"></div>, um Ihre Daten am linken Rand der Zelle auszurichten (rechte Seite wird nicht ausgerichtet).</li>
+						<li>Klicken Sie auf die Option <b>Zentrieren</b> <div class = "icon icon-aligncenter"></div>, um Ihre Daten mittig in der Zelle auszurichten (rechte und linke Seiten werden nicht ausgerichtet).</li>
+						<li>Klicken Sie auf die Option <b>Rechtsbündig ausrichten</b> <div class = "icon icon-alignright"></div>, um Ihre Daten am rechten Rand der Zelle auszurichten (linke Seite wird nicht ausgerichtet).</li>
+						<li>Klicken Sie auf die Option <b>Blocksatz</b> <div class = "icon icon-justify"></div>, um Ihre Daten am linken und rechten Rand der Zelle auszurichten (falls erforderlich, werden zusätzliche Leerräume eingefügt).</li>
+					</ul>
+				</li>
+				<li>
+					Wählen Sie den vertikalen Ausrichtungstyp, den Sie auf die Daten in der Zelle anwenden möchten:
+					<ul>
+						<li>Klicken Sie auf die Option <b>Oben ausrichten</b> <div class = "icon icon-aligntop"></div>, um die Daten am oberen Rand der Zelle auszurichten.</li>
+						<li>Klicken Sie auf die Option <b>Mittig ausrichten</b> <div class = "icon icon-alignmiddle"></div>, um die Daten mittig in der Zelle auszurichten.</li>
+						<li>Klicken Sie auf die Option <b>Unten ausrichten</b> <div class = "icon icon-alignbottom"></div>, um die Daten am unteren Rand der Zelle auszurichten.</li>
+					</ul>
+				</li>
+				<li>
+					Um den Winkel der Daten in einer Zelle zu ändern, klicken Sie auf das Symbol <b>Ausrichtung</b> <div class = "icon icon-orientation"></div> und wählen Sie eine der Optionen:
+					<ul>
+						<li><b>Horizontaler Text</b> <div class = "icon icon-horizontaltext"></div> - Text horizontal platzieren (Standardoption)</li>
+						<li><b>Gegen den Uhrzeigersinn drehen</b> <div class = "icon icon-anglecounterclockwise"></div> - Text von unten links nach oben rechts in der Zelle platzieren</li>
+						<li><b>Im Uhrzeigersinn drehen</b> <div class = "icon icon-angleclockwise"></div> - Text von oben links nach unten rechts in der Zelle platzieren</li>
+						<li><b>Vertikaler Text</b> <div class = "icon icon-verticaltext"></div> - den Text vertikal platzieren</li>
+						<li><b>Text nach oben drehen</b> <div class = "icon icon-rotateup"></div> - der Text verläuft von unten nach oben</li>
+						<li>
+							<b>Text nach unten drehen</b> <div class = "icon icon-rotatedown"></div> - der Text verläuft von oben nach unten
+						</li>
+					</ul>
+				</li>
+				</ul>
+				<p><img alt="Zelleneinstellungen" src="../images/cellsettings_rightsidebar.png" /></p>
+				<ul>
+					<li>
+						Sie können den Text in einer Zelle mithilfe des Abschnitts <b>Einzugen</b> in der rechten Seitenleiste <b>Zelleneinstellungen</b> <div class = "icon icon-cellsettings_rightpanel"></div> einrücken. Geben Sie den Wert (d.h. die Anzahl der Zeichen) an, um den der Inhalt nach rechts verschoben wird.
+						<p class="note">Wenn Sie die Ausrichtung des Textes ändern, werden die Einzüge zurückgesetzt. Wenn Sie die Einzüge für den gedrehten Text ändern, wird die Ausrichtung des Textes zurückgesetzt. Einzüge können nur gesetzt werden, wenn die horizontale oder vertikale Textausrichtung ausgewählt ist.</p>
+					</li>
+					<li>
+						Drehen Sie den Text um einen genau festgelegten Winkel, klicken Sie auf das Symbol <b>Zelleneinstellungen</b> <div class = "icon icon-cellsettings_rightpanel"></div> in der rechten Seitenleiste und verwenden Sie die Option <b>Textausrichtung</b>. Geben Sie den erforderlichen Wert in Grad in das Feld <b>Winkel</b> ein oder passen Sie ihn mit den Pfeilen rechts an.
+					</li>
+					<li>
+						Um Ihre Daten an die Zellenbreite anzupassen, klicken Sie auf das Symbol <b>Zeilenumbruch</b> <div class = "icon icon-wraptext"></div> auf der Registerkarte <b>Startseite</b> in der oberen Symbolleiste oder aktivieren Sie das Kästchen <b>Text umbrechen</b> in der rechten Seitenleiste.
+						<p class="note">Wenn Sie die Breite der Spalte ändern, wird der Zeilenumbruch automatisch angepasst.
+					</li>
+					<li>Passen Sie Ihre Daten an die Zellenbreite an, indem Sie das Kontrollkästchen <b>Passend schrumpfen</b> in der rechten Seitenleiste aktivieren. Der Inhalt der Zelle wird so weit verkleinert, dass er hineinpasst.</li>
+				</ul>
+		</div>
+	</body>
+</html>

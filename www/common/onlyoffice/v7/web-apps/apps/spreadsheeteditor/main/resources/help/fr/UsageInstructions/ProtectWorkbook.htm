@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Protéger un classeur</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Protéger la structure du classeur et contrôler les manipulations d'utilisateur" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Protéger un classeur</h1>
+			<p>L'option <b>Protéger le livre</b> permet de protéger la structure du classeur et de contrôler les manipulations d'utilisateur pour que personne ne puisse accéder aux classeurs masqués, ajouter, déplacer, supprimer, masquer et renommer des classeurs. Vois pouvez protéger un classeur avec ou sans un mot de passe. Si vous opter pour la protection sans un mot de passe, toute personne peut désactiver la protection du classeur.</p>
+			<p>Pour protéger un classeur :</p>
+			<ol>
+			<li>Passez à l'onglet <b>Protection</b> et cliquez sur le bouton <b>Protéger le livre</b> de la barre d'outils supérieure.
+			</li>
+            <li>
+                Dans la fenêtre <b>Protéger la structure du livre</b> qui s'affiche, saisissez et validez le mot de passe qu'on doit entrer pour désactiver la protection du classeur.
+                <p><img alt="Protéger un classeur" src="../images/protect_workbook.png" /></p>
+                </li>
+				<li>
+                Cliquez sur le bouton <b>Protéger</b> pour activer la protection avec ou sans un mot de passe.
+                <p class="note">Il n'est pas possible de récupérer un mot de passe perdu ou oublié. Gardez vos mots de passe dans un endroit sécurisé.</p>
+                <p>Une fois le classeur protégé, le bouton <b>Protéger le livre</b> devient activé.</p>
+                <p><img alt="Protéger le classeur activé" src="../images/protectworkbook_highlighted.png" /></p>
+            </li>
+				<li>Pour désactiver la protection d'un classeur :
+				<ul>
+				<li>avec un classeur protégé par un mot de passe, cliquez sur le bouton <b>Protéger le livre</b> de la barre d'outils supérieure, saisissez le mot de passe dans la fenêtre contextuelle <b>Déprotéger le livre</b> et cliquez sur <b>OK</b>.
+				<p><img alt="Désactiver la protection su classeur" src="../images/unprotect_workbook.png" /></p>
+				</li>
+				<li>avec un classeur protégé sans un mot de passe, cliquez sur le bouton <b>Protéger le livre</b> de la barre d'outils supérieure.</li>
+				</ul>
+			</ol>
+		</div>
+	</body>
+</html>

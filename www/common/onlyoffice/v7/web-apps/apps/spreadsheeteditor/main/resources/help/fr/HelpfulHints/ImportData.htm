@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Obtenir des données à partir de fichiers Texte/CSV</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="How to import data from Text/CSV file" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Obtenir des données à partir de fichiers Texte/CSV</h1>
+			<p>Quand vous avez besoin d'obtenir rapidement des données à partir d'un fichier .txt/.csv file et l'organiser et positionner correctement dans une feuille de calcul, utilisez l'option <b>Récupérer les données à partir d'un fichier texte/CSV file</b> sous l'onglet <b>Données</b>.</p>
+			<h2 id="step1">Étape 1. Importer du fichier</h2>
+			<ol>
+				<li>Cliquez sur l'option <b>Obtenir les données</b> sous l'onglet <b>Données</b>.</li>
+				<li>Choisissez l'une des options disponibles:
+				<ul>
+					<li><b>À partir d'un fichier local TXT/CSV:</b> recherchez le fichier nécessaire sur votre ordinateur, sélectionnez-le et cliquer sur <b>Ouvrir</b>.</li>
+					<li><b>À partir de l'URL du fichier TXT/CSV</b>: collez le lien vers le fichier ou un site web dans le champ <b>Coller l'URL de données</b> et cliquez sur <b>OK</b>.
+                        <p class="note">
+                            Dans ce cas on ne peut pas utiliser le lien pour afficher et modifier un fichier stocké sur le portail ONLYOFFICE ou sur un stockage de nuage externe. Veuillez utiliser le lien pour <b>télécharger</b> le fichier.
+                        </p>
+                    </li>
+					<li><b>À partir du XML local<b>:</b></b> recherchez le fichier nécessaire sur votre ordinateur, sélectionnez-le et cliquer sur <b>Ouvrir</b>.
+						<p class="note">Actuellement,  c'est uniquement la feuille de calcul XML 2003 qui est pris en charge.</p>
+					</li>
+				</ul>
+				</li>
+			</ol>
+			<h2 id="step2">Étape 2. Configurer les paramètres</h2>
+			<p><b>Assistant importation de texte</b> comporte trois sections: <b>Codage</b>, <b>Délimiteur</b>, <b>Aperçu</b> et <b>Sélectionnez où placer les données</b>.</p>
+			<p><img alt="Assistant importation de texte" src="../images/textimport.png" /></p>
+			<ol>
+				<li><b>Codage</b>. Le codage par défaut est <em>UTF-8</em>. Laissez la valeur par défaut ou sélectionnez le codage approprié dans la liste déroulante.</li>
+                <li>
+                    <b>Délimiteur.</b> Utilisez ce paramètre pour définir le type de séparateur pour distribuer du texte sur cellules. Les séparateurs disponibles: <em>Virgule</em>, <em>Point-virgule</em>, <em>Deux-points</em>, <em>Tabulation</em>, <em>Espace</em> et <em>Autre</em> (saisissez manuellement).
+                    <p>Cliquez sur le bouton <b>Avancé</b> à droite pour paramétrer les données reconnues en tant que des données numériques:</p>
+                    <p><img alt="Importation des données avancé" src="../images/dataimport_advanced.png" /></p>
+                    <ul>
+                        <li>Définissez le Séparateur décimal et le Séparateur de milliers. Les séparateurs par défaut sont <b>“.”;</b> pour décimal et <b>“,”;</b> pour milliers.</li>
+                        <li>
+                            Sélectionnez le Qualificateur de texte. Un Qualificateur de texte est le caractère utilisé pour marquer le début et la fin du texte lors de l'importation de données. Les options disponibles sont les suivantes: <b>(aucun)</b>, <b>guillemets doubles</b> et <b>virgule</b>.
+                        </li>
+                    </ul>
+                </li>
+				<li><b>Aperçu</b>. Cette section affiche comment le texte sera organisé en cellules.</li>
+				<li><b>Sélectionnez où placer les données</b>. Saisissez une plage de donnés appropriée  ou choisissez le bouton <b>Sélectionner des données</b> à droite.</li>
+				<li>Cliquez sur OK pour importer le fichier et quitter l'<b>assistant importation de texte</b>.</li>
+			</ol>
+		</div>
+	</body>
+</html>
