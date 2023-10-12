@@ -1092,7 +1092,7 @@ MessengerUI, Messages, Pages) {
                 Common.openURL("/notifications/");
             }
         });
-        var div = h('div.cp-notifications-container', [
+        var div = h('li.cp-notifications-container', [
             h('div.cp-notifications-empty', Messages.notifications_empty)
         ]);
         var pads_options = [div];
