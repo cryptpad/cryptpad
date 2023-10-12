@@ -1086,7 +1086,7 @@ MessengerUI, Messages, Pages) {
 
     var createNotifications = function (toolbar, config) {
         var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
-        var openNotifsApp = h('div.cp-notifications-gotoapp',{ tabindex: '0' }, h('p', Messages.openNotificationsApp || "Open notifications App"));
+        var openNotifsApp = h('li', {}, h('div.cp-notifications-gotoapp', { tabindex: '0' }, h('p', Messages.openNotificationsApp || "Open notifications App")));
         $(openNotifsApp).on('click keypress', function (event) {
             if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                 Common.openURL("/notifications/");
