@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Функция СВЕРНСТРОК</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Функция СВЕРНСТРОК</h1>
+			<p>Функция <b>СВЕРНСТРОК</b> - это одна из поисковых функций. Она переносит вектор строки или столбца после указанного числа значений.</p>
+			<p class="note">Обратите внимание, что это формула массива. Чтобы узнать больше, обратитесь к статье <a href="../UsageInstructions/InsertArrayFormulas.htm" onclick="onhyperlinkclick(this)">Вставка формул массива</a>.</p>
+			<p>Синтаксис функции <b>СВЕРНСТРОК</b>:</p>
+			<p style="text-indent: 150px;"><b><em>СВЕРНСТРОК(вектор, количество_для_переноса, [заполняющее_значение])</em></b></p>
+			<p><em>где</em></p>
+			<p style="text-indent: 50px;"><b><em>вектор</em></b> - задает вектор или ссылку для переноса.</p>
+			<p style="text-indent: 50px;"><b><em>количество_для_переноса</em></b> - задает максимальное количество значений для каждой строки.</p>
+			<p style="text-indent: 50px;"><b><em>заполняющее_значение</em></b> - задает значение, используемое для заполнения. Значение по умолчанию #Н/Д.</p>
+			<p>Чтобы применить функцию <b>СВЕРНСТРОК</b>,</p>
+			<ol>
+				<li>выделите ячейку, в которой требуется отобразить результат,</li>
+				<li>
+					щелкните по значку <b>Вставить функцию</b> <div class="icon icon-insertfunction"></div>, расположенному на верхней панели инструментов,
+					<br />или щелкните правой кнопкой мыши по выделенной ячейке и выберите в меню команду <b>Вставить функцию</b>,
+					<br />или щелкните по значку <div class="icon icon-function"></div> перед строкой формул,
+				</li>
+				<li>выберите из списка группу функций <b>Поиск и ссылки</b>,</li>
+				<li>щелкните по функции <b>СВЕРНСТРОК</b>,</li>
+				<li>введите требуемые аргументы через точку с запятой,</li>
+				<li>нажмите клавишу <b>Enter</b>.</li>
+			</ol>
+			<p>Результат будет отображен в выбранной ячейке.</p>
+			<!--<p style="text-indent: 150px;"><img alt="Функция СВЕРНСТРОК" src="../images/wraprows.png" /></p>-->
+		</div>
+	</body>
+</html>

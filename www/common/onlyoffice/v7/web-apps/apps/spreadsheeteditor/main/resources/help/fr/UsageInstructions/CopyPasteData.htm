@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Couper/copier/coller des données</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Couper/copier/coller des données en utilisant les raccourcis claviers" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Couper/copier/coller des données</h1>
+            <h3>Utiliser les opérations de base du presse-papiers</h3>
+            <p>Pour couper, copier et coller les données dans le classeur actuel, utilisez le menu contextuel ou les icônes correspondantes sur la barre d'outils supérieure de <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>,</p>
+            <ul>
+                <li><b>Couper</b> - sélectionnez les données et utilisez l'option <b>Couper</b> du menu contextuel ou l'icône <b>Couper</b> <span class="icon icon-cut"></span> de la barre d'outils supérieure pour supprimer les données sélectionnées et les envoyer vers le presse-papiers. <span class="onlineDocumentFeatures">Les données coupées peuvent être insérées ensuite dans un autre endroit du même classeur.</span></li>
+                <li><b>Copier </b>- sélectionnez les données et utilisez l'icône <b>Copier</b> <span class = "icon icon-copy"></span> sur la barre d'outils supérieure ou cliquez avec le bouton droit et sélectionnez l'option <b>Copier</b> depuis le menu pour envoyer les données sélectionnées vers le presse-papiers. <span class="onlineDocumentFeatures">Les données copiées peuvent être insérées ensuite dans un autre endroit du même classeur.</span></li>
+                <li><b>Coller</b> - sélectionnez l'endroit et utilisez l'icône<b> Coller</b> <span class = "icon icon-paste"></span> sur la barre d'outils supérieure ou cliquez avec le bouton droit et sélectionnez l'option <b>Coller</b> du menu pour insérer les données copiées/coupées depuis le presse-papiers à la position actuelle du curseur. <span class="onlineDocumentFeatures">Les données peuvent être copiées à partir du même classeur.</span></li>
+            </ul>
+            <p><span class="onlineDocumentFeatures">Dans la <em>version en ligne</em>, les combinaisons de touches suivantes ne sont utilisées que pour copier ou coller des données de/vers une autre feuille de calcul ou un autre programme,</span> <span class="desktopDocumentFeatures">dans la <em>version de bureau</em>, les boutons/options de menu et les combinaisons de touches correspondantes peuvent être utilisées pour toute opération copier/coller:</span></p>
+            <ul>
+                <li><b>Ctrl+X</b> pour couper;</li>
+                <li><b>Ctrl+X</b> pour couper;</li>
+                <li><b>Ctrl+V</b> pour coller.</li>
+            </ul>
+            <p class="note"><b>Remarque</b>: au lieu de couper et coller des données dans la même feuille de calcul, vous pouvez sélectionner la cellule/plage de cellules requise, placez le pointeur de la souris sur la bordure de sélection pour qu'il devienne l'icône Flèche <span class = "icon icon-arrow"></span> et faites glisser la sélection jusqu'au l'emplacement requis.</p>
+            <p>Pour afficher ou masquer l'affichage automatique du bouton <b>Collage spécial</b> lors du collage, accédez à l'onglet <b>Fichier ></b> <b>Paramètres avancés </b>et activez/désactivez l'option <b>Afficher le bouton Options de collage lorsque le contenu est collé</b>.</p>
+            <h3>Utiliser la fonctionnalité Collage spécial</h3>
+            <p class="note"><b>Remarque</b>: Pour l'édition collaborative, l'option <b>Collage spécial</b> est n'est disponible que lorsque le mode Strict est activé.</p>
+            <p>Une fois les données collées, le bouton <b>Collage spécial</b> apparaît <span class = "icon icon-pastespecialbutton"></span> à côté du coin inférieur droit de la cellule/plage de cellules insérée. Cliquez sur ce bouton pour sélectionner l'option de collage requise. </p>
+            <p>Lorsque vous collez une cellule/plage de cellules avec des données formatées, les options suivantes sont disponibles:</p>
+            <ul>
+                <li><em>Coller</em> <em>(Ctrl+P)</em> - permet de coller tout le contenu de la cellule, y compris la mise en forme des données. Cette option est sélectionnée par défaut.</li>
+                <li>
+                    Les options suivantes peuvent être utilisées si les données copiées contiennent des formules:
+                    <ul>
+                        <li><em>Coller uniquement la formule</em> <em>(Ctrl+F)</em>  - permet de coller des formules sans coller la mise en forme des données.</li>
+                        <li><em>Formule + format numérique</em>  <em>(Ctrl+O)</em> - permet de coller des formules en conservant la mise en forme des nombres.</li>
+                        <li><em>Formule + toute la mise en forme <em>(Ctrl+K)</em></em> - permet de coller des formules en conservant la mise en forme des données.</li>
+                        <li><em>Formule sans bordures</em> <em>(Ctrl+B)</em> - permet de coller des formules en conservant la mise en forme sauf les bordures de cellules.</li>
+                        <li><em>Formule + largeur de colonne (Ctrl+W)</em> - permet de coller des formules en conservant la mise en forme des données et de définir la largeur de la colonne source pour la plage de cellules.</li>
+                        <li><em>Transposer  <em>(Ctrl+T)</em> </em>- permet de coller des données en transposant les colonnes en lignes et les lignes en colonnes. Cette option est disponible pour les plages de données normales, mais pas pour les tableaux mis en forme.</li>
+                    </ul>
+                </li>
+                <li>
+                    Les options suivantes permettent de coller le résultat renvoyé par la formule copiée sans coller la formule elle-même:
+                    <ul>
+                        <li><em>Coller uniquement la valeur</em> <em>(Ctrl+V)</em>  - permet de coller les résultats de la formule sans coller la mise en forme des données.</li>
+                        <li><em>Valeur + format numérique</em> <em>(Ctrl+A)</em> - permet de coller les résultats de la formule en conservant la mise en forme des nombres.</li>
+                        <li><em>Valeur + toute la mise en forme</em> <em>Ctrl+E)</em> - permet de coller les résultats de la formule en conservant la mise en forme des données.</li>
+                    </ul>
+                </li>
+                <li><em>Coller uniquement la mise en forme</em> <em>Ctrl+R)</em> - permet de coller la mise en forme de la cellule uniquement sans coller le contenu de la cellule.</li>
+                <li><em>Coller le lien (Ctrl+N)</em> - permet de coller le lien interne redirigeant ver une cellule ou un fichier or a file sur le portail actuel.
+                    <p><img alt="Options de collage" src="../images/pastespecial.png" /></p>
+                <ol>
+                    <li>
+                        <b>Coller</b>
+                        <ul>
+                            <li><em>Formule</em> - permet de coller des formules sans coller le formatage des données.</li>
+                            <li><em>Valeurs</em> - permet de coller les résultats de la formule sans coller la mise en forme des données.</li>
+                            <li>Formats - permet de conserver la mise en forme de la zone copiée.</li>
+                            <li><em>Commentaires</em> - permet d'ajouter les commentaires de la zone copiée.</li>
+                            <li><em>Largeur de colonne</em> - permet d'appliquer la largeur de colonne de la zone copiée.</li>
+                            <li><em>Tout sauf la bordure</em> - permet de coller les formules, les résultats de formules et la mise en forme sauf les bordures.</li>
+                            <li><em>Formules et mise en forme</em> - permet de coller les formules et conserver la mise en forme de la zone copiée.</li>
+                            <li><em>Formules et largeur de colonne</em> - permet de coller les formules et d'appliquer la largeur de colonne de la zone copiée.</li>
+                            <li><em>Formules et format des chiffres</em> - permet de coller les formules et le format des chiffres.</li>
+                            <li><em>Valeurs et format des chiffres</em> - permet de coller les résultats de formules et d'appliquer le format des chiffres de la zone copiée.</li>
+                            <li><em>Valeurs et mise en forme</em> - permet de coller les résultats de formules et de conserver la mise en forme de la zone copiée.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <b>Opération</b>
+                        <ul>
+                            <li><em>Additionner</em> - permet d'additionner automatiquement tous les nombres de chaque cellule insérée.</li>
+                            <li><em>Soustraire</em> - permet de soustraire automatiquement les nombres de chaque cellule insérée.</li>
+                            <li><em>Multiplier</em> - permet de multiplier automatiquement les nombres de chaque cellule insérée.</li>
+                            <li><em>Diviser</em> - permet de diviser automatiquement les nombres de chaque cellule insérée.</li>
+                        </ul>
+                    </li>
+                    <li><b>Transposer</b> - permet de coller des données en modifiant les colonnes en lignes et les lignes en colonnes.</li>
+                    <li><b>Ignorer les vides</b> - permet d'ignorer les cellules vides et eur mise en forme.</li>
+                </ol>
+                <p><img alt="Fenêtre de collage spéciale" src="../images/pastespecial_window.png" /></p>
+                </li>
+            </ul>
+            
+            <p>Lorsque vous collez le contenu d'une seule cellule ou du texte dans des formes automatiques, les options suivantes sont disponibles:</p>
+            <ul>
+                <li><em>Mise en forme de la source <em>(Ctrl+K)</em></em> - permet de conserver la mise en forme initiale des données copiées.</li>
+                <li><em>Mise en forme de la destination</em>  <em>(Ctrl+M)</em> - permet d'appliquer la mise en forme déjà utilisée pour la cellule/forme automatique dans laquelle vous collez les données.</li>
+            </ul>
+            <h5 id="delimiteddata"><b>Texte délimité</b></h5>
+            <p>Lorsque vous collez du texte délimité copié à partir d'un fichier <b>.txt</b>, les options suivantes sont disponibles:</p>
+            <p class="note">Le texte délimité peut contenir plusieurs enregistrements dont chaque enregistrement correspond à une seule ligne de table. Chaque enregistrement peut contenir plusieurs valeurs de texte séparées par des délimiteurs (tels que virgule, point-virgule, deux-points, tabulation, espace ou tout autre caractère). Le fichier doit être enregistré sous la forme d'un fichier <b>.txt </b>de texte brut.</p>
+            <ul>
+                <li><em>Conserver le texte uniquement</em> (<em>Ctrl+T)</em> - permet de coller les valeurs de texte dans une colonne où le contenu de chaque cellule correspond à une ligne dans le fichier texte source.</li>
+                <li><em>Utiliser l'assistant importation de texte</em> - permet d'ouvrir<b><b> l'assistant importation</b> de texte</b> qui permet de diviser facilement les valeurs de texte en plusieurs colonnes où chaque valeur de texte qui est séparée par un délimiteur sera placé dans une cellule séparée.
+                <p>Lorsque la fenêtre <b>Assistant importation</b> de texte s'ouvre, sélectionnez le délimiteur de texte utilisé dans les données délimitées dans la liste déroulante <b>Délimiteur</b>. Les données divisées en colonnes seront affichées dans le champ <b>Aperçu</b> au-dessous. Si vous êtes satisfait du résultat, appuyez sur le bouton <b>OK</b>.</p>
+                </li>
+            </ul>
+            <p><img alt="Assistant importation de texte" src="../images/textimportwizard.png" /></p>
+            <p>Si vous avez collé des données délimitées à partir d'une source qui n'est pas un fichier texte brut (par exemple, du texte copié à partir d'une page Web, etc.), ou si vous avez appliqué la fonction <em>Conserver uniquement le texte</em> et que vous souhaitez maintenant fractionner les données d'une seule colonne en plusieurs colonnes, vous pouvez utiliser l'option <b>Texte en colonnes</b>. </p>
+            <p>Pour diviser les données en plusieurs colonnes:</p>
+            <ol>
+                <li>Sélectionnez la cellule ou la colonne nécessaire qui contient les données avec délimiteurs.</li>
+                <li>Passez à l'onglet <b>Données.</b></li>
+                <li>Cliquez sur le bouton <b>Texte en colonnes</b> dans la barre d'outils supérieure. L'assistant Texte en colonnes s'affiche.</li>
+                <li>Dans la liste déroulante <b>Délimiteur</b>, sélectionnez le délimiteur utilisé dans les données délimitées.</li>
+                <li>Cliquez sur le bouton <b>Avancé</b> pour ouvrir la fenêtre <b>Paramètres avancés</b> et spécifier le <b>Séparateur décimal</b> ou <b>Séparateur de milliers</b>.
+                <p><img alt="Le fenêtre Paramètres de date" src="../images/separator.png" /></p></li>
+                <li>Affichez l'aperçu du résultat dans le champ en dessous et cliquez sur <b>OK</b>.</li>
+            </ol>
+            <p>Ensuite, chaque valeur de texte séparée par le délimiteur sera placée dans une cellule séparée.</p>
+            <p class="note">S'il y a des données dans les cellules à droite de la colonne que vous voulez fractionner, les données seront écrasées.</p>
+            <h3>Utiliser l'option Remplissage automatique</h3>
+            <p>Pour remplir rapidement plusieurs cellules avec les mêmes données, utilisez l'option <b>Remplissage automatique</b>:</p>
+            <ol>
+                <li>sélectionner une cellule/plage de cellules contenant les données ciblées,</li>
+                <li>déplacez le curseur de la souris sur la poignée de remplissage dans le coin inférieur droit de la cellule. Le curseur va se transformer en croix noire:
+                <p><div class = "big big-autofill"></div></p>
+                </li>
+                <li>faites glisser la poignée sur les cellules adjacentes que vous souhaitez remplir avec les données sélectionnées.</li>
+            </ol>
+            <p class="note"><b>Remarque</b>: si vous devez créer une série de nombres (tels que 1, 2, 3, 4 ..., 2, 4, 6, 8 ... etc.) ou des dates, vous pouvez entrer au moins deux valeurs de départ et étendre rapidement la série en sélectionnant ces cellules puis en faisant glisser la poignée de remplissage. </p>
+            <h3>Remplissez les cellules de la colonne avec des valeurs textuelles</h3>
+            <p>Si une colonne de votre feuille de calcul contient des valeurs textuelles, vous pouvez facilement remplacer n'importe quelle valeur dans cette colonne ou remplir la cellule vide suivante en sélectionnant l'une des valeurs de texte existantes.</p>
+            <p>Cliquez avec le bouton droit sur la cellule requise et choisissez l'option <b>Sélectionner dans la liste déroulante</b> dans le menu contextuel.</p>
+            <p><img alt="Sélectionnez dans la liste déroulante" src="../images/selectfromlist.png" /></p>
+            <p>Sélectionnez l'une des valeurs de texte disponibles pour remplacer la valeur actuelle ou remplir une cellule vide.</p>
+            
+        </div>
+	</body>
+</html>

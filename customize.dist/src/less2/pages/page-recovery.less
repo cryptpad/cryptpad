@@ -36,6 +36,9 @@
         .cp-hidden {
             display: none;
         }
+        .cp-default-label {
+            display: none;
+        }
     }
     .alertify {
         // workaround for alertify making empty p
@@ -81,6 +84,15 @@
         }
         .cp-recover-email {
             height: 164px;
+            overflow: scroll;
+        }
+        //for chrome,safari
+        .cp-recover-email::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .btn-secondary {
+            margin-top: 1rem;
         }
         #userForm {
             padding: 15px;

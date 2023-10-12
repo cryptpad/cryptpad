@@ -18,11 +18,13 @@ Configuring CryptPad for production requires a little more work, but the process
 
 ## Current version
 
-The most recent version and all past release notes can be found [here](https://github.com/xwiki-labs/cryptpad/releases/).
+The most recent version and all past release notes can be found [here](https://github.com/cryptpad/cryptpad/releases/).
 
 ## Setup using Docker
 
-See [CryptPad-Docker](https://github.com/xwiki-labs/cryptpad-docker) repository for details on how to get up-and-running with CryptPad in Docker. This repository is maintained by the community and not officially supported.
+You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files at the root of this repository. We also publish every release on [Docker Hub](https://hub.docker.com/r/cryptpad/cryptpad) as AMD64 & ARM64 official images. 
+
+Previously, Docker images were community maintained, had their own repository and weren't official supported. We changed that with v5.4.0 during July 2023. Thanks to @promasu for all the work on the community images.
 
 # Security
 
@@ -56,9 +58,9 @@ meet our strict criteria for safety.
 # Translations
 
 CryptPad can be translated with nothing more than a web browser via our
-[Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/). See the state of the translated languages:
+[Weblate instance](https://weblate.cryptpad.org/projects/cryptpad/app/). See the state of the translated languages:
 
-![](https://weblate.cryptpad.fr/widgets/cryptpad/-/app/multi-auto.svg)
+![](https://weblate.cryptpad.org/widgets/cryptpad/-/app/multi-auto.svg)
 
 More information about this can be found in [our translation guide](/customize.dist/translations/README.md).
 
@@ -66,10 +68,7 @@ More information about this can be found in [our translation guide](/customize.d
 
 The best places to reach the development team and the community are the [CryptPad Forum](https://forum.cryptpad.org) and the [Matrix chat](https://matrix.to/#/#cryptpad:matrix.xwiki.com)
 
-The team is also on social media:
-- Mastodon: [@cryptpad@fosstodon.org](https://fosstodon.org/@cryptpad)
-- Twitter: [@cryptpad](https://twitter.com/cryptpad)
-
+The team is also on the fediverse: [@cryptpad@fosstodon.org](https://fosstodon.org/@cryptpad)
 
 # Team
 

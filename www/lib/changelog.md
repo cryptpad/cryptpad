@@ -8,10 +8,11 @@ This file is intended to be used as a log of what third-party source we have ven
 * [jscolor v2.0.5](https://jscolor.com/) for providing a consistent color picker across all browsers
 * [jquery.ui 1.12.1](https://jqueryui.com/) for its 'autocomplete' extension which is used for our tag picker
 * [pdfjs](https://mozilla.github.io/pdf.js/) with some minor modifications to prevent CSP errors
-* [mermaid 9.1.7](https://github.com/mermaid-js/mermaid/releases/tag/8.13.4) extends our markdown integration to support a variety of diagram types
+* [mermaid 10.2.4](https://github.com/mermaid-js/mermaid/releases/tag/v10.2.4) extends our markdown integration to support a variety of diagram types
 * [Fabricjs 4.6.0](https://github.com/fabricjs/fabric.js) and [Fabric-history](https://github.com/lyzerk/fabric-history) for the whiteboard app
 * [qrcode.js](https://github.com/davidshimjs/qrcodejs) from [this commit](https://github.com/davidshimjs/qrcodejs/commit/06c7a5e134f116402699f03cda5819e10a0e5787) since the repo doesn't use tags
 * [Requirejs optional module plugin](https://stackoverflow.com/a/27422370)
 * [asciidoc.js 2.0.0](https://github.com/asciidoctor/codemirror-asciidoc/releases/tag/2.0.0) with slight changes to match the format of other codemirror modes
 * [Asciidoctor.js 2.2.6](https://github.com/asciidoctor/asciidoctor.js/releases/tag/v2.2.6) for AsciiDoc rendering
+* [Rangy 1.3.0](https://github.com/timdown/rangy/tree/1.3.0) for cursor management. NOTE: [A CVE](https://github.com/advisories/GHSA-65rp-mhqf-8gj3) exists for this version but CryptPad isn't affected
 

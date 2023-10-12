@@ -22,16 +22,15 @@
 
         if (/\/api\/.*/.test(src)) {
             console.error("A serverside API endpoint could not be reached.", src);
-            // don't warn about bower if the error is the optional instance endpoint
+            // don't warn about missing components if the error is the optional instance endpoint
             if (/\/api\/instance/.test(src)) { return; }
         }
 
-        //if (!/\/bower_components\/.*/.test(src)) { return; }
+        //if (!/\/components\/.*/.test(src)) { return; }
         if (first) {
             document.body.appendChild(h('h1', ['Oops!']));
             document.body.appendChild(h('p', [
-                `It's possible that this server's administrators forgot to install its client-side dependencies with 'bower update',`,
-                ` or that some other required resource couldn't be loaded.`,
+                `It's possible that required resource couldn't be loaded.`,
                 ` See your browser's console for more details.`,
             ]));
             first = false;

@@ -1,0 +1,640 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Ausfüllbare Formulare erstellen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Erstellen Sie ausfüllbare Formulare für eine erweiterte Formularinteraktion" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+
+        <h1>Ausfüllbare Formulare erstellen</h1>
+        <p>Mit dem ONLYOFFICE Dokumenteneditor können Sie <b>ausfüllbare Formulare</b> in Ihren Dokumenten erstellen, z.B. Vertragsentwürfe oder Umfragen.</p>
+        <p><b>Formularvorlage</b> ist das DOCXF-Format, das eine Reihe von Tools zum Erstellen eines ausfüllbaren Formulars bietet. Speichern Sie das resultierende Formular als <b>DOCXF</b>-Datei, und Sie haben eine Formularvorlage, die Sie noch bearbeiten, überprüfen oder gemeinsam bearbeiten können. Um eine Formularvorlage ausfüllbar zu machen und die Dateibearbeitung durch andere Benutzer einzuschränken, speichern Sie sie als <b>OFORM</b>-Datei. Weitere Informationen finden Sie in den <a href="../UsageInstructions/FillingOutForm.htm">Anleitungen zum Ausfüllen von Formularen</a>.</p>
+        <p class="note"><b>DOCXF</b> und <b>OFORM</b> sind neue <b>ONLYOFFICE</b>-Formate, die es ermöglichen, Formularvorlagen zu erstellen und Formulare auszufüllen. Verwenden Sie den <b>ONLYOFFICE Dokumenteneditor</b> entweder online oder auf dem Desktop, um alle formularbezogenen Elemente und Optionen zu nutzen.</p>
+        <p>Sie können auch jede vorhandene <b>DOCX</b>-Datei als <b>DOCXF</b> speichern, um sie als Formularvorlage zu verwenden. Gehen Sie zur Registerkarte <b>Datei</b>, klicken Sie im linken Menü auf die Option <b>Herunterladen als...</b> oder <b>Speichern als...</b> und wählen Sie die Option <b>DOCXF</b>. Jetzt können Sie alle verfügbaren Formularbearbeitungsfunktionen verwenden, um ein Formular zu erstellen.</p>
+        <p>Sie können nicht nur die Formularfelder in einer <b>DOCXF</b>-Datei bearbeiten sondern auch Text hinzufügen, bearbeiten und formatieren oder andere Funktionen des <b>Dokumenteneditors</b> verwenden.</p>
+        <p>Das Erstellen ausfüllbarer Formulare wird durch vom Benutzer bearbeitbare Objekte ermöglicht, die die Gesamtkonsistenz der resultierenden Dokumente sicherstellen und eine erweiterte Formularinteraktion ermöglichen.</p>
+        <p>Derzeit können Sie bearbeitbare <em>Textfelder</em>, <em>Comboboxen</em>, <em>Dropdown-Listen</em>, <em>Kontrollkästchen</em>, <em>Radiobuttons</em> einfügen und den <em>Bildern</em> bestimmte Bereiche zuweisen, sowie <em>E-Mail-Adresse-</em>, <em>Telefonnummer-</em>, <em>Datum und Uhrzeit-</em>, <em>Postleitzahl-</em>, <em>Kreditkarte-</em> und <em>komplexe Felder</em> erstellen. Greifen Sie auf diese Funktionen auf der Registerkarte <b>Formulare</b> zu, die nur für <b>DOCXF</b>-Dateien verfügbar ist.</p>
+
+        <h2 id="textfield">Erstellen eines neuen Textfelds</h2>
+        <p><em>Textfelder</em> sind vom Benutzer bearbeitbare Text-Formularfelder. Es können keine weiteren Objekte hinzugefügt werden.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein Textfeld einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-text_field_icon"></div> <b>Textfeld</b>
+                        <p>oder</p>
+                    <p>Klicken Sie auf den Pfeil neben dem Symbol <span class="icon icon-text_field_icon"></span> <b>Textfeld</b> und wählen Sie aus, ob Sie ein <b>Inline-Textfeld</b> oder ein <b>festes Textfeld</b> einfügen möchten. Um mehr über feste Felder zu erfahren, lesen Sie bitte den Absatz <b>Felder mit fester Größe</b> in diesem Abschnitt weiter unten.</p>
+                    </li>
+                </ol>
+                <p><img alt="Textfeld eingefügt" src="../images/text_field_inserted.png" /></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="text_field_settings">
+                    <img alt="Textfeldeinstellungen" src="../images/text_field_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Feldern zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Textfeld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu. Die Meldung <em>Verbundene Felder: 2/3/...</em> wird angezeigt. Um die Felder zu trennen, klicken Sie auf die Schaltfläche <b>Verbindung trennen</b>.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den anzuzeigenden Text in das eingefügte Textfeld ein; <em>"Hier den Text eingeben"</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer den Mauszeiger über das Textfeld fährt.
+                            <br /> <img alt="Tipp eingefügt" src="../images/text_field_tip.png" />
+                        </li>
+                        <li>
+                            <b>Format</b>: Wählen Sie das Inhaltsformat des Felds, d. h. <em>Keine</em>, <em>Ziffern</em>, <em>Buchstaben</em>, <em>Beliebige Maske</em> oder <em>Regulärer Ausdruck</em>. Das Feld ist standardmäßig auf <em>Beliebige Maske</em> eingestellt. Um das Format zu ändern, geben Sie die erforderliche Maske in das Feld darunter ein.
+                            <p>Wenn Sie ein <em>Beliebige Maske</em>- oder ein <em>Regulärer Ausdruck</em>-Format wählen, erscheint ein zusätzliches Feld unter dem Feld <b>Format</b>.</p>
+                        </li>
+                        <li><b>Erlaubte Symbole</b>: Geben Sie die Symbole ein, die im Textfeld erlaubt sind.</li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen. Wenn diese Option aktiviert ist, können Sie auch die Einstellungen <b>Automatisch anpassen</b> und/oder <b>Mehrzeiliges Feld</b> verwenden.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Automatisch anpassen</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um die Schriftgröße automatisch an die Feldgröße anzupassen.</li>
+                        <li><b>Mehrzeiliges Feld</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um ein Formularfeld mit mehreren Zeilen zu erstellen, andernfalls belegt der Text eine einzelne Zeile.</li>
+                        <li><b>Zeichengrenze</b>: Standardmäßig gibt es keine Grenzen. Aktivieren Sie dieses Kontrollkästchen, um die maximale Zeichenanzahl im Feld rechts festzulegen.</li>
+                        <li>
+                            <b>Zeichenanzahl in Textfeld</b>: Verteilen Sie den Text gleichmäßig innerhalb des eingefügten Textfelds und konfigurieren Sie seine allgemeine Darstellung. Lassen Sie das Kontrollkästchen deaktiviert, um die Standardeinstellungen beizubehalten, oder aktivieren Sie es, um die folgenden Parameter festzulegen:
+                            <ul>
+                                <li><b>Zeilenbreite</b>: Wählen Sie, ob der Breitenwert <em>Auto</em> (Breite wird automatisch berechnet), <em>Mindestens</em> (Breite ist nicht kleiner als der manuell angegebene Wert) oder <em>Genau</em> sein soll (Breite entspricht dem manuell eingegebenen Wert). Der darin enthaltene Text wird entsprechend ausgerichtet.</li>
+                            </ul>
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder des eingefügten Textfelds festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um dem eingefügten Textfeld eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Feld für das Textfeld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+                <p><img alt="Zeilenbreite" src="../images/comb_of_characters.png" /></p>
+                <p>Klicken Sie in das eingefügte Textfeld und passen Sie <a href="../UsageInstructions/FontTypeSizeColor.htm"> Schriftart, Größe und Farbe</a> an, wenden Sie <a href="../UsageInstructions/DecorationStyles.htm">Dekorationsstile</a> und <a href="../UsageInstructions/FormattingPresets.htm">Formatierungsvorgaben</a> an. Die Formatierung wird auf den gesamten Text innerhalb des Felds angewendet.</p>
+            </details>
+        </div>
+
+
+        <h2 id="combobox">Erstellen einer neuen Combobox</h2>
+        <p><em>Comboboxen</em> enthalten eine Dropdown-Liste mit einer Reihe von Auswahlmöglichkeiten, die von Benutzern bearbeitet werden können.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um eine Combobox einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-combo_box_icon"></div> <b>Combobox</b>.
+                    </li>
+                </ol>
+                <p><img alt="Combobox eingefügt" src="../images/combo_box_inserted.png" /></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="combo_box_settings">
+                    <img alt="combo box settings" src="../images/combo_box_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Comboboxen zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu. Die Meldung <em>Verbundene Felder: 2/3/...</em> wird angezeigt. Um die Felder zu trennen, klicken Sie auf die Schaltfläche <b>Verbindung trennen</b>.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den Text ein, der in der eingefügten Combobox angezeigt werden soll; <em>"Wählen Sie ein Element aus"</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer den Mauszeiger über die Combobox bewegt.
+                            <br /> <img alt="Tipp eingefügt" src="../images/combo_box_tip.png" />
+                        </li>
+                        <li><b>Optionen von Werten</b>: <div class="icon icon-combo_add_values"></div> Fügen Sie neue Werte hinzu, <div class="icon icon-combo_delete_values"></div> löschen Sie sie oder verschieben Sie sie nach oben <div class="icon icon-combo_values_up"></div> oder <div class="icon icon-combo_values_down"></div> unten in der Liste.</li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder der eingefügten Combobox festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um der eingefügten Combobox eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Feld für das Feld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+                <p>Sie können auf die Pfeilschaltfläche im rechten Teil der hinzugefügten <b>Combobox</b> klicken, um die Elementliste zu öffnen und das erforderliche Element auszuwählen. Sobald das erforderliche Element ausgewählt ist, können Sie den angezeigten Text ganz oder teilweise bearbeiten, indem Sie ihn durch Ihren Text ersetzen.</p>
+                <p><img alt="Combobox geöffnet" src="../images/combo_box_opened.png" /></p>
+                <p>Sie können Schriftdekoration, Farbe und Größe ändern. Klicken Sie in die eingefügte Combobox und fahren Sie gemäß den <a href="../UsageInstructions/FontTypeSizeColor.htm">Anleitungen</a> fort. Die Formatierung wird auf den gesamten Text innerhalb des Felds angewendet.</p>
+            </details>
+        </div>
+
+
+        <h2 id="dropdownlist">Erstellen einer neuen Dropdown-Liste</h2>
+        <p><em>Dropdown-Liste</em> enthalten eine Liste mit einer Reihe von Auswahlmöglichkeiten, die von den Benutzern nicht bearbeitet werden können.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um eine Dropdown-Liste einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-dropdown_list_icon"></div> <b>Dropdown</b>.
+                    </li>
+                </ol>
+                <p><img alt="Dropdown-Liste eingefügt" src="../images/combo_box_inserted.png" /></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="dropdown_list_settings">
+                    <img alt="Dropdown-Liste Einstellungen" src="../images/dropdown_list_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Dropdown-Listen zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu. Die Meldung <em>Verbundene Felder: 2/3/...</em> wird angezeigt. Um die Felder zu trennen, klicken Sie auf die Schaltfläche <b>Verbindung trennen</b>.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den Text ein, der in der eingefügten Dropdown-Liste angezeigt werden soll; <em>"Wählen Sie ein Element aus"</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer den Mauszeiger über die Dropdown-Liste bewegt.
+                            <br /> <img alt="Tipp eingefügt" src="../images/dropdown_tip.png" />
+                        </li>
+                        <li><b>Optionen von Werten</b>: <div class="icon icon-combo_add_values"></div> Fügen Sie neue Werte hinzu, <div class="icon icon-combo_delete_values"></div> löschen Sie sie oder verschieben Sie sie nach oben <div class="icon icon-combo_values_up"></div> oder <div class="icon icon-combo_values_down"></div> unten in der Liste.</li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder der eingefügten Dropdown-Liste festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um der eingefügten Dropdown-Liste eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Feld für das Feld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+                <p>Sie können auf die Pfeilschaltfläche im rechten Teil des hinzugefügten Formularfelds <b>Dropdown-Liste</b> klicken, um die Elementliste zu öffnen und die erforderliche Elemente auszuwählen.</p>
+                <p><img alt="Dropdown-Liste geöffnet" src="../images/dropdown_list_opened.png" /></p>
+            </details>
+        </div>
+
+
+        <h2 id="checkbox">Erstellen eines neuen Kontrollkästchens</h2>
+        <p><em>Kontrollkästchen</em> werden verwendet, um dem Benutzer eine Vielzahl von Optionen anzubieten, von denen eine beliebige Anzahl ausgewählt werden kann. Kontrollkästchen funktionieren einzeln, sodass sie unabhängig voneinander aktiviert oder deaktiviert werden können.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein Kontrollkästchen einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-checkbox_icon"></div> <b>Kontrollkästchen</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-checkbox_inserted"></span></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="checkbox_settings">
+                    <img alt="Kontrollkästchen Einstellungen" src="../images/checkbox_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Kontrollkästchen zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu. Die Meldung <em>Verbundene Felder: 2/3/...</em> wird angezeigt. Um die Felder zu trennen, klicken Sie auf die Schaltfläche <b>Verbindung trennen</b>.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer den Mauszeiger über das Kontrollkästchen bewegt.
+                            <br /> <img alt="Tipp eingefügt" src="../images/checkbox_tip.png" />
+                        </li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder des eingefügten Kontrollkästchens festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um dem eingefügten Kontrollkästchen eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Feld für das Feld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+                <p>Um das Kontrollkästchen zu aktivieren, klicken Sie einmal darauf.</p>
+                <p><span class="big big-checkbox_checked"></span></p>
+            </details>
+        </div>
+
+
+        <h2 id="radiobutton">Erstellen eines neuen Radiobuttons</h2>
+        <p><em>Radiobuttons</em> werden verwendet, um Benutzern eine Vielzahl von Optionen anzubieten, von denen nur eine Option ausgewählt werden kann. Radiobuttons können gruppiert werden, sodass nicht mehrere Schaltflächen innerhalb einer Gruppe ausgewählt werden müssen.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um einen Radiobutton einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-radio_button_icon"></div> <b>Radiobutton</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-radio_button_inserted"></span></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="radio_button_settings">
+                    <img alt="Radiobutton Einstellungen" src="../images/radio_button_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Gruppenschlüssel</b>: Um eine neue Gruppe von Radiobuttons zu erstellen, geben Sie den Namen der Gruppe in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Radiobutton die erforderliche Gruppe zu.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer den Mauszeiger über den Radiobutton bewegt.
+                            <br /> <img alt="Tipp eingefügt" src="../images/radio_button_tip.png" />
+                        </li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder des eingefügten Radiobuttons festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um dem eingefügten Radiobutton eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Feld für das Feld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+                <p>Um den Radiobutton zu aktivieren, klicken Sie einmal darauf.</p>
+                <p><span class="big big-radio_button_checked"></span></p>
+            </details>
+        </div>
+
+
+        <h2 id="image">Erstellen eines neuen Bild-Felds</h2>
+        <p><em>Bilder</em> sind Formularfelder, die das Einfügen eines Bildes mit den von Ihnen festgelegten Einschränkungen, d. h. der Position des Bildes oder seiner Größe, ermöglichen.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein Bildformularfeld einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-image_form_icon"></div> <b>Bild</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-image_form_inserted"></span></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="image_form_settings">
+                    <img alt="Bild Einstellungen" src="../images/image_form_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Bildern zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu. Die Meldung <em>Verbundene Felder: 2/3/...</em> wird angezeigt. Um die Felder zu trennen, klicken Sie auf die Schaltfläche <b>Verbindung trennen</b>.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den Text ein, der in das eingefügte Bildformularfeld angezeigt werden soll; <em>"Klicken Sie, um das Bild herunterzuladen"</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer seinen Mauszeiger über den unteren Bildrand bewegt.
+                        </li>
+                        <li><b>Wann skalieren</b>: Klicken Sie auf das Dropdown-Menü und wählen Sie eine geeignete Bildskalierungsoption: <b>Immer</b>, <b>Nie</b>, <b>Das Bild ist zu groß</b> oder <b>Das Bild ist zu klein</b>. Das ausgewählte Bild wird innerhalb des Felds entsprechend skaliert.</li>
+                        <li><b>Seitenverhältnis sperren</b>: Aktivieren Sie dieses Kontrollkästchen, um das Bildseitenverhältnis ohne Verzerrung beizubehalten. Wenn das Kontrollkästchen aktiviert ist, verwenden Sie den vertikalen und den horizontalen Schieberegler, um das Bild innerhalb des eingefügten Felds zu positionieren. Die Positionierungsschieber sind inaktiv, wenn das Kontrollkästchen deaktiviert ist.</li>
+                        <li><b>Bild auswählen</b>: Klicken Sie auf diese Schaltfläche, um ein Bild entweder <b>Aus einer Datei</b>, <b>Aus einer URL</b> oder <b>Aus dem Speicher</b> hochzuladen.</li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder der eingefügten Bild festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um der eingefügten Bild eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Feld für das Feld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+                <p>Um das Bild zu ersetzen, klicken Sie auf das <span class="icon icon-image"></span> Bildsymbol über dem Rahmen des Formularfelds und wählen Sie ein anderes Bild aus.</p>
+                <p>Um die Bildeinstellungen <b>anzupassen</b>, öffnen Sie die Registerkarte <b>Bildeinstellungen</b> in der rechten Symbolleiste. Um mehr zu erfahren, lesen Sie bitte die Anleitung zu <a href="../UsageInstructions/InsertImages.htm">Bildeinstellungen</a>.</p>
+            </details>
+        </div>
+
+        <h2 id="emailaddress">Erstellen eines neuen E-Mail-Adresse-Felds</h2>
+        <p>Das Feld <em>E-Mail-Adresse</em> wird verwendet, um eine E-Mail-Adresse einzugeben, die einem regulären Ausdruck \S+@\S+\.\S+ entspricht.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein neues E-Mail-Adresse-Feld einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-email_address_icon"></div> <b>E-Mail-Adresse</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-email_address_inserted"></span></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="email_address_settings">
+                    <img alt="email address settings" src="../images/email_address_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von E-Mail-Adresse-Felder zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den Text ein, der in das eingefügte E-Mail-Adresse-Feld angezeigt werden soll; <em>“user_name@email.com”</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer seinen Mauszeiger über die E-Mail-Adresse bewegt.
+                            <br /> <img alt="tip inserted" src="../images/email_address_tip.png" />
+                        </li>
+                        <li><b>Format</b>: Wählen Sie das Inhaltsformat des Felds, d. h. <em>Keine</em>, <em>Ziffern</em>, <em>Buchstaben</em>, <em>Beliebige Maske</em> oder <em>Regulärer Ausdruck</em>. Das Feld ist standardmäßig auf <em>Beliebige Maske</em> eingestellt. Um das Format zu ändern, geben Sie die erforderliche Maske in das Feld darunter ein.</li>
+                        <li><b>Erlaubte Symbole</b>: Geben Sie die Symbole ein, die im E-Mail-Adresse-Feld erlaubt sind.</li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen. Wenn diese Option aktiviert ist, können Sie auch die Einstellungen <b>Automatisch anpassen</b> und/oder <b>Mehrzeiliges Feld</b> verwenden.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Automatisch anpassen</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um die Schriftgröße automatisch an die Feldgröße anzupassen.</li>
+                        <li><b>Mehrzeiliges Feld</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um ein Formularfeld mit mehreren Zeilen zu erstellen, andernfalls belegt der Text eine einzelne Zeile.</li>
+                        <li><b>Zeichengrenze</b>: Standardmäßig gibt es keine Grenzen. Aktivieren Sie dieses Kontrollkästchen, um die maximale Zeichenanzahl im Feld rechts festzulegen.</li>
+                        <li>
+                            <b>Zeichenanzahl in Textfeld</b>: Verteilen Sie den Text gleichmäßig innerhalb des eingefügten E-Mail-Adresse-Felds und konfigurieren Sie seine allgemeine Darstellung. Lassen Sie das Kontrollkästchen deaktiviert, um die Standardeinstellungen beizubehalten, oder aktivieren Sie es, um die folgenden Parameter festzulegen:
+                            <ul>
+                                <li><b>Zeilenbreite</b>: Wählen Sie, ob der Breitenwert <em>Auto</em> (Breite wird automatisch berechnet), <em>Mindestens</em> (Breite ist nicht kleiner als der manuell angegebene Wert) oder <em>Genau</em> sein soll (Breite entspricht dem manuell eingegebenen Wert). Der darin enthaltene Text wird entsprechend ausgerichtet.</li>
+                            </ul>
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder des eingefügten E-Mail-Adresse-Felds festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um dem eingefügten E-Mail-Adresse-Feld eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das E-Mail-Adresse-Feld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="phonenumber">Erstellen eines neuen Telefonnummernfelds</h2>
+        <p>Das Feld <em>Telefonnummer</em> wird verwendet, um eine Telefonnummer einzugeben, die einer beliebigen Maske entspricht, die vom Ersteller des Formulars vorgegeben wurde. Es ist standardmäßig auf <code>(999)999-9999</code> eingestellt.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein Telefonnummernfeld einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-phone_number_icon"></div> <b>Telefonnummer</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-phone_number_inserted"></span></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="phone_number_settings">
+                    <img alt="phone number settings" src="../images/phone_number_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Telefonnummernfelder zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den Text ein, der in das eingefügte Telefonnummernfeld angezeigt werden soll; <em>“(999)999-9999”</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer seinen Mauszeiger über die E-Mail-Adresse bewegt.
+                            <br /> <img alt="tip inserted" src="../images/phone_number_tip.png" />
+                        </li>
+                        <li><b>Format</b>: Wählen Sie das Inhaltsformat des Felds, d. h. <em>Keine</em>, <em>Ziffern</em>, <em>Buchstaben</em>, <em>Beliebige Maske</em> oder <em>Regulärer Ausdruck</em>. Das Feld ist standardmäßig auf <em>Beliebige Maske</em> eingestellt. Um das Format zu ändern, geben Sie die erforderliche Maske in das Feld darunter ein.</li>
+                        <li><b>Erlaubte Symbole</b>: Geben Sie die Symbole ein, die im Telefonnummernfeld erlaubt sind.</li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen. Wenn diese Option aktiviert ist, können Sie auch die Einstellungen <b>Automatisch anpassen</b> und/oder <b>Mehrzeiliges Feld</b> verwenden.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Automatisch anpassen</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um die Schriftgröße automatisch an die Feldgröße anzupassen.</li>
+                        <li><b>Mehrzeiliges Feld</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um ein Formularfeld mit mehreren Zeilen zu erstellen, andernfalls belegt der Text eine einzelne Zeile.</li>
+                        <li><b>Zeichengrenze</b>: Standardmäßig gibt es keine Grenzen. Aktivieren Sie dieses Kontrollkästchen, um die maximale Zeichenanzahl im Feld rechts festzulegen.</li>
+                        <li>
+                            <b>Zeichenanzahl in Textfeld</b>: Verteilen Sie den Text gleichmäßig innerhalb des eingefügten Telefonnummernfelds und konfigurieren Sie seine allgemeine Darstellung. Lassen Sie das Kontrollkästchen deaktiviert, um die Standardeinstellungen beizubehalten, oder aktivieren Sie es, um die folgenden Parameter festzulegen:
+                            <ul>
+                                <li><b>Zeilenbreite</b>: Wählen Sie, ob der Breitenwert <em>Auto</em> (Breite wird automatisch berechnet), <em>Mindestens</em> (Breite ist nicht kleiner als der manuell angegebene Wert) oder <em>Genau</em> sein soll (Breite entspricht dem manuell eingegebenen Wert). Der darin enthaltene Text wird entsprechend ausgerichtet.</li>
+                            </ul>
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder des eingefügten Telefonnummernfelds festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um dem eingefügten Telefonnummernfeld eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Telefonnummernfeld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="datetime">Erstellen eines neuen Datum und Zeit-Felds</h2>
+        <p>Das Feld <em>Datum und Uhrzeit</em> wird verwendet, um ein Datum einzufügen. Das Datum ist standardmäßig auf TT-MM-JJJJ eingestellt.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein Datum und Zeit-Feld einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-date_time_icon"></div> <b>Datum und Zeit</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-date_time_inserted"></span></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Um ein Datum einzugeben, klicken Sie auf den Dropdown-Pfeil innerhalb des Felds und wählen Sie das gewünschte Datum über den Kalender aus. <!--The <b>Form Settings</b> menu will open to the right.--><!--</p>-->
+                <!--<div id="phone_number_settings">
+                <img alt="phone number settings" src="../images/phone_number_settings.png" />
+                <ul>
+                    <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                    <li><b>Key</b>: to create a new group of phone numbers, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each phone number.</li>
+                    <li><b>Placeholder</b>: type in the text to be displayed in the inserted phone number form field; <em>“(999)999-9999”</em> is set by default.</li>
+                    <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                    <li>
+                        <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the phone number field.
+                        <br /> <img alt="tip inserted" src="../images/phone_number_tip.png" />
+                    </li>
+                    <li><b>Format</b>: choose the content format of the field, i.e., <em>None</em>, <em>Digits</em>, <em>Letters</em>, <em>Arbitrary Mask</em> or <em>Regular Expression</em>. The field is set to <em>Arbitrary Mask</em> by default. To change its format, type in the required mask into the field below.</li>
+                    <li><b>Allowed Symbols</b>: type in the symbols that are allowed in the phone number field.</li>
+                    <li>
+                        <b>Fixed size field</b>: check this box to create a field with a fixed size. When this option is enabled, you can also use the <b>AutoFit</b> and/or <b>Multiline field</b> settings.<br />
+                        A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                    </li>
+                    <li><b>AutoFit</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to automatically fit the font size to the field size.</li>
+                    <li><b>Multiline field</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to create a form field with multiple lines, otherwise, the text will occupy a single line.</li>
+                    <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+                    <li>
+                        <b>Comb of characters</b>: spread the text evenly within the inserted phone number field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                        <ul>
+                            <li><b>Cell width</b>: choose whether the width value should be <em>Auto</em> (width is calculated automatically), <em>At least</em> (width is no less than the value given manually), or <em>Exactly</em> (width corresponds to the value given manually). The text within will be justified accordingly.</li>
+                        </ul>
+                    </li>
+                    <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted phone number field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                    <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted phone number field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                    <li><b>Required</b>: check this box to make the phone number field a necessary one to fill in.</li>
+                </ul>
+            </div>-->
+            </details>
+        </div>
+
+        <h2 id="zipcode">Erstellen eines neuen Zip Code-Felds</h2>
+        <p>Das Feld <em>Zip Code</em> wird verwendet, um eine Postleitzahl einzugeben, die einer beliebigen Maske entspricht, die vom Ersteller des Formulars angegeben wurde. Die Maske ist standardmäßig auf <code>99999-9999</code> eingestellt.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein Postleitzahlenfeld einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-zip_code_icon"></div> <b>Zip Code</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-zip_code_inserted"></span></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="zip_code_settings">
+                    <img alt="zip code settings" src="../images/zip_code_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Postleitzahlenfelder zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu. Die Meldung <em>Verbundene Felder: 2/3/...</em> wird angezeigt. Um die Felder zu trennen, klicken Sie auf die Schaltfläche <b>Verbindung trennen</b>.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den Text ein, der in das eingefügte Zip Code-Formularfeld angezeigt werden soll; <em>"Klicken Sie, um das Zip Code herunterzuladen"</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer seinen Mauszeiger über das Zip Code-Feld bewegt.
+                            <br /> <img alt="tip inserted" src="../images/zip_code_tip.png" />
+                        </li>
+                        <li><b>Format</b>: Wählen Sie das Inhaltsformat des Felds, d. h. <em>Keine</em>, <em>Ziffern</em>, <em>Buchstaben</em>, <em>Beliebige Maske</em> oder <em>Regulärer Ausdruck</em>. Das Feld ist standardmäßig auf <em>Beliebige Maske</em> eingestellt. Um das Format zu ändern, geben Sie die erforderliche Maske in das Feld darunter ein.</li>
+                        <li><b>Erlaubte Symbole</b>: Geben Sie die Symbole ein, die im Zip Code-Feld erlaubt sind.</li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen. Wenn diese Option aktiviert ist, können Sie auch die Einstellungen <b>Automatisch anpassen</b> und/oder <b>Mehrzeiliges Feld</b> verwenden.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Automatisch anpassen</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um die Schriftgröße automatisch an die Feldgröße anzupassen.</li>
+                        <li><b>Mehrzeiliges Feld</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um ein Formularfeld mit mehreren Zeilen zu erstellen, andernfalls belegt der Text eine einzelne Zeile.</li>
+                        <li><b>Zeichengrenze</b>: Standardmäßig gibt es keine Grenzen. Aktivieren Sie dieses Kontrollkästchen, um die maximale Zeichenanzahl im Feld rechts festzulegen.</li>
+                        <li>
+                            <b>Zeichenanzahl in Textfeld</b>: Verteilen Sie den Text gleichmäßig innerhalb des eingefügten Postleitzahlfelds und konfigurieren Sie seine allgemeine Darstellung. Lassen Sie das Kontrollkästchen deaktiviert, um die Standardeinstellungen beizubehalten, oder aktivieren Sie es, um die folgenden Parameter festzulegen:
+                            <ul>
+                                <li><b>Zeilenbreite</b>: Wählen Sie, ob der Breitenwert <em>Auto</em> (Breite wird automatisch berechnet), <em>Mindestens</em> (Breite ist nicht kleiner als der manuell angegebene Wert) oder <em>Genau</em> sein soll (Breite entspricht dem manuell eingegebenen Wert). Der darin enthaltene Text wird entsprechend ausgerichtet.</li>
+                            </ul>
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder des eingefügten Zip Code-Felds festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um dem eingefügten Zip Code-Feld eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Feld für die Postleitzahl zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="creditcard">Erstellen eines neuen Kreditkartefelds</h2>
+        <p>Das Feld <em>Kreditkarte</em> wird verwendet, um eine Kreditkartennummer einzugeben, die einer beliebigen Maske entspricht, die vom Ersteller des Formulars vorgegeben wird. Das Feld ist standardmäßig auf <code>9999-9999-9999-9999</code> eingestellt.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein Kreditkartenfeld einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-credit_card_icon"></div> <b>Credit Card</b>.
+                    </li>
+                </ol>
+                <p><span class="big big-credit_card_inserted"></span></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="credit_card_settings">
+                    <img alt="credit card settings" src="../images/credit_card_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Kreditkartenfelder zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu. Die Meldung <em>Verbundene Felder: 2/3/...</em> wird angezeigt. Um die Felder zu trennen, klicken Sie auf die Schaltfläche <b>Verbindung trennen</b>.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den Text ein, der in das eingefügte Credit Card-Formularfeld angezeigt werden soll; <em>"Klicken Sie, um die Kreditkarte herunterzuladen"</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer seinen Mauszeiger über das Kreditkarte-Feld bewegt.
+                            <br /> <img alt="tip inserted" src="../images/credit_card_tip.png" />
+                        </li>
+                        <li><b>Format</b>: Wählen Sie das Inhaltsformat des Felds, d. h. <em>Keine</em>, <em>Ziffern</em>, <em>Buchstaben</em>, <em>Beliebige Maske</em> oder <em>Regulärer Ausdruck</em>. Das Feld ist standardmäßig auf <em>Beliebige Maske</em> eingestellt. Um das Format zu ändern, geben Sie die erforderliche Maske in das Feld darunter ein.</li>
+                        <li><b>Erlaubte Symbole</b>: Geben Sie die Symbole ein, die im Kreditkarte-Feld erlaubt sind.</li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen. Wenn diese Option aktiviert ist, können Sie auch die Einstellungen <b>Automatisch anpassen</b> und/oder <b>Mehrzeiliges Feld</b> verwenden.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Automatisch anpassen</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um die Schriftgröße automatisch an die Feldgröße anzupassen.</li>
+                        <li><b>Mehrzeiliges Feld</b>: Diese Option kann aktiviert werden, wenn die Einstellung <b>Feste Feldgröße</b> ausgewählt ist. Aktivieren Sie sie, um ein Formularfeld mit mehreren Zeilen zu erstellen, andernfalls belegt der Text eine einzelne Zeile.</li>
+                        <li><b>Zeichengrenze</b>: Standardmäßig gibt es keine Grenzen. Aktivieren Sie dieses Kontrollkästchen, um die maximale Zeichenanzahl im Feld rechts festzulegen.</li>
+                        <li>
+                            <b>Zeichenanzahl in Textfeld</b>: Verteilen Sie den Text gleichmäßig innerhalb des eingefügten Kreditkartefelds und konfigurieren Sie seine allgemeine Darstellung. Lassen Sie das Kontrollkästchen deaktiviert, um die Standardeinstellungen beizubehalten, oder aktivieren Sie es, um die folgenden Parameter festzulegen:
+                            <ul>
+                                <li><b>Zeilenbreite</b>: Wählen Sie, ob der Breitenwert <em>Auto</em> (Breite wird automatisch berechnet), <em>Mindestens</em> (Breite ist nicht kleiner als der manuell angegebene Wert) oder <em>Genau</em> sein soll (Breite entspricht dem manuell eingegebenen Wert). Der darin enthaltene Text wird entsprechend ausgerichtet.</li>
+                            </ul>
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder des eingefügten Kreditkartefelds festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um dem eingefügten Kreditkartefeld eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Kreditkartefeld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="complexfield">Erstellen eines neuen komplexen Feld</h2>
+        <p><em>Komplexes Feld</em> kombiniert mehrere Feldtypen, z. B. Textfeld und eine Dropdown-Liste. Sie können Felder beliebig kombinieren.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um ein komplexes Feld einzufügen,</summary>
+                <ol>
+                    <li>positionieren Sie die Einfügemarke innerhalb einer Textzeile an der Stelle, an der das Feld hinzugefügt werden soll,</li>
+                    <li>wechseln Sie zur Registerkarte <b>Formulare</b> der oberen Symbolleiste,</li>
+                    <li>
+                        klicken Sie auf das Symbol <div class="icon icon-complex_field_icon"></div> <b>Komplexes Feld</b>.
+                    </li>
+                </ol>
+                <p><img alt="complex field inserted" src="../images/complex_field_inserted.png"></p>
+                <p>Das Formularfeld erscheint an der Einfügemarke innerhalb der bestehenden Textzeile. Das Menü <b>Einstellungen des Formulars</b> wird rechts geöffnet.</p>
+                <div id="complex_field_settings">
+                    <img alt="complex field settings" src="../images/complex_field_settings.png" />
+                    <ul>
+                        <li><b>Wer soll das Feld ausfüllen?</b>: Wählen Sie die Rolle über die Dropdown-Liste aus, um die Benutzergruppe mit Zugriff auf dieses Feld festzulegen. Um mehr über das Zuweisen von Rollen zu erfahren, lesen Sie bitte den Abschnitt <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Verwalten von Rollen</a> in dieser Anleitung.</li>
+                        <li><b>Schlüssel</b>: Die Option zum Gruppieren von Komplexfelder zum gleichzeitigen Ausfüllen. Um einen neuen Schlüssel zu erstellen, geben Sie seinen Namen in das Feld ein und drücken Sie die <b>Eingabetaste</b>, und weisen Sie dann jedem Feld den erforderlichen Schlüssel mithilfe der Dropdown-Liste zu. Die Meldung <em>Verbundene Felder: 2/3/...</em> wird angezeigt. Um die Felder zu trennen, klicken Sie auf die Schaltfläche <b>Verbindung trennen</b>.</li>
+                        <li><b>Platzhalter</b>: Geben Sie den Text ein, der in das eingefügte komplexe Feld angezeigt werden soll; <em>"Klicken Sie, um das komplexe Feld herunterzuladen"</em> ist standardmäßig eingestellt.</li>
+                        <li><b>Tag</b>: Geben Sie den Text ein, der als Tag für den internen Gebrauch verwendet werden soll, d. h. nur für Mitbearbeiter angezeigt wird.</li>
+                        <li>
+                            <b>Tipp</b>: Geben Sie den Text ein, der als Tipp angezeigt werden soll, wenn ein Benutzer seinen Mauszeiger über das Kreditkarte-Feld bewegt.
+                            <br /> <img alt="tip inserted" src="../images/complex_field_tip.png" />
+                        </li>
+                        <li>
+                            <b>Feste Feldgröße</b>: Aktivieren Sie dieses Kontrollkästchen, um ein Feld mit einer festen Größe zu erstellen. Wenn diese Option aktiviert ist, können Sie auch die Einstellungen <b>Automatisch anpassen</b> und/oder <b>Mehrzeiliges Feld</b> verwenden.<br />
+                            Ein Feld mit fester Größe sieht wie eine Autoform aus. Sie können einen Umbruchstil dafür festlegen und die Position anpassen.
+                        </li>
+                        <li><b>Rahmenfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um die Farbe für die Ränder des eingefügten Kreditkartefelds festzulegen. Wählen Sie die bevorzugte Rahmenfarbe aus der Palette. Sie können bei Bedarf <b>eine neue benutzerdefinierte Farbe hinzufügen</b>.</li>
+                        <li><b>Hintergrundfarbe</b>: Klicken Sie auf das Symbol <div class="icon icon-nofill"></div>, um dem eingefügten Kreditkartefeld eine Hintergrundfarbe zuzuweisen. Wählen Sie die bevorzugte Farbe aus <b>Designfarben</b>, <b>Standardfarben</b> oder fügen Sie bei Bedarf <b>eine neue benutzerdefinierte Farbe</b> hinzu.</li>
+                        <li><b>Erforderlich</b>: Aktivieren Sie dieses Kontrollkästchen, damit das Kreditkartefeld zwingend ausgefüllt werden muss.</li>
+                    </ul>
+                    <p>Um verschiedene Formularfelder in ein komplexes Feld einzufügen, klicken Sie darauf und wählen Sie das gewünschte Feld in der oberen Symbolleiste auf der Registerkarte <b>Formulare</b> aus und konfigurieren Sie es dann nach Ihren Wünschen. Um mehr über die einzelnen Feldtypen zu erfahren, lesen Sie die entsprechenden Abschnitte oben.</p>
+                    <p class="note">Bitte beachten Sie, dass Sie das Formularfeld <em>Bild</em> nicht innerhalb komplexer Felder verwenden können.</p>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="managing_roles">Verwalten von Rollen</h2>
+        <p>Sie können neue Rollen erstellen, die bestimmen, wer bestimmte Formularfelder ausfüllen kann.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um die Rollen zu verwalten,</summary>
+                <div id="managing_roles">
+                    <img alt="managing roles" src="../images/managing_roles.png" />
+                    <ul>
+                        <li>gehen Sie zur Registerkarte <b>Formulare</b> in der oberen Symbolleiste,</li>
+                        <li>klicken Sie auf das Symbol <div class="icon icon-sharingicon"></div> <b>Managing Roles</b>,</li>
+                        <li>
+                            klicken Sie auf die Schaltfläche <b>New</b>, um eine neue Rolle zu erstellen,
+                            <p><img alt="new role" src="../images/edit_role.png" /></p>
+                        </li>
+                        <li>geben Sie den Namen der Rolle ein und wählen Sie bei Bedarf die Farbe aus. Sie können auch eine benutzerdefinierte Farbe erstellen, indem Sie auf den entsprechenden Menüpunkt klicken,</li>
+                        <li>klicken Sie auf <b>OK</b>, um eine neue Rolle zu erstellen,</li>
+                        <li>legen Sie die Reihenfolge fest, in der die Ausfüller das Dokument erhalten und unterschreiben. Verwenden Sie dazu die Schaltfläche <div class="icon icon-role_up"></div> und <div class="icon icon-role_down"></div>,</li>
+                        <li>verwenden Sie die Schaltflächen <b>Bearbeiten</b> oder <b>Löschen</b>, um die Rollen zu ändern oder zu löschen,</li>
+                        <li>klicken Sie auf <b>Schließen</b>, um zur Formularbearbeitung zurückzukehren.</li>
+                    </ul>
+                    <p>Wenn Sie das Formular als .oform-Datei speichern, können Sie alle für das Formular erstellten Rollen anzeigen.</p>
+                </div>
+
+            </details>
+        </div>
+
+        <!--<h2>Formulare hervorheben</h2>
+        <p>Sie können eingefügte Formularfelder mit einer bestimmten Farbe hervorheben.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>Um Felder hervorzuheben,</summary>
+                <div id="highlight_settings">
+                    <img alt="Einstellungen für Hervorhebungen" src="../images/highlight_settings.png" />
+                    <ul>
+                        <li>Öffnen Sie die <b>Einstellungen für Hervorhebungen</b> auf der Registerkarte <b>Formulare</b> der oberen Symbolleiste.</li>
+                        <li>Wählen Sie eine Farbe aus den <b>Standardfarben</b> aus. Sie können auch <b>eine neue benutzerdefinierte Farbe</b> hinzufügen.</li>
+                        <li>Um zuvor angewendete Farbhervorhebungen zu entfernen, verwenden Sie die Option <b>Ohne Hervorhebung</b>.</li>
+                    </ul>
+                </div>
+                <p>Die ausgewählten Hervorhebungsoptionen werden auf alle Formularfelder im Dokument angewendet.</p>
+                <p class="note">Der Rahmen des Formularfelds ist nur sichtbar, wenn das Feld ausgewählt ist. Die Ränder erscheinen nicht auf einer gedruckten Version.</p>
+            </details>
+        </div>-->
+
+        <h2>Aktivieren des Modus "Formular anzeigen"</h2>
+        <p class="note">
+            Sobald Sie den Modus <b>Formular anzeigen</b> aktiviert haben, stehen alle Bearbeitungsoptionen nicht mehr zur Verfügung.
+        </p>
+        <p>Klicken Sie auf die Schaltfläche <span class="icon icon-view_form_icon"></span> <b>Formular anzeigen</b> auf der Registerkarte <b>Formulare</b> der oberen Symbolleiste, um zu sehen, wie alle eingefügten Formulare in Ihrem Dokument angezeigt werden.</p>
+        <p><img alt="Formular anzeigen - Aktiviert" src="../images/view_form_active2.png" /></p>
+        <p>Sie können das Formular aus der Sicht jeder erstellten Rolle anzeigen. Klicken Sie dazu auf den Pfeil unter der Schaltfläche <span class="icon icon-view_form_icon"></span> <b>Formular anzeigen</b> und wählen Sie die gewünschte Rolle aus.</p>
+        <p><img alt="Formular anzeigen - Rolle" src="../images/view_form_role.png" /></p>
+        <p>Um den Anzeigemodus <b>zu verlassen</b>, klicken Sie erneut auf dasselbe Symbol.</p>
+
+        <h2>Verschieben von Formularfeldern</h2>
+        <p>Formularfelder können an eine andere Stelle im Dokument verschoben werden: Klicken Sie auf die Schaltfläche links neben dem Steuerrahmen, um das Feld auszuwählen und ziehen Sie es ohne loslassen der Maustaste an eine andere Position im Text.</p>
+        <p><img alt="Verschieben von Formularfeldern" src="../images/moving_form_fields.png" /></p>
+        <p>Sie können Formularfelder auch <b>kopieren und einfügen</b>: Wählen Sie das erforderliche Feld aus und verwenden Sie die Tastenkombination <b>Strg + C/Strg + V</b>.</p>
+
+        <h2>Erstellen von erforderlichen Feldern</h2>
+        <p>Um ein Feld <b>obligatorisch zu machen</b>, aktivieren Sie die Option <b>Erforderlich</b>. Die Pflichtfelder werden mit rotem Strich markiert.<!--Das Formular kann erst abgeschickt werden, wenn alle Pflichtfelder ausgefüllt sind.--></p>
+
+        <h2>Sperren von Formfeldern</h2>
+        <p>Um die <b>weitere Bearbeitung</b> des eingefügten Formularfelds zu verhindern, klicken Sie auf das Symbol <span class="icon icon-lock_form_icon"></span> <b>Sperren</b>. Das Ausfüllen der Felder bleibt verfügbar.</p>
+
+        <h2>Löschen von Formularfeldern</h2>
+        <p>Um alle eingefügten Felder und alle Werte zu löschen, klicken Sie auf die Schaltfläche <span class="icon icon-clear_fields_icon"></span> <b>Alle Felder löschen</b> auf der Registerkarte <b>Formulare</b> in der oberen Symbolleiste. Das Löschen von Feldern kann nur im Formularausfüllmodus durchgeführt werden.</p>
+
+        <h2>Navigieren, Anzeigen und Speichern eines Formulars</h2>
+        <p><img alt="Formularfeld ausfüllen" src="../images/fill_form.png" /></p>
+        <p>Gehen Sie zur Registerkarte <b>Formulare</b> in der oberen Symbolleiste.</p>
+        <p>Navigieren Sie durch die Formularfelder mit den Schaltflächen <span class="icon icon-previous_field_icon"></span> <b>Vorheriges Feld</b> und <span class="icon icon-next_field_icon"></span> <b>Nächstes Feld</b> in der oberen Symbolleiste.</p>
+        <p>Wenn Sie fertig sind, klicken Sie in der oberen Symbolleiste auf die Schaltfläche <span class="icon icon-save_form_icon"></span> <b>Als OFORM speichern</b>, um das Formular als eine zum Ausfüllen bereite <b>OFORM</b>-Datei zu speichern. Sie können beliebig viele <b>OFORM</b>-Dateien speichern.</p>
+        <!--<p>To clear all fields and reset the form, click the <div class = "icon icon-clear_fields_icon"></div> <b>Clear fields</b> button at the top toolbar.</p>
+        <p>When you are finished, click the <div class = "icon icon-submit_form_icon"></div> <b>Submit</b> button at the top toolbar to send the form for further processing. Please note that this action cannot be undone.</p>
+    <p class="note">If you are using the server version of ONLYOFFICE Docs, the presence of the <b>Submit</b> button depends on the configuration. Read <a href="https://api.onlyoffice.com/editors/config/editor/customization">this article</a> to learn more.</p>-->
+        <h2>Entfernen von Formularfeldern</h2>
+        <p>Um ein Formularfeld zu entfernen und seinen gesamten Inhalt beizubehalten, wählen Sie es aus und klicken Sie auf das Symbol <span class="icon icon-combo_delete_values"></span> <b>Löschen</b> (stellen Sie sicher, dass das Feld nicht gesperrt ist) oder drücken Sie die Taste <b>Löschen</b> auf der Tastatur.</p>
+    </div>
+</body>
+</html>

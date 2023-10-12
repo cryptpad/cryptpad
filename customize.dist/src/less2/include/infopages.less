@@ -123,11 +123,6 @@ body.html {
                 background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
             }
         }
-        button.cp-secondary {
-            background-color: @cp_buttons-cancel;
-            color: @cp_buttons-fg;
-            border: 1px solid @cp_buttons-fg;
-        }
 
         .form-group {
             // & > * {
@@ -146,6 +141,14 @@ body.html {
                 input {
                     margin-right: 0.5em;
                 }
+            }
+            .big-container {
+                width: 100%;
+            }
+            .input-container {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
             }
         }
     }

@@ -5,7 +5,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/dom-ready.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common-outer.js',
     '/customize/login.js',
     '/common/common-hash.js',
@@ -17,8 +17,8 @@ define([
     '/checkup/checkup-tools.js',
     '/customize/application_config.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    '/components/tweetnacl/nacl-fast.min.js',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
@@ -96,6 +96,15 @@ define([
         API_URL = new URL(NetConfig.getWebsocketURL(window.location.origin), trimmedUnsafe);
     } catch (err) {
         console.error(err);
+    }
+
+    var HTTP_API_URL;
+    if (API_URL) {
+        try {
+            var httpApi = new URL(API_URL);
+            httpApi.protocol = API_URL.protocol === 'wss:' ? 'https:' : 'http:';
+            HTTP_API_URL = httpApi.origin;
+        } catch (e) {}
     }
 
     var ACCOUNTS_URL;
@@ -311,7 +320,7 @@ define([
         var blockUrl = Login.Block.getBlockUrl(opt.blockKeys);
         console.warn('Testing block URL (%s). One 404 is normal.', blockUrl);
 
-        var userHash = '/2/drive/edit/000000000000000000000000';
+        var userHash = Hash.createRandomHash('drive');
         var secret = Hash.getSecrets('drive', userHash);
         opt.keys = secret.keys;
         opt.channelHex = secret.channel;
@@ -350,12 +359,12 @@ define([
             Block.writeLoginBlock({
                 blockKeys: blockKeys,
                 content: {}
-            }, waitFor(function (e) {
+            }, waitFor(function (e, obj) {
                 // we should tolerate restricted registration
                 // and proceed to clean up after any data we've created
-                if (e === 'E_RESTRICTED') {
+                if (e && obj && obj.errorCode === 'E_RESTRICTED') {
                     restricted = true;
-                    return void cb(true);
+                    return;
                 }
                 if (e) {
                     waitFor.abort();
@@ -1001,7 +1010,8 @@ define([
                     'blob:',
                     $outer,
                     $sandbox,
-                    API_URL.origin,
+                    API_URL && API_URL.origin,
+                    (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
                     // support for cryptpad.fr configuration
                     accounts_api,
@@ -1042,6 +1052,7 @@ define([
                     $outer,
                     $sandbox,
                     API_URL.origin,
+                    (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
                     accounts_api,
                     ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
@@ -1095,7 +1106,9 @@ define([
         });
     };
 
-    ['/', '/blob/placeholder.txt', '/block/placeholder.txt'].forEach(relativeURL => {
+    // FIXME Blob and block can't be served for all origins anymore because of "Allow-Credentials"
+    // for advanced authentication features: rempve the tests?
+    ['/'/*, '/blob/placeholder.txt', '/block/placeholder.txt'*/].forEach(relativeURL => {
         assert(function (cb, msg) {
             var header = 'Access-Control-Allow-Origin';
             var url = new URL(relativeURL, trimmedUnsafe).href;
@@ -1192,7 +1205,7 @@ define([
         assert(function (cb, msg) {
             var url = new URL(relativeURL, trimmedUnsafe).href;
             Tools.common_xhr(url, xhr => {
-                var span = h('span', h('p', '// XXX DEBUGGING DUPLICATED HEADERS'));
+                var span = h('span', h('p', '// DEBUGGING DUPLICATED HEADERS'));
 
                 var duplicated = false;
                 var pre = [];
@@ -1270,7 +1283,7 @@ define([
 
     // check if they provide legal data
     assert(function (cb, msg) {
-        if (true) { return void cb(true); } // XXX stubbed while we determine whether this is necessary
+        if (true) { return void cb(true); } // FIXME stubbed while we determine whether this is necessary
         if (ApiConfig.restrictRegistration) { return void cb(true); }
 
         var url = Pages.customURLs.imprint;

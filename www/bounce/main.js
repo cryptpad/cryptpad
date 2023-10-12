@@ -15,7 +15,7 @@ define(['/api/config'], function (ApiConfig) {
     // where stricter CSP blocks various attacks. Reject any other usage.
     if (ApiConfig.httpSafeOrigin !== window.location.origin) {
         window.alert('The bounce application must only be used from the sandbox domain, ' +
-            'please report this issue on https://github.com/xwiki-labs/cryptpad');
+            'please report this issue on https://github.com/cryptpad/cryptpad');
         return void reject();
     }
     // Old/bad browsers lack the URL API, making it more difficult to validate and compare URLs.

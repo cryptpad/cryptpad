@@ -13,7 +13,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/customize/pages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/inner/invitation.js',
     '/common/visible.js',
 
@@ -128,14 +128,8 @@ define([
     };
 
     var importContent = UIElements.importContent = function (type, f, cfg) {
-        return function () {
-            var $files = $('<input>', {type:"file"});
-            if (cfg && cfg.accept) {
-                $files.attr('accept', cfg.accept);
-            }
-            $files.click();
-            $files.on('change', function (e) {
-                var file = e.target.files[0];
+        return function (_file) {
+            var todo = function (file) {
                 var reader = new FileReader();
                 var parsed = file && file.name && /.+\.([^.]+)$/.exec(file.name);
                 var ext = parsed && parsed[1];
@@ -144,7 +138,19 @@ define([
                    reader.readAsArrayBuffer(file, type);
                 } else {
                    reader.readAsText(file, type);
-               }
+                }
+            };
+
+            if (_file) { return void todo(_file); }
+
+            var $files = $('<input>', {type:"file"});
+            if (cfg && cfg.accept) {
+                $files.attr('accept', cfg.accept);
+            }
+            $files.click();
+            $files.on('change', function (e) {
+                var file = e.target.files[0];
+                todo(file);
             });
         };
     };
@@ -627,12 +633,16 @@ define([
                     });
 
                     var handler = data.first? function () {
-                        data.first(importer);
+                        data.first(function () {
+                            importer(); // Make sure we don't pass arguments to importer
+                        });
                     }: importer; //importContent;
 
                     button
                     .click(common.prepareFeedback(type))
-                    .click(handler);
+                    .click(function () {
+                        handler();
+                    });
                 //}
                 break;
             case 'upload':
@@ -817,6 +827,7 @@ define([
                 }
                 button = $('<button>', {
                     title: Messages.historyButton,
+                    'aria-label': Messages.historyButton,
                     'class': "fa fa-history cp-toolbar-icon-history",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
                 if (data.histConfig) {
@@ -1141,11 +1152,13 @@ define([
             editor.focus();
         };
         for (var k in actions) {
-            $('<button>', {
+            let $b = $('<button>', {
                 'data-type': k,
                 'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
-            }).click(onClick).appendTo($toolbar);
+            }).click(onClick);
+            if (k === "embed") { $toolbar.prepend($b); }
+            else { $toolbar.append($b); }
         }
         $('<button>', {
             'class': 'pure-button fa fa-question cp-markdown-help',
@@ -1478,14 +1491,17 @@ define([
         if (config.buttonContent) {
             $button = $(h('button', {
                 class: config.buttonCls || '',
+                'aria-label': config.ariaLabel || '',
             }, [
                 h('span.cp-dropdown-button-title', config.buttonContent),
             ]));
         } else {
             $button = $('<button>', {
-                'class': config.buttonCls || ''
+                'class': config.buttonCls || '',
+                'aria-label': config.ariaLabel || '',
             }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
         }
+
 
         if (config.caretDown) {
             $('<span>', {
@@ -1700,7 +1716,7 @@ define([
         var origin = priv.origin;
 
         // TODO link to the most recent changelog/release notes
-        // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
+        // https://github.com/cryptpad/cryptpad/releases/latest/ ?
 
         var template = function (line, link) {
             if (!line || !link) { return; }
@@ -1727,10 +1743,11 @@ define([
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
         var content = h('div.cp-info-menu-container', [
-            h('div.logo-block', [
-                h('img', {
-                    src: '/customize/CryptPad_logo.svg?' + urlArgs
-                }),
+                h('div.logo-block', [
+                    h('img', {
+                        src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                        alt: Messages.label_logo
+                    }),
                 h('h6', "CryptPad"),
                 h('span', Pages.versionString)
             ]),
@@ -1755,7 +1772,7 @@ define([
             },
         ];
 
-        var modal = UI.dialog.customModal(content, {buttons: buttons });
+        var modal = UI.dialog.customModal(content, {scrollable: true, buttons: buttons });
         UI.openCustomModal(modal);
     };
 
@@ -2848,8 +2865,10 @@ define([
     UIElements.onServerError = function (common, err, toolbar, cb) {
         //if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
+        var viewer = priv.readOnly || err.viewer;
         var sframeChan = common.getSframeChannel();
         var msg = err.type;
+        var exitable = Boolean(err.loaded);
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
@@ -2866,6 +2885,23 @@ define([
                 delete autoStoreModal[priv.channel];
             }
 
+            if (err.message && err.drive) {
+                let msg = UI.getDestroyedPlaceholder(err.message, true);
+                return UI.errorLoadingScreen(msg, false, () => {
+                    // When closing error screen
+                    if (err.message === 'PASSWORD_CHANGE') {
+                        return common.setLoginRedirect('login');
+                    }
+                    return common.setLoginRedirect('');
+                });
+            }
+            if (err.message && (err.message !== "PASSWORD_CHANGE" || viewer)) {
+                // XXX If readonly, tell the viewer that their link won't work with the new password
+                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
+                    exitable, exitable);
+                return;
+            }
+
             if (err.ownDeletion) {
                 if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
                 (cb || function () {})();
@@ -2874,7 +2910,7 @@ define([
 
             // View users have the wrong seed, thay can't retireve access directly
             // Version 1 hashes don't support passwords
-            if (!priv.readOnly && !priv.oldVersionHash) {
+            if (!viewer && !priv.oldVersionHash) {
                 sframeChan.event('EV_SHARE_OPEN', {hidden: true}); // Close share modal
                 UIElements.displayPasswordPrompt(common, {
                     fromServerError: true,
@@ -2909,9 +2945,17 @@ define([
 
     UIElements.displayPasswordPrompt = function (common, cfg, isError) {
         var error;
-        if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
+        if (isError) {
+            let msg = isError === 'PASSWORD_CHANGE' ? Messages.drive_sfPasswordError : Messages.password_error;
+            error = setHTML(h('p.cp-password-error'), msg);
+        }
 
-        var info = h('p.cp-password-info', Messages.password_info);
+        var pwMsg = UI.getDestroyedPlaceholderMessage('PASSWORD_CHANGE', false);
+        if (cfg.legacy) {
+            // Legacy mode: we don't know if the pad has been destroyed or its password has changed
+            pwMsg = Messages.password_info;
+        }
+        var info = h('p.cp-password-info', pwMsg);
         var info_loaded = setHTML(h('p.cp-password-info'), Messages.errorCopy);
 
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
@@ -2948,8 +2992,16 @@ define([
                 });
             }
             common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
-                if (!data) {
-                    return void UIElements.displayPasswordPrompt(common, cfg, true);
+                data = data || {};
+                if (!data.state && data.view && data.reason === "PASSWORD_CHANGE") {
+                    return UIElements.onServerError(common, {
+                        type: 'EDELETED',
+                        message: data.reason,
+                        viewer: data.view
+                    });
+                }
+                if (!data.state) {
+                    return void UIElements.displayPasswordPrompt(common, cfg, (data && data.reason) || 1);
                 }
             });
         };

@@ -291,7 +291,14 @@
             margin-bottom: 3px;
             margin-left: -2px;
         }
+        .droppable-tree-element () {
+            .cp-app-drive-element-droppable {
+                background-color: @cp_drive-droppable-bg !important;
+                color: @cp_drive-droppable-fg !important;
+            }
+        }
         .cp-app-drive-tree-docs {
+            .droppable-tree-element();
             margin-top: 15px;
             //padding: 0 0 0 20px;
             padding: 0;
@@ -346,6 +353,7 @@
             border-radius: @variables_radius;
             box-shadow: @cryptpad_ui_shadow;
             .cp-app-drive-tree-root {
+                .droppable-tree-element();
                 .fa-trash-o {
                     padding-left: 2px;
                 }

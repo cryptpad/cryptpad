@@ -2,9 +2,9 @@ define([
     'jquery',
     '/common/hyperscript.js',
     '/customize/pages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Pages, nThen) {
     // we consider that there is no valid reason to load any of the info pages
     // in an iframe. abort everything if you detect that you are embedded.
@@ -41,11 +41,19 @@ $(function () {
         });
     }).nThen(function () {
         require([
+            '/api/config',
+            '/common/common-util.js',
+            'optional!/api/instance',
             'less!/customize/src/less2/pages/page-' + pageName + '.less',
-            'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+            'css!/components/bootstrap/dist/css/bootstrap.min.css',
             'css!/customize/fonts/cptools/style.css'
-        ], function () {
+        ], function (ApiConfig, Util, Instance) {
             var $main = $(infoPage());
+            var titleSuffix = (Util.find(Instance, ['name','default']) || '').trim();
+            if (!titleSuffix || titleSuffix === ApiConfig.httpUnsafeOrigin) {
+                titleSuffix = window.location.hostname;
+            }
+            document.title = document.title + ' - ' + titleSuffix;
 
             $('#placeholder').remove();
 

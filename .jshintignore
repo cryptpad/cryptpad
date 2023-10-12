@@ -1,4 +1,5 @@
 node_modules/
+www/components/
 www/bower_components/
 www/common/onlyoffice/sdkjs
 www/common/onlyoffice/web-apps

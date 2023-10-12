@@ -14,6 +14,7 @@ define([
     '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
+    '/common/outer/integration.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
     '/common/outer/profile.js',
@@ -25,16 +26,16 @@ define([
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad-crypto/crypto.js',
+    '/components/chainpad/chainpad.dist.js',
     'chainpad-netflux',
     'chainpad-listmap',
     'netflux-client',
-    '/bower_components/nthen/index.js',
-    '/bower_components/saferphore/index.js',
+    '/components/nthen/index.js',
+    '/components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
-             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
+             SF, Cursor, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, Block, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
@@ -202,7 +203,7 @@ define([
         };
 
         var getUserChannelList = function () {
-            var userChannel = store.driveChannel;
+            var userChannel = `${store.driveChannel}#drive`;
             if (!userChannel) { return null; }
 
             // Get the list of pads' channel ID in your drive
@@ -244,6 +245,11 @@ define([
             }
 
             list.push(userChannel);
+
+            if (store.data && store.data.blockId) {
+                //list.push(`${store.data.blockId}#block`); // XXX 5.5.0?
+            }
+
             list.sort();
 
             return list;
@@ -359,10 +365,12 @@ define([
             var channel = data;
             var force = false;
             var teamId;
+            var reason;
             if (data && typeof(data) === "object") {
                 channel = data.channel;
                 force = data.force;
                 teamId = data.teamId;
+                reason = data.reason;
             }
 
             if (channel === store.driveChannel && !force) {
@@ -379,7 +387,7 @@ define([
             s.rpc.removeOwnedChannel(channel, function (err) {
                 if (err) { delete myDeletions[channel]; }
                 cb({error:err});
-            });
+            }, reason);
         };
 
         var arePinsSynced = function (cb) {
@@ -506,11 +514,9 @@ define([
             var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
-                if (response && response.length && typeof(response[0]) === 'boolean') {
-                    if (response[0]) { Cache.clearChannel(channelId); }
-                    return void cb({
-                        isNew: response[0]
-                    });
+                if (response && response.length && typeof(response[0]) === 'object') {
+                    if (response[0].isNew) { Cache.clearChannel(channelId); }
+                    return void cb(response[0]);
                 } else {
                     cb({error: 'INVALID_RESPONSE'});
                 }
@@ -633,6 +639,7 @@ define([
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
+            return metadata;
         };
 
         Store.onMaintenanceUpdate = function (uid) {
@@ -738,7 +745,6 @@ define([
                         list.push(m.channel);
                     });
                 }
-                // XXX calendars
             } else {
                 list = store.manager.getChannelsList('owned');
                 /*
@@ -882,6 +888,7 @@ define([
                     }).nThen(function (waitFor) {
                         if (!blockKeys) { return; }
                         Block.removeLoginBlock({
+                            reason: 'ARCHIVE_OWNED',
                             auth: auth,
                             blockKeys: blockKeys,
                         }, waitFor(function (err) {
@@ -2484,6 +2491,9 @@ define([
                 store.modules['cursor'].leavePad(chanId);
             } catch (e) { console.error(e); }
             try {
+                store.modules['integration'].leavePad(chanId);
+            } catch (e) { console.error(e); }
+            try {
                 store.onlyoffice.leavePad(chanId);
             } catch (e) { console.error(e); }
 
@@ -2717,6 +2727,7 @@ define([
                 loadSharedFolder: loadSharedFolder,
                 settings: proxy.settings,
                 removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
+                store: store,
                 Store: Store
             }, {
                 outer: true,
@@ -2807,6 +2818,7 @@ define([
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
                 loadUniversal(Cursor, 'cursor', waitFor);
+                loadUniversal(Integration, 'integration', waitFor);
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
@@ -3040,6 +3052,13 @@ define([
                     rt.realtime.abort();
                     sendDriveEvent('NETWORK_DISCONNECT');
                 }
+            })
+            .on('error', function (info) {
+                if (info.error && info.error === 'EDELETED') {
+                    broadcast([], "LOGOUT", {
+                        reason: info.message
+                    });
+                }
             });
 
             // Proxy handlers (reconnect only called when the proxy is ready)
@@ -3122,6 +3141,7 @@ define([
                 // To be able to use all the features inside the pad, we need to
                 // initialize the chat (messenger) and the cursor modules.
                 loadUniversal(Cursor, 'cursor', function () {});
+                loadUniversal(Integration, 'integration', function () {});
                 loadUniversal(Messenger, 'messenger', function () {});
                 store.messenger = store.modules['messenger'];
 
@@ -3210,7 +3230,9 @@ define([
 
             // First tab, no user hash, no anon hash and this app doesn't need a drive
             // ==> don't create a drive
-            if (data.noDrive && !data.userHash && !data.anonHash) {
+            // Or "neverDrive" (integration into another platform?)
+            // ==> don't create a drive
+            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // if we can't properly initialize the noDrive mode, use normal mode

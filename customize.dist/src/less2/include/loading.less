@@ -6,11 +6,11 @@
 #cp-loading {
     @font-face {
       font-family: 'Open Sans';
-      src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot');
-      src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
-           url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.woff') format('woff'),
-           url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.ttf') format('truetype'),
-           url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular') format('svg');
+      src: url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot');
+      src: url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+           url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.woff') format('woff'),
+           url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.ttf') format('truetype'),
+           url('/components/open-sans-fontface/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular') format('svg');
       font-weight: normal;
       font-style: normal;
     }
@@ -102,6 +102,9 @@
         display: none;
         a {
             color: @cp_loading-link;
+        }
+        p:last-child {
+            margin-bottom: 0;
         }
     }
 

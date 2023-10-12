@@ -3,8 +3,8 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/outer/cache-store.js',
-    '/bower_components/nthen/index.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/nthen/index.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (FileCrypto, Hash, Util, Cache, nThen) {
     var Nacl = window.nacl;
     var module = {};

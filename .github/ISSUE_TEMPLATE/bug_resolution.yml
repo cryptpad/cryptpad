@@ -1,37 +1,34 @@
-name: Reproducible bug report
-description: Report a reproducible bug ONLY, otherwise see the links below
+name: Bug report
+description: Report a bug, otherwise see the links below
 labels: ["bug"]
 body:
-  - type: checkboxes
+  - type: markdown
+    id: coc
     attributes:
-      label: Contribution guidelines
-      description: Please read the code of conduct before proceeding.
-      options:
-        - label: I've read the [code of conduct](https://github.com/xwiki-labs/cryptpad/blob/main/CODE_OF_CONDUCT.md) and wholeheartedly agree
-          required: true
-  - type: checkboxes
+      value: |
+        # Contribution guidelines
+        Please read the [code of conduct](https://github.com/cryptpad/cryptpad/blob/main/CODE_OF_CONDUCT.md) before proceeding.
+  - type: markdown
+    id: terms
     attributes:
-      label: I've found a bug and checked that ...
-      description: Prior to placing the issue, please check following:** *(fill out each checkbox with an `X` once done)*
-      options:
-      - label: I understand that not following the below instructions will result in immediate closure and/or deletion of my issue.
-        required: true
-      - label: I have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
-        required: true
-      - label: I have understood that answers are voluntary and community-driven, and not commercial support.
-        required: true
-      - label: I have verified that my issue has not been already answered in the past. I've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and I also checked [previous issues](https://github.com/xwiki-labs/cryptpad/issues).
-        required: true
+      value: |
+        You've found a bug and checked that ...
+        - You understand that not following the below instructions will result in immediate closure and/or deletion of your issue.
+        - You have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
+        - You have understood that answers are voluntary and community-driven, and not commercial support.
+        - You have verified that your issue has not been already answered in the past. You've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and you also checked [previous issues](https://github.com/cryptpad/cryptpad/issues).
   - type: textarea
+    id: description
     attributes:
       label: Description
       description: Please provide a brief description of the bug in 1-2 sentences. If applicable, add screenshots to help explain your problem. Very useful for bugs in CryptPad UI.
     validations:
       required: true
   - type: textarea
+    id: reproduce
     attributes:
       label: Steps to reproduce
-      description: Please describe the steps to reproduce the bug. Screenshots can be added, if helpful.
+      description: Please describe the steps to reproduce the bug.
       placeholder: |-
         1. ...
         2. ...
@@ -39,22 +36,70 @@ body:
     validations:
       required: true
   - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: textarea
+    id: expected-behavior
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen.
     validations:
       required: true
-  - type: textarea
+  - type: dropdown
+    id: operating-system
     attributes:
-      label: System information
-      description: In this stage we would kindly ask you to attach general system information about your setup.
-      value: |-
-             | Question | Answer |
-             | --- | --- |
-             | Operating system and version | I_DO_REPLY_HERE |
-             | Web browser and version| I_DO_REPLY_HERE |
-             | Extensions installed | I_DO_REPLY_HERE |
-             | Browser tweaks | I_DO_REPLY_HERE |
-             | CryptPad version | I_DO_REPLY_HERE |
+      label: What opreating system are you using?
+      multiple: true
+      options:
+        - Linux/BSD/UNIX
+        - Microsoft Windows
+        - Apple macOS
+        - Apple iOS
+        - Google ChromeOS
+        - Google Android
+        - Other
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Mozilla Firefox
+        - Google Chrome
+        - Apple Safari
+        - Microsoft Edge
+        - Other
+  - type: textarea
+    id: extensions
+    attributes:
+      label: Extensions
+      description: Web browser extensions installed
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of CryptPad are you running?
+      options:
+        - 5.5.0
+        - 5.4.1
+        - 5.4.0
+        - 5.3.0
+        - 5.2.1
+        - 5.2.0
+        - 5.1.0
+        - 5.0.0
+        - 4.14.1
+        - 4.14.0
+        - 4.13.0
+        - 4.12.1
+        - 4.12.0
+        - 4.11.0
+        - 4.10.0
+        - Other
     validations:
       required: true

@@ -1,5 +1,5 @@
 define([
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function () {
     var Nacl = window.nacl;
     //var PARANOIA = true;

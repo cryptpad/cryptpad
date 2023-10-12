@@ -1,9 +1,9 @@
 define([
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/common-util.js',
     '/api/config',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (nThen, Util, ApiConfig) {
     var Nacl = window.nacl;
     var clone = o => JSON.parse(JSON.stringify(o));
@@ -88,7 +88,7 @@ define([
                     console.error(err);
                     // there might be more info here
                     if (data) { console.error(data); }
-                    return void cb("RESPONSE_REJECTED");
+                    return void cb("RESPONSE_REJECTED", data);
                 }
                 cb(void 0, data);
             }));

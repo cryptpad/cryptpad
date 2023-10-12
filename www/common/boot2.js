@@ -78,7 +78,7 @@ define([
     window.onerror = function (e) {
         if (/requirejs\.org/.test(e)) {
             console.log();
-            console.error("Require.js threw a Script Error. This probably means you're missing a dependency for CryptPad.\nIt is recommended that the admin of this server runs `bower install && bower update` to get the latest code, then modify their cache version.\nBest of luck,\nThe CryptPad Developers");
+            console.error("Require.js threw a Script Error. This probably means you're missing a dependency for CryptPad.\nIt is recommended that the admin of this server runs `npm install && npm run install:components` to get the latest code.\nBest of luck,\nThe CryptPad Developers");
             return void console.log();
         }
         if (window.CryptPad_loadingError) {

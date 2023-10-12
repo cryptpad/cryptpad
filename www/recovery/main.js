@@ -15,9 +15,9 @@ define([
     '/common/outer/login-block.js',
     '/common/outer/http-command.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Sortify, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback,
     Clipboard, LocalStore, Block, ServerCommand) {
     if (window.top !== window) { return; }
@@ -94,7 +94,7 @@ define([
         var revokeTOTP = function () {
             var recoveryKey = $recoveryKey.val().trim();
             if (!recoveryKey || recoveryKey.length !== 32) {
-                return void UI.warn(Messages.error); // XXX error message?
+                return void UI.warn(Messages.error);
             }
             ServerCommand(blockKeys.sign, {
                 command: 'TOTP_REVOKE',
@@ -105,7 +105,6 @@ define([
                     console.error(err, response);
                     return void UI.warn(Messages.error);
                 }
-                // XXX redirect to login?
                 UI.log(Messages.ui_success);
                 LocalStore.login(undefined, blockHash, uname, function () {
                     Login.redirect();
@@ -145,12 +144,10 @@ define([
             }, 100);
         });
 
-        UI.confirmButton($recoverConfirm[0], {
-            multiple: true
-        }, function () {
+        $recoverConfirm[0].onclick = function () {
             if (!blockKeys) { return; }
             revokeTOTP();
-        });
+        };
 
     });
 });

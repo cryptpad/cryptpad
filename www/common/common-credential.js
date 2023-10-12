@@ -95,12 +95,12 @@ var factory = function (AppConfig, Scrypt) {
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory(
             {}, //require("../../customize.dist/application_config.js"),
-            require("../bower_components/scrypt-async/scrypt-async.min.js")
+            require("../components/scrypt-async/scrypt-async.min.js")
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/customize/application_config.js',
-            '/bower_components/scrypt-async/scrypt-async.min.js',
+            '/components/scrypt-async/scrypt-async.min.js',
         ], function (AppConfig) {
             return factory(AppConfig, window.scrypt);
         });

@@ -1,5 +1,6 @@
 datastore
 tasks
+www/components/*
 www/bower_components/*
 www/accounts
 node_modules
@@ -23,4 +24,3 @@ logs/
 privileged.conf
 config/config.js
 config/sso.js
-*.sh

@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bedingte Formatierung</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Conditional formatting allows you to apply various formatting styles (color, font, decoration, gradient) to cells to work with data on the spreadsheet: highlight or sort through and display the data that meets the needed criteria." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Bedingte Formatierung</h1>
+            <p>Mit der <b>bedingten Formatierung</b> können Sie verschiedene Formatierungsstile (Farbe, Schriftart, Schriftschnitt, Farbverlauf) auf Zellen anwenden, um mit Daten in der Tabelle zu arbeiten: Sortieren Sie oder bringen die Daten hervor, die die erforderlichen Bedingungen treffen, und zeigen Sie sie an. Legen Sie die Kriterien fest und erstellen Sie neue Formatierungsregeln, bearbeiten, verwalten oder löschen Sie die vorhandenen Regeln.
+                Von der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>ONLYOFFICE Tabellenkalkulation</b></a> unterstützte bedingte Formatierungsregeln sind:</p>
+            <p><b>Wert ist</b>, <b>Oben/Unten</b>, <b>Durchschnitt</b>, <b>Text</b>, <b>Datum</b>, <b>Leer/Fehler</b>, <b>Verdoppeln/Eindeutig</b>, <b>Datenbalken</b>, <b>Farbskalen</b>, <b>Symbolsätze</b>, und die Regeltypen, die sich <b>auf Formeln</b> basieren.</p>
+            <p>Für einen schnellen Zugriff oder wenn Sie eine der verfügbaren voreingestellten Bedingungen auswählen oder auf alle verfügbaren bedingten Formatierungsoptionen zugreifen möchten, gehen Sie zur Registerkarte <b>Startseite</b> und klicken Sie auf die Schaltfläche <b>Bedingte Formatierung</b> <span class="icon icon-conditionalformatting_button"></span>.</p>
+            <p><img alt="Bedingte Formatierung - Registerkarte Startseite" src="../images/interface/hometab.png" /></p>
+            <p>Alle Optionen zur <b>Bedingten Formatierung</b> sind auch in der rechten Seitenleiste auf der Registerkarte <b>Zelleneinstellungen</b> verfügbar. Klicken Sie auf den Abwärtspfeil des Steuerelements <b>Bedingte Formatierung</b>, um das Drop-Down-Menü mit allen verfügbaren Optionen zu öffnen.</p>
+            <p><img alt="Bedingte Formatierung - Rechte Seitenleiste" src="../images/conditionalformatting_rightsidebar.png" /></p>
+            <p>Um das Fenster <b>Neue Regel</b> zu öffnen, können Sie mit der rechten Maustaste auf eine beliebige Zelle klicken und die Option <b>Bedingte Formatierung</b> aus dem Kontextmenü wählen.</p>
+            <p><img alt="Bedingte Formatierung - Rechtsklick" src="../images/conditionalformatting_rightclick.png" /></p>
+            <p>Um eine Formatierungsregelbedingung anzuwenden, wählen Sie den Zellbereich aus und klicken Sie dann auf die Schaltfläche <b>Bedingte Formatierung</b> <span class="icon icon-conditionalformatting_button"></span> in der oberen Symbolleiste oder klicken Sie auf das Steuerelement <b>Bedingte Formatierung</b> der <b>Zelleneinstellungen</b> in der rechten Seitenleiste und wählen Sie die entsprechende Regel aus dem Drop-Down-Menü aus.</p>
+            <p><img alt="Bedingte Formatierung - Drop-Down" src="../images/conditionalformatting_dropdown.png" />.
+            <p>Das Fenster <b>Neue Regel</b> wird geöffnet, in dem Sie die Hervorhebungskriterien formatieren können.</p>
+            <details class="details-example">
+                <summary><b>Formatierungsregel "Wert ist"</b></summary>
+                <p>Die Formatierungsregel <b>Wert ist</b> wird verwendet, um Zellen zu finden und hervorzuheben, die eine bestimmte Vergleichsbedingung erfüllen:</p>
+                <ul type="circle">
+                    <li>Größer als</li>
+                    <li>Größer als oder gleich wie</li>
+                    <li>Kleiner als</li>
+                    <li>Kleiner als oder gleich</li>
+                    <li>Gleich</li>
+                    <li>Nicht gleich</li>
+                    <li>Zwischen</li>
+                    <li>Nicht zwischen</li>
+                </ul>
+                <p><img alt="Neue Regel - Wert ist" src="../images/newrule_valueis.png" /></p>
+                <ul type="disc">
+                    <li>Der Abschnitt <b>Regel</b> zeigt die ausgewählte Regel und die ausgewählte Vergleichsbedingung an. Durch Klicken auf den Abwärtspfeil können Sie auf die Liste der verfügbaren Regeln und Bedingungen zugreifen. Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenwert zu definieren, mit dem die Daten verglichen werden soll. Verwenden Sie den Verweis auf eine einzelne Zelle oder den Verweis mit der Arbeitsblattfunktion, z.B. =SUM(A1:B5).</li>
+                    <li>Der Abschnitt <b>Formatierung</b> bietet eine Reihe von Formatierungsoptionen für Zellen. Sie können eine der verfügbaren <b>Voreinstellungen</b> auswählen</li>
+                </ul>
+                <p><img alt="Formatierung - Voreinstellungen" src="../images/format_presets.png" /></p>
+                <p>oder</p>
+                <p>passen Sie die Formatierung mit Schriftartformatoptionen (Fett, Kursiv, Unterstrichen, Durchgestrichen), Textfarbe, Hintergrundfarbe und Rahmen an. Verwenden Sie die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (Allgemein, Zahl, Wissenschaftlich, Rechnungswesen, Währung, Datum, Zeit, Prozentsatz). Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird. Klicken Sie auf <b>Löschen</b>, 
+                um die Formatierung zu löschen.</p>
+                <p>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</p>
+                <p>Das folgende Beispiel zeigt die voreingestellten Formatierungskriterien wie <b>Größer als</b> und <b>Zwischen</b>. Dadurch werden Berge mit einer Höhe von mehr als 6.960 mit grünem Hintergrund und einem Perzentil zwischen 5.000 und 6.500 mit rosa formatiert.</p>
+                <p><img alt="Wert ist" src="../images/conditionalformatting/valueis_example.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Formatierungsregel "Oben/unten"</b></summary>
+                <p>Die Regel <b>Oben/unten</b> wird verwendet, um die oberen und unteren Werte in der Tabelle zu finden und anzuzeigen:</p>
+                <ul type="circle">
+                    <li>Oben 10 Elemente</li>
+                    <li>Oben 10%</li>
+                    <li>Unten 10 Elemente</li>
+                    <li>Unten 10%</li>
+                </ul>
+                <p><img alt="Neue Regel Oben und unten" src="../images/newrule_topbottom.png" /></p>
+                <ul type="disc">
+                    <li>Der Abschnitt <b>Regel</b> zeigt die ausgewählte Regel und die ausgewählte Vergleichsbedingung an. Durch Klicken auf den Abwärtspfeil können Sie auf die Liste der verfügbaren Regeln und Bedingungen zugreifen. Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenwert zu definieren, mit dem die Daten verglichen werden soll. Verwenden Sie den Verweis auf eine einzelne Zelle oder den Verweis mit der Arbeitsblattfunktion, z.B. =SUM(A1:B5).</li>
+                    <li>Der Abschnitt <b>Formatierung</b> bietet eine Reihe von Formatierungsoptionen für Zellen. Sie können eine der verfügbaren <b>Voreinstellungen</b> auswählen</li>
+                </ul>
+                <p><img alt="Formatierung - Voreinstellungen" src="../images/format_presets.png" /></p>
+                <p>oder</p>
+                <p>passen Sie die Formatierung mit Schriftartformatoptionen (Fett, Kursiv, Unterstrichen, Durchgestrichen), Textfarbe, Hintergrundfarbe und Rahmen an. Verwenden Sie die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (Allgemein, Zahl, Wissenschaftlich, Rechnungswesen, Währung, Datum, Zeit, Prozentsatz). Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird. Klicken Sie auf <b>Löschen</b>, um die Formatierung zu löschen.</p>
+                <p>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</p>
+                <p>Das folgende Beispiel zeigt die voreingestellten Formatierungskriterien an, wie die Regel <b>Oben 10%</b>, die so eingestellt sind, dass die obere 20%-Werte angezeigt werden, und <b>Unten 10 Elemente</b>. Dies formatiert die oberen 20 % der Gebühren in den besuchten Städten mit einem orangefarbenen Hintergrund und die unteren Werte für die Städte, in denen Sie eine kleine Anzahl von Büchern verkauft haben, mit einem blauen Hintergrund.</p>
+                <p><img alt="Oben Unten" src="../images/conditionalformatting/topbottom_example.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Formatierungsregel "Durchschnitt"</b></summary>
+                <p>Der <b>Durchschnitt</b> wird verwendet, um Werte über oder unter einem Durchschnitt oder einer Standardabweichung in einer Bewertung zu finden und anzeigen:</p>
+                <ul type="circle">
+                    <li>Oben</li>
+                    <li>Unten</li>
+                    <li>Gleich oder größer</li>
+                    <li>Gleich oder weniger</li>
+                    <li>1 Std Abw über</li>
+                    <li>1 Std Abw unter</li>
+                    <li>2 Std Abw über</li>
+                    <li>2 Std Abw unter</li>
+                    <li>3 Std Abw über</li>
+                    <li>3 Std Abw unter</li>
+                </ul>
+                <p><img alt="Neue Regel - Durchschnitt" src="../images/newrule_average.png" /></p>
+                <ul type="disc">
+                    <li>Der Abschnitt <b>Regel</b> zeigt die ausgewählte Regel und die ausgewählte Vergleichsbedingung an. Durch Klicken auf den Abwärtspfeil können Sie auf die Liste der verfügbaren Regeln und Bedingungen zugreifen. Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenwert zu definieren, mit dem die Daten verglichen werden soll. Verwenden Sie den Verweis auf eine einzelne Zelle oder den Verweis mit der Arbeitsblattfunktion, z.B. =SUM(A1:B5).</li>
+                    <li>Der Abschnitt <b>Formatierung</b> bietet eine Reihe von Formatierungsoptionen für Zellen. Sie können eine der verfügbaren <b>Voreinstellungen</b> auswählen</li>
+                </ul>
+                <p><img alt="Formatierung - Voreinstellungen" src="../images/format_presets.png" /></p>
+                <p>oder</p>
+                <p>passen Sie die Formatierung mit Schriftartformatoptionen (Fett, Kursiv, Unterstrichen, Durchgestrichen), Textfarbe, Hintergrundfarbe und Rahmen an. Verwenden Sie die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (Allgemein, Zahl, Wissenschaftlich, Rechnungswesen, Währung, Datum, Zeit, Prozentsatz). Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird. Klicken Sie auf <b>Löschen</b>,
+                    um die Formatierung zu löschen.
+                <p>Das folgende Beispiel zeigt die voreingestellten Formatierungskriterien an, z.B. <b>Überdurchschnittlich</b>. Dabei werden die Städte mit überdurchschnittlichen Besucherzahlen mit grün formatiert.</p>
+                <p><img alt="Durchschnitt" src="../images/conditionalformatting/average_example.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Formatierungsregel "Text"</b></summary>
+                <p>Die Formatierungsregel <b>Text</b> wird verwendet, um Zellen zu suchen und hervorzuheben, die bestimmten Text enthalten und eine der verfügbaren Formatierungsbedingungen erfüllen:</p>
+                <ul type="circle">
+                    <li>Enthält</li>
+                    <li>Enthält kein (e/en)</li>
+                    <li>Beginnt mit</li>
+                    <li>Endet mit</li>
+                </ul>
+                <p><img alt="Neue Regel - Text" src="../images/newrule_text.png" /></p>
+                <ul type="disc">
+                    <li>Der Abschnitt <b>Regel</b> zeigt die ausgewählte Regel und die ausgewählte Vergleichsbedingung an. Durch Klicken auf den Abwärtspfeil können Sie auf die Liste der verfügbaren Regeln und Bedingungen zugreifen. Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenwert zu definieren, mit dem die Daten verglichen werden soll. Verwenden Sie den Verweis auf eine einzelne Zelle oder den Verweis mit der Arbeitsblattfunktion, z.B. =SUM(A1:B5).</li>
+                    <li>Der Abschnitt <b>Formatierung</b> bietet eine Reihe von Formatierungsoptionen für Zellen. Sie können eine der verfügbaren <b>Voreinstellungen</b> auswählen</li>
+                </ul>
+                <p><img alt="Formatierung - Voreinstellungen" src="../images/format_presets.png" /></p>
+                <p>oder</p>
+                <p>passen Sie die Formatierung mit Schriftartformatoptionen (Fett, Kursiv, Unterstrichen, Durchgestrichen), Textfarbe, Hintergrundfarbe und Rahmen an. Verwenden Sie die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (Allgemein, Zahl, Wissenschaftlich, Rechnungswesen, Währung, Datum, Zeit, Prozentsatz). Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird. Klicken Sie auf <b>Löschen</b>, um die Formatierung zu löschen.</p>
+                <p>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</p>
+                <p>Das folgende Beispiel zeigt die voreingestellten Formatierungskriterien an, z.B. <b>Enthält</b>. Dadurch werden Zellen, die Dänemark enthalten, mit einem rosa Hintergrund formatiert, um die Verkäufe für eine bestimmte Region hervorzuheben.</p>
+                <p><img alt="Text" src="../images/conditionalformatting/text_example.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Formatierungsregel "Datum"</b></summary>
+                <p>Die Formatierungsregel <b>Datum</b> wird verwendet, um Zellen zu suchen und hervorzuheben, die ein bestimmtes Datum enthalten und eine der verfügbaren Formatierungsbedingungen erfüllen:</p>
+                <ul type="circle">
+                    <li>Gestern</li>
+                    <li>Heute</li>
+                    <li>Morgen</li>
+                    <li>In den letzten 7 Tagen</li>
+                    <li>Letzte Woche</li>
+                    <li>Diese Woche</li>
+                    <li>Nächste Woche</li>
+                    <li>Letzter Monat</li>
+                    <li>Dieser Monat</li>
+                    <li>Nächster Monat</li>
+                </ul>
+                <p><img alt="Neue Regel - Datum" src="../images/newrule_date.png" /></p>
+                <ul type="disc">
+                    <li>Der Abschnitt <b>Regel</b> zeigt die ausgewählte Regel und die ausgewählte Vergleichsbedingung an. Durch Klicken auf den Abwärtspfeil können Sie auf die Liste der verfügbaren Regeln und Bedingungen zugreifen. Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenwert zu definieren, mit dem die Daten verglichen werden soll. Verwenden Sie den Verweis auf eine einzelne Zelle oder den Verweis mit der Arbeitsblattfunktion, z.B. =SUM(A1:B5).</li>
+                    <li>Der Abschnitt <b>Formatierung</b> bietet eine Reihe von Formatierungsoptionen für Zellen. Sie können eine der verfügbaren <b>Voreinstellungen</b> auswählen</li>
+                </ul>
+                <p><img alt="Formatierung - Voreinstellungen" src="../images/format_presets.png" /></p>
+                <p>oder</p>
+                <p>passen Sie die Formatierung mit Schriftartformatoptionen (Fett, Kursiv, Unterstrichen, Durchgestrichen), Textfarbe, Hintergrundfarbe und Rahmen an. Verwenden Sie die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (Allgemein, Zahl, Wissenschaftlich, Rechnungswesen, Währung, Datum, Zeit, Prozentsatz). Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird. Klicken Sie auf <b>Löschen</b>, um die Formatierung zu löschen.</p>
+                <p>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</p>
+                <p>Das folgende Beispiel zeigt die voreingestellten Formatierungskriterien an, z.B. <b>Letzter Monat</b>. Dadurch werden Zellen mit Daten aus dem Vormonat mit einem gelben Hintergrund formatiert, um Verkäufe für einen bestimmten Zeitraum hervorzuheben.</p>
+                <p><img alt="Datum" src="../images/conditionalformatting/date_example.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Formatierungsregel "Leer/Fehler"</b></summary>
+                <p>Die Formatierungsregel <b>Leer/Fehler</b> wird verwendet, um Zellen zu finden und hervorzuheben, die Leerzeichen und Fehler enthalten oder nicht:</p>
+                <ul type="circle">
+                    <li>Enthält leere Werte</li>
+                    <li>Enthält keine leeren Werte</li>
+                    <li>Enthält Fehler</li>
+                    <li>Enthält keine Fehler</li>
+                </ul>
+                <p><img alt="Neue Regel - Leer/Fehler" src="../images/newrule_blankerror.png" /></p>
+                <ul type="disc">
+                    <li>Der Abschnitt <b>Regel</b> zeigt die ausgewählte Regel und die ausgewählte Vergleichsbedingung an. Durch Klicken auf den Abwärtspfeil können Sie auf die Liste der verfügbaren Regeln und Bedingungen zugreifen. Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenwert zu definieren, mit dem die Daten verglichen werden soll. Verwenden Sie den Verweis auf eine einzelne Zelle oder den Verweis mit der Arbeitsblattfunktion, z.B. =SUM(A1:B5).</li>
+                    <li>Der Abschnitt <b>Formatierung</b> bietet eine Reihe von Formatierungsoptionen für Zellen. Sie können eine der verfügbaren <b>Voreinstellungen</b> auswählen</li>
+                </ul>
+                <p><img alt="Formatierung - Voreinstellungen" src="../images/format_presets.png" /></p>
+                <p>oder</p>
+                <p>passen Sie die Formatierung mit Schriftartformatoptionen (Fett, Kursiv, Unterstrichen, Durchgestrichen), Textfarbe, Hintergrundfarbe und Rahmen an. Verwenden Sie die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (Allgemein, Zahl, Wissenschaftlich, Rechnungswesen, Währung, Datum, Zeit, Prozentsatz). Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird. Klicken Sie auf <b>Löschen</b>, um die Formatierung zu löschen.</p>
+                <p>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</p>
+                <p>Das folgende Beispiel zeigt die voreingestellten Formatierungskriterien an, z.B. <b>Enthält leere Werte</b>. Dadurch werden leere Zellen in der Spalte formatiert, die den Umsatz mit hellblauem Hintergrund anzeigt.</p>
+                <p><img alt="Blank/Error" src="../images/conditionalformatting/blankerror_example.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Formatierungsregel "Verdoppeln/Eindeutig"</b></summary>
+                <p>Die Formatierungsregel <b>Verdoppeln/Eindeutig</b> wird verwendet, um doppelte Werte innerhalb der Tabelle und des durch die bedingte Formatierung definierten Zellbereichs anzuzeigen. Die verfügbaren Optionen sind:</p>
+                <ul type="circle">
+                    <li>Verdoppeln</li>
+                    <li>Eindeutig</li>
+                </ul>
+                <p><img alt="Neue Regel - Verdoppeln/Eindeutig" src="../images/newrule_duplicateunique.png" /></p>
+                <ul type="disc">
+                    <li>Der Abschnitt <b>Regel</b> zeigt die ausgewählte Regel und die ausgewählte Vergleichsbedingung an. Durch Klicken auf den Abwärtspfeil können Sie auf die Liste der verfügbaren Regeln und Bedingungen zugreifen. Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenwert zu definieren, mit dem die Daten verglichen werden soll. Verwenden Sie den Verweis auf eine einzelne Zelle oder den Verweis mit der Arbeitsblattfunktion, z.B. =SUM(A1:B5).</li>
+                    <li>Der Abschnitt <b>Formatierung</b> bietet eine Reihe von Formatierungsoptionen für Zellen. Sie können eine der verfügbaren <b>Voreinstellungen</b> auswählen</li>
+                </ul>
+                <p><img alt="Formatierung - Voreinstellungen" src="../images/format_presets.png" /></p>
+                <p>oder</p>
+                <p>passen Sie die Formatierung mit Schriftartformatoptionen (Fett, Kursiv, Unterstrichen, Durchgestrichen), Textfarbe, Hintergrundfarbe und Rahmen an. Verwenden Sie die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (Allgemein, Zahl, Wissenschaftlich, Rechnungswesen, Währung, Datum, Zeit, Prozentsatz). Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird. Klicken Sie auf <b>Löschen</b>, um die Formatierung zu löschen.</p>
+                <p>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</p>
+                <p>Das folgende Beispiel zeigt die voreingestellten Formatierungskriterien an, z.B. <b>Verdoppeln</b>. Dadurch werden doppelte Kontakte mit einem gelben Hintergrund formatiert.</p>
+                <p><img alt="Verdoppeln/Eindeutig" src="../images/conditionalformatting/uniqueduplicates.gif" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Datenbalken-Formatierung</b></summary>
+                <p>Die <b>Datenbalken</b> dienen zum Vergleich von Werten in Form eines Diagrammbalkens.</p>
+                <p><span class="big big-databars_diagrams"></span></p>
+                <p>Vergleichen Sie beispielsweise Berghöhen, indem Sie ihren Standardwert in Metern (grüner Balken) und denselben Wert im Bereich von 0 bis 100 Prozent (gelber Balken) anzeigen; Perzentil, wenn Extremwerte die Daten neigen (hellblauer Balken); nur Balken statt Zahlen (blauer Balken); zweispaltige Datenanalyse, um sowohl Zahlen als auch Balken zu sehen (roter Balken).</p>
+                <p><img alt="Datenbalken" src="../images/conditionalformatting/databars.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Farbskalen-Formatierung</b></summary>
+                <p>Die <b>Farbskalen</b> werden verwendet, um Werte innerhalb der Tabelle durch eine Verlaufsskala hervorzuheben.</p>
+                <p><span class="big big-colorscales"></span></p>
+                <p>Das folgende Beispiel zeigt die Spalten von „Dairy“ bis „Beverage“, die Daten über eine zweifarbige Skala mit Variation von Gelb bis Rot anzeigen; Die Spalte „Total Sales“ zeigt Daten über eine dreifarbige Skala vom kleinsten Betrag in Rot bis zum größten Betrag in Blau an.</p>
+                <p><img alt="Verlauf" src="../images/conditionalformatting/gradient.png" /></p>
+            </details>
+            <details class="details-example">
+                <summary><b>Symbolsätze-Formatierung</b></summary>
+                <p>Die <b>Symbolsätze</b> werden verwendet, um die Daten anzuzeigen, indem ein entsprechendes Symbol in der Zelle angezeigt wird, die die Kriterien erfüllt. Die Tabellenkalkulation unterstützt verschiedene Symbolsätze:</p>
+                <ul type="circle">
+                    <li>Direktional</li>
+                    <li>Formen</li>
+                    <li>Indikatoren</li>
+                    <li>Bewertungen</li>
+                </ul>
+                <p><span class="big big-iconsets"></span></p>
+                <p>Im Folgenden finden Sie Beispiele für die gängigsten Fälle der bedingten Formatierung von Symbolsätzen.</p>
+                <ul>
+                    <li>Statt Zahlen und Prozentwerten sehen Sie in der Spalte „Status“ formatierte Zellen mit entsprechenden Pfeilen, die Ihre Umsatzerlöse und in der Spalte „Trend“ die Dynamik für zukünftige Trends anzeigen.
+                        <p><img alt="Symbolsatz" src="../images/conditionalformatting/iconsetrevenue.png" /></p>
+                    </li>
+                    <li>Anstelle von Zellen mit Bewertungszahlen von 1 bis 5 zeigt das Tool zur bedingten Formatierung oben für jedes Fahrrad in der Bewertungsliste entsprechende Symbole aus der Legendenkarte an.
+                        <p><img alt="Symbolsatz" src="../images/conditionalformatting/iconsetbikerating.png" /></p>
+                    </li>
+                    <li>Anstatt die monatlichen Gewinndynamikdaten manuell zu vergleichen, haben die formatierten Zellen einen entsprechenden roten oder grünen Pfeil.
+                        <p><img alt="Symbolsatz" src="../images/conditionalformatting/iconsettrends.png" /></p>
+                    </li>
+                    <li>Verwenden Sie das Ampelsystem (rote, gelbe und grüne Kreise), um die Verkaufsdynamik zu visualisieren.
+                        <p><img alt="Symbolsatz" src="../images/conditionalformatting/iconsettrafficlights.png" /></p>
+                    </li>
+                </ul>
+            </details>
+            <details class="details-example">
+                <summary><b>Formatierung mit Formeln</b></summary>
+                <p>Die <b>formelbasierte</b> Formatierung verwendet verschiedene Formeln, um Daten nach spezifischen Anforderungen zu filtern.</p>
+                <p><img alt="Neue Regel - Formel" src="../images/newrule_formula.png" /></p>
+                <ul>
+                    <li>Der Abschnitt <b>Regel</b> zeigt die ausgewählte Regel und die ausgewählte Vergleichsbedingung an. Durch Klicken auf den Abwärtspfeil können Sie auf die Liste der verfügbaren Regeln und Bedingungen zugreifen. Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenwert zu definieren, mit dem die Daten verglichen werden soll. Verwenden Sie den Verweis auf eine einzelne Zelle oder den Verweis mit der Arbeitsblattfunktion, z.B. =SUM(A1:B5).</li>
+                    <li>Der Abschnitt <b>Formatierung</b> bietet eine Reihe von Formatierungsoptionen für Zellen. Sie können eine der verfügbaren <b>Voreinstellungen</b> auswählen</li>
+                </ul>
+                <p><img alt="Formatierung - Voreinstellungen" src="../images/format_presets.png" /></p>
+                <p>oder</p>
+                <p>passen Sie die Formatierung mit Schriftartformatoptionen (Fett, Kursiv, Unterstrichen, Durchgestrichen), Textfarbe, Hintergrundfarbe und Rahmen an. Verwenden Sie die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (Allgemein, Zahl, Wissenschaftlich, Rechnungswesen, Währung, Datum, Zeit, Prozentsatz). Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird. Klicken Sie auf <b>Löschen</b>, um die Formatierung zu löschen.</p>
+                <p>Klicken Sie auf <b>OK</b>, um die Änderungen anzunehmen.</p>
+                <p>Die folgenden Beispiele zeigen die Möglichkeiten der Formelformatierung an.</p>
+                <p>Abwechselnde Reihen schatten,</p>
+                <p><img alt="Formelbasiert" src="../images/conditionalformatting/shading.png" /></p>
+                <p>Mit einem Referenzwert (hier sind es 55 $) vergleichen und zeigen, ob er höher (grün) oder niedriger (rot) ist,</p>
+                <p><img alt="Formelbasiert" src="../images/conditionalformatting/comparison.png" /></p>
+                <p>Die Zeilen markieren, die die erforderlichen Kriterien erfüllen (sehen Sie, welche Ziele Sie diesen Monat erreichen sollen, in diesem Fall ist es Oktober),</p>
+                <p><img alt="Formelbasiert" src="../images/conditionalformatting/shaderows.png" /></p>
+                <p>Oder nur eindeutige Zeilen markieren.</p>
+                <p><img alt="Formelbasiert" src="../images/conditionalformatting/shadeunique.png" /></p>
+            </details>
+            <h2>Neue Regel erstellen</h2>
+            <p>Wenn Sie eine neue Regel für die bedingte Formatierung erstellen müssen, können Sie dies auf eine der folgenden Arten tun:</p>
+            <ul>
+                <li>Gehen Sie zur Registerkarte <b>Startseite</b> und klicken Sie auf die Schaltfläche <b>Bedingte Formatierung</b> <span class="icon icon-conditionalformatting_button"></span>, oder wählen Sie die Option <b>Neue Regel</b> im Drop-Down-Menü aus.</li>
+                <li>Klicken Sie in der rechten Seitenleiste auf die Registerkarte <b>Zelleneinstellungen</b>, klicken Sie auf den Abwärtspfeil des Steuerelements <b>Bedingte Formatierung</b> und wählen Sie <b>Neue Regel</b> aus dem Drop-Down-Menü.</li>
+                <li>Klicken Sie mit der rechten Maustaste auf eine beliebige Zelle und wählen Sie die Option <b>Bedingte Formatierung</b> aus dem Kontextmenü aus.</li>
+            </ul>
+            <p>Das Fenster <b>Neue Formatierungsregel</b> wird sofort geöffnet. Legen Sie die erforderlichen Optionen zum Konfigurieren der Regel wie oben beschrieben fest und klicken Sie zur Bestätigung auf <b>OK</b>.</p>
+            <h2>Regeln für bedingte Formatierung verwalten</h2>
+            <p>Nachdem Sie die Regeln für die bedingte Formatierung eingerichtet haben, können Sie sie mithilfe der Option <b>Regeln verwalten</b> ganz einfach bearbeiten, löschen und anzeigen, indem Sie auf die Schaltfläche <b>Bedingte Formatierung</b> <span class="icon icon-conditionalformatting_button"></span> auf der Registerkarte <b>Startseite</b> klicken, oder verwenden Sie das Steuerelement <b>Bedingte Formatierung</b> auf der Registerkarte <b>Zelleneinstellungen</b> der rechten Seitenleiste. Das Fenster <b>Bedingte Formatierung</b> wird angezeigt:</p>
+            <p><img alt="Regeln verwalten" src="../images/managerules.png" /><p>
+            <p>Die Option <b>Formatierungsregeln anzeigen für</b> ermöglicht die Auswahl der anzuzeigenden Regeln:</p>
+            <ul type="circle">
+                <li>Aktuelle Auswahl</li>
+                <li>Dieses Arbeitsblatt</li>
+                <li>Diese Tabelle</li>
+                <li>Diese Pivot-Tabelle</li>
+            </ul>
+            <p>Alle im ausgewählten Bereich gefundenen Regeln werden in der Rangfolge (von oben nach unten) unter <b>Regeln</b> angezeigt. <b>Anwenden für</b> zeigt den Bereich an, auf den die Regel angewendet wird. Sie können den Bereich ändern, indem Sie auf das Symbol <b>Daten auswählen</b> <span class="icon icon-selectdata_icon"></span> klicken. Das Feld <b>Formatierung</b> zeigt die angewendete Formatierungsregel an.</p>
+            <ul>
+                <li>Verwenden Sie die Schaltfläche <b>Neu</b>, um eine neue Regel hinzuzufügen.</li>
+                <li>Verwenden Sie die Schaltfläche <b>Bearbeiten</b>, wenn Sie die vorhandene Regel bearbeiten möchten. Das Fenster <b>Formatierungsregel bearbeiten</b> wird geöffnet. Bearbeiten Sie die Regel nach Belieben und klicken Sie auf <b>OK</b>.</li>
+                <li>Verwenden Sie die Aufwärts- und Abwärtspfeile, um den Platz in der Rangfolge zu ändern.</li>
+                <li>Klicken Sie auf <b>Löschen</b>, um die Regel zu entfernen.</li>
+                <li>Klicken Sie zur Bestätigung auf <b>OK</b>.</li>
+            </ul>
+            <h2>Bedingte Formatierung bearbeiten</h2>
+            <details class="details-example">
+                <summary><b>Bearbeitung von Regeln: Wert ist, Oben/unten, Durchschnitt, Text, Datum, Leer/Fehler, Verdoppeln/Eindeutig, Formel</b></summary>
+                <p>Das Fenster <b>Formatierungsregel bearbeiten</b> für <b>Wert ist</b>, <b>Oben/unten</b>, <b>Durchschnitt</b>, <b>Text</b>, <b>Datum</b>, <b>Leer/Fehler</b>, <b>Verdoppeln/Eindeutig</b>, <b>Formel</b> bietet eine Reihe von regulären Einstellungen:</p>
+                <p><img alt="Formatierungsregel Wert ist bearbeiten" src="../images/editrule_valueis.png" /></p>
+                <ul type="disc">
+                    <li>Klicken Sie auf <b>Regel</b>, um die zuvor angewendete Regel und Formatierungsbedingung zu ändern.</li>
+                    <li>Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellbereich zu ändern, auf den die Regel verwiesen werden soll (für <em>Wert ist</em>, <em>Text und Formel</em>).</li>
+                    <li>Verwenden Sie die Optionen für <b>Schriftart</b> und Zellenformat (<em>Fett</em>, <em>Kursiv</em>, <em>Unterstrichen</em>, <em>Durchgestrichen</em>), <em>Textfarbe</em>, <em>Hintergrundfarbe</em> und <em>Rahmen</em>.</li>
+                    <li>Klicken Sie auf die Drop-Down-Liste <b>Allgemeines</b>, um das entsprechende Zahlenformat auszuwählen (<em>Allgemein</em>, <em>Nummer</em>, <em>Wissenschaftlich</em>, <em>Rechnungswesen</em>, <em>Währung</em>, <em>Datum</em>, <em>Zeit</em>, <em>Prozentsatz</em>).</li>
+                    <li>Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird.</li>
+                    <li>Klicken Sie zur Bestätigung auf OK.</li>
+                </ul>
+            </details>
+            <details class="details-example">
+                <summary><b>Datenbalken bearbeiten</b></summary>
+                <p>Das Fenster <b>Formatierungsregel bearbeiten</b> für <b>Datenbalken</b> bietet eine Reihe von regulären Einstellungen:</p>
+                <p><img alt="Datenbalken-Formatierung bearbeiten" src="../images/editrule_databar.png" /></p>
+                <ul type="disc">
+                    <li>Klicken Sie auf <b>Regel</b>, um die zuvor angewendete Regel und Formatierungsbedingung zu ändern.</li>
+                    <li>
+                        <b>Minimum/Maximum</b> zum Definieren des Typs der Minimal- und Maximalwerte für Datenbalken, wenn Sie sich auf Unterschiede konzentrieren möchten. Die maximalen/minimalen Werttypen:
+                        <ul>
+                            <li>Minimum/Maximum</li>
+                            <li>Zahl</li>
+                            <li>Prozent</li>
+                            <li>Formel</li>
+                            <li>Quantil</li>
+                            <li>Automatisch</li>
+                        </ul>
+                        <p>Wählen Sie <b>Automatisch</b>, um den Mindestwert auf Null und den Höchstwert auf die größte Zahl im Bereich festzulegen. <b>Automatisch</b> ist die Standardoption.</p>
+                        <p>Klicken Sie auf das Feld <b>Daten auswählen</b>, um den Zellenbereich für die Mindest-/Höchstwerte zu ändern.</p>
+                    </li>
+                    <li><b>Darstellung des Datenbalkens</b>
+                        <p>Passen Sie die Darstellung des <b>Datenbalkens</b> an, indem Sie den Typ und die Farbe der Füllung und des Rahmens sowie die Balkenrichtung auswählen.</p>
+                        <ul>
+                            <li>Es gibt zwei Optionen von <b>Ausfüllen</b>: <b>Einfarbig</b> und <b>Farbverlauf</b>. Verwenden Sie den Abwärtspfeil unten, um die Füllfarbe für die Balken auszuwählen, die positive und negative Werte darstellen.</li>
+                            <li>Es gibt zwei Optionen von <b>Rahmen</b>: <b>Einfarbig</b> und <b>Kein(e)</b>. Verwenden Sie den Abwärtspfeil unten, um die Rahmenfarbe für die Balken auszuwählen, die positive und negative Werte darstellen.</li>
+                            <li>Aktivieren Sie das Kontrollkästchen <b>Wie positive</b>, um Positiv und Negativ in derselben Farbe anzuzeigen. Farbeinstellungen für <b>Negative</b>-Werte werden deaktiviert, wenn dieses Kontrollkästchen aktiviert ist.</li>
+                            <li>Verwenden Sie die Option <b>Balkenrichtung</b>, um die Richtung der Datenbalken zu ändern. <b>Kontext</b> ist standardmäßig die Option, aber Sie können je nach Ihren Präferenzen für die Datendarstellung von <b>links nach rechts</b> oder von <b>rechts nach links</b> wählen.</li>
+                            <li>Aktivieren Sie das Kontrollkästchen <b>Nur Balken anzeigen</b>, um nur Datenbalken in Zellen anzuzeigen und Werte auszublenden.</li>
+                        </ul>
+                    </li>
+                    <li><b>Achse</b>
+                        <p>Wählen Sie die <b>Position</b> der Datenbalkenachse in Bezug auf den Zellmittelpunkt aus, um positive und negative Werte zu trennen. Es gibt drei Optionen für die Achsenposition: <b>Automatisch</b>, <b>Zellmittelpunkt</b> und <b>Kein(e)</b>. Klicken Sie auf den Abwärtspfeil des Farbfelds, um die Achsenfarbe festzulegen.</p>
+                    </li>
+                    <li>Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird.</li>
+                    <li>Klicken Sie zur Bestätigung auf <b>OK</b>.</li>
+                </ul>
+            </details>
+            <details class="details-example">
+                <summary><b>Farbskalen bearbeiten</b></summary>
+                <details class="details-example">
+                    <summary><b>2-Farben-Skala-Formatierung bearbeiten</b></summary>
+                    <p>Das Fenster <b>Formatierungsregel bearbeiten</b> für <b>2-Farben-Skala</b> bietet eine Reihe von regulären Einstellungen:</p>
+                    <p><img alt="2-Farben-Skala-Formatierung bearbeiten" src="../images/editrule_2color.png" /></p>
+                    <ul type="disc">
+                        <li>Klicken Sie auf <b>Regel</b>, um die zuvor angewendete Regel und Formatierungsbedingung zu ändern.</li>
+                        <li>
+                            Klicken Sie auf <b>Minimaler/Maximaler Wert</b>, um die Art der Werte für die minimalen und maximalen Punkte der Farbskala zu definieren, wenn Sie sich auf Unterschiede konzentrieren möchten. Die Werttypen von minimalen/maximalen Wert sind:
+                            <ul>
+                                <li>Minimum/Maximum</li>
+                                <li>Zahl</li>
+                                <li>Prozent</li>
+                                <li>Formel</li>
+                                <li>Quantil</li>
+                            </ul>
+                            <p>Die Option <b>Minimum/Maximum</b> ist standardmäßig.</p>
+                        </li>
+                        <li>Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellenbereich für die minimalen und maximalen Punkte zu ändern.</li>
+                        <li>Verwenden Sie den Abwärtspfeil unten, um die Farbe für jede Skala auszuwählen.</li>
+                        <li>Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird.</li>
+                        <li>Klicken Sie zur Bestätigung auf <b>OK</b>.</li>
+                    </ul>
+                </details>
+                <details class="details-example">
+                    <summary><b>3-Farben-Skala-Formatierung bearbeiten</b></summary>
+                    <p>Das Fenster <b>Formatierungsregel bearbeiten</b> für <b>3-Farben-Skala</b> bietet eine Reihe von regulären Einstellungen:</p>
+                    <p><img alt="3-Farben-Skala-Formatierung bearbeiten" src="../images/editrule_3color.png" /></p>
+                    <ul type="disc">
+                        <li>Klicken Sie auf <b>Regel</b>, um die zuvor angewendete Regel und Formatierungsbedingung zu ändern.</li>
+                        <li>
+                            Klicken Sie auf <b>minimalen/maximaler Wert oder Mittelwert</b>, um die Art der Werte für die minimalen, mittleren und maximalen Punkte der Farbskala festzulegen, wenn Sie sich auf Unterschiede konzentrieren möchten.
+                            <p>Die Werttypen von minimalen/maximalen Wert sind:</p>
+                            <ul>
+                                <li>Minimum/Maximum</li>
+                                <li>Zahl</li>
+                                <li>Prozent</li>
+                                <li>Formel</li>
+                                <li>Quantil</li>
+                            </ul>
+                            <p>Die Werttypen von Mittelwert sind:</p>
+                            <ul>
+                                <li>Zahl</li>
+                                <li>Prozent</li>
+                                <li>Formel</li>
+                                <li>Quantil</li>
+                            </ul>
+                            <p><b>Minimum/Prozent/Maximum</b> ist die Standardoption für die <b>3-Farben-Skala-Formatierung</b>.</p>
+                        </li>
+                        <li>Verwenden Sie das Feld <b>Daten auswählen</b>, um den Zellbereich für die minimalen, mittleren und maximalen Punkte zu ändern.</li>
+                        <li>Verwenden Sie den Abwärtspfeil unten, um die Farbe für jede Skala auszuwählen.</li>
+                        <li>Das Feld <b>Vorschau</b> zeigt, wie die Zelle nach der Formatierung aussehen wird.</li>
+                        <li>Klicken Sie zur Bestätigung auf <b>OK</b>.</li>
+                    </ul>
+                </details>
+            </details>
+            <details class="details-example">
+                <summary><b>Symbolsätze bearbeiten</b></summary>
+                <p>Das Fenster <b>Formatierungsregel bearbeiten</b> für <b>Symbolsätze</b> bietet eine Reihe von regulären Einstellungen:</p>
+                <p><img alt="Symbolsätze-Formatierung bearbeiten" src="../images/editrule_iconsets.png" /></p>
+                <ul type="disc">
+                    <li>Klicken Sie auf <b>Regel</b>, um die zuvor angewendete Regel und Formatierungsbedingung zu ändern.</li>
+                    <li>Klicken Sie auf <b>Symbolart</b>, um den Stil der Symbole für die erstellte Regel anzupassen.</li>
+                    <li>Aktivieren Sie <b>Nur Symbol anzeigen</b>, um nur Symbole in Zellen anzuzeigen und Werte auszublenden.</li>
+                    <li>Aktivieren Sie <b>Reihenfolge von Symbolen umkehren</b>, um die Reihenfolge der Symbole zu ändern und sie vom niedrigsten zum höchsten Wert anzuordnen. Standardmäßig sind die Symbole vom höchsten zum niedrigsten Wert angeordnet.</li>
+                    <li>Legen Sie die Regel für jedes Symbol fest und passen Sie Vergleichsoperatoren (<em>größer oder gleich</em>, <em>größer als</em>), Schwellenwerte und Werttyp (<em>Zahl</em>, <em>Prozent</em>, <em>Formel</em>, <em>Quantil</em>), um die Werte von oben nach unten anzuordnen. Standardmäßig werden die Werte gleichmäßig aufgeteilt.</li>
+                    <li>Klicken Sie zur Bestätigung auf <b>OK</b>.</li>
+                </ul>
+            </details>
+            <h2>Bedingte Formatierung löschen</h2>
+            <p>Um alle bedingten Formatierungen zu löschen, gehen Sie zur Registerkarte <b>Startseite</b> und klicken Sie auf die Schaltfläche <b>Bedingte Formatierung</b> <span class="icon icon-conditionalformatting_button"></span>, oder klicken Sie auf das Steuerelement <b>Bedingte Formatierung</b> der Registerkarte <b>Zelleneinstellungen</b> in der rechten Seitenleiste, klicken Sie dann im Drop-Down-Menü auf <b>Regeln löschen</b> und wählen Sie eine der Optionen aus:</p>
+            <ul type="circle">
+                <li>Aus der aktuellen Auswahl</li>
+                <li>Aus diesem Arbeitsblatt</li>
+                <li>Aus dieser Tabelle</li>
+                <li>Aus dieser Pivot-Tabelle</li>
+            </ul>
+            <p class="note"><b>Bitte beachten Sie</b>: Dieses Handbuch enthält grafische Informationen aus der Arbeitsmappe und Richtlinien für Microsoft Office <a href="https://download.microsoft.com/download/e/4/0/e4089f75-cdb0-4658-9d34-bfa3f7b48815/Conditional%20Formatting%20examples.xlsx" onclick="onhyperlinkclick(this)">bedingte Formatierungsbeispiele</a>. Testen Sie die oben genannte Regelanzeige aus, indem Sie dieses Handbuch herunterladen und in der Tabellenkalkulation öffnen.</p>
+
+        </div>
+	</body>
+</html>

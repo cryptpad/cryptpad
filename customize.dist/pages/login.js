@@ -15,28 +15,38 @@ define([
                     h('div.col-md-3'),
                     h('div#userForm.form-group.hidden.col-md-6', [
                         h('div.cp-login-instance', Msg._getKey('login_instance', [ Pages.Instance.name ])),
-                        h('input.form-control#name', {
-                            name: 'name',
-                            type: 'text',
-                            autocomplete: 'off',
-                            autocorrect: 'off',
-                            autocapitalize: 'off',
-                            spellcheck: false,
-                            placeholder: Msg.login_username,
-                            autofocus: true,
-                        }),
-                        h('input.form-control#password', {
-                            type: 'password',
-                            'name': 'password',
-                            placeholder: Msg.login_password,
-                        }),
+                        h('div.big-container', [
+                            h('div.input-container', [
+                                h('label.cp-default-label', { for: 'name' }, Msg.login_username),
+                                h('input.form-control#name', {
+                                    name: 'name',
+                                    type: 'text',
+                                    autocomplete: 'off',
+                                    autocorrect: 'off',
+                                    autocapitalize: 'off',
+                                    spellcheck: false,
+                                    placeholder: Msg.login_username,
+                                    autofocus: true,
+                                }),
+                            ]),
+                            h('div.input-container', [
+                                h('label.cp-default-label', { for: 'password' }, Msg.login_password),
+                                h('input.form-control#password', {
+                                    type: 'password',
+                                    'name': 'password',
+                                    placeholder: Msg.login_password,
+                                }),
+                            ]),
+                        ]),
                         h('div.checkbox-container', [
                             UI.createCheckbox('import-recent', Msg.register_importRecent),
                         ]),
                         h('div.extra', [
                             (Config.restrictRegistration?
                                 undefined:
-                                h('button#register.cp-secondary', Msg.login_register)
+                                h('a#register', {
+                                    href: "/register/",
+                                }, Msg.login_register)
                             ),
                             h('button.login', Msg.login_login),
                         ]),
@@ -54,4 +64,3 @@ define([
         ])];
     };
 });
-

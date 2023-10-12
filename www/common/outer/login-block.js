@@ -2,7 +2,7 @@ define([
     '/common/common-util.js',
     '/api/config',
     '/common/outer/http-command.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (Util, ApiConfig, ServerCommand) {
     var Nacl = window.nacl;
 
@@ -189,14 +189,15 @@ define([
         }, cb);
     };
     Block.removeLoginBlock = function (data, cb) {
-        const { blockKeys, auth } = data;
+        const { reason, blockKeys, auth } = data;
 
         var command = 'REMOVE_BLOCK';
         if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         ServerCommand(blockKeys.sign, {
             command: command,
-            auth: auth && auth.data
+            auth: auth && auth.data,
+            reason: reason
         }, cb);
     };
 

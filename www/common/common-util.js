@@ -77,7 +77,7 @@
             },
             unreg: function (cb) {
                 if (handlers.indexOf(cb) === -1) {
-                    return void console.error("event handler was already unregistered");
+                    return void console.log("event handler was already unregistered");
                 }
                 handlers.splice(handlers.indexOf(cb), 1);
             },
@@ -334,11 +334,11 @@
                 // this is resulting in some code duplication
                 return void CB(void 0, response);
             }
-            if (response.status === 401) {
+            if (response.status === 401 || response.status === 404) {
                 response.json().then((data) => {
-                    CB(401, data);
+                    CB(response.status, data);
                 }).catch(() => {
-                    CB(401);
+                    CB(response.status);
                 });
 
                 return;

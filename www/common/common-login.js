@@ -85,7 +85,8 @@ define([
         return opt;
     };
 
-    var loadUserObject = Exports.loadUserObject = function (opt, cb) {
+    var loadUserObject = Exports.loadUserObject = function (opt, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
             channel: opt.channelHex,
@@ -102,6 +103,9 @@ define([
         rt.proxy
         .on('ready', function () {
             setTimeout(function () { cb(void 0, rt); });
+        })
+        .on('error', function (info) {
+            cb(info.type, {reason: info.message});
         })
         .on('disconnect', function (info) {
             cb('E_DISCONNECT', info);
@@ -355,6 +359,16 @@ define([
                     if (err === 401) {
                         missingAuth = response && response.method;
                         return void console.log("Block requires 2FA");
+                    }
+
+                    if (err === 404 && response && response.reason) {
+                        waitFor.abort();
+                        w.abort();
+                        /*
+                        // the following block prevent users from re-using an old password
+                        if (isRegister) { return void cb('HAS_PLACEHOLDER'); }
+                        */
+                        return void cb('DELETED_USER', response);
                     }
 
                     // Some other error?

@@ -1,0 +1,29 @@
+---
+version: '3.8'
+
+services:
+  cryptpad:
+    image: "cryptpad/cryptpad:version-5.4.0"
+    hostname: cryptpad
+
+    environment:
+      - CPAD_MAIN_DOMAIN=https://your-main-domain.com
+      - CPAD_SANDBOX_DOMAIN=https://your-sandbox-domain.com
+      - CPAD_CONF=/cryptpad/config/config.js
+
+    volumes:
+      - ./data/blob:/cryptpad/blob
+      - ./data/block:/cryptpad/block
+      - ./customize:/cryptpad/customize
+      - ./data/data:/cryptpad/data
+      - ./data/files:/cryptpad/datastore
+
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "3003:3003"
+
+    ulimits:
+      nofile:
+        soft: 1000000
+        hard: 1000000

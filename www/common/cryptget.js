@@ -1,5 +1,5 @@
 define([
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-netflux',
     'netflux-client',
     '/common/common-util.js',
@@ -8,8 +8,8 @@ define([
     '/common/outer/network-config.js',
     '/common/outer/cache-store.js',
     '/common/pinpad.js',
-    '/bower_components/nthen/index.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/nthen/index.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function (Crypto, CPNetflux, Netflux, Util, Hash, Realtime, NetConfig, Cache, Pinpad, nThen) {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
@@ -193,6 +193,11 @@ define([
                 finish(Session, void 0, doc);
             });
         };
+
+        config.onChannelError = function (info) {
+            finish(Session, info);
+        };
+
         overwrite(config, opt);
 
         start(Session, config);

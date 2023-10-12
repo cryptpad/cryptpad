@@ -6,6 +6,7 @@ var simpleTags = [
     '<br>',
     '<a href="/login/">',
     '<a href="/register/">',
+    '<a href="/recovery/">',
 
     // FIXME
     "<a href='#'>",
@@ -170,7 +171,7 @@ var processLang = function (map, lang, primary) {
 
                 console.log();
             }
-            //if (mismatchedTags.length) { console.log(mismatchedTags); } // XXX
+            //if (mismatchedTags.length) { console.log(mismatchedTags); } // TODO
         }
     });
 };

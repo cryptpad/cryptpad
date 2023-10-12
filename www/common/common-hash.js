@@ -750,9 +750,9 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-util.js',
-            '/bower_components/chainpad-crypto/crypto.js',
+            '/components/chainpad-crypto/crypto.js',
             '/common/common-signing-keys.js',
-            '/bower_components/tweetnacl/nacl-fast.min.js'
+            '/components/tweetnacl/nacl-fast.min.js'
         ], function (Util, Crypto, Keys) {
             return factory(Util, Crypto, Keys, window.nacl);
         });

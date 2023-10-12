@@ -1,9 +1,9 @@
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -15,17 +15,17 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/bower_components/marked/marked.min.js',
+    '/components/marked/marked.min.js',
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 
     'cm/mode/markdown/markdown',
 
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
+    'css!/components/codemirror/addon/fold/foldgutter.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/profile/app-profile.less',
 ], function (
     $,
@@ -479,7 +479,7 @@ define([
         });
     };
     var refreshDescription = function (data) {
-        var val = Marked(data.description || "");
+        var val = Marked.parse(data.description || "");
         APP.$description.html(val);
         APP.$description.off('click');
         APP.$description.click(function (e) {

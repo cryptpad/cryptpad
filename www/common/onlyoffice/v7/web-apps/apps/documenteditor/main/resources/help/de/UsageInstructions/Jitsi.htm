@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio- und Videoanrufe durchführen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Die Beschreibung des Jitsi-Plugins für ONLYOFFICE-Editoren, das Audio- und Videoanrufe sofort über den Dokumenteneditor zugänglich macht." />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Audio- und Videoanrufe durchführen</h1>
+        <p>Audio- und Videoanrufe sind sofort über ONLYOFFICE <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> mit Jitsi-Plugin zugänglich. Jitsi bietet Videokonferenzfunktionen, die sicher und einfach bereitzustellen sind.</p>
+        <p class="note">Das Jitsi-Plugin ist standardmäßig nicht installiert und muss manuell hinzugefügt werden. Bitte lesen Sie den entsprechenden Artikel, um die manuelle Installationsanleitung zu finden: <a href="https://api.onlyoffice.com/plugin/installation/cloud">Hinzufügen von Plugins zu ONLYOFFICE Cloud</a> oder <a href="https://helpcenter.onlyoffice.com/installation/docs-add-plugin.aspx">Hinzufügen neuer Plugins zu Server-Editoren</a>.</p>
+        <ol>
+            <li>Wechseln Sie zur Registerkarte <b>Plugins</b> und klicken Sie auf das Symbol <b>Jitsi</b> in der oberen Symbolleiste.</li>
+            <li>
+                Füllen Sie die Felder unten in der linken Seitenleiste aus, bevor Sie einen Anruf starten:
+                <p><b>Domain</b>: Geben Sie den Domainnamen ein, wenn Sie Ihre Domain verbinden möchten.</p>
+                <p><b>Room name</b>: Geben Sie den Namen des Besprechungsraums ein. Dieses Feld ist obligatorisch und Sie können keinen Anruf starten, wenn Sie es auslassen.</p>
+            </li>
+            <li>Klicken Sie auf die Schaltfläche <b>Start</b>, um den <b>Jitsi Meet-Iframe</b> zu öffnen.</li>
+            <li>Geben Sie Ihren Namen ein und erlauben Sie Kamera- und Mikrofonzugriff auf Ihren Browser.</li>
+            <li>Wenn Sie den Jitsi Meet Iframe schließen möchten, klicken Sie unten links auf die Schaltfläche <b>Stop</b>.</li>
+            <li>Klicken Sie auf die Schaltfläche <b>Join the meeting</b>, um einen Anruf mit Audio zu starten, oder klicken Sie auf den Pfeil, um ohne Audio beizutreten.</li>
+        </ol>
+        <img class="gif" alt="Youtube plugin gif" src="../../images/jitsi_plugin.gif" width="600" />
+        <p>Die Elemente der Benutzeroberfläche von <b>Jitsi Meet iframe</b> vor dem Start eines Meetings:</p>
+        <p>
+            <div class = "icon icon-jitsi_micro"></div>
+            <b>Audioeinstellungen und Stumm/Stumm aufheben</b>
+        </p>
+        <ul>
+            <li>Klicken Sie auf den Pfeil, um auf die Vorschau der Audio Settings zuzugreifen.</li>
+            <li>Klicken Sie auf das Mikro, um Ihr Mikrofon stumm zu schalten/die Stummschaltung aufzuheben.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_camera"></div>
+            <b>Videoeinstellungen und Start/Stop</b>
+        </p>
+        <ul>
+            <li>Klicken Sie auf den Pfeil, um auf die Videovorschau zuzugreifen.</li>
+            <li>Klicken Sie auf die Kamera, um Ihr Video zu starten/stoppen.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_invite"></div>
+            <b>Personen einladen</b>
+        </p>
+        <ul>
+            <li>Klicken Sie auf diese Schaltfläche, um weitere Personen zu Ihrem Meeting einzuladen.</li>
+            <li>
+                Geben Sie das Meeting frei, indem Sie den Meeting-Link kopieren, oder<br>
+                Geben Sie die Besprechungseinladung durch Kopieren oder über Ihre Standard-E-Mail, Google-E-Mail, Outlook-E-Mail oder Yahoo-E-Mail frei.
+            </li>
+            <li>Betten Sie das Meeting ein, indem Sie den Link kopieren.</li>
+            <li>Verwenden Sie eine der verfügbaren Einwahlnummern, um am Meeting teilzunehmen.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_background"></div>
+            <b>Hintergrund auswählen</b>
+        </p>
+        <ul>
+            <li>Wählen Sie einen virtuellen Hintergrund für Ihr Meeting aus oder fügen Sie einen hinzu.</li>
+            <li>Geben Sie Ihren Desktop frei, indem Sie die entsprechende Option auswählen: <b>Screen</b>,<b> Window</b> oder <b>Tab</b>.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_background"></div>
+            <b>Einstellungen</b>
+        </p>
+        <p>Konfigurieren Sie erweiterte Einstellungen, die in den folgenden Kategorien organisiert sind:</p>
+        <ul>
+            <li><b>Devices</b> zum Einrichten Ihres Mikrofons, Ihrer Kamera und Ihres Audioausgangs und zum Abspielen eines Testtons.</li>
+            <li><b>Profile</b> zum Einrichten Ihres anzuzeigenden Namens und Gravatar-E-Mail, Verstecken/Anzeigen der Selbstansicht.</li>
+            <li><b>Calendar</b> zur Integration Ihres Google- oder Microsoft-Kalenders.</li>
+            <li><b>Sounds</b>, um die Aktionen auszuwählen, bei denen der Sound abgespielt werden soll.</li>
+            <li>
+                <b>More</b> zum Konfigurieren einiger zusätzlicher Optionen: Aktivieren/Deaktivieren des Bildschirms vor dem Meeting und der Tastenkombinationen, Einrichten einer Sprache und Bildrate für die Desktopfreigabe.
+            </li>
+        </ul>
+        <p>
+            Elemente der Benutzeroberfläche, die während einer Videokonferenz angezeigt werden:
+        </p>
+        <img alt="Jitsi Conference" src="../images/jitsi_conference.png" />
+        <p>Klicken Sie rechts auf den Seitenpfeil, um die Miniaturansichten der Teilnehmer oben anzuzeigen.</p>
+        <p>
+            <img alt="Jitsi Timer" src="../images/jitsi_timer.png" />
+            Der Timer oben im Iframe zeigt die Meetingsdauer an.
+        </p>
+        <p>
+            <div class = "icon icon-jitsi_openchat"></div>
+            <b>Chat öffnen</b>
+        </p>
+        <ul>
+            <li>Geben Sie eine Textnachricht ein oder erstellen Sie eine Umfrage.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_participants"></div>
+            <b>Teilnehmer</b>
+        </p>
+        <ul>
+            <li>Zeigen Sie die Liste der Meetingsteilnehmer an, laden Sie weitere Teilnehmer ein und suchen Sie einen Teilnehmer.</li>
+        </ul>
+        <p>
+            <div class = "icon icon-jitsi_more"></div>
+            <b>Mehr Aktionen</b>
+        </p>
+        <ul>
+            <li>Finden Sie eine Reihe von Optionen, um alle verfügbaren Jitsi-Funktionen vollständig zu nutzen. Scrollen Sie durch die Optionen, um sie alle anzuzeigen.</li>
+        </ul>
+        <details class="details-example">
+            <summary>Verfügbare Optionen sind:</summary>
+            <ul>
+                <li>Start screen sharing | Starten Sie die Bildschirmfreigabe</li>
+                <li>Invite people | Personen einladen</li>
+                <li>Enter/Exit tile view | Kachelansicht öffnen/verlassen</li>
+                <li>Performance settings for adjusting the quality | Leistungseinstellungen zum Anpassen der Qualität</li>
+                <li>View full screen | Vollbild anzeigen</li>
+                <li>
+                    Security options | Sicherheitsoptionen
+                    <ul>
+                        <li><b>Lobby mode</b>, damit Teilnehmer dem Meeting nach Zustimmung des Moderators beitreten können;</li>
+                        <li><b>Add password mode</b>, damit Teilnehmer dem Meeting mit einem Passwort beitreten können;</li>
+                        <li><b>End-to-end encryption</b> ist eine experimentelle Methode zum Tätigen sicherer Anrufe (beachten Sie die Einschränkungen wie das Deaktivieren serverseitig bereitgestellter Dienste und die Verwendung von Browsern, die einfügbare Streams unterstützen).</li>
+                    </ul>
+                </li>
+                <li>Start live stream | Livestream starten</li>
+                <li>Mute everyone | Alle stummschalten</li>
+                <li>Disable everyone’s camera | Die Kamera aller Teilnehmer deaktivieren</li>
+                <li>Share video | Video freigeben</li>
+                <li>Select background | Hintergrund auswählen</li>
+                <li>Speaker stats | Sprecherstatistik</li>
+                <li>Settings | Einstellungen</li>
+                <li>View shortcuts | Verknüpfungen anzeigen</li>
+                <li>Embed meeting | Meeting einbetten</li>
+                <li>Leave feedback | Feedback hinterlassen</li>
+                <li>Help | Hilfe</li>
+            </ul>
+        </details>
+        <p>
+            <div class = "icon icon-jitsi_leave"></div>
+            <b>Leave the meeting | Meeting verlassen</b>
+        </p>
+        <ul>
+            <li>Klicken Sie darauf, wenn Sie einen Anruf beenden möchten.</li>
+        </ul>
+    </div>
+</body>
+</html>

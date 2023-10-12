@@ -1,7 +1,7 @@
 require([
     'jquery',
     '/mediatag/media-tag.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js'
+    '/components/tweetnacl/nacl-fast.min.js'
 ], function ($, MediaTag) {
     console.log(MediaTag);
     console.log($('media-tag'));

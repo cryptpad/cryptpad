@@ -4,10 +4,10 @@ define([
     '/common/userObject.js',
     '/common/outer/cache-store.js',
 
-    '/bower_components/nthen/index.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/nthen/index.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function (Hash, Util, UserObject, Cache,
              nThen, Crypto, Listmap, ChainPad) {
     var SF = {};
@@ -120,7 +120,7 @@ define([
         }).nThen(function (waitFor) {
             isNewChannel(null, { channel: secret.channel }, waitFor(function (obj) {
                 if (obj.isNew && !isNew) {
-                    store.manager.deprecateProxy(id, secret.channel);
+                    store.manager.deprecateProxy(id, secret.channel, obj.reason);
                     waitFor.abort();
                     return void cb(null);
                 }
@@ -245,7 +245,7 @@ define([
                             // Deprecate the shared folder from each team
                             // We can only hide it
                             sf.teams.forEach(function (obj) {
-                                obj.store.manager.deprecateProxy(obj.id, secret.channel);
+                                obj.store.manager.deprecateProxy(obj.id, secret.channel, info.message);
                                 if (obj.store.handleSharedFolder) {
                                     obj.store.handleSharedFolder(obj.id, null);
                                 }

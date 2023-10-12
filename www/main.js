@@ -10,7 +10,7 @@ define([
     trailing slash) and somehow end up trying to load this script. ¯\_(ツ)_/¯
 
     This script helps to avoid reports of confusion due to blank pages
-    like in some of the comments here: (https://github.com/xwiki-labs/cryptpad/issues/246)
+    like in some of the comments here: (https://github.com/cryptpad/cryptpad/issues/246)
     by using jquery to check if adding a trailing slash would help,
     and redirecting automatically if so.
 */

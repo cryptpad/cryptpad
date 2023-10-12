@@ -8,10 +8,10 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/bower_components/croppie/croppie.min.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    'css!/bower_components/croppie/croppie.css',
+    '/components/tweetnacl/nacl-fast.min.js',
+    '/components/croppie/croppie.min.js',
+    '/components/file-saver/FileSaver.min.js',
+    'css!/components/croppie/croppie.css',
 ], function ($, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
     var MT = {};
 
@@ -237,6 +237,7 @@ define([
             'image/png',
             'image/jpeg',
             'image/jpg',
+            'image/webp',
             'image/gif',
         ];
         var fmConfig = {
@@ -246,7 +247,7 @@ define([
             onUploaded: cb
         };
         var FM = common.createFileManager(fmConfig);
-        var accepted = ".gif,.jpg,.jpeg,.png";
+        var accepted = ".gif,.jpg,.jpeg,.png,.webp";
         var data = {
             FM: FM,
             filter: function (file) {

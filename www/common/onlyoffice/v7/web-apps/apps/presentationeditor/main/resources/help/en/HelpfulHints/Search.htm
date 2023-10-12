@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Search and Replace Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the search and replace function in Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Search and Replace Function</h1>
+            <p>
+                <b>To search</b> for the needed characters, words or phrases in the <a target="_blank" href="https://www.onlyoffice.com/en/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a>,
+                click the <span class="icon icon-searchicon"></span> icon situated on the left sidebar, the <span class="icon icon-search_icon_header"></span> icon situated in the upper right corner, or use the <em>Ctrl+F</em> (<em>Command+F</em> for MacOS) key combination to open the small Find panel or the <em>Ctrl+H</em> key combination to open the full Find panel.
+            </p>
+            <p>A small <b>Find</b> panel will open in the upper right corner of the working area.</p>
+            <p><img alt="Find small panel" src="../../../../../../common/main/resources/help/en/images/find_small.png" /></p>
+            <p>To access the advanced settings, click the <span class="icon icon-search_advanced"></span> icon.</p>
+            <p>The <b>Find and replace</b> panel will open:</p>
+            <img alt="Find and Replace Window" src="../images/search_window.png" />
+            <ol>
+                <li>Type in your inquiry into the corresponding <b>Find</b> data entry field.</li>
+                <li>If you need to replace one or more occurrences of the found characters, type in the replacement text into the corresponding <b>Replace with</b> data entry field. You can choose to replace a single currently highlighted occurrence or replace all occurrences by clicking the corresponding <b>Replace</b> and <b>Replace All</b> buttons.</li>
+                <li>To navigate between the found occurrences, click one of the arrow buttons. The <div class="icon icon-searchdownbutton"></div> button shows the next occurrence while the <div class="icon icon-searchupbutton"></div> button shows the previous one.</li>
+                <li>
+                    Specify search parameters by checking the necessary options below the entry fields:
+                    <ul>
+                        <li><b>Case sensitive</b> - is used to find only the occurrences typed in the same case as your inquiry (e.g. if your inquiry is 'Editor' and this option is selected, such words as 'editor' or 'EDITOR' etc. will not be found).</li>
+                        <li><b>Whole words only</b> - is used to highlight whole words only.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>The first slide in the selected direction that contains the characters you entered will be highlighted in the slide list and displayed in the working area with the required characters outlined. If it is not the slide you are looking for, click the selected button again to find the next slide containing the characters you entered.</p>
+        </div>
+	</body>
+</html>

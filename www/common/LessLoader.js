@@ -5,7 +5,7 @@ const require = define;
 */
 define([
     '/api/config',
-    '/bower_components/nthen/index.js'
+    '/components/nthen/index.js'
 ], function (Config, nThen) { /*::});module.exports = (function() {
     const Config = (undefined:any);
     const nThen = (undefined:any);

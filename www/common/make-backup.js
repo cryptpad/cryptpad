@@ -8,9 +8,9 @@ define([
     '/common/common-feedback.js',
     '/common/inner/cache.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
-    '/bower_components/saferphore/index.js',
-    '/bower_components/jszip/dist/jszip.min.js',
+    '/components/nthen/index.js',
+    '/components/saferphore/index.js',
+    '/components/jszip/dist/jszip.min.js',
 ], function ($, FileCrypto, Hash, Util, UI, h, Feedback,
              Cache, Messages, nThen, Saferphore, JsZip) {
     var saveAs = window.saveAs;

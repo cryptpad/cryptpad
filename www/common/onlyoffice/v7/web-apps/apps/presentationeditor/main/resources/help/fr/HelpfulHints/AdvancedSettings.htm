@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Paramètres avancés de l'Éditeur de Présentations</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Paramètres avancés de l'Éditeur de Présentations" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Paramètres avancés de l'Éditeur de Présentations</h1>
+			<p><a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Éditeur de Présentations</b></a> vous permet de modifier ses paramètres avancés. Pour y accéder, ouvrez l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Paramètres avancés...</b>.</p>
+			<p>Les paramètres avancés sont les suivants :</p>
+
+            <h3>Édition et enregistrement</h3>
+            <ol>
+                <li><span class="onlineDocumentFeatures"><b>Enregistrement automatique</b> est utilisé dans la <em>version en ligne</em> pour activer/désactiver l'enregistrement automatique des modifications que vous effectuez pendant l'édition.</span> </li>
+                <li><span class="desktopDocumentFeatures"><b>Récupération automatique</b> est utilisée dans la <em>version de bureau</em> pour activer/désactiver l'option qui permet de récupérer automatiquement les présentations en cas de fermeture inattendue du programme.</span></li>
+                <li><b>Afficher le bouton "Options de collage" lorsque le contenu est collé</b>. L'icône correspondante sera affichée lorsque vous collez le contenu à la présentation.</li>
+            </ol>
+
+            <h3>Collaboration</h3>
+            <ol>
+                <li class="onlineDocumentFeatures">
+                    Le <b>Mode de co-édition</b> permet de sélectionner le mode d'affichage des modifications apportées à la présentation lors de la co-édition.
+                    <ul>
+                        <li><b>Rapide</b> (par défaut). Les utilisateurs qui participent à la co-édition de la présentation verront les changements en temps réel une fois qu'ils sont faits par d'autres utilisateurs.</li>
+                        <li><b>Strict</b>. Tous les changements apparaîtront seulement après avoir cliqué sur l'icône <b>Enregistrer</b> <div class="icon icon-saveupdate"></div> pour vous informer qu'il y a des changements effectués par d'autres utilisateurs.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>Vérification</h3>
+            <ol>
+                <li><b>Vérification de l'orthographe</b> sert à activer/désactiver l'option de vérification de l'orthographe.</li>
+                <li><b>Ignorer les mots en MAJUSCULES</b>. Les mots tapés en majuscules sont ignorés lors de la vérification de l'orthographe.</li>
+                <li><b>Ignorer les mots contenant des chiffres</b>. Les mots contenant des chiffres sont ignorés lors de la vérification de l'orthographe.</li>
+                <li>Le menu <b>Options d'auto-correction...</b> permet d'accéder aux <a href="../UsageInstructions/MathAutoCorrect.htm" onclick="onhyperlinkclick(this)">paramètres d'auto-correction</a> tels que remplacement au cours de la frappe, fonctions de reconnaissance, mise en forme automatique etc.</li>
+            </ol>
+
+            <h3>Espace de travail</h3>
+            <ol>
+                <li>L'option <b>Guides d'alignement</b> est utilisée pour activer/désactiver les guides d'alignement qui apparaissent lorsque vous déplacez des objets et vous permettent de les positionner précisément sur la diapositive.</li>
+                <li>L'option <b>Hiéroglyphes</b> est utilisée pour activer/désactiver l'affichage des hiéroglyphes.</li>
+                <li>L'option <b>Utiliser la touche Alt pour naviguer dans l'interface utilisateur à l'aide du clavier</b> est utilisée pour activer l'utilisation de la touche <em>Alt</em> / <em>Option</em> à un raccourci clavier.</li>
+                <li>
+                    L'option <b>Thème d'interface</b> permet de modifier les jeux de couleurs de l'interface d'éditeur.
+                    <ul>
+                        <li>L'option <b>Identique à système</b> rend le thème d'interface de l'éditeur identique à celui de votre système.</li>
+                        <li>Le mode <b>Claire</b> comprend l'affichage des éléments de l'interface utilisateur en couleurs standards bleu, blanc et gris claire à contraste réduit et est destiné à un travail de jour.</li>
+                        <li>Le mode <b>Claire classique</b> comprend l'affichage en couleurs standards bleu, blanc et gris claire.</li>
+                        <li>Le mode <b>Sombre</b> comprend l'affichage en tons sombres noir, gris foncé et gris claire destinés à un travail de nuit.</li>
+                        <li>
+                            Le mode <b>Contraste sombre</b> comprend l'affichage des éléments de l'interface utilisateur en couleurs noir, gris foncé et blanc à plus de contraste et est destiné à mettre en surbrillance la zone de travail du fichier.
+                            <p class="note"><b>Remarque</b> : En plus des thèmes de l'interface disponibles <b>Claire</b>, <b>Classique claire</b>, <b>Sombre</b> et <b>Contraste sombre</b> il est possible de personnaliser les éditeurs ONLYOFFICE en utilisant votre propre couleur de thème. Pour en savoir plus, veuillez consulter <a target="_blank" href="https://helpcenter.onlyoffice.com/fr/installation/docs-developer-change-theme.aspx" onclick="onhyperlinkclick(this)">ces instructions</a>.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>L'option <b>Unité de mesure</b> sert à spécifier les unités de mesure utilisées sur les règles et dans les fenêtres de paramètres pour les paramètres tels que largeur, hauteur, espacement, marges etc. Vous pouvez choisir l'option <em>Centimètre</em>, <em>Point</em> ou <em>Pouce</em>.</li>
+                <li>L'option <b>Valeur du zoom par défaut</b> sert à définir la valeur de zoom par défaut en la sélectionnant de la liste des options disponibles de 50% à 500%. Vous pouvez également choisir l'option <em>Ajuster à la diapositive</em> ou <em>Ajuster à la largeur</em>.</li>
+                <li>
+                    L'option <b>Hinting de la police</b> sert à sélectionner le type d'affichage de la police dans l'Éditeur de Présentations.
+                    <ul>
+                        <li>Choisissez <b>Comme Windows</b> si vous aimez la façon dont les polices sont habituellement affichées sous Windows, c'est-à-dire en utilisant la police de Windows.</li>
+                        <li>Choisissez <b>Comme OS X</b> si vous aimez la façon dont les polices sont habituellement affichées sous Mac, c'est-à-dire sans hinting.</li>
+                        <li>Choisissez <b>Natif</b> si vous voulez que votre texte soit affiché avec les hintings intégrés dans les fichiers de polices.</li>
+                        <li>
+                            <b>Mise en cache par défaut</b> - sert à sélectionner cache de police. Il n'est pas recommandé de désactiver ce mode-ci sans raison évidente. C'est peut être utile dans certains cas, par exemple les problèmes d'accélération matérielle activé sous Google Chrome.
+                            <p>Éditeur de Présentations gère deux modes de mise en cache :</p>
+                            <ol>
+                                <li>Dans le <b>premier mode de mise en cache</b>, chaque lettre est mise en cache comme une image indépendante.</li>
+                                <li>Dans le <b>deuxième mode de mise en cache</b>, l'image d'une certaine taille est sélectionnée avec les lettres dynamiques et avec de l'allocation/libération de la mémoire mise en place. La deuxième image est créée s'il n'y a pas de mémoire suffisante etc.</li>
+                            </ol>
+                            <p>Le <b>Mode de mise en cache par défaut</b> est activé en fonction du navigateur utilisé :</p>
+                            <ul>
+                                <li>Avec la <b>mise en cache par défaut</b> activée, dans Internet Explorer (v. 9, 10, 11) le <b>deuxième mode de mise en cache</b> est utilisé, le <b>premier mode de mise en cache</b> est utilisé dans les autres navigateurs.</li>
+                                <li>Avec la <b>mise en cache par défaut</b> désactivée, dans Internet Explorer (v. 9, 10, 11) le <b>premier mode de mise en cache</b> est utilisé, le <b>deuxième mode de mise en cache</b> est utilisé dans les autres navigateurs.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    L'option <b>Réglages macros</b> s'utilise pour définir l'affichage des macros avec notification.
+                    <ul>
+                        <li>Choisissez <b>Désactivez tout</b> pour désactiver toutes les macros dans votre présentation.</li>
+                        <li>Choisissez <b>Montrer la notification</b> pour afficher les notifications lorsque des macros sont présentes dans une présentation.</li>
+                        <li>Choisissez <b>Activer tout</b> pour exécuter automatiquement toutes les macros dans une présentation.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Pour enregistrer toutes les modifications, cliquez sur le bouton <b>Appliquer</b>.</p>
+        </div>
+	</body>
+</html>

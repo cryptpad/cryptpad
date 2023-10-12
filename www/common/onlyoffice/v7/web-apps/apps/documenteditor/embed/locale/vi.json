@@ -1,0 +1,22 @@
+{
+  "common.view.modals.txtCopy": "Sao chép vào khay nhớ tạm",
+  "common.view.modals.txtHeight": "Chiều cao",
+  "common.view.modals.txtWidth": "Chiều rộng",
+  "DE.ApplicationController.convertationTimeoutText": "Đã quá thời gian chờ chuyển đổi.",
+  "DE.ApplicationController.criticalErrorTitle": "Lỗi",
+  "DE.ApplicationController.downloadErrorText": "Tải về không thành công.",
+  "DE.ApplicationController.downloadTextText": "Đang tải tài liệu...",
+  "DE.ApplicationController.errorAccessDeny": "Bạn đang cố gắng thực hiện hành động mà bạn không có quyền.<br>Vui lòng liên hệ với quản trị viên Server Tài liệu của bạn.",
+  "DE.ApplicationController.errorDefaultMessage": "Mã lỗi: %1",
+  "DE.ApplicationController.errorFilePassProtect": "Tài liệu được bảo vệ bằng mật khẩu và không thể mở được.",
+  "DE.ApplicationController.errorUserDrop": "Không thể truy cập file ngay lúc này.",
+  "DE.ApplicationController.notcriticalErrorTitle": "Cảnh báo",
+  "DE.ApplicationController.textLoadingDocument": "Đang tải tài liệu",
+  "DE.ApplicationController.textOf": "trên",
+  "DE.ApplicationController.txtClose": "Đóng",
+  "DE.ApplicationController.unknownErrorText": "Lỗi không xác định.",
+  "DE.ApplicationController.unsupportedBrowserErrorText": "Trình duyệt của bạn không được hỗ trợ.",
+  "DE.ApplicationView.txtDownload": "Tải về",
+  "DE.ApplicationView.txtFullScreen": "Toàn màn hình",
+  "DE.ApplicationView.txtShare": "Chia sẻ"
+}

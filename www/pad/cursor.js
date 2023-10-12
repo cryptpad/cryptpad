@@ -2,7 +2,7 @@ define([
     'jquery',
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/customize/messages.js',
     '/common/inner/common-mediatag.js',
 ], function ($, UIElements, UI, ChainPad, Messages, MT) {

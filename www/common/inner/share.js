@@ -10,10 +10,10 @@ define([
     '/common/hyperscript.js',
     '/common/clipboard.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/customize/pages.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
     '/lib/qrcode.min.js',
 ], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen, Pages) {
@@ -615,7 +615,7 @@ define([
                         label: {style: "display: none;"}
                     }) : undefined;
         var rights = h('div.msg.cp-inline-radio-group', [
-            h('label', Messages.share_linkAccess),
+            h('label',{ for: 'cp-share-editable-true' }, Messages.share_linkAccess),
             h('div.radio-group',[
             UI.createRadio('accessRights', 'cp-share-editable-false',
                             labelView, true, { mark: {tabindex:1} }),
@@ -848,11 +848,11 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
-        }, {
+        }, window.CP_DEV_MODE ? { // XXX enable for all
             getTab: getQRTab,
             title: Messages.share_QRCategory,
             icon: 'fa fa-qrcode',
-        }];
+        } : undefined].filter(Boolean);
         if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
                 getTab: getEmbedTab,

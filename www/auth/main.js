@@ -10,7 +10,7 @@ define([
     '/common/outer/local-store.js',
 
     '/lib/qrcode.min.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 
     'less!/auth/app-auth.less',
 ], function ($, Util, h, UI, ServerCommand, Base32, Login, Block, LocalStore) {
@@ -63,7 +63,7 @@ Note: The login process performs many checks, confirming that crentials point to
 
         h('div.bordered#totp-app-config', [
             h('h2#app', "TOTP app configuration"),
-            h('blockquote', `// XXX TOTP app configuration notes
+            h('blockquote', `// TOTP app configuration notes
 Time-based One-Time Passwords are generated using a relatively simple algorithm which uses:
 
 1. a hash function
@@ -126,7 +126,7 @@ Scan the generated code with your preferred app so that you can generate a code 
         h('div.bordered', [
             h('h2#setup', "MFA account settings"),
             h('blockquote',
-`// XXX MFA account settings notes
+`// MFA account settings notes
 
 Once you have:
 
@@ -158,7 +158,7 @@ Note: This must currently be reversed manually (by deleting the mfa config file)
 
     document.body.appendChild(main);
 
-    // XXX hack to make the page jump to a given element once the content has been rendered
+    // hack to make the page jump to a given element once the content has been rendered
     window.location.hash = window.location.hash;
 
     // Key derivation

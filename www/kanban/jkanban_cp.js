@@ -3,7 +3,7 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/visible.js',
-    '/bower_components/dragula.js/dist/dragula.min.js',
+    '/components/dragula/dist/dragula.min.js',
 ], function ($, Messages, Util, Visible, Dragula) {
         /**
          * jKanban

@@ -2,9 +2,8 @@
 // This file is for automated testing, it should probably not be invoked for any other purpose.
 // It will:
 // 1. npm install
-// 2. bower install
-// 3. launch the server
-// 4. run the tests on the machine
+// 2. launch the server
+// 3. run the tests on the machine
 const Spawn = require('child_process').spawn;
 
 const processes = [];
@@ -74,8 +73,6 @@ run('npm', ['install'], () => {
 
             run('bash', ['-c', 'caffeinate -u -t 2'], waitFor());
         }
-    }).nThen((waitFor) => {
-        run('bower', ['install'], waitFor());
     }).nThen((waitFor) => {
         run('npm', ['run', 'fresh'], ()=>{});
         run('node', ['./scripts/TestSelenium.js'], waitFor());

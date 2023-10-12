@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/common/diffMarked.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/common/sframe-app-framework.js',
@@ -560,7 +560,7 @@ define([
                 I used 'apply' with 'arguments' to avoid breaking things if this API ever changes.
             */
             var ret = CodeMirror.fileImporter.apply(null, Array.prototype.slice.call(arguments));
-            previewPane.modeChange(ret.mode);
+            previewPane.modeChange(ret.highlightMode);
             return ret;
         });
 

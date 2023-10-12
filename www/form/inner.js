@@ -2,12 +2,12 @@ define([
     'jquery',
     'json.sortify',
     '/api/config',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/sframe-app-framework.js',
     '/common/toolbar.js',
     '/form/export.js',
     '/form/condorcet.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -22,14 +22,14 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/text-cursor.js',
     'cm/lib/codemirror',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
     '/lib/datepicker/flatpickr.js',
-    '/bower_components/sortablejs/Sortable.min.js',
+    '/components/sortablejs/Sortable.min.js',
 
     'cm/addon/edit/closebrackets',
     'cm/addon/edit/matchbrackets',
@@ -37,13 +37,13 @@ define([
     'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',
 
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
+    'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/lib/datepicker/flatpickr.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
 ], function (
     $,
@@ -75,7 +75,6 @@ define([
     Sortable
     )
 {
-
     var APP = window.APP = {
         blocks: {}
     };
@@ -608,7 +607,8 @@ define([
             if (v.type === "day") {
                 var dayPickr = $(calendarView).find('input')[0]._flatpickr;
                 values = dayPickr.selectedDates.map(function (date) {
-                    return +date;
+                    return date.toLocaleDateString('EN-CA');
+                    //return +date;
                 });
             } else {
                 $container.find('input').each(function (i, el) {
@@ -3738,7 +3738,7 @@ define([
         });
         $body.addClass('cp-form-palette-'+color);
 
-        $container.attr('class', 'cp-form-creator-content');
+        $container.attr('class', 'cp-form-creator-content'+(APP.isEditor? ' cp-form-iseditor': ''));
 
         if (APP.isClosed && content.answers.privateKey && !APP.isEditor && !APP.hasAnswered) {
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -4254,8 +4254,6 @@ define([
         if (APP.responseDiv) { $(APP.responseDiv).detach(); }
         $container.empty().append(_content);
 
-
-// XXX Delete translation key form_updateMsg
         if (editable) {
             var responseMsg = h('div.cp-form-response-msg-container');
             var $responseMsg = $(responseMsg).appendTo($container);
@@ -5035,7 +5033,7 @@ define([
                 fillerContainer = h('div.cp-form-filler-container');
             }
 
-            var contentContainer = h('div.cp-form-creator-content');
+            var contentContainer = h('div.cp-form-creator-content' + (APP.isEditor ? '.cp-form-iseditor' : ''));
             var resultsContainer = h('div.cp-form-creator-results');
             var answeredContainer = h('div.cp-form-creator-answered', {
                 style: 'display: none;'

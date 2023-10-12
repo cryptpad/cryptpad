@@ -408,7 +408,7 @@ var factory = function (Util, Nacl) {
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-util.js',
-            '/bower_components/tweetnacl/nacl-fast.min.js',
+            '/components/tweetnacl/nacl-fast.min.js',
         ], function (Util) {
             return factory(Util, window.nacl);
         });

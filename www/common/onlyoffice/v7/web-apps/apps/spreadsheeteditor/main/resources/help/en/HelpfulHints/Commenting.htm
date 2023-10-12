@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Commenting</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Tips on collaborative editing" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Commenting</h1>
+            <p>The <a target="_blank" href="https://www.onlyoffice.com/spreadsheet-editor.aspx" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> allows you to maintain constant team-wide approach to work flow: <a href="https://helpcenter.onlyoffice.com/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">share</a> files and folders, <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">collaborate</a> on spreadsheets in real time, <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">communicate</a> right in the editor, save <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">spreadsheet versions</a> for future use.</p>
+            <p>In <b>Spreadsheet Editor</b> you can leave comments to the content of spreadsheets without actually editing it. Unlike <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">chat messages</a>, the comments stay until deleted.</p>
+            <h3>Leaving comments and replying to them</h3>
+            <p>To leave a comment,</p>
+            <ol>
+                <li>select a cell where you think there is an error or problem,</li>
+                <li>
+                    switch to the <b>Insert</b> or <b>Collaboration</b> tab of the top toolbar and click the <div class = "icon icon-comment_toptoolbar"></div> <b>Comment</b> button, or<br />
+                    use the Comments <div class = "icon icon-commentsicon"></div> icon on the left sidebar to open the <b>Comments</b> panel and click the <b>Add Comment to Document</b> link, or<br />
+                    right-click within the selected cell and select the <b>Add Сomment</b> option from the menu,
+                </li>
+                <li>enter the needed text,</li>
+                <li>click the <b>Add Comment</b>/<b>Add</b> button.</li>
+            </ol>
+            <p>If you are using the <b>Strict</b> co-editing mode, new comments added by other users will become visible only after you click the <span class="icon icon-saveupdate"></span> icon in the left upper corner of the top toolbar.</p>
+            <p>To view the comment, just click within the cell. You or any other user can answer to the added comment asking questions or reporting on the work he/she has done. For this purpose, use the <b>Add Reply</b> link, type in your reply text in the entry field and press the <b>Reply</b> button.</p>
+            <h3>Disabling display of comments</h3>
+            <p>The comment will be seen on the panel on the left. The orange triangle will appear in the upper right corner of the cell you commented. If you need to disable this feature,</p>
+            <ul>
+                <li>click the <b>File</b> tab on the top toolbar,</li>
+                <li>select the <b>Advanced Settings...</b> option,</li>
+                <li>uncheck the <b>Turn on display of the comments</b> box.</li>
+            </ul>
+            <p>In this case, the commented cells will be marked only if you click the Comments <span class="icon icon-commentsicon"></span> icon.</p>
+            <h3>Managing comments</h3>
+            <p>You can manage the added comments using the icons in the comment balloon or on the <b>Comments</b> panel on the left:</p>
+            <ul>
+                <li>
+                    sort the added comments by clicking the <div class = "icon icon-sortcommentsicon"></div> icon:
+                    <ul>
+                        <li>by date: <b>Newest</b> or <b>Oldest</b></li>
+                        <li>by author: <b>Author from A to Z</b> or <b>Author from Z to A</b></li>
+                        <li>
+                            by group: <b>All</b> or choose a certain group from the list. This sorting option is available if you are running a version that includes this functionality.
+                            <p><img alt="Sort comments" src="../images/sortcomments.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+                <li>edit the currently selected by clicking the <div class = "icon icon-editcommenticon"></div> icon,</li>
+                <li>delete the currently selected by clicking the <div class = "icon icon-deletecommenticon"></div> icon,</li>
+                <li>close the currently selected discussion by clicking the <div class = "icon icon-resolveicon"></div> icon if the task or problem you stated in your comment was solved, after that the discussion you opened with your comment gets the resolved status. To open it again, click the <div class = "icon icon-resolvedicon"></div> icon. If you want to hide resolved comments, click the <b>File</b> tab on the top toolbar, select the <b>Advanced Settings...</b> option, uncheck the <b>Turn on display of the resolved comments</b> box and click <b>Apply</b>. In this case the resolved comments will be highlighted only if you click the <div class = "icon icon-commentsicon"></div> icon,</li>
+                <li>if you want to manage comments in a bunch, open the <b>Resolve</b> drop-down menu on the <b>Collaboration</b> tab. Select one of the options for resolving comments: <b>resolve current comments</b>, <b>resolve my comments</b> or <b>resolve all comments</b> in the spreadsheet.</li>
+            </ul>
+            <h3>Adding mentions</h3>
+            <p class="note">You can only add mentions to the comments made to the spreadsheet content and not to the spreadsheet itself.</p>
+            <p>When entering comments, you can use the <b>mentions</b> feature that allows you to attract somebody's attention to the comment and send a notification to the mentioned user via email and <b>Talk</b>.</p>
+            <p>To add a mention,</p>
+            <ol>
+                <li>Enter the "+" or "@" sign anywhere in the comment text - a list of the portal users will open. To simplify the search process, you can start typing the required name in the comment field - the user list will change while you type.</li>
+                <li>Select the necessary person from the list. If the file has not been shared with the mentioned user yet, the <b>Sharing Settings</b> window will open. The <b>Read only</b> access type is selected by default. <a href="https://helpcenter.onlyoffice.com/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">Change it if necessary</a>.</li>
+                <li>Click <b>OK</b>.</li>
+            </ol>
+            <p>The mentioned user will receive an email notification that they have been mentioned in a comment. If the file has been shared, the user will also receive a corresponding notification.</p>
+            <h3>Removing comments</h3>
+            <p>To remove comments,</p>
+            <ol>
+                <li>click the <div class = "icon icon-removecomment_toptoolbar"></div> <b>Remove</b> button on the <b>Collaboration</b> tab of the top toolbar,</li>
+                <li>
+                    select the necessary option from the menu:
+                    <ul>
+                        <li><b>Remove Current Comments</b> - to remove the currently selected comment. If some replies have been added to the comment, all its replies will be removed as well.</li>
+                        <li><b>Remove My Comments</b> - to remove comments you added without removing comments added by other users. If some replies have been added to your comment, all its replies will be removed as well.</li>
+                        <li><b>Remove All Comments</b> - to remove all the comments in the spreadsheet that you and other users added.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>To close the panel with comments, click the Comments <span class="icon icon-commentsicon"></span> icon on the left sidebar once again.</p>
+        </div>
+	</body>
+</html>

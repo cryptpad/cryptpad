@@ -15,12 +15,12 @@ define([
     '/common/outer/cache-store.js',
 
     'chainpad-listmap',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-netflux',
-    '/bower_components/chainpad/chainpad.dist.js',
-    '/bower_components/nthen/index.js',
-    '/bower_components/saferphore/index.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/chainpad/chainpad.dist.js',
+    '/components/nthen/index.js',
+    '/components/saferphore/index.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
              ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt, Cache,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
@@ -149,7 +149,7 @@ define([
         var list = store.manager.getChannelsList('pin');
 
         var team = ctx.store.proxy.teams[id];
-        list.push(team.channel);
+        list.push(`${team.channel}#drive`);
         var chatChannel = Util.find(team, ['keys', 'chat', 'channel']);
         var membersChannel = Util.find(team, ['keys', 'roster', 'channel']);
         var mailboxChannel = Util.find(team, ['keys', 'mailbox', 'channel']);
@@ -319,8 +319,10 @@ define([
                 }
                 ctx.Store.removeOwnedChannel('', data, cb);
             },
-            Store: ctx.Store
+            Store: ctx.Store,
+            store: ctx.store
         }, {
+            teamId: team.id,
             outer: true,
             edPublic: keys.drive.edPublic,
             loggedIn: true,
@@ -423,7 +425,7 @@ define([
         };
         if (channel) {
             ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, waitFor(function (e, res) {
-                if (res && res.length && typeof(res[0]) === 'boolean' && res[0]) {
+                if (res && res.length && typeof(res[0]) === 'object' && res[0].isNew) {
                     // Channel is empty: remove this team
                     close();
                 }
@@ -431,7 +433,7 @@ define([
         }
         if (roster) {
             ctx.store.anon_rpc.send("IS_NEW_CHANNEL", roster, waitFor(function (e, res) {
-                if (res && res.length && typeof(res[0]) === 'boolean' && res[0]) {
+                if (res && res.length && typeof(res[0]) === 'object' && res[0].isNew) {
                     // Channel is empty: remove this team
                     close();
                 }

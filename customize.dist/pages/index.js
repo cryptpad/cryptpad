@@ -35,6 +35,7 @@ define([
     };
 
     return function () {
+        document.title = Msg.homePage;
         var icons = [
                 [ 'sheet', Msg.type.sheet],
                 [ 'doc', Msg.type.doc],
@@ -43,7 +44,7 @@ define([
                 [ 'kanban', Msg.type.kanban],
                 [ 'code', Msg.type.code],
                 [ 'form', Msg.type.form],
-                [ 'whiteboard', Msg.type.whiteboard],
+                [ 'diagram', Msg.type.diagram],
                 [ 'slide', Msg.type.slide]
             ].filter(function (x) {
                 return isAvailableType(x[0]);
@@ -120,6 +121,7 @@ define([
         var imprintLink = fastLink('imprint');
         var privacyLink = fastLink('privacy');
         var termsLink = fastLink('terms');
+        var statusLink = fastLink('status');
 
         var notice;
 /*  Admins can specify a notice to display in application_config.js via the `homeNotice` attribute.
@@ -132,6 +134,7 @@ define([
         }
 
         // instance title
+
         var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
 
         // instance location
@@ -180,7 +183,8 @@ define([
                                 termsLink,
                                 privacyLink,
                                 imprintLink,
-                                h('a', {href:"/contact.html"}, Msg.contact)
+                                h('a', {href:"/contact.html"}, Msg.contact),
+                                statusLink,
                             ])
                         ]),
                         h('div.cp-apps.col-lg-6', [

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Функция УНИК</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Функция УНИК</h1>
+        <p>Функция <b>УНИК</b> - это одна из поисковых функций. Используется для возврата списка уникальных значений из указанного диапазона.</p>
+        <p>Синтаксис функции <b>УНИК</b>:</p>
+        <p style="text-indent: 150px;"><b><em>УНИК(массив,[by_col],[exactly_once])</em></b></p>
+        <p>где</p>
+        <p><b><em>массив</em></b> - это диапазон, из которого нужно извлечь уникальные значения.</p>
+        <p><b><em>by_col</em></b> - это необязательное значение ИСТИНА или ЛОЖЬ, указывающее метод сравнения: ИСТИНА для столбцов и ЛОЖЬ для строк.</p>
+        <p><b><em>exactly_once</em></b> - это необязательное значение ИСТИНА или ЛОЖЬ, указывающее метод возврата: ИСТИНА для значений, встречающихся один раз, и ЛОЖЬ для всех уникальных значений.</p>
+
+        <p>Чтобы применить функцию <b>УНИК</b>,</p>
+        <ol>
+            <li>выделите ячейку, в которой требуется отобразить результат,</li>
+            <li>
+                щелкните по значку <b>Вставить функцию</b> <div class = "icon icon-insertfunction"></div>, расположенному на верхней панели инструментов,
+                <br />или щелкните правой кнопкой мыши по выделенной ячейке и выберите в меню команду <b>Вставить функцию</b>,
+                <br />или щелкните по значку <div class = "icon icon-function"></div> перед строкой формул,
+            </li>
+            <li>выберите из списка группу функций <b>Поиск и ссылки</b>,</li>
+            <li>щелкните по функции <b>УНИК</b>,</li>
+            <li>введите требуемые аргументы,</li>
+            <li>нажмите клавишу <b>Enter</b>.</li>
+        </ol>
+        <p>Результат будет отображен в выделенной ячейке.</p>
+        <p class="note">Чтобы вернуть диапазон значений, выберите необходимый диапазон ячеек, введите формулу и нажмите комбинацию клавиш <b>Ctrl + Shift + Enter</b>.</p>
+        <p style="text-indent: 150px;"><img alt="Функция УНИК" src="../images/unique.png" /></p>
+    </div>
+</body>
+</html>

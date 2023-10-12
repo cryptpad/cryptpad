@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>AutoFormen einfügen und formatieren</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your spreadsheet and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>AutoFormen einfügen und formatieren</h1>
+			<h3>AutoForm einfügen</h3>
+			<p>Um eine AutoForm in die Tabelle in der <a href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> einzufügen:</p>
+			<ol>
+				<li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie auf der oberen Symbolleiste auf das Symbol <div class = "icon icon-insertautoshape"></div> <b>Form</b>.</li>
+				<li>Wählen Sie eine der verfügbaren Gruppen für AutoFormen aus der <b>Formengalerie</b> aus: <em>Zuletzt verwendet</em>, <em>Standardformen</em>, <em>Geformte Pfeile</em>, <em>Mathematik</em>, <em>Diagramme</em>, <em>Sterne &amp; Bänder</em>, <em>Legenden</em>, <em>Schaltflächen</em>, <em>Rechtecke</em>, <em>Linien</em>.</li>
+				<li>Klicken Sie in der gewählten Gruppe auf die gewünschte AutoForm.</li>
+				<li>Positionieren Sie den Mauszeiger an der Stelle, an der Sie eine Form einfügen möchten.</li>
+				<li>Wenn Sie die AutoForm hinzugefügt haben können Sie <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">Größe, Position</a> und Eigenschaften ändern.
+			</ol>
+			<h3>Einstellungen der AutoForm anpassen</h3>
+			<p>Einige Eigenschaften von AutoFormen können auf der Registerkarte <b>Formeinstellungen</b> im rechten Seitenbereich geändert werden. Das entsprechende Menü öffnet sich, wenn Sie die hinzugefügte Form mit der Maus auswählen und dann auf das Symbol <b>Formeinstellungen</b> <span class="icon icon-shape_settings_icon"></span> klicken. Sie können die folgenden Eigenschaften ändern:</p>
+			<ul>
+				<li id="shape_fill">
+					<b>Füllung</b> - zum Ändern der Füllung einer AutoForm. Folgende Optionen stehen Ihnen zur Verfügung:<ul>
+						<li>
+							<b>Einfarbige Füllung</b> - wählen Sie diese Option, um die Volltonfarbe festzulegen, mit der Sie die innere Fläche der ausgewählten Autoform ausfüllen möchten.<p><img alt="Einfarbige Füllung" src="../images/fill_color.png" /></p>
+							<p id="color">Klicken Sie auf das Farbfeld unten und wählen Sie die gewünschte Farbe aus den verfügbaren Farbpaletten aus oder legen Sie eine beliebige Farbe fest:</p>
+							<ul>
+								<li><b>Designfarben</b> - die Farben, die dem gewählten Farbschema der Tabelle entsprechen.</li>
+								<li><b>Standardfarben</b> - die voreingestellten Standardfarben.</li>
+								<li>
+									<b>Benutzerdefinierte Farbe</b> - klicken Sie auf diese Option, wenn Ihre gewünschte Farbe nicht in der Palette mit verfügbaren Farben enthalten ist. Wählen Sie den gewünschten Farbbereich aus, indem Sie den vertikalen Farbregler verschieben und die entsprechende Farbe festlegen, indem Sie den Farbwähler innerhalb des großen quadratischen Farbfelds ziehen. Sobald Sie eine Farbe mit dem Farbwähler bestimmt haben, werden die entsprechenden RGB- und sRGB-Farbwerte in den Feldern auf der rechten Seite angezeigt. Sie können eine Farbe auch anhand des RGB-Farbmodells bestimmen, indem Sie die gewünschten nummerischen Werte in den Feldern <b>R</b>, <b>G</b>, <b>B</b> (Rot, Grün, Blau) festlegen oder den sRGB-Hexadezimalcode in das Feld mit dem <b>#</b>-Zeichen eingeben. Die gewählte Farbe erscheint im Vorschaufeld <b>Neu</b>. Wenn das Objekt vorher mit einer benutzerdefinierten Farbe gefüllt war, wird diese Farbe im Feld <b>Aktuell</b> angezeigt, so dass Sie die Originalfarbe und die Zielfarbe vergleichen könnten. Wenn Sie die Farbe festgelegt haben, klicken Sie auf <b>Hinzufügen</b>. Ihre AutoForm wird in der benutzerdefinierten Farbe formatiert und die Farbe wird der Palette <b>Benutzerdefinierte Farbe</b> hinzugefügt.
+								</li>
+							</ul>
+						</li>
+						<li>
+							<b>Füllung mit Farbverlauf</b> - wählen Sie diese Option, um die Form mit einem sanften Übergang von einer Farbe zu einer anderen zu füllen.<p><img alt="Füllung mit Farbverlauf" src="../images/fill_gradient.png" /></p>
+							<ul>
+								<li><b>Stil</b> - wählen Sie eine der verfügbaren Optionen: <b>Linear</b> (Farben ändern sich linear, d.h. entlang der horizontalen/vertikalen Achse oder diagonal in einem 45-Grad Winkel) oder <b>Radial</b> (Farben ändern sich kreisförmig vom Zentrum zu den Kanten).</li>
+								<li><b>Richtung</b> - wählen Sie eine Vorlage aus dem Menü aus. Wenn der Farbverlauf <b>Linear</b> ausgewählt ist, sind die folgenden Richtungen verfügbar: von oben links nach unten rechts, von oben nach unten, von oben rechts nach unten links, von rechts nach links, von unten rechts nach oben links, von unten nach oben, von unten links nach oben rechts, von links nach rechts. Wenn der Farbverlauf <b>Radial</b> ausgewählt ist, steht nur eine Vorlage zur Verfügung.</li>
+								<li>
+									<b>Farbverlauf</b> - verwenden Sie diese Option, um die Form mit zwei oder mehr verblassenden Farben zu füllen. Passen Sie Ihre Farbverlaufsfüllung ohne Einschränkungen an. Klicken Sie auf die Form, um das rechte <b>Füllungsmenü</b> zu öffnen.
+									<p>Die verfügbare Menüoptionen:</p>
+									<ul>
+										<li>
+											<b>Stil</b> - wählen Sie <b>Linear</b> oder <b>Radial</b> aus:
+											<ul>
+												<li><b>Linear</b> wird verwendet, wenn Ihre Farben von links nach rechts, von oben nach unten oder in einem beliebigen Winkel in eine Richtung fließen sollen. Klicken Sie auf <b>Richtung</b>, um eine voreingestellte Richtung auszuwählen, und klicken Sie auf <b>Winke</b>, um einen genauen Verlaufswinkel einzugeben.</li>
+												<li><b>Radial</b> wird verwendet, um sich von der Mitte zu bewegen, da die Farbe an einem einzelnen Punkt beginnt und nach außen ausstrahlt.</li>
+											</ul>
+										</li>
+										<li>
+											<b>Punkt des Farbverlaufs</b> ist ein bestimmter Punkt für den Verlauf von einer Farbe zur anderen.
+											<ul>
+												<li>Verwenden Sie die Schaltfläche <div class = "icon icon-addgradientpoint"></div> <b>Punkt des Farbverlaufs einfügen</b> oder den Schieberegler, um einen Punkt des Verlaufs einzufügen. Sie können bis zu 10 Punkte einfügen. Jeder nächste eingefügte Punkt des Farbverlaufs beeinflusst in keiner Weise die aktuelle Darstellung der Farbverlaufsfüllung. Verwenden Sie die Schaltfläche <div class = "icon icon-removegradientpoint"></div> <b>Punkt des Farbverlaufs entfernen</b>, um den bestimmten Punkt zu löschen.</li>
+												<li>Verwenden Sie den Schieberegler, um die Position des Farbverlaufspunkts zu ändern, oder geben Sie <b>Position</b> in Prozent an, um eine genaue Position zu erhalten.</li>
+												<li>Um eine Farbe auf einen Verlaufspunkt anzuwenden, klicken Sie auf einen Punkt im Schieberegler und dann auf <b>Farbe</b>, um die gewünschte Farbe auszuwählen.</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<b>Bild oder Textur</b> - wählen Sie diese Option, um ein Bild oder eine vorgegebene Textur als Formhintergrund zu nutzen.<p><img alt="Bild- oder Texturfüllung" src="../images/fill_picture.png" /></p>
+							<ul>
+								<li>Wenn Sie ein Bild als Hintergrund für eine Form verwenden möchten, können Sie das Bild <b>Aus Datei</b> einfügen, geben Sie dazu in dem geöffneten Fenster den Speicherort auf Ihrem Computer an, oder <b>Aus URL</b>, geben Sie dazu die entsprechende Webadresse in das geöffnete Fenster ein.</li>
+								<li>
+									Wenn Sie eine Textur als Hintergrund für eine Form nutzen möchten, öffnen Sie das Menü <b>Textur</b> und wählen Sie die gewünschte Texturvoreinstellung aus.<p>Derzeit sind die folgenden Texturen verfügbar: Leinwand, Karton, dunkler Stoff, Korn, Granit, graues Papier, stricken, Leder, braunes Papier, Papyrus, Holz.</p>
+								</li>
+							</ul>
+							<ul>
+								<li>
+									Wenn das gewählte <b>Bild</b> kleiner oder größer als die AutoForm ist, können Sie die Option <b>Strecken</b> oder <b>Kacheln</b> aus dem Listenmenü auswählen.<p>Die Option <b>Strecken</b> ermöglicht Ihnen die Größe des Bildes so anzupassen, dass es den kompletten Bereich der AutoForm füllen kann.</p>
+									<p>Die Option <b>Kacheln</b> ermöglicht Ihnen nur einen Teil eines größeren Bildes zu verwenden und die Originalgröße beizubehalten oder ein kleines Bild unter Beibehaltung der Originalgröße zu wiederholen und durch diese Wiederholungen die gesamte Fläche der AutoForm auszufüllen.</p>
+									<p class="note">Jede Voreinstellung für <b>Texturfüllungen</b> ist dahingehend festgelegt, den gesamten Bereich auszufüllen, aber Sie können nach Bedarf auch den Effekt <b>Strecken</b> anwenden.</p>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<b>Muster</b> - wählen Sie diese Option, um die Form mit einem zweifarbigen Design zu füllen, dass aus regelmäßig wiederholten Elementen besteht.<p><img alt="Füllungsmuster" src="../images/fill_pattern.png" /></p>
+							<ul>
+								<li><b>Muster</b> - wählen Sie eine der Designvorgaben aus dem Menü aus.</li>
+								<li><b>Vordergrundfarbe</b> - klicken Sie auf dieses Farbfeld, um die Farbe der Musterelemente zu ändern.</li>
+								<li><b>Hintergrundfarbe</b> - klicken Sie auf dieses Farbfeld, um die Farbe des Mustershintergrundes zu ändern.</li>
+							</ul>
+						</li>
+						<li><b>Keine Füllung</b> - wählen Sie diese Option, wenn Sie keine Füllung verwenden möchten.</li>
+					</ul>
+				</li>
+				<li><b>Transparenz</b> - hier können Sie den Grad der gewünschten <b>Transparenz</b> auswählen, bringen Sie dazu den Schieberegler in die gewünschte Position oder geben Sie manuell einen Prozentwert ein. Der Standardwert beträgt <b>100%</b>. Also volle Deckkraft. Der Wert <b>0%</b> steht für vollständige Transparenz.</li>
+				<li id="shape_stroke">
+					<b>Strich</b> - in dieser Gruppe können Sie Strichbreite und -farbe der AutoForm ändern.<ul>
+						<li>Um die Strichstärke zu ändern, wählen Sie eine der verfügbaren Optionen im Listenmenü <b>Größe</b> aus. Die folgenden Optionen stehen Ihnen zur Verfügung: 0,5 Pt., 1 Pt., 1,5 Pt., 2,25 Pt., 3 Pt., 4,5 Pt., 6 Pt. Alternativ können Sie die Option <b>Keine Linie</b> auswählen, wenn Sie keine Umrandung wünschen.</li>
+						<li>Um die <b>Konturfarbe</b> zu ändern, klicken Sie auf das farbige Feld und wählen Sie die gewünschte Farbe aus.</li>
+						<li>Um den <b>Stil der Kontur</b> zu ändern, wählen Sie die gewünschte Option aus der entsprechenden Dropdown-Liste aus (standardmäßig wird eine durchgezogene Linie verwendet, diese können Sie in eine der verfügbaren gestrichelten Linien ändern).</li>
+					</ul>
+				</li>
+				<li>
+					<b>Drehen</b> dient dazu die Form um 90 Grad im oder gegen den Uhrzeigersinn zu drehen oder die Form horizontal oder vertikal zu spiegeln. Wählen Sie eine der folgenden Optionen:<ul>
+						<li><div class = "icon icon-rotatecounterclockwise"></div> um die Form um 90 Grad gegen den Uhrzeigersinn zu drehen</li>
+						<li><div class = "icon icon-rotateclockwise"></div> um die Form um 90 Grad im Uhrzeigersinn zu drehen</li>
+						<li><div class = "icon icon-fliplefttoright"></div> um die Form horizontal zu spiegeln (von links nach rechts)</li>
+						<li><div class = "icon icon-flipupsidedown"></div> um die Form vertikal zu spiegeln (von oben nach unten)</li>
+					</ul>
+				</li>
+				<li><b>AutoForm ändern</b> - ersetzen Sie die aktuelle AutoForm durch eine andere, die Sie im Listenmenü wählen können.</li>
+			</ul>
+			<hr />
+			<p id="shape_advanced">Um die <b>erweiterten Einstellungen</b> der AutoForm zu ändern, nutzen Sie den Link <b>Erweiterte Einstellungen anzeigen</b> im rechten Seitenbereich. Das Fenster Form - Erweiterte Einstellungen wird geöffnet.</p>
+			<p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties.png" /></p>
+			<p>Die Registerkarte <b>Größe</b> enthält die folgenden Parameter:</p>
+			<ul>
+				<li><b>Breite</b> und <b>Höhe</b> - mit diesen Optionen können Sie die Breite bzw. Höhe der AutoForm ändern. Wenn Sie die Funktion <b>Seitenverhältnis sperren</b> <div class = "icon icon-constantproportions"></div> aktivieren (in diesem Fall sieht das Symbol so aus <div class = "icon icon-constantproportionsactivated"></div>), werden Breite und Höhe gleichmäßig geändert und das ursprüngliche Seitenverhältnis der AutoForm wird beibehalten.</li>
+			</ul>
+			<p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_5.png" /></p>
+			<p>Die Registerkarte <b>Drehen</b> umfasst die folgenden Parameter:</p>
+			<ul>
+				<li><b>Winkel</b> - mit dieser Option lässt sich die Form in einem genau festgelegten Winkel drehen. Geben Sie den erforderlichen Wert in Grad in das Feld ein oder stellen Sie diesen mit den Pfeilen rechts ein.</li>
+				<li><b>Spiegeln</b> - Aktivieren Sie das Kontrollkästchen <b>Horizontal</b>, um die Form horizontal zu spiegeln (von links nach rechts), oder aktivieren Sie das Kontrollkästchen <b>Vertikal</b>, um die Form vertikal zu spiegeln (von oben nach unten).</li>
+			</ul>
+			<p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_1.png" /></p>
+			<p>Die Registerkarte <b>Gewichtungen &amp; Pfeile</b> umfasst die folgenden Parameter:</p>
+			<ul>
+				<li>
+					<b>Linienart</b> - in dieser Gruppe können Sie die folgenden Parameter bestimmen:<ul>
+						<li>
+							<b>Abschlusstyp</b> - legen Sie den Stil für den Abschluss der Linie fest, diese Option besteht nur bei Formen mit offener Kontur wie Linien, Polylinien usw.:<ul>
+								<li><b>Flach</b> - für flache Endpunkte.</li>
+								<li><b>Rund</b> - für runde Endpunkte.</li>
+								<li><b>Quadratisch</b> - quadratisches Linienende.</li>
+							</ul>
+						</li>
+						<li>
+							<b>Anschlusstyp</b> - legen Sie die Art der Verknüpfung von zwei Linien fest, z.B. kann diese Option auf Polylinien oder die Ecken von Dreiecken bzw. Vierecken angewendet werden:<ul>
+								<li><b>Rund</b> - die Ecke wird abgerundet.</li>
+								<li><b>Schräge Kante</b> - die Ecke wird schräg abgeschnitten.</li>
+								<li><b>Winkel</b> - spitze Ecke. Dieser Typ passt gut bei AutoFormen mit spitzen Winkeln.</li>
+							</ul>
+							<p class="note">Der Effekt wird auffälliger, wenn Sie eine hohe Konturbreite verwenden.</p>
+						</li>
+					</ul>
+				</li>
+				<li><b>Pfeile</b> - diese Option ist verfügbar, wenn eine Form aus der Gruppe <b>Linien</b> ausgewählt ist. In dieser Gruppe können Sie die Form von <b>Startpfeil</b> und <b>Endpfeil</b> festlegen und die jeweilige <b>Größe</b> bestimmen. Wählen Sie dazu einfach die gewünschte Option aus der Liste aus.</li>
+			</ul>
+			<p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_2.png" /></p>
+			<p>Über die Registerkarte <b>Textränder</b> können Sie die <b>oberen</b>, <b>unteren</b>, <b>linken</b> und <b>rechten</b> inneren Ränder der AutoForm ändern (also den Abstand zwischen dem Text innerhalb der Form und dem Rahmen der AutoForm).</p>
+			<p class="note">Diese Registerkarte ist nur verfügbar, wenn der AutoForm ein Text hinzugefügt wurde, ansonsten wird die Registerkarte ausgeblendet.</p>
+			<p id="columns"><img alt="Formeigenschaften - Spalten" src="../images/shape_properties_4.png" /></p>
+			<p>Über die Registerkarte <b>Spalten</b> ist es möglich, der AutoForm Textspalten hinzuzufügen und die gewünschte <b>Anzahl der Spalten</b> (bis zu 16) und den <b>Abstand zwischen den Spalten</b> festzulegen. Wenn Sie auf <b>OK</b> klicken, erscheint der bereits vorhandene Text, oder jeder beliebige Text den Sie in die AutoForm eingeben, in den Spalten und geht flüssig von einer Spalte in die nächste über.</p>
+			<p><img alt="Form - Erweiterte Einstellungen" src="../images/shape_properties_3.png" /></p>
+			<p>Die Registerkarte <b>Alternativtext</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen in der Form enthalten sind.</p>
+			<hr />
+			<h3>Text in AutoFormen einfügen und formatieren</h3>
+			<p>Um einen Text in eine AutoForm einzufügen, wählen Sie die entsprechende Form aus und geben Sie einfach Ihren Text ein. Ein solcher Text wird Bestandteil der AutoForm (wenn Sie die AutoForm verschieben oder drehen, wird der Text ebenfalls verschoben oder gedreht).</p>
+			<p>Alle Formatierungsoptionen die für den Text in einer AutoForm zur Verfügung stehen finden Sie <a href="InsertTextObjects.htm#textbox_textformatting" onclick="onhyperlinkclick(this)">hier</a>.</p>
+			<hr />
+			<h3>AutoFormen mithilfe von Verbindungen anbinden</h3>
+			<p>Sie können Autoformen mithilfe von Linien mit Verbindungspunkten verbinden, um Abhängigkeiten zwischen Objekten zu demonstrieren (z.B. wenn Sie ein Flussdiagramm erstellen wollen). Gehen Sie dazu vor wie folgt:</p>
+			<ol>
+				<li>Klicken Sie in der oberen Symbolleiste in der Registerkarte <b>Einfügen</b> auf das Smbol <div class = "icon icon-insertautoshape"></div> <b>Form</b>.</li>
+				<li>
+					Wählen Sie die Gruppe <b>Linien</b> im Menü aus.<p><img alt="Formen - Linien" src="../images/connectors.png" /></p>
+				</li>
+				<li>Klicken Sie auf die gewünschte Form in der ausgewählten Gruppe (mit Ausnahme der letzten drei Formen, bei denen es sich nicht um Konnektoren handelt: <em>Kurve</em>, <em>Skizze</em> und <em>Freihand</em>).</li>
+				<li>
+					Bewegen Sie den Mauszeiger über die erste AutoForm und klicken Sie auf einen der Verbindungspunkte <div class = "icon icon-connectionpoint"></div>, die auf dem Umriss der Form zu sehen sind.
+                    <p><span class="big big-connectors_firstshape"></span></p>
+				</li>
+				<li>
+					Bewegen Sie den Mauszeiger in Richtung der zweiten AutoForm und klicken Sie auf den gewünschten Verbindungspunkt auf dem Umriss der Form.
+                    <p><span class="big big-connectors_secondshape"></span></p>
+				</li>
+			</ol>
+			<p>Wenn Sie die verbundenen AutoFormen verschieben, bleiben die Verbindungen an die Form gebunden und bewegen sich mit den Formen zusammen.</p>
+			<p><span class="big big-connectors_moveshape"></span></p>
+			<p>Alternativ können Sie die Verbindungen auch von den Formen lösen und an andere Verbindungspunkte anbinden.</p>
+			<h3>Makro zu einer Form zuweisen</h3>
+			<p>Sie können einen schnellen und einfachen Zugriff auf ein Makro in einer Tabelle bereitstellen, indem Sie einer beliebigen Form ein Makro zuweisen. Nachdem Sie ein Makro zugewiesen haben, wird die Form als Schaltflächensteuerelement angezeigt und Sie können das Makro jedes Mal ausführen, wenn Sie darauf klicken.</p>
+			<p>Um ein Makro zuzuweisen:</p>
+			<ul type="circle">
+				<li>
+					Klicken Sie mit der rechten Maustaste auf die Form, der Sie ein Makro zuweisen möchten, und wählen Sie die Option <b>Makro zuweisen</b> aus dem Drop-Down-Menü.
+					<p><img alt="Makro zuweisen - Menü" src="../images/assignmacro_rightclickshape.png" /></p>
+				</li>
+				<li>Das Dialogfenster <b>Makro zuweisen</b> wird geöffnet.</li>
+				<li>
+					Wählen Sie ein Makro aus der Liste aus oder geben Sie den Makronamen ein und klicken Sie zur Bestätigung auf <b>OK</b>.
+					<p><img alt="Makro zuweisen" src="../images/assignmacro.png" /></p>
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>

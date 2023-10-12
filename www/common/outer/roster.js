@@ -919,23 +919,23 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         module.exports = factory(
             require("../common-util"),
             require("../common-hash"),
-            require("../../bower_components/chainpad-netflux/chainpad-netflux.js"),
-            require("../../bower_components/json.sortify"),
+            require("../../components/chainpad-netflux/chainpad-netflux.js"),
+            require("../../components/json.sortify"),
             require("nthen"),
-            require("../../bower_components/chainpad-crypto/crypto"),
+            require("../../components/chainpad-crypto/crypto"),
             null // no feedback here
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        require.config({ paths:  { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
+        require.config({ paths:  { 'json.sortify': '/components/json.sortify/dist/JSON.sortify' } });
         define([
             '/common/common-util.js',
             '/common/common-hash.js',
             'chainpad-netflux',
             'json.sortify',
-            '/bower_components/nthen/index.js',
-            '/bower_components/chainpad-crypto/crypto.js',
+            '/components/nthen/index.js',
+            '/components/chainpad-crypto/crypto.js',
             '/common/common-feedback.js',
-            //'/bower_components/tweetnacl/nacl-fast.min.js',
+            //'/components/tweetnacl/nacl-fast.min.js',
         ], function (Util, Hash, CPNF, Sortify, nThen, Crypto, Feedback) {
             return factory.apply(null, [
                 Util,

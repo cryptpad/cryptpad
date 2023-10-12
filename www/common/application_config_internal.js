@@ -12,7 +12,8 @@ define(function() {
      * You should never remove the drive from this list.
      */
     AppConfig.availablePadTypes = ['drive', 'teams', 'sheet', 'doc', 'presentation', 'pad', 'kanban', 'code', 'form', 'poll', 'whiteboard',
-                                'file', 'contacts', 'slide', 'convert'];
+                                'file', 'contacts', 'slide', 'convert', 'diagram'];
+
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
      * listed here by default can't work without a user account.
@@ -112,6 +113,12 @@ define(function() {
      */
     AppConfig.roadmap = false;
 
+    /* If you have a status page for your instance, you may use the setting belox
+     *
+     * See the comments above for a description of possible configurations.
+     */
+    AppConfig.status = false;
+
     /* By default CryptPad instances display some text on the home page indicating that
      * they are an independent community instance of the software. You can provide customized messages
      * by filling in the following data structure with strings for each language you intend to support.
@@ -192,6 +199,7 @@ define(function() {
         poll: 'cptools-poll',
         form: 'cptools-poll',
         whiteboard: 'cptools-whiteboard',
+        diagram: 'cptools-diagram',
         todo: 'cptools-todo',
         contacts: 'fa-address-book',
         calendar: 'fa-calendar',

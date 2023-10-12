@@ -81,7 +81,7 @@ nThen(function (w) {
         process.exit(1);
     }
     Env.httpServer = Http.createServer(app);
-    Env.httpServer.listen(Env.websocketPort, 'localhost', w(function () {
+    Env.httpServer.listen(Env.websocketPort, Env.httpAddress, w(function () {
         Env.Log.info('WEBSOCKET_LISTENING', {
             port: Env.websocketPort,
         });
@@ -154,7 +154,7 @@ nThen(function (w) {
     };
 
     var broadcast = (command, data, cb) => {
-        cb = cb; // XXX nThen/concurrency
+        cb = cb; // TODO nThen/concurrency
         for (const worker of Object.values(Cluster.workers)) {
             sendCommand(worker, command, data /*, cb */);
         }
@@ -187,7 +187,7 @@ nThen(function (w) {
         });
     }
     if (Env.OFFLINE_MODE) { return; }
-    //if (Env.websocketPath) { return; } // XXX
+    if (Env.websocketPath) { return; }
 
     require("./lib/api").create(Env);
 });

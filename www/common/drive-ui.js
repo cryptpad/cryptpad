@@ -14,7 +14,7 @@ define([
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/hyperscript.js',
     '/common/proxy-manager.js',
     '/customize/application_config.js',
@@ -1152,10 +1152,36 @@ define([
 
         var FILTER_BY = "filterBy";
 
+        var refreshDeprecated = function () {
+            if (!APP.passwordModal) { return; }
+            var deprecated = files.sharedFoldersTemp;
+            if (JSONSortify(deprecated) === APP.deprecatedSF) { return; }
+            APP.deprecatedSF = JSONSortify(deprecated);
+            if (typeof (deprecated) === "object" && Object.keys(deprecated).length) {
+                var nt = nThen;
+                Object.keys(deprecated).forEach(function (fId) {
+                    var data = deprecated[fId];
+                    var sfId = manager.user.userObject.getSFIdFromHref(data.href);
+                    if (folders[fId] || sfId) { // This shared folder is already stored in the drive...
+                        return void manager.delete([['sharedFoldersTemp', fId]], function () { });
+                    }
+                    nt = nt(function (waitFor) {
+                        UI.openCustomModal(APP.passwordModal(fId, data, waitFor()));
+                    }).nThen;
+                });
+                nt(function () {
+                    APP.refresh();
+                });
+            }
+
+        };
         var refresh = APP.refresh = function (cb) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
-            APP.displayDirectory(path, undefined, cb);
+            APP.displayDirectory(path, undefined, () => {
+                refreshDeprecated();
+                if (typeof(cb) === "function") { cb(); }
+            });
         };
 
         // `app`: true (force open wiht the app), false (force open in preview),
@@ -1490,6 +1516,7 @@ define([
                 $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
             }
             var $button = $driveToolbar.find('#cp-app-drive-toolbar-context-mobile');
+            $button.attr('aria-label', Messages.context_menu);
             if ($button.length) { // mobile
                 if ($li.length !== 1
                     || !$._data($li[0], 'events').contextmenu
@@ -2693,6 +2720,7 @@ define([
                 gridIcon,
                 listIcon
             ]));
+            $button.attr('aria-label', Messages.label_viewMode);
             var $gridIcon = $(gridIcon);
             var $listIcon = $(listIcon);
             var showMode = function (mode) {
@@ -3868,6 +3896,8 @@ define([
                 });
             }
 
+            var $fileHeader = getFileListHeader(false);
+            $list.append($fileHeader);
             $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active1Day)));
             filesList.some(function (arr) {
                 var id = arr[0];
@@ -5370,11 +5400,13 @@ define([
             });
         }
         */
-        var nt = nThen;
-        var passwordModal = function (fId, data, cb) {
+        APP.passwordModal = function (fId, data, cb) {
             var content = [];
-            var folderName = '<b>'+ (data.lastTitle || Messages.fm_newFolder) +'</b>';
-            content.push(UI.setHTML(h('p'), Messages._getKey('drive_sfPassword', [folderName])));
+
+            var legacy = data.legacy; // Legacy mode: we don't know if the sf has been destroyed or its password has changed
+            var folderName = '<b>'+ (Util.fixHTML(data.lastTitle) || Messages.fm_newFolder) +'</b>';
+            var pwMsg = legacy ? Messages._getKey('drive_sfPassword', [folderName]) : Messages._getKey('dph_sf_pw', [folderName]);
+            content.push(UI.setHTML(h('p'), pwMsg));
             var newPassword = UI.passwordInput({
                 id: 'cp-app-prop-change-password',
                 placeholder: Messages.settings_changePasswordNew,
@@ -5425,24 +5457,7 @@ define([
                 onClose: cb
             });
         };
-        onConnectEvt.reg(function () {
-            var deprecated = files.sharedFoldersTemp;
-            if (typeof (deprecated) === "object" && Object.keys(deprecated).length) {
-                Object.keys(deprecated).forEach(function (fId) {
-                    var data = deprecated[fId];
-                    var sfId = manager.user.userObject.getSFIdFromHref(data.href);
-                    if (folders[fId] || sfId) { // This shared folder is already stored in the drive...
-                        return void manager.delete([['sharedFoldersTemp', fId]], function () { });
-                    }
-                    nt = nt(function (waitFor) {
-                        UI.openCustomModal(passwordModal(fId, data, waitFor()));
-                    }).nThen;
-                });
-                nt(function () {
-                    refresh();
-                });
-            }
-        });
+        onConnectEvt.reg(refreshDeprecated);
 
         return {
             refresh: refresh,

@@ -3,7 +3,7 @@ var factory = function () {
     var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
-    var sendCredentials = window.sendCredentials || false; // XXX find a logical place to infer whether this should be set
+    var sendCredentials = window.sendCredentials || false; // XXX SSO find a logical place to infer whether this should be set
 
     // Save a blob on the file system
     var saveFile = function (blob, url, fileName) {
@@ -47,6 +47,7 @@ var factory = function () {
             'text/plain',
             'image/png',
             'image/jpeg',
+            'image/webp',
             'image/jpg',
             'image/gif',
             'audio/mpeg',
@@ -234,6 +235,22 @@ var factory = function () {
         config.Cache.setBlobCache(id, u8, cb);
     };
 
+    var headRequest = function (src, cb) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("HEAD", src);
+        if (sendCredentials) { xhr.withCredentials = true; }
+        xhr.onerror = function () { return void cb("XHR_ERROR"); };
+        xhr.onreadystatechange = function() {
+            if (this.readyState === this.DONE) {
+                cb(null, Number(xhr.getResponseHeader("Content-Length")));
+            }
+        };
+        xhr.onload = function () {
+            if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+        };
+        xhr.send();
+
+    };
     var getFileSize = function (src, _cb) {
         var cb = function (e, res) {
             _cb(e, res);
@@ -243,25 +260,14 @@ var factory = function () {
         var cacheKey = getCacheKey(src);
 
         var check = function () {
-            var xhr = new XMLHttpRequest();
-            xhr.open("HEAD", src);
-            if (sendCredentials) { xhr.withCredentials = true; }
-            xhr.onerror = function () { return void cb("XHR_ERROR"); };
-            xhr.onreadystatechange = function() {
-                if (this.readyState === this.DONE) {
-                    cb(null, Number(xhr.getResponseHeader("Content-Length")));
-                }
-            };
-            xhr.onload = function () {
-                if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
-            };
-            xhr.send();
+            headRequest(src, cb);
         };
 
         if (!cacheKey) { return void check(); }
 
         getBlobCache(cacheKey, function (err, u8) {
-            if (err || !u8) { return void check(); }
+            check(); // send the HEAD request to update the blob activity
+            if (err || !u8) { return; }
             cb(null, 0);
         });
     };
@@ -748,7 +754,11 @@ var factory = function () {
             });
         };
 
-        if (cfg.force) { dl(); return mediaObject; }
+        if (cfg.force) {
+            headRequest(src, function () {}); // Update activity
+            dl();
+            return mediaObject;
+        }
 
         var maxSize = typeof(config.maxDownloadSize) === "number" ? config.maxDownloadSize
                                 : (5 * 1024 * 1024);

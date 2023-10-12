@@ -2,9 +2,9 @@ define([
     'jquery',
     '/api/config',
     '/customize/application_config.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
@@ -18,11 +18,11 @@ define([
     'json.sortify',
 
     '/lib/datepicker/flatpickr.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/admin/app-admin.less',
 ], function (
     $,
@@ -127,7 +127,7 @@ define([
         // Convert to camlCase for translation keys
         var safeKey = keyToCamlCase(key);
         var $div = $('<div>', {'class': 'cp-admin-' + key + ' cp-sidebarlayout-element'});
-        $('<label>').text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
+        $('<label>', {'id': 'cp-admin-' + key}).text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .text(Messages['admin_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
         if (addButton) {
@@ -226,6 +226,7 @@ define([
                 data.currentlyOnline = response[0];
             }));
         }).nThen(function (w) {
+            if (!data.first) { return; }
             sframeCommand('GET_USER_QUOTA', key, w((err, response) => {
                 if (err || !response) {
                     return void console.error('quota', err, response);
@@ -236,6 +237,7 @@ define([
                 }
             }));
         }).nThen(function (w) {
+            if (!data.first) { return; }
             // storage used
             sframeCommand('GET_USER_TOTAL_SIZE', key, w((err, response) => {
                 if (err || !Array.isArray(response)) {
@@ -246,6 +248,7 @@ define([
                 }
             }));
         }).nThen(function (w) {
+            if (!data.first) { return; }
             // channels pinned
             // files pinned
             sframeCommand('GET_USER_STORAGE_STATS', key, w((err, response) => {
@@ -268,6 +271,17 @@ define([
                     data.archived = response[0].archived;
                 }
             }));
+        }).nThen(function (w) {
+            if (data.first) { return; }
+            // Account is probably deleted
+            sframeCommand('GET_ACCOUNT_ARCHIVE_STATUS', {key}, w((err, response) => {
+                if (err || !Array.isArray(response) || !response[0]) {
+                    console.error('account status', err, response);
+                } else {
+                    console.info('account status', response);
+                    data.archiveReport = response[0];
+                }
+            }));
         }).nThen(function () {
             //console.log(data);
             try {
@@ -281,6 +295,12 @@ define([
                     if (typeof(val) !== 'number') { return; }
                     data[`${k}_formatted`] = getPrettySize(val);
                 });
+                if (data.archiveReport) {
+                    let formatted = Util.clone(data.archiveReport);
+                    formatted.channels = data.archiveReport.channels.length;
+                    formatted.blobs = data.archiveReport.blobs.length;
+                    data['archiveReport_formatted'] = JSON.stringify(formatted, 0, 2);
+                }
             } catch (err) {
                 console.error(err);
             }
@@ -391,14 +411,16 @@ define([
             ]));
         }
 
-        // First pin activity time
-        row(Messages.admin_firstPinTime, maybeDate(data.first));
+        if (data.first || data.latest) {
+            // First pin activity time
+            row(Messages.admin_firstPinTime, maybeDate(data.first));
 
-        // last pin activity time
-        row(Messages.admin_lastPinTime, maybeDate(data.latest));
+            // last pin activity time
+            row(Messages.admin_lastPinTime, maybeDate(data.latest));
+        }
 
         // currently online
-        row(Messages.admin_currentlyOnline, data.currentlyOnline);
+        row(Messages.admin_currentlyOnline, localizeState(data.currentlyOnline));
 
         // plan name
         row(Messages.admin_planName, data.plan || Messages.ui_none);
@@ -407,27 +429,46 @@ define([
         row(Messages.admin_note, data.note || Messages.ui_none);
 
         // storage limit
-        row(Messages.admin_planlimit, getPrettySize(data.limit));
+        if (data.limit) { row(Messages.admin_planlimit, getPrettySize(data.limit)); }
 
         // data stored
-        row(Messages.admin_storageUsage, getPrettySize(data.usage));
+        if (data.usage) { row(Messages.admin_storageUsage, getPrettySize(data.usage)); }
 
         // number of channels
-        row(Messages.admin_channelCount, data.channels);
+        if (typeof(data.channel) === "number") {
+            row(Messages.admin_channelCount, data.channels);
+        }
 
         // number of files pinned
-        row(Messages.admin_fileCount, data.files);
+        if (typeof(data.channel) === "number") {
+            row(Messages.admin_fileCount, data.files);
+        }
 
         row(Messages.admin_pinLogAvailable, localizeState(data.live));
 
         // pin log archived
         row(Messages.admin_pinLogArchived, localizeState(data.archived));
 
+        if (data.archiveReport) {
+            row(Messages.admin_accountSuspended, localizeState(Boolean(data.archiveReport)));
+        }
+        if (data.archiveReport_formatted) {
+            let button, pre;
+            row(Messages.admin_accountReport, h('div', [
+                pre = h('pre', data.archiveReport_formatted),
+                button = primary(Messages.admin_accountReportFull, () => {
+                    $(button).remove();
+                    $(pre).html(JSON.stringify(data.archiveReport, 0, 2));
+                })
+            ]));
+        }
+
+
     // actions
-        if (data.archived && data.live === false) {
-            row(Messages.admin_restoreArchivedPins, primary(Messages.ui_restore, function () {
+        if (data.archived && data.live === false && data.archiveReport) {
+            row(Messages.admin_restoreAccount, primary(Messages.ui_restore, function () {
                 justifyRestorationDialog('', reason => {
-                    sframeCommand('RESTORE_ARCHIVED_PIN_LOG', {
+                    sframeCommand('RESTORE_ACCOUNT', {
                         key: data.key,
                         reason: reason,
                     }, function (err) {
@@ -497,9 +538,10 @@ define([
 
             // archive pin log
             var archiveHandler = () => {
-                justifyArchivalDialog(Messages.admin_archivePinLogConfirm, reason => {
-                    sframeCommand('ARCHIVE_PIN_LOG', {
+                justifyArchivalDialog(Messages.admin_archiveAccountConfirm, reason => {
+                    sframeCommand('ARCHIVE_ACCOUNT', {
                         key: data.key,
+                        block: data.blockId,
                         reason: reason,
                     }, (err /*, response */) => {
                         console.error(err);
@@ -512,7 +554,12 @@ define([
                 });
             };
 
-            row(Messages.admin_archivePinLog, danger(Messages.admin_archiveButton, archiveHandler));
+            var archiveAccountLabel = h('span', [
+                Messages.admin_archiveAccount,
+                h('br'),
+                h('small', Messages.admin_archiveAccountInfo)
+            ]);
+            row(archiveAccountLabel, danger(Messages.admin_archiveButton, archiveHandler));
 
             // archive owned documents
 /* // TODO not implemented
@@ -678,6 +725,7 @@ define([
                 }
                 data.live = res[0].live;
                 data.archived = res[0].archived;
+                data.placeholder = res[0].placeholder;
                 //console.error("get channel status", err, res);
             }));
         }).nThen(function () {
@@ -696,7 +744,6 @@ define([
 
 /* FIXME
     Messages.admin_getFullPinHistory = 'Pin history';
-    Messages.admin_archivePinLogConfirm = "All content in this user's drive will be un-listed, meaning it may be deleted if it is not in any other drive.";
     Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)";
     Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored.";
 */
@@ -789,6 +836,11 @@ define([
         if (data.type === 'file') {
             // TODO what to do for files?
 
+        }
+
+        if (data.placeholder) {
+            console.warn('Placeholder code', data.placeholder);
+            row(Messages.admin_channelPlaceholder, UI.getDestroyedPlaceholderMessage(data.placeholder));
         }
 
         if (data.live && data.archived) {
@@ -1075,6 +1127,7 @@ define([
                 data.live = res[0].live;
                 data.archived = res[0].archived;
                 data.totp = res[0].totp;
+                data.placeholder = res[0].placeholder;
             }));
         }).nThen(function () {
             try {
@@ -1098,8 +1151,8 @@ define([
         row(Messages.admin_blockAvailable, localizeState(data.live));
         row(Messages.admin_blockArchived, localizeState(data.archived));
 
-        row(Messages.admin_totpEnabled, localizeState(data.totp.enabled));
-        row(Messages.admin_totpRecoveryMethod, data.totp.recovery); // XXX localize?
+        row(Messages.admin_totpEnabled, localizeState(Boolean(data.totp.enabled)));
+        row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
 
         if (data.live) {
             var archiveButton = danger(Messages.ui_archive, function () {
@@ -1119,6 +1172,10 @@ define([
                 });
             });
             row(Messages.admin_archiveBlock, archiveButton);
+        }
+        if (data.placeholder) {
+            console.warn('Placeholder code', data.placeholder);
+            row(Messages.admin_channelPlaceholder, UI.getDestroyedPlaceholderMessage(data.placeholder, true));
         }
         if (data.archived && !data.live) {
             var restoreButton = danger(Messages.ui_restore, function () {
@@ -1235,13 +1292,6 @@ define([
         return $div;
     };
 
-    Messages.admin_totpEnabled = "TOTP is enabled"; // XXX
-    Messages.admin_totpRecoveryMethod = "TOTP recovery method"; // XXX
-    Messages.admin_totpFailed = "Signature verification failed";
-    Messages.admin_totpCheck = "Signature verification success";
-    Messages.admin_totpDisable = "Disable TOTP for this account";
-    Messages.admin_totpDisableButton = "Disable";
-
     var renderTOTPData  = function (data) {
         var tableObj = makeMetadataTable('cp-block-stats');
         var row = tableObj.row;
@@ -1258,7 +1308,7 @@ define([
 
         row(Messages.admin_totpEnabled, localizeState(Boolean(data.totp.enabled)));
         if (data.totp && data.totp.enabled) {
-            row(Messages.admin_totpRecoveryMethod, data.totp.recovery); // XXX localize?
+            row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
         }
 
         if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }
@@ -1296,22 +1346,22 @@ define([
 
     create['totp-recovery'] = function () {
         var key = 'totp-recovery';
-        // XXX translation keys
         var $div = makeBlock(key, true); // Msg.admin_totpRecoveryHint.totpRecoveryTitle
 
-        var textarea = h('textarea', {});
+        var textarea = h('textarea', {
+            id: 'textarea-input',
+            'aria-labelledby': 'cp-admin-totp-recovery'
+        });
         var $input = $(textarea);
 
-        var box = h('div.cp-admin-setter', [
-            textarea,
-        ]);
+        var box = h('div.cp-admin-setter', textarea);
 
         $div.find('.cp-sidebarlayout-description').after(box);
 
         var results = h('span');
         $div.append(results);
         var $btn = $div.find('.btn');
-        $btn.text(Messages.ui_generateReport);
+        $btn.text(Messages.admin_totpDisable);
         disable($btn);
 
         var pending = false;
@@ -1483,10 +1533,13 @@ Example
 
         var input = h('input', {
             type: 'email',
-            value: ApiConfig.adminEmail || ''
+            value: ApiConfig.adminEmail || '',
+            'aria-labelledby': 'cp-admin-email'
         });
         var $input = $(input);
+
         var innerDiv = h('div.cp-admin-setter.cp-admin-setlimit-form', input);
+
         var spinner = UI.makeSpinner($(innerDiv));
 
         $button.click(function () {
@@ -1534,6 +1587,7 @@ Example
             type: 'text',
             value: getInstanceString('instanceJurisdiction'),
             placeholder: Messages.owner_unknownUser || '',
+            'aria-labelledby': 'cp-admin-jurisdiction'
         });
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setter', input);
@@ -1575,7 +1629,9 @@ Example
             type: 'text',
             value: getInstanceString('instanceNotice'),
             placeholder: '',
+            'aria-labelledby': 'cp-admin-notice'
         });
+
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setter', input);
         var spinner = UI.makeSpinner($(innerDiv));
@@ -1624,6 +1680,7 @@ Example
             type: 'text',
             value: getInstanceString('instanceName') || ApiConfig.httpUnsafeOrigin || '',
             placeholder: ApiConfig.httpUnsafeOrigin,
+            'aria-labelledby': 'cp-admin-name'
         });
         var $input = $(input);
         var innerDiv = h('div.cp-admin-setter', input);
@@ -1660,6 +1717,7 @@ Example
 
         var textarea = h('textarea.cp-admin-description-text', {
             placeholder: Messages.home_host || '',
+            'aria-labelledby': 'cp-admin-description'
         }, getInstanceString('instanceDescription'));
 
         var $button = $div.find('button').text(Messages.settings_save);
@@ -1703,16 +1761,24 @@ Example
         var _limit = APP.instanceStatus.defaultStorageLimit;
         var _limitMB = Util.bytesToMegabytes(_limit);
         var limit = getPrettySize(_limit);
-        var newLimit = h('input', {type: 'number', min: 0, value: _limitMB});
+        var newLimit = h('input', {
+            type: 'number',
+            min: 0,
+            value: _limitMB,
+            'aria-labelledby': 'cp-admin-defaultlimit'
+        });
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
+
         $div.append(h('div', [
             h('span.cp-admin-defaultlimit-value', Messages._getKey('admin_limit', [limit])),
             h('div.cp-admin-setlimit-form', [
-                h('label', Messages.admin_defaultLimitMB),
                 newLimit,
                 h('nav', [set])
             ])
         ]));
+
+
+
 
         UI.confirmButton(set, {
             classes: 'btn-primary',
@@ -1822,21 +1888,23 @@ Example
         var key = 'setlimit';
         var $div = makeBlock(key); // Msg.admin_setlimitHint, .admin_setlimitTitle
 
-        var user = h('input.cp-setlimit-key');
+        var user = h('input.cp-setlimit-key', { id: 'user-input' });
         var $key = $(user);
-        var limit = h('input.cp-setlimit-quota', {type: 'number', min: 0, value: 0});
-        var note = h('input.cp-setlimit-note');
+        var limit = h('input.cp-setlimit-quota', { type: 'number', min: 0, value: 0, id: 'limit-input' });
+        var note = h('input.cp-setlimit-note', { id: 'note-input' });
         var remove = h('button.btn.btn-danger', Messages.fc_remove);
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
+
         var form = h('div.cp-admin-setlimit-form', [
-            h('label', Messages.admin_limitUser),
+            h('label', { for: 'user-input' }, Messages.admin_limitUser),
             user,
-            h('label', Messages.admin_limitMB),
+            h('label', { for: 'limit-input' }, Messages.admin_limitMB),
             limit,
-            h('label', Messages.admin_limitSetNote),
+            h('label', { for: 'note-input' }, Messages.admin_limitSetNote),
             note,
             h('nav', [set, remove])
         ]);
+
         var $note = $(note);
 
         var getValues = function () {
@@ -2023,11 +2091,15 @@ Example
         onRefreshStats.reg(onRefresh);
         return $div;
     };
+
     create['disk-usage'] = function () {
         var key = 'disk-usage';
         var $div = makeBlock(key, true); // Msg.admin_diskUsageHint, .admin_diskUsageTitle, .admin_diskUsageButton
         var called = false;
+
         $div.find('button').click(function () {
+        UI.confirm(Messages.admin_diskUsageWarning, function (yes) {
+            if (!yes) { return; }
             $div.find('button').hide();
             if (called) { return; }
             called = true;
@@ -2057,6 +2129,8 @@ Example
                 })));
             });
         });
+        });
+
         return $div;
     };
 
@@ -2460,17 +2534,17 @@ Example
     // message's hash.
     // If the last BROADCAST_CUSTOM has been deleted by an admin, we can use the most recent
     // message's hash.
-    var checkLastBroadcastHash = function () {
+    var checkLastBroadcastHash = function (cb) {
         var deleted = [];
 
         require(['/api/broadcast?'+ (+new Date())], function (BCast) {
             var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
             common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
-                if (e) { return void console.error(e); }
+                if (e) { console.error(e); return void cb(e); }
 
                 // No history, nothing to change
-                if (!Array.isArray(msgs)) { return; }
-                if (!msgs.length) { return; }
+                if (!Array.isArray(msgs)) { return void cb(); }
+                if (!msgs.length) { return void cb(); }
 
                 var lastHash;
                 var next = false;
@@ -2514,7 +2588,7 @@ Example
                 });
 
                 // If we don't have to bump our lastBroadcastHash, abort
-                if (next) { return; }
+                if (next) { return void cb(); }
 
                 // Otherwise, bump to lastHash
                 console.warn('Updating last broadcast hash to', lastHash);
@@ -2528,6 +2602,7 @@ Example
                         return;
                     }
                     console.log('lastBroadcastHash updated');
+                    if (typeof(cb) === "function") { cb(); }
                 });
             });
         });
@@ -2649,10 +2724,14 @@ Example
                     'data-lang': l,
                     label: {class: 'noTitle'}
                 });
+
+                var label = h('label', { for: 'kanban-body' }, Messages.kanban_body);
+                var textarea = h('textarea', { id: 'kanban-body' });
+
                 $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
                     h('h4', languages[l]),
-                    h('label', Messages.kanban_body),
-                    h('textarea'),
+                    label,
+                    textarea,
                     radio,
                     preview
                 ]));
@@ -2716,9 +2795,9 @@ Example
                         return UI.warn(Messages.error);
                     }
                     UI.log(Messages.saved);
-                    refresh();
-
-                    checkLastBroadcastHash();
+                    checkLastBroadcastHash(function () {
+                        setTimeout(refresh, 300);
+                    });
                 });
             };
 
@@ -2737,8 +2816,9 @@ Example
                 }, {}, function (err) {
                     if (err) { return UI.warn(Messages.error); }
                     UI.log(Messages.saved);
-                    refresh();
-                    checkLastBroadcastHash();
+                    checkLastBroadcastHash(function () {
+                        setTimeout(refresh, 300);
+                    });
                 });
             });
 
@@ -2786,8 +2866,8 @@ Example
             }
 
             // Start and end date pickers
-            var start = h('input');
-            var end = h('input');
+            var start = h('input#cp-admin-start-input');
+            var end = h('input#cp-admin-end-input');
             var $start = $(start);
             var $end = $(end);
             var is24h = UIElements.is24h();
@@ -2838,8 +2918,9 @@ Example
                     }
                     // Maintenance applied, send notification
                     common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function () {
-                        refresh();
-                        checkLastBroadcastHash();
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
                     });
                 });
 
@@ -2857,9 +2938,9 @@ Example
 
             $form.empty().append([
                 active,
-                h('label', Messages.broadcast_start),
+                h('label', { for: 'cp-admin-start-input' }, Messages.broadcast_start),
                 start,
-                h('label', Messages.broadcast_end),
+                h('label', { for: 'cp-admin-end-input' }, Messages.broadcast_end),
                 end,
                 h('br'),
                 h('div.cp-broadcast-form-submit', [
@@ -2905,8 +2986,8 @@ Example
             }
 
             // Survey form
-            var label = h('label', Messages.broadcast_surveyURL);
-            var input = h('input');
+            var label = h('label', { for: 'cp-admin-survey-url-input' }, Messages.broadcast_surveyURL);
+            var input = h('input#cp-admin-survey-url-input');
             var $input = $(input);
 
             // Extract form data
@@ -2935,8 +3016,9 @@ Example
                     common.mailbox.sendTo('BROADCAST_SURVEY', {
                         url: data
                     }, {}, function () {
-                        refresh();
-                        checkLastBroadcastHash();
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
                     });
                 });
 
@@ -3087,15 +3169,19 @@ Example
 
         var duration = APP.instanceStatus.profilingWindow;
         if (!isPositiveInteger(duration)) { duration = 10000; }
-        var newDuration = h('input', {type: 'number', min: 0, value: duration});
+        var newDuration = h('input#cp-admin-duration-input', { type: 'number', min: 0, value: duration });
         var set = h('button.btn.btn-primary', Messages.admin_setDuration);
+
+        var label = h('label', { for: 'cp-admin-duration-input' }, Messages.ui_ms);
+
         $div.append(h('div', [
-            h('span.cp-admin-bytes-written-duration', Messages.ui_ms),
             h('div.cp-admin-setlimit-form', [
+                label,
                 newDuration,
                 h('nav', [set])
             ])
         ]));
+
 
         UI.confirmButton(set, {
             classes: 'btn-primary',
@@ -3129,7 +3215,7 @@ Example
         if (!APP.instanceStatus.updateAvailable) { return; }
         var $div = makeBlock('update-available', true);
 
-        var updateURL = 'https://github.com/xwiki-labs/cryptpad/releases/latest';
+        var updateURL = 'https://github.com/cryptpad/cryptpad/releases/latest';
         if (typeof(APP.instanceStatus.updateAvailable) === 'string') {
             updateURL = APP.instanceStatus.updateAvailable;
         }

@@ -1,7 +1,7 @@
 define([
     'jquery',
     'json.sortify',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
@@ -12,7 +12,7 @@ define([
     '/customize/messages.js',
     '/whiteboard/colors.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 
     '/lib/fabric.min.js',
     'less!/whiteboard/app-whiteboard.less'

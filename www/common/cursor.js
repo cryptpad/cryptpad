@@ -1,6 +1,6 @@
 define([
     '/common/cursor-treesome.js',
-    '/bower_components/rangy/rangy-core.min.js'
+    '/lib/rangy/rangy-core.min.js'
 ], function (Tree, Rangy) {
     var verbose = function (x) { if (window.verboseMode) { console.log(x); } };
 

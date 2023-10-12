@@ -103,7 +103,7 @@ define([
                         )
                     ),
                     h('div',
-                        h('a.card-small', {href : "https://github.com/xwiki-labs/cryptpad/issues/"},
+                        h('a.card-small', {href : "https://github.com/cryptpad/cryptpad/issues/"},
                             h('div.card-body',
                                 h('p', [
                                     h('img', {

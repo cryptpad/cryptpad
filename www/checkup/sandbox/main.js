@@ -3,8 +3,8 @@ define([
     '/common/common-util.js',
     '/checkup/checkup-tools.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    '/components/tweetnacl/nacl-fast.min.js',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, Util, Tools) {
     var postMessage = function (content) {

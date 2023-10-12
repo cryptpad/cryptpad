@@ -1,7 +1,7 @@
 define([
     'jquery',
     'json.sortify',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
     '/common/sframe-common-codemirror.js',
@@ -14,8 +14,7 @@ define([
     '/common/hyperscript.js',
     '/common/text-cursor.js',
     '/common/diffMarked.js',
-    '/bower_components/chainpad/chainpad.dist.js',
-    '/bower_components/marked/marked.min.js',
+    '/components/chainpad/chainpad.dist.js',
     'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',
@@ -28,9 +27,9 @@ define([
     'cm/addon/search/search',
     'cm/addon/search/match-highlighter',
 
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
+    'css!/components/codemirror/addon/fold/foldgutter.css',
     'less!/kanban/app-kanban.less'
 ], function (
     $,
@@ -49,12 +48,10 @@ define([
     TextCursor,
     DiffMd,
     ChainPad,
-    Marked,
     CodeMirror,
     jKanban,
     Export)
 {
-
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();

@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/api/config',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
     '/common/outer/worker-channel.js',
@@ -11,6 +11,7 @@ define([
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-cursor.js',
+    '/common/sframe-common-integration.js',
     '/common/sframe-common-mailbox.js',
     '/common/inner/cache.js',
     '/common/inner/common-mediatag.js',
@@ -26,7 +27,7 @@ define([
     '/common/common-feedback.js',
     '/common/common-language.js',
     '/common/common-constants.js',
-    '/bower_components/localforage/dist/localforage.min.js',
+    '/components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
 ], function (
     $,
@@ -41,6 +42,7 @@ define([
     File,
     CodeMirror,
     Cursor,
+    Integration,
     Mailbox,
     Cache,
     MT,
@@ -130,6 +132,9 @@ define([
 
     // Cursor
     funcs.createCursor = callWithCommon(Cursor.create);
+
+    // Integration
+    funcs.createIntegration = callWithCommon(Integration.create);
 
     // Files
     funcs.uploadFile = callWithCommon(File.uploadFile);
@@ -391,6 +396,22 @@ define([
         });
     };
 
+    funcs.openIntegrationChannel = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        var channel = md.integration;
+        if (typeof(channel) !== 'string' || channel.length !== Hash.ephemeralChannelLength) {
+            channel = Hash.createChannelId(true); // true indicates that it's an ephemeral channel
+        }
+        if (md.integration !== channel) {
+            md.integration = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        ctx.sframeChan.query('Q_INTEGRATION_OPENCHANNEL', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
+
     // CodeMirror
     funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);
 
@@ -412,7 +433,11 @@ define([
     };
 
     funcs.setLoginRedirect = function (page) {
-        ctx.sframeChan.query('EV_SET_LOGIN_REDIRECT', page);
+        // We have to logout before redirecting because otherwise Safari might keep
+        // the guest SharedWorker alive
+        funcs.logout(() => {
+            ctx.sframeChan.event('EV_SET_LOGIN_REDIRECT', page);
+        });
     };
 
     funcs.isPresentUrl = function (cb) {
@@ -426,6 +451,9 @@ define([
     funcs.handleNewFile = function (waitFor, config) {
         if (window.__CRYPTPAD_TEST__) { return; }
         var priv = ctx.metadataMgr.getPrivateData();
+        if (priv.isNewFile && priv.initialState) {
+            return void setTimeout(waitFor());
+        }
         if (priv.isNewFile) {
             var c = (priv.settings.general && priv.settings.general.creation) || {};
             // If this is a new file but we have a hash in the URL and pad creation screen is
@@ -820,6 +848,28 @@ define([
                 UI.errorLoadingScreen(Messages.restrictedError);
             });
 
+            ctx.sframeChan.on("EV_DELETED_ERROR", function (reason) {
+                var obj = reason;
+                var viewer;
+                if (typeof(reason) === "object") {
+                    reason = obj.reason;
+                    viewer = obj.viewer;
+                }
+                funcs.onServerError({
+                    type: 'EDELETED',
+                    message: reason,
+                    viewer: viewer
+                });
+            });
+
+            ctx.sframeChan.on("EV_DRIVE_DELETED", function (reason) {
+                funcs.onServerError({
+                    type: 'EDELETED',
+                    drive: true,
+                    message: reason
+                });
+            });
+
             ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
                 UI.errorLoadingScreen(Messages.password_error_seed);
             });
@@ -855,13 +905,19 @@ define([
 
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 var msg = err;
-                if (err === 'DELETED') {
+                if (err === 'DELETED' || (err && err.type === 'EDELETED')) {
                     // XXX You can still use the current version in read-only mode by pressing Esc.
                     // what if they don't have a keyboard (ie. mobile)
-                    msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
-                }
-                if (err === "INVALID_HASH") {
+                    if (err.type && err.message) {
+                        msg = UI.getDestroyedPlaceholderMessage(err.message, false, true);
+                    } else {
+                        msg = Messages.deletedError;
+                    }
+                    msg += '<br>' + Messages.errorRedirectToHome;
+                } else if (err === "INVALID_HASH") {
                     msg = Messages.invalidHashError;
+                } else if (err === 'ACCOUNT') { // block 404 but no placeholder
+                    msg = Messages.login_unhandledError;
                 }
                 UI.errorLoadingScreen(msg, false, function () {
                     funcs.gotoURL('/drive/');
@@ -969,6 +1025,10 @@ define([
 
             ctx.sframeChan.on('EV_CHROME_68', function () {
                 UI.alert(Messages.chrome68);
+            });
+
+            ctx.sframeChan.on('EV_IFRAME_TITLE', function (title) {
+                document.title = title;
             });
 
             funcs.isPadStored(function (err, val) {

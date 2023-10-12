@@ -1,0 +1,9 @@
+.dockerignore
+.git
+.gitignore
+.gitmodules
+.github
+docker-compose.yml
+traefik2.yml
+Dockerfile*
+*.png

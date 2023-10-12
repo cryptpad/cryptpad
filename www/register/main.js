@@ -14,7 +14,7 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
 
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function (Config, $, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
@@ -49,7 +49,6 @@ define([
 
         var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
         var br = function () { return h('br'); };
-        Messages.register_nameTooLong = "Usernames must be shorter than {0} characters"; // XXX
 
         if (Config.sso) {
             // TODO

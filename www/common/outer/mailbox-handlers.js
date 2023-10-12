@@ -2,7 +2,7 @@ define([
     '/common/common-messaging.js',
     '/common/common-hash.js',
     '/common/common-util.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
 ], function (Messaging, Hash, Util, Crypto) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
@@ -794,6 +794,29 @@ define([
         cb(true);
     };
 
+    var sfDeleted = {};
+    handlers['SF_DELETED'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        var teamId = content.team;
+        var sfId = content.sfId;
+
+        if (sfDeleted[sfId]) { return void cb(true); }
+        sfDeleted[sfId] = 1;
+
+        // If it's a team SF, add the team name here
+
+        if (!teamId) { return void cb(false); }
+
+        var team = ctx.store.proxy.teams[teamId];
+        content.teamName = team.metadata && team.metadata.name;
+        cb(false);
+    };
+    removeHandlers['SF_DELETED'] = function (ctx, box, data) {
+        var id = data.content.sfId;
+        delete sfDeleted[id];
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**
@@ -806,7 +829,7 @@ define([
                     hash: 'string'
                 }
              */
-            if (!data.msg) { return void cb(true); }
+            if (!data.msg) { return void cb(null, null, true); }
 
             // Check if the request is valid (sent by the correct user)
             var myCurve = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
@@ -816,7 +839,7 @@ define([
             // except if the author is ourselves.
             if (curve && data.msg.author !== curve && data.msg.author !== myCurve) {
                 console.error('blocked');
-                return void cb(true);
+                return void cb(null, null, true);
             }
 
             var type = data.msg.type;

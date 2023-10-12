@@ -1,5 +1,5 @@
 define([
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function (ChainPad) {
     var Diff = ChainPad.Diff;
 

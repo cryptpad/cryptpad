@@ -4,8 +4,8 @@ define([
     '/common/common-constants.js',
     '/common/common-realtime.js',
     'chainpad-listmap',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad-crypto/crypto.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function (Util, Hash, Constants, Realtime, Listmap, Crypto, ChainPad) {
     var Profile = {};
 

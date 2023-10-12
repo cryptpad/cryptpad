@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tabellen einfügen und formatieren</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a table to your presentation and adjust its properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Tabellen einfügen und formatieren</h1>
+			<h3>Eine Tabelle einfügen</h3>
+			<p>Eine Tabelle in eine Folie einfügen im <a target="_blank" href="https://www.onlyoffice.com/de/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a>:</p>
+			<ol>
+				<li>Wählen Sie die gewünschte Folie aus, in die Sie eine Tabelle einfügen möchten.</li>
+				<li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie auf das Symbol <div class="icon icon-inserttable"></div> <b>Tabelle</b>.</li>
+				<li>
+					Wählen Sie die gewünschte Option für die Erstellung einer Tabelle:
+					<ul>
+						<li>
+							<p>Tabelle mit einer vordefinierten Zellenanzahl (maximal 10 x 8 Zellen)</p>
+							<p>Wenn Sie schnell eine Tabelle erstellen möchten, wählen Sie einfach die Anzahl der Zeilen (maximal 8) und Spalten (maximal 10) aus.</p>
+						</li>
+						<li>
+							<p>Eine benutzerdefinierte Tabelle</p>
+							<p>Wenn Sie eine Tabelle mit mehr als 10 x 8 Zellen benötigen, wählen Sie die Option <b>Benutzerdefinierte Tabelle einfügen</b>. Geben Sie nun im geöffneten Fenster die gewünschte Anzahl der Zeilen und Spalten an und klicken Sie anschließend auf <b>OK</b>.</p>
+						</li>
+					</ul>
+				</li>
+				<li>
+					Wenn Sie eine Tabelle als OLE-Objekt einfügen möchten:
+					<ol>
+						<li>Wählen Sie die Option <b>Tabelle einfügen</b> im Menü <b>Tabelle</b> auf der Registerkarte <b>Einfügen</b>.</li>
+						<li>
+							Es erscheint das entsprechende Fenster, in dem Sie die erforderlichen Daten eingeben und mit den Formatierungswerkzeugen der Tabellenkalkulation wie <a href="../../../../../../spreadsheeteditor/main/resources/help/de/UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">Auswahl von Schriftart, Typ und Stil</a>, <a href="../../../../../../spreadsheeteditor/main/resources/help/de/UsageInstructions/ChangeNumberFormat.htm" onclick="onhyperlinkclick(this)">Zahlenformat einstellen</a>, <a href="../../../../../../spreadsheeteditor/main/resources/help/de/UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">Funktionen einfügen</a>, <a href="../../../../../../spreadsheeteditor/main/resources/help/de/UsageInstructions/FormattedTables.htm" onclick="onhyperlinkclick(this)">Tabellen formatieren</a> usw. sie formatieren.
+							<p><img alt="OLE table" src="../../../../../../common/main/resources/help/de/images/ole_table.png" /></p>
+						</li>
+						<li>Die Kopfzeile enthält die Schaltfläche <span class="icon icon-visible_area"></span> <b>Sichtbarer Bereich</b> in der oberen rechten Ecke des Fensters. Wählen Sie die Option <b>Sichtbaren Bereich bearbeiten</b>, um den Bereich auszuwählen, der angezeigt wird, wenn das Objekt in die Präsentation eingefügt wird; andere Daten gehen nicht verloren, sie werden nur ausgeblendet. Klicken Sie auf <b>Fertig</b>, wenn Sie fertig sind.</li>
+						<li>Klicken Sie auf die Schaltfläche <b>Sichtbaren Bereich anzeigen</b>, um den ausgewählten Bereich mit einem blauen Rand anzuzeigen.</li>
+						<li>Wenn Sie fertig sind, klicken Sie auf die Schaltfläche <b>Speichern und beenden</b>.</li>
+					</ol>
+				</li>
+				<li>Wenn Sie eine Tabelle eingefügt haben, können Sie Eigenschaften und Position verändern.</li>
+			</ol>
+			<p>Sie können auch eine Tabelle in einen Textplatzhalter einfügen, indem Sie auf das Symbol <span class="icon icon-placeholder_table"></span> <b>Tabelle</b> darin drücken und die gewünschte Anzahl der Zellen auswählen oder die Option <b>Benutzerdefinierte Tabelle einfügen</b> verwenden:</p>
+			<p><img alt="Add table to placeholder" src="../images/placeholder_object.png" /></p>
+			<p>Um die Größe einer Tabelle zu ändern, ziehen Sie die Griffe <span class="icon icon-resize_square"></span> an ihren Rändern, bis die Tabelle die erforderliche Größe erreicht.</p>
+			<p><span class="big big-resizetable"></span></p>
+			<p>Sie können die Breite einer bestimmten Spalte oder die Höhe einer Zeile auch manuell ändern. Bewegen Sie den Mauszeiger über den rechten Rand der Spalte, sodass sich der Mauszeiger in den bidirektionalen Pfeil verwandelt <span class="icon icon-changecolumnwidth"></span>, und ziehen Sie den Rand nach links oder rechts, um die erforderliche Breite einzustellen. Um die Höhe einer einzelnen Zeile manuell zu ändern, bewegen Sie den Mauszeiger über den unteren Rand der Zeile, bis sich der Cursor in den bidirektionalen Pfeil verwandelt <span class="icon icon-changerowheight"></span>, und ziehen Sie den Rand nach oben oder unten.</p>
+			<p>Sie können die <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">Tabellenposition</a> auf der Folie festlegen, indem Sie sie vertikal oder horizontal ziehen.</p>
+			<p class="note">
+				Um sich in einer Tabelle zu bewegen, können Sie <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithtables" onclick="onhyperlinkclick(this)">Tastaturkürzel</a> verwenden.
+			</p>
+			<p>Es ist auch möglich, einem Folienlayout eine Tabelle hinzuzufügen. Weitere Informationen finden Sie in diesem <a href="../UsageInstructions/SetSlideParameters.htm#addtolayout" onclick="onhyperlinkclick(this)">Artikel</a>.</p>
+			<hr />
+			<h3>Tabelleneinstellungen anpassen</h3>
+			<img class="floatleft" alt="Registerkarte Tabelleneinstellungen" src="../images/tablesettingstab.png" />
+			<p>Die meisten Tabelleneigenschaften sowie die Struktur, können Sie in der rechten Seitenleiste ändern. Um diese zu aktivieren, klicken Sie auf die Tabelle und wählen Sie rechts das Symbol <b>Tabelleneinstellungen</b> <span class="icon icon-table_settings_icon"></span> aus.</p>
+			<p>In den Abschnitten <b>Zeilen</b> und <b>Spalten</b>, haben Sie die Möglichkeit, bestimmte Zeilen/Spalten hervorzuheben, eine bestimmte Formatierung anzuwenden oder die Zeilen/Spalten in den verschiedenen Hintergrundfarben einzufärben, um sie klar zu unterscheiden. Folgende Auswahlmöglichkeiten stehen zur Verfügung:</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Kopfzeile</b> - die erste Zeile der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+				<li><b>Ergebniszeile</b> - die letzte Zeile der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+				<li><b>Gebänderte Zeilen</b> - gerade und ungerade Zeilen werden unterschiedlich formatiert.</li>
+				<li><b>Erste Spalte</b> - die erste Spalte der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+				<li><b>Letzte Spalte</b> - die letzte Spalte der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+				<li><b>Gebänderte Spalten</b> - gerade und ungerade Spalten werden unterschiedlich formatiert.</li>
+			</ul>
+			<p>
+				Im Abschnitt <b>Aus Vorlage wählen</b> können Sie einen vordefinierten Tabellenstil auswählen. Jede Vorlage kombiniert bestimmte Formatierungsparameter, wie Hintergrundfarbe, Rahmenstil, Zellen-/Spaltenformat usw.
+				Abhängig von den in den Abschnitten <b>Zeilen</b> oder <b>Spalten</b> ausgewählten Optionen, werden die Vorlagen unterschiedlich dargestellt. Wenn Sie zum Beispiel die Option <b>Kopfzeile</b> im Abschnitt <b>Zeilen</b> und die Option <b>Gebänderte Spalten</b> im Abschnitt <b>Spalten</b> aktiviert haben, enthält die angezeigte Vorlagenliste nur Vorlagen mit Kopfzeile und gebänderten Spalten:
+			</p>
+			<p><span class="big big-templateslist"></span></p>
+			<p>Im Abschnitt <b>Rahmenstil</b> können Sie die angewandte Formatierung ändern, die der gewählten Vorlage entspricht. Sie können die ganze Tabelle auswählen oder einen bestimmten Zellenbereich, dessen Formatierung Sie ändern möchten, und alle Parameter manuell bestimmen.</p>
+			<ul>
+				<li>
+					<b>Rahmen</b> - legen Sie die Stärke des Rahmens in der Liste <div class="big big-bordersize"></div> fest (oder wählen Sie die Option <b>Kein Rahmen</b>) sowie den gewünschten Rahmenstil und wählen Sie die <b>Rahmenfarbe</b> aus den verfügbaren Paletten aus:
+					<p><span class="big big-bordertype"></span></p>
+				</li>
+				<li><b>Hintergrundfarbe</b> - wählen Sie eine Farbe für den Hintergrund innerhalb der ausgewählten Zellen.</li>
+			</ul>
+			<p>Im Abschnitt <b>Zeilen &amp; Spalten</b> <span class="icon icon-rowsandcolumns"></span> können Sie folgende Vorgänge durchzuführen:</p>
+			<ul>
+				<li><b>Auswählen</b> - eine Zeile, Spalte, Zelle (abhängig von der Cursorposition) oder die ganze Tabelle auswählen.</li>
+				<li><b>Einfügen</b> eine neue Zeile unter oder über der ausgewählten Zeile bzw. eine neue Spalte links oder rechts von der ausgewählten Spalte einfügen.</li>
+				<li><b>Löschen</b> eine Zeile, Spalte, Zelle (abhängig von der Cursorposition) oder die ganze Tabelle löschen.</li>
+				<li><b>Zellen verbinden</b> - die ausgewählten Zellen in einer Zelle zusammenführen.</li>
+				<li>
+					<b>Zelle teilen...</b> - die ausgewählte Zelle in mehrere Zellen oder Spalten teilen. Diese Option öffnet das folgende Fenster:
+					<p><img alt="Fenster Zelle teilen" src="../images/split_cells.png" /></p>
+					<p>Geben Sie die gewünschte <b>Spaltenanzahl</b> und <b>Zeilenanzahl</b> für die Teilung der ausgewählten Zelle an und klicken Sie auf <b>OK</b>.</p>
+				</li>
+			</ul>
+			<p class="note">Die Optionen im Abschnitt <b>Zeilen &amp; Spalten</b> sind auch über das <b>Rechtsklickmenü</b> zugänglich.</p>
+			<p>Der Abschnitt <b>Zellengröße</b> wird verwendet, um die Breite und Höhe der aktuell ausgewählten Zelle anzupassen. In diesem Abschnitt können Sie auch <b>Zeilen verteilen</b>, sodass alle ausgewählten Zellen die gleiche Höhe haben, oder <b>Spalten verteilen</b>, sodass alle ausgewählten Zellen die gleiche Breite haben. Die Optionen <b>Zeilen/Spalten verteilen</b> sind auch über das <b>Rechtsklickmenü</b> zugänglich.</p>
+			<hr />
+			<h3>Die erweiterten Einstellungen der Tabelle anpassen</h3>
+			<p>Um die erweiterten Tabelleneinstellungen zu ändern, klicken Sie mit der rechten Maustaste auf die Tabelle und wählen Sie die Option <b>Erweiterte Tabelleneinstellungen</b> aus dem Rechtsklickmenü oder klicken Sie auf den Link <b>Erweiterte Einstellungen anzeigen</b> in der rechten Seitenleiste. Das Tabelleneigenschaften-Fenster wird geöffnet:</p>
+			<p><img alt="Table Properties" src="../images/table_properties2.png" /></p>
+			<p>In der Registerkarte <b>Positionierung</b> können Sie die folgenden Tabelleneigenschaften festlegen:</p>
+			<ul>
+				<li><b>Größe</b> - mit diesen Optionen können Sie die Breite bzw. Höhe der Tabelle ändern. Wenn Sie die Funktion <b>Seitenverhältnis beibehalten</b> <div class="icon icon-constantproportions"></div> aktivieren (in diesem Fall sieht das Symbol so aus <div class="icon icon-constantproportionsactivated"></div>), werden Breite und Höhe gleichmäßig geändert und das ursprüngliche Bildseitenverhältnis wird beibehalten.</li>
+				<li><b>Position</b> - stellen Sie die genaue Position mit den Feldern <b>Horizontal</b> und <b>Vertikal</b> sowie dem Feld <b>Ab</b> ein, wo Sie auf Einstellungen wie <b>Obere linke Ecke</b> und <b>Zentriert</b> zugreifen können.</li>
+			</ul>
+			<p><img alt="Table Properties" src="../images/table_properties.png" /></p>
+			<p>Auf der Registerkarte <b>Ränder</b> können Sie den Abstand zwischen dem Text innerhalb der Zellen und dem Zellenrand festlegen:</p>
+			<ul>
+				<li>geben Sie die erforderlichen Werte für die <b>Zellenränder</b> manuell ein, oder</li>
+				<li>aktivieren Sie das Kontrollkästchen <b>Standardränder nutzen</b>, um die vordefinierten Werte zu übernehmen (falls erforderlich, können sie auch angepasst werden).</li>
+			</ul>
+			<p><img alt="Table Properties" src="../images/table_properties1.png" /></p>
+			<p>Die Registerkarte <b>Alternativer Text</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen in der Tabelle enthalten sind.</p>
+			<hr />
+			<p>Um den <b>eingegebenen Text</b> in den Zellen zu formatieren, nutzen Sie die <a href="../UsageInstructions/InsertText.htm#formatfont" onclick="onhyperlinkclick(this)">Symbole in der Registerkarte <b>Start</b> in der oberen Symbolleiste</a>. Im <b>Rechtsklickmenü</b> stehen Ihnen zwei zusätzliche Optionen zur Verfügung:</p>
+			<ul>
+				<li><b>Textausrichtung in Zellen</b> - ermöglicht Ihnen den gewünschten Typ der vertikalen Textausrichtung in den gewählten Zellen festzulegen: <b>Oben ausrichten</b>, <b>Vertikal zentrieren</b> oder <b>Unten ausrichten</b>.</li>
+				<li><b>Hyperlink</b> - einen Hyperlink in die ausgewählte Zelle einfügen.</li>
+			</ul>
+		</div>
+	</body>
+</html>

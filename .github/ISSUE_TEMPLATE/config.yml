@@ -1,8 +1,5 @@
-blank_issues_enabled: false
+blank_issues_enabled: true
 contact_links:
-  - name: Bug report
-    url: https://forum.cryptpad.org/t/bug-report
-    about: Use the appropriate tags & describe your issue in much details as possible
   - name: Feature request
     url: https://forum.cryptpad.org/t/feature-request
     about: Check if an existing topic doesn't already cover the feature you'd like
@@ -12,6 +9,3 @@ contact_links:
   - name: CryptPad.fr flagship instance issue
     url: https://cryptpad.fr/support/#new
     about: Issue with an account or document on cryptpad.fr only
-  - name: Report a security vulnerability
-    url: https://ouvaton.link/pOgHev
-    about: Please give us appropriate time to verify, respond and fix before disclosure

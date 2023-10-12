@@ -1,27 +1,28 @@
 define([
     'jquery',
     'chainpad-listmap',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/common-util.js',
     '/common/outer/network-config.js',
     '/common/common-login.js',
     '/common/common-credential.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
     '/common/common-interface.js',
     '/common/common-feedback.js',
+    '/common/hyperscript.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/outer/login-block.js',
     '/common/common-hash.js',
     '/common/outer/http-command.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
+    '/components/tweetnacl/nacl-fast.min.js',
+    '/components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Login, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
+            Feedback, h, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
     var Exports = {
         Cred: Cred,
         Block: Block,
@@ -133,15 +134,26 @@ define([
                                 break;
                             case 'INVAL_USER':
                                 UI.removeLoadingScreen(function () {
-                                    UI.alert(Messages.login_invalUser, function () {
+                                    UI.alert(Messages.login_notFilledUser , function () {
                                         hashing = false;
                                         $('#password').focus();
                                     });
                                 });
                                 break;
+/*
+                            case 'HAS_PLACEHOLDER':
+                                UI.errorLoadingScreen('UNAVAILABLE', true, true);
+                                break;
+*/
+                            case 'DELETED_USER':
+                                UI.errorLoadingScreen(
+                                    UI.getDestroyedPlaceholder(result.reason, true), true, () => {
+                                        window.location.reload();
+                                    });
+                                break;
                             case 'INVAL_PASS':
                                 UI.removeLoadingScreen(function () {
-                                    UI.alert(Messages.login_invalPass, function () {
+                                    UI.alert(Messages.login_notFilledPass, function () {
                                         hashing = false;
                                         $('#password').focus();
                                     });
