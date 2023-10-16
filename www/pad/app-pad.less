@@ -22,8 +22,6 @@ body.cp-app-pad {
         flex-flow: row;
         height: 100%;
         overflow: hidden;
-        position: relative;
-
        .cp-toolbar-chat-drawer, .cp-toolbar-userlist-drawer{
         @media screen and (max-width: @browser_media-medium-screen){
             position: absolute;
@@ -82,8 +80,12 @@ body.cp-app-pad {
                 border-color: @cryptpad_color_red;
             }
         }
+
         .cp-pad-show {
             line-height: 0px;
+        }
+        .h2{
+            text-align: center;
         }
     }
     #cp-app-pad-resize {
@@ -143,7 +145,7 @@ body.cp-app-pad {
         }
         h2 {
             font-size: 1.5rem;
-            text-align: right;
+            text-align: center;
         }
         .comments_main();
     }
@@ -153,6 +155,10 @@ body.cp-app-pad {
         max-height: 100%;
         h2 {
             text-align: left;
+        }
+        p.msg{
+            overflow: hidden;
+            align-self: center;
         }
     }
 
