@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Kalkulationstabelle kommentieren</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tips on collaborative editing" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Kalkulationstabelle kommentieren</h1>
+        <p>Die <a target="_blank" href="https://www.onlyoffice.com/de/spreadsheet-editor.aspx" onclick="onhyperlinkclick(this)"><b>Tabellenkalkulation</b></a> ermöglicht es Ihnen, einen konstanten teamweiten Ansatz für den Arbeitsablauf beizubehalten: Sie können die Dateien und Ordner <a href="https://helpcenter.onlyoffice.com/de/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">freigeben</a>; an Kalkulationstabellen in Echtzeit <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">zusammenarbeiten</a>; direkt in der Tabellenkalkulation <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">kommunizieren</a>; <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">Kalkulationstabellenversionen</a> für die zukünftige Verwendung speichern.</p>
+        <p>In der <b>Tabellenkalkulation</b> können Sie Kommentare zum Inhalt von Tabellen hinterlassen, ohne diese tatsächlich zu bearbeiten. Im Gegensatz zu <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">Chat-Nachrichten</a> bleiben die Kommentare, bis sie gelöscht werden.</p>
+        <h3>Kommentare hinterlassen und darauf antworten</h3>
+        <p>Um einen Kommentar zu hinterlassen:</p>
+        <ol>
+            <li>Wählen Sie eine Zelle, die Ihrer Meinung nach einen Fehler oder ein Problem beinhaltet.</li>
+            <li>
+                Wechseln Sie zur Registerkarte <b>Einfügen</b> oder <b>Zusammenarbeit</b> in der oberen Symbolleiste und klicken Sie auf das Symbol <div class = "icon icon-comment_toptoolbar"></div> <b>Kommentare</b>, oder<br />
+                Verwenden Sie das Kommentarsymbol <div class = "icon icon-commentsicon"></div> in der linken Seitenleiste, um das Fenster <b>Kommentare</b> zu öffnen, und klicken Sie auf den Link <b>Kommentar zum Dokument hinzufügen</b>, oder<br />
+                Klicken Sie mit der rechten Maustaste in die ausgewählte Zelle und wählen Sie im Menü die Option <b>Kommentar hinzufügen</b>.
+            </li>
+            <li>Geben Sie den erforderlichen Text ein.</li>
+            <li>Klicken Sie auf die Schaltfläche <b>Kommentar hinzufügen</b>/<b>Hinzufügen</b>.</li>
+        </ol>
+        <p>Wenn Sie den Co-Bearbeitungsmodus <b>Formal</b> verwenden, werden neue Kommentare, die von anderen Benutzern hinzugefügt wurden, erst sichtbar, nachdem Sie auf das Symbol <span class="icon icon-saveupdate"></span> in der linken oberen Ecke der oberen Symbolleiste geklickt haben.</p>
+        <p>Um den Kommentar anzuzeigen, klicken Sie einfach in die Zelle. Sie oder jeder andere Benutzer kann auf den hinzugefügten Kommentar antworten, indem Sie Fragen stellen oder über die Arbeit berichten. Verwenden Sie dazu den Link <b>Antwort hinzufügen</b>, geben Sie Ihren Antworttext in das Eingabefeld ein und drücken Sie den Button <b>Antworten</b>.</p>
+        <h3>Anzeige von Kommentaren deaktivieren</h3>
+        <p>Der Kommentar wird im Bereich auf der linken Seite angezeigt. Das orangefarbene Dreieck erscheint in der oberen rechten Ecke der Zelle, die Sie kommentiert haben. Um diese Funktion zu deaktivieren:</p>
+        <ul>
+            <li>Klicken Sie in der oberen Symbolleiste auf die Registerkarte <b>Datei</b>.</li>
+            <li>Wählen Sie die Option <b>Erweiterte Einstellungen...</b>.</li>
+            <li>Deaktivieren Sie das Kontrollkästchen <b>Live-Kommentare einschalten</b>.</li>
+        </ul>
+        <p>In diesem Fall werden die kommentierten Zellen nur markiert, wenn Sie auf das Symbol <b>Kommentare</b> <span class="icon icon-commentsicon"></span> klicken.</p>
+        <h3>Kommentare verwalten</h3>
+        <p>Sie können die hinzugefügten Kommentare mit den Symbolen in der Kommentarsprechblase oder im Bereich <b>Kommentare</b> auf der linken Seite verwalten:</p>
+        <ul>
+            <li>
+                Sortieren Sie die hinzugefügten Kommentare, indem Sie auf das Symbol <div class = "icon icon-sortcommentsicon"></div> klicken:
+                <ul>
+                    <li>nach Datum: <b>Neueste zuerst</b> oder <b>Älteste zuerste</b>.</li>
+                    <li>nach Verfasser: <b>Verfasser (A-Z)</b> oder <b>Verfasser (Z-A)</b>.</li>
+                    <li>
+                        nach Gruppe: <b>Alle</b> oder wählen Sie eine bestimmte Gruppe aus der Liste aus. Diese Sortieroption ist verfügbar, wenn Sie eine Version ausführen, die diese Funktionalität enthält.
+                        <p><img alt="Sort comments" src="../images/sortcomments.png" /></p>
+                    </li>
+                </ul>
+            </li>
+            <li>Bearbeiten Sie den aktuell ausgewählten Kommentar, indem Sie auf das Symbol <div class = "icon icon-editcommenticon"></div> klicken.</li>
+            <li>Löschen Sie den aktuell ausgewählten Kommentar, indem Sie auf das Symbol <div class = "icon icon-deletecommenticon"></div> klicken.</li>
+            <li>Schließen Sie die aktuell ausgewählte Diskussion, indem Sie auf das Symbol <div class = "icon icon-resolveicon"></div> klicken, wenn die von Ihnen in Ihrem Kommentar angegebene Aufgabe oder das Problem gelöst wurde, danach die von Ihnen geöffnete Diskussion mit Ihrem Kommentar erhält den gelösten Status. Klicken Sie auf das Symbol <div class = "icon icon-resolvedicon"></div>, um die Diskussion neu zu öffnen. Wenn Sie aufgelöste Kommentare ausblenden möchten, klicken Sie auf die Registerkarte <b>Datei</b> in der oberen Symbolleiste, wählen Sie die Option <b>Erweiterte Einstellungen...</b> und deaktivieren Sie die Option <b>Anzeige der aktivieren Kommentare gelöst</b> und klicken Sie auf <b>Anwenden</b>. In diesem Fall werden die gelösten Kommentare nur hervorgehoben, wenn Sie auf das Symbol <div class = "icon icon-commentsicon"></div> klicken.</li>
+            <li>Wenn Sie mehrere Kommentare verwalten möchten, öffnen Sie das Drop-Down-Menü <b>Lösen</b> auf der Registerkarte <b>Zusammenarbeit</b>. Wählen Sie eine der Optionen zum Auflösen von Kommentaren aus: <b>Gültige Kommentare lösen</b>, <b>Meine Kommentare lösen</b> oder <b>Alle Kommentare lösen</b>.</li>
+        </ul>
+        <h3>Erwähnungen hinzufügen</h3>
+        <p class="note">Sie können Erwähnungen nur zu den Kommentaren zum Inhalt der Kalkulationstabelle hinzufügen, nicht zur Kalkulationstabelle selbst.</p>
+        <p>Beim Eingeben von Kommentaren können Sie die Funktion <b>Erwähnungen</b> verwenden, mit der Sie jemanden auf den Kommentar aufmerksam machen und dem genannten Benutzer per E-Mail und <b>Chat</b> eine Benachrichtigung senden können.</p>
+        <p>Um eine Erwähnung hinzuzufügen:</p>
+        <ol>
+            <li>Geben Sie das Zeichen "+" oder "@" an einer beliebigen Stelle im Kommentartext ein - eine Liste der Portalbenutzer wird geöffnet. Um den Suchvorgang zu vereinfachen, können Sie im Kommentarfeld mit der Eingabe eines Namens beginnen - die Benutzerliste ändert sich während der Eingabe.</li>
+            <li>Wählen Sie die erforderliche Person aus der Liste aus. Wenn die Datei noch nicht für den genannten Benutzer freigegeben wurde, wird das Fenster <b>Freigabeeinstellungen</b> geöffnet. Der Zugriffstyp <b>Schreibgeschützt</b> ist standardmäßig ausgewählt. <a href="https://helpcenter.onlyoffice.com/de/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">Ändern Sie es bei Bedarf</a>.</li>
+            <li>Klicken Sie auf <b>OK</b>.</li>
+        </ol>
+        <p>Der erwähnte Benutzer erhält eine E-Mail-Benachrichtigung, dass er in einem Kommentar erwähnt wurde. Wurde die Datei freigegeben, erhält der Benutzer auch eine entsprechende Benachrichtigung.</p>
+        <h3>Kommentare entfernen</h3>
+        <p>Um Kommentare zu entfernen:</p>
+        <ol>
+            <li>Klicken Sie auf die Schaltfläche <div class = "icon icon-removecomment_toptoolbar"></div> <b>Kommentare entfernen</b> auf der Registerkarte <b>Zusammenarbeit</b> der oberen Symbolleiste.</li>
+            <li>
+                Wählen Sie die erforderliche Option aus dem Menü:
+                <ul>
+                    <li><b>Aktuelle Kommentare entfernen</b>, um den aktuell ausgewählten Kommentar zu entfernen. Wenn dem Kommentar einige Antworten hinzugefügt wurden, werden alle seine Antworten ebenfalls entfernt.</li>
+                    <li><b>Meine Kommentare entfernen</b>, um von Ihnen hinzugefügte Kommentare zu entfernen, ohne von anderen Benutzern hinzugefügte Kommentare zu entfernen. Wenn Ihrem Kommentar einige Antworten hinzugefügt wurden, werden auch alle Antworten entfernt.</li>
+                    <li><b>Alle Kommentare entfernen</b>, um alle Kommentare in der Präsentation zu entfernen, die Sie und andere Benutzer hinzugefügt haben.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>Um die Leiste mit den Kommentaren zu schließen, klicken Sie in der linken Seitenleiste erneut auf das Symbol <span class="icon icon-commentsicon"></span>.</p>
+    </div>
+</body>
+</html>

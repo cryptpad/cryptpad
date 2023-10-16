@@ -30,6 +30,17 @@
             display: none !important;
         }
 
+
+        .tui-full-calendar-confirm {
+            span, i {
+                padding: 0.5rem;
+            }
+            span {
+                padding-left: 0;
+            }
+            width: unset;
+        }
+
         .tui-full-calendar-layout {
             background-color: @cp_sidebar-right-bg !important;
             color: @cryptpad_text_col;
@@ -113,7 +124,10 @@
                 justify-content: center !important;
                 align-items: center !important;
                 .tui-full-calendar-popup {
-                    width: 540px !important;
+                    width: 540px;
+                    max-width: 100%;
+                    max-height: 100%;
+                    overflow-y: auto;
                 }
             }
             #tui-full-calendar-popup-arrow {
@@ -138,6 +152,7 @@
             border-radius: @variables_radius_L;
         }
         .tui-full-calendar-popup-container {
+            min-width: 100%;
             background: @cp_flatpickr-bg;
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
@@ -186,6 +201,7 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     font: @colortheme_app-font;
+                    padding: 0 10px;
                 }
                 input { flex: 1; }
             }
@@ -288,6 +304,7 @@
                 display: flex;
             }
             .cp-calendar-notif-list-container {
+                width: 100%;
                 margin-bottom: 10px;
                 .cp-notif-label {
                     margin-top: 0.5em;
@@ -296,25 +313,37 @@
             .cp-calendar-notif-list {
                 display: flex;
                 flex-flow: column;
+                flex: 1;
+                min-width: 150px;
+                &:empty {
+                    display: none;
+                }
                 .cp-notif-entry {
+                    display: flex;
                     margin-bottom: 2px;
                     border-radius: @variables_radius;
                     background-color: fade(@cryptpad_text_col, 10%);
                     padding: 0.25rem;
                     .cp-notif-value {
-                        width: 170px;
+                        width: 75%;
                         display: inline-flex;
                         line-height: 30px;
                         vertical-align: middle;
+                        flex-grow: 1;
                         .cp-before {
                             flex: 1;
                             min-width: 0;
                         }
                     }
                     span:not(:last-child) {
-                        margin: 0px 5px;
+                        margin: 0;
+                        margin-right: 0.3rem;
+                    }
+                    span:first-child {
+                        margin-left: 0.3rem;
                     }
                     .btn-danger-outline {
+                        display: block;
                         margin-right: 0px !important;
                         background-color: transparent;
                         color: @cryptpad_text_col;
@@ -340,10 +369,20 @@
             }
             .cp-calendar-notif-form {
                 align-items: center;
+                .cp-calendar-notif-form-buttons {
+                    display: inline-flex;
+                    align-items: center;
+                    & > input {
+                        height: 40px;
+                    }
+                }
                 // margin-bottom: 20px;
                 input {
                     width: 80px;
-                    margin-right: 5px;
+                    margin-right: 0.3rem;
+                }
+                .fa-plus{
+                    margin-left:0.3rem;
                 }
             }
         }
@@ -628,6 +667,10 @@
     }
 
     @media (max-width: @browser_media-medium-screen) {
+        .cp-calendar-notif-list-container, .cp-calendar-notif-form {
+            flex-direction: column;
+            align-items: unset !important;
+        }
         .cp-calendar-newevent {
             i {
                 margin: 0 !important;
@@ -664,5 +707,6 @@
             }
         }
     }
+
 }
 

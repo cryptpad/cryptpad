@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dokumenteigenschaften anzeigen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="View document title, author, location, creation date, persons with the rights to view or edit the document, and statistics" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Dokumenteigenschaften anzeigen</h1>
+            <p>Um detaillierte Informationen über das aktuelle Dokument im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> einzusehen, wechseln Sie in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Dokumentinformationen</b>.</p>
+            <h3>Allgemeine Eigenschaften</h3>
+            <p>Die Dokumentinformationen enthalten eine Reihe von Dateieigenschaften, die das Dokument beschreiben. Einige dieser Eigenschaften werden automatisch aktualisiert, andere können bearbeitet werden.</p>
+            <ul>
+                <li class="onlineDocumentFeatures"><b>Speicherort</b> - den Ordner im Modul <b>Dokumente</b>, in dem die Datei gespeichert ist. <b>Besitzer</b> - der Name des Benutzers, der die Datei erstellt hat. <b>Hochgeladen</b> - das Datum und die Uhrzeit, wann die Datei erstellt wurde. Diese Eigenschaften sind nur in der <em>Online-Version</em> verfügbar.</li>
+                <li><b>Statistiken</b> - die Anzahl der Seiten, Absätze, Wörter, Symbole, Symbole mit Leerzeichen.</li>
+                <li><b>Titel</b>, <b>Thema</b>, <b>Kommentar</b> - mit diesen Eigenschaften können Sie die Klassifizierung Ihrer Dokumente vereinfachen. Sie können den erforderlichen Text in den Eigenschaftsfeldern angeben.</li>
+                <li><b>Zuletzt geändert</b> - Datum und Uhrzeit der letzten Änderung der Datei.</li>
+                <li><b>Zuletzt geändert von</b> - der Name des Benutzers, der die letzte Änderung am Dokument vorgenommen hat. Diese Option ist verfügbar, wenn das Dokument freigegeben wurde und von mehreren Benutzern bearbeitet werden kann.</li>
+                <li><b>Anwendung</b> - die Anwendung, mit der das Dokument erstellt wurde.</li>
+                <li><b>Verfasser</b> - die Person, die die Datei erstellt hat. In diesem Feld können Sie den erforderlichen Namen eingeben. Drücken Sie die <em>Eingabetaste</em>, um ein neues Feld hinzuzufügen, in dem Sie einen weiteren Autor angeben können.</li>
+            </ul>
+            <p>Wenn Sie die Dateieigenschaften geändert haben, klicken Sie auf die Schaltfläche <b>Anwenden</b>, um die Änderungen anzuwenden.</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note">Sie können den Namen des Dokuments direkt über die Oberfläche des Editors ändern. Klicken Sie dazu in der oberen Menüleiste auf die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Umbenennen</b>, geben Sie den neuen <b>Dateinamen</b> an und klicken Sie auf <b>OK</b>.</p>
+            </div>
+            <div class="onlineDocumentFeatures">
+                <h3>Zugriffsrechte</h3>
+                <p>In der <em>Online-Version</em> können Sie die Informationen zu Berechtigungen für die in der Cloud gespeicherten Dateien einsehen.</p>
+                <p class="note">Diese Option steht im <b>schreibgeschützten</b> Modus nicht zur Verfügung.</p>
+                <p>Um einzusehen, wer das Recht hat, das Dokument anzuzeigen oder zu bearbeiten, wählen Sie die Option <b>Zugriffsrechte</b> in der linken Seitenleiste.</p>
+                <p>Sie können die aktuell ausgewählten Zugriffsrechte auch ändern, klicken Sie dazu im Abschnitt <b>Personen mit Berechtigungen</b> auf die Schaltfläche <b>Zugriffsrechte ändern</b>.</p>
+                <h3>Versionsverlauf</h3>
+                <p>In der <em>Online-Version</em> können Sie den Versionsverlauf für die in der Cloud gespeicherten Dateien einsehen.</p>
+                <p class="note">Diese Option steht im <b>schreibgeschützten</b> Modus nicht zur Verfügung.</p>
+                <p>Um alle Änderungen an diesem Dokument anzuzeigen, wählen Sie die Option <b>Versionsverlauf</b> in der linken Seitenleiste. Sie können den Versionsverlauf auch über das Symbol <span class = "icon icon-versionhistoryicon"></span> <b>Versionsverlauf</b> in der Registerkarte <b>Zusammenarbeit</b> öffnen. Sie sehen eine Liste mit allen Dokumentversionen (Hauptänderungen) und Revisionen (geringfügige Änderungen), unter Angabe aller jeweiligen Autoren sowie Erstellungsdatum und -zeit. Für Dokumentversionen wird auch die Versionsnummer angegeben (z.B. <em>Ver. 2</em>). Für eine detaillierte Anzeige der jeweiligen Änderungen in jeder einzelnen Version/Revision können Sie die gewünschte Version anzeigen, indem Sie in der linken Seitenleiste darauf klicken. Die vom Autor der Version/Revision vorgenommenen Änderungen sind mit der Farbe markiert, die neben dem Autorennamen in der linken Seitenleiste angezeigt wird. Über den unterhalb der gewählten Version/Revision angezeigten Link <b>Wiederherstellen</b> gelangen Sie in die jeweilige Version. <!--To hide the list of the revisions within a certain version, use the <div class = "icon icon-collapse"></div> icon next to the version. To display revisions again, use the <div class = "icon icon-expand"></div> icon.--></p>
+                <p><img alt="Versionsverlauf" src="../images/versionhistory.png" /></p>
+                <p>Um zur aktuellen Version des Dokuments zurückzukehren, klicken Sie oben in der Liste mit Versionen auf <b>Verlauf schließen</b>.</p>
+            </div>
+            <p>Um das Fenster <b>Datei</b> zu schließen und zur Dokumentbearbeitung zurückzukehren, klicken sie auf <b>Menü schließen</b>.</p>
+        </div>
+	</body>
+</html>

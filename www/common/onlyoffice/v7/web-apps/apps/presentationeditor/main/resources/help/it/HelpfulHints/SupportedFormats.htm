@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Supported Formats of Electronic Presentations</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The list of presentation formats supported by Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Supported Formats of Electronic Presentation</h1>
+        <p>
+            Presentation is a set of slides that may include different type of content such as images, media files, text, effects etc.
+            <b>Presentation Editor</b> handles the following presentation formats.
+        </p>
+        <p class="note">While uploading or opening the file for editing, it will be converted to the Office Open XML format (PPTX). It's done to speed up the file processing and increase the interoperability.</p>
+        <p>The following table contains the formats which can be opened for viewing and/or editing.</p>
+        <table>
+            <tr>
+                <td><b>Formats</b></td>
+                <td><b>Description</b></td>
+                <td>View natively</td>
+                <td>View after conversion to OOXML</td>
+                <td>Edit natively</td>
+                <td>Edit after conversion to OOXML</td>
+            </tr>
+            <tr>
+                <td>ODP</td>
+                <td>OpenDocument Presentation<br />File format that represents presentations created by Impress application, which is a part of OpenOffice based office suites</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>OTP</td>
+                <td>OpenDocument Presentation Template<br />OpenDocument file format for presentation templates. An OTP template contains formatting settings, styles, etc. and can be used to create multiple presentations with the same formatting</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>POTX</td>
+                <td>PowerPoint Open XML Document Template<br />Zipped, XML-based file format developed by Microsoft for presentation templates. A POTX template contains formatting settings, styles, etc. and can be used to create multiple presentations with the same formatting</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>PPSX</td>
+                <td>Microsoft PowerPoint Slide Show<br />Presentation file format used for slide show playback</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>PPT</td>
+                <td>File format used by Microsoft PowerPoint</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+            </tr>
+            <tr>
+                <td>PPTX</td>
+                <td>Office Open XML Presentation<br />Zipped, XML-based file format developed by Microsoft for representing spreadsheets, charts, presentations, and word processing documents</td>
+                <td>+</td>
+                <td></td>
+                <td>+</td>
+                <td></td>
+            </tr>
+        </table>
+        <p>The following table contains the formats in which you can download a presentation from the <b>File</b> -> <b>Download as</b> menu.</p>
+        <table>
+            <tr>
+                <td><b>Input format</b></td>
+                <td><b>Can be downloaded as</b></td>
+            </tr>
+            <tr>
+                <td>ODP</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>OTP</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>POTX</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>PPSX</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>PPT</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+            <tr>
+                <td>PPTX</td>
+                <td>JPG, ODP, OTP, PDF, PDF/A, PNG, POTX, PPSX, PPTX</td>
+            </tr>
+        </table>
+        <p>You can also refer to the conversion matrix on <a href="https://api.onlyoffice.com/editors/conversionapi#presentation-matrix" target="_blank" onclick="onhyperlinkclick(this)"><b>api.onlyoffice.com</b></a> to see possibility of conversion your presentations into the most known file formats.</p>
+    </div>
+</body>
+</html>

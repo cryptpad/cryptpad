@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Querverweise einfügen</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Verwenden Sie Querverweise, um Links zu erstellen, die zu anderen Teilen desselben Dokuments führen" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Querverweise einfügen</h1>
+        <p>Im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> werden Querverweise verwendet, um Links zu erstellen, die zu anderen Teilen desselben Dokuments führen, z.B. Überschriften oder Objekte wie Diagramme oder Tabellen. Solche Verweise erscheinen in Form eines Hyperlinks.</p>
+        <h2>Querverweis erstellen</h2>
+        <ol>
+            <li>Positionieren Sie den Cursor an der Stelle, an der Sie einen Querverweis einfügen möchten.</li>
+            <li>Öffnen Sie die Registerkarte <b>Verweise</b> und klicken Sie auf das Symbol <b>Querverweis</b>.</li>
+            <li>
+                Im geöffneten Fenster <b>Querverweis</b> stellen Sie die gewünschten Parameter ein:
+                <p><img alt="Querverweis Fenster" src="../images/cross_refference_window.png" /></p>
+                <ul>
+                    <li>Das Drop-Down-Menü <b>Bezugstyp</b> gibt das Element an, auf das Sie sich beziehen möchten, z.B. <em>ein nummeriertes Element</em> (standarmäßig), <em>eine Überschrift, ein Lesezeichen, eine Fuß-/Endnote, eine Gleichung, eine Tabelle</em>. Wählen Sie den gewünschten Typ aus.</li>
+                    <li>
+                        Das Drop-Down-Menü <b>Verweisen auf</b> gibt den Text oder den numerischen Wert des Verweises an, abhängig vom Element, das Sie im Menü <b>Bezugstyp</b> ausgewählt haben. Z.B., wenn Sie die Option <b>Überschrift</b> ausgewählt haben, können Sie den folgenden Inhalt angeben: <em>Überschriftentext, Seitennummer, Nummer der Überschrift, Nummer der Überschrift (kein Kontext), Nummer der Überschrift (der ganze Text), Oben/unten</em>.
+                        <details class="details-example">
+                            <summary>Die vollständige Liste der verfügbaren Optionen im Menü "Bezugstyp":</summary>
+                            <table class="cross-reference">
+                                <tr>
+                                    <th>Bezugstyp</th>
+                                    <th>Verweisen auf</th>
+                                    <th style="text-align: left;">Beschreibung</th>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Nummeriertes Element</td>
+                                    <td style="text-align: left;">Seitennummer</td>
+                                    <td style="text-align: left;">Die Seitennummer des nummerierten Elements wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Absatznummer</td>
+                                    <td style="text-align: left;">Die Absatznummer des nummerierten Elements wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Absatznummer (kein Kontext)</td>
+                                    <td style="text-align: left;">Die abgekürzte Absatznummer wird eingefügt. Der Verweis bezieht sich nur auf das spezifische Element der nummerierten Liste, z.B. beziehen Sie sich anstelle von "4.1.1" nur auf "1"</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Absatznummer (der ganze Kontext)</td>
+                                    <td style="text-align: left;">Die ganze Absatznummer wird eingefügt, z.B. "4.1.1"</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Text im Absatz</td>
+                                    <td style="text-align: left;">Der Textwert des Absatzes wird eingefügt, z.B anstelle von "4.1.1. Allgemeine Geschäftsbedingungen" beziehen Sie sich nur auf "Allgemeine Geschäftsbedingungen"</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Oben/unten</td>
+                                    <td style="text-align: left;">Die Wörter "oben" oder "unten" werden je nach Position des Elements eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Überschrift</td>
+                                    <td style="text-align: left;">Überschriftentext</td>
+                                    <td style="text-align: left;">Der ganze Überschriftentext wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Seitennummer</td>
+                                    <td style="text-align: left;">Die Seitennummer der Überschrift wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Nummer der Überschrift</td>
+                                    <td style="text-align: left;">Die Sequenznummer der Überschrift wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Nummer der Überschrift (kein Kontext)</td>
+                                    <td style="text-align: left;">Die abgekürzte Nummer der Überschrift wird eingefügt. Stellen Sie den Cursorpunkt in dem Abschnitt, auf den Sie sich beziehen, z.B. im Abschnitt 4. Anstelle von „4.B“ erhalten Sie also nur „B“</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Nummer der Überschrift (der ganze Kontext)</td>
+                                    <td style="text-align: left;">Die ganze Nummer der Überschrift wird eingefügt, auch wenn sich der Cursorpunkt im selben Abschnitt befindet</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Oben/unten</td>
+                                    <td style="text-align: left;">Die Wörter "oben" oder "unten" werden je nach Position des Elements eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="6">Lesezeichen</td>
+                                    <td style="text-align: left;">Text des Lesezeichens</td>
+                                    <td style="text-align: left;">Der gesamten Text des Lesezeichens wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Seitennummer</td>
+                                    <td style="text-align: left;">Die Seitennummer des Lesezeichnis wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Absatznummer</td>
+                                    <td style="text-align: left;">Die Absatznummer des Lesezeichnis wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Absatznummer (kein Kontext)</td>
+                                    <td style="text-align: left;">Die abgekürzte Absatznummer wird eingefügt. Der Verweis bezieht sich nur auf das spezifische Element, z.B. beziehen Sie sich anstelle von "4.1.1" nur auf "1"</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Absatznummer (der ganze Kontext)</td>
+                                    <td style="text-align: left;">Die ganze Absatznummer wird eingefügt, z.B., "4.1.1"</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Oben/unten</td>
+                                    <td style="text-align: left;">Die Wörter "oben" oder "unten" werden je nach Position des Elements eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="4">Fußnote</td>
+                                    <td style="text-align: left;">Nummer der Fußnote</td>
+                                    <td style="text-align: left;">Die Nummer der Fußnote wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Seitennummer</td>
+                                    <td style="text-align: left;">Die Seitennummer der Fußnote wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Oben/unten</td>
+                                    <td style="text-align: left;">Die Wörter "oben" oder "unten" werden je nach Position des Elements eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Nummer der Fußnote (formatiert)</td>
+                                    <td style="text-align: left;">Die Nummer wird eingefügt, die als Fußnote formatiert ist. Die Nummerierung der tatsächlichen Fußnoten ist nicht betroffen</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="4">Endnote</td>
+                                    <td style="text-align: left;">Nummer der Endnote</td>
+                                    <td style="text-align: left;">Die Nummer der Endnote wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Seitennummer</td>
+                                    <td style="text-align: left;">Die Seitennummer der Endnote wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Oben/unten</td>
+                                    <td style="text-align: left;">Die Wörter "oben" oder "unten" werden je nach Position des Elements eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Nummer der Endnote (formatiert)</td>
+                                    <td style="text-align: left;">Die Nummer wird eingefügt, die als Endnote formatiert ist. Die Nummerierung der tatsächlichen Endnoten ist nicht betroffen</td>
+                                </tr>
+                                <tr>
+                                    <td rowspan="5">Gleichung / Abbildung / Tabelle</td>
+                                    <td style="text-align: left;">Ganze Beschriftung</td>
+                                    <td style="text-align: left;">Der ganze Text der Beschriftung wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Nur Bezeichnung und Nummer</td>
+                                    <td style="text-align: left;">Nur die Beschriftung und die Objektnummer werden eingefügt, z.B. "Tabelle 1.1"</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Nur der Text von der Legende</td>
+                                    <td style="text-align: left;">Nur der Text der Beschriftung wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Seitennummer</td>
+                                    <td style="text-align: left;">Die Seitennummer des verweisenden Objekts wird eingefügt</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Oben/unten</td>
+                                    <td style="text-align: left;">Die Wörter "oben" oder "unten" werden je nach Position des Elements eingefügt</td>
+                                </tr>
+                            </table>
+                        </details>
+                        <br />
+                    </li>
+
+                    <li>Markieren Sie das Kästchen <b>Als Hyperlink einfügen</b>, um den Verweis in einen aktiven Link zu verwandeln.</li>
+                    <li>Markieren Sie das Kästchen <b>Oben/unten einschließen</b> (wenn verfügbar), um die Position des Elements anzugeben, auf das Sie sich beziehen. Der ONLYOFFICE-Dokumenteneditor fügt je nach Position des Elements automatisch die Wörter <em>"oben"</em> und <em>"unten"</em> ein.</li>
+                    <li>Markieren Sie das Kästchen <b>Nummern trennen mit</b>, um das Trennzeichen im Feld rechts anzugeben. Die Trennzeichen werden für vollständige Kontextverweise benötigt.</li>
+                    <li>Das Feld <b>Für welche</b> bietet Ihnen die verfügbaren Elemente gemäß dem von Ihnen ausgewählten <b>Bezugstyp</b>, z.B. wenn Sie die Option <b>Überschrift</b> ausgewählt haben, wird die vollständige Liste der Überschriften im Dokument angezeigt.</li>
+                </ul>
+            </li>
+            <li>Klicken Sie auf <b>Einfügen</b>, um einen Querverweis zu erstellen.</li>
+        </ol>
+        <h2>Querverweise löschen</h2>
+        <p>Um einen Querverweis zu löschen, wählen Sie den gewünschten Querverweis und drücken Sie die <b>Entfernen</b>-Taste.</p>
+    </div>
+</body>
+</html>

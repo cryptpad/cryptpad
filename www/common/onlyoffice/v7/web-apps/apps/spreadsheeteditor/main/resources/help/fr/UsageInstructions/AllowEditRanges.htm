@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Autoriser la modification des plages</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Protecting sheets to prevent the unwanted changes and to restrict the editing abilities of other users" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Autoriser la modification des plages</h1>
+			<p>L'option <b>Autoriser la modification des plages</b> permet de sélectionner les cellules dont un autre utilisateur pourra modifier dans une feuille de calcul protégé. Vous pouvez autoriser la modification de certaines plages de cellules verrouillées avec ou sans mot de passe. On peut modifier la plage de cellules qui n'est pas protégé par un mot de passe.</p>
+			<p>Pour sélectionner une plage de cellules verrouillées qui peut être modifiée :</p>
+			<ol>
+				<li>
+					Cliquez sur le bouton <b>Autoriser la modification des plages</b> dans la barre d'outils supérieure. La fenêtre <b>Autoriser les utilisateurs à modifier les plages</b> s'affiche :
+					<p><img alt="Modifier des plages" src="../images/editranges.png" /></p>
+				</li>
+				<li>
+					Dans la fenêtre <b>Autoriser les utilisateurs à modifier les plages</b>, cliquez sur le bouton <b>Nouveau</b> pour sélectionner et ajouter les cellules qui peuvent être modifiées par un utilisateur.
+					<p><img alt="Nouvelle plage" src="../images/allowedit_newrange.png" /></p>
+				</li>
+				<li>
+					Dans la fenêtre <b>Nouvelle plage</b>, saisissez le <b>Titre</b> de la plage et sélectionnez la plage de cellules en cliquant sur le bouton <b>Sélectionner les données</b>. Le <b>Mot de passe</b> est facultatif, alors saisissez et validez-le si vous souhaitez protéger les plages de cellules par un mot de passe. Cliquez sur <b>OK</b> pour valider.
+					<p class="note">Il n'est pas possible de récupérer un mot de passe perdu ou oublié. Gardez vos mots de passe dans un endroit sécurisé.</p>
+				</li>
+
+				<li>Une fois terminé, cliquez sur le bouton <b>Protéger la feuille de calcul</b> ou cliquez sur <b>OK</b> pour enregistrer les modifications et continuer à travailler dans la feuille de calcul non protégée.</li>
+				<li>
+					Lorsque vous cliquez sur le bouton <b>Protéger la feuille de calcul</b>, la fenêtre <b>Protéger la feuille de calcul</b> s'affiche pour que vous sélectionniez les opérations que les utilisateurs peuvent exécuter afin d'empêcher toute modification indésirable. Si vous optez pour une protection avec un mot de passe, saisissez et validez le mot de passe qu'on doit entrer pour annuler la protection de la feuille de calcul.
+					<p><img alt="Protéger la feuille de calcul" src="../images/protect_sheet.png" /></p>
+					<details class="details-example">
+                        <summary>Les opérations que les utilisateurs peuvent exécuter.</summary>
+						<ul>
+							<li>Sélectionner les cellules verrouillées</li>
+							<li>Sélectionner les cellules non verrouillées</li>
+							<li>Modifier les cellules</li>
+							<li>Modifier les colonnes</li>
+							<li>Modifier les lignes</li>
+							<li>Insérer des colonnes</li>
+							<li>Insérer des lignes</li>
+							<li>Insérer un lien hypertexte</li>
+							<li>Supprimer les colonnes</li>
+							<li>Supprimer les lignes</li>
+							<li>Trier</li>
+							<li>Utiliser Autofilter</li>
+							<li>Utiliser tableau et graphique croisés dynamiques</li>
+							<li>Modifier les objets</li>
+							<li>Modifier les scénarios</li>
+						</ul>
+					</details>
+<li>
+					Cliquez sur le bouton <b>Protéger</b> pour activer la protection. Une fois la feuille de calcul protégée, le bouton <b>Protéger la feuille de calcul</b> devient activé.
+					<p><img alt="Protéger la feuille de calcul activé" src="../images/protectsheet_highlighted.png" /></p>
+				</li>
+				<li>
+					Vous pouvez modifier les plages de cellules, tant que la feuille de calcul n'est pas protégée. Cliquez sur le bouton <b><b>Autoriser la modification des plages</b> </b>pour ouvrir la fenêtre <b>Autoriser les utilisateurs à modifier les plages</b> : Utilisez les boutons <b>Modifier</b> et <b>Supprimer</b> pour gérer les plages de cellules sélectionnées. Ensuite, cliquez sur le bouton <b>Protéger la feuille de calcul</b> pour activer la protection de la feuille de calcul ou cliquez sur <b>OK</b> pour enregistrer les modifications et continuer à travailler dans la feuille de calcul non protégée.
+					<p><img alt="Modifier des plages" src="../images/alloweditranges_edit.png" /></p>
+				</li>
+				<li>
+					Avec des plages protégées avec un mot de passe, la fenêtre <b>Déverrouiller la plage</b> s'affiche invitant à saisir le mot de passe lorsque quelqu'un essaie de modifier la plage protégée.
+					<p><img alt="Déverrouiller la plage" src="../images/unlockrange.png" /></p>
+				</li>
+			</ol>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Co-editing documents in real time</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tips on collaborative editing" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Co-editing documents in real time</h1>
+        <p>The <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> allows you to maintain constant team-wide approach to work flow: <a href="https://helpcenter.onlyoffice.com/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">share</a> files and folders, <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">communicate</a> right in the editor, <a href="../HelpfulHints/Commenting.htm" onclick="onhyperlinkclick(this)">comment</a> certain parts of your documents that require additional third-party input, save <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">document versions</a> for future use, <a href="../HelpfulHints/Review.htm" onclick="onhyperlinkclick(this)">review</a> documents and add your changes without actually editing the file, <a href="../HelpfulHints/Comparison.htm" onclick="onhyperlinkclick(this)">compare and merge</a> documents to facilitate processing and editing.</p>
+        <p>In <b>Document Editor</b> you can collaborate on documents in real time using two modes: <b>Fast</b> or <b>Strict</b>.</p>
+        <p>The modes can be selected in the <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Advanced Settings</a>. It's also possible to choose the required mode using the <span class = "icon icon-coeditingmode"></span> <b>Co-editing Mode</b> icon on the <b>Collaboration</b> tab of the top toolbar:</p>
+        <p><img alt="Co-editing Mode menu" src="../../../../../../common/main/resources/help/en/images/coeditingmodemenu.png" /></p>
+        <p>The number of users who are working on the current document is displayed on the right side of the editor header - <span class = "icon icon-usersnumber"></span>. If you want to see who exactly is editing the file now, you can click this icon or open the <b>Chat</b> panel with the full list of the users.</p>
+        <h3>Fast mode</h3>
+        <p>The <b>Fast</b> mode is used by default and shows the changes made by other users in real time. When you co-edit a document in this mode, the possibility to <b>Redo</b> the last undone operation is not available. This mode will show the actions and the names of the co-editors when they are editing the text.</p>
+        <p>By hovering the mouse cursor over one of the edited passages, the name of the user who is editing it at the moment is displayed.</p>
+        <p><img alt="Fast mode" src="../images/fastmode.png" /></p>
+        <h3>Strict mode</h3>
+        <p>The <b>Strict</b> mode is selected to hide changes made by other users until you click the <b>Save</b> <span class = "icon icon-savewhilecoediting"></span> icon to save your changes and accept the changes made by co-authors. When a document is being edited by several users simultaneously in this mode, the edited text passages are marked with dashed lines of different colors.</p>
+        <p><img alt="Strict mode" src="../images/strictmode.png" /></p>
+        <p>As soon as one of the users saves their changes by clicking the <span class = "icon icon-savewhilecoediting"></span> icon, the others will see a note within the status bar stating that they have updates. To save the changes you made, so that other users can view them, and get the updates saved by your co-editors, click the <span class = "icon icon-saveupdate"></span> icon in the left upper corner of the top toolbar. The updates will be highlighted for you to check what exactly has been changed.</p>
+        <p>You can specify what changes you want to be highlighted during co-editing if you click the <b>File</b> tab on the top toolbar, select the <b>Advanced Settings</b> option and choose one of the three options:</p>
+        <ul>
+            <li><b>View all</b> - all the changes made during the current session will be highlighted.</li>
+            <li><b>View last</b> - only the changes made since you last time clicked the <div class = "icon icon-saveupdate"></div> icon will be highlighted.</li>
+            <li><b>View None</b> - changes made during the current session will not be highlighted.</li>
+        </ul>
+        <h3>Live Viewer mode</h3>
+        <p>The <b>Live Viewer</b> mode is used to see the changes made by other users in real time when the document is opened by a user with the <b>View only</b> access rights.</p>
+        <p class="note">For the mode to function properly, make sure that the <b>Show changes from other users</b> checkbox is active in the editor's <b>Advanced Settings</b>.</p>
+        <h3>Anonymous</h3>
+        <p>Portal users who are not registered and do not have a profile are considered to be anonymous, although they still can collaborate on documents. To have a name assigned to them, the anonymous user should enter a name they prefer in the corresponding field appearing in the right top corner of the screen when they open the document for the first time. Activate the “Don’t ask me again” checkbox to preserve the name.</p>
+        <p><img alt="anonymous collaboration" src="../images/anonymous_collab.png" /></p>
+    </div>
+</body>
+</html>

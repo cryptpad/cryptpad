@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "5.4.1",
+  "version": "5.5.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
     "chainpad": "^5.2.6",
     "chainpad-listmap": "^1.0.0",
     "chainpad-netflux": "^1.0.0",
-    "ckeditor": "npm:ckeditor4@^4.22.1",
+    "ckeditor": "npm:ckeditor4@~4.22.1",
     "codemirror": "^5.19.0",
     "components-font-awesome": "^4.6.3",
     "croppie": "^2.5.0",

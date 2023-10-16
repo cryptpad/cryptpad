@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEXTBEFORE Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>TEXTBEFORE Function</h1>
+			<p>The <b>TEXTBEFORE</b> function is one of the text and data functions. It is used to return text occurring before delimiting characters.</p>
+			<p>The <b>TEXTBEFORE</b> function syntax is:</p>
+			<p style="text-indent: 150px;"><b><em>TEXTBEFORE(text,delimiter,[instance_num], [match_mode], [match_end], [if_not_found])</em></b></p>
+			<p>where</p>
+			<p style="text-indent: 50px;"><b><em>text</em></b> is the text the search is conducted within. Wildcard characters are not allowed. If <b>text</b> is an empty string, the function returns empty text.</p>
+			<p style="text-indent: 50px;"><b><em>delimiter</em></b> is the text that marks the point before which the function extracts the text.</p>
+			<p style="text-indent: 50px;"><b><em>instance_num</em></b> is an optional argument. The instance of the delimiter before which the function extracts the text. By default, <b>instance_num</b> equals <b>1</b>. A negative number will start the text search from the end.</p>
+			<p style="text-indent: 50px;"><b><em>match_mode</em></b> is an optional argument. It is used to determine whether the text search is case-sensitive. The default is case-sensitive. The following values are used: <b>0</b> for case sensitive, <b>1</b> for case insensitive.</p>
+			<p style="text-indent: 50px;"><b><em>match_end</em></b> is an optional argument. It treats the end of text as a delimiter. By default, the text is an exact match. The following values are used: <b>0</b> for <b><em>not</em></b> matching the delimiter against the end of the text, <b>1</b> for matching the delimiter against the end of the text.</p>
+			<p style="text-indent: 50px;"><b><em>if_not_found</em></b> is an optional argument. It sets a value that is returned if no match is found.</p>
+			<p>To apply the <b>TEXTBEFORE</b> function,</p>
+			<ol>
+				<li>select the cell where you wish to display the result,</li>
+				<li>
+					click the <b>Insert function</b> <div class="icon icon-insertfunction"></div> icon situated at the top toolbar,
+					<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+					<br />or click the <div class="icon icon-function"></div> icon situated at the formula bar,
+				</li>
+				<li>select the <b>Text and data</b> function group from the list,</li>
+				<li>click the <b>TEXTBEFORE</b> function,</li>
+				<li>enter the required arguments separating them by commas,</li>
+				<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="TEXTBEFORE Function" src="../images/textbefore.png" /></p>
+		</div>
+	</body>
+</html>

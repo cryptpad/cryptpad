@@ -1,0 +1,90 @@
+﻿	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Animationen hinzufügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Wie kann man Animationseffekte auf einer Folie hinzufügen und verwalten." />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<script type="text/javascript" src="../callback.js"></script>
+		<script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Animationen hinzufügen</h1>
+			<p><b>Animation</b> ist ein visueller Effekt, mit dem Sie Text, Objekte und Grafiken animieren können, um Ihre Präsentation dynamischer zu gestalten und wichtige Informationen hervorzuheben. Sie können die Bewegung, Farbe und Größe von Text, Objekten und Grafiken verwalten.</p>
+			<h3 id="applyanimation">Animationseffekt anwenden</h3>
+			<ol>
+				<li>Wechseln Sie in der oberen Symbolleiste zur Registerkarte <b>Animation</b>.</li>
+				<li>Wählen Sie einen Text, ein Objekt oder ein Grafikelement aus, um den Animationseffekt darauf anzuwenden.</li>
+				<li>Wählen Sie einen <b>Animationseffekt</b> aus der Animationsgalerie aus.</li>
+				<li>Wählen Sie die Bewegungsrichtung des Animationseffekts aus, indem Sie neben der Animationsgalerie auf <b>Parameter</b> klicken. Die Parameter in der Liste hängen vom angewendeten Effekt ab.</li>
+			</ol>
+			<p>Sie können Animationseffekte auf der aktuellen Folie in der Vorschau anzeigen. Standardmäßig werden Animationseffekte automatisch abgespielt, wenn Sie sie zu einer Folie hinzufügen, aber Sie können sie deaktivieren. Klicken Sie auf der Registerkarte <b>Animation</b> auf das Drop-Down-Menü <b>Vorschau</b> und wählen Sie einen Vorschaumodus aus:</p>
+			<ul>
+				<li><b>Vorschau</b>, um eine Vorschau anzuzeigen, wenn Sie auf die Schaltfläche <b>Vorschau</b> klicken.</li>
+				<li><b>AutoVorschau</b>, um automatisch eine Vorschau anzuzeigen, wenn Sie einer Folie eine Animation hinzufügen.</li>
+			</ul>
+
+			<h3>Typen von Animationen</h3>
+			<p>Alle <b>Animationseffekte</b> sind in der <b>Animationsgalerie</b> aufgelistet. Klicken Sie auf den Drop-Down-Pfeil, um sie zu öffnen. Jeder <b>Animationseffekt</b> wird durch ein sternförmiges Symbol dargestellt. Die Animationen sind nach dem Zeitpunkt ihres Auftretens gruppiert:</p>
+			<p><img alt="Animationsgalerie" src="../images/animationgallery.png" /></p>
+			<p><b>Eingangseffekte</b> bestimmen, wie Objekte auf einer Folie erscheinen, und werden in der Galerie grün gefärbt.</p>
+			<p><b>Hervorhebungseffekte</b> ändern die Größe oder Farbe des Objekts, um ein Objekt hervorzuheben und die Aufmerksamkeit des Publikums auf sich zu ziehen, und sind in der Galerie gelb oder zweifarbig gefärbt.</p>
+			<p><b>Ausgangseffekte</b> bestimmen, wie Objekte von einer Folie verschwinden, und werden in der Galerie rot eingefärbt.</p>
+			<p><b>Animationspfad</b> bestimmt die Bewegung eines Objekts und den Pfad, dem es folgt. Die Symbole in der Galerie stellen den vorgeschlagenen Pfad dar. Die Option <b>Benutzerdefinierter Pfad</b> ist ebenfalls verfügbar. Um mehr zu erfahren, lesen Sie bitte den <a href="../UsageInstructions/MotionPath.htm" onclick="onhyperlinkclick(this)">folgenden Artikel</a>.</p> 
+			<p>Scrollen Sie in der Animationsgalerie nach unten, um alle in der Galerie enthaltenen Effekte anzuzeigen. Wenn Sie die benötigte Animation nicht in der Galerie sehen, klicken Sie unten in der Galerie auf die Option <b>Mehr Effekte anzeigen</b>.</p>
+			<p><img alt="Mehr Effekte" src="../images/moreeffects.png" /></p>
+			<p>Hier finden Sie die vollständige Liste der Animationseffekte. Effekte werden zusätzlich nach der visuellen Wirkung gruppiert, die sie auf das Publikum haben.</p>
+			<ul>
+				<li>Die <b>Eingangs-</b>, <b>Hervorhebungs-</b> und <b>Ausgangs</b>effekte sind gruppiert: <b>Grundlegende</b>, <b>Dezent</b>, <b>Mittelmäßig</b> und <b>Spektakulär</b>.</li>
+				<li><b>Animationspfad</b>-Effekte sind gruppiert: <b>Grundlegende</b>, <b>Dezent</b> und <b>Mittelmäßig</b>.</li>
+			</ul>
+			<!--<p>Die Option <b>Vorschau</b> ist standardmäßig aktiv, deaktivieren Sie sie, wenn Sie keine Vorschau möchten.</p>-->
+
+			<h3 id="multipleanimations">Anwenden mehrerer Animationen</h3>
+			<p>Sie können demselben Objekt mehr als einen Animationseffekt hinzufügen. Um eine weitere Animation hinzuzufügen,</p>
+			<ol>
+				<li>Klicken Sie auf der Registerkarte <b>Animation</b> auf die Schaltfläche <b>Animation hinzufügen</b>.</li>
+				<li>Die Liste der Animationseffekte wird geöffnet. Wiederholen Sie die Schritte 3 und 4 oben, um eine Animation hinzuzufügen.</li>
+			</ol>
+			<p>Wenn Sie die <b>Animationsgalerie</b> und nicht die Schaltfläche <b>Animation hinzufügen</b> verwenden, wird der erste Animationseffekt durch einen neuen Effekt ersetzt. Ein kleines Quadrat neben dem Objekt zeigt die Sequenznummern der angewendeten Effekte.</p>
+			<p>Sobald Sie einem Objekt mehrere Effekte hinzufügen, erscheint das Symbol <b>Mehrfach</b> Animationen in der Animationsgalerie.</p>
+			<p><img alt="Mehrere Effekte" src="../images/multipleeffect_icon.png" /></p>
+			<h3 id="animationsorder">Ändern der Reihenfolge der Animationseffekte auf einer Folie</h3>
+			<ol>
+				<li>Klicken Sie auf das Animationsquadrat.</li>
+				<li>Klicken Sie auf die Pfeile <img alt="Aufwärts schweben" src="../images/moveearlier.png" /> oder <img alt="Abwärts schweben" src="../images/movelater.png" /> auf der Registerkarte <b>Animation</b>, um die Reihenfolge der Darstellung von Objekten auf der Folie zu ändern.</li>
+			</ol>
+			<p><img alt="Reihenfolge der Animationen" src="../images/multipleanimations_order.png" /></p>
+			<h3 id="timing">Einstellen des Animationstimings</h3>
+			<p>Verwenden Sie die Timing-Optionen auf der Registerkarte <b>Animation</b>, um die Optionen <b>Start</b>, <b>Dauer</b>, <b>Verzögern</b>, <b>Wiederholen</b> und <b>Zurückspulen</b> für Animationen auf einer Folie festzulegen.</p>
+			<h4>Startoptionen für Animationen</h4>
+			<ul>
+				<li><b>Beim Klicken</b>: Die Animation beginnt, wenn Sie auf die Folie klicken. Dies ist die Standardoption.</li>
+				<li><b>Mit vorheriger</b>: Die Animation beginnt, wenn der vorherige Animationseffekt beginnt und die Effekte gleichzeitig erscheinen.</li>
+				<li><b>Nach vorheriger</b>: Die Animation beginnt direkt nach dem vorherigen Animationseffekt.</li>
+			</ul>
+			<p class="note">Animationseffekte werden automatisch auf einer Folie nummeriert. Alle Animationen, die auf <b>Mit vorheriger</b> und <b>Nach vorheriger</b> eingestellt sind, nehmen die Nummer der Animation, mit der sie verbunden sind, da sie automatisch erscheinen.</p>
+			<p><img alt="Nummerierung von Animationen" src="../images/animationnumbering.png" /></p>
+			<h4>Optionen für Animation-Trigger</h4>
+			<p>Klicken Sie auf die Schaltfläche <b>Trigger</b> und wählen Sie eine der entsprechenden Optionen aus:</p>
+			<ul>
+				<li><b>Bei Reihenfolge von Klicken</b>: Jedes Mal, wenn Sie irgendwo auf die Folie klicken, wird die nächste Animation in Folge gestartet. Dies ist die Standardoption.</li>
+				<li><b>Beim Klicken auf</b>: Um die Animation zu starten, wenn Sie auf das Objekt klicken, das Sie aus der Drop-Down-Liste auswählen.</li>
+			</ul>
+			<p><img alt="Trigger Optionen" src="../images/triggeroptions.png" /></p>
+			<h4>Andere Timing-Optionen</h4>
+			<p><img alt="Timing-Optionen" src="../images/timingoptions.png" /></p>
+			<p><b>Dauer</b>: Verwenden Sie diese Option, um festzulegen, wie lange eine Animation angezeigt werden soll. Wählen Sie eine der verfügbaren Optionen aus dem Menü oder geben Sie den erforderlichen Zeitwert ein.</p>
+			<p><img alt="Animationsdauer" src="../images/animationduration.png" /></p>
+			<p><b>Verzögern</b>: Verwenden Sie diese Option, wenn Sie möchten, dass die ausgewählte Animation innerhalb eines bestimmten Zeitraums angezeigt wird, oder wenn Sie eine Pause zwischen den Effekten benötigen. Verwenden Sie die Pfeile, um den erforderlichen Zeitwert auszuwählen, oder geben Sie den erforderlichen Wert in Sekunden ein.</p>
+			<p><b>Wiederholen</b>: Verwenden Sie diese Option, wenn Sie eine Animation mehr als einmal anzeigen möchten. Klicken Sie auf das Feld <b>Wiederholen</b> und wählen Sie eine der verfügbaren Optionen aus oder geben Sie Ihren Wert ein.</p>
+			<p><img alt="Animation wiederholen" src="../images/animationrepeat.png" /></p>
+			<p><b>Zurückspulen</b>: Aktivieren Sie dieses Kontrollkästchen, wenn Sie das Objekt in seinen ursprünglichen Zustand zurückspulen möchten, wenn die Animation endet.</p>
+		</div>
+	</body>
+</html>

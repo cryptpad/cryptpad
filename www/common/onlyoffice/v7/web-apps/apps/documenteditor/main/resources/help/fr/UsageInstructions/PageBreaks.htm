@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des sauts de page</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insérer des sauts de page page breaks and keep lines together" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des sauts de page</h1>
+			<p>Dans l'<a target="_blank" href="https://www.onlyoffice.com/fr/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Éditeur de Documents</b></a>, vous pouvez ajouter un saut de page pour commencer une nouvelle page, insérer une page blanche et régler les options de pagination.</p>
+			<p>Pour insérer un saut de page à la position actuelle du curseur, cliquez sur l'icône <span class = "icon icon-pagebreak1"></span> <b>Sauts de page</b> sous l'onglet <b>Insertion</b> ou <b>Mise en page</b> de la barre d'outils supérieure ou cliquez sur la flèche en regard de cette icône et sélectionnez l'option <b>Insertion un saut de page</b> dans le menu. Vous pouvez également utiliser la combinaison de touches <b>Ctrl+Entrée</b>.</p>
+			<p>Pour insérer une page blanche à la position actuelle du curseur, cliquez sur l'icône <span class = "icon icon-blankpage"></span> <b>Page vierge</b> sous l'onglet <b>Insertion</b> de la barre d'outils supérieure. Cela insère deux sauts de page qui créent une page blanche.</p>
+            <p>Pour insérer un saut de page avant le paragraphe sélectionné c'est-à-dire pour commencer ce paragraphe en haut d'une nouvelle page :</p>
+			<ul>
+				<li>cliquez avec le bouton droit de la souris et sélectionnez l'option <b>Saut de page avant</b> du menu contextuel, ou</li>
+				<li>cliquez avec le bouton droit de la souris, sélectionnez l'option <b>Paramètres avancés du paragraphe</b> du menu contextuel ou utilisez le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite et cochez la case <b>Saut de page avant</b> sous l'onglet <b>Enchaînements</b> dans la fenêtre <b>Paragraphe - Paramètres avancés</b> ouverte.
+				</li>
+			</ul>
+			<p>Pour garder les lignes solidaires de sorte que seulement des paragraphes entiers seront placés sur la nouvelle page (c'est-à-dire il n'y aura aucun saut de page entre les lignes dans un seul paragraphe),</p>
+			<ul>
+				<li>cliquez avec le bouton droit de la souris et sélectionnez l'option <b>Lignes solidaires</b> du menu contextuel, ou</li>
+				<li>cliquez avec le bouton droit de la souris, sélectionnez l'option <b>Paramètres avancés du paragraphe</b> du menu contextuel ou utilisez le lien <b>Afficher paramètres avancés</b> sur la barre latérale droite et cochez la case <b>Lignes solidaires</b> sous l'onglet <b>Enchaînements</b> dans la fenêtre <b>Paragraphe - Paramètres avancés</b> ouverte.</li>
+			</ul>
+			<p>L'onglet <b>Enchaînements</b> dans la fenêtre <b>Paragraphe - Paramètres avancés</b> vous permet de définir deux autres options de pagination :</p>
+			<ul>
+			    <li><b>Paragraphes solidaires</b> sert à empêcher l'application du saut de page entre le paragraphe sélectionné et celui-ci qui le suit.</li>
+			    <li><b>Éviter orphelines</b> est sélectionné par défaut et sert à empêcher l'application d'une ligne (première ou dernière) d'un paragraphe en haut ou en bas d'une page.</li>
+			</ul>
+			<p><img alt="Paramètres avancés du paragraphe - Enchaînements" src="../images/paradvsettings_breaks.png" /></p>
+		</div>
+	</body>
+</html>

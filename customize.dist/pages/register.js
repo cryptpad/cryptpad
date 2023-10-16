@@ -8,7 +8,6 @@ define([
 ], function (Config, $, h, UI, Msg, Pages) {
     return function () {
         document.title = Msg.register_header;
-
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
 
         var termsLink = Pages.customURLs.terms;
@@ -52,29 +51,40 @@ define([
                 h('div.cp-reg-form.col-md-6', [
                     h('div#userForm.form-group.hidden', [
                         h('div.cp-register-instance', [
-                            Msg._getKey('register_instance', [ Pages.Instance.name ]),
+                            Msg._getKey('register_instance', [Pages.Instance.name]),
                             h('br'),
                             h('a', {
                                 href: '/features.html'
                             }, Msg.register_whyRegister)
                         ]),
-                        h('input.form-control#username', {
-                            type: 'text',
-                            autocomplete: 'off',
-                            autocorrect: 'off',
-                            autocapitalize: 'off',
-                            spellcheck: false,
-                            placeholder: Msg.login_username,
-                            autofocus: true,
-                        }),
-                        h('input.form-control#password', {
-                            type: 'password',
-                            placeholder: Msg.login_password,
-                        }),
-                        h('input.form-control#password-confirm', {
-                            type: 'password',
-                            placeholder: Msg.login_confirm,
-                        }),
+                        h('div.big-container', [
+                            h('div.input-container', [
+                                h('label.cp-register-label', { for: 'username' }, Msg.login_username),
+                                h('input.form-control#username', {
+                                    type: 'text',
+                                    autocomplete: 'off',
+                                    autocorrect: 'off',
+                                    autocapitalize: 'off',
+                                    spellcheck: false,
+                                    placeholder: Msg.login_username,
+                                    autofocus: true,
+                                }),
+                            ]),
+                            h('div.input-container', [
+                                h('label.cp-register-label', { for: 'password' }, Msg.login_password),
+                                h('input.form-control#password', {
+                                    type: 'password',
+                                    placeholder: Msg.login_password,
+                                }),
+                            ]),
+                            h('div.input-container', [
+                                h('label.cp-register-label', { for: 'password-confirm' }, Msg.login_confirm),
+                                h('input.form-control#password-confirm', {
+                                    type: 'password',
+                                    placeholder: Msg.login_confirm,
+                                }),
+                            ]),
+                        ]),
                         h('div.checkbox-container', [
                             UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                         ]),
@@ -85,6 +95,4 @@ define([
             ])
         ]);
     };
-
 });
-

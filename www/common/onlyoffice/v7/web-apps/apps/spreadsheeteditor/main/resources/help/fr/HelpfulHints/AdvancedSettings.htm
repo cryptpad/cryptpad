@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Paramètres avancés du Tableur</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Paramètres avancés du Tableur" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Paramètres avancés du Tableur</h1>
+            <p><a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tableur</b></a> vous permet de modifier ses paramètres avancés. Pour y accéder, ouvrez l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Paramètres avancés...</b>.</p>
+			<p>Les paramètres avancés sont les suivants :</p>
+
+            <h3>Édition et enregistrement</h3>
+            <ol>
+                <li><span class="onlineDocumentFeatures"><b>Enregistrement automatique</b> est utilisé dans la <em>version en ligne</em> pour activer/désactiver l'enregistrement automatique des modifications que vous effectuez pendant l'édition.</span></li>
+                <li><span class="desktopDocumentFeatures"><b>Récupération automatique</b> est utilisée dans la <em>version de bureau</em> pour activer/désactiver l'option qui permet de récupérer automatiquement les feuilles de calcul en cas de fermeture inattendue du programme.</span></li>
+                <li><b>Afficher le bouton "Options de collage" lorsque le contenu est collé</b>. L'icône correspondante sera affichée lorsque vous collez le contenu à la feuille de calcul.</li>
+            </ol>
+
+            <h3>Collaboration</h3>
+            <ol>
+                <li class="onlineDocumentFeatures">
+                    Le paragraphe <b>Mode de co-édition</b> permet de sélectionner le mode d'affichage préférable des modifications effectuées lors de la co-édition de la feuille de calcul.
+                    <ul>
+                        <li><b>Rapide</b> (par défaut). Les utilisateurs qui participent à la co-édition de la feuille de calcul verront les changements en temps réel une fois qu'ils sont faits par d'autres utilisateurs.</li>
+                        <li><b>Strict</b>. Tous les changements apparaîtront seulement après avoir cliqué sur l'icône <b>Enregistrer</b> <div class="icon icon-saveupdate"></div> pour vous informer qu'il y a des changements effectués par d'autres utilisateurs.</li>
+                    </ul>
+                </li>
+                <li><b>Activer l'affichage des commentaires</b>. Si cette option est désactivée, les passages commentés seront mis en surbrillance uniquement si vous cliquez sur l'icône <b>Commentaires</b> <div class="icon icon-commentsicon"></div> dans la barre latérale gauche.</li>
+                <li><b>Activer l'affichage des commentaires résolus</b>. Cette fonction est désactivée par défaut pour que les commentaires résolus soient cachés dans la feuille de calcul. Vous ne pourrez voir ces commentaires que si vous cliquez sur l'icône <b>Commentaires</b> <div class="icon icon-commentsicon"></div> dans la barre latérale gauche. Activez cette option si vous voulez afficher les commentaires résolus dans la feuille de calcul.</li>
+            </ol>
+
+            <h3>Espace de travail</h3>
+            <ol>
+                <li>
+                    <p>L'option <b>Style de référence R1C1</b> est désactivée et le style de référence A1 est utilisé.</p>
+                    <p>Lorsque <b>le style de référence A1</b> est utilisé, les colonnes sont désignées par des lettres et les lignes par des chiffres. Si vous sélectionnez la cellule située dans la rangée 3 et la colonne 2, son adresse affichée dans la case à gauche de la barre de formule ressemble à ceci : <b>B3</b>. Si <b>le style de référence R1C1</b> est activé, les lignes et les colonnes sont désignées par des numéros. Si vous sélectionnez la cellule à l'intersection de la ligne 3 et de la colonne 2, son adresse ressemblera à ceci : <b>R3C2</b>. La lettre R indique le numéro de ligne et la lettre C le numéro de colonne.</p>
+                    <p><img alt="Active cell" src="../images/activecell.png" /></p>
+                    <p>Si vous vous référez à d'autres cellules en utilisant <b>le style de référence A1</b>, la référence à une cellule cible est formée en fonction de la distance à partir de la cellule active. Par exemple, lorsque vous sélectionnez la cellule de la ligne 5 et de la colonne 1 et faites référence à la cellule de la ligne 3 et de la colonne 2, la référence est <b>R[-2]C[1]</b>. Les chiffres entre crochets désignent la position de la cellule à laquelle vous vous référez par rapport à la position actuelle de la cellule, c'est-à-dire que la cellule cible est à 2 lignes plus haut et 1 colonne à droite de la cellule active. Si vous sélectionnez la cellule de la ligne 1 et de la colonne 2 et que vous vous référez à la même cellule de la ligne 3 et de la colonne 2, la référence est <b>R[2]C</b>, c'est-à-dire que la cellule cible est à 2 lignes en dessous de la cellule active et dans la même colonne.</p>
+                    <p><div class="big big-relativereference"></div></p>
+                </li>
+                <li>L'option <b>Utiliser la touche Alt pour naviguer dans l'interface utilisateur à l'aide du clavier</b> est utilisée pour activer l'utilisation de la touche <em>Alt</em> / <em>Option</em> à un raccourci clavier.</li>
+                <li>
+                    L'option <b>Thème d'interface</b> permet de modifier les jeux de couleurs de l'interface d'éditeur.
+                    <ul>
+                        <li>L'option <b>Identique à système</b> rend le thème d'interface de l'éditeur identique à celui de votre système.</li>
+                        <li>Le mode <b>Claire</b> comprend l'affichage des éléments de l'interface utilisateur en couleurs standards bleu, blanc et gris claire à contraste réduit et est destiné à un travail de jour.</li>
+                        <li>Le mode <b>Claire classique</b> comprend l'affichage en couleurs standards bleu, blanc et gris claire.</li>
+                        <li>Le mode <b>Sombre</b> comprend l'affichage en tons sombres noir, gris foncé et gris claire destinés à un travail de nuit.</li>
+                        <li>
+                            Le mode <b>Contraste sombre</b> comprend l'affichage des éléments de l'interface utilisateur en couleurs noir, gris foncé et blanc à plus de contraste et est destiné à mettre en surbrillance la zone de travail du fichier.
+                            <p class="note"><b>Remarque</b> : En plus des thèmes de l'interface disponibles <b>Claire</b>, <b>Classique claire</b>, <b>Sombre</b> et <b>Contraste sombre</b>, il est possible de personnaliser les éditeurs ONLYOFFICE en utilisant votre propre couleur de thème. Pour en savoir plus, veuillez consulter <a target="_blank" href="https://helpcenter.onlyoffice.com/fr/installation/docs-developer-change-theme.aspx" onclick="onhyperlinkclick(this)">ces instructions</a>.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>L'option <b>Unité de mesure</b> sert à spécifier les unités de mesure utilisées sur les règles et dans les fenêtres de paramètres pour les paramètres tels que largeur, hauteur, espacement, marges etc. Vous pouvez choisir l'option <em>Centimètre</em>, <em>Point</em> ou <em>Pouce</em>.</li>
+                <li>L'option <b>Valeur du zoom par défaut</b> sert à définir la valeur de zoom par défaut en la sélectionnant de la liste des options disponibles de 50% à 500%.</li>
+                <li>
+                    L'option <b>Hinting de la police</b> sert à sélectionner le type d'affichage de la police dans le Tableur.
+                    <ul>
+                        <li>Choisissez <b>Comme Windows</b> si vous aimez la façon dont les polices sont habituellement affichées sous Windows, c'est-à-dire en utilisant la police de Windows.</li>
+                        <li>Choisissez <b>Comme OS X</b> si vous aimez la façon dont les polices sont habituellement affichées sous Mac, c'est-à-dire sans hinting.</li>
+                        <li>Choisissez <b>Natif</b> pour afficher le texte avec les hintings intégrés dans les fichiers de polices.</li>
+                        <li>
+                            <b>Mise en cache par défaut</b> sert à sélectionner cache de police. Il n'est pas recommandé de désactiver ce mode-ci sans raison évidente. C'est peut être utile dans certains cas, par exemple les problèmes d'accélération matérielle activé sous Google Chrome.
+                            <p>Le Tableur gère deux modes de mise en cache :</p>
+                            <ol>
+                                <li>Dans le <b>premier mode de mise en cache</b> chaque lettre est mise en cache comme une image indépendante.</li>
+                                <li>Dans le <b>deuxième mode de mise en cache</b> l'image d'une certaine taille est sélectionnée avec les lettres dynamiques et avec de l'allocation/libération de la mémoire mise en place. La deuxième image est créée s'il n'y a pas de mémoire suffisante etc.</li>
+                            </ol>
+                            <p>Le <b>Mode de mise en cache par défaut</b> est activé en fonction du navigateur utilisé :</p>
+                            <ul>
+                                <li>Avec la <b>mise en cache par défaut</b> activée, dans Internet Explorer (v. 9, 10, 11) le <b>deuxième mode de mise en cache</b> est utilisé, le <b>premier mode de mise en cache</b> est utilisé dans les autres navigateurs.</li>
+                                <li>Avec la <b>mise en cache par défaut</b> désactivée, dans Internet Explorer (v. 9, 10, 11) le <b>premier mode de mise en cache</b> est utilisé, le <b>deuxième mode de mise en cache</b> est utilisé dans les autres navigateurs.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    L'option <b>Réglages macros</b> s'utilise pour définir l'affichage des macros avec notification.
+                    <ul>
+                        <li>Choisissez <b>Désactivez tout</b> pour désactiver toutes les macros dans la feuille de calcul.</li>
+                        <li>Choisissez <b>Montrer la notification</b> pour afficher les notifications lorsque des macros sont présentes dans la feuille de calcul.</li>
+                        <li>Choisissez <b>Activer tout</b> pour exécuter automatiquement toutes les macros dans la feuille de calcul.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>Paramètres régionaux</h3>
+            <ol>
+                <li>
+                    L'option <b>Langage de formule</b> est utilisée pour sélectionner la langue d'affichage et de saisie des noms de formules, des noms et des descriptions d'arguments.
+                    <p><b>Langage de formule</b> est disponible dans 32 langues :</p>
+                    <p><em>Allemand</em>, <em>Anglais</em>, <em>Biélorusse</em>, <em>Bulgare</em>, <em>Catalan</em>, <em>Chinois</em>, <em>Coréen</em>, <em>Danois</em>, <em>Espagnol</em>, <em>Finnois</em>, <em>Français</em>, <em>Grec</em>, <em>Hongrois</em>, <em>Indonésien</em>, <em>Italien</em>, <em>Japonais</em>, <em>Laotien</em>, <em>Letton</em>, <em>Norvégien</em>, <em>Néerlandais</em>, <em>Polonais</em>, <em>Portugais</em>, <em>Portugais (Brésil)</em>, <em>Roumain</em>, <em>Russe</em>, <em>Slovaque</em>, <em>Slovène</em>, <em>Suédois</em>, <em>Tchèque</em>, <em>Turc</em>, <em>Ukrainien</em>, <em>Vietnamien</em>.</p>
+                </li>
+                <li>L'option <b>Paramètres régionaux</b> est utilisée pour sélectionner le format d'affichage par défaut pour la devise, la date et l'heure.</li>
+                <li>L'option <b>Utiliser des séparateurs basés sur les paramètres régionaux</b> est activée par défaut, les séparateurs correspondront à la région définie. Afin de définir les séparateurs personnalisés, désactivez cette option et saisissez les séparateurs requis dans les champs <b>Séparateur décimal</b> et <b>Séparateur de milliers</b>.</li>
+            </ol>
+
+            <h3>Vérification</h3>
+            <ol>
+                <li>L'option <b>Langue du dictionnaire</b> est utilisée afin de sélectionner le dictionnaire préféré pour la vérification de l'orthographe.</li>
+                <li><b>Ignorer les mots en MAJUSCULES</b>. Les mots tapés en majuscules sont ignorés lors de la vérification de l'orthographe.</li>
+                <li><b>Ignorer les mots contenant des chiffres</b>. Les mots contenant des chiffres sont ignorés lors de la vérification de l'orthographe.</li>
+                <li>Le menu <b>Options d'auto-correction...</b> permet d'accéder aux <a href="../UsageInstructions/MathAutoCorrect.htm" onclick="onhyperlinkclick(this)">paramètres d'auto-correction</a> tels que remplacement au cours de la frappe, fonctions de reconnaissance, mise en forme automatique etc.</li>
+            </ol>
+
+            <h3>Calcul en cours</h3>
+            <ol>
+                <li>L'option <b>Utiliser le calendrier depuis 1904</b> permet de calculer les dates à partir du 1er janvier 1904 comme point de départ. Elle peut être utile lorsque vous travaillez avec des feuilles de calcul créées dans la version MS Excel 2008 pour Mac ou des versions antérieures de MS Excel pour Mac.</li>
+            </ol>
+            <p>Pour enregistrer toutes les modifications, cliquez sur le bouton <b>Appliquer</b>.</p>
+		</div>
+	</body>
+</html>

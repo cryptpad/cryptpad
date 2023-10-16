@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tabellen einfügen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Fügen Sie eine Tabelle in Ihrem Dokument ein und ändern Sie ihre Eigenschaften" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Tabellen einfügen</h1>
+            <h3>Fügen Sie eine Tabelle ein</h3>
+            <p>So fügen Sie eine Tabelle in den Dokumenttext ein im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a>:</p>
+			<ol>
+                <li>Positionieren Sie den Zeiger an der Stelle, an der die Tabelle eingefügt werden soll.</li>
+                <li>Wechseln Sie zur Registerkarte <b>Einfügen</b> in der oberen Symbolleiste.</li>
+                <li>Klicken Sie auf das <b>Tabellensymbol</b> <div class = "icon icon-table"></div> in der oberen Symbolleiste.</li>
+                <li>Wählen Sie die Option zum Erstellen einer Tabelle aus:
+                    <ul>
+                        <li>
+                            <p>entweder eine Tabelle mit einer vordefinierten Anzahl von Zellen (maximal 10 mal 8 Zellen)</p>
+                            <p>Wenn Sie schnell eine Tabelle hinzufügen möchten, wählen Sie einfach die Anzahl der Zeilen (maximal 8) und Spalten (maximal 10).</p>
+                        </li>
+                        <li>
+                            <p>oder eine benutzerdefinierte Tabelle</p>
+                            <p>Wenn Sie mehr als 10 x 8 Zellen benötigen, wählen Sie die Option <b>Benutzerdefinierte Tabelle einfügen</b>, um das Fenster zu öffnen, in dem Sie die erforderliche Anzahl von Zeilen bzw. Spalten eingeben können, und klicken Sie dann auf die Schaltfläche <b>OK</b>.</p>
+                            <p><img alt="Benutzerdefinierte Tabelle" src="../images/customtable.png" /></p>
+                        </li>
+                        <li>Wenn Sie eine Tabelle mit der Maus zeichnen möchten, wählen Sie die Option <b>Tabelle zeichnen</b>. Dies kann nützlich sein, wenn Sie eine Tabelle mit Zeilen und Spalten unterschiedlicher Größe erstellen möchten. Der Mauszeiger verwandelt sich in einen Bleistift <div class="icon icon-pencil_tool"></div>. Zeichnen Sie eine rechteckige Form, in der Sie eine Tabelle hinzufügen möchten, und fügen Sie dann Zeilen hinzu, indem Sie horizontale Linien  zeichnen, und Spalten, indem Sie vertikale Linien innerhalb der Tabellengrenze zeichnen.</li>
+                        <li>Wenn Sie einen vorhandenen Text in eine Tabelle umwandeln möchten, wählen Sie die Option <b>Text in Tabelle umwandeln</b>. Diese Funktion kann sich als nützlich erweisen, wenn Sie bereits Text haben, den Sie in einer Tabelle anordnen möchten. Das Fenster <b>Text in Tabelle umwandeln</b> besteht aus 3 Abschnitten:
+                            <p><img alt="Text in eine Tabelle umwandeln" src="../images/converttotable.png" /></p>
+                            <ul>
+                                <li><b>Größe der Tabelle</b>. Wählen Sie die erforderliche Anzahl von Spalten/Zeilen, in die Sie Ihren Text verteilen möchten. Sie können entweder die Auf-/Ab-Pfeiltasten verwenden oder die Nummer manuell über die Tastatur eingeben.</li>
+                                <li><b>Einstellung für AutoAnpassen</b>. Aktivieren Sie die erforderliche Option, um die Textanpassung einzustellen: <b>Feste Spaltenbreite</b> (standardmäßig auf <em>Auto</em> eingestellt. Sie können entweder die Auf-/Ab-Pfeiltasten verwenden oder die Zahl manuell über die Tastatur eingeben), <b>Autoanpassen an Inhalt</b> (die Spaltenbreite entspricht der Textlänge), <b>Größe an Fenster anpassen</b> (die Spaltenbreite entspricht der Seitenbreite).</li>
+                                <li><b>Text trennen bei</b>. Aktivieren Sie die erforderliche Option, um einen Trennzeichentyp für Ihren Text festzulegen: <b>Absätze</b>, <b>Tabulatoren</b>, <b>Semikolons</b> und <b>Sonstiges</b> (geben Sie das bevorzugte Trennzeichen manuell ein).</li>
+                                <li>Klicken Sie auf <b>OK</b>, um den Text in Tabelle umzuwandeln.</li>
+                            </ul>
+                        </li>
+                        <li>Wenn Sie eine Tabelle als OLE-Objekt einfügen möchten:
+                            <ol>
+                                <li>Wählen Sie die Option <b>Tabelle einfügen</b> im Menü <b>Tabelle</b> auf der Registerkarte <b>Einfügen</b>.</li>
+                                <li>
+                                    Es erscheint das entsprechende Fenster, in dem Sie die erforderlichen Daten eingeben und mit den Formatierungswerkzeugen der Tabellenkalkulation wie <a href="../../../../../../spreadsheeteditor/main/resources/help/de/UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">Auswahl von Schriftart, Typ und Stil</a>, <a href="../../../../../../spreadsheeteditor/main/resources/help/de/UsageInstructions/ChangeNumberFormat.htm" onclick="onhyperlinkclick(this)">Zahlenformat einstellen</a>, <a href="../../../../../../spreadsheeteditor/main/resources/help/de/UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">Funktionen einfügen</a>, <a href="../../../../../../spreadsheeteditor/main/resources/help/de/UsageInstructions/FormattedTables.htm" onclick="onhyperlinkclick(this)">Tabellen formatieren</a> usw. sie formatieren.
+                                    <p><img alt="OLE table" src="../../../../../../common/main/resources/help/de/images/ole_table.png" /></p>
+                                </li>
+                                <li>Die Kopfzeile enthält die Schaltfläche <span class="icon icon-visible_area"></span> <b>Sichtbarer Bereich</b> in der oberen rechten Ecke des Fensters. Wählen Sie die Option <b>Sichtbaren Bereich bearbeiten</b>, um den Bereich auszuwählen, der angezeigt wird, wenn das Objekt in das Dokument eingefügt wird; andere Daten gehen nicht verloren, sie werden nur ausgeblendet. Klicken Sie auf <b>Fertig</b>, wenn Sie fertig sind.</li>
+                                <li>Klicken Sie auf die Schaltfläche <b>Sichtbaren Bereich anzeigen</b>, um den ausgewählten Bereich mit einem blauen Rand anzuzeigen.</li>
+                                <li>Wenn Sie fertig sind, klicken Sie auf die Schaltfläche <b>Speichern und beenden</b>.</li>
+                            </ol>
+                        </li>
+                    </ul>
+                </li>
+                <li>Sobald die Tabelle hinzugefügt wurde, können Sie ihre Eigenschaften, Größe und Position ändern.</li>
+			</ol>
+            <p>Um die Größe einer Tabelle zu ändern, bewegen Sie den Mauszeiger über den Griff <span class = "icon icon-resizetable_handle"></span> in der unteren rechten Ecke und ziehen Sie ihn, bis die Tabelle die erforderliche Größe erreicht hat.</p>
+            <p><span class = "big big-resizetable"></span></p>
+            <p>Sie können die Breite einer bestimmten Spalte oder die Höhe einer Zeile auch manuell ändern. Bewegen Sie den Mauszeiger über den rechten Rand der Spalte, sodass sich der Zeiger in einen bidirektionalen Pfeil <span class = "icon icon-changecolumnwidth"></span> verwandelt, und ziehen Sie den Rand nach links oder rechts, um die erforderliche Breite festzulegen. Um die Höhe einer einzelnen Zeile manuell zu ändern, bewegen Sie den Mauszeiger über den unteren Rand der Zeile, sodass sich der Zeiger in den bidirektionalen Pfeil <span class = "icon icon-changerowheight"></span> verwandelt, und ziehen Sie den Rand nach oben oder nach unten.</p>
+            <p>Um eine Tabelle zu verschieben, halten Sie den Griff <span class = "icon icon-movetable_handle"></span> in der oberen linken Ecke gedrückt und ziehen Sie ihn an die gewünschte Stelle im Dokument.</p>
+            <p>Es ist auch möglich, der Tabelle eine Beschriftung hinzuzufügen. Weitere Informationen zum Arbeiten mit Beschriftungen für Tabellen finden Sie <a href="../UsageInstructions/AddCaption.htm" onclick="onhyperlinkclick(this)">in diesem Artikel</a>.</p>
+            <hr />
+            <h3>Eine Tabelle oder deren Teil auswählen</h3>
+            <p>Um eine gesamte Tabelle auszuwählen, klicken Sie auf den <span class = "icon icon-movetable_handle"></span> Griff in der oberen linken Ecke.</p>
+            <p>Um eine bestimmte Zelle auszuwählen, bewegen Sie den Mauszeiger auf die linke Seite der gewünschten Zelle, sodass sich der Zeiger in den schwarzen Pfeil <span class = "icon icon-selectcellpointer"></span> verwandelt, und klicken Sie dann mit der linken Maustaste.</p>
+            <p>Um eine bestimmte Zeile auszuwählen, bewegen Sie den Mauszeiger an den linken Rand der Tabelle neben der erforderlichen Zeile, sodass sich der Zeiger in den horizontalen schwarzen Pfeil <span class = "icon icon-selectrowpointer"></span> verwandelt, und klicken Sie dann mit der linken Maustaste.</p>
+            <p>Um eine bestimmte Spalte auszuwählen, bewegen Sie den Mauszeiger an den oberen Rand der erforderlichen Spalte, sodass sich der Zeiger  in den schwarzen Pfeil <span class = "icon icon-selectcolumnpointer"></span> nach unten verwandelt, und klicken Sie dann mit der linken Maustaste.</p>
+            <p>Es ist auch möglich, eine Zelle, Zeile, Spalte oder Tabelle mithilfe von Optionen aus dem Kontextmenü oder aus dem Abschnitt <b>Zeilen und Spalten</b> in der rechten Seitenleiste auszuwählen.</p>
+            <p class="note">
+                Um sich in einer Tabelle zu bewegen, können Sie <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithtables" onclick="onhyperlinkclick(this)"><b>Tastaturkürzel</b></a> verwenden.
+            </p>
+            <hr />
+            <h3>Die Tabelleneinstellungen anpassen</h3>
+			<p>Einige der Tabelleneigenschaften sowie deren Struktur können über das Kontextmenü geändert werden. Die Menüoptionen sind:</p>
+			<ul>
+				<li><b>Ausschneiden, Kopieren, Einfügen</b> - Standardoptionen, mit denen ein ausgewählter Text / ein ausgewähltes Objekt ausgeschnitten oder kopiert und eine zuvor ausgeschnittene / kopierte Textpassage oder ein Objekt an die aktuelle Cursorposition eingefügt wird.</li>
+                <li>Mit <b>Auswahl</b> können Sie eine Zeile, Spalte, Zelle oder Tabelle auswählen.</li>
+                <li><b>Einfügen</b> wird verwendet, um eine Zeile über oder unter der Zeile einzufügen, in der sich der Cursor befindet, sowie um eine Spalte links oder rechts von der Spalte einzufügen, in der sich der Cursor befindet.
+                    <p>Es ist auch möglich, mehrere Zeilen oder Spalten einzufügen. Wenn Sie die Option <b>Mehrere Zeilen / Spalten</b> auswählen, wird das Fenster <b>Mehrere Zeilen einfügen</b> geöffnet. Wählen Sie die Option <b>Zeilen</b> oder <b>Spalten</b> aus der Liste aus, geben Sie die Anzahl der Zeilen / Spalten an, die Sie hinzufügen möchten, wählen Sie aus, wo sie hinzugefügt werden sollen: <b>Über dem Cursor</b> oder <b>Unter dem Cursor</b> und klicken Sie auf <b>OK</b>.</p>
+                </li>
+				<li><b>Löschen</b> wird verwendet, um eine Zeile, Spalte, Tabelle oder Zellen zu löschen. Wenn Sie die Option Zellen auswählen, wird das Fenster Zellen löschen geöffnet, in dem Sie auswählen können, ob Sie Zellen nach links verschieben, die gesamte Zeile löschen oder die gesamte Spalte löschen möchten.</li>
+                <li><b>Zellen zusammenführen</b> ist verfügbar, wenn zwei oder mehr Zellen ausgewählt sind, und wird zum Zusammenführen verwendet.
+                <p>
+                    Es ist auch möglich, Zellen zusammenzuführen, indem mit dem Radiergummi eine Grenze zwischen ihnen gelöscht wird. Klicken Sie dazu in der oberen Symbolleiste auf das <b>Tabellensymbol</b> <span class = "icon icon-table"></span> und wählen Sie die Option <b>Tabelle löschen</b>. Der Mauszeiger wird zum <b>Radiergummi</b> <span class = "icon icon-eraser_tool"></span>. Bewegen Sie den Mauszeiger über den Rand zwischen den Zellen, die Sie zusammenführen und löschen möchten.
+                </p>
+                </li>
+                <li><b>Zelle teilen...</b> wird verwendet, um ein Fenster zu öffnen, in dem Sie die erforderliche Anzahl von Spalten und Zeilen auswählen können, in die die Zelle aufgeteilt werden soll.
+                <p>
+                    Sie können eine Zelle auch teilen, indem Sie mit dem Bleistiftwerkzeug Zeilen oder Spalten zeichnen. Klicken Sie dazu in der oberen Symbolleiste auf das <b>Tabellensymbol</b> <span class = "icon icon-table"></span> und wählen Sie die Option <b>Tabelle zeichnen</b>. Der Mauszeiger verwandelt sich in einen <b>Bleistift</b> <span class = "icon icon-pencil_tool"></span>. Zeichnen Sie eine horizontale Linie, um eine Zeile zu erstellen, oder eine vertikale Linie, um eine Spalte zu erstellen.
+                </p>
+                </li>
+				<li>Mit <b>Zeilen verteilen</b> werden die ausgewählten Zellen so angepasst, dass sie dieselbe Höhe haben, ohne die Gesamthöhe der Tabelle zu ändern..</li>
+                <li>Mit <b>Spalten verteilen</b> werden die ausgewählten Zellen so angepasst, dass sie dieselbe Breite haben, ohne die Gesamtbreite der Tabelle zu ändern.</li>
+                <li>Die <b>vertikale Ausrichtung der Zelle</b> wird verwendet, um den Text oben, in der Mitte oder unten auszurichten in der ausgewählten Zelle.</li>
+                <li><b>Textrichtung</b> - wird verwendet, um die Textausrichtung in einer Zelle zu ändern. Sie können den Text horizontal, vertikal von oben nach unten (<b>Text nach unten drehen</b>) oder vertikal von unten nach oben (<b>Text nach oben drehen</b>) platzieren.</li>
+                <li>Mit <b>Tabelle - Erweiterte Einstellungen</b> wird das Fenster <b>Tabelle</b> - Erweiterte Einstellungen" geöffnet.</li>
+                <li><b>Hyperlink</b> wird verwendet, um einen Hyperlink einzufügen.</li>
+				<li>Mit den <b>erweiterten Absatzeinstellungen</b> wird das Fenster "Absatz - Erweiterte Einstellungen" geöffnet.</li>
+			</ul>
+			<hr />
+			<p><img class="floatleft"alt="Rechte Seitenleiste - Tabelleneinstellungen" src="../images/right_table.png" /></p>
+			<p>Sie können auch die Tabelleneigenschaften in der rechten Seitenleiste ändern:</p>
+			<ul style="margin-left: 280px;">
+				<li><p><b>Zeilen</b> und <b>Spalten</b> werden verwendet, um die Tabellenteile auszuwählen, die hervorgehoben werden sollen.</p>
+					<p>Für Zeilen:</p>
+					<ul>
+						<li><i>Kopfzeile</i> - um die erste Zeile hervorzuheben</li>
+						<li><i>Insgesamt</i> - um die letzte Zeile hervorzuheben</li>
+						<li><i>Gestreift </i> - um jede zweite Zeile hervorzuheben</li>
+					</ul>
+					<p>Für Spalten:</p>
+					<ul>
+						<li><i>Erste</i> - um die erste Spalte hervorzuheben</li>
+						<li><i>Letzte</i> - um die letzte Spalte hervorzuheben</li>
+						<li><i>Gestreift</i> - um jede andere Spalte hervorzuheben</li>
+					</ul>
+				</li>
+				<li><p><b>Aus Vorlage auswählen</b> wird verwendet, um eine Tabellenvorlage aus den verfügbaren auszuwählen.</p></li>
+				<li><p><b>Rahmenstil</b> wird verwendet, um die Rahmengröße, Farbe, den Stil sowie die Hintergrundfarbe auszuwählen.</p></li>
+				<li><p><b>Zeilen &amp; Spalten</b> werden verwendet, um einige Operationen mit der Tabelle auszuführen: Auswählen, Löschen, Einfügen von Zeilen und Spalten, Zusammenführen von Zellen, Teilen einer Zelle.</p></li>
+                <li><p><b>Zeilen- und Spaltengröße</b> wird verwendet, um die Breite und Höhe der aktuell ausgewählten Zelle anzupassen. In diesem Abschnitt können Sie auch <b>Zeilen so verteilen</b>, dass alle ausgewählten Zellen die gleiche Höhe haben, oder <b>Spalten so verteilen</b>, dass alle ausgewählten Zellen die gleiche Breite haben.</p></li>
+                <li><p><b>Formel hinzufügen</b> wird verwendet, um eine Formel in die ausgewählte Tabellenzelle <a href="../UsageInstructions/AddFormulasInTables.htm" onclick="onhyperlinkclick(this)">einzufügen</a>.</p></li>
+                <li><p><b>Gleiche Kopfzeile auf jeder Seite wiederholen</b> wird verwendet, um dieselbe Kopfzeile oben auf jeder Seite in lange Tabellen einzufügen.</p></li>
+                <li>Die Option <b>Tabelle in Text umwandeln</b> wird verwendet, um die Tabelle in einer einfachen Textform anzuordnen. Das Fenster <b>Tabelle in Text umwandeln</b> legt den Trennzeichentyp für das Umwandeln fest: <b>Absatzmarken</b>, <b>Tabulatoren</b>, <b>Semikolons</b> und <b>Sonstiges</b> (geben Sie das bevorzugte Trennzeichen manuell ein). Der Text in jeder Zelle der Tabelle wird als separates und individuelles Element des zukünftigen Textes betrachtet.</li>
+				<li><p><b>Erweiterte Einstellungen anzeigen</b> wird verwendet, um das Fenster "Tabelle - Erweiterte Einstellungen" zu öffnen.</p></li>
+			</ul>
+            <hr />
+            <h3>Die erweiterten Tabelleneinstellungen anpassen</h3>
+			<p>Um die Eigenschaften der erweiterten Tabelle zu ändern, klicken Sie mit der rechten Maustaste auf die Tabelle und wählen Sie im Kontextmenü die Option <b>Erweiterte Tabelleneinstellungen</b> aus, oder verwenden Sie den Link <b>Erweiterte Einstellungen</b> anzeigen in der rechten Seitenleiste. Das Fenster mit den Tabelleneigenschaften wird geöffnet:</p>
+            <p><img alt="Tabelle - Erweiterte Einstellungen" src="../images/table_properties_1.png" /></p>
+            <p>Auf der Registerkarte <b>Tabelle</b> können Sie die Eigenschaften der gesamten Tabelle ändern.</p>
+            <ul>
+                <li>Der Abschnitt <b>Tabellengröße</b> enthält die folgenden Parameter:
+                <ul>
+                    <li>
+                        <b>Breite</b>: Standardmäßig wird die Tabellenbreite automatisch an die Seitenbreite angepasst, d. H. Die Tabelle nimmt den gesamten Raum zwischen dem linken und rechten Seitenrand ein. Sie können dieses Kontrollkästchen aktivieren und die erforderliche Tabellenbreite manuell angeben.
+                    </li>
+                    <li><b>Messen in</b>: Ermöglicht die Angabe, ob Sie die Tabellenbreite in absoluten Einheiten festlegen möchten, d. H. <b>Zentimeter</b> / <b>Punkte</b> / <b>Zoll</b> (abhängig von der auf der Registerkarte <b>Datei</b> -&gt; <b>Erweiterte Einstellungen...</b>angegebenen Option) oder in <b>Prozent</b> der Gesamtseitenbreite.
+                    <p class="note">Sie können die Tabellengröße auch manuell anpassen, indem Sie die Zeilenhöhe und Spaltenbreite ändern. Bewegen Sie den Mauszeiger über einen Zeilen- / Spaltenrand, bis  er sich in einen bidirektionalen Pfeil verwandelt, und ziehen Sie den Rand. Sie können auch die <span class = "icon icon-columnwidthmarker"></span> Markierungen auf dem horizontalen Lineal verwenden, um die Spaltenbreite zu ändern, und die <span class = "icon icon-rowheightmarker"></span> Markierungen auf dem vertikalen Lineal, um die Zeilenhöhe zu ändern.</p>
+                    </li>
+                    <li><b>Automatische Größenanpassung an den Inhalt</b>: Ermöglicht die automatische Änderung jeder Spaltenbreite entsprechend dem Text in den Zellen.</li>
+                </ul>
+                </li>
+                <li>Im Abschnitt <b>Standardzellenränder</b> können Sie den Abstand zwischen dem Text innerhalb der Zellen und dem standardmäßig verwendeten Zellenrand ändern.</li>
+                <li>Im Abschnitt <b>Optionen</b> können Sie den folgenden Parameter ändern:
+                <ul>
+                    <li><b>Abstand zwischen Zellen</b> - Der Zellenabstand, der mit der <b>Farbe des Tabellenhintergrunds</b> gefüllt wird.</li>
+                </ul>
+                </li>
+            </ul>
+            <p><img alt="Tabelle - Erweiterte Einstellungen" src="../images/table_properties_5.png" /></p>
+            <p>Auf der Registerkarte <b>Zelle</b> können Sie die Eigenschaften einzelner Zellen ändern. Zuerst müssen Sie die Zelle auswählen, auf die Sie die Änderungen anwenden möchten, oder die gesamte Tabelle auswählen, um die Eigenschaften aller Zellen zu ändern.</p>
+            <ul>
+                <li>
+                    Der Abschnitt <b>Zellengröße</b> enthält die folgenden Parameter:
+                <ul>
+                    <li><b>Bevorzugte Breite</b> - Ermöglicht das Festlegen einer bevorzugten Zellenbreite. Dies ist die Größe, an die eine Zelle angepasst werden soll. In einigen Fällen ist es jedoch möglicherweise nicht möglich, genau an diesen Wert anzupassen. Wenn der Text in einer Zelle beispielsweise die angegebene Breite überschreitet, wird er in die nächste Zeile aufgeteilt, sodass die bevorzugte Zellenbreite unverändert bleibt. Wenn Sie jedoch eine neue Spalte einfügen, wird die bevorzugte Breite verringert.</li>
+                    <li><b>Messen in</b> - ermöglicht die Angabe, ob Sie die Zellenbreite in absoluten Einheiten festlegen möchten, d. H. <b>Zentimeter</b> / <b>Punkte</b> / <b>Zoll</b> (abhängig von der auf der Registerkarte <b>Datei</b> -&gt; <b>Erweiterte Einstellungen...</b> angegebenen Option) oder in <b>Prozent</b> der gesamten Tabellenbreite.
+                    <p class="note">Sie können die Zellenbreite auch manuell anpassen. Um eine einzelne Zelle in einer Spalte breiter oder schmaler als die gesamte Spaltenbreite zu machen, wählen Sie die gewünschte Zelle aus und bewegen Sie den Mauszeiger über den rechten Rand, bis sie sich in den bidirektionalen Pfeil verwandelt. Ziehen Sie dann den Rand. Um die Breite aller Zellen in einer Spalte zu ändern, verwenden Sie die <span class = "icon icon-columnwidthmarker"></span> Markierungen auf dem horizontalen Lineal, um die Spaltenbreite zu ändern.</p>
+                    </li>
+                </ul>
+                </li>
+                <li>Im Abschnitt <b>Zellenränder</b> können Sie den Abstand zwischen dem Text innerhalb  der Zellen und dem Zellenrand anpassen. Standardmäßig werden Standardwerte verwendet (die Standardwerte können auch auf der Registerkarte <b>Tabelle</b> geändert werden). Sie können jedoch das Kontrollkästchen <b>Standardränder</b> verwenden deaktivieren und die erforderlichen Werte manuell eingeben.</li>
+                <li>
+                    Im Abschnitt <b>Zellenoptionen</b> können Sie den folgenden Parameter ändern:
+                    <ul>
+                        <li>Die Option <b>Text umbrechen</b> ist standardmäßig aktiviert. Es erlaubts, um Text in eine Zelle, die ihre Breite überschreitet, in die nächste Zeile zu umbrechen, um die Zeilenhöhe zu erweitern und die Spaltenbreite unverändert zu lassen.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Tabelle - Erweiterte Einstellungen" src="../images/table_properties_3.png" /></p>
+            <p>Die Registerkarte <b>Rahmen &amp; Hintergrund</b> enthält die folgenden Parameter:</p>
+            <ul>
+                <li>
+                    <b>Rahmenparameter</b> (Größe, Farbe und Vorhandensein oder Nichtvorhandensein): Legen Sie die Rahmengröße fest, wählen Sie die Farbe aus und legen Sie fest, wie sie in den Zellen angezeigt werden soll.
+                    <p class="note">
+                        Wenn Sie festlegen, dass Tabellenränder nicht angezeigt werden, indem Sie auf die Schaltfläche <span class = "icon icon-noborders"></span> klicken oder alle Ränder manuell im Diagramm deaktivieren, werden sie im Dokument durch eine gepunktete Linie angezeigt. 
+                        Um sie überhaupt verschwinden zu lassen, klicken Sie auf der Registerkarte <b>Startseite</b> der oberen Symbolleiste auf das Symbol <b>Nicht druckbare Zeichen</b> <span class = "icon icon-nonprintingcharacters"></span> und wählen Sie die Option <b>Versteckte Tabellenränder</b>.
+                    </p>
+                </li>
+                <li><b>Zellenhintergrund</b>: Die Farbe für den Hintergrund innerhalb der Zellen (nur verfügbar, wenn eine oder mehrere Zellen ausgewählt sind oder die Option <b>Abstand zwischen Zellen zulassen</b> auf der Registerkarte <b>Tabelle</b> ausgewählt ist).</li>
+                <li><b>Tabellenhintergrund</b>: Die Farbe für den Tabellenhintergrund oder den Abstand zwischen den Zellen, falls auf der Registerkarte <b>Tabelle</b> die Option <b>Abstand zwischen Zellen zulassen</b> ausgewählt ist.</li>
+            </ul>
+            <p id="position"><img alt="Tabelle - Erweiterte Einstellungen" src="../images/table_properties_4.png" /></p>
+			<p>Die Registerkarte <b>Tabellenposition</b> ist nur verfügbar, wenn die Option <b>Flusstabelle</b> auf der Registerkarte <b>Textumbruch</b> ausgewählt ist und die folgenden Parameter enthält:</p>
+			<ul>
+				<li>Zu den <b>horizontalen</b> Parametern gehören die <b>Tabellenausrichtung</b> (links, Mitte, rechts) <b>relativ zu</b> Rand, Seite oder Text sowie die <b>Tabellenposition rechts von</b> Rand, Seite oder Text.</li>
+				<li>Zu den <b>vertikalen</b> Parametern gehören die <b>Tabellenausrichtung</b> (oben, Mitte, unten) <b>relativ zu</b> Rand, Seite oder Text sowie die <b>Tabellenposition</b> unter Rand, Seite oder Text.</li>
+				<li>Im <b>Abschnitt</b> Optionen können Sie die folgenden Parameter ändern:
+                <ul>
+                    <li><b>Objekt mit Text verschieben</b> steuert, ob die Tabelle verschoben wird, während sich der Text, in den sie eingefügt wird, bewegt.</li>
+                    <li><b>Überlappungssteuerung zulassen</b> steuert, ob zwei Tabellen zu einer großen Tabelle zusammengeführt werden oder überlappen, wenn Sie sie auf der Seite nebeneinander ziehen.</li>
+                </ul>
+                </li>                
+			</ul>            
+            <p><img alt="Tabelle - Erweiterte Einstellungen" src="../images/table_properties_2.png" /></p>
+            <p>Die Registerkarte <b>Textumbruch</b> enthält die folgenden Parameter:</p>
+            <ul>
+                <li><b>Textumbruchstil</b> - <b>Inline-Tabelle</b> oder <b>Flow-Tabelle</b>. Verwenden Sie die erforderliche Option, um die Position der Tabelle relativ zum Text zu ändern: Sie ist entweder Teil des Textes (falls Sie die Inline-Tabelle auswählen) oder wird von allen Seiten umgangen (wenn Sie die Flusstabelle auswählen).</li>
+                <li>
+                    Nachdem Sie den Umbruchstil ausgewählt haben, können die zusätzlichen Umbruchparameter sowohl für Inline- als auch für Flusstabellen festgelegt werden:
+                    <ul>
+                        <li>Für die Inline-Tabelle können Sie die <b>Tabellenausrichtung</b> und den <b>Einzug</b> von links angeben.</li>
+                        <li>Für die Flusstabelle können Sie den <b>Abstand von Text</b> und <b>Tabellenposition</b> auf der Registerkarte <b>Tabellenposition</b> angeben.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Tabelle - Erweiterte Einstellungen" src="../images/table_properties_6.png" /></p>
+            <p>Auf der Registerkarte <b>Alternativer Text</b> können Sie einen <b>Titel</b> und eine <b>Beschreibung</b> angeben, die Personen mit Seh- oder kognitiven Beeinträchtigungen vorgelesen werden, damit sie besser verstehen, welche Informationen in der Tabelle enthalten sind.</p>
+                        
+		</div>
+	</body>
+</html>

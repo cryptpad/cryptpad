@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Search and Replace Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the document search and replace function in Document Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Search and Replace Function</h1>
+			<p>To search for the required characters, words or phrases used in the currently edited document, click the <span class="icon icon-searchicon"></span> icon situated on the left sidebar of the <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a>, the <span class="icon icon-search_icon_header"></span> icon situated in the upper right corner, or use the <em>Ctrl+F</em> (<em>Command+F</em> for MacOS) key combination to open the small Find panel or the <em>Ctrl+H</em> key combination to open the full Find panel.</p>
+			<p>A small <b>Find</b> panel will open in the upper right corner of the working area.</p>
+			<p><img alt="Find small panel" src="../../../../../../common/main/resources/help/en/images/find_small.png" /></p>
+			<p>To access the advanced settings, click the <span class="icon icon-search_advanced"></span> icon or use the Ctrl+H key combination.</p>
+			<p>The <b>Find and replace</b> panel will open:</p>
+			<p><img alt="Find and Replace Window" src="../images/search_window.png" /></p>
+			<ol>
+				<li>Type in your inquiry into the corresponding <b>Find</b> data entry field.</li>
+				<li>If you need to <b>replace</b> one or more occurrences of the found characters, type in the replacement text into the corresponding <b>Replace with</b> data entry field. You can choose to replace a single currently highlighted occurrence or replace all occurrences by clicking the corresponding <b>Replace</b> and <b>Replace All</b> buttons.</li>
+				<li>To navigate between the found occurrences, click one of the arrow buttons. The <div class="icon icon-searchdownbutton"></div> button shows the next occurrence while the <div class="icon icon-searchupbutton"></div> button shows the previous one.</li>
+				<li>
+					Specify search parameters by checking the necessary options below the entry fields:
+					<ul>
+						<li><b>Case sensitive</b> - is used to find only the occurrences typed in the same case as your inquiry (e.g. if your inquiry is 'Editor' and this option is selected, such words as 'editor' or 'EDITOR' etc. will not be found).</li>
+						<li><b>Whole words only</b> - is used to highlight only whole words.</li>
+					</ul>
+				</li>
+			</ol>
+			<p>All occurrences will be highlighted in the file and shown as a list in the <b>Find</b> panel to the left. Use the list to skip to the required occurrence, or use the navigation <span class="icon icon-searchupbutton"></span> and <span class="icon icon-searchdownbutton"></span> buttons.</p>
+			<p>The <b>Document Editor</b> supports search for special characters. To find a special character, enter it into the search box.</p>
+			<details class="details-example">
+				<summary>The list of special characters that can be used in searches</summary>
+				<table>
+					<tr>
+						<td><b>Special character</b></td>
+						<td><b>Description</b></td>
+					</tr>
+					<tr>
+						<td>^l</td>
+						<td>Line break</td>
+					</tr>
+					<tr>
+						<td>^t</td>
+						<td>Tab stop</td>
+					</tr>
+					<tr>
+						<td>^?</td>
+						<td>Any symbol</td>
+					</tr>
+					<tr>
+						<td>^#</td>
+						<td>Any digit</td>
+					</tr>
+					<tr>
+						<td>^$</td>
+						<td>Any letter</td>
+					</tr>
+					<tr>
+						<td>^n</td>
+						<td>Column break</td>
+					</tr>
+					<tr>
+						<td>^e</td>
+						<td>Endnote</td>
+					</tr>
+					<tr>
+						<td>^f</td>
+						<td>Footnote</td>
+					</tr>
+					<tr>
+						<td>^g</td>
+						<td>Graphic element</td>
+					</tr>
+					<tr>
+						<td>^m</td>
+						<td>Page break</td>
+					</tr>
+					<tr>
+						<td>^~</td>
+						<td>Non-breaking hyphen</td>
+					</tr>
+					<tr>
+						<td>^s</td>
+						<td>Non-breaking space</td>
+					</tr>
+					<tr>
+						<td>^^</td>
+						<td>Escaping the caret itself</td>
+					</tr>
+					<tr>
+						<td>^w</td>
+						<td>Any space</td>
+					</tr>
+					<tr>
+						<td>^+</td>
+						<td>Em dash</td>
+					</tr>
+					<tr>
+						<td>^=</td>
+						<td>En dash</td>
+					</tr>
+					<tr>
+						<td>^y</td>
+						<td>Any dash</td>
+					</tr>
+				</table>
+			</details>
+			<details class="details-example">
+				<summary>Special characters that may be used for replacement too:</summary>
+				<table>
+					<tr>
+						<td><b>Special character</b></td>
+						<td><b>Description</b></td>
+					</tr>
+					<tr>
+						<td>^l</td>
+						<td>Line break</td>
+					</tr>
+					<tr>
+						<td>^t</td>
+						<td>Tab stop</td>
+					</tr>
+					<tr>
+						<td>^n</td>
+						<td>Column break</td>
+					</tr>
+					<tr>
+						<td>^m</td>
+						<td>Page break</td>
+					</tr>
+					<tr>
+						<td>^~</td>
+						<td>Non-breaking hyphen</td>
+					</tr>
+					<tr>
+						<td>^s</td>
+						<td>Non-breaking space</td>
+					</tr>
+					<tr>
+						<td>^+</td>
+						<td>Em dash</td>
+					</tr>
+					<tr>
+						<td>^=</td>
+						<td>En dash</td>
+					</tr>
+				</table>
+			</details>
+
+		</div>
+	</body>
+</html>

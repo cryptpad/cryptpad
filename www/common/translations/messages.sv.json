@@ -1411,7 +1411,6 @@
     "form_totalResponses": "Totalt antal svar: {0}",
     "form_answerName": "Svar från {0} på {1}",
     "admin_purpose_experiment": "För att testa plattformen eller utveckla nya funktioner",
-    "admin_archivePinLog": "Arkivera detta kontos pin-logg",
     "form_alreadyAnswered": "Du svarade på det här formuläret den {0}",
     "form_authAnswer": "Detta formulär kan inte skickas anonymt",
     "form_requiredWarning": "Följande frågor kräver svar:",
@@ -1420,7 +1419,6 @@
     "admin_currentlyOnline": "Är för närvarande online",
     "admin_archiveBlock": "Arkiv block",
     "admin_getPinList": "Aktuell pinlista",
-    "admin_restoreArchivedPins": "Återställ arkiverad pin-logg",
     "admin_archiveDocument": "Arkivdokument",
     "admin_restoreDocument": "Återställ dokument",
     "admin_planlimit": "Lagringsgräns",
@@ -1442,7 +1440,6 @@
     "form_exportCSV": "Exportera til CSV",
     "form_viewAllAnswers": "Visa alla svar ({0})",
     "form_changeTypeConfirm": "Välj den nya frågetypen.",
-    "form_updateMsg": "Uppdatera skickat meddelande",
     "form_addMsg": "Lägg till skicka meddelande",
     "premiumOnly": "Att skapa nya dokument i det här programmet är för närvarande begränsat till prenumeranter på {0}. Detta är en experimentell version av applikationen för teständamål. Den blir snart tillgänglig för alla den {0}.",
     "earlyAccessBlocked": "Denna applikation är ännu inte tillgänglig på den här instansen",
@@ -1622,5 +1619,12 @@
     "register_nameTooLong": "Användarnamn måste vara kortare än {0} tecken",
     "loading_recover": "Ingen möjlighet att få en kod? <a href=\"/recovery/\">Återställ ditt konto</a>",
     "recovery_mfa_secret_ph": "Återställningskod",
-    "settings_mfaTitle": "Tvåfaktorsautentisering (2FA)"
+    "settings_mfaTitle": "Tvåfaktorsautentisering (2FA)",
+    "form_condorcetSchulze": "Schulze",
+    "form_showCondorcetWinner": "vinnare: ",
+    "form_condorcetRanked": "Rankade par",
+    "form_condorcetExtendedDisplay": "Antalet matcher vunna av varje kandidat: ",
+    "form_noCondorcetWinner": "Ingen vinnare",
+    "form_showCondorcetMethod": "Condorcet-metoden",
+    "admin_totpRecoveryHint": "Användare kan kopiera åsterställningsdata på sidan för 2FA-återställning /recovery/ och e-posta den till instansens administratörer. Klistra in återställningsdata nedan för att avaktivera 2FA för ett konto"
 }

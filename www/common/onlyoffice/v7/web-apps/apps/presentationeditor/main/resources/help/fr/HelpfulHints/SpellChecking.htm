@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Vérification de l'orthographe</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Vérification de l'orthographe du texte saisi dans une certaine langue lors de l'édition" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Vérification de l'orthographe</h1>
+			<p><a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Éditeur de Présentations</b></a> vous permet de vérifier l'orthographe du texte saisi dans une certaine langue et corriger des fautes lors de l'édition. Sur l'édition de bureau, il est aussi possible d'ajouter les mots au dictionnaire personnalisé commun à tous les trois éditeurs.</p>
+			<p class="note">À partir de la <b>version 6.3</b>, les éditeurs ONLYOFFICE prennent en charge l'interface <b>SharedWorker</b> pour un meilleur fonctionnement en évitant une utilisation élevée de la mémoire. Si votre navigateur ne prend pas en charge SharedWorker, alors c'est seulement <b>Worker</b> qui sera actif. Pour en savoir plus sur SharedWorker, veuillez consulter <a href="https://javascript.plainenglish.io/introduction-to-shared-workers-533d9abe9de3">cette page</a>.</p>
+			<p>Tout d'abord, <b>choisissez la langue</b> pour tout le document. Cliquez sur l'icône <span class="icon icon-document_language"></span> sur le côté droit de la barre d'état. Dans la fenêtre ouverte sélectionnez la langue nécessaire et cliquez sur <b>OK</b>. La langue sélectionnée sera appliquée à tout le document.</p>
+			<p><img alt="Fenêtre Définir la langue du document" src="../../../../../../common/main/resources/help/fr/images/document_language_window.png" /></p>
+			<p>Pour <b>sélectionner une langue différente</b> pour un fragment de texte dans la présentation, sélectionnez le fragment nécessaire avec la souris et utilisez le menu <img alt="Vérification de l'orthographe - Langue du texte" src="../images/spellchecking_language.png" /> de la barre d'état.</p>
+            <p>Pour <b>activer</b> l'option de vérification orthographique, vous pouvez :</p>
+            <ul>
+                <li>cliquer sur l'icône <div class = "icon icon-spellcheckdeactivated"></div> <b>Vérification orthographique</b> dans la barre d'état, ou</li>
+                <li>basculer vers l'onglet <b>Fichier</b> de la barre d'outils supérieure, aller à la section <b>Paramètres avancés...</b>, cocher la case <b>Activer la vérification orthographique</b> et cliquer sur le bouton <b>Appliquer</b>.</li>
+            </ul>
+            <p>Les mots mal orthographiés seront soulignés par une ligne rouge.</p>
+			<p>Cliquez droit sur le mot nécessaire pour activer le menu et :</p>
+			<ul>
+			<li>choisissez une des variantes suggérées pour remplacer le mot mal orthographié. S'il y a trop de variantes, l'option <b>Plus de variantes...</b> apparaît dans le menu ;</li>
+			<li>utilisez l'option <b>Ignorer</b> pour ignorer juste ce mot et supprimer le surlignage ou <b>Ignorer tout</b> pour ignorer tous les mots identiques présentés dans le texte ;</li>
+			<li>si le mot n'est pas dans le dictionnaire, vous pouvez l'ajouter à votre dictionnaire personnel. La fois prochaine ce mot ne sera donc plus considéré comme erroné. Cette option est disponible sur l'édition de bureau ;</li>
+			<li>sélectionnez une autre langue pour ce mot.</li>
+			</ul>  
+            <p><img alt="Vérification de l'orthographe" src="../images/spellchecking_presentation.png" /></p>
+            <p>Pour <b>désactiver</b> l'option de vérification orthographique, vous pouvez :</p>
+            <ul>
+                <li>cliquer sur l'icône <div class = "icon icon-spellcheckactivated"></div> <b>Vérification orthographique</b> dans la barre d'état, ou</li>
+                <li>Basculer vers l'onglet <b>Fichier</b> de la barre d'outils supérieure, aller à la section <b>Paramètres avancés...</b>, décocher la case <b>Activer la vérification orthographique</b> et cliquer sur le bouton <b>Appliquer</b>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

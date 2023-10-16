@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer des listes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Créer des listes à puces et des listes numérotées" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Créer des listes</h1>
+            <p>Pour créer une liste dans l'<a target="_blank" href="https://www.onlyoffice.com/fr/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Éditeur de Présentations</b></a>,</p>
+            <ol>
+                <li>placez le curseur dans le bloc de texte à la position où vous voulez commencer la liste (cela peut être une nouvelle ligne ou le texte déjà saisi),</li>
+                <li>passez à l'onglet <b>Accueil</b> de la barre d'outils supérieure,</li>
+                <li>
+                    sélectionnez le type de liste à créer :
+                    <ul>
+                        <li><b>Liste non ordonnée</b> avec des marqueurs est créée à l'aide de l'icône <b>Puces</b> <div class = "icon icon-bullets"></div> de la barre d'outils supérieure</li>
+                        <li>
+                            <b>Liste ordonnée</b> avec numérotage spécial est créée à l'aide de l'icône <b>Numérotation</b> <div class = "icon icon-numbering"></div> de la barre d'outils supérieure.
+                            <p class="note"><b>Remarque</b> : cliquez sur la flèche vers le bas à côté de l'icône <b>Puces</b> ou <b>Numérotation</b> pour sélectionner le format de puces ou de numérotation souhaité.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>appuyez sur la touche <b>Entrée</b> à la fin de la ligne pour ajouter un nouvel élément à la liste. Pour terminer la liste, appuyez sur la touche <b>Retour arrière</b> et continuez le travail.</li>
+            </ol>
+            <p>Il est aussi possible de modifier le retrait et l'imbrication des listes en utilisant des icônes <b>Diminuer le retrait</b> <span class="icon icon-decreaseindent"></span> et <b>Augmenter le retrait</b> <span class="icon icon-increaseindent"></span> sous l'onglet <b>Accueil</b> de la barre d'outils supérieure.</p>
+            <p class="note"><b>Remarque</b> : on peut configurer les paramètres du retrait et de l'espacement supplémentaire sur la barre latérale droite dans la fenêtre Paramètres avancés. Pour en savoir plus, consultez <a href="InsertText.htm" onclick="onhyperlinkclick(this)">Insertion en mise en forme du texte</a>.</p>
+
+            <h3>Configurer les paramètres de la liste</h3>
+            <p>Pour configurer les paramètres de la liste comme la puce, la taille et la couleur :</p>
+            <ol>
+                <li>cliquez sur l'élément de la liste actuelle ou sélectionnez le texte à partir duquel vous souhaitez créer une liste,</li>
+                <li>cliquez sur l'icône <b>Puces</b> <div class = "icon icon-bullets"></div> ou <b>Numérotation</b> <div class = "icon icon-numbering"></div> sous l'onglet <b>Accueil</b> dans la barre d'outils en haut,</li>
+                <li>sélectionnez l'option <b>Paramètres de la liste</b>,</li>
+                <li>
+                    la fenêtre <b>Paramètres de la liste</b> s'affiche. La fenêtre Paramètres de la liste <b>à puces</b> se présente sous cet aspect :
+                    <p><img alt="La fenêtre Paramètres de la liste à puces" src="../images/bulletedlistsettings.png" /></p>
+                    <ul>
+                        <li><b>Type</b> - permet de sélectionner le caractère nécessaire utilisé pour la liste. Lorsque vous cliquez sur l'option <b>Nouvelle puce</b>, la fenêtre <b>Symbole</b> s'ouvre et vous pouvez choisir l'un des caractères disponibles. Vous pouvez également ajouter un nouveau symbole. Pour en savoir plus sur le travail avec les symboles, veuillez consulter <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">cet article</a>.
+                        <p>Lorsque vous cliquez sur l'option <b>Nouvelle image</b>, un nouveau champ <b>Importer</b> va apparaître dans lequel vous pouvez choisir de nouvelles images pour les puces <em>Depuis un fichier</em>, <em>D'une URL</em>, ou <em>À partir de l'espace de stockage</em>.</p>
+                        <li><b>Taille</b> - permet de sélectionner la taille des puces nécessaire en fonction de la taille actuelle du texte. La taille peut être configuré de 25% à 400%.</li>
+                        <li><b>Couleur</b> - permet de choisir la couleur des puces nécessaire. Vous pouvez choisir l'une des <em>couleurs de thème</em>, ou des <em>couleurs standard</em> de la palette ou définir la couleur <em>personnalisée</em>.</li>
+                    </ul>
+                    <p>La fenêtre des paramètres de la liste <b>numérotée</b> se présente sous cet aspect :</p>
+                    <p><img alt="La fenêtre Paramètres de la liste numérotée" src="../images/orderedlistsettings.png" /></p>
+                    <ul>
+                        <li><b>Type</b> - permet de sélectionner le format des numéros nécessaire utilisé pour la liste.</li>
+                        <li><b>Taille</b> - permet de sélectionner la taille des numéros nécessaire en fonction de la taille actuelle du texte. La taille peut être configuré de 25% à 400%.</li>
+                        <li><b>Commencer par</b> - permet de sélectionner le numéro de séquence nécessaire à partir duquel une liste numérotée commence.</li>
+                        <li><b>Couleur</b> - permet de choisir la couleur des numéros nécessaire. Vous pouvez choisir l'une des <em>couleurs de thème</em>, ou des <em>couleurs standard</em> de la palette ou définir la couleur <em>personnalisée</em>.</li>
+                    </ul>
+                </li>
+                <li>Cliquez sur <b>OK</b> pour appliquer toutes les modifications et fermer la fenêtre des paramètres.</li>
+            </ol>
+        </div>
+	</body>
+</html>
