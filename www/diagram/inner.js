@@ -126,7 +126,6 @@ define([
         APP.addImage = function() {
             return new Promise((resolve) => {
                 framework.insertImage({}, (_, image) => {
-                    console.log('XXX image', image);
                     resolve(image);
                 });
             });
