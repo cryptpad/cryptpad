@@ -34,6 +34,7 @@ define([
 
                 // On new command
                 var msg = data.msg;
+                if (!msg) { return; }
                 var txid = data.txid;
                 if (commands[msg.q]) {
                     commands[msg.q](msg.data, function (args) {

@@ -36,7 +36,8 @@ define([
     return {
         openImageDialog: function(common, integrationChannel, data, cb) {
             if (integrationChannel) {
-                integrationChannel.query('Q_INTEGRATION_ON_INSERT_IMAGE', data, cb, {raw: true});
+                const ignoreFirstParam = (_, image) => cb(image);
+                integrationChannel.query('Q_INTEGRATION_ON_INSERT_IMAGE', data, ignoreFirstParam, {raw: true});
                 return;
             }
             common.openFilePicker({
@@ -46,7 +47,7 @@ define([
                     fileType: ['image/', 'application/x-drawio']
                 }
             }, (data) => {
-                getImage(data, function(blob) {
+                getImage(common, data, function(blob) {
                     common.setPadAttribute('atime', +new Date(), null, data.href);
                     cb({
                         name: data.name,
