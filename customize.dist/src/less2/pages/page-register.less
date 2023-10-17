@@ -26,6 +26,16 @@
                 min-width: 30%;
             }
         }
+        .input-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            input {
+                margin-top: 5px;
+            }
+        }
+        .cp-register-label { display: none; }
         padding-bottom: 3em;
         min-height: 5vh;
     }
@@ -94,6 +104,7 @@
                 .tools_placeholder-color();
             }
             .checkbox-container {
+                margin-top: 0.5rem;
                 color: @cryptpad_text_col;
             }
             button#register {

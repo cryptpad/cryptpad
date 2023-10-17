@@ -1,0 +1,640 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Create fillable forms</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Create fillable forms for advanced form interaction experience" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+
+        <h1>Create fillable forms</h1>
+        <p>ONLYOFFICE Document Editor allows you to effortlessly create <b>fillable forms</b> in your documents, e.g. agreement drafts or surveys.</p>
+        <p><b>Form Template</b> is DOCXF format that offers a range of tools to create a fillable form. Save the resulting form as a <b>DOCXF</b> file, and you will have a form template you can still edit, revise or collaborate on. To make a Form template fillable and to restrict file editing by other users, save it as an <b>OFORM</b> file. Please refer to <a href="../UsageInstructions/FillingOutForm.htm">form filling instructions</a> for further details.</p>
+        <p class="note"><b>DOCXF</b> and <b>OFORM</b> are new <b>ONLYOFFICE</b> formats that allow to create form templates and fill out forms. Use <b>ONLYOFFICE Document Editor</b> either online or desktop to make full use of form-associated elements and options.</p>
+        <p>You can also save any existing <b>DOCX</b> file as a <b>DOCXF</b> to use it as Form template. Go to the <b>File</b> tab, click the <b>Download as...</b> or <b>Save as...</b> option on the left side menu and choose the <b>DOCXF</b> icon. Now you can use all the available form editing functions to create a form.</p>
+        <p>It is not only the form fields that you can edit in a <b>DOCXF</b> file, you can still add, edit and format text or use other <b>Document Editor</b> functions.</p>
+        <p>Creating fillable forms is enabled through user-editable objects that ensure overall consistency of the resulting documents and allow for advanced form interaction experience.</p>
+        <p>Currently, you can insert editable <em>plain text</em> fields, <em>combo boxes</em>, <em>dropdown lists</em>, <em>checkboxes</em>, <em>radio buttons</em>, assign designated areas for <em>images</em>, as well as create <em>email address</em>, <em>phone number</em>, <em>date and time</em>, <em>zip code</em>, <em>credit card</em> and <em>complex</em> fields. Access these features on the <b>Forms</b> tab that is available for <b>DOCXF</b> files only.</p>
+
+        <h2 id="textfield">Creating a new Plain Text Field</h2>
+        <p><em>Text fields</em> are user-editable plain text form fields; no other objects can be added.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a text field,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-text_field_icon"></div> <b>Text Field</b> icon
+                        <p>or</p>
+                        <p>click the arrow next to the <span class="icon icon-text_field_icon"></span> <b>Text Field</b> icon and choose whether you want to insert an <b>inline text field</b> or a <b>fixed text field</b>. To learn more about fixed field, please read the <b>Fixed size field</b> paragraph of this section below.</p>
+                    </li>
+                </ol>
+                <p><img alt="text field inserted" src="../images/text_field_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="text_field_settings">
+                    <img alt="text field settings" src="../images/text_field_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: a key to group fields to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each text field using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted text field; <em>“Your text here”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the text field.
+                            <br /> <img alt="tip inserted" src="../images/text_field_tip.png" />
+                        </li>
+                        <li>
+                            <b>Format</b>: choose the content format of the text field, i.e., only the chosen character format will be allowed: <em>None</em>, <em>Digits</em>, <em>Letters</em>, <em>Arbitrary Mask</em> (the text shall correspond with the custom mask, e.g., (999) 999 99 99), <em>Regular Expression</em> (the text shall correspond with the custom expression).
+                            <p>When you choose an <em>Arbitrary Mask</em> or a <em>Regular Expression</em> format, an additional field below the <b>Format</b> field appears.</p>
+                        </li>
+                        <li><b>Allowed Symbols</b>: type in the symbols that are allowed in the text field.</li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size. When this option is enabled, you can also use the <b>AutoFit</b> and/or <b>Multiline field</b> settings.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>AutoFit</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to automatically fit the font size to the field size.</li>
+                        <li><b>Multiline field</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to create a form field with multiple lines, otherwise, the text will occupy a single line.</li>
+                        <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+                        <li>
+                            <b>Comb of characters</b>: spread the text evenly within the inserted text field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                            <ul>
+                                <li><b>Cell width</b>: choose whether the width value should be <em>Auto</em> (width is calculated automatically), <em>At least</em> (width is no less than the value given manually), or <em>Exactly</em> (width corresponds to the value given manually). The text within will be justified accordingly.</li>
+                            </ul>
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted text field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted text field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the text field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+                <p><img alt="comb of characters" src="../images/comb_of_characters.png" /></p>
+                <p>Click within the inserted text field and <a href="../UsageInstructions/FontTypeSizeColor.htm">adjust the font type, size, color</a>, apply <a href="../UsageInstructions/DecorationStyles.htm">decoration styles</a> and <a href="../UsageInstructions/FormattingPresets.htm">formatting presets</a>. Formatting will be applied to all the text inside the field.</p>
+            </details>
+        </div>
+
+
+        <h2 id="combobox">Creating a new Combo box</h2>
+        <p><em>Combo boxes</em> contain a dropdown list with a set of choices that can be edited by users.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a combo box,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-combo_box_icon"></div> <b>Combo box</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="combo box inserted" src="../images/combo_box_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="combo_box_settings">
+                    <img alt="combo box settings" src="../images/combo_box_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: a key to group combo boxes to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each combo box using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted combo box; <em>“Choose an item”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the form field.
+                            <br /> <img alt="tip inserted" src="../images/combo_box_tip.png" />
+                        </li>
+                        <li><b>Value Options</b>: add <div class="icon icon-combo_add_values"></div> new values, delete <div class="icon icon-combo_delete_values"></div> them, or move them up <div class="icon icon-combo_values_up"></div> and <div class="icon icon-combo_values_down"></div> down in the list.</li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted combo box. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted combo box. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the combo box field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+                <p>You can click the arrow button in the right part of the added <b>Combo box</b> to open the item list and choose the necessary one. Once the necessary item is selected, you can edit the displayed text entirely or partially by replacing it with yours.</p>
+                <p><img alt="combo box opened" src="../images/combo_box_opened.png" /></p>
+                <p>You can change font decoration, color, and size. Click within the inserted combo box and proceed according to the <a href="../UsageInstructions/FontTypeSizeColor.htm">instructions</a>. Formatting will be applied to all the text inside the field.</p>
+            </details>
+        </div>
+
+
+        <h2 id="dropdownlist">Creating a new Dropdown list form field</h2>
+        <p><em>Dropdown lists</em> contain a list with a set of choices that cannot be edited by the users.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a dropdown list,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-dropdown_list_icon"></div> <b>Dropdown</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="dropdown list inserted" src="../images/combo_box_inserted.png" /></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="dropdown_list_settings">
+                    <img alt="dropdown list settings" src="../images/dropdown_list_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: a key to group dropdown lists to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each form field using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted dropdown list; <em>“Choose an item”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the form field.
+                            <br /> <img alt="tip inserted" src="../images/combo_box_tip.png" />
+                        </li>
+                        <li><b>Value Options</b>: add <div class="icon icon-combo_add_values"></div> new values, delete <div class="icon icon-combo_delete_values"></div> them, or move them up <div class="icon icon-combo_values_up"></div> and <div class="icon icon-combo_values_down"></div> down in the list.</li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted dropdown field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted dropdown field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the dropdown list field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+                <p>You can click the arrow button in the right part of the added <b>Dropdown list</b> form field to open the item list and choose the necessary one.</p>
+                <p><img alt="dropdown list opened" src="../images/dropdown_list_opened.png" /></p>
+            </details>
+        </div>
+
+
+        <h2 id="checkbox">Creating a new Checkbox</h2>
+        <p><em>Checkboxes</em> are used to provide users with a variety of options, any number of which can be selected. Checkboxes operate individually, so they can be checked or unchecked independently.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a checkbox,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-checkbox_icon"></div> <b>Checkbox</b> icon.
+                    </li>
+                </ol>
+                <p><span class="big big-checkbox_inserted"></span></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="checkbox_settings">
+                    <img alt="checkbox settings" src="../images/checkbox_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: a key to group checkboxes to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each form field using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the checkbox.
+                            <br /> <img alt="tip inserted" src="../images/checkbox_tip.png" />
+                        </li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted checkbox. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted checkbox. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the checkbox field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+                <p>To check the box, click it once.</p>
+                <p><span class="big big-checkbox_checked"></span></p>
+            </details>
+        </div>
+
+
+        <h2 id="radiobutton">Creating a new Radio Button</h2>
+        <p><em>Radio buttons</em> are used to provide users with a variety of options, only one of which can be selected. Radio buttons can be grouped so that there is no selecting several buttons within one group.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a radio button,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-radio_button_icon"></div> <b>Radio Button</b> icon.
+                    </li>
+                </ol>
+                <p><span class="big big-radio_button_inserted"></span></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="radio_button_settings">
+                    <img alt="radio button settings" src="../images/radio_button_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Group key</b>: to create a new group of radio buttons, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each radio button.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the radio button.
+                            <br /> <img alt="tip inserted" src="../images/radio_button_tip.png" />
+                        </li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted radi button. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted radio button. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the radio button field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+                <p>To check the radio button, click it once.</p>
+                <p><span class="big big-radio_button_checked"></span></p>
+            </details>
+        </div>
+
+
+        <h2 id="image">Creating a new Image field</h2>
+        <p><em>Images</em> are form fields which are used to enable inserting an image with the limitations you set, i.e. the location of the image or its size.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert an image form field,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-image"></div> <b>Image</b> icon.
+                    </li>
+                </ol>
+                <p><span class="big big-image_form_inserted"></span></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="image_form_settings">
+                    <img alt="image form settings" src="../images/image_form_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: a key to group images to fill out simultaneously. To create a new key, enter its name in the field and press <b>Enter</b>, then assign the required key to each form field using the dropdown list. A message <em>Fields connected: 2/3/...</em> will be displayed. To disconnect the fields, click the <b>Disconnect</b> button.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted image form field; <em>“Click to load image”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the bottom border of the image.
+                        </li>
+                        <li><b>When to scale</b>: click the drop down menu and select an appropriate image sizing option: <b>Always</b>, <b>Never</b>, when the <b>Image is Too Big</b>, or when the <b>Image is Too Small</b>. The selected image will scale inside the field correspondingly.</li>
+                        <li><b>Lock aspect ratio</b>: check this box to maintain the image aspect ratio without distortion. When the box is checked, use the vertical and the horizontal slider to position the image inside the inserted field. The positioning sliders are inactive when the box is unchecked.</li>
+                        <li><b>Select Image</b>: click this button to upload an image either <b>From File</b>, <b>From URL</b>, or <b>From Storage</b>.</li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted image field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted image field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the image field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+                <p>To replace the image, click the <span class="icon icon-image"></span> image icon above the form field border and select another one.</p>
+                <p>To <b>adjust</b> the image settings, open the <b>Image Settings</b> tab on the right toolbar. To learn more, please read the guide on <a href="../UsageInstructions/InsertImages.htm">image settings</a>.</p>
+            </details>
+        </div>
+
+        <h2 id="emailaddress">Creating a new Email Address field</h2>
+        <p><em>Email Address</em> field is used to type in an email address corresponding to a regular expression \S+@\S+\.\S+.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert an email address field,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-email_address_icon"></div> <b>Email Address</b> icon.
+                    </li>
+                </ol>
+                <p><span class="big big-email_address_inserted"></span></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="email_address_settings">
+                    <img alt="email address settings" src="../images/email_address_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: to create a new group of email addresses, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each email address field.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted email address form field; <em>“user_name@email.com”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the email address field.
+                            <br /> <img alt="tip inserted" src="../images/email_address_tip.png" />
+                        </li>
+                        <li><b>Format</b>: choose the content format of the field, i.e., <em>None</em>, <em>Digits</em>, <em>Letters</em>, <em>Arbitrary Mask</em> or <em>Regular Expression</em>. The field is set to <em>Regular Expression</em> by default so as to preserve the email address format <code>\S+@\S+\.\S+</code>.</li>
+                        <li><b>Allowed Symbols</b>: type in the symbols that are allowed in the email address field.</li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size. When this option is enabled, you can also use the <b>Autofit</b> and/or <b>Multiline field</b> settings.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>AutoFit</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to automatically fit the font size to the field size.</li>
+                        <li><b>Multiline field</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to create a form field with multiple lines, otherwise, the text will occupy a single line.</li>
+                        <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+                        <li>
+                            <b>Comb of characters</b>: spread the text evenly within the inserted email address field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                            <ul>
+                                <li><b>Cell width</b>: choose whether the width value should be <em>Auto</em> (width is calculated automatically), <em>At least</em> (width is no less than the value given manually), or <em>Exactly</em> (width corresponds to the value given manually). The text within will be justified accordingly.</li>
+                            </ul>
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted email address field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted email address field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the email address field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="phonenumber">Creating a new Phone Number field</h2>
+        <p><em>Phone Number</em> field is used to type in a phone number corresponding to an arbitrary mask given by the form creator. It is set to <code>(999)999-9999</code> by default.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a phone number field,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-phone_number_icon"></div> <b>Phone Number</b> icon.
+                    </li>
+                </ol>
+                <p><span class="big big-phone_number_inserted"></span></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="phone_number_settings">
+                    <img alt="phone number settings" src="../images/phone_number_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: to create a new group of phone numbers, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each phone number.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted phone number form field; <em>“(999)999-9999”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the phone number field.
+                            <br /> <img alt="tip inserted" src="../images/phone_number_tip.png" />
+                        </li>
+                        <li><b>Format</b>: choose the content format of the field, i.e., <em>None</em>, <em>Digits</em>, <em>Letters</em>, <em>Arbitrary Mask</em> or <em>Regular Expression</em>. The field is set to <em>Arbitrary Mask</em> by default. To change its format, type in the required mask into the field below.</li>
+                        <li><b>Allowed Symbols</b>: type in the symbols that are allowed in the phone number field.</li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size. When this option is enabled, you can also use the <b>AutoFit</b> and/or <b>Multiline field</b> settings.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>AutoFit</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to automatically fit the font size to the field size.</li>
+                        <li><b>Multiline field</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to create a form field with multiple lines, otherwise, the text will occupy a single line.</li>
+                        <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+                        <li>
+                            <b>Comb of characters</b>: spread the text evenly within the inserted phone number field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                            <ul>
+                                <li><b>Cell width</b>: choose whether the width value should be <em>Auto</em> (width is calculated automatically), <em>At least</em> (width is no less than the value given manually), or <em>Exactly</em> (width corresponds to the value given manually). The text within will be justified accordingly.</li>
+                            </ul>
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted phone number field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted phone number field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the phone number field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="datetime">Creating a new Date and Time field</h2>
+        <p><em>Date and Time</em> field is used to insert a date. The date is set to DD-MM-YYYY by default.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a date and time field,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-date_time_icon"></div> <b>Date and Time</b> icon.
+                    </li>
+                </ol>
+                <p><span class="big big-date_time_inserted"></span></p>
+                <p>The form field will appear at the insertion point within the existing text line. To enter a date, click the dropdown arrow within the field and choose the required date via the calendar. <!--The <b>Form Settings</b> menu will open to the right.--></p>
+                <!--<div id="phone_number_settings">
+        <img alt="phone number settings" src="../images/phone_number_settings.png" />
+        <ul>
+            <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+            <li><b>Key</b>: to create a new group of phone numbers, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each phone number.</li>
+            <li><b>Placeholder</b>: type in the text to be displayed in the inserted phone number form field; <em>“(999)999-9999”</em> is set by default.</li>
+            <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+            <li>
+                <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the phone number field.
+                <br /> <img alt="tip inserted" src="../images/phone_number_tip.png" />
+            </li>
+            <li><b>Format</b>: choose the content format of the field, i.e., <em>None</em>, <em>Digits</em>, <em>Letters</em>, <em>Arbitrary Mask</em> or <em>Regular Expression</em>. The field is set to <em>Arbitrary Mask</em> by default. To change its format, type in the required mask into the field below.</li>
+            <li><b>Allowed Symbols</b>: type in the symbols that are allowed in the phone number field.</li>
+            <li>
+                <b>Fixed size field</b>: check this box to create a field with a fixed size. When this option is enabled, you can also use the <b>AutoFit</b> and/or <b>Multiline field</b> settings.<br />
+                A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+            </li>
+            <li><b>AutoFit</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to automatically fit the font size to the field size.</li>
+            <li><b>Multiline field</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to create a form field with multiple lines, otherwise, the text will occupy a single line.</li>
+            <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+            <li>
+                <b>Comb of characters</b>: spread the text evenly within the inserted phone number field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                <ul>
+                    <li><b>Cell width</b>: choose whether the width value should be <em>Auto</em> (width is calculated automatically), <em>At least</em> (width is no less than the value given manually), or <em>Exactly</em> (width corresponds to the value given manually). The text within will be justified accordingly.</li>
+                </ul>
+            </li>
+            <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted phone number field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+            <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted phone number field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+            <li><b>Required</b>: check this box to make the phone number field a necessary one to fill in.</li>
+        </ul>
+    </div>-->
+            </details>
+        </div>
+
+        <h2 id="zipcode">Creating a new Zip Code field</h2>
+        <p><em>Zip Code</em> field is used to enter a zip code corresponding to an arbitrary mask given by the form creator. It is set to <code>99999-9999</code> by default.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a zip code field,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-zip_code_icon"></div> <b>Zip Code</b> icon.
+                    </li>
+                </ol>
+                <p><span class="big big-zip_code_inserted"></span></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="zip_code_settings">
+                    <img alt="zip code settings" src="../images/zip_code_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing roles</a> section of this guide.</li>
+                        <li><b>Key</b>: to create a new group of zip codes, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each zip code.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted zip code form field; <em>“99999-9999”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the zip code field.
+                            <br /> <img alt="tip inserted" src="../images/zip_code_tip.png" />
+                        </li>
+                        <li><b>Format</b>: choose the content format of the field, i.e., <em>None</em>, <em>Digits</em>, <em>Letters</em>, <em>Arbitrary Mask</em> or <em>Regular Expression</em>. The field is set to <em>Arbitrary Mask</em> by default. To change its format, type in the required mask into the field below.</li>
+                        <li><b>Allowed Symbols</b>: type in the symbols that are allowed in the zip code field.</li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size. When this option is enabled, you can also use the <b>AutoFit</b> and/or <b>Multiline field</b> settings.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>AutoFit</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to automatically fit the font size to the field size.</li>
+                        <li><b>Multiline field</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to create a form field with multiple lines, otherwise, the text will occupy a single line.</li>
+                        <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+                        <li>
+                            <b>Comb of characters</b>: spread the text evenly within the inserted zip code field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                            <ul>
+                                <li><b>Cell width</b>: choose whether the width value should be <em>Auto</em> (width is calculated automatically), <em>At least</em> (width is no less than the value given manually), or <em>Exactly</em> (width corresponds to the value given manually). The text within will be justified accordingly.</li>
+                            </ul>
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted zip code field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted zip code field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the zip code field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="creditcard">Creating a new Credit Card field</h2>
+        <p><em>Credit Card</em> field is used to enter a credit card number corresponding to an arbitrary mask given by the form creator. It is set to <code>9999-9999-9999-9999</code> by default.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a credit card field,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-credit_card_icon"></div> <b>Credit Card</b> icon.
+                    </li>
+                </ol>
+                <p><span class="big big-credit_card_inserted"></span></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="credit_card_settings">
+                    <img alt="credit card settings" src="../images/credit_card_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: to create a new group of credit card numbers, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each credit card field.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted credit card form field; <em>“9999-9999-9999-9999”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the credit card field.
+                            <br /> <img alt="tip inserted" src="../images/credit_card_tip.png" />
+                        </li>
+                        <li><b>Format</b>: choose the content format of the field, i.e., <em>None</em>, <em>Digits</em>, <em>Letters</em>, <em>Arbitrary Mask</em> or <em>Regular Expression</em>. The field is set to <em>Arbitrary Mask</em> by default. To change its format, type in the required mask into the field below.</li>
+                        <li><b>Allowed Symbols</b>: type in the symbols that are allowed in the credit card field.</li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size. When this option is enabled, you can also use the <b>AutoFit</b> and/or <b>Multiline field</b> settings.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>AutoFit</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to automatically fit the font size to the field size.</li>
+                        <li><b>Multiline field</b>: this option can be enabled when the <b>Fixed size field</b> setting is selected, check it to create a form field with multiple lines, otherwise, the text will occupy a single line.</li>
+                        <li><b>Characters limit</b>: no limits by default; check this box to set the maximum characters number in the field to the right.</li>
+                        <li>
+                            <b>Comb of characters</b>: spread the text evenly within the inserted credit card field and configure its general appearance. Leave the box unchecked to preserve the default settings or check it to set the following parameters:
+                            <ul>
+                                <li><b>Cell width</b>: choose whether the width value should be <em>Auto</em> (width is calculated automatically), <em>At least</em> (width is no less than the value given manually), or <em>Exactly</em> (width corresponds to the value given manually). The text within will be justified accordingly.</li>
+                            </ul>
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted credit card field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted credit card field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the credit card field a necessary one to fill in.</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="complexfield">Creating a new Complex Field</h2>
+        <p><em>Complex Field</em> combines several field types, e.g., text field and a drop-down list. You can combine fields however you need.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To insert a complex field,</summary>
+                <ol>
+                    <li>place the insertion point within a line of the text where you want the field to be added,</li>
+                    <li>switch to the <b>Forms</b> tab of the top toolbar,</li>
+                    <li>
+                        click the <div class="icon icon-complex_field_icon"></div> <b>Complex Field</b> icon.
+                    </li>
+                </ol>
+                <p><img alt="complex field inserted" src="../images/complex_field_inserted.png"></p>
+                <p>The form field will appear at the insertion point within the existing text line. The <b>Form Settings</b> menu will open to the right.</p>
+                <div id="complex_field_settings">
+                    <img alt="complex field settings" src="../images/complex_field_settings.png" />
+                    <ul>
+                        <li><b>Who needs to fill this out?</b>: choose the role via the dropdown list to set the group of users with access to this field. To learn more about assigning roles, please read the <a href="../UsageInstructions/CreateFillableForms.htm#managing_roles">Managing Roles</a> section of this guide.</li>
+                        <li><b>Key</b>: to create a new group of complex fields, enter the name of the group in the field and press <b>Enter</b>, then assign the required group to each complex field.</li>
+                        <li><b>Placeholder</b>: type in the text to be displayed in the inserted complex field; <em>“Your text here”</em> is set by default.</li>
+                        <li><b>Tag</b>: type in the text to be used as a tag for internal use, i.e., displayed only for co-editors.</li>
+                        <li>
+                            <b>Tip</b>: type in the text to be displayed as a tip when a user hovers their mouse pointer over the complex field.
+                            <br /> <img alt="tip inserted" src="../images/complex_field_tip.png" />
+                        </li>
+                        <li>
+                            <b>Fixed size field</b>: check this box to create a field with a fixed size.<br />
+                            A fixed size field looks like an autoshape. You can set a wrapping style for it as well as adjust its position.
+                        </li>
+                        <li><b>Border color</b>: click the icon <div class="icon icon-nofill"></div>  to set the color for the borders of the inserted complex field. Choose the preferred border color from the palette. You can <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Background color</b>: click the icon <div class="icon icon-nofill"></div> to apply a background color to the inserted complex field. Choose the preferred color out of <b>Theme Colors</b>, <b>Standard Colors</b>, or <b>add a new custom color</b> if necessary.</li>
+                        <li><b>Required</b>: check this box to make the complex field a necessary one to fill in.</li>
+                    </ul>
+                    <p>To insert various form fields in a complex field, click within it and choose the required field at the top toolbar in the <b>Forms</b> tab, then configure it to your liking. To learn more about each field type, read the corresponding sections above.</p>
+                    <p class="note">Please note that you cannot use <em>Image</em> form field within complex fields.</p>
+                </div>
+            </details>
+        </div>
+
+        <h2 id="managing_roles">Managing Roles</h2>
+        <p>You can create new roles that will determine who can fill in certain form fields.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To manage roles,</summary>
+                <div id="managing_roles">
+                    <img alt="managing roles" src="../images/managing_roles.png" />
+                    <ul>
+                        <li>go to the <b>Forms</b> tab in the top toolbar,</li>
+                        <li>click the <div class="icon icon-sharingicon"></div> <b>Managing Roles</b> icon,</li>
+                        <li>
+                            click the <b>New</b> button to create a new role,
+                            <p><img alt="new role" src="../images/edit_role.png" /></p>
+                        </li>
+                        <li>type in the role name and choose its color if necessary. You can also create a custom color by clicking the corresponding menu item,</li>
+                        <li>click <b>OK</b> to create a new role,</li>
+                        <li>set the order in which the fillers receive and sign the document using the <div class="icon icon-role_up"></div> and <div class="icon icon-role_down"></div> buttons,</li>
+                        <li>use the <b>Edit</b> or <b>Delete</b> buttons to change the roles or delete them,</li>
+                        <li>click <b>Close</b> to go back to form editing.</li>
+                    </ul>
+                    <p>When saving the form as .oform file, you can view all roles created for the form.</p>
+                </div>
+
+            </details>
+        </div>
+
+        <!--<h2>Highlight forms</h2>
+        <p>You can highlight inserted form fields with a certain color.</p>
+        <div class="forms">
+            <details class="details-example">
+                <summary>To highlight fields,</summary>
+                <div id="highlight_settings">
+                    <img alt="highlight settings" src="../images/highlight_settings.png" />
+                    <ul>
+                        <li>open the <b>Highlight Settings</b> on the <b>Forms</b> tab of the top toolbar,</li>
+                        <li>choose a color from the <b>Standard Colors</b>. You can also <b>add a new custom color</b>,</li>
+                        <li>to remove previously applied color highlighting, use the <b>No highlighting</b> option.</li>
+                    </ul>
+                </div>
+                <p>The selected highlight options will be applied to all form fields in the document.</p>
+                <p class="note">The form field border is only visible when the field is selected. The borders do not appear on a printed version.</p>
+            </details>
+        </div>-->
+
+        <h2>Enabling the View form</h2>
+        <p class="note">
+            <b>Note</b>: Once you have entered the <b>View form</b> mode, all editing options will become unavailable.
+        </p>
+        <p>Click the <span class="icon icon-view_form_icon"></span> <b>View Form</b> button on the <b>Forms</b> tab of the top toolbar to see how all the inserted forms will be displayed in your document.</p>
+        <p><img alt="view form active" src="../images/view_form_active2.png" /></p>
+        <p>You can view the form from the point of view of each created role. To do that, click the arrow under the <span class="icon icon-view_form_icon"></span> <b>View Form</b> button and choose the required role.</p>
+        <p><img alt="view form role" src="../images/view_form_role.png" /></p>
+        <p>To <b>exit</b> the viewing mode, click the same icon again.</p>
+
+        <h2>Moving form fields</h2>
+        <p>Form fields can be moved to another place in the document: click the button on the left of the control border to select the field and drag it without releasing the mouse button to another position in the text.</p>
+        <p><img alt="moving form fields" src="../images/moving_form_fields.png" /></p>
+        <p>You can also <b>copy and paste</b> form fields: select the necessary field and use the <b>Ctrl+C/Ctrl+V</b> key combinations.</p>
+
+        <h2>Creating required fields</h2>
+        <p>To <b>make a field obligatory</b>, check the <b>Required</b> option. The mandatory fields will be marked with red stroke.<!--The form cannot be submitted until all required fields are filled in.--></p>
+
+        <h2>Locking form fields</h2>
+        <p>To <b>prevent further editing</b> of the inserted form field, click the <span class="icon icon-lock_form_icon"></span> <b>Lock</b> icon. Filling the fields remains available.</p>
+
+        <h2>Clearing form fields</h2>
+        <p>To clear all inserted fields and delete all values, click the <span class="icon icon-clear_fields_icon"></span> <b>Clear All Fields</b> button on the <b>Forms</b> tab on the top toolbar. Clearing fields can be performed in the form filling mode only.</p>
+
+        <h2>Navigate, View and Save a Form</h2>
+        <p><img alt="fill form panel" src="../images/fill_form.png" /></p>
+        <p>Go to the <b>Forms</b> tab at the top toolbar.</p>
+        <p>Navigate through the form fields using the <span class="icon icon-previous_field_icon"></span> <b>Previous field</b> and <span class="icon icon-next_field_icon"></span> <b>Next field</b> buttons at the top toolbar.</p>
+        <p>When you are finished, click the <span class="icon icon-save_form_icon"></span> <b>Save as oform</b> button at the top toolbar  to save the form as an <b>OFORM</b> file ready to be filled out. You can save as many <b>OFORM</b> files as you need.</p>
+        <!--<p>To clear all fields and reset the form, click the <div class = "icon icon-clear_fields_icon"></div> <b>Clear fields</b> button at the top toolbar.</p>
+        <p>When you are finished, click the <div class = "icon icon-submit_form_icon"></div> <b>Submit</b> button at the top toolbar to send the form for further processing. Please note that this action cannot be undone.</p>
+    <p class="note">If you are using the server version of ONLYOFFICE Docs, the presence of the <b>Submit</b> button depends on the configuration. Read <a href="https://api.onlyoffice.com/editors/config/editor/customization">this article</a> to learn more.</p>-->
+        <h2>Removing form fields</h2>
+        <p>To remove a form field and leave all its contents, select it and click the <span class="icon icon-combo_delete_values"></span> <b>Delete</b> icon (make sure the field is not locked) or press the <b>Delete</b> key on the keyboard.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Search and Replace Functions</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the search and replace functions in Spreadsheet Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Search and Replace Functions</h1>
+		<p>To search for the required characters, words or phrases in the <a href="https://www.onlyoffice.com/en/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a>, click the Search <span class="icon icon-searchicon"></span> icon situated on the left sidebar, the <span class="icon icon-search_icon_header"></span> icon situated in the upper right corner, or use the <em>Ctrl+F</em> (<em>Command+F</em> for MacOS) key combination to open the small Find panel or the <em>Ctrl+H</em> key combination to open the full Find panel.</p>
+			<p>A small <b>Find</b> panel will open in the upper right corner of the working area.</p>
+			<p><img alt="Find small panel" src="../../../../../../common/main/resources/help/en/images/find_small.png" /></p>
+			<p>To access the advanced settings, click the <span class="icon icon-search_advanced"></span> icon.</p>
+			<p>The <b>Find and replace</b> panel will open:</p>
+			<img alt="Find and Replace Window" src="../images/search_window.png" />
+			<ol>
+				<li>Type in your inquiry into the corresponding <b>Find</b> data entry field.</li>
+				<li>To navigate between the found occurrences, click one of the arrow buttons. The <div class="icon icon-searchdownbutton"></div> button shows the next occurrence while the <div class="icon icon-searchupbutton"></div> button shows the previous one.</li>
+				<li>If you need to replace one or more occurrences of the found characters, type in the replacement text into the corresponding <b>Replace with</b> data entry field. You can choose to replace a single currently selected occurrence or replace all occurrences by clicking the corresponding <b>Replace</b> and <b>Replace All</b> buttons.</li>
+				<li>
+					Specify search options by checking the necessary options:
+					<ul>
+						<li><b>Within</b> - is used to search within the active <em>Sheet</em> only, the whole <em>Workbook</em>, or the <em>Specific range</em>. In the latter case, the <b>Select Data range</b> field will become active where you can specify the required range.</li>
+						<li><b>Search</b> - is used to specify the direction that you want to search: to the right <b>by rows</b> or down <b>by columns</b>.</li>
+						<li><b>Look in</b> - is used to specify whether you want to search the <b>Value</b> of the cells or their underlying <b>Formulas</b>.</li>
+					</ul>
+				</li>
+				<li>
+					Specify search parameters by checking the necessary options below the entry fields:
+					<ul>
+						<li><b>Case sensitive</b> - is used to find only the occurrences typed in the same case as your inquiry (e.g. if your inquiry is 'Editor' and this option is selected, such words as 'editor' or 'EDITOR' etc. will not be found).</li>
+						<li><b>Entire cell contents</b> - is used to find only the cells that do not contain any other characters besides the ones specified in your inquiry (e.g. if your inquiry is '56' and this option is selected, the cells containing such data as '0.56' or '156' etc. will not be found).</li>
+					</ul>
+				</li>
+			</ol>
+			<p>All occurrences will be highlighted in the file and shown as a list in the <b>Find</b> panel to the left. Use the list to skip to the required occurrence, or use the navigation <span class="icon icon-searchupbutton"></span> and <span class="icon icon-searchdownbutton"></span> buttons.</p> 
+		</div>
+	</body>
+</html>

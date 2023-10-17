@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Protecting a sheet</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Protecting sheets to prevent the unwanted changes and to restrict the editing abilities of other users" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+
+			<h1>Protecting a sheet</h1>
+			<p>The <b>Protect Sheet</b> option allows you to protect the sheets and to control changes made by other users in a sheet as to prevent the unwanted changes to data and to restrict the editing abilities of other users. You can protect a sheet with or without a password. If you don’t use a password, anyone can unprotect the protected sheet.</p>
+			<p>To protect a sheet:</p>
+			<ol>
+				<li>
+					Go to the <b>Protection</b> tab, and click the <b>Protect Sheet</b> button on the top toolbar.
+					<p>or</p>
+					<p>Right-click the sheet tab you want to protect, and select <b>Protect</b> from the list of options</p>
+					<p><img alt="Protect Sheet Tab" src="../images/protect_sheettab.png" /></p>
+				</li>
+			<li>In the <b>Protect Sheet</b> window that opens, enter and confirm the password, if you want to set a password to unprotect this sheet.
+			<p><img alt="Protect Sheet" src="../images/protect_sheet.png" /></p>
+			<p class="note">The password cannot be restored if you lose or forget it. Please keep it in a safe place.</p>
+			</li> 
+			<li>Check the boxes in the <b>Allow all users of this sheet to</b> list to select operations that users will be able to perform. The operations <b>Select locked cells</b> and <b>Select unlocked cells</b> are allowed by default. 
+                    <details class="details-example">
+                        <summary>Operations a user may be allowed to perform.</summary>
+                        <ul>
+                            <li>Select locked cells</li>
+                            <li>Select unlocked cells</li>
+                            <li>Format cells</li>
+                            <li>Format columns</li>
+                            <li>Format rows</li>
+                            <li>Insert columns</li>
+                            <li>Insert rows</li>			
+							<li>Insert hyperlink</li>
+							<li>Delete columns</li>
+							<li>Delete rows</li>
+							<li>Sort</li>
+							<li>Use Autofilter</li>
+							<li>Use PivotTable and PivotChart</li>
+							<li>Edit objects</li>
+							<li>Edit scenarios</li>
+                        </ul>
+                    </details>
+			</li>
+		<li>click the <b>Protect</b> button to enable the protection. The <b>Protect Sheet</b> button on the top toolbar stays highlighted once the sheet is protected.
+			<p><img alt="Protect Sheet Highlighted" src="../images/protectsheet_highlighted.png" /></p>
+		</li>
+		<li>To unprotect the sheet: 
+				<ul>
+					<li>click the <b>Protect Sheet</b> button, 
+					<p>or</p>
+					<p>right-click the protected sheet tab and select <b>Unprotect</b> from the list of options</p>
+					<p><img alt="Unrotect Sheet Tab" src="../images/unprotect_sheettab.png" /></p>
+					</li>
+					<li>Enter a password and click <b>OK</b> in the <b>Unprotect Sheet</b> window if prompted.
+					<p><img alt="Unrotect Sheet" src="../images/unprotect_sheet.png" /></p>
+					</li>
+				</ul>
+			</ol>
+		</div>
+	</body>
+</html>

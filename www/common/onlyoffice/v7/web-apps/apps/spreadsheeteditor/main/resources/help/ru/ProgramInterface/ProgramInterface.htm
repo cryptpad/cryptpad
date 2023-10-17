@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Знакомство с пользовательским интерфейсом редактора электронных таблиц</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Знакомство с пользовательским интерфейсом редактора электронных таблиц" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Знакомство с пользовательским интерфейсом редактора электронных таблиц</h1>
+			<p>В <b>редакторе электронных таблиц</b> используется вкладочный интерфейс, в котором команды редактирования сгруппированы во вкладки по функциональности.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Окно онлайн-редактора электронных таблиц:</p>
+                <p><img alt="Окно онлайн-редактора электронных таблиц" src="../images/interface/editorwindow.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Окно десктопного редактора электронных таблиц:</p>
+                <p><img alt="Окно десктопного редактора электронных таблиц" src="../images/interface/desktop_editorwindow.png" /></p>
+            </div>
+            <p>Интерфейс редактора состоит из следующих основных элементов:</p>
+            <ol>
+                <li>
+                    В <b>Шапке редактора</b> отображается логотип, <span class="desktopDocumentFeatures">вкладки открытых документов, </span> название документа и вкладки меню.
+                    <p>В левой части <b>Шапки редактора</b> расположены кнопки <b>Сохранить</b>, <b>Напечатать файл</b>, <b>Отменить</b> и <b>Повторить</b>.</p>
+                    <p><img alt="Значки в шапке редактора" src="../images/interface/leftpart.png" /></p>
+                    <p>В правой части <b>Шапки редактора</b> отображается имя пользователя и находятся следующие значки:</p>
+                    <ul>
+                        <li><div class = "icon icon-gotodocuments"></div> <b>Открыть расположение файла</b>, с помощью которого <span class="desktopDocumentFeatures">в <em>десктопной версии</em> можно открыть в окне <b>Проводника</b> папку, в которой сохранен файл.</span><span class="onlineDocumentFeatures"> В <em>онлайн-версии</em> можно открыть в новой вкладке браузера папку модуля <b>Документы</b>, в которой сохранен файл</span>.</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-access_rights"></div> <b>Доступ</b> (доступно только в <em>онлайн-версии</em>), с помощью которого можно <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">задать права доступа</a> к документам, сохраненным в облаке.</li>
+                        <li><div class = "icon icon-favorites_icon"></div> <b>Добавить в избранное</b>, чтобы добавить файл в избранное и упростить поиск. Добавленный файл - это просто ярлык, поэтому сам файл остается в исходном месте. Удаление файла из избранного не приводит к удалению файла из исходного местоположения.</li>
+                        <li><div class="icon icon-search_icon_header"></div> <b>Поиск</b> - позволяет искать в электронной таблице определенное слово, символ и т.д.</li>
+                    </ul>
+                </li>
+                <li>На <b>Верхней панели инструментов</b> отображается набор команд редактирования в зависимости от выбранной вкладки меню. В настоящее время доступны следующие вкладки: <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Файл</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Главная</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Вставка</a>, <a href="../ProgramInterface/LayoutTab.htm" onclick="onhyperlinkclick(this)">Макет</a>, <a href="../ProgramInterface/FormulaTab.htm" onclick="onhyperlinkclick(this)">Формула</a>, <a href="../ProgramInterface/DataTab.htm" onclick="onhyperlinkclick(this)">Данные</a>, <span class="onlineDocumentFeatures"><a href="../ProgramInterface/PivotTableTab.htm" onclick="onhyperlinkclick(this)">Сводная таблица</a>, </span><a href="../ProgramInterface/CollaborationTab.htm" onclick="onhyperlinkclick(this)">Совместная работа</a>, <a href="../ProgramInterface/ProtectionTab.htm" onclick="onhyperlinkclick(this)">Защита</a>, <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Вид</a>, <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Плагины</a>.
+                    <p>Опции <span class = "icon icon-copy"></span> <b>Копировать</b>, <span class = "icon icon-paste"></span> <b>Вставить</b>, <span class="icon icon-cut"></span> <b>Вырезать</b> и <span class="icon icon-select_all"></span> <b>Выделить все</b> всегда доступны в левой части <b>Верхней панели инструментов</b>, независимо от выбранной вкладки.</p>
+                </li>
+                <li><b>Строка формул</b> позволяет вводить и изменять <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">формулы</a> или значения в ячейках. В <b>Строке формул</b> отображается содержимое выделенной ячейки.</li>
+                <li>В <b>Строке состояния</b>, расположенной внизу окна редактора, находятся некоторые <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">инструменты навигации</a>: кнопки навигации по листам, кнопка добавления нового листа, кнопка список листов, ярлычки листов и кнопки масштаба. В <b>Строке состояния</b> также отображается статус фонового сохранения и состояние восстановления соединения, когда редактор пытается переподключиться, количество отфильтрованных записей при применении <a href="../UsageInstructions/SortData.htm#filter" onclick="onhyperlinkclick(this)">фильтра</a> или результаты <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">автоматических вычислений</a> при выделении нескольких ячеек, содержащих данные.</li>
+                <li>
+                    На <b>Левой боковой панели</b> находятся следующие значки:
+                    <ul>
+                        <li><div class = "icon icon-searchicon"></div> - позволяет использовать инструмент <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">поиска и замены</a>,</li>
+                        <li><div class = "icon icon-commentsicon"></div> - позволяет открыть панель <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Комментариев</a></li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-chaticon"></div> (доступно только в <em>онлайн-версии</em>) - позволяет открыть панель <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Чата</a>,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-feedbackicon"></div> - позволяет обратиться в службу технической поддержки,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-about"></div> (доступно только в <em>онлайн-версии</em>) - позволяет посмотреть информацию о программе.</li>
+                    </ul>
+                </li>
+                <li><b>Правая боковая панель</b> позволяет настроить дополнительные параметры различных объектов. При выделении на рабочем листе определенного объекта активируется соответствующий значок на правой боковой панели. Нажмите на этот значок, чтобы развернуть правую боковую панель.</li>
+                <li>В <b>Рабочей области</b> вы можете просматривать содержимое электронной таблицы, вводить и редактировать данные.</li>
+                <li>Горизонтальная и вертикальная <b>Полосы прокрутки</b> позволяют прокручивать текущий лист вверх/вниз и влево/вправо.</li>
+            </ol>
+            <p>Для удобства вы можете скрыть некоторые элементы и снова отобразить их при необходимости. Для получения дополнительной информации о настройке параметров представления, пожалуйста, обратитесь к <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">этой странице</a>.</p>
+           
+		</div>
+	</body>
+</html>

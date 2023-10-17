@@ -476,6 +476,7 @@ define([
     common.drive.onLog = Util.mkEvent();
     common.drive.onChange = Util.mkEvent();
     common.drive.onRemove = Util.mkEvent();
+    common.drive.onDeleted = Util.mkEvent();
     // Profile
     common.getProfileEditUrl = function (cb) {
         postMessage("GET", { key: ['profile', 'edit'] }, function (obj) {
@@ -649,15 +650,23 @@ define([
 
         }).nThen(function (waitFor) {
             // If it's not in the cache or it's not a blob, try to get the value from the server
-            postMessage("GET_FILE_SIZE", {channel:channel}, waitFor(function (obj) {
-                if (obj && obj.error) {
-                    // If disconnected, try to get the value from the channel cache (next nThen)
-                    error = obj.error;
-                    return;
-                }
-                waitFor.abort();
-                cb(undefined, obj.size);
-            }));
+            var getSize = () => {
+                postMessage("GET_FILE_SIZE", {channel:channel}, waitFor(function (obj) {
+                    if (obj && obj.error === "ANON_RPC_NOT_READY") { return void setTimeout(waitFor(getSize), 100); }
+
+                    if (obj && obj.error && obj.error.code === 'ENOENT' && obj.error.reason) {
+                        waitFor.abort();
+                        cb(obj.error.reason);
+                    } else if (obj && obj.error) {
+                        // If disconnected, try to get the value from the channel cache (next nThen)
+                        error = obj.error;
+                        return;
+                    }
+                    waitFor.abort();
+                    cb(undefined, obj.size);
+                }));
+            };
+            getSize();
         }).nThen(function () {
             Cache.getChannelCache(channel, function(err, data) {
                 if (err) { return void cb(error); }
@@ -681,7 +690,7 @@ define([
             var error = obj && obj.error;
             if (error) { return void cb(error); }
             if (!obj) { return void cb('ERROR'); }
-            cb (null, obj.isNew);
+            cb (null, obj.isNew, obj.reason);
         }, {timeout: -1});
     };
     // This function is used when we want to open a pad. We first need
@@ -711,7 +720,7 @@ define([
                     } else if (error) {
                         return void cb(error);
                     }
-                    cb(undefined, obj.isNew);
+                    cb(undefined, obj.isNew, obj.reason);
                 }, {timeout: -1});
             };
             isNew();
@@ -952,9 +961,9 @@ define([
                 optsPut.accessKeys = keys;
             }));
         }).nThen(function () {
-            Crypt.get(parsed.hash, function (err, val) {
+            Crypt.get(parsed.hash, function (err, val, errData) {
                 if (err) {
-                    return void cb(err);
+                    return void cb(err, errData);
                 }
                 if (!val) {
                     return void cb('ENOENT');
@@ -996,10 +1005,10 @@ define([
                         optsGet.accessKeys = keys;
                     }));
                 }).nThen(function () {
-                    Crypt.get(parsed.hash, function (err, _val) {
+                    Crypt.get(parsed.hash, function (err, _val, errData) {
                         if (err) {
                             _waitFor.abort();
-                            return void cb(err);
+                            return void cb(err, errData);
                         }
                         try {
                             val = JSON.parse(_val);
@@ -1443,8 +1452,10 @@ define([
         }).nThen(function (waitFor) {
             optsPut.metadata.restricted = oldMetadata.restricted;
             optsPut.metadata.allowed = oldMetadata.allowed;
+            if (!newPassword) { optsPut.metadata.forcePlaceholder = true; }
             Crypt.put(newHash, cryptgetVal, waitFor(function (err) {
                 if (err) {
+                    if (err === "EDELETED") { err = "PASSWORD_ALREADY_USED"; }
                     waitFor.abort();
                     return void cb({ error: err });
                 }
@@ -1484,7 +1495,8 @@ define([
             // delete the old pad
             common.removeOwnedChannel({
                 channel: oldChannel,
-                teamId: teamId
+                teamId: teamId,
+                reason: 'PASSWORD_CHANGE',
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
@@ -1620,7 +1632,8 @@ define([
             // delete the old pad
             common.removeOwnedChannel({
                 channel: oldChannel,
-                teamId: teamId
+                teamId: teamId,
+                reason: 'PASSWORD_CHANGE'
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
@@ -1777,8 +1790,8 @@ define([
             var newCrypto = Crypto.createEncryptor(newSecret.keys);
             var oldCrypto = Crypto.createEncryptor(oldSecret.keys);
             var cps = Util.find(cryptgetVal, ['content', 'hashes']);
-            var l = Object.keys(cps).length;
-            var lastCp = l ? cps[l] : {};
+            var cpLength = Object.keys(cps).length;
+            var lastCp = cpLength ? cps[cpLength] : {};
             cryptgetVal.content.hashes = {};
             common.getHistory({
                 channel: oldRtChannel,
@@ -1801,7 +1814,7 @@ define([
                     }
                 });
                 // Update last knwon hash in cryptgetVal
-                if (lastCp) {
+                if (cpLength && newHistory.length) {
                     lastCp.hash = newHistory[0].slice(0, 64);
                     lastCp.index = 50;
                     cryptgetVal.content.hashes[1] =  lastCp;
@@ -1826,6 +1839,7 @@ define([
             // The new rt channel is ready
             // The blob uses its own encryption and doesn't need to be reencrypted
             cryptgetVal.content.channel = newRtChannel;
+            if (!newPassword) { optsPut.metadata.forcePlaceholder = true; }
             Crypt.put(newHash, JSON.stringify(cryptgetVal), waitFor(function (err) {
                 if (err) {
                     waitFor.abort();
@@ -1941,8 +1955,9 @@ define([
             console.log("checking if old drive is owned");
             common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
                 if (err || obj.error) { return; }
-                if (obj.owners && Array.isArray(obj.owners) &&
-                    obj.owners.indexOf(edPublic) !== -1) {
+                var md = obj[0];
+                if (md && md.owners && Array.isArray(md.owners) &&
+                    md.owners.indexOf(edPublic) !== -1) {
                     oldIsOwned = true;
                 }
             }));
@@ -1956,6 +1971,42 @@ define([
                     console.error(err);
                     return void cb({ error: 'INVALID_CODE' });
                 }
+            }));
+        }).nThen(function (waitFor) {
+            var blockUrl = Block.getBlockUrl(blockKeys);
+            // Check whether there is a block at that new location
+            Util.getBlock(blockUrl, {}, waitFor(function (err, response) {
+                // If there is no block or the block is invalid, continue.
+                // error 401 means protected block
+
+                /*
+                // the following block prevent users from re-using an old password
+                if (err === 404 && response && response.reason) {
+                    waitFor.abort();
+                    return void cb({
+                        error: 'EDELELED',
+                        reason: response.reason
+                    });
+                }
+                */
+
+                if (err && err !== 401) {
+                    console.log("no block found");
+                    return;
+                }
+
+                response.arrayBuffer().then(waitFor(arraybuffer => {
+                    var block = new Uint8Array(arraybuffer);
+                    var decryptedBlock = Block.decrypt(block, blockKeys);
+                    if (!decryptedBlock) {
+                        console.error("Found a login block but failed to decrypt");
+                        return;
+                    }
+
+                    // If there is already a valid block, abort! We risk overriding another user's data
+                    waitFor.abort();
+                    cb({ error: 'EEXISTS' });
+                }));
             }));
         }).nThen(function (waitFor) {
             // Create a new user hash
@@ -1984,27 +2035,6 @@ define([
                         return void cb({ error: err });
                     }
                 }), optsPut);
-            }));
-        }).nThen(function (waitFor) {
-            var blockUrl = Block.getBlockUrl(blockKeys);
-            // Check whether there is a block at that new location
-            Util.fetch(blockUrl, waitFor(function (err, block) {
-                // If there is no block or the block is invalid, continue.
-                // error 401 means protected block
-                if (err && err !== 401) {
-                    console.log("no block found");
-                    return;
-                }
-
-                var decryptedBlock = Block.decrypt(block, blockKeys);
-                if (!decryptedBlock) {
-                    console.error("Found a login block but failed to decrypt");
-                    return;
-                }
-
-                // If there is already a valid block, abort! We risk overriding another user's data
-                waitFor.abort();
-                cb({ error: 'EEXISTS' });
             }));
         }).nThen(function (waitFor) {
             // Write the new login block
@@ -2054,10 +2084,12 @@ define([
             if (!blockHash) { return; }
             console.log('removing old login block');
             Block.removeLoginBlock({
+                reason: 'PASSWORD_CHANGE',
                 auth: auth,
                 blockKeys: oldBlockKeys,
             }, waitFor(function (err) {
                 if (err) { return void console.error(err); }
+                common.passwordUpdated = true;
             }));
         }).nThen(function (waitFor) {
             if (!oldIsOwned) { return; }
@@ -2065,16 +2097,15 @@ define([
             common.removeOwnedChannel({
                 channel: secret.channel,
                 teamId: null,
-                force: true
+                force: true,
+                reason: 'PASSWORD_CHANGE'
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     // Deal with it as if it was not owned
                     oldIsOwned = false;
                     return;
                 }
-                common.logoutFromAll(waitFor(function () {
-                    common.stopWorker();
-                }));
+                common.stopWorker();
             }));
         }).nThen(function (waitFor) {
             if (oldIsOwned) { return; }
@@ -2087,9 +2118,7 @@ define([
                 if (obj && obj.error) {
                     console.error(obj.error);
                 }
-                common.logoutFromAll(waitFor(function () {
-                    common.stopWorker();
-                }));
+                common.stopWorker();
             }));
         }).nThen(function () {
             // We have the new drive, with the new login block
@@ -2266,6 +2295,14 @@ define([
         cb();
     };
 
+    common.storeLogout = function (data) {
+        if (common.passwordUpdated) { return; }
+        LocalStore.logout(function () {
+            common.stopWorker();
+            common.drive.onDeleted.fire(data.reason);
+        });
+    };
+
     var lastPing = +new Date();
     var onPing = function (data, cb) {
         lastPing = +new Date();
@@ -2342,8 +2379,10 @@ define([
         DRIVE_LOG: common.drive.onLog.fire,
         DRIVE_CHANGE: common.drive.onChange.fire,
         DRIVE_REMOVE: common.drive.onRemove.fire,
+        DRIVE_DELETED: common.drive.onDeleted.fire,
         // Account deletion
         DELETE_ACCOUNT: common.startAccountDeletion,
+        LOGOUT: common.storeLogout,
         // Loading
         LOADING_DRIVE: common.loading.onDriveEvent.fire,
         // AutoStore
@@ -2459,6 +2498,14 @@ define([
                         });
                     }
 
+                    if (err === 404) {
+                        // Not found: account deleted
+                        waitFor.abort();
+                        return LocalStore.logout(function () {
+                            f(response || err);
+                        });
+                    }
+
                     if (err) {
                         // TODO
                         // it seems wrong that errors here aren't reported or handled
@@ -2496,6 +2543,15 @@ define([
                 }));
             }
         }).nThen(function (waitFor) {
+            var blockHash = LocalStore.getBlockHash();
+            var blockId = '';
+            try {
+                var blockPath = (new URL(blockHash)).pathname;
+                var blockSplit = blockPath.split('/');
+                if (blockSplit[1] === 'block') {
+                    blockId = blockSplit[3];
+                }
+            } catch (e) { }
             var cfg = {
                 init: true,
                 userHash: userHash || LocalStore.getUserHash(),
@@ -2508,9 +2564,10 @@ define([
                 neverDrive: rdyCfg.neverDrive,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
-                lastVisit: Number(localStorage.lastVisit) || undefined
+                lastVisit: Number(localStorage.lastVisit) || undefined,
+                blockId: blockId
             };
-            common.userHash = userHash;
+            common.userHash = userHash || LocalStore.getUserHash();
 
             // FIXME Backward compatibility
             if (sessionStorage.newPadFileData) {
@@ -2786,6 +2843,9 @@ define([
                     LocalStore.loginReload();
                 } else if (o && !n) {
                     LocalStore.logout();
+                } else if (o && n && o !== n) {
+                    common.passwordUpdated = true;
+                    window.location.reload();
                 }
             });
             LocalStore.onLogout(function () {

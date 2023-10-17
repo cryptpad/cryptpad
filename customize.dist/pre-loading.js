@@ -8,7 +8,7 @@ var elem = document.createElement('div');
 elem.setAttribute('id', 'placeholder');
 elem.innerHTML = [
     '<div class="placeholder-logo-container">',
-        '<img class="placeholder-logo" src="' + logoPath + '">',
+        '<img class="placeholder-logo" alt="CryptPad Logo" src="' + logoPath + '">',
     '</div>',
     '<div class="placeholder-message-container">',
         '<p>Loading...</p>',

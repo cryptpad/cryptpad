@@ -514,6 +514,7 @@ define([
         });
         return dialog.nav(navs);
     };
+
     dialog.customModal = function (msg, opt) {
         var force = false;
         if (typeof(opt) === 'object') {
@@ -535,11 +536,11 @@ define([
             message = dialog.message(msg);
         }
 
-        var frame = h('div', [
+        var cls = opt.scrollable ? '.cp-alertify-scrollable' : '';
+        var frame = h('div'+cls, [
             message,
             dialog.getButtons(opt.buttons, opt.onClose)
         ]);
-
         if (opt.forefront) { $(frame).addClass('forefront'); }
         return frame;
     };
@@ -1042,12 +1043,17 @@ define([
             window.parent.location = href;
         });
         if (exitable) {
+            // XXX if true or function, ALSO add a button to leave
             $(window).focus();
             $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
                 if (e.which === 27) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Function: call the function (should be a redirect)
+                    if (typeof(exitable) === "function") { return void exitable(); }
+                    // Otherwise remove the loading screen
                     $loading.hide();
                     $('html').toggleClass('cp-loading-noscroll', false);
-                    if (typeof(exitable) === "function") { exitable(); }
                 }
             });
         }
@@ -1542,6 +1548,50 @@ define([
         // set the user's cursor in the OTP input field
         $(block).find('.cp-password-form input').focus();
 
+    };
+
+    UI.getDestroyedPlaceholderMessage = (code, isAccount, isTemplate) => {
+        var account = {
+            ARCHIVE_OWNED: Messages.dph_account_destroyed,
+            INACTIVE: Messages.dph_account_inactive,
+            MODERATION_ACCOUNT: Messages.dph_account_moderated,
+            MODERATION_BLOCK: Messages.dph_account_moderated,
+            PASSWORD_CHANGE: Messages.dph_account_pw,
+        };
+        var template = {
+            ARCHIVE_OWNED: Messages.dph_tmp_destroyed,
+            MODERATION_PAD: Messages.dph_tmp_moderated,
+            MODERATION_ACCOUNT: Messages.dph_tmp_moderated_account,
+            PASSWORD_CHANGE: Messages.dph_tmp_pw
+        };
+        var pad = {
+            ARCHIVE_OWNED: Messages.dph_pad_destroyed,
+            INACTIVE: Messages.dph_pad_inactive,
+            MODERATION_PAD: Messages.dph_pad_moderated,
+            MODERATION_DESTROY: Messages.dph_pad_moderated,
+            MODERATION_ACCOUNT: Messages.dph_pad_moderated_account,
+            PASSWORD_CHANGE: Messages.dph_pad_pw
+        };
+        var msg = pad[code];
+        if (isAccount) {
+            msg = account[code];
+        } else if (isTemplate) {
+            msg = template[code];
+        }
+        if (!msg) { msg = Messages.dph_default; }
+        return msg;
+    };
+    UI.getDestroyedPlaceholder = function (reason, isAccount) {
+        if (typeof(reason) !== "string") { return; }
+        var split = reason.split(':');
+        var code = split[0]; // Generated code
+        var input = split[1]; // User/admin manual input
+        var text = UI.getDestroyedPlaceholderMessage(code, isAccount);
+        var reasonBlock = input ? h('p', Messages._getKey('dph_reason', [input])) : undefined;
+        return h('div', [
+            h('p', text),
+            reasonBlock
+        ]);
     };
 
     return UI;

@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Présentation de l'interface utilisateur du Tableur</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Présentation de l'interface utilisateur du Tableur" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Présentation de l'interface utilisateur du Tableur</h1>
+			<p> <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tableur</b></a> utilise une interface à onglets où les commandes d'édition sont regroupées en onglets par fonctionnalité.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Fenêtre principale du Tableur en ligne :</p>
+                <p><img alt="Fenêtre du Tableur en ligne :" src="../images/interface/editorwindow.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Fenêtre principale du Tableur de bureau :</p>
+                <p><img alt="Fenêtre du Tableur de bureau :" src="../images/interface/desktop_editorwindow.png" /></p>
+            </div>
+            <p>L'interface de l'éditeur est composée des éléments principaux suivants :</p>
+            <ol>
+                <li>
+                    L'en-tête de l'éditeur affiche le logo, <span class="desktopDocumentFeatures"> les onglets des documents ouverts, </span> le nom de la feuille de calcul et les onglets du menu.
+                    <p>Dans la partie gauche de <b>l'en-tête de l'éditeur</b> se trouvent les boutons <b>Enregistrer</b>, <b>Imprimer le fichier</b>, <b>Annuler</b> et <b>Rétablir</b>.</p>
+                    <p><img alt="L'icônes dans l'en-tête de l'éditeur" src="../images/interface/leftpart.png" /></p>
+                    <p>Dans la partie droite de <b>l'en-tête de l'éditeur</b>, le nom de l'utilisateur est affiché ainsi que les icônes suivantes :</p>
+                    <ul>
+                        <li><div class = "icon icon-gotodocuments"></div> <b>Ouvrir l'emplacement du fichier</b> - <span class="desktopDocumentFeatures">dans la <em>version de bureau</em>, elle permet d'ouvrir le dossier où le fichier est stocké dans la fenêtre de<b> l'Explorateur de fichiers</b>.</span> <span class="onlineDocumentFeatures"> Dans la <em>version en ligne</em>, elle permet d'ouvrir le dossier du module <b>Documents</b> où le fichier est stocké dans un nouvel onglet du navigateur.</span></li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-access_rights"></div> <b>Gérer les droits d'accès au document</b> - (disponible uniquement dans la <em>version en ligne</em>) permet de <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">définir les droits d'accès</a> aux documents stockés dans le cloud.</li>
+                        <li><div class = "icon icon-favorites_icon"></div> <b>Marquer en tant que favori</b> - cliquez sur l'étoile pour ajouter le fichier aux favoris et pour le retrouver rapidement. Ce n'est qu'un fichier de raccourcis car le fichier lui-même est dans l'emplacement de stockage d'origine. Le fichier réel n'est pas supprimé quand vous le supprimez de Favoris.</li>
+                        <li><div class="icon icon-search_icon_header"></div> <b>Recherche</b> - permet de rechercher dans la feuille de calcul un mot ou un symbole particulier, etc.</li>
+                    </ul>
+                </li>
+                <li>La <b>barre d'outils supérieure</b> affiche un ensemble de commandes d'édition en fonction de l'onglet de menu sélectionné. Actuellement, les onglets suivants sont disponibles : <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Fichier</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Accueil</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Insertion</a>, <a href="../ProgramInterface/LayoutTab.htm" onclick="onhyperlinkclick(this)">Mise en page</a>, <a href="../ProgramInterface/FormulaTab.htm" onclick="onhyperlinkclick(this)">Formule</a>, <a href="../ProgramInterface/DataTab.htm" onclick="onhyperlinkclick(this)">Données</a>, <span class="onlineDocumentFeatures"><a href="../ProgramInterface/PivotTableTab.htm" onclick="onhyperlinkclick(this)"> Tableau croisé dynamique</a>,</span> <a href="../ProgramInterface/CollaborationTab.htm" onclick="onhyperlinkclick(this)">Collaboration</a>, <span class="desktopDocumentFeatures">Protection,</span> <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Affichage</a>, <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Modules complémentaires</a>.
+                    <p>Des options <span class = "icon icon-copy"></span> <b>Copier</b> et <span class = "icon icon-paste"></span> <b>Coller</b> sont toujours disponibles dans la partie gauche de la <b>Barre d'outils supérieure</b>, quel que soit l'onglet sélectionné.</p>
+                </li>
+                <li>La <b>Barre de formule</b> permet d'entrer et de modifier <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">des formules</a> ou des valeurs dans les cellules. La<b> Barre de formule</b> affiche le contenu de la cellule actuellement sélectionnée.</li>
+                <li>La <b>Barre d'état</b> en bas de la fenêtre de l'éditeur contient <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">des outils de navigation</a> : boutons de navigation de feuille, bouton pour ajouter une feuille de calcul, bouton pour afficher la liste de feuilles de calcul, onglets de feuille et boutons de zoom. La <b>Barre d'état</b> affiche également l'état de sauvegarde s'exécutant en arrière-plan, l'état de connexion quand l'éditeur ne parvient pas à se connecter, le nombre d'enregistrements filtrés si vous appliquez <a href="../UsageInstructions/SortData.htm#filter" onclick="onhyperlinkclick(this)">un filtre</a> ou les résultats <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">des calculs automatiques</a> si vous sélectionnez plusieurs cellules contenant des données.</li>
+                <li>
+                    La <b>barre latérale gauche</b> contient les icônes suivantes :
+                    <ul>
+                        <li><div class = "icon icon-searchicon"></div> - permet d'utiliser l'outil <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Rechercher et remplacer</a> ,</li>
+                        <li><div class = "icon icon-commentsicon"></div> - permet d'ouvrir le panneau <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Commentaires</a> ,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-chaticon"></div> - (disponible dans la <em>version en ligne</em> seulement) permet d'ouvrir le panneau de <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Chat</a> ,</li>
+                        <li><div class="icon icon-spellcheckdeactivated"></div> - permet de vérifier l'orthographe de votre texte dans une certaine langue et de corriger les erreurs lors de l'édition.</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-feedbackicon"></div> - permet de contacter notre équipe d'assistance technique,</li>
+                        <li class="onlineDocumentFeatures"><div class = "icon icon-about"></div> - (disponible dans la <em>version en ligne</em> seulement) permet de visualiser les informations sur le programme.</li>
+                    </ul>
+                </li>
+                <li>La <b>barre latérale droite</b> permet d'ajuster les paramètres supplémentaires de différents objets. Lorsque vous sélectionnez un objet particulier sur une feuille de calcul, l'icône correspondante est activée dans la barre latérale droite. Cliquez sur cette icône pour développer la barre latérale droite.</li>
+                <li>La <b>Zone de travail</b> permet d'afficher le contenu de la feuille de calcul, d'entrer et de modifier les données.</li>
+                <li>Les <b>Barres de défilement</b> horizontales et verticales permettent de faire défiler la feuille actuelle de haut en bas ou de gauche à droite.</li>
+            </ol>
+            <p>Pour plus de commodité, vous pouvez masquer certains composants et les afficher à nouveau lorsque cela est nécessaire. Pour en savoir plus sur l'ajustement des paramètres d'affichage, <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">reportez-vous à cette page</a>.</p>
+           
+		</div>
+	</body>
+</html>

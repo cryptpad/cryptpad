@@ -1,0 +1,22 @@
+{
+  "common.view.modals.txtCopy": "Nokopēts starpliktuvē",
+  "common.view.modals.txtHeight": "Augstums",
+  "common.view.modals.txtWidth": "Platums",
+  "DE.ApplicationController.convertationErrorText": "Konversija neizdevās.",
+  "DE.ApplicationController.convertationTimeoutText": "Konversijas taimauts pārsniegts.",
+  "DE.ApplicationController.criticalErrorTitle": "Kļūda",
+  "DE.ApplicationController.downloadErrorText": "Lejuplāde neizdevās.",
+  "DE.ApplicationController.downloadTextText": "Lejuplādē dokumentu...",
+  "DE.ApplicationController.errorAccessDeny": "Jūs mēģināt veikt darbību, kuru nedrīkstat veikt.<br>Lūdzu, sazinieties ar savu dokumentu servera administratoru.",
+  "DE.ApplicationController.errorDefaultMessage": "Kļūdas kods: %1",
+  "DE.ApplicationController.errorFilePassProtect": "Fails ir aizsargāts ar paroli un to nevar atvērt.",
+  "DE.ApplicationController.errorUserDrop": "Failam šobrīd nevar piekļūt.",
+  "DE.ApplicationController.notcriticalErrorTitle": "Brīdinājums",
+  "DE.ApplicationController.textLoadingDocument": "Ielādē dokumentu",
+  "DE.ApplicationController.textOf": "no",
+  "DE.ApplicationController.txtClose": "Aizvērt",
+  "DE.ApplicationController.unknownErrorText": "Nezināma kļūda.",
+  "DE.ApplicationController.unsupportedBrowserErrorText": "Jūsu pārlūkprogramma nav atbalstīta.",
+  "DE.ApplicationView.txtDownload": "Lejupielādēt",
+  "DE.ApplicationView.txtShare": "Dalīties"
+}

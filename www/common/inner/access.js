@@ -752,7 +752,8 @@ define([
                 _owners[ed] = {
                     //selected: true,
                     name: user.name,
-                    avatar: user.avatar
+                    avatar: user.avatar,
+                    uid: user.uid
                 };
                 return;
             }
@@ -939,8 +940,12 @@ define([
                         }, function (err, data) {
                             $(passwordOk).text(Messages.properties_changePasswordButton);
                             pLocked = false;
-                            if (err || data.error) {
-                                console.error(err || data.error);
+                            err = err || data.error;
+                            if (err) {
+                                if (err === "PASSWORD_ALREADY_USED") {
+                                    return void UI.alert(Messages.access_passwordUsed);
+                                }
+                                console.error(err);
                                 return void UI.alert(Messages.properties_passwordError);
                             }
                             UI.findOKButton().click();
@@ -982,11 +987,17 @@ define([
 
                             if (data.warning) {
                                 return void UI.alert(Messages.properties_passwordWarning, function () {
+                                    if (isNotStored) {
+                                        return sframeChan.query('Q_PASSWORD_CHECK', newPass, () => { common.gotoURL(_href);  });
+                                    }
                                     common.gotoURL(_href);
                                 }, {force: true});
                             }
                             return void UI.alert(UIElements.fixInlineBRs(Messages.properties_passwordSuccess), function () {
                                 if (!isSharedFolder) {
+                                    if (isNotStored) {
+                                        return sframeChan.query('Q_PASSWORD_CHECK', newPass, () => { common.gotoURL(_href);  });
+                                    }
                                     common.gotoURL(_href);
                                 }
                             });

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Documents</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="../../../apps/documenteditor/forms/resources/css/app-all.css" rel="stylesheet">
+
+    <!-- splash -->
+
+    <style type="text/css">
+        .content-theme-dark {
+            --skeleton-canvas-content-background: #3a3a3a;
+            --skeleton-canvas-page-border: #2a2a2a;
+            --skeleton-canvas-line: rgba(255,255,255,.05);
+        }
+
+        .loadmask {
+            left: 0;
+            top: 0;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            border: none;
+            background-color: #e2e2e2;
+            background-color: var(--canvas-background, #e2e2e2);
+            z-index: 1001;
+        }
+
+        .loadmask > .brendpanel {
+            width: 100%;
+            position: absolute;
+            height: 40px;
+            background-color: #F7F7F7;
+            background-color: var(--background-toolbar, #F7F7F7);
+            -webkit-box-shadow: inset 0 -1px 0 #cbcbcb;
+            box-shadow: inset 0 -1px 0 #cbcbcb;
+            -webkit-box-shadow: inset 0 -1px 0 var(--border-toolbar, #cbcbcb);
+            box-shadow: inset 0 -1px 0 var(--border-toolbar, #cbcbcb);
+        }
+
+        .loadmask > .brendpanel > div {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .loadmask > .brendpanel .loading-logo {
+            max-width: 200px;
+            height: 20px;
+            margin-left: 10px;
+            text-align: center;
+        }
+
+        .loadmask > .brendpanel .loading-logo > img {
+            display: inline-block;
+            max-width: 100px;
+            max-height: 20px;
+            opacity: 0;
+        }
+        .loadmask > .brendpanel .doc-title {
+            flex-grow: 1;
+        }
+
+        .loadmask > .brendpanel .circle {
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            border-radius: 12px;
+            margin: 4px 10px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .loadmask .placeholder-outer {
+            width: 100%;
+            padding-right: 14px;
+        }
+
+        .loadmask .placeholder {
+            background: #fff;
+            background: var(--skeleton-canvas-content-background, var(--canvas-content-background, #fff));
+            width: 796px;
+            margin: 59px auto;
+            height: 100%;
+            border: 1px solid #bbbec2;
+            border: var(--scaled-one-px-value, 1px) solid var(--skeleton-canvas-page-border, var(--canvas-page-border, #bbbec2));
+            padding-top: 50px;
+        }
+
+        .loadmask .placeholder > .line {
+            height: 15px;
+            margin: 30px 80px;
+            background: rgba(0,0,0,.05);
+            background: var(--skeleton-canvas-line, rgba(0,0,0,.05));
+            overflow: hidden;
+            position: relative;
+
+            -webkit-animation: flickerAnimation 2s infinite ease-in-out;
+            -moz-animation: flickerAnimation 2s infinite ease-in-out;
+            -o-animation: flickerAnimation 2s infinite ease-in-out;
+            animation: flickerAnimation 2s infinite ease-in-out;
+        }
+
+        @keyframes flickerAnimation {
+            0%   { opacity:0.1; }
+            50%  { opacity:1; }
+            100% { opacity:0.1; }
+        }
+        @-o-keyframes flickerAnimation{
+            0%   { opacity:0.1; }
+            50%  { opacity:1; }
+            100% { opacity:0.1; }
+        }
+        @-moz-keyframes flickerAnimation{
+            0%   { opacity:0.1; }
+            50%  { opacity:1; }
+            100% { opacity:0.1; }
+        }
+        @-webkit-keyframes flickerAnimation{
+            0%   { opacity:0.1; }
+            50%  { opacity:1; }
+            100% { opacity:0.1; }
+        }
+    </style>
+
+    <script>window.features={uitype:'fillform'}</script>
+
+    <!--[if lt IE 9]>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.1/html5shiv.js"></script>
+    <![endif]-->
+    <script>
+
+if ( window.AscDesktopEditor ) {
+    window.desktop = window.AscDesktopEditor;
+    desktop.features = {};
+    window.native_message_cmd = [];
+
+    window.on_native_message = function (cmd, param) {
+        if ( /window:features/.test(cmd) ) {
+            var obj = JSON.parse(param);
+            if ( obj.singlewindow !== undefined ) {
+                desktop.features.singlewindow = obj.singlewindow;
+            }
+        } else
+            window.native_message_cmd[cmd] = param;
+    }
+
+    if ( !!window.RendererProcessVariable ) {
+        desktop.theme = window.RendererProcessVariable.theme;
+    }
+
+    window.desktop.execCommand('webapps:entry', (window.features && JSON.stringify(window.features)) || '');
+}
+
+</script>
+  </head>
+
+  <body class="embed-body">
+      <script>
+
+function checkScaling() {
+    var matches = {
+        'pixel-ratio__1_25': "screen and (-webkit-min-device-pixel-ratio: 1.25) and (-webkit-max-device-pixel-ratio: 1.49), " +
+                                "screen and (min-resolution: 1.25dppx) and (max-resolution: 1.49dppx)",
+        'pixel-ratio__1_5': "screen and (-webkit-min-device-pixel-ratio: 1.5) and (-webkit-max-device-pixel-ratio: 1.74), " +
+                                "screen and (min-resolution: 1.5dppx) and (max-resolution: 1.74dppx)",
+        'pixel-ratio__1_75': "screen and (-webkit-min-device-pixel-ratio: 1.75) and (-webkit-max-device-pixel-ratio: 1.99), " +
+                                "screen and (min-resolution: 1.75dppx) and (max-resolution: 1.99dppx)",
+    };
+
+    for (var c in matches) {
+        if ( window.matchMedia(matches[c]).matches ) {
+            document.body.classList.add(c);
+            break;
+        }
+    }
+
+    if ( !window.matchMedia("screen and (-webkit-device-pixel-ratio: 1.5)," +
+                            "screen and (-webkit-device-pixel-ratio: 1)," +
+                            "screen and (-webkit-device-pixel-ratio: 2)").matches )
+    {
+        // don't add zoom for mobile devices
+        // if (!(/android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent || navigator.vendor || window.opera)))
+        //     document.getElementsByTagName('html')[0].setAttribute('style', 'zoom: ' + (1 / window.devicePixelRatio) + ';');
+    }
+}
+
+checkScaling();
+
+var params = (function() {
+    var e,
+        a = /\+/g,  // Regex for replacing addition symbol with a space
+        r = /([^&=]+)=?([^&]*)/g,
+        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+        q = window.location.search.substring(1),
+        urlParams = {};
+
+    while (e = r.exec(q))
+        urlParams[d(e[1])] = d(e[2]);
+
+    return urlParams;
+})();
+
+var checkLocalStorage = (function () {
+    try {
+        var storage = window['localStorage'];
+        return true;
+    }
+    catch(e) {
+        return false;
+    }
+})();
+
+if ( window.desktop ) {
+    var theme = desktop.theme
+
+    if ( theme ) {
+        if ( !theme.id && !!theme.type ) {
+            if ( theme.type == 'dark' ) theme.id = 'theme-dark'; else
+            if ( theme.type == 'light' ) theme.id = 'theme-classic-light';
+        }
+
+        if ( theme.id ) {
+            if ( theme.id == 'theme-system' ) {
+                localStorage.setItem("ui-theme-use-system", "1");
+                localStorage.removeItem("ui-theme-id");
+                delete params.uitheme;
+            } else {
+                localStorage.setItem("ui-theme-id", theme.id);
+                localStorage.removeItem("ui-theme-use-system");
+            }
+
+            localStorage.removeItem("ui-theme");
+        }
+    }
+}
+
+if ( !!params.uitheme && checkLocalStorage && !localStorage.getItem("ui-theme-id") ) {
+    // const _t = params.uitheme.match(/([\w-]+)/g);
+
+    if ( params.uitheme == 'default-dark' )
+        params.uitheme = 'theme-dark';
+    else
+    if ( params.uitheme == 'default-light' )
+        params.uitheme = 'theme-classic-light';
+
+    localStorage.removeItem("ui-theme");
+}
+
+var ui_theme_name = checkLocalStorage && localStorage.getItem("ui-theme-id") ? localStorage.getItem("ui-theme-id") : params.uitheme;
+var ui_theme_type;
+if ( !ui_theme_name ) {
+    if ( (window.desktop && desktop.theme && desktop.theme.system == 'dark') ||
+            (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) )
+    {
+        ui_theme_name = 'theme-dark';
+        ui_theme_type = 'dark';
+        checkLocalStorage && localStorage.removeItem("ui-theme");
+    }
+}
+if ( !!ui_theme_name ) {
+    document.body.classList.add(ui_theme_name);
+}
+
+if ( checkLocalStorage ) {
+    let current_theme = localStorage.getItem("ui-theme");
+    if ( !!current_theme && /type":\s*"dark/.test(current_theme) || ui_theme_type == 'dark' ) {
+        document.body.classList.add("theme-type-dark");
+
+        let content_theme = localStorage.getItem("content-theme");
+        if ( content_theme == 'dark' ) {
+            document.body.classList.add("content-theme-dark");
+        }
+    }
+}
+</script>
+      <script>
+          if ( !!window.desktop ) {
+              var sheet = document.createElement('style')
+              sheet.innerHTML = ".device-desktop .loading-logo {display:none;}";
+              document.body.appendChild(sheet);
+
+              document.body.classList.add('device-desktop');
+          }
+      </script>
+
+      <div id="loading-mask" class="loadmask">
+          <div class="brendpanel">
+            <div><div class="brand-logo loading-logo"><img src=""></div><div class="doc-title"></div><div class="circle"></div></div>
+          </div>
+          <div class="placeholder-outer">
+          <div class="placeholder">
+              <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+          </div>
+          </div>
+      </div>
+
+       <script>
+            var  userAgent = navigator.userAgent.toLowerCase(),
+                check = function(regex){ return regex.test(userAgent); },
+                stopLoading = false;
+            if (!check(/opera/) && (check(/msie/) || check(/trident/))) {
+                var m = /msie (\d+\.\d+)/.exec(userAgent);
+                if (m && parseFloat(m[1]) < 10.0) {
+                    document.write(
+                        '<div id="id-error-mask" class="errormask">',
+                            '<div class="error-body" align="center">',
+                                '<div id="id-error-mask-title" class="title">Your browser is not supported.</div>',
+                                '<div id="id-error-mask-text">Sorry, Document Editor is currently only supported in the latest versions of the Chrome, Firefox, Safari or Internet Explorer web browsers.</div>',
+                            '</div>',
+                        '</div>'
+                    );
+                    stopLoading = true;
+                }
+            } else
+             if (check(/windows\snt/i)) {
+                 var re = /chrome\/(\d+)/i.exec(userAgent);
+                 if (!!re && !!re[1] && !(re[1] > 49)) {
+                     setTimeout(function () {
+                         document.getElementsByTagName('html')[0].className += "winxp";
+                     },0);
+                 }
+             }
+
+            function getUrlParams() {
+                var e,
+                    a = /\+/g,  // Regex for replacing addition symbol with a space
+                    r = /([^&=]+)=?([^&]*)/g,
+                    d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+                    q = window.location.search.substring(1),
+                    urlParams = {};
+
+                while (e = r.exec(q))
+                    urlParams[d(e[1])] = d(e[2]);
+
+                return urlParams;
+            }
+
+            function encodeUrlParam(str) {
+                return str.replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+            }
+
+            var params = getUrlParams(),
+                           lang = (params["lang"] || 'en').split(/[\-\_]/)[0],
+                           logo = params["headerlogo"] ? encodeUrlParam(params["headerlogo"]) : null,
+                           logoDark = params["headerlogodark"] ? encodeUrlParam(params["headerlogodark"]) : null;
+
+            window.frameEditorId = params["frameEditorId"];
+            window.parentOrigin = params["parentOrigin"];
+
+            if (stopLoading) {
+               document.body.removeChild(document.getElementById('loading-mask'));
+            } else {
+               var elem = document.querySelector('.loading-logo');
+               if (elem && (logo || logoDark)) {
+                   elem.style.backgroundImage= 'none';
+                   elem.style.width = 'auto';
+                   elem.style.height = 'auto';
+                   var img = document.querySelector('.loading-logo img');
+                   img && img.setAttribute('src', /theme-dark/.test(document.body.className) ? logoDark || logo : logo || logoDark);
+                   img.style.opacity = 1;
+               }
+            }
+        </script>
+
+      <div id="editor_sdk" class="viewer" style="overflow: hidden;" tabindex="-1"></div>
+
+      <div class="overlay-controls" style="margin-left: -32px">
+          <ul class="left">
+              <li id="id-btn-zoom-in"><button class="overlay svg-icon zoom-up"></button></li>
+              <li id="id-btn-zoom-out"><button class="overlay svg-icon zoom-down"></button></li>
+          </ul>
+      </div>
+
+      <div class="toolbar" id="toolbar">
+          <div class="group left">
+              <div class="margin-right-large"><a id="header-logo" class="brand-logo" href="http://www.onlyoffice.com/" target="_blank"></a></div>
+              <span id="id-btn-undo" class="margin-right-small"></span>
+              <span id="id-btn-redo" class="margin-right-small"></span>
+              <div class="separator"></div>
+              <span id="id-btn-prev-field" class="margin-left-small margin-right-small"></span>
+              <span id="id-btn-next-field" class="margin-right-large"></span>
+              <span id="id-btn-clear-fields"></span>
+          </div>
+          <div class="group center">
+              <span id="title-doc-name"></span>
+          </div>
+          <div class="group right">
+              <div id="id-pages" class="item margin-right-small" style="vertical-align: middle;">
+                  <div id="page-number" style="display: inline-block; vertical-align: middle;"></div><span class="text" id="pages" tabindex="-1">of 1</span>
+              </div>
+              <div id="id-submit-group" style="display: inline-block;"></div>
+              <div id="id-download-group" style="display: inline-block;"></div>
+              <span id="box-tools"></span>
+          </div>
+      </div>
+      <script>
+          window.requireTimeourError = function(){
+              var reqerr;
+
+              if ( lang == 'de')      reqerr = 'Die Verbindung ist zu langsam, einige Komponenten konnten nicht geladen werden. Aktualisieren Sie bitte die Seite.';
+              else if ( lang == 'es') reqerr = 'La conexión es muy lenta, algunos de los componentes no han podido cargar. Por favor recargue la página.';
+              else if ( lang == 'fr') reqerr = 'La connexion est trop lente, certains des composants n\'ons pas pu être chargé. Veuillez recharger la page.';
+              else if ( lang == 'ru') reqerr = 'Слишком медленное соединение, не удается загрузить некоторые компоненты. Пожалуйста, обновите страницу.';
+              else if ( lang == 'tr') reqerr = 'Bağlantı çok yavaş, bileşenlerin bazıları yüklenemedi. Lütfen sayfayı yenileyin.';
+              else reqerr = 'The connection is too slow, some of the components could not be loaded. Please reload the page.';
+
+              return reqerr;
+          };
+
+          var requireTimeoutID = setTimeout(function(){
+              window.alert(window.requireTimeourError());
+              window.location.reload();
+          }, 30000);
+
+          var require = {
+              waitSeconds: 30,
+              callback: function(){
+                  clearTimeout(requireTimeoutID);
+              }
+          };
+      </script>
+      <!--application-->
+      <script>
+/*
+ * (c) Copyright Ascensio System SIA 2010-2019
+ *
+ * This program is a free software product. You can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License (AGPL)
+ * version 3 as published by the Free Software Foundation. In accordance with
+ * Section 7(a) of the GNU AGPL its Section 15 shall be amended to the effect
+ * that Ascensio System SIA expressly excludes the warranty of non-infringement
+ * of any third-party rights.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For
+ * details, see the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+ *
+ * You can contact Ascensio System SIA at 20A-12 Ernesta Birznieka-Upisha
+ * street, Riga, Latvia, EU, LV-1050.
+ *
+ * The  interactive user interfaces in modified source and object code versions
+ * of the Program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU AGPL version 3.
+ *
+ * Pursuant to Section 7(b) of the License you must retain the original Product
+ * logo when distributing the program. Pursuant to Section 7(e) we decline to
+ * grant you any rights under trademark law for use of our trademarks.
+ *
+ * All the Product's GUI elements, including illustrations and icon sets, as
+ * well as technical writing content are licensed under the terms of the
+ * Creative Commons Attribution-ShareAlike 4.0 International. See the License
+ * terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+ *
+ */
+
+"use strict";
+(function (window, undefined) {
+	var supportedScaleValues = [1, 1.25, 1.5, 1.75, 2];
+	if (window["AscDesktopEditor"] && window["AscDesktopEditor"]["GetSupportedScaleValues"])
+		supportedScaleValues = window["AscDesktopEditor"]["GetSupportedScaleValues"]();
+
+	// uncomment to debug all scales
+	//supportedScaleValues = [];
+
+	var isCorrectApplicationScaleEnabled = (function(){
+
+		if (supportedScaleValues.length === 0)
+			return false;
+
+		var userAgent = navigator.userAgent.toLowerCase();
+		var isAndroid = (userAgent.indexOf("android") > -1);
+		var isIE = (userAgent.indexOf("msie") > -1 || userAgent.indexOf("trident") > -1 || userAgent.indexOf("edge") > -1);
+		var isChrome = !isIE && (userAgent.indexOf("chrome") > -1);
+		var isOperaOld = (!!window.opera);
+		var isMobile = /android|avantgo|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent || navigator.vendor || window.opera);
+
+		if (isAndroid || !isChrome || isOperaOld || isMobile || !document || !document.firstElementChild || !document.body)
+			return false;
+
+		return true;
+
+	})();
+
+	window['AscCommon'] = window['AscCommon'] || {};
+	window['AscCommon'].checkDeviceScale = function()
+	{
+		var retValue = {
+			zoom: 1,
+			devicePixelRatio: window.devicePixelRatio,
+			applicationPixelRatio: window.devicePixelRatio,
+			correct : false
+		};
+
+		if (!isCorrectApplicationScaleEnabled)
+			return retValue;
+
+		var systemScaling = window.devicePixelRatio;
+		var bestIndex = 0;
+		var bestDistance = Math.abs(supportedScaleValues[0] - systemScaling);
+		var currentDistance = 0;
+		for (var i = 1, len = supportedScaleValues.length; i < len; i++)
+		{
+			if (true)
+			{
+				// это "подстройка под интерфейс" - после убирания этого в общий код - удалить
+				if (Math.abs(supportedScaleValues[i] - systemScaling) > 0.0001)
+				{
+					if (supportedScaleValues[i] > (systemScaling - 0.0001))
+						break;
+				}
+			}
+
+			currentDistance = Math.abs(supportedScaleValues[i] - systemScaling);
+			if (currentDistance < (bestDistance - 0.0001))
+			{
+				bestDistance = currentDistance;
+				bestIndex = i;
+			}
+		}
+
+		retValue.applicationPixelRatio = supportedScaleValues[bestIndex];
+		if (Math.abs(retValue.devicePixelRatio - retValue.applicationPixelRatio) > 0.01)
+		{
+			retValue.zoom = retValue.devicePixelRatio / retValue.applicationPixelRatio;
+			retValue.correct = true;
+		}
+		return retValue;
+	};
+
+	var oldZoomValue = 1;
+	window['AscCommon'].correctApplicationScale = function(zoomValue)
+	{
+		if (!zoomValue.correct && Math.abs(zoomValue.zoom - oldZoomValue) < 0.0001)
+			return;
+		oldZoomValue = zoomValue.zoom;
+		var firstElemStyle = document.firstElementChild.style;
+		if (Math.abs(oldZoomValue - 1) < 0.001)
+			firstElemStyle.zoom = "normal";
+		else
+			firstElemStyle.zoom = 1.0 / oldZoomValue;
+	};
+})(window);
+
+</script>
+      <script data-main="app" src="../../../vendor/requirejs/require.js"></script>
+  </body>
+</html>

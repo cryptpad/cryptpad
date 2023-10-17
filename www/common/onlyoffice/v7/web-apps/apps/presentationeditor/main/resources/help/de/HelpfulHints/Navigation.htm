@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ansichtseinstellungen und Navigationswerkzeuge</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of view settings and navigation tools such as zoom, previous/next slide buttons" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Ansichtseinstellungen und Navigationswerkzeuge</h1>
+			<p>Der <a target="_blank" href="https://www.onlyoffice.com/de/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a> bietet mehrere Werkzeuge, um Ihnen die Ansicht und Navigation in Ihrer Präsentation zu erleichtern: Zoom, vorherige/nächste Folie, Anzeige der Foliennummer.</p>
+			<h3>Anzeigeeinstellungen anpassen</h3>
+			<p>
+				Um die Standardansichtseinstellungen anzupassen und den bequemsten Modus für die Arbeit mit der Präsentation festzulegen, gehen Sie zur Registerkarte <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Ansicht</a> und wählen Sie aus, welche Elemente der Benutzeroberfläche ausgeblendet oder angezeigt werden sollen.
+				Auf der Registerkarte <b>Ansicht</b> können Sie die folgenden Optionen auswählen:
+			</p>
+			<ul>
+				<li><b>Zoom</b>, um den erforderlichen Zoomwert von 50 % bis 500 % aus der Drop-Down-Liste einzustellen.</li>
+				<li><b>An Folie anpassen</b>, um die gesamte Folie an den sichtbaren Teil des Arbeitsbereichs anzupassen.</li>
+				<li><b>An Breite anpassen</b>, um die Folienbreite an den sichtbaren Teil des Arbeitsbereichs anzupassen.</li>
+				<li><b>Thema der Benutzeroberfläche</b> - wählen Sie eines der verfügbaren Oberflächenthemen aus dem Drop-Down-Menü: <em>Wie im System</em>, <em>Hell</em>, <em>Klassisch Hell</em>, <em>Dunkel</em>, <em>Dunkler Kontrast</em>.</li>
+				<li><b>Notizen</b> - wenn deaktiviert, wird der Notizenbereich unter der Folie ausgeblendet. Dieser Abschnitt kann auch durch Ziehen mit dem Mauszeiger ein-/ausgeblendet werden.</li>
+				<li><b>Lineale</b> - wenn deaktiviert, werden Lineale ausgeblendet, die zum Einrichten von Tabstopps und Absatzeinzügen in den Textfeldern verwendet werden. Um die ausgeblendeten <b>Lineale</b> anzuzeigen, klicken Sie erneut auf diese Option.</li>
+				<li><b>Führungslinien</b> – wählen Sie den bevorzugten Führungstyp, um Objekte richtig auf der Folie zu positionieren. Die verfügbaren Optionen sind <em>vertikal</em>, <em>horizontal</em> und <em>Smart-Führungslinien</em> für eine bessere Positionierung.</li>
+				<li><b>Gitternetzlinien</b> – wählen Sie die bevorzugte <em>Gittergröße</em> aus verfügbaren Vorlagen oder legen Sie eine <em>benutzerdefinierte</em> Größe fest, und ob Sie <em>Objekte</em> am Gitter ausrichten möchten oder nicht, um die Objektpositionierung zu verbessern.</li>
+				<li>
+					<b>Symbolleiste immer anzeigen</b> - wenn diese Option deaktiviert ist, wird die obere Symbolleiste, die Befehle enthält, ausgeblendet, während die Registerkartennamen sichtbar bleiben.
+					<p class="note">Sie können auch einfach auf eine beliebige Registerkarte doppelklicken, um die obere Symbolleiste auszublenden oder wieder anzuzeigen.</p>
+				</li>
+				<li><b>Statusleiste</b> - wenn deaktiviert, wird die unterste Leiste ausgeblendet, in der sich die Schaltflächen <b>Folienzahlanzeige</b> und <b>Zoom</b> befinden. Um die ausgeblendete <b>Statusleiste</b> anzuzeigen, klicken Sie erneut auf diese Option.</li>
+				<li><b>Linkes Bedienfeld</b> - wenn diese Option deaktiviert ist, wird der linke Bereich ausgeblendet, in dem sich die Schaltflächen <b>Suchen</b>, <b>Kommentare</b> usw. befinden. Aktivieren Sie dieses Kontrollkästchen, um das linke Bedienfeld anzuzeigen.</li>
+				<li><b>Rechtes Bedienungsfeld</b> - wenn diese Option deaktiviert ist, wird das rechte Bedienfeld ausgeblendet, in dem sich <b>Einstellungen</b> befinden. Aktivieren Sie dieses Kontrollkästchen, um das rechte Bedienfeld anzuzeigen.</li>
+			</ul>
+			<p>
+				Die rechte Seitenleiste ist standartmäßig minimiert. Um sie zu erweitern, wählen Sie ein beliebiges Objekt/Folie aus und klicken Sie auf das Symbol des aktuell aktivierten Tabs auf der rechten Seite. Um die Seitenleiste wieder zu minimieren, klicken Sie erneut auf das Symbol. Die Breite der linken Randleiste wurd durch Ziehen und Loslassen mit dem Mauszeiger angepasst:
+				Bewegen Sie den Mauszeiger über den Rand der linken Seitenleiste, so dass dieser sich in einen bidirektionalen Pfeil verwandelt und ziehen Sie den Rand nach links, um die Seitenleiste zu verkleinern und nach rechs um sie zu erweitern.
+			</p>
+			<h3>Verwendung der Navigationswerkzeuge</h3>
+			<p>Mithilfe der folgenden Werkzeuge können Sie durch Ihre Präsentation navigieren:</p>
+			<p>
+				Die <b>Zoom-Funktion</b> befindet sich in der rechten unteren Ecke und dient zum Vergrößern und Verkleinern der aktuellen Präsentation.
+				Um den in Prozent angezeigten aktuellen Zoomwert zu ändern, klicken Sie darauf und wählen Sie eine der verfügbaren Zoomoptionen (50% / 75% / 100% / 125% / 150% / 175% / 200% / 300% / 400% / 500%) aus der Liste
+				oder klicken Sie auf <b>Vergrößern</b> <span class="icon icon-zoomin"></span> oder <b>Verkleinern</b> <span class="icon icon-zoomout"></span>.
+				Klicken Sie auf das Symbol <b>Breite anpassen</b> <span class="icon icon-fitwidth"></span>, um die Folienbreite der Präsentation an den sichtbaren Teil des Arbeitsbereichs anzupassen.
+				Um die ganze Folie der Präsentation an den sichtbaren Teil des Arbeitsbereichs anzupassen, klicken Sie auf das Symbol <b>Folie anpassen</b> <span class="icon icon-fitslide"></span>.
+				Zoomeinstellungen sind auch auf der Registerkarte <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">Ansicht</a> verfügbar.
+			</p>
+			<p class="note">Sie können einen Standard-Zoomwert festlegen. Wechseln Sie in der oberen Symbolleiste in die Registerkarte <b>Datei</b>, wählen Sie die Option <b>Erweiterte Einstellungen...</b>, wählen Sie den gewünschten <b>Zoom-Standard-Wert</b> aus der Liste aus und klicken sie auf <b>Anwenden</b>.</p>
+			<p>Um während der Bearbeitung der Präsentation zur nächsten Folie zu wechseln oder zur vorherigen Folie zurückzukehren, können Sie über die Schaltflächen <span class="icon icon-previouspage"></span> und <span class="icon icon-nextpage"></span> oben und unten in der vertikalen Bildlaufleiste am rechten Folienrand für die Navigation verwenden.</p>
+			<p>
+				Die <b>Folienzahlanzeige</b> stellt die aktuelle Folie als Teil aller Folien in der aktuellen Präsentation dar (Folie „n“ von „nn“).
+				Wenn Sie auf die Anzeige der Foliennummer klicken, öffnet sich ein Fenster und Sie können eine gewünschte Foliennummer angeben, um direkt auf diese Folie zu wechseln. Wenn Sie die <b>Statusleiste</b> ausgeblendet haben, ist dieser Schnellzugriff nicht zugänglich.
+			</p>
+
+
+		</div>
+	</body>
+</html>

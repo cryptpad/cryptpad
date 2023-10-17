@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Get data from TXT/CSV file</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="How to import data from Text/CSV file" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Get data from TXT/CSV file</h1>
+			<p>If you need to quickly get data from a .txt/.csv file and have it all arranged properly in a spreadsheet, use the <b>Get data from Text/CSV file</b> option available on the <b>Data</b> tab.</p>
+			<h2 id="step1">Step 1. Importing the file</h2>
+			<ol>
+				<li>Click the <b>Get data</b> option on the <b>Data</b> tab.</li>
+				<li>Choose one of the importing options:
+				<ul>
+					<li><b>From Local TXT/CSV</b>: find the needed file on your hard drive, select it and click <b>Open</b>.</li>
+					<li><b>From TXT/CSV Web Address</b>: paste the link to the file or web page into the <b>Paste a data URL</b> field and click <b>OK</b>.
+                        <p class="note">
+                            A link for viewing or editing a file stored on the ONLYOFFICE portal or in a third-party storage cannot be used in this case. Please use the link to <b>download</b> the file.
+                        </p>
+                    </li>
+					<li><b>From Local XML</b>: find the needed file on your hard drive, select it and click <b>Open</b>.
+						<p class="note">Currently, only XML spreadsheet 2003 is supported.</p>
+					</li>
+				</ul>
+				</li>
+			</ol>
+			<h2 id="step2">Step 2. Configuring the settings</h2>
+			<p>The <b>Text Import Wizard</b> encompasses four sections: <b>Encoding</b>, <b>Delimiter</b>, <b>Preview</b>, and <b>Choose where to put data</b>.</p>
+			<p><img alt="Text Import Wizard" src="../images/textimport.png" /></p>
+			<ol>
+				<li><b>Encoding</b>. The parameter is set to <em>UTF-8</em> by default. Leave it at that or select the type you need using the drop-down menu.</li>
+                <li>
+                    <b>Delimiter</b>. The parameter sets the type of delimiter used to distribute the plain text into different cells. The delimiters available are <em>Comma</em>, <em>Semicolon</em>, <em>Colon</em>, <em>Tab</em>, <em>Space</em>, and <em>Other</em> (enter manually).
+                    <p>Click the <b>Advanced</b> button located to the right to configure settings for data recognized as numeric:</p>
+                    <p><img alt="Data Import Advanced Settings" src="../images/dataimport_advanced.png" /></p>
+                    <ul>
+                        <li>Set a <b>Decimal separator</b> and a <b>Thousands separator</b>. The default separators are <b>“.”</b> for decimal and <b>“,”</b> for thousands.</li>
+                        <li>
+                            Select a <b>Text qualifier</b>. A <b>Text qualifier</b> is a character that is used to recognize where the text begins and ends when you are importing data. The available options: <b>(none)</b>, <b>double quotes</b>, and <b>single quote</b>.
+                        </li>
+                    </ul>
+                </li>
+				<li><b>Preview</b>. The section shows how the text will be arranged in the spreadsheet cells.</li>
+				<li><b>Choose where to put data</b>. Enter the required range in the field or choose one using the <b>Select data</b> button to the right.</li>
+				<li>Click <b>OK</b> to import the file and exit the <b>Text Import Wizard</b>.</li>
+			</ol>
+		</div>
+	</body>
+</html>

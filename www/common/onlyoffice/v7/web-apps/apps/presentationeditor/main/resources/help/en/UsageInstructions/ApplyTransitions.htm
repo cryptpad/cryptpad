@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Apply transitions</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add animation effects between slides" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Apply transitions</h1>
+			<p>A <b>transition</b> is an effect that appears when one slide advances to the next one during presentation. In the <a target="_blank" href="https://www.onlyoffice.com/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Presentation Editor</b></a>, you can apply the same transition to all slides or different transitions to each separate slide and adjust the transition parameters.</p>
+			<p><b>To apply a transition</b> to a single slide or several selected slides:</p>
+			<ol>
+				<li>Switch to the <b>Transitions</b> tab on the top toolbar.
+				<p><img alt="Transitions tab" src="../images/interface/transitionstab.png" /></p>
+				</li>
+				<li>Select a slide (or several slides in the slide list) you want to apply a transition to.</li>
+				<li>Select one of the available transition effects on the <b>Transition</b> tab: <b>None</b>, <b>Fade</b>, <b>Push</b>, <b>Wipe</b>, <b>Split</b>, <b>Uncover</b>, <b>Cover</b>, <b>Clock</b>, <b>Zoom</b>.</li>
+				<li>Click the <b>Parameters</b> button to select one of the available effect options that define exactly how the effect appears. For example, the options available for <b>Zoom</b> effect are <b>Zoom In</b>, <b>Zoom Out</b> and <b>Zoom and Rotate</b>.</li>
+				<li>Specify how long you want the transition to last. In the <b>Duration</b> box, enter or select the necessary time value, measured in seconds.</li>
+				<li>Press the <b>Preview</b> button to view the slide with the transition applied in the slide editing area.</li>
+				<li>Specify how long you want the slide to be displayed until it advances to the next one:
+				    <ul>
+				    <li><b>Start on click</b> – check this box if you don't want to restrict the time to display the selected slide. The slide will advance to the next one only when you click it with the mouse.</li>
+				    <li><b>Delay</b> – use this option if you want the selected slide to be displayed within a specified period of time until it advances to the next one. Check this box and enter or select the necessary time value, measured in seconds.
+				    <p class="note"><b>Note</b>: if you check only the <b>Delay</b> box, the slides will advance automatically within a specified time interval. If you check both the <b>Start on click</b> and the <b>Delay</b> boxes and set the delay value, the slides will advance automatically as well, but you will also be able to click a slide to advance it to the next.</p>
+					</li>
+				    </ul>
+			</ol>
+			<p><b>To apply a transition to all slides</b> in your presentation, click the <b>Apply to All Slides</b> button on the <b>Transitions</b> tab.</p>
+			<p><b>To delete a transition</b>, select the necessary slide and choose <b>None</b> among the transition effect options on the <b>Transitions</b> tab.</p>
+			<p><b>To delete all transitions</b>, select any slide, choose <b>None</b> among the transition effect options and press the <b>Apply to All Slides</b> button on the <b>Transitions</b> tab.</p>
+		</div>
+	</body>
+</html>

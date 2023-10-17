@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction de recherche et remplacement</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Description de la fonction de recherche et de remplacement de l'Éditeur de Documents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Fonction de recherche et remplacement</h1>
+			<p>Pour rechercher des caractères, des mots ou des phrases utilisés dans le document, cliquez sur l'icône <span class="icon icon-searchicon"></span> située sur la barre latérale gauche de l'<a href="https://www.onlyoffice.com/fr/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Éditeur de Documents</b></a>, sur l'icône <span class="icon icon-searchicon"></span> située au coin droit en haut ou appuyez sur la combinaison de touches <em>Ctrl+F</em> (<em>Command+F</em> pour MacOS) pour ouvrir le petit panneau Recherche ou sur la combinaison de touches <em>Ctrl+H</em> pour ouvrir le panneau complet Recherche.</p>
+            <p>Un petit panneau <b>Recherche</b> s'affiche au coin droit en haut de la zone de travail.</p>
+            <p><img alt="Petit panneau Recherche" src="../../../../../../common/main/resources/help/fr/images/find_small.png" /></p>
+            <p>Afin d'accéder aux paramètres avancés, cliquez sur l'icône <span class="icon icon-search_advanced"></span> ou appuyez sur la combinaison de touches Ctrl+H.</p>
+			<p>La fenêtre <b>Rechercher et remplacer</b> s'affiche :</p>
+			<p><img alt="Fenêtre Rechercher et remplacer" src="../images/search_window.png" /></p>
+			<ol>
+				<li>Saisissez votre enquête dans le champ de saisie correspondant <b>Recherche</b>.</li>
+                <li>Si vous avez besoin de <b>remplacer</b> une ou plusieurs occurrences des caractères saisis, saisissez le texte de remplacement dans le champ de saisie correspondant <b>Remplacer par</b>. Vous pouvez remplacer l'occurrence actuellement sélectionnée ou remplacer toutes les occurrences en cliquant sur les boutons correspondants <b>Remplacer</b> et <b>Remplacer tout</b>.</li>
+                <li>Afin de parcourir les occurrences trouvées, cliquez sur un des boutons à flèche. Le bouton <div class="icon icon-searchdownbutton"></div> affiche l'occurrence suivante, le bouton <div class="icon icon-searchupbutton"></div>) affiche l'occurrence précédente.</li>
+				<li>
+                    Spécifiez les paramètres de recherche en cochant les options nécessaires au-dessous du champ de saisie :
+				    <ul>
+					    <li><b>Sensible à la casse</b> - sert à trouver les occurrences saisies de la même casse (par exemple, si votre enquête est 'Editeur' et cette option est sélectionnée, les mots tels que 'éditeur' ou 'EDITEUR' etc. ne seront pas trouvés).</li>
+                        <li><b>Seulement les mots entiers</b> - sert à surligner les mots entiers uniquement.</li>
+				    </ul>
+				</li>
+			</ol>
+            <p>Toutes les occurrences seront mises en surbrillance dans le fichier et affichées sous forme de liste dans le panneau gauche <b>Recherche</b>. Utilisez la liste pour passer à l'occurrence requise ou utilisez les boutons de navigation <span class="icon icon-searchupbutton"></span> et <span class="icon icon-searchdownbutton"></span>.</p>
+            <p><b>Éditeur de Documents</b> prend en charge la recherche de caractères spéciaux. Pour rechercher un caractère spécial, saisissez-le dans le champ de recherche.</p>
+            <details class="details-example">
+                    <summary>La liste des caractères spéciaux qu'on peut utiliser dans une requête</summary>
+                    <table>
+                        <tr>
+                            <td><b>Caractère spécial</b></td>
+                            <td><b>Description</b></td>
+                        </tr>
+                        <tr>
+                            <td>^l</td>
+                            <td>Saut de ligne</td>
+                        </tr>
+                        <tr>
+                            <td>^t</td>
+                            <td>Taquet de tabulation</td>
+                        </tr>
+                        <tr>
+                            <td>^?</td>
+                            <td>Tout symbole</td>
+                        </tr>
+                        <tr>
+                            <td>^#</td>
+                            <td>Tout chiffre</td>
+                        </tr>
+                        <tr>
+                            <td>^$</td>
+                            <td>Toute lettre</td>
+                        </tr>
+                        <tr>
+                            <td>^n</td>
+                            <td>Saut de colonne</td>
+                        </tr>
+                        <tr>
+                            <td>^e</td>
+                            <td>Note de fin</td>
+                        </tr>
+                        <tr>
+                            <td>^f</td>
+                            <td>Note de bas de page</td>
+                        </tr>
+                        <tr>
+                            <td>^g</td>
+                            <td>Élément graphique</td>
+                        </tr>
+                        <tr>
+                            <td>^m</td>
+                            <td>Saut de page</td>
+                        </tr>
+                        <tr>
+                            <td>^~</td>
+                            <td>Trait d'union insécable</td>
+                        </tr>
+                        <tr>
+                            <td>^s</td>
+                            <td>Espace insécable</td>
+                        </tr>
+                        <tr>
+                            <td>^^</td>
+                            <td>Échappement du caret lui-même</td>
+                        </tr>
+                        <tr>
+                            <td>^w</td>
+                            <td>Tout espace</td>
+                        </tr>
+                        <tr>
+                            <td>^+</td>
+                            <td>Tiret cadratin</td>
+                        </tr>
+                        <tr>
+                            <td>^=</td>
+                            <td>Tiret demi-cadratin</td>
+                        </tr>
+                        <tr>
+                            <td>^y</td>
+                            <td>Tout tiret</td>
+                        </tr>
+                    </table>
+                </details>
+            <details class="details-example">
+                    <summary>Les caractères qu'on peut utiliser pour remplacement :</summary>
+                    <table>
+                        <tr>
+                            <td><b>Caractère spécial</b></td>
+                            <td><b>Description</b></td>
+                        </tr>
+                        <tr>
+                            <td>^l</td>
+                            <td>Saut de ligne</td>
+                        </tr>
+                        <tr>
+                            <td>^t</td>
+                            <td>Taquet de tabulation</td>
+                        </tr>
+                        <tr>
+                            <td>^n</td>
+                            <td>Saut de colonne</td>
+                        </tr>
+                        <tr>
+                            <td>^m</td>
+                            <td>Saut de page</td>
+                        </tr>
+                        <tr>
+                            <td>^~</td>
+                            <td>Trait d'union insécable</td>
+                        </tr>
+                        <tr>
+                            <td>^s</td>
+                            <td>Espace insécable</td>
+                        </tr>
+                        <tr>
+                            <td>^+</td>
+                            <td>Tiret cadratin</td>
+                        </tr>
+                        <tr>
+                            <td>^=</td>
+                            <td>Tiret demi-cadratin</td>
+                        </tr>
+                    </table>
+                </details>
+
+</div>
+	</body>
+</html>
