@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert Sparklines</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a chart to your spreadsheet and adjust its position, size and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Insert Sparklines</h1>
+            <h3>Using Sparklines</h3>
+            <p>Sparkline is a small chart that fits into a cell to represent trends or variations of data. Sparklines have limited functionality compared with regular charts but are an excellent tool to quickly analyze your data and to create a concise visual representation.  Sparkline size depends on the size of the cell, change cell width and length to adjust the size. After adding a sparkline, you can still type text or add conditional formatting into the cell. ONLYOFFICE <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"> <b>Spreadsheet Editor</b></a> offers three types of sparklines:</p>
+            <p><div class = "big big-sparklines_types"></div> </p>
+            <ul>
+                <li><b>Column</b> is similar to a regular <b>Column Chart</b>.</li>
+                <li><b>Line</b> is similar to a regular <b>Line Chart</b>.</li>
+                <li><b>Win/Loss</b> is suitable for representing data that include both positive and negative values.</li>
+            </ul>
+            <h3>Insert Sparklines</h3>
+            <p>To insert a <b>Sparkline</b> chart, select the data range to include in the sparkline, or click a blank cell where to place it, go to the <b>Insert</b> tab and click the <b>Sparkline</b> <span class="icon icon-sparklines_button"></span> button on the top toolbar. Choose a sparkline that serves your purpose. The <b>Create Sparklines</b> window will open, click the <b>Select data</b> icon to specify the data range, and the location of the sparkline, click <b>OK</b> to confirm</p>
+			<p><img alt="Create Sparkline Window" src="../images/createsparkline_window.png" /></p>
+            <h3>Edit and Format Sparklines</h3>
+            <p>After inserting a sparkline, you can customize and edit it. Click the cell with a sparkline to enable the <b>Sparkline settings</b> tab on the right sidebar.</p>
+            <p><img alt="Sparkline Settings Tab" src="../images/sparklinesettings_tab.png" /></p>
+            <ul>
+                <li>In the <b>Type</b> section, you can select one of the available sparkline types drop-down list: 
+                <p><b>Column</b> - this type is similar to a regular <b>Column Chart</b>.</p> 
+                <p><b>Line</b> - this type is similar to a regular <b>Line Chart</b>.</p>
+                <p><b>Win/Loss</b> - this type is suitable for representing data that include both positive and negative values.</p>
+            </li>
+                <li>In the <b>Style</b> section, you can select the style which suits you best from the <b>Template</b> drop-down list, the necessary <b>Color</b> for the sparkline, and the necessary <b>Line Weight</b> (available for the <b>Line</b> sparkline only)</li>
+                <li>In the <b>Show</b> section, you can highlight or mark certain data in the sparkline: 
+                <p><i>High Point</i> – use it to highlight the maximum value.</p>
+                <p><i>Low Point</i> – use it to highlight the minimum value.</p>
+                <p><i>Negative Point</i> – use it to highlight negative values.</p>
+                <p><i>First Point</i> – use it to highlight the starting point in the data range.</p>
+                <p><i>Last Point</i> - use it to highlight the end point in the data range. </p>
+                <p><i>Markers</i> – is available for Line sparklines only, use it to enable a marker for all points.</p>
+            </li>
+            </ul>    
+            <p>Click the down arrow in the color box to select a color for each point. </p>
+            <p>If you need to make your sparkline more accurate and easier to read, click the <b>Show advanced settings</b> option to open the <b>Sparkline – Advanced Settings</b> window.</p>
+            <p><img alt="Sparkline Advanced Settings Window" src="../images/sparkline_advancedsettings1.png" /> </p>   
+            <p> </p>
+            <p>The <b>Type &amp Data</b> tab allows you to change the sparkline <b>Type</b> and <b>Style</b> as well as specify the <b>Hidden and Empty cells</b> display settings:</p>
+            <ul>
+                <li>
+                    <b>Show empty cells as</b> - this option allows you to control how sparklines are displayed if some cells in a data range are empty. Select the necessary option from the list:
+                    <ul>
+                        <li><b>Gaps</b> - to display the sparkline with gaps in place of missing data,</li>
+                        <li><b>Zero</b> - to display the sparkline as if the value in an empty cell was zero,</li>
+                        <li><b>Connect data points with line</b> (available for the <b>Line</b> type only) - to ignore empty cells and display a connecting line between data points.</li>
+                    </ul>
+                </li>
+                <li><b>Show data in hidden rows and columns</b> - check this box if you want to include values from the hidden cells into sparklines.</li>
+            </ul>
+            <p><img alt="Sparkline Advanced Settings window" src="../images/sparkline_advancedsettings2.png" /></p>
+            <p>The <b>Axis Options</b> tab allows you to specify the following <b>Horizontal/Vertical Axis</b> parameters:</p>
+            <ul>
+                <li>
+                    In the <b>Horizontal Axis</b> section, the following parameters are available:
+                    <ul>
+                        <li><b>Show axis</b> - check this box to display the horizontal axis. If the source data contain negative values, this option helps to display them more vividly.</li>
+                        <li><b>Reverse order</b> - check this box to display data in the reverse sequence.</li>
+                    </ul>
+                </li>
+                <li>
+                    In the <b>Vertical Axis</b> section, the following parameters are available to define the <b>Minimum/Maximum Value</b>:
+                    <ul>
+                        <li>
+                            <b>Minimum/Maximum Value</b>
+                            <ul>
+                                <li><b>Auto for Each</b> - this option is selected by default. It allows you to use own minimum/maximum values for each sparkline. The minimum/maximum values are taken from the separate data series that are used to plot each sparkline. The maximum value for each sparkline will be located at the top of the cell, and the minimum value will be at the bottom.
+                                    <p><span class="big big-autoforeach"></span></p>
+                                </li>
+                                <li><b>Same for All</b> - this option allows you to use the same minimum/maximum value for the entire sparkline group. The minimum/maximum values are taken from the whole data range that is used to plot the sparkline group. The maximum/minimum values for each sparkline will be scaled relative to the highest/lowest value within the range. If you select this option, it will be easier to compare several sparklines.
+                                    <p><span class="big big-sameforall"></span></p>
+                                </li><li><b>Fixed</b> - this option allows you to set a custom minimum/maximum value. The values which are lower or higher than the specified ones are not displayed in the sparklines.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <h3>Clear Sparklines</h3>
+            <p>To delete sparklines, select the cell(s) with the sparkline(s) to be removed and right-click on it. Choose <b>Sparklines</b> from the drop-down menu and click <b>Clear Selected Sparklines</b> or <b>Clear the Selected Sparkline Groups</b>.
+        </div>
+	</body>
+</html>

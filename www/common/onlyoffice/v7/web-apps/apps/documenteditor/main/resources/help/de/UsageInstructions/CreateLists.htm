@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Listen erstellen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Erstellen Sie Aufzählungen oder nummerierte Listen in einem Dokument und ändern Sie die Gliederung der Seiten" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Listen erstellen</h1>
+            <p>Um eine Liste in Ihrem Dokument zu erstellen im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a>,</p>
+            <ol>
+                <li>Platzieren Sie den Zeiger an der Stelle, an der eine Liste gestartet wird (dies kann eine neue Zeile oder der bereits eingegebene Text sein).</li>
+                <li>Wechseln Sie zur Registerkarte <b>Startseite</b> der oberen Symbolleiste.</li>
+                <li>
+                    Wählen Sie den Listentyp aus, den Sie starten möchten:<ul>
+                        <li><b>Eine ungeordnete Liste</b> mit Markierungen wird mithilfe des <b>Aufzählungssymbols</b> <div class = "icon icon-bullets"></div> in der oberen Symbolleiste erstellt</li>
+                        <li>
+                            <b>Die geordnete Liste</b> mit Ziffern oder Buchstaben wird mithilfe des <b>Nummerierungssymbols</b> <div class = "icon icon-numbering"></div> in der oberen Symbolleiste erstellt
+                            <p class="note">Klicken Sie auf den Abwärtspfeil neben dem Symbol <b>Aufzählungszeichen</b> oder <b>Nummerierung</b>, um auszuwählen, wie die Liste aussehen soll.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>Jedes Mal, wenn Sie die <b>Eingabetaste</b> am Ende der Zeile drücken, wird ein neues geordnetes oder ungeordnetes Listenelement angezeigt. Um dies zu stoppen, drücken Sie die <b>Rücktaste</b> und fahren Sie mit dem allgemeinen Textabsatz fort.</li>
+            </ol>
+            <p>Das Programm erstellt auch automatisch nummerierte Listen, wenn Sie Ziffer 1 mit einem Punkt oder einer Klammer und einem Leerzeichen danach eingeben: <b>1.</b>, <b>1)</b>. Listen mit Aufzählungszeichen können automatisch erstellt werden, wenn Sie die Zeichen <b>-</b>, <b>*</b> und ein Leerzeichen danach eingeben.</p>
+            <p>Sie können den Texteinzug in den Listen und ihre Verschachtelung auch mithilfe der Symbole <b>Liste mit mehreren Ebenen</b> <span class = "icon icon-outline"></span>, <b>Einzug verringern</b> <span class = "icon icon-decreaseindent"></span> und <b>Einzug vergrößern</b> <span class = "icon icon-increaseindent"></span> auf der Registerkarte <b>Startseite</b> der oberen Symbolleiste ändern.</p>
+            <p>Um die Listenebene zu ändern, klicken Sie auf das Symbol <b>Nummerierung</b> <span class = "icon icon-numbering"></span>, <b>Aufzählungszeichen</b> <span class = "icon icon-bullets"></span> oder <b>Liste mit mehreren Ebenen</b> <span class = "icon icon-outline"></span> und wählen Sie die Option <b>Listenebene ändern</b>, oder positionieren Sie den Cursor am Zeilenanfang und drücken Sie die Tabulatortaste auf der Tastatur, um zur nächsten Ebene der Liste zu gelangen. Fahren Sie mit der erforderlichen Listenebene fort.</p>
+            <p><img alt="Listenebene ändern" src="../images/listlevel.png" /></p>
+            <p class="note">Die zusätzlichen Einrückungs- und Abstandsparameter können in der rechten Seitenleiste und im Fenster mit den erweiterten Einstellungen geändert werden. Weitere Informationen finden Sie im Abschnitt <a href="ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Ändern von Absatzeinzügen</a> und <a href="LineSpacing.htm" onclick="onhyperlinkclick(this)">Festlegen des Absatzzeilenabstands</a>.</p>
+
+            <h3>Listen verbinden und trennen</h3>
+            <p>So verbinden Sie eine Liste mit der vorhergehenden:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf das erste Element der zweiten Liste,</li>
+                <li>Verwenden Sie die Option <b>Mit vorheriger Liste verbinden</b> aus dem Kontextmenü.</li>
+            </ol>
+            <p>Die Listen werden zusammengefügt und die Nummerierung wird gemäß der ersten Listennummerierung fortgesetzt.</p>
+
+            <p>So trennen Sie eine Liste:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf das Listenelement, mit dem Sie eine neue Liste beginnen möchten.</li>
+                <li>Verwenden Sie die Option <b>Liste trennen</b> aus dem Kontextmenü.</li>
+            </ol>
+            <p>Die Liste wird getrennt und die Nummerierung in der zweiten Liste beginnt von neuem.</p>
+
+            <h3>Nummerierung ändern</h3>
+            <p>So setzen Sie die fortlaufende Nummerierung in der zweiten Liste gemäß der vorherigen Listennummerierung fort:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf das erste Element der zweiten Liste.</li>
+                <li>Verwenden Sie die Option <b>Nummerierung fortsetzen</b> im Kontextmenü.</li>
+            </ol>
+            <p>Die Nummerierung wird gemäß der ersten Listennummerierung fortgesetzt.</p>
+
+            <p>So legen Sie einen bestimmten Nummerierungsanfangswert fest:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf das Listenelement, auf das Sie einen neuen Nummerierungswert anwenden möchten.</li>
+                <li>Verwenden Sie die Option <b>Nummerierungswert festlegen</b> aus dem Kontextmenü.</li>
+                <li>Stellen Sie in einem neuen Fenster, das geöffnet wird, den erforderlichen numerischen Wert ein und klicken Sie auf die Schaltfläche <b>OK</b>.</li>
+            </ol>
+            <h3>Ändern Sie die Listeneinstellungen</h3>
+            <p>So ändern Sie die Listeneinstellungen mit Aufzählungszeichen oder nummerierten Listen, z. B. Aufzählungszeichen / Nummerntyp, Ausrichtung, Größe und Farbe:</p>
+            <ol>
+                <li>Klicken Sie auf ein vorhandenes Listenelement oder wählen Sie den Text aus, den Sie als Liste formatieren möchten.</li>
+                <li>Klicken Sie auf der Registerkarte <b>Startseite</b> der oberen Symbolleiste auf das Symbol <b>Aufzählungszeichen</b> <div class = "icon icon-bullets"></div> oder <b>Nummerierung</b> <div class = "icon icon-numbering"></div>.</li>
+                <li>Wählen Sie die Option <b>Listeneinstellungen</b>.</li>
+                <li>
+                    Das Fenster <b>Listeneinstellungen</b> wird geöffnet. Das Fenster mit den Listen mit Aufzählungszeichen sieht folgendermaßen aus:
+                    <p><img alt="Listeinstellungen" src="../images/bulletedlistsettings.png" /></p>
+                    <p>Das Fenster mit den nummerierten Listeneinstellungen sieht folgendermaßen aus:</p>
+                    <p><img alt="Nummerierte Liste" src="../images/orderedlistsettings.png" /></p>
+                    <p>Für die Liste mit Aufzählungszeichen können Sie ein Zeichen auswählen, das als <b>Aufzählungszeichen</b> verwendet wird, während Sie für die nummerierte Liste den Nummerierungstyp auswählen können. Die Optionen <b>Ausrichtung, Größe</b> und <b>Farbe</b> sind sowohl für die Listen mit Aufzählungszeichen als auch für die nummerierten Listen gleich.</p>
+                    <ul>
+                        <li><b>Aufzählungszeichen</b> - Ermöglicht die Auswahl des erforderlichen Zeichens für die Aufzählungsliste. Wenn Sie auf das Feld <b>Schriftart und Symbol</b> klicken, wird das <b>Symbolfenster</b> geöffnet, in dem Sie eines der verfügbaren Zeichen auswählen können. Weitere Informationen zum Arbeiten mit Symbolen finden Sie in <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">diesem Artikel</a>.</li>
+                        <li><b>Typ</b> - Ermöglicht die Auswahl des erforderlichen Nummerierungstyps für die nummerierte Liste. Folgende Optionen stehen zur Verfügung: <em>Keine, 1, 2, 3, ..., a, b, c, ..., A, B, C, ..., i, ii, iii, ..., I, II, III, ....</em></li>
+                        <li><b>Ausrichtung</b> - Ermöglicht die Auswahl des erforderlichen Typs für die Ausrichtung von Aufzählungszeichen / Zahlen, mit dem Aufzählungszeichen / Zahlen horizontal innerhalb des dafür vorgesehenen Bereichs ausgerichtet werden. Folgende Ausrichtungstypen stehen zur Verfügung: <em>Links, Mitte, Rechts</em>.</li>
+                        <li><b>Größe</b> - Ermöglicht die Auswahl der erforderlichen Aufzählungszeichen- / Zahlengröße. Die Option <em>Wie ein Text</em> ist standardmäßig ausgewählt. Wenn diese Option ausgewählt ist, entspricht die Aufzählungszeichen- oder Zahlengröße der Textgröße. Sie können eine der vordefinierten Größen von <em>8</em> bis <em>96</em> auswählen.</li>
+                        <li><b>Farbe</b> - Ermöglicht die Auswahl der erforderlichen Aufzählungszeichen- / Zahlenfarbe. Die Option <em>Wie ein Text</em> ist standardmäßig ausgewählt. Wenn diese Option ausgewählt ist, entspricht die Aufzählungszeichen- oder Zahlenfarbe der Textfarbe. Sie können die Option <b>Automatisch</b> auswählen, um die automatische Farbe anzuwenden, oder eine der <em>Themenfarben</em> oder <em>Standardfarben</em> in der Palette auswählen oder eine <em>benutzerdefinierte</em> Farbe angeben.</li>
+                    </ul>
+                    <p>Alle Änderungen werden im Feld <b>Vorschau</b> angezeigt.</p>
+                </li>
+                <li>Klicken Sie auf <b>OK</b>, um die Änderungen zu übernehmen und das Einstellungsfenster zu schließen.</li>
+            </ol>
+            <p>So ändern Sie die Einstellungen für mehrstufige Listen:</p>
+            <ol>
+                <li>Klicken Sie auf ein Listenelement.</li>
+                <li>Klicken Sie auf der Registerkarte <b>Startseite</b> der oberen Symbolleiste auf das Symbol <b>Mehrstufige Liste</b> <div class = "icon icon-outline"></div>.</li>
+                <li>Wählen Sie die Option <b>Listeneinstellungen</b>.</li>
+                <li>
+                    Das Fenster <b>Listeneinstellungen</b> wird geöffnet. Das Fenster mit den Einstellungen für mehrstufige Listen sieht folgendermaßen aus:
+                    <p><img alt="Mehrstufige Liste" src="../images/multilevellistsettings.png" /></p>
+                    <p>Wählen Sie die gewünschte Ebene der Liste im Feld Ebene links aus und passen Sie das Aufzählungszeichen oder die Zahl mit den Schaltflächen oben an Aussehen für die ausgewählte Ebene:</p>
+                    <ul>
+                        <li><b>Typ</b> - Ermöglicht die Auswahl des erforderlichen Nummerierungstyps für die nummerierte Liste oder des erforderlichen Zeichens für die Liste mit Aufzählungszeichen. Für die nummerierte Liste stehen folgende Optionen zur Verfügung: <em>Keine, 1, 2, 3, ..., a, b, c, ..., A, B, C, ..., i, ii, iii, .. ., I, II, III, ....</em> Für die Liste mit Aufzählungszeichen können Sie eines der Standardsymbole auswählen oder die Option <b>Neues Aufzählungszeichen</b> verwenden. Wenn Sie auf diese Option klicken, wird das <b>Symbolfenster</b> geöffnet, in dem Sie eines der verfügbaren Zeichen auswählen können. Weitere Informationen zum Arbeiten mit Symbolen finden Sie in <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">diesem Artikel</a>.</li>
+                        <li><b>Ausrichtung</b> - Ermöglicht die Auswahl des erforderlichen Typs für die Ausrichtung von Aufzählungszeichen / Zahlen, mit dem Aufzählungszeichen / Zahlen horizontal innerhalb des am Anfang des Absatzes dafür vorgesehenen Bereichs ausgerichtet werden. Folgende Ausrichtungstypen stehen zur Verfügung: <em>Links, Mitte, Rechts</em>.</li>
+                        <li><b>Größe</b> - Ermöglicht die Auswahl der erforderlichen Aufzählungszeichen- / Zahlengröße. Die Option <em>Wie ein Text</em> ist standardmäßig ausgewählt. Sie können eine der vordefinierten Größen von <em>8</em> bis <em>96</em> auswählen.</li>
+                        <li><b>Farbe</b> - Ermöglicht die Auswahl der erforderlichen Aufzählungszeichen- / Zahlenfarbe. Die Option Wie ein Text ist standardmäßig ausgewählt. Wenn diese Option ausgewählt ist, entspricht die Aufzählungszeichen- oder Zahlenfarbe der Textfarbe. Sie können die Option <b>Automatisch</b> auswählen, um die automatische Farbe anzuwenden, oder eine der <em>Themenfarben</em> oder <em>Standardfarben</em> in der Palette auswählen oder eine <em>benutzerdefinierte</em> Farbe angeben.</li>
+                    </ul>
+                    <p>Alle Änderungen werden im Feld <b>Vorschau</b> angezeigt.</p>
+                </li>
+                <li>
+                    Klicken Sie auf <b>OK</b>, um die Änderungen zu übernehmen und das Einstellungsfenster zu schließen.
+                </li>
+            </ol>
+        </div>
+	</body>
+</html>

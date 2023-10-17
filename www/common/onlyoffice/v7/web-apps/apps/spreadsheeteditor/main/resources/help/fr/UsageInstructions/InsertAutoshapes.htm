@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer et mettre en forme des formes automatiques</title>
+		<meta charset="utf-8" />
+		<meta name="description" content=">Insérer une forme automatique à votre classeur et configurer ses paramètres." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer et mettre en forme des formes automatiques</h1>
+			<h3>Insérer une forme automatique</h3>
+			<p>Pour ajouter une forme automatique au <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Tableur</b></a>,</p>
+			<ol>
+                <li>passez à l'onglet Insérer de la barre d'outils supérieure,</li>
+                <li>cliquez sur l'icône <b>Forme</b> <div class = "icon icon-insertautoshape"></div> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'un des groupes des formes automatiques disponibles dans la <b>Galerie des formes</b> : <em>Récemment utilisé</em>, <em>Formes de base</em>, <em>Flèches figurées</em>, <em>Maths</em>, <em>Graphiques</em>, <em>Étoiles et rubans</em>, <em>Légendes</em>, <em>Boutons</em>, <em>Rectangles</em>, <em>Lignes</em>,</li>
+				<li>cliquez sur la forme automatique nécessaire du groupe sélectionné,</li>
+				<li>placez le curseur de la souris là où vous voulez insérer la forme,</li>
+				<li>une fois que la forme automatique est ajoutée vous pouvez <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">modifier sa taille et sa position</a> aussi bien que ses propriétés.
+			</ol>
+			<h3>Régler les paramètres de la forme automatique</h3>
+			<p>Certains paramètres de la forme automatique peuvent être modifiés dans l'onglet <b>Paramètres de la forme</b> de la barre latérale droite qui s'ouvre si vous sélectionnez la forme automatique avec la souris et cliquez sur l'icône Paramètres de la forme <span class="icon icon-shape_settings_icon"></span>. Vous pouvez y modifier les paramètres suivants :</p>
+			<ul>
+			<li id="shape_fill"><b>Remplissage</b> - utilisez cette section pour sélectionner le remplissage de la forme automatique. Les options disponibles sont les suivantes :
+			<ul>
+				<li><b>Couleur de remplissage</b> - sélectionnez cette option pour spécifier la couleur unie à utiliser pour remplir l'espace intérieur de la forme.
+				<p><img alt="Couleur de remplissage" src="../images/fill_color.png" /></p>
+				<p id="color">Cliquez sur la case de couleur et sélectionnez la couleur voulue à partir de l'ensemble de couleurs disponibles ou spécifiez n'importe quelle couleur de votre choix :</p>
+					<ul>
+						<li><b>Couleurs de thème</b> - les couleurs qui correspondent à la palette de couleurs sélectionnée de la feuille de calcul.</li>
+						<li><b>Couleurs standard</b> - le jeu de couleurs par défaut.</li>
+						<li><b>Couleur personnalisée</b> - choisissez cette option si il n'y a pas de couleur nécessaire dans les palettes disponibles. Sélectionnez la gamme de couleurs nécessaire en déplaçant le curseur vertical et définissez la couleur spécifique en faisant glisser le sélecteur de couleur dans le grand champ de couleur carré. Une fois que vous sélectionnez une couleur avec le sélecteur de couleur, les valeurs de couleur appropriées RGB et sRGB seront affichées dans les champs à droite. Vous pouvez également spécifier une couleur sur la base du modèle de couleur RGB en entrant les valeurs numériques nécessaires dans les champs <b>R, G, B</b> (rouge, vert, bleu) ou saisir le code hexadécimal dans le champ sRGB marqué par le signe <b>#</b>. La couleur sélectionnée apparaît dans la case de prévisualisation <b>Nouveau</b>. Si l'objet a déjà été rempli d'une couleur personnalisée, cette couleur sera affichée dans la case <b>Actuel</b> que vous puissiez comparer les couleurs originales et modifiées. Lorsque la couleur est spécifiée, cliquez sur le bouton <b>Ajouter</b> : La couleur personnalisée sera appliquée à la forme automatique et sera ajoutée dans la palette <b>Couleur personnalisée</b> du menu.
+						</li>
+					</ul>
+				</li>
+				<li><b>Remplissage en dégradé</b> - sélectionnez cette option pour spécifier deux couleurs pour créer une transition douce entre elles et remplir la forme. Personnaliser votre dégradé sans aucune contrainte. Cliquez sur <b>Paramètres de la forme</b> <div class = "icon icon-shape_settings_icon"></div> pour ouvrir le menu <b>Remplissage</b> de la barre latérale droite :
+				<p><img alt="Remplissage en dégradé" src="../images/fill_gradient.png" /></p>
+                <p>Les options disponibles du menu :</p>
+				    <ul>
+				    <li><b>Style</b> - choisissez <b>Linéaire</b> or <b>Radial</b> :
+					<ul>
+					<li><b>Linéaire</b> sert à remplir par un dégradé de gauche à droite, de bas en haut ou sous l'angle partant en direction définie. La fenêtre d'aperçu <b>Direction</b> affiche la couleur de dégradé sélectionnée, cliquez sur la flèche pour définir la direction du dégradé. Utilisez les paramètres <b>Angle</b> pour définir un angle précis du dégradé.</li>
+					<li>Radial sert à remplir par un dégradé de forme circulaire entre le point de départ et le point d'arrivée.</li>
+					</ul>
+                    </li>
+				    <li><b>Point de dégradé</b> est le point d'arrêt de d'une couleur et de la transition entre les couleurs.
+                        <ul>
+                            <li>Utilisez le bouton <b>Ajouter un point de dégradé</b> <div class = "icon icon-addgradientpoint"></div> ou le curseur de dégradé pour ajouter un point de dégradé. Vous pouvez ajouter 10 points de dégradé. Le nouveau arrêt de couleur n'affecte pas l'aspect actuel du dégradé. Utilisez le bouton <b>Supprimer un point de dégradé</b>  <div class = "icon icon-removegradientpoint"></div> pour supprimer un certain point de dégradé.</li>
+                            <li>Faites glisser le curseur de déragé pour changer l'emplacement des points de dégradé ou spécifiez la <b>Position</b> en pourcentage pour l'emplacement plus précis.</li>
+                            <li>Pour choisir la couleur au dégradé, cliquez sur l'arrêt concerné sur le curseur de dégradé, ensuite cliquez sur <b>Couleur</b> pour sélectionner la couleur appropriée.</li>
+                        </ul>
+                    </li>
+				    </ul>			
+				</li>
+				<li><b>Image ou Texture</b> - sélectionnez cette option pour utiliser une image ou une texture prédéfinie en tant que l'arrière-plan de la forme.
+				<p><img alt="Remplissage Image ou Texture" src="../images/fill_picture.png" /></p>
+					<ul>
+						<li>Si vous souhaitez utiliser une image en tant que l'arrière-plan de la forme, vous pouvez cliquez sur <b>Sélectionnez l'image</b> et ajouter une image <b>D'un fichier</b> en la sélectionnant sur le disque dur de votre ordinateur ou <b>A partir de l'espace de stockage</b> à l'aide du gestionnaire de fichiers ONLYOFFICE, ou <b>D'une URL</b> en insérant l'adresse URL appropriée dans la fenêtre ouverte.</li>
+						<li>Si vous souhaitez utiliser une texture en tant que arrière-plan de la forme, utilisez le menu déroulant<b> D'une texture</b> et sélectionnez le préréglage de la texture nécessaire.
+						<p>Actuellement, les textures suivantes sont disponibles : Toile, Carton, Tissu foncé, Grain, Granit, Papier gris, Tricot, Cuir, Papier brun, Papyrus, Bois.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>Si <b>l'Image</b> sélectionnée est plus grande ou plus petite que la forme automatique ou diapositive, vous pouvez profiter d'une des options <b>Prolonger</b> ou <b>Tuile</b> depuis la liste déroulante.
+						<p>L'option <b>Prolonger</b> permet de régler la taille de l'image pour l'adapter à la taille de la forme automatique afin qu'elle puisse remplir tout l'espace uniformément.</p>
+						<p>L'option <b>Tuile </b>permet d'afficher seulement une partie de l'image plus grande en gardant ses dimensions d'origine, ou de répéter l'image plus petite en conservant ses dimensions initiales sur la surface de la forme automatique ou de la diapositive afin qu'elle puisse remplir tout l'espace uniformément.</p>
+						<p class="note"><b>Remarque</b> : tout préréglage <b>Texture</b> sélectionné remplit l'espace de façon uniforme, mais vous pouvez toujours appliquer l'effet <b>Prolonger</b>, si nécessaire.</p>
+						</li>
+					</ul>
+				</li>
+				<li><b>Modèle</b> - sélectionnez cette option pour sélectionner le modèle à deux couleurs composé des éléments répétés pour remplir l'espace intérieur de la forme.
+				<p><img alt="Remplissage avec un modèle" src="../images/fill_pattern.png" /></p>
+						<ul>
+							<li><b>Modèle</b> - sélectionnez un des modèles prédéfinis du menu.</li>
+							<li><b>Couleur de premier plan</b> - cliquez sur cette palette de couleurs pour changer la couleur des éléments du modèle.</li>
+							<li><b>Couleur d'arrière-plan</b> - cliquez sur cette palette de couleurs pour changer de l'arrière-plan du modèle.</li>
+						</ul>
+				</li>
+				<li><b>Pas de remplissage</b> - sélectionnez cette option si vous ne voulez pas utiliser un remplissage.</li>
+			</ul>
+			</li>
+			<li><b>Opacité</b> sert à régler le niveau d'<b>Opacité </b>des formes automatiques en faisant glisser le curseur ou en saisissant la valeur de pourcentage à la main. La valeur par défaut est <b>100%</b>. Celle-ci correspond à l'opacité complète. La valeur <b>0%</b> correspond à la transparence totale.</li>
+			<li id="shape_stroke"><b>Ligne</b> - sert à régler la taille, la couleur et le type du contour de la forme.
+				<ul>
+				<li>Pour modifier la largeur du ligne, sélectionnez une des options disponibles depuis la liste déroulante <b>Taille</b>. Les options disponibles sont les suivantes : 0,5 pt, 1 pt, 1,5 pt, 2,25 pt, 3 pt, 4,5 pt, 6 pt ou <b>Pas de ligne</b> si vous ne voulez pas utiliser de ligne.</li>
+				<li>Pour changer la <b>couleur</b> du contour, cliquez sur la case colorée et sélectionnez la couleur voulue.</li>
+                <li>Pour modifier le <b>type</b> de contour, sélectionnez l'option voulue dans la liste déroulante correspondante (une ligne continue est appliquée par défaut, vous pouvez la remplacer par l'une des lignes pointillées disponibles).</li>
+				</ul>
+			</li>
+            <li>
+                <b>Rotation</b> permet de faire pivoter la forme de 90 degrés dans le sens des aiguilles d'une montre ou dans le sens inverse des aiguilles d'une montre, ainsi que de retourner l'image horizontalement ou verticalement. Cliquez sur l'un des boutons :
+                <ul>
+                   <li><div class = "icon icon-rotatecounterclockwise"></div> pour faire pivoter la forme de 90 degrés dans le sens inverse des aiguilles d'une montre</li>
+                   <li><div class = "icon icon-rotateclockwise"></div> pour faire pivoter la forme de 90 degrés dans le sens des aiguilles d'une montre</li>
+                   <li><div class = "icon icon-fliplefttoright"></div> pour retourner la forme horizontalement (de gauche à droite)</li>
+                   <li><div class = "icon icon-flipupsidedown"></div> pour retourner la forme verticalement (à l'envers)</li>
+                </ul>
+            </li>
+			<li><b>Modifier la forme automatique</b> sert à remplacer la forme actuelle par une autre en la sélectionnant de la liste déroulante.</li>
+            <li><b>Ajouter une ombre</b> activez cette option pour ajouter une ombre portée à une forme.</li>
+			</ul>
+			<hr />
+            <h3>Configurer les paramètres avancés de la forme</h3>
+            <p id="shape_advanced">Pour configurer les paramètres avancés de la forme automatique, cliquez sur le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite. La fenêtre Forme - Paramètres avancés s'ouvre :</p>
+            <p><img alt="Forme - Paramètres avancés" src="../images/shape_properties.png" /></p>
+            <p>L'onglet <b>Taille</b> comporte les paramètres suivants :</p>
+			<ul>
+				<li><b>Largeur</b> et <b>Hauteur</b>&nbsp utilisez ces options pour changer la largeur et/ou la hauteur de la forme. Lorsque le bouton <b><b>Proportions constantes  </b></b> <div class = "icon icon-constantproportions"></div> est activé (dans ce cas elle se présente comme suit <div class = "icon icon-constantproportionsactivated"></div>), le rapport largeur/hauteur d'origine s'ajuste proportionnellement.</li>
+			</ul>
+            <p><img alt="Forme - Paramètres avancés" src="../images/shape_properties_5.png" /></p>
+            <p>L'onglet <b>Rotation</b> comporte les paramètres suivants :</p>
+            <ul>
+                <li><b>Angle</b> - utilisez cette option pour faire pivoter la forme d'un angle exactement spécifié. Entrez la valeur souhaitée mesurée en degrés dans le champ ou réglez-la à l'aide des flèches situées à droite. </li>
+                <li><b>Retourné</b> - cochez la case <b>Horizontalement</b> pour retourner la forme horizontalement (de gauche à droite) ou la case <b>Verticalement</b> pour retourner l'image verticalement (à l'envers).</li>
+            </ul>
+			<p><img alt="Forme - Paramètres avancés" src="../images/shape_properties_1.png" /></p>
+			<p>L'onglet <b>Poids et flèches</b> contient les paramètres suivants :</p>
+			<ul>
+				<li><b>Style de ligne</b> - ce groupe d'options vous permet de spécifier les paramètres suivants :
+				<ul>
+				<li><b>Type de lettrine</b> - cette option permet de définir le style de la fin de la ligne, ainsi elle peut être appliquée seulement aux formes avec un contour ouvert telles que des lignes, des polylignes etc. : 
+					<ul>
+					<li><b>Plat</b> - les points finaux seront plats.</li>
+					<li><b>Arrondi</b> - les points finaux seront arrondis.</li>
+					<li><b>Carré</b> - les points finaux seront carrés.</li>
+					</ul>
+				</li>
+				<li><b>Type de jointure</b> - cette option permet de définir le style de l'intersection de deux lignes, par exemple, une polyligne, les coins du triangle ou le contour du rectangle :
+					<ul>
+					<li><b>Arrondi</b> - le coin sera arrondi.</li>
+					<li><b>Plaque</b> - le coin sera coupé d'une manière angulaire.</li>
+					<li><b>Onglet</b> - l'angle sera aiguisé. Bien adapté pour les formes à angles vifs.</li>
+					</ul>
+					<p class="note"><b>Remarque</b> : l'effet sera plus visible si vous utilisez un contour plus épais.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Flèches</b> - ce groupe d'options est disponible pour les formes du groupe Lignes. Il permet de définir le <b>Style</b> <b>de début</b> et <b>Style de fin</b> aussi bien que la <b>Taille</b> des flèches en sélectionnant l'option appropriée de la liste déroulante.</li>
+			</ul>
+            <p id="internalmargins"><img alt="Forme - Paramètres avancés" src="../images/shape_properties_2.png" /></p>
+            <p>L'onglet Zone de texte vous permet de <b>Redimensionner la forme pour contenir la texte</b>, <b>Autoriser le texte à sortir de la forme</b> ou changer les marges internes <b>En haut</b>, <b>En bas</b>, <b>A gauche</b> et <b>A droite</b> (c'est-à-dire la distance entre le texte à l'intérieur de la forme et les bordures de la forme automatique).</p>
+            <p class="note"><b>Remarque</b> : cet onglet n'est disponible que si tu texte est ajouté dans la forme automatique, sinon l'onglet est désactivé.</p>
+            <p id="columns"><img alt="Paramètres de la forme - L'onglet Colonnes" src="../images/shape_properties_4.png" /></p>
+            <p>L'onglet <b>Colonnes</b> permet d'ajouter des colonnes de texte dans la forme automatique en spécifiant le <b>Nombre de colonnes</b> nécessaires (jusqu'à 16) et <b>l'Espacement entre les colonnes</b>. Une fois que vous avez cliqué sur <b>OK</b>, le texte qui existe déjà ou tout autre texte que vous entrez dans la forme automatique apparaîtra dans les colonnes et circulera d'une colonne à l'autre.</p>
+            <p><img alt="Forme - Paramètres avancés Alignement dans une cellule" src="../images/shape_properties_6.png" /></p>
+            <p>L'onglet<b> Alignement dans une cellule</b> comprend les options suivantes :</p>
+            <ul>
+                <li><b>Déplacer et dimensionner avec des cellules</b> - cette option permet de placer la forme derrière la cellule. Quand une cellule se déplace (par exemple : insertion ou suppression des lignes/colonnes), la forme se déplace aussi. Quand vous ajustez la largeur ou la hauteur de la cellule, la dimension de la forme s'ajuste aussi.</li>
+                <li><b>Déplacer sans dimensionner avec les cellules</b> - cette option permet de placé la forme derrière la cellule mais d'empêcher sa redimensionnement. Quand une cellule se déplace, la forme se déplace aussi, mais si vous redimensionnez la cellule, la forme demeure inchangée.</li>
+                <li><b>Ne pas déplacer et dimensionner avec les cellules</b> - cette option empêche le déplacement ou redimensionnement de la forme si la position ou la dimension de la cellule restent inchangées.</li>
+            </ul>
+            <p><img alt="Forme - Paramètres avancés L'onglet Texte de remplacement" src="../images/shape_properties_3.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information de la forme.</p>
+		    <hr />
+			<h3>Insérer et mettre en forme du texte dans la forme automatique</h3>
+			<p>Pour insérer un texte dans la forme automatique, sélectionnez la forme avec la souris et commencez à taper votre texte. Le texte que vous ajoutez fait partie de la forme (ainsi si vous déplacez ou faites pivoter la forme, le texte change de position lui aussi).</p>
+            <p>Toutes les options de mise en forme que vous pouvez appliquer au texte dans la forme automatique sont listées <a href="InsertTextObjects.htm#textbox_textformatting" onclick="onhyperlinkclick(this)">ici</a>.</p>
+            <hr />
+            <h3>Joindre des formes automatiques à l'aide de connecteurs</h3>
+            <p>Vous pouvez connecter des formes automatiques à l'aide de lignes munies de points de connexion pour démontrer les dépendances entre les objets (par exemple, si vous souhaitez créer un diagramme). Pour ce faire,</p>
+            <ol>
+                <li>cliquez sur l'icône <b>Forme</b> <div class = "icon icon-insertautoshape"></div> dans l'onglet <b>Insérer</b> de la barre d'outils supérieure,</li>
+                <li>sélectionnez le groupe Lignes dans le menu,
+                <p><img alt="Formes - Lignes" src="../images/connectors.png" /></p>
+                </li>
+                <li>cliquez sur la forme souhaitée dans le groupe sélectionné (à l'exception des trois dernières formes qui ne sont pas des connecteurs, à savoir les formes <em>Courbe</em>, <em>Dessin à main levée</em> et <em>Forme libre</em>),</li>
+                <li>passez le curseur de la souris sur la première forme automatique et cliquez sur l'un des points de connexions <div class = "icon icon-connectionpoint"></div> apparaissant sur le contour,
+                <p><span class="big big-connectors_firstshape"></span></p>
+                </li>
+                <li>faites glisser le curseur de la souris vers la deuxième forme automatique et cliquez sur le point de connexion voulu sur son contour.
+                <p><span class="big big-connectors_secondshape"></span></p>
+                </li>
+            </ol>
+            <p>Si vous déplacez les formes automatiques jointes, le connecteur reste attaché aux formes et se déplace avec elles. </p>
+            <p><span class="big big-connectors_moveshape"></span></p>
+            <p>Vous pouvez également détacher le connecteur des formes, puis l'attacher à d'autres points de connexion.</p>
+			<h3>Affecter une macro à une forme</h3>
+            <p>Pour rendre l'accès à macro plus rapide et facile dans une feuille de calcul, vous pouvez affecter une macro à une forme. Une fois la macro affectée, la forme apparaît ainsi comme un bouton de contrôle et vous pouvez lancer la macro par un clic dessus.</p>
+            <p>Pour affecter une macro :</p>
+            <ul type="circle">
+                <li>
+                    Cliquer avec le bouton droit de la souris sur la forme et sélectionnez l'option <b>Affecter une macro</b> dans le menu déroulant.
+                    <p><img alt="Affecter une macro dans le menu" src="../images/assignmacro_rightclickshape.png" /></p>
+                </li>
+                <li>La boîte de dialogue <b>Affecter une macro</b> s'affiche.</li>
+                <li>
+                    Sélectionnez la macro dans la liste ou saisissez le nom et cliquez sur <b>OK</b>.
+                    <p><img alt="Affecter une macro" src="../images/assignmacro.png" /></p>
+                </li>
+            </ul>
+		</div>
+	</body>
+</html>

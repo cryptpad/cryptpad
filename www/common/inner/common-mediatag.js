@@ -237,6 +237,7 @@ define([
             'image/png',
             'image/jpeg',
             'image/jpg',
+            'image/webp',
             'image/gif',
         ];
         var fmConfig = {
@@ -246,7 +247,7 @@ define([
             onUploaded: cb
         };
         var FM = common.createFileManager(fmConfig);
-        var accepted = ".gif,.jpg,.jpeg,.png";
+        var accepted = ".gif,.jpg,.jpeg,.png,.webp";
         var data = {
             FM: FM,
             filter: function (file) {

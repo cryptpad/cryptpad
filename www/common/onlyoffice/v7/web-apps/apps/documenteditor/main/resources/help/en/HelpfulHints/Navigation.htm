@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>View Settings and Navigation Tools</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of view settings and navigation tools such as zoom, previous/next page buttons" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>View Settings and Navigation Tools</h1>
+			<p>The <a href="https://www.onlyoffice.com/en/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Document Editor</b></a> offers several tools to help you view and navigate through your document: zoom, page number indicator etc.</p>
+			<h3>Adjust the View Settings</h3>
+			<p>
+				To adjust default view settings and set the most convenient mode to work with the document, go to the <b>View</b> tab and select which interface elements you want to be hidden or shown.
+				You can select the following options on the <b>View</b> tab:
+			</p>
+			<ul>
+				<li><b>Headings</b> – to show the document headers in the left panel.</li>
+				<li><b>Zoom</b> – to set the required zoom value from 50% to 500% from the drop-down list.</li>
+				<li><b>Fit to Page</b> - to fit the whole document page to the visible part of the working area.</li>
+				<li><b>Fit to Width</b> - to fit the document page width to the visible part of the working area.</li>
+				<li><b>Interface theme</b> – choose one of the available interface themes from the drop-down menu: <em>Same as system</em>, <em>Light</em>, <em>Classic Light</em>, <em>Dark</em>, <em>Contrast Dark</em>. When the <em>Dark</em> or <em>Contrast Dark</em> theme is enabled, the <b>Dark document</b> switcher becomes active; use it to set the working area to white or dark gray.</li>
+				<li>
+					<b>Always show toolbar</b> – when this option is disabled, the top toolbar that contains commands will be hidden while tab names remain visible.
+					<p class="note">Alternatively, you can just double-click any tab to hide the top toolbar or display it again.</p>
+				</li>
+				<li><b>Status Bar</b> – when this option is disabled, the bottommost bar where the <b>Page Number Indicator</b>, <b>Word Count Indicator</b> and <b>Zoom</b> buttons are situated will be hidden. To show the hidden <b>Status Bar</b>, enable this option.</li>
+				<li><b>Rulers</b> - when this option is disabled, the rulers which are used to align text, graphics, tables, and other elements in a document, set up margins, tab stops, and paragraph indents will be hidden. To show the hidden <b>Rulers</b>, enable this option once again.</li>
+				<li><b>Left Panel</b> - when disabled, hides the left panel where <b>Search</b>, <b>Comments</b>, etc. buttons are located. To show the left panel, check this box.</li>
+				<li><b>Right Panel</b> - when disabled, hides the right panel where <b>Settings</b> are located. To show the right panel, check this box.</li>
+				</ul>
+			<p>The right sidebar is minimized by default. To expand it, select any object (e.g. image, chart, shape) or text passage and click the icon of the currently activated tab on the right. To minimize the right sidebar, click the icon once again.</p>
+			<p>
+				When the <b>Comments</b> <span class="onlineDocumentFeatures"> or <b>Chat</b></span> panel is opened, the width of the left sidebar is adjusted by simple drag-and-drop:
+				move the mouse cursor over the left sidebar border so that it turns into the bidirectional arrow and drag the border to the right to extend the width of the sidebar. To restore its original width, move the border to the left.
+			</p>
+			<h3 id="navigationtools">Use the Navigation Tools</h3>
+			<p>To navigate through your document, use the following tools:</p>
+			<p>
+				The <b>Zoom</b> buttons are situated in the right lower corner and are used to zoom in and out the current document.
+				To change the currently selected zoom value that is displayed in percent, click it and select one of the available zoom options from the list (50% / 75% / 100% / 125% / 150% / 175% / 200% / 300% / 400% / 500%)
+				or use the <b>Zoom in</b> <span class="icon icon-zoomin"></span> or <b>Zoom out</b> <span class="icon icon-zoomout"></span> buttons.
+				Click the <b>Fit to width</b> <span class="icon icon-fitwidth"></span> icon to fit the document page width to the visible part of the working area.
+				To fit the whole document page to the visible part of the working area, click the <b>Fit to page</b> <span class="icon icon-fitpage"></span> icon.
+				Zoom settings are also available on the <a href="../ProgramInterface/ViewTab.htm" onclick="onhyperlinkclick(this)">View</a> tab.
+			</p>
+			<p>The <b>Page Number Indicator</b> shows the current page as a part of all the pages in the current document (page 'n' of 'nn'). 
+			Click this caption to open the window where you can enter the page number and quickly go to it.</p>
+			<p>The <b>Word Count Indicator</b> shows the current document's word count statistics.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Gemeinsame Bearbeitung von Dokumenten in Echtzeit</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tipps zur gemeinsamen Bearbeitung" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Gemeinsame Bearbeitung von Dokumenten in Echtzeit</h1>
+        <p>Der <a href="https://www.onlyoffice.com/de/document-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a> ermöglicht es Ihnen, einen konstanten teamweiten Ansatz für den Arbeitsablauf beizubehalten: Sie können die Dateien und Ordner <a href="https://helpcenter.onlyoffice.com/de/userguides/groups-guides-documents-share-documents.aspx" onclick="onhyperlinkclick(this)">freigeben</a>; direkt im Editor <a href="../HelpfulHints/Communicating.htm" onclick="onhyperlinkclick(this)">kommunizieren</a>; bestimmte Teile Ihrer Dokumente, die zusätzliche Eingaben Dritter erfordern, <a href="../HelpfulHints/Commenting.htm" onclick="onhyperlinkclick(this)">kommentieren</a>; <a href="../HelpfulHints/VersionHistory.htm" onclick="onhyperlinkclick(this)">Dokumentversionen</a> für zukünftige Verwendung speichern; Dokumente <a href="../HelpfulHints/Review.htm" onclick="onhyperlinkclick(this)">überprüfen</a> und Ihre Änderungen hinzufügen, ohne die Datei tatsächlich zu bearbeiten; Dokumente <a href="../HelpfulHints/Comparison.htm" onclick="onhyperlinkclick(this)">vergleichen und zusammenführen</a>, um die Verarbeitung und Bearbeitung zu erleichtern.</p>
+        <p>Im <b>Dokumenteneditor</b> können Sie in Echtzeit an Dokumenten mit zwei Modi zusammenarbeiten: <b>Schnell</b> oder <b>Formal</b>.</p>
+        <p>Die Modi können in den <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">erweiterten Einstellungen</a> ausgewählt werden. Es ist auch möglich, den gewünschten Modus über das Symbol <span class="icon icon-coeditingmode"></span> <b>Modus "Gemeinsame Bearbeitung"</b> auf der Registerkarte <b>Zusammenarbeit</b> in der oberen Symbolleiste auswählen:</p>
+        <p><img alt="Co-editing Mode menu" src="../../../../../../common/main/resources/help/de/images/coeditingmodemenu.png" /></p>
+        <p>Die Anzahl der Benutzer, die an dem aktuellen Dokument arbeiten, wird auf der rechten Seite der Editor-Kopfzeile angezeigt - <span class="icon icon-usersnumber"></span>. Wenn Sie sehen möchten, wer genau die Datei gerade bearbeitet, können Sie auf dieses Symbol klicken oder das <b>Chat</b>-Bedienfeld mit der vollständigen Liste der Benutzer öffnen.</p>
+        <h3>Modus "Schnell"</h3>
+        <p>Der Modus <b>Schnell</b> wird standardmäßig verwendet und zeigt die von anderen Benutzern vorgenommenen Änderungen in Echtzeit an. Wenn Sie ein Dokument in diesem Modus gemeinsam bearbeiten, ist die Möglichkeit zum <b>Wiederholen</b> des letzten rückgängig gemachten Vorgangs nicht verfügbar. In diesem Modus werden die Aktionen und die Namen der Co-Autoren angezeigt, wenn sie den Text bearbeiten.</p>
+        <p>Wenn Sie den Mauszeiger über eine der bearbeiteten Passagen bewegen, wird der Name des Benutzers angezeigt, der sie gerade bearbeitet.</p>
+        <p><img alt="Modus Schnell" src="../images/fastmode.png" /></p>
+        <h3>Modus "Formal"</h3>
+        <p>Der Modus <b>Formal</b> wird ausgewählt, um die von anderen Benutzern vorgenommenen Änderungen auszublenden, bis Sie auf das Symbol <b>Speichern</b> <span class="icon icon-savewhilecoediting"></span> klicken, um Ihre Änderungen zu speichern und die von Co-Autoren vorgenommenen Änderungen anzunehmen. Wenn ein Dokument in diesem Modus von mehreren Benutzern gleichzeitig bearbeitet wird, werden die bearbeiteten Textpassagen mit gestrichelten Linien in unterschiedlichen Farben gekennzeichnet.</p>
+        <p><img alt="Modus Formal" src="../images/strictmode.png" /></p>
+        <p>Sobald einer der Benutzer seine Änderungen durch Klicken auf das Symbol <span class="icon icon-savewhilecoediting"></span> speichert, sehen die anderen einen Hinweis in der Statusleiste, der darauf hinweist, dass es Aktualisierungen gibt. Um die von Ihnen vorgenommenen Änderungen zu speichern, damit andere Benutzer sie sehen und die von Ihren Mitbearbeitern gespeicherten Aktualisierungen abrufen können, klicken Sie auf das Symbol <span class="icon icon-saveupdate"></span> in der linken oberen Ecke der oberen Symbolleiste. Die Aktualisierungen werden hervorgehoben, damit Sie sehen können, was genau geändert wurde.</p>
+        <p>Sie können angeben, welche Änderungen während der gemeinsamen Bearbeitung hervorgehoben werden sollen, indem Sie auf die Registerkarte <b>Datei</b> in der oberen Symbolleiste klicken, die Option <b>Erweiterte Einstellungen...</b> auswählen und eine der drei Möglichkeiten auswählen:</p>
+        <ul>
+            <li><b>Alle anzeigen</b>: Alle Änderungen, die während der aktuellen Sitzung vorgenommen wurden, werden hervorgehoben.</li>
+            <li><b>Letzte anzeigen</b>: Nur die Änderungen, die seit dem letzten Klicken auf das Symbol <div class="icon icon-saveupdate"></div> vorgenommen wurden, werden hervorgehoben.</li>
+            <li><b>Keine</b>: Änderungen, die während der aktuellen Sitzung vorgenommen wurden, werden nicht hervorgehoben.</li>
+        </ul>
+        <h3>Modus "Live Viewer"</h3>
+        <p>Der Modus <b>Live Viewer</b> wird verwendet, um die von anderen Benutzern vorgenommenen Änderungen in Echtzeit anzuzeigen, wenn das Dokument von einem Benutzer mit den Zugriffsrechten <b>Schreibgeschützt</b> geöffnet wird.</p>
+        <p class="note">Damit der Modus richtig funktioniert, stellen Sie sicher, dass das Kontrollkästchen <b>Änderungen von anderen Benutzer anzeigen</b> in den <b>Erweiterten Einstellungen</b> des Editors aktiviert ist.</p>
+        <h3>Anonym</h3>
+        <p>Portalbenutzer, die nicht registriert sind und kein Profil haben, gelten als anonym, können jedoch weiterhin an Dokumenten zusammenarbeiten. Um ihnen einen Namen zuzuweisen, muss der anonyme Benutzer beim ersten Öffnen des Dokuments einen Namen in das entsprechende Feld in der rechten oberen Ecke des Bildschirms eingeben. Aktivieren Sie das Kontrollkästchen "Nicht mehr anzeigen", um den Namen beizubehalten.</p>
+        <p><img alt="anonymous collaboration" src="../images/anonymous_collab.png" /></p>
+    </div>
+</body>
+</html>

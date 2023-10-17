@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert array formulas</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert array formulas" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insert array formulas</h1>
+			<p>The <a href="https://www.onlyoffice.com/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"><b>Spreadsheet Editor</b></a> allows you to use array formulas. Array formulas ensure consistency among formulas in a spreadsheet, as you can enter a single array formula instead of several usual formulas, they simplify working with large amount of data, allow you to quickly fill a sheet with data, and much more.</p>			
+            <p>You can enter formulas and built-in functions as array formulas in order to:</p>
+            <ul>
+                <li>perform multiple calculations at once and display a single result, or</li>
+                <li>return a range of values displayed in multiple rows or/and columns.</li>
+            </ul>
+            <p>There are also specially designated functions which can return multiple values. If you enter them by pressing <b>Enter</b>, they return a single value. If you select an output range of cells to display the results and then enter a function by pressing <b>Ctrl + Shift + Enter</b>, it returns a range of values (the number of returned values depends on the size of the previously selected output range). The list below contains links to detailed descriptions of these functions.</p>
+            <details class="details-example">
+                <summary><b>Array functions</b></summary>
+                <ul>
+                    <li><a href="../Functions/cell.htm" onclick="onhyperlinkclick(this)">CELL</a></li>
+                    <li><a href="../Functions/chooserows.htm" onclick="onhyperlinkclick(this)">CHOOSEROWS</a></li>
+                    <li><a href="../Functions/choosecols.htm" onclick="onhyperlinkclick(this)">CHOOSECOLS</a></li>
+                    <li><a href="../Functions/column.htm" onclick="onhyperlinkclick(this)">COLUMN</a></li>
+                    <li><a href="../Functions/drop.htm" onclick="onhyperlinkclick(this)">DROP</a></li>
+                    <li><a href="../Functions/formulatext.htm" onclick="onhyperlinkclick(this)">FORMULATEXT</a></li>
+                    <li><a href="../Functions/frequency.htm" onclick="onhyperlinkclick(this)">FREQUENCY</a></li>
+                    <li><a href="../Functions/growth.htm" onclick="onhyperlinkclick(this)">GROWTH</a></li>
+                    <li><a href="../Functions/hstack.htm" onclick="onhyperlinkclick(this)">HSTACK</a></li>
+                    <li><a href="../Functions/hyperlink.htm" onclick="onhyperlinkclick(this)">HYPERLINLK</a></li>
+                    <li><a href="../Functions/indirect.htm" onclick="onhyperlinkclick(this)">INDIRECT</a></li>
+                    <li><a href="../Functions/index.htm" onclick="onhyperlinkclick(this)">INDEX</a></li>
+                    <li><a href="../Functions/isformula.htm" onclick="onhyperlinkclick(this)">ISFORMULA</a></li>
+                    <li><a href="../Functions/linest.htm" onclick="onhyperlinkclick(this)">LINEST</a></li>
+                    <li><a href="../Functions/logest.htm" onclick="onhyperlinkclick(this)">LOGEST</a></li>
+                    <li><a href="../Functions/minverse.htm" onclick="onhyperlinkclick(this)">MINVERSE</a></li>
+                    <li><a href="../Functions/mmult.htm" onclick="onhyperlinkclick(this)">MMULT</a></li>
+                    <li><a href="../Functions/munit.htm" onclick="onhyperlinkclick(this)">MUNIT</a></li>
+                    <li><a href="../Functions/offset.htm" onclick="onhyperlinkclick(this)">OFFSET</a></li>
+                    <li><a href="../Functions/randarray.htm" onclick="onhyperlinkclick(this)">RANDARRAY</a></li>
+                    <li><a href="../Functions/row.htm" onclick="onhyperlinkclick(this)">ROW</a></li>
+                    <li><a href="../Functions/take.htm" onclick="onhyperlinkclick(this)">TAKE</a></li>
+                    <li><a href="../Functions/textsplit.htm" onclick="onhyperlinkclick(this)">TEXTSPLIT</a></li>
+                    <li><a href="../Functions/tocol.htm" onclick="onhyperlinkclick(this)">TOCOL</a></li>
+                    <li><a href="../Functions/torow.htm" onclick="onhyperlinkclick(this)">TOROW</a></li>
+                    <li><a href="../Functions/transpose.htm" onclick="onhyperlinkclick(this)">TRANSPOSE</a></li>
+                    <li><a href="../Functions/trend.htm" onclick="onhyperlinkclick(this)">TREND</a></li>
+                    <li><a href="../Functions/wrapcols.htm" onclick="onhyperlinkclick(this)">WRAPCOLS</a></li>
+                    <li><a href="../Functions/wraprows.htm" onclick="onhyperlinkclick(this)">WRAPROWS</a></li>
+                    <li><a href="../Functions/unique.htm" onclick="onhyperlinkclick(this)">UNIQUE</a></li>
+                    <li><a href="../Functions/vstack.htm" onclick="onhyperlinkclick(this)">VSTACK</a></li>
+                    <li><a href="../Functions/xlookup.htm" onclick="onhyperlinkclick(this)">XLOOKUP</a></li>
+                </ul>  
+            </details>
+            <h3>Insert array formulas</h3>         
+            <p>To insert an array formula,</p>
+			<ol>
+				<li>Select a range of cells where you wish to display results.
+                    <p><img alt="Insert array formulas" src="../images/array3.png" /></p>
+                </li>
+                <li>Enter the formula you want to use in the formula bar, specifying necessary arguments within parentheses <b>()</b>. 
+                    <p><img alt="Insert array formulas" src="../images/array4.png" /></p>
+                </li>
+				<li>Press the <b>Ctrl + Shift + Enter</b> key combination.
+                    <p><img alt="Insert array formulas" src="../images/array5.png" /></p>
+                </li>
+			</ol>
+            <p>The results will be displayed in the selected range of cells, and the formula in the formula bar will be automatically enclosed in the curly braces <b>{ }</b> to indicate that it is an array formula. For example, <b>{=UNIQUE(B2:D6)}</b>. These braces cannot be entered manually.</p>
+            <h3>Create a single-cell array formula</h3>
+            <p>The following example illustrates the result of the array formula displayed in a single cell. Select a cell, enter <em>=SUM(C2:C11*D2:D11)</em>, and press <b>Ctrl + Shift + Enter</b>.</p>
+            <p><img alt="Insert array formulas" src="../images/array1.png" /></p>
+            <h3>Create a multi-cell array formula</h3>
+            <p>The following example illustrates the results of the array formula displayed in a range of cells. Select a range of cells, enter <em>=C2:C11*D2:D11</em>, and press <b>Ctrl + Shift + Enter</b>.</p>
+            <p><img alt="Insert array formulas" src="../images/array2.png" /></p>
+            <h3>Edit array formulas</h3>
+            <p>Every time you edit an entered array formula (e.g., change arguments), you need to press the <b>Ctrl + Shift + Enter</b> key combination to save the changes.</p>
+            <p>The following example explains how to expand a multi-cell array formula when you add new data. Select all the cells which contain an array formula, as well as empty cells next to new data, edit arguments in the formula bar so that they include new data, and press <b>Ctrl + Shift + Enter</b>.</p>
+            <p><img alt="Edit array formulas" src="../images/array6.png" /></p>
+            <p>If you want to apply a multi-cell array formula to a smaller range of cells, you need to delete the current array formula and then enter a new array formula.</p>
+            <p>A part of the array cannot be modified or deleted. If you try to edit, move, or delete a single cell within the array, or insert a new cell to the array, you get the following warning: <em>You cannot change part of an array</em>.</p>
+            <p>To delete an array formula, select all the cells which contain the array formula and press <b>Delete</b>. Alternatively, select the array formula in the formula bar, press <b>Delete</b> and then press <b>Ctrl + Shift + Enter</b>.</p>
+            <details class="details-example">
+                <summary><b>Examples of array formula usage</b></summary>
+                <p>This section provides some examples on how to use array formulas to perform certain tasks.</p>
+                <p><b>Count a number of characters in a range of cells</b></p>
+                <p>You can use the following array formula, replacing the cell range in the argument with your own one: <b>=SUM(LEN(B2:B11))</b>. The <a href="../Functions/len.htm" onclick="onhyperlinkclick(this)">LEN</a> function calculates the length of each text string in the range of cells. The <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUM</a> function adds the values together.</p>
+                <p><img alt="Use array formulas" src="../images/array7.png" /></p>
+                <p>To get the average number of characters, replace <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUM</a> with <a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">AVERAGE</a>.</p>
+                <p><b>Find the longest string in a range of cells</b></p>
+                <p>You can use the following array formula, replacing cell ranges in arguments with your own ones: <b>=INDEX(B2:B11,MATCH(MAX(LEN(B2:B11)),LEN(B2:B11),0),1)</b>. The <a href="../Functions/len.htm" onclick="onhyperlinkclick(this)">LEN</a> function calculates the length of each text string in the range of cells. The <a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a> function calculates the largest value. The <a href="../Functions/match.htm" onclick="onhyperlinkclick(this)">MATCH</a> function finds the address of the cell with the longest string. The <a href="../Functions/index.htm" onclick="onhyperlinkclick(this)">INDEX</a> function returns the value from the found cell.</p>
+                <p><img alt="Use array formulas" src="../images/array8.png" /></p>
+                <p>To find the shortest string, replace <a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a> with <a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a>.</p>
+                <p><b>Sum values based on conditions</b></p>
+                <p>To sum values greater than a specified number (2 in this example), you can use the following array formula, replacing cell ranges in arguments with your own ones: <b>=SUM(IF(C2:C11>2,C2:C11))</b>. The <a href="../Functions/if.htm" onclick="onhyperlinkclick(this)">IF</a> function creates an array of positive and false values. The <a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUM</a> function ignores false values and adds the positive values together.</p>
+                <p><img alt="Use array formulas" src="../images/array9.png" /></p>
+            </details>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dekoschriften anwenden</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Apply font decoration styles: increment/decrement values, bold, italic, underline, strikeout, superscript/subscript" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Dekoschriften anwenden</h1>
+			<p>Im <a target="_blank" href="https://www.onlyoffice.com/de/document-editor.aspx" onclick="onhyperlinkclick(this)"><b>Dokumenteneditor</b></a>, können Sie mithilfe der entsprechenden Symbole auf der Registerkarte <b>Startseite</b> in der oberen Symbolleiste verschiedene Schriftdekorationsstile anwenden.</p>
+			<p class="note">Wenn Sie die Formatierung auf Text anwenden möchten, der bereits im Dokument vorhanden ist, wählen Sie diesen mit der Maus oder <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">mithilfe der Tastatur</a> aus und legen Sie die gewünschte Formatierung fest.</p>
+			<table>
+				<tr>
+					<td>Fett</td>
+					<td><div class = "icon icon-bold"></div></td>
+					<td>Der gewählte Textabschnitt wird durch fette Schrift hervorgehoben.</td>
+				</tr>
+				<tr>
+					<td>Kursiv</td>
+					<td><div class = "icon icon-italic"></div></td>
+					<td>Der gewählte Textabschnitt wird durch die Schrägstellung der Zeichen hervorgehoben.</td>
+				</tr>
+				<tr>
+					<td>Unterstrichen</td>
+					<td><div class = "icon icon-underline"></div></td>
+					<td>Der gewählten Textabschnitt wird mit einer Linie unterstrichen.</td>
+				</tr>
+				<tr>
+					<td>Durchgestrichen</td>
+					<td><div class = "icon icon-strike"></div></td>
+					<td>Der gewählten Textabschnitt wird mit einer Linie durchgestrichen.</td>
+				</tr>
+				<tr>
+					<td>Hochgestellt</td>
+					<td><div class = "icon icon-sup"></div></td>
+					<td>Der gewählte Textabschnitt wird verkleinert und im oberen Teil der Textzeile platziert z.B. in Bruchzahlen.</td>
+				</tr>
+				<tr>
+					<td>Tiefgestellt</td>
+					<td><div class = "icon icon-sub"></div></td>
+					<td>Der gewählte Textabschnitt wird verkleinert und im unteren Teil der Textzeile platziert z.B. in chemischen Formeln.</td>
+				</tr>
+			</table>
+			<p>Um auf erweiterte Schrifteinstellungen zuzugreifen, klicken Sie mit der rechten Maustaste und wählen Sie die Option <b>Absatz - Erweiterte Einstellungen</b> im Menü oder nutzen Sie den Link <b>Erweiterte Einstellungen anzeigen</b> in der rechten Seitenleiste. Das Fenster <b>Absatz - Erweiterte Einstellungen</b> öffnet sich, wechseln Sie nun in die Registerkarte <b>Schriftart</b>.</p>
+			<p>Hier stehen Ihnen die folgenden Deckoschriften und Einstellungen zur Verfügung:</p>
+			<ul>
+				<li><b>Durchgestrichen</b> - durchstreichen einer Textstelle mithilfe einer Linie.</li>
+				<li><b>Doppelt durchgestrichen</b> - durchstreichen einer Textstelle mithilfe einer doppelten Linie.</li>
+				<li><b>Hochgestellt</b> - Textstellen verkleinern und hochstellen, wie beispielsweise in Brüchen.</li>
+				<li><b>Tiefgestellt</b> - Textstellen verkleinern und tiefstellen, wie beispielsweise in chemischen Formeln.</li>
+				<li><b>Kapitälchen</b> - erzeugt Großbuchstaben in Höhe von Kleinbuchstaben.</li>
+				<li><b>Großbuchstaben</b> - alle Buchstaben als Großbuchstaben schreiben.</li>
+				<li><b>Abstand</b> - Abstand zwischen den einzelnen Zeichen einstellen. Erhöhen Sie den Standardwert für den Abstand <b>Erweitert</b> oder verringern Sie den Standardwert für den Abstand <b>Verkürzt</b>. Nutzen Sie die Pfeiltasten oder geben Sie den erforderlichen Wert in das dafür vorgesehene Feld ein.</li>
+				<li><b>Position</b> - Zeichenposition (vertikaler Versatz) in der Zeile festlegen. Erhöhen Sie den Standardwert, um Zeichen nach oben zu verschieben, oder verringern Sie den Standardwert, um Zeichen nach unten zu verschieben. Nutzen Sie die Pfeiltasten oder geben Sie den erforderlichen Wert in das dafür vorgesehene Feld ein.</li>
+				<li><b>Doppelbuchstaben</b> sind verbundene Buchstaben eines Wortes, die in einer der OpenType-Schriftarten eingegeben werden. Bitte beachten Sie, dass die Verwendung von Ligaturen den Zeichenabstand stören kann. Die verfügbaren Doppebuchstabenoptionen sind wie folgt:
+					<ul>
+						<li><em>Kein</em></li>
+						<li><em>Nur standartisierte</em> (includes “fi”, “fl”, “ff”; enhances readability)</li>
+						<li><em>Kontextbezogene</em> (ligatures are applied based on the surrounding letters; enhances readability)</li>
+						<li><em>Historische</em> (ligatures have more swoops and curved lines; lowers readability)</li>
+						<li><em>Freie</em> (ornamental ligatures; lowers readability)</li>
+						<li><em>Standartisierte und kontextbezogene</em></li>
+						<li><em>Standartisierte und historische</em></li>
+						<li><em>Kontextbezogene und historische</em></li>
+						<li><em>Standartisierte und freie</em></li>
+						<li><em>Kontextbezogene und freie</em></li>
+						<li><em>Historische und freie</em></li>
+						<li><em>Standartisierte, kontextbezogene und historische</em></li>
+						<li><em>Standartisierte, kontextbezogene und freie</em></li>
+						<li><em>Standartisierte, historische und freie</em></li>
+						<li><em>Kontextbezogene, historische und freie</em></li>
+						<li><em>Alle</em></li>
+					</ul>
+					<p>Alle Änderungen werden im Feld <b>Vorschau</b> unten angezeigt.</p>
+				</li>
+			</ul>
+			<p><img alt="Absatz - Erweiterte Einstellungen: Schriftart" src="../images/paradvsettings_font.png" /></p>
+		</div>
+	</body>
+</html>

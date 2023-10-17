@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des graphiques sparkline</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Ajouter un graphique sparkline à votre feuille de calcul, paramétrer son position, taille et caractéristiques" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Rechercher" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Insérer des graphiques sparkline</h1>
+            <h3>Utiliser des graphiques sparkline</h3>
+            <p>Un graphique sparkline est un graphique tout petit qui s'adapte à la taille de la cellule et représente des tendances ou des variations des données. Les fonctionnalités des graphiques sparkline sont limitées par comparaison avec des graphiques habituels mais c'est un excellent outil d'analyse rapide des données et de représentation visuelle compacte.  La taille d'un graphique sparkline dépend de la taille de la cellule, ajustez la largeur et la longueur de la cellule pour paramétrer la taille du graphique sparkline. Une fois le graphique sparkline ajouté, il est possible de saisir du texte ou appliquer une mise en forme conditionnelle dans la même cellule. <a href="https://www.onlyoffice.com/fr/spreadsheet-editor.aspx" target="_blank" onclick="onhyperlinkclick(this)"> <b>Éditeur de feuilles de calcul ONLYOFFICE</b></a> vous propose trois types de graphiques sparkline :</p>
+            <p><div class = "big big-sparklines_types"></div> </p>
+            <ul>
+                <li><b>Colonne</b> est similaire à un <b>Graphique à colonnes </b>ordinaire.</li>
+                <li><b>Ligne</b> est similaire à un <b>Graphique à lignes</b> ordinaire.</li>
+                <li><b>Gain/Perte</b> ce type est approprié pour représenter des données qui incluent à la fois des valeurs positives et négatives.</li>
+            </ul>
+            <h3>Insérer des graphiques sparkline</h3>
+            <p>Pour insérer un <b>Graphique sparkline</b>, sélectionnez une plage de données à inclure dans le graphique sparkline ou cliquez sur une cellule vide où vous souhaitez placer le graphique sparkline, passez à l'onglet <b>Insertion</b> et cliquez sur le bouton <b>Graphique sparkline</b> <img alt="Bouton Graphiques Sparkline" src="../images/sparkline_button.png" /> de la barre d'outils supérieure. Choisissez le graphique sparkline selon vos besoins. La fenêtre <b>Créer des graphiques sparkline</b> s'affiche, cliquez sur l'icône <b>Sélectionner des données</b> pour définir une plage de données et l'emplacement du graphique sparkline, cliquez sur <b>OK</b> pour valider.</p>
+			<p><img alt="Fenêtre Créer des graphiques sparkline" src="../images/createsparkline_window.png" /></p>
+            <h3>Modifier et mettre en forme un graphique sparkline</h3>
+            <p>Une fois le graphique sparkline inséré, vous pouvez le personnaliser et modifier. Cliquez sur la cellule comprenant un graphique sparkline pour activer l'onglet <b>Paramètres du graphique sparkline</b> sur la barre latérale droite.</p>
+            <p><img alt="L'onglet Paramètres du graphique sparkline" src="../images/sparklinesettings_tab.png" /></p>
+            <ul>
+                <li>Dans la section <b>Type</b>, vous pouvez sélectionner l'un des types de graphiques sparkline disponibles dans la liste déroulante :
+                <p><b>Colonne</b> - ce type est similaire à un <b>Graphique à colonnes</b> ordinaire.</p> 
+                <p><b>Ligne</b> - ce type est similaire à un <b>Graphique à lignes </b>ordinaire.</p>
+                <p><b>Gain/Perte</b> - ce type est approprié pour représenter des données qui incluent à la fois des valeurs positives et négatives.</p>
+            </li>
+                <li>Dans la section <b>Style</b>, vous pouvez sélectionner le style qui vous convient le mieux dans la liste déroulante <b>Modèle</b> , la <b>Couleur</b> appropriée pour le graphique sparkline et <b>Épaisseur de trait</b> (disponible uniquement pour les graphiques sparklines <b>en Ligne</b>)</li>
+                <li>Dans la section <b>Afficher</b>, vous pouvez mettre en surbrillance ou marquer les données dans un graphique sparkline :
+                <p><i>Point élevé</i> - pour mettre en évidence les points qui représentent des valeurs maximales.</p>
+                <p><i>Point bas </i> - pour mettre en évidence les points qui représentent des valeurs maximales.</p>
+                <p><i>Point négatif </i> - pour mettre en évidence les points qui représentent des valeurs négatives,</p>
+                <p>Premier point - pour mettre en évidence le point qui représente la première valeur.</p>
+                <p>Dernier point - pour mettre en évidence le point qui représente la dernière valeur. </p>
+                <p><em>Marqueurs</em> est disponible uniquement pour des graphiques sparkline en Ligne pour mettre en surbrillance toutes les valeurs.</p>
+            </li>
+            </ul>
+            <p>Cliquez sur la flèche en bas dans la zone de couleur pour sélectionnez une couleur pour chaque valeur. </p>
+            <p>Pour rendre votre graphique sparkline plus précis et facile à comprendre, cliquez sur l'option <b>Afficher les paramètres avancés</b> pour accéder à la fenêtre <b>Graphique sparkline - Paramètres avancés</b>.</p>
+            <p><img alt="Fenêtre Graphique sparkline - Paramètres avancés" src="../images/sparkline_advancedsettings1.png" /> </p>
+            <p> </p>
+            <p>L'onglet <b>Type et données</b> vous permet de modifier le <b>Type</b> et le <b>Style</b> du graphique sparkline, ainsi que de spécifier les paramètres d'affichage des <b>Cellules masquées et vides</b> :</p>
+            <ul>
+                <li>
+                    <b>Afficher les cellules vides comme</b> - cette option permet de contrôler l'affichage des graphiques sparklines si certaines cellules d'une plage de données sont vides. Sélectionnez l'option souhaitée dans la liste :
+                    <ul>
+                        <li><b>Vides</b> - pour afficher le graphique sparkline avec des vides à la place des données manquantes,</li>
+                        <li><b>Zéro</b> - pour afficher le graphique sparkline comme si la valeur dans une cellule vide était nulle,</li>
+                        <li><b>Connecter les points de données avec la ligne</b> (disponible uniquement pour le type <b>Ligne</b>) - pour ignorer les cellules vides et afficher une ligne de connexion entre les points de données.</li>
+                    </ul>
+                </li>
+                <li><b>Afficher les données dans les lignes et les colonnes masquées</b> - cochez cette case si vous souhaitez inclure des valeurs provenant des cellules masquées dans les graphiques sparklines.</li>
+            </ul>
+            <p><img alt="Fenêtre Graphiques sparkline - Paramètres avancés" src="../images/sparkline_advancedsettings2.png" /></p>
+            <p>L'onglet <b>Options de l'axe</b> vous permet de spécifier les paramètres <b>d'Axe horizontal/vertical</b> suivants :</p>
+            <ul>
+                <li>
+                    Dans la section <b>Axe horizontal</b>, les paramètres suivants sont disponibles :
+                    <ul>
+                        <li><b>Afficher l'axe</b> - cochez cette case pour afficher l'axe horizontal. Si les données source contiennent des valeurs négatives, cette option permet de les afficher plus clairement.</li>
+                        <li><b>Inverser l'ordre</b> - cochez cette case pour afficher les données dans l'ordre inverse.</li>
+                    </ul>
+                </li>
+                <li>
+                    Dans la section <b>Axe vertical</b>, les paramètres suivants sont disponibles pour définir la <b>Valeur minimale/maximale</b> :
+                    <ul>
+                        <li>
+                            <b>Valeur minimale/maximale</b>
+                            <ul>
+                                <li><b>Automatique pour chaque</b> - cette option est sélectionnée par défaut. Elle permet d'utiliser des valeurs minimum/maximum propres pour chaque graphique sparkline. Les valeurs minimum/maximum sont extraites des séries de données séparées qui sont utilisées pour tracer chaque graphique sparkline. La valeur maximale pour chaque graphique sparkline sera située en haut de la cellule, et la valeur minimale sera en bas.
+                                    <p><span class="big big-autoforeach"></span></p>
+                                </li>
+                                <li><b>La même pour tous</b> - cette option permet d'utiliser la même valeur minimum/maximum pour tout le groupe de graphiques sparklines. Les valeurs minimum/maximum sont extraites de toute la plage de données et utilisées pour tracer toutes les graphiques sparklines. Les valeurs maximum/minimum pour chaque sparkline seront mises à l'échelle par rapport à la valeur la plus haute/la plus basse dans la plage. Si vous sélectionnez cette option, il sera plus facile de comparer plusieurs graphiques sparklines.
+                                    <p><span class="big big-sameforall"></span></p>
+                                </li><li><b>Fixé</b> - cette option permet de définir une valeur minimale/maximale personnalisée. Les valeurs inférieures ou supérieures à celles spécifiées ne sont pas affichées dans le graphique sparkline.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <h3>Supprimer les graphiques sparkline</h3>
+            <p>Pour supprimer les graphiques sparkline, sélectionnez une ou plusieurs cellules comprenant des graphiques sparkline que vous souhaitez supprimer et cliquez avec le bouton droit de la souris. Sélectionnez Graphiques sparkline dans le menu déroulant et cliquez sur <b>Supprimer les graphiques sparkline sélectionnés</b> ou <b>Supprimer les groupes de graphiques sparkline sélectionnés</b>.
+        </div>
+	</body>
+</html>

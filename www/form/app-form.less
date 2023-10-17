@@ -2,6 +2,7 @@
 @import (reference) '../../customize/src/less2/include/tools.less';
 @import (reference) '../../customize/src/less2/include/avatar.less';
 @import (reference) '../../customize/src/less2/include/charts.less';
+@import (reference) '../../customize/src/less2/include/markdown.less';
 
 &.cp-app-form {
     @form_input-width: 400px;
@@ -77,6 +78,12 @@
         }
     }
     .checkmark-colors(@form-colors2; length(@form-colors2));
+
+    [data-type="md"] {
+        .cp-form-block-content {
+            .markdown_cryptpad();
+        }
+    }
 
     .cp-form-palette {
         &.cp-form-palette-nocolor {
@@ -604,6 +611,7 @@
                             }
                         }
                     }
+
                     .cp-form-block-content {
                         p {
                             a {

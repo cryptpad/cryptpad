@@ -10,6 +10,7 @@ define([
     '/common/common-constants.js',
     '/common/common-interface.js',
     '/common/common-feedback.js',
+    '/common/hyperscript.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
@@ -20,7 +21,7 @@ define([
     '/components/tweetnacl/nacl-fast.min.js',
     '/components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
+            Feedback, h, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
     var Exports = {
         Cred: Cred,
         Block: Block,
@@ -103,7 +104,8 @@ define([
         return opt;
     };
 
-    var loadUserObject = Exports.loadUserObject = function (opt, cb) {
+    var loadUserObject = Exports.loadUserObject = function (opt, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
             channel: opt.channelHex,
@@ -120,6 +122,9 @@ define([
         rt.proxy
         .on('ready', function () {
             setTimeout(function () { cb(void 0, rt); });
+        })
+        .on('error', function (info) {
+            cb(info.type, {reason: info.message});
         })
         .on('disconnect', function (info) {
             cb('E_DISCONNECT', info);
@@ -210,6 +215,16 @@ define([
                         return void console.log("Block requires 2FA");
                     }
 
+                    if (err === 404 && response && response.reason) {
+                        waitFor.abort();
+                        w.abort();
+                        /*
+                        // the following block prevent users from re-using an old password
+                        if (isRegister) { return void cb('HAS_PLACEHOLDER'); }
+                        */
+                        return void cb('DELETED_USER', response);
+                    }
+
                     // Some other error?
                     if (err) {
                         console.error(err);
@@ -291,6 +306,7 @@ define([
             loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) {
                     waitFor.abort();
+                    if (err === 'EDELETED') { return void cb('DELETED_USER', rt); }
                     return void cb(err);
                 }
 
@@ -388,6 +404,7 @@ define([
             loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) {
                     waitFor.abort();
+                    if (err === 'EDELETED') { return void cb('DELETED_USER', rt); }
                     return void cb('MODERN_REGISTRATION_INIT');
                 }
 
@@ -589,15 +606,26 @@ define([
                                 break;
                             case 'INVAL_USER':
                                 UI.removeLoadingScreen(function () {
-                                    UI.alert(Messages.login_invalUser, function () {
+                                    UI.alert(Messages.login_notFilledUser , function () {
                                         hashing = false;
                                         $('#password').focus();
                                     });
                                 });
                                 break;
+/*
+                            case 'HAS_PLACEHOLDER':
+                                UI.errorLoadingScreen('UNAVAILABLE', true, true);
+                                break;
+*/
+                            case 'DELETED_USER':
+                                UI.errorLoadingScreen(
+                                    UI.getDestroyedPlaceholder(result.reason, true), true, () => {
+                                        window.location.reload();
+                                    });
+                                break;
                             case 'INVAL_PASS':
                                 UI.removeLoadingScreen(function () {
-                                    UI.alert(Messages.login_invalPass, function () {
+                                    UI.alert(Messages.login_notFilledPass, function () {
                                         hashing = false;
                                         $('#password').focus();
                                     });

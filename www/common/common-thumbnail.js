@@ -19,6 +19,7 @@ define([
         'image/png',
         'image/jpeg',
         'image/jpg',
+        'image/webp',
         'image/gif',
         'video/',
         'application/pdf'
@@ -239,7 +240,7 @@ define([
             });
         };
         if (window.html2canvas) { return void todo(); }
-        require(['/components/html2canvas/build/html2canvas.min.js'], todo);
+        require(['/components/html2canvas/dist/html2canvas.min.js'], todo);
     };
 
     Thumb.initPadThumbnails = function (common, opts) {
@@ -316,7 +317,7 @@ define([
             var key = secret.keys && secret.keys.cryptKey;
             MediaTag.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
-                    if (e === 'XHR_ERROR') { return; }
+                    if (/^XHR_ERROR/.test(e)) { return; }
                     return console.error(e);
                 }
                 if (!metadata) { return console.error("NO_METADATA"); }

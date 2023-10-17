@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction TEXTE.APRES</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Fonction <b>TEXTE.APRES</b></h1>
+			<p>La fonction <b>TEXTE.APRES </b>est l'une des fonctions de données et texte. Cette fonction renvoie le texte qui se trouve après le caractère de délimitation.</p>
+			<p>Le syntaxe de la fonction <b>TEXTE.APRES</b>:</p>
+			<p style="text-indent: 150px;"><b><em>=TEXTE.APRES(texte,délimiteur,[no_position], [mode_correspondance], [fin_correspondance], [si_non_trouvé]</em></b></p>
+			<p>où:</p>
+			<p style="text-indent: 50px;"><b><em>texte</em></b> est le texte dans lequel la recherche se réalise. Des caractères génériques ne sont pas autorisés. Lorsque la chaîne de caractères <b>texte</b> est vide, le texte renvoyé est vide.</p>
+			<p style="text-indent: 50px;"><b><em>délimiteur</em></b> est le texte qui marque le point après lequel la fonction extrait.</p>
+			<p style="text-indent: 50px;"><b><em>no_position</em></b> est un argument facultatif. Position du délimiteur après laquelle la fonction extrait le texte. Par défaut, <b>no_position</b> est égal à <b>1</b>. Un nombre négatif commence à rechercher du texte à partir de la fin.</p>
+			<p style="text-indent: 50px;"><b><em>mode_correspondance</em></b> est un argument facultatif. Détermine si la recherche de texte est sensible à la casse. Par défaut, la recherche est sensible à la casse. Les valeurs utilisées: <b>0</b> sensible à la casse, <b>1</b> insensible à la casse.</p>
+			<p style="text-indent: 50px;"><b><em>fin_correspondance</em></b> est un argument facultatif. Considère la fin du texte comme un délimiteur. Par défaut, le texte correspond exactement.  Les valeurs utilisées: <b>0</b> ne <b><em>pas</em></b> faire correspondre le délimiteur à la fin du texte, <b>1</b> faire correspondre le délimiteur à la fin du texte.</p>
+			<p style="text-indent: 50px;"><b><em>si_non_trouvé </em></b>est un argument facultatif. Détermine la valeur renvoyée si aucune correspondance n'est trouvée.</p>
+			<p>Pour appliquer la fonction <b>TEXTE.APRES</b>,</p>
+			<ol>
+				<li>sélectionnez la cellule où vous voulez afficher le résultat,</li>
+				<li>
+					cliquez sur l'icône <b>Insérer une fonction</b> <div class="icon icon-insertfunction"></div> de la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule et choisissez l'option <b>Insérer une fonction</b> dans le menu, <br />ou cliquez sur <div class="icon icon-function"></div> l'icône de la barre de formule,
+				</li>
+				<li>sélectionnez le groupe de fonctions de <b>Données et texte</b> depuis la liste,</li>
+				<li>cliquez sur la fonction <b>TEXTE.APRES</b>,</li>
+				<li>insérez les arguments nécessaires en les séparant par des virgules,</li>
+				<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat s'affiche dans la cellule choisie.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction TEXTE.APRES" src="../images/textafter.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Listen erstellen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Create bulleted and numbered lists in the presentation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+		<link type = "text/css" rel = "stylesheet" href = "../../images/sprite.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<div class="search-field">
+				<input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+			</div>
+			<h1>Listen erstellen</h1>
+			<p>Um eine Liste im <a target="_blank" href="https://www.onlyoffice.com/presentation-editor.aspx" onclick="onhyperlinkclick(this)"><b>Präsentationseditor</b></a> zu erstellen:</p>
+			<ol>
+				<li>Positionieren Sie den Cursor dort, wo eine Liste beginnen soll (dies kann eine neue Zeile oder der bereits eingegebene Text sein).</li>
+				<li>Wechseln Sie zur Registerkarte <b>Startseite</b> der oberen Symbolleiste.</li>
+				<li>
+					Wählen Sie den Listentyp aus, den Sie starten möchten:
+					<ul>
+						<li><b>Ungeordnete Liste</b> mit Markierungen wird mit dem Symbol <b>Aufzählung</b> <div class = "icon icon-bullets"></div> erstellt, das sich in der oberen Symbollesite befindet</li>
+						<li>
+							Eine <b>geordnete Liste</b> mit Ziffern oder Buchstaben wird mithilfe des Symbols <b>Nummerierung</b> <div class = "icon icon-numbering"></div> in der oberen Symbolleiste erstellt.
+							<p class="note">Klicken Sie auf den Abwärtspfeil neben dem Symbol <b>Aufzählung</b> oder <b>Nummerierung</b>, um auszuwählen, wie die Liste aussehen soll.</p>
+						</li>
+					</ul>
+				</li>
+				<li>Jetzt erscheint jedes Mal, wenn Sie die <b>Eingabetaste</b> am Ende der Zeile drücken, ein neues geordnetes oder ungeordnetes Listenelement. Um dies zu beenden, drücken Sie die <b>Rücktaste</b> und fahren Sie mit dem allgemeinen Textabsatz fort.</li>
+			</ol>
+			<p>Sie können auch den Texteinzug in den Listen und ihre Verschachtelung mit den Schaltflächen <b>Einzug verkleinern</b> <span class = "icon icon-decreaseindent"></span> und <b>Einzug vergrößern</b> <span class = "icon icon-increaseindent"></span> auf der Registerkarte <b>Startseite</b> in der oberen Symbolleiste ändern.</p>
+			<p class="note">Die zusätzlichen Einzugs- und Abstandsparameter können in der rechten Seitenleiste und im erweiterten Einstellungsfenster geändert werden. Um mehr darüber zu erfahren, lesen Sie den Abschnitt <a href="InsertText.htm" onclick="onhyperlinkclick(this)">Text einfügen und formatieren</a>.</p>
+
+			<h3>Listeneinstellungen ändern</h3>
+			<p>Um die Einstellungen für Aufzählungszeichen oder nummerierte Listen, z. B. Art, Größe und Farbe der Aufzählungszeichen zu ändern:</p>
+			<ol>
+				<li>Klicken Sie auf ein vorhandenes Listenelement oder wählen Sie den Text aus, den Sie als Liste formatieren möchten.</li>
+				<li>Klicken Sie auf das Symbol <b>Aufzählung</b> <div class = "icon icon-bullets"></div> oder <b>Nummerierung</b> <div class = "icon icon-numbering"></div> auf der Registerkarte <b>Startseite</b> in der oberen Symbolleiste.</li>
+				<li>Wählen Sie die Option <b>Listeneinstellungen</b>.</li>
+				<li>
+					Das Fenster <b>Listeneinstellungen</b> wird geöffnet. Das Einstellungsfenster der <b>Liste mit Aufzählungszeichen</b> sieht folgendermaßen aus:
+					<p><img alt="Bulleted List Settings window" src="../images/bulletedlistsettings.png" /></p>
+					<ul>
+						<li>
+							<b>Typ</b> - ermöglicht Ihnen die Auswahl des erforderlichen Zeichens für die Liste. Wenn Sie auf die Option <b>Neues Aufzählungszeichen</b> klicken, öffnet sich das Fenster <b>Symbol</b> und Sie können eines der verfügbaren Zeichen auswählen. Sie können auch ein neues Symbol hinzufügen. Weitere Informationen zum Arbeiten mit Symbolen finden Sie in <a href="../UsageInstructions/InsertSymbols.htm" onclick="onhyperlinkclick(this)">diesem Artikel</a>.
+							<p>Wenn Sie auf die Option <b>Neues Bild</b> klicken, erscheint ein neues Feld <b>Importieren</b>, in dem Sie neue Bilder für Aufzählungszeichen <em>Aus Datei</em>, <em>Aus URL</em> oder <em>Aus dem Speicher</em>.</p>
+						</li>
+						<li><b>Größe</b> - ermöglicht es Ihnen, die erforderliche Aufzählungszeichengröße abhängig von der aktuellen Textgröße auszuwählen. Der Wert kann zwischen 25% und 400% liegen.</li>
+						<li><b>Farbe</b> - ermöglicht Ihnen die Auswahl der erforderlichen Aufzählungszeichenfarbe. Sie können eine der <em>Designfarben</em> oder <em>Standardfarben</em> aus der Palette auswählen oder eine <em>benutzerdefinierte</em> Farbe angeben.</li>
+					</ul>
+					<p>Das Einstellungsfenster der <b>nummerierten</b> Liste sieht folgendermaßen aus:</p>
+					<p><img alt="Numbered List Settings window" src="../images/orderedlistsettings.png" /></p>
+					<ul>
+						<li><b>Typ</b> - können Sie das für die Liste verwendete Zahlenformat auswählen.</li>
+						<li><b>Größe</b> - ermöglicht Ihnen die Auswahl der erforderlichen Zahlengröße in Abhängigkeit von der aktuellen Textgröße. Der Wert kann zwischen 25% und 400% liegen.</li>
+						<li><b>Beginnen mit</b> - ermöglicht Ihnen die Auswahl der erforderlichen Sequenznummer, ab der eine nummerierte Liste beginnt.</li>
+						<li><b>Farbe</b> - ermöglicht Ihnen die Auswahl der erforderlichen Zahlenfarbe. Sie können eine der <em>Designfarben</em> oder <em>Standardfarben</em> aus der Palette auswählen oder eine <em>benutzerdefinierte</em> Farbe angeben.</li>
+					</ul>
+				</li>
+				<li>Klicken Sie auf <b>OK</b>, um die Änderungen zu übernehmen und das Einstellungsfenster zu schließen.</li>
+			</ol>
+		</div>
+	</body>
+</html>

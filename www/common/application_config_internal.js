@@ -113,6 +113,12 @@ define(function() {
      */
     AppConfig.roadmap = false;
 
+    /* If you have a status page for your instance, you may use the setting belox
+     *
+     * See the comments above for a description of possible configurations.
+     */
+    AppConfig.status = false;
+
     /* By default CryptPad instances display some text on the home page indicating that
      * they are an independent community instance of the software. You can provide customized messages
      * by filling in the following data structure with strings for each language you intend to support.

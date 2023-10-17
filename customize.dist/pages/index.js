@@ -121,6 +121,7 @@ define([
         var imprintLink = fastLink('imprint');
         var privacyLink = fastLink('privacy');
         var termsLink = fastLink('terms');
+        var statusLink = fastLink('status');
 
         var notice;
 /*  Admins can specify a notice to display in application_config.js via the `homeNotice` attribute.
@@ -133,6 +134,7 @@ define([
         }
 
         // instance title
+
         var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
 
         // instance location
@@ -181,7 +183,8 @@ define([
                                 termsLink,
                                 privacyLink,
                                 imprintLink,
-                                h('a', {href:"/contact.html"}, Msg.contact)
+                                h('a', {href:"/contact.html"}, Msg.contact),
+                                statusLink,
                             ])
                         ]),
                         h('div.cp-apps.col-lg-6', [

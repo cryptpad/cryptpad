@@ -192,7 +192,7 @@ define([
         }, cb);
     };
     Block.removeLoginBlock = function (data, cb) {
-        const { blockKeys, auth } = data;
+        const { reason, blockKeys, auth } = data;
 
         var command = 'REMOVE_BLOCK';
         if (auth && auth.type === 'TOTP') {
@@ -201,7 +201,8 @@ define([
 
         ServerCommand(blockKeys.sign, {
             command: command,
-            auth: auth && auth.data
+            auth: auth && auth.data,
+            reason: reason
         }, cb);
     };
 
