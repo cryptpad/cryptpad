@@ -1539,6 +1539,16 @@ define([
                         if (typeof(item) === 'string') {
                             $el[0].appendChild(document.createTextNode(item));
                         }
+                        if (typeof item === 'object') {
+                            //  case where item is an object, eg: an <a> tag
+                            var $subElement = $(h(item.tag, item.attributes || {}));
+                            if (typeof item.content === 'string') {
+                                $subElement.text(item.content);
+                            } else if (item.content instanceof Element) {
+                                $subElement.append(item.content);
+                            }
+                            $el.append($subElement);
+                        }
                     });
                     // array of elements or text nodes
                 }
@@ -2102,9 +2112,18 @@ define([
                 return true;
             };
         });
+        var liOptions = options.map(function (option) {
+            if (option.tag === 'hr' || option.tag === 'li') {
+                return option;
+            }
+            return {
+                tag: 'li',
+                content: [option]
+            };
+        });
         var dropdownConfigUser = {
             buttonContent: $userButton[0],
-            options: options, // Entries displayed in the menu
+            options: liOptions, // Entries displayed in the menu
             left: true, // Open to the left of the button
             container: config.$initBlock, // optional
             feedback: "USER_ADMIN",
