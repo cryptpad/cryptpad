@@ -178,7 +178,7 @@ define([
         // starting the CryptPad framework
         framework.start();
 
-        drawioFrame.src = '/components/drawio-cp/src/main/webapp/index.html?'
+        drawioFrame.src = '/components/drawio/src/main/webapp/index.html?'
             + new URLSearchParams({
                 test: 1,
                 stealth: 1,
