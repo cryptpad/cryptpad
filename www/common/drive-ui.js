@@ -107,6 +107,7 @@ define([
     var $folderIcon = $('<span>', {
         "class": faFolder + " cptools cp-app-drive-icon-folder cp-app-drive-content-icon"
     });
+    var $fileMenuIcon = $('<span>', {"class": "fa fa-ellipsis-h"});
     //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
     var $folderOpenedIcon = $('<span>', {"class": faFolderOpen + " cptools cp-app-drive-icon-folder"});
@@ -505,6 +506,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faDelete,
                 }, Messages.fc_delete_owned)),
+                
                 h('li', h('a.cp-app-drive-context-remove.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
@@ -1524,6 +1526,7 @@ define([
                     $button.hide();
                     return;
                 }
+
                 $button.show();
                 $button.css({
                     background: '#63b1f7'
@@ -1679,10 +1682,17 @@ define([
             // show contextmenu at cursor position
             $menu.css({ display: "block" });
             if (APP.mobile()) {
+                let menuPosition;
+                if ($(e.target).offset().top > ($(window).height()-$menu.height())) {
+                    console.log('top')
+                    menuPosition = ($(e.target).offset().top - $menu.height()) + 'px'
+                } else {
+                    console.log('bottom')
+                    menuPosition = ($(e.target).offset().top) + 'px'
+                }
                 $menu.css({
-                    top: ($("#cp-app-drive-toolbar-context-mobile").offset().top + 32) + 'px',
-                    right: '0px',
-                    left: ''
+                    top: menuPosition,
+                    left: (($(e.target).offset().left - 50)) + 'px'
                 });
                 return;
             }
@@ -1782,6 +1792,7 @@ define([
                 filterContextMenu(type, paths);
 
                 displayMenu(e);
+
 
                 $(".cp-app-drive-context-noAction").toggle($contextMenu.find('li:visible').length === 0);
 
@@ -2167,6 +2178,8 @@ define([
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
             $element.append($type).append($adate).append($cdate);
+
+
         };
         var _addOwnership = function ($span, $state, data) {
             if (data && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1) {
@@ -2178,6 +2191,7 @@ define([
                 $owner.attr('title', Messages.fm_padIsOwnedOther);
             } */
         };
+
         var thumbsUrls = {};
         var addFileData = function (element, $element) {
             if (!manager.isFile(element)) { return; }
@@ -2219,12 +2233,24 @@ define([
             }
             _addOwnership($element, $state, data);
 
+            var $menu = $('<span>', {'class': 'cp-app-drive-element-menu'});
+            $menu.click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $element.contextmenu();
+            })
+            var $fileMenu = $fileMenuIcon.clone().appendTo($menu);
+
             var name = manager.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
             $element.append($name);
             $element.append($state);
+            if (APP.mobile()) {
+                $element.append($menu);
+            }
+            
             if (getViewMode() === 'grid') {
                 $element.attr('title', name);
             }
@@ -2275,6 +2301,15 @@ define([
                 $span.addClass('cp-app-drive-element-sharedf');
                 _addOwnership($span, $state, data);
 
+                var $menu = $('<span>', {'class': 'cp-app-drive-element-menu'});
+                $menu.click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var $element = $(element)
+                    $element.contextmenu();
+                })
+                var $fileMenu = $fileMenuIcon.clone().appendTo($menu);
+
                 var hrefData = Hash.parsePadUrl(data.href || data.roHref);
                 if (hrefData.hashData && hrefData.hashData.password) {
                     var $password = $passwordIcon.clone().appendTo($state);
@@ -2291,6 +2326,7 @@ define([
                 }
 
                 var $shared = $sharedIcon.clone().appendTo($state);
+                // var $menu = $shared.clone().appendTo($state);
                 $shared.attr('title', Messages.fm_canBeShared);
             } else if ($content.data('readOnlyFolder') || APP.readOnly) {
                 $ro = $readonlyIcon.clone().appendTo($state);
@@ -2312,7 +2348,8 @@ define([
             if (getViewMode() === 'grid') {
                 $span.attr('title', key);
             }
-            $span.append($name).append($state).append($subfolders).append($files).append($filler);
+
+            $span.append($name).append($state).append($subfolders).append($files).append($filler).append($menu);
         };
 
         // This is duplicated in cryptpad-common, it should be unified
@@ -3327,8 +3364,8 @@ define([
             var $filler = $('<span>', {
                 'class': 'cp-app-drive-element-filler cp-app-drive-element-list'
             });
-            $fohElement.append($fhIcon).append($name).append($state)
-                        .append($subfolders).append($files).append($filler);
+            $fohElement.append($name).append($state)
+                        .append($subfolders).append($files).append($filler)
             if (clickable) { addFolderSortIcon($fohElement); }
             return $fohElement;
         };
@@ -3645,6 +3682,7 @@ define([
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
+                
                 addFileData(id, $element);
                 $element.data('path', [FILES_DATA, id]);
                 $element.data('element', id);
@@ -3654,6 +3692,8 @@ define([
                 });
                 $element.contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
+                var $fileMenu = $('<li>').append($fileMenuIcon);
+                $element.append($fileMenu);
                 $container.append($element);
             });
             createGhostIcon($container);
