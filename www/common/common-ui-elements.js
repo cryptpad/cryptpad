@@ -1785,7 +1785,7 @@ define([
 
         var options = [];
         options.push({
-            tag: 'div',
+            tag: 'li',
             attributes: {'class': 'cp-user-menu-logo'},
             content: h('span', [
                 h('img', {
@@ -1816,7 +1816,7 @@ define([
                 ]));
             }
             options.push({
-                tag: 'p',
+                tag: 'li',
                 attributes: {'class': 'cp-toolbar-account'},
                 content: userAdminContent,
             });
