@@ -13,7 +13,8 @@ module.exports = {
         type: 'oidc',
         url: 'https://accounts.google.com',
         client_id: "{your_client_id}",
-        client_secret: "{your_client_secret}"
+        client_secret: "{your_client_secret}",
+        jwt_alg: 'RS256' (optional)
     }
     */
     ]

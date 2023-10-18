@@ -51,8 +51,12 @@ define([
             }
         }, function (err) {
             if (err) {
-                console.error(err);
-                return void UI.warn(Messages.error);
+                UI.removeLoadingScreen();
+                var msg = Messages.error;
+                if (err === 'NO_SUCH_USER') { msg = Messages.drive_sfPasswordError;  }
+                let $button = $('button#cp-ssoauth-button');
+                $button.prop('disabled', '');
+                return void UI.warn(msg);
             }
             window.location.href = '/drive/';
         });

@@ -113,8 +113,8 @@ define([
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {
-                Exports.loginOrRegister({
-                    uname,
+                Login.loginOrRegister({
+                uname,
                     passwd,
                     isRegister,
                     onOTP

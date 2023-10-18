@@ -301,7 +301,6 @@ define([
             register: isRegister,
             uname: uname
         };
-        if (ssoAuth && ssoAuth.name) { uname = res.uname = ssoAuth.name; }
 
         var RT, blockKeys, blockUrl;
 
@@ -312,6 +311,7 @@ define([
                 res.opt = allocateBytes(bytes);
                 res.blockHash = res.opt.blockHash;
                 blockKeys = res.opt.blockKeys;
+                if (ssoAuth && ssoAuth.name) { uname = res.uname = ssoAuth.name; }
             }));
         }).nThen(function (waitFor) {
             // the allocated bytes can be used either in a legacy fashion,
