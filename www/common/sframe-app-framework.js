@@ -1121,7 +1121,7 @@ define([
                 start: evStart.fire,
 
                 // Call this, when the user wants to add an image from drive.
-                insertImage: function(data, cb) {  // TODO Move function somwhere else
+                insertImage: function(data, cb) {
                     require(['/common/image-dialog.js'], function(imageDialog) {
                         imageDialog.openImageDialog(common, integrationChannel, data, cb);
                     });
@@ -1129,6 +1129,8 @@ define([
 
                 // Determine the internal state of the framework.
                 getState: function () { return state; },
+
+                isIntegrated: function() { return cpNfInner.metadataMgr.getPrivateData().integration; },
 
                 // Internals
                 _: {

@@ -184,8 +184,8 @@ define([
                 stealth: 1,
                 embed: 1,
                 drafts: 0,
-                // plugins: 0,
                 p: 'cryptpad',
+                integrated: framework.isIntegrated() ? 'true' : 'false',
 
                 chrome: framework.isReadOnly() ? 0 : 1,
                 dark: window.CryptPad_theme === "dark" ? 1 : 0,
