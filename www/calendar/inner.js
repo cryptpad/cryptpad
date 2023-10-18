@@ -99,6 +99,7 @@ define([
     };
     var newEvent = function (event, cb) {
         var reminders = APP.notificationsEntries;
+        var description = APP.description;
 
         var startDate = event.start._date;
         var endDate = event.end._date;
@@ -113,6 +114,7 @@ define([
             isAllDay: event.isAllDay,
             end: +endDate,
             reminders: reminders,
+            description: description,
             recurrenceRule: event.recurrenceRule
         };
 
@@ -283,6 +285,7 @@ define([
                 var obj = data.content[uid];
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
+                obj.description = obj.description || "";
                 if (obj.isAllDay && obj.startDay) { obj.start = +Flatpickr.parseDate((obj.startDay)); }
                 if (obj.isAllDay && obj.endDay) {
                     var endDate = Flatpickr.parseDate(obj.endDay);
@@ -1023,6 +1026,9 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 if (JSONSortify(oldRec || '') !== JSONSortify(rec)) {
                     changes.recurrenceRule = rec;
                 }
+
+                var description = APP.description;
+                changes.description = description;
             }
 
 
@@ -1900,7 +1906,6 @@ APP.recurrenceRule = {
     var getNotificationDropdown = function () {
         var ev = APP.editModalData;
         var calId = ev.selectedCal.id;
-        // DEFAULT HERE [10] ==> 10 minutes before the event
         var id = (ev.id && ev.id.split('|')[0]) || undefined;
         var _ev = APP.calendar.getSchedule(ev.id, calId);
         var oldReminders = _ev && _ev.raw && _ev.raw.reminders;
@@ -2005,6 +2010,41 @@ APP.recurrenceRule = {
                     addNotif
                 ])
             ])
+        ]);
+    };
+
+    var getDescriptionInput = function() {
+        var ev = APP.editModalData;
+        var calId = ev.selectedCal.id;
+        // DEFAULT HERE [10] ==> 10 minutes before the event
+        var id = (ev.id && ev.id.split('|')[0]) || undefined;
+        var _ev = APP.calendar.getSchedule(ev.id, calId);
+        var oldDescription = _ev && _ev.raw && _ev.raw.description;
+        if (!oldDescription) {
+            oldDescription = Util.find(APP.calendars, [calId, 'content', 'content', id, 'description']) || "";
+        }
+
+        APP.description = oldDescription;
+        var description = h('textarea.tui-full-calendar-content', {
+            placeholder: 'Description', // TODO: replace with Message.calendar_description
+            id: 'tui-full-calendar-description',
+        });
+
+        description.value = oldDescription;
+
+        var updateDescription = function(value) {
+            APP.description = value;
+        };
+
+        var $description = $(description);
+        $description.on('input', function() {
+            updateDescription(description.value);
+        });
+
+        return h('div.tui-full-calendar-popup-section.tui-full-calendar-vlayout-area', [
+            h('div.tui-full-calendar-popup-section-item.tui-full-calendar-section-description', [
+                description,
+            ]),
         ]);
     };
 
@@ -2117,6 +2157,9 @@ APP.recurrenceRule = {
 
             var div = getNotificationDropdown();
             $button.before(div);
+
+            var descriptionInput = getDescriptionInput();
+            $startDate.parent().parent().before(descriptionInput);
 
             // Use Flatpickr with or without time depending on allday checkbox
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');
