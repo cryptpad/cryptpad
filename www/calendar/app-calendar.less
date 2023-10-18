@@ -197,7 +197,9 @@
                     background-color: @cp_dropdown-bg-hover;
                 }
                 .tui-full-calendar-content {
-                    white-space: nowrap;
+                    &:not(textarea) {
+                        white-space: nowrap;
+                    }
                     overflow: hidden;
                     text-overflow: ellipsis;
                     font: @colortheme_app-font;
