@@ -285,7 +285,7 @@ define([
                 var obj = data.content[uid];
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
-                obj.description = obj.description || "";
+                obj.body = obj.body || "";
                 if (obj.isAllDay && obj.startDay) { obj.start = +Flatpickr.parseDate((obj.startDay)); }
                 if (obj.isAllDay && obj.endDay) {
                     var endDate = Flatpickr.parseDate(obj.endDay);
@@ -390,6 +390,13 @@ define([
             }
 
             return Messages._getKey('calendar_location', [str]);
+        },
+        popupDetailBody: function(schedule) {
+            var d = schedule.body;
+            var str = Util.fixHTML(d);
+            str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
+            delete APP.body;
+            return 'Description:<br />' + str;
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -1027,8 +1034,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     changes.recurrenceRule = rec;
                 }
 
-                var description = APP.description;
-                changes.description = description;
+                var body = APP.body;
+                changes.body = body;
             }
 
 
@@ -2013,37 +2020,37 @@ APP.recurrenceRule = {
         ]);
     };
 
-    var getDescriptionInput = function() {
+    var getBodyInput = function() {
         var ev = APP.editModalData;
         var calId = ev.selectedCal.id;
         // DEFAULT HERE [10] ==> 10 minutes before the event
         var id = (ev.id && ev.id.split('|')[0]) || undefined;
         var _ev = APP.calendar.getSchedule(ev.id, calId);
-        var oldDescription = _ev && _ev.raw && _ev.raw.description;
-        if (!oldDescription) {
-            oldDescription = Util.find(APP.calendars, [calId, 'content', 'content', id, 'description']) || "";
+        var oldBody = _ev && _ev.raw && _ev.raw.body;
+        if (!oldBody) {
+            oldBody = Util.find(APP.calendars, [calId, 'content', 'content', id, 'body']) || "";
         }
 
-        APP.description = oldDescription;
-        var description = h('textarea.tui-full-calendar-content', {
+        APP.body = oldBody;
+        var body = h('textarea.tui-full-calendar-content', {
             placeholder: 'Description', // TODO: replace with Message.calendar_description
-            id: 'tui-full-calendar-description',
+            id: 'tui-full-calendar-body',
         });
 
-        description.value = oldDescription;
+        body.value = oldBody;
 
-        var updateDescription = function(value) {
-            APP.description = value;
+        var updateBody = function(value) {
+            APP.body = value;
         };
 
-        var $description = $(description);
-        $description.on('input', function() {
-            updateDescription(description.value);
+        var $body = $(body);
+        $body.on('input', function() {
+            updateBody(body.value);
         });
 
         return h('div.tui-full-calendar-popup-section.tui-full-calendar-vlayout-area', [
-            h('div.tui-full-calendar-popup-section-item.tui-full-calendar-section-description', [
-                description,
+            h('div.tui-full-calendar-popup-section-item.tui-full-calendar-section-body', [
+                body,
             ]),
         ]);
     };
@@ -2158,8 +2165,8 @@ APP.recurrenceRule = {
             var div = getNotificationDropdown();
             $button.before(div);
 
-            var descriptionInput = getDescriptionInput();
-            $startDate.parent().parent().before(descriptionInput);
+            var bodyInput = getBodyInput();
+            $startDate.parent().parent().before(bodyInput);
 
             // Use Flatpickr with or without time depending on allday checkbox
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');

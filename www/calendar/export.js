@@ -106,7 +106,7 @@ define([
 
                 var escapeValue = function(str) {
                     return str.replace(/\n/g, ["\\n"]);
-                }
+                };
 
                 Array.prototype.push.apply(arr, [
                     'BEGIN:VEVENT',
@@ -118,7 +118,7 @@ define([
                     rrule,
                     'SUMMARY:'+ data.title,
                     'LOCATION:'+ data.location,
-                    'DESCRIPTION:' + escapeValue(data.description),
+                    'DESCRIPTION:' + escapeValue(data.body),
                 ].filter(Boolean));
 
                 if (Array.isArray(data.reminders)) {
@@ -314,7 +314,7 @@ define([
                 }
 
                 // Store other properties
-                var used = ['dtstart', 'dtend', 'uid', 'summary', 'location', 'dtstamp', 'rrule', 'recurrence-id'];
+                var used = ['dtstart', 'dtend', 'uid', 'summary', 'location', 'description', 'dtstamp', 'rrule', 'recurrence-id'];
                 var hidden = [];
                 ev.getAllProperties().forEach(function (p) {
                     if (used.indexOf(p.name) !== -1) { return; }
@@ -359,7 +359,7 @@ define([
                     category: 'time',
                     title: ev.getFirstPropertyValue('summary'),
                     location: ev.getFirstPropertyValue('location'),
-                    description: ev.getFirstPropertyValue('description'),
+                    body: ev.getFirstPropertyValue('description'),
                     isAllDay: isAllDay,
                     start: start,
                     end: end,
