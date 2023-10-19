@@ -97,13 +97,16 @@ define([
             };
 
 
-
             var addEvent = function (arr, data, recId) {
                 var uid = data.id;
                 var dt = getDT(data);
                 var start = dt.start;
                 var end = dt.end;
                 var rrule = getRRule(data);
+
+                var escapeValue = function(str) {
+                    return str.replace(/\n/g, ["\\n"]);
+                }
 
                 Array.prototype.push.apply(arr, [
                     'BEGIN:VEVENT',
@@ -115,6 +118,7 @@ define([
                     rrule,
                     'SUMMARY:'+ data.title,
                     'LOCATION:'+ data.location,
+                    'DESCRIPTION:' + escapeValue(data.description),
                 ].filter(Boolean));
 
                 if (Array.isArray(data.reminders)) {
@@ -355,6 +359,7 @@ define([
                     category: 'time',
                     title: ev.getFirstPropertyValue('summary'),
                     location: ev.getFirstPropertyValue('location'),
+                    description: ev.getFirstPropertyValue('description'),
                     isAllDay: isAllDay,
                     start: start,
                     end: end,
