@@ -54,7 +54,7 @@ define([
     Rec,
     Flatpickr,
     Share, Access, Properties,
-    diffMk,
+    diffMk
     )
 {
     Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
