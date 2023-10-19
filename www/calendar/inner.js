@@ -24,6 +24,8 @@ define([
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
+    '/common/diffMarked.js',
+
     '/common/jscolor.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
@@ -51,7 +53,8 @@ define([
     Export,
     Rec,
     Flatpickr,
-    Share, Access, Properties
+    Share, Access, Properties,
+    diffMk,
     )
 {
     Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
@@ -392,11 +395,9 @@ define([
             return Messages._getKey('calendar_location', [str]);
         },
         popupDetailBody: function(schedule) {
-            var d = schedule.body;
-            var str = Util.fixHTML(d);
-            str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
+            var str = schedule.body;
             delete APP.body;
-            return 'Description:<br />' + str;
+            return 'Description:<br />' + diffMk.render(str,true);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
