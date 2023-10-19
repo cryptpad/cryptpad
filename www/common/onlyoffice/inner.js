@@ -1365,7 +1365,6 @@ define([
                 endSaveChanges: true,
                 isExcel: true,
                 deleteIndex: null,
-                excelAdditionalInfo: null,
                 unlock: false,
                 releaseLocks: true,
                 reSave: true,

@@ -1,9 +1,11 @@
+/* globals nacl */
+
 define([
     '/common/common-util.js',
     '/file/file-crypto.js',
 ], function(
     Util,
-    FileCrypto,
+    FileCrypto
 ) {
 
     const setBlobType = (blob, mimeType) => {
