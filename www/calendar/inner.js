@@ -57,8 +57,12 @@ define([
     diffMk
     )
 {
+    // XXX New translation keys
     Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
     Messages.calendar_rec_change = "You moved a repeating event to different calendar. You can only apply this change to this event or all repeated events."; // XXX New translation key
+    Messages.calendar_desc = "Description"; // XXX maybe rename in `description`?
+    Messages.calendar_description = "Description:{0}{1}"; // XXX
+
     var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
@@ -397,7 +401,7 @@ define([
         popupDetailBody: function(schedule) {
             var str = schedule.body;
             delete APP.body;
-            return 'Description:<br />' + diffMk.render(str,true);
+            return Messages._getKey('calendar_description', ['<br />', diffMk.render(str, true)]);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -2034,7 +2038,7 @@ APP.recurrenceRule = {
 
         APP.body = oldBody;
         var body = h('textarea.tui-full-calendar-content', {
-            placeholder: 'Description', // TODO: replace with Message.calendar_description
+            placeholder: Messages.calendar_desc,
             id: 'tui-full-calendar-body',
         });
 
