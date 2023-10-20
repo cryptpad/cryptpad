@@ -1235,7 +1235,7 @@ define([
                     var nSecret = secret;
                     if (cfg.isDrive) {
                         // Shared folder or user hash or fs hash
-                        var hash = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                        var hash = Cryptpad.userHash || Utils.LocalStore.getFSHash();
                         if (data.sharedFolder) { hash = data.sharedFolder.hash; }
                         if (hash) {
                             var password = (data.sharedFolder && data.sharedFolder.password) || undefined;
