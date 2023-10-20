@@ -2028,7 +2028,6 @@ APP.recurrenceRule = {
     var getBodyInput = function() {
         var ev = APP.editModalData;
         var calId = ev.selectedCal.id;
-        // DEFAULT HERE [10] ==> 10 minutes before the event
         var id = (ev.id && ev.id.split('|')[0]) || undefined;
         var _ev = APP.calendar.getSchedule(ev.id, calId);
         var oldBody = _ev && _ev.raw && _ev.raw.body;
