@@ -47,7 +47,7 @@ define([
         return hash;
     };
 
-    var getUserHash = LocalStore.getUserHash = function () {
+    LocalStore.getUserHash = function () {
         var hash = localStorage[Constants.userHashKey];
 
         if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
