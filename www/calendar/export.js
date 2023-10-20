@@ -104,8 +104,13 @@ define([
                 var end = dt.end;
                 var rrule = getRRule(data);
 
-                var escapeValue = function(str) {
-                    return str.replace(/\n/g, ["\\n"]);
+                var formatDescription = function(str) {
+                    var result = str.replace(/\n/g, ["\\n"]);
+                    // XXX Should use ical.js helper foldline instead ↓
+                    // XXX https://kewisch.github.io/ical.js/api/ICAL.module_helpers.html#.foldline
+                    // In RFC5545: https://www.rfc-editor.org/rfc/rfc5545#section-3.1
+                    result = result.replace(/([^\n]{1,74})/g, '$1\n ');
+                    return result;
                 };
 
                 Array.prototype.push.apply(arr, [
@@ -118,7 +123,7 @@ define([
                     rrule,
                     'SUMMARY:'+ data.title,
                     'LOCATION:'+ data.location,
-                    'DESCRIPTION:' + escapeValue(data.body),
+                    'DESCRIPTION:' + formatDescription(data.body),
                 ].filter(Boolean));
 
                 if (Array.isArray(data.reminders)) {
