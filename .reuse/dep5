@@ -8,3 +8,44 @@ Source: https://cryptpad.org
 # Files: src/*
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
+
+# Temporary WIP DIRECTORIES
+
+# www/common/onlyoffice
+# www/components
+# www/lib
+
+Files: www/common/onlyoffice/*
+Copyright: ignoring this for now
+License: MIT
+
+Files: www/components/*
+Copyright: Respective copyright holders
+License: MIT
+
+Files: www/lib/*
+Copyright: Respective copyright holders
+License: MIT
+
+Files: www/common/theme/*
+Copyright: temporary
+License: MIT
+
+## Dependencies
+
+Files: www/pad/mathjax/*
+Copyright: 2009-2018 The MathJax Consortium
+License: Apache-2.0
+
+Files: www/pad/wordcount/*
+Copyright: Ingo Herbote
+License: MIT
+
+# same as CKEditor
+Files: www/pad/wysiwygarea-plugin.js
+Copyright: 2003-2017, CKSource - Frederico Knabben. All rights reserved
+License:  GPL-2.0-or-later
+
+Files: www/pad/icons/*
+Copyright: unknown
+License:  GPL-2.0-or-later
