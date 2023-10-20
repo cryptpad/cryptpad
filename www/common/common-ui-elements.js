@@ -1515,7 +1515,7 @@ define([
         }
 
         // Menu
-        var $innerblock = $('<ul>', {'class': 'cp-dropdown-content'});
+        var $innerblock = $('<ul>', {'class': 'cp-dropdown-content', 'role': 'menu'});
         if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
 
         var hide = function () {
@@ -1803,7 +1803,8 @@ define([
         var options = [];
         options.push({
             tag: 'li',
-            attributes: {'class': 'cp-user-menu-logo'},
+            role: 'presentation',
+            attributes: {'class': 'cp-user-menu-logo','role':'menuitem'},
             content: h('span', [
                 h('img', {
                     src: '/customize/CryptPad_logo_grey.svg',
@@ -1834,7 +1835,8 @@ define([
             }
             options.push({
                 tag: 'li',
-                attributes: {'class': 'cp-toolbar-account'},
+                role: 'presentation',
+                attributes: {'class': 'cp-toolbar-account','role':'menuitem'},
                 content: userAdminContent,
             });
         }
@@ -1842,7 +1844,7 @@ define([
         if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle','tabindex': '0'},
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle','tabindex': '0','role':'menuitem'},
                 content: h('span', Messages.profileButton),
                 action: function () {
                     if (padType) {
@@ -1858,7 +1860,8 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-hdd-o',
-                    'tabindex': '0'
+                    'tabindex': '0',
+                    'role': 'menuitem'
                 },
                 content: h('span', Messages.type.drive),
                 action: function () {
@@ -1871,7 +1874,8 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-users',
-                    'tabindex': '0'
+                    'tabindex': '0',
+                    'role': 'menuitem'
                 },
                 content: h('span', Messages.type.teams),
                 action: function () {
@@ -1884,7 +1888,8 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-calendar',
-                    'tabindex': '0'
+                    'tabindex': '0',
+                    'role': 'menuitem'
                 },
                 content: h('span', Messages.calendar),
                 action: function () {
@@ -1897,7 +1902,8 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-address-book',
-                    'tabindex': '0'
+                    'tabindex': '0',
+                    'role': 'menuitem'
                 },
                 content: h('span', Messages.type.contacts),
                 action: function () {
@@ -1908,7 +1914,7 @@ define([
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog','tabindex': '0'},
+                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog','tabindex': '0','role':'menuitem'},
                 content: h('span', Messages.settingsButton),
                 action: function () {
                     if (padType) {
@@ -1925,7 +1931,7 @@ define([
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs','tabindex': '0'},
+                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs','tabindex': '0', 'role':'menuitem'},
                 content: h('span', Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
@@ -1942,7 +1948,8 @@ define([
                 'target': '_blank',
                 'rel': 'noopener',
                 'href': 'https://docs.cryptpad.org',
-                'class': 'fa fa-book'
+                'class': 'fa fa-book',
+                'role': 'menuitem'
             },
             content: h('span', Messages.docs_link)
         });
@@ -1965,7 +1972,8 @@ define([
             tag: 'a',
             attributes: {
                 'class': 'cp-toolbar-about fa fa-info',
-                'tabindex': '0'
+                'tabindex': '0',
+                'role': 'menuitem'
             },
             content: h('span', Messages.user_about),
             action: function () {
@@ -1977,7 +1985,8 @@ define([
             tag: 'a',
             attributes: {
                 'class': 'fa fa-home',
-                'tabindex': '0'
+                'tabindex': '0',
+                'role': 'menuitem'
             },
             content: h('span', Messages.homePage),
             action: function () {
@@ -2019,7 +2028,8 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-gift',
-                    'tabindex': '0'
+                    'tabindex': '0',
+                    'role': 'menuitem'
                 },
                 content: h('span', Messages.crowdfunding_button2),
                 action: function () {
@@ -2050,7 +2060,8 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
-                    'tabindex': '0'
+                    'tabindex': '0',
+                    'role': 'menuitem'
                 },
                 content: h('span', Messages.logoutEverywhere),
                 action: function () {
@@ -2064,7 +2075,7 @@ define([
             });
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out','tabindex': '0'},
+                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out','tabindex': '0','role':'menuitem'},
                 content: h('span', Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
@@ -2075,7 +2086,7 @@ define([
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in','tabindex': '0'},
+                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in','tabindex': '0','role':'menuitem'},
                 content: h('span', Messages.login_login),
                 action: function () {
                     Common.setLoginRedirect('login');
@@ -2084,7 +2095,7 @@ define([
             if (!Config.restrictRegistration) {
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus','tabindex': '0'},
+                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus','tabindex': '0', 'role':'menuitem'},
                     content: h('span', Messages.login_register),
                     action: function () {
                         Common.setLoginRedirect('register');
@@ -2118,7 +2129,8 @@ define([
             }
             return {
                 tag: 'li',
-                content: [option]
+                content: [option],
+                attributes: { 'role': 'presentation'}
             };
         });
         var dropdownConfigUser = {
