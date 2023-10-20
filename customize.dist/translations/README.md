@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Translations
 
 Translations can now be made using [Weblate](https://weblate.cryptpad.org). We may still accept PRs for the internal translation files, but we won't provide support for this. See the state of the translated languages:

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 /* jshint esversion: 7 */
 define([], function () {
     // Based on https://gist.github.com/bellbind/871b145110c458e83077a718aef9fa0e
