@@ -19,19 +19,23 @@ Files: www/common/onlyoffice/*
 Copyright: ignoring this for now
 License: MIT
 
-Files: www/components/*
-Copyright: Respective copyright holders
-License: MIT
-
-Files: www/lib/*
-Copyright: Respective copyright holders
-License: MIT
-
 Files: www/common/theme/*
 Copyright: temporary
 License: MIT
 
 ## Dependencies
+
+Files: www/lib/mermaid/*
+Copyright: (c) 2014 - 2021 Knut Sveidqvist
+License: MIT
+
+Files: www/lib/pdfjs/*
+Copyright: 2017 Mozilla Foundation
+License: Apache-2.0
+
+Files: www/lib/rangy
+Copyright: 2015, Tim Down
+License: MIT
 
 Files: www/pad/mathjax/*
 Copyright: 2009-2018 The MathJax Consortium
