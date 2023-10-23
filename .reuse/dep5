@@ -33,8 +33,52 @@ Files: www/lib/pdfjs/*
 Copyright: 2017 Mozilla Foundation
 License: Apache-2.0
 
-Files: www/lib/rangy
+Files: www/lib/codemirror-extra-modes/asciidoc/*
+Copyright: (c) 2015, the Asciidoctor Project
+License: BSD-3-Clause
+
+Files: www/lib/datepicker/*
+Copyright: 2017 Gregory Petrosyan
+License: MIT
+
+Files: www/lib/diff-dom/*
+Copyright: Johannes Wilm, Fidus Writer
+License: LGPL-3.0-only
+
+Files: www/lib/fabric-history.min.js
+Copyright: 2008-2015 Printio (Juriy Zaytsev, Maxim Chernyak)
+License: MIT
+
+Files: www/lib/fabric.min.js
+Copyright: 2008-2015 Printio (Juriy Zaytsev, Maxim Chernyak)
+License: MIT
+
+Files: www/lib/pdfjs/*
+Copyright: 2012 Mozilla Foundation
+License: Apache-2.0
+
+Files: www/lib/qrcode.min.js
+Copyright: Sangmin Shim
+License: MIT
+
+Files: www/lib/rangy/rangy-core.min.js
 Copyright: 2015, Tim Down
+License: MIT
+
+Files: www/lib/textFit.min.js
+Copyright: 11/2014 by STRML (strml.github.com)
+License: MIT
+
+Files: www/lib/tippy/*
+Copyright: 2017 atomiks
+License: MIT
+
+Files: www/lib/turndown.browser.umd.js
+Copyright: 2017 Dom Christie
+License: MIT
+
+Files: www/lib/markmap/*
+Copyright: 2015 Jakub Dundalek
 License: MIT
 
 Files: www/pad/mathjax/*
