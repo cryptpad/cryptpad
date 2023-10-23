@@ -4787,6 +4787,7 @@ define([
                     // Otherwise add it
                     var datePicker = h('input');
                     var picker = Flatpickr(datePicker, {
+                        disableMobile: true,
                         enableTime: true,
                         time_24hr: is24h,
                         dateFormat: dateFormat,
