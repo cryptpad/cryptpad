@@ -1844,7 +1844,7 @@ define([
         if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle','tabindex': '0','role':'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle','tabindex': '-1','role':'menuitem'},
                 content: h('span', Messages.profileButton),
                 action: function () {
                     if (padType) {
@@ -1860,7 +1860,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-hdd-o',
-                    'tabindex': '0',
+                    'tabindex': '-1',
                     'role': 'menuitem'
                 },
                 content: h('span', Messages.type.drive),
@@ -1874,7 +1874,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-users',
-                    'tabindex': '0',
+                    'tabindex': '-1',
                     'role': 'menuitem'
                 },
                 content: h('span', Messages.type.teams),
@@ -1888,7 +1888,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-calendar',
-                    'tabindex': '0',
+                    'tabindex': '-1',
                     'role': 'menuitem'
                 },
                 content: h('span', Messages.calendar),
@@ -1902,7 +1902,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-address-book',
-                    'tabindex': '0',
+                    'tabindex': '-1',
                     'role': 'menuitem'
                 },
                 content: h('span', Messages.type.contacts),
@@ -1914,7 +1914,7 @@ define([
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog','tabindex': '0','role':'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog','tabindex': '-1','role':'menuitem'},
                 content: h('span', Messages.settingsButton),
                 action: function () {
                     if (padType) {
@@ -1931,7 +1931,7 @@ define([
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs','tabindex': '0', 'role':'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs','tabindex': '-1', 'role':'menuitem'},
                 content: h('span', Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
@@ -1949,7 +1949,8 @@ define([
                 'rel': 'noopener',
                 'href': 'https://docs.cryptpad.org',
                 'class': 'fa fa-book',
-                'role': 'menuitem'
+                'role': 'menuitem',
+                'tabindex': -1
             },
             content: h('span', Messages.docs_link)
         });
@@ -1972,7 +1973,7 @@ define([
             tag: 'a',
             attributes: {
                 'class': 'cp-toolbar-about fa fa-info',
-                'tabindex': '0',
+                'tabindex': '-1',
                 'role': 'menuitem'
             },
             content: h('span', Messages.user_about),
@@ -1985,7 +1986,7 @@ define([
             tag: 'a',
             attributes: {
                 'class': 'fa fa-home',
-                'tabindex': '0',
+                'tabindex': '-1',
                 'role': 'menuitem'
             },
             content: h('span', Messages.homePage),
@@ -2028,7 +2029,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'fa fa-gift',
-                    'tabindex': '0',
+                    'tabindex': '-1',
                     'role': 'menuitem'
                 },
                 content: h('span', Messages.crowdfunding_button2),
@@ -2060,7 +2061,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
-                    'tabindex': '0',
+                    'tabindex': '-1',
                     'role': 'menuitem'
                 },
                 content: h('span', Messages.logoutEverywhere),
@@ -2075,7 +2076,7 @@ define([
             });
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out','tabindex': '0','role':'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out','tabindex': '-1','role':'menuitem'},
                 content: h('span', Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
@@ -2086,7 +2087,7 @@ define([
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in','tabindex': '0','role':'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in','tabindex': '-1','role':'menuitem'},
                 content: h('span', Messages.login_login),
                 action: function () {
                     Common.setLoginRedirect('login');
@@ -2124,7 +2125,7 @@ define([
             };
         });
         var liOptions = options.map(function (option) {
-            if (option.tag === 'hr' || option.tag === 'li') {
+            if (option.tag === 'li') {
                 return option;
             }
             return {

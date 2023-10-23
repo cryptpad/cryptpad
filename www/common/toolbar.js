@@ -1030,8 +1030,34 @@ MessengerUI, Messages, Pages) {
         $userAdmin.find('> button').click(function() {
             if ($userAdmin.find('> button').attr('aria-expanded') === 'true') {
                 $userAdmin.find('> button').attr('aria-expanded', 'false');
+                $(document).off('keydown');
             } else {
                 $userAdmin.find('> button').attr('aria-expanded', 'true');
+                var dropdownActive = $(".cp-dropdown-content");
+                if (dropdownActive.length > 0) {
+                    dropdownActive.attr('tabindex', '0').focus();
+                    $(document).on('keydown', function(e) {
+                        if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
+                            var items = dropdownActive.find('li');
+                            var focusedItem = items.filter(':focus');
+                            items.attr('tabindex', '-1');
+                            if (e.key === 'Tab') {
+                                e.preventDefault();
+                            } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                                if (e.key === 'ArrowUp') {
+                                    var prevItem = focusedItem.prev().length ? focusedItem.prev() : items.last();
+                                    prevItem.attr('tabindex', '0').focus();
+                                } else if (e.key === 'ArrowDown') {
+                                    var nextItem = focusedItem.next().length ? focusedItem.next() : items.first();
+                                    nextItem.attr('tabindex', '0').focus();
+                                }
+                            }
+                        } else if (e.key === 'Escape') {
+                            $(document).off('keydown');
+                            $userAdmin.find('> button').attr('aria-expanded', 'false');
+                        }
+                    });
+                }
             }
         });
         return $userAdmin;
