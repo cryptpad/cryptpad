@@ -9,21 +9,11 @@ Source: https://cryptpad.org
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
 
-# Temporary WIP DIRECTORIES
-
-# www/common/onlyoffice
-# www/components
-# www/lib
-
-Files: www/common/onlyoffice/*
-Copyright: ignoring this for now
-License: MIT
+## Dependencies
 
 Files: www/common/theme/*
-Copyright: temporary
+Copyright: 2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
 License: MIT
-
-## Dependencies
 
 Files: www/lib/mermaid/*
 Copyright: (c) 2014 - 2021 Knut Sveidqvist
@@ -89,7 +79,7 @@ Files: www/pad/wordcount/*
 Copyright: Ingo Herbote
 License: MIT
 
-# same as CKEditor
+### same as CKEditor
 Files: www/pad/wysiwygarea-plugin.js
 Copyright: 2003-2017, CKSource - Frederico Knabben. All rights reserved
 License:  GPL-2.0-or-later
@@ -97,3 +87,49 @@ License:  GPL-2.0-or-later
 Files: www/pad/icons/*
 Copyright: unknown
 License:  GPL-2.0-or-later
+
+## OnlyOffice
+
+Files: www/common/onlyoffice/AllFonts.js
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/fonts_thumbnail.png
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/fonts_thumbnail@2x.png
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/plugins.json
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v1/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v2b/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v4/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v5/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v6/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v7/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/x2t/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
