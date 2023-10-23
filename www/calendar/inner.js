@@ -95,7 +95,25 @@ define([
             cb(null, obj);
         });
     };
-    var newEvent = function (data, cb) {
+    var newEvent = function (event, cb) {
+        var reminders = APP.notificationsEntries;
+
+        var startDate = event.start._date;
+        var endDate = event.end._date;
+
+        var data = {
+            id: Util.uid(),
+            calendarId: event.calendarId,
+            title: event.title,
+            category: "time",
+            location: event.location,
+            start: +startDate,
+            isAllDay: event.isAllDay,
+            end: +endDate,
+            reminders: reminders,
+            recurrenceRule: event.recurrenceRule
+        };
+
         APP.module.execCommand('CREATE_EVENT', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
@@ -964,30 +982,13 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            var reminders = APP.notificationsEntries;
-
-            var startDate = event.start._date;
-            var endDate = event.end._date;
-
-            var schedule = {
-                id: Util.uid(),
-                calendarId: event.calendarId,
-                title: event.title,
-                category: "time",
-                location: event.location,
-                start: +startDate,
-                isAllDay: event.isAllDay,
-                end: +endDate,
-                reminders: reminders,
-                recurrenceRule: APP.recurrenceRule
-            };
-
-            newEvent(schedule, function (err) {
+            event.recurrenceRule = APP.recurrenceRule; // XXX Not sure about the consistency of data structures
+            newEvent(event, function (err) {
                 if (err) {
                     console.error(err);
                     return void UI.warn(err);
                 }
-                cal.createSchedules([schedule]);
+                //cal.createSchedules([schedule]); XXX Remove these occurrence elsewhere
             });
         });
         cal.on('beforeUpdateSchedule', function(event) {
