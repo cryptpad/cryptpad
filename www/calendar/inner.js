@@ -1034,6 +1034,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     end: raw.end || ev.end,
                     isOrigin: isOrigin
                 };
+                var isOneTime = APP.editType == 'one';
                 if (['one', 'from'].includes(APP.editType)) {
                     if (changes.start) {
                         changes.start = diffDate(raw.start || ev.start, changes.start);
@@ -1043,22 +1044,50 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     }
                 }
 
-                old.id = id;
-                updateEvent({
-                    ev: old,
-                    changes: changes,
-                    rawData: rawData,
-                    type: {
-                        which: APP.editType,
-                        when: raw.start || ev.start
+
+                if (isOneTime && ev.recurrenceRule && changes.calendarId) {
+                    var copyEvent = ev;
+                    copyEvent.recurrenceRule = "";
+                    copyEvent.calendarId = changes.calendarId;
+                    newEvent(copyEvent, function(err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(err);
+                        }
+                    });
+
+                    if (!isOrigin) {
+                        deleteEvent(old, function(err) {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(err);
+                            }
+                        });
+                    } else {
+                        // Modifying the first event
+                        // XXX Not implemented yet
+                        console.error("Not implemented");
+                        return void UI.warn("Not implemented");
                     }
-                }, function (err) {
-                    if (err) {
-                        console.error(err);
-                        return void UI.warn(err);
-                    }
-                    //cal.updateSchedule(old.id, old.calendarId, changes);
-                });
+                } else {
+                    old.id = id;
+
+                    updateEvent({
+                        ev: old,
+                        changes: changes,
+                        rawData: rawData,
+                        type: {
+                            which: APP.editType,
+                            when: raw.start || ev.start
+                        }
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(err);
+                        }
+                        //cal.updateSchedule(old.id, old.calendarId, changes);
+                    });
+                }
             };
 
 
