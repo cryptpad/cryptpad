@@ -1034,7 +1034,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     end: raw.end || ev.end,
                     isOrigin: isOrigin
                 };
-                var isOneTime = APP.editType == 'one';
+                var isOneTime = APP.editType === 'one';
                 if (['one', 'from'].includes(APP.editType)) {
                     if (changes.start) {
                         changes.start = diffDate(raw.start || ev.start, changes.start);
