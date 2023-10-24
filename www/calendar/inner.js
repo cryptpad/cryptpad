@@ -1008,6 +1008,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var isOrigin = id === old.id;
             var wasRecurrent = Boolean(originalEvent.recurrenceRule);
+            var moveCalendar = Boolean(changes.calendarId);
 
             if (event.calendar) { // Don't update reminders and recurrence with drag&drop event
                 var oldReminders = ev.raw.reminders || originalEvent.reminders;
@@ -1046,7 +1047,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 }
 
 
-                if (isOneTime && ev.recurrenceRule && changes.calendarId) {
+                if (isOneTime && wasRecurrent && moveCalendar) {
                     // Copy the event with applied changes
                     var copyEvent = ev;
                     for (let key in changes) {
@@ -1103,7 +1104,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var list = ['one','from','all'];
             if (isOrigin) { list = ['one', 'all']; }
-            if (changes.calendarId) {
+            if (moveCalendar) {
                 if (isOrigin) {
                     // Changing calendar on Origin can only be done for all
                     list = ['all'];
@@ -1172,12 +1173,10 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             };
             recurrenceWarn();
             var changeCalendarWarn = function() {
-                if (changes.calendarId && evOrig.recurrenceRule && isOrigin) {
+                if (moveCalendar && wasRecurrent && isOrigin) {
                     // Don't change only the first event of a recurring event
                     $warn.show();
                     $p.hide();
-                    console.log($radio.find('input[id="cp.calendar-rec-edit-one"]'));
-                    $radio.find('input[id="cp-calendar-rec-edit-one"]').disabled = true;
                     return $warn.text(Messages.calendar_rec_change_first);
                 } else {
                     return null;
