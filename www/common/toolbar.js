@@ -1060,11 +1060,14 @@ MessengerUI, Messages, Pages) {
                                     console.log(nextItem);
                                 }
                             }
-                        } else if (e.key === 'Escape') {
-                            dropdownActive.find('li').attr('tabindex', '-1');
-                            $(document).off('keydown');
-                            $userAdmin.find('> button').attr('aria-expanded', 'false');
-                            $userAdmin.find('> button').focus();
+                            else if (e.key === 'Escape') {
+                                dropdownActive.find('li').attr('tabindex', '-1');
+                                dropdownActive.attr('tabindex', '-1');
+                                $(document).off('keydown');
+                                $userAdmin.find('> button').attr('aria-expanded', 'false');
+                                $userAdmin.find('> button').focus();
+                                console.log("AM INTRAT");
+                            }
                         }
                     });
                 }
