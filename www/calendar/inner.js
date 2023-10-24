@@ -990,7 +990,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     console.error(err);
                     return void UI.warn(err);
                 }
-                //cal.createSchedules([schedule]); XXX Remove these occurrence elsewhere
+                //cal.createSchedules([schedule]); XXX Remove these occurrences elsewhere
             });
         });
         cal.on('beforeUpdateSchedule', function(event) {
