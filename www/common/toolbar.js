@@ -1043,12 +1043,19 @@ MessengerUI, Messages, Pages) {
                             items.attr('tabindex', '-1');
                             if (e.key === 'Tab') {
                                 e.preventDefault();
-                            } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                            }
+                            else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                                 if (e.key === 'ArrowUp') {
                                     var prevItem = focusedItem.prev().length ? focusedItem.prev() : items.last();
+                                    while (prevItem.find('hr').length > 0 || prevItem.hasClass('cp-user-menu-logo') || prevItem.hasClass('cp-toolbar-account')) {
+                                        prevItem = prevItem.prev().length ? prevItem.prev() : items.last();
+                                    }
                                     prevItem.attr('tabindex', '0').focus();
                                 } else if (e.key === 'ArrowDown') {
                                     var nextItem = focusedItem.next().length ? focusedItem.next() : items.first();
+                                    while (nextItem.find('hr').length > 0 || nextItem.hasClass('cp-user-menu-logo') || nextItem.hasClass('cp-toolbar-account')) {
+                                        nextItem = nextItem.next().length ? nextItem.next() : items.first();
+                                    }
                                     nextItem.attr('tabindex', '0').focus();
                                 }
                             }
