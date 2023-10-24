@@ -54,7 +54,8 @@ define([
     Share, Access, Properties
     )
 {
-    Messages.calendar_rec_change_first = "You moved the first recurring event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
+    Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
+    Messages.calendar_rec_change = "You moved a repeating event to different calendar. You can only apply this change to this event or all repeated events."; // XXX New translation key
     var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
@@ -1173,11 +1174,15 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             };
             recurrenceWarn();
             var changeCalendarWarn = function() {
-                if (moveCalendar && wasRecurrent && isOrigin) {
+                if (moveCalendar && wasRecurrent) {
                     // Don't change only the first event of a recurring event
                     $warn.show();
                     $p.hide();
-                    return $warn.text(Messages.calendar_rec_change_first);
+                    if (isOrigin) {
+                        return $warn.text(Messages.calendar_rec_change_first);
+                    } else {
+                        return $warn.text(Messages.calendar_rec_change);
+                    }
                 } else {
                     return null;
                 }
