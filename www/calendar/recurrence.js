@@ -773,14 +773,6 @@ define([
 
         return all;
     };
-    Rec.getSecondOccurrence = function (ev) {
-        if (!ev.recurrenceRule) { return null; }
-        var d = new Date(ev.start);
-        d.setDate(15); // Make sure we won't skip a month if the event starts on day > 28
-        var secondOccurrence = Rec.getRecurring([Rec.getMonthId(d)], [ev]);
-
-        return secondOccurrence[0];
-    };
 
     Rec.diffDate = function (oldTime, newTime) {
         var n = new Date(newTime);

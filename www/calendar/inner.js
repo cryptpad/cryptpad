@@ -54,6 +54,7 @@ define([
     Share, Access, Properties
     )
 {
+    Messages.calendar_rec_change_first = "You moved the first recurring event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
     var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
@@ -1070,24 +1071,9 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                             }
                         });
                     } else {
-                        var nextEvent = Rec.getSecondOccurrence(old);
-                        changes = {}; // Changes have already been applied to the clone
-                        changes.start = nextEvent.start;
-                        changes.end = nextEvent.end;
-                        delete changes.calendarId;
-
-                        updateEvent({
-                            ev: old,
-                            changes: changes,
-                            type: {
-                                which: 'all'
-                            }
-                        }, function(err) {
-                            if (err) {
-                                console.error(err);
-                                return void UI.warn(err);
-                            }
-                        });
+                        // You can only edit all events in the origin case
+                        console.error(Messages.error);
+                        return void UI.warn(Messages.error);
                     }
                 } else {
                     old.id = id;
@@ -1117,6 +1103,15 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var list = ['one','from','all'];
             if (isOrigin) { list = ['one', 'all']; }
+            if (changes.calendarId) {
+                if (isOrigin) {
+                    // Changing calendar on Origin can only be done for all
+                    list = ['all'];
+                } else {
+                    // Otherwise cannot apply it to the future event
+                    list = ['one', 'all'];
+                }
+            }
             if ((changes.start || changes.end) && !isOrigin) {
                 list = list.filter(function (item) {
                     return item !== "all";
@@ -1176,6 +1171,19 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 return $warn.text(Messages.calendar_rec_warn_update);
             };
             recurrenceWarn();
+            var changeCalendarWarn = function() {
+                if (changes.calendarId && evOrig.recurrenceRule && isOrigin) {
+                    // Don't change only the first event of a recurring event
+                    $warn.show();
+                    $p.hide();
+                    console.log($radio.find('input[id="cp.calendar-rec-edit-one"]'));
+                    $radio.find('input[id="cp-calendar-rec-edit-one"]').disabled = true;
+                    return $warn.text(Messages.calendar_rec_change_first);
+                } else {
+                    return null;
+                }
+            };
+            changeCalendarWarn();
             $radio.find('input[type="radio"]').on('change', recurrenceWarn);
         });
         cal.on('beforeDeleteSchedule', function(event) {
