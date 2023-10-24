@@ -297,6 +297,7 @@ define([
             if (v.type && v.type !== 'text') {
                 if (v.type === 'time') {
                     Flatpickr(input, {
+                        disableMobile: true,
                         enableTime: true,
                         time_24hr: is24h,
                         dateFormat: dateFormat,

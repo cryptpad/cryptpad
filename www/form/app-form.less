@@ -774,6 +774,9 @@
                         &.sortable-drag { opacity: 0.9 !important; }
                         display: flex;
                         width: 400px;
+                        @media (max-width:460px) {
+                            width: 300px
+                        }
                         input {
                             flex: 1;
                             min-width: 100px;
