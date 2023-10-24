@@ -1070,10 +1070,24 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                             }
                         });
                     } else {
-                        // Modifying the first event
-                        // XXX Not implemented yet
-                        console.error("Not implemented");
-                        return void UI.warn("Not implemented");
+                        var nextEvent = Rec.getSecondOccurrence(old);
+                        changes = {}; // Changes have already been applied to the clone
+                        changes.start = nextEvent.start;
+                        changes.end = nextEvent.end;
+                        delete changes.calendarId;
+
+                        updateEvent({
+                            ev: old,
+                            changes: changes,
+                            type: {
+                                which: 'all'
+                            }
+                        }, function(err) {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(err);
+                            }
+                        });
                     }
                 } else {
                     old.id = id;
