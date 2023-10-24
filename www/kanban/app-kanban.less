@@ -426,7 +426,9 @@
         position: relative;
         min-height: 50px;
         .cp-kanban-filterTags {
-            display: inline-flex;
+            @media (min-width: 505px) {
+                display: inline-flex;
+            }
             align-items: center;
             flex: 1;
             //max-width: 80%;
@@ -434,6 +436,9 @@
             .cp-kanban-filterTags-toggle {
                 min-width: 100px;
                 display: flex;
+                @media (max-width: 505px) {
+                    margin-left: 10px;
+                }
                 flex-flow: column;
                 flex-shrink: 0;
                 & > * {
