@@ -1027,7 +1027,7 @@ MessengerUI, Messages, Pages) {
             'aria-expanded': 'false',
             'aria-label': Messages.userAccountButton
         });
-        $userAdmin.find('> button').click(function() {
+        $userAdmin.find('> button').click(function () {
             if ($userAdmin.find('> button').attr('aria-expanded') === 'true') {
                 $userAdmin.find('> button').attr('aria-expanded', 'false');
                 $(document).off('keydown');
@@ -1036,20 +1036,20 @@ MessengerUI, Messages, Pages) {
                 var dropdownActive = $(".cp-dropdown-content");
                 if (dropdownActive.length > 0) {
                     dropdownActive.attr('tabindex', '0').focus();
-                    $(document).on('keydown', function(e) {
+                    $(document).on('keydown', function (e) {
                         if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
                             var items = dropdownActive.find('li');
                             var focusedItem = items.filter(':focus');
                             items.attr('tabindex', '-1');
                             if (e.key === 'Tab') {
                                 e.preventDefault();
-                            }
-                            else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                            } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                                 if (e.key === 'ArrowUp') {
                                     var prevItem = focusedItem.prev().length ? focusedItem.prev() : items.last();
                                     while (prevItem.find('hr').length > 0 || prevItem.hasClass('cp-user-menu-logo') || prevItem.hasClass('cp-toolbar-account')) {
                                         prevItem = prevItem.prev().length ? prevItem.prev() : items.last();
                                     }
+                                    console.log(prevItem);
                                     prevItem.attr('tabindex', '0').focus();
                                 } else if (e.key === 'ArrowDown') {
                                     var nextItem = focusedItem.next().length ? focusedItem.next() : items.first();
@@ -1057,11 +1057,14 @@ MessengerUI, Messages, Pages) {
                                         nextItem = nextItem.next().length ? nextItem.next() : items.first();
                                     }
                                     nextItem.attr('tabindex', '0').focus();
+                                    console.log(nextItem);
                                 }
                             }
                         } else if (e.key === 'Escape') {
+                            dropdownActive.find('li').attr('tabindex', '-1');
                             $(document).off('keydown');
                             $userAdmin.find('> button').attr('aria-expanded', 'false');
+                            $userAdmin.find('> button').focus();
                         }
                     });
                 }
