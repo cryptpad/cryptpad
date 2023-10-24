@@ -1046,9 +1046,13 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
 
                 if (isOneTime && ev.recurrenceRule && changes.calendarId) {
+                    // Copy the event with applied changes
                     var copyEvent = ev;
+                    for (let key in changes) {
+                        copyEvent[key] = changes[key];
+                    }
                     copyEvent.recurrenceRule = "";
-                    copyEvent.calendarId = changes.calendarId;
+
                     newEvent(copyEvent, function(err) {
                         if (err) {
                             console.error(err);
@@ -1057,6 +1061,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     });
 
                     if (!isOrigin) {
+                        // If it's not the first event, then simply remove the
+                        // original occurrence
                         deleteEvent(old, function(err) {
                             if (err) {
                                 console.error(err);
