@@ -1033,9 +1033,13 @@ MessengerUI, Messages, Pages) {
                 $(document).off('keydown');
             } else {
                 $userAdmin.find('> button').attr('aria-expanded', 'true');
+                $userAdmin.find('> button').blur();
                 var dropdownActive = $(".cp-dropdown-content");
                 if (dropdownActive.length > 0) {
-                    dropdownActive.attr('tabindex', '0').focus();
+                    dropdownActive.attr('tabindex', '0');
+                    setTimeout(function() {
+                        dropdownActive.focus();
+                    }, 0);
                     $(document).on('keydown', function (e) {
                         if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
                             var items = dropdownActive.find('li');
