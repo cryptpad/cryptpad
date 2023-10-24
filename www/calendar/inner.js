@@ -1189,6 +1189,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             };
             changeCalendarWarn();
             $radio.find('input[type="radio"]').on('change', recurrenceWarn);
+            $radio.find('input[type="radio"]').on('change', changeCalendarWarn);
         });
         cal.on('beforeDeleteSchedule', function(event) {
             deleteEvent(event.schedule, function (err) {
