@@ -258,7 +258,9 @@ define([
                     },
                     content: Messages['form_poll_'+t]
                 };
+                
             });
+            
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
@@ -294,7 +296,7 @@ define([
             if (uid) { $input.data('uid', uid); }
 
             // If the input is a date, initialize flatpickr
-            if (v.type && v.type !== 'text') {
+
                 if (v.type === 'time') {
                     Flatpickr(input, {
                         disableMobile: true,
@@ -303,12 +305,7 @@ define([
                         dateFormat: dateFormat,
                         defaultDate: val ? new Date(val) : undefined
                     });
-                } else if (v.type === 'day') {
-                    /*Flatpickr(input, {
-                        defaultDate: val ? new Date(val) : undefined
-                    });*/
-                }
-            }
+                } 
 
             // if this element was active before the remote change, restore cursor
             var setCursor = function () {
@@ -499,7 +496,8 @@ define([
                 } else {
                     $(addMultiple).hide();
                 }
-            } else {
+            } 
+            else {
                 $(addMultiple).hide();
                 $calendar.show();
                 $container.hide();
@@ -515,6 +513,7 @@ define([
                 setTimeout(evOnSave.fire);
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
+
                     if (val === "time") {
                         var time = new Date();
                         time.setHours(14);
@@ -525,11 +524,12 @@ define([
                         $add.before(el);
                         $(el).find('input').focus();
                         return;
-                    }
+                    } 
                     $(add).click();
                     return;
                 }
                 $container.find('input').each(function (i, input) {
+                    $container.find('input')[0].value = ''
                     if (input._flatpickr) {
                         input._flatpickr.destroy();
                         delete input._flatpickr;
@@ -2532,6 +2532,7 @@ define([
         poll: {
             defaultOpts: {
                 type: 'text', // Text or Days or Time
+                
                 values: [1, 2, 3].map(function (i) {
                     return {
                         uid: Util.uid(),
@@ -2619,6 +2620,7 @@ define([
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
+
                         return editOptions(v, isDefaultOpts, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
