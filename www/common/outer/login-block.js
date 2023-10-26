@@ -173,7 +173,7 @@ define([
         }, cb);
     };
     Block.writeLoginBlock = function (data, cb) {
-        const { content, blockKeys, oldBlockKeys, auth, pw } = data;
+        const { content, blockKeys, oldBlockKeys, auth, pw, session } = data;
 
         var command = 'WRITE_BLOCK';
         if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
@@ -185,7 +185,8 @@ define([
 
         ServerCommand(blockKeys.sign, {
             command: command,
-            content: block
+            content: block,
+            session: session // sso session
         }, cb);
     };
     Block.removeLoginBlock = function (data, cb) {
@@ -199,6 +200,17 @@ define([
             auth: auth && auth.data,
             reason: reason
         }, cb);
+    };
+
+    Block.updateSSOBlock = function (data, cb) {
+        const { blockKeys, oldBlockKeys } = data;
+        var oldProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+
+        ServerCommand(blockKeys.sign, {
+            command: 'SSO_UPDATE_BLOCK',
+            ancestorProof: oldProof
+        }, cb);
+
     };
 
     return Block;

@@ -881,6 +881,7 @@ define([
                         }));
                     }).nThen(function (waitFor) {
                         // Delete Drive
+                        store.ownDeletion = true;
                         Store.removeOwnedChannel(clientId, {
                             channel: store.driveChannel,
                             force: true
@@ -3055,6 +3056,7 @@ define([
             })
             .on('error', function (info) {
                 if (info.error && info.error === 'EDELETED') {
+                    if (store.ownDeletion) { return; }
                     broadcast([], "LOGOUT", {
                         reason: info.message
                     });

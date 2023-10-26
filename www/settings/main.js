@@ -81,7 +81,10 @@ define([
                 require([
                     '/common/outer/http-command.js',
                 ], function (ServerCommand) {
-                    ServerCommand(obj.key, obj.data, function (err, response) {
+                    var data = obj.data;
+                    data.command = 'TOTP_SETUP';
+                    data.session = Utils.LocalStore.getSessionToken();
+                    ServerCommand(obj.key, data, function (err, response) {
                         cb({ success: Boolean(!err && response && response.bearer) });
                         if (response && response.bearer) {
                             Utils.LocalStore.setSessionToken(response.bearer);
@@ -111,9 +114,16 @@ define([
                     Utils.Util.getBlock(parsed.href, {}, function (err, data) {
                         cb({
                             mfa: err === 401,
+                            sso: data && data.sso,
                             type: data && data.method
                         });
                     });
+                });
+            });
+            sframeChan.on('Q_SETTINGS_GET_SSO_SEED', function (obj, _cb) {
+                var cb = Utils.Util.mkAsync(_cb);
+                cb({
+                    seed: Utils.LocalStore.getSSOSeed()
                 });
             });
             sframeChan.on('Q_SETTINGS_REMOVE_OWNED_PADS', function (data, cb) {

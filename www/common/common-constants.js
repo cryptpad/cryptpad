@@ -6,6 +6,7 @@ define(['/customize/application_config.js'], function (AppConfig) {
         blockHashKey: 'Block_hash',
         fileHashKey: 'FS_hash',
         sessionJWT: 'Session_JWT',
+        ssoSeed: 'SSO_seed',
 
         // Store
         displayNameKey: 'cryptpad.username',

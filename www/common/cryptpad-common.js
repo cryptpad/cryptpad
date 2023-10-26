@@ -1994,6 +1994,11 @@ define([
                     console.log("no block found");
                     return;
                 }
+                if (err && err === 401) {
+                    // there is a protected block at the next location, abort FIXME check
+                    waitFor.abort();
+                    return void cb({ error: 'EEXISTS' });
+                }
 
                 response.arrayBuffer().then(waitFor(arraybuffer => {
                     var block = new Uint8Array(arraybuffer);
@@ -2042,21 +2047,42 @@ define([
                 User_hash: newHash,
                 edPublic: edPublic,
             };
+            var sessionToken = LocalStore.getSessionToken() || undefined;
             Block.writeLoginBlock({
                 auth: auth,
                 blockKeys: blockKeys,
                 oldBlockKeys: oldBlockKeys,
-                content: content
+                content: content,
+                session: sessionToken // Recover existing SSO session
             }, waitFor(function (err, data) {
                 if (err) {
                     waitFor.abort();
                     return void cb({error: err});
                 }
+                // Update the session if OTP is enabled
+                // If OTP is disabled, keep the existing SSO session
                 if (data && data.bearer) {
                     LocalStore.setSessionToken(data.bearer);
                 }
             }));
 
+        }).nThen(function (waitFor) {
+            var isSSO = Boolean(LocalStore.getSSOSeed());
+            if (!isSSO) { return; }
+
+            // Update "sso_block" data for SSO accounts
+            Block.updateSSOBlock({
+                blockKeys: blockKeys,
+                oldBlockKeys: oldBlockKeys
+            }, waitFor(function (err) {
+                if (err) {
+                    // If we can't move the sso_block data, we won't be able to log in later
+                    // so we must abort the password change.
+                    console.error(err);
+                    waitFor.abort();
+                    return void cb({error: err});
+                }
+            }));
         }).nThen(function (waitFor) {
             var blockUrl = Block.getBlockUrl(blockKeys);
             var sessionToken = LocalStore.getSessionToken() || undefined;

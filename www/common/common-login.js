@@ -299,7 +299,8 @@ define([
         // results...
         var res = {
             register: isRegister,
-            uname: uname
+            uname: uname,
+            auth_token: {}
         };
 
         var RT, blockKeys, blockUrl;
@@ -323,11 +324,12 @@ define([
             // determine where a block for your set of keys would be stored
             blockUrl = Block.getBlockUrl(res.opt.blockKeys);
 
-            var TOTP_prompt = function (err, cb) {
+            var TOTP_prompt = function (err, ssoSession, cb) {
                 onOTP(function (code) {
                     ServerCommand(res.opt.blockKeys.sign, {
                         command: 'TOTP_VALIDATE',
                         code: code,
+                        session: ssoSession
                         // TODO optionally allow the user to specify a lifetime for this session?
                         // this will require a little bit of server work
                         // and more UI/UX:
@@ -352,11 +354,13 @@ define([
             };
 
             var missingAuth;
+            var missingSSO;
             nThen(function (w) {
                 Util.getBlock(blockUrl, {
                 // request the block without credentials
                 }, w(function (err, response) {
                     if (err === 401) {
+                        missingSSO = response && response.sso;
                         missingAuth = response && response.method;
                         return void console.log("Block requires 2FA");
                     }
@@ -395,19 +399,24 @@ define([
                     });
                 }));
             }).nThen(function (w) {
-                if (missingAuth !== 'SSO') { return; } // XXX multiple auth
+                if (!missingSSO) { return; }
+                // SSO session should always be applied before the OTP one
+                // because we can't transform an account into an SSO account later
+                // so we probably don't need to recover the OTP session here
                 ServerCommand(res.opt.blockKeys.sign, {
                     command: 'SSO_VALIDATE',
                     jwt: ssoAuth.data,
                 }, w(function (err, response) {
                     if (err) {
-                        // XXX
-                        return;
+                        console.error(err);
+                        w.abort();
+                        waitFor.abort();
+                        return void cb(err);
                     }
                     res.auth_token = response;
                 }));
             }).nThen(function (w) {
-                if (missingAuth !== 'TOTP') { return; } // XXX multiple auth
+                if (missingAuth !== 'TOTP') { return; }
                 // if you're here then you need to request a JWT
                 var done = w();
                 var tries = 3;
@@ -418,7 +427,9 @@ define([
                         return void cb('TOTP_ATTEMPTS_EXHAUSTED');
                     }
                     tries--;
-                    TOTP_prompt(tries !== 2, function (err, response) {
+                    // If we have an SSO account, provide the SSO session to update it with OTP
+                    var ssoSession = (res.auth_token && res.auth_token.bearer) || '';
+                    TOTP_prompt(tries !== 2, ssoSession, function (err, response) {
                         // ask again until your number of tries are exhausted
                         if (err) {
                             console.error(err);
@@ -477,6 +488,7 @@ define([
         }).nThen(function (waitFor) { // MODERN REGISTRATION / LOGIN
             var opt = getProxyOpt(res.blockInfo);
 
+            LocalStore.setSessionToken('');
             modernLoginRegister(opt, isRegister, waitFor(function (err, data, _RT) {
                 if (err) {
                     waitFor.abort();
@@ -497,11 +509,14 @@ define([
             toPublish[Constants.userHashKey] = res.userHash;
             toPublish.edPublic = RT.proxy.edPublic;
 
+            // FIXME We currently can't create an account with OTP by default
+            // NOTE If we ever want to do that for SSO accounts it will require major changes
+            //      because writeLoginBlock only supports one type of authentication at a time
             Block.writeLoginBlock({
                 pw: Boolean(passwd),
                 auth: ssoAuth,
                 blockKeys: blockKeys,
-                content: toPublish
+                content: toPublish,
             }, waitFor(function (e, res) {
                 if (e === 'SSO_NO_SESSION') { return; } // account created, need re-login
                 if (e) {

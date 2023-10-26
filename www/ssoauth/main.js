@@ -58,6 +58,7 @@ define([
                 $button.prop('disabled', '');
                 return void UI.warn(msg);
             }
+            LocalStore.setSSOSeed(seed.toLowerCase());
             window.location.href = '/drive/';
         });
     };
