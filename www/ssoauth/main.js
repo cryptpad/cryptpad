@@ -110,6 +110,19 @@ define([
             }
 
             $('div.cp-ssoauth-pw').show();
+            $pw.focus();
+
+            $pw.on('keypress', (ev) => {
+                if (ev.which !== 13) { return; }
+                if (!$pw2.val() && data.register) {
+                    return void $pw2.focus();
+                }
+                $button.click();
+            });
+            $pw2.on('keypress', (ev) => {
+                if (ev.which !== 13) { return; }
+                $button.click();
+            });
 
             $button.click(() => {
                 let pw = $pw.val();
