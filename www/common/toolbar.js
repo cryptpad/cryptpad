@@ -1135,7 +1135,6 @@ define([
                                     while (prevItem.find('hr').length > 0 || prevItem.hasClass('cp-user-menu-logo') || prevItem.hasClass('cp-toolbar-account')) {
                                         prevItem = prevItem.prev().length ? prevItem.prev() : items.last();
                                     }
-                                    console.log(prevItem);
                                     prevItem.attr('tabindex', '0').focus();
                                 } else if (e.key === 'ArrowDown') {
                                     var nextItem = focusedItem.next().length ? focusedItem.next() : items.first();
@@ -1143,7 +1142,7 @@ define([
                                         nextItem = nextItem.next().length ? nextItem.next() : items.first();
                                     }
                                     nextItem.attr('tabindex', '0').focus();
-                                    console.log("ce " + nextItem);
+
                                 }
                             } else if (e.key === 'Escape') {
                                 dropdownActive.find('li').attr('tabindex', '-1');
@@ -1151,7 +1150,6 @@ define([
                                 $(document).off('keydown');
                                 $userAdmin.find('> button').attr('aria-expanded', 'false');
                                 $userAdmin.find('> button').focus();
-                                console.log("AM INTRAT");
                             }
                         }
                     });
