@@ -106,7 +106,7 @@ define([
     };
     var newEvent = function (event, cb) {
         var reminders = APP.notificationsEntries;
-        var description = APP.description;
+        var eventBody = APP.description;
 
         var startDate = event.start._date;
         var endDate = event.end._date;
@@ -121,7 +121,7 @@ define([
             isAllDay: event.isAllDay,
             end: +endDate,
             reminders: reminders,
-            description: description,
+            body: eventBody,
             recurrenceRule: event.recurrenceRule
         };
 
@@ -1039,8 +1039,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     changes.recurrenceRule = rec;
                 }
 
-                var body = APP.body;
-                changes.body = body;
+                var eventBody = APP.eventBody;
+                changes.body = eventBody;
             }
 
 
@@ -2030,31 +2030,31 @@ APP.recurrenceRule = {
         var calId = ev.selectedCal.id;
         var id = (ev.id && ev.id.split('|')[0]) || undefined;
         var _ev = APP.calendar.getSchedule(ev.id, calId);
-        var oldBody = _ev && _ev.raw && _ev.raw.body;
-        if (!oldBody) {
-            oldBody = Util.find(APP.calendars, [calId, 'content', 'content', id, 'body']) || "";
+        var oldEventBody = _ev && _ev.raw && _ev.raw.body;
+        if (!oldEventBody) {
+            oldEventBody = Util.find(APP.calendars, [calId, 'content', 'content', id, 'body']) || "";
         }
 
-        APP.body = oldBody;
-        var body = h('textarea.tui-full-calendar-content', {
+        APP.eventBody = oldEventBody;
+        var description = h('textarea.tui-full-calendar-content', {
             placeholder: Messages.calendar_desc,
             id: 'tui-full-calendar-body',
         });
 
-        body.value = oldBody;
+        description.value = oldEventBody;
 
         var updateBody = function(value) {
-            APP.body = value;
+            APP.eventBody = value;
         };
 
-        var $body = $(body);
-        $body.on('input', function() {
-            updateBody(body.value);
+        var $description = $(description);
+        $description.on('input', function() {
+            updateBody(description.value);
         });
 
         return h('div.tui-full-calendar-popup-section.tui-full-calendar-vlayout-area', [
             h('div.tui-full-calendar-popup-section-item.tui-full-calendar-section-body', [
-                body,
+                description,
             ]),
         ]);
     };
