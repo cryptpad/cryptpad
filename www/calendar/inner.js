@@ -1030,6 +1030,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 APP.recurrenceRule = ev.recurrenceRule;
             }
 
+            APP.editType = undefined;
             var afterConfirm = function () {
                 var raw = (ev && ev.raw) || {};
                 var rawData = { // Exact start and end of the selected event
