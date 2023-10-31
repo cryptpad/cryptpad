@@ -431,11 +431,7 @@ define([
             // Calendar inline for "day" type
             var calendarInput = h('input');
             calendarView = h('div', calendarInput);
-            var calendarDefault = v.type === "day" ? extractValues(v.values).map(function (time) {
-                if (!time) { return; }
-                var d = new Date(time);
-                if (!isNaN(d)) { return d; }
-            }).filter(Boolean) : undefined;
+            var calendarDefault = new Date()
             Flatpickr(calendarInput, {
                 mode: 'multiple',
                 inline: true,
@@ -506,6 +502,7 @@ define([
         refreshView();
 
         // Doodle type change: empty current values and change input types?
+
         if (typeSelect) {
             typeSelect.onChange.reg(function (prettyVal, val) {
                 v.type = val;
@@ -524,12 +521,22 @@ define([
                         $add.before(el);
                         $(el).find('input').focus();
                         return;
+                    } else if (val === "day") {
+                        var time = new Date();
+                        var el = getOption(+time, false, false, Util.uid());
+                        $add.before(el);
+                        $(el).find('input').focus();
+                        return;
                     } 
                     $(add).click();
                     return;
                 }
+
+                if (parseInt($container.find('input')[0].value) !== NaN && parseInt($container.find('input')[0].value).toString().length > 4) {
+                    var dateInput = new Date(parseInt($container.find('input')[0].value))
+                    $container.find('input')[0].value = dateInput.toDateString()
+                } 
                 $container.find('input').each(function (i, input) {
-                    $container.find('input')[0].value = ''
                     if (input._flatpickr) {
                         input._flatpickr.destroy();
                         delete input._flatpickr;
@@ -4054,23 +4061,25 @@ define([
                     framework.localChange();
                     updateAddInline();
                 });
-
                 editButtons = h('div.cp-form-edit-buttons-container', [ fakeEdit, del ]);
 
-                    changeType = h('div.cp-form-block-type', [
-                        model.icon.cloneNode(),
-                        h('span', Messages['form_type_'+type])
-                    ]);
-
+                changeType = h('div.cp-form-block-type', [
+                    model.icon.cloneNode(),
+                    h('span', Messages['form_type_'+type])
+                ]);
 
                 // Values
                 if (data.edit) {
+
                     var edit = h('button.btn.btn-default.cp-form-edit-button', [
                         h('i.fa.fa-pencil'),
                         h('span', Messages.form_editBlock)
                     ]);
                     editButtons = h('div.cp-form-edit-buttons-container', [ edit, del ]);
                     editContainer = h('div');
+                    if (type === 'poll' && block.opts.values.length === 0) {
+                        $(editButtons).addClass('cp-empty-poll-edit-buttons')
+                    }
                     var onSave = function (newOpts, close) {
                         if (close) { // Cancel edit
                             data.editing = false;
