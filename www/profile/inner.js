@@ -19,7 +19,8 @@ define([
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 
-    'cm/mode/markdown/markdown',
+    'cm/mode/gfm/gfm',
+
 
     'css!/components/codemirror/lib/codemirror.css',
     'css!/components/codemirror/addon/dialog/dialog.css',
