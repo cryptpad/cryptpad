@@ -2030,7 +2030,7 @@ APP.recurrenceRule = {
         var calId = ev.selectedCal.id;
         var id = (ev.id && ev.id.split('|')[0]) || undefined;
         var _ev = APP.calendar.getSchedule(ev.id, calId);
-        var oldEventBody = _ev && _ev.raw && _ev.raw.body;
+        var oldEventBody = _ev && _ev.body;
         if (!oldEventBody) {
             oldEventBody = Util.find(APP.calendars, [calId, 'content', 'content', id, 'body']) || "";
         }
