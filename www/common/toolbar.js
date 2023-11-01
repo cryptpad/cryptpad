@@ -1106,6 +1106,18 @@ define([
             'aria-expanded': 'false',
             'aria-label': Messages.userAccountButton
         });
+        function findItems(search, current, items) {
+            const currentIndex = items.index(current);
+            for (let i = 1; i < items.length; i++) {
+                const nextIndex = (currentIndex + i) % items.length;
+                const nextItem = items.eq(nextIndex);
+                const text = nextItem.text().trim().toLowerCase();
+                if (text.startsWith(search)) {
+                    return nextItem;
+                }
+            }
+            return null;
+        }
         $userAdmin.find('> button').click(function () {
             if ($userAdmin.find('> button').attr('aria-expanded') === 'true') {
                 $userAdmin.find('> button').attr('aria-expanded', 'false');
@@ -1122,6 +1134,7 @@ define([
                         }).first();
                         firstVisibleItem.attr('tabindex', '0').focus();
                     }, 0);
+                    var searchCharacters = '';
                     $(document).on('keydown', function (e) {
                         if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
                             var items = dropdownActive.find('li:visible');
@@ -1136,12 +1149,14 @@ define([
                                         prevItem = prevItem.prev().length ? prevItem.prev() : items.last();
                                     }
                                     prevItem.attr('tabindex', '0').focus();
+                                    searchCharacters = '';
                                 } else if (e.key === 'ArrowDown') {
                                     var nextItem = focusedItem.next().length ? focusedItem.next() : items.first();
                                     while (nextItem.find('hr').length > 0 || nextItem.hasClass('cp-user-menu-logo') || nextItem.hasClass('cp-toolbar-account')) {
                                         nextItem = nextItem.next().length ? nextItem.next() : items.first();
                                     }
                                     nextItem.attr('tabindex', '0').focus();
+                                    searchCharacters = '';
 
                                 }
                             } else if (e.key === 'Escape') {
@@ -1150,8 +1165,16 @@ define([
                                 $(document).off('keydown');
                                 $userAdmin.find('> button').attr('aria-expanded', 'false');
                                 $userAdmin.find('> button').focus();
+                                searchCharacters = '';
+                            } else if (e.key.match(/[a-zA-Z]/)) {
+                                searchCharacters += e.key.toLowerCase();
+                                nextItem = findItems(searchCharacters, focusedItem, items);
+                                if (nextItem) {
+                                    nextItem.attr('tabindex', '0').focus();
+                                }
                             }
                         }
+
                     });
                 }
             }
