@@ -1138,6 +1138,7 @@ define([
                     document.addEventListener("visibilitychange", function () {
                         if (document.hidden) {
                             $userAdmin.find('> button').attr('aria-expanded', 'false');
+                            $userAdmin.find('> button').focus();
                         }
                     });
                     $(document).on('click', function (e) {
