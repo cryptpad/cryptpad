@@ -1135,6 +1135,16 @@ define([
                         firstVisibleItem.attr('tabindex', '0').focus();
                     }, 0);
                     var searchCharacters = '';
+                    document.addEventListener("visibilitychange", function () {
+                        if (document.hidden) {
+                            $userAdmin.find('> button').attr('aria-expanded', 'false');
+                        }
+                    });
+                    $(document).on('click', function (e) {
+                        if ( !$(e.target).closest(".cp-dropdown-content").length) {
+                            $userAdmin.find('> button').attr('aria-expanded', 'false');
+                        }
+                    });
                     $(document).on('keydown', function (e) {
                         if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
                             var items = dropdownActive.find('li:visible');
