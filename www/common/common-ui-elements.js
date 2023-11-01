@@ -1684,7 +1684,7 @@ define([
 
                 $el.appendTo($innerblock);
                 $el.on('click keydown', function (e) {
-                    if (e.type === 'click' || (e.type === 'keydown' && e.keyCode === 13)) {
+                    if (e.type === 'click' || (e.type === 'keydown' && e.keyCode === 13) || (e.type === 'keydown' && e.keyCode === 32)) {
                         if (Array.isArray(o.content)) {
                             o.content.forEach(function (item) {
                                 if (typeof item === 'object') {
