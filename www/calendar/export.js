@@ -3,8 +3,9 @@
 define([
     '/customize/pages.js',
     '/common/common-util.js',
-    '/calendar/recurrence.js'
-], function (Pages, Util, Rec) {
+    '/calendar/recurrence.js',
+    '/lib/ical.min.js'
+], function (Pages, Util, Rec, ICAL) {
     var module = {};
 
     var getICSDate = function (str) {
@@ -96,42 +97,6 @@ define([
                 return rrule;
             };
 
-            // XXX Below function: from ical.js, should be imported instead.
-            // XXX However, if it's done, it would be better to refactor the
-            // XXX export module to directly use ical.js for exporting ICS.
-            var foldline = function(aLine) {
-                var foldLength = 75;
-                var newLineChar = '\r\n';
-                let result = "";
-                let line = aLine || "", pos = 0, line_length = 0;
-                //pos counts position in line for the UTF-16 presentation
-                //line_length counts the bytes for the UTF-8 presentation
-                while (line.length) {
-                    let cp = line.codePointAt(pos);
-                    if (cp < 128) {
-                        ++line_length;
-                    }
-                    else if (cp < 2048) {
-                        line_length += 2;//needs 2 UTF-8 bytes
-                    }
-                    else if (cp < 65536) {
-                        line_length += 3;
-                    }
-                    else {
-                        line_length += 4; //cp is less than 1114112
-                    }
-                    if (line_length < foldLength + 1) {
-                        pos += cp > 65535 ? 2 : 1;
-                    }
-                    else {
-                        result += newLineChar + " " + line.slice(0, Math.max(0, pos));
-                        line = line.slice(Math.max(0, pos));
-                        pos = line_length = 0;
-                    }
-                }
-                return result.slice(newLineChar.length + 1);
-            };
-
             var addEvent = function (arr, data, recId) {
                 var uid = data.id;
                 var dt = getDT(data);
@@ -142,10 +107,9 @@ define([
                 var formatDescription = function(str) {
                     var componentName = 'DESCRIPTION:';
                     var result = componentName + str.replace(/\n/g, ["\\n"]);
-                    // XXX Should use ical.js helper foldline instead ↓
-                    // XXX https://kewisch.github.io/ical.js/api/ICAL.module_helpers.html#.foldline
+                    var ICAL = window.ICAL;
                     // In RFC5545: https://www.rfc-editor.org/rfc/rfc5545#section-3.1
-                    result = foldline(result);
+                    result = ICAL.helpers.foldline(result);
                     return result;
                 };
 
