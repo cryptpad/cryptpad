@@ -409,7 +409,7 @@ define([
         },
         popupDetailBody: function(schedule) {
             var str = schedule.body;
-            delete APP.body;
+            delete APP.eventBody;
             return Messages._getKey('calendar_description', ['<br />', diffMk.render(str, true)]);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
