@@ -115,7 +115,7 @@ define([
     };
     var newEvent = function (event, cb) {
         var reminders = APP.notificationsEntries;
-        var eventBody = APP.description;
+        var eventBody = APP.eventBody;
 
         var startDate = event.start._date;
         var endDate = event.end._date;
