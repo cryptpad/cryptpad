@@ -115,7 +115,7 @@ define([
     };
     var newEvent = function (event, cb) {
         var reminders = APP.notificationsEntries;
-        var eventBody = APP.eventBody;
+        var eventBody = APP.eventBody || "";
 
         var startDate = event.start._date;
         var endDate = event.end._date;
@@ -1048,8 +1048,10 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     changes.recurrenceRule = rec;
                 }
 
-                var eventBody = APP.eventBody;
-                changes.body = eventBody;
+                var eventBody = APP.eventBody || "";
+                if (eventBody !== old.body) {
+                    changes.body = eventBody;
+                }
             }
 
 
