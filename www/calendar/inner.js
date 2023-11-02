@@ -25,10 +25,17 @@ define([
     '/common/inner/properties.js',
 
     '/common/diffMarked.js',
+    '/common/sframe-common-codemirror.js',
+    'cm/lib/codemirror',
 
+    'cm/addon/display/autorefresh',
+    'cm/addon/display/placeholder',
+    'cm/mode/gfm/gfm',
     '/common/jscolor.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/calendar/app-calendar.less',
@@ -54,7 +61,9 @@ define([
     Rec,
     Flatpickr,
     Share, Access, Properties,
-    diffMk
+    diffMk,
+    SFCodeMirror,
+    CodeMirror
     )
 {
     // XXX New translation keys
@@ -2043,20 +2052,30 @@ APP.recurrenceRule = {
 
         description.value = oldEventBody;
 
+        var block = h('div.tui-full-calendar-popup-section', [
+            description,
+        ]);
+
+        var cm = SFCodeMirror.create("gfm", CodeMirror, description);
+        var editor = APP.editor = cm.editor;
+        editor.setOption('lineNumbers', false);
+        editor.setOption('lineWrapping', true);
+        editor.setOption('styleActiveLine', false);
+        editor.setOption('readOnly', false);
+        editor.setOption('autoRefresh', true);
+        editor.setOption('gutters', []);
+        cm.configureTheme(common, function () {});
+        editor.setValue(oldEventBody);
+
         var updateBody = function(value) {
             APP.eventBody = value;
         };
 
-        var $description = $(description);
-        $description.on('input', function() {
-            updateBody(description.value);
+        editor.on('changes', function() {
+            updateBody(editor.getValue());
         });
 
-        return h('div.tui-full-calendar-popup-section.tui-full-calendar-vlayout-area', [
-            h('div.tui-full-calendar-popup-section-item.tui-full-calendar-section-body', [
-                description,
-            ]),
-        ]);
+        return block;
     };
 
     var createToolbar = function () {
