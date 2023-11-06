@@ -1057,10 +1057,10 @@ define([
             if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
             e.preventDefault();
 
-            var click = function (el) {
-                if (!el) { return; }
-                APP.onElementClick(ev, $(el));
-            };
+            // var click = function (el) {
+            //     if (!el) { return; }
+            //     APP.onElementClick(ev, $(el));
+            // };
 
             // var $selection = findSelectedElements();
             // if ($selection.length === 0) { return void click($elements.first()[0]); }
@@ -1080,17 +1080,17 @@ define([
             // Icon mode
             // Get the vertical and horizontal position of lastIndex
             // Filter all the elements to get those in the same line/column
-            var pos = $($elements.get(0)).position();
-            var $line = $elements.filter(function (idx, el) {
-                return $(el).position().top === pos.top;
-            });
-            var cols = $line.length;
-            var lines = Math.ceil(length/cols);
+            // var pos = $($elements.get(0)).position();
+            // var $line = $elements.filter(function (idx, el) {
+            //     return $(el).position().top === pos.top;
+            // });
+            // var cols = $line.length;
+            // var lines = Math.ceil(length/cols);
 
-            var lastPos = {
-                l : Math.floor(lastIndex/cols),
-                c : lastIndex - Math.floor(lastIndex/cols)*cols
-            };
+            // var lastPos = {
+            //     l : Math.floor(lastIndex/cols),
+            //     c : lastIndex - Math.floor(lastIndex/cols)*cols
+            // };
 
             // if (e.which === 37) {
             //     if (lastPos.c === 0) { return; }
