@@ -1118,14 +1118,17 @@ define([
             }
             return null;
         }
-        $userAdmin.find('> button').click(function () {
-            if ($userAdmin.find('> button').attr('aria-expanded') === 'true') {
-                $userAdmin.find('> button').attr('aria-expanded', 'false');
+
+        let userMenuButton = $userAdmin.find('> button');
+        userMenuButton.click(function () {
+            const isExpanded =  userMenuButton.attr('aria-expanded') === 'true';
+            if (isExpanded) {
+                userMenuButton.attr('aria-expanded', 'false');
                 $(document).off('keydown');
             } else {
-                $userAdmin.find('> button').attr('aria-expanded', 'true');
-                $userAdmin.find('> button').blur();
-                var dropdownActive = $(".cp-dropdown-content");
+                userMenuButton.attr('aria-expanded', 'true');
+                userMenuButton.blur();
+                const dropdownActive = $(".cp-dropdown-content");
                 if (dropdownActive.length > 0) {
                     setTimeout(function () {
                         let items = dropdownActive.find('li:visible');
@@ -1134,22 +1137,24 @@ define([
                         }).first();
                         firstVisibleItem.attr('tabindex', '0').focus();
                     }, 0);
-                    var searchCharacters = '';
+                    let searchCharacters = '';
                     document.addEventListener("visibilitychange", function () {
                         if (document.hidden) {
-                            $userAdmin.find('> button').attr('aria-expanded', 'false');
-                            $userAdmin.find('> button').focus();
+                            userMenuButton.attr('aria-expanded', 'false');
+                            userMenuButton.focus();
+                            $(document).off('keydown');
                         }
                     });
                     $(document).on('click', function (e) {
                         if ( !$(e.target).closest(".cp-dropdown-content").length) {
-                            $userAdmin.find('> button').attr('aria-expanded', 'false');
+                            userMenuButton.attr('aria-expanded', 'false');
+                            $(document).off('keydown');
                         }
                     });
                     $(document).on('keydown', function (e) {
                         if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
-                            var items = dropdownActive.find('li:visible');
-                            var focusedItem = items.filter(':focus');
+                            const items = dropdownActive.find('li:visible');
+                            const focusedItem = items.filter(':focus');
                             items.attr('tabindex', '-1');
                             if (e.key === 'Tab') {
                                 e.preventDefault();
@@ -1168,14 +1173,13 @@ define([
                                     }
                                     nextItem.attr('tabindex', '0').focus();
                                     searchCharacters = '';
-
                                 }
                             } else if (e.key === 'Escape') {
                                 dropdownActive.find('li').attr('tabindex', '-1');
                                 dropdownActive.attr('tabindex', '-1');
                                 $(document).off('keydown');
-                                $userAdmin.find('> button').attr('aria-expanded', 'false');
-                                $userAdmin.find('> button').focus();
+                                userMenuButton.attr('aria-expanded', 'false');
+                                userMenuButton.focus();
                                 searchCharacters = '';
                             } else if (e.key.match(/[a-zA-Z]/)) {
                                 searchCharacters += e.key.toLowerCase();
