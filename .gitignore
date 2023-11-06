@@ -9,6 +9,7 @@ customization
 .*.swp
 *.db
 /customize/
+/lib/plugins
 customize
 messages.log
 .DS_Store
