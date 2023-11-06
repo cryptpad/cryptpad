@@ -896,7 +896,14 @@ define([
             if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
                 cleanAfter(type.when);
             } else {
-                update = ev.recUpdate = RECUPDATE;
+                if (changes.recurrenceRule.until) {
+                    // Remove changes after the last iteration
+                    cleanAfter(changes.recurrenceRule.until);
+                }
+                if (changes.recurrenceRule === "") {
+                    // Reset special cases when removing recurrence
+                    update = ev.recUpdate = RECUPDATE;
+                }
             }
         }
 
