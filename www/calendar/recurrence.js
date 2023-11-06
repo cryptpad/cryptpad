@@ -578,6 +578,38 @@ define([
             return r;
         }).filter(Boolean);
     };
+
+    var fixTimeZone = function (evTimeZone, origin, target) {
+        var getOffset = function (date, tz) {
+            // Get an ISO string using Canadian local format
+            let iso = date.toLocaleString('en-CA', { timeZone:tz, hour12: false }).replace(', ', 'T');
+            iso += '.' + date.getMilliseconds().toString().padStart(3, '0');
+
+            // Get a UTC version of this time
+            let utcDate = new Date(iso + 'Z');
+
+            // Return the difference in timestamps, as minutes (60*1000)
+            return -(utcDate - date);
+        }
+
+        var myTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        var offset = getOffset(origin, evTimeZone) - getOffset(target, evTimeZone);
+        var myOffset = getOffset(origin, myTimeZone) - getOffset(target, myTimeZone);
+
+        return offset - myOffset;
+    };
+/*
+XXX to test
+ var first = new Date(2023, 09, 10, 15)
+ var second = new Date(2023, 09, 30, 15)
+ fixTimeZone('America/New_York', first, second) ==> should return +1h
+
+*/
+
+
+
+
+
     Rec.getRecurring = function (months, events) {
         if (window.CP_DEV_MODE) { debug = console.warn; }
 
