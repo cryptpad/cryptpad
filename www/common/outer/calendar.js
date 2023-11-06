@@ -893,8 +893,9 @@ define([
         // Update recurrence rule. We may create a new event here
         var dontSendUpdate = false;
         if (typeof(changes.recurrenceRule) !== "undefined") {
-            if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
-                cleanAfter(type.when);
+            if (type.which === "from" && !data.rawData.isOrigin) {
+                // Clean from the day after the event (it otherwise wipes too much)
+                cleanAfter(type.when + 86400000);
             } else {
                 if (changes.recurrenceRule.until) {
                     // Remove changes after the last iteration
