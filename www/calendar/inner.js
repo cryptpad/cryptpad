@@ -54,6 +54,8 @@ define([
     Share, Access, Properties
     )
 {
+    Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
+    Messages.calendar_rec_change = "You moved a repeating event to different calendar. You can only apply this change to this event or all repeated events."; // XXX New translation key
     var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
@@ -95,7 +97,25 @@ define([
             cb(null, obj);
         });
     };
-    var newEvent = function (data, cb) {
+    var newEvent = function (event, cb) {
+        var reminders = APP.notificationsEntries;
+
+        var startDate = event.start._date;
+        var endDate = event.end._date;
+
+        var data = {
+            id: Util.uid(),
+            calendarId: event.calendarId,
+            title: event.title,
+            category: "time",
+            location: event.location,
+            start: +startDate,
+            isAllDay: event.isAllDay,
+            end: +endDate,
+            reminders: reminders,
+            recurrenceRule: event.recurrenceRule
+        };
+
         APP.module.execCommand('CREATE_EVENT', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
@@ -964,30 +984,13 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            var reminders = APP.notificationsEntries;
-
-            var startDate = event.start._date;
-            var endDate = event.end._date;
-
-            var schedule = {
-                id: Util.uid(),
-                calendarId: event.calendarId,
-                title: event.title,
-                category: "time",
-                location: event.location,
-                start: +startDate,
-                isAllDay: event.isAllDay,
-                end: +endDate,
-                reminders: reminders,
-                recurrenceRule: APP.recurrenceRule
-            };
-
-            newEvent(schedule, function (err) {
+            event.recurrenceRule = APP.recurrenceRule; // XXX Not sure about the consistency of data structures
+            newEvent(event, function (err) {
                 if (err) {
                     console.error(err);
                     return void UI.warn(err);
                 }
-                cal.createSchedules([schedule]);
+                //cal.createSchedules([schedule]); XXX Remove these occurrences elsewhere
             });
         });
         cal.on('beforeUpdateSchedule', function(event) {
@@ -1006,6 +1009,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var isOrigin = id === old.id;
             var wasRecurrent = Boolean(originalEvent.recurrenceRule);
+            var moveCalendar = Boolean(changes.calendarId);
 
             if (event.calendar) { // Don't update reminders and recurrence with drag&drop event
                 var oldReminders = ev.raw.reminders || originalEvent.reminders;
@@ -1026,6 +1030,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 APP.recurrenceRule = ev.recurrenceRule;
             }
 
+            APP.editType = undefined;
             var afterConfirm = function () {
                 var raw = (ev && ev.raw) || {};
                 var rawData = { // Exact start and end of the selected event
@@ -1033,6 +1038,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     end: raw.end || ev.end,
                     isOrigin: isOrigin
                 };
+                var isOneTime = APP.editType === 'one';
                 if (['one', 'from'].includes(APP.editType)) {
                     if (changes.start) {
                         changes.start = diffDate(raw.start || ev.start, changes.start);
@@ -1042,22 +1048,55 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     }
                 }
 
-                old.id = id;
-                updateEvent({
-                    ev: old,
-                    changes: changes,
-                    rawData: rawData,
-                    type: {
-                        which: APP.editType,
-                        when: raw.start || ev.start
+
+                if (isOneTime && wasRecurrent && moveCalendar) {
+                    // Copy the event with applied changes
+                    var copyEvent = ev;
+                    for (let key in changes) {
+                        copyEvent[key] = changes[key];
                     }
-                }, function (err) {
-                    if (err) {
-                        console.error(err);
-                        return void UI.warn(err);
+                    copyEvent.recurrenceRule = "";
+
+                    newEvent(copyEvent, function(err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(err);
+                        }
+                    });
+
+                    if (!isOrigin) {
+                        // If it's not the first event, then simply remove the
+                        // original occurrence
+                        deleteEvent(old, function(err) {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(err);
+                            }
+                        });
+                    } else {
+                        // You can only edit all events in the origin case
+                        console.error(Messages.error);
+                        return void UI.warn(Messages.error);
                     }
-                    //cal.updateSchedule(old.id, old.calendarId, changes);
-                });
+                } else {
+                    old.id = id;
+
+                    updateEvent({
+                        ev: old,
+                        changes: changes,
+                        rawData: rawData,
+                        type: {
+                            which: APP.editType,
+                            when: raw.start || ev.start
+                        }
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(err);
+                        }
+                        //cal.updateSchedule(old.id, old.calendarId, changes);
+                    });
+                }
             };
 
 
@@ -1067,6 +1106,15 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var list = ['one','from','all'];
             if (isOrigin) { list = ['one', 'all']; }
+            if (moveCalendar) {
+                if (isOrigin) {
+                    // Changing calendar on Origin can only be done for all
+                    list = ['all'];
+                } else {
+                    // Otherwise cannot apply it to the future event
+                    list = ['one', 'all'];
+                }
+            }
             if ((changes.start || changes.end) && !isOrigin) {
                 list = list.filter(function (item) {
                     return item !== "all";
@@ -1126,7 +1174,23 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 return $warn.text(Messages.calendar_rec_warn_update);
             };
             recurrenceWarn();
+            var changeCalendarWarn = function() {
+                if (moveCalendar && wasRecurrent) {
+                    // Don't change only the first event of a recurring event
+                    $warn.show();
+                    $p.hide();
+                    if (isOrigin) {
+                        return $warn.text(Messages.calendar_rec_change_first);
+                    } else {
+                        return $warn.text(Messages.calendar_rec_change);
+                    }
+                } else {
+                    return null;
+                }
+            };
+            changeCalendarWarn();
             $radio.find('input[type="radio"]').on('change', recurrenceWarn);
+            $radio.find('input[type="radio"]').on('change', changeCalendarWarn);
         });
         cal.on('beforeDeleteSchedule', function(event) {
             deleteEvent(event.schedule, function (err) {

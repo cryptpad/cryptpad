@@ -51,7 +51,7 @@ define([
                 require([
                     '/common/cryptget.js',
                 ], function (Crypt) {
-                    var k = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                    var k = Cryptpad.userHash || Utils.LocalStore.getFSHash();
                     Crypt.put(k, sjson, function (err) {
                         cb(err);
                     });
