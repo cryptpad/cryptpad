@@ -4,11 +4,11 @@ CKEDITOR.editorConfig = function( config ) {
     // https://dev.ckeditor.com/ticket/10907
     config.needsBrFiller= fixThings;
     config.needsNbspFiller= fixThings;
-
     config.removeButtons= 'Source,Maximize';
     // magicline plugin inserts html crap into the document which is not part of the
     // document itself and causes problems when it's sent across the wire and reflected back
-    config.removePlugins= 'resize,elementspath';
+    config.removePlugins= 'resize,elementspath,contextmenu,liststyle,tabletools,tableselection';
+    config.forcePasteAsPlainText = true;
     config.resize_enabled= false; //bottom-bar
     config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print,blockbase64,mathjax,wordcount,comments';
     config.toolbarGroups= [
