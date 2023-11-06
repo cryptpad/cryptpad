@@ -1956,8 +1956,7 @@ define([
         var options = [];
         options.push({
             tag: 'li',
-            role: 'presentation',
-            attributes: {'class': 'cp-user-menu-logo', 'role': 'menuitem'},
+            attributes: {'class': 'cp-user-menu-logo', 'role': 'none'},
             content: h('span', [
                 h('img', {
                     src: '/customize/CryptPad_logo_grey.svg',
@@ -1988,8 +1987,7 @@ define([
             }
             options.push({
                 tag: 'li',
-                role: 'presentation',
-                attributes: {'class': 'cp-toolbar-account', 'role': 'menuitem'},
+                attributes: {'class': 'cp-toolbar-account', 'role': 'none'},
                 content: userAdminContent,
             });
         }
@@ -2296,7 +2294,7 @@ define([
             return {
                 tag: 'li',
                 content: [option],
-                attributes: {'role': 'presentation'}
+                attributes: {'role': 'none'}
             };
         });
         var dropdownConfigUser = {
