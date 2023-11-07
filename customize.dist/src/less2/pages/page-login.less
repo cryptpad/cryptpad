@@ -19,13 +19,16 @@
         }
     }
     .cp-container {
-        #userForm {
+        .cp-hidden {
+            display: none !important;
+        }
+        #userForm, #ssoForm {
             .cp-shadow();
             background-color: @cp_static-card-bg;
             padding: 10px;
             margin: 0 10px 10px 10px;
             border-radius: @infopages-radius-L;
-            .cp-login-instance {
+            .cp-login-instance, .cp-login-sso-description {
                 margin-bottom: 5px;
             }
             .form-control {
@@ -40,6 +43,11 @@
             }
             .checkbox-container {
                 color: @cryptpad_text_col;
+            }
+        }
+        #ssoForm {
+            button {
+                margin: 0 5px;
             }
         }
         .align-items-center {

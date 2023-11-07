@@ -85,13 +85,17 @@
                 z-index: 0;
             }
         }
-        #userForm {
+        .cp-hidden {
+            display: none !important;
+        }
+        #userForm, #ssoForm {
             padding: 15px;
             background-color: @cp_static-card-bg;
             position: relative;
             z-index: 2;
-            margin-bottom: 100px;
+            //margin-bottom: 100px;
             border-radius: @infopages-radius-L;
+            max-width: 100%;
             .cp-shadow();
             .form-control {
                 border-radius: @infopages-radius;
@@ -109,6 +113,11 @@
             }
             button#register {
                 margin-top: 10px;
+            }
+        }
+        #ssoForm {
+            button {
+                margin: 0 5px;
             }
         }
 

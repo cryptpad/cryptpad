@@ -10,6 +10,10 @@ define([
         document.title = Msg.register_header;
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
 
+        var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
+        var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';
+        Msg.sso_register_description = "Register from SSO...."; // XXX
+
         var termsLink = Pages.customURLs.terms;
         $(tos).find('a').attr({
             href: termsLink,
@@ -49,7 +53,7 @@ define([
                     Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
                 ]),
                 h('div.cp-reg-form.col-md-6', [
-                    h('div#userForm.form-group.hidden', [
+                    h('div#userForm.form-group'+ssoEnforced, [
                         h('div.cp-register-instance', [
                             Msg._getKey('register_instance', [Pages.Instance.name]),
                             h('br'),
@@ -90,8 +94,10 @@ define([
                         ]),
                         termsCheck,
                         h('button#register', Msg.login_register),
-                        Config.sso ? h('div.cp-register-sso') : undefined
-                    ])
+                    ]),
+                    h('div#ssoForm.form-group.col-md-6'+ssoEnabled, [
+                        h('div.cp-register-sso', Msg.sso_register_description)
+                    ]),
                 ]),
             ])
         ]);

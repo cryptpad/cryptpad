@@ -7,13 +7,18 @@ define([
 ], function (h, UI, Msg, Pages, Config) {
     return function () {
         document.title = Msg.login_login;
+
+        var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
+        var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';
+        Msg.sso_login_description = "Login from SSO...."; // XXX
+
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
                 h('div.row.cp-page-title', h('h1', Msg.login_login)),
                 h('div.row', [
-                    h('div.col-md-3'),
-                    h('div#userForm.form-group.hidden.col-md-6', [
+                    h('div.col-md-3'+ssoEnforced),
+                    h('div#userForm.form-group.col-md-6'+ssoEnforced, [
                         h('div.cp-login-instance', Msg._getKey('login_instance', [ Pages.Instance.name ])),
                         h('div.big-container', [
                             h('div.input-container', [
@@ -50,7 +55,10 @@ define([
                             ),
                             h('button.login', Msg.login_login),
                         ]),
-                        Config.sso ? h('div.cp-login-sso') : undefined
+                    ]),
+                    h('div.col-md-3'+ssoEnabled),
+                    h('div#ssoForm.form-group.col-md-6'+ssoEnabled, [
+                        h('div.cp-login-sso', Msg.sso_login_description)
                     ]),
                     h('div.col-md-3')
                 ]),
