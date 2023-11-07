@@ -132,6 +132,9 @@ define([
                 if (data.register && pw && !Cred.isLongEnoughPassword(pw)) {
                     return void UI.warn(Messages.register_passwordTooShort);
                 }
+                if (data.register && !pw && ApiConfig.sso.password === 2) {
+                    return void UI.warn(Messages.register_passwordTooShort);
+                }
                 $button.prop('disabled', 'disabled');
 
                 if (data.register) {
