@@ -150,8 +150,9 @@ define([
             category = window.location.hash.slice(1);
             window.location.hash = '';
         }
-        var addData = function (obj) {
+        var addData = function (obj, Cryptpad, user, Utils) {
             if (category) { obj.category = category; }
+            obj.isSSO = Boolean(Utils.LocalStore.getSSOSeed());
         };
         SFCommonO.start({
             noRealtime: true,

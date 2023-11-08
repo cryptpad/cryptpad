@@ -662,6 +662,7 @@ define([
 
     create['change-password'] = function() {
         if (!common.isLoggedIn()) { return; }
+        if (privateData.isSSO && ApiConfig.sso && ApiConfig.sso.password === 0) { return; }
 
         var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element' });
 
