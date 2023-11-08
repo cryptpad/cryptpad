@@ -2662,7 +2662,12 @@ define([
                 var q = form.q || Messages.form_default;
                 if (answer === false) {
                     var cols = extractValues(opts.values).map(function (key) {
-                        return q + ' | ' + key;
+                        if (opts.type === 'time') {
+                            return q + ' | ' + new Date(parseInt(key)).toISOString();
+                        } else {
+                            return q + ' | ' + key;
+                        }
+                        
                     });
                     cols.unshift(q);
                     return cols;
@@ -2675,10 +2680,26 @@ define([
                 var str = '';
                 Object.keys(answer.values).sort().forEach(function (k, i) {
                     if (i !== 0) { str += ';'; }
-                    str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
+                    if (opts.type === 'time') {
+                        Object.defineProperty(
+                            answer.values,
+                            new Date(parseInt(k)).toISOString(),
+                            Object.getOwnPropertyDescriptor(answer.values, k),
+                            );
+                            delete answer.values[k];
+                            str += new Date(parseInt(k)).toISOString().replace(';', '').replace(':', '') + ':' + answer.values[ new Date(parseInt(k)).toISOString()] ;
+                    } 
+                    else {
+                        str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
+                    }
                 });
                 var res = extractValues(opts.values).map(function (key) {
-                    return answer.values[key] || '';
+                    if (opts.type === 'time') {
+                        return answer.values[ new Date(parseInt(key)).toISOString()] || '';
+                    } else {
+                        return answer.values[key] || '';
+                    }
+                    
                 });
                 res.unshift(str);
                 return res;
