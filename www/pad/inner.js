@@ -1422,7 +1422,7 @@ define([
                 };
 
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
-                    customConfig: '/customize.dist/ckeditor-config.js',
+                    customConfig: '/customize/ckeditor-config.js',
                 });
 
                 editor.on('instanceReady', waitFor());
