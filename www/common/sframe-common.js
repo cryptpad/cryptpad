@@ -15,6 +15,7 @@ define([
     '/common/sframe-common-mailbox.js',
     '/common/inner/cache.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/mfa.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -46,6 +47,7 @@ define([
     Mailbox,
     Cache,
     MT,
+    MFA,
     MetadataMgr,
     AppConfig,
     Pages,
@@ -119,6 +121,7 @@ define([
     funcs.importMediaTagMenu = callWithCommon(MT.importMediaTagMenu);
     funcs.getMediaTagPreview = callWithCommon(MT.getMediaTagPreview);
     funcs.getMediaTag = callWithCommon(MT.getMediaTag);
+    funcs.totpSetup = callWithCommon(MFA.totpSetup);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -887,6 +890,10 @@ define([
             ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
                 //UI.updateLoadingProgress(data, 'drive');
                 UI.updateLoadingProgress(data);
+            });
+
+            ctx.sframeChan.on('Q_LOADING_MISSING_AUTH', function (data, cb) {
+                UIElements.onMissingMFA(funcs, data, cb);
             });
 
             ctx.sframeChan.on('EV_NEW_VERSION', function () {

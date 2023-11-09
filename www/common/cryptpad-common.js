@@ -2160,6 +2160,7 @@ define([
     // Loading events
     common.loading = {};
     common.loading.onDriveEvent = Util.mkEvent();
+    common.loading.onMissingMFAEvent = Util.mkEvent();
 
     // (Auto)store pads
     common.autoStore = {};
@@ -2484,6 +2485,22 @@ define([
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
             }
+        }).nThen(function (waitFor) {
+            var blockHash = LocalStore.getBlockHash();
+            if (!blockHash || !Config.enforceMFA) { return; }
+
+            // If this instance is configured to enforce MFA for all registered users,
+            // request the login block with no credential to check if it is protected.
+            var parsed = Block.parseBlockHash(blockHash);
+            Util.getBlock(parsed.href, { }, waitFor((err, response) => {
+                // If this account is already protected, nothing to do
+                if (err === 401 && response.method) { return; }
+
+                // Missing MFA protection, show set up screen
+                common.loading.onMissingMFAEvent.fire({
+                    cb: waitFor()
+                });
+            }));
 
         }).nThen(function (waitFor) {
             // if a block URL is present then the user is probably logged in with a modern account

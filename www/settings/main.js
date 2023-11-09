@@ -70,40 +70,6 @@ define([
             sframeChan.on('Q_SETTINGS_IMPORT_LOCAL', function (data, cb) {
                 Cryptpad.mergeAnonDrive(cb);
             });
-            sframeChan.on('Q_SETTINGS_CHECK_PASSWORD', function (data, cb) {
-                var blockHash = Utils.LocalStore.getBlockHash();
-                var userHash = Utils.LocalStore.getUserHash();
-                var correct = (blockHash && blockHash === data.blockHash) ||
-                              (!blockHash && userHash === data.userHash);
-                cb({correct: correct});
-            });
-            sframeChan.on('Q_SETTINGS_TOTP_SETUP', function (obj, cb) {
-                require([
-                    '/common/outer/http-command.js',
-                ], function (ServerCommand) {
-                    var data = obj.data;
-                    data.command = 'TOTP_SETUP';
-                    data.session = Utils.LocalStore.getSessionToken();
-                    ServerCommand(obj.key, data, function (err, response) {
-                        cb({ success: Boolean(!err && response && response.bearer) });
-                        if (response && response.bearer) {
-                            Utils.LocalStore.setSessionToken(response.bearer);
-                        }
-                    });
-                });
-            });
-            sframeChan.on('Q_SETTINGS_TOTP_REVOKE', function (obj, cb) {
-                require([
-                    '/common/outer/http-command.js',
-                ], function (ServerCommand) {
-                    ServerCommand(obj.key, obj.data, function (err, response) {
-                        cb({ success: Boolean(!err && response && response.success) });
-                        if (response && response.success) {
-                            Utils.LocalStore.setSessionToken('');
-                        }
-                    });
-                });
-            });
             sframeChan.on('Q_SETTINGS_MFA_CHECK', function (obj, cb) {
                 require([
                     '/common/outer/login-block.js',
@@ -118,12 +84,6 @@ define([
                             type: data && data.method
                         });
                     });
-                });
-            });
-            sframeChan.on('Q_SETTINGS_GET_SSO_SEED', function (obj, _cb) {
-                var cb = Utils.Util.mkAsync(_cb);
-                cb({
-                    seed: Utils.LocalStore.getSSOSeed()
                 });
             });
             sframeChan.on('Q_SETTINGS_REMOVE_OWNED_PADS', function (data, cb) {

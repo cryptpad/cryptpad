@@ -57,7 +57,7 @@
     .cp-loading-container {
         width: 700px;
         max-width: 90vw;
-        height: 236px;
+        min-height: 236px;
         max-height: calc(100vh - 20px);
         margin: 50px;
         flex-shrink: 0;
@@ -100,6 +100,7 @@
         color: @cp_loading-fg;
         text-align: left;
         display: none;
+        overflow-y: auto;
         a {
             color: @cp_loading-link;
         }

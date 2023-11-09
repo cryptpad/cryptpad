@@ -1236,7 +1236,16 @@ define([
         sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, function (err, obj) {
             if (err || !obj || (obj && obj.err === 'NOBLOCK')) { return void cb(false); }
             var enabled = obj && obj.mfa && obj.type === 'TOTP';
-            drawMfa(content, Boolean(enabled));
+            var config = {
+                accountName: privateData.accountName,
+                origin: privateData.origin
+            };
+            var draw = (state) => {
+                common.totpSetup(config, content, state, (newState) => {
+                    draw(newState);
+                });
+            };
+            draw(Boolean(enabled));
             cb(content);
         });
     }, true);
