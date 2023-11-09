@@ -196,8 +196,6 @@
                     background-color: @cp_dropdown-bg-hover;
                 }
                 .tui-full-calendar-content {
-                    white-space: nowrap;
-                    overflow: hidden;
                     text-overflow: ellipsis;
                     font: @colortheme_app-font;
                     padding: 0 10px;
@@ -208,7 +206,7 @@
         .tui-full-calendar-section-date-dash {
             height: auto;
         }
-        .tui-full-calendar-section-title, .tui-full-calendar-section-location {
+        .tui-full-calendar-section-title, .tui-full-calendar-section-location, .tui-full-calendar-section-body {
             width: 100%;
         }
         .tui-full-calendar-dropdown-menu {
@@ -243,6 +241,28 @@
                         margin-left: 5px;
                         border-radius: 2px;
                     }
+                }
+                .CodeMirror {
+                    margin-top: 5px;
+                    background: @cp_forms-bg;
+                    color: @cryptpad_text_col;
+                    border: 1px solid @cp_forms-border;
+                    border-radius: @variables_radius;
+                    width: 100%;
+                    height: 80px;
+                    font: @colortheme_app-font;
+                    font-size: 16px;
+                    line-height: initial;
+                    padding-left: 0.3rem;
+                    pre {
+                        margin: 0;
+                        font-family: inherit;
+                        font-size: inherit;
+                        line-height: inherit;
+                    }
+                }
+                .CodeMirror-placeholder {
+                    color: @cp_forms-placeholder;
                 }
             }
         }
