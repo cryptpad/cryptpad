@@ -893,18 +893,16 @@ define([
         // Update recurrence rule. We may create a new event here
         var dontSendUpdate = false;
         if (typeof(changes.recurrenceRule) !== "undefined") {
-            if (type.which === "from" && !data.rawData.isOrigin) {
-                // Clean from the day after the event (it otherwise wipes too much)
-                cleanAfter(type.when + 86400000);
+            if (type.which === "all" && changes.recurrenceRule.until) {
+                // Remove changes after the last iteration
+                cleanAfter(changes.recurrenceRule.until);
+            }
+            else if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
+                // Start cleaning after the event (otherwise it resets the current event)
+                cleanAfter(type.when + 1);
             } else {
-                if (changes.recurrenceRule.until) {
-                    // Remove changes after the last iteration
-                    cleanAfter(changes.recurrenceRule.until);
-                }
-                if (changes.recurrenceRule === "") {
-                    // Reset special cases when removing recurrence
-                    update = ev.recUpdate = RECUPDATE;
-                }
+                // Else wipe everything
+                update = ev.recUpdate = RECUPDATE;
             }
         }
 
