@@ -4,6 +4,8 @@ define([
     '/customize/messages.js', // translation keys
     '/components/pako/dist/pako.min.js',
     '/components/x2js/x2js.js',
+    '/common/common-util.js',
+    '/file/file-crypto.js',
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
@@ -11,7 +13,9 @@ define([
     Framework,
     Messages,
     pako,
-    X2JS) {
+    X2JS,
+    Util,
+    FileCrypto) {
     const Nacl = window.nacl;
     const APP = window.APP = {};
 
@@ -122,10 +126,60 @@ define([
             autosave: onDrawioAutosave,
         };
 
+        const getCryptPadUrl = function(src, key, type) {
+            const url = new URL(src);
+            const params = new URLSearchParams();
+            params.set('type', type);
+            url.search = params.toString();
+            url.protocol = url.protocol === 'https:' ? 'cryptpads:' : 'cryptpad:';
+            url.hash = key;
+            return url.href;
+        };
+
+        const parseCryptPadUrl = function(href) {
+            const url = new URL(href);
+            url.protocol = url.protocol === 'cryptpads:' ? 'https:' : 'http:';
+            const key = url.hash.substring(1);  // remove leading '#'
+            const type = url.searchParams.get('type');
+            url.search = '';
+            url.hash = '';
+            return { src: url.href, key, type };
+        }
+
+        const setBlobType = (blob, mimeType) => {
+            const fixedBlob = new Blob([blob], {type: mimeType});
+            return fixedBlob;
+        };
+
+        APP.loadImage = function(href) {
+            return new Promise((resolve, reject) => {
+                const { src, key, type } = parseCryptPadUrl(href);
+                Util.fetch(src, function (err, u8) {
+                    if (err) {
+                        console.error(err);
+                        return void reject(err);
+                    }
+                    try {
+                        FileCrypto.decrypt(u8, nacl.util.decodeBase64(key), (err, res) => {
+                            if (err || !res.content) {
+                                console.error("Decrypting failed");
+                                return void reject(err);
+                            }
+
+                            resolve(setBlobType(res.content, type));
+                        });
+                    } catch (e) {
+                        console.error(e);
+                        reject(err);
+                    }
+                }, void 0, framework._.sfCommon.getCache());
+            });
+        };
+
         APP.addImage = function() {
             return new Promise((resolve) => {
-                framework.insertImage({}, (image) => {
-                    resolve(image);
+                framework.insertImage({}, (imageData) => {
+                    resolve(getCryptPadUrl(imageData.src, imageData.key, imageData.fileType));
                 });
             });
         };
