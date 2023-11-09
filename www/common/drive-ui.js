@@ -3270,7 +3270,7 @@ define([
                 var newObj = {
                     tag: 'a',
                     attributes: {'class': obj.class, href: '#'},
-                    content: [obj.icon, obj.name]
+                    content: [obj.icon, { tag: 'span', content: obj.name }]
                 };
                 if (obj.type) {
                     newObj.attributes['data-type'] = obj.type;
@@ -3347,7 +3347,7 @@ define([
                     attributes: attributes,
                     content: [
                         getIcon(type)[0],
-                        Messages.type[type],
+                        { tag: 'span', content: Messages.type[type] },
                     ],
                 });
             });
@@ -3362,7 +3362,7 @@ define([
                     },
                     content: [
                         getIcon('link')[0],
-                        Messages.fm_link_type,
+                        { tag: 'span', content: Messages.fm_link_type },
                     ],
                 });
                 options.push({
@@ -3374,7 +3374,7 @@ define([
                     },
                     content: [
                         getIcon('file')[0],
-                        Messages.type['file'],
+                        { tag: 'span', content: Messages.type['file'] },
                     ],
                 });
             }
