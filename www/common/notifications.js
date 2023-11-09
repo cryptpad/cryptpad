@@ -8,7 +8,7 @@ define([
     '/common/common-constants.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/lib/calendar/date-picker.js',
+    'tui-date-picker'
 ], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, DatePicker) {
 
     var handlers = {};

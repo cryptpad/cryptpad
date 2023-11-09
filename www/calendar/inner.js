@@ -19,7 +19,7 @@ define([
     '/calendar/export.js',
     '/calendar/recurrence.js',
     '/lib/datepicker/flatpickr.js',
-    '/lib/calendar/date-picker.js',
+    'tui-date-picker',
 
     '/common/inner/share.js',
     '/common/inner/access.js',

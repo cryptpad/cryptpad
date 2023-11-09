@@ -23,7 +23,7 @@ define([
     '/common/text-cursor.js',
     'cm/lib/codemirror',
     '/components/chainpad/chainpad.dist.js',
-    '/lib/calendar/date-picker.js',
+    'tui-date-picker',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
