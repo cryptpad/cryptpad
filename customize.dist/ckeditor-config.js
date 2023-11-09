@@ -28,7 +28,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.mathJaxLib = '/pad/mathjax/MathJax.js?config=TeX-AMS_HTML';
     config.font_defaultLabel = 'Arial';
     config.fontSize_defaultLabel = '16';
-
+    config.accessibility = 'true';
     config.keystrokes = [
         [ CKEDITOR.ALT + 121 /*F10*/, 'toolbarFocus' ],
         [ CKEDITOR.ALT + 122 /*F11*/, 'elementsPathFocus' ],
@@ -46,7 +46,13 @@ CKEDITOR.editorConfig = function( config ) {
         [ CKEDITOR.CTRL + 73 /*I*/, 'italic' ],
         [ CKEDITOR.CTRL + 85 /*U*/, 'underline' ],
 
-        [ CKEDITOR.ALT + 109 /*-*/, 'toolbarCollapse' ]
+        [CKEDITOR.ALT + 109 /*-*/, 'toolbarCollapse' ],
+        [37 /* Left Arrow */, 'focusPreviousButton'],
+        [39 /* Right Arrow */, 'focusNextButton'],
+        //enter
+        [13, 'clickFocusedButton'],
+        //space bar
+        [32, 'clickFocusedButton']
     ];
 
     //skin: 'moono-cryptpad,/pad/themes/moono-cryptpad/'

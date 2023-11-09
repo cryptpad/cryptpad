@@ -14,11 +14,12 @@ define(['jquery'], function ($) {
         CKEDITOR.tools.callFunction(Number(m[1]), e.currentTarget);
         $iframe.scrollTop(s);
     });
-
+    
     // Buttons
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
     $a.each(function (i, el) {
         var $el = $(el);
+        $el.attr('tabindex', '0');
         var $icon = $el.find('span.cke_button_icon');
         if ($icon.length) {
             try {
@@ -30,7 +31,7 @@ define(['jquery'], function ($) {
             } catch (e) { console.error(e); }
         }
         $el.on('keydown blur focus click dragstart', function (e) {
-            e.preventDefault();
+            //e.preventDefault();
             var attr = $(el).attr('oon'+e.type);
             if (!attr) { return; }
             if (['blur', 'dragstart'].indexOf(e.type) !== -1) { return false; }
