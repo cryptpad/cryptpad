@@ -23,6 +23,7 @@ define([
     '/common/text-cursor.js',
     'cm/lib/codemirror',
     '/components/chainpad/chainpad.dist.js',
+    '/lib/calendar/date-picker.js',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
@@ -70,6 +71,7 @@ define([
     TextCursor,
     CMeditor,
     ChainPad,
+    DatePicker,
     Share, Access, Properties,
     Flatpickr,
     Sortable
@@ -2046,7 +2048,7 @@ define([
                     tag: tag,
                     isEmpty: function () { return !$tag.val().trim(); },
                     getValue: function () {
-                        var d = picker.parseDate(tag.value);
+                        var d = DatePicker.parseDate(tag.value);
                         return +d;
                     },
                     setValue: function (val) {
@@ -4797,7 +4799,7 @@ define([
                         if (datePicker.value === '') {
                             return void refreshEndDate();
                         }
-                        var d = picker.parseDate(datePicker.value);
+                        var d = DatePicker.parseDate(datePicker.value);
                         content.answers.endDate = +d;
                         framework.localChange();
                         framework._.cpNfInner.chainpad.onSettle(function () {

@@ -15,4 +15,5 @@ This file is intended to be used as a log of what third-party source we have ven
 * [asciidoc.js 2.0.0](https://github.com/asciidoctor/codemirror-asciidoc/releases/tag/2.0.0) with slight changes to match the format of other codemirror modes
 * [Asciidoctor.js 2.2.6](https://github.com/asciidoctor/asciidoctor.js/releases/tag/v2.2.6) for AsciiDoc rendering
 * [Rangy 1.3.0](https://github.com/timdown/rangy/tree/1.3.0) for cursor management. NOTE: [A CVE](https://github.com/advisories/GHSA-65rp-mhqf-8gj3) exists for this version but CryptPad isn't affected
+* [Moment v2.29.4](http://momentjs.com/) for providing a date parser
 
