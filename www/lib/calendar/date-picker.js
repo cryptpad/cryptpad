@@ -5,6 +5,11 @@ define([
 
     'css!/lib/datepicker/flatpickr.min.css',
 ], function ($, Flatpickr, Moment) {
+
+    var parseDate = (value) => {
+        return Moment(value, 'YYYY-MM-DD HH:mm a').toDate();
+    };
+
     var createRangePicker = function (cfg) {
         var start = cfg.startpicker;
         var end = cfg.endpicker;
@@ -15,10 +20,6 @@ define([
             is24h = !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
         } catch (e) {}
         if (!is24h) { dateFormat = "Y-m-d h:i K"; }
-
-        var parseDate = (value) => {
-            return Moment(value, 'YYYY-MM-DD HH:mm a').toDate();
-        };
 
         var e = $(end.input)[0];
         var endPickr = Flatpickr(e, {

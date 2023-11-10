@@ -8,10 +8,10 @@ define([
     '/customize/messages.js',
     '/components/nthen/index.js',
     'chainpad-listmap',
-    '/lib/calendar/date-picker.js',
+    '/lib/datepicker/flatpickr.js',
     '/components/chainpad-crypto/crypto.js',
     '/components/chainpad/chainpad.dist.js',
-], function (Util, Hash, Constants, Realtime, Cache, Rec, Messages, nThen, Listmap, DatePicker, Crypto, ChainPad) {
+], function (Util, Hash, Constants, Realtime, Cache, Rec, Messages, nThen, Listmap, FP, Crypto, ChainPad) {
     var Calendar = {};
 
     var getStore = function (ctx, id) {
@@ -132,9 +132,9 @@ define([
         var last = ctx.store.data.lastVisit;
 
         if (ev.isAllDay) {
-            if (ev.startDay) { ev.start = +DatePicker.parseDate(ev.startDay); }
+            if (ev.startDay) { ev.start = +FP.parseDate(ev.startDay); }
             if (ev.endDay) {
-                var endDate = DatePicker.parseDate(ev.endDay);
+                var endDate = FP.parseDate(ev.endDay);
                 endDate.setHours(23);
                 endDate.setMinutes(59);
                 endDate.setSeconds(59);

@@ -590,25 +590,14 @@ define([
 
             // Return the difference in timestamps, as minutes (60*1000)
             return -(utcDate - date);
-        }
+        };
 
         var myTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         var offset = getOffset(origin, evTimeZone) - getOffset(target, evTimeZone);
         var myOffset = getOffset(origin, myTimeZone) - getOffset(target, myTimeZone);
 
-        return offset - myOffset;
+        return myOffset - offset;
     };
-/*
-XXX to test
- var first = new Date(2023, 09, 10, 15)
- var second = new Date(2023, 09, 30, 15)
- fixTimeZone('America/New_York', first, second) ==> should return +1h
-
-*/
-
-
-
-
 
     Rec.getRecurring = function (months, events) {
         if (window.CP_DEV_MODE) { debug = console.warn; }
@@ -767,6 +756,11 @@ XXX to test
                         }
 
                         // Add this event
+                        if (_origin.timeZone && !_ev.isAllDay) {
+                            var offset = fixTimeZone(_origin.timeZone, _start, _evS);
+                            _ev.start += offset;
+                            _ev.end += offset;
+                        }
                         toAdd.push(_ev);
                         if (newrule) {
                             useNewRule();

@@ -105,6 +105,8 @@ define([
         var startDate = event.start._date;
         var endDate = event.end._date;
 
+        var timeZone;
+        try { timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
         var data = {
             id: Util.uid(),
             calendarId: event.calendarId,
@@ -115,7 +117,8 @@ define([
             isAllDay: event.isAllDay,
             end: +endDate,
             reminders: reminders,
-            recurrenceRule: event.recurrenceRule
+            recurrenceRule: event.recurrenceRule,
+            timeZone: timeZone
         };
 
         APP.module.execCommand('CREATE_EVENT', data, function (obj) {
