@@ -4,8 +4,9 @@ define([
     '/customize/pages.js',
     '/common/common-util.js',
     '/calendar/recurrence.js',
+
     '/lib/ical.min.js'
-], function (Pages, Util, Rec, ICAL) {
+], function (Pages, Util, Rec) {
     var module = {};
 
     var getICSDate = function (str) {
