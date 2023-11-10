@@ -4539,6 +4539,20 @@ define([
             var resultsStr = h('div');
             var $results = $(resultsType);
             var refreshPublic = function () {
+                // Perform sanity check on refresh
+                // (for instance on template import)
+                if (APP.isEditor) {
+                    if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
+                        // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
+                        content.answers = content.answers || {};
+                        content.answers.channel = Hash.createChannelId();
+                        content.answers.publicKey = priv.form_public;
+                        content.answers.validateKey = priv.form_answerValidateKey;
+                        content.answers.version = 2;
+                        framework.localChange();
+                    }
+                    checkIntegrity();
+                }
                 $results.empty();
                 var makePublic = h('button.btn.btn-secondary', Messages.form_makePublic);
                 var makePublicDiv = h('div.cp-form-actions', makePublic);
