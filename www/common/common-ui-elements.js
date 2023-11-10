@@ -3599,9 +3599,9 @@ define([
             });
         };
 
-        var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
         var todo = function (yes) {
             var priv = common.getMetadataMgr().getPrivateData();
+            var MAX_TEAMS_SLOTS = priv.plan ? Constants.MAX_PREMIUM_TEAMS_SLOTS : Constants.MAX_TEAMS_SLOTS;
             var numberOfTeams = Object.keys(priv.teams || {}).length;
             if (yes) {
                 if (numberOfTeams >= MAX_TEAMS_SLOTS) {
