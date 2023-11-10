@@ -3,8 +3,9 @@
 define([
     '/customize/pages.js',
     '/common/common-util.js',
-    '/calendar/recurrence.js'
-], function (Pages, Util, Rec) {
+    '/calendar/recurrence.js',
+    '/lib/ical.min.js'
+], function (Pages, Util, Rec, ICAL) {
     var module = {};
 
     var getICSDate = function (str) {
@@ -96,14 +97,21 @@ define([
                 return rrule;
             };
 
-
-
             var addEvent = function (arr, data, recId) {
                 var uid = data.id;
                 var dt = getDT(data);
                 var start = dt.start;
                 var end = dt.end;
                 var rrule = getRRule(data);
+
+                var formatDescription = function(str) {
+                    var componentName = 'DESCRIPTION:';
+                    var result = componentName + str.replace(/\n/g, ["\\n"]);
+                    var ICAL = window.ICAL;
+                    // In RFC5545: https://www.rfc-editor.org/rfc/rfc5545#section-3.1
+                    result = ICAL.helpers.foldline(result);
+                    return result;
+                };
 
                 Array.prototype.push.apply(arr, [
                     'BEGIN:VEVENT',
@@ -115,6 +123,7 @@ define([
                     rrule,
                     'SUMMARY:'+ data.title,
                     'LOCATION:'+ data.location,
+                    formatDescription(data.body),
                 ].filter(Boolean));
 
                 if (Array.isArray(data.reminders)) {
@@ -310,7 +319,7 @@ define([
                 }
 
                 // Store other properties
-                var used = ['dtstart', 'dtend', 'uid', 'summary', 'location', 'dtstamp', 'rrule', 'recurrence-id'];
+                var used = ['dtstart', 'dtend', 'uid', 'summary', 'location', 'description', 'dtstamp', 'rrule', 'recurrence-id'];
                 var hidden = [];
                 ev.getAllProperties().forEach(function (p) {
                     if (used.indexOf(p.name) !== -1) { return; }
@@ -355,6 +364,7 @@ define([
                     category: 'time',
                     title: ev.getFirstPropertyValue('summary'),
                     location: ev.getFirstPropertyValue('location'),
+                    body: ev.getFirstPropertyValue('description'),
                     isAllDay: isAllDay,
                     start: start,
                     end: end,

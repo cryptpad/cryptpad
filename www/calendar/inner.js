@@ -25,9 +25,18 @@ define([
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
+    '/common/diffMarked.js',
+    '/common/sframe-common-codemirror.js',
+    'cm/lib/codemirror',
+
+    'cm/addon/display/autorefresh',
+    'cm/addon/display/placeholder',
+    'cm/mode/gfm/gfm',
     '/common/jscolor.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/calendar/app-calendar.less',
@@ -53,11 +62,18 @@ define([
     Rec,
     Flatpickr,
     DatePicker,
-    Share, Access, Properties
+    Share, Access, Properties,
+    diffMk,
+    SFCodeMirror,
+    CodeMirror
     )
 {
+    // XXX New translation keys
     Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
     Messages.calendar_rec_change = "You moved a repeating event to different calendar. You can only apply this change to this event or all repeated events."; // XXX New translation key
+    Messages.calendar_desc = "Description"; // XXX maybe rename in `description`?
+    Messages.calendar_description = "Description:{0}{1}"; // XXX
+
     var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
@@ -101,6 +117,7 @@ define([
     };
     var newEvent = function (event, cb) {
         var reminders = APP.notificationsEntries;
+        var eventBody = APP.eventBody || "";
 
         var startDate = event.start._date;
         var endDate = event.end._date;
@@ -117,8 +134,9 @@ define([
             isAllDay: event.isAllDay,
             end: +endDate,
             reminders: reminders,
-            recurrenceRule: event.recurrenceRule,
-            timeZone: timeZone
+            body: eventBody,
+            timeZone: timeZone,
+            recurrenceRule: event.recurrenceRule
         };
 
         APP.module.execCommand('CREATE_EVENT', data, function (obj) {
@@ -288,6 +306,7 @@ define([
                 var obj = data.content[uid];
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
+                obj.body = obj.body || "";
                 if (obj.isAllDay && obj.startDay) { obj.start = +DatePicker.parseDate((obj.startDay)); }
                 if (obj.isAllDay && obj.endDay) {
                     var endDate = DatePicker.parseDate(obj.endDay);
@@ -392,6 +411,11 @@ define([
             }
 
             return Messages._getKey('calendar_location', [str]);
+        },
+        popupDetailBody: function(schedule) {
+            var str = schedule.body;
+            delete APP.eventBody;
+            return Messages._getKey('calendar_description', ['<br />', diffMk.render(str, true)]);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -1027,6 +1051,11 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 var rec = APP.recurrenceRule;
                 if (JSONSortify(oldRec || '') !== JSONSortify(rec)) {
                     changes.recurrenceRule = rec;
+                }
+
+                var eventBody = APP.eventBody || "";
+                if (eventBody !== old.body) {
+                    changes.body = eventBody;
                 }
             }
 
@@ -1905,7 +1934,6 @@ APP.recurrenceRule = {
     var getNotificationDropdown = function () {
         var ev = APP.editModalData;
         var calId = ev.selectedCal.id;
-        // DEFAULT HERE [10] ==> 10 minutes before the event
         var id = (ev.id && ev.id.split('|')[0]) || undefined;
         var _ev = APP.calendar.getSchedule(ev.id, calId);
         var oldReminders = _ev && _ev.raw && _ev.raw.reminders;
@@ -2011,6 +2039,50 @@ APP.recurrenceRule = {
                 ])
             ])
         ]);
+    };
+
+    var getBodyInput = function() {
+        var ev = APP.editModalData;
+        var calId = ev.selectedCal.id;
+        var id = (ev.id && ev.id.split('|')[0]) || undefined;
+        var _ev = APP.calendar.getSchedule(ev.id, calId);
+        var oldEventBody = _ev && _ev.body;
+        if (!oldEventBody) {
+            oldEventBody = Util.find(APP.calendars, [calId, 'content', 'content', id, 'body']) || "";
+        }
+
+        APP.eventBody = oldEventBody;
+        var description = h('textarea.tui-full-calendar-content', {
+            placeholder: Messages.calendar_desc,
+            id: 'tui-full-calendar-body',
+        });
+
+        description.value = oldEventBody;
+
+        var block = h('div.tui-full-calendar-popup-section', [
+            description,
+        ]);
+
+        var cm = SFCodeMirror.create("gfm", CodeMirror, description);
+        var editor = APP.editor = cm.editor;
+        editor.setOption('lineNumbers', false);
+        editor.setOption('lineWrapping', true);
+        editor.setOption('styleActiveLine', false);
+        editor.setOption('readOnly', false);
+        editor.setOption('autoRefresh', true);
+        editor.setOption('gutters', []);
+        cm.configureTheme(common, function () {});
+        editor.setValue(oldEventBody);
+
+        var updateBody = function(value) {
+            APP.eventBody = value;
+        };
+
+        editor.on('changes', function() {
+            updateBody(editor.getValue());
+        });
+
+        return block;
     };
 
     var createToolbar = function () {
@@ -2122,6 +2194,9 @@ APP.recurrenceRule = {
 
             var div = getNotificationDropdown();
             $button.before(div);
+
+            var bodyInput = getBodyInput();
+            $startDate.parent().parent().before(bodyInput);
 
             // Use Flatpickr with or without time depending on allday checkbox
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');
