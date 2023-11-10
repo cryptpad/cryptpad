@@ -924,7 +924,14 @@ define([
             delete meta.cursor;
 
             if (meta.type === "form") {
+                // Keep anonymous and makeAnonymous values from templates
+                var anonymous = parsed.answers.anonymous || false;
+                var makeAnonymous = parsed.answers.makeAnonymous || false;
                 delete parsed.answers;
+                parsed.answers = {
+                    anonymous: anonymous,
+                    makeAnonymous: makeAnonymous
+                };
             }
         }
     };
