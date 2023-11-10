@@ -4551,7 +4551,6 @@ define([
                         content.answers.version = 2;
                         framework.localChange();
                     }
-                    checkIntegrity();
                 }
                 $results.empty();
                 var makePublic = h('button.btn.btn-secondary', Messages.form_makePublic);
