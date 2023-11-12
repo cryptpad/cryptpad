@@ -3265,19 +3265,26 @@ define([
             // Create dropdown
             var options = getNewPadOptions(isInRoot).map(function (obj) {
                 if (obj.separator) {
-                    return {tag: 'hr'};
+                    return { tag: 'hr' };
                 }
+
                 var newObj = {
-                    tag: 'a',
-                    attributes: {'class': obj.class, href: '#'},
-                    content: [obj.icon, { tag: 'span', content: obj.name }]
+                    tag: 'li',
+                    content: {
+                        tag: 'a',
+                        attributes: { 'class': obj.class, href: '#' },
+                        content: [obj.icon, obj.name]
+                    }
                 };
+
                 if (obj.type) {
-                    newObj.attributes['data-type'] = obj.type;
-                    newObj.attributes['href'] = APP.origin + Hash.hashToHref('', obj.type);
+                    newObj.content.attributes['data-type'] = obj.type;
+                    newObj.content.attributes['href'] = APP.origin + Hash.hashToHref('', obj.type);
                 }
+
                 return newObj;
             });
+
             var dropdownConfig = {
                 buttonContent: [
                     h('i.fa.fa-plus'),

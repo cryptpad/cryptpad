@@ -1660,6 +1660,9 @@ define([
                 if (typeof (o.content) === 'string' || (o.content instanceof Element)) {
                     o.content = [o.content];
                 }
+                if(typeof (o.content) === 'object' && !Array.isArray(o.content)) {
+                    o.content = [o.content];
+                }
                 if (Array.isArray(o.content)) {
                     o.content.forEach(function (item) {
                         if (item instanceof Element) {
@@ -1671,7 +1674,15 @@ define([
                         if (typeof item === 'object') {
                             //  case where item is an object, eg: an <a> tag
                             var $subElement = $(h(item.tag, item.attributes || {}));
-                            if (typeof item.content === 'string') {
+                            if (Array.isArray(item.content)) {
+                                item.content.forEach(function (subItem) {
+                                    if (typeof subItem === 'string') {
+                                        $subElement[0].appendChild(document.createTextNode(subItem));
+                                    } else if (subItem instanceof Element) {
+                                        $subElement.append(subItem);
+                                    }
+                                });
+                            } else if (typeof item.content === 'string') {
                                 $subElement.text(item.content);
                             } else if (item.content instanceof Element) {
                                 $subElement.append(item.content);
