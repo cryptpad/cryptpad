@@ -86,7 +86,7 @@ define([
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
             const tabIndexValue = data.content.isDismissible ? undefined : '0';
-            notif = h('div.cp-notification', {
+            notif = h('li.cp-notification', {
                 style: 'order:'+order+';',
                 'data-hash': data.content.hash
             }, [

@@ -1256,7 +1256,7 @@ define([
                 Common.openURL("/notifications/");
             }
         });
-        var div = h('li.cp-notifications-container', [
+        var div = h('ul.cp-notifications-container', [
             h('div.cp-notifications-empty', Messages.notifications_empty)
         ]);
         var pads_options = [div];
@@ -1265,6 +1265,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
         if (!privateData.notifications) {
             var allowNotif = h('div.cp-notifications-gotoapp', {tabindex: '0'}, h('p', Messages.allowNotifications));
+            allowNotif = h('li', {}, allowNotif);
             pads_options.unshift(h("hr"));
             pads_options.unshift(allowNotif);
             $(allowNotif).on('click keypress', function (event) {
