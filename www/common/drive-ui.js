@@ -3270,6 +3270,7 @@ define([
 
                 var newObj = {
                     tag: 'li',
+                    attributes: { role: 'none'},
                     content: {
                         tag: 'a',
                         attributes: { 'class': obj.class, href: '#' },
