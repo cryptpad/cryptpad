@@ -3354,7 +3354,7 @@ define([
                     attributes: attributes,
                     content: [
                         getIcon(type)[0],
-                        { tag: 'span', content: Messages.type[type] },
+                        Messages.type[type]
                     ],
                 });
             });
@@ -3369,7 +3369,7 @@ define([
                     },
                     content: [
                         getIcon('link')[0],
-                        { tag: 'span', content: Messages.fm_link_type },
+                        Messages.fm_link_type
                     ],
                 });
                 options.push({
@@ -3381,10 +3381,20 @@ define([
                     },
                     content: [
                         getIcon('file')[0],
-                        { tag: 'span', content: Messages.type['file'] },
+                        Messages.type['file']
                     ],
                 });
             }
+            // wrap the option in a li tag
+            options = options.map(function (obj) {
+                if (obj.tag === 'hr') {
+                    return { tag: 'hr' };
+                }
+                return {
+                    tag: 'li',
+                    content: obj
+                };
+            });
             var dropdownConfig = {
                 buttonContent: [
                     h('i.fa.fa-filter'),
