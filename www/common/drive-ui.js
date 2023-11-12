@@ -3386,13 +3386,10 @@ define([
                     ],
                 });
             }
-            // wrap the option in a li tag
             options = options.map(function (obj) {
-                if (obj.tag === 'hr') {
-                    return { tag: 'hr' };
-                }
                 return {
                     tag: 'li',
+                    attributes: { role: 'none'},
                     content: obj
                 };
             });
