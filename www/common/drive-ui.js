@@ -3338,6 +3338,7 @@ define([
             }
             getNewPadTypes().forEach(function (type) {
                 var attributes = {
+                    'role': 'menuitem',
                     'class': 'cp-app-drive-filter-doc',
                     'data-type': type,
                     'href': '#'
@@ -3364,6 +3365,7 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: {
+                        'role': 'menuitem',
                         'class': 'cp-app-drive-filter-doc',
                         'data-type': 'link',
                         'href': '#'
@@ -3376,6 +3378,7 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: {
+                        'role': 'menuitem',
                         'class': 'cp-app-drive-filter-doc',
                         'data-type': 'file',
                         'href': '#'
