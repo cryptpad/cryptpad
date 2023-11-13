@@ -3299,30 +3299,31 @@ define([
             var $block = UIElements.createDropdown(dropdownConfig);
 
             // Custom style:
+            // actions for +New menu button
             var menuButton = $block.find('button');
             menuButton.addClass('cp-app-drive-toolbar-new');
-            menuButton.attr('aria-haspopup', 'menu');
-            menuButton.attr('aria-expanded', 'false');
-            menuButton.click(function () {
-                if (menuButton.attr('aria-expanded') === 'true') {
-                    menuButton.attr('aria-expanded', 'false');
-                } else {
-                    menuButton.attr('aria-expanded', 'true');
-                }
-                $(document).on('click', function (e) {
-                    if ( !$(e.target).closest(".cp-dropdown-content").length) {
-                        menuButton.attr('aria-expanded', 'false');
-                        $(document).off('keydown');
-                    }
-                });
-            });
-
-
+            functionalDropdown(menuButton);
             addNewPadHandlers($block, isInRoot);
 
             $container.append($block);
         };
-
+        var functionalDropdown = function ($button) {
+            menuButton.attr('aria-haspopup', 'menu');
+            menuButton.attr('aria-expanded', 'false');
+            $button.click(function () {
+                if ($button.attr('aria-expanded') === 'true') {
+                    $button.attr('aria-expanded', 'false');
+                } else {
+                    $button.attr('aria-expanded', 'true');
+                    $(document).on('click', function (e) {
+                        if ( !$(e.target).closest(".cp-dropdown-content").length) {
+                            $button.attr('aria-expanded', 'false');
+                            $(document).off('keydown');
+                        }
+                    });
+                }
+            });
+        };
         var createFilterButton = function (isTemplate, $container) {
             if (!APP.loggedIn) {
                 return;
@@ -3425,15 +3426,8 @@ define([
             }
             var $block = UIElements.createDropdown(dropdownConfig);
 
-            $block.find('button').attr('aria-haspopup', 'menu');
-            $block.find('button').attr('aria-expanded', 'false');
-            $block.find('button').click(function () {
-                if ($block.find('button').attr('aria-expanded') === 'true') {
-                    $block.find('button').attr('aria-expanded', 'false');
-                } else {
-                    $block.find('button').attr('aria-expanded', 'true');
-                }
-            });
+            var menuButton = $block.find('button');
+            functionalDropdown(menuButton);
 
             // Add style
             if (APP.store[FILTER_BY]) {
