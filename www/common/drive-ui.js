@@ -3265,7 +3265,13 @@ define([
             // Create dropdown
             var options = getNewPadOptions(isInRoot).map(function (obj) {
                 if (obj.separator) {
-                    return { tag: 'hr' };
+                    return {
+                        tag: 'li',
+                        role: 'none',
+                        content: {
+                            tag: 'hr'
+                        }
+                    };
                 }
 
                 var newObj = {
@@ -3308,17 +3314,58 @@ define([
             $container.append($block);
         };
         var functionalDropdown = function ($button) {
-            menuButton.attr('aria-haspopup', 'menu');
-            menuButton.attr('aria-expanded', 'false');
+            $button.attr('aria-haspopup', 'menu');
+            $button.attr('aria-expanded', 'false');
             $button.click(function () {
                 if ($button.attr('aria-expanded') === 'true') {
                     $button.attr('aria-expanded', 'false');
                 } else {
                     $button.attr('aria-expanded', 'true');
                     $(document).on('click', function (e) {
-                        if ( !$(e.target).closest(".cp-dropdown-content").length) {
+                        if (!$(e.target).closest(".cp-dropdown-content").length) {
                             $button.attr('aria-expanded', 'false');
                             $(document).off('keydown');
+                        }
+                    });
+                    $button.blur();
+                    const dropdownActive = $(".cp-dropdown-content");
+                    if (dropdownActive.length > 0) {
+                        setTimeout(function () {
+                            let items = dropdownActive.find('li:visible');
+                            const firstVisibleItem = items.filter(function () {
+                                return !($(this).find('hr').length > 0);
+                            }).first();
+                            firstVisibleItem.attr('tabindex', '0').focus();
+                        }, 0);
+                    }
+                    $(document).on('keydown', function (e) {
+                        if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
+                            const items = dropdownActive.find('li:visible');
+                            const focusedItem = items.filter(':focus');
+                            items.attr('tabindex', '-1');
+                            if (e.key === 'Tab') {
+                                e.preventDefault();
+                            } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                                if (e.key === 'ArrowUp') {
+                                    var prevItem = focusedItem.prev().length ? focusedItem.prev() : items.last();
+                                    while (prevItem.find('hr').length > 0) {
+                                        prevItem = prevItem.prev().length ? prevItem.prev() : items.last();
+                                    }
+                                    prevItem.attr('tabindex', '0').focus();
+                                } else if (e.key === 'ArrowDown') {
+                                    var nextItem = focusedItem.next().length ? focusedItem.next() : items.first();
+                                    while (nextItem.find('hr').length > 0) {
+                                        nextItem = nextItem.next().length ? nextItem.next() : items.first();
+                                    }
+                                    nextItem.attr('tabindex', '0').focus();
+                                }
+                            } else if (e.key === 'Escape') {
+                                dropdownActive.find('li').attr('tabindex', '-1');
+                                dropdownActive.attr('tabindex', '-1');
+                                $(document).off('keydown');
+                                menuButton.attr('aria-expanded', 'false');
+                                menuButton.focus();
+                            }
                         }
                     });
                 }
