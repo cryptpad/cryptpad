@@ -3299,16 +3299,24 @@ define([
             var $block = UIElements.createDropdown(dropdownConfig);
 
             // Custom style:
-            $block.find('button').addClass('cp-app-drive-toolbar-new');
-            $block.find('button').attr('aria-haspopup', 'menu');
-            $block.find('button').attr('aria-expanded', 'false');
-            $block.find('button').click(function () {
-                if ($block.find('button').attr('aria-expanded') === 'true') {
-                    $block.find('button').attr('aria-expanded', 'false');
+            var menuButton = $block.find('button');
+            menuButton.addClass('cp-app-drive-toolbar-new');
+            menuButton.attr('aria-haspopup', 'menu');
+            menuButton.attr('aria-expanded', 'false');
+            menuButton.click(function () {
+                if (menuButton.attr('aria-expanded') === 'true') {
+                    menuButton.attr('aria-expanded', 'false');
                 } else {
-                    $block.find('button').attr('aria-expanded', 'true');
+                    menuButton.attr('aria-expanded', 'true');
                 }
+                $(document).on('click', function (e) {
+                    if ( !$(e.target).closest(".cp-dropdown-content").length) {
+                        menuButton.attr('aria-expanded', 'false');
+                        $(document).off('keydown');
+                    }
+                });
             });
+
 
             addNewPadHandlers($block, isInRoot);
 
