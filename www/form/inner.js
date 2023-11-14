@@ -4514,6 +4514,19 @@ define([
             $('.cp-toolbar-icon-snapshots').hide();
         }
 
+        var initializeAnswers = function() {
+            // Initialize the answers channel if it doesn't exist yet
+            if (!APP.isEditor) { return; }
+            if (content.answers && content.answers.channel && content.answers.publicKey && content.answers.validateKey) { return; }
+            // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
+            content.answers = content.answers || {};
+            content.answers.channel = Hash.createChannelId();
+            content.answers.publicKey = priv.form_public;
+            content.answers.validateKey = priv.form_answerValidateKey;
+            content.answers.version = 2;
+            framework.localChange();
+        }
+
         var makeFormSettings = function () {
             var previewBtn = h('button.btn.btn-primary', [
                 h('i.fa.fa-eye'),
@@ -4533,21 +4546,6 @@ define([
                     UI.warn(Messages.error);
                 });
             });
-
-            // Perform a sanity check on refresh (for instance on template imports)
-            var checkAnswersValidity = function() {
-                if (APP.isEditor) {
-                    if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
-                        // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
-                        content.answers = content.answers || {};
-                        content.answers.channel = Hash.createChannelId();
-                        content.answers.publicKey = priv.form_public;
-                        content.answers.validateKey = priv.form_answerValidateKey;
-                        content.answers.version = 2;
-                        framework.localChange();
-                    }
-                }
-            };
 
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
@@ -4884,7 +4882,7 @@ define([
             };
             refreshColorTheme();
 
-            evOnChange.reg(checkAnswersValidity);
+            evOnChange.reg(initializeAnswers);
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
             evOnChange.reg(refreshAnon);
@@ -5152,15 +5150,7 @@ define([
                     content.order = ["1", "2"];
                     framework.localChange();
                 }
-                if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
-                    // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
-                    content.answers = content.answers || {};
-                    content.answers.channel = Hash.createChannelId();
-                    content.answers.publicKey = priv.form_public;
-                    content.answers.validateKey = priv.form_answerValidateKey;
-                    content.answers.version = 2;
-                    framework.localChange();
-                }
+                initializeAnswers();
                 checkIntegrity();
             }
             if (isNew && content.answers && typeof(content.answers.anonymous) === "undefined") {
