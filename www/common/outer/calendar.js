@@ -893,9 +893,15 @@ define([
         // Update recurrence rule. We may create a new event here
         var dontSendUpdate = false;
         if (typeof(changes.recurrenceRule) !== "undefined") {
-            if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
-                cleanAfter(type.when);
+            if (type.which === "all" && changes.recurrenceRule.until) {
+                // Remove changes after the last iteration
+                cleanAfter(changes.recurrenceRule.until);
+            }
+            else if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
+                // Start cleaning after the event (otherwise it resets the current event)
+                cleanAfter(type.when + 1);
             } else {
+                // Else wipe everything
                 update = ev.recUpdate = RECUPDATE;
             }
         }
