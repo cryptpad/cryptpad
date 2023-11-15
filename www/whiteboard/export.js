@@ -30,6 +30,7 @@ define([
             canvas.setWidth(w);
             canvas.setHeight(h);
             canvas.calcOffset();
+            canvas.renderAll();
 
             module.ext = '.png';
             canvas_node.toBlob(cb);
