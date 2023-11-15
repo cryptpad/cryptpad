@@ -4525,7 +4525,7 @@ define([
             content.answers.validateKey = priv.form_answerValidateKey;
             content.answers.version = 2;
             framework.localChange();
-        }
+        };
 
         var makeFormSettings = function () {
             var previewBtn = h('button.btn.btn-primary', [
