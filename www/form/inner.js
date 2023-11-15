@@ -4515,7 +4515,7 @@ define([
         }
 
         var initializeAnswers = function() {
-            // Initialize the answers channel if it doesn't exist yet
+            // Initialize the answers properties if they do not exist yet
             if (!APP.isEditor) { return; }
             if (content.answers && content.answers.channel && content.answers.publicKey && content.answers.validateKey) { return; }
             // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
