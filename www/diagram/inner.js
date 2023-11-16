@@ -130,15 +130,16 @@ define([
             const url = new URL(src);
             const params = new URLSearchParams();
             params.set('type', type);
+            params.set('protocol', url.protocol);
             url.search = params.toString();
-            url.protocol = url.protocol === 'https:' ? 'cryptpads:' : 'cryptpad:';
+            url.protocol = 'cryptpad:';
             url.hash = key;
             return url.href;
         };
 
         const parseCryptPadUrl = function(href) {
             const url = new URL(href);
-            url.protocol = url.protocol === 'cryptpads:' ? 'https:' : 'http:';
+            url.protocol = url.searchParams.get('protocol');
             const key = url.hash.substring(1);  // remove leading '#'
             const type = url.searchParams.get('type');
             url.search = '';
