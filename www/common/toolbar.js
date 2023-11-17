@@ -14,7 +14,7 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
 ], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, h,
-             MessengerUI, Messages, Pages) {
+MessengerUI, Messages, Pages) {
     var Common;
 
     var Bar = {
@@ -52,8 +52,7 @@ define([
     // User admin menu
     var USERADMIN_CLS = Bar.constants.user = 'cp-toolbar-user-dropdown';
     var USERNAME_CLS = Bar.constants.username = 'cp-toolbar-user-name';
-    /*var READONLY_CLS = */
-    Bar.constants.readonly = 'cp-toolbar-readonly';
+    /*var READONLY_CLS = */Bar.constants.readonly = 'cp-toolbar-readonly';
     var USERBUTTON_CLS = Bar.constants.changeUsername = "cp-toolbar-user-rename";
 
     // Create the toolbar element
@@ -64,23 +63,17 @@ define([
 
     var observeChildren = function ($content) {
         var reorderDOM = Util.throttle(function ($content, observer) {
-            if (!$content.length) {
-                return;
-            }
+            if (!$content.length) { return; }
 
             // List all children based on their "order" property
             var map = {};
             $content[0].childNodes.forEach((node) => {
                 try {
-                    if (!node.attributes) {
-                        return;
-                    }
+                    if (!node.attributes) { return; }
                     var order = getComputedStyle(node).getPropertyValue("order");
                     var a = map[order] = map[order] || [];
                     a.push(node);
-                } catch (e) {
-                    console.error(e, node);
-                }
+                } catch (e) { console.error(e, node); }
             });
 
             // Disconnect the observer while we're reordering to avoid infinite loop
@@ -89,9 +82,7 @@ define([
                 return Number(a) - Number(b);
             }).forEach(function (k) {
                 var arr = map[k];
-                if (!Number(k)) {
-                    return;
-                } // No need to "append" if order is 0
+                if (!Number(k)) { return; } // No need to "append" if order is 0
                 // Reorder
                 arr.forEach(function (node) {
                     $content.append(node);
@@ -100,8 +91,8 @@ define([
             observer.start();
         }, 100);
 
-        let observer = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
+        let observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
                 if (mutation.addedNodes.length) {
                     reorderDOM($content, observer);
                 }
@@ -116,14 +107,12 @@ define([
     };
 
     var createRealtimeToolbar = function (config) {
-        if (!config.$container) {
-            return;
-        }
+        if (!config.$container) { return; }
         var $container = config.$container;
 
         var priv = config.metadataMgr.getPrivateData();
         var isEmbed = Bar.isEmbed = priv.isEmbed ||
-            (priv.app === 'form' && priv.readOnly && !priv.form_auditorHash);
+                (priv.app === 'form' && priv.readOnly && !priv.form_auditorHash);
         if (isEmbed) {
             $container.hide();
         }
@@ -144,22 +133,22 @@ define([
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer);
-        var $bottom = $(h('div.' + BOTTOM_CLS, [
-            h('div.' + BOTTOM_LEFT_CLS),
-            h('div.' + BOTTOM_MID_CLS),
-            h('div.' + BOTTOM_RIGHT_CLS)
+        var $bottom = $(h('div.'+BOTTOM_CLS, [
+            h('div.'+BOTTOM_LEFT_CLS),
+            h('div.'+BOTTOM_MID_CLS),
+            h('div.'+BOTTOM_RIGHT_CLS)
         ])).appendTo($toolbar);
-        $toolbar.append(h('div.' + HISTORY_CLS));
-        $toolbar.append(h('div.' + SNAPSHOTS_CLS));
+        $toolbar.append(h('div.'+HISTORY_CLS));
+        $toolbar.append(h('div.'+SNAPSHOTS_CLS));
 
-        var $file = $toolbar.find('.' + BOTTOM_LEFT_CLS);
+        var $file = $toolbar.find('.'+BOTTOM_LEFT_CLS);
 
         if (!config.hideDrawer) {
             var $drawer = $(h('button.' + FILE_CLS, [
                 h('i.fa.fa-file-o'),
                 h('span.cp-button-name', Messages.toolbar_file)
             ])).appendTo($file).hide();
-            var $drawerContent = $(h('div.' + DRAWER_CLS, {tabindex: 1})).hide();
+            var $drawerContent = $(h('div.'+ DRAWER_CLS, {tabindex: 1})).hide();
             UI.createDrawer($drawer, $drawerContent);
         }
 
@@ -179,7 +168,7 @@ define([
 
     // Userlist elements
 
-    var getOtherUsers = function (config) {
+    var getOtherUsers = function(config) {
         //var userList = config.userList.getUserlist();
         var userData = config.metadataMgr.getMetadata().users;
 
@@ -188,20 +177,16 @@ define([
 
         // Display only one time each user (if he is connected in multiple tabs)
         var uids = [];
-        Object.keys(userData).forEach(function (user) {
+        Object.keys(userData).forEach(function(user) {
             //if (user !== userNetfluxId) {
-            var data = userData[user] || {};
-            var userId = data.uid;
-            if (!userId) {
-                return;
-            }
-            //data.netfluxId = user;
-            if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
-                uids.push(userId);
-                list.push(data);
-            } else {
-                i++;
-            }
+                var data = userData[user] || {};
+                var userId = data.uid;
+                if (!userId) { return; }
+                //data.netfluxId = user;
+                if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
+                    uids.push(userId);
+                    list.push(data);
+                } else { i++; }
             //}
         });
         return {
@@ -224,12 +209,8 @@ define([
     };
     var showColors = false;
     var updateUserList = function (toolbar, config, forceOffline) {
-        if (!config.displayed || config.displayed.indexOf('userlist') === -1) {
-            return;
-        }
-        if (toolbar.isAlone) {
-            return;
-        }
+        if (!config.displayed || config.displayed.indexOf('userlist') === -1) { return; }
+        if (toolbar.isAlone) { return; }
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
         var $userlistContent = toolbar.userlistContent;
@@ -273,11 +254,12 @@ define([
         }
 
 
+
         // Update the userlist
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
 
         var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'})
-            .appendTo($editUsers);
+                                .appendTo($editUsers);
 
         var degradedLimit = Config.degradedLimit || 8;
         if (toolbar.isDeleted) {
@@ -300,13 +282,9 @@ define([
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
         $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
 
-        if (!online || toolbar.isDeleted) {
-            return;
-        }
+        if (!online || toolbar.isDeleted) { return; }
 
-        if (metadataMgr.isDegraded() === true) {
-            return;
-        }
+        if (metadataMgr.isDegraded() === true) { return; }
 
         // Display the userlist
 
@@ -332,10 +310,7 @@ define([
                         'class': 'fa fa-pencil cp-toolbar-userlist-button',
                         title: Messages.user_rename
                     }).appendTo($nameSpan);
-                    $button.hover(function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
+                    $button.hover(function (e) { e.preventDefault(); e.stopPropagation(); });
                     $button.mouseenter(function (e) {
                         e.preventDefault();
                         e.stopPropagation();
@@ -378,10 +353,8 @@ define([
                         $button.click();
                         $nameInput.val(editingUserName.value);
                         $nameInput[0].setSelectionRange(editingUserName.select[0],
-                            editingUserName.select[1]);
-                        setTimeout(function () {
-                            $nameInput.focus();
-                        });
+                                                     editingUserName.select[1]);
+                        setTimeout(function () { $nameInput.focus(); });
                     }
                 }
             } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]
@@ -432,7 +405,7 @@ define([
                 $span.addClass('cp-userlist-clickable');
                 $span.attr('title', Messages._getKey('userlist_visitProfile', [name]));
                 $span.click(function () {
-                    Common.openURL(origin + '/profile/#' + data.profile);
+                    Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
             Common.displayAvatar($span, data.avatar, name, function () {
@@ -455,12 +428,8 @@ define([
         if (config.metadataMgr) {
             var metadataMgr = config.metadataMgr;
             metadataMgr.onChange(function () {
-                if (metadataMgr.isConnected()) {
-                    toolbar.connected = true;
-                }
-                if (!toolbar.connected) {
-                    return;
-                }
+                if (metadataMgr.isConnected()) {toolbar.connected = true;}
+                if (!toolbar.connected) { return; }
                 updateUserList(toolbar, config);
             });
             setTimeout(function () {
@@ -490,7 +459,7 @@ define([
         var $container = $('<span>', {id: 'cp-toolbar-userlist-drawer-open', title: Messages.userListButton});
 
         var $button = $('<button>').appendTo($container);
-        $('<span>', {'class': 'cp-dropdown-button-title'}).appendTo($button);
+        $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
 
         toolbar.$bottomR.prepend($container);
 
@@ -503,10 +472,7 @@ define([
             $button.removeClass('cp-toolbar-button-active');
         };
         var show = function () {
-            if (Bar.isEmbed) {
-                $content.hide();
-                return;
-            }
+            if (Bar.isEmbed) { $content.hide(); return; }
             $content.show();
             $button.addClass('cp-toolbar-button-active');
         };
@@ -518,18 +484,15 @@ define([
         */
         $button.click(function () {
             var visible = $content.is(':visible');
-            if (visible) {
-                hide();
-            } else {
-                show();
-            }
+            if (visible) { hide(); }
+            else { show(); }
             visible = !visible;
             Common.setAttribute(['toolbar', 'userlist-drawer'], visible);
-            Feedback.send(visible ? 'USERLIST_SHOW' : 'USERLIST_HIDE');
+            Feedback.send(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
-            if (val === false || window.innerWidth < 800) {
+            if (val === false || window.innerWidth < 800)  {
                 return void hide();
             }
             show();
@@ -544,7 +507,7 @@ define([
         var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
         var notif = h('span.cp-collapsed-notif');
 
-        var $button = $(h('button.cp-toolbar-collapse', [
+        var $button = $(h('button.cp-toolbar-collapse',[
             up,
             down,
             notif
@@ -580,9 +543,7 @@ define([
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the chat");
         }
-        if (Config.availablePadTypes.indexOf('contacts') === -1) {
-            return;
-        }
+        if (Config.availablePadTypes.indexOf('contacts') === -1) { return; }
         var $content = $('<div>', {'class': 'cp-toolbar-chat-drawer'});
         $content.on('drop dragover', function (e) {
             e.preventDefault();
@@ -617,10 +578,7 @@ define([
             config.$contentContainer.removeClass('cp-chat-visible');
         };
         var show = function () {
-            if (Bar.isEmbed) {
-                $content.hide();
-                return;
-            }
+            if (Bar.isEmbed) { $content.hide(); return; }
             $content.show();
             // scroll down chat
             var $messagebox = $content.find('.cp-app-contacts-messages');
@@ -640,11 +598,8 @@ define([
         */
         $button.click(function () {
             var visible = $content.is(':visible');
-            if (visible) {
-                hide(true);
-            } else {
-                show();
-            }
+            if (visible) { hide(true); }
+            else { show(); }
             visible = !visible;
             Common.setAttribute(['toolbar', 'chat-drawer'], visible);
         });
@@ -681,8 +636,8 @@ define([
             }
             var privateData = config.metadataMgr.getPrivateData();
             var title = (config.title && config.title.getTitle && config.title.getTitle())
-                || (config.title && config.title.defaultName)
-                || "";
+                        || (config.title && config.title.defaultName)
+                        || "";
             Common.getSframeChannel().event('EV_SHARE_OPEN', {
                 title: title,
                 auditorHash: privateData.form_auditorHash
@@ -711,8 +666,8 @@ define([
                 return void UI.warn(Messages.deletedFromServer);
             }
             var title = (config.title && config.title.getTitle && config.title.getTitle())
-                || (config.title && config.title.defaultName)
-                || "";
+                        || (config.title && config.title.defaultName)
+                        || "";
             Common.getSframeChannel().event('EV_ACCESS_OPEN', {
                 title: title
             });
@@ -739,7 +694,7 @@ define([
         });
         $shareBlock.click(function () {
             var title = (config.title && config.title.getTitle && config.title.getTitle())
-                || "";
+                        || "";
             Common.getSframeChannel().event('EV_SHARE_OPEN', {
                 title: title,
                 file: true
@@ -780,11 +735,11 @@ define([
         }).hide();
         if (config.readOnly === 1) {
             $hoverable.append($('<span>', {'class': 'cp-toolbar-title-readonly'})
-                .text('(' + Messages.readonly + ')'));
+                .text('('+Messages.readonly+')'));
             return $titleContainer;
         }
         $hoverable.append($('<span>', {'class': 'cp-toolbar-title-readonly cp-toolbar-title-unsync'})
-            .text('(' + Messages.readonly + ')'));
+            .text('('+Messages.readonly+')'));
         var $input = $('<input>', {
             type: 'text',
             placeholder: placeholder,
@@ -813,17 +768,13 @@ define([
             return true;
         });
         var save = function () {
-            if (toolbar.history) {
-                return;
-            }
+            if (toolbar.history) { return; }
             var name = $input.val().trim();
             if (name === "") {
                 name = $input.attr('placeholder');
             }
             updateTitle(name, function (err/*, newtitle*/) {
-                if (err) {
-                    return console.error(err);
-                }
+                if (err) { return console.error(err); }
                 //$text.text(newtitle);
                 $input.hide();
                 $text.show();
@@ -847,13 +798,9 @@ define([
         $saveIcon.click(save);
 
         var displayInput = function () {
-            if (toolbar.connected === false) {
-                return;
-            }
-            if (toolbar.history) {
-                return;
-            }
-            $input.width(Math.max(($text.width() + 10), 300) + 'px');
+            if (toolbar.connected === false) { return; }
+            if (toolbar.history) { return; }
+            $input.width(Math.max(($text.width() + 10), 300)+'px');
             $text.hide();
             //$pencilIcon.css('display', 'none');
             var inputVal = suggestName() || "";
@@ -882,9 +829,7 @@ define([
 
 
     var createPageTitle = function (toolbar, config) {
-        if (!config.pageTitle) {
-            return;
-        }
+        if (!config.pageTitle) { return; }
         var $titleContainer = $('<span>', {
             'class': TITLE_CLS
         }).appendTo(toolbar.$top);
@@ -918,7 +863,7 @@ define([
         var isAnonSF = privateData.newSharedFolder && !privateData.accountName;
         var toMain = inDrive.test(pathname) && !isAnonSF;
 
-        var href = toMain ? origin + '/index.html' : origin + '/drive/';
+        var href = toMain ? origin+'/index.html' : origin+'/drive/';
         var buttonTitle = toMain ? Messages.header_homeTitle : Messages.header_logoTitle;
         var $aTag = $('<a>', {
             href: href,
@@ -937,9 +882,7 @@ define([
             Common.gotoURL(href);
         };
 
-        var onContext = function (e) {
-            e.stopPropagation();
-        };
+        var onContext = function (e) { e.stopPropagation(); };
 
         $aTag.click(onClick).contextmenu(onContext);
 
@@ -950,37 +893,25 @@ define([
 
     var typing = -1;
     var kickSpinner = function (toolbar, config/*, local*/) {
-        if (!toolbar.spinner) {
-            return;
-        }
-        if (toolbar.isErrorState) {
-            return;
-        }
+        if (!toolbar.spinner) { return; }
+        if (toolbar.isErrorState) { return; }
         var $spin = toolbar.spinner;
 
         if (typing === -1) {
             typing = 1;
             $spin.text(Messages.typing);
             $spin.interval = window.setInterval(function () {
-                if (toolbar.isErrorState) {
-                    return;
-                }
-                var dots = Array(typing + 1).join('.');
+                if (toolbar.isErrorState) { return; }
+                var dots = Array(typing+1).join('.');
                 $spin.text(Messages.typing + dots);
                 typing++;
-                if (typing > 3) {
-                    typing = 0;
-                }
+                if (typing > 3) { typing = 0; }
             }, 500);
         }
         var onSynced = function () {
-            if ($spin.timeout) {
-                clearTimeout($spin.timeout);
-            }
+            if ($spin.timeout) { clearTimeout($spin.timeout); }
             $spin.timeout = setTimeout(function () {
-                if (toolbar.isErrorState) {
-                    return;
-                }
+                if (toolbar.isErrorState) { return; }
                 window.clearInterval($spin.interval);
                 typing = -1;
                 $spin.text(Messages.saved);
@@ -989,11 +920,7 @@ define([
         if (config.spinner) {
             var h = function () {
                 onSynced();
-                try {
-                    config.spinner.onSync.unreg(h);
-                } catch (e) {
-                    console.error(e);
-                }
+                try { config.spinner.onSync.unreg(h); } catch (e) { console.error(e); }
             };
             config.spinner.onSync.reg(h);
             return;
@@ -1002,15 +929,11 @@ define([
     };
     var ks = function (toolbar, config, local) {
         return function () {
-            if (toolbar.connected) {
-                kickSpinner(toolbar, config, local);
-            }
+            if (toolbar.connected) { kickSpinner(toolbar, config, local); }
         };
     };
     var createSpinner = function (toolbar, config) {
-        if (config.readOnly === 1) {
-            return;
-        }
+        if (config.readOnly === 1) { return; }
         var $spin = $('<span>', {'class': SPINNER_CLS}).appendTo(toolbar.title);
         $spin.text(Messages.synchronizing);
 
@@ -1038,7 +961,7 @@ define([
 
     var createLimit = function (toolbar, config) {
         var $limitIcon = $('<span>', {'class': 'fa fa-exclamation-triangle'});
-        var $limit = toolbar.$userAdmin.find('.' + LIMIT_CLS).attr({
+        var $limit = toolbar.$userAdmin.find('.'+LIMIT_CLS).attr({
             'title': Messages.pinLimitReached
         }).append($limitIcon).hide();
 
@@ -1048,9 +971,7 @@ define([
         l.href = origin;
 
         var todo = function (e, overLimit) {
-            if (e) {
-                return void console.error("Unable to get the pinned usage", e);
-            }
+            if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 $limit.show().click(function () {
                     if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
@@ -1084,7 +1005,7 @@ define([
             throw new Error("You must provide a `metadataMgr` to display the user menu");
         }
         var metadataMgr = config.metadataMgr;
-        var $userAdmin = toolbar.$userAdmin.find('.' + USERADMIN_CLS).show();
+        var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
             $initBlock: $userAdmin,
         };
@@ -1130,7 +1051,7 @@ define([
                 userMenuButton.blur();
                 const dropdownActive = $(".cp-dropdown-content");
                 if (dropdownActive.length > 0) {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         let items = dropdownActive.find('li:visible');
                         const firstVisibleItem = items.filter(function () {
                             return !($(this).find('hr').length > 0 || $(this).hasClass('cp-user-menu-logo') || $(this).hasClass('cp-toolbar-account'));
@@ -1174,7 +1095,8 @@ define([
                                     nextItem.attr('tabindex', '0').focus();
                                     searchCharacters = '';
                                 }
-                            } else if (e.key === 'Escape') {
+                            }
+                            else if (e.key === 'Escape') {
                                 dropdownActive.find('li').attr('tabindex', '-1');
                                 dropdownActive.attr('tabindex', '-1');
                                 $(document).off('keydown');
@@ -1197,16 +1119,14 @@ define([
     };
 
     var createMaintenance = function (toolbar, config) {
-        var $notif = toolbar.$top.find('.' + MAINTENANCE_CLS);
+        var $notif = toolbar.$top.find('.'+MAINTENANCE_CLS);
         var button = h('button.cp-maintenance-wrench.fa.fa-wrench');
         $notif.append(button);
 
 
         var m = Broadcast.maintenance;
         $(button).click(function () {
-            if (!m || !m.start || !m.end) {
-                return;
-            }
+            if (!m || !m.start || !m.end) { return; }
             UI.alert(Messages._getKey('broadcast_maintenance', [
                 new Date(m.start).toLocaleString(),
                 new Date(m.end).toLocaleString(),
@@ -1217,9 +1137,7 @@ define([
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
                 var cmd = obj.ev;
-                if (cmd !== "MAINTENANCE") {
-                    return;
-                }
+                if (cmd !== "MAINTENANCE") { return; }
                 var data = obj.data;
                 if (!data) {
                     return void $notif.hide();
@@ -1232,7 +1150,7 @@ define([
                 to = setTimeout(function () {
                     m = undefined;
                     $notif.hide();
-                }, m.end - (+new Date()));
+                }, m.end-(+new Date()));
                 $notif.css('display', '');
             }
         });
@@ -1242,15 +1160,15 @@ define([
             to = setTimeout(function () {
                 m = undefined;
                 $notif.hide();
-            }, m.end - (+new Date()));
+            }, m.end-(+new Date()));
         } else {
             $notif.hide();
         }
     };
 
     var createNotifications = function (toolbar, config) {
-        var $notif = toolbar.$top.find('.' + NOTIFICATIONS_CLS).show();
-        var openNotifsApp = h('li', {}, h('div.cp-notifications-gotoapp', {tabindex: '0'}, h('p', Messages.openNotificationsApp || "Open notifications App")));
+        var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
+        var openNotifsApp = h('li', {}, h('div.cp-notifications-gotoapp', { tabindex: '0' }, h('p', Messages.openNotificationsApp || "Open notifications App")));
         $(openNotifsApp).on('click keypress', function (event) {
             if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                 Common.openURL("/notifications/");
@@ -1271,9 +1189,7 @@ define([
             $(allowNotif).on('click keypress', function (event) {
                 if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                     Common.getSframeChannel().event('Q_ASK_NOTIFICATION', null, function (e, allow) {
-                        if (!allow) {
-                            return;
-                        }
+                        if (!allow) { return; }
                         $(allowNotif).remove();
                     });
                 }
@@ -1281,9 +1197,7 @@ define([
 
             var onChange = function () {
                 var privateData = metadataMgr.getPrivateData();
-                if (!privateData.notifications) {
-                    return;
-                }
+                if (!privateData.notifications) { return; }
                 $allow.remove();
                 metadataMgr.off('change', onChange);
             };
@@ -1307,7 +1221,7 @@ define([
         $button.attr('title', Messages.notificationsPage);
         $button.attr('aria-haspopup', 'menu');
         $button.attr("aria-expanded", "false");
-        $button.click(function () {
+        $button.click(function() {
             if ($button.attr("aria-expanded") === "true") {
                 $button.attr("aria-expanded", "false");
             } else {
@@ -1359,7 +1273,7 @@ define([
 
     // Events
     var initClickEvents = function (toolbar) {
-        var removeDropdowns = function () {
+        var removeDropdowns =  function () {
             window.setTimeout(function () {
                 $('body').find('.cp-dropdown-content').hide();
             });
@@ -1370,9 +1284,7 @@ define([
                 return;
             }
             var $title = toolbar.title;
-            if (!$title.find('input').is(':visible')) {
-                return;
-            }
+            if (!$title.find('input').is(':visible')) { return; }
 
             // Press enter
             var ev = $.Event("keyup");
@@ -1411,25 +1323,17 @@ define([
     var initNotifications = function (toolbar, config) {
         // Display notifications when users are joining/leaving the session
         var oldUserData;
-        if (!config.metadataMgr) {
-            return;
-        }
+        if (!config.metadataMgr) { return; }
         var metadataMgr = config.metadataMgr;
-        var notify = function (type, name, oldname, uid) {
-            if (toolbar.isAlone) {
-                return;
-            }
+        var notify = function(type, name, oldname, uid) {
+            if (toolbar.isAlone) { return; }
             // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
-            if (typeof name === "undefined") {
-                return;
-            }
-            if (Config.disableUserlistNotifications) {
-                return;
-            }
+            if (typeof name === "undefined") { return; }
+            if (Config.disableUserlistNotifications) { return; }
             name = getFancyGuestName(name, uid);
             oldname = getFancyGuestName(oldname, uid);
 
-            switch (type) {
+            switch(type) {
                 case 1:
                     UI.log(Messages._getKey("notifyJoined", [name]));
                     break;
@@ -1458,9 +1362,7 @@ define([
 
             var count = 0;
             Object.keys(data).forEach(function (k) {
-                if (data[k] && data[k].uid === user.uid) {
-                    count++;
-                }
+                if (data[k] && data[k].uid === user.uid) { count++; }
             });
             return count;
         };
@@ -1477,9 +1379,7 @@ define([
                     if (netfluxIds.indexOf(u) === -1) {
                         var temp = JSON.parse(JSON.stringify(oldUserData[u]));
                         delete oldUserData[u];
-                        if (temp && newdata[userNetfluxId] && temp.uid === newdata[userNetfluxId].uid) {
-                            return;
-                        }
+                        if (temp && newdata[userNetfluxId] && temp.uid === newdata[userNetfluxId].uid) { return; }
                         if (userPresent(u, temp, newdata || oldUserData) < 1) {
                             notify(-1, temp.name, undefined, temp.uid);
                         }
@@ -1487,9 +1387,7 @@ define([
                 }
             }
             // Update the "oldUserData" object and notify for new users and names changed
-            if (typeof newdata === "undefined") {
-                return;
-            }
+            if (typeof newdata === "undefined") { return; }
             if (typeof oldUserData === "undefined") {
                 oldUserData = JSON.parse(JSON.stringify(newdata));
                 return;
@@ -1516,6 +1414,7 @@ define([
     };
 
 
+
     // Main
 
     Bar.create = function (cfg) {
@@ -1530,17 +1429,17 @@ define([
         toolbar.firstConnection = true;
 
         var $toolbar = toolbar.$toolbar = createRealtimeToolbar(config);
-        toolbar.$bottom = $toolbar.find('.' + Bar.constants.bottom);
-        toolbar.$bottomL = $toolbar.find('.' + Bar.constants.bottomL);
-        toolbar.$bottomM = $toolbar.find('.' + Bar.constants.bottomM);
-        toolbar.$bottomR = $toolbar.find('.' + Bar.constants.bottomR);
-        toolbar.$leftside = $toolbar.find('.' + Bar.constants.leftside);
-        toolbar.$rightside = $toolbar.find('.' + Bar.constants.rightside);
-        toolbar.$file = $toolbar.find('.' + Bar.constants.file);
-        toolbar.$drawer = $toolbar.find('.' + Bar.constants.drawer);
-        toolbar.$top = $toolbar.find('.' + Bar.constants.top);
-        toolbar.$history = $toolbar.find('.' + Bar.constants.history);
-        toolbar.$user = $toolbar.find('.' + Bar.constants.userAdmin);
+        toolbar.$bottom = $toolbar.find('.'+Bar.constants.bottom);
+        toolbar.$bottomL = $toolbar.find('.'+Bar.constants.bottomL);
+        toolbar.$bottomM = $toolbar.find('.'+Bar.constants.bottomM);
+        toolbar.$bottomR = $toolbar.find('.'+Bar.constants.bottomR);
+        toolbar.$leftside = $toolbar.find('.'+Bar.constants.leftside);
+        toolbar.$rightside = $toolbar.find('.'+Bar.constants.rightside);
+        toolbar.$file = $toolbar.find('.'+Bar.constants.file);
+        toolbar.$drawer = $toolbar.find('.'+Bar.constants.drawer);
+        toolbar.$top = $toolbar.find('.'+Bar.constants.top);
+        toolbar.$history = $toolbar.find('.'+Bar.constants.history);
+        toolbar.$user = $toolbar.find('.'+Bar.constants.userAdmin);
 
         observeChildren(toolbar.$drawer);
         observeChildren(toolbar.$bottomL);
@@ -1552,7 +1451,7 @@ define([
             observeChildren(config.$contentContainer);
         }
 
-        toolbar.$userAdmin = $toolbar.find('.' + Bar.constants.userAdmin);
+        toolbar.$userAdmin = $toolbar.find('.'+Bar.constants.userAdmin);
 
         // Create the subelements
         var tb = {};
@@ -1587,7 +1486,7 @@ define([
             toolbar.$bottom.removeClass('cp-toolbar-small');
             var w = $(window).width();
             var size = toolbar.$bottomL.width() + toolbar.$bottomM.width() +
-                toolbar.$bottomR.width();
+                       toolbar.$bottomR.width();
             if (size > w) {
                 toolbar.$bottom.addClass('cp-toolbar-small');
             }
@@ -1596,20 +1495,12 @@ define([
         $(window).on('resize', checkSize);
 
         var addElement = toolbar.addElement = function (arr, additionalCfg, init) {
-            if (typeof additionalCfg === "object") {
-                $.extend(true, config, additionalCfg);
-            }
+            if (typeof additionalCfg === "object") { $.extend(true, config, additionalCfg); }
             arr.forEach(function (el) {
-                if (typeof el !== "string" || !el.trim()) {
-                    return;
-                }
+                if (typeof el !== "string" || !el.trim()) { return; }
                 if (typeof tb[el] === "function") {
-                    if (!init && config.displayed.indexOf(el) !== -1) {
-                        return;
-                    } // Already done
-                    if (!init) {
-                        config.displayed.push(el);
-                    }
+                    if (!init && config.displayed.indexOf(el) !== -1) { return; } // Already done
+                    if (!init) { config.displayed.push(el); }
                     toolbar[el] = tb[el](toolbar, config);
                 }
             });
@@ -1622,9 +1513,7 @@ define([
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);
 
-        if (!config.realtime) {
-            toolbar.connected = true;
-        }
+        if (!config.realtime) { toolbar.connected = true; }
 
         initClickEvents(toolbar, config);
         initNotifications(toolbar, config);
@@ -1641,30 +1530,22 @@ define([
             //checkLag(toolbar, config);
         };
         toolbar.initializing = function (/*userId*/) {
-            if (toolbar.history) {
-                return;
-            }
+            if (toolbar.history) { return; }
             toolbar.connected = false;
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.initializing);
             }
         };
         toolbar.reconnecting = function (/*userId*/) {
-            if (toolbar.history) {
-                return;
-            }
+            if (toolbar.history) { return; }
             toolbar.connected = false;
             if (toolbar.spinner) {
                 var state = -1;
                 var interval = window.setInterval(function () {
-                    if (toolbar.connected) {
-                        clearInterval(interval);
-                    }
-                    var dots = Array(state + 1).join('.');
+                    if (toolbar.connected) { clearInterval(interval); }
+                    var dots = Array(state+1).join('.');
                     toolbar.spinner.text(Messages.reconnecting + dots);
-                    if (++state > 3) {
-                        state = 0;
-                    }
+                    if (++state > 3) { state = 0; }
                 }, 500);
                 toolbar.spinner.text(Messages.reconnecting);
             }
@@ -1676,9 +1557,7 @@ define([
 
         toolbar.errorState = function (state, error) {
             toolbar.isErrorState = state;
-            if (state) {
-                toolbar.connected = false;
-            }
+            if (state) { toolbar.connected = false; }
             if (toolbar.spinner) {
                 if (!state) {
                     return void kickSpinner(toolbar, config);
@@ -1711,22 +1590,16 @@ define([
         // Show user colors in the userlist only if the app is compatible and if the user
         // wants to see the cursors
         toolbar.showColors = function () {
-            if (!config.metadataMgr) {
-                return;
-            }
+            if (!config.metadataMgr) { return; }
             var privateData = config.metadataMgr.getPrivateData();
             var show = Util.find(privateData, ['settings', 'general', 'cursor', 'show']);
-            if (show === false) {
-                return;
-            }
+            if (show === false) { return; }
             showColors = true;
         };
 
         // If we had to create a new chainpad instance, reset the one used in the toolbar
         toolbar.resetChainpad = function (chainpad) {
-            if (config.readOnly === 1) {
-                return;
-            }
+            if (config.readOnly === 1) { return; }
             if (config.realtime !== chainpad) {
                 config.realtime = chainpad;
                 config.realtime.onPatch(ks(toolbar, config));
@@ -1777,12 +1650,8 @@ define([
         // On log out, remove permanently the realtime elements of the toolbar
         Common.onLogout(function () {
             failed();
-            if (toolbar.useradmin) {
-                toolbar.useradmin.hide();
-            }
-            if (toolbar.userlist) {
-                toolbar.userlist.hide();
-            }
+            if (toolbar.useradmin) { toolbar.useradmin.hide(); }
+            if (toolbar.userlist) { toolbar.userlist.hide(); }
         });
 
         return toolbar;
