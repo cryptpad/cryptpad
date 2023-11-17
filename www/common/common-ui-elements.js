@@ -1580,8 +1580,8 @@ define([
                             var close = o.action(e);
                             if (close) { hide(); }
                         }
-                    });
-                }
+                    }
+                });
 
             });
         };
