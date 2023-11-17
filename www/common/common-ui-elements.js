@@ -24,25 +24,24 @@ define([
     var urlArgs = Config.requireConf.urlArgs;
 
     UIElements.getSvgLogo = function () {
-        var svg = (function () {/*
+        var svg = (function(){/*
 <svg width="45" height="50" version="1.1" viewBox="0 0 11.906 13.229" xmlns="http://www.w3.org/2000/svg">
  <path id="background" d="m1.0914 0.43939h6.464l3.2642 3.0329v3.6261c0 3.8106-3.1186 4.6934-4.8229 5.5936-1.8663-0.85843-4.7759-1.7955-4.8229-5.5936z" style="stroke-width:0"/>
  <path id="squares" transform="matrix(.26458 0 0 .26458 -5.37e-5 0)" d="m4.125 1.6582 0.30469 21.82h18.242l0.001953-21.82h-18.549zm18.555 21.822 0.001953 24.188c7.0591-3.2362 18.032-9.399 18.232-23.754l0.007813-0.43359h-18.242z" style="fill-opacity:.4;stroke-width:.55042"/>
  <path id="outline" transform="matrix(.26458 0 0 .26458 -5.37e-5 0)" d="m2.6504 0.19922 0.021484 1.4766 0.31055 25.172c0.093479 7.5478 3.1451 12.529 7.0488 15.826 3.9038 3.297 8.5769 5.029 12.025 6.6152l0.65039 0.30274 0.63477-0.33984c3.0702-1.6216 7.7769-3.3403 11.773-6.5996 3.9966-3.2593 7.2344-8.2277 7.2344-15.826v-14.336l-13.221-12.291zm2.9453 2.916h20.381v12.379h13.457v11.332c0 6.8038-2.6491 10.706-6.1562 13.566-3.2982 2.6898-7.3426 4.2502-10.623 5.9141-3.4806-1.5714-7.5236-3.1369-10.74-5.8535-3.4025-2.8737-5.9391-6.8355-6.0234-13.643zm23.289 0.83789 9.2871 8.6328h-9.2871zm-6.5176 14.223a4.9632 4.9632 0 0 0-4.8496 4.9629 4.9632 4.9632 0 0 0 2.8184 4.4746l-1.7324 9.1504h7.7598l-1.7324-9.1523a4.9632 4.9632 0 0 0 2.8145-4.4727 4.9632 4.9632 0 0 0-4.9629-4.9629 4.9632 4.9632 0 0 0-0.11523 0z" style="color-rendering:auto;color:#000000;dominant-baseline:auto;font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;font-variation-settings:normal;image-rendering:auto;inline-size:0;isolation:auto;mix-blend-mode:normal;shape-margin:0;shape-padding:0;shape-rendering:auto;solid-color:#000000;stop-color:#000000;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"/>
 </svg>
-*/
-        }).toString().slice(14, -3);
+*/}).toString().slice(14,-3);
         return svg;
     };
 
     UIElements.prettySize = function (bytes) {
         var unit = Util.magnitudeOfBytes(bytes);
         if (unit === 'GB') {
-            return Messages._getKey('formattedGB', [Util.bytesToGigabytes(bytes)]);
+            return Messages._getKey('formattedGB', [ Util.bytesToGigabytes(bytes)]);
         } else if (unit === 'MB') {
-            return Messages._getKey('formattedMB', [Util.bytesToMegabytes(bytes)]);
+            return Messages._getKey('formattedMB', [ Util.bytesToMegabytes(bytes)]);
         } else {
-            return Messages._getKey('formattedKB', [Util.bytesToKilobytes(bytes)]);
+            return Messages._getKey('formattedKB', [ Util.bytesToKilobytes(bytes)]);
         }
     };
 
@@ -52,11 +51,9 @@ define([
         if (!hrefs || typeof (hrefs) === "string") {
             hrefs = [hrefs];
         }
-        NThen(function (waitFor) {
-            common.getSframeChannel().query("Q_GET_ALL_TAGS", null, waitFor(function (err, res) {
-                if (err || res.error) {
-                    return void console.error(err || res.error);
-                }
+        NThen(function(waitFor) {
+            common.getSframeChannel().query("Q_GET_ALL_TAGS", null, waitFor(function(err, res) {
+                if (err || res.error) { return void console.error(err || res.error); }
                 existing = Object.keys(res.tags).sort();
             }));
         }).nThen(function (waitFor) {
@@ -79,15 +76,13 @@ define([
                             return tags.indexOf(tag) !== -1;
                         });
                     } else {
-                        tags = res || [];
+                        tags = res || [];
                     }
                 }), href);
             });
         }).nThen(function () {
             UI.dialog.tagPrompt(tags, existing, function (newTags) {
-                if (!Array.isArray(newTags)) {
-                    return;
-                }
+                if (!Array.isArray(newTags)) { return; }
                 var added = [];
                 var removed = [];
                 newTags.forEach(function (tag) {
@@ -119,15 +114,11 @@ define([
 
     var dcAlert;
     UIElements.disconnectAlert = function () {
-        if (dcAlert && $(dcAlert.element).length) {
-            return;
-        }
+        if (dcAlert && $(dcAlert.element).length) { return; }
         dcAlert = UI.alert(Messages.common_connectionLost, undefined, true);
     };
     UIElements.reconnectAlert = function () {
-        if (!dcAlert) {
-            return;
-        }
+        if (!dcAlert) { return; }
         if (!dcAlert.delete) {
             dcAlert = undefined;
             return;
@@ -142,21 +133,17 @@ define([
                 var reader = new FileReader();
                 var parsed = file && file.name && /.+\.([^.]+)$/.exec(file.name);
                 var ext = parsed && parsed[1];
-                reader.onload = function (e) {
-                    f(e.target.result, file, ext);
-                };
+                reader.onload = function (e) { f(e.target.result, file, ext); };
                 if (cfg && cfg.binary && cfg.binary.indexOf(ext) !== -1) {
-                    reader.readAsArrayBuffer(file, type);
+                   reader.readAsArrayBuffer(file, type);
                 } else {
-                    reader.readAsText(file, type);
+                   reader.readAsText(file, type);
                 }
             };
 
-            if (_file) {
-                return void todo(_file);
-            }
+            if (_file) { return void todo(_file); }
 
-            var $files = $('<input>', {type: "file"});
+            var $files = $('<input>', {type:"file"});
             if (cfg && cfg.accept) {
                 $files.attr('accept', cfg.accept);
             }
@@ -171,9 +158,7 @@ define([
     UIElements.getUserGrid = function (label, config, onSelect) {
         var common = config.common;
         var users = config.data;
-        if (!users) {
-            return;
-        }
+        if (!users) { return; }
 
         var icons = Object.keys(users).map(function (key, i) {
             var data = users[key];
@@ -190,25 +175,23 @@ define([
                 });
             }
 
-            el = h('div.cp-usergrid-user' + (data.selected ? '.cp-selected' : '') + (config.large ? '.large' : ''), {
+            el = h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
                 'data-teamid': data.teamId,
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
-                style: 'order:' + i + ';'
-            }, [
+                style: 'order:'+i+';'
+            },[
                 avatar,
                 h('span.cp-usergrid-user-name', name),
                 data.notRemovable ? undefined : removeBtn
             ]);
             return el;
-        }).filter(function (x) {
-            return x;
-        });
+        }).filter(function (x) { return x; });
 
         var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
-        var classes = noOthers + (config.large ? '.large' : '') + (config.list ? '.list' : '');
+        var classes = noOthers + (config.large?'.large':'') + (config.list?'.list':'');
 
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
@@ -227,7 +210,7 @@ define([
             var name = $(inputFilter).val().trim().replace(/"/g, '').toLowerCase();
             $div.find('.cp-usergrid-user').show();
             if (name) {
-                $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="' + name + '"])').hide();
+                $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="'+name+'"])').hide();
             }
         };
         $(inputFilter).on('keydown keyup change', redraw);
@@ -240,7 +223,7 @@ define([
                     $(this).addClass('cp-selected');
                 } else {
                     var order = $(this).attr('data-order');
-                    order = order ? 'order:' + order : '';
+                    order = order ? 'order:'+order : '';
                     $(this).removeClass('cp-selected').attr('style', order);
                 }
                 onSelect();
@@ -267,12 +250,10 @@ define([
                     onClick: function () {
                         var profile = data.profile ? (origin + '/profile/#' + data.profile) : '';
                         var success = Clipboard.copy(profile);
-                        if (success) {
-                            UI.log(Messages.shareSuccess);
-                        }
+                        if (success) { UI.log(Messages.shareSuccess); }
                     },
                     keys: [13]
-                }]
+                  }]
             };
         } else {
             return {
@@ -283,26 +264,24 @@ define([
                     onClick: function () {
                         common.setLoginRedirect('register');
                     }
-                }, {
+                  }, {
                     className: 'secondary',
                     name: Messages.login_login,
                     onClick: function () {
                         common.setLoginRedirect('login');
                     }
-                }]
+                  }]
             };
         }
     };
 
     UIElements.createInviteTeamModal = function (config) {
         var common = config.common;
-        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var hasFriends = Object.keys(config.friends || {}).length !== 0;
 
         var privateData = common.getMetadataMgr().getPrivateData();
         var team = privateData.teams[config.teamId];
-        if (!team) {
-            return void UI.warn(Messages.error);
-        }
+        if (!team) { return void UI.warn(Messages.error); }
 
         var origin = privateData.origin;
 
@@ -311,9 +290,7 @@ define([
         // Invite contacts
         var $div;
         var refreshButton = function () {
-            if (!$div) {
-                return;
-            }
+            if (!$div) { return; }
             var $modal = $div.closest('.alertify');
             var $nav = $modal.find('nav');
             var $btn = $nav.find('button.primary');
@@ -339,9 +316,7 @@ define([
                 onClick: function () {
                     var $sel = $div.find('.cp-usergrid-user.cp-selected');
                     var sel = $sel.toArray();
-                    if (!sel.length) {
-                        return;
-                    }
+                    if (!sel.length) { return; }
 
                     sel.forEach(function (el) {
                         var curve = $(el).attr('data-curve');
@@ -370,8 +345,7 @@ define([
         contactsButtons.unshift({
             className: 'cancel',
             name: Messages.cancel,
-            onClick: function () {
-            },
+            onClick: function () {},
             keys: [27]
         });
 
@@ -390,26 +364,26 @@ define([
         var dismissButton = h('span.fa.fa-times');
 
         var roleViewer = UI.createRadio('cp-team-role', 'cp-team-role-viewer',
-            Messages.team_viewers, true, {
-                input: {value: 'VIEWER'},
-            });
+                Messages.team_viewers, true, {
+                    input: { value: 'VIEWER' },
+                });
         var roleMember = UI.createRadio('cp-team-role', 'cp-team-role-member',
-            Messages.team_members, false, {
-                input: {value: 'MEMBER'},
-            });
+                Messages.team_members, false, {
+                    input: { value: 'MEMBER' },
+                });
 
 
         var linkContent = h('div.cp-share-modal', [
-            h('p', Messages.team_inviteLinkTitle),
-            linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style: 'display: none;'}),
+            h('p', Messages.team_inviteLinkTitle ),
+            linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
             linkForm = h('div.cp-teams-invite-form', [
                 // autofill: 'off' was insufficient
                 // adding these two fake inputs confuses firefox and prevents unwanted form autofill
-                h('input', {type: 'text', style: 'display: none'}),
-                h('input', {type: 'password', style: 'display: none'}),
+                h('input', { type: 'text', style: 'display: none'}),
+                h('input', { type: 'password', style: 'display: none'}),
 
                 linkName = h('input', {
-                    placeholder: Messages.team_inviteLinkTempName
+                    placeholder:  Messages.team_inviteLinkTempName
                 }),
                 h('br'),
                 h('div.cp-teams-invite-block', [
@@ -464,21 +438,15 @@ define([
                 dismissButton
             ])
         ]);
-        $(linkUses).on('change keyup', function (e) {
-            if (e.target.value === '') {
-                e.target.value = 0;
-            }
+        $(linkUses).on('change keyup', function(e) {
+            if (e.target.value === '') { e.target.value = 0; }
         });
         $(linkMessage).keydown(function (e) {
-            if (e.which === 13) {
-                e.stopPropagation();
-            }
+            if (e.which === 13) { e.stopPropagation(); }
         });
         var localStore = window.cryptpadStore;
         localStore.get('hide-alert-teamInvite', function (val) {
-            if (val === '1') {
-                return;
-            }
+            if (val === '1') { return; }
             $(linkWarning).css('display', 'flex');
 
             $(dismissButton).on('click', function () {
@@ -494,9 +462,7 @@ define([
             var name = $(linkName).val();
 
             var uses = Number($(linkUses).val());
-            if (isNaN(uses) || !uses) {
-                uses = -1;
-            }
+            if (isNaN(uses) || !uses) { uses = -1; }
 
             var role = $(linkRole).find("input[name='cp-team-role']:checked").val() || 'VIEWER';
 
@@ -555,8 +521,7 @@ define([
         var linkButtons = [{
             className: 'cancel',
             name: Messages.cancel,
-            onClick: function () {
-            },
+            onClick: function () {},
             keys: [27]
         }, {
             className: 'primary cp-teams-invite-create',
@@ -569,13 +534,9 @@ define([
             className: 'primary cp-teams-invite-copy',
             name: Messages.team_inviteLinkCopy,
             onClick: function () {
-                if (!href) {
-                    return;
-                }
+                if (!href) { return; }
                 var success = Clipboard.copy(href);
-                if (success) {
-                    UI.log(Messages.shareSuccess);
-                }
+                if (success) { UI.log(Messages.shareSuccess); }
             },
             keys: []
         }];
@@ -605,9 +566,7 @@ define([
     UIElements.openDirectlyConfirmation = function (common, cb) {
         cb = cb || Util.noop;
         UI.confirm(h('p', Messages.ui_openDirectly), yes => {
-            if (!yes) {
-                return void cb(yes);
-            }
+            if (!yes) { return void cb(yes); }
             common.openDirectly();
             cb(yes);
         });
@@ -667,19 +626,19 @@ define([
                     }
                 }
                 else if (callback) {*/
-                // Old import button, used in settings
-                var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
-                    accept: data ? data.accept : undefined,
-                    binary: data ? data.binary : undefined
-                });
-
-                var handler = data.first ? function () {
-                    data.first(function () {
-                        importer(); // Make sure we don't pass arguments to importer
+                    // Old import button, used in settings
+                    var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
+                        accept: data ? data.accept : undefined,
+                        binary: data ? data.binary : undefined
                     });
-                } : importer; //importContent;
 
-                button
+                    var handler = data.first? function () {
+                        data.first(function () {
+                            importer(); // Make sure we don't pass arguments to importer
+                        });
+                    }: importer; //importContent;
+
+                    button
                     .click(common.prepareFeedback(type))
                     .click(function () {
                         handler();
@@ -690,10 +649,8 @@ define([
                 button = $('<button>', {
                     'class': 'btn btn-primary new',
                     title: Messages.uploadButtonTitle,
-                }).append($('<span>', {'class': 'fa fa-upload'})).append(' ' + Messages.uploadButton);
-                if (!data.FM) {
-                    return;
-                }
+                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
+                if (!data.FM) { return; }
                 var $input = $('<input>', {
                     'type': 'file',
                     'style': 'display: none;',
@@ -715,154 +672,131 @@ define([
                         }
                         data.FM.handleFile(file, ev);
                     });
-                    if (callback) {
-                        callback();
-                    }
+                    if (callback) { callback(); }
                 });
-                if (data.accept) {
-                    $input.attr('accept', data.accept);
-                }
-                button.click(function () {
-                    $input.click();
-                });
+                if (data.accept) { $input.attr('accept', data.accept); }
+                button.click(function () { $input.click(); });
                 break;
             case 'copy':
                 button = $('<button>', {
                     'class': 'fa fa-files-o cp-toolbar-icon-import',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.makeACopy));
                 button
-                    .click(common.prepareFeedback(type))
-                    .click(function () {
-                        sframeChan.query('EV_MAKE_A_COPY');
-                    });
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    sframeChan.query('EV_MAKE_A_COPY');
+                });
                 break;
             case 'importtemplate':
-                if (!AppConfig.enableTemplates) {
-                    return;
-                }
-                if (!common.isLoggedIn()) {
-                    return;
-                }
+                if (!AppConfig.enableTemplates) { return; }
+                if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.template_import));
                 button
-                    .click(common.prepareFeedback(type))
-                    .click(function () {
-                        if (callback) {
-                            return void callback();
-                        }
-                        UIElements.openTemplatePicker(common, true);
-                    });
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    if (callback) { return void callback(); }
+                    UIElements.openTemplatePicker(common, true);
+                });
                 break;
             case 'template':
-                if (!AppConfig.enableTemplates) {
-                    return;
-                }
-                if (!common.isLoggedIn()) {
-                    return;
-                }
+                if (!AppConfig.enableTemplates) { return; }
+                if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
                     'class': 'cptools cptools-new-template cp-toolbar-icon-template',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.saveTemplateButton));
                 if (data.rt || data.callback) {
                     button
-                        .click(function () {
-                            var title = data.getTitle() || document.title;
-                            var todo = function (val) {
-                                if (typeof (val) !== "string") {
-                                    return;
-                                }
-                                if (data.callback) {
-                                    return void data.callback(val);
-                                }
-                                var toSave = data.rt.getUserDoc();
-                                if (val.trim()) {
-                                    val = val.trim();
-                                    title = val;
-                                    try {
-                                        var parsed = JSON.parse(toSave);
-                                        var meta;
-                                        if (Array.isArray(parsed) && typeof (parsed[3]) === "object") {
-                                            meta = parsed[3].metadata; // pad
-                                        } else if (parsed.info) {
-                                            meta = parsed.info; // poll
-                                        } else {
-                                            meta = parsed.metadata;
-                                        }
-                                        if (typeof (meta) === "object") {
-                                            meta.title = val;
-                                            meta.defaultTitle = val;
-                                            delete meta.users;
-                                        }
-                                        toSave = JSON.stringify(parsed);
-                                    } catch (e) {
-                                        console.error("Parse error while setting the title", e);
+                    .click(function () {
+                        var title = data.getTitle() || document.title;
+                        var todo = function (val) {
+                            if (typeof(val) !== "string") { return; }
+                            if (data.callback) {
+                                return void data.callback(val);
+                            }
+                            var toSave = data.rt.getUserDoc();
+                            if (val.trim()) {
+                                val = val.trim();
+                                title = val;
+                                try {
+                                    var parsed = JSON.parse(toSave);
+                                    var meta;
+                                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
+                                        meta = parsed[3].metadata; // pad
+                                    } else if (parsed.info) {
+                                        meta = parsed.info; // poll
+                                    } else {
+                                        meta = parsed.metadata;
                                     }
+                                    if (typeof(meta) === "object") {
+                                        meta.title = val;
+                                        meta.defaultTitle = val;
+                                        delete meta.users;
+                                    }
+                                    toSave = JSON.stringify(parsed);
+                                } catch(e) {
+                                    console.error("Parse error while setting the title", e);
                                 }
-                                sframeChan.query('Q_SAVE_AS_TEMPLATE', {
-                                    toSave: toSave,
-                                    title: title
-                                }, function () {
-                                    UI.alert(Messages.templateSaved);
-                                    Feedback.send('TEMPLATE_CREATED');
-                                });
-                            };
-                            UI.prompt(Messages.saveTemplatePrompt, title, todo);
-                        });
+                            }
+                            sframeChan.query('Q_SAVE_AS_TEMPLATE', {
+                                toSave: toSave,
+                                title: title
+                            }, function () {
+                                UI.alert(Messages.templateSaved);
+                                Feedback.send('TEMPLATE_CREATED');
+                            });
+                        };
+                        UI.prompt(Messages.saveTemplatePrompt, title, todo);
+                    });
                 }
                 break;
             case 'forget':
                 button = $('<button>', {
                     'class': "fa fa-trash cp-toolbar-icon-forget"
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_delete));
-                callback = typeof callback === "function" ? callback : function () {
-                };
+                callback = typeof callback === "function" ? callback : function () {};
                 button
-                    .click(common.prepareFeedback(type))
-                    .click(function () {
-                        common.isPadStored(function (err, data) {
-                            if (!data) {
-                                return void UI.alert(Messages.autostore_notAvailable);
+                .click(common.prepareFeedback(type))
+                .click(function() {
+                    common.isPadStored(function (err, data) {
+                        if (!data) {
+                            return void UI.alert(Messages.autostore_notAvailable);
+                        }
+                        sframeChan.query('Q_IS_ONLY_IN_SHARED_FOLDER', null, function (err, res) {
+                            if (err || res.error) { return void console.log(err || res.error); }
+                            var msg = Messages.forgetPrompt;
+                            if (res) {
+                                UI.alert(Messages.sharedFolders_forget);
+                                return;
+                            } else if (!common.isLoggedIn()) {
+                                msg = Messages.fm_removePermanentlyDialog;
                             }
-                            sframeChan.query('Q_IS_ONLY_IN_SHARED_FOLDER', null, function (err, res) {
-                                if (err || res.error) {
-                                    return void console.log(err || res.error);
-                                }
-                                var msg = Messages.forgetPrompt;
-                                if (res) {
-                                    UI.alert(Messages.sharedFolders_forget);
-                                    return;
-                                } else if (!common.isLoggedIn()) {
-                                    msg = Messages.fm_removePermanentlyDialog;
-                                }
-                                UI.confirm(msg, function (yes) {
-                                    if (!yes) {
-                                        return;
+                            UI.confirm(msg, function (yes) {
+                                if (!yes) { return; }
+                                sframeChan.query('Q_MOVE_TO_TRASH', null, function (err, obj) {
+                                    err = err || (obj && obj.error);
+                                    if (err) {
+                                        callback(err);
+                                        return void UI.warn(Messages.fm_forbidden);
                                     }
-                                    sframeChan.query('Q_MOVE_TO_TRASH', null, function (err, obj) {
-                                        err = err || (obj && obj.error);
-                                        if (err) {
-                                            callback(err);
-                                            return void UI.warn(Messages.fm_forbidden);
-                                        }
-                                        var msg;
-                                        if (common.isLoggedIn()) {
-                                            msg = Pages.setHTML(h('div'), Messages.movedToTrash);
-                                            $(msg).find('a').attr('href', '/drive/');
-                                            common.fixLinks(msg);
-                                        } else {
-                                            msg = h('div', Messages.deleted);
-                                        }
-                                        UI.alert(msg);
-                                        callback();
-                                        return;
-                                    });
+                                    var msg;
+                                    if (common.isLoggedIn()) {
+                                        msg = Pages.setHTML(h('div'), Messages.movedToTrash);
+                                        $(msg).find('a').attr('href', '/drive/');
+                                        common.fixLinks(msg);
+                                    } else {
+                                        msg = h('div', Messages.deleted);
+                                    }
+                                    UI.alert(msg);
+                                    callback();
+                                    return;
                                 });
-
                             });
+
                         });
                     });
+                });
                 break;
             case 'present':
                 button = $(h('button', {
@@ -900,8 +834,8 @@ define([
                     button
                         .click(common.prepareFeedback(type))
                         .on('click', function () {
-                            common.getHistory(data.histConfig);
-                        });
+                        common.getHistory(data.histConfig);
+                    });
                 }
                 break;
             case 'mediatag':
@@ -950,14 +884,14 @@ define([
                     title: Messages.tags_title,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_hashtag));
                 button.click(common.prepareFeedback(type))
-                    .click(function () {
-                        common.isPadStored(function (err, data) {
-                            if (!data) {
-                                return void UI.alert(Messages.autostore_notAvailable);
-                            }
-                            UIElements.updateTags(common, null);
-                        });
+                .click(function () {
+                    common.isPadStored(function (err, data) {
+                        if (!data) {
+                            return void UI.alert(Messages.autostore_notAvailable);
+                        }
+                        UIElements.updateTags(common, null);
                     });
+                });
                 break;
             case 'toggle':
                 button = $(h('button.cp-toolbar-tools', {
@@ -979,19 +913,13 @@ define([
                 button.click(function (e) {
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
-                    if (callback) {
-                        callback(isVisible);
-                    }
+                    if (callback) { callback(isVisible); }
                     if (isVisible) {
                         button.addClass('cp-toolbar-button-active');
-                        if (e.originalEvent) {
-                            Feedback.send('TOGGLE_SHOW_' + appType);
-                        }
+                        if (e.originalEvent) { Feedback.send('TOGGLE_SHOW_' + appType); }
                     } else {
                         button.removeClass('cp-toolbar-button-active');
-                        if (e.originalEvent) {
-                            Feedback.send('TOGGLE_HIDE_' + appType);
-                        }
+                        if (e.originalEvent) { Feedback.send('TOGGLE_HIDE_' + appType); }
                     }
                     //updateIcon(isVisible);
                 });
@@ -1002,32 +930,28 @@ define([
                     'class': 'fa fa-info-circle cp-toolbar-icon-properties',
                     title: Messages.propertiesButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                    .text(Messages.propertiesButton))
-                    .click(common.prepareFeedback(type))
-                    .click(function () {
-                        var isTop;
-                        try {
-                            isTop = common.getMetadataMgr().getPrivateData().isTop;
-                        } catch (err) {
-                            console.error(err);
-                        }
-                        if (!isTop) {
-                            return void UIElements.openDirectlyConfirmation(common);
-                        }
+                .text(Messages.propertiesButton))
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    var isTop;
+                    try {
+                        isTop = common.getMetadataMgr().getPrivateData().isTop;
+                    } catch (err) { console.error(err); }
+                    if (!isTop) {
+                        return void UIElements.openDirectlyConfirmation(common);
+                    }
 
-                        sframeChan.event('EV_PROPERTIES_OPEN');
-                    });
+                    sframeChan.event('EV_PROPERTIES_OPEN');
+                });
                 break;
             case 'save': // OnlyOffice save
                 button = $('<button>', {
                     'class': 'fa fa-save',
                     title: Messages.settings_save,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                    .text(Messages.settings_save))
-                    .click(common.prepareFeedback(type));
-                if (callback) {
-                    button.click(callback);
-                }
+                .text(Messages.settings_save))
+                .click(common.prepareFeedback(type));
+                if (callback) { button.click(callback); }
                 break;
             case 'newpad':
                 button = $('<button>', {
@@ -1035,10 +959,10 @@ define([
                     'class': 'fa fa-plus cp-toolbar-icon-newpad',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.newButton));
                 button
-                    .click(common.prepareFeedback(type))
-                    .click(function () {
-                        common.createNewPadModal();
-                    });
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    common.createNewPadModal();
+                });
                 break;
             case 'snapshots':
                 button = $('<button>', {
@@ -1046,13 +970,13 @@ define([
                     'class': 'fa fa-camera cp-toolbar-icon-snapshots',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.snapshots_button));
                 button
-                    .click(common.prepareFeedback(type))
-                    .click(function () {
-                        if (typeof (data.load) !== "function" || typeof (data.make) !== "function") {
-                            return;
-                        }
-                        UIElements.openSnapshotsModal(common, data.load, data.make, data.remove);
-                    });
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    if (typeof(data.load) !== "function" || typeof(data.make) !== "function") {
+                        return;
+                    }
+                    UIElements.openSnapshotsModal(common, data.load, data.make, data.remove);
+                });
                 break;
             default:
                 var drawerCls = data.drawer === false ? '' : '.cp-toolbar-drawer-element';
@@ -1062,27 +986,19 @@ define([
                     //title: data.title || '',
                 }, [
                     h('i.fa.' + icon),
-                    h('span.cp-toolbar-name' + drawerCls, data.text)
+                    h('span.cp-toolbar-name'+drawerCls, data.text)
                 ]));
                 var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');
                 button[0].addEventListener('click', function () {
                     feedbackHandler();
-                    if (typeof (callback) !== 'function') {
-                        return;
-                    }
+                    if (typeof(callback) !== 'function') { return; }
                     callback();
                 });
-                if (data.style) {
-                    button.attr('style', data.style);
-                }
-                if (data.id) {
-                    button.attr('id', data.id);
-                }
-                if (data.hiddenReadOnly) {
-                    button.addClass('cp-hidden-if-readonly');
-                }
+                if (data.style) { button.attr('style', data.style); }
+                if (data.id) { button.attr('id', data.id); }
+                if (data.hiddenReadOnly) { button.addClass('cp-hidden-if-readonly'); }
                 if (data.name) {
-                    button.addClass('cp-toolbar-icon-' + data.name);
+                    button.addClass('cp-toolbar-icon-'+data.name);
                 }
         }
         if (rightside) {
@@ -1118,9 +1034,9 @@ define([
             'heading': {
                 // Msg.mdToolbar_heading
                 apply: function (str) {
-                    return '\n' + clean(str).split('\n').map(function (line) {
-                        return '# ' + line;
-                    }).join('\n') + '\n';
+                    return '\n'+clean(str).split('\n').map(function (line) {
+                        return '# '+line;
+                    }).join('\n')+'\n';
                 },
                 icon: 'fa-header'
             },
@@ -1132,27 +1048,27 @@ define([
             'quote': {
                 // Msg.mdToolbar_quote
                 apply: function (str) {
-                    return '\n\n' + str.split('\n').map(function (line) {
-                        return '> ' + line;
-                    }).join('\n') + '\n\n';
+                    return '\n\n'+str.split('\n').map(function (line) {
+                        return '> '+line;
+                    }).join('\n')+'\n\n';
                 },
                 icon: 'fa-quote-right'
             },
             'nlist': {
                 // Msg.mdToolbar_nlist
                 apply: function (str) {
-                    return '\n' + clean(str).split('\n').map(function (line) {
-                        return '1. ' + line;
-                    }).join('\n') + '\n';
+                    return '\n'+clean(str).split('\n').map(function (line) {
+                        return '1. '+line;
+                    }).join('\n')+'\n';
                 },
                 icon: 'fa-list-ol'
             },
             'list': {
                 // Msg.mdToolbar_list
                 apply: function (str) {
-                    return '\n' + clean(str).split('\n').map(function (line) {
-                        return '* ' + line;
-                    }).join('\n') + '\n';
+                    return '\n'+clean(str).split('\n').map(function (line) {
+                        return '* '+line;
+                    }).join('\n')+'\n';
                 },
                 icon: 'fa-list-ul'
             },
@@ -1182,7 +1098,7 @@ define([
             }
         };
 
-        if (typeof (cfg.embed) === "function") {
+        if (typeof(cfg.embed) === "function") {
             actions.embed = { // Messages.mdToolbar_embed
                 icon: 'fa-picture-o',
                 action: function () {
@@ -1204,14 +1120,11 @@ define([
                             console.log("Unexpected data type picked " + data.type);
                             return;
                         }
-                        if (data.type !== 'file') {
-                            console.log('unhandled embed type ' + data.type);
-                            return;
-                        }
+                        if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
                         common.setPadAttribute('atime', +new Date(), null, data.href);
                         var privateDat = common.getMetadataMgr().getPrivateData();
                         var origin = privateDat.fileHost || privateDat.origin;
-                        var src = data.src = data.src.slice(0, 1) === '/' ? origin + data.src : data.src;
+                        var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
                         cfg.embed(h('media-tag', {
                             src: src,
                             'data-crypto-key': 'cryptpad:' + data.key,
@@ -1244,11 +1157,8 @@ define([
                 'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
             }).click(onClick);
-            if (k === "embed") {
-                $toolbar.prepend($b);
-            } else {
-                $toolbar.append($b);
-            }
+            if (k === "embed") { $toolbar.prepend($b); }
+            else { $toolbar.append($b); }
         }
         $('<button>', {
             'class': 'pure-button fa fa-question cp-markdown-help',
@@ -1265,8 +1175,7 @@ define([
             return {
                 toolbar: $(),
                 button: $(),
-                setState: function () {
-                }
+                setState: function () {}
             };
         }
 
@@ -1277,21 +1186,15 @@ define([
         };
         var onClick = function (visible) {
             common.setAttribute(['general', 'markdown-help'], visible, function (e) {
-                if (e) {
-                    return void console.error(e);
-                }
+                if (e) { return void console.error(e); }
             });
         };
 
         var $toolbarButton = common.createButton('toggle', true, cfg, onClick);
         var tbState = true;
         common.getAttribute(['general', 'markdown-help'], function (e, data) {
-            if (e) {
-                return void console.error(e);
-            }
-            if ($(window).height() < 800 && $(window).width() < 800) {
-                return;
-            }
+            if (e) { return void console.error(e); }
+            if ($(window).height() < 800 && $(window).width() < 800) { return; }
             if (data === true && $toolbarButton.length && tbState) {
                 $toolbarButton.click();
             }
@@ -1307,12 +1210,8 @@ define([
                 return;
             }
             common.getAttribute(['general', 'markdown-help'], function (e, data) {
-                if (e) {
-                    return void console.error(e);
-                }
-                if ($(window).height() < 800 && $(window).width() < 800) {
-                    return;
-                }
+                if (e) { return void console.error(e); }
+                if ($(window).height() < 800 && $(window).width() < 800) { return; }
                 if (data === true && $toolbarButton) {
                     // Show the toolbar using the button to make sure the icon in the button is
                     // correct (caret-down / caret-up)
@@ -1424,15 +1323,11 @@ define([
     // NOTE: The callback must stay SYNCHRONOUS
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     UIElements.createUsageBar = function (common, teamId, cb) {
-        if (AppConfig.hideUsageBar) {
-            return cb('USAGE_BAR_HIDDEN');
-        }
-        if (!common.isLoggedIn()) {
-            return cb("NOT_LOGGED_IN");
-        }
+        if (AppConfig.hideUsageBar) { return cb('USAGE_BAR_HIDDEN'); }
+        if (!common.isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
-        var $container = $('<span>', {'class': 'cp-limit-container'});
+        var $container = $('<span>', {'class':'cp-limit-container'});
         var to;
         var todo = function (err, data) {
             if (to) {
@@ -1445,9 +1340,7 @@ define([
                 }, 1000);
                 return;
             }
-            if (err || !data) {
-                return void console.error(err || 'No data');
-            }
+            if (err || !data) { return void console.error(err || 'No data'); }
 
             var usage = data.usage;
             var limit = data.limit;
@@ -1455,14 +1348,14 @@ define([
             $container.html('');
             var unit = Util.magnitudeOfBytes(limit);
 
-            usage = unit === 'GB' ? Util.bytesToGigabytes(usage) :
+            usage = unit === 'GB'? Util.bytesToGigabytes(usage):
                 Util.bytesToMegabytes(usage);
-            limit = unit === 'GB' ? Util.bytesToGigabytes(limit) :
+            limit = unit === 'GB'? Util.bytesToGigabytes(limit):
                 Util.bytesToMegabytes(limit);
 
             var $limit = $('<span>', {'class': 'cp-limit-bar'}).appendTo($container);
-            var quota = limit === 0 ? 1 : usage / limit;
-            var $usage = $('<span>', {'class': 'cp-limit-usage'}).css('width', quota * 100 + '%');
+            var quota = limit === 0 ? 1 : usage/limit;
+            var $usage = $('<span>', {'class': 'cp-limit-usage'}).css('width', quota*100+'%');
             var $buttons = $(h('span.cp-limit-buttons')).appendTo($container);
 
             var urls = common.getMetadataMgr().getPrivateData().accounts;
@@ -1515,13 +1408,9 @@ define([
                 prettyLimit = Messages._getKey('formattedMB', [limit]);
             }
 
-            if (quota < 0.8) {
-                $usage.addClass('cp-limit-usage-normal');
-            } else if (quota < 1) {
-                $usage.addClass('cp-limit-usage-warning');
-            } else {
-                $usage.addClass('cp-limit-usage-above');
-            }
+            if (quota < 0.8) { $usage.addClass('cp-limit-usage-normal'); }
+            else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
+            else { $usage.addClass('cp-limit-usage-above'); }
             var $text = $('<span>', {'class': 'cp-limit-usage-text'});
             $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit])); // TODO avoid use of .html() if possible
             $container.prepend($text);
@@ -1568,28 +1457,18 @@ define([
     //
     // allowed options tags: ['a', 'hr', 'p']
     UIElements.createDropdown = function (config) {
-        if (typeof config !== "object" || !Array.isArray(config.options)) {
-            return;
-        }
-        if (config.feedback && !config.common) {
-            return void console.error("feedback in a dropdown requires sframe-common");
-        }
+        if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
+        if (config.feedback && !config.common) { return void console.error("feedback in a dropdown requires sframe-common"); }
 
         var isElement = function (o) {
             return /HTML/.test(Object.prototype.toString.call(o)) &&
-                typeof (o.tagName) === 'string';
+                typeof(o.tagName) === 'string';
         };
         var allowedTags = ['a', 'li', 'p', 'hr', 'div'];
         var isValidOption = function (o) {
-            if (typeof o !== "object") {
-                return false;
-            }
-            if (isElement(o)) {
-                return true;
-            }
-            if (!o.tag || allowedTags.indexOf(o.tag) === -1) {
-                return false;
-            }
+            if (typeof o !== "object") { return false; }
+            if (isElement(o)) { return true; }
+            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
             return true;
         };
 
@@ -1637,27 +1516,19 @@ define([
 
         // Menu
         var $innerblock = $('<ul>', {'class': 'cp-dropdown-content', 'role': 'menu'});
-        if (config.left) {
-            $innerblock.addClass('cp-dropdown-left');
-        }
+        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
 
         var hide = function () {
-            window.setTimeout(function () {
-                $innerblock.hide();
-            }, 0);
+            window.setTimeout(function () { $innerblock.hide(); }, 0);
         };
 
         var setOptions = function (options) {
             options.forEach(function (o) {
-                if (!isValidOption(o)) {
-                    return;
-                }
-                if (isElement(o)) {
-                    return $innerblock.append(o);
-                }
+                if (!isValidOption(o)) { return; }
+                if (isElement(o)) { return $innerblock.append(o); }
                 var $el = $(h(o.tag, (o.attributes || {})));
 
-                if (typeof (o.content) === 'string' || (o.content instanceof Element)) {
+                if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
                     o.content = [o.content];
                 }
                 if(typeof (o.content) === 'object' && !Array.isArray(o.content)) {
@@ -1668,7 +1539,7 @@ define([
                         if (item instanceof Element) {
                             return void $el.append(item);
                         }
-                        if (typeof (item) === 'string') {
+                        if (typeof(item) === 'string') {
                             $el[0].appendChild(document.createTextNode(item));
                         }
                         if (typeof item === 'object') {
@@ -1707,12 +1578,11 @@ define([
                             });
                         } else {
                             var close = o.action(e);
-                            if (close) {
-                                hide();
-                            }
+                            if (close) { hide(); }
                         }
-                    }
-                });
+                    });
+                }
+
             });
         };
         setOptions(config.options);
@@ -1726,16 +1596,14 @@ define([
         var value = config.initialValue || '';
 
         var setActive = function ($el) {
-            if ($el.length !== 1) {
-                return;
-            }
+            if ($el.length !== 1) { return; }
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             $el.addClass('cp-dropdown-element-active');
             var scroll = $el.position().top + $innerblock.scrollTop();
             if (scroll < $innerblock.scrollTop()) {
                 $innerblock.scrollTop(scroll);
             } else if (scroll > ($innerblock.scrollTop() + 280)) {
-                $innerblock.scrollTop(scroll - 270);
+                $innerblock.scrollTop(scroll-270);
             }
         };
 
@@ -1747,28 +1615,23 @@ define([
             if (config.noscroll) {
                 var h = $innerblock.outerHeight();
                 if ((topPos + h) > wh) {
-                    $innerblock.css('bottom', button.height + 'px');
+                    $innerblock.css('bottom', button.height+'px');
                 }
             } else {
-                $innerblock.css('max-height', Math.floor(wh - topPos - 1) + 'px');
+                $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
                 // We use JSON.stringify here to escape quotes
-                if (typeof (value) === "object") {
-                    value = JSON.stringify(value);
-                }
-                var $val = $innerblock.find('[data-value=' + JSON.stringify(value) + ']');
+                if (typeof(value) === "object") { value = JSON.stringify(value); }
+                var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
                 setActive($val);
                 try {
                     $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
-                } catch (e) {
-                }
+                } catch (e) {}
             }
-            if (config.feedback) {
-                Feedback.send(config.feedback);
-            }
+            if (config.feedback) { Feedback.send(config.feedback); }
         };
 
         $container.click(function (e) {
@@ -1851,7 +1714,7 @@ define([
                 var c = String.fromCharCode(e.which);
                 pressed += c;
                 // We use JSON.stringify here to escape quotes
-                var $value = $innerblock.find('[data-value^=' + JSON.stringify(pressed) + ']:first');
+                var $value = $innerblock.find('[data-value^='+JSON.stringify(pressed)+']:first');
                 if ($value.length) {
                     setActive($value);
                     $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
@@ -1864,19 +1727,17 @@ define([
             $container.setValue = function (val, name, sync) {
                 value = val;
                 // We use JSON.stringify here to escape quotes
-                var $val = $innerblock.find('[data-value=' + JSON.stringify(val) + ']');
+                var $val = $innerblock.find('[data-value='+JSON.stringify(val)+']');
                 var textValue = name || $val.text() || val;
                 var f = function () {
                     $button.find('.cp-dropdown-button-title').text(textValue);
                 };
 
-                if (sync) {
-                    return void f();
-                }
+                if (sync) { return void f(); }
                 setTimeout(f);
             };
             $container.getValue = function () {
-                return typeof (value) === "undefined" ? '' : value;
+                return typeof(value) === "undefined" ? '' : value;
             };
         }
 
@@ -1892,9 +1753,7 @@ define([
         // https://github.com/cryptpad/cryptpad/releases/latest/ ?
 
         var template = function (line, link) {
-            if (!line || !link) {
-                return;
-            }
+            if (!line || !link) { return; }
             var p = Pages.setHTML(h('p'), line);
             var sub = link.cloneNode(true);
             var href;
@@ -1904,9 +1763,7 @@ define([
                 return; // don't return anything to display if their href causes URL to throw
             }
             var a = p.querySelector('a');
-            if (!a) {
-                return;
-            }
+            if (!a) { return; }
             sub.innerText = a.innerText;
             sub.setAttribute('href', href);
             p.replaceChild(sub, a);
@@ -1920,11 +1777,11 @@ define([
         var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
         var content = h('div.cp-info-menu-container', [
-            h('div.logo-block', [
-                h('img', {
-                    src: '/customize/CryptPad_logo.svg?' + urlArgs,
-                    alt: Messages.label_logo
-                }),
+                h('div.logo-block', [
+                    h('img', {
+                        src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                        alt: Messages.label_logo
+                    }),
                 h('h6', "CryptPad"),
                 h('span', Pages.versionString)
             ]),
@@ -1944,13 +1801,12 @@ define([
             {
                 className: 'primary',
                 name: Messages.filePicker_close,
-                onClick: function () {
-                },
+                onClick: function () {},
                 keys: [27],
             },
         ];
 
-        var modal = UI.dialog.customModal(content, {scrollable: true, buttons: buttons});
+        var modal = UI.dialog.customModal(content, {scrollable: true, buttons: buttons });
         UI.openCustomModal(modal);
     };
 
@@ -2006,17 +1862,13 @@ define([
         if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {
-                    'class': 'cp-toolbar-menu-profile fa fa-user-circle',
-                    'tabindex': '-1',
-                    'role': 'menuitem'
-                },
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle','tabindex': '-1','role':'menuitem'},
                 content: h('span', Messages.profileButton),
                 action: function () {
                     if (padType) {
-                        Common.openURL(origin + '/profile/');
+                        Common.openURL(origin+'/profile/');
                     } else {
-                        Common.gotoURL(origin + '/profile/');
+                        Common.gotoURL(origin+'/profile/');
                     }
                 },
             });
@@ -2031,7 +1883,7 @@ define([
                 },
                 content: h('span', Messages.type.drive),
                 action: function () {
-                    Common.openURL(origin + '/drive/');
+                    Common.openURL(origin+'/drive/');
                 },
             });
         }
@@ -2080,30 +1932,30 @@ define([
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog', 'tabindex': '-1', 'role': 'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog','tabindex': '-1','role':'menuitem'},
                 content: h('span', Messages.settingsButton),
                 action: function () {
                     if (padType) {
-                        Common.openURL(origin + '/settings/');
+                        Common.openURL(origin+'/settings/');
                     } else {
-                        Common.gotoURL(origin + '/settings/');
+                        Common.gotoURL(origin+'/settings/');
                     }
                 },
             });
         }
 
-        options.push({tag: 'hr'});
+        options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs', 'tabindex': '-1', 'role': 'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs','tabindex': '-1', 'role':'menuitem'},
                 content: h('span', Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
-                        Common.openURL(origin + '/admin/');
+                        Common.openURL(origin+'/admin/');
                     } else {
-                        Common.gotoURL(origin + '/admin/');
+                        Common.gotoURL(origin+'/admin/');
                     }
                 },
             });
@@ -2127,9 +1979,9 @@ define([
                 content: h('span', Messages.supportPage || 'Support'),
                 action: function () {
                     if (padType) {
-                        Common.openURL(origin + '/support/');
+                        Common.openURL(origin+'/support/');
                     } else {
-                        Common.gotoURL(origin + '/support/');
+                        Common.gotoURL(origin+'/support/');
                     }
                 },
             });
@@ -2169,7 +2021,7 @@ define([
                 content: h('span', Messages.user_rename)
             });
         }*/
-        options.push({tag: 'hr'});
+        options.push({ tag: 'hr' });
 
         // We have code to hide 2 separators in a row, but in the case of survey, they may be
         // in the DOM but hidden. We need to know if there are other elements in this
@@ -2185,7 +2037,7 @@ define([
                 },
                 content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing),
                 action: function () {
-                    Common.openURL(priv.plan ? priv.accounts.upgradeURL : '/features.html');
+                    Common.openURL(priv.plan ? priv.accounts.upgradeURL :'/features.html');
                 },
             });
         }
@@ -2206,8 +2058,8 @@ define([
         }
 
         // If you set "" in the admin panel, it will remove the AppConfig survey
-        var surveyURL = typeof (Broadcast.surveyURL) !== "undefined" ? Broadcast.surveyURL
-            : AppConfig.surveyURL;
+        var surveyURL = typeof(Broadcast.surveyURL) !== "undefined" ? Broadcast.surveyURL
+                                        : AppConfig.surveyURL;
         options.push({
             tag: 'a',
             attributes: {
@@ -2220,7 +2072,7 @@ define([
             },
         });
 
-        options.push({tag: 'hr'});
+        options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
         if (priv.loggedIn) {
             options.push({
@@ -2233,9 +2085,7 @@ define([
                 content: h('span', Messages.logoutEverywhere),
                 action: function () {
                     UI.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
-                        if (!yes) {
-                            return;
-                        }
+                        if (!yes) { return; }
                         Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
                             Common.gotoURL(origin + '/');
                         });
@@ -2244,18 +2094,18 @@ define([
             });
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out', 'tabindex': '-1', 'role': 'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out','tabindex': '-1','role':'menuitem'},
                 content: h('span', Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
-                        Common.gotoURL(origin + '/');
+                        Common.gotoURL(origin+'/');
                     });
                 },
             });
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in', 'tabindex': '-1', 'role': 'menuitem'},
+                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in','tabindex': '-1','role':'menuitem'},
                 content: h('span', Messages.login_login),
                 action: function () {
                     Common.setLoginRedirect('login');
@@ -2264,11 +2114,7 @@ define([
             if (!Config.restrictRegistration) {
                 options.push({
                     tag: 'a',
-                    attributes: {
-                        'class': 'cp-toolbar-menu-register fa fa-user-plus',
-                        'tabindex': '0',
-                        'role': 'menuitem'
-                    },
+                    attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus','tabindex': '0', 'role':'menuitem'},
                     content: h('span', Messages.login_register),
                     action: function () {
                         Common.setLoginRedirect('register');
@@ -2290,9 +2136,7 @@ define([
 
         options.forEach(function (option) {
             var f = option.action;
-            if (!f) {
-                return;
-            }
+            if (!f) { return; }
             option.action = function () {
                 f();
                 return true;
@@ -2321,35 +2165,23 @@ define([
         var $survey = $userAdmin.find('.cp-toolbar-survey');
         if (!surveyURL) {
             $survey.hide();
-            if (surveyAlone) {
-                $survey.next('hr').hide();
-            }
+            if (surveyAlone) { $survey.next('hr').hide(); }
         }
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
                 var cmd = obj.ev;
-                if (cmd !== "SURVEY") {
-                    return;
-                }
+                if (cmd !== "SURVEY") { return; }
                 var url = obj.data;
-                if (url === surveyURL) {
-                    return;
-                }
-                if (url && !Util.isValidURL(url)) {
-                    return;
-                }
+                if (url === surveyURL) { return; }
+                if (url && !Util.isValidURL(url)) { return; }
                 surveyURL = url;
                 if (!url) {
                     $survey.hide();
-                    if (surveyAlone) {
-                        $survey.next('hr').hide();
-                    }
+                    if (surveyAlone) { $survey.next('hr').hide(); }
                     return;
                 }
                 $survey.show();
-                if (surveyAlone) {
-                    $survey.next('hr').show();
-                }
+                if (surveyAlone) { $survey.next('hr').show(); }
             }
         });
 
@@ -2360,7 +2192,7 @@ define([
         $userAdmin.find('.cp-dropdown-content').append($lang);
         */
 
-        var $displayName = $userAdmin.find('.' + displayNameCls);
+        var $displayName = $userAdmin.find('.'+displayNameCls);
 
         var $avatar = $userAdmin.find('> button .cp-dropdown-button-title');
         var loadingAvatar;
@@ -2378,9 +2210,7 @@ define([
                 UIElements.createUserAdminMenu(Common, config);
                 return;
             }
-            if (!myData) {
-                return;
-            }
+            if (!myData) { return; }
             if (loadingAvatar) {
                 // Try again in 200ms
                 window.clearTimeout(to);
@@ -2398,9 +2228,7 @@ define([
                     oldUid = uid;
                     oldName = newName;
                     $userAdmin.find('> button').removeClass('cp-avatar');
-                    if ($img) {
-                        $userAdmin.find('> button').addClass('cp-avatar');
-                    }
+                    if ($img) { $userAdmin.find('> button').addClass('cp-avatar'); }
                     loadingAvatar = false;
                 }, uid);
                 return;
@@ -2453,6 +2281,7 @@ define([
     };
 
 
+
     UIElements.createNewPadModal = function (common) {
         // if in drive, show new pad modal instead
         if ($(".cp-app-drive-element-row.cp-app-drive-new-ghost").length !== 0) {
@@ -2464,7 +2293,7 @@ define([
             $body: $('body')
         });
         var $modal = modal.$modal;
-        var $title = $(h('h3', [h('i.fa.fa-plus'), ' ', Messages.fm_newButton]));
+        var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
 
         var $description = $(Pages.setHTML(h('p'), Messages.creation_newPadModalDescription));
         $modal.find('.cp-modal').append($title);
@@ -2474,20 +2303,16 @@ define([
         var i = 0;
 
         var types = AppConfig.availablePadTypes.filter(function (p) {
-            if (AppConfig.hiddenTypes.indexOf(p) !== -1) {
-                return;
-            }
+            if (AppConfig.hiddenTypes.indexOf(p) !== -1) { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
-                AppConfig.registeredOnlyTypes.indexOf(p) !== -1) {
-                return;
-            }
+                AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;
         });
 
         types.forEach(function (p) {
             var $element = $('<li>', {
                 'class': 'cp-icons-element',
-                'id': 'cp-newpad-icons-' + (i++)
+                'id': 'cp-newpad-icons-'+ (i++)
             }).prepend(UI.getIcon(p)).appendTo($container);
             $element.append($('<span>', {'class': 'cp-icons-name'})
                 .text(Messages.type[p]));
@@ -2508,7 +2333,7 @@ define([
         var next = function () {
             selected = ++selected % types.length;
             $container.find('.cp-icons-element-selected').removeClass('cp-icons-element-selected');
-            $container.find('#cp-newpad-icons-' + selected).addClass('cp-icons-element-selected');
+            $container.find('#cp-newpad-icons-'+selected).addClass('cp-icons-element-selected');
         };
 
         $modal.off('keydown');
@@ -2538,9 +2363,7 @@ define([
     UIElements.openFilePicker = function (common, types, cb) {
         var sframeChan = common.getSframeChannel();
         sframeChan.query("Q_FILE_PICKER_OPEN", types, function (err, data) {
-            if (err) {
-                return;
-            }
+            if (err) { return; }
             cb(data);
         });
     };
@@ -2562,9 +2385,7 @@ define([
         };
         var onConfirm = function (yes) {
             if (!yes) {
-                if (focus) {
-                    focus.focus();
-                }
+                if (focus) { focus.focus(); }
                 return;
             }
             delete pickerCfg.hidden;
@@ -2583,9 +2404,7 @@ define([
                         UI.removeLoadingScreen();
                         Feedback.send('TEMPLATE_USED');
                     });
-                    if (focus) {
-                        focus.focus();
-                    }
+                    if (focus) { focus.focus(); }
                     return;
                 }
             });
@@ -2595,9 +2414,7 @@ define([
             if (data) {
                 common.openFilePicker(pickerCfgInit);
                 focus = document.activeElement;
-                if (force) {
-                    return void onConfirm(true);
-                }
+                if (force) { return void onConfirm(true); }
                 UI.confirm(Messages.useTemplate, onConfirm, {
                     ok: Messages.useTemplateOK,
                     cancel: Messages.useTemplateCancel,
@@ -2635,9 +2452,7 @@ define([
     */
     UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
         appCfg = appCfg || {};
-        if (!common.isLoggedIn()) {
-            return void cb();
-        }
+        if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -2645,9 +2460,7 @@ define([
         if (privateData.offline) {
             var onChange = function () {
                 var privateData = metadataMgr.getPrivateData();
-                if (privateData.offline) {
-                    return;
-                }
+                if (privateData.offline) { return; }
                 UIElements.getPadCreationScreen(common, cfg, appCfg, cb);
                 metadataMgr.off('change', onChange);
             };
@@ -2660,13 +2473,13 @@ define([
         var fromContent = privateData.fromContent;
 
         var $body = $('body');
-        var $creationContainer = $('<div>', {id: 'cp-creation-container'}).appendTo($body);
+        var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
 
-        var logo = h('img', {src: '/customize/CryptPad_logo.svg?' + urlArgs});
+        var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs });
         var fill1 = h('div.cp-creation-fill.cp-creation-logo', logo);
         var fill2 = h('div.cp-creation-fill');
-        var $creation = $('<div>', {id: 'cp-creation', tabindex: 1});
+        var $creation = $('<div>', { id: 'cp-creation', tabindex:1 });
         $creationContainer.append([fill1, $creation, fill2]);
 
         var createHelper = function (href, text) {
@@ -2677,13 +2490,11 @@ define([
 
         // Title
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
-        var newPadH3Title = Messages._getKey('creation_new', [Messages.type[type]]);
+        var newPadH3Title = Messages._getKey('creation_new',[Messages.type[type]]);
 
         var early = common.checkRestrictedApp(type);
         var domain = Config.httpUnsafeOrigin || 'CryptPad';
-        if (/^http/.test(domain)) {
-            domain = domain.replace(/^https?\:\/\//, '');
-        }
+        if (/^http/.test(domain)) { domain = domain.replace(/^https?\:\/\//, ''); }
 
         var title = h('div.cp-creation-title', [
             UI.getFileIcon({type: type})[0],
@@ -2727,7 +2538,7 @@ define([
                 return h('div.cp-creation-team', {
                     'data-id': id,
                     title: data.name,
-                }, [
+                },[
                     avatar,
                     h('span.cp-creation-team-name', data.name)
                 ]);
@@ -2755,7 +2566,7 @@ define([
                 teamValue = $(this).attr('data-id');
             });
             if (privateData.storeInTeam) {
-                $team.find('[data-id="' + privateData.storeInTeam + '"]').addClass('cp-selected');
+                $team.find('[data-id="'+privateData.storeInTeam+'"]').addClass('cp-selected');
                 teamValue = privateData.storeInTeam;
             }
         }
@@ -2780,8 +2591,8 @@ define([
                     value: 3
                 }),
                 h('select#cp-creation-expire-unit', [
-                    h('option', {value: 'hour'}, Messages.creation_expireHours),
-                    h('option', {value: 'day'}, Messages.creation_expireDays),
+                    h('option', { value: 'hour' }, Messages.creation_expireHours),
+                    h('option', { value: 'day' }, Messages.creation_expireDays),
                     h('option', {
                         value: 'month',
                         selected: 'selected'
@@ -2837,8 +2648,7 @@ define([
 
         var selected = 0; // Selected template in the list (highlighted)
         var TEMPLATES_DISPLAYED = big ? 6 : 3; // Max templates displayed per page
-        var next = function () {
-        }; // Function called when pressing tab to highlight the next template
+        var next = function () {}; // Function called when pressing tab to highlight the next template
         var i = 0; // Index of the first template displayed in the current page
         sframeChan.query("Q_CREATE_TEMPLATES", type, function (err, res) {
             if (!res.data || !Array.isArray(res.data)) {
@@ -2847,9 +2657,7 @@ define([
             var allData = res.data.slice().sort(function (a, b) {
                 if (a.used === b.used) {
                     // Sort by name
-                    if (a.name === b.name) {
-                        return 0;
-                    }
+                    if (a.name === b.name) { return 0; }
                     return a.name < b.name ? -1 : 1;
                 }
                 return b.used - a.used;
@@ -2869,13 +2677,9 @@ define([
                 icon: UI.getFileIcon({type: type})
             });
             var redraw = function (index) {
-                if (index < 0) {
-                    i = 0;
-                } else if (index > allData.length - 1) {
-                    return;
-                } else {
-                    i = index;
-                }
+                if (index < 0) { i = 0; }
+                else if (index > allData.length - 1) { return; }
+                else { i = index; }
                 var data = allData.slice(i, i + TEMPLATES_DISPLAYED);
                 var $container = $(templates).find('.cp-creation-template-container').html('');
                 data.forEach(function (obj, idx) {
@@ -2885,12 +2689,8 @@ define([
                         'title': name,
                     }).appendTo($container);
                     $span.data('id', obj.id);
-                    if (obj.content) {
-                        $span.data('content', obj.content);
-                    }
-                    if (idx === selected) {
-                        $span.addClass('cp-creation-template-selected');
-                    }
+                    if (obj.content) { $span.data('content', obj.content); }
+                    if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
                     if (!obj.thumbnail) {
                         $span.append(obj.icon || h('span.cptools.cptools-template'));
                     }
@@ -2905,24 +2705,19 @@ define([
 
                     // Add thumbnail if it exists
                     if (obj.thumbnail) {
-                        common.addThumbnail(obj.thumbnail, $span, function () {
-                        });
+                        common.addThumbnail(obj.thumbnail, $span, function () {});
                     }
                 });
                 $(right).off('click').removeClass('hidden').click(function () {
                     selected = 0;
                     redraw(i + TEMPLATES_DISPLAYED);
                 });
-                if (i >= allData.length - TEMPLATES_DISPLAYED) {
-                    $(right).addClass('hidden');
-                }
+                if (i >= allData.length - TEMPLATES_DISPLAYED ) { $(right).addClass('hidden'); }
                 $(left).off('click').removeClass('hidden').click(function () {
                     selected = TEMPLATES_DISPLAYED - 1;
                     redraw(i - TEMPLATES_DISPLAYED);
                 });
-                if (i < TEMPLATES_DISPLAYED) {
-                    $(left).addClass('hidden');
-                }
+                if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
             };
             if (fromFileData) {
                 var todo = function (thumbnail) {
@@ -2936,19 +2731,19 @@ define([
                 };
                 todo();
                 sframeChan.query("Q_GET_FILE_THUMBNAIL", null, function (err, res) {
-                    if (err || (res && res.error)) {
-                        return;
-                    }
+                    if (err || (res && res.error)) { return; }
                     todo(res.data);
                 });
-            } else if (fromContent) {
+            }
+            else if (fromContent) {
                 allData = [{
                     name: fromContent.title,
                     id: 0,
                     icon: h('span.cptools.cptools-poll'),
                 }];
                 redraw(0);
-            } else {
+            }
+            else {
                 redraw(0);
             }
 
@@ -2965,8 +2760,8 @@ define([
                     return void redraw(i - TEMPLATES_DISPLAYED);
                 }
                 selected = revert ?
-                    (--selected < 0 ? 0 : selected) :
-                    ++selected >= max ? max - 1 : selected;
+                            (--selected < 0 ? 0 : selected) :
+                            ++selected >= max ? max-1 : selected;
                 $creation.find('.cp-creation-template-element')
                     .removeClass('cp-creation-template-selected');
                 $($creation.find('.cp-creation-template-element').get(selected))
@@ -2975,9 +2770,7 @@ define([
 
             $w.on('resize', function () {
                 var _big = $w.width() > 800;
-                if (big === _big) {
-                    return;
-                }
+                if (big === _big) { return; }
                 big = _big;
                 if (!big) {
                     $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
@@ -3044,26 +2837,19 @@ define([
             var ownedVal = $('#cp-creation-owned').is(':checked') ? 1 : 0;
             // Life time
             var expireVal = 0;
-            if ($('#cp-creation-expire').is(':checked')) {
+            if($('#cp-creation-expire').is(':checked')) {
                 var unit = 0;
                 switch ($('#cp-creation-expire-unit').val()) {
-                    case "hour" :
-                        unit = 3600;
-                        break;
-                    case "day"  :
-                        unit = 3600 * 24;
-                        break;
-                    case "month":
-                        unit = 3600 * 24 * 30;
-                        break;
-                    default:
-                        unit = 0;
+                    case "hour" : unit = 3600;           break;
+                    case "day"  : unit = 3600 * 24;      break;
+                    case "month": unit = 3600 * 24 * 30; break;
+                    default: unit = 0;
                 }
                 expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
             }
             // Password
             var passwordVal = $('#cp-creation-password').is(':checked') ?
-                $('#cp-creation-password-val').val() : undefined;
+                                $('#cp-creation-password-val').val() : undefined;
 
             var $template = $creation.find('.cp-creation-template-selected');
             var templateId = $template.data('id') || undefined;
@@ -3088,18 +2874,14 @@ define([
             var val = getFormValues();
 
             common.setAttribute(['general', 'creation', 'owned'], val.owned, function (e) {
-                if (e) {
-                    return void console.error(e);
-                }
+                if (e) { return void console.error(e); }
             });
             common.setAttribute(['general', 'creation', 'expire'], val.expire, function (e) {
-                if (e) {
-                    return void console.error(e);
-                }
+                if (e) { return void console.error(e); }
             });
 
             if (val.expire) {
-                Feedback.send('EXPIRING_PAD-' + val.expire);
+                Feedback.send('EXPIRING_PAD-'+val.expire);
             }
 
             $creationContainer.remove();
@@ -3156,13 +2938,9 @@ define([
                 // what if they don't have a keyboard (ie. mobile)
                 msg += Messages.errorCopy;
             }
-            if (toolbar && typeof toolbar.deleted === "function") {
-                toolbar.deleted();
-            }
+            if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'EDELETED') {
-            if (priv.burnAfterReading) {
-                return void cb();
-            }
+            if (priv.burnAfterReading) { return void cb(); }
 
             if (autoStoreModal[priv.channel]) {
                 autoStoreModal[priv.channel].delete();
@@ -3187,11 +2965,8 @@ define([
             }
 
             if (err.ownDeletion) {
-                if (toolbar && typeof toolbar.deleted === "function") {
-                    toolbar.deleted();
-                }
-                (cb || function () {
-                })();
+                if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
+                (cb || function () {})();
                 return;
             }
 
@@ -3203,11 +2978,8 @@ define([
                     fromServerError: true,
                     loaded: err.loaded,
                 });
-                if (toolbar && typeof toolbar.deleted === "function") {
-                    toolbar.deleted();
-                }
-                (cb || function () {
-                })();
+                if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
+                (cb || function () {})();
                 return;
             }
 
@@ -3216,28 +2988,21 @@ define([
                 msg += Messages.errorCopy;
             }
 
-            if (toolbar && typeof toolbar.deleted === "function") {
-                toolbar.deleted();
-            }
+            if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'ERESTRICTED') {
             msg = Messages.restrictedError;
             if (!common.isLoggedIn()) {
                 msg = UIElements.loginErrorScreenContent(common);
             }
 
-            if (toolbar && typeof toolbar.failed === "function") {
-                toolbar.failed(true);
-            }
+            if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         } else if (err.type === 'HASH_NOT_FOUND' && priv.isHistoryVersion) {
             msg = Messages.oo_deletedVersion;
-            if (toolbar && typeof toolbar.failed === "function") {
-                toolbar.failed(true);
-            }
+            if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         }
         sframeChan.event('EV_SHARE_OPEN', {hidden: true});
         UI.errorLoadingScreen(msg, Boolean(err.loaded), Boolean(err.loaded));
-        (cb || function () {
-        })();
+        (cb || function () {})();
     };
 
     UIElements.displayPasswordPrompt = function (common, cfg, isError) {
@@ -3304,14 +3069,8 @@ define([
         };
 
 
-        $password.find('.cp-password-input').on('keydown', function (e) {
-            if (e.which === 13) {
-                submit();
-            }
-        });
-        $(button).on('click', function () {
-            submit();
-        });
+        $password.find('.cp-password-input').on('keydown', function (e) { if (e.which === 13) { submit(); } });
+        $(button).on('click', function () { submit(); });
 
 
         var block = h('div#cp-loading-password-prompt', [
@@ -3346,17 +3105,13 @@ define([
     };
     UIElements.getBurnAfterReadingWarning = function (common) {
         var priv = common.getMetadataMgr().getPrivateData();
-        if (!priv.burnAfterReading) {
-            return;
-        }
+        if (!priv.burnAfterReading) { return; }
         return h('div.alert.alert-danger.cp-burn-after-reading', Messages.burnAfterReading_warningDeleted);
     };
 
     var crowdfundingState = false;
     UIElements.displayCrowdfunding = function (common, force) {
-        if (crowdfundingState) {
-            return;
-        }
+        if (crowdfundingState) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
 
 
@@ -3398,23 +3153,15 @@ define([
             return void todo();
         }
 
-        if (AppConfig.disableCrowdfundingMessages) {
-            return;
-        }
-        if (priv.plan) {
-            return;
-        }
+        if (AppConfig.disableCrowdfundingMessages) { return; }
+        if (priv.plan) { return; }
 
         crowdfundingState = true;
         common.getAttribute(['general', 'crowdfunding'], function (err, val) {
-            if (err || val === false) {
-                return;
-            }
+            if (err || val === false) { return; }
             common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
                 var quotaMb = obj.quota / (1024 * 1024);
-                if (quotaMb < 10) {
-                    return;
-                }
+                if (quotaMb < 10) { return; }
                 todo();
             });
         });
@@ -3422,9 +3169,7 @@ define([
 
     var storePopupState = false;
     UIElements.displayStorePadPopup = function (common, data) {
-        if (storePopupState) {
-            return;
-        }
+        if (storePopupState) { return; }
         storePopupState = true;
         // We won't display the popup for dropped files or already stored pads
         if (data && data.stored) {
@@ -3436,14 +3181,12 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
 
         // This pad will be deleted automatically, it shouldn't be stored
-        if (priv.burnAfterReading) {
-            return;
-        }
+        if (priv.burnAfterReading) { return; }
 
 
         var typeMsg = priv.pathname.indexOf('/file/') !== -1 ? Messages.autostore_file :
-            priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
-                Messages.autostore_pad;
+                        priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
+                          Messages.autostore_pad;
         var text = Messages._getKey('autostore_notstored', [typeMsg]);
         var footer = Pages.setHTML(h('span'), Messages.autostore_settings);
 
@@ -3478,9 +3221,7 @@ define([
         });
         var waitingForStoringCb = false;
         $(store).click(function () {
-            if (waitingForStoringCb) {
-                return;
-            }
+            if (waitingForStoringCb) { return; }
             waitingForStoringCb = true;
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
                 waitingForStoringCb = false;
@@ -3580,9 +3321,7 @@ define([
         var buttons = [{
             name: Messages.friendRequest_later,
             onClick: function () {
-                if (clicked) {
-                    return true;
-                }
+                if (clicked) { return true; }
                 clicked = true;
                 Feedback.send('LINK_RECEIVED_LATER');
             },
@@ -3591,9 +3330,7 @@ define([
             className: 'primary',
             name: Messages.fc_open,
             onClick: function () {
-                if (clicked) {
-                    return true;
-                }
+                if (clicked) { return true; }
                 clicked = true;
                 common.openUnsafeURL(url);
                 Feedback.send("LINK_RECEIVED_OPEN");
@@ -3603,9 +3340,7 @@ define([
             className: 'primary',
             name: Messages.toolbar_storeInDrive,
             onClick: function () {
-                if (clicked) {
-                    return;
-                }
+                if (clicked) { return; }
                 clicked = true;
                 common.getSframeChannel().query("Q_DRIVE_USEROBJECT", {
                     cmd: "addLink",
@@ -3644,7 +3379,7 @@ define([
         $(link).click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var obj = {pw: msg.content.password || ''};
+            var obj = { pw: msg.content.password || '' };
             common.openURL(Hash.getNewPadURL(msg.content.href, obj));
         });
 
@@ -3655,9 +3390,7 @@ define([
 
         var dismiss = function () {
             common.mailbox.dismiss(data, function (err) {
-                if (err) {
-                    console.log(err);
-                }
+                if (err) { console.log(err); }
             });
         };
         var answer = function (yes) {
@@ -3687,7 +3420,7 @@ define([
                     err = err || (res && res.error);
                     if (err) {
                         var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
-                            : Messages.error;
+                                                                      : Messages.error;
                         console.error(err);
                         dismiss();
                         return void UI.warn(text);
@@ -3715,7 +3448,7 @@ define([
                             }
                         });
                     } else {
-                        sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
+                        sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
                             if (err || (res && res.error)) {
                                 return void console.error(err | res.error);
                             }
@@ -3786,9 +3519,7 @@ define([
                 curvePublic: msg.content.user.curvePublic
             });
             common.mailbox.dismiss(data, function (err) {
-                if (err) {
-                    console.log(err);
-                }
+                if (err) { console.log(err); }
             });
         };
         var module = common.makeUniversal('team');
@@ -3801,9 +3532,7 @@ define([
                 value: [priv.edPublic]
             }, function (err, res) {
                 err = err || (res && res.error);
-                if (!err) {
-                    return;
-                }
+                if (!err) { return; }
                 waitFor.abort();
                 cb(err);
             });
@@ -3816,9 +3545,7 @@ define([
                 value: [priv.edPublic]
             }, waitFor(function (err, res) {
                 err = err || (res && res.error);
-                if (!err) {
-                    return;
-                }
+                if (!err) { return; }
                 waitFor.abort();
                 cb(err);
             }));
@@ -3830,9 +3557,7 @@ define([
                 f(msg.content.teamChannel, waitFor, cb);
                 f(msg.content.chatChannel, waitFor, cb);
                 f(msg.content.rosterChannel, waitFor, cb);
-            }).nThen(function () {
-                cb();
-            });
+            }).nThen(function () { cb(); });
         };
 
         var todo = function (yes) {
@@ -3842,7 +3567,7 @@ define([
                     if (err) {
                         console.error(err);
                         var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
-                            : Messages.error;
+                                                                      : Messages.error;
                         return void UI.warn(text);
                     }
                     UI.log(Messages.saved);
@@ -3855,16 +3580,12 @@ define([
                         teamChannel: msg.content.teamChannel,
                         answer: true
                     }, function (obj) {
-                        if (obj && obj.error) {
-                            console.error(obj.error);
-                        }
+                        if (obj && obj.error) { console.error(obj.error); }
                     });
 
                     // Remove yourself from the pending owners
                     changeAll(false, function (err) {
-                        if (err) {
-                            console.error(err);
-                        }
+                        if (err) { console.error(err); }
                     });
                 });
                 return;
@@ -3873,9 +3594,7 @@ define([
             // DECLINE
             // Remove yourself from the pending owners
             changeAll(false, function (err) {
-                if (err) {
-                    console.error(err);
-                }
+                if (err) { console.error(err); }
                 // Send notification to the sender
                 answer(false);
                 // Set our role back to ADMIN
@@ -3883,9 +3602,7 @@ define([
                     teamChannel: msg.content.teamChannel,
                     answer: false
                 }, function (obj) {
-                    if (obj && obj.error) {
-                        console.error(obj.error);
-                    }
+                    if (obj && obj.error) { console.error(obj.error); }
                 });
             });
         };
@@ -3917,7 +3634,7 @@ define([
         var msg = data.content.msg;
 
         var name = Util.fixHTML(UI.getDisplayName(msg.content.user.displayName));
-        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
 
         var verified = UIElements.getVerifiedFriend(common, msg.author, name);
 
@@ -3958,16 +3675,13 @@ define([
                 }, function (obj) {
                     if (obj && obj.error) {
                         if (obj.error === 'ENOENT') {
-                            common.mailbox.dismiss(data, function () {
-                            });
+                            common.mailbox.dismiss(data, function () {});
                             return void UI.alert(Messages.deletedError);
                         }
                         return void UI.warn(Messages.error);
                     }
                     answer(true);
-                    if (priv.app !== 'teams') {
-                        common.openURL('/teams/');
-                    }
+                    if (priv.app !== 'teams') { common.openURL('/teams/'); }
                 });
                 return;
             }
@@ -3995,13 +3709,9 @@ define([
     getSource['contacts'] = function (common, sources) {
         var priv = common.getMetadataMgr().getPrivateData();
         Object.keys(priv.friends || {}).forEach(function (key) {
-            if (key === 'me') {
-                return;
-            }
+            if (key === 'me') { return; }
             var f = priv.friends[key];
-            if (!f.curvePublic || sources[f.curvePublic]) {
-                return;
-            }
+            if (!f.curvePublic || sources[f.curvePublic]) { return; }
             sources[f.curvePublic] = {
                 avatar: f.avatar,
                 name: f.displayName,
@@ -4013,52 +3723,35 @@ define([
         });
     };
     UIElements.addMentions = function (common, options) {
-        if (!options.$input) {
-            return;
-        }
+        if (!options.$input) { return; }
         var $t = options.$input;
 
-        var getValue = function () {
-            return $t.val();
-        };
-        var setValue = function (val) {
-            $t.val(val);
-        };
+        var getValue = function () { return $t.val(); };
+        var setValue = function (val) { $t.val(val); };
 
         var div = false;
         if (options.contenteditable) {
             div = true;
-            getValue = function () {
-                return $t.html();
-            };
-            setValue = function () {
-            }; // Not used, we insert data at the node level
+            getValue = function () { return $t.html(); };
+            setValue = function () {}; // Not used, we insert data at the node level
             $t.on('paste', function (e) {
                 try {
                     insertTextAtCursor(e.originalEvent.clipboardData.getData('text'));
                     e.preventDefault();
-                } catch (err) {
-                    console.error(err);
-                }
+                } catch (err) { console.error(err); }
             });
 
             // Fix backspace with "contenteditable false" children
             $t.on('keydown', function (e) {
-                if (e.which !== 8 && e.which !== 46) {
-                    return;
-                } // Backspace or del
+                if (e.which !== 8 && e.which !== 46) { return; } // Backspace or del
                 var sel = document.getSelection();
-                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) {
-                    return;
-                } // text nodes only
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; } // text nodes only
 
                 // Only fix node located after mentions
                 var n = sel.anchorNode;
                 var prev = n && n.previousSibling;
                 // Check if our caret is just after a mention
-                if (!prev || !prev.classList || !prev.classList.contains('cp-mentions')) {
-                    return;
-                }
+                if (!prev || !prev.classList || !prev.classList.contains('cp-mentions')) { return; }
 
                 // Del: if we're at offset 0, make sure we won't delete the text node
                 if (e.which === 46) {
@@ -4087,9 +3780,7 @@ define([
         // Add the sources
         // NOTE: Sources must have a "name". They can have an "avatar".
         var sources = options.sources || {};
-        if (!getSource[options.type]) {
-            return;
-        }
+        if (!getSource[options.type]) { return; }
         getSource[options.type](common, sources);
 
 
@@ -4097,31 +3788,25 @@ define([
         var sort = function (a, b) {
             var _a = a.label.toLowerCase();
             var _b = b.label.toLowerCase();
-            if (_a.label < _b.label) {
-                return -1;
-            }
-            if (_b.label < _a.label) {
-                return 1;
-            }
+            if (_a.label < _b.label) { return -1; }
+            if (_b.label < _a.label) { return 1; }
             return 0;
         };
 
         // Get the text between the last @ before the cursor and the cursor
         var extractLast = function (term, offset) {
-            offset = typeof (offset) !== "undefined" ? offset : $t[0].selectionStart;
-            var startOffset = term.slice(0, offset).lastIndexOf('@');
-            return term.slice(startOffset + 1, offset);
+            offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
+            var startOffset = term.slice(0,offset).lastIndexOf('@');
+            return term.slice(startOffset+1, offset);
         };
         // Insert the autocomplete value in the input field
         var insertValue = function (value, offset, content) {
-            offset = typeof (offset) !== "undefined" ? offset : $t[0].selectionStart;
+            offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
             content = content || getValue();
-            var startOffset = content.slice(0, offset).lastIndexOf('@');
+            var startOffset = content.slice(0,offset).lastIndexOf('@');
             var length = offset - startOffset;
-            if (length <= 0) {
-                return;
-            }
-            var result = content.slice(0, startOffset) + value + content.slice(offset);
+            if (length <= 0) { return; }
+            var result = content.slice(0,startOffset) + value + content.slice(offset);
             if (content) {
                 return {
                     result: result,
@@ -4133,7 +3818,7 @@ define([
         // Set the value to receive from the autocomplete
         var toInsert = function (data, key) {
             var name = UI.getDisplayName(data.name.replace(/[^a-zA-Z0-9]+/g, "-"));
-            return "[@" + name + "|" + key + "]";
+            return "[@"+name+"|"+key+"]";
         };
 
         // Fix the functions when suing a contenteditable div
@@ -4142,33 +3827,26 @@ define([
             // Use getSelection to get the cursor position in contenteditable
             extractLast = function () {
                 var sel = document.getSelection();
-                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) {
-                    return;
-                }
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; }
                 return _extractLast(sel.anchorNode.nodeValue, sel.anchorOffset);
             };
             var _insertValue = insertValue;
-            insertValue = function (value) {
+            insertValue = function (value) {
                 // Get the selected node
                 var sel = document.getSelection();
-                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) {
-                    return;
-                }
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; }
                 var node = sel.anchorNode;
 
                 // Remove the "term"
-                var insert = _insertValue("", sel.anchorOffset, node.nodeValue);
+                var insert =_insertValue("", sel.anchorOffset, node.nodeValue);
                 if (insert) {
                     node.nodeValue = insert.result;
                 }
                 var breakAt = insert ? insert.startOffset : sel.anchorOffset;
 
                 var el;
-                if (typeof (value) === "string") {
-                    el = document.createTextNode(value);
-                } else {
-                    el = value;
-                }
+                if (typeof(value) === "string") { el = document.createTextNode(value); }
+                else { el = value; }
 
                 node.parentNode.insertBefore(el, node.splitText(breakAt));
                 var next = el.nextSibling;
@@ -4213,7 +3891,7 @@ define([
 
 
         // don't navigate away from the field on tab when selecting an item
-        $t.on("keydown", function (e) {
+        $t.on("keydown", function(e) {
             // Tab or enter
             if ((e.which === 13 || e.which === 9)) {
                 try {
@@ -4222,17 +3900,15 @@ define([
                         e.preventDefault();
                         e.stopPropagation();
                     }
-                } catch (err) {
-                    console.error(err, $t);
-                }
+                } catch (err) { console.error(err, $t); }
             }
         }).autocomplete({
             minLength: 0,
-            source: function (data, cb) {
+            source: function(data, cb) {
                 var term = data.term;
                 var results = [];
                 if (term.indexOf("@") >= 0) {
-                    term = extractLast(data.term) || '';
+                    term = extractLast(data.term) || '';
                     results = Object.keys(sources).filter(function (key) {
                         var data = sources[key];
                         return data.name.toLowerCase().indexOf(term.toLowerCase()) !== -1;
@@ -4253,16 +3929,15 @@ define([
                     var menu = $t.autocomplete("instance").menu.activeMenu;
                     menu.css({
                         'overflow-y': 'auto',
-                        'max-height': (max - pos.bottom) + 'px'
+                        'max-height': (max-pos.bottom)+'px'
                     });
-                } catch (e) {
-                }
+                } catch (e) {}
             },
-            focus: function () {
+            focus: function() {
                 // prevent value inserted on focus
                 return false;
             },
-            select: function (event, ui) {
+            select: function(event, ui) {
                 // add the selected item
                 var key = ui.item.value;
                 var data = sources[key];
@@ -4270,12 +3945,10 @@ define([
                 insertValue(value);
                 return false;
             }
-        }).autocomplete("instance")._renderItem = function (ul, item) {
+        }).autocomplete( "instance" )._renderItem = function( ul, item ) {
             var key = item.value;
             var obj = sources[key];
-            if (!obj) {
-                return;
-            }
+            if (!obj) { return; }
             var avatar = h('span.cp-avatar');
             var displayName = UI.getDisplayName(obj.name);
 
@@ -4296,20 +3969,15 @@ define([
 
     UIElements.is24h = function () {
         try {
-            return !new Intl.DateTimeFormat(navigator.language, {hour: 'numeric'}).format(0).match(/AM/);
-        } catch (e) {
-        }
+            return !new Intl.DateTimeFormat(navigator.language, { hour: 'numeric' }).format(0).match(/AM/);
+        } catch (e) {}
         return false;
     };
 
     UIElements.fixInlineBRs = function (htmlString) {
-        if (!htmlString && typeof (htmlString) === 'string') {
-            return;
-        }
+        if (!htmlString && typeof(htmlString) === 'string') { return; }
         var lines = htmlString.split('<br>');
-        if (lines.length === 1) {
-            return lines;
-        }
+        if (lines.length === 1) { return lines; }
         var len = lines.length - 1;
         var result = [];
         for (var i = 0; i <= len; i++) {
@@ -4325,7 +3993,7 @@ define([
         var modal;
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
 
-        var container = h('div.cp-snapshots-container', {tabindex: 1});
+        var container = h('div.cp-snapshots-container', {tabindex:1});
         var $container = $(container);
 
         var input = h('input', {
@@ -4343,7 +4011,7 @@ define([
         var refresh = function () {
             var metadataMgr = common.getMetadataMgr();
             var md = metadataMgr.getMetadata();
-            var snapshots = md.snapshots || {};
+            var snapshots = md.snapshots || {};
 
             var list = Object.keys(snapshots).sort(function (h1, h2) {
                 var s1 = snapshots[h1];
@@ -4378,7 +4046,7 @@ define([
                     refresh();
                 });
 
-                return h('span.cp-snapshot-element', {tabindex: 1}, [
+                return h('span.cp-snapshot-element', {tabindex:1}, [
                     h('i.fa.fa-camera'),
                     h('span.cp-snapshot-title', [
                         h('span', s.title),
@@ -4393,9 +4061,7 @@ define([
 
             $container.html('').append(list);
             setTimeout(function () {
-                if (list.length) {
-                    return void $container.focus();
-                }
+                if (list.length) { return void $container.focus(); }
                 $input.focus();
             });
         };
@@ -4404,8 +4070,7 @@ define([
         var buttons = [{
             className: 'cancel',
             name: Messages.filePicker_close,
-            onClick: function () {
-            },
+            onClick: function () {},
             keys: [27],
         }];
         if (!readOnly) {
@@ -4415,9 +4080,7 @@ define([
                 name: Messages.snapshots_new,
                 onClick: function () {
                     var val = $input.val();
-                    if (!val) {
-                        return true;
-                    }
+                    if (!val) { return true; }
                     $container.html('').append(h('div.cp-snapshot-spinner'));
                     var to = setTimeout(function () {
                         UI.spinner($container.find('div')).get().show();
@@ -4436,7 +4099,7 @@ define([
             });
         }
 
-        modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons}));
+        modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
     };
 
     return UIElements;
