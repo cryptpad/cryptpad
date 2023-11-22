@@ -9,6 +9,26 @@ Source: https://cryptpad.org
 # Copyright: $YEAR $NAME <$CONTACT>
 # License: ...
 
+Files: *.png
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: *.json
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: .jshintignore
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: .jshintrc
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: .lesshintrc
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
 ## Dependencies
 
 Files: www/common/theme/*
