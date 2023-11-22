@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 var nThen = require("nthen");
 var Tasks = require("../../lib/storage/tasks");
 var Logger = require("../../lib/log");
