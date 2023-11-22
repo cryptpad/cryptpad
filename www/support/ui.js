@@ -344,8 +344,9 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             $(url).click(function (e) {
                 e.stopPropagation();
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
-                var success = Clipboard.copy(link);
-                if (success) { UI.log(Messages.shareSuccess); }
+                Clipboard.copy(link, (err) => {
+                    if (!err) { UI.log(Messages.shareSuccess); }
+                });
             });
             if (typeof(publicKey) === 'string') {
                 copyKey = h('button.btn', {
@@ -357,11 +358,10 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
                 ]);
                 $(copyKey).click(e => {
                     e.stopPropagation();
-                    if (Clipboard.copy(publicKey)) {
-                        UI.log(Messages.shareSuccess);
-                    } else {
+                    Clipboard.copy(publicKey, (err) => {
+                        if (!err) { return UI.log(Messages.shareSuccess); }
                         UI.warn(Messages.error);
-                    }
+                    });
                 });
             }
         }

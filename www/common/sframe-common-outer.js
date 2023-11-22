@@ -1985,8 +1985,9 @@ define([
                 require(['/common/clipboard.js'], function (Clipboard) {
                     var url = window.location.origin +
                                 Utils.Hash.hashToHref(hashes.viewHash, 'form');
-                    var success = Clipboard.copy(url);
-                    cb(success);
+                    Clipboard.copy(url, (err) => {
+                        cb(!err);
+                    });
                 });
             });
             sframeChan.on('EV_OPEN_VIEW_URL', function () {

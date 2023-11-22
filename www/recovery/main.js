@@ -82,11 +82,10 @@ define([
 
         $copyProof.click(function () {
             if (!proofStr) { return; }
-            if (Clipboard.copy.multiline(proofStr)) {
-                UI.log(Messages.genericCopySuccess);
-            } else {
+            Clipboard.copy(proofStr, (err) => {
+                if (!err) { return UI.log(Messages.genericCopySuccess); }
                 UI.warn(Messages.error);
-            }
+            });
         });
 
         var blockKeys, blockHash, uname;

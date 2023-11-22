@@ -1,7 +1,7 @@
 define(['jquery'], function ($) {
     var Clipboard = {};
 
-    var copy = function (text, multiline) {
+    var oldCopy = function (text, multiline) {
         var $ta = $('<input>', {
             type: 'text',
         }).val(text);
@@ -32,13 +32,20 @@ define(['jquery'], function ($) {
     };
 
     // copy arbitrary text to the clipboard
-    // return boolean indicating success
-    Clipboard.copy = function (text) {
-        return copy(text);
-    };
-
-    Clipboard.copy.multiline = function (text) {
-        return copy(text, true);
+    // call back boolean indicating success
+    Clipboard.copy = function (text, cb) {
+        if (!navigator || !navigator.clipboard || !navigator.clipboard.writeText) {
+            return void setTimeout(() => {
+                var success = oldCopy(text, true);
+                cb(!success);
+            });
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            cb();
+        }).catch((err) => {
+            console.warn(err);
+            cb(err);
+        });
     };
 
     return Clipboard;

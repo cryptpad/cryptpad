@@ -48,11 +48,10 @@ define([
     };
 
     var copyToClipboard = function () {
-        if (Clipboard.copy.multiline(getReportContent())) {
+        Clipboard.copy(getReportContent(), (err) => {
+            if (err) { return UI.warn(Messages.error); }
             UI.log(Messages.genericCopySuccess);
-        } else {
-            UI.warn(Messages.error);
-        }
+        });
     };
 
     var checkCache = function (chan, cb) {

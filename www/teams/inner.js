@@ -840,8 +840,9 @@ define([
                     var privateData = common.getMetadataMgr().getPrivateData();
                     var origin = privateData.origin;
                     var href = origin + Hash.hashToHref(data.hash, 'teams');
-                    var success = Clipboard.copy(href);
-                    if (success) { UI.log(Messages.shareSuccess); }
+                    Clipboard.copy(href, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
                 }).prependTo(actions);
             }
             content = [
