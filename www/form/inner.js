@@ -75,6 +75,8 @@ define([
     Sortable
     )
 {
+    Messages.form_copyQuestion = 'Duplicate' //XXX
+
     var APP = window.APP = {
         blocks: {}
     };
@@ -4096,7 +4098,39 @@ define([
                         h('i.fa.fa-pencil'),
                         h('span', Messages.form_editBlock)
                     ]);
-                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, del ]);
+                    var copy = h('button.btn.btn-default.cp-form-copy-button', [
+                        h('i.fa.fa-copy'),
+                        h('span', Messages.form_copyQuestion)
+                    ]);
+                    $(copy).click(function() {
+                        if (!APP.isEditor) { return; }
+                        var full = !uid;
+                        var arr = content.order;
+                        var idx = content.order.indexOf(uid);
+                        if (!full) {
+                            var obj = getSectionFromQ(content, uid);
+                            arr = obj.arr;
+                            idx = obj.idx;
+                            var _uid = Util.uid();
+                        }
+
+                        var model = TYPES[type] || STATIC_TYPES[type];
+                        if (!model) { return; }
+                        content.form[_uid] = {
+                            //q: Messages.form_default,
+                            opts: model.defaultOpts ? Util.clone(model.defaultOpts) : undefined,
+                            type: type,
+                        };
+                        if (full) {
+                            arr.push(_uid);
+                        } else {
+                            arr.splice(idx, 0, _uid);
+                        }
+                        framework.localChange();
+                        updateForm(framework, content, true);
+                    })
+
+                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, copy, del ]);
                     editContainer = h('div');
                     if (type === 'poll' && block.opts.values.length === 0) {
                         $(editButtons).addClass('cp-empty-poll-edit-buttons')
@@ -4137,6 +4171,7 @@ define([
                         $(editContainer).find('.cp-form-preview-button').prependTo(editButtons);
 
                         $(edit).hide();
+                        $(copy).hide()
                     };
                     $(edit).click(function () {
                         onEdit();
@@ -4229,7 +4264,6 @@ define([
         if (APP.isEditor) {
             elements.push(getFormCreator());
         }
-
         var _content = elements;
         if (!editable) {
             _content = [];
