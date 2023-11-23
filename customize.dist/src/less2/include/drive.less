@@ -546,7 +546,7 @@
         }
         li {
             cursor: default;
-            &:not(.cp-app-drive-element-header) {
+            &:not(.cp-app-drive-element-header):not([role="menuitem"]) {
                 &:hover {
                     &:not(.-cp-app-drive-element-selected, .cp-app-drive-element-selected-tmp) {
                         background-color: @cp_drive-icon-hover;

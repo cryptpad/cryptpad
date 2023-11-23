@@ -719,8 +719,8 @@ define([
             options: options, // Entries displayed in the menu
             common: common,
             buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions',
-            ariaLabel: Messages.calendar_settings,
-    };
+            buttonTitle: Messages.calendar_settings,
+        };
         return UIElements.createDropdown(dropdownConfig)[0];
     };
     var makeCalendarEntry = function (id, teamId) {
@@ -1173,9 +1173,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         };
         var $block = UIElements.createDropdown(dropdownConfig);
         $block.setValue(view || 'week');
-        var $views = $block.find('a');
-        $views.click(function () {
-            var mode = $(this).attr('data-value');
+        $block.onChange.reg((name, mode) => {
             cal.changeView(mode);
             updateDateRange();
             updateRecurring();
@@ -1877,9 +1875,7 @@ APP.recurrenceRule = {
 
         var $block = UIElements.createDropdown(dropdownConfig);
         $block.setValue('minutes');
-        var $types = $block.find('a');
-        $types.click(function () {
-            var mode = $(this).attr('data-value');
+        $block.onChange.reg((name, mode) => {
             var max = mode === "minutes" ? 60 : 24;
             $number.attr('max', max);
             if ($number.val() > max) { $number.val(max); }

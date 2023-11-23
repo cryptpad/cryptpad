@@ -1008,6 +1008,7 @@ MessengerUI, Messages, Pages) {
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
             $initBlock: $userAdmin,
+            buttonTitle: Messages.userAccountButton,
         };
         if (!config.hideDisplayName) {
             $.extend(true, userMenuCfg, {
@@ -1020,101 +1021,6 @@ MessengerUI, Messages, Pages) {
             userMenuCfg.displayChangeName = 1;
         }
         Common.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('> button').attr({
-            title: Messages.userAccountButton,
-            class: Messages.userAccountButton,
-            'aria-haspopup': 'menu',
-            'aria-expanded': 'false',
-            'aria-label': Messages.userAccountButton
-        });
-        function findItems(search, current, items) {
-            const currentIndex = items.index(current);
-            for (let i = 1; i < items.length; i++) {
-                const nextIndex = (currentIndex + i) % items.length;
-                const nextItem = items.eq(nextIndex);
-                const text = nextItem.text().trim().toLowerCase();
-                if (text.startsWith(search)) {
-                    return nextItem;
-                }
-            }
-            return null;
-        }
-
-        let userMenuButton = $userAdmin.find('> button');
-        userMenuButton.click(function () {
-            const isExpanded =  userMenuButton.attr('aria-expanded') === 'true';
-            if (isExpanded) {
-                userMenuButton.attr('aria-expanded', 'false');
-                $(document).off('keydown');
-            } else {
-                userMenuButton.attr('aria-expanded', 'true');
-                userMenuButton.blur();
-                const dropdownActive = $(".cp-dropdown-content");
-                if (dropdownActive.length > 0) {
-                    setTimeout(function() {
-                        let items = dropdownActive.find('li:visible');
-                        const firstVisibleItem = items.filter(function () {
-                            return !($(this).find('hr').length > 0 || $(this).hasClass('cp-user-menu-logo') || $(this).hasClass('cp-toolbar-account'));
-                        }).first();
-                        firstVisibleItem.attr('tabindex', '0').focus();
-                    }, 0);
-                    let searchCharacters = '';
-                    document.addEventListener("visibilitychange", function () {
-                        if (document.hidden) {
-                            userMenuButton.attr('aria-expanded', 'false');
-                            userMenuButton.focus();
-                            $(document).off('keydown');
-                        }
-                    });
-                    $(document).on('click', function (e) {
-                        if ( !$(e.target).closest(".cp-dropdown-content").length) {
-                            userMenuButton.attr('aria-expanded', 'false');
-                            $(document).off('keydown');
-                        }
-                    });
-                    $(document).on('keydown', function (e) {
-                        if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
-                            const items = dropdownActive.find('li:visible');
-                            const focusedItem = items.filter(':focus');
-                            items.attr('tabindex', '-1');
-                            if (e.key === 'Tab') {
-                                e.preventDefault();
-                            } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                                if (e.key === 'ArrowUp') {
-                                    var prevItem = focusedItem.prev().length ? focusedItem.prev() : items.last();
-                                    while (prevItem.find('hr').length > 0 || prevItem.hasClass('cp-user-menu-logo') || prevItem.hasClass('cp-toolbar-account')) {
-                                        prevItem = prevItem.prev().length ? prevItem.prev() : items.last();
-                                    }
-                                    prevItem.attr('tabindex', '0').focus();
-                                    searchCharacters = '';
-                                } else if (e.key === 'ArrowDown') {
-                                    var nextItem = focusedItem.next().length ? focusedItem.next() : items.first();
-                                    while (nextItem.find('hr').length > 0 || nextItem.hasClass('cp-user-menu-logo') || nextItem.hasClass('cp-toolbar-account')) {
-                                        nextItem = nextItem.next().length ? nextItem.next() : items.first();
-                                    }
-                                    nextItem.attr('tabindex', '0').focus();
-                                    searchCharacters = '';
-                                }
-                            }
-                            else if (e.key === 'Escape') {
-                                dropdownActive.find('li').attr('tabindex', '-1');
-                                dropdownActive.attr('tabindex', '-1');
-                                $(document).off('keydown');
-                                userMenuButton.attr('aria-expanded', 'false');
-                                userMenuButton.focus();
-                                searchCharacters = '';
-                            } else if (e.key.match(/[a-zA-Z]/)) {
-                                searchCharacters += e.key.toLowerCase();
-                                nextItem = findItems(searchCharacters, focusedItem, items);
-                                if (nextItem) {
-                                    nextItem.attr('tabindex', '0').focus();
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        });
         return $userAdmin;
     };
 
@@ -1168,50 +1074,59 @@ MessengerUI, Messages, Pages) {
 
     var createNotifications = function (toolbar, config) {
         var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
-        var openNotifsApp = h('li', {}, h('div.cp-notifications-gotoapp', { tabindex: '0' }, h('p', Messages.openNotificationsApp || "Open notifications App")));
-        $(openNotifsApp).on('click keypress', function (event) {
-            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                Common.openURL("/notifications/");
-            }
-        });
-        var div = h('ul.cp-notifications-container', [
-            h('div.cp-notifications-empty', Messages.notifications_empty)
-        ]);
-        var pads_options = [div];
+
+        var options = [];
+
+        if (Common.isLoggedIn()) {
+            options.push({
+                tag: 'a',
+                attributes: { 'class':'cp-notifications-gotoapp' },
+                content: h('p', Messages.openNotificationsApp),
+                action: () => {
+                    Common.openURL("/notifications/");
+                }
+            });
+            options.push({ tag: 'hr' });
+        }
 
         var metadataMgr = config.metadataMgr;
         var privateData = metadataMgr.getPrivateData();
         if (!privateData.notifications) {
-            var allowNotif = h('div.cp-notifications-gotoapp', {tabindex: '0'}, h('p', Messages.allowNotifications));
-            allowNotif = h('li', {}, allowNotif);
-            pads_options.unshift(h("hr"));
-            pads_options.unshift(allowNotif);
-            $(allowNotif).on('click keypress', function (event) {
-                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                    Common.getSframeChannel().event('Q_ASK_NOTIFICATION', null, function (e, allow) {
+            options.push({
+                tag: 'a',
+                attributes: { 'class':'cp-notifications-gotoapp cp-notifications-allow' },
+                content: h('p', Messages.allowNotifications),
+                action: function (ev) {
+                    Common.getSframeChannel().query('Q_ASK_NOTIFICATION', null, function (e, allow) {
+                        console.error(e, allow);
                         if (!allow) { return; }
-                        $(allowNotif).remove();
+                        $(ev.target).closest('li').remove();
                     });
+
                 }
             });
+            options.push({ tag: 'hr' });
 
             var onChange = function () {
                 var privateData = metadataMgr.getPrivateData();
                 if (!privateData.notifications) { return; }
-                $allow.remove();
+                $('.cp-notifications-allow').closest('li').remove();
                 metadataMgr.off('change', onChange);
             };
             metadataMgr.onChange(onChange);
         }
 
+        var div = h('ul.cp-notifications-container', [
+            h('li.cp-notifications-empty', Messages.notifications_empty)
+        ]);
+        options.push({
+            tag: 'li',
+            content: div
+        });
 
-        if (Common.isLoggedIn()) {
-            pads_options.unshift(h("hr"));
-            pads_options.unshift(openNotifsApp);
-        }
         var dropdownConfig = {
             text: '', // Button initial text
-            options: pads_options, // Entries displayed in the menu
+            options: options, // Entries displayed in the menu
             container: $notif,
             left: true,
             common: Common

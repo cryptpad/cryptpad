@@ -3089,28 +3089,18 @@ define([
             // Create dropdown
             var options = getNewPadOptions(isInRoot).map(function (obj) {
                 if (obj.separator) {
-                    return {
-                        tag: 'li',
-                        role: 'none',
-                        content: {
-                            tag: 'hr'
-                        }
-                    };
+                    return { tag: 'hr', };
                 }
 
                 var newObj = {
-                    tag: 'li',
-                    attributes: { role: 'none'},
-                    content: {
-                        tag: 'a',
-                        attributes: { 'class': obj.class, href: '#' },
-                        content: [obj.icon, obj.name]
-                    }
+                    tag: 'a',
+                    attributes: { 'class': obj.class, href: '#' },
+                    content: [obj.icon, obj.name]
                 };
 
                 if (obj.type) {
-                    newObj.content.attributes['data-type'] = obj.type;
-                    newObj.content.attributes['href'] = APP.origin + Hash.hashToHref('', obj.type);
+                    newObj.attributes['data-type'] = obj.type;
+                    newObj.attributes['href'] = APP.origin + Hash.hashToHref('', obj.type);
                 }
 
                 return newObj;
@@ -3132,68 +3122,9 @@ define([
             // actions for +New menu button
             var menuButton = $block.find('button');
             menuButton.addClass('cp-app-drive-toolbar-new');
-            functionalDropdown(menuButton);
             addNewPadHandlers($block, isInRoot);
 
             $container.append($block);
-        };
-        var functionalDropdown = function ($button) {
-            $button.attr('aria-haspopup', 'menu');
-            $button.attr('aria-expanded', 'false');
-            $button.click(function () {
-                if ($button.attr('aria-expanded') === 'true') {
-                    $button.attr('aria-expanded', 'false');
-                } else {
-                    $button.attr('aria-expanded', 'true');
-                    $(document).on('click', function (e) {
-                        if (!$(e.target).closest(".cp-dropdown-content").length) {
-                            $button.attr('aria-expanded', 'false');
-                            $(document).off('keydown');
-                        }
-                    });
-                    $button.blur();
-                    const dropdownActive = $(".cp-dropdown-content");
-                    if (dropdownActive.length > 0) {
-                        setTimeout(function () {
-                            let items = dropdownActive.find('li:visible');
-                            const firstVisibleItem = items.filter(function () {
-                                return !($(this).find('hr').length > 0);
-                            }).first();
-                            firstVisibleItem.attr('tabindex', '0').focus();
-                        }, 0);
-                    }
-                    $(document).on('keydown', function (e) {
-                        if (dropdownActive.is(":focus") || dropdownActive.find(':focus').length > 0) {
-                            const items = dropdownActive.find('li:visible');
-                            const focusedItem = items.filter(':focus');
-                            items.attr('tabindex', '-1');
-                            if (e.key === 'Tab') {
-                                e.preventDefault();
-                            } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                                if (e.key === 'ArrowUp') {
-                                    var prevItem = focusedItem.prev().length ? focusedItem.prev() : items.last();
-                                    while (prevItem.find('hr').length > 0) {
-                                        prevItem = prevItem.prev().length ? prevItem.prev() : items.last();
-                                    }
-                                    prevItem.attr('tabindex', '0').focus();
-                                } else if (e.key === 'ArrowDown') {
-                                    var nextItem = focusedItem.next().length ? focusedItem.next() : items.first();
-                                    while (nextItem.find('hr').length > 0) {
-                                        nextItem = nextItem.next().length ? nextItem.next() : items.first();
-                                    }
-                                    nextItem.attr('tabindex', '0').focus();
-                                }
-                            } else if (e.key === 'Escape') {
-                                dropdownActive.find('li').attr('tabindex', '-1');
-                                dropdownActive.attr('tabindex', '-1');
-                                $(document).off('keydown');
-                                $button.attr('aria-expanded', 'false');
-                                $button.focus();
-                            }
-                        }
-                    });
-                }
-            });
         };
         var createFilterButton = function (isTemplate, $container) {
             if (!APP.loggedIn) { return; }
@@ -3267,13 +3198,6 @@ define([
                     ],
                 });
             }
-            options = options.map(function (obj) {
-                return {
-                    tag: 'li',
-                    attributes: { role: 'none'},
-                    content: obj
-                };
-            });
             var dropdownConfig = {
                 buttonContent: [
                     h('i.fa.fa-filter'),
@@ -3294,9 +3218,6 @@ define([
                 );
             }
             var $block = UIElements.createDropdown(dropdownConfig);
-
-            var menuButton = $block.find('button');
-            functionalDropdown(menuButton);
 
             // Add style
             if (APP.store[FILTER_BY]) {
@@ -3391,6 +3312,7 @@ define([
                     h('i.fa.fa-minus'),
                     Messages.fm_type,
                 ],
+                action: function (e) { onSortByClick.call($(e.target).find('a')[0]); }
             },{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-atime'},
@@ -3398,6 +3320,7 @@ define([
                     h('i.fa.fa-minus'),
                     Messages.fm_lastAccess,
                 ],
+                action: function (e) { onSortByClick.call($(e.target).find('a')[0]); }
             },{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-ctime'},
@@ -3405,6 +3328,7 @@ define([
                     h('i.fa.fa-minus'),
                     Messages.fm_creation,
                 ],
+                action: function (e) { onSortByClick.call($(e.target).find('a')[0]); }
             }];
             var dropdownConfig = {
                 text: '', // Button initial text
@@ -3416,7 +3340,6 @@ define([
             };
             var $sortBlock = UIElements.createDropdown(dropdownConfig);
             $sortBlock.find('button').append(h('span.fa.fa-sort-amount-desc')).append(h('span', Messages.fm_sort));
-            $sortBlock.on('click', 'a', onSortByClick);
             return $fhSort;
         };
         var getFolderListHeader = function (clickable, small) {

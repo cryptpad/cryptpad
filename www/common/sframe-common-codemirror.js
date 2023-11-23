@@ -369,10 +369,10 @@ define([
             $block.find('button').attr('title', Messages.languageButtonTitle);
 
             var isHovering = false;
-            var $aLanguages = $block.find('a');
+            var $aLanguages = $block.find('li');
             $aLanguages.mouseenter(function () {
                 isHovering = true;
-                setMode($(this).attr('data-value'));
+                setMode($(this).find('a').attr('data-value'));
             });
             $aLanguages.mouseleave(function () {
                 if (isHovering) {
@@ -381,7 +381,7 @@ define([
             });
             $aLanguages.click(function () {
                 isHovering = false;
-                var mode = $(this).attr('data-value');
+                var mode = $(this).find('a').attr('data-value');
                 setMode(mode, onModeChanged);
                 onLocal();
             });
@@ -431,10 +431,10 @@ define([
                 setTheme(lastTheme, $block);
 
                 var isHovering = false;
-                var $aThemes = $block.find('a');
+                var $aThemes = $block.find('li');
                 $aThemes.mouseenter(function () {
                     isHovering = true;
-                    var theme = $(this).attr('data-value');
+                    var theme = $(this).find('a').attr('data-value');
                     setTheme(theme, $block);
                 });
                 $aThemes.mouseleave(function () {
@@ -445,7 +445,7 @@ define([
                 });
                 $aThemes.click(function () {
                     isHovering = false;
-                    var theme = $(this).attr('data-value');
+                    var theme = $(this).find('a').attr('data-value');
                     setTheme(theme, $block);
                     Common.setAttribute(themeKey, theme);
                 });
