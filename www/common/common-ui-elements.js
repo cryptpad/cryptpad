@@ -1776,6 +1776,10 @@ define([
                 hide();
                 $button.focus();
             }
+            if(e.which === 9) { // Tab
+                e.preventDefault();
+                e.stopPropagation();
+            }
         });
         $container.keypress(function (e) {
             window.clearTimeout(to);
