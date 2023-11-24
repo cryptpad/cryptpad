@@ -4026,7 +4026,6 @@ define([
                     value: block.q || Messages.form_default
                 });
                 var $inputQ = $(inputQ);
-
                 var saving = false;
                 var cancel = false;
                 var onSaveQ = function (e) {
@@ -4116,9 +4115,21 @@ define([
 
                         var model = TYPES[type] || STATIC_TYPES[type];
                         if (!model) { return; }
+                        var question;
+                        if (content.form[uid].q) {
+                            question = content.form[uid].q
+                        } else {
+                            question = Messages.form_default
+                        }
+                        var options;
+                        if (content.form[uid].opts) {
+                            options = content.form[uid].opts
+                        } else {
+                            options = Util.clone(model.defaultOpts)
+                        }
                         content.form[_uid] = {
-                            //q: Messages.form_default,
-                            opts: model.defaultOpts ? Util.clone(model.defaultOpts) : undefined,
+                            q: question,
+                            opts: options,
                             type: type,
                         };
                         if (full) {
@@ -4130,7 +4141,8 @@ define([
                         updateForm(framework, content, true);
                     })
 
-                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, copy, del ]);
+                    copydelContainer = h('div', [copy, del])
+                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, copydelContainer]);
                     editContainer = h('div');
                     if (type === 'poll' && block.opts.values.length === 0) {
                         $(editButtons).addClass('cp-empty-poll-edit-buttons')
@@ -4141,6 +4153,7 @@ define([
                             $(editContainer).empty();
                             var $oldTag = $(data.tag);
                             $(edit).show();
+                            $(copy).show();
                             $(previewDiv).show();
                             $(requiredDiv).hide();
 
