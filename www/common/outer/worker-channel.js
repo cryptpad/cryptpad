@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // This file provides the API for the channel for talking to and from the sandbox iframe.
 define([
     //'/common/sframe-protocol.js',

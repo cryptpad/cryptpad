@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Customizing CryptPad
 
 In order allow a variety of features to be changed and to allow site-specific changes
