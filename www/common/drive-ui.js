@@ -514,7 +514,6 @@ define([
                     'tabindex': '-1',
                     'data-icon': faDelete,
                 }, Messages.fc_delete_owned)),
-                
                 h('li', h('a.cp-app-drive-context-remove.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
@@ -1199,6 +1198,7 @@ define([
         var defaultInApp = ['application/pdf'];
         var openFile = function (el, isRo, app) {
             var data = manager.getFileData(el);
+
             if (data.static) {
                 if (data.href) {
                     common.openUnsafeURL(data.href);
@@ -1296,6 +1296,7 @@ define([
             var show = [];
             var filter;
             var editable = true;
+
             if (type === "content") {
                 if (APP.$content.data('readOnlyFolder')) { editable = false; }
                 // Return true in filter to hide
@@ -1751,7 +1752,6 @@ define([
 
                 displayMenu(e);
 
-
                 $(".cp-app-drive-context-noAction").toggle($contextMenu.find('li:visible').length === 0);
 
                 $contextMenu.data('paths', paths);
@@ -2136,8 +2136,6 @@ define([
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
             $element.append($type).append($adate).append($cdate);
-
-
         };
         var _addOwnership = function ($span, $state, data) {
             if (data && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1) {
@@ -2149,7 +2147,6 @@ define([
                 $owner.attr('title', Messages.fm_padIsOwnedOther);
             } */
         };
-
         var thumbsUrls = {};
         var addFileData = function (element, $element) {
             if (!manager.isFile(element)) { return; }
