@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: CC-BY-SA-3.0
+// SPDX-FileCopyrightText: 2014 LordOfThePigs https://stackoverflow.com/a/27422370
+
 define("optional", [], {
     load : function (moduleName, parentRequire, onload, config){
 
