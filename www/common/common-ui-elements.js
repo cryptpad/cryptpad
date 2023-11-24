@@ -1740,6 +1740,9 @@ define([
                 if ($value.length) {
                     $value.mouseleave();
                     var $prev = $value.prevAll('[role="menuitem"]:first');
+                    if (!$prev.length) {
+                        $prev = $innerblock.find('[role="menuitem"]').last();
+                    }
                     $prev.mouseenter();
                     setFocus($prev);
                 }
@@ -1750,6 +1753,9 @@ define([
                 if ($value.length) {
                     $value.mouseleave();
                     var $next = $value.nextAll('[role="menuitem"]:first');
+                    if (!$next.length) {
+                        $next = $innerblock.find('[role="menuitem"]').first();
+                    }
                     $next.mouseenter();
                     setFocus($next);
                 }
