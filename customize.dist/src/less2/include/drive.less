@@ -1,9 +1,3 @@
-/*
- * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
- *
- * SPDX-License-Identifier: AGPL-3.0-or-later
- */
-
 @import (reference) "./browser.less";
 @import (reference) './leftside-menu.less';
 @import (reference) "./tools.less";
@@ -655,23 +649,19 @@
                     font-size: 14px;
                     height: auto;
                 }
-                .cp-app-drive-element-state {
+                .cp-app-drive-element-state, .cp-app-drive-element-menu {
                     position: absolute;
                     top: 3px;
-                    left: 3px;
                     .fa, .cptools {
                         margin: 0;
                         font-size: 18px;
                     }
                 }
+                .cp-app-drive-element-state {
+                    left: 3px;
+                }
                 .cp-app-drive-element-menu {
-                    position: absolute;
-                    top: 3px;
                     right: 3px;
-                    .fa, .cptools {
-                        margin: 0;
-                        font-size: 18px;
-                    }
                 }
                 .cp-app-drive-element-thumbnail {
                     max-width: 100px;
