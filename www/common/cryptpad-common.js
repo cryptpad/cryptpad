@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/api/config',
     '/customize/messages.js',
@@ -924,7 +928,14 @@ define([
             delete meta.cursor;
 
             if (meta.type === "form") {
+                // Keep anonymous and makeAnonymous values from templates
+                var anonymous = parsed.answers.anonymous || false;
+                var makeAnonymous = parsed.answers.makeAnonymous || false;
                 delete parsed.answers;
+                parsed.answers = {
+                    anonymous: anonymous,
+                    makeAnonymous: makeAnonymous
+                };
             }
         }
     };
