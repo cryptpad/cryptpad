@@ -1741,9 +1741,6 @@ define([
                     $value.mouseleave();
                     if ($value.has('li').length) {
                         var $prev = $value.find('li:last');
-                        if (!$prev.length) {
-                            $prev = $innerblock.find('[role="menuitem"]').last();
-                        }
                     } else {
                         var $prev = $value.prevAll('[role="menuitem"]:first');
                     }
@@ -1761,10 +1758,6 @@ define([
                     $value.mouseleave();
                     if ($value.has('li').length) {
                         var $next = $value.find('li:first');
-                        console.log($next);
-                        if (!$next.length) {
-                            $next = $value.nextAll('[role="menuitem"]:first');
-                        }
                     } else {
                         var $next = $value.nextAll('[role="menuitem"]:first');
                     }
