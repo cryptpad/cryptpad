@@ -1597,9 +1597,19 @@ define([
                         } else {
                             // Click on <a> with an href
                             if (e.type === 'keydown'){
-                                $el.get(0).click();
-                                $el.find('.cp-clickable').first().click();
+                                if ($el.find('.cp-clickable')) {
+                                    $el.find('.cp-clickable').first().click();
+                                }
+                                else{
+                                    $el.get(0).click();
+                                }
                             }
+                        }
+                    }
+                    if(e.type === 'keydown' && e.keyCode === 46){
+                        e.stopPropagation();
+                        if ($el.find('.cp-clickable')) {
+                            $el.find('.cp-clickable').last().click();
                         }
                     }
                 };
