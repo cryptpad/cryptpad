@@ -1596,7 +1596,10 @@ define([
                             if (close) { hide(); }
                         } else {
                             // Click on <a> with an href
-                            if (e.type === 'keydown') { $el.get(0).click(); }
+                            if (e.type === 'keydown'){
+                                $el.get(0).click();
+                                $el.find('.cp-clickable').first().click();
+                            }
                         }
                     }
                 };
