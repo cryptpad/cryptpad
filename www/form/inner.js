@@ -4519,6 +4519,7 @@ define([
             if (!APP.isEditor) { return; }
             if (content.answers && content.answers.channel && content.answers.publicKey && content.answers.validateKey) { return; }
             // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
+            var priv = metadataMgr.getPrivateData();
             content.answers = content.answers || {};
             content.answers.channel = Hash.createChannelId();
             content.answers.publicKey = priv.form_public;
