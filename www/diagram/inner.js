@@ -132,9 +132,8 @@ define([
             params.set('type', type);
             params.set('protocol', url.protocol);
             url.search = params.toString();
-            url.protocol = 'cryptpad:';
             url.hash = key;
-            return url.href;
+            return url.href.replace(/https?:\/\//, 'cryptpad://');
         };
 
         const parseCryptPadUrl = function(href) {
@@ -161,7 +160,7 @@ define([
                         return void reject(err);
                     }
                     try {
-                        FileCrypto.decrypt(u8, nacl.util.decodeBase64(key), (err, res) => {
+                        FileCrypto.decrypt(u8, Nacl.util.decodeBase64(key), (err, res) => {
                             if (err || !res.content) {
                                 console.error("Decrypting failed");
                                 return void reject(err);
@@ -180,7 +179,11 @@ define([
         APP.addImage = function() {
             return new Promise((resolve) => {
                 framework.insertImage({}, (imageData) => {
-                    resolve(getCryptPadUrl(imageData.src, imageData.key, imageData.fileType));
+                    if (imageData.blob) {
+                        resolve(imageData.blob);
+                    } else {
+                        resolve(getCryptPadUrl(imageData.src, imageData.key, imageData.fileType));
+                    }
                 });
             });
         };
