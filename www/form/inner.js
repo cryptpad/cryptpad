@@ -214,7 +214,7 @@ define([
     var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
         var evOnSave = Util.mkEvent();
 
-        var add = h('button.btn.btn-secondary', [
+        var add = h('button.btn', [
             h('i.fa.fa-plus'),
             h('span', Messages.form_add_option)
         ]);
@@ -328,11 +328,15 @@ define([
             }
 
             var del = h('button.btn.btn-danger-outline', h('i.fa.fa-times'));
+            var formHandle;
+            if (v.type !== 'time') {
+                formHandle = h('span.cp-form-handle', [
+                    h('i.fa.fa-ellipsis-v'),
+                    h('i.fa.fa-ellipsis-v'),
+                ])
+            }
             var el = h('div.cp-form-edit-block-input', [
-                h('span.cp-form-handle', [
-                    h('i.fa.fa-ellipsis-v'),
-                    h('i.fa.fa-ellipsis-v'),
-                ]),
+                formHandle,
                 input,
                 del
             ]);
@@ -2669,7 +2673,7 @@ define([
                         } else {
                             return q + ' | ' + key;
                         }
-                        
+                    
                     });
                     cols.unshift(q);
                     return cols;
@@ -2680,16 +2684,12 @@ define([
                     return empty;
                 }
                 var str = '';
+                var timeValues = {};
                 Object.keys(answer.values).sort().forEach(function (k, i) {
                     if (i !== 0) { str += ';'; }
                     if (opts.type === 'time') {
-                        Object.defineProperty(
-                            answer.values,
-                            new Date(parseInt(k)).toISOString(),
-                            Object.getOwnPropertyDescriptor(answer.values, k),
-                            );
-                            delete answer.values[k];
-                            str += new Date(parseInt(k)).toISOString().replace(';', '').replace(':', '') + ':' + answer.values[ new Date(parseInt(k)).toISOString()] ;
+                        timeValues[new Date(parseInt(k)).toISOString()] = answer.values[k]
+                        str += new Date(parseInt(k)).toISOString().replace(';', '').replace(':', '') + ':' + timeValues[new Date(parseInt(k)).toISOString()] ;
                     } 
                     else {
                         str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
@@ -2697,13 +2697,14 @@ define([
                 });
                 var res = extractValues(opts.values).map(function (key) {
                     if (opts.type === 'time') {
-                        return answer.values[ new Date(parseInt(key)).toISOString()] || '';
+                        return timeValues[new Date(parseInt(key)).toISOString()] || '';
                     } else {
                         return answer.values[key] || '';
                     }
                     
                 });
                 res.unshift(str);
+
                 return res;
             },
             icon: h('i.cptools.cptools-form-poll')
