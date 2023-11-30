@@ -16,23 +16,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
         .loading-hidden {
             display: none;
         }
-
-        #overlay {
-            position: fixed;
-            display: none;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0,0,0,0.1);
-            z-index: 2;
-        }
-
-        #overlay.show {
-            display: block;
-        }
     </style>
     <title></title>
 </head>
@@ -41,7 +24,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
     <div id="cp-app-diagram-editor" class="cp-app-diagram-editor">
         <div id="cp-app-diagram-container" class="cp-app-diagram-container">
             <div class="diagram-editor loading">
-                <div id="overlay"></div>
                 <iframe id="cp-app-diagram-content"
                         src=""
                         border="0"
