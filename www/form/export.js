@@ -6,7 +6,9 @@ define([
     '/common/common-util.js',
     '/customize/messages.js'
 ], function (Util, Messages) {
-    var Export = {};
+    var Export = {
+        ext: '.json'
+    };
 
     var escapeCSV = function (v) {
         if (!/("|,|\n|;)/.test(v)) {

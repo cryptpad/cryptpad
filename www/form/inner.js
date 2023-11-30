@@ -4521,7 +4521,8 @@ define([
         var initializeAnswers = function() {
             // Initialize the answers properties if they do not exist yet
             if (!APP.isEditor) { return; }
-            if (content.answers && content.answers.channel && content.answers.publicKey && content.answers.validateKey) { return; }
+            var priv = metadataMgr.getPrivateData();
+            if (content.answers && content.answers.channel && content.answers.publicKey === priv.form_public && content.answers.validateKey) { return; }
             // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
             content.answers = content.answers || {};
             content.answers.channel = Hash.createChannelId();
