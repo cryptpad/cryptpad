@@ -175,7 +175,7 @@ define([
         }, cb);
     };
     Block.writeLoginBlock = function (data, cb) {
-        const { content, blockKeys, oldBlockKeys, auth } = data;
+        const { content, blockKeys, oldBlockKeys, token, userData, auth } = data;
 
         var command = 'WRITE_BLOCK';
         if (auth && auth.type === 'TOTP') {
@@ -185,6 +185,8 @@ define([
         var block = Block.serialize(JSON.stringify(content), blockKeys);
         block.auth = auth && auth.data;
         block.registrationProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+        if (token) { block.inviteToken = token; }
+        if (userData) { block.userData = userData; }
 
         ServerCommand(blockKeys.sign, {
             command: command,

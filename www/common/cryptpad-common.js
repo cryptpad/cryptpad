@@ -2042,8 +2042,10 @@ define([
                 User_hash: newHash,
                 edPublic: edPublic,
             };
+            var userData = [undefined, edPublic];
             Block.writeLoginBlock({
                 auth: auth,
+                userData: userData,
                 blockKeys: blockKeys,
                 oldBlockKeys: oldBlockKeys,
                 content: content

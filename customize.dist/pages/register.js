@@ -29,20 +29,21 @@ define([
             ];
         };
 
-        if (Config.restrictRegistration) {
-            return frame([
-                h('div.cp-restricted-registration', [
-                    h('p', Msg.register_registrationIsClosed),
-                ])
-            ]);
-        }
-
         var termsCheck;
         if (termsLink) {
             termsCheck = h('div.checkbox-container', tos);
         }
 
+        var closed = Config.restrictRegistration;
+        if (closed) {
+            $('body').addClass('cp-register-closed');
+        }
+
+
         return frame([
+            h('div.cp-restricted-registration', [
+                h('p', Msg.register_registrationIsClosed),
+            ]),
             h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     h('h2', Msg.register_notes_title),

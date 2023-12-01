@@ -140,7 +140,8 @@ define([
         Exports.mergeAnonDrive = 1;
     };
 
-    Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, onOTP, cb) {
+    Exports.loginOrRegister = function (config, cb) {
+        let { uname, passwd, token, isRegister, shouldImport, onOTP } = config;
         if (typeof(cb) !== 'function') { return; }
 
         // Usernames are all lowercase. No going back on this one
@@ -519,14 +520,20 @@ define([
             toPublish[Constants.userHashKey] = userHash;
             toPublish.edPublic = RT.proxy.edPublic;
 
+            var userData;
+            if (token) { userData = [uname, RT.proxy.edPublic]; }
+
             Block.writeLoginBlock({
                 blockKeys: blockKeys,
+                token: token,
+                userData,
                 content: toPublish
-            }, waitFor(function (e) {
+            }, waitFor(function (e, errData) {
                 if (e) {
-                    console.error(e);
+                    console.error(e, errData);
                     waitFor.abort();
-                    return void cb(e);
+
+                    return void cb(errData ? (errData.errorCode || errData.error) : e);
                 }
             }));
         }).nThen(function (waitFor) {
@@ -565,14 +572,16 @@ define([
     };
 
     var hashing;
-    Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, onOTP, testing, test) {
+
+    Messages.register_invalidToken = "Registration is closed and the invitation link is invalid"; // XXX
+    Exports.loginOrRegisterUI = function (config) {
+        let { uname, token, cb } = config;
         if (hashing) { return void console.log("hashing is already in progress"); }
         hashing = true;
 
         var proceed = function (result) {
             hashing = false;
-            // NOTE: test is also use as a cb for the install page
-            if (test && typeof test === "function" && test(result)) { return; }
+            if (cb && typeof cb === "function" && cb(result)) { return; }
             LocalStore.clearLoginToken();
             Realtime.whenRealtimeSyncs(result.realtime, function () {
                 Exports.redirect();
@@ -590,11 +599,12 @@ define([
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {
-                Exports.loginOrRegister(uname, passwd, isRegister, shouldImport, onOTP, function (err, result) {
-                    var proxy;
+                Exports.loginOrRegister(config, function (err, result) {
+                    var proxy = {};
                     if (result) { proxy = result.proxy; }
 
                     if (err) {
+                        console.warn(err);
                         switch (err) {
                             case 'NO_SUCH_USER':
                                 UI.removeLoadingScreen(function () {
@@ -664,6 +674,9 @@ define([
                                 });
                                 break;
                             case 'E_RESTRICTED':
+                                if (token) {
+                                    return UI.errorLoadingScreen(Messages.register_invalidToken);
+                                }
                                 UI.errorLoadingScreen(Messages.register_registrationIsClosed);
                                 break;
                             default: // UNHANDLED ERROR
@@ -672,8 +685,6 @@ define([
                         }
                         return;
                     }
-
-                    //if (testing) { return void proceed(result); }
 
                     if (!(proxy.curvePrivate && proxy.curvePublic &&
                           proxy.edPrivate && proxy.edPublic)) {

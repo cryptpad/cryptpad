@@ -11,6 +11,17 @@
     .alertify_main();
     .checkmark_main(20px);
 
+    &:not(.cp-register-closed) {
+        .cp-restricted-registration {
+            display: none;
+        }
+    }
+    &.cp-register-closed {
+        div.cp-register-det {
+            display: none;
+        }
+    }
+
     .cp-container {
         .form-group {
             .cp-register-instance {
