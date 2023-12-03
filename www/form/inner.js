@@ -4278,6 +4278,7 @@ define([
         if (APP.isEditor) {
             elements.push(getFormCreator());
         }
+
         var _content = elements;
         if (!editable) {
             _content = [];
@@ -4306,19 +4307,79 @@ define([
                 _content.push(pageContainer);
                 var refreshPage = APP.refreshPage = function (current) {
                     $page.empty();
+                    var hiddenPages;
+
+                    var checkEmptyPages = function() {
+                        var shownContent = [];
+                        hiddenPages = 0;
+                        _content.forEach(function(div) {
+                            var hiddenQs = 0;
+                            for (child of div.children) {
+                                if ($(child).attr('data-title') == 'hidden') {
+                                    hiddenQs++;
+                                }
+                            }
+                            if (hiddenQs == div.children.length && $(div).attr('class') !== 'cp-form-page-container') {
+                                div['empty'] = true;
+                                hiddenPages ++;
+                            }
+                            else {
+                                div['empty'] = false;
+                                if ($(div).attr('class') !== 'cp-form-page-container' && shownContent.indexOf(div) == -1) {
+                                    shownContent.push(div)
+                                }
+                            }
+                        })
+                        return shownContent;
+                    }
+                    var shownContent = checkEmptyPages()
+                    var shownPages = checkEmptyPages().length
+
                     if (!current || current < 1) { current = 1; }
-                    if (current > pages) { current = pages; }
+
+                    checkEmptyPages();
+
+                    var state = h('span', Messages._getKey('form_page', [shownContent.indexOf(_content[current-1])+1,  shownPages]));
+                    evOnChange.reg(function(){
+                        checkEmptyPages();
+                        shownContent = checkEmptyPages()
+                        shownPages = checkEmptyPages().length
+                        $(state).html(Messages._getKey('form_page', [shownContent.indexOf(_content[current-1])+1, shownPages]))
+
+                    })
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
                     ]);
-                    var state = h('span', Messages._getKey('form_page', [current, pages]));
                     var right = h('button.btn.btn-secondary.cp-next', [
                         h('i.fa.fa-arrow-right'),
                     ]);
                     if (current === pages) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
-                    $(left).click(function () { refreshPage(current - 1); });
-                    $(right).click(function () { refreshPage(current + 1); });
+
+                    $(left).click(function () {
+                        checkEmptyPages();
+                        var prevPage = -1;
+                        if (_content[current+prevPage-1]['empty']) {
+                            prevPage--;
+                            while (_content[current+prevPage-1]['empty']) {
+                                prevPage --;
+                            }
+                        }
+                        checkEmptyPages();
+                        $(state).html(Messages._getKey('form_page', [current, pages-hiddenPages]))
+                        refreshPage(current + prevPage);
+                    });
+                    $(right).click(function () {
+                        checkEmptyPages();
+                        var nextPage = 1;
+                        if (_content[current]['empty']) {
+                            nextPage++;
+                            while (_content[(current+nextPage)-1]['empty']) {
+                                nextPage ++;
+                            }
+                        }
+                        refreshPage(current + nextPage);
+                    });
                     $page.append([left, state, right]);
                     $container.find('.cp-form-page').hide();
                     $($container.find('.cp-form-page').get(current-1)).show();
@@ -4468,10 +4529,15 @@ define([
                 var show = checkCondition(block);
                 block.opts.questions.forEach(function (_uid) {
                     $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
+                    if (!show) {
+                        $container.find('.cp-form-block[data-id="'+_uid+'"]').attr('data-title', 'hidden')
+                    } else {
+                        $container.find('.cp-form-block[data-id="'+_uid+'"]').attr('data-title', 'visible')
+                    }
                 });
             });
         });
-
+        
         // If the form is already submitted, show an info message
         var lastTime = (answers && answers._time) || APP.editingTime;
         if (APP.hasAnswered && lastTime) {
