@@ -260,9 +260,7 @@ define([
                     },
                     content: Messages['form_poll_'+t]
                 };
-                
-            });
-            
+            }); 
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
@@ -298,7 +296,6 @@ define([
             if (uid) { $input.data('uid', uid); }
 
             // If the input is a date, initialize flatpickr
-
                 if (v.type === 'time') {
                     Flatpickr(input, {
                         disableMobile: true,
@@ -498,8 +495,7 @@ define([
                 } else {
                     $(addMultiple).hide();
                 }
-            } 
-            else {
+            } else {
                 $(addMultiple).hide();
                 $calendar.show();
                 $container.hide();
@@ -508,7 +504,6 @@ define([
         refreshView();
 
         // Doodle type change: empty current values and change input types?
-
         if (typeSelect) {
             typeSelect.onChange.reg(function (prettyVal, val) {
                 v.type = val;
@@ -2545,7 +2540,6 @@ define([
         poll: {
             defaultOpts: {
                 type: 'text', // Text or Days or Time
-                
                 values: [1, 2, 3].map(function (i) {
                     return {
                         uid: Util.uid(),
@@ -2633,7 +2627,6 @@ define([
                     },
                     edit: function (cb, tmp) {
                         var v = Util.clone(opts);
-
                         return editOptions(v, isDefaultOpts, setCursorGetter, cb, tmp);
                     },
                     getCursor: function () { return cursorGetter(); },
@@ -2673,7 +2666,6 @@ define([
                         } else {
                             return q + ' | ' + key;
                         }
-                    
                     });
                     cols.unshift(q);
                     return cols;
@@ -2690,8 +2682,7 @@ define([
                     if (opts.type === 'time') {
                         timeValues[new Date(parseInt(k)).toISOString()] = answer.values[k];
                         str += new Date(parseInt(k)).toISOString().replace(';', '').replace(':', '') + ':' + timeValues[new Date(parseInt(k)).toISOString()];
-                    } 
-                    else {
+                    } else {
                         str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
                     }
                 });
@@ -2701,10 +2692,8 @@ define([
                     } else {
                         return answer.values[key] || '';
                     }
-                    
                 });
                 res.unshift(str);
-
                 return res;
             },
             icon: h('i.cptools.cptools-form-poll')
@@ -4027,6 +4016,7 @@ define([
                     value: block.q || Messages.form_default
                 });
                 var $inputQ = $(inputQ);
+
                 var saving = false;
                 var cancel = false;
                 var onSaveQ = function (e) {
@@ -4084,6 +4074,7 @@ define([
                     framework.localChange();
                     updateAddInline();
                 });
+
                 editButtons = h('div.cp-form-edit-buttons-container', [ fakeEdit, del ]);
 
                 changeType = h('div.cp-form-block-type', [
@@ -4093,7 +4084,6 @@ define([
 
                 // Values
                 if (data.edit) {
-
                     var edit = h('button.btn.btn-default.cp-form-edit-button', [
                         h('i.fa.fa-pencil'),
                         h('span', Messages.form_editBlock)
@@ -4544,7 +4534,7 @@ define([
                 });
             });
         });
-        
+
         // If the form is already submitted, show an info message
         var lastTime = (answers && answers._time) || APP.editingTime;
         if (APP.hasAnswered && lastTime) {
