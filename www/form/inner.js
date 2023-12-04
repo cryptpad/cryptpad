@@ -4355,8 +4355,6 @@ define([
                                 prevPage --;
                             }
                         }
-                        checkEmptyPages();
-                        $(state).html(Messages._getKey('form_page', [current, pages-hiddenPages]));
                         refreshPage(current + prevPage);
                     });
                     $(right).click(function () {
