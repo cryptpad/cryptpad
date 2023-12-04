@@ -75,7 +75,7 @@ define([
     Sortable
     )
 {
-    Messages.form_copyQuestion = 'Duplicate' //XXX
+    Messages.form_copyQuestion = 'Duplicate'; //XXX
 
     var APP = window.APP = {
         blocks: {}
@@ -333,7 +333,7 @@ define([
                 formHandle = h('span.cp-form-handle', [
                     h('i.fa.fa-ellipsis-v'),
                     h('i.fa.fa-ellipsis-v'),
-                ])
+                ]);
             }
             var el = h('div.cp-form-edit-block-input', [
                 formHandle,
@@ -437,7 +437,7 @@ define([
             // Calendar inline for "day" type
             var calendarInput = h('input');
             calendarView = h('div', calendarInput);
-            var calendarDefault = new Date()
+            var calendarDefault = new Date();
             Flatpickr(calendarInput, {
                 mode: 'multiple',
                 inline: true,
@@ -516,20 +516,20 @@ define([
                 setTimeout(evOnSave.fire);
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
-
+                    var time, el;
                     if (val === "time") {
-                        var time = new Date();
+                        time = new Date();
                         time.setHours(14);
                         time.setMinutes(0);
                         time.setSeconds(0);
                         time.setMilliseconds(0);
-                        var el = getOption(+time, false, false, Util.uid());
+                        el = getOption(+time, false, false, Util.uid());
                         $add.before(el);
                         $(el).find('input').focus();
                         return;
                     } else if (val === "day") {
-                        var time = new Date();
-                        var el = getOption(+time, false, false, Util.uid());
+                        time = new Date();
+                        el = getOption(+time, false, false, Util.uid());
                         $add.before(el);
                         $(el).find('input').focus();
                         return;
@@ -538,9 +538,9 @@ define([
                     return;
                 }
 
-                if (parseInt($container.find('input')[0].value) !== NaN && parseInt($container.find('input')[0].value).toString().length > 4) {
-                    var dateInput = new Date(parseInt($container.find('input')[0].value))
-                    $container.find('input')[0].value = dateInput.toDateString()
+                if (!isNaN(parseInt($container.find('input')[0].value))&& parseInt($container.find('input')[0].value).toString().length > 4) {
+                    var dateInput = new Date(parseInt($container.find('input')[0].value));
+                    $container.find('input')[0].value = dateInput.toDateString();
                 } 
                 $container.find('input').each(function (i, input) {
                     if (input._flatpickr) {
@@ -2688,8 +2688,8 @@ define([
                 Object.keys(answer.values).sort().forEach(function (k, i) {
                     if (i !== 0) { str += ';'; }
                     if (opts.type === 'time') {
-                        timeValues[new Date(parseInt(k)).toISOString()] = answer.values[k]
-                        str += new Date(parseInt(k)).toISOString().replace(';', '').replace(':', '') + ':' + timeValues[new Date(parseInt(k)).toISOString()] ;
+                        timeValues[new Date(parseInt(k)).toISOString()] = answer.values[k];
+                        str += new Date(parseInt(k)).toISOString().replace(';', '').replace(':', '') + ':' + timeValues[new Date(parseInt(k)).toISOString()];
                     } 
                     else {
                         str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
@@ -4107,26 +4107,27 @@ define([
                         var full = !uid;
                         var arr = content.order;
                         var idx = content.order.indexOf(uid);
+                        var _uid;
                         if (!full) {
                             var obj = getSectionFromQ(content, uid);
                             arr = obj.arr;
                             idx = obj.idx;
-                            var _uid = Util.uid();
+                            _uid = Util.uid();
                         }
 
                         var model = TYPES[type] || STATIC_TYPES[type];
                         if (!model) { return; }
                         var question;
                         if (content.form[uid].q) {
-                            question = content.form[uid].q
+                            question = content.form[uid].q;
                         } else {
-                            question = Messages.form_default
+                            question = Messages.form_default;
                         }
                         var options;
                         if (content.form[uid].opts) {
-                            options = content.form[uid].opts
+                            options = content.form[uid].opts;
                         } else {
-                            options = Util.clone(model.defaultOpts)
+                            options = Util.clone(model.defaultOpts);
                         }
                         content.form[_uid] = {
                             q: question,
@@ -4140,13 +4141,13 @@ define([
                         }
                         framework.localChange();
                         updateForm(framework, content, true);
-                    })
+                    });
 
-                    copydelContainer = h('div', [copy, del])
+                    var copydelContainer = h('div', [copy, del]);
                     editButtons = h('div.cp-form-edit-buttons-container', [ edit, copydelContainer]);
                     editContainer = h('div');
                     if (type === 'poll' && block.opts.values.length === 0) {
-                        $(editButtons).addClass('cp-empty-poll-edit-buttons')
+                        $(editButtons).addClass('cp-empty-poll-edit-buttons');
                     }
                     var onSave = function (newOpts, close) {
                         if (close) { // Cancel edit
@@ -4185,7 +4186,7 @@ define([
                         $(editContainer).find('.cp-form-preview-button').prependTo(editButtons);
 
                         $(edit).hide();
-                        $(copy).hide()
+                        $(copy).hide();
                     };
                     $(edit).click(function () {
                         onEdit();
@@ -4314,26 +4315,26 @@ define([
                         hiddenPages = 0;
                         _content.forEach(function(div) {
                             var hiddenQs = 0;
-                            for (child of div.children) {
-                                if ($(child).attr('data-title') == 'hidden') {
+                            for (var child of div.children) {
+                                if ($(child).attr('data-title') === 'hidden') {
                                     hiddenQs++;
                                 }
                             }
-                            if (hiddenQs == div.children.length && $(div).attr('class') !== 'cp-form-page-container') {
+                            if (hiddenQs === div.children.length && $(div).attr('class') !== 'cp-form-page-container') {
                                 div['empty'] = true;
                                 hiddenPages ++;
                             }
                             else {
                                 div['empty'] = false;
-                                if ($(div).attr('class') !== 'cp-form-page-container' && shownContent.indexOf(div) == -1) {
-                                    shownContent.push(div)
+                                if ($(div).attr('class') !== 'cp-form-page-container' && shownContent.indexOf(div) === -1) {
+                                    shownContent.push(div);
                                 }
                             }
-                        })
+                        });
                         return shownContent;
-                    }
-                    var shownContent = checkEmptyPages()
-                    var shownPages = checkEmptyPages().length
+                    };
+                    var shownContent = checkEmptyPages();
+                    var shownPages = checkEmptyPages().length;
 
                     if (!current || current < 1) { current = 1; }
 
@@ -4342,11 +4343,10 @@ define([
                     var state = h('span', Messages._getKey('form_page', [shownContent.indexOf(_content[current-1])+1,  shownPages]));
                     evOnChange.reg(function(){
                         checkEmptyPages();
-                        shownContent = checkEmptyPages()
-                        shownPages = checkEmptyPages().length
-                        $(state).html(Messages._getKey('form_page', [shownContent.indexOf(_content[current-1])+1, shownPages]))
-
-                    })
+                        shownContent = checkEmptyPages();
+                        shownPages = checkEmptyPages().length;
+                        $(state).html(Messages._getKey('form_page', [shownContent.indexOf(_content[current-1])+1, shownPages]));
+                    });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
                     ]);
@@ -4366,7 +4366,7 @@ define([
                             }
                         }
                         checkEmptyPages();
-                        $(state).html(Messages._getKey('form_page', [current, pages-hiddenPages]))
+                        $(state).html(Messages._getKey('form_page', [current, pages-hiddenPages]));
                         refreshPage(current + prevPage);
                     });
                     $(right).click(function () {
@@ -4495,7 +4495,14 @@ define([
 
         if (editable) {
             if (APP.mainSortable) { APP.mainSortable.destroy(); }
+            var grabHandle;
+            if (window.matchMedia("(pointer: coarse)").matches) {
+                grabHandle = '.cp-form-block-drag-handle';
+            } else {
+                grabHandle = null;
+            }
             APP.mainSortable = Sortable.create($container[0], {
+                handle: grabHandle,
                 group: 'nested',
                 direction: "vertical",
                 filter: "input, button, .CodeMirror, .cp-form-type-sort, .cp-form-block-type.editable",
@@ -4530,9 +4537,9 @@ define([
                 block.opts.questions.forEach(function (_uid) {
                     $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
                     if (!show) {
-                        $container.find('.cp-form-block[data-id="'+_uid+'"]').attr('data-title', 'hidden')
+                        $container.find('.cp-form-block[data-id="'+_uid+'"]').attr('data-title', 'hidden');
                     } else {
-                        $container.find('.cp-form-block[data-id="'+_uid+'"]').attr('data-title', 'visible')
+                        $container.find('.cp-form-block[data-id="'+_uid+'"]').attr('data-title', 'visible');
                     }
                 });
             });
