@@ -164,7 +164,10 @@
         }
         margin-bottom: 15px;
     }
-
+    .kanban-tag-btn-toggle {
+        margin-top: 10px;
+        margin-left: 10px
+    }
     #cp-app-kanban-container {
         flex: 1;
         display: flex;
@@ -474,6 +477,9 @@
             .cp-kanban-filterTags-list {
                 margin-right: 10px;
                 margin-left: 10px;
+                @media (max-width: 405px) {
+                    padding-top: 15px
+                }
                 display: flex;
                 flex-wrap: wrap;
                 &:not(.cp-empty) {
