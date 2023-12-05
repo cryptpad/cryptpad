@@ -940,7 +940,7 @@ define([
                 //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
-            var toggleTagsButton = h('button.btn.kanban-tag-btn-toggle', Messages.kanban_showTags);
+            var toggleTagsButton = h('button.btn.btn-default.kanban-tag-btn-toggle', Messages.kanban_showTags);
 
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
