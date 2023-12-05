@@ -1583,7 +1583,6 @@ define([
                 if (o.tag !== 'a' && o.tag !== 'li') { return; }
 
                 $li.on('mouseenter', (e) => {
-                    console.error($li);
                     e.stopPropagation();
                     $li.focus();
                 });
@@ -1596,20 +1595,7 @@ define([
                             if (close) { hide(); }
                         } else {
                             // Click on <a> with an href
-                            if (e.type === 'keydown'){
-                                if ($el.find('.cp-clickable')) {
-                                    $el.find('.cp-clickable').first().click();
-                                }
-                                else{
-                                    $el.get(0).click();
-                                }
-                            }
-                        }
-                    }
-                    if(e.type === 'keydown' && e.keyCode === 46){
-                        e.stopPropagation();
-                        if ($el.find('.cp-clickable')) {
-                            $el.find('.cp-clickable').last().click();
+                            if (e.type === 'keydown'){ $el.get(0).click(); }
                         }
                     }
                 };
@@ -1741,45 +1727,62 @@ define([
             });
             return $value;
         };
+        var getPrev = ($el) => {
+            var $all = $innerblock.find('[role="menuitem"]');
+            if (!$all.length) { return $(); }
+            var idx = $all.index($el[0]);
+            if (idx === -1) { return $(); }
+            var prev = ($all.length + idx - 1) % $all.length;
+            return $($all.get(prev));
+        };
+        var getNext = ($el) => {
+            var $all = $innerblock.find('[role="menuitem"]');
+            if (!$all.length) { return $(); }
+            var idx = $all.index($el[0]);
+            if (idx === -1) { return $(); }
+            var next = (idx + 1) % $all.length;
+            return $($all.get(next));
+        };
+        var getFirst = () => {
+            return $innerblock.find('[role="menuitem"]').first();
+        };
         $container.keydown(function (e) {
-            if (!$innerblock.is(':visible')) { return; }
+            var visible = $innerblock.is(':visible');
             var $value = $innerblock.find('li:focus');
-            if (!$value.length) {
-                $value = $innerblock.find('[role="menuitem"]').first();
+            if (!visible && [38,40].includes(e.which) && !config.isSelect) {
+                $container.click();
+                visible = true;
             }
+            if (!visible) { return; }
             if (e.which === 38) { // Up
                 e.preventDefault();
                 e.stopPropagation();
-                if ($value.length) {
-                    $value.mouseleave();
-                    if ($value.has('li').length) {
-                        var $prev = $value.find('li:last');
-                    } else {
-                        var $prev = $value.prevAll('[role="menuitem"]:first');
-                    }
-                    if (!$prev.length) {
-                        $prev = $innerblock.find('[role="menuitem"]').last();
-                    }
-                    $prev.mouseenter();
-                    setFocus($prev);
+                var $prev;
+                if (!$value.length) {
+                    $prev = $innerblock.find('[role="menuitem"]').last();
+                } else {
+                    $prev = getPrev($value);
                 }
+                $value.mouseleave();
+                $prev.mouseenter();
+                setTimeout(() => {
+                    setFocus($prev);
+                });
             }
             if (e.which === 40) { // Down
                 e.preventDefault();
                 e.stopPropagation();
-                if ($value.length) {
-                    $value.mouseleave();
-                    if ($value.has('li').length) {
-                        var $next = $value.find('li:first');
-                    } else {
-                        var $next = $value.nextAll('[role="menuitem"]:first');
-                    }
-                    if (!$next.length) {
-                        $next = $innerblock.find('[role="menuitem"]').first();
-                    }
-                    $next.mouseenter();
-                    setFocus($next);
+                var $next;
+                if (!$value.length) {
+                    $next = $innerblock.find('[role="menuitem"]').first();
+                } else {
+                    $next = getNext($value);
                 }
+                $value.mouseleave();
+                $next.mouseenter();
+                setTimeout(() => {
+                    setFocus($next);
+                });
             }
             if (e.which === 13 || e.which === 32) { //Enter or space
                 e.preventDefault();
@@ -1788,6 +1791,10 @@ define([
                     $value.click();
                     hide();
                     $button.focus();
+                } else {
+                    setTimeout(() => {
+                        getFirst().focus();
+                    });
                 }
             }
             if (e.which === 27) { // Esc
@@ -1797,9 +1804,13 @@ define([
                 hide();
                 $button.focus();
             }
-            if(e.which === 9) { // Tab
-                e.preventDefault();
-                e.stopPropagation();
+            if (e.which === 9) {
+                hide();
+                if (e.shiftKey) {
+                    $button.focus();
+                } else {
+                    $innerblock.find('[role="menuitem"]').last().focus();
+                }
             }
         });
         $container.keypress(function (e) {

@@ -1120,7 +1120,7 @@ MessengerUI, Messages, Pages) {
             h('li.cp-notifications-empty', Messages.notifications_empty)
         ]);
         options.push({
-            tag: 'li',
+            tag: 'div',
             content: div
         });
 
@@ -1148,6 +1148,7 @@ MessengerUI, Messages, Pages) {
         $button.attr('aria-label', Messages.notificationsPage);
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
+        observeChildren($(div));
 
         var refresh = function () {
             updateUserList(toolbar, config);
@@ -1176,6 +1177,14 @@ MessengerUI, Messages, Pages) {
                 if (el) {
                     $(div).prepend(el);
                 }
+                $(el).on('keydown', function (e) {
+                    if (![13,32,46].includes(e.which)) { return; }
+                    e.stopPropagation();
+                    if (e.which === 46) {
+                        return $(el).find('.cp-notification-dismiss').click();
+                    }
+                    $(el).find('.cp-notification-content').click();
+                });
                 refresh();
             },
             onViewed: function () {
