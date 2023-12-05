@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/api/config',
     'json.sortify',
@@ -710,6 +714,7 @@ define([
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
             if (data.readme) { pad.readme = 1; }
 
+            if (data.teamId === -1) { data.teamId = undefined; }
             var s = getStore(data.teamId);
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
 
@@ -1182,7 +1187,6 @@ define([
             }
 
             //var storeLocally = data.teamId === -1;
-            if (data.teamId === -1) { data.teamId = undefined; }
             if (data.teamId) { data.teamId = Number(data.teamId); }
 
             // If a teamId is provided, it means we want to store the pad in a specific

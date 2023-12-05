@@ -1,9 +1,13 @@
+# SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 ---
 version: '3.8'
 
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:version-5.4.0"
+    image: "cryptpad/cryptpad:version-5.5.0"
     hostname: cryptpad
 
     environment:

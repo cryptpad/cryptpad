@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -249,8 +253,9 @@ define([
                     name: Messages.share_copyProfileLink,
                     onClick: function () {
                         var profile = data.profile ? (origin + '/profile/#' + data.profile) : '';
-                        var success = Clipboard.copy(profile);
-                        if (success) { UI.log(Messages.shareSuccess); }
+                        Clipboard.copy(profile, (err) => {
+                            if (!err) { UI.log(Messages.shareSuccess); }
+                        });
                     },
                     keys: [13]
                   }]
@@ -535,8 +540,9 @@ define([
             name: Messages.team_inviteLinkCopy,
             onClick: function () {
                 if (!href) { return; }
-                var success = Clipboard.copy(href);
-                if (success) { UI.log(Messages.shareSuccess); }
+                Clipboard.copy(href, (err) => {
+                    if (!err) { UI.log(Messages.shareSuccess); }
+                });
             },
             keys: []
         }];
