@@ -8,8 +8,7 @@ define([
     '/customize/messages.js', // translation keys
     '/components/pako/dist/pako.min.js',
     '/components/x2js/x2js.js',
-    '/common/common-util.js',
-    '/file/file-crypto.js',
+    '/diagram/util.js',
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
@@ -18,8 +17,8 @@ define([
     Messages,
     pako,
     X2JS,
-    Util,
-    FileCrypto) {
+    DiagramUtil,
+) {
     const Nacl = window.nacl;
     const APP = window.APP = {};
 
@@ -130,63 +129,14 @@ define([
             autosave: onDrawioAutosave,
         };
 
-        const getCryptPadUrl = function(src, key, type) {
-            const url = new URL(src);
-            const params = new URLSearchParams();
-            params.set('type', type);
-            params.set('protocol', url.protocol);
-            url.search = params.toString();
-            url.hash = key;
-            return url.href.replace(/https?:\/\//, 'cryptpad://');
-        };
-
-        const parseCryptPadUrl = function(href) {
-            const url = new URL(href);
-            url.protocol = url.searchParams.get('protocol');
-            const key = url.hash.substring(1);  // remove leading '#'
-            const type = url.searchParams.get('type');
-            url.search = '';
-            url.hash = '';
-            return { src: url.href, key, type };
-        }
-
-        const setBlobType = (blob, mimeType) => {
-            const fixedBlob = new Blob([blob], {type: mimeType});
-            return fixedBlob;
-        };
-
-        APP.loadImage = function(href) {
-            return new Promise((resolve, reject) => {
-                const { src, key, type } = parseCryptPadUrl(href);
-                Util.fetch(src, function (err, u8) {
-                    if (err) {
-                        console.error(err);
-                        return void reject(err);
-                    }
-                    try {
-                        FileCrypto.decrypt(u8, Nacl.util.decodeBase64(key), (err, res) => {
-                            if (err || !res.content) {
-                                console.error("Decrypting failed");
-                                return void reject(err);
-                            }
-
-                            resolve(setBlobType(res.content, type));
-                        });
-                    } catch (e) {
-                        console.error(e);
-                        reject(err);
-                    }
-                }, void 0, framework._.sfCommon.getCache());
-            });
-        };
-
+        APP.loadImage = DiagramUtil.loadImage;
         APP.addImage = function() {
             return new Promise((resolve) => {
                 framework.insertImage({}, (imageData) => {
                     if (imageData.blob) {
                         resolve(imageData.blob);
                     } else {
-                        resolve(getCryptPadUrl(imageData.src, imageData.key, imageData.fileType));
+                        resolve(DiagramUtil.getCryptPadUrl(imageData.src, imageData.key, imageData.fileType));
                     }
                 });
             });
@@ -218,9 +168,13 @@ define([
 
         framework.setFileExporter(
             '.drawio',
-            () => {
-                return new Blob([jsonContentAsXML(lastContent)], {type: 'application/x-drawio'});
-            }
+            (cb) => {
+                require(['/diagram/export.js'], (exporter) => {
+                    exporter.main(lastContent, (xml) => {
+                        cb(new Blob([xml], {type: 'application/x-drawio'}));
+                    });
+                });
+            }, true
         );
 
         framework.onEditableChange(function () {
