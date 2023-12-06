@@ -1734,15 +1734,15 @@ define([
             return $value;
         };
         var getPrev = ($el) => {
-            var $all = $innerblock.find('[role="menuitem"]');
+            var $all = $innerblock.find('[role="menuitem"]:has(:visible)');
             if (!$all.length) { return $(); }
             var idx = $all.index($el[0]);
             if (idx === -1) { return $(); }
-            var prev = ($all.length + idx - 1) % $all.length;
+            var prev = (idx - 1 + $all.length) % $all.length;
             return $($all.get(prev));
         };
         var getNext = ($el) => {
-            var $all = $innerblock.find('[role="menuitem"]');
+            var $all = $innerblock.find('[role="menuitem"]:has(:visible)');
             if (!$all.length) { return $(); }
             var idx = $all.index($el[0]);
             if (idx === -1) { return $(); }
@@ -1750,7 +1750,7 @@ define([
             return $($all.get(next));
         };
         var getFirst = () => {
-            return $innerblock.find('[role="menuitem"]').first();
+            return $innerblock.find('[role="menuitem"]:has(:visible)').first();
         };
         $container.keydown(function (e) {
             var visible = $innerblock.is(':visible');
