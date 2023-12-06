@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function(name, definition) {
     if (typeof module !== 'undefined') { module.exports = definition(); }
     else if (typeof define === 'function' && typeof define.amd === 'object') { define(definition); }

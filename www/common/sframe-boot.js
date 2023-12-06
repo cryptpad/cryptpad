@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Stage 0, this gets cached which means we can't change it. boot2-sframe.js is changable.
 // Note that this file is meant to be executed only inside of a sandbox iframe.
 //

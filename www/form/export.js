@@ -1,8 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/customize/messages.js'
 ], function (Util, Messages) {
-    var Export = {};
+    var Export = {
+        ext: '.json'
+    };
 
     var escapeCSV = function (v) {
         if (!/("|,|\n|;)/.test(v)) {

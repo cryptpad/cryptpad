@@ -478,6 +478,7 @@
         flex-flow: column;
         flex: 1;
         min-width: 0;
+        min-height: 100%;
         position: relative;
         .cp-splitter {
             position: absolute;
@@ -649,14 +650,19 @@
                     font-size: 14px;
                     height: auto;
                 }
-                .cp-app-drive-element-state {
+                .cp-app-drive-element-state, .cp-app-drive-element-menu {
                     position: absolute;
                     top: 3px;
-                    right: 3px;
                     .fa, .cptools {
                         margin: 0;
                         font-size: 18px;
                     }
+                }
+                .cp-app-drive-element-state {
+                    left: 3px;
+                }
+                .cp-app-drive-element-menu {
+                    right: 3px;
                 }
                 .cp-app-drive-element-thumbnail {
                     max-width: 100px;

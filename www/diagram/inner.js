@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // This is the initialization loading the CryptPad libraries
 define([
     '/common/sframe-app-framework.js',
@@ -226,10 +230,6 @@ define([
                 message: Messages.reconnecting,
                 show: !editable
             });
-
-            document.getElementById('overlay').className = editable
-                ? ""
-                : "show";
         });
 
         // starting the CryptPad framework

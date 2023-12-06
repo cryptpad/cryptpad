@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: MIT
+
 (function () {
     'use strict';
     var factory = function (/*Hash*/) {

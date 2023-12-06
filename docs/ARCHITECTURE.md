@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 So you want to write a realtime collaborative application?
 
 This guide will focus on applications which require **multiple clients** to **collaboratively construct a single authoratative document**.

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function () {
 // add your module to this map so it gets used
 var map = {
@@ -22,7 +26,7 @@ var map = {
     //'sv': 'Svenska',
     //'te': 'తెలుగు',
     'uk': 'Українська',
-    'zh': '繁體中文',
+    'zh': '中文(簡體)',
 };
 
 var messages = {};
