@@ -59,7 +59,7 @@
     "requirejs-plugins": "^1.0.2",
     "scrypt-async": "1.2.0",
     "sortablejs": "^1.6.0",
-    "drawio": "github:cryptpad/drawio-npm#npm-21.8.2+2",
+    "drawio": "github:cryptpad/drawio-npm#npm-21.8.2+3",
     "pako": "^2.1.0",
     "x2js": "^3.4.4"
   },
