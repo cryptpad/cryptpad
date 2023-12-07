@@ -74,7 +74,7 @@ define([
     Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
     Messages.calendar_rec_change = "You moved a repeating event to different calendar. You can only apply this change to this event or all repeated events."; // XXX New translation key
     Messages.calendar_desc = "Description"; // XXX maybe rename in `description`?
-    delete Messages.calendar_location // XXX Remove Messages.calendar_location from translation keys as it is not used anymore?
+    delete Messages.calendar_location; // XXX Remove Messages.calendar_location from translation keys as it is not used anymore?
 
     var SaveAs = window.saveAs;
     var APP = window.APP = {
