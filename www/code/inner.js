@@ -86,7 +86,7 @@ define([
             h('i.cptools.cptools-palette'),
             h('span.cp-button-name', Messages.toolbar_theme)
         ]));
-        var $content = $(h('div.cp-toolbar-drawer-content', {
+        var $content = $(h('ul.cp-toolbar-drawer-content', {
             tabindex: 1
         })).hide();
 
