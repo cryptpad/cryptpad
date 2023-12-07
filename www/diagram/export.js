@@ -7,13 +7,15 @@ define([
     '/diagram/util.js',
 ], function (
     X2JS,
-    DiagramUtil,
+    DiagramUtil
 ) {
     const x2js = new X2JS();
     const jsonContentAsXML = (content) => x2js.js2xml(content);
 
     const parseDrawioStyle = (styleAttrValue) => {
-        if (!styleAttrValue) return;
+        if (!styleAttrValue) {
+            return;
+        }
 
         const result = {};
         for (const part of styleAttrValue.split(';')) {
@@ -32,10 +34,31 @@ define([
         return parts.join(';');
     };
 
-    const findCryptPadImages = (doc) => {
+    const blobToImage = (blob) => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                resolve(reader.result);
+            };
+            reader.readAsDataURL(blob);
+        });
+    };
+
+    const loadImage = (url) => {
+        return DiagramUtil.loadImage(url).then((blob) => blobToImage(blob));
+    };
+
+    const loadCryptPadImages = (doc) => {
         return Array.from(doc .querySelectorAll('mxCell'))
             .map((element) => [element, parseDrawioStyle(element.getAttribute('style'))])
             .filter(([element, style]) => style && style.image && style.image.startsWith('cryptpad://'))
+            .map(([element, style]) => {
+                return loadImage(style.image)
+                    .then((dataUrl) => {
+                        style.image = dataUrl.replace(';base64', '');  // ';' breaks draw.ios style format
+                        element.setAttribute('style', stringifyDrawioStyle(style));
+                    });
+            });
     };
 
     const parseXML = (xmlStr) => {
@@ -48,23 +71,8 @@ define([
         return doc;
     };
     
-    const blobToImage = (blob) => {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                resolve(reader.result);
-            };
-            reader.readAsDataURL(blob);
-        });
-    };
-
-    const loadImage = async (url) => {
-        const blob = await DiagramUtil.loadImage(url);
-        return await blobToImage(blob);
-    };
-
     return {
-        main: async function(userDoc, cb) {
+        main: function(userDoc, cb) {
             delete userDoc.metadata;
 
             const xml = jsonContentAsXML(userDoc);
@@ -77,16 +85,11 @@ define([
                 return;
             }
 
-            const elements = findCryptPadImages(doc)
-                .map(([element, style]) => [element, style, loadImage(style.image)]);
+            const promises = loadCryptPadImages(doc);
 
-            for (const [element, style, imagePromise] of elements) {
-                const dataUrl = await imagePromise;
-                style.image = dataUrl.replace(';base64', '');  // ';' breaks draw.ios style format
-                element.setAttribute('style', stringifyDrawioStyle(style));
-            }
-
-            cb(new XMLSerializer().serializeToString(doc), '.drawio');
+            Promise.all(promises).then(() => {
+                cb(new XMLSerializer().serializeToString(doc), '.drawio');
+            });
         }
     };
 });

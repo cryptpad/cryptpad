@@ -17,7 +17,7 @@ define([
     Messages,
     pako,
     X2JS,
-    DiagramUtil,
+    DiagramUtil
 ) {
     const Nacl = window.nacl;
     const APP = window.APP = {};

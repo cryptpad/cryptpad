@@ -5,7 +5,7 @@ define([
 ], function (
     Util,
     FileCrypto,
-    Cache,
+    Cache
 ) {
     const Nacl = window.nacl;
 
@@ -17,7 +17,7 @@ define([
         url.search = '';
         url.hash = '';
         return { src: url.href.replace(/cryptpad?:\/\//, `${protocol}//`), key, type };
-    }
+    };
 
     const getCryptPadUrl = function(src, key, type) {
         const url = new URL(src);
