@@ -152,7 +152,7 @@ MessengerUI, Messages, Pages) {
                 h('i.fa.fa-file-o'),
                 h('span.cp-button-name', Messages.toolbar_file)
             ])).appendTo($file).hide();
-            var $drawerContent = $(h('div.'+ DRAWER_CLS, {tabindex: 1})).hide();
+            var $drawerContent = $(h('ul.'+ DRAWER_CLS, {tabindex: 1})).hide();
             UI.createDrawer($drawer, $drawerContent);
         }
 
