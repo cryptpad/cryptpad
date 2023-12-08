@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 var Assert = require("assert");
 var Util = require("../../lib/common-util");
 var addIfAbsent = function (A, e) {

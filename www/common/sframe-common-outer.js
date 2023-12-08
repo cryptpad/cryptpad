@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
     '/components/nthen/index.js',
@@ -1235,7 +1239,7 @@ define([
                     var nSecret = secret;
                     if (cfg.isDrive) {
                         // Shared folder or user hash or fs hash
-                        var hash = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                        var hash = Cryptpad.userHash || Utils.LocalStore.getFSHash();
                         if (data.sharedFolder) { hash = data.sharedFolder.hash; }
                         if (hash) {
                             var password = (data.sharedFolder && data.sharedFolder.password) || undefined;
@@ -1985,8 +1989,9 @@ define([
                 require(['/common/clipboard.js'], function (Clipboard) {
                     var url = window.location.origin +
                                 Utils.Hash.hashToHref(hashes.viewHash, 'form');
-                    var success = Clipboard.copy(url);
-                    cb(success);
+                    Clipboard.copy(url, (err) => {
+                        cb(!err);
+                    });
                 });
             });
             sframeChan.on('EV_OPEN_VIEW_URL', function () {
