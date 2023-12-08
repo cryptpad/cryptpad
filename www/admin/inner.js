@@ -3508,6 +3508,7 @@ Example
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (waitFor) {
+        if (!common.isAdmin()) { return; }
         updateStatus(waitFor());
     }).nThen(function (/*waitFor*/) {
         createToolbar();
