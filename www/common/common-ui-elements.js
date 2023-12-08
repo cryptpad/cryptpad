@@ -2878,7 +2878,7 @@ define([
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
-                // XXX You can still use the current version in read-only mode by pressing Esc.
+                // You can still use the current version in read-only mode by pressing Esc.
                 // what if they don't have a keyboard (ie. mobile)
                 msg += Messages.errorCopy;
             }
@@ -2902,7 +2902,7 @@ define([
                 });
             }
             if (err.message && (err.message !== "PASSWORD_CHANGE" || viewer)) {
-                // XXX If readonly, tell the viewer that their link won't work with the new password
+                // If readonly, tell the viewer that their link won't work with the new password
                 UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
                     exitable, exitable);
                 return;
