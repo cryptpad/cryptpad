@@ -135,6 +135,8 @@ define([
                 framework.insertImage({}, (imageData) => {
                     if (imageData.blob) {
                         resolve(imageData.blob);
+                    } else if (imageData.url) {
+                        resolve(imageData.url);
                     } else {
                         resolve(DiagramUtil.getCryptPadUrl(imageData.src, imageData.key, imageData.fileType));
                     }
