@@ -1051,10 +1051,10 @@ define([
                         if (existing.indexOf(tag.innerHTML) > 10 && kanban.options.tags.indexOf(tag.innerHTML) === -1) {
                             if ($(tag).is(":visible")) { 
                                 $(tag).hide();
-                                $(toggleTagsButton).html(Messages.kanban_showTags);
+                                $(toggleTagsButton).text(Messages.kanban_showTags);
                             } else {
                                 $(tag).show();
-                                $(toggleTagsButton).html(Messages.kanban_hideTags);
+                                $(toggleTagsButton).text(Messages.kanban_hideTags);
                             }
                         }
                     }
