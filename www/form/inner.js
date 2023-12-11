@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     'json.sortify',
@@ -4514,6 +4518,20 @@ define([
             $('.cp-toolbar-icon-snapshots').hide();
         }
 
+        var initializeAnswers = function() {
+            // Initialize the answers properties if they do not exist yet
+            if (!APP.isEditor) { return; }
+            var priv = metadataMgr.getPrivateData();
+            if (content.answers && content.answers.channel && content.answers.publicKey === priv.form_public && content.answers.validateKey) { return; }
+            // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
+            content.answers = content.answers || {};
+            content.answers.channel = Hash.createChannelId();
+            content.answers.publicKey = priv.form_public;
+            content.answers.validateKey = priv.form_answerValidateKey;
+            content.answers.version = 2;
+            framework.localChange();
+        };
+
         var makeFormSettings = function () {
             var previewBtn = h('button.btn.btn-primary', [
                 h('i.fa.fa-eye'),
@@ -4869,6 +4887,7 @@ define([
             };
             refreshColorTheme();
 
+            evOnChange.reg(initializeAnswers);
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
             evOnChange.reg(refreshAnon);
@@ -5136,15 +5155,7 @@ define([
                     content.order = ["1", "2"];
                     framework.localChange();
                 }
-                if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
-                    // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
-                    content.answers = content.answers || {};
-                    content.answers.channel = Hash.createChannelId();
-                    content.answers.publicKey = priv.form_public;
-                    content.answers.validateKey = priv.form_answerValidateKey;
-                    content.answers.version = 2;
-                    framework.localChange();
-                }
+                initializeAnswers();
                 checkIntegrity();
             }
             if (isNew && content.answers && typeof(content.answers.anonymous) === "undefined") {

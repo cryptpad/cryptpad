@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 var prompt = require('prompt-confirm');
 const p = new prompt('Are you sure? This will permanently delete all existing data on your instance.');
 

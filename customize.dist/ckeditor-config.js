@@ -1,9 +1,15 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 /* global CKEDITOR */
 CKEDITOR.editorConfig = function( config ) {
     var fixThings = false;
     // https://dev.ckeditor.com/ticket/10907
     config.needsBrFiller= fixThings;
     config.needsNbspFiller= fixThings;
+
+    config.disableObjectResizing = true;
 
     config.removeButtons= 'Source,Maximize';
     // magicline plugin inserts html crap into the document which is not part of the

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -462,8 +466,9 @@ define([
                     var v = opts.getLinkValue({
                         embed: Util.isChecked($link.find('#cp-share-embed'))
                     });
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess); }
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
                 },
                 keys: [13]
             }, {
@@ -569,8 +574,9 @@ define([
                 onClick: function () {
                     Feedback.send('SHARE_EMBED');
                     var v = opts.getEmbedValue();
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess); }
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
                 },
                 keys: [13]
         }];
@@ -958,11 +964,11 @@ define([
                 iconClass: '.fa.fa-link',
                 onClick: function () {
                     var v = opts.getLinkValue();
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess);
-                }
-              },
-              keys: [13]
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
+                },
+                keys: [13]
             }
         ];
 
@@ -1004,8 +1010,9 @@ define([
             iconClass: '.fa.fa-link',
             onClick: function () {
                 var v = common.getMediatagFromHref(opts.fileData);
-                var success = Clipboard.copy(v);
-                if (success) { UI.log(Messages.shareSuccess); }
+                Clipboard.copy(v, (err) => {
+                    if (!err) { UI.log(Messages.shareSuccess); }
+                });
             },
             keys: [13]
         }];
