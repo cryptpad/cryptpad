@@ -3,6 +3,7 @@
 @import (reference) "../include/alertify.less";
 @import (reference) "../include/checkmark.less";
 @import (reference) "../include/forms.less";
+@import (reference) "../include/login.less";
 
 &.cp-page-login {
     .infopages_main();
@@ -22,47 +23,15 @@
         .cp-hidden {
             display: none !important;
         }
-        #userForm, #ssoForm {
-            .cp-shadow();
-            background-color: @cp_static-card-bg;
-            padding: 10px;
-            margin: 0 10px 10px 10px;
-            border-radius: @infopages-radius-L;
-            .cp-login-instance, .cp-login-sso-description {
-                margin-bottom: 5px;
-            }
-            .form-control {
-                border-radius: @infopages-radius;
-                color: @cryptpad_text_col;
-                background-color: @cp_forms-bg;
-                margin-bottom: 10px;
-                &:focus {
-                    border-color: @cryptpad_color_brand;
-                }
-                .tools_placeholder-color();
-            }
-            .checkbox-container {
-                color: @cryptpad_text_col;
-            }
-        }
-        #ssoForm {
-            button {
-                margin: 0 5px;
-            }
-        }
+        .login_main();
         .align-items-center {
             box-shadow: 0 5px 15px @cp_shadow-color;
             background: @cryptpad_color_white;
         }
-        .extra {
-            margin-top: 1em;
-            button.login {
-                margin-right: 0px;
-            }
-        }
-        .cp-default-label {
-            display: none;
-        }
+    }
+
+    .cp-login-encryption {
+        margin-top: 10px;
     }
 
     .cp-password-form {
