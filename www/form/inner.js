@@ -434,7 +434,11 @@ define([
             // Calendar inline for "day" type
             var calendarInput = h('input');
             calendarView = h('div', calendarInput);
-            var calendarDefault = new Date();
+            var calendarDefault = v.type === "day" ? extractValues(v.values).map(function (time) {
+                if (!time) { return; }
+                var d = new Date(time);
+                if (!isNaN(d)) { return d; }
+            }).filter(Boolean) : undefined;
             Flatpickr(calendarInput, {
                 mode: 'multiple',
                 inline: true,
@@ -527,16 +531,31 @@ define([
                         el = getOption(+time, false, false, Util.uid());
                         $add.before(el);
                         $(el).find('input').focus();
+
                         return;
                     } 
                     $(add).click();
                     return;
-                }
-
-                if (!isNaN(parseInt($container.find('input')[0].value))&& parseInt($container.find('input')[0].value).toString().length > 4) {
-                    var dateInput = new Date(parseInt($container.find('input')[0].value));
-                    $container.find('input')[0].value = dateInput.toDateString();
+                } else {
+                    var selectedDates = $(calendarView).find('input')[0]._flatpickr.selectedDates;
+                    if ($container.find('input')[0] && $container.find('input')[0]._flatpickr) {
+                        var dateInput = new Date(+$container.find('input').value);
+                        $container.find('input').value = dateInput.toLocaleDateString();
+                    } else if (selectedDates.length > 0) {
+                        for (var i=0; i < selectedDates.length; i++ ) {
+                            if (!$container.find('input')[i]) {
+                                var element = getOption(selectedDates[i].toLocaleDateString(), true, false, Util.uid());
+                                $add.before(element);
+                                $(element).find('input').focus();
+                            } else {
+                                $container.find('input')[i].value = selectedDates[i].toLocaleDateString();
+                            } 
+                        }
+                    } else if ($container.find('input')[0]) {
+                        $container.find('input')[0].value = '';
+                    }   
                 } 
+
                 $container.find('input').each(function (i, input) {
                     if (input._flatpickr) {
                         input._flatpickr.destroy();
@@ -2662,12 +2681,11 @@ define([
                 if (answer === false) {
                     var cols = extractValues(opts.values).map(function (key) {
                         if (opts.type === 'time') {
-                            return q + ' | ' + new Date(parseInt(key)).toISOString();
-                        } else {
-                            return q + ' | ' + key;
+                            return q + ' | ' + new Date(+key).toISOString();
                         }
+                        return q + ' | ' + key;
+                        
                     });
-                    cols.unshift(q);
                     return cols;
                 }
                 if (!answer || !answer.values) {
@@ -2675,25 +2693,18 @@ define([
                     empty.unshift('');
                     return empty;
                 }
-                var str = '';
                 var timeValues = {};
-                Object.keys(answer.values).sort().forEach(function (k, i) {
-                    if (i !== 0) { str += ';'; }
+                Object.keys(answer.values).sort().forEach(function (k) {
                     if (opts.type === 'time') {
-                        timeValues[new Date(parseInt(k)).toISOString()] = answer.values[k];
-                        str += new Date(parseInt(k)).toISOString().replace(';', '').replace(':', '') + ':' + timeValues[new Date(parseInt(k)).toISOString()];
-                    } else {
-                        str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
-                    }
+                        timeValues[new Date(+k).toISOString()] = answer.values[k];
+                    } 
                 });
                 var res = extractValues(opts.values).map(function (key) {
                     if (opts.type === 'time') {
-                        return timeValues[new Date(parseInt(key)).toISOString()] || '';
-                    } else {
-                        return answer.values[key] || '';
-                    }
+                        return timeValues[new Date(+key).toISOString()] || '';
+                    } 
+                    return answer.values[key] || '';
                 });
-                res.unshift(str);
                 return res;
             },
             icon: h('i.cptools.cptools-form-poll')
@@ -3661,7 +3672,7 @@ define([
                     e.preventDefault();
                     if (!$el.is(':visible')) {
                         var pages = $el.closest('.cp-form-page').index();
-                        if (APP.refreshPage) { APP.refreshPage(pages + 1); }
+                        if (APP.refreshPage) { APP.refreshPage(pages, 'required'); }
                     }
                     $el[0].scrollIntoView();
                 });
@@ -4094,41 +4105,21 @@ define([
                     ]);
                     $(copy).click(function() {
                         if (!APP.isEditor) { return; }
-                        var full = !uid;
                         var arr = content.order;
                         var idx = content.order.indexOf(uid);
                         var _uid;
-                        if (!full) {
-                            var obj = getSectionFromQ(content, uid);
-                            arr = obj.arr;
-                            idx = obj.idx;
-                            _uid = Util.uid();
-                        }
+                        var obj = getSectionFromQ(content, uid);
+                        arr = obj.arr;
+                        idx = obj.idx;
+                        _uid = Util.uid();
 
-                        var model = TYPES[type] || STATIC_TYPES[type];
-                        if (!model) { return; }
-                        var question;
-                        if (content.form[uid].q) {
-                            question = content.form[uid].q;
-                        } else {
-                            question = Messages.form_default;
-                        }
-                        var options;
-                        if (content.form[uid].opts) {
-                            options = content.form[uid].opts;
-                        } else {
-                            options = Util.clone(model.defaultOpts);
-                        }
                         content.form[_uid] = {
-                            q: question,
-                            opts: options,
+                            q: content.form[uid].q,
+                            opts: content.form[uid].opts,
                             type: type,
                         };
-                        if (full) {
-                            arr.push(_uid);
-                        } else {
-                            arr.splice(idx, 0, _uid);
-                        }
+
+                        arr.splice(idx, 0, _uid);
                         framework.localChange();
                         updateForm(framework, content, true);
                     });
@@ -4273,6 +4264,8 @@ define([
         var _content = elements;
         if (!editable) {
             _content = [];
+            var pgcontent = [];
+            var pg = [];
             var div = h('div.cp-form-page');
             var pages = 1;
             var wasPage = false;
@@ -4282,60 +4275,93 @@ define([
                     if (i === (elements.length - 1)) { return; } // Can't end with a page break
                     if (wasPage) { return; } // Prevent double page break
                     _content.push(div);
+                    pgcontent.push(pg);
                     pages++;
                     div = h('div.cp-form-page');
+                    pg = [];
                     wasPage = true;
                     return;
                 }
+                if (form[obj.uid] && form[obj.uid].type === 'section') {
+                    return;
+                }
+                pg.push(obj);
                 wasPage = false;
                 $(div).append(obj);
             });
             _content.push(div);
-
+            pgcontent.push(pg);
             if (pages > 1) {
-                var pageContainer = h('div.cp-form-page-container');
-                var $page = $(pageContainer);
-                _content.push(pageContainer);
-                var refreshPage = APP.refreshPage = function (current) {
-                    $page.empty();
-                    var hiddenPages;
-
-                    var checkEmptyPages = function() {
-                        var shownContent = [];
-                        hiddenPages = 0;
-                        _content.forEach(function(div) {
-                            var hiddenQs = 0;
-                            for (var child of div.children) {
-                                if ($(child).attr('data-title') === 'hidden') {
-                                    hiddenQs++;
-                                }
-                            }
-                            if (hiddenQs === div.children.length && $(div).attr('class') !== 'cp-form-page-container') {
-                                div['empty'] = true;
-                                hiddenPages ++;
-                            }
-                            else {
-                                div['empty'] = false;
-                                if ($(div).attr('class') !== 'cp-form-page-container' && shownContent.indexOf(div) === -1) {
-                                    shownContent.push(div);
-                                }
+                var checkEmptyPages = function() {
+                    getSections(content).forEach(function (uid) {
+                        var block = content.form[uid];
+                        if (checkCondition(block)) {
+                            block.opts.questions.forEach(function(uid){
+                                form[uid].visible = true;
+                            });
+                        } else {
+                            block.opts.questions.forEach(function(uid){
+                                form[uid].visible = false;
+                            });
+                        }
+                    });
+                    
+                    var shownContent = [];
+                    var shownPages = [];
+                    pgcontent.forEach(function(page) {
+                        var hiddenQs = 0;
+                        page.forEach(function(q) {
+                            if (form[$(q).attr('data-id')] && form[$(q).attr('data-id')].visible === false) {
+                                hiddenQs++;
                             }
                         });
-                        return shownContent;
-                    };
-                    var shownContent = checkEmptyPages();
-                    var shownPages = checkEmptyPages().length;
+                        if (hiddenQs === page.length) {
+                            page.empty = true;
+                        } else {
+                            page.empty = false;
+                            shownContent.push(page);
+                            shownPages.push(_content[pgcontent.indexOf(page)]);
+                        }
+                    });
+                    return [shownContent, shownPages];
+                };
 
+                var pageContainer = h('div.cp-form-page-container');
+                
+                var $page = $(pageContainer);
+                _content.push(pageContainer);
+                var refreshPage = APP.refreshPage = function (current, direction) {
+                    $page.empty();
                     if (!current || current < 1) { current = 1; }
 
-                    checkEmptyPages();
+                    var checkPages = checkEmptyPages();
+                    var shownContent = checkPages[0];
+                    var shownPages = checkPages[1];
+                    var shownLength = shownContent.length;
 
-                    var state = h('span', Messages._getKey('form_page', [shownContent.indexOf(_content[current-1])+1,  shownPages]));
+                    if (pgcontent[(current - 1)] && pgcontent[current-1].empty) {
+                        if (direction === 'next') {
+                            current++;
+                            while (pgcontent[current-1].empty) {
+                                current++;
+                            }
+                        } else if (direction === 'prev') {
+                            current--;
+                            while (pgcontent[current-1].empty) {
+                                current--;
+                            }
+                        } else if (direction === 'required') {
+                            current = shownContent.indexOf(_content[current]);
+                        }
+                    }
+
+                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
                     evOnChange.reg(function(){
-                        checkEmptyPages();
-                        shownContent = checkEmptyPages();
-                        shownPages = checkEmptyPages().length;
-                        $(state).html(Messages._getKey('form_page', [shownContent.indexOf(_content[current-1])+1, shownPages]));
+                        var checkPages = checkEmptyPages();
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
+                        var shownLength = shownContent.length;
+                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
                     });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
@@ -4343,32 +4369,18 @@ define([
                     var right = h('button.btn.btn-secondary.cp-next', [
                         h('i.fa.fa-arrow-right'),
                     ]);
-                    if (current === pages) { $(right).css('visibility', 'hidden'); }
+
+                    if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
 
                     $(left).click(function () {
-                        checkEmptyPages();
-                        var prevPage = -1;
-                        if (_content[current+prevPage-1]['empty']) {
-                            prevPage--;
-                            while (_content[current+prevPage-1]['empty']) {
-                                prevPage --;
-                            }
-                        }
-                        refreshPage(current + prevPage);
+                        refreshPage(current - 1, 'prev');
                     });
                     $(right).click(function () {
-                        checkEmptyPages();
-                        var nextPage = 1;
-                        if (_content[current]['empty']) {
-                            nextPage++;
-                            while (_content[(current+nextPage)-1]['empty']) {
-                                nextPage ++;
-                            }
-                        }
-                        refreshPage(current + nextPage);
+                        refreshPage(current + 1, 'next');
                     });
                     $page.append([left, state, right]);
+
                     $container.find('.cp-form-page').hide();
                     $($container.find('.cp-form-page').get(current-1)).show();
                     if (current !== pages) {
@@ -4524,11 +4536,6 @@ define([
                 var show = checkCondition(block);
                 block.opts.questions.forEach(function (_uid) {
                     $container.find('.cp-form-block[data-id="'+_uid+'"]').toggle(show);
-                    if (!show) {
-                        $container.find('.cp-form-block[data-id="'+_uid+'"]').attr('data-title', 'hidden');
-                    } else {
-                        $container.find('.cp-form-block[data-id="'+_uid+'"]').attr('data-title', 'visible');
-                    }
                 });
             });
         });
