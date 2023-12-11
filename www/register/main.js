@@ -70,6 +70,10 @@ define([
                 return b;
             });
             $sso.append(list);
+
+            // Disable bfcache (back/forward cache) to prevent SSO button
+            // being disabled when using the browser "back" feature on the SSO page
+            $(window).on('unload', () => {});
         }
 
         var registerClick = function () {

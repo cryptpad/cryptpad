@@ -48,7 +48,7 @@ define([
                         ]),
                         h('div.extra', [
                             (Config.restrictRegistration?
-                                undefined:
+                                h('div'):
                                 h('a#register', {
                                     href: "/register/",
                                 }, Msg.login_register)
@@ -56,13 +56,14 @@ define([
                             h('button.login', Msg.login_login),
                         ]),
                     ]),
+                    h('div.col-md-3'),
                     h('div.col-md-3'+ssoEnabled),
                     h('div#ssoForm.form-group.col-md-6'+ssoEnabled, [
                         h('div.cp-login-sso', Msg.sso_login_description)
                     ]),
-                    h('div.col-md-3')
+                    h('div.col-md-3'+ssoEnabled),
                 ]),
-                h('div.row', [
+                h('div.row.cp-login-encryption', [
                     h('div.col-md-3'),
                     h('div.col-md-6', Msg.register_warning_note),
                     h('div.col-md-3'),
