@@ -63,6 +63,7 @@ define([
             'cp-admin-update-limit',
             'cp-admin-registration',
             'cp-admin-enableembeds',
+            'cp-admin-forcemfa',
             'cp-admin-email',
 
             'cp-admin-instance-info-notice',
@@ -1521,6 +1522,31 @@ Example
                 }
                 APP.updateStatus(function () {
                     setState(APP.instanceStatus.enableEmbedding);
+                    flushCacheNotice();
+                });
+            });
+        },
+    });
+
+    // Msg.admin_forcemfaHint, .admin_forcemfaTitle
+    Messages.admin_forcemfaTitle = "Enforce MFA on this instance"; // XXX
+    Messages.admin_forcemfaHint = "All CryptPad users will be asked to set up a multi-factor authenticator (TOTP) to log in to their account."; // XXX
+    create['forcemfa'] = makeAdminCheckbox({
+        key: 'forcemfa',
+        getState: function () {
+            return APP.instanceStatus.enforceMFA;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['ENFORCE_MFA', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.enforceMFA);
                     flushCacheNotice();
                 });
             });
