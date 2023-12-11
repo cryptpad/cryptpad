@@ -1,9 +1,15 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // This file is used when a user tries to export the entire CryptDrive.
 // Calendars will be exported using this format instead of plain text.
 define([
     '/customize/pages.js',
     '/common/common-util.js',
-    '/calendar/recurrence.js'
+    '/calendar/recurrence.js',
+
+    '/lib/ical.min.js'
 ], function (Pages, Util, Rec) {
     var module = {};
 
@@ -96,14 +102,20 @@ define([
                 return rrule;
             };
 
-
-
             var addEvent = function (arr, data, recId) {
                 var uid = data.id;
                 var dt = getDT(data);
                 var start = dt.start;
                 var end = dt.end;
                 var rrule = getRRule(data);
+
+                var formatDescription = function(str) {
+                    var componentName = 'DESCRIPTION:';
+                    var result = componentName + str.replace(/\n/g, ["\\n"]);
+                    // In RFC5545: https://www.rfc-editor.org/rfc/rfc5545#section-3.1
+                    result = window.ICAL.helpers.foldline(result);
+                    return result;
+                };
 
                 Array.prototype.push.apply(arr, [
                     'BEGIN:VEVENT',
@@ -115,6 +127,7 @@ define([
                     rrule,
                     'SUMMARY:'+ data.title,
                     'LOCATION:'+ data.location,
+                    formatDescription(data.body),
                 ].filter(Boolean));
 
                 if (Array.isArray(data.reminders)) {
@@ -253,154 +266,153 @@ define([
     };
 
     module.import = function (content, id, cb) {
-        require(['/lib/ical.min.js'], function () {
-            var ICAL = window.ICAL;
-            var res = {};
+        var ICAL = window.ICAL;
+        var res = {};
 
-            var vcalendar;
-            try {
-                var jcalData = ICAL.parse(content);
-                vcalendar = new ICAL.Component(jcalData);
-            } catch (e) {
-                console.error(e);
-                return void cb(e);
+        var vcalendar;
+        try {
+            var jcalData = ICAL.parse(content);
+            vcalendar = new ICAL.Component(jcalData);
+        } catch (e) {
+            console.error(e);
+            return void cb(e);
+        }
+
+        //var method = vcalendar.getFirstPropertyValue('method');
+        //if (method !== "PUBLISH") { return void cb('NOT_SUPPORTED'); }
+
+        // Add all timezones in iCalendar object to TimezoneService
+        // if they are not already registered.
+            var timezones = vcalendar.getAllSubcomponents("vtimezone");
+        timezones.forEach(function (timezone) {
+            if (!(ICAL.TimezoneService.has(timezone.getFirstPropertyValue("tzid")))) {
+                ICAL.TimezoneService.register(timezone);
+            }
+        });
+
+        var events = vcalendar.getAllSubcomponents('vevent');
+        events.forEach(function (ev) {
+            var uid = ev.getFirstPropertyValue('uid');
+            if (!uid) { return; }
+
+            // Get start and end time
+            var isAllDay = false;
+            var start = ev.getFirstPropertyValue('dtstart');
+            var end = ev.getFirstPropertyValue('dtend');
+            var duration = ev.getFirstPropertyValue('duration');
+            if (!end && !duration) {
+                if (start.isDate) {
+                    end = start.clone();
+                    end.adjust(1); // Add one day
+                } else {
+                    end = start.clone();
+                }
+            } else if (!end) {
+                end = start.clone();
+                end.addDuration(duration);
+            }
+            if (start.isDate && end.isDate) {
+                isAllDay = true;
+                start = String(start);
+                end.adjust(-1); // Substract one day
+                end = String(end);
+            } else {
+                start = +start.toJSDate();
+                end = +end.toJSDate();
             }
 
-            //var method = vcalendar.getFirstPropertyValue('method');
-            //if (method !== "PUBLISH") { return void cb('NOT_SUPPORTED'); }
-
-            // Add all timezones in iCalendar object to TimezoneService
-            // if they are not already registered.
-            var timezones = vcalendar.getAllSubcomponents("vtimezone");
-            timezones.forEach(function (timezone) {
-                if (!(ICAL.TimezoneService.has(timezone.getFirstPropertyValue("tzid")))) {
-                    ICAL.TimezoneService.register(timezone);
-                }
+            // Store other properties
+            var used = ['dtstart', 'dtend', 'uid', 'summary', 'location', 'description', 'dtstamp', 'rrule', 'recurrence-id'];
+            var hidden = [];
+            ev.getAllProperties().forEach(function (p) {
+                if (used.indexOf(p.name) !== -1) { return; }
+                // This is an unused property
+                hidden.push(p.toICALString());
             });
 
-            var events = vcalendar.getAllSubcomponents('vevent');
-            events.forEach(function (ev) {
-                var uid = ev.getFirstPropertyValue('uid');
-                if (!uid) { return; }
-
-                // Get start and end time
-                var isAllDay = false;
-                var start = ev.getFirstPropertyValue('dtstart');
-                var end = ev.getFirstPropertyValue('dtend');
-                var duration = ev.getFirstPropertyValue('duration');
-                if (!end && !duration) {
-                    if (start.isDate) {
-                        end = start.clone();
-                        end.adjust(1); // Add one day
-                    } else {
-                        end = start.clone();
-                    }
-                } else if (!end) {
-                    end = start.clone();
-                    end.addDuration(duration);
+            // Get reminders
+            var reminders = [];
+            ev.getAllSubcomponents('valarm').forEach(function (al) {
+                var action = al.getFirstPropertyValue('action');
+                if (action !== 'DISPLAY') {
+                    // Email notification: keep it in "hidden" and create a cryptpad notification
+                    hidden.push(al.toString());
                 }
-                if (start.isDate && end.isDate) {
-                    isAllDay = true;
-                    start = String(start);
-                    end.adjust(-1); // Substract one day
-                    end = String(end);
-                } else {
-                    start = +start.toJSDate();
-                    end = +end.toJSDate();
-                }
+                var trigger = al.getFirstPropertyValue('trigger');
+                var minutes = trigger && trigger.toSeconds ? (-trigger.toSeconds() / 60) : 0;
+                if (reminders.indexOf(minutes) === -1) { reminders.push(minutes); }
+            });
 
-                // Store other properties
-                var used = ['dtstart', 'dtend', 'uid', 'summary', 'location', 'dtstamp', 'rrule', 'recurrence-id'];
-                var hidden = [];
-                ev.getAllProperties().forEach(function (p) {
-                    if (used.indexOf(p.name) !== -1) { return; }
-                    // This is an unused property
-                    hidden.push(p.toICALString());
+            // Get recurrence rule
+            var rrule = ev.getFirstPropertyValue('rrule');
+            var rec;
+            if (rrule && rrule.freq) {
+                rec = {};
+                rec.freq = rrule.freq.toLowerCase();
+                if (rrule.interval) { rec.interval = rrule.interval; }
+                if (rrule.count) { rec.count = rrule.count; }
+                if (Object.keys(rrule).includes('wkst')) { rec.wkst = (rrule.wkst + 6) % 7; }
+                if (rrule.until) { rec.until = +new Date(rrule.until); }
+                Object.keys(rrule.parts || {}).forEach(function (k) {
+                    rec.by = rec.by || {};
+                    var _k = k.toLowerCase().slice(2); // "BYDAY" ==> "day"
+                    rec.by[_k] = rrule.parts[k];
                 });
+            }
 
-                // Get reminders
-                var reminders = [];
-                ev.getAllSubcomponents('valarm').forEach(function (al) {
-                    var action = al.getFirstPropertyValue('action');
-                    if (action !== 'DISPLAY') {
-                        // Email notification: keep it in "hidden" and create a cryptpad notification
-                        hidden.push(al.toString());
-                    }
-                    var trigger = al.getFirstPropertyValue('trigger');
-                    var minutes = trigger && trigger.toSeconds ? (-trigger.toSeconds() / 60) : 0;
-                    if (reminders.indexOf(minutes) === -1) { reminders.push(minutes); }
+            // Create event
+            var obj = {
+                calendarId: id,
+                id: uid,
+                category: 'time',
+                title: ev.getFirstPropertyValue('summary'),
+                location: ev.getFirstPropertyValue('location'),
+                body: ev.getFirstPropertyValue('description'),
+                isAllDay: isAllDay,
+                start: start,
+                end: end,
+                reminders: reminders,
+                cp_hidden: hidden,
+            };
+            if (rec) { obj.recurrenceRule = rec; }
+
+            if (!hidden.length) { delete obj.cp_hidden; }
+            if (!reminders.length) { delete obj.reminders; }
+
+            var recId = ev.getFirstPropertyValue('recurrence-id');
+            if (recId) {
+                setTimeout(function () {
+                    if (!res[uid]) { return; }
+                    var old = res[uid];
+                    var time = +new Date(recId);
+                    var diff = {};
+                    var from = {};
+                    Object.keys(obj).forEach(function (k) {
+                        if (JSON.stringify(old[k]) === JSON.stringify(obj[k])) { return; }
+                        if (['start','end'].includes(k)) {
+                            diff[k] = Rec.diffDate(old[k], obj[k]);
+                            return;
+                        }
+                        if (k === "recurrenceRule") {
+                            from[k] = obj[k];
+                            return;
+                        }
+                        diff[k] = obj[k];
+                    });
+                    old.recUpdate = old.recUpdate || {one:{},from:{}};
+                    if (Object.keys(from).length) { old.recUpdate.from[time] = from; }
+                    if (Object.keys(diff).length) { old.recUpdate.one[time] = diff; }
                 });
+                return;
+            }
 
-                // Get recurrence rule
-                var rrule = ev.getFirstPropertyValue('rrule');
-                var rec;
-                if (rrule && rrule.freq) {
-                    rec = {};
-                    rec.freq = rrule.freq.toLowerCase();
-                    if (rrule.interval) { rec.interval = rrule.interval; }
-                    if (rrule.count) { rec.count = rrule.count; }
-                    if (Object.keys(rrule).includes('wkst')) { rec.wkst = (rrule.wkst + 6) % 7; }
-                    if (rrule.until) { rec.until = +new Date(rrule.until); }
-                    Object.keys(rrule.parts || {}).forEach(function (k) {
-                        rec.by = rec.by || {};
-                        var _k = k.toLowerCase().slice(2); // "BYDAY" ==> "day"
-                        rec.by[_k] = rrule.parts[k];
-                    });
-                }
+            res[uid] = obj;
+        });
 
-                // Create event
-                var obj = {
-                    calendarId: id,
-                    id: uid,
-                    category: 'time',
-                    title: ev.getFirstPropertyValue('summary'),
-                    location: ev.getFirstPropertyValue('location'),
-                    isAllDay: isAllDay,
-                    start: start,
-                    end: end,
-                    reminders: reminders,
-                    cp_hidden: hidden,
-                };
-                if (rec) { obj.recurrenceRule = rec; }
-
-                if (!hidden.length) { delete obj.cp_hidden; }
-                if (!reminders.length) { delete obj.reminders; }
-
-                var recId = ev.getFirstPropertyValue('recurrence-id');
-                if (recId) {
-                    setTimeout(function () {
-                        if (!res[uid]) { return; }
-                        var old = res[uid];
-                        var time = +new Date(recId);
-                        var diff = {};
-                        var from = {};
-                        Object.keys(obj).forEach(function (k) {
-                            if (JSON.stringify(old[k]) === JSON.stringify(obj[k])) { return; }
-                            if (['start','end'].includes(k)) {
-                                diff[k] = Rec.diffDate(old[k], obj[k]);
-                                return;
-                            }
-                            if (k === "recurrenceRule") {
-                                from[k] = obj[k];
-                                return;
-                            }
-                            diff[k] = obj[k];
-                        });
-                        old.recUpdate = old.recUpdate || {one:{},from:{}};
-                        if (Object.keys(from).length) { old.recUpdate.from[time] = from; }
-                        if (Object.keys(diff).length) { old.recUpdate.one[time] = diff; }
-                    });
-                    return;
-                }
-
-                res[uid] = obj;
-            });
-
-            // setTimeout to make sure we call back after the "recurrence-id" setTimeout
-            // are called
-            setTimeout(function () {
-                cb(null, res);
-            });
+        // setTimeout to make sure we call back after the "recurrence-id" setTimeout
+        // are called
+        setTimeout(function () {
+            cb(null, res);
         });
     };
 

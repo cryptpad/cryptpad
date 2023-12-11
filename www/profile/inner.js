@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/components/chainpad-crypto/crypto.js',
@@ -114,8 +118,9 @@ define([
         }).append(h('i.fa.fa-shhare-alt'))
           .append(h('span', Messages.shareButton))
           .click(function () {
-            var success = Clipboard.copy(url);
-            if (success) { UI.log(Messages.shareSuccess); }
+            Clipboard.copy(url, (err) => {
+                if (!err) { UI.log(Messages.shareSuccess); }
+            });
         }).appendTo($container);
     };
 
@@ -521,8 +526,9 @@ define([
             var metadataMgr = APP.common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
             var url = Hash.getPublicSigningKeyString(privateData.origin, data.name, data.edPublic);
-            var success = Clipboard.copy(url);
-            if (success) { UI.log(Messages.genericCopySuccess); }
+            Clipboard.copy(url, (err) => {
+                if (!err) { UI.log(Messages.genericCopySuccess); }
+            });
         };
     };
 

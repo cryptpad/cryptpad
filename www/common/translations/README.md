@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # Adding Translations
 
 To illustrate the process of translating, this guide will make an english-pirate translation of Cryptpad.
@@ -30,7 +36,7 @@ var map = {
     'de': 'Deutsch',
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
-    'zh': '繁體中文',
+    'zh': '中文(簡體)',
     'el': 'Ελληνικά',
 };
 ```
@@ -48,7 +54,7 @@ var map = {
     'de': 'Deutsch',
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
-    'zh': '繁體中文',
+    'zh': '中文(簡體)',
     'el': 'Ελληνικά',
     'pirate': 'English Pirate', // add our module to the map of languages
 };

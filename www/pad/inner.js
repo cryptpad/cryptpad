@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 require(['/api/config'], function(ApiConfig) {
     // see ckeditor_base.js getUrl()
     window.CKEDITOR_GETURL = function(resource) {
