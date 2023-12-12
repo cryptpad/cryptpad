@@ -2527,7 +2527,7 @@ define([
             UI.createCheckbox('cp-creation-expire', Messages.creation_expiration, false, {
                 labelAlt: Messages.creation_expiresIn
             }),
-            h('span.cp-creation-expire-picker.cp-creation-slider', [
+            h('form.cp-creation-expire-picker.cp-creation-slider', { autocomplete: "off" }, [
                 h('input#cp-creation-expire-val', {
                     type: "number",
                     min: 1,
@@ -2789,7 +2789,7 @@ define([
                     case "month": unit = 3600 * 24 * 30; break;
                     default: unit = 0;
                 }
-                expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
+                expireVal = (Math.min(Number($('#cp-creation-expire-val').val()), 100) || 0) * unit;
             }
             // Password
             var passwordVal = $('#cp-creation-password').is(':checked') ?
