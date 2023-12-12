@@ -39,6 +39,7 @@ define([
                                     type: 'password',
                                     'name': 'password',
                                     placeholder: Msg.login_password,
+                                    autocomplete: "current-password"
                                 }),
                             ]),
                         ]),

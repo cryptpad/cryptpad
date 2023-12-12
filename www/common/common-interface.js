@@ -877,7 +877,7 @@ define([
         opts = opts || {};
         var attributes = merge({
             type: 'password',
-            autocomplete: 'new-password', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
+            autocomplete: 'one-time-code', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
