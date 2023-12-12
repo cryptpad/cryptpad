@@ -2694,11 +2694,6 @@ define([
                     return empty;
                 }
                 var timeValues = {};
-                Object.keys(answer.values).sort().forEach(function (k) {
-                    if (opts.type === 'time') {
-                        timeValues[new Date(+k).toISOString()] = answer.values[k];
-                    } 
-                });
                 var res = extractValues(opts.values).map(function (key) {
                     if (opts.type === 'time') {
                         return timeValues[new Date(+key).toISOString()] || '';
@@ -4295,30 +4290,21 @@ define([
                 var checkEmptyPages = function() {
                     getSections(content).forEach(function (uid) {
                         var block = content.form[uid];
-                        if (checkCondition(block)) {
-                            block.opts.questions.forEach(function(uid){
-                                form[uid].visible = true;
-                            });
-                        } else {
-                            block.opts.questions.forEach(function(uid){
-                                form[uid].visible = false;
-                            });
-                        }
+                        var condition = Boolean(checkCondition(block));
+                        block.opts.questions.forEach(function(uid){
+                            form[uid].visible = condition;
+                        });
                     });
+
                     
                     var shownContent = [];
                     var shownPages = [];
                     pgcontent.forEach(function(page) {
-                        var hiddenQs = 0;
-                        page.forEach(function(q) {
-                            if (form[$(q).attr('data-id')] && form[$(q).attr('data-id')].visible === false) {
-                                hiddenQs++;
-                            }
+                        var visible = page.some(function(q) {
+                            return form[$(q).attr('data-id')] && form[$(q).attr('data-id')].visible !== false;
                         });
-                        if (hiddenQs === page.length) {
-                            page.empty = true;
-                        } else {
-                            page.empty = false;
+                        page.empty = !visible;
+                        if (visible) {
                             shownContent.push(page);
                             shownPages.push(_content[pgcontent.indexOf(page)]);
                         }
