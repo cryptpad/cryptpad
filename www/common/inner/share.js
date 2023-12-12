@@ -511,7 +511,7 @@ define([
         return container;
     };
 
-    Messages.share_toggleQR = "Click to toggle QR code visibility"; // XXX
+    Messages.share_toggleQR = "Click to toggle QR code visibility"; // NEXT
     var getQRTab = function (Env, data, opts, _cb) {
         var qr = getQRCode(opts.getLinkValue());
 
@@ -525,7 +525,7 @@ define([
                 className: 'primary cp-bar',
                 name: Messages.share_bar,
                 onClick: function () {
-                    UI.warn("OOPS: NOT IMPLEMENTED"); // XXX
+                    UI.warn("OOPS: NOT IMPLEMENTED"); // NEXT
                     return true;
                 },
             },
@@ -794,7 +794,7 @@ define([
         return $rights;
     };
 
-    Messages.share_QRCategory = "QR"; // XXX
+    Messages.share_QRCategory = "QR"; // NEXT
 
     // In the share modal, tabs need to share data between themselves.
     // To do so we're using "opts" to store data and functions
@@ -854,7 +854,7 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
-        }, window.CP_DEV_MODE ? { // XXX enable for all
+        }, window.CP_DEV_MODE ? { // NEXT enable for all
             getTab: getQRTab,
             title: Messages.share_QRCategory,
             icon: 'fa fa-qrcode',
@@ -1056,7 +1056,7 @@ define([
             active: !hasFriends,
         }];
 
-        // XXX add QR code generation for files
+        // NEXT add QR code generation for files
         if (ApiConfig.enableEmbedding) {
             tabs.push({
                 getTab: getFileEmbedTab,

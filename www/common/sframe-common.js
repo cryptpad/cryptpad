@@ -910,7 +910,7 @@ define([
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 var msg = err;
                 if (err === 'DELETED' || (err && err.type === 'EDELETED')) {
-                    // XXX You can still use the current version in read-only mode by pressing Esc.
+                    // You can still use the current version in read-only mode by pressing Esc.
                     // what if they don't have a keyboard (ie. mobile)
                     if (err.type && err.message) {
                         msg = UI.getDestroyedPlaceholderMessage(err.message, false, true);

@@ -7,7 +7,7 @@ var factory = function () {
     var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
-    var sendCredentials = window.sendCredentials || false; // XXX SSO find a logical place to infer whether this should be set
+    var sendCredentials = window.sendCredentials || false; // SSO find a logical place to infer whether this should be set
 
     // Save a blob on the file system
     var saveFile = function (blob, url, fileName) {
