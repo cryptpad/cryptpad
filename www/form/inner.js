@@ -75,7 +75,7 @@ define([
     Sortable
     )
 {
-    Messages.form_copyQuestion = 'Duplicate'; //XXX
+    Messages.duplicate = 'Duplicate'; // XXX
 
     var APP = window.APP = {
         blocks: {}
@@ -4096,7 +4096,7 @@ define([
                     ]);
                     var copy = h('button.btn.btn-default.cp-form-copy-button', [
                         h('i.fa.fa-copy'),
-                        h('span', Messages.form_copyQuestion)
+                        h('span', Messages.duplicate)
                     ]);
                     $(copy).click(function() {
                         if (!APP.isEditor) { return; }
