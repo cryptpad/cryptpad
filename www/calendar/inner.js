@@ -1012,13 +1012,12 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            event.recurrenceRule = APP.recurrenceRule; // XXX Not sure about the consistency of data structures
+            event.recurrenceRule = APP.recurrenceRule;
             newEvent(event, function (err) {
                 if (err) {
                     console.error(err);
                     return void UI.warn(err);
                 }
-                //cal.createSchedules([schedule]); XXX Remove these occurrences elsewhere
             });
         });
         cal.on('beforeUpdateSchedule', function(event) {
@@ -1127,7 +1126,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                             console.error(err);
                             return void UI.warn(err);
                         }
-                        //cal.updateSchedule(old.id, old.calendarId, changes);
                     });
                 }
             };
