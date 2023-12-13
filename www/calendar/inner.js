@@ -76,7 +76,7 @@ define([
     Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
     Messages.calendar_rec_change = "You moved a repeating event to different calendar. You can only apply this change to this event or all repeated events."; // XXX New translation key
     Messages.calendar_desc = "Description"; // XXX maybe rename in `description`?
-    Messages.calendar_description = "Description:{0}{1}"; // XXX
+    delete Messages.calendar_location; // XXX Remove Messages.calendar_location from translation keys as it is not used anymore?
 
     var SaveAs = window.saveAs;
     var APP = window.APP = {
@@ -413,13 +413,13 @@ define([
                 str = `<a href="${l}" id="${uid}">${str}</a>`;
                 APP.nextLocationUid = uid;
             }
-
-            return Messages._getKey('calendar_location', [str]);
+            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-label': Messages.calendar_loc }, []);
+            return location_icon.outerHTML + str;
         },
         popupDetailBody: function(schedule) {
             var str = schedule.body;
             delete APP.eventBody;
-            return Messages._getKey('calendar_description', ['<br />', diffMk.render(str, true)]);
+            return diffMk.render(str, true);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -1017,13 +1017,12 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            event.recurrenceRule = APP.recurrenceRule; // XXX Not sure about the consistency of data structures
+            event.recurrenceRule = APP.recurrenceRule;
             newEvent(event, function (err) {
                 if (err) {
                     console.error(err);
                     return void UI.warn(err);
                 }
-                //cal.createSchedules([schedule]); XXX Remove these occurrences elsewhere
             });
         });
         cal.on('beforeUpdateSchedule', function(event) {
@@ -1132,7 +1131,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                             console.error(err);
                             return void UI.warn(err);
                         }
-                        //cal.updateSchedule(old.id, old.calendarId, changes);
                     });
                 }
             };
