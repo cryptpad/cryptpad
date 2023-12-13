@@ -737,9 +737,6 @@ define([
         var removeSelected =  function (keepObj) {
             APP.selectedFiles = [];
             findSelectedElements().removeClass("cp-app-drive-element-selected");
-            var $container = $driveToolbar.find('#cp-app-drive-toolbar-contextbuttons');
-            if (!$container.length) { return; }
-            $container.html('');
             if (!keepObj) {
                 delete sel.startSelected;
                 delete sel.endSelected;
@@ -1042,6 +1039,11 @@ define([
             // [Left, Up, Right, Down]
             if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
             e.preventDefault();
+
+            // If the arrow keys aren't caught by another listener before, it means we can
+            // use them to select content in the drive. If that's the case, we'll also
+            // focus the drive container to avoid conflicts with other focused elements
+            $content.focus();
 
             var click = function (el) {
                 if (!el) { return; }
