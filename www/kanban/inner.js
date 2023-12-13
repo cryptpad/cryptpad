@@ -56,6 +56,9 @@ define([
     jKanban,
     Export)
 {
+    Messages.kanban_showTags = 'See all tags'; // XXX
+    Messages.kanban_hideTags = 'See less tags'; // XXX
+
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();
@@ -937,6 +940,8 @@ define([
                 //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
+            var toggleTagsButton = h('button.btn.btn-default.kanban-tag-btn-toggle', Messages.kanban_showTags);
+
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
@@ -946,12 +951,14 @@ define([
             ]);
             var hint = h('span.cp-kanban-filterTags-name', Messages.kanban_tags);
             var tags = h('div.cp-kanban-filterTags', [
+
                 h('span.cp-kanban-filterTags-toggle', [
                     hint,
                     reset,
                 ]),
                 list,
             ]);
+
             var $reset = $(reset);
             var $list = $(list);
             var $hint = $(hint);
@@ -967,6 +974,7 @@ define([
                     return String($(this).data('tag'));
                 }).get();
             };
+
             var commitTags = function () {
                 var t = getTags();
                 setTagFilterState(t.length);
@@ -1023,6 +1031,40 @@ define([
                 setTags([]);
                 commitTags();
             });
+
+
+            if ($(window).width() < 500) {
+
+                $(tags).append(toggleTagsButton);
+
+                var hideTags = function () {
+                    for (var tag of list.children) {
+                        if (existing.indexOf(tag.innerHTML) > 10) {
+                            $(tag).hide();                    
+                        }
+                    }
+                };
+                hideTags();
+    
+                var toggleTags = function () {
+                    for (var tag of list.children) {
+                        if (existing.indexOf(tag.innerHTML) > 10 && kanban.options.tags.indexOf(tag.innerHTML) === -1) {
+                            if ($(tag).is(":visible")) { 
+                                $(tag).hide();
+                                $(toggleTagsButton).text(Messages.kanban_showTags);
+                            } else {
+                                $(tag).show();
+                                $(toggleTagsButton).text(Messages.kanban_hideTags);
+                            }
+                        }
+                    }
+                };
+    
+                $(toggleTagsButton).click(function() {
+                    toggleTags();
+                });
+    
+            }
 
             var container = h('div#cp-kanban-controls', [
                 tags,

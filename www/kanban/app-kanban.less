@@ -164,7 +164,10 @@
         }
         margin-bottom: 15px;
     }
-
+    .kanban-tag-btn-toggle {
+        margin-top: 10px;
+        margin-left: 10px
+    }
     #cp-app-kanban-container {
         flex: 1;
         display: flex;
@@ -432,7 +435,12 @@
         position: relative;
         min-height: 50px;
         .cp-kanban-filterTags {
-            display: inline-flex;
+            @media (min-width: 505px) {
+                display: inline-flex;
+                .kanban-tag-btn-toggle {
+                    margin-right: 10px;
+                }
+            }
             align-items: center;
             flex: 1;
             //max-width: 80%;
@@ -440,6 +448,9 @@
             .cp-kanban-filterTags-toggle {
                 min-width: 100px;
                 display: flex;
+                @media (max-width: 505px) {
+                    margin-left: 10px;
+                }
                 flex-flow: column;
                 flex-shrink: 0;
                 & > * {
@@ -457,6 +468,10 @@
             button.cp-kanban-filterTags-reset {
                 cursor: pointer;
                 white-space: normal !important;
+                @media (max-width: 505px) {
+                    margin-bottom: 10px;
+                    margin-right: 10px;
+                }
                 .tools_unselectable();
                 i {
                     margin-right: 5px;
