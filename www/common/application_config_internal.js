@@ -274,6 +274,10 @@ define(function() {
     // You can change the value here.
     // AppConfig.maxOwnedTeams = 5;
 
+    // Same settings but for premium users (users with a custom limit included)
+    // AppConfig.maxPremiumTeamsSlots = 10;
+    // AppConfig.maxPremiumTeamsOwned = 10;
+
     // The userlist displayed in collaborative documents is stored alongside the document data.
     // Everytime someone with edit rights joins a document or modify their user data (display
     // name, avatar, color, etc.), they update the "userlist" part of the document. When too many
