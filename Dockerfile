@@ -15,6 +15,11 @@ COPY . /cryptpad
 RUN sed -i "s@//httpAddress: '::'@httpAddress: '0.0.0.0'@" /cryptpad/config/config.example.js
 RUN sed -i "s@installMethod: 'unspecified'@installMethod: 'docker'@" /cryptpad/config/config.example.js
 
+# Install wget for healthcheck
+RUN apt-get update && apt-get install --no-install-recommends -y wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+    
 # Install dependencies
 RUN npm install --production \
     && npm run install:components
@@ -47,6 +52,9 @@ VOLUME /cryptpad/data
 VOLUME /cryptpad/datastore
 
 ENTRYPOINT ["/bin/bash", "/cryptpad/docker-entrypoint.sh"]
+
+# Healthcheck
+HEALTHCHECK --interval=1m CMD wget --no-verbose --tries=1 http://localhost:3000/ -q -O /dev/null || exit 1
 
 # Ports
 EXPOSE 3000 3001 3003
