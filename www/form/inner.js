@@ -2684,7 +2684,6 @@ define([
                             return q + ' | ' + new Date(+key).toISOString();
                         }
                         return q + ' | ' + key;
-                        
                     });
                     return cols;
                 }
@@ -2693,11 +2692,7 @@ define([
                     empty.unshift('');
                     return empty;
                 }
-                var timeValues = {};
                 var res = extractValues(opts.values).map(function (key) {
-                    if (opts.type === 'time') {
-                        return timeValues[new Date(+key).toISOString()] || '';
-                    } 
                     return answer.values[key] || '';
                 });
                 return res;
