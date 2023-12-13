@@ -47,8 +47,8 @@ define(['jquery'], function ($) {
         navigator.clipboard.writeText(text).then(() => {
             cb();
         }).catch((err) => {
-            console.warn(err);
-            cb(err);
+            var success = oldCopy(text, true);
+            cb(!success && err);
         });
     };
 
