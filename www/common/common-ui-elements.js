@@ -2658,7 +2658,7 @@ define([
             UI.createCheckbox('cp-creation-expire', Messages.creation_expiration, false, {
                 labelAlt: Messages.creation_expiresIn
             }),
-            h('span.cp-creation-expire-picker.cp-creation-slider', [
+            h('form.cp-creation-expire-picker.cp-creation-slider', { autocomplete: "off" }, [
                 h('input#cp-creation-expire-val', {
                     type: "number",
                     min: 1,
@@ -2920,7 +2920,7 @@ define([
                     case "month": unit = 3600 * 24 * 30; break;
                     default: unit = 0;
                 }
-                expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
+                expireVal = (Math.min(Number($('#cp-creation-expire-val').val()), 100) || 0) * unit;
             }
             // Password
             var passwordVal = $('#cp-creation-password').is(':checked') ?
@@ -3009,7 +3009,7 @@ define([
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
-                // XXX You can still use the current version in read-only mode by pressing Esc.
+                // You can still use the current version in read-only mode by pressing Esc.
                 // what if they don't have a keyboard (ie. mobile)
                 msg += Messages.errorCopy;
             }
@@ -3033,7 +3033,7 @@ define([
                 });
             }
             if (err.message && (err.message !== "PASSWORD_CHANGE" || viewer)) {
-                // XXX If readonly, tell the viewer that their link won't work with the new password
+                // If readonly, tell the viewer that their link won't work with the new password
                 UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
                     exitable, exitable);
                 return;

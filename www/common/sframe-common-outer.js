@@ -77,6 +77,7 @@ define([
             ApiConfig.httpSafeOrigin + (pathname || window.location.pathname) + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
         $i.attr('allowfullscreen', 'true');
+        $i.attr('allow', 'clipboard-write');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -1656,7 +1657,10 @@ define([
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    SecureModal.$iframe = $('<iframe>', {id: 'sbox-secure-iframe'}).appendTo($('body'));
+                    SecureModal.$iframe = $('<iframe>', {
+                        id: 'sbox-secure-iframe',
+                        allow: 'clipboard-write'
+                    }).appendTo($('body'));
                     SecureModal.modal = SecureIframe.create(config);
                 }
                 setDocumentTitle();
@@ -1698,7 +1702,10 @@ define([
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    UnsafeObject.$iframe = $('<iframe>', {id: 'sbox-unsafe-iframe'}).appendTo($('body')).hide();
+                    UnsafeObject.$iframe = $('<iframe>', {
+                        id: 'sbox-unsafe-iframe',
+                        allow: 'clipboard-write'
+                    }).appendTo($('body')).hide();
                     UnsafeObject.modal = UnsafeIframe.create(config);
                 }
                 UnsafeObject.modal.refresh(cfg, function (data) {
@@ -1718,7 +1725,10 @@ define([
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    OOIframeObject.$iframe = $('<iframe>', {id: 'sbox-oo-iframe'}).appendTo($('body')).hide();
+                    OOIframeObject.$iframe = $('<iframe>', {
+                        id: 'sbox-oo-iframe',
+                        allow: 'clipboard-write'
+                    }).appendTo($('body')).hide();
                     OOIframeObject.modal = OOIframe.create(config);
                 }
                 OOIframeObject.modal.refresh(cfg, function (data) {

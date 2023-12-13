@@ -36,7 +36,7 @@ var map = {
     'de': 'Deutsch',
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
-    'zh': '繁體中文',
+    'zh': '中文(簡體)',
     'el': 'Ελληνικά',
 };
 ```
@@ -54,7 +54,7 @@ var map = {
     'de': 'Deutsch',
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
-    'zh': '繁體中文',
+    'zh': '中文(簡體)',
     'el': 'Ελληνικά',
     'pirate': 'English Pirate', // add our module to the map of languages
 };

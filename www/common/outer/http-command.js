@@ -23,7 +23,7 @@ define([
         }).then(response => {
             if (response.ok) {
 
-                return void response.text().then(result => { CB(void 0, Util.tryParse(result)); }); // XXX checkup error when using .json()
+                return void response.text().then(result => { CB(void 0, Util.tryParse(result)); }); // checkup error when using .json()
                 //return void response.json().then(result => { CB(void 0, result); });
             }
 

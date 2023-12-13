@@ -99,7 +99,8 @@ define([
     // we'll consider increasing this restriction if people are unhappy with it
     // but as a general rule we expect users will appreciate having simpler questions
     var MAX_OPTIONS = 25;
-    var MAX_ITEMS = 10;
+    var MAX_ITEMS = 25;
+
 
     var getOptionValue = function (obj) {
         if (!Util.isObject(obj)) { return obj; }
@@ -4484,6 +4485,12 @@ define([
         APP.isEditor = Boolean(priv.form_public);
         var $body = $('body');
 
+        if (priv.devMode) {
+            MAX_OPTIONS = 10000;
+            MAX_ITEMS = 10000;
+        }
+
+
         var $toolbarContainer = $('#cp-toolbar');
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
@@ -4521,7 +4528,8 @@ define([
         var initializeAnswers = function() {
             // Initialize the answers properties if they do not exist yet
             if (!APP.isEditor) { return; }
-            if (content.answers && content.answers.channel && content.answers.publicKey && content.answers.validateKey) { return; }
+            var priv = metadataMgr.getPrivateData();
+            if (content.answers && content.answers.channel && content.answers.publicKey === priv.form_public && content.answers.validateKey) { return; }
             // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
             content.answers = content.answers || {};
             content.answers.channel = Hash.createChannelId();
