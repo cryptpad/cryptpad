@@ -131,6 +131,14 @@ module.exports = {
      */
     //otpSessionExpiration: 7*24, // hours
 
+    /*  Registered users can be forced to protect their account
+     *  with a Multi-factor Authentication (MFA) tool like a TOTP
+     *  authenticator application.
+     *
+     *  defaults to false
+     */
+    //enforceMFA: false,
+
     /* =====================
      *         Admin
      * ===================== */
