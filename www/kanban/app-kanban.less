@@ -437,6 +437,9 @@
         .cp-kanban-filterTags {
             @media (min-width: 505px) {
                 display: inline-flex;
+                .kanban-tag-btn-toggle {
+                    margin-right: 10px;
+                }
             }
             align-items: center;
             flex: 1;
@@ -477,9 +480,6 @@
             .cp-kanban-filterTags-list {
                 margin-right: 10px;
                 margin-left: 10px;
-                @media (max-width: 405px) {
-                    padding-top: 15px
-                }
                 display: flex;
                 flex-wrap: wrap;
                 &:not(.cp-empty) {
