@@ -582,10 +582,17 @@ define([
                     loadingText: Messages.settings_deleteTitle
                 });
                 setTimeout(function () {
-                    var name = privateData.accountName;
                     var bytes;
                     var auth = {};
+                    var ssoSeed;
                     nThen(function (w) {
+                        sframeChan.query("Q_SETTINGS_GET_SSO_SEED", {
+                        }, w(function (err, obj) {
+                            if (!obj || !obj.seed) { return; } // Not an sso account?
+                            ssoSeed = obj.seed;
+                        }));
+                    }).nThen(function (w) {
+                        var name = ssoSeed || privateData.accountName;
                         deriveBytes(name, password, w(function (_bytes) {
                             bytes = _bytes;
                         }));
@@ -660,6 +667,7 @@ define([
 
     create['change-password'] = function() {
         if (!common.isLoggedIn()) { return; }
+        if (privateData.isSSO && ApiConfig.sso && ApiConfig.sso.password === 0) { return; }
 
         var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element' });
 
@@ -730,8 +738,15 @@ define([
                     setTimeout(function () {
                         var oldBytes, newBytes;
                         var auth = {};
+                        var ssoSeed;
                         nThen(function (w) {
-                            var name = privateData.accountName;
+                            sframeChan.query("Q_SETTINGS_GET_SSO_SEED", {
+                            }, w(function (err, obj) {
+                                if (!obj || !obj.seed) { return; } // Not an sso account?
+                                ssoSeed = obj.seed;
+                            }));
+                        }).nThen(function (w) {
+                            var name = ssoSeed || privateData.accountName;
                             deriveBytes(name, oldPassword, w(function (bytes) {
                                 oldBytes = bytes;
                             }));
@@ -1061,6 +1076,7 @@ define([
             var Base32, QRCode, Nacl;
             var blockKeys;
             var recoverySecret;
+            var ssoSeed;
             nThen(function (waitFor) {
                 require([
                     '/auth/base32.js',
@@ -1072,11 +1088,18 @@ define([
                     Nacl = window.nacl;
                 }));
             }).nThen(function (waitFor) {
+                sframeChan.query("Q_SETTINGS_GET_SSO_SEED", {
+                }, waitFor(function (err, obj) {
+                    if (!obj || !obj.seed) { return; } // Not an sso account?
+                    ssoSeed = obj.seed;
+                }));
+            }).nThen(function (waitFor) {
                 var next = waitFor();
                 // scrypt locks up the UI before the DOM has a chance
                 // to update (displaying logs, etc.), so do a set timeout
                 setTimeout(function () {
-                    Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
+                    var salt = ssoSeed || name;
+                    Login.Cred.deriveFromPassphrase(salt, password, Login.requiredBytes, function (bytes) {
                         var result = Login.allocateBytes(bytes);
                         sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
                             blockHash: result.blockHash,
@@ -1168,7 +1191,6 @@ define([
                         lock = true;
 
                         var data = {
-                            command: 'TOTP_SETUP',
                             secret: secret,
                             contact: "secret:" + recoverySecret, // TODO other recovery options
                             code: code,

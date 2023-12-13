@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/api/config',
     'jquery',
     '/customize/login.js',
     '/common/cryptpad-common.js',
@@ -18,7 +19,7 @@ define([
     '/customize/pages.js',
 
     'css!/components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages) {
+], function (Config, $, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {
@@ -52,6 +53,32 @@ define([
 
         var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
         var br = function () { return h('br'); };
+
+        if (Config.sso) {
+            // TODO
+            // Config.sso.force => no legacy login allowed
+            // Config.sso.password => cp password required or forbidden
+            // Config.sso.list => list of configured identity providers
+            var $sso = $('div.cp-register-sso');
+            var list = Config.sso.list.map(function (name) {
+                var b = h('button.btn.btn-secondary', name);
+                var $b = $(b).click(function () {
+                    console.log('sso register click:', name);
+                    $b.prop('disabled', 'disabled');
+                    Login.ssoAuth(name, function (err, data) {
+                        if (data.url) {
+                            window.location.href = data.url;
+                        }
+                    });
+                });
+                return b;
+            });
+            $sso.append(list);
+
+            // Disable bfcache (back/forward cache) to prevent SSO button
+            // being disabled when using the browser "back" feature on the SSO page
+            $(window).on('unload', () => {});
+        }
 
         var registerClick = function () {
             var uname = $uname.val().trim();
@@ -130,7 +157,8 @@ define([
             function (yes) {
                 if (!yes) { return; }
 
-                Login.loginOrRegisterUI(uname, passwd, true, shouldImport, false /*Test.testing*/, function () {
+                Login.loginOrRegisterUI(uname, passwd, true, shouldImport,
+                    UI.getOTPScreen, false /*Test.testing*/, function () {
                     if (test) {
                         localStorage.clear();
                         test.pass();

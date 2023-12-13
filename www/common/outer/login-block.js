@@ -169,9 +169,7 @@ define([
         const { blockKeys, auth } = data;
 
         var command = 'MFA_CHECK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_CHECK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         ServerCommand(blockKeys.sign, {
             command: command,
@@ -179,35 +177,44 @@ define([
         }, cb);
     };
     Block.writeLoginBlock = function (data, cb) {
-        const { content, blockKeys, oldBlockKeys, auth } = data;
+        const { content, blockKeys, oldBlockKeys, auth, pw, session } = data;
 
         var command = 'WRITE_BLOCK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_WRITE_BLOCK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         var block = Block.serialize(JSON.stringify(content), blockKeys);
         block.auth = auth && auth.data;
+        block.hasPassword = pw;
         block.registrationProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
 
         ServerCommand(blockKeys.sign, {
             command: command,
-            content: block
+            content: block,
+            session: session // sso session
         }, cb);
     };
     Block.removeLoginBlock = function (data, cb) {
         const { reason, blockKeys, auth } = data;
 
         var command = 'REMOVE_BLOCK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_REMOVE_BLOCK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         ServerCommand(blockKeys.sign, {
             command: command,
             auth: auth && auth.data,
             reason: reason
         }, cb);
+    };
+
+    Block.updateSSOBlock = function (data, cb) {
+        const { blockKeys, oldBlockKeys } = data;
+        var oldProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+
+        ServerCommand(blockKeys.sign, {
+            command: 'SSO_UPDATE_BLOCK',
+            ancestorProof: oldProof
+        }, cb);
+
     };
 
     return Block;

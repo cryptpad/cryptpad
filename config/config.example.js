@@ -118,6 +118,20 @@ module.exports = {
     // maxWorkers: 4,
 
     /* =====================
+     *       Sessions
+     * ===================== */
+
+    /*  Accounts can be protected with an OTP (One Time Password) system
+     *  to add a second authentication layer. Such accounts use a session
+     *  with a given lifetime after which they are logged out and need
+     *  to be re-authenticated. You can configure the lifetime of these
+     *  sessions here.
+     *
+     *  defaults to 7 days
+     */
+    //otpSessionExpiration: 7*24, // hours
+
+    /* =====================
      *         Admin
      * ===================== */
 
