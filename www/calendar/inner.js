@@ -23,6 +23,7 @@ define([
     '/calendar/export.js',
     '/calendar/recurrence.js',
     '/lib/datepicker/flatpickr.js',
+    'tui-date-picker',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
@@ -64,6 +65,7 @@ define([
     Export,
     Rec,
     Flatpickr,
+    DatePicker,
     Share, Access, Properties,
     diffMk,
     SFCodeMirror,
@@ -124,6 +126,8 @@ define([
         var startDate = event.start._date;
         var endDate = event.end._date;
 
+        var timeZone;
+        try { timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
         var data = {
             id: Util.uid(),
             calendarId: event.calendarId,
@@ -135,6 +139,7 @@ define([
             end: +endDate,
             reminders: reminders,
             body: eventBody,
+            timeZone: timeZone,
             recurrenceRule: event.recurrenceRule
         };
 
@@ -306,9 +311,9 @@ define([
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
                 obj.body = obj.body || "";
-                if (obj.isAllDay && obj.startDay) { obj.start = +Flatpickr.parseDate((obj.startDay)); }
+                if (obj.isAllDay && obj.startDay) { obj.start = +DatePicker.parseDate((obj.startDay)); }
                 if (obj.isAllDay && obj.endDay) {
-                    var endDate = Flatpickr.parseDate(obj.endDay);
+                    var endDate = DatePicker.parseDate(obj.endDay);
                     endDate.setHours(23);
                     endDate.setMinutes(59);
                     endDate.setSeconds(59);
@@ -1670,7 +1675,7 @@ APP.recurrenceRule = {
                 minDate: date,
                 //dateFormat: dateFormat,
                 onChange: function () {
-                    //endPickr.set('minDate', startPickr.parseDate(s.value));
+                    //endPickr.set('minDate', DatePicker.parseDate(s.value));
                 }
             });
             var endDate = new Date(+date);
@@ -1848,7 +1853,7 @@ APP.recurrenceRule = {
                         if (until === "count") {
                             rec.count = $(radioCount).find('input[type="number"]').val();
                         } else if (until === "date") {
-                            var _date = Flatpickr.parseDate(pickr.value);
+                            var _date = DatePicker.parseDate(pickr.value);
                             _date.setDate(_date.getDate()+1);
                             rec.until = +_date - 1;
                         }
@@ -2182,7 +2187,7 @@ APP.recurrenceRule = {
             var $button = $el.find('.tui-full-calendar-section-button-save');
 
             var $startDate = $el.find('#tui-full-calendar-schedule-start-date');
-            var startDate = Flatpickr.parseDate($startDate.val());
+            var startDate = DatePicker.parseDate($startDate.val());
 
             var divRec = getRecurrenceInput(startDate);
             $button.before(divRec);
