@@ -32,6 +32,15 @@ define(['jquery'], function ($) {
         }
         $el.on('keydown blur focus click dragstart', function (e) {
             //e.preventDefault();
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                var focusedButton = document.activeElement;
+        
+                // Simulate a click event on the focused button
+                if (focusedButton) {
+                    focusedButton.click();
+                }
+            }
             var attr = $(el).attr('oon'+e.type);
             if (!attr) { return; }
             if (['blur', 'dragstart'].indexOf(e.type) !== -1) { return false; }
@@ -45,7 +54,7 @@ define(['jquery'], function ($) {
             $iframe.scrollTop(s);
         });
     });
-
+    
 
     // Dropdown menus
 
@@ -104,7 +113,7 @@ define(['jquery'], function ($) {
                             that.onLoad();
                         }
                     }).contents().find('body').on('click dragstart mouseover mouseout', '.cke_button, a.cke_colormore, a.cke_colorbox, .cke_colorauto, .cke_combo_button, .cke_panel_listItem a, a.cke_menubutton', function (e) {
-                        e.preventDefault();
+                        //e.preventDefault();
                         if (e.type === 'dragstart') { return false; }
                         var attr = $(e.currentTarget).attr('oon'+e.type);
                         if (!attr) { return; }
