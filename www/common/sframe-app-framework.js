@@ -757,6 +757,7 @@ define([
                     Util.fixFileName(suggestion), function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
+                    console.error(filename);
                     var ext = $select.getValue();
                     filename = filename + ext;
                     if (async) {

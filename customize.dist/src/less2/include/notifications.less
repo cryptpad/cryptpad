@@ -17,8 +17,9 @@
         width: 300px;
         display: flex;
         flex-flow: column;
+        padding-left: 0;
         & hr {
-            margin: 0px !important;
+            margin: 0 !important;
         }
         .cp-notification {
             min-height: @notif-height;
@@ -71,10 +72,13 @@
         }
     }
     .cp-notifications-gotoapp {
+        padding: 0 !important;
+        justify-content: center !important;
         p {
             padding: 10px 0 !important;
             text-align: center !important;
-            font-weight: bold;
+            font-size: 14px !important;
+            font-weight: bold !important;
             cursor: pointer;
             &:hover {
                 background-color: @cp_dropdown-bg-hover;

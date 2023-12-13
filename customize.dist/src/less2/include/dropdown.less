@@ -77,65 +77,71 @@
 
             &.cp-dropdown-left {
                 right: 0;
+                margin-right: 5px;
             }
 
             &:hover {
                 display: block;
             }
 
-            & > a, & > span {
-                color: @cp_dropdown-fg;
-                border-radius: @variables_radius;
-                padding: 5px;
-                text-decoration: none;
-                display: flex;
-                cursor: pointer;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-                float: none;
-                text-align: left;
-                line-height: 1em;
-                align-items: center;
+            li:not([class]) {
+                padding: 0;
+                & > a, & > span {
+                    color: @cp_dropdown-fg;
+                    border-radius: @variables_radius;
+                    padding: 5px;
+                    text-decoration: none;
+                    display: flex;
+                    cursor: pointer;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    float: none;
+                    text-align: left;
+                    line-height: 1em;
+                    align-items: center;
 
-                &:not(.fa) {
-                    font: @dropdown_font;
-                }
-                &.fa, &.cptools {
-                    font-size: 18px;
-                    &::before {
-                        width: 40px;
-                        margin-left: -10px;
-                        text-align: center;
-                    }
-                    * {
+                    &:not(.fa) {
                         font: @dropdown_font;
                     }
-                }
+                    &.fa, &.cptools {
+                        font-size: 18px;
+                        &::before {
+                            width: 40px;
+                            margin-left: -10px;
+                            text-align: center;
+                        }
+                        * {
+                            font: @dropdown_font;
+                        }
+                    }
 
-                .fa, .cptools {
-                    width: 20px;
-                    text-align: center;
-                    margin-right: 5px !important;
-                }
+                    .fa, .cptools {
+                        width: 20px;
+                        text-align: center;
+                        margin-right: 5px !important;
+                    }
 
-                &:hover {
-                    background-color: @cp_dropdown-bg-hover;
+                    &.cp-dropdown-element-active {
+                        background-color: @cp_dropdown-bg-active;
+                        color: @cp_dropdown-fg;
+                    }
+
+                    &.cp-app-hidden {
+                        display: none;
+                    }
+                    &.cp-app-disabled {
+                        cursor: not-allowed !important;
+                        opacity: 0.5;
+                    }
+                }
+            }
+            li[role="menuitem"] {
+                border-radius: @variables_radius;
+                &:hover, &:focus {
+                    background-color: @cp_dropdown-bg-hover !important;
                     color: @cp_dropdown-fg;
-                }
-
-                &.cp-dropdown-element-active {
-                    background-color: @cp_dropdown-bg-active;
-                    color: @cp_dropdown-fg;
-                }
-
-                &.cp-app-hidden {
-                    display: none;
-                }
-                &.cp-app-disabled {
-                    cursor: not-allowed !important;
-                    opacity: 0.5;
                 }
             }
             &> span {
@@ -172,6 +178,9 @@
                 & + hr {
                     display: none;
                 }
+            }
+            [role="separator"] + [role="separator"] {
+                display: none;
             }
 
             p {

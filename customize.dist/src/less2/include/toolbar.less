@@ -367,12 +367,14 @@
         * {
             outline-width: 0;
             &:focus {
-                outline-width: 0;
+                outline-width: 1rem;
+                // color shows on chrome/edge, but not firefox
+                outline-color: grey; // XXX temporary color to change
             }
         }
 
         box-sizing: border-box;
-        padding: 0px;
+        padding: 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -443,13 +445,6 @@
                    screen and (max-height: 500px) {
                 flex-wrap: wrap;
                 height: @toolbar_line-height;
-                .cp-pad-not-pinned {
-                    line-height: 32px;
-                    flex: unset;
-                    padding: 0;
-                    align-self: auto;
-                    margin: 0 5px;
-                }
                 .cp-toolbar-top-filler {
                     height: 32px;
                 }
@@ -582,41 +577,6 @@
         position: relative;
         width: 100%;
 
-        .cp-pad-not-pinned {
-            order: 4;
-            flex: 1;
-
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-
-            line-height: @toolbar_top-height;
-            padding: 0;
-            margin: 0 5px;
-            font-size: @colortheme_app-font-size;
-            color: @cp_toolbar-warn;
-            .cp-pnp-msg {
-                padding-left: 5px;
-                font-family: @colortheme_font;
-                font-size: @colortheme_app-font-size;
-                a {
-                    font-size: @colortheme_app-font-size;
-                    font-family: @colortheme_font;
-                    font-weight: bold;
-                    color: @cp_toolbar-warn;
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-                @media screen and (max-width: (@browser_media-not-big)) {
-                    display: none;
-                }
-            }
-            @media screen and (max-width: (@browser_media-not-big)) {
-                overflow: visible;
-                max-width: 20px;
-            }
-        }
         .cp-toolbar-top-filler {
             height: @toolbar_top-height;
             display: inline-block;
@@ -795,6 +755,15 @@
                 }
             }
         }
+        .cp-toolbar-notifications {
+            .cp-notifications-container {
+                padding: 0 5px;;
+                li {
+                    margin: 0 -5px;
+                    padding: 0;
+                }
+            }
+        }
         .cp-toolbar-link {
             display: inline-flex;
             align-items: center;
@@ -867,7 +836,6 @@
                 text-align: center;
 
                 .cp-dropdown-content {
-                    margin: 0;
                     padding-bottom: 10px;
                 }
                 & > button {
@@ -913,14 +881,22 @@
                     margin-left: 10px;
                 }
             }
-            p.cp-toolbar-account {
+            div.cp-toolbar-account {
                 &> span {
                     font-weight: bold;
                     span {
                         font-weight: normal;
                     }
                 }
+                min-width: 160px;
+                padding: 5px;
+                margin: 0;
+                white-space: normal;
+                text-align: left;
+                color: @cryptpad_text_col;
+                font-size: 14px;
             }
+
             .cp-toolbar-backup {
                 margin: 0;
                 border-radius: 0;
@@ -1264,4 +1240,5 @@
         }
     }
 }
+
 

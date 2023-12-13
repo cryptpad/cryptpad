@@ -241,7 +241,7 @@ define([
         Object.keys(categories).forEach(function (key) {
             if (key === 'admin' && !teamAdmin) { return; }
 
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key}).appendTo($categories);
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key, 'tabindex': 0}).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
             if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
             if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
@@ -256,7 +256,8 @@ define([
                 $category.addClass('cp-leftside-active');
             }
 
-            $category.click(function () {
+            $category.on('click keypress', function (event) {
+                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                 if (!Array.isArray(categories[key]) && categories[key].onClick) {
                     categories[key].onClick(common);
                     return;
@@ -277,7 +278,7 @@ define([
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
                 $category.addClass('cp-leftside-active');
                 showCategories(categories[key]);
-            });
+            }});
 
             $category.append(h('span.cp-sidebarlayout-category-name', Messages['team_cat_'+key] || key));
         });
@@ -473,20 +474,26 @@ define([
                     created++;
                 }
                 if (team.empty) {
-                    var createTeamDiv = h('div.cp-team-list-team.empty'+createCls, [
+                    var createTeamDiv = h('div.cp-team-list-team.empty'+createCls,{
+                        tabindex: '0'
+                    }, [
                         h('span.cp-team-list-name.empty', Messages.team_listSlot),
                         createBtn
                     ]);
                     list.push(createTeamDiv);
                     if (createCls) {
-                        $(createTeamDiv).click(function () {
-                            $('div.cp-team-cat-create').click();
+                        $(createTeamDiv).on('click keypress', function (event) {
+                            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                                $('div.cp-team-cat-create').click();
+                            }
                         });
                     }
                     return;
                 }
                 var avatar = h('span.cp-avatar');
-                var teamDiv = h('div.cp-team-list-team', [
+                var teamDiv = h('div.cp-team-list-team',{
+                        tabindex: '0'
+                    }, [
                     h('span.cp-team-list-avatar', avatar),
                     h('span.cp-team-list-name', {
                         title: team.metadata.name
@@ -494,12 +501,14 @@ define([
                 ]);
                 list.push(teamDiv);
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
-                $(teamDiv).click(function () {
-                    if (team.error) {
-                        UI.warn(Messages.error); // FIXME better error message - roster bug, can't load the team for now
-                        return;
+                $(teamDiv).on('click keypress', function (event) {
+                    if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                        if (team.error) {
+                            UI.warn(Messages.error); // FIXME better error message - roster bug, can't load the team for now
+                            return;
+                        }
+                        openTeam(common, id, team);
                     }
-                    openTeam(common, id, team);
                 });
             });
             content.push(h('div.cp-team-list-container', list));

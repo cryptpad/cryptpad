@@ -1497,14 +1497,20 @@ define([
         if (config.buttonContent) {
             $button = $(h('button', {
                 class: config.buttonCls || '',
-                'aria-label': config.ariaLabel || '',
+                'aria-haspopup': 'menu',
+                'aria-expanded': 'false',
+                'title': config.buttonTitle || '',
+                'aria-label': config.buttonTitle || '',
             }, [
                 h('span.cp-dropdown-button-title', config.buttonContent),
             ]));
         } else {
             $button = $('<button>', {
                 'class': config.buttonCls || '',
-                'aria-label': config.ariaLabel || '',
+                'aria-haspopup': 'menu',
+                'aria-expanded': 'false',
+                'title': config.buttonTitle || '',
+                'aria-label': config.buttonTitle || '',
             }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
         }
 
@@ -1521,19 +1527,30 @@ define([
         }
 
         // Menu
-        var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
+        var $innerblock = $('<ul>', {'class': 'cp-dropdown-content', 'role': 'menu'});
         if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
 
         var hide = function () {
             window.setTimeout(function () { $innerblock.hide(); }, 0);
         };
 
+        // When the menu is collapsed, update aria-expanded
+        var observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.attributeName !== 'style') { return; }
+                if ($innerblock[0].style.display === 'none') {
+                    $button.attr('aria-expanded', 'false');
+                }
+            });
+        });
+        observer.observe($innerblock[0], { attributes: true });
+
+        // Add the dropdown content
         var setOptions = function (options) {
             options.forEach(function (o) {
                 if (!isValidOption(o)) { return; }
-                if (isElement(o)) { return $innerblock.append(o); }
+                if (isElement(o)) { return void $innerblock.append(o); }
                 var $el = $(h(o.tag, (o.attributes || {})));
-
                 if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
                     o.content = [o.content];
                 }
@@ -1546,16 +1563,49 @@ define([
                             $el[0].appendChild(document.createTextNode(item));
                         }
                     });
-                    // array of elements or text nodes
                 }
 
-                $el.appendTo($innerblock);
-                if (typeof(o.action) === 'function') {
-                    $el.click(function (e) {
-                        var close = o.action(e);
-                        if (close) { hide(); }
-                    });
+                // Everything is added as an "li" tag
+                // Links and items with action are focusable
+                // Add correct "role" attribute
+                var $li = $(h('li'));
+                if (o.tag === 'a') {
+                    $el.attr('tabindex', '-1');
+                    $li.attr('role', 'menuitem');
+                    $li.attr('tabindex', '0');
+                } else if (o.tag === 'li') {
+                    $li = $el;
+                    $li.attr('role', 'menuitem');
+                    $li.attr('tabindex', '0');
+                } else if (o.tag === 'hr') {
+                    $li.attr('role', 'separator');
+                } else {
+                    $li.attr('role', 'none');
                 }
+                $li.append($el);
+                $li.appendTo($innerblock);
+
+                // Action can be triggered with a click or keyboard event
+                if (o.tag !== 'a' && o.tag !== 'li') { return; }
+
+                $li.on('mouseenter', (e) => {
+                    e.stopPropagation();
+                    $li.focus();
+                });
+                var onAction = function (e) {
+                    if (config.isSelect) { return; }
+                    if (e.type === 'click' || (e.type === 'keydown' && e.keyCode === 13) || (e.type === 'keydown' && e.keyCode === 32)) {
+                        e.stopPropagation();
+                        if (typeof(o.action) === "function") {
+                            var close = o.action(e);
+                            if (close) { hide(); }
+                        } else {
+                            // Click on <a> with an href
+                            if (e.type === 'keydown'){ $el.get(0).click(); }
+                        }
+                    }
+                };
+                $li.on('click keydown', onAction);
             });
         };
         setOptions(config.options);
@@ -1572,6 +1622,11 @@ define([
             if ($el.length !== 1) { return; }
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             $el.addClass('cp-dropdown-element-active');
+            $el.closest('li').focus();
+        };
+        var setFocus = function ($el) {
+            if ($el.length !== 1) { return; }
+            $el.focus();
             var scroll = $el.position().top + $innerblock.scrollTop();
             if (scroll < $innerblock.scrollTop()) {
                 $innerblock.scrollTop(scroll);
@@ -1584,6 +1639,7 @@ define([
             var wh = $(window).height();
             var button = $button[0].getBoundingClientRect();
             var topPos = button.bottom;
+            $button.attr('aria-expanded', 'true');
             $innerblock.css('bottom', '');
             if (config.noscroll) {
                 var h = $innerblock.outerHeight();
@@ -1595,15 +1651,19 @@ define([
             }
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
-            if (config.isSelect && value) {
-                // We use JSON.stringify here to escape quotes
-                if (typeof(value) === "object") { value = JSON.stringify(value); }
-                var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
-                setActive($val);
-                try {
-                    $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
-                } catch (e) {}
-            }
+            setTimeout(() => {
+                if (config.isSelect && value) {
+                    // We use JSON.stringify here to escape quotes
+                    if (typeof(value) === "object") { value = JSON.stringify(value); }
+                    var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
+                    setActive($val);
+                    try {
+                        $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                    } catch (e) {}
+                } else {
+                    setFocus($innerblock.find('[role="menuitem"]').first());
+                }
+            });
             if (config.feedback) { Feedback.send(config.feedback); }
         };
 
@@ -1614,7 +1674,9 @@ define([
 
             var $c = $container.closest('.cp-toolbar-drawer-content');
             $c.removeClass('cp-dropdown-visible');
-            if (!state) { $c.addClass('cp-dropdown-visible'); }
+            if (!state) {
+                $c.addClass('cp-dropdown-visible');
+            }
 
             try {
                 $('iframe').each(function (idx, ifrw) {
@@ -1631,71 +1693,14 @@ define([
         });
 
         if (config.isSelect) {
-            var pressed = '';
-            var to;
             $container.onChange = Util.mkEvent();
-            $container.on('click', 'a', function () {
-                value = $(this).data('value');
-                var $val = $(this);
+            $container.on('click', 'li', function () {
+                var $val = $(this).find('a');
+                value = $val.data('value');
                 var textValue = $val.text() || value;
                 $button.find('.cp-dropdown-button-title').text(textValue);
                 $container.onChange.fire(textValue, value);
             });
-            $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
-                if (!$value.length) {
-                    $value = $innerblock.find('[data-value]').first();
-                }
-                if (e.which === 38) { // Up
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if ($value.length) {
-                        $value.mouseleave();
-                        var $prev = $value.prev();
-                        $prev.mouseenter();
-                        setActive($prev);
-                    }
-                }
-                if (e.which === 40) { // Down
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if ($value.length) {
-                        $value.mouseleave();
-                        var $next = $value.next();
-                        $next.mouseenter();
-                        setActive($next);
-                    }
-                }
-                if (e.which === 13) { //Enter
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if ($value.length) {
-                        $value.click();
-                        hide();
-                    }
-                }
-                if (e.which === 27) { // Esc
-                    e.preventDefault();
-                    e.stopPropagation();
-                    $value.mouseleave();
-                    hide();
-                }
-            });
-            $container.keypress(function (e) {
-                window.clearTimeout(to);
-                var c = String.fromCharCode(e.which);
-                pressed += c;
-                // We use JSON.stringify here to escape quotes
-                var $value = $innerblock.find('[data-value^='+JSON.stringify(pressed)+']:first');
-                if ($value.length) {
-                    setActive($value);
-                    $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
-                }
-                to = window.setTimeout(function () {
-                    pressed = '';
-                }, 1000);
-            });
-
             $container.setValue = function (val, name, sync) {
                 value = val;
                 // We use JSON.stringify here to escape quotes
@@ -1712,6 +1717,130 @@ define([
                 return typeof(value) === "undefined" ? '' : value;
             };
         }
+
+        var pressed = '';
+        var to;
+        var findItem = function () {
+            var $value = $();
+            $innerblock.find('[role="menuitem"]').each((i, el) => {
+                var $el = $(el);
+                var $item = $el.find('> *');
+                if ($item.length && !$item.is(':visible')) { return false; }
+                var text = $el.text().toLowerCase();
+                var p = pressed.toLowerCase();
+                if (text.indexOf(p) === 0) {
+                    $value = $el;
+                    return false;
+                }
+            });
+            return $value;
+        };
+        var getAll = () => {
+            return $innerblock.find('[role="menuitem"]').filter((i, el) => {
+                var $item = $(el).find('> *');
+                return !$item.length || $item.is(':visible');
+            });
+        };
+        var getPrev = ($el) => {
+            var $all = getAll();
+            if (!$all.length) { return $(); }
+            var idx = $all.index($el[0]);
+            if (idx === -1) { return $(); }
+            var prev = (idx - 1 + $all.length) % $all.length;
+            return $($all.get(prev));
+        };
+        var getNext = ($el) => {
+            var $all = getAll();
+            if (!$all.length) { return $(); }
+            var idx = $all.index($el[0]);
+            if (idx === -1) { return $(); }
+            var next = (idx + 1) % $all.length;
+            return $($all.get(next));
+        };
+        $container.keydown(function (e) {
+            e.stopPropagation(); // don't propagate event to window if the dropdown is focused
+
+            var visible = $innerblock.is(':visible');
+            var $value = $innerblock.find('li:focus');
+            if (!visible && [38,40].includes(e.which) && !config.isSelect) {
+                $container.click();
+                visible = true;
+            }
+            if (!visible) { return; }
+            if (e.which === 38) { // Up
+                e.preventDefault();
+                var $prev;
+                if (!$value.length) {
+                    $prev = getAll().last();
+                } else {
+                    $prev = getPrev($value);
+                }
+                $value.mouseleave();
+                $prev.mouseenter();
+                setTimeout(() => {
+                    setFocus($prev);
+                });
+            }
+            if (e.which === 40) { // Down
+                e.preventDefault();
+                var $next;
+                if (!$value.length) {
+                    $next = getAll().first();
+                } else {
+                    $next = getNext($value);
+                }
+                $value.mouseleave();
+                $next.mouseenter();
+                setTimeout(() => {
+                    setFocus($next);
+                });
+            }
+            if (e.which === 13 || e.which === 32) { //Enter or space
+                e.preventDefault();
+                if ($value.length) {
+                    $value.click();
+                    hide();
+                    $button.focus();
+                } else {
+                    setFocus(getAll().first());
+                }
+            }
+            if (e.which === 27) { // Esc
+                e.preventDefault();
+                $value.mouseleave();
+                hide();
+                $button.focus();
+            }
+            if (e.which === 9) { // Tab
+                hide();
+                if (e.shiftKey) {
+                    $button.focus();
+                } else {
+                    $innerblock.find('[role="menuitem"]').last().focus();
+                }
+            }
+        });
+        $container.keypress(function (e) {
+            e.stopPropagation(); // Don't propagate to window
+            window.clearTimeout(to);
+            var c = String.fromCharCode(e.which);
+            pressed += c;
+            // We use JSON.stringify here to escape quotes
+            var $value;
+            if (config.isSelect) {
+                $value = $innerblock.find('[data-value^='+JSON.stringify(pressed)+']:first').closest('li');
+            } else {
+                $value = findItem();
+            }
+            if ($value.length) {
+                setFocus($value);
+                $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
+            }
+            to = window.setTimeout(function () {
+                pressed = '';
+            }, 1000);
+        });
+
 
         return $container;
     };
@@ -1825,7 +1954,7 @@ define([
                 ]));
             }
             options.push({
-                tag: 'p',
+                tag: 'div',
                 attributes: {'class': 'cp-toolbar-account'},
                 content: userAdminContent,
             });
@@ -1849,7 +1978,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-hdd-o'
+                    'class': 'fa fa-hdd-o',
                 },
                 content: h('span', Messages.type.drive),
                 action: function () {
@@ -1861,7 +1990,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-users'
+                    'class': 'fa fa-users',
                 },
                 content: h('span', Messages.type.teams),
                 action: function () {
@@ -1885,7 +2014,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-address-book'
+                    'class': 'fa fa-address-book',
                 },
                 content: h('span', Messages.type.contacts),
                 action: function () {
@@ -1930,7 +2059,7 @@ define([
                 'target': '_blank',
                 'rel': 'noopener',
                 'href': 'https://docs.cryptpad.org',
-                'class': 'fa fa-book'
+                'class': 'fa fa-book',
             },
             content: h('span', Messages.docs_link)
         });
@@ -1963,7 +2092,7 @@ define([
         options.push({
             tag: 'a',
             attributes: {
-                'class': 'fa fa-home'
+                'class': 'fa fa-home',
             },
             content: h('span', Messages.homePage),
             action: function () {
@@ -2004,7 +2133,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-gift'
+                    'class': 'fa fa-gift',
                 },
                 content: h('span', Messages.crowdfunding_button2),
                 action: function () {
@@ -2101,6 +2230,7 @@ define([
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
             container: config.$initBlock, // optional
+            buttonTitle: config.buttonTitle,
             feedback: "USER_ADMIN",
             common: Common
         };
