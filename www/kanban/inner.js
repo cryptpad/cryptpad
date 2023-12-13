@@ -56,8 +56,8 @@ define([
     jKanban,
     Export)
 {
-    Messages.kanban_showTags = 'See all tags'; //XX
-    Messages.kanban_hideTags = 'See less tags'; //XX
+    Messages.kanban_showTags = 'See all tags'; // XXX
+    Messages.kanban_hideTags = 'See less tags'; // XXX
 
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
