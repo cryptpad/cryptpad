@@ -296,9 +296,9 @@ define([
         },
     };
 
-    Messages.convertPage = "Convert"; // XXX 4.11.0
-    Messages.convert_hint = "Pick the file you want to convert. The list of output format will be visible afterwards."; // XXX 4.11.0
-    Messages.convert_unsupported = "UNSUPPORTED FILE TYPE :("; // XXX
+    Messages.convertPage = "Convert"; // TODO: hard-coded text since 4.11.0
+    Messages.convert_hint = "Pick the file you want to convert. The list of output format will be visible afterwards.";
+    Messages.convert_unsupported = "UNSUPPORTED FILE TYPE :(";
 
     var createToolbar = function () {
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
