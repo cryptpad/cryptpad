@@ -1667,5 +1667,20 @@
     "dph_tmp_pw": "This template is protected with a new password. Open it from your drive to enter the new password.",
     "access_passwordUsed": "This password has already been used for this document. It cannot be used again.",
     "status": "Status page",
-    "admin_diskUsageWarning": "Use with caution! Depending on the size of the data stored on the instance, generating this report can consume all the memory available on the server and lead to a crash."
+    "admin_diskUsageWarning": "Use with caution! Depending on the size of the data stored on the instance, generating this report can consume all the memory available on the server and lead to a crash.",
+    "calendar_rec_change_first": "Moving the first repeating even to a different calendar. All repeated events will also be moved.",
+    "calendar_rec_change": "Moving a repeating even to a different calendar. You can only apply this change to this event or all repeated events.",
+    "calendar_desc": "Description",
+    "calendar_description": "Description:{0}{1}",
+    "sso_login_description": "Login with",
+    "sso_register_description": "Register with",
+    "ssoauth_header": "CryptPad Password",
+    "ssoauth_form_hint_register": "Add a CryptPad password for extra security or leave empty and continue. If you do not add a password, the keys protecting your data will be available to the instance administrators.",
+    "ssoauth_form_hint_login": "Please enter your CryptPad password",
+    "duplicate": "Duplicate",
+    "kanban_showTags": "See all tags",
+    "kanban_hideTags": "See less tags",
+    "admin_forcemfaTitle": "Mandatory Two-Factor Authentication",
+    "admin_forcemfaHint": "All users on this instance will be asked to set up two-factor authentication to log in to their account.",
+    "loading_mfa_required": "Two-factor authentication is required on this instance. Please update your account using an authenticator app and the form below."
 }
