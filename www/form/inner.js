@@ -81,6 +81,8 @@ define([
     Sortable
     )
 {
+    Messages.duplicate = 'Duplicate'; // XXX
+
     var APP = window.APP = {
         blocks: {}
     };
@@ -219,7 +221,7 @@ define([
     var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
         var evOnSave = Util.mkEvent();
 
-        var add = h('button.btn.btn-secondary', [
+        var add = h('button.btn', [
             h('i.fa.fa-plus'),
             h('span', Messages.form_add_option)
         ]);
@@ -265,7 +267,7 @@ define([
                     },
                     content: Messages['form_poll_'+t]
                 };
-            });
+            }); 
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
@@ -301,20 +303,15 @@ define([
             if (uid) { $input.data('uid', uid); }
 
             // If the input is a date, initialize flatpickr
-            if (v.type && v.type !== 'text') {
                 if (v.type === 'time') {
                     Flatpickr(input, {
+                        disableMobile: true,
                         enableTime: true,
                         time_24hr: is24h,
                         dateFormat: dateFormat,
                         defaultDate: val ? new Date(val) : undefined
                     });
-                } else if (v.type === 'day') {
-                    /*Flatpickr(input, {
-                        defaultDate: val ? new Date(val) : undefined
-                    });*/
-                }
-            }
+                } 
 
             // if this element was active before the remote change, restore cursor
             var setCursor = function () {
@@ -335,11 +332,15 @@ define([
             }
 
             var del = h('button.btn.btn-danger-outline', h('i.fa.fa-times'));
+            var formHandle;
+            if (v.type !== 'time') {
+                formHandle = h('span.cp-form-handle', [
+                    h('i.fa.fa-ellipsis-v'),
+                    h('i.fa.fa-ellipsis-v'),
+                ]);
+            }
             var el = h('div.cp-form-edit-block-input', [
-                h('span.cp-form-handle', [
-                    h('i.fa.fa-ellipsis-v'),
-                    h('i.fa.fa-ellipsis-v'),
-                ]),
+                formHandle,
                 input,
                 del
             ]);
@@ -521,20 +522,47 @@ define([
                 setTimeout(evOnSave.fire);
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
+                    var time, el;
                     if (val === "time") {
-                        var time = new Date();
+                        time = new Date();
                         time.setHours(14);
                         time.setMinutes(0);
                         time.setSeconds(0);
                         time.setMilliseconds(0);
-                        var el = getOption(+time, false, false, Util.uid());
+                        el = getOption(+time, false, false, Util.uid());
                         $add.before(el);
                         $(el).find('input').focus();
                         return;
-                    }
+                    } else if (val === "day") {
+                        time = new Date();
+                        el = getOption(+time, false, false, Util.uid());
+                        $add.before(el);
+                        $(el).find('input').focus();
+
+                        return;
+                    } 
                     $(add).click();
                     return;
-                }
+                } else {
+                    var selectedDates = $(calendarView).find('input')[0]._flatpickr.selectedDates;
+                    if ($container.find('input')[0] && $container.find('input')[0]._flatpickr) {
+                        var dateInput = new Date(+$container.find('input').value);
+                        $container.find('input').value = dateInput.toLocaleDateString();
+                    } else if (selectedDates.length > 0) {
+                        for (var i=0; i < selectedDates.length; i++ ) {
+                            if (!$container.find('input')[i]) {
+                                var element = getOption(selectedDates[i].toLocaleDateString(), true, false, Util.uid());
+                                $add.before(element);
+                                $(element).find('input').focus();
+                            } else {
+                                $container.find('input')[i].value = selectedDates[i].toLocaleDateString();
+                            } 
+                        }
+                    } else if ($container.find('input')[0]) {
+                        $container.find('input')[0].value = '';
+                    }   
+                } 
+
                 $container.find('input').each(function (i, input) {
                     if (input._flatpickr) {
                         input._flatpickr.destroy();
@@ -2659,9 +2687,11 @@ define([
                 var q = form.q || Messages.form_default;
                 if (answer === false) {
                     var cols = extractValues(opts.values).map(function (key) {
+                        if (opts.type === 'time') {
+                            return q + ' | ' + new Date(+key).toISOString();
+                        }
                         return q + ' | ' + key;
                     });
-                    cols.unshift(q);
                     return cols;
                 }
                 if (!answer || !answer.values) {
@@ -2669,15 +2699,9 @@ define([
                     empty.unshift('');
                     return empty;
                 }
-                var str = '';
-                Object.keys(answer.values).sort().forEach(function (k, i) {
-                    if (i !== 0) { str += ';'; }
-                    str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
-                });
                 var res = extractValues(opts.values).map(function (key) {
                     return answer.values[key] || '';
                 });
-                res.unshift(str);
                 return res;
             },
             icon: h('i.cptools.cptools-form-poll')
@@ -3645,7 +3669,7 @@ define([
                     e.preventDefault();
                     if (!$el.is(':visible')) {
                         var pages = $el.closest('.cp-form-page').index();
-                        if (APP.refreshPage) { APP.refreshPage(pages + 1); }
+                        if (APP.refreshPage) { APP.refreshPage(pages, 'required'); }
                     }
                     $el[0].scrollIntoView();
                 });
@@ -4061,11 +4085,10 @@ define([
 
                 editButtons = h('div.cp-form-edit-buttons-container', [ fakeEdit, del ]);
 
-                    changeType = h('div.cp-form-block-type', [
-                        model.icon.cloneNode(),
-                        h('span', Messages['form_type_'+type])
-                    ]);
-
+                changeType = h('div.cp-form-block-type', [
+                    model.icon.cloneNode(),
+                    h('span', Messages['form_type_'+type])
+                ]);
 
                 // Values
                 if (data.edit) {
@@ -4073,14 +4096,44 @@ define([
                         h('i.fa.fa-pencil'),
                         h('span', Messages.form_editBlock)
                     ]);
-                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, del ]);
+                    var copy = h('button.btn.btn-default.cp-form-copy-button', [
+                        h('i.fa.fa-copy'),
+                        h('span', Messages.duplicate)
+                    ]);
+                    $(copy).click(function() {
+                        if (!APP.isEditor) { return; }
+                        var arr = content.order;
+                        var idx = content.order.indexOf(uid);
+                        var _uid;
+                        var obj = getSectionFromQ(content, uid);
+                        arr = obj.arr;
+                        idx = obj.idx;
+                        _uid = Util.uid();
+
+                        content.form[_uid] = {
+                            q: content.form[uid].q,
+                            opts: content.form[uid].opts,
+                            type: type,
+                        };
+
+                        arr.splice(idx, 0, _uid);
+                        framework.localChange();
+                        updateForm(framework, content, true);
+                    });
+
+                    var copydelContainer = h('div', [copy, del]);
+                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, copydelContainer]);
                     editContainer = h('div');
+                    if (type === 'poll' && block.opts.values.length === 0) {
+                        $(editButtons).addClass('cp-empty-poll-edit-buttons');
+                    }
                     var onSave = function (newOpts, close) {
                         if (close) { // Cancel edit
                             data.editing = false;
                             $(editContainer).empty();
                             var $oldTag = $(data.tag);
                             $(edit).show();
+                            $(copy).show();
                             $(previewDiv).show();
                             $(requiredDiv).hide();
 
@@ -4111,6 +4164,7 @@ define([
                         $(editContainer).find('.cp-form-preview-button').prependTo(editButtons);
 
                         $(edit).hide();
+                        $(copy).hide();
                     };
                     $(edit).click(function () {
                         onEdit();
@@ -4207,6 +4261,8 @@ define([
         var _content = elements;
         if (!editable) {
             _content = [];
+            var pgcontent = [];
+            var pg = [];
             var div = h('div.cp-form-page');
             var pages = 1;
             var wasPage = false;
@@ -4216,36 +4272,103 @@ define([
                     if (i === (elements.length - 1)) { return; } // Can't end with a page break
                     if (wasPage) { return; } // Prevent double page break
                     _content.push(div);
+                    pgcontent.push(pg);
                     pages++;
                     div = h('div.cp-form-page');
+                    pg = [];
                     wasPage = true;
                     return;
                 }
+                if (form[obj.uid] && form[obj.uid].type === 'section') {
+                    return;
+                }
+                pg.push(obj);
                 wasPage = false;
                 $(div).append(obj);
             });
             _content.push(div);
-
+            pgcontent.push(pg);
             if (pages > 1) {
+                var checkEmptyPages = function() {
+                    getSections(content).forEach(function (uid) {
+                        var block = content.form[uid];
+                        var condition = Boolean(checkCondition(block));
+                        block.opts.questions.forEach(function(uid){
+                            form[uid].visible = condition;
+                        });
+                    });
+
+                    
+                    var shownContent = [];
+                    var shownPages = [];
+                    pgcontent.forEach(function(page) {
+                        var visible = page.some(function(q) {
+                            return form[$(q).attr('data-id')] && form[$(q).attr('data-id')].visible !== false;
+                        });
+                        page.empty = !visible;
+                        if (visible) {
+                            shownContent.push(page);
+                            shownPages.push(_content[pgcontent.indexOf(page)]);
+                        }
+                    });
+                    return [shownContent, shownPages];
+                };
+
                 var pageContainer = h('div.cp-form-page-container');
+                
                 var $page = $(pageContainer);
                 _content.push(pageContainer);
-                var refreshPage = APP.refreshPage = function (current) {
+                var refreshPage = APP.refreshPage = function (current, direction) {
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
-                    if (current > pages) { current = pages; }
+
+                    var checkPages = checkEmptyPages();
+                    var shownContent = checkPages[0];
+                    var shownPages = checkPages[1];
+                    var shownLength = shownContent.length;
+
+                    if (pgcontent[(current - 1)] && pgcontent[current-1].empty) {
+                        if (direction === 'next') {
+                            current++;
+                            while (pgcontent[current-1].empty) {
+                                current++;
+                            }
+                        } else if (direction === 'prev') {
+                            current--;
+                            while (pgcontent[current-1].empty) {
+                                current--;
+                            }
+                        } else if (direction === 'required') {
+                            current = shownContent.indexOf(_content[current]);
+                        }
+                    }
+
+                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
+                    evOnChange.reg(function(){
+                        var checkPages = checkEmptyPages();
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
+                        var shownLength = shownContent.length;
+                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
+                    });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
                     ]);
-                    var state = h('span', Messages._getKey('form_page', [current, pages]));
                     var right = h('button.btn.btn-secondary.cp-next', [
                         h('i.fa.fa-arrow-right'),
                     ]);
-                    if (current === pages) { $(right).css('visibility', 'hidden'); }
+
+                    if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
-                    $(left).click(function () { refreshPage(current - 1); });
-                    $(right).click(function () { refreshPage(current + 1); });
+
+                    $(left).click(function () {
+                        refreshPage(current - 1, 'prev');
+                    });
+                    $(right).click(function () {
+                        refreshPage(current + 1, 'next');
+                    });
                     $page.append([left, state, right]);
+
                     $container.find('.cp-form-page').hide();
                     $($container.find('.cp-form-page').get(current-1)).show();
                     if (current !== pages) {
@@ -4360,7 +4483,14 @@ define([
 
         if (editable) {
             if (APP.mainSortable) { APP.mainSortable.destroy(); }
+            var grabHandle;
+            if (window.matchMedia("(pointer: coarse)").matches) {
+                grabHandle = '.cp-form-block-drag-handle';
+            } else {
+                grabHandle = null;
+            }
             APP.mainSortable = Sortable.create($container[0], {
+                handle: grabHandle,
                 group: 'nested',
                 direction: "vertical",
                 filter: "input, button, .CodeMirror, .cp-form-type-sort, .cp-form-block-type.editable",
@@ -4814,6 +4944,7 @@ define([
                     // Otherwise add it
                     var datePicker = h('input');
                     var picker = Flatpickr(datePicker, {
+                        disableMobile: true,
                         enableTime: true,
                         time_24hr: is24h,
                         dateFormat: dateFormat,
