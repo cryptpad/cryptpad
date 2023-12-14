@@ -4176,7 +4176,6 @@ define([
         modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
     };
 
-    Messages.loading_mfa_required = "Multi-factor Authentication is required on this instance. Please update your account using an anthenticator app and the form below."; // XXX
     UIElements.onMissingMFA = (common, config, cb) => {
         let content = h('div');
         let msg = h('div.cp-loading-missing-mfa', [

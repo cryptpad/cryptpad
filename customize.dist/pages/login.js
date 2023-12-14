@@ -14,7 +14,6 @@ define([
 
         var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
         var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';
-        Msg.sso_login_description = "Login from SSO...."; // XXX
 
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
