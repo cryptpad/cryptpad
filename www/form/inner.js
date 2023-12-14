@@ -81,7 +81,6 @@ define([
     Sortable
     )
 {
-    Messages.duplicate = 'Duplicate'; // XXX
 
     var APP = window.APP = {
         blocks: {}

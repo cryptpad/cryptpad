@@ -1529,8 +1529,6 @@ Example
     });
 
     // Msg.admin_forcemfaHint, .admin_forcemfaTitle
-    Messages.admin_forcemfaTitle = "Enforce MFA on this instance"; // XXX
-    Messages.admin_forcemfaHint = "All CryptPad users will be asked to set up a multi-factor authenticator (TOTP) to log in to their account."; // XXX
     create['forcemfa'] = makeAdminCheckbox({
         key: 'forcemfa',
         getState: function () {

@@ -7,11 +7,6 @@ define([
     '/customize/pages.js'
 ], function (Config, $, h, UI, Msg, Pages) {
 
-    Msg.ssoauth_header = "SSO authentication"; // XXX
-    Msg.ssoauth_form_hint_register = "Add a CryptPad password for extra security or leave empty and continue";
-    Msg.ssoauth_form_hint_login = "Please enter your CryptPad password";
-    Msg.continue = "Continue";
-
     return function () {
         document.title = Msg.ssoauth_header;
 

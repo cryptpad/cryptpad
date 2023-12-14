@@ -16,7 +16,6 @@ define([
 
         var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
         var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';
-        Msg.sso_register_description = "Register from SSO...."; // XXX
 
         var termsLink = Pages.customURLs.terms;
         $(tos).find('a').attr({
