@@ -58,13 +58,21 @@ define([
                 $(pwInput).prop('disabled', 'disabled');
                 $mfaRevokeBtn.prop('disabled', 'disabled');
                 var blockKeys;
+                var ssoSeed;
 
                 nThen(function (waitFor) {
+                    sframeChan.query("Q_SETTINGS_GET_SSO_SEED", {
+                    }, waitFor(function (err, obj) {
+                        if (!obj || !obj.seed) { return; } // Not an sso account?
+                        ssoSeed = obj.seed;
+                    }));
+                }).nThen(function (waitFor) {
                     var next = waitFor();
                     // scrypt locks up the UI before the DOM has a chance
                     // to update (displaying logs, etc.), so do a set timeout
                     setTimeout(function () {
-                    Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
+                    var salt = ssoSeed || name;
+                    Login.Cred.deriveFromPassphrase(salt, password, Login.requiredBytes, function (bytes) {
                         var result = Login.allocateBytes(bytes);
                         sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
                             blockHash: result.blockHash,
@@ -246,7 +254,7 @@ define([
                     var hostname = new URL(origin).hostname;
                     var label = "CryptPad";
 
-                    var uri = `otpauth://totp/${label}:${username}@${hostname}?secret=${secret}`;
+                    var uri = `otpauth://totp/${encodeURI(label)}:${encodeURI(username)}@${hostname}?secret=${secret}`;
 
                     var qr = h('div.cp-settings-qr');
                     var uriInput = UI.dialog.selectable(uri);

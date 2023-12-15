@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const fs = require('node:fs');
+//const fs = require('node:fs');
 module.exports = {
     // Enable SSO login on this instance
     enabled: false,
