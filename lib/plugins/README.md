@@ -1,0 +1,1 @@
+# CryptPad's plugins directory
