@@ -522,7 +522,6 @@
     "calendar_import": "Voeg toe aan mijn agenda's",
     "calendar_dateTimeRange": "{0} {1} - {2}",
     "calendar_title": "Titel",
-    "calendar_location": "Plaats: {0}",
     "calendar_minutes": "Minuten",
     "calendar_addNotification": "Voeg herinnering toe",
     "register_registrationIsClosed": "Registratie is gesloten.",

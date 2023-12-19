@@ -915,7 +915,6 @@
     "calendar_default": "Kalender saya",
     "calendar_new": "Kalender baru",
     "calendar_newEvent": "Acara baru",
-    "calendar_location": "Lokasi: {0}",
     "calendar_allDay": "Seharian",
     "reminder_inProgressAllDay": "Hari ini: <b>{0}</b>",
     "admin_supportPrivButton": "Tampilkan kunci",
