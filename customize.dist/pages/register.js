@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/api/config',
     'jquery',
@@ -75,6 +79,7 @@ define([
                                 h('input.form-control#password', {
                                     type: 'password',
                                     placeholder: Msg.login_password,
+                                    autocomplete: "new-password"
                                 }),
                             ]),
                             h('div.input-container', [
@@ -82,6 +87,7 @@ define([
                                 h('input.form-control#password-confirm', {
                                     type: 'password',
                                     placeholder: Msg.login_confirm,
+                                    autocomplete: "new-password"
                                 }),
                             ]),
                         ]),

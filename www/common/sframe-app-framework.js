@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/components/hyper-json/hyperjson.js',
@@ -753,6 +757,7 @@ define([
                     Util.fixFileName(suggestion), function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
+                    console.error(filename);
                     var ext = $select.getValue();
                     filename = filename + ext;
                     if (async) {

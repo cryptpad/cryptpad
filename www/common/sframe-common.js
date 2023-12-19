@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -906,7 +910,7 @@ define([
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 var msg = err;
                 if (err === 'DELETED' || (err && err.type === 'EDELETED')) {
-                    // XXX You can still use the current version in read-only mode by pressing Esc.
+                    // You can still use the current version in read-only mode by pressing Esc.
                     // what if they don't have a keyboard (ie. mobile)
                     if (err.type && err.message) {
                         msg = UI.getDestroyedPlaceholderMessage(err.message, false, true);

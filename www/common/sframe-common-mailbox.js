@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-util.js',
@@ -85,8 +89,10 @@ define([
                 });
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
-            const tabIndexValue = data.content.isDismissible ? undefined : '0';
-            notif = h('div.cp-notification', {
+            const tabIndexValue = undefined;//data.content.isDismissible ? undefined : '0';
+            notif = h('li.cp-notification', {
+                role: 'menuitem',
+                tabindex: '0',
                 style: 'order:'+order+';',
                 'data-hash': data.content.hash
             }, [
@@ -111,6 +117,11 @@ define([
                 }
             }
 
+            $(notif).mouseenter((e) => {
+                e.stopPropagation();
+                $(notif).focus();
+            });
+
             if (data.content.isClickable) {
                 $(notif).find('.cp-notification-content').addClass("cp-clickable").on('click keypress', function (event) {
                     if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
@@ -122,7 +133,6 @@ define([
                 var dismissIcon = h('span.fa.fa-times');
                 var dismiss = h('div.cp-notification-dismiss', {
                     title: Messages.notifications_dismiss,
-                    tabindex: '0'
                 }, dismissIcon);
                 $(dismiss).addClass("cp-clickable")
                     .on('click keypress', function (event) {

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/customize/application_config.js',
@@ -1008,6 +1012,7 @@ MessengerUI, Messages, Pages) {
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
             $initBlock: $userAdmin,
+            buttonTitle: Messages.userAccountButton,
         };
         if (!config.hideDisplayName) {
             $.extend(true, userMenuCfg, {
@@ -1020,20 +1025,6 @@ MessengerUI, Messages, Pages) {
             userMenuCfg.displayChangeName = 1;
         }
         Common.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('> button').attr({
-            title: Messages.userAccountButton,
-            class: Messages.userAccountButton,
-            'aria-haspopup': 'menu',
-            'aria-expanded': 'false',
-            'aria-label': Messages.userAccountButton
-        });
-        $userAdmin.find('> button').click(function() {
-            if ($userAdmin.find('> button').attr('aria-expanded') === 'true') {
-                $userAdmin.find('> button').attr('aria-expanded', 'false');
-            } else {
-                $userAdmin.find('> button').attr('aria-expanded', 'true');
-            }
-        });
         return $userAdmin;
     };
 
@@ -1087,49 +1078,59 @@ MessengerUI, Messages, Pages) {
 
     var createNotifications = function (toolbar, config) {
         var $notif = toolbar.$top.find('.'+NOTIFICATIONS_CLS).show();
-        var openNotifsApp = h('li', {}, h('div.cp-notifications-gotoapp', { tabindex: '0' }, h('p', Messages.openNotificationsApp || "Open notifications App")));
-        $(openNotifsApp).on('click keypress', function (event) {
-            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                Common.openURL("/notifications/");
-            }
-        });
-        var div = h('li.cp-notifications-container', [
-            h('div.cp-notifications-empty', Messages.notifications_empty)
-        ]);
-        var pads_options = [div];
+
+        var options = [];
+
+        if (Common.isLoggedIn()) {
+            options.push({
+                tag: 'a',
+                attributes: { 'class':'cp-notifications-gotoapp' },
+                content: h('p', Messages.openNotificationsApp),
+                action: () => {
+                    Common.openURL("/notifications/");
+                }
+            });
+            options.push({ tag: 'hr' });
+        }
 
         var metadataMgr = config.metadataMgr;
         var privateData = metadataMgr.getPrivateData();
         if (!privateData.notifications) {
-            var allowNotif = h('div.cp-notifications-gotoapp',{ tabindex: '0' }, h('p', Messages.allowNotifications));
-            pads_options.unshift(h("hr"));
-            pads_options.unshift(allowNotif);
-            $(allowNotif).on('click keypress', function (event) {
-                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                    Common.getSframeChannel().event('Q_ASK_NOTIFICATION', null, function (e, allow) {
+            options.push({
+                tag: 'a',
+                attributes: { 'class':'cp-notifications-gotoapp cp-notifications-allow' },
+                content: h('p', Messages.allowNotifications),
+                action: function (ev) {
+                    Common.getSframeChannel().query('Q_ASK_NOTIFICATION', null, function (e, allow) {
+                        console.error(e, allow);
                         if (!allow) { return; }
-                        $(allowNotif).remove();
+                        $(ev.target).closest('li').remove();
                     });
+
                 }
             });
+            options.push({ tag: 'hr' });
 
             var onChange = function () {
                 var privateData = metadataMgr.getPrivateData();
                 if (!privateData.notifications) { return; }
-                $allow.remove();
+                $('.cp-notifications-allow').closest('li').remove();
                 metadataMgr.off('change', onChange);
             };
             metadataMgr.onChange(onChange);
         }
 
+        var div = h('ul.cp-notifications-container', [
+            h('li.cp-notifications-empty', Messages.notifications_empty)
+        ]);
+        options.push({
+            tag: 'div',
+            content: div
+        });
 
-        if (Common.isLoggedIn()) {
-            pads_options.unshift(h("hr"));
-            pads_options.unshift(openNotifsApp);
-        }
         var dropdownConfig = {
             text: '', // Button initial text
-            options: pads_options, // Entries displayed in the menu
+            options: options, // Entries displayed in the menu
             container: $notif,
             left: true,
             common: Common
@@ -1151,6 +1152,7 @@ MessengerUI, Messages, Pages) {
         $button.attr('aria-label', Messages.notificationsPage);
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
+        observeChildren($(div));
 
         var refresh = function () {
             updateUserList(toolbar, config);
@@ -1179,6 +1181,14 @@ MessengerUI, Messages, Pages) {
                 if (el) {
                     $(div).prepend(el);
                 }
+                $(el).on('keydown', function (e) {
+                    if (![13,32,46].includes(e.which)) { return; }
+                    e.stopPropagation();
+                    if (e.which === 46) {
+                        return $(el).find('.cp-notification-dismiss').click();
+                    }
+                    $(el).find('.cp-notification-content').click();
+                });
                 refresh();
             },
             onViewed: function () {

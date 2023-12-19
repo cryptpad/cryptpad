@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -462,8 +466,9 @@ define([
                     var v = opts.getLinkValue({
                         embed: Util.isChecked($link.find('#cp-share-embed'))
                     });
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess); }
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
                 },
                 keys: [13]
             }, {
@@ -506,7 +511,7 @@ define([
         return container;
     };
 
-    Messages.share_toggleQR = "Click to toggle QR code visibility"; // XXX
+    Messages.share_toggleQR = "Click to toggle QR code visibility"; // NEXT
     var getQRTab = function (Env, data, opts, _cb) {
         var qr = getQRCode(opts.getLinkValue());
 
@@ -520,7 +525,7 @@ define([
                 className: 'primary cp-bar',
                 name: Messages.share_bar,
                 onClick: function () {
-                    UI.warn("OOPS: NOT IMPLEMENTED"); // XXX
+                    UI.warn("OOPS: NOT IMPLEMENTED"); // NEXT
                     return true;
                 },
             },
@@ -569,8 +574,9 @@ define([
                 onClick: function () {
                     Feedback.send('SHARE_EMBED');
                     var v = opts.getEmbedValue();
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess); }
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
                 },
                 keys: [13]
         }];
@@ -788,7 +794,7 @@ define([
         return $rights;
     };
 
-    Messages.share_QRCategory = "QR"; // XXX
+    Messages.share_QRCategory = "QR"; // NEXT
 
     // In the share modal, tabs need to share data between themselves.
     // To do so we're using "opts" to store data and functions
@@ -848,7 +854,7 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
-        }, window.CP_DEV_MODE ? { // XXX enable for all
+        }, window.CP_DEV_MODE ? { // NEXT enable for all
             getTab: getQRTab,
             title: Messages.share_QRCategory,
             icon: 'fa fa-qrcode',
@@ -958,11 +964,11 @@ define([
                 iconClass: '.fa.fa-link',
                 onClick: function () {
                     var v = opts.getLinkValue();
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess);
-                }
-              },
-              keys: [13]
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
+                },
+                keys: [13]
             }
         ];
 
@@ -1004,8 +1010,9 @@ define([
             iconClass: '.fa.fa-link',
             onClick: function () {
                 var v = common.getMediatagFromHref(opts.fileData);
-                var success = Clipboard.copy(v);
-                if (success) { UI.log(Messages.shareSuccess); }
+                Clipboard.copy(v, (err) => {
+                    if (!err) { UI.log(Messages.shareSuccess); }
+                });
             },
             keys: [13]
         }];
@@ -1049,7 +1056,7 @@ define([
             active: !hasFriends,
         }];
 
-        // XXX add QR code generation for files
+        // NEXT add QR code generation for files
         if (ApiConfig.enableEmbedding) {
             tabs.push({
                 getTab: getFileEmbedTab,

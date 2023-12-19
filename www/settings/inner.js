@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/toolbar.js',
@@ -528,7 +532,8 @@ define([
         var form = h('div', [
             UI.passwordInput({
                 id: 'cp-settings-delete-account',
-                placeholder: Messages.settings_changePasswordCurrent
+                placeholder: Messages.settings_changePasswordCurrent,
+                autocomplete: 'current-password',
             }, true),
             button
         ]);
@@ -672,11 +677,13 @@ define([
             }, true),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new',
-                placeholder: Messages.settings_changePasswordNew
+                placeholder: Messages.settings_changePasswordNew,
+                autocomplete: 'new-password',
             }, true),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new2',
-                placeholder: Messages.settings_changePasswordNewConfirm
+                placeholder: Messages.settings_changePasswordNewConfirm,
+                autocomplete: 'new-password',
             }, true),
             h('button.btn.btn-primary', Messages.settings_changePasswordButton)
         ]);
@@ -935,6 +942,7 @@ define([
                 pwInput = h('input#cp-mfa-password', {
                     type: 'password',
                     placeholder: Messages.login_password,
+                    autocomplete: 'current-password',
                 }),
                 button
             ]);

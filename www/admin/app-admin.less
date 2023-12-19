@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) '../../customize/src/less2/include/support.less';
@@ -348,14 +354,14 @@
     table.cp-block-stats,
     table.cp-pin-list,
     table.cp-document-stats {
-        @color: #777; // XXX
+        @color: #777; // TODO use a colotheme variable
         border: 1px solid @color;
         margin: 15px;
         td, pre {
             color: @cryptpad_text_col;
         }
         td, th {
-            max-width: 60vw; // XXX
+            max-width: 60vw;
             border: 1px solid @color;
             padding: 5px;
             .scroll {

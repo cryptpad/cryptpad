@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
@@ -35,6 +39,7 @@ define([
                                     type: 'password',
                                     'name': 'password',
                                     placeholder: Msg.login_password,
+                                    autocomplete: "current-password"
                                 }),
                             ]),
                         ]),

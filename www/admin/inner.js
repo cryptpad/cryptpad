@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -364,11 +368,10 @@ define([
     var copyToClipboard = (content) => {
         var button = primary(Messages.copyToClipboard, () => {
             var toCopy = JSON.stringify(content, null, 2);
-            if (Clipboard.copy.multiline(toCopy)) {
+            Clipboard.copy(toCopy, (err) => {
+                if (err) { return UI.warn(Messages.error); }
                 UI.log(Messages.genericCopySuccess);
-            } else {
-                UI.warn(Messages.error);
-            }
+            });
         });
         return button;
     };
@@ -505,11 +508,10 @@ define([
                     UI.confirm(table, yes => {
                         if (!yes) { return; }
                         var content = P.join('\n');
-                        if (Clipboard.copy.multiline(content)) {
+                        Clipboard.copy(content, (err) => {
+                            if (err) { return UI.warn(Messages.error); }
                             UI.log(Messages.genericCopySuccess);
-                        } else {
-                            UI.warn(Messages.error);
-                        }
+                        });
                     }, {
                         wide: true,
                         ok: Messages.copyToClipboard,
@@ -811,11 +813,10 @@ define([
                     UI.confirm(tableObj.table, (yes) => {
                         if (!yes) { return; }
                         var content = result.map(line => JSON.stringify(line)).join('\n');
-                        if (Clipboard.copy.multiline(content)) {
+                        Clipboard.copy(content, (err) => {
+                            if (err) { return UI.warn(Messages.error); }
                             UI.log(Messages.genericCopySuccess);
-                        } else {
-                            UI.warn(Messages.error);
-                        }
+                        });
                     }, {
                         wide: true,
                         ok: Messages.copyToClipboard,
@@ -3510,6 +3511,7 @@ Example
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (waitFor) {
+        if (!common.isAdmin()) { return; }
         updateStatus(waitFor());
     }).nThen(function (/*waitFor*/) {
         createToolbar();

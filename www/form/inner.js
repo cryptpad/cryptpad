@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     'json.sortify',
@@ -95,7 +99,8 @@ define([
     // we'll consider increasing this restriction if people are unhappy with it
     // but as a general rule we expect users will appreciate having simpler questions
     var MAX_OPTIONS = 25;
-    var MAX_ITEMS = 10;
+    var MAX_ITEMS = 25;
+
 
     var getOptionValue = function (obj) {
         if (!Util.isObject(obj)) { return obj; }
@@ -4480,6 +4485,12 @@ define([
         APP.isEditor = Boolean(priv.form_public);
         var $body = $('body');
 
+        if (priv.devMode) {
+            MAX_OPTIONS = 10000;
+            MAX_ITEMS = 10000;
+        }
+
+
         var $toolbarContainer = $('#cp-toolbar');
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
@@ -4513,6 +4524,20 @@ define([
             $('.cp-toolbar-icon-history').hide();
             $('.cp-toolbar-icon-snapshots').hide();
         }
+
+        var initializeAnswers = function() {
+            // Initialize the answers properties if they do not exist yet
+            if (!APP.isEditor) { return; }
+            var priv = metadataMgr.getPrivateData();
+            if (content.answers && content.answers.channel && content.answers.publicKey === priv.form_public && content.answers.validateKey) { return; }
+            // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
+            content.answers = content.answers || {};
+            content.answers.channel = Hash.createChannelId();
+            content.answers.publicKey = priv.form_public;
+            content.answers.validateKey = priv.form_answerValidateKey;
+            content.answers.version = 2;
+            framework.localChange();
+        };
 
         var makeFormSettings = function () {
             var previewBtn = h('button.btn.btn-primary', [
@@ -4869,6 +4894,7 @@ define([
             };
             refreshColorTheme();
 
+            evOnChange.reg(initializeAnswers);
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
             evOnChange.reg(refreshAnon);
@@ -5136,15 +5162,7 @@ define([
                     content.order = ["1", "2"];
                     framework.localChange();
                 }
-                if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
-                    // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
-                    content.answers = content.answers || {};
-                    content.answers.channel = Hash.createChannelId();
-                    content.answers.publicKey = priv.form_public;
-                    content.answers.validateKey = priv.form_answerValidateKey;
-                    content.answers.version = 2;
-                    framework.localChange();
-                }
+                initializeAnswers();
                 checkIntegrity();
             }
             if (isNew && content.answers && typeof(content.answers.anonymous) === "undefined") {
