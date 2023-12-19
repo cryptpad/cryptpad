@@ -365,10 +365,9 @@
 
     .cp-toolbar {
         * {
-            outline-width: 0;
+            outline-style: none;
             &:focus {
-                // color shows on chrome/edge, but not firefox
-                outline-color: @cryptpad_color_brand;
+                outline: @cryptpad_color_brand solid 2px;
             }
         }
 
@@ -780,6 +779,7 @@
                 padding: 10px;
                 color: @toolbar-bg-color;
                 color: var(--toolbar-bg-color);
+                border-radius: 5px;
 
                 span {
                     font-size: 45px;
