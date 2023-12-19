@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/customize/messages.js',
@@ -70,7 +74,7 @@ define([
                 h('div.cp-app-contacts-category-content')
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
-                h('button.cp-app-contacts-muted-button',[
+                h('button.cp-app-contacts-muted-button', {tabindex:0},[
                     h('i.fa.fa-bell-slash'),
                     Messages.contacts_manageMuted
                 ]), 
@@ -516,6 +520,7 @@ define([
 
         markup.room = function (id, room, userlist) {
             var roomEl = h('div.cp-app-contacts-friend.cp-avatar', {
+                'tabindex': '0',
                 'data-key': id,
                 'data-user': room.isFriendChat ? userlist[0].curvePublic : '',
             });
@@ -557,8 +562,10 @@ define([
 
             var friendData = room.isFriendChat ? userlist[0] : {};
 
-            var $room = $(roomEl).click(function () {
-                display(id);
+            var $room = $(roomEl).on('click keypress', function (event) {
+                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                    display(id);
+                }
             }).dblclick(function () {
                 if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
             });

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-constants.js',
     '/common/common-hash.js',
@@ -47,7 +51,7 @@ define([
         return hash;
     };
 
-    var getUserHash = LocalStore.getUserHash = function () {
+    LocalStore.getUserHash = function () {
         var hash = localStorage[Constants.userHashKey];
 
         if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
@@ -82,6 +86,13 @@ define([
 
     LocalStore.setSessionToken = function (token) {
         safeSet(Constants.sessionJWT, token);
+    };
+
+    LocalStore.getSSOSeed = function () {
+        return localStorage[Constants.ssoSeed];
+    };
+    LocalStore.setSSOSeed = function (seed) {
+        safeSet(Constants.ssoSeed, seed);
     };
 
     LocalStore.getAccountName = function () {
@@ -130,6 +141,7 @@ define([
             Constants.userHashKey,
             Constants.blockHashKey,
             Constants.sessionJWT,
+            Constants.ssoSeed,
             'loginToken',
             'plan',
         ].forEach(function (k) {

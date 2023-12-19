@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/userObject.js',
     '/common/common-util.js',
@@ -1250,7 +1254,7 @@ define([
                     var data = userObject.getFileData(fileId);
                     if (!data) { return; }
                     // Don't pin pads owned by someone else
-                    //if (_ownedByOther(Env, data.owners)) { return; } // XXX 
+                    //if (_ownedByOther(Env, data.owners)) { return; }
                     // Pin onlyoffice checkpoints
                     if (data.lastVersion) {
                         var otherChan = Hash.hrefToHexChannelId(data.lastVersion);

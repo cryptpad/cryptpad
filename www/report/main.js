@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -48,11 +52,10 @@ define([
     };
 
     var copyToClipboard = function () {
-        if (Clipboard.copy.multiline(getReportContent())) {
+        Clipboard.copy(getReportContent(), (err) => {
+            if (err) { return UI.warn(Messages.error); }
             UI.log(Messages.genericCopySuccess);
-        } else {
-            UI.warn(Messages.error);
-        }
+        });
     };
 
     var checkCache = function (chan, cb) {

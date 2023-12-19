@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 /*
  * This is an internal configuration file.
  * If you want to change some configurable values, use the '/customize/application_config.js'
@@ -269,6 +273,10 @@ define(function() {
     // users don't use "fake" teams (1 member) just to increase their storage limit.
     // You can change the value here.
     // AppConfig.maxOwnedTeams = 5;
+
+    // Same settings but for premium users (users with a custom limit included)
+    // AppConfig.maxPremiumTeamsSlots = 10;
+    // AppConfig.maxPremiumTeamsOwned = 10;
 
     // The userlist displayed in collaborative documents is stored alongside the document data.
     // Everytime someone with edit rights joins a document or modify their user data (display

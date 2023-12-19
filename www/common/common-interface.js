@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 if (!document.querySelector("#alertifyCSS")) {
     // Prevent alertify from injecting CSS, we create our own in alertify.less.
     // see: https://github.com/alertifyjs/alertify.js/blob/v1.0.11/src/js/alertify.js#L414
@@ -873,7 +877,8 @@ define([
         opts = opts || {};
         var attributes = merge({
             type: 'password',
-            autocomplete: 'new-password', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
+            tabindex: '1',
+            autocomplete: 'one-time-code', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
@@ -1043,9 +1048,9 @@ define([
             window.parent.location = href;
         });
         if (exitable) {
-            // XXX if true or function, ALSO add a button to leave
+            // if true or function, ALSO add a button to leave
             $(window).focus();
-            $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
+            $(window).keydown(function (e) { // what if they don't have a keyboard?
                 if (e.which === 27) {
                     e.preventDefault();
                     e.stopPropagation();

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/toolbar.js',
@@ -528,7 +532,8 @@ define([
         var form = h('div', [
             UI.passwordInput({
                 id: 'cp-settings-delete-account',
-                placeholder: Messages.settings_changePasswordCurrent
+                placeholder: Messages.settings_changePasswordCurrent,
+                autocomplete: 'current-password',
             }, true),
             button
         ]);
@@ -577,10 +582,17 @@ define([
                     loadingText: Messages.settings_deleteTitle
                 });
                 setTimeout(function () {
-                    var name = privateData.accountName;
                     var bytes;
                     var auth = {};
+                    var ssoSeed;
                     nThen(function (w) {
+                        sframeChan.query("Q_SETTINGS_GET_SSO_SEED", {
+                        }, w(function (err, obj) {
+                            if (!obj || !obj.seed) { return; } // Not an sso account?
+                            ssoSeed = obj.seed;
+                        }));
+                    }).nThen(function (w) {
+                        var name = ssoSeed || privateData.accountName;
                         deriveBytes(name, password, w(function (_bytes) {
                             bytes = _bytes;
                         }));
@@ -655,6 +667,7 @@ define([
 
     create['change-password'] = function() {
         if (!common.isLoggedIn()) { return; }
+        if (privateData.isSSO && ApiConfig.sso && ApiConfig.sso.password === 0) { return; }
 
         var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element' });
 
@@ -672,11 +685,13 @@ define([
             }, true),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new',
-                placeholder: Messages.settings_changePasswordNew
+                placeholder: Messages.settings_changePasswordNew,
+                autocomplete: 'new-password',
             }, true),
             UI.passwordInput({
                 id: 'cp-settings-change-password-new2',
-                placeholder: Messages.settings_changePasswordNewConfirm
+                placeholder: Messages.settings_changePasswordNewConfirm,
+                autocomplete: 'new-password',
             }, true),
             h('button.btn.btn-primary', Messages.settings_changePasswordButton)
         ]);
@@ -723,8 +738,15 @@ define([
                     setTimeout(function () {
                         var oldBytes, newBytes;
                         var auth = {};
+                        var ssoSeed;
                         nThen(function (w) {
-                            var name = privateData.accountName;
+                            sframeChan.query("Q_SETTINGS_GET_SSO_SEED", {
+                            }, w(function (err, obj) {
+                                if (!obj || !obj.seed) { return; } // Not an sso account?
+                                ssoSeed = obj.seed;
+                            }));
+                        }).nThen(function (w) {
+                            var name = ssoSeed || privateData.accountName;
                             deriveBytes(name, oldPassword, w(function (bytes) {
                                 oldBytes = bytes;
                             }));
@@ -917,296 +939,6 @@ define([
 
     // Account access
 
-    var drawMfa = function (content, enabled) {
-        var $content = $(content).empty();
-        $content.append(h('div.cp-settings-mfa-hint.cp-settings-mfa-status' + (enabled ? '.mfa-enabled' : '.mfa-disabled'), [
-            h('i.fa' + (enabled ? '.fa-check' : '.fa-times')),
-            h('span', enabled ? Messages.mfa_status_on : Messages.mfa_status_off)
-        ]));
-
-        if (enabled) {
-            (function () {
-            var button = h('button.btn', Messages.mfa_disable);
-            button.classList.add('disable-button');
-            var $mfaRevokeBtn = $(button);
-            var pwInput;
-            var pwContainer = h('div.cp-password-container', [
-                h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_label),
-                pwInput = h('input#cp-mfa-password', {
-                    type: 'password',
-                    placeholder: Messages.login_password,
-                }),
-                button
-            ]);
-            $content.append(pwContainer);
-
-            // submit password on enter keyup
-            $(pwInput).on('keyup', e => {
-                if (e.which === 13) { $mfaRevokeBtn.click(); }
-            });
-
-            var spinner = UI.makeSpinner($mfaRevokeBtn);
-            $mfaRevokeBtn.click(function () {
-                var name = privateData.accountName;
-                var password = $(pwInput).val();
-                if (!password) { return void UI.warn(Messages.login_noSuchUser); }
-
-                spinner.spin();
-                $(pwInput).prop('disabled', 'disabled');
-                $mfaRevokeBtn.prop('disabled', 'disabled');
-                var blockKeys;
-
-                nThen(function (waitFor) {
-                    var next = waitFor();
-                    // scrypt locks up the UI before the DOM has a chance
-                    // to update (displaying logs, etc.), so do a set timeout
-                    setTimeout(function () {
-                    Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
-                        var result = Login.allocateBytes(bytes);
-                        sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
-                            blockHash: result.blockHash,
-                        }, function (err, obj) {
-                            if (!obj || !obj.correct) {
-                                spinner.hide();
-                                UI.warn(Messages.login_noSuchUser);
-                                $mfaRevokeBtn.removeAttr('disabled');
-                                $(pwInput).removeAttr('disabled');
-                                waitFor.abort();
-                                return;
-                            }
-                            spinner.done();
-                            blockKeys = result.blockKeys;
-                            next();
-                        });
-                    });
-                    }, 100);
-                }).nThen(function () {
-                    $(pwContainer).remove();
-                    var OTPEntry;
-                    var disable = h('button.btn.disable-button', Messages.mfa_revoke_button);
-                    $content.append(h('div.cp-password-container', [
-                        h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_revoke_code),
-                        OTPEntry = h('input', {
-                            placeholder: Messages.settings_otp_code
-                        }),
-                        disable
-                    ]));
-                    var $OTPEntry = $(OTPEntry);
-                    var $d = $(disable).click(function () {
-                        $d.prop('disabled', 'disabled');
-                        var code = $OTPEntry.val();
-                        sframeChan.query("Q_SETTINGS_TOTP_REVOKE", {
-                            key: blockKeys.sign,
-                            data: {
-                                command: 'TOTP_REVOKE',
-                                code: code,
-                            }
-                        }, function (err, obj) {
-                            $OTPEntry.val("");
-                            if (err || !obj || !obj.success) {
-                                $d.removeAttr('disabled');
-                                return void UI.warn(Messages.settings_otp_invalid);
-                            }
-                            drawMfa(content, false);
-                        }, {raw: true});
-
-                    });
-                    OTPEntry.focus();
-                    // submit OTP on enter keyup
-                    $OTPEntry.on('keyup', e => {
-                        if (e.which === 13) { $d.click(); }
-                    });
-                });
-            });
-
-            })();
-            return;
-        }
-
-        var button = h('button.btn.btn-primary', Messages.mfa_setup_button);
-        var $mfaSetupBtn = $(button);
-        var pwInput;
-        $content.append(h('div.cp-password-container', [
-            h('label.cp-settings-mfa-hint', { for: 'cp-mfa-password' }, Messages.mfa_setup_label),
-            pwInput = h('input#cp-mfa-password', {
-                type: 'password',
-                placeholder: Messages.login_password,
-            }),
-            button
-        ]));
-        var spinner = UI.makeSpinner($mfaSetupBtn);
-
-        // submit password on enter keyup
-        $(pwInput).on('keyup', e => {
-            if (e.which === 13) { $(button).click(); }
-        });
-
-        $(button).click(function () {
-            var name = privateData.accountName;
-            var password = $(pwInput).val();
-            if (!password) { return void UI.warn(Messages.login_noSuchUser); }
-
-            spinner.spin();
-            $(pwInput).prop('disabled', 'disabled');
-            $mfaSetupBtn.prop('disabled', 'disabled');
-
-            var Base32, QRCode, Nacl;
-            var blockKeys;
-            var recoverySecret;
-            nThen(function (waitFor) {
-                require([
-                    '/auth/base32.js',
-                    '/lib/qrcode.min.js',
-                    '/components/tweetnacl/nacl-fast.min.js',
-                ], waitFor(function (_Base32) {
-                    Base32 = _Base32;
-                    QRCode = window.QRCode;
-                    Nacl = window.nacl;
-                }));
-            }).nThen(function (waitFor) {
-                var next = waitFor();
-                // scrypt locks up the UI before the DOM has a chance
-                // to update (displaying logs, etc.), so do a set timeout
-                setTimeout(function () {
-                    Login.Cred.deriveFromPassphrase(name, password, Login.requiredBytes, function (bytes) {
-                        var result = Login.allocateBytes(bytes);
-                        sframeChan.query("Q_SETTINGS_CHECK_PASSWORD", {
-                            blockHash: result.blockHash,
-                        }, function (err, obj) {
-                            if (!obj || !obj.correct) {
-                                spinner.hide();
-                                UI.warn(Messages.login_noSuchUser);
-                                $mfaSetupBtn.removeAttr('disabled');
-                                $(pwInput).removeAttr('disabled');
-                                waitFor.abort();
-                                return;
-                            }
-                            spinner.done();
-                            blockKeys = result.blockKeys;
-                            next();
-                        });
-                    });
-                }, 100);
-            }).nThen(function (waitFor) {
-                $content.empty();
-                var next = waitFor();
-                recoverySecret = Nacl.util.encodeBase64(Nacl.randomBytes(24));
-                var button = h('button.btn.btn-primary', [
-                    h('i.fa.fa-check'),
-                    h('span', Messages.done)
-                ]);
-                $content.append(h('div.alert.alert-danger', [
-                    h('h2', Messages.mfa_recovery_title),
-                    h('p', Messages.mfa_recovery_hint),
-                    h('p', Messages.mfa_recovery_warning),
-                    h('div.cp-password-container', [
-                        UI.dialog.selectable(recoverySecret),
-                        button
-                    ])
-                ]));
-
-                var nextButton = h('button.btn.btn-primary', {
-                    'disabled': 'disabled'
-                }, Messages.continue);
-                $(nextButton).click(function () {
-                    next();
-                }).appendTo($content);
-
-                $(button).click(function () {
-                    $content.find('.alert-danger').removeClass('alert-danger').addClass('alert-success');
-                    $(button).prop('disabled', 'disabled');
-                    $(nextButton).removeAttr('disabled');
-                });
-            }).nThen(function () {
-                var randomSecret = function () {
-                    var U8 = Nacl.randomBytes(20);
-                    return Base32.encode(U8);
-                };
-                $content.empty();
-
-                var updateQR = Util.mkAsync(function (uri, target) {
-                    new QRCode(target, uri);
-                });
-                var updateURI = function (secret) {
-                    var username = privateData.accountName;
-                    var hostname = new URL(privateData.origin).hostname;
-                    var label = "CryptPad";
-
-                    var uri = `otpauth://totp/${label}:${username}@${hostname}?secret=${secret}`;
-
-                    var qr = h('div.cp-settings-qr');
-                    var uriInput = UI.dialog.selectable(uri);
-
-                    updateQR(uri, qr);
-
-                    var OTPEntry = h('input', {
-                        placeholder: Messages.settings_otp_code
-                    });
-                    var $OTPEntry = $(OTPEntry);
-
-                    var description = h('p.cp-settings-mfa-hint', Messages.settings_otp_tuto);
-                    var confirmOTP = h('button.btn.btn-primary', [
-                        h('i.fa.fa-check'),
-                        h('span', Messages.mfa_enable)
-                    ]);
-                    var lock = false;
-
-                    confirmOTP.addEventListener('click', function () {
-                        var code = $OTPEntry.val();
-                        if (code.length !== 6 || /\D/.test(code)) {
-                            return void UI.warn(Messages.settings_otp_invalid);
-                        }
-                        confirmOTP.disabled = true;
-                        lock = true;
-
-                        var data = {
-                            command: 'TOTP_SETUP',
-                            secret: secret,
-                            contact: "secret:" + recoverySecret, // TODO other recovery options
-                            code: code,
-                        };
-
-                        sframeChan.query("Q_SETTINGS_TOTP_SETUP", {
-                            key: blockKeys.sign,
-                            data: data
-                        }, function (err, obj) {
-                            lock = false;
-                            $OTPEntry.val("");
-                            if (err || !obj || !obj.success) {
-                                confirmOTP.disabled = false;
-                                console.error(err);
-                                return void UI.warn(Messages.error);
-                            }
-                            drawMfa(content, true);
-                        }, { raw: true });
-                    });
-
-                    $content.append([
-                        description,
-                        uriInput,
-                        h('div.cp-settings-qr-container', [
-                            qr,
-                            h('div.cp-settings-qr-code', [
-                                OTPEntry,
-                                h('br'),
-                                confirmOTP
-                            ])
-                        ])
-                    ]);
-                    OTPEntry.focus();
-                    // submit OTP on enter keyup
-                    $OTPEntry.on('keyup', e => {
-                        if (e.which === 13) { $(confirmOTP).click(); }
-                    });
-                };
-
-
-                var secret = randomSecret();
-                updateURI(secret);
-            });
-
-        });
-    };
     makeBlock('mfa', function (cb) { // Msg.settings_mfaTitle, Msg.settings_mfaHint
         if (!common.isLoggedIn()) { return void cb(false); }
 
@@ -1214,7 +946,16 @@ define([
         sframeChan.query('Q_SETTINGS_MFA_CHECK', {}, function (err, obj) {
             if (err || !obj || (obj && obj.err === 'NOBLOCK')) { return void cb(false); }
             var enabled = obj && obj.mfa && obj.type === 'TOTP';
-            drawMfa(content, Boolean(enabled));
+            var config = {
+                accountName: privateData.accountName,
+                origin: privateData.origin
+            };
+            var draw = (state) => {
+                common.totpSetup(config, content, state, (newState) => {
+                    draw(newState);
+                });
+            };
+            draw(Boolean(enabled));
             cb(content);
         });
     }, true);
@@ -2181,6 +1922,7 @@ define([
             }
 
             var $category = $(h('div.cp-sidebarlayout-category', {
+                'tabindex': 0,
                 'data-category': key
             }, [
                 icon,
@@ -2192,16 +1934,18 @@ define([
                 $category.addClass('cp-leftside-active');
             }
 
-            $category.click(function() {
-                if (!Array.isArray(categories[key]) && categories[key].onClick) {
-                    categories[key].onClick();
-                    return;
+            $category.on('click keypress', function (event) {
+                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                    if (!Array.isArray(categories[key]) && categories[key].onClick) {
+                        categories[key].onClick();
+                        return;
+                    }
+                    active = key;
+                    common.setHash(key);
+                    $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
+                    $category.addClass('cp-leftside-active');
+                    showCategories(categories[key]);
                 }
-                active = key;
-                common.setHash(key);
-                $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
-                $category.addClass('cp-leftside-active');
-                showCategories(categories[key]);
             });
         });
         showCategories(categories[active]);

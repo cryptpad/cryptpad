@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/hyperscript.js',
     '/common/common-language.js',
@@ -94,7 +98,7 @@ define([
         return h('a', attrs, [icon, text]);
     };
 
-    Pages.versionString = "5.5.0";
+    Pages.versionString = "5.6.0";
 
     var customURLs = Pages.customURLs = {};
     (function () {

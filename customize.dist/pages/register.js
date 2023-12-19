@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/api/config',
     'jquery',
@@ -9,6 +13,9 @@ define([
     return function () {
         document.title = Msg.register_header;
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
+
+        var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
+        var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';
 
         var termsLink = Pages.customURLs.terms;
         $(tos).find('a').attr({
@@ -50,7 +57,7 @@ define([
                     Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
                 ]),
                 h('div.cp-reg-form.col-md-6', [
-                    h('div#userForm.form-group.hidden', [
+                    h('div#userForm.form-group'+ssoEnforced, [
                         h('div.cp-register-instance', [
                             Msg._getKey('register_instance', [Pages.Instance.name]),
                             h('br'),
@@ -76,6 +83,7 @@ define([
                                 h('input.form-control#password', {
                                     type: 'password',
                                     placeholder: Msg.login_password,
+                                    autocomplete: "new-password"
                                 }),
                             ]),
                             h('div.input-container', [
@@ -83,6 +91,7 @@ define([
                                 h('input.form-control#password-confirm', {
                                     type: 'password',
                                     placeholder: Msg.login_confirm,
+                                    autocomplete: "new-password"
                                 }),
                             ]),
                         ]),
@@ -90,8 +99,11 @@ define([
                             UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                         ]),
                         termsCheck,
-                        h('button#register', Msg.login_register)
-                    ])
+                        h('button#register', Msg.login_register),
+                    ]),
+                    h('div#ssoForm.form-group.col-md-6'+ssoEnabled, [
+                        h('div.cp-register-sso', Msg.sso_register_description)
+                    ]),
                 ]),
             ])
         ]);

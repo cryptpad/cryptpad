@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -58,6 +62,7 @@ define([
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
             'cp-admin-enableembeds',
+            'cp-admin-forcemfa',
             'cp-admin-email',
 
             'cp-admin-instance-info-notice',
@@ -368,11 +373,10 @@ define([
     var copyToClipboard = (content) => {
         var button = primary(Messages.copyToClipboard, () => {
             var toCopy = JSON.stringify(content, null, 2);
-            if (Clipboard.copy.multiline(toCopy)) {
+            Clipboard.copy(toCopy, (err) => {
+                if (err) { return UI.warn(Messages.error); }
                 UI.log(Messages.genericCopySuccess);
-            } else {
-                UI.warn(Messages.error);
-            }
+            });
         });
         return button;
     };
@@ -509,11 +513,10 @@ define([
                     UI.confirm(table, yes => {
                         if (!yes) { return; }
                         var content = P.join('\n');
-                        if (Clipboard.copy.multiline(content)) {
+                        Clipboard.copy(content, (err) => {
+                            if (err) { return UI.warn(Messages.error); }
                             UI.log(Messages.genericCopySuccess);
-                        } else {
-                            UI.warn(Messages.error);
-                        }
+                        });
                     }, {
                         wide: true,
                         ok: Messages.copyToClipboard,
@@ -815,11 +818,10 @@ define([
                     UI.confirm(tableObj.table, (yes) => {
                         if (!yes) { return; }
                         var content = result.map(line => JSON.stringify(line)).join('\n');
-                        if (Clipboard.copy.multiline(content)) {
+                        Clipboard.copy(content, (err) => {
+                            if (err) { return UI.warn(Messages.error); }
                             UI.log(Messages.genericCopySuccess);
-                        } else {
-                            UI.warn(Messages.error);
-                        }
+                        });
                     }, {
                         wide: true,
                         ok: Messages.copyToClipboard,
@@ -1741,6 +1743,29 @@ Example
                 }
                 APP.updateStatus(function () {
                     setState(APP.instanceStatus.enableEmbedding);
+                    flushCacheNotice();
+                });
+            });
+        },
+    });
+
+    // Msg.admin_forcemfaHint, .admin_forcemfaTitle
+    create['forcemfa'] = makeAdminCheckbox({
+        key: 'forcemfa',
+        getState: function () {
+            return APP.instanceStatus.enforceMFA;
+        },
+        query: function (val, setState) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['ENFORCE_MFA', [val]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    setState(APP.instanceStatus.enforceMFA);
                     flushCacheNotice();
                 });
             });
@@ -3667,6 +3692,7 @@ Example
                 icon = h('span', { class: iconClass });
             }
             var $category = $(h('div', {
+                'tabindex': 0,
                 'class': 'cp-sidebarlayout-category'
             }, [
                 icon,
@@ -3676,16 +3702,18 @@ Example
                 $category.addClass('cp-leftside-active');
             }
 
-            $category.click(function () {
-                if (!Array.isArray(categories[key]) && categories[key].onClick) {
-                    categories[key].onClick();
-                    return;
+            $category.on('click keypress', function (event) {
+                if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                    if (!Array.isArray(categories[key]) && categories[key].onClick) {
+                        categories[key].onClick();
+                        return;
+                    }
+                    active = key;
+                    common.setHash(key);
+                    $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
+                    $category.addClass('cp-leftside-active');
+                    showCategories(categories[key]);
                 }
-                active = key;
-                common.setHash(key);
-                $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
-                $category.addClass('cp-leftside-active');
-                showCategories(categories[key]);
             });
 
         });
@@ -3728,6 +3756,7 @@ Example
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (waitFor) {
+        if (!common.isAdmin()) { return; }
         updateStatus(waitFor());
     }).nThen(function (/*waitFor*/) {
         createToolbar();

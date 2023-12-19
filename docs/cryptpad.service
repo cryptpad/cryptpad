@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 [Unit]
 Description=CryptPad API server
 
@@ -9,6 +13,10 @@ WorkingDirectory=/home/cryptpad/cryptpad
 Restart=always
 # Restart service after 10 seconds if node service crashes
 RestartSec=2
+
+# Proper logging to journald
+StandardOutput=journal
+StandardError=journal+console
 
 User=cryptpad
 Group=cryptpad

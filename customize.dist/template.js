@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/hyperscript.js',
@@ -65,6 +69,8 @@ $(function () {
                 require([ '/install/main.js' ], function () {});
             } else if (/^\/recovery\//.test(pathname)) {
                 require([ '/recovery/main.js' ], function () {});
+            } else if (/^\/ssoauth\//.test(pathname)) {
+                require([ '/ssoauth/main.js' ], function () {});
             } else if (/^\/login\//.test(pathname)) {
                 require([ '/login/main.js' ], function () {});
             } else if (/^\/($|^\/index\.html$)/.test(pathname)) {

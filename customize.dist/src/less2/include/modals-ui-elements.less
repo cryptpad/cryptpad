@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./colortheme-all.less";
 @import (reference) "./variables.less";
 @import (reference) "./browser.less";
@@ -31,6 +37,44 @@
                 .cp-radio {
                     margin: 0 0 5px 0;
                 }
+            }
+        }
+    }
+
+    .cp-loading-missing-mfa {
+        .cp-settings-qr-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            .cp-settings-qr-code {
+                input {
+                    max-width: 250px;
+                }
+                button {
+                    margin-top: 10px;
+                }
+            }
+        }
+        .cp-settings-qr {
+            img {
+                border: 10px solid white;
+                border-radius: 10px;
+            }
+            margin: 10px 10px 10px 0;
+        }
+        .cp-password-container {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+
+            justify-content: flex-start;
+            input {
+                flex-shrink: 1;
+                max-width: 400px;
+            }
+            label {
+                width: 100%;
+                font-weight: unset;
+                margin-bottom: 5px;
             }
         }
     }

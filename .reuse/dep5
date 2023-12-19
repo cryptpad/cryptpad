@@ -1,0 +1,159 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: CryptPad
+Upstream-Contact: XWiki <contact@cryptpad.org>
+Source: https://cryptpad.org
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
+
+Files: *.png
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: *.json
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: .jshintignore
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: .jshintrc
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: .lesshintrc
+Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+## Dependencies
+
+Files: www/common/theme/*
+Copyright: 2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
+License: MIT
+
+Files: www/lib/mermaid/*
+Copyright: (c) 2014 - 2021 Knut Sveidqvist
+License: MIT
+
+Files: www/lib/calendar/moment.min.js
+Copyright: (c) JS Foundation and other contributors
+License: MIT
+
+Files: www/lib/pdfjs/*
+Copyright: 2017 Mozilla Foundation
+License: Apache-2.0
+
+Files: www/lib/codemirror-extra-modes/asciidoc/*
+Copyright: (c) 2015, the Asciidoctor Project
+License: BSD-3-Clause
+
+Files: www/lib/datepicker/*
+Copyright: 2017 Gregory Petrosyan
+License: MIT
+
+Files: www/lib/diff-dom/*
+Copyright: Johannes Wilm, Fidus Writer
+License: LGPL-3.0-only
+
+Files: www/lib/fabric-history.min.js
+Copyright: 2008-2015 Printio (Juriy Zaytsev, Maxim Chernyak)
+License: MIT
+
+Files: www/lib/fabric.min.js
+Copyright: 2008-2015 Printio (Juriy Zaytsev, Maxim Chernyak)
+License: MIT
+
+Files: www/lib/pdfjs/*
+Copyright: 2012 Mozilla Foundation
+License: Apache-2.0
+
+Files: www/lib/qrcode.min.js
+Copyright: Sangmin Shim
+License: MIT
+
+Files: www/lib/rangy/rangy-core.min.js
+Copyright: 2015, Tim Down
+License: MIT
+
+Files: www/lib/textFit.min.js
+Copyright: 11/2014 by STRML (strml.github.com)
+License: MIT
+
+Files: www/lib/tippy/*
+Copyright: 2017 atomiks
+License: MIT
+
+Files: www/lib/turndown.browser.umd.js
+Copyright: 2017 Dom Christie
+License: MIT
+
+Files: www/lib/markmap/*
+Copyright: 2015 Jakub Dundalek
+License: MIT
+
+Files: www/pad/mathjax/*
+Copyright: 2009-2018 The MathJax Consortium
+License: Apache-2.0
+
+Files: www/pad/wordcount/*
+Copyright: Ingo Herbote
+License: MIT
+
+### same as CKEditor
+Files: www/pad/wysiwygarea-plugin.js
+Copyright: 2003-2017, CKSource - Frederico Knabben. All rights reserved
+License:  GPL-2.0-or-later
+
+Files: www/pad/icons/*
+Copyright: unknown
+License:  GPL-2.0-or-later
+
+## OnlyOffice
+
+Files: www/common/onlyoffice/AllFonts.js
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/fonts_thumbnail.png
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/fonts_thumbnail@2x.png
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/plugins.json
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v1/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v2b/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v4/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v5/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v6/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/v7/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later
+
+Files: www/common/onlyoffice/x2t/*
+Copyright: Ascensio System Limited 2010-2022
+License: AGPL-3.0-or-later

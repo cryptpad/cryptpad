@@ -1,8 +1,0 @@
-[ignore]
-.*/components/.*
-.*/node_modules/lesshint/*
-[include]
-
-[libs]
-
-[options]

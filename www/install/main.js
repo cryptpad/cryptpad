@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/customize/login.js',
@@ -130,6 +134,7 @@ define([
                     uname,
                     passwd,
                     isRegister: true,
+                    onOTP: UI.getOTPScreen,
                     shouldImport,
                     cb: function (data) {
                         var proxy = data.proxy;

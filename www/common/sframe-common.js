@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -15,6 +19,7 @@ define([
     '/common/sframe-common-mailbox.js',
     '/common/inner/cache.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/mfa.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -46,6 +51,7 @@ define([
     Mailbox,
     Cache,
     MT,
+    MFA,
     MetadataMgr,
     AppConfig,
     Pages,
@@ -119,6 +125,7 @@ define([
     funcs.importMediaTagMenu = callWithCommon(MT.importMediaTagMenu);
     funcs.getMediaTagPreview = callWithCommon(MT.getMediaTagPreview);
     funcs.getMediaTag = callWithCommon(MT.getMediaTag);
+    funcs.totpSetup = callWithCommon(MFA.totpSetup);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -889,6 +896,10 @@ define([
                 UI.updateLoadingProgress(data);
             });
 
+            ctx.sframeChan.on('Q_LOADING_MISSING_AUTH', function (data, cb) {
+                UIElements.onMissingMFA(funcs, data, cb);
+            });
+
             ctx.sframeChan.on('EV_NEW_VERSION', function () {
                 // TODO lock the UI and do the same in non-framework apps
                 var $err = $('<div>').append(Messages.newVersionError);
@@ -906,7 +917,7 @@ define([
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 var msg = err;
                 if (err === 'DELETED' || (err && err.type === 'EDELETED')) {
-                    // XXX You can still use the current version in read-only mode by pressing Esc.
+                    // You can still use the current version in read-only mode by pressing Esc.
                     // what if they don't have a keyboard (ie. mobile)
                     if (err.type && err.message) {
                         msg = UI.getDestroyedPlaceholderMessage(err.message, false, true);

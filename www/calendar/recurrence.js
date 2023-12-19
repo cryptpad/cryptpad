@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
 ], function (Util) {
@@ -578,6 +582,27 @@ define([
             return r;
         }).filter(Boolean);
     };
+
+    var fixTimeZone = function (evTimeZone, origin, target) {
+        var getOffset = function (date, tz) {
+            // Get an ISO string using Canadian local format
+            let iso = date.toLocaleString('en-CA', { timeZone:tz, hour12: false }).replace(', ', 'T');
+            iso += '.' + date.getMilliseconds().toString().padStart(3, '0');
+
+            // Get a UTC version of this time
+            let utcDate = new Date(iso + 'Z');
+
+            // Return the difference in timestamps, as minutes (60*1000)
+            return -(utcDate - date);
+        };
+
+        var myTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        var offset = getOffset(origin, evTimeZone) - getOffset(target, evTimeZone);
+        var myOffset = getOffset(origin, myTimeZone) - getOffset(target, myTimeZone);
+
+        return myOffset - offset;
+    };
+
     Rec.getRecurring = function (months, events) {
         if (window.CP_DEV_MODE) { debug = console.warn; }
 
@@ -735,6 +760,11 @@ define([
                         }
 
                         // Add this event
+                        if (_origin.timeZone && !_ev.isAllDay) {
+                            var offset = fixTimeZone(_origin.timeZone, _start, _evS);
+                            _ev.start += offset;
+                            _ev.end += offset;
+                        }
                         toAdd.push(_ev);
                         if (newrule) {
                             useNewRule();

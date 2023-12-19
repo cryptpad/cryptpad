@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     'json.sortify',
@@ -19,14 +23,24 @@ define([
     '/calendar/export.js',
     '/calendar/recurrence.js',
     '/lib/datepicker/flatpickr.js',
+    'tui-date-picker',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
+    '/common/diffMarked.js',
+    '/common/sframe-common-codemirror.js',
+    'cm/lib/codemirror',
+
+    'cm/addon/display/autorefresh',
+    'cm/addon/display/placeholder',
+    'cm/mode/gfm/gfm',
     '/common/jscolor.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/lib/calendar/tui-calendar.min.css',
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/calendar/app-calendar.less',
@@ -51,9 +65,14 @@ define([
     Export,
     Rec,
     Flatpickr,
-    Share, Access, Properties
+    DatePicker,
+    Share, Access, Properties,
+    diffMk,
+    SFCodeMirror,
+    CodeMirror
     )
 {
+
     var SaveAs = window.saveAs;
     var APP = window.APP = {
         calendars: {}
@@ -95,7 +114,30 @@ define([
             cb(null, obj);
         });
     };
-    var newEvent = function (data, cb) {
+    var newEvent = function (event, cb) {
+        var reminders = APP.notificationsEntries;
+        var eventBody = APP.eventBody || "";
+
+        var startDate = event.start._date;
+        var endDate = event.end._date;
+
+        var timeZone;
+        try { timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
+        var data = {
+            id: Util.uid(),
+            calendarId: event.calendarId,
+            title: event.title,
+            category: "time",
+            location: event.location,
+            start: +startDate,
+            isAllDay: event.isAllDay,
+            end: +endDate,
+            reminders: reminders,
+            body: eventBody,
+            timeZone: timeZone,
+            recurrenceRule: event.recurrenceRule
+        };
+
         APP.module.execCommand('CREATE_EVENT', data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
@@ -263,9 +305,10 @@ define([
                 var obj = data.content[uid];
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
-                if (obj.isAllDay && obj.startDay) { obj.start = +Flatpickr.parseDate((obj.startDay)); }
+                obj.body = obj.body || "";
+                if (obj.isAllDay && obj.startDay) { obj.start = +DatePicker.parseDate((obj.startDay)); }
                 if (obj.isAllDay && obj.endDay) {
-                    var endDate = Flatpickr.parseDate(obj.endDay);
+                    var endDate = DatePicker.parseDate(obj.endDay);
                     endDate.setHours(23);
                     endDate.setMinutes(59);
                     endDate.setSeconds(59);
@@ -365,8 +408,13 @@ define([
                 str = `<a href="${l}" id="${uid}">${str}</a>`;
                 APP.nextLocationUid = uid;
             }
-
-            return Messages._getKey('calendar_location', [str]);
+            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-label': Messages.calendar_loc }, []);
+            return location_icon.outerHTML + str;
+        },
+        popupDetailBody: function(schedule) {
+            var str = schedule.body;
+            delete APP.eventBody;
+            return diffMk.render(str, true);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -719,8 +767,8 @@ define([
             options: options, // Entries displayed in the menu
             common: common,
             buttonCls: 'btn btn-default fa fa-gear small cp-calendar-actions',
-            ariaLabel: Messages.calendar_settings,
-    };
+            buttonTitle: Messages.calendar_settings,
+        };
         return UIElements.createDropdown(dropdownConfig)[0];
     };
     var makeCalendarEntry = function (id, teamId) {
@@ -964,30 +1012,12 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            var reminders = APP.notificationsEntries;
-
-            var startDate = event.start._date;
-            var endDate = event.end._date;
-
-            var schedule = {
-                id: Util.uid(),
-                calendarId: event.calendarId,
-                title: event.title,
-                category: "time",
-                location: event.location,
-                start: +startDate,
-                isAllDay: event.isAllDay,
-                end: +endDate,
-                reminders: reminders,
-                recurrenceRule: APP.recurrenceRule
-            };
-
-            newEvent(schedule, function (err) {
+            event.recurrenceRule = APP.recurrenceRule;
+            newEvent(event, function (err) {
                 if (err) {
                     console.error(err);
                     return void UI.warn(err);
                 }
-                cal.createSchedules([schedule]);
             });
         });
         cal.on('beforeUpdateSchedule', function(event) {
@@ -1006,6 +1036,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var isOrigin = id === old.id;
             var wasRecurrent = Boolean(originalEvent.recurrenceRule);
+            var moveCalendar = Boolean(changes.calendarId);
 
             if (event.calendar) { // Don't update reminders and recurrence with drag&drop event
                 var oldReminders = ev.raw.reminders || originalEvent.reminders;
@@ -1019,6 +1050,11 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 if (JSONSortify(oldRec || '') !== JSONSortify(rec)) {
                     changes.recurrenceRule = rec;
                 }
+
+                var eventBody = APP.eventBody || "";
+                if (eventBody !== old.body) {
+                    changes.body = eventBody;
+                }
             }
 
 
@@ -1026,6 +1062,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 APP.recurrenceRule = ev.recurrenceRule;
             }
 
+            APP.editType = undefined;
             var afterConfirm = function () {
                 var raw = (ev && ev.raw) || {};
                 var rawData = { // Exact start and end of the selected event
@@ -1033,6 +1070,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     end: raw.end || ev.end,
                     isOrigin: isOrigin
                 };
+                var isOneTime = APP.editType === 'one';
                 if (['one', 'from'].includes(APP.editType)) {
                     if (changes.start) {
                         changes.start = diffDate(raw.start || ev.start, changes.start);
@@ -1042,22 +1080,54 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                     }
                 }
 
-                old.id = id;
-                updateEvent({
-                    ev: old,
-                    changes: changes,
-                    rawData: rawData,
-                    type: {
-                        which: APP.editType,
-                        when: raw.start || ev.start
+
+                if (isOneTime && wasRecurrent && moveCalendar) {
+                    // Copy the event with applied changes
+                    var copyEvent = ev;
+                    for (let key in changes) {
+                        copyEvent[key] = changes[key];
                     }
-                }, function (err) {
-                    if (err) {
-                        console.error(err);
-                        return void UI.warn(err);
+                    copyEvent.recurrenceRule = "";
+
+                    newEvent(copyEvent, function(err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(err);
+                        }
+                    });
+
+                    if (!isOrigin) {
+                        // If it's not the first event, then simply remove the
+                        // original occurrence
+                        deleteEvent(old, function(err) {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(err);
+                            }
+                        });
+                    } else {
+                        // You can only edit all events in the origin case
+                        console.error(Messages.error);
+                        return void UI.warn(Messages.error);
                     }
-                    //cal.updateSchedule(old.id, old.calendarId, changes);
-                });
+                } else {
+                    old.id = id;
+
+                    updateEvent({
+                        ev: old,
+                        changes: changes,
+                        rawData: rawData,
+                        type: {
+                            which: APP.editType,
+                            when: raw.start || ev.start
+                        }
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(err);
+                        }
+                    });
+                }
             };
 
 
@@ -1067,6 +1137,15 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
 
             var list = ['one','from','all'];
             if (isOrigin) { list = ['one', 'all']; }
+            if (moveCalendar) {
+                if (isOrigin) {
+                    // Changing calendar on Origin can only be done for all
+                    list = ['all'];
+                } else {
+                    // Otherwise cannot apply it to the future event
+                    list = ['one', 'all'];
+                }
+            }
             if ((changes.start || changes.end) && !isOrigin) {
                 list = list.filter(function (item) {
                     return item !== "all";
@@ -1126,7 +1205,23 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 return $warn.text(Messages.calendar_rec_warn_update);
             };
             recurrenceWarn();
+            var changeCalendarWarn = function() {
+                if (moveCalendar && wasRecurrent) {
+                    // Don't change only the first event of a recurring event
+                    $warn.show();
+                    $p.hide();
+                    if (isOrigin) {
+                        return $warn.text(Messages.calendar_rec_change_first);
+                    } else {
+                        return $warn.text(Messages.calendar_rec_change);
+                    }
+                } else {
+                    return null;
+                }
+            };
+            changeCalendarWarn();
             $radio.find('input[type="radio"]').on('change', recurrenceWarn);
+            $radio.find('input[type="radio"]').on('change', changeCalendarWarn);
         });
         cal.on('beforeDeleteSchedule', function(event) {
             deleteEvent(event.schedule, function (err) {
@@ -1173,9 +1268,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         };
         var $block = UIElements.createDropdown(dropdownConfig);
         $block.setValue(view || 'week');
-        var $views = $block.find('a');
-        $views.click(function () {
-            var mode = $(this).attr('data-value');
+        $block.onChange.reg((name, mode) => {
             cal.changeView(mode);
             updateDateRange();
             updateRecurring();
@@ -1575,7 +1668,7 @@ APP.recurrenceRule = {
                 minDate: date,
                 //dateFormat: dateFormat,
                 onChange: function () {
-                    //endPickr.set('minDate', startPickr.parseDate(s.value));
+                    //endPickr.set('minDate', DatePicker.parseDate(s.value));
                 }
             });
             var endDate = new Date(+date);
@@ -1753,7 +1846,7 @@ APP.recurrenceRule = {
                         if (until === "count") {
                             rec.count = $(radioCount).find('input[type="number"]').val();
                         } else if (until === "date") {
-                            var _date = Flatpickr.parseDate(pickr.value);
+                            var _date = DatePicker.parseDate(pickr.value);
                             _date.setDate(_date.getDate()+1);
                             rec.until = +_date - 1;
                         }
@@ -1836,7 +1929,6 @@ APP.recurrenceRule = {
     var getNotificationDropdown = function () {
         var ev = APP.editModalData;
         var calId = ev.selectedCal.id;
-        // DEFAULT HERE [10] ==> 10 minutes before the event
         var id = (ev.id && ev.id.split('|')[0]) || undefined;
         var _ev = APP.calendar.getSchedule(ev.id, calId);
         var oldReminders = _ev && _ev.raw && _ev.raw.reminders;
@@ -1877,9 +1969,7 @@ APP.recurrenceRule = {
 
         var $block = UIElements.createDropdown(dropdownConfig);
         $block.setValue('minutes');
-        var $types = $block.find('a');
-        $types.click(function () {
-            var mode = $(this).attr('data-value');
+        $block.onChange.reg((name, mode) => {
             var max = mode === "minutes" ? 60 : 24;
             $number.attr('max', max);
             if ($number.val() > max) { $number.val(max); }
@@ -1942,6 +2032,50 @@ APP.recurrenceRule = {
                 ])
             ])
         ]);
+    };
+
+    var getBodyInput = function() {
+        var ev = APP.editModalData;
+        var calId = ev.selectedCal.id;
+        var id = (ev.id && ev.id.split('|')[0]) || undefined;
+        var _ev = APP.calendar.getSchedule(ev.id, calId);
+        var oldEventBody = _ev && _ev.body;
+        if (!oldEventBody) {
+            oldEventBody = Util.find(APP.calendars, [calId, 'content', 'content', id, 'body']) || "";
+        }
+
+        APP.eventBody = oldEventBody;
+        var description = h('textarea.tui-full-calendar-content', {
+            placeholder: Messages.calendar_desc,
+            id: 'tui-full-calendar-body',
+        });
+
+        description.value = oldEventBody;
+
+        var block = h('div.tui-full-calendar-popup-section', [
+            description,
+        ]);
+
+        var cm = SFCodeMirror.create("gfm", CodeMirror, description);
+        var editor = APP.editor = cm.editor;
+        editor.setOption('lineNumbers', false);
+        editor.setOption('lineWrapping', true);
+        editor.setOption('styleActiveLine', false);
+        editor.setOption('readOnly', false);
+        editor.setOption('autoRefresh', true);
+        editor.setOption('gutters', []);
+        cm.configureTheme(common, function () {});
+        editor.setValue(oldEventBody);
+
+        var updateBody = function(value) {
+            APP.eventBody = value;
+        };
+
+        editor.on('changes', function() {
+            updateBody(editor.getValue());
+        });
+
+        return block;
     };
 
     var createToolbar = function () {
@@ -2046,13 +2180,16 @@ APP.recurrenceRule = {
             var $button = $el.find('.tui-full-calendar-section-button-save');
 
             var $startDate = $el.find('#tui-full-calendar-schedule-start-date');
-            var startDate = Flatpickr.parseDate($startDate.val());
+            var startDate = DatePicker.parseDate($startDate.val());
 
             var divRec = getRecurrenceInput(startDate);
             $button.before(divRec);
 
             var div = getNotificationDropdown();
             $button.before(div);
+
+            var bodyInput = getBodyInput();
+            $startDate.parent().parent().before(bodyInput);
 
             // Use Flatpickr with or without time depending on allday checkbox
             var $cbox = $el.find('#tui-full-calendar-schedule-allday');

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
     '/components/nthen/index.js',
@@ -73,6 +77,7 @@ define([
             ApiConfig.httpSafeOrigin + (pathname || window.location.pathname) + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
         $i.attr('allowfullscreen', 'true');
+        $i.attr('allow', 'clipboard-write');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -226,6 +231,61 @@ define([
                         }
                     }
                 };
+
+                var addFirstHandlers = () => {
+                    sframeChan.on('Q_SETTINGS_CHECK_PASSWORD', function (data, cb) {
+                        var blockHash = Utils.LocalStore.getBlockHash();
+                        var userHash = Utils.LocalStore.getUserHash();
+                        var correct = (blockHash && blockHash === data.blockHash) ||
+                                      (!blockHash && userHash === data.userHash);
+                        cb({correct: correct});
+                    });
+                    sframeChan.on('Q_SETTINGS_TOTP_SETUP', function (obj, cb) {
+                        require([
+                            '/common/outer/http-command.js',
+                        ], function (ServerCommand) {
+                            var data = obj.data;
+                            data.command = 'TOTP_SETUP';
+                            data.session = Utils.LocalStore.getSessionToken();
+                            ServerCommand(obj.key, data, function (err, response) {
+                                cb({ success: Boolean(!err && response && response.bearer) });
+                                if (response && response.bearer) {
+                                    Utils.LocalStore.setSessionToken(response.bearer);
+                                }
+                            });
+                        });
+                    });
+                    sframeChan.on('Q_SETTINGS_TOTP_REVOKE', function (obj, cb) {
+                        require([
+                            '/common/outer/http-command.js',
+                        ], function (ServerCommand) {
+                            ServerCommand(obj.key, obj.data, function (err, response) {
+                                cb({ success: Boolean(!err && response && response.success) });
+                                if (response && response.success) {
+                                    Utils.LocalStore.setSessionToken('');
+                                }
+                            });
+                        });
+                    });
+                    sframeChan.on('Q_SETTINGS_GET_SSO_SEED', function (obj, _cb) {
+                        var cb = Utils.Util.mkAsync(_cb);
+                        cb({
+                            seed: Utils.LocalStore.getSSOSeed()
+                        });
+                    });
+                    Cryptpad.loading.onMissingMFAEvent.reg((data) => {
+                        var cb = data.cb;
+                        if (!sframeChan) { return void cb('EINVAL'); }
+                        sframeChan.query('Q_LOADING_MISSING_AUTH', {
+                            accountName: Utils.LocalStore.getAccountName(),
+                            origin: window.location.origin,
+                        }, (err, obj) => {
+                            if (obj && obj.state) { return void cb(true); }
+                            console.error(err || obj);
+                        });
+                    });
+                };
+
                 var whenReady = waitFor(function (msg) {
                     if (msg.source !== iframe) { return; }
                     var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
@@ -242,6 +302,7 @@ define([
                     });
                     SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) {
                         Utils.sframeChan = sframeChan = sfc;
+                        addFirstHandlers();
                         window.CryptPad_loadingError = function (e) {
                             sfc.event('EV_LOADING_ERROR', e);
                         };
@@ -266,6 +327,7 @@ define([
                                                                   : '';
                     }
                 } catch (e) { console.error(e); }
+
 
                 // NOTE: Driveless mode should only work for existing pads, but we can't check that
                 // before creating the worker because we need the anon RPC to do so.
@@ -1235,7 +1297,7 @@ define([
                     var nSecret = secret;
                     if (cfg.isDrive) {
                         // Shared folder or user hash or fs hash
-                        var hash = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                        var hash = Cryptpad.userHash || Utils.LocalStore.getFSHash();
                         if (data.sharedFolder) { hash = data.sharedFolder.hash; }
                         if (hash) {
                             var password = (data.sharedFolder && data.sharedFolder.password) || undefined;
@@ -1652,7 +1714,10 @@ define([
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    SecureModal.$iframe = $('<iframe>', {id: 'sbox-secure-iframe'}).appendTo($('body'));
+                    SecureModal.$iframe = $('<iframe>', {
+                        id: 'sbox-secure-iframe',
+                        allow: 'clipboard-write'
+                    }).appendTo($('body'));
                     SecureModal.modal = SecureIframe.create(config);
                 }
                 setDocumentTitle();
@@ -1694,7 +1759,10 @@ define([
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    UnsafeObject.$iframe = $('<iframe>', {id: 'sbox-unsafe-iframe'}).appendTo($('body')).hide();
+                    UnsafeObject.$iframe = $('<iframe>', {
+                        id: 'sbox-unsafe-iframe',
+                        allow: 'clipboard-write'
+                    }).appendTo($('body')).hide();
                     UnsafeObject.modal = UnsafeIframe.create(config);
                 }
                 UnsafeObject.modal.refresh(cfg, function (data) {
@@ -1714,7 +1782,10 @@ define([
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    OOIframeObject.$iframe = $('<iframe>', {id: 'sbox-oo-iframe'}).appendTo($('body')).hide();
+                    OOIframeObject.$iframe = $('<iframe>', {
+                        id: 'sbox-oo-iframe',
+                        allow: 'clipboard-write'
+                    }).appendTo($('body')).hide();
                     OOIframeObject.modal = OOIframe.create(config);
                 }
                 OOIframeObject.modal.refresh(cfg, function (data) {
@@ -1985,8 +2056,9 @@ define([
                 require(['/common/clipboard.js'], function (Clipboard) {
                     var url = window.location.origin +
                                 Utils.Hash.hashToHref(hashes.viewHash, 'form');
-                    var success = Clipboard.copy(url);
-                    cb(success);
+                    Clipboard.copy(url, (err) => {
+                        cb(!err);
+                    });
                 });
             });
             sframeChan.on('EV_OPEN_VIEW_URL', function () {

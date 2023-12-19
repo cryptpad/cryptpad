@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/toolbar.js',
@@ -55,7 +59,7 @@ define([
         }
 
         var Title = common.createTitle({});
-        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade', 'notifications'];
+        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade', 'notifications', 'pageTitle'];
         if (!uploadMode) {
             displayed.push('fileshare');
             displayed.push('access');
@@ -64,12 +68,9 @@ define([
             displayed: displayed,
             $container: $bar,
             metadataMgr: metadataMgr,
+            pageTitle: Messages.upload_title,
             sfCommon: common,
         };
-        if (uploadMode) {
-            displayed.push('pageTitle');
-            configTb.pageTitle = Messages.upload_title;
-        }
         var toolbar = APP.toolbar = Toolbar.create(configTb);
 
         if (!uploadMode) {
@@ -136,10 +137,9 @@ define([
                         common.setPadAttribute('fileType', metadata.type);
                     }
 
-                    toolbar.addElement(['pageTitle'], {
-                        pageTitle: title,
-                        title: Title.getTitleConfig(),
-                    });
+                    if (toolbar.updatePageTitle) {
+                        toolbar.updatePageTitle(title);
+                    }
                     toolbar.$drawer.append(common.createButton('forget', true));
                     toolbar.$drawer.append(common.createButton('properties', true));
                     if (common.isLoggedIn()) {

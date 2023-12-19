@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
     '/components/nthen/index.js',
@@ -51,7 +55,7 @@ define([
                 require([
                     '/common/cryptget.js',
                 ], function (Crypt) {
-                    var k = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                    var k = Cryptpad.userHash || Utils.LocalStore.getFSHash();
                     Crypt.put(k, sjson, function (err) {
                         cb(err);
                     });
@@ -70,37 +74,6 @@ define([
             sframeChan.on('Q_SETTINGS_IMPORT_LOCAL', function (data, cb) {
                 Cryptpad.mergeAnonDrive(cb);
             });
-            sframeChan.on('Q_SETTINGS_CHECK_PASSWORD', function (data, cb) {
-                var blockHash = Utils.LocalStore.getBlockHash();
-                var userHash = Utils.LocalStore.getUserHash();
-                var correct = (blockHash && blockHash === data.blockHash) ||
-                              (!blockHash && userHash === data.userHash);
-                cb({correct: correct});
-            });
-            sframeChan.on('Q_SETTINGS_TOTP_SETUP', function (obj, cb) {
-                require([
-                    '/common/outer/http-command.js',
-                ], function (ServerCommand) {
-                    ServerCommand(obj.key, obj.data, function (err, response) {
-                        cb({ success: Boolean(!err && response && response.bearer) });
-                        if (response && response.bearer) {
-                            Utils.LocalStore.setSessionToken(response.bearer);
-                        }
-                    });
-                });
-            });
-            sframeChan.on('Q_SETTINGS_TOTP_REVOKE', function (obj, cb) {
-                require([
-                    '/common/outer/http-command.js',
-                ], function (ServerCommand) {
-                    ServerCommand(obj.key, obj.data, function (err, response) {
-                        cb({ success: Boolean(!err && response && response.success) });
-                        if (response && response.success) {
-                            Utils.LocalStore.setSessionToken('');
-                        }
-                    });
-                });
-            });
             sframeChan.on('Q_SETTINGS_MFA_CHECK', function (obj, cb) {
                 require([
                     '/common/outer/login-block.js',
@@ -111,6 +84,7 @@ define([
                     Utils.Util.getBlock(parsed.href, {}, function (err, data) {
                         cb({
                             mfa: err === 401,
+                            sso: data && data.sso,
                             type: data && data.method
                         });
                     });
@@ -140,8 +114,9 @@ define([
             category = window.location.hash.slice(1);
             window.location.hash = '';
         }
-        var addData = function (obj) {
+        var addData = function (obj, Cryptpad, user, Utils) {
             if (category) { obj.category = category; }
+            obj.isSSO = Boolean(Utils.LocalStore.getSSOSeed());
         };
         SFCommonO.start({
             noRealtime: true,

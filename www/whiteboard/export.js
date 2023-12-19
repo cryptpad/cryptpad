@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // This file is used when a user tries to export the entire CryptDrive.
 // Pads from the code app will be exported using this format instead of plain text.
 define([
@@ -25,11 +29,13 @@ define([
                     if (c[k].y > h) { h = c[k].y + 1; }
                 });
             });
-            w = Math.min(w, MAX);
-            h = Math.min(h, MAX);
+            // Empty documents are rendered as a 600x600 transparent PNG image
+            w = w === 0 ? 600 : Math.min(w, MAX);
+            h = h === 0 ? 600 : Math.min(h, MAX);
             canvas.setWidth(w);
             canvas.setHeight(h);
             canvas.calcOffset();
+            canvas.renderAll();
 
             module.ext = '.png';
             canvas_node.toBlob(cb);

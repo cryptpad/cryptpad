@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "../../customize/src/less2/include/framework.less";
 @import (reference) "../../customize/src/less2/include/comments.less";
 @import (reference) "../../customize/src/less2/include/tools.less";
@@ -22,6 +28,15 @@ body.cp-app-pad {
         flex-flow: row;
         height: 100%;
         overflow: hidden;
+       .cp-toolbar-chat-drawer, .cp-toolbar-userlist-drawer{
+        @media screen and (max-width: @browser_media-medium-screen){
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            top: 74px;
+
+        }
+       }
     }
 
     @media screen and (max-height: @browser_media-medium-screen),
@@ -72,6 +87,7 @@ body.cp-app-pad {
                 border-color: @cryptpad_color_red;
             }
         }
+
         .cp-pad-show {
             line-height: 0px;
         }
@@ -133,7 +149,7 @@ body.cp-app-pad {
         }
         h2 {
             font-size: 1.5rem;
-            text-align: right;
+            text-align: center;
         }
         .comments_main();
     }
@@ -144,6 +160,13 @@ body.cp-app-pad {
         h2 {
             text-align: left;
         }
+        p.msg{
+            align-self: center;
+            padding: 0;
+        }
+        .dialog.nav{
+            padding: 10px;
+        }
     }
 
     .cke_toolbox_main {
@@ -152,6 +175,7 @@ body.cp-app-pad {
         .cke_toolbar {
             height: 28px;
             padding: 2px 0;
+            display: flex;
         }
         .cp-app-pad-wordCount {
             float: right;
@@ -169,6 +193,15 @@ body.cp-app-pad {
             border-color: @toolbar-bg-active;
         }
         .cke_button, .cke_combo_button {
+            .cke_combo_open{
+                display: flex;
+                flex-flow: row;
+                .cke_combo_arrow{
+                    @media (max-width: 360px){
+                        display:none;
+                    }
+                }
+            }
             .tools_unselectable();
             &.cke_button_on, &.cke_combo_button:hover, &.cke_button_off:hover {
                 background-color: @toolbar-bg-active;
