@@ -56,6 +56,7 @@ define([
                     h('h2', Msg.register_notes_title),
                     Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
                 ]),
+                h('div.col-md-3.cp-closed-filler'+ssoEnabled, h('div')),
                 h('div.cp-reg-form.col-md-6', [
                     h('div#userForm.form-group'+ssoEnforced, [
                         h('div.cp-register-instance', [
@@ -105,6 +106,7 @@ define([
                         h('div.cp-register-sso', Msg.sso_register_description)
                     ]),
                 ]),
+                h('div.col-md-3.cp-closed-filler'+ssoEnabled),
             ])
         ]);
     };

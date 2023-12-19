@@ -34,6 +34,10 @@ define([
             var hash = window.location.hash.slice(1);
             token = hash;
             $('body').removeClass('cp-register-closed');
+        } else if (Config.sso && Config.restrictRegistration && !Config.restrictSsoRegistration) {
+            $('body').find('.cp-register-det').css('display', 'flex');
+            $('body').find('#data').hide();
+            $('body').find('#userForm').hide();
         }
 
         // text and password input fields
@@ -69,7 +73,6 @@ define([
             var list = Config.sso.list.map(function (name) {
                 var b = h('button.btn.btn-secondary', name);
                 var $b = $(b).click(function () {
-                    console.log('sso register click:', name);
                     $b.prop('disabled', 'disabled');
                     Login.ssoAuth(name, function (err, data) {
                         if (data.url) {

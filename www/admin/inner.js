@@ -1495,29 +1495,81 @@ Example
     };
 
     // Msg.admin_registrationHint, .admin_registrationTitle
-    create['registration'] = makeAdminCheckbox({
-        key: 'registration',
-        getState: function () {
-            return APP.instanceStatus.restrictRegistration;
-        },
-        query: function (val, setState) {
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'ADMIN_DECREE',
-                data: ['RESTRICT_REGISTRATION', [val]]
-            }, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                }
-                APP.updateStatus(function () {
-                    setState(APP.instanceStatus.restrictRegistration);
-                    flushCacheNotice();
+    // Msg.admin_registrationSsoTitle
+    Messages.admin_registrationSsoTitle = "ALSO CLOSE SSO REGISTRATION"; // XXX
+    create['registration'] = function () {
+        var key = 'registration';
+
+        var refresh = function () {};
+
+        var $div = makeAdminCheckbox({
+            key: 'registration',
+            getState: function () {
+                return APP.instanceStatus.restrictRegistration;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RESTRICT_REGISTRATION', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.restrictRegistration);
+                        refresh();
+                        flushCacheNotice();
+                    });
                 });
-            });
-        },
-    });
+            }
+        })();
+
+        var $sso = makeAdminCheckbox({
+            key: 'registration-sso',
+            getState: function () {
+                return APP.instanceStatus.restrictSsoRegistration;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RESTRICT_SSO_REGISTRATION', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.restrictSsoRegistration);
+                        flushCacheNotice();
+                    });
+                });
+            }
+        })();
+        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
+        if (ssoEnabled) {
+            $sso.find('#cp-admin-registration-sso').hide();
+            $sso.find('> span.cp-sidebarlayout-description').hide();
+            $div.append($sso);
+        }
+
+        refresh = () => {
+            var closed = APP.instanceStatus.restrictRegistration;
+            if (closed) {
+                $sso.show();
+            } else {
+                $sso.hide();
+            }
+        };
+        refresh();
+
+
+        return $div;
+    };
 
     Messages.admin_invitationCreate = "Create invitation link"; // XXX
+    Messages.admin_invitationHint = "Create invitation links to allow users to register even when registration is closed";
+    Messages.admin_invitationTitle = "Invitation links";
     create['invitation'] = function () {
         var key = 'invitation';
         var $div = makeBlock(key); // Msg.admin_invitationHint, admin_invitationTitle
@@ -1610,7 +1662,9 @@ Example
         return $div;
     };
 
-    Messages.admin_usersAdd = "Add known user";
+    Messages.admin_usersAdd = "Add known user"; // XXX
+    Messages.admin_userHint = "List of known users. You can add more using the form and select automated options";
+    Messages.admin_userTitle = "Known users";
     create['users'] = function () {
         var key = 'users';
         var $div = makeBlock(key); // Msg.admin_usersHint, admin_usersTitle
