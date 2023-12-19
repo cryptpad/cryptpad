@@ -1098,7 +1098,6 @@
     "broadcast_end": "Termina",
     "broadcast_maintenance": "Una manutenzione è programmata tra <b>{0}</b> e <b>{1}</b>. CryptPad potrebbe non essere disponibile in quel lasso di tempo.",
     "admin_surveyTitle": "Sondaggio",
-    "calendar_location": "Posizione: {0}",
     "admin_surveyButton": "Salva sondaggio",
     "admin_surveyActive": "Apri sondaggio",
     "calendar_minutes": "Minuti",
