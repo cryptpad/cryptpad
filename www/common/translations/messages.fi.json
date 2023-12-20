@@ -1173,7 +1173,6 @@
     "calendar_update": "Päivitä",
     "calendar_title": "Otsikko",
     "calendar_loc": "Sijainti",
-    "calendar_location": "Sijainti: {0}",
     "calendar_allDay": "Koko päivä",
     "calendar_minutes": "Minuutit",
     "calendar_hours": "Tunnit",
