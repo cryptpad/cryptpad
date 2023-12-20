@@ -516,8 +516,10 @@ define([
             // FIXME We currently can't create an account with OTP by default
             // NOTE If we ever want to do that for SSO accounts it will require major changes
             //      because writeLoginBlock only supports one type of authentication at a time
-            var userData;
-            if (token) { userData = [uname, RT.proxy.edPublic]; }
+
+            // XXX userData always sent, maybe only for SSO and token?
+            // Only SSO users and invited users can be soted by the server and it needs to be configured
+            var userData = [uname, RT.proxy.edPublic];
             Block.writeLoginBlock({
                 pw: Boolean(passwd),
                 auth: ssoAuth,

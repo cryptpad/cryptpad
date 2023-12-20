@@ -1498,8 +1498,6 @@ Example
     // Msg.admin_registrationSsoTitle
     Messages.admin_registrationSsoTitle = "ALSO CLOSE SSO REGISTRATION"; // XXX
     create['registration'] = function () {
-        var key = 'registration';
-
         var refresh = function () {};
 
         var $div = makeAdminCheckbox({
@@ -1663,8 +1661,10 @@ Example
     };
 
     Messages.admin_usersAdd = "Add known user"; // XXX
-    Messages.admin_userHint = "List of known users. You can add more using the form and select automated options";
-    Messages.admin_userTitle = "Known users";
+    Messages.admin_usersHint = "List of known users. You can add more using the form and select automated options";
+    Messages.admin_usersTitle = "Known users";
+    Messages.admin_storeInvitedLabel = "Automatically store invited users"; // XXX
+    Messages.admin_storeSsoLabel = "Automatically store SSO users";
     create['users'] = function () {
         var key = 'users';
         var $div = makeBlock(key); // Msg.admin_usersHint, admin_usersTitle
@@ -1679,6 +1679,58 @@ Example
         var $b = $(button);
 
         var refreshUsers = function () {};
+
+        var $invited = makeAdminCheckbox({
+            key: 'store-invited',
+            getState: function () {
+                return APP.instanceStatus.storeInvitedUsers;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['STORE_INVITED_USERS', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.storeInvitedUsers);
+                        flushCacheNotice();
+                    });
+                });
+            }
+        })();
+        $invited.find('#cp-admin-store-invited').hide();
+        $invited.find('> span.cp-sidebarlayout-description').hide();
+        $div.append($invited);
+        var $sso = makeAdminCheckbox({
+            key: 'store-sso',
+            getState: function () {
+                return APP.instanceStatus.storeSSOUsers;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['STORE_SSO_USERS', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.storeSSOUsers);
+                        flushCacheNotice();
+                    });
+                });
+            }
+        })();
+        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
+        if (ssoEnabled) {
+            $sso.find('#cp-admin-store-sso').hide();
+            $sso.find('> span.cp-sidebarlayout-description').hide();
+            $div.append($sso);
+        }
 
         var deleteUser = function (/*id*/) {
             /*
