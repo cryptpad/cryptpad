@@ -1421,7 +1421,6 @@
     "calendar_deleteTeamConfirm": "Esteu segur que voleu suprimir aquest calendari de l'equip?",
     "calendar_deleteOwned": "Continuarà sent visible per a altres usuaris amb els quals s'ha compartit.",
     "calendar_newEvent": "Esdeveniment nou",
-    "calendar_location": "Ubicació: {0}",
     "calendar_more": "{0} més",
     "reminder_missed": "<b>{0}</b> va tenir lloc el {1}",
     "reminder_now": "<b>{0}</b> ha començat",
