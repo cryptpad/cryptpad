@@ -3295,7 +3295,7 @@ define([
         });
         sorted.forEach(function (uid) {
             var answer = answers[uid];
-
+            
             var viewOnly = content.answers.cantEdit || APP.isClosed;
 
             var action = h(viewOnly ? 'button.btn.btn-secondary' : 'button.btn.btn-primary', [
@@ -4108,10 +4108,25 @@ define([
                         arr = obj.arr;
                         idx = obj.idx;
                         _uid = Util.uid();
+                        
+                        var opts = type === 'multiradio' || type === 'multicheck' ? {
+                            items: [...Array(content.form[uid].opts.items.length).keys()].map(function (i) {
+                                return {
+                                    uid: Util.uid(),
+                                    v: content.form[uid].opts.items[i].v
+                                };
+                            }),
+                            values: [...Array(content.form[uid].opts.values.length).keys()].map(function (i) {
+                                return {
+                                    uid: Util.uid(),
+                                    v: content.form[uid].opts.values[i].v
+                                };
+                            })
+                        } : content.form[uid].opts
 
                         content.form[_uid] = {
                             q: content.form[uid].q,
-                            opts: content.form[uid].opts,
+                            opts: opts,
                             type: type,
                         };
 
