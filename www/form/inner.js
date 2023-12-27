@@ -2065,6 +2065,7 @@ define([
                 var tag = h('input');
 
                 var picker = Flatpickr(tag, {
+                    disableMobile: true,
                     enableTime: true,
                     time_24hr: is24h,
                     dateFormat: dateFormat,
