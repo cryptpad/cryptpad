@@ -95,7 +95,7 @@ This project is tested with [BrowserStack](https://www.browserstack.com/).
 This software is and will always be available under the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the License, or (at your option)
 any later version. If you wish to use this technology in a proprietary product, please contact
-sales@xcryptpad.org
+sales@cryptpad.org
 
 [Tor browser]: https://www.torproject.org/download/
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attack
