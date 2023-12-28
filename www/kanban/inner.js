@@ -415,6 +415,10 @@ define([
                     var list = boards.list || [];
                     var idx = list.indexOf(id);
                     if (idx !== -1) { list.splice(idx, 1); }
+                    var items = boards.data[id].item 
+                    items.forEach(function(item) {
+                        delete boards.items[item]
+                    })
                     delete (boards.data || {})[id];
                     kanban.removeBoard(id);
                     return void commit();
