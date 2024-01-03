@@ -415,10 +415,6 @@ define([
                     var list = boards.list || [];
                     var idx = list.indexOf(id);
                     if (idx !== -1) { list.splice(idx, 1); }
-                    var items = boards.data[id].item 
-                    items.forEach(function(item) {
-                        delete boards.items[item]
-                    })
                     delete (boards.data || {})[id];
                     kanban.removeBoard(id);
                     return void commit();
@@ -1154,6 +1150,8 @@ define([
         });
 
         framework.setFileExporter('.json', function () {
+            var content = kanban.getBoardsJSON();
+            cleanData(content);
             return new Blob([JSON.stringify(kanban.getBoardsJSON(), 0, 2)], {
                 type: 'application/json',
             });
