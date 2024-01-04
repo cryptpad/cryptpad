@@ -196,7 +196,7 @@ define([
         }, cb);
     };
     Block.removeLoginBlock = function (data, cb) {
-        const { reason, blockKeys, auth } = data;
+        const { reason, blockKeys, auth, edPublic } = data;
 
         var command = 'REMOVE_BLOCK';
         if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
@@ -204,6 +204,7 @@ define([
         ServerCommand(blockKeys.sign, {
             command: command,
             auth: auth && auth.data,
+            edPublic: edPublic,
             reason: reason
         }, cb);
     };
