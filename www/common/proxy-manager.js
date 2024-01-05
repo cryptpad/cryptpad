@@ -586,11 +586,15 @@ define([
             // 1. add the shared folder to our list of shared folders
             // NOTE: pushSharedFolder will encrypt the href directly in the object if needed
             Env.user.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
-                if (err === "EEXISTS" && folderData.href && folderId) {
+                if (err === "EEXISTS" && folderData.href && folderId) { // Check upgrade
                     var parsed = Hash.parsePadUrl(folderData.href);
                     var secret = Hash.getSecrets('drive', parsed.hash, folderData.password);
                     SF.upgrade(secret.channel, secret);
                     Env.folders[folderId].userObject.setReadOnly(false, secret.keys.secondaryKey);
+                    waitFor.abort();
+                    return void cb(folderId);
+                }
+                if (err === "EEXISTS" && folderId) { // Exists but no upgrade, return folderId
                     waitFor.abort();
                     return void cb(folderId);
                 }
