@@ -4109,7 +4109,7 @@ define([
                         idx = obj.idx;
                         _uid = Util.uid();
 
-                        var opts = content.form[uid].opts;
+                        var opts = Util.clone(content.form[uid].opts);
                         if (type === 'multiradio' || type === 'multicheck') {
                             var itemKeys = Util.getKeysArray(content.form[uid].opts.items.length);
                             var valueKeys = Util.getKeysArray(content.form[uid].opts.values.length);
