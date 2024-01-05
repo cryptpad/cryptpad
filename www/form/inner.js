@@ -4108,24 +4108,29 @@ define([
                         arr = obj.arr;
                         idx = obj.idx;
                         _uid = Util.uid();
-                        
-                        var itemKeys = Util.getKeysArray(content.form[uid].opts.items.length);
-                        var valueKeys = Util.getKeysArray(content.form[uid].opts.values.length);
-                        var opts = type === 'multiradio' || type === 'multicheck' ? {
-                            items: itemKeys.map(function (i) {
-                                return {
-                                    uid: Util.uid(),
-                                    v: content.form[uid].opts.items[i].v
-                                };
-                            }),
-                            values: valueKeys.map(function (i) {
-                                return {
-                                    uid: Util.uid(),
-                                    v: content.form[uid].opts.values[i].v
-                                };
-                            })
-                        } : content.form[uid].opts;
 
+                        var opts;
+                        if (type === 'multiradio' || type === 'multicheck') {
+                            var itemKeys = Util.getKeysArray(content.form[uid].opts.items.length);
+                            var valueKeys = Util.getKeysArray(content.form[uid].opts.values.length);
+                            opts = {
+                                items: itemKeys.map(function (i) {
+                                    return {
+                                        uid: Util.uid(),
+                                        v: content.form[uid].opts.items[i].v
+                                    };
+                                }),
+                                values: valueKeys.map(function (i) {
+                                    return {
+                                        uid: Util.uid(),
+                                        v: content.form[uid].opts.values[i].v
+                                    };
+                                })
+                            };
+                        } else {
+                            opts = content.form[uid].opts;
+                        }
+                        
                         content.form[_uid] = {
                             q: content.form[uid].q,
                             opts: opts,
