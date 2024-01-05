@@ -21,7 +21,6 @@
     @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
-    // XXX: check contrasts of app colors used as btn background
     @toolbar-bg-color-light: lighten(@bg-color, 30%);
     @toolbar-bg-color-fade: fade(@toolbar-bg-color-light, 60%);
 };
@@ -366,11 +365,9 @@
 
     .cp-toolbar {
         * {
-            outline-width: 0;
+            outline-style: none;
             &:focus {
-                outline-width: 1rem;
-                // color shows on chrome/edge, but not firefox
-                outline-color: grey; // XXX temporary color to change
+                outline: @cryptpad_color_brand solid 2px;
             }
         }
 
@@ -782,6 +779,7 @@
                 padding: 10px;
                 color: @toolbar-bg-color;
                 color: var(--toolbar-bg-color);
+                border-radius: 5px;
 
                 span {
                     font-size: 45px;
@@ -894,7 +892,7 @@
                 margin: 0;
                 white-space: normal;
                 text-align: left;
-                color: #EEEEEE;
+                color: @cryptpad_text_col;
                 font-size: 14px;
             }
 

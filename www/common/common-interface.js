@@ -875,8 +875,8 @@ define([
         opts = opts || {};
         var attributes = merge({
             type: 'password',
-            autocomplete: 'new-password', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
             tabindex: '1',
+            autocomplete: 'one-time-code', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
@@ -1046,9 +1046,9 @@ define([
             window.parent.location = href;
         });
         if (exitable) {
-            // XXX if true or function, ALSO add a button to leave
+            // if true or function, ALSO add a button to leave
             $(window).focus();
-            $(window).keydown(function (e) { // XXX what if they don't have a keyboard?
+            $(window).keydown(function (e) { // what if they don't have a keyboard?
                 if (e.which === 27) {
                     e.preventDefault();
                     e.stopPropagation();

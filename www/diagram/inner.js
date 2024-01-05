@@ -163,10 +163,6 @@ define([
                 message: Messages.reconnecting,
                 show: !editable
             });
-
-            document.getElementById('overlay').className = editable
-                ? ""
-                : "show";
         });
 
         // starting the CryptPad framework

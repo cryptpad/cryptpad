@@ -1724,6 +1724,8 @@ define([
             var $value = $();
             $innerblock.find('[role="menuitem"]').each((i, el) => {
                 var $el = $(el);
+                var $item = $el.find('> *');
+                if ($item.length && !$item.is(':visible')) { return false; }
                 var text = $el.text().toLowerCase();
                 var p = pressed.toLowerCase();
                 if (text.indexOf(p) === 0) {
@@ -1733,8 +1735,14 @@ define([
             });
             return $value;
         };
+        var getAll = () => {
+            return $innerblock.find('[role="menuitem"]').filter((i, el) => {
+                var $item = $(el).find('> *');
+                return !$item.length || $item.is(':visible');
+            });
+        };
         var getPrev = ($el) => {
-            var $all = $innerblock.find('[role="menuitem"]:has(:visible)');
+            var $all = getAll();
             if (!$all.length) { return $(); }
             var idx = $all.index($el[0]);
             if (idx === -1) { return $(); }
@@ -1742,17 +1750,16 @@ define([
             return $($all.get(prev));
         };
         var getNext = ($el) => {
-            var $all = $innerblock.find('[role="menuitem"]:has(:visible)');
+            var $all = getAll();
             if (!$all.length) { return $(); }
             var idx = $all.index($el[0]);
             if (idx === -1) { return $(); }
             var next = (idx + 1) % $all.length;
             return $($all.get(next));
         };
-        var getFirst = () => {
-            return $innerblock.find('[role="menuitem"]:has(:visible)').first();
-        };
         $container.keydown(function (e) {
+            e.stopPropagation(); // don't propagate event to window if the dropdown is focused
+
             var visible = $innerblock.is(':visible');
             var $value = $innerblock.find('li:focus');
             if (!visible && [38,40].includes(e.which) && !config.isSelect) {
@@ -1762,10 +1769,9 @@ define([
             if (!visible) { return; }
             if (e.which === 38) { // Up
                 e.preventDefault();
-                e.stopPropagation();
                 var $prev;
                 if (!$value.length) {
-                    $prev = $innerblock.find('[role="menuitem"]').last();
+                    $prev = getAll().last();
                 } else {
                     $prev = getPrev($value);
                 }
@@ -1777,10 +1783,9 @@ define([
             }
             if (e.which === 40) { // Down
                 e.preventDefault();
-                e.stopPropagation();
                 var $next;
                 if (!$value.length) {
-                    $next = $innerblock.find('[role="menuitem"]').first();
+                    $next = getAll().first();
                 } else {
                     $next = getNext($value);
                 }
@@ -1792,25 +1797,21 @@ define([
             }
             if (e.which === 13 || e.which === 32) { //Enter or space
                 e.preventDefault();
-                e.stopPropagation();
                 if ($value.length) {
                     $value.click();
                     hide();
                     $button.focus();
                 } else {
-                    setTimeout(() => {
-                        getFirst().focus();
-                    });
+                    setFocus(getAll().first());
                 }
             }
             if (e.which === 27) { // Esc
                 e.preventDefault();
-                e.stopPropagation();
                 $value.mouseleave();
                 hide();
                 $button.focus();
             }
-            if (e.which === 9) {
+            if (e.which === 9) { // Tab
                 hide();
                 if (e.shiftKey) {
                     $button.focus();
@@ -1820,6 +1821,7 @@ define([
             }
         });
         $container.keypress(function (e) {
+            e.stopPropagation(); // Don't propagate to window
             window.clearTimeout(to);
             var c = String.fromCharCode(e.which);
             pressed += c;
@@ -2655,7 +2657,7 @@ define([
             UI.createCheckbox('cp-creation-expire', Messages.creation_expiration, false, {
                 labelAlt: Messages.creation_expiresIn
             }),
-            h('span.cp-creation-expire-picker.cp-creation-slider', [
+            h('form.cp-creation-expire-picker.cp-creation-slider', { autocomplete: "off" }, [
                 h('input#cp-creation-expire-val', {
                     type: "number",
                     min: 1,
@@ -2917,7 +2919,7 @@ define([
                     case "month": unit = 3600 * 24 * 30; break;
                     default: unit = 0;
                 }
-                expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
+                expireVal = (Math.min(Number($('#cp-creation-expire-val').val()), 100) || 0) * unit;
             }
             // Password
             var passwordVal = $('#cp-creation-password').is(':checked') ?
@@ -3006,7 +3008,7 @@ define([
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
-                // XXX You can still use the current version in read-only mode by pressing Esc.
+                // You can still use the current version in read-only mode by pressing Esc.
                 // what if they don't have a keyboard (ie. mobile)
                 msg += Messages.errorCopy;
             }
@@ -3030,7 +3032,7 @@ define([
                 });
             }
             if (err.message && (err.message !== "PASSWORD_CHANGE" || viewer)) {
-                // XXX If readonly, tell the viewer that their link won't work with the new password
+                // If readonly, tell the viewer that their link won't work with the new password
                 UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
                     exitable, exitable);
                 return;
