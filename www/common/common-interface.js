@@ -1471,6 +1471,7 @@ define([
     */
     UI.createDrawer = function ($button, $content) {
         $button.attr('aria-expanded', false);
+
         $button.click(function () {
             var topPos = $button[0].getBoundingClientRect().bottom;
             $content.toggle();
@@ -1480,7 +1481,7 @@ define([
                 $content.find(':first').focus();
                 var wh = $(window).height();
                 $content.css('max-height', Math.floor(wh - topPos - 1)+'px')
-                $content.children().addClass('active-element');
+                $content.children(':visible').addClass('active-element');
             } else {
                 $content.children().removeClass('active-element');
             }
@@ -1555,6 +1556,14 @@ define([
         $('body').keydown(function (e) {
             if (e.which === 27) {
                 $content.blur();
+            }
+        });
+
+        $(document).click(function (e) {
+            var $target = $(e.target);
+            if (!$target.closest($content).length && !$target.closest($button).length) {
+                $content.hide();
+                $button.removeClass('cp-toolbar-button-active');
             }
         });
     };
