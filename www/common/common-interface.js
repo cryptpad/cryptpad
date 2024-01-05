@@ -1477,11 +1477,56 @@ define([
             $button.removeClass('cp-toolbar-button-active');
             if ($content.is(':visible')) {
                 $button.addClass('cp-toolbar-button-active');
-                $content.focus();
+                $content.find(':first').focus();
                 var wh = $(window).height();
-                $content.css('max-height', Math.floor(wh - topPos - 1)+'px');
+                $content.css('max-height', Math.floor(wh - topPos - 1)+'px')
+                $content.children().addClass('active-element');
+            } else {
+                $content.children().removeClass('active-element');
             }
         });
+
+
+        var currentIndex = 0;
+
+        $(document).keydown(function(e) {
+            if ($content.is(':visible')) {
+                var activeElements = $content.find('.active-element');
+                switch (e.which) {
+                    case 38: // Up
+                        if (currentIndex > 0) {
+                            currentIndex--;
+                        } else {
+                            currentIndex = activeElements.length - 1;
+                        }
+                        activeElements.eq(currentIndex).focus();
+                        break;
+
+                    case 40: // Down
+                        if (currentIndex < activeElements.length - 1) {
+                            currentIndex++;
+                        } else {
+                            currentIndex = 0;
+                        }
+                        activeElements.eq(currentIndex).focus();
+                        break;
+
+                    case 27: // Escape
+                        $content.hide();
+                        $content.blur();
+                        break;
+
+                    case 9: // Tab
+                        e.preventDefault();
+                        break;
+
+                    default:
+                        return;
+                }
+                e.preventDefault();
+            }
+        });
+
 
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
