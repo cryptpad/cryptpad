@@ -617,7 +617,8 @@ define([
     };
 
     var mkPrintButton = function (framework, editor) {
-        var $printButton = framework._.sfCommon.createButton('print', true);
+        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false
+        var $printButton = framework._.sfCommon.createButton('print', true, {}, null, isMobile);
         $printButton.click(function () {
             /*
             // NOTE: alternative print system in case we keep having more issues on Firefox

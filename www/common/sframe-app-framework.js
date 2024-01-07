@@ -707,6 +707,7 @@ define([
             });
         };
 
+        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false
         var setFileExporter = function (extension, fe, async) {
             fileExporter = fe;
             var $export = common.createButton('export', true, {}, function () {
@@ -772,7 +773,7 @@ define([
                     typeInput: $select[0]
                 });
                 $select.find('button').addClass('btn');
-            });
+            }, isMobile);
             toolbar.$drawer.append($export);
         };
 
@@ -803,7 +804,7 @@ define([
                 });
             };
             toolbar.$drawer.append(
-                common.createButton('import', true, options, fileImporter)
+                common.createButton('import', true, options, fileImporter, isMobile)
             );
         };
 
@@ -814,7 +815,7 @@ define([
 
         var createFilePicker = function () {
             if (!common.isLoggedIn()) { return; }
-            $embedButton = common.createButton('mediatag', true).click(function () {
+            $embedButton = common.createButton('mediatag', true, {}, null, isMobile).click(function () {
                 if (!cpNfInner.metadataMgr.getPrivateData().isTop) {
                     return void UIElements.openDirectlyConfirmation(common);
                 }
@@ -997,20 +998,20 @@ define([
                 },
                 $toolbar: $(toolbarContainer)
             };
-            var $hist = common.createButton('history', true, {histConfig: histConfig});
+            var $hist = common.createButton('history', true, {histConfig: histConfig}, null, isMobile);
             toolbar.$drawer.append($hist);
 
             var $snapshot = common.createButton('snapshots', true, {
                 remove: deleteSnapshot,
                 make: makeSnapshot,
                 load: loadSnapshot
-            });
+            }, null, isMobile);
             toolbar.$drawer.append($snapshot);
 
-            var $copy = common.createButton('copy', true);
+            var $copy = common.createButton('copy', true, {}, null, isMobile);
             toolbar.$drawer.append($copy);
 
-            var $store = common.createButton('storeindrive', true);
+            var $store = common.createButton('storeindrive', true, {}, null, isMobile);
             toolbar.$drawer.append($store);
 
             if (!cpNfInner.metadataMgr.getPrivateData().isTemplate) {
@@ -1018,11 +1019,11 @@ define([
                     rt: cpNfInner.chainpad,
                     getTitle: function () { return cpNfInner.metadataMgr.getMetadata().title; }
                 };
-                var $templateButton = common.createButton('template', true, templateObj);
+                var $templateButton = common.createButton('template', true, templateObj, null, isMobile);
                 toolbar.$drawer.append($templateButton);
             }
 
-            var $importTemplateButton = common.createButton('importtemplate', true);
+            var $importTemplateButton = common.createButton('importtemplate', true, {}, null, isMobile);
             if (!readOnly) {
                 toolbar.$drawer.append($importTemplateButton);
             }
@@ -1031,14 +1032,14 @@ define([
             toolbar.$drawer.append(common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 stateChange(STATE.FORGOTTEN);
-            }));
+            }, isMobile));
 
             if (common.isLoggedIn()) {
-                var $tags = common.createButton('hashtag', true);
+                var $tags = common.createButton('hashtag', true, {}, null, isMobile);
                 toolbar.$drawer.append($tags);
             }
 
-            var $properties = common.createButton('properties', true);
+            var $properties = common.createButton('properties', true, {}, null, isMobile);
             toolbar.$drawer.append($properties);
 
             createFilePicker();

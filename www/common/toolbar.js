@@ -999,7 +999,8 @@ MessengerUI, Messages, Pages) {
     };
 
     var createNewPad = function (toolbar, config) {
-        var $button = Common.createButton('newpad', true);
+        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false
+        var $button = Common.createButton('newpad', true, {}, null, isMobile);
         toolbar.$drawer.append($button);
         return $button;
     };

@@ -578,7 +578,7 @@ define([
         });
     };
 
-    UIElements.createButton = function (common, type, rightside, data, callback) {
+    UIElements.createButton = function (common, type, rightside, data, callback, isMobile) {
         var AppConfig = common.getAppConfig();
         var button;
         var sframeChan = common.getSframeChannel();
@@ -588,7 +588,7 @@ define([
             case 'export':
                 button = $('<button>', {
                     'class': 'fa fa-download cp-toolbar-icon-export',
-                    title: Messages.exportButtonTitle,
+                    title: isMobile ? '' : Messages.exportButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.exportButton));
 
                 button.click(common.prepareFeedback(type));
@@ -599,7 +599,7 @@ define([
             case 'import':
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
-                    title: Messages.importButtonTitle,
+                    title: isMobile ? '' : Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
                 /*if (data.types) {
                     // New import button in the toolbar
@@ -654,7 +654,7 @@ define([
             case 'upload':
                 button = $('<button>', {
                     'class': 'btn btn-primary new',
-                    title: Messages.uploadButtonTitle,
+                    title:isMobile ? '' :  Messages.uploadButtonTitle,
                 }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
                 if (!data.FM) { return; }
                 var $input = $('<input>', {
@@ -759,7 +759,7 @@ define([
                 break;
             case 'forget':
                 button = $('<button>', {
-                    'class': "fa fa-trash cp-toolbar-icon-forget"
+                    'class': "fa fa-trash cp-toolbar-icon-forget",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_delete));
                 callback = typeof callback === "function" ? callback : function () {};
                 button
@@ -822,7 +822,7 @@ define([
                 break;
             case 'print':
                 button = $('<button>', {
-                    title: Messages.printButtonTitle2,
+                    title: isMobile ? '' : Messages.printButtonTitle2,
                     'class': "fa fa-print cp-toolbar-icon-print",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
                 break;
@@ -832,7 +832,7 @@ define([
                     break;
                 }
                 button = $('<button>', {
-                    title: Messages.historyButton,
+                    title: isMobile ? '' : Messages.historyButton,
                     'aria-label': Messages.historyButton,
                     'class': "fa fa-history cp-toolbar-icon-history",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
@@ -854,7 +854,7 @@ define([
                 break;
             case 'savetodrive':
                 button = $(h('button.cp-toolbar-savetodrive', {
-                    title: Messages.canvas_saveToDrive,
+                    title: isMobile ? '' : Messages.canvas_saveToDrive,
                 }, [
                     h('i.fa.fa-file-image-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
@@ -887,7 +887,7 @@ define([
             case 'hashtag':
                 button = $('<button>', {
                     'class': 'fa fa-hashtag cp-toolbar-icon-hashtag',
-                    title: Messages.tags_title,
+                    title: isMobile ? '' : Messages.tags_title,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_hashtag));
                 button.click(common.prepareFeedback(type))
                 .click(function () {
@@ -934,7 +934,7 @@ define([
             case 'properties':
                 button = $('<button>', {
                     'class': 'fa fa-info-circle cp-toolbar-icon-properties',
-                    title: Messages.propertiesButtonTitle,
+                    title: isMobile ? '' : Messages.propertiesButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
                 .text(Messages.propertiesButton))
                 .click(common.prepareFeedback(type))
@@ -953,7 +953,7 @@ define([
             case 'save': // OnlyOffice save
                 button = $('<button>', {
                     'class': 'fa fa-save',
-                    title: Messages.settings_save,
+                    title: isMobile ? '' : Messages.settings_save,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
                 .text(Messages.settings_save))
                 .click(common.prepareFeedback(type));
@@ -961,7 +961,7 @@ define([
                 break;
             case 'newpad':
                 button = $('<button>', {
-                    title: Messages.newButtonTitle,
+                    title: isMobile ? '' : Messages.newButtonTitle,
                     'class': 'fa fa-plus cp-toolbar-icon-newpad',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.newButton));
                 button
@@ -972,7 +972,7 @@ define([
                 break;
             case 'snapshots':
                 button = $('<button>', {
-                    title: Messages.snapshots_button,
+                    title: isMobile ? '' : Messages.snapshots_button,
                     'class': 'fa fa-camera cp-toolbar-icon-snapshots',
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.snapshots_button));
                 button
@@ -1281,16 +1281,18 @@ define([
         common.fixLinks(text);
 
         var closeButton = h('span.cp-help-close.fa.fa-times');
+        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false
         var $toolbarButton = common.createButton('', true, {
             text: Messages.help_button,
-            name: 'help'
-        }).addClass('cp-toolbar-button-active');
+            name: 'help', 
+        }, null).addClass('cp-toolbar-button-active');
         var help = h('div.cp-help-container', [
             closeButton,
             text
         ]);
 
-        $toolbarButton.attr('title', Messages.show_help_button);
+        var toolbarButtonTitle = window.matchMedia("(any-hover: none)").matches ? '' : Messages.show_help_button
+        $toolbarButton.attr('title', toolbarButtonTitle);
 
         var toggleHelp = function () {
             $toolbarButton.removeClass('cp-toolbar-button-active');

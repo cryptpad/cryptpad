@@ -107,7 +107,8 @@ define([
         markers.setButton($showAuthorColorsButton);
     };
     var mkPrintButton = function (framework, $content, $print) {
-        var $printButton = framework._.sfCommon.createButton('print', true);
+        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false
+        var $printButton = framework._.sfCommon.createButton('print', true, {}, null, isMobile);
         $printButton.click(function () {
             $print.html($content.html());
             window.focus();
