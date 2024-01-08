@@ -347,6 +347,28 @@ define([
         cb(false);
     };
 
+    handlers['ADD_TO_ACCESS_LIST'] = function(ctx, common, data, cb) {
+
+        var msg = data.msg;
+        var content = msg.content;
+        var channel = content.channel;
+
+        ctx.Store.getAllStores().forEach(function (store) {
+            var res = store.manager.findChannel(channel);
+            if (!res.length) { return; }
+            
+            var data = res[0];
+            var id = data.id // check if that's correct
+            // var teamId = store.data.blockId;
+            ctx.Store.loadSharedFolder(null, id, data, function () {
+            // callback of loadSharefFolder, nothing to do here  
+            }, undefined);
+          });
+
+        cb(true)
+
+    };
+
     // Hide duplicates when receiving an ADD_OWNER notification:
     var addOwners = {};
     handlers['ADD_OWNER'] = function (ctx, box, data, cb) {

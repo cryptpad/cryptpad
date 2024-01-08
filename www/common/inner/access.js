@@ -554,6 +554,7 @@ define([
                 }, function (err, res) {
                     err = err || (res && res.error);
                     redrawAll(true);
+                    
                     if (err) {
                         spinner.hide();
                         var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
@@ -657,8 +658,10 @@ define([
             var $sel = $div.find('.cp-usergrid-user.cp-selected');
             var sel = $sel.toArray();
             if (!sel.length) { return; }
+            var friend;
             var toAdd = sel.map(function (el) {
                 var curve = $(el).attr('data-curve');
+                friend = friends[curve]
                 var teamId = $(el).attr('data-teamid');
                 // If the pad is woned by a team, we can transfer ownership to ourselves
                 if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
@@ -690,6 +693,14 @@ define([
                     }, waitFor(function (err, res) {
                         err = err || (res && res.error);
                         redrawAll(true);
+                        common.mailbox.sendTo("ADD_TO_ACCESS_LIST", {
+                            channel: channel,
+                            title: data.title || title,
+                        }, {
+                            channel: friend.notifications,
+                            curvePublic: friend.curvePublic
+                        });
+
                         if (err) {
                             waitFor.abort();
                             var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
