@@ -707,7 +707,7 @@ define([
             });
         };
 
-        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false
+        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false;
         var setFileExporter = function (extension, fe, async) {
             fileExporter = fe;
             var $export = common.createButton('export', true, {}, function () {

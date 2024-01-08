@@ -1281,7 +1281,6 @@ define([
         common.fixLinks(text);
 
         var closeButton = h('span.cp-help-close.fa.fa-times');
-        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false
         var $toolbarButton = common.createButton('', true, {
             text: Messages.help_button,
             name: 'help', 
@@ -1291,7 +1290,7 @@ define([
             text
         ]);
 
-        var toolbarButtonTitle = window.matchMedia("(any-hover: none)").matches ? '' : Messages.show_help_button
+        var toolbarButtonTitle = window.matchMedia("(any-hover: none)").matches ? '' : Messages.show_help_button;
         $toolbarButton.attr('title', toolbarButtonTitle);
 
         var toggleHelp = function () {

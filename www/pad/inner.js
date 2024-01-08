@@ -617,7 +617,7 @@ define([
     };
 
     var mkPrintButton = function (framework, editor) {
-        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false
+        var isMobile = window.matchMedia("(any-hover: none)").matches ? true : false;
         var $printButton = framework._.sfCommon.createButton('print', true, {}, null, isMobile);
         $printButton.click(function () {
             /*
