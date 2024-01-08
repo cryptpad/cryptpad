@@ -1321,7 +1321,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             },
         });
         $(goDate).click(function () {
-            f.isOpen ? f.close() : f.open()
+            return f.isOpen ? f.close() : f.open();
         });
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
             goLeft, goToday, goRight, goDate
