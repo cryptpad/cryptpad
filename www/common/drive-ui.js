@@ -2399,7 +2399,10 @@ define([
             if (isElementSelected($element)) {
                 selectElement($element);
             }
-            $element.prepend($icon).dblclick(function () {
+            if (!$element.is('.cp-app-drive-element-noreadonly') || $element.is('.cp-app-drive-static')) {
+                $element.prepend($icon);
+            }
+            $element.dblclick(function () {
                 if (restricted) {
                     UI.warn(Messages.fm_restricted);
                     return;
