@@ -1403,7 +1403,7 @@ define([
 
         // Hidden hash: if a pad is deleted, we may have to switch back to full hash
         // in some tabs
-        Store.checkDeletedPad = function (channel) {
+        Store.checkDeletedPad = function (channel, cb) {
             if (!channel) { return; }
 
             // Check if the pad is still stored in one of our drives
@@ -1411,6 +1411,7 @@ define([
                 channel: channel,
                 isFile: true // we don't care if it's view or edit
             }, function (res) {
+                if (typeof(cb) === "function") { setTimeout(cb); }
                 // If it is stored, abort
                 if (Object.keys(res).length) { return; }
                 // Otherwise, tell all the tabs that this channel was deleted and give them the hrefs

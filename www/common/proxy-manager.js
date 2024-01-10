@@ -1019,41 +1019,52 @@ define([
                 var owned = Env.user.userObject.ownedInTrash(function (owners) {
                     return _ownedByMe(Env, owners);
                 });
+                var n = nThen;
                 owned.forEach(function (chan) {
-                    Env.removeOwnedChannel(chan, waitFor(function (obj) {
-                        // If the error is that the file is already removed, nothing to
-                        // report, it's a normal behavior (pad expired probably)
-                        if (obj && obj.error && obj.error !== "ENOENT") {
-                            // RPC may not be responding
-                            // Send a report that can be handled manually
-                            console.error(obj.error, chan);
-                            Feedback.send('ERROR_EMPTYTRASH_OWNED=' + chan + '|' + obj.error, true);
-                        }
-                        console.warn('DELETED', chan);
-                    }));
+                    n = n(function (w) {
+                        Env.removeOwnedChannel(chan, w(function (obj) {
+                            setTimeout(w(), 50);
+                            // If the error is that the file is already removed, nothing to
+                            // report, it's a normal behavior (pad expired probably)
+                            if (obj && obj.error && obj.error !== "ENOENT") {
+                                // RPC may not be responding
+                                // Send a report that can be handled manually
+                                console.error(obj.error, chan);
+                                Feedback.send('ERROR_EMPTYTRASH_OWNED=' + chan + '|' + obj.error, true);
+                            }
+                            console.warn('DELETED', chan);
+                        }));
+                    }).nThen;
                 });
+                n(waitFor());
             }
 
             // Empty the trash
             Env.user.userObject.emptyTrash(waitFor(function (err, toClean) {
-                cb();
-
+                var nn = nThen;
                 // Don't block nThen for the lower-priority tasks
-                setTimeout(function () {
+                setTimeout(waitFor(function () {
                     // Unpin deleted pads if needed
                     // Check if we need to restore a full hash (hidden hash deleted from drive)
                     if (!Array.isArray(toClean)) { return; }
+                    var done = waitFor();
                     var toCheck = Util.deduplicateString(toClean);
                     var toUnpin = [];
                     toCheck.forEach(function (channel) {
                         // Check unpin
-                        var data = findChannel(Env, channel, true);
-                        if (!data.length) { toUnpin.push(channel); }
-                        // Check hidden hash
-                        Env.Store.checkDeletedPad(channel);
+                        nn = nn(function (w) {
+                            var data = findChannel(Env, channel, true);
+                            if (!data.length) { toUnpin.push(channel); }
+                            // Check hidden hash, one at a time, asynchronously
+                            Env.Store.checkDeletedPad(channel, w());
+                        }).nThen;
                     });
-                    Env.unpinPads(toUnpin, function () {});
-                });
+                    nn(function () {
+                        Env.unpinPads(toUnpin, function () {
+                            done();
+                        });
+                    });
+                }));
             }));
         }).nThen(cb);
     };
