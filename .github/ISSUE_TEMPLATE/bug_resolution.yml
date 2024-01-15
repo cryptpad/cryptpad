@@ -55,7 +55,7 @@ body:
   - type: dropdown
     id: operating-system
     attributes:
-      label: What opreating system are you using?
+      label: Which operating system are you using?
       multiple: true
       options:
         - Linux/BSD/UNIX
