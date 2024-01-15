@@ -2399,7 +2399,7 @@ define([
             if (isElementSelected($element)) {
                 selectElement($element);
             }
-            if (!$element.is('.cp-app-drive-element-noreadonly') || $element.is('.cp-app-drive-static')) {
+            if (!thumbsUrls[element]) {
                 $element.prepend($icon);
             }
             $element.dblclick(function () {
