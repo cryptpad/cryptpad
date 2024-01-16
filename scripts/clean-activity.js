@@ -6,7 +6,6 @@
  * Some .activity file were created for deleted blob due to a bug.
  * This script can be run once to remove these invalid activity file.
 **/
-var nThen = require("nthen");
 var config = require("../lib/load-config");
 var BlobStore = require("../lib/storage/blob");
 
