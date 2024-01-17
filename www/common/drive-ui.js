@@ -2202,15 +2202,6 @@ define([
 
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
-            $element.append($name);
-            $element.append($state);
-            if (APP.mobile()) {
-                $element.append($menu);
-            }
-            
-            if (getViewMode() === 'grid') {
-                $element.attr('title', name);
-            }
 
             // display the thumbnail
             // if the thumbnail has already been displayed once, do not reload it, keep the same url
@@ -2220,6 +2211,11 @@ define([
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
+
+                var icon = getFileIcon(element)
+                $(icon).addClass('cp-app-drive-element-icon')
+                $name.addClass('cp-app-drive-element-name-icon')
+                $name.prepend($(icon))
             }
             else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
@@ -2230,6 +2226,17 @@ define([
                     $thumb.attr("draggable", false);
                     thumbsUrls[element] = $thumb[0].src;
                 });
+            }
+            
+
+            $element.append($name);
+            $element.append($state);
+            if (APP.mobile()) {
+                $element.append($menu);
+            }
+            
+            if (getViewMode() === 'grid') {
+                $element.attr('title', name);
             }
 
             var type = Messages.type[hrefData.type] || hrefData.type;
