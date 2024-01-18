@@ -209,6 +209,9 @@ define([
                 noExitBtn: 1,
                 browser: 0,
 
+                noDevice: 1,
+                filesupport: 0,
+
                 modified: 'unsavedChanges',
                 proto: 'json',
 
