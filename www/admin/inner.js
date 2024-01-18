@@ -1585,6 +1585,11 @@ Example
 
         var refreshInvite = function () {};
 
+        var refresh = h('div', h('button.btn.btn-primary', Messages.oo_refresh));
+        Util.onClickEnter($(refresh).find('button'), function () {
+            refreshInvite();
+        });
+
         var deleteInvite = function (id) {
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'DELETE_INVITATION',
@@ -1662,7 +1667,7 @@ Example
             });
         });
 
-        $div.append([add, list]);
+        $div.append([add, refresh, list]);
         return $div;
     };
 
@@ -1686,6 +1691,11 @@ Example
         var $b = $(button);
 
         var refreshUsers = function () {};
+
+        var refresh = h('div', h('button.btn.btn-primary', Messages.oo_refresh));
+        Util.onClickEnter($(refresh).find('button'), function () {
+            refreshUsers();
+        });
 
         var $invited = makeAdminCheckbox({
             key: 'store-invited',
@@ -1739,19 +1749,32 @@ Example
             $div.append($sso);
         }
 
-        var deleteUser = function (/*id*/) {
-            /*
+        var deleteUser = function (id) {
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'DELETE_KNOWN_USER',
                 data: id
             }, function (e, response) {
-                $b.prop('disabled', false);
                 if (e || response.error) {
                     UI.warn(Messages.error);
                     return void console.error(e, response);
                 }
                 refreshUsers();
-            });*/
+            });
+        };
+        var updateUser = function (key, changes) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'UPDATE_KNOWN_USER',
+                data: {
+                    edPublic: key,
+                    changes: changes
+                }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                refreshUsers();
+            });
         };
         var $list = $(list);
         refreshUsers = function () {
@@ -1766,14 +1789,18 @@ Example
                 }
                 if (!Array.isArray(response)) { return; }
                 var all = response[0];
-                console.log(all);
                 Object.keys(all).forEach(function (key) {
                     var data = all[key];
-
+                    var editUser = () => {};
                     var del = h('button.btn.btn-danger.fa.fa-trash');
                     $(del).click(function () {
                         // XXX CONFIRM
                         deleteUser(key);
+                    });
+                    var edit = h('button.btn.btn-secondary.fa.fa-pencil');
+                    $(edit).click(function () {
+                        // XXX CONFIRM
+                        editUser();
                     });
                     var copy = h('button.btn.btn-secondary.fa.fa-clipboard');
                     $(copy).click(function () {
@@ -1782,13 +1809,46 @@ Example
                         });
                         if (success) { UI.log(Messages.genericCopySuccess); } // XXX merge staging delete this line
                     });
+
+                    var alias = h('td', data.alias);
+                    var email = h('td', data.email);
+                    var actions = h('td', [copy, edit, del]);
+                    var $alias = $(alias);
+                    var $email = $(email);
+                    var $actions = $(actions);
+
+                    editUser = () => {
+                        var aliasInput = h('input');
+                        var emailInput = h('input');
+                        $(aliasInput).val(data.alias);
+                        $(emailInput).val(data.email);
+                        var save = h('button.btn.btn-primary', Messages.settings_save);
+                        var cancel = h('button.btn.btn-secondary', Messages.cancel);
+                        Util.onClickEnter($(save), function () {
+                            var aliasVal = $(aliasInput).val().trim();
+                            if (!aliasVal) { return void UI.warn(Messages.error); }
+                            var changes = {
+                                alias: aliasVal,
+                                email: $(emailInput).val().trim()
+                            };
+                            updateUser(key, changes);
+                        });
+                        Util.onClickEnter($(cancel), function () {
+                            refreshUsers();
+                        });
+                        $alias.html('').append(aliasInput);
+                        $email.html('').append(emailInput);
+                        $actions.html('').append([save, cancel]);
+                        console.warn(alias, email, $alias, $email, aliasInput);
+                    };
+
                     var line = h('tr', [
-                        h('td', data.alias),
+                        alias,
+                        email,
                         h('td', h('pre', key)),
                         h('td', new Date(data.time).toLocaleString()),
                         //h('td', data.createdBy),
-                        copy,
-                        del
+                        actions
                     ]);
                     $list.append(line);
                 });
@@ -1835,7 +1895,7 @@ Example
             });
         });
 
-        $div.append([add, list]);
+        $div.append([add, refresh, list]);
         return $div;
     };
 

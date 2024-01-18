@@ -107,6 +107,16 @@
         });
     };
 
+    Util.onClickEnter = function ($element, handler, cfg) {
+        $element.on('click keydown', function (e) {
+            var isClick = e.type === 'click';
+            var isEnter = e.type === 'keydown' && e.which === 13;
+            var isSpace = e.type === 'keydown' && e.which === 32 && cfg && cfg.space;
+            if (!isClick && !isEnter && !isSpace) { return; }
+            handler();
+        });
+    };
+
     Util.response = function (errorHandler) {
         var pending = {};
         var timeouts = {};
