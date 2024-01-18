@@ -2220,6 +2220,7 @@ define([
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
+                addTitle(element, $element, $name)
             }
             else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
@@ -2229,6 +2230,8 @@ define([
                     $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                     $thumb.attr("draggable", false);
                     thumbsUrls[element] = $thumb[0].src;
+                    addTitle(element, $element, $name)
+
                 });
             }
 
@@ -2244,6 +2247,15 @@ define([
             }).text(getDate(data.ctime));
             $element.append($type).append($adate).append($cdate);
         };
+
+        var addTitle = function (element, $element, $name) {
+            var icon = getFileIcon(element)
+
+            $(icon).addClass('cp-app-drive-element-icon')
+            $name.addClass('cp-app-drive-element-name-icon')
+            $name.prepend($(icon))
+
+        }
 
         var addFolderData = function (element, key, $span) {
             if (!element || !manager.isFolder(element)) { return; }
