@@ -420,7 +420,7 @@ define([
                         info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1)) {
                     return true;
                 }
-                // CkEditor temporary data (used when copy-paste large chunks for instance
+                // CkEditor temporary data (used when copy-paste large chunks for instance)
                 if (info.node && (info.node.tagName === 'SPAN' || info.node.tagName === 'DIV') && info.diff.name === 'data-cke-temp') {
                     return true;
                 }
