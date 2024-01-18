@@ -55,7 +55,7 @@ body:
   - type: dropdown
     id: operating-system
     attributes:
-      label: What opreating system are you using?
+      label: Which operating system are you using?
       multiple: true
       options:
         - Linux/BSD/UNIX
@@ -89,6 +89,7 @@ body:
       label: Version
       description: What version of CryptPad are you running?
       options:
+        - 5.6.0
         - 5.5.0
         - 5.4.1
         - 5.4.0
@@ -99,11 +100,6 @@ body:
         - 5.0.0
         - 4.14.1
         - 4.14.0
-        - 4.13.0
-        - 4.12.1
-        - 4.12.0
-        - 4.11.0
-        - 4.10.0
         - Other
     validations:
       required: true

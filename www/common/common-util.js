@@ -743,6 +743,11 @@
         return !(typeof(Atomics) === "undefined" || !supportsSharedArrayBuffers() || typeof(WebAssembly) === 'undefined');
     };
 
+    //Returns an array of integers in range 0 to (length-1)
+    Util.getKeysArray = function (length) {
+        return [...Array(length).keys()];
+    };
+
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {

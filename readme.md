@@ -32,7 +32,7 @@ You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files
 
 Previously, Docker images were community maintained, had their own repository and weren't official supported. We changed that with v5.4.0 during July 2023. Thanks to @promasu for all the work on the community images.
 
-# Security
+# Privacy / Security
 
 CryptPad offers a variety of collaborative tools that encrypt your data in your browser
 before it is sent to the server and your collaborators. In the event that the server is
@@ -95,7 +95,7 @@ This project is tested with [BrowserStack](https://www.browserstack.com/).
 This software is and will always be available under the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the License, or (at your option)
 any later version. If you wish to use this technology in a proprietary product, please contact
-sales@xwiki.com.
+sales@cryptpad.org
 
 [Tor browser]: https://www.torproject.org/download/
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attack

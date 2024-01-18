@@ -1028,7 +1028,7 @@ define([
 
                     // If this is a form wiht a answer channel, delete it too
                     var p = priv.propChannels;
-                    if (p.answersChannel) {
+                    if (p && p.answersChannel) {
                         sframeChan.query('Q_DELETE_OWNED', {
                             teamId: typeof(owned) !== "boolean" ? owned : undefined,
                             channel: p.answersChannel
