@@ -1574,8 +1574,9 @@ Example
 
         var list = h('table');
         var input = h('input', { placeholder: 'ALIAS' }); // XXX
+        var inputEmail = h('input', { placeholder: 'EMAIL' }); // XXX
         var button = h('button.btn.btn-primary', Messages.admin_invitationCreate);
-        var add = h('div', [input, button]);
+        var add = h('div', [input, inputEmail, button]);
 
         var $b = $(button);
 
@@ -1641,10 +1642,15 @@ Example
         refreshInvite();
 
         $b.on('click', () => {
+            var alias = $(input).val().trim();
+            if (!alias) { return void UI.warn(Messages.error); } // XXX  bettter message?
             $b.prop('disabled', true);
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'CREATE_INVITATION',
-                data: $(input).val()
+                data: {
+                    alias,
+                    email: $(inputEmail).val()
+                }
             }, function (e, response) {
                 $b.prop('disabled', false);
                 if (e || response.error) {
@@ -1671,10 +1677,11 @@ Example
 
         var list = h('table');
         var userAlias = h('input', { placeholder: 'ALIAS' }); // XXX
+        var userEmail = h('input', { placeholder: 'EMAIL' }); // XXX
         var userEdPublic = h('input', { placeholder: 'USER PUBLIC KEY' }); // XXX
         var userBlock = h('input', { placeholder: 'USER BLOCK (optional)' }); // XXX
         var button = h('button.btn.btn-primary', Messages.admin_usersAdd);
-        var add = h('div', [userAlias, userEdPublic, userBlock, button]);
+        var add = h('div', [userAlias, userEmail, userEdPublic, userBlock, button]);
 
         var $b = $(button);
 
@@ -1683,19 +1690,19 @@ Example
         var $invited = makeAdminCheckbox({
             key: 'store-invited',
             getState: function () {
-                return APP.instanceStatus.storeInvitedUsers;
+                return !APP.instanceStatus.dontStoreInvitedUsers;
             },
             query: function (val, setState) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
-                    data: ['STORE_INVITED_USERS', [val]]
+                    data: ['DISABLE_STORE_INVITED_USERS', [!val]]
                 }, function (e, response) {
                     if (e || response.error) {
                         UI.warn(Messages.error);
                         console.error(e, response);
                     }
                     APP.updateStatus(function () {
-                        setState(APP.instanceStatus.storeInvitedUsers);
+                        setState(!APP.instanceStatus.dontStoreInvitedUsers);
                         flushCacheNotice();
                     });
                 });
@@ -1707,19 +1714,19 @@ Example
         var $sso = makeAdminCheckbox({
             key: 'store-sso',
             getState: function () {
-                return APP.instanceStatus.storeSSOUsers;
+                return !APP.instanceStatus.dontStoreSSOUsers;
             },
             query: function (val, setState) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
-                    data: ['STORE_SSO_USERS', [val]]
+                    data: ['DISABLE_STORE_SSO_USERS', [!val]]
                 }, function (e, response) {
                     if (e || response.error) {
                         UI.warn(Messages.error);
                         console.error(e, response);
                     }
                     APP.updateStatus(function () {
-                        setState(APP.instanceStatus.storeSSOUsers);
+                        setState(!APP.instanceStatus.dontStoreSSOUsers);
                         flushCacheNotice();
                     });
                 });
@@ -1790,13 +1797,12 @@ Example
         refreshUsers();
 
         $b.on('click', () => {
+            var alias = $(userAlias).val().trim();
+            if (!alias) { return void UI.warn(Messages.error); } // XXX  bettter message?
             $b.prop('disabled', true);
-            // XXX CHECK ALL VALUES ARE AVAILABLE
-            // XXX PARSE FULL KEY INTO EDPUBLIC
-            // XXX PARSE BLOCK HASH INTO BLOCK KEY
-            // XXX GET BLOCK FROM PIN LOG?
 
             var done = () => { $b.prop('disabled', false); };
+            // TODO Get "block" from pin log?
 
             var keyStr = $(userEdPublic).val().trim();
             var parsed = keyStr && Keys.parseUser(keyStr);
@@ -1807,7 +1813,8 @@ Example
             var block = getBlockId($(userBlock).val());
 
             var obj = {
-                alias: $(userAlias).val(),
+                alias,
+                email: $(userEmail).val(),
                 block: block,
                 edPublic: parsed.edPublic,
                 name: parsed.user
