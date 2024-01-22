@@ -1307,23 +1307,34 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             updateDateRange();
             updateRecurring();
         });
+        var dateFlatpickr;
         $(goDate).click(function () {
-            var f = Flatpickr(goDate, {
-                enableTime: false,
-                defaultDate: APP.calendar.getDate()._date,
-                //dateFormat: dateFormat,
-                onChange: function (date) {
-                    date[0].setHours(12);
-                    f.destroy();
-                    APP.moveToDate(+date[0]);
-                    updateDateRange();
-                    updateRecurring();
-                },
-                onClose: function () {
-                    setTimeout(f.destroy);
-                }
-            });
-            f.open();
+            if(dateFlatpickr) {
+                dateFlatpickr.destroy();
+                dateFlatpickr = null;
+            } else {
+                dateFlatpickr = Flatpickr(goDate, {
+                    enableTime: false,
+                    defaultDate: APP.calendar.getDate()._date,
+                    //dateFormat: dateFormat,
+                    onChange: function (date) {
+                        date[0].setHours(12);
+                        dateFlatpickr.destroy();
+                        APP.moveToDate(+date[0]);
+                        updateDateRange();
+                        updateRecurring();
+                    },
+                    onClose: function () {
+                        if(dateFlatpickr) {
+                            setTimeout(function() {
+                                dateFlatpickr.destroy();
+                                dateFlatpickr = null;
+                            });
+                        }
+                    }
+                });
+                dateFlatpickr.open();
+            }
         });
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
             goLeft, goToday, goRight, goDate
