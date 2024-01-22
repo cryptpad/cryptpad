@@ -2150,6 +2150,22 @@ define([
             } */
         };
         var thumbsUrls = {};
+
+        // This is duplicated in cryptpad-common, it should be unified
+        var getFileIcon = function (id) {
+            var data = manager.getFileData(id);
+            return UI.getFileIcon(data);
+        };
+        var getIcon = UI.getIcon;
+
+        var addTitle = function (element, $name) {
+            var icon = getFileIcon(element);
+
+            $(icon).addClass('cp-app-drive-element-icon');
+            $name.addClass('cp-app-drive-element-name-icon');
+            $name.prepend($(icon));
+        };
+
         var addFileData = function (element, $element) {
             if (!manager.isFile(element)) { return; }
 
@@ -2220,9 +2236,8 @@ define([
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
-                addTitle(element, $element, $name)
-            }
-            else {
+                addTitle(element, $name);
+            } else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
                     // Called only if the thumbnail exists
                     // Remove the .hide() added by displayThumnail() because it hides the icon in list mode too
@@ -2230,8 +2245,7 @@ define([
                     $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                     $thumb.attr("draggable", false);
                     thumbsUrls[element] = $thumb[0].src;
-                    addTitle(element, $element, $name)
-
+                    addTitle(element, $name);
                 });
             }
 
@@ -2247,15 +2261,6 @@ define([
             }).text(getDate(data.ctime));
             $element.append($type).append($adate).append($cdate);
         };
-
-        var addTitle = function (element, $element, $name) {
-            var icon = getFileIcon(element)
-
-            $(icon).addClass('cp-app-drive-element-icon')
-            $name.addClass('cp-app-drive-element-name-icon')
-            $name.prepend($(icon))
-
-        }
 
         var addFolderData = function (element, key, $span) {
             if (!element || !manager.isFolder(element)) { return; }
@@ -2319,13 +2324,6 @@ define([
                 $span.append($menu);
             }
         };
-
-        // This is duplicated in cryptpad-common, it should be unified
-        var getFileIcon = function (id) {
-            var data = manager.getFileData(id);
-            return UI.getFileIcon(data);
-        };
-        var getIcon = UI.getIcon;
 
         var createShareButton = function (id, $container) {
             var $shareBlock = $('<button>', {
