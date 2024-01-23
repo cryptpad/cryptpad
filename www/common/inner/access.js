@@ -656,12 +656,14 @@ define([
             var $sel = $div.find('.cp-usergrid-user.cp-selected');
             var sel = $sel.toArray();
             if (!sel.length) { return; }
+            var dataToAdd = [];
             var toAdd = sel.map(function (el) {
                 var curve = $(el).attr('data-curve');
                 var teamId = $(el).attr('data-teamid');
                 // If the pad is woned by a team, we can transfer ownership to ourselves
                 if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
                 var data = friends[curve] || teamsData[teamId];
+                dataToAdd.push(data);
                 if (!data) { return; }
                 return data.edPublic;
             }).filter(function (x) { return x; });
@@ -689,23 +691,17 @@ define([
                     }, waitFor(function (err, res) {
                         err = err || (res && res.error);
                         redrawAll(true);
-                        var $friends = $div.find('.cp-usergrid-user.cp-selected')
-                        $friends.each(function (i, el) {
-                            var curve = $(el).attr('data-curve');
-                            var ed = $(el).attr('data-ed');
-                            var friend = curve && friends[curve];
-                            var team = teamsData[ed];
-                            var mailbox = friend || team;
-                            if (mailbox) { 
-                                if (friends[curve] && !mailbox.notifications) { return; }
-                                if (mailbox.notifications && mailbox.curvePublic) {
-                                    common.mailbox.sendTo("ADD_TO_ACCESS_LIST", {
-                                        channel: channel,
-                                    }, {
-                                        channel: mailbox.notifications,
-                                        curvePublic: mailbox.curvePublic
+                        dataToAdd.forEach(function(mailbox) {
+                            if (mailbox.notifications && mailbox.curvePublic) {
+                                common.mailbox.sendTo("ADD_TO_ACCESS_LIST", {
+                                    channel: channel,
+                                }, {
+                                    channel: mailbox.notifications,
+                                    curvePublic: mailbox.curvePublic
                                 });
-                            }}
+                            } else {
+                                return;
+                            }
                         })
 
                         if (err) {
