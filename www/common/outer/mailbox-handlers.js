@@ -357,15 +357,19 @@ define([
             var res = store.manager.findChannel(channel);
             if (!res.length) { return; }
             
-            var data = res[0];
-            var id = data.id // check if that's correct
-            // var teamId = store.data.blockId;
-            ctx.Store.loadSharedFolder(null, id, data, function () {
-            // callback of loadSharefFolder, nothing to do here  
-            }, undefined);
-          });
-
-        cb(true)
+            var data = res[0].data;
+            var id = res[0].id;
+            var teamId = store.id;
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
+            if (parsed) {
+                ctx.Store.loadSharedFolder(teamId, id, data, function () {
+                }, false);
+            } else {
+                //handle invalid ref/href
+            }
+        });
+             
+        cb(true);
 
     };
 

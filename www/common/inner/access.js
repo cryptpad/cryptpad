@@ -647,21 +647,22 @@ define([
 
             return $div;
         };
-
         $(addBtn).click(function () {
             var priv = metadataMgr.getPrivateData();
             var user = metadataMgr.getUserData();
             var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
 
+            
             var $div = $div2.find('.cp-share-column');
             // Check selection
             var $sel = $div.find('.cp-usergrid-user.cp-selected');
             var sel = $sel.toArray();
             if (!sel.length) { return; }
-            var friend;
+
+            var curves = [];
             var toAdd = sel.map(function (el) {
                 var curve = $(el).attr('data-curve');
-                friend = friends[curve]
+                curves.push(curve);
                 var teamId = $(el).attr('data-teamid');
                 // If the pad is woned by a team, we can transfer ownership to ourselves
                 if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
@@ -693,13 +694,16 @@ define([
                     }, waitFor(function (err, res) {
                         err = err || (res && res.error);
                         redrawAll(true);
-                        common.mailbox.sendTo("ADD_TO_ACCESS_LIST", {
-                            channel: channel,
-                            title: data.title || title,
-                        }, {
-                            channel: friend.notifications,
-                            curvePublic: friend.curvePublic
+                        curves.forEach(function(curve){
+                            common.mailbox.sendTo("ADD_TO_ACCESS_LIST", {
+                                channel: channel,
+                            }, {
+                                channel: friends[curve].notifications,
+                                curvePublic: friends[curve].curvePublic
+                            });
+                            
                         });
+
 
                         if (err) {
                             waitFor.abort();
