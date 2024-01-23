@@ -360,17 +360,11 @@ define([
             var data = res[0].data;
             var id = res[0].id;
             var teamId = store.id;
-            var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (parsed) {
-                ctx.Store.loadSharedFolder(teamId, id, data, function () {
-                }, false);
-            } else {
-                //handle invalid ref/href
-            }
-        });
-             
-        cb(true);
+            ctx.Store.loadSharedFolder(teamId, id, data, function () {
 
+            }, false);
+        });
+        cb(true);
     };
 
     // Hide duplicates when receiving an ADD_OWNER notification:

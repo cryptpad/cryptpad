@@ -554,7 +554,6 @@ define([
                 }, function (err, res) {
                     err = err || (res && res.error);
                     redrawAll(true);
-                    
                     if (err) {
                         spinner.hide();
                         var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
@@ -652,13 +651,11 @@ define([
             var user = metadataMgr.getUserData();
             var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
 
-            
             var $div = $div2.find('.cp-share-column');
             // Check selection
             var $sel = $div.find('.cp-usergrid-user.cp-selected');
             var sel = $sel.toArray();
             if (!sel.length) { return; }
-
             var curves = [];
             var toAdd = sel.map(function (el) {
                 var curve = $(el).attr('data-curve');
@@ -701,9 +698,7 @@ define([
                                 channel: friends[curve].notifications,
                                 curvePublic: friends[curve].curvePublic
                             });
-                            
                         });
-
 
                         if (err) {
                             waitFor.abort();
