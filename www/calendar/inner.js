@@ -1314,7 +1314,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             //dateFormat: dateFormat,
             onChange: function (date) {
                 date[0].setHours(12);
-                f.destroy();
                 APP.moveToDate(+date[0]);
                 updateDateRange();
                 updateRecurring();
