@@ -3931,6 +3931,7 @@ Example
     var SIDEBAR_ICONS = {
         general: 'fa fa-user-o',
         stats: 'fa fa-line-chart',
+        users: 'fa fa-address-card-o',
         quota: 'fa fa-hdd-o',
         support: 'fa fa-life-ring',
         broadcast: 'fa fa-bullhorn',
