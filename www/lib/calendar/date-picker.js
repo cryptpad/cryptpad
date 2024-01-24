@@ -30,17 +30,22 @@ define([
             enableTime: true,
             time_24hr: is24h,
             dateFormat: dateFormat,
-            minDate: start.date
+            minDate: start.date,
+            onChange: function () {
+                    duration = parseDate(e.value) - parseDate(s.value);
+            }
         });
         endPickr.setDate(end.date);
 
         var s = $(start.input)[0];
+        var duration = end.date - start.date;
         var startPickr = Flatpickr(s, {
             enableTime: true,
             time_24hr: is24h,
             dateFormat: dateFormat,
             onChange: function () {
                 endPickr.set('minDate', parseDate(s.value));
+                endPickr.setDate(parseDate(s.value).getTime() + duration);
             }
         });
         startPickr.setDate(start.date);
