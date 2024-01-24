@@ -136,7 +136,7 @@ define([
         // Convert to camlCase for translation keys
         var safeKey = keyToCamlCase(key);
         var $div = $('<div>', {'class': 'cp-admin-' + key + ' cp-sidebarlayout-element'});
-        $('<label>', {'id': 'cp-admin-' + key}).text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
+        $('<label>', {'id': 'cp-admin-' + key, 'class':'cp-admin-label'}).text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .text(Messages['admin_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
         if (addButton) {
@@ -1568,27 +1568,40 @@ Example
     Messages.admin_invitationCreate = "Create invitation link"; // XXX
     Messages.admin_invitationHint = "Create invitation links to allow users to register even when registration is closed";
     Messages.admin_invitationTitle = "Invitation links";
+
+    Messages.admin_invitationLink = "Invitation link";
+    Messages.admin_invitationCopy = "Copy link";
+    Messages.admin_invitationAlias = "User name";
+    Messages.admin_invitationEmail = "User email";
+    Messages.admin_invitationDeleteConfirm = "Are you sure you want to delete this invitation?";
+
     create['invitation'] = function () {
         var key = 'invitation';
         var $div = makeBlock(key); // Msg.admin_invitationHint, admin_invitationTitle
 
-        var list = h('table');
-        var input = h('input', { placeholder: 'ALIAS' }); // XXX
-        var inputEmail = h('input', { placeholder: 'EMAIL' }); // XXX
+        var list = h('table.cp-admin-all-limits');
+        var input = h('input#cp-admin-invitation-alias');
+        var inputEmail = h('input#cp-admin-invitation-email');
         var button = h('button.btn.btn-primary', Messages.admin_invitationCreate);
-        var add = h('div', [input, inputEmail, button]);
-
         var $b = $(button);
+
+
+        var refreshInvite = function () {};
+        var refresh = h('button.btn.btn-secondary', Messages.oo_refresh);
+        Util.onClickEnter($(refresh), function () {
+            refreshInvite();
+        });
+
+        var add = h('div', [
+            h('label', { for: 'cp-admin-invitation-alias' }, Messages.admin_invitationAlias),
+            input,
+            h('label', { for: 'cp-admin-invitation-email' }, Messages.admin_invitationEmail),
+            inputEmail,
+            h('nav', [button, refresh])
+        ]);
 
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
-
-        var refreshInvite = function () {};
-
-        var refresh = h('div', h('button.btn.btn-primary', Messages.oo_refresh));
-        Util.onClickEnter($(refresh).find('button'), function () {
-            refreshInvite();
-        });
 
         var deleteInvite = function (id) {
             sFrameChan.query('Q_ADMIN_RPC', {
@@ -1616,29 +1629,52 @@ Example
                 }
                 if (!Array.isArray(response)) { return; }
                 var all = response[0];
-                Object.keys(all).forEach(function (key) {
+                Object.keys(all).forEach(function (key, i) {
+                    if (!i) { // First item: add header to table
+                        var trHead = h('tr', [
+                            h('th', Messages.admin_invitationLink),
+                            h('th', Messages.admin_invitationAlias),
+                            h('th', Messages.admin_invitationEmail),
+                            h('th', Messages.admin_documentCreationTime),
+                            h('th')
+                        ]);
+                        $list.append(trHead);
+                    }
                     var data = all[key];
                     var url = privateData.origin + Hash.hashToHref(key, 'register');
 
-                    var del = h('button.btn.btn-danger.fa.fa-trash');
-                    $(del).click(function () {
-                        // XXX CONFIRM
-                        deleteInvite(key);
+                    var del = h('button.btn.btn-danger', [
+                        h('i.fa.fa-trash'),
+                        h('span', Messages.kanban_delete)
+                    ]);
+                    var $del = $(del);
+                    Util.onClickEnter($del, function () {
+                        $del.attr('disabled', 'disabled');
+                        UI.confirm(Messages.admin_invitationDeleteConfirm, function (yes) {
+                            $del.attr('disabled', '');
+                            if (!yes) { return; }
+                            deleteInvite(key);
+                        });
                     });
-                    var copy = h('button.btn.btn-secondary.fa.fa-clipboard');
-                    $(copy).click(function () {
-                        var success = Clipboard.copy(url, () => {
+                    var copy = h('button.btn.btn-secondary', [
+                        h('i.fa.fa-clipboard'),
+                        h('span', Messages.admin_invitationCopy)
+                    ]);
+                    Util.onClickEnter($(copy), function () {
+                        Clipboard.copy(url, () => {
                             UI.log(Messages.genericCopySuccess);
                         });
-                        if (success) { UI.log(Messages.genericCopySuccess); } // XXX merge staging delete this line
                     });
                     var line = h('tr', [
                         h('td', UI.dialog.selectable(url)),
                         h('td', data.alias),
+                        h('td', data.email),
                         h('td', new Date(data.time).toLocaleString()),
                         //h('td', data.createdBy),
-                        copy,
-                        del
+                        h('td', [
+                            copy,
+                            del
+                        ])
                     ]);
                     $list.append(line);
                 });
@@ -1663,39 +1699,56 @@ Example
                     return void console.error(e, response);
                 }
                 $(input).val('').focus();
+                $(inputEmail).val('');
                 refreshInvite();
             });
         });
 
-        $div.append([add, refresh, list]);
+        $div.append([add, list]);
         return $div;
     };
 
+    Messages.admin_cat_users = "Users";
     Messages.admin_usersAdd = "Add known user"; // XXX
     Messages.admin_usersHint = "List of known users. You can add more using the form and select automated options";
     Messages.admin_usersTitle = "Known users";
     Messages.admin_storeInvitedLabel = "Automatically store invited users"; // XXX
     Messages.admin_storeSsoLabel = "Automatically store SSO users";
+    Messages.admin_usersBlock = "User's block URL (optional)";
+    Messages.admin_usersRemove = "Remove from list";
+    Messages.admin_usersRemoveConfirm = "Are you sure you want to remove this user from this list? They will still be able to access their account.";
+
+
     create['users'] = function () {
         var key = 'users';
         var $div = makeBlock(key); // Msg.admin_usersHint, admin_usersTitle
 
-        var list = h('table');
-        var userAlias = h('input', { placeholder: 'ALIAS' }); // XXX
-        var userEmail = h('input', { placeholder: 'EMAIL' }); // XXX
-        var userEdPublic = h('input', { placeholder: 'USER PUBLIC KEY' }); // XXX
-        var userBlock = h('input', { placeholder: 'USER BLOCK (optional)' }); // XXX
+        var list = h('table.cp-admin-all-limits');
+        var userAlias = h('input#cp-admin-users-alias');
+        var userEmail = h('input#cp-admin-users-email');
+        var userEdPublic = h('input#cp-admin-users-key');
+        var userBlock = h('input#cp-admin-users-block');
         var button = h('button.btn.btn-primary', Messages.admin_usersAdd);
-        var add = h('div', [userAlias, userEmail, userEdPublic, userBlock, button]);
-
         var $b = $(button);
 
         var refreshUsers = function () {};
 
-        var refresh = h('div', h('button.btn.btn-primary', Messages.oo_refresh));
+        var refresh = h('button.btn.btn-secondary', Messages.oo_refresh);
         Util.onClickEnter($(refresh).find('button'), function () {
             refreshUsers();
         });
+
+        var add = h('div', [
+            h('label', { for: 'cp-admin-users-alias' }, Messages.admin_invitationAlias),
+            userAlias,
+            h('label', { for: 'cp-admin-users-email' }, Messages.admin_invitationEmail),
+            userEmail,
+            h('label', { for: 'cp-admin-users-key' }, Messages.admin_limitUser),
+            userEdPublic,
+            h('label', { for: 'cp-admin-users-block' }, Messages.admin_usersBlock),
+            userBlock,
+            h('nav', [button, refresh])
+        ]);
 
         var $invited = makeAdminCheckbox({
             key: 'store-invited',
@@ -1789,30 +1842,43 @@ Example
                 }
                 if (!Array.isArray(response)) { return; }
                 var all = response[0];
-                Object.keys(all).forEach(function (key) {
+                Object.keys(all).forEach(function (key, i) {
+                    if (!i) { // First item: add header to table
+                        var trHead = h('tr', [
+                            h('th', Messages.admin_invitationAlias),
+                            h('th', Messages.admin_invitationEmail),
+                            h('th', Messages.admin_limitUser),
+                            h('th', Messages.admin_documentCreationTime),
+                            h('th')
+                        ]);
+                        $list.append(trHead);
+                    }
                     var data = all[key];
                     var editUser = () => {};
-                    var del = h('button.btn.btn-danger.fa.fa-trash');
-                    $(del).click(function () {
-                        // XXX CONFIRM
-                        deleteUser(key);
-                    });
-                    var edit = h('button.btn.btn-secondary.fa.fa-pencil');
-                    $(edit).click(function () {
-                        // XXX CONFIRM
-                        editUser();
-                    });
-                    var copy = h('button.btn.btn-secondary.fa.fa-clipboard');
-                    $(copy).click(function () {
-                        var success = Clipboard.copy(key, () => {
-                            UI.log(Messages.genericCopySuccess);
+                    var del = h('button.btn.btn-danger', [
+                        h('i.fa.fa-trash'),
+                        Messages.admin_usersRemove
+                    ]);
+                    var $del = $(del);
+                    Util.onClickEnter($del, function () {
+                        $del.attr('disabled', 'disabled');
+                        UI.confirm(Messages.admin_usersRemoveConfirm, function (yes) {
+                            $del.attr('disabled', '');
+                            if (!yes) { return; }
+                            deleteUser(key);
                         });
-                        if (success) { UI.log(Messages.genericCopySuccess); } // XXX merge staging delete this line
+                    });
+                    var edit = h('button.btn.btn-secondary', [
+                        h('i.fa.fa-pencil'),
+                        h('span', Messages.tag_edit)
+                    ]);
+                    Util.onClickEnter($(edit), function () {
+                        editUser();
                     });
 
                     var alias = h('td', data.alias);
                     var email = h('td', data.email);
-                    var actions = h('td', [copy, edit, del]);
+                    var actions = h('td', [edit, del]);
                     var $alias = $(alias);
                     var $email = $(email);
                     var $actions = $(actions);
@@ -1842,10 +1908,31 @@ Example
                         console.warn(alias, email, $alias, $email, aliasInput);
                     };
 
+                    var infoButton = h('button.btn.primary.cp-report', {
+                        style: 'margin-left: 10px; cursor: pointer;',
+                    }, [
+                        h('i.fa.fa-database'),
+                        h('span', Messages.admin_diskUsageButton)
+                    ]);
+                    $(infoButton).click(() => {
+                         getAccountData(key, (err, data) => {
+                             if (err) { return void console.error(err); }
+                             var table = renderAccountData(data);
+                             UI.alert(table, () => {
+
+                             }, {
+                                wide: true,
+                             });
+                         });
+                    });
+
                     var line = h('tr', [
                         alias,
                         email,
-                        h('td', h('pre', key)),
+                        h('td', [
+                            h('code', key),
+                            infoButton
+                        ]),
                         h('td', new Date(data.time).toLocaleString()),
                         //h('td', data.createdBy),
                         actions
@@ -1889,13 +1976,14 @@ Example
                     return void console.error(e, response);
                 }
                 $(userAlias).val('').focus();
+                $(userEmail).val('');
                 $(userBlock).val('');
                 $(userEdPublic).val('');
                 refreshUsers();
             });
         });
 
-        $div.append([add, refresh, list]);
+        $div.append([add, list]);
         return $div;
     };
 
@@ -2307,19 +2395,23 @@ Example
         var key = 'setlimit';
         var $div = makeBlock(key); // Msg.admin_setlimitHint, .admin_setlimitTitle
 
-        var user = h('input.cp-setlimit-key', { id: 'user-input' });
+        var user = h('input.cp-setlimit-key#cp-admin-setlimit-user');
         var $key = $(user);
-        var limit = h('input.cp-setlimit-quota', { type: 'number', min: 0, value: 0, id: 'limit-input' });
-        var note = h('input.cp-setlimit-note', { id: 'note-input' });
+        var limit = h('input.cp-setlimit-quota#cp-admin-setlimit-value', {
+            type: 'number',
+            min: 0,
+            value: 0
+        });
+        var note = h('input.cp-setlimit-note#cp-admin-setlimit-note');
         var remove = h('button.btn.btn-danger', Messages.fc_remove);
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
 
         var form = h('div.cp-admin-setlimit-form', [
-            h('label', { for: 'user-input' }, Messages.admin_limitUser),
+            h('label', { for: 'cp-admin-setlimit-user' }, Messages.admin_limitUser),
             user,
-            h('label', { for: 'limit-input' }, Messages.admin_limitMB),
+            h('label', { for: 'cp-admin-setlimit-value' }, Messages.admin_limitMB),
             limit,
-            h('label', { for: 'note-input' }, Messages.admin_limitSetNote),
+            h('label', { for: 'cp-admin-setlimit-note' }, Messages.admin_limitSetNote),
             note,
             h('nav', [set, remove])
         ]);
