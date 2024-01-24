@@ -2158,7 +2158,7 @@ define([
         };
         var getIcon = UI.getIcon;
 
-        var addTitle = function (element, $name) {
+        var addTitleIcon = function (element, $name) {
             var icon = getFileIcon(element);
 
             $(icon).addClass('cp-app-drive-element-icon');
@@ -2236,7 +2236,7 @@ define([
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
-                addTitle(element, $name);
+                addTitleIcon(element, $name);
             } else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
                     // Called only if the thumbnail exists
@@ -2245,7 +2245,7 @@ define([
                     $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                     $thumb.attr("draggable", false);
                     thumbsUrls[element] = $thumb[0].src;
-                    addTitle(element, $name);
+                    addTitleIcon(element, $name);
                 });
             }
 
