@@ -130,7 +130,6 @@ define([
             var ext = s.pop() || 'bin';
             var name = s.join('');
             var replacement = '';
-            console.error(name);
             var sanitized = name
                 .replace(illegalRe, replacement)
                 .replace(controlRe, replacement)
