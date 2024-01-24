@@ -2400,7 +2400,7 @@ define([
             var s = getStore(teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (!parsed) { return void cb({error: 'EINVAL'}); }
+            if (!parsed && !parsed.hashData) { return void cb({error: 'EINVAL'}); }
             SF.load({
                 isNew: isNew,
                 network: store.network || store.networkPromise,
