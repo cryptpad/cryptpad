@@ -54,7 +54,9 @@
                 width: 100%;
                 height: 24px;
                 margin: 0;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
                 font-size: 14px;
                 //align-items: center;
                 //justify-content: center;
@@ -668,14 +670,14 @@
                     }
                 }
                 .cp-app-drive-element-icon {
-                    font-size: 12px !important;
-                    float: left !important;
-                    margin: 4px !important;
+                    font-size: 0.9rem;
+                    margin: 0;
+                    margin-right: 0.3rem;
                 }
-                .cp-app-drive-element-name-icon {
-                    text-align: center !important;
-                    float: center !important;
-                    max-width: fit-content !important;
+                .cp-app-drive-element-name-text {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                 }
 
                 .cp-app-drive-element-state {

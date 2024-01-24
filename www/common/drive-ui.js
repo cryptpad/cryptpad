@@ -2217,13 +2217,15 @@ define([
             var name = manager.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
-            var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
+            var $name = $(h('span.cp-app-drive-element-name', [
+                h('span.cp-app-drive-element-name-text', name)
+            ]));
             $element.append($name);
             $element.append($state);
             if (APP.mobile()) {
                 $element.append($menu);
             }
-            
+
             if (getViewMode() === 'grid') {
                 $element.attr('title', name);
             }
