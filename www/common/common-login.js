@@ -245,6 +245,10 @@ define([
                 return void cb('NO_SUCH_USER');
             }
 
+            if (!isProxyEmpty(rt.proxy) && res.auth_token && res.auth_token.bearer) {
+                LocalStore.setSessionToken(res.auth_token.bearer);
+            }
+
             // they tried to register, but those exact credentials exist
             if (isRegister && !isProxyEmpty(rt.proxy)) {
                 //rt.network.disconnect();
@@ -256,9 +260,6 @@ define([
                 var LS_LANG = "CRYPTPAD_LANG";
                 if (l) { localStorage.setItem(LS_LANG, l); }
 
-                if (res.auth_token && res.auth_token.bearer) {
-                    LocalStore.setSessionToken(res.auth_token.bearer);
-                }
                 return void LocalStore.login(undefined, res.blockHash, res.uname, function () {
                     cb(void 0, res, RT);
                 });
@@ -481,7 +482,7 @@ define([
             legacyLogin(opt, isRegister, waitFor(function (err, data) {
                 if (err) {
                     waitFor.abort();
-                    return void cb(err);
+                    return void cb(err, res);
                 }
                 if (!data) { return; } // Go to next block (modern registration)
 
@@ -496,7 +497,7 @@ define([
             modernLoginRegister(opt, isRegister, waitFor(function (err, data, _RT) {
                 if (err) {
                     waitFor.abort();
-                    return void cb(err);
+                    return void cb(err, res);
                 }
                 RT = _RT;
                 if (!data) { return; } // Go to next block (modern registration)

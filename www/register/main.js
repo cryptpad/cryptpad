@@ -172,7 +172,7 @@ define([
                     token,
                     isRegister: true,
                     shouldImport,
-                    onOTP: false,
+                    onOTP: UI.getOTPScreen
                 });
                 registering = true;
             }, {
