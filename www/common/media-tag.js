@@ -121,6 +121,12 @@ var factory = function () {
                 if (cfg.pdf.viewer) { // PDFJS
                     var viewerUrl = cfg.pdf.viewer + '?file=' + url;
                     iframe.src = viewerUrl + '#' + window.encodeURIComponent(metadata.name);
+                    iframe.onload = function () {
+                        if (!metadata.name) { return; }
+                        try {
+                            iframe.contentWindow.PDFViewerApplication.setTitleUsingUrl(metadata.name)
+                        } catch (e) { console.warn(e); }
+                    };
                     return void cb (void 0, iframe);
                 }
                 iframe.src = url + '#' + window.encodeURIComponent(metadata.name);
