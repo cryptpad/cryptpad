@@ -24,8 +24,29 @@ define([
     // Configure MediaTags to use our local viewer
     // This file is loaded by sframe-common so the following config is used in all the inner apps
     if (MediaTag) {
+        // Firefox 121 introduces an issue with ligatures that requires an update to PDFjs
+        // See: https://github.com/cryptpad/cryptpad/issues/1362
+        // Unfortunately this updated PDFjs doesn't work with older browsers
+
+        let isModernFirefox = false;
+        try {
+            const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+            if (isFirefox) {
+                let version = +navigator.userAgent.match(/rv:([0-9.]+)/)[1];
+                isModernFirefox = version >= 100;
+            }
+        } catch (e) {}
+        let isModernChromium = false;
+        try {
+            isModernChromium = navigator.userAgentData.brands.some(data => {
+                return data.brand === 'Chromium' && data.version >= 100;
+            });
+        } catch (e) {}
+
+        let path = 'legacy';
+        if (isModernFirefox || isModernChromium) { path = 'modern'; }
         MediaTag.setDefaultConfig('pdf', {
-            viewer: '/lib/pdfjs/web/viewer.html'
+            viewer: `/lib/pdfjs/${path}/web/viewer.html`
         });
         MediaTag.setDefaultConfig('download', {
             text: Messages.mediatag_saveButton,
