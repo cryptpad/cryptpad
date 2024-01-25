@@ -25,13 +25,19 @@ define([
         var open = function () {
             if (href[0] === '#') {
                 try {
+                    var foundAnchor = false;
                     $inner.find('.cke_anchor[data-cke-realelement]').each(function (j, el) {
                         var i = editor.restoreRealElement($(el));
                         var node = i.$;
                         if (node.id === href.slice(1)) {
                             el.scrollIntoView();
+                            foundAnchor = true;
                         }
                     });
+                    if (!foundAnchor) {
+                        var anchorsById = $inner.find('#' + href.slice(1));
+                        if (anchorsById.length != 0) { anchorsById[0].scrollIntoView(); }
+                    }
                 } catch (err) {}
                 return;
             }
