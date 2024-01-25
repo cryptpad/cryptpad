@@ -124,7 +124,7 @@ var factory = function () {
                     iframe.onload = function () {
                         if (!metadata.name) { return; }
                         try {
-                            iframe.contentWindow.PDFViewerApplication.setTitleUsingUrl(metadata.name)
+                            iframe.contentWindow.PDFViewerApplication.setTitleUsingUrl(metadata.name);
                         } catch (e) { console.warn(e); }
                     };
                     return void cb (void 0, iframe);
