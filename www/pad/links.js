@@ -27,6 +27,7 @@ define([
                 try {
                     var foundAnchor = false;
                     $inner.find('.cke_anchor[data-cke-realelement]').each(function (j, el) {
+                        if (foundAnchor) { return; }
                         var i = editor.restoreRealElement($(el));
                         var node = i.$;
                         if (node.id === href.slice(1)) {
@@ -36,7 +37,7 @@ define([
                     });
                     if (!foundAnchor) {
                         var anchorsById = $inner.find('#' + href.slice(1));
-                        if (anchorsById.length != 0) { anchorsById[0].scrollIntoView(); }
+                        if (anchorsById.length) { anchorsById[0].scrollIntoView(); }
                     }
                 } catch (err) {}
                 return;
