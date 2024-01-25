@@ -1734,7 +1734,7 @@ Example
         var refreshUsers = function () {};
 
         var refresh = h('button.btn.btn-secondary', Messages.oo_refresh);
-        Util.onClickEnter($(refresh).find('button'), function () {
+        Util.onClickEnter($(refresh), function () {
             refreshUsers();
         });
 
