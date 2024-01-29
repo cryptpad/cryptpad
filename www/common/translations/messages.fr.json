@@ -388,7 +388,7 @@
     "settings_import": "Importer",
     "settings_importConfirm": "Êtes-vous sûr·e de vouloir importer les documents récents de ce navigateur dans le CryptDrive de votre compte utilisateur·e ?",
     "settings_importDone": "Importation terminée",
-    "settings_autostoreTitle": "Stockage des pads dans CryptDrive",
+    "settings_autostoreTitle": "Stockage des documents dans CryptDrive",
     "settings_autostoreHint": "Le stockage <b>Automatique</b> des pads permet de sauver tous les documents que vous visitez dans votre CryptDrive, sans action de votre part.<br>Le stockage <b>Manuel (toujours demander)</b> permet de ne pas stocker automatiquement les documents, mais d'afficher un message vous demandant s'il faut le faire ou non.<br>Le stockage <b>Manuel (ne pas demander)</b> permet de ne pas stocker les documents ni d'afficher le message. Une option permettant de les stocker sera toujours disponible, mais cachée.",
     "settings_autostoreYes": "Automatique",
     "settings_autostoreNo": "Manuel (ne pas demander)",
