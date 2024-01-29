@@ -91,11 +91,24 @@
                 pre {
                     color: @cryptpad_text_col;
                 }
-                label:not(.noTitle), .cp-default-label {
+                label.cp-item-label, .cp-default-label {
                     display: block;
                     font-weight: bold;
                     margin-bottom: 0;
                 }
+                .cp-sidebar-form {
+                    display: flex;
+                    flex-flow: column;
+                    align-items: baseline;
+                }
+                input {
+                    max-width: 25rem;
+                }
+                nav {
+                    display: flex;
+                    margin-top: 0.5rem;
+                }
+
                 .cp-sidebarlayout-description {
                     display: block;
                     color: @cp_sidebar-hint;
