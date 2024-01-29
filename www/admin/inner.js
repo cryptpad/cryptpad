@@ -1496,7 +1496,6 @@ Example
 
     // Msg.admin_registrationHint, .admin_registrationTitle
     // Msg.admin_registrationSsoTitle
-    Messages.admin_registrationSsoTitle = "ALSO CLOSE SSO REGISTRATION"; // XXX
     create['registration'] = function () {
         var refresh = function () {};
 
@@ -1564,16 +1563,6 @@ Example
 
         return $div;
     };
-
-    Messages.admin_invitationCreate = "Create invitation link"; // XXX
-    Messages.admin_invitationHint = "Create invitation links to allow users to register even when registration is closed";
-    Messages.admin_invitationTitle = "Invitation links";
-
-    Messages.admin_invitationLink = "Invitation link";
-    Messages.admin_invitationCopy = "Copy link";
-    Messages.admin_invitationAlias = "User name";
-    Messages.admin_invitationEmail = "User email";
-    Messages.admin_invitationDeleteConfirm = "Are you sure you want to delete this invitation?";
 
     create['invitation'] = function () {
         var key = 'invitation';
@@ -1684,7 +1673,7 @@ Example
 
         $b.on('click', () => {
             var alias = $(input).val().trim();
-            if (!alias) { return void UI.warn(Messages.error); } // XXX  bettter message?
+            if (!alias) { return void UI.warn(Messages.error); } // FIXME better error message
             $b.prop('disabled', true);
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'CREATE_INVITATION',
@@ -1707,17 +1696,6 @@ Example
         $div.append([add, list]);
         return $div;
     };
-
-    Messages.admin_cat_users = "Users";
-    Messages.admin_usersAdd = "Add known user"; // XXX
-    Messages.admin_usersHint = "List of known users. You can add more using the form and select automated options";
-    Messages.admin_usersTitle = "Known users";
-    Messages.admin_storeInvitedLabel = "Automatically store invited users"; // XXX
-    Messages.admin_storeSsoLabel = "Automatically store SSO users";
-    Messages.admin_usersBlock = "User's block URL (optional)";
-    Messages.admin_usersRemove = "Remove from list";
-    Messages.admin_usersRemoveConfirm = "Are you sure you want to remove this user from this list? They will still be able to access their account.";
-
 
     create['users'] = function () {
         var key = 'users';
@@ -1945,7 +1923,7 @@ Example
 
         $b.on('click', () => {
             var alias = $(userAlias).val().trim();
-            if (!alias) { return void UI.warn(Messages.error); } // XXX  bettter message?
+            if (!alias) { return void UI.warn(Messages.error); }
             $b.prop('disabled', true);
 
             var done = () => { $b.prop('disabled', false); };

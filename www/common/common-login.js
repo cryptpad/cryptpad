@@ -518,9 +518,9 @@ define([
             // NOTE If we ever want to do that for SSO accounts it will require major changes
             //      because writeLoginBlock only supports one type of authentication at a time
 
-            // XXX userData always sent, maybe only for SSO and token?
-            // Only SSO users and invited users can be soted by the server and it needs to be configured
-            var userData = [uname, RT.proxy.edPublic];
+            // XXX Get server config to know if the user data should be sent or not
+            // Only SSO users and invited users can be stored by the server and it needs to be configured
+            var userData = (token || ssoAuth) ? [uname, RT.proxy.edPublic] : undefined;
             Block.writeLoginBlock({
                 pw: Boolean(passwd),
                 auth: ssoAuth,
