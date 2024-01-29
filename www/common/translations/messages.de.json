@@ -381,7 +381,7 @@
     "settings_import": "Importieren",
     "settings_importConfirm": "Bist du sicher, dass du die kürzlich besuchten Dokumente in das CryptDrive deines Accounts importieren möchtest?",
     "settings_importDone": "Import abgeschlossen",
-    "settings_autostoreTitle": "Speichern von Pads im CryptDrive",
+    "settings_autostoreTitle": "Speicherung von Dokumenten im CryptDrive",
     "settings_autostoreHint": "<b>Automatisch:</b> Alle Dokumente werden in deinem CryptDrive gespeichert.<br><b>Manuell (immer nachfragen):</b> Wenn du ein Dokument noch nicht gespeichert hast, wirst du gefragt, ob du es im CryptDrive speichern willst.<br><b>Manuell (nie nachfragen):</b> Dokumente werden nicht automatisch im CryptDrive gespeichert. Die Option zum Speichern wird nicht mehr angezeigt.",
     "settings_autostoreYes": "Automatisch",
     "settings_autostoreNo": "Manuell (nie nachfragen)",
