@@ -49,9 +49,11 @@ define([
 
     Exports.ssoAuth = function (provider, cb) {
         var keys = Nacl.sign.keyPair();
+        var inviteToken = window.location.hash.slice(1);
         localStorage.CP_sso_auth = JSON.stringify({
             s: Nacl.util.encodeBase64(keys.secretKey),
-            p: Nacl.util.encodeBase64(keys.publicKey)
+            p: Nacl.util.encodeBase64(keys.publicKey),
+            token: inviteToken
         });
         ServerCommand(keys, {
             command: 'SSO_AUTH',
@@ -90,7 +92,10 @@ define([
     };
 
     var hashing;
-    Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, onOTP, testing, test) {
+
+    Messages.register_invalidToken = "Registration is closed and the invitation link is invalid"; // XXX
+    Exports.loginOrRegisterUI = function (config) {
+        let { uname, token, shouldImport, cb } = config;
         if (hashing) { return void console.log("hashing is already in progress"); }
         hashing = true;
 
@@ -98,8 +103,7 @@ define([
 
         var proceed = function (result) {
             hashing = false;
-            // NOTE: test is also use as a cb for the install page
-            if (test && typeof test === "function" && test(result)) { return; }
+            if (cb && typeof cb === "function" && cb(result)) { return; }
             LocalStore.clearLoginToken();
             Realtime.whenRealtimeSyncs(result.realtime, function () {
                 Exports.redirect();
@@ -117,16 +121,12 @@ define([
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {
-                Login.loginOrRegister({
-                uname,
-                    passwd,
-                    isRegister,
-                    onOTP
-                }, function (err, result) {
-                    var proxy;
+                Login.loginOrRegister(config, function (err, result) {
+                    var proxy = {};
                     if (result) { proxy = result.proxy; }
 
                     if (err) {
+                        console.warn(err);
                         switch (err) {
                             case 'NO_SUCH_USER':
                                 UI.removeLoadingScreen(function () {
@@ -196,6 +196,9 @@ define([
                                 });
                                 break;
                             case 'E_RESTRICTED':
+                                if (token) {
+                                    return UI.errorLoadingScreen(Messages.register_invalidToken);
+                                }
                                 UI.errorLoadingScreen(Messages.register_registrationIsClosed);
                                 break;
                             default: // UNHANDLED ERROR
@@ -204,8 +207,6 @@ define([
                         }
                         return;
                     }
-
-                    //if (testing) { return void proceed(result); }
 
                     if (!(proxy.curvePrivate && proxy.curvePublic &&
                           proxy.edPrivate && proxy.edPublic)) {

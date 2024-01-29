@@ -38,7 +38,7 @@
     }
 
     .cp-sidebarlayout-element {
-        label:not(> label) {
+        label:not(.cp-admin-label) {
             font-weight: normal !important;
         }
         input {
@@ -243,6 +243,12 @@
         label {
             margin-right: 40px;
             margin-top: 5px;
+        }
+    }
+
+    .cp-admin-users {
+        .cp-admin-store-invited, .cp-admin-store-sso {
+            margin-bottom: 0 !important;
         }
     }
 

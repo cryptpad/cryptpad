@@ -61,7 +61,6 @@ define([
         'general': [ // Msg.admin_cat_general
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
-            'cp-admin-registration',
             'cp-admin-enableembeds',
             'cp-admin-forcemfa',
             'cp-admin-email',
@@ -72,6 +71,11 @@ define([
             'cp-admin-description',
             'cp-admin-jurisdiction',
             'cp-admin-notice',
+        ],
+        'users': [ // Msg.admin_cat_quota
+            'cp-admin-registration',
+            'cp-admin-invitation',
+            'cp-admin-users',
         ],
         'quota': [ // Msg.admin_cat_quota
             'cp-admin-defaultlimit',
@@ -132,7 +136,7 @@ define([
         // Convert to camlCase for translation keys
         var safeKey = keyToCamlCase(key);
         var $div = $('<div>', {'class': 'cp-admin-' + key + ' cp-sidebarlayout-element'});
-        $('<label>', {'id': 'cp-admin-' + key}).text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
+        $('<label>', {'id': 'cp-admin-' + key, 'class':'cp-admin-label'}).text(Messages['admin_'+safeKey+'Title'] || key).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .text(Messages['admin_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
         if (addButton) {
@@ -1204,6 +1208,25 @@ define([
         return tableObj.table;
     };
 
+    var getBlockId = (val) => {
+        var url;
+        try {
+            url = new URL(val, ApiConfig.httpUnsafeOrigin);
+        } catch (err) { }
+        var getKey = function () {
+            var parts = val.split('/');
+            return parts[parts.length - 1];
+        };
+        var isValidBlockURL = function (url) {
+            if (!url) { return; }
+            return /* url.origin === ApiConfig.httpUnsafeOrigin && */ /^\/block\/.*/.test(url.pathname) && getKey().length === 44;
+        };
+        if (isValidBlockURL(url)) {
+            return getKey();
+        }
+        return;
+    };
+
     create['block-metadata'] = function () {
         var key = 'block-metadata';
         var $div = makeBlock(key, true); // Msg.admin_blockMetadataHint.admin_blockMetadataTitle
@@ -1236,21 +1259,10 @@ define([
                 key: '',
             };
 
-            var url;
-            try {
-                url = new URL(val, ApiConfig.httpUnsafeOrigin);
-            } catch (err) { }
-            var getKey = function () {
-                var parts = val.split('/');
-                return parts[parts.length - 1];
-            };
-            var isValidBlockURL = function (url) {
-                if (!url) { return; }
-                return /* url.origin === ApiConfig.httpUnsafeOrigin && */ /^\/block\/.*/.test(url.pathname) && getKey().length === 44;
-            };
-            if (isValidBlockURL(url)) {
+            var key = getBlockId(val);
+            if (key) {
                 state.valid = true;
-                state.key = getKey();
+                state.key = key;
             }
             return state;
         };
@@ -1483,27 +1495,497 @@ Example
     };
 
     // Msg.admin_registrationHint, .admin_registrationTitle
-    create['registration'] = makeAdminCheckbox({
-        key: 'registration',
-        getState: function () {
-            return APP.instanceStatus.restrictRegistration;
-        },
-        query: function (val, setState) {
+    // Msg.admin_registrationSsoTitle
+    Messages.admin_registrationSsoTitle = "ALSO CLOSE SSO REGISTRATION"; // XXX
+    create['registration'] = function () {
+        var refresh = function () {};
+
+        var $div = makeAdminCheckbox({
+            key: 'registration',
+            getState: function () {
+                return APP.instanceStatus.restrictRegistration;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RESTRICT_REGISTRATION', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.restrictRegistration);
+                        refresh();
+                        flushCacheNotice();
+                    });
+                });
+            }
+        })();
+
+        var $sso = makeAdminCheckbox({
+            key: 'registration-sso',
+            getState: function () {
+                return APP.instanceStatus.restrictSsoRegistration;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RESTRICT_SSO_REGISTRATION', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.restrictSsoRegistration);
+                        flushCacheNotice();
+                    });
+                });
+            }
+        })();
+        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
+        if (ssoEnabled) {
+            $sso.find('#cp-admin-registration-sso').hide();
+            $sso.find('> span.cp-sidebarlayout-description').hide();
+            $div.append($sso);
+        }
+
+        refresh = () => {
+            var closed = APP.instanceStatus.restrictRegistration;
+            if (closed) {
+                $sso.show();
+            } else {
+                $sso.hide();
+            }
+        };
+        refresh();
+
+
+        return $div;
+    };
+
+    Messages.admin_invitationCreate = "Create invitation link"; // XXX
+    Messages.admin_invitationHint = "Create invitation links to allow users to register even when registration is closed";
+    Messages.admin_invitationTitle = "Invitation links";
+
+    Messages.admin_invitationLink = "Invitation link";
+    Messages.admin_invitationCopy = "Copy link";
+    Messages.admin_invitationAlias = "User name";
+    Messages.admin_invitationEmail = "User email";
+    Messages.admin_invitationDeleteConfirm = "Are you sure you want to delete this invitation?";
+
+    create['invitation'] = function () {
+        var key = 'invitation';
+        var $div = makeBlock(key); // Msg.admin_invitationHint, admin_invitationTitle
+
+        var list = h('table.cp-admin-all-limits');
+        var input = h('input#cp-admin-invitation-alias');
+        var inputEmail = h('input#cp-admin-invitation-email');
+        var button = h('button.btn.btn-primary', Messages.admin_invitationCreate);
+        var $b = $(button);
+
+
+        var refreshInvite = function () {};
+        var refresh = h('button.btn.btn-secondary', Messages.oo_refresh);
+        Util.onClickEnter($(refresh), function () {
+            refreshInvite();
+        });
+
+        var add = h('div', [
+            h('label', { for: 'cp-admin-invitation-alias' }, Messages.admin_invitationAlias),
+            input,
+            h('label', { for: 'cp-admin-invitation-email' }, Messages.admin_invitationEmail),
+            inputEmail,
+            h('nav', [button, refresh])
+        ]);
+
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+
+        var deleteInvite = function (id) {
             sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'ADMIN_DECREE',
-                data: ['RESTRICT_REGISTRATION', [val]]
+                cmd: 'DELETE_INVITATION',
+                data: id
+            }, function (e, response) {
+                $b.prop('disabled', false);
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                refreshInvite();
+            });
+        };
+        var $list = $(list);
+        refreshInvite = function () {
+            $list.empty();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_ALL_INVITATIONS',
+            }, function (e, response) {
+                if (e || response.error) {
+                    if (!response || response.error !== "ENOENT") { UI.warn(Messages.error); }
+                    console.error(e, response);
+                    return;
+                }
+                if (!Array.isArray(response)) { return; }
+                var all = response[0];
+                Object.keys(all).forEach(function (key, i) {
+                    if (!i) { // First item: add header to table
+                        var trHead = h('tr', [
+                            h('th', Messages.admin_invitationLink),
+                            h('th', Messages.admin_invitationAlias),
+                            h('th', Messages.admin_invitationEmail),
+                            h('th', Messages.admin_documentCreationTime),
+                            h('th')
+                        ]);
+                        $list.append(trHead);
+                    }
+                    var data = all[key];
+                    var url = privateData.origin + Hash.hashToHref(key, 'register');
+
+                    var del = h('button.btn.btn-danger', [
+                        h('i.fa.fa-trash'),
+                        h('span', Messages.kanban_delete)
+                    ]);
+                    var $del = $(del);
+                    Util.onClickEnter($del, function () {
+                        $del.attr('disabled', 'disabled');
+                        UI.confirm(Messages.admin_invitationDeleteConfirm, function (yes) {
+                            $del.attr('disabled', '');
+                            if (!yes) { return; }
+                            deleteInvite(key);
+                        });
+                    });
+                    var copy = h('button.btn.btn-secondary', [
+                        h('i.fa.fa-clipboard'),
+                        h('span', Messages.admin_invitationCopy)
+                    ]);
+                    Util.onClickEnter($(copy), function () {
+                        Clipboard.copy(url, () => {
+                            UI.log(Messages.genericCopySuccess);
+                        });
+                    });
+                    var line = h('tr', [
+                        h('td', UI.dialog.selectable(url)),
+                        h('td', data.alias),
+                        h('td', data.email),
+                        h('td', new Date(data.time).toLocaleString()),
+                        //h('td', data.createdBy),
+                        h('td', [
+                            copy,
+                            del
+                        ])
+                    ]);
+                    $list.append(line);
+                });
+            });
+        };
+        refreshInvite();
+
+        $b.on('click', () => {
+            var alias = $(input).val().trim();
+            if (!alias) { return void UI.warn(Messages.error); } // XXX  bettter message?
+            $b.prop('disabled', true);
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'CREATE_INVITATION',
+                data: {
+                    alias,
+                    email: $(inputEmail).val()
+                }
+            }, function (e, response) {
+                $b.prop('disabled', false);
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                $(input).val('').focus();
+                $(inputEmail).val('');
+                refreshInvite();
+            });
+        });
+
+        $div.append([add, list]);
+        return $div;
+    };
+
+    Messages.admin_cat_users = "Users";
+    Messages.admin_usersAdd = "Add known user"; // XXX
+    Messages.admin_usersHint = "List of known users. You can add more using the form and select automated options";
+    Messages.admin_usersTitle = "Known users";
+    Messages.admin_storeInvitedLabel = "Automatically store invited users"; // XXX
+    Messages.admin_storeSsoLabel = "Automatically store SSO users";
+    Messages.admin_usersBlock = "User's block URL (optional)";
+    Messages.admin_usersRemove = "Remove from list";
+    Messages.admin_usersRemoveConfirm = "Are you sure you want to remove this user from this list? They will still be able to access their account.";
+
+
+    create['users'] = function () {
+        var key = 'users';
+        var $div = makeBlock(key); // Msg.admin_usersHint, admin_usersTitle
+
+        var list = h('table.cp-admin-all-limits');
+        var userAlias = h('input#cp-admin-users-alias');
+        var userEmail = h('input#cp-admin-users-email');
+        var userEdPublic = h('input#cp-admin-users-key');
+        var userBlock = h('input#cp-admin-users-block');
+        var button = h('button.btn.btn-primary', Messages.admin_usersAdd);
+        var $b = $(button);
+
+        var refreshUsers = function () {};
+
+        var refresh = h('button.btn.btn-secondary', Messages.oo_refresh);
+        Util.onClickEnter($(refresh), function () {
+            refreshUsers();
+        });
+
+        var add = h('div', [
+            h('label', { for: 'cp-admin-users-alias' }, Messages.admin_invitationAlias),
+            userAlias,
+            h('label', { for: 'cp-admin-users-email' }, Messages.admin_invitationEmail),
+            userEmail,
+            h('label', { for: 'cp-admin-users-key' }, Messages.admin_limitUser),
+            userEdPublic,
+            h('label', { for: 'cp-admin-users-block' }, Messages.admin_usersBlock),
+            userBlock,
+            h('nav', [button, refresh])
+        ]);
+
+        var $invited = makeAdminCheckbox({
+            key: 'store-invited',
+            getState: function () {
+                return !APP.instanceStatus.dontStoreInvitedUsers;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['DISABLE_STORE_INVITED_USERS', [!val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(!APP.instanceStatus.dontStoreInvitedUsers);
+                        flushCacheNotice();
+                    });
+                });
+            }
+        })();
+        $invited.find('#cp-admin-store-invited').hide();
+        $invited.find('> span.cp-sidebarlayout-description').hide();
+        $div.append($invited);
+        var $sso = makeAdminCheckbox({
+            key: 'store-sso',
+            getState: function () {
+                return !APP.instanceStatus.dontStoreSSOUsers;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['DISABLE_STORE_SSO_USERS', [!val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(!APP.instanceStatus.dontStoreSSOUsers);
+                        flushCacheNotice();
+                    });
+                });
+            }
+        })();
+        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
+        if (ssoEnabled) {
+            $sso.find('#cp-admin-store-sso').hide();
+            $sso.find('> span.cp-sidebarlayout-description').hide();
+            $div.append($sso);
+        }
+
+        var deleteUser = function (id) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'DELETE_KNOWN_USER',
+                data: id
             }, function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
-                    console.error(e, response);
+                    return void console.error(e, response);
                 }
-                APP.updateStatus(function () {
-                    setState(APP.instanceStatus.restrictRegistration);
-                    flushCacheNotice();
+                refreshUsers();
+            });
+        };
+        var updateUser = function (key, changes) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'UPDATE_KNOWN_USER',
+                data: {
+                    edPublic: key,
+                    changes: changes
+                }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                refreshUsers();
+            });
+        };
+        var $list = $(list);
+        refreshUsers = function () {
+            $list.empty();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_ALL_USERS',
+            }, function (e, response) {
+                if (e || response.error) {
+                    if (!response || response.error !== "ENOENT") { UI.warn(Messages.error); }
+                    console.error(e, response);
+                    return;
+                }
+                if (!Array.isArray(response)) { return; }
+                var all = response[0];
+                Object.keys(all).forEach(function (key, i) {
+                    if (!i) { // First item: add header to table
+                        var trHead = h('tr', [
+                            h('th', Messages.admin_invitationAlias),
+                            h('th', Messages.admin_invitationEmail),
+                            h('th', Messages.admin_limitUser),
+                            h('th', Messages.admin_documentCreationTime),
+                            h('th')
+                        ]);
+                        $list.append(trHead);
+                    }
+                    var data = all[key];
+                    var editUser = () => {};
+                    var del = h('button.btn.btn-danger', [
+                        h('i.fa.fa-trash'),
+                        Messages.admin_usersRemove
+                    ]);
+                    var $del = $(del);
+                    Util.onClickEnter($del, function () {
+                        $del.attr('disabled', 'disabled');
+                        UI.confirm(Messages.admin_usersRemoveConfirm, function (yes) {
+                            $del.attr('disabled', '');
+                            if (!yes) { return; }
+                            deleteUser(key);
+                        });
+                    });
+                    var edit = h('button.btn.btn-secondary', [
+                        h('i.fa.fa-pencil'),
+                        h('span', Messages.tag_edit)
+                    ]);
+                    Util.onClickEnter($(edit), function () {
+                        editUser();
+                    });
+
+                    var alias = h('td', data.alias);
+                    var email = h('td', data.email);
+                    var actions = h('td', [edit, del]);
+                    var $alias = $(alias);
+                    var $email = $(email);
+                    var $actions = $(actions);
+
+                    editUser = () => {
+                        var aliasInput = h('input');
+                        var emailInput = h('input');
+                        $(aliasInput).val(data.alias);
+                        $(emailInput).val(data.email);
+                        var save = h('button.btn.btn-primary', Messages.settings_save);
+                        var cancel = h('button.btn.btn-secondary', Messages.cancel);
+                        Util.onClickEnter($(save), function () {
+                            var aliasVal = $(aliasInput).val().trim();
+                            if (!aliasVal) { return void UI.warn(Messages.error); }
+                            var changes = {
+                                alias: aliasVal,
+                                email: $(emailInput).val().trim()
+                            };
+                            updateUser(key, changes);
+                        });
+                        Util.onClickEnter($(cancel), function () {
+                            refreshUsers();
+                        });
+                        $alias.html('').append(aliasInput);
+                        $email.html('').append(emailInput);
+                        $actions.html('').append([save, cancel]);
+                        console.warn(alias, email, $alias, $email, aliasInput);
+                    };
+
+                    var infoButton = h('button.btn.primary.cp-report', {
+                        style: 'margin-left: 10px; cursor: pointer;',
+                    }, [
+                        h('i.fa.fa-database'),
+                        h('span', Messages.admin_diskUsageButton)
+                    ]);
+                    $(infoButton).click(() => {
+                         getAccountData(key, (err, data) => {
+                             if (err) { return void console.error(err); }
+                             var table = renderAccountData(data);
+                             UI.alert(table, () => {
+
+                             }, {
+                                wide: true,
+                             });
+                         });
+                    });
+
+                    var line = h('tr', [
+                        alias,
+                        email,
+                        h('td', [
+                            h('code', key),
+                            infoButton
+                        ]),
+                        h('td', new Date(data.time).toLocaleString()),
+                        //h('td', data.createdBy),
+                        actions
+                    ]);
+                    $list.append(line);
                 });
             });
-        },
-    });
+        };
+        refreshUsers();
+
+        $b.on('click', () => {
+            var alias = $(userAlias).val().trim();
+            if (!alias) { return void UI.warn(Messages.error); } // XXX  bettter message?
+            $b.prop('disabled', true);
+
+            var done = () => { $b.prop('disabled', false); };
+            // TODO Get "block" from pin log?
+
+            var keyStr = $(userEdPublic).val().trim();
+            var parsed = keyStr && Keys.parseUser(keyStr);
+            if (!parsed || !parsed.edPublic) {
+                done();
+                return void UI.warn(Messages.admin_invalKey);
+            }
+            var block = getBlockId($(userBlock).val());
+
+            var obj = {
+                alias,
+                email: $(userEmail).val(),
+                block: block,
+                edPublic: parsed.edPublic,
+                name: parsed.user
+            };
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADD_KNOWN_USER',
+                data: obj
+            }, function (e, response) {
+                done();
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                $(userAlias).val('').focus();
+                $(userEmail).val('');
+                $(userBlock).val('');
+                $(userEdPublic).val('');
+                refreshUsers();
+            });
+        });
+
+        $div.append([add, list]);
+        return $div;
+    };
 
     // Msg.admin_enableembedsHint, .admin_enableembedsTitle
     create['enableembeds'] = makeAdminCheckbox({
@@ -1913,19 +2395,23 @@ Example
         var key = 'setlimit';
         var $div = makeBlock(key); // Msg.admin_setlimitHint, .admin_setlimitTitle
 
-        var user = h('input.cp-setlimit-key', { id: 'user-input' });
+        var user = h('input.cp-setlimit-key#cp-admin-setlimit-user');
         var $key = $(user);
-        var limit = h('input.cp-setlimit-quota', { type: 'number', min: 0, value: 0, id: 'limit-input' });
-        var note = h('input.cp-setlimit-note', { id: 'note-input' });
+        var limit = h('input.cp-setlimit-quota#cp-admin-setlimit-value', {
+            type: 'number',
+            min: 0,
+            value: 0
+        });
+        var note = h('input.cp-setlimit-note#cp-admin-setlimit-note');
         var remove = h('button.btn.btn-danger', Messages.fc_remove);
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
 
         var form = h('div.cp-admin-setlimit-form', [
-            h('label', { for: 'user-input' }, Messages.admin_limitUser),
+            h('label', { for: 'cp-admin-setlimit-user' }, Messages.admin_limitUser),
             user,
-            h('label', { for: 'limit-input' }, Messages.admin_limitMB),
+            h('label', { for: 'cp-admin-setlimit-value' }, Messages.admin_limitMB),
             limit,
-            h('label', { for: 'note-input' }, Messages.admin_limitSetNote),
+            h('label', { for: 'cp-admin-setlimit-note' }, Messages.admin_limitSetNote),
             note,
             h('nav', [set, remove])
         ]);
@@ -3445,6 +3931,7 @@ Example
     var SIDEBAR_ICONS = {
         general: 'fa fa-user-o',
         stats: 'fa fa-line-chart',
+        users: 'fa fa-address-card-o',
         quota: 'fa fa-hdd-o',
         support: 'fa fa-life-ring',
         broadcast: 'fa fa-bullhorn',

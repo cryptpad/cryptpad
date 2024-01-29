@@ -861,7 +861,6 @@ define([
                 // Owned drive
                 if (metadata && metadata.owners && metadata.owners.length === 1 &&
                     metadata.owners.indexOf(edPublic) !== -1) {
-                    var token;
                     nThen(function (waitFor) {
                         Block.checkRights({
                             auth: auth,
@@ -876,8 +875,7 @@ define([
                     }).nThen(function (waitFor) {
                         self.accountDeletion = clientId;
                         // Log out from other workers
-                        var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
-                        store.proxy[Constants.tokenKey] = token;
+                        store.proxy[Constants.tokenKey] = 'DELETED';
                         onSync(null, waitFor());
                     }).nThen(function (waitFor) {
                         // Delete Pin Store
@@ -896,6 +894,7 @@ define([
                         Block.removeLoginBlock({
                             reason: 'ARCHIVE_OWNED',
                             auth: auth,
+                            edPublic: edPublic,
                             blockKeys: blockKeys,
                         }, waitFor(function (err) {
                             if (err) { console.error(err); }
@@ -904,7 +903,8 @@ define([
                         removeOwnedPads(true, waitFor);
                     }).nThen(function () {
                         // Log out current worker
-                        postMessage(clientId, "DELETE_ACCOUNT", token, function () {});
+                        broadcast([clientId], "DRIVE_DELETED", 'ARCHIVE_OWNED');
+                        postMessage(clientId, "DELETE_ACCOUNT", 'DELETED', function () {});
                         store.network.disconnect();
                         cb({
                             state: true
@@ -2929,6 +2929,7 @@ define([
                     broadcast([], "UPDATE_METADATA");
                 });
                 proxy.on('change', [Constants.tokenKey], function () {
+                    if (store.isDeleted || proxy[Constants.tokenKey] === 'DELETED') { return; }
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
 
@@ -3064,9 +3065,8 @@ define([
             .on('error', function (info) {
                 if (info.error && info.error === 'EDELETED') {
                     if (store.ownDeletion) { return; }
-                    broadcast([], "LOGOUT", {
-                        reason: info.message
-                    });
+                    store.isDeleted = true;
+                    broadcast([], "DRIVE_DELETED", info.message);
                 }
             });
 

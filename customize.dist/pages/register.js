@@ -36,25 +36,27 @@ define([
             ];
         };
 
-        if (Config.restrictRegistration) {
-            return frame([
-                h('div.cp-restricted-registration', [
-                    h('p', Msg.register_registrationIsClosed),
-                ])
-            ]);
-        }
-
         var termsCheck;
         if (termsLink) {
             termsCheck = h('div.checkbox-container', tos);
         }
 
+        var closed = Config.restrictRegistration;
+        if (closed) {
+            $('body').addClass('cp-register-closed');
+        }
+
+
         return frame([
+            h('div.cp-restricted-registration', [
+                h('p', Msg.register_registrationIsClosed),
+            ]),
             h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     h('h2', Msg.register_notes_title),
                     Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
                 ]),
+                h('div.col-md-3.cp-closed-filler'+ssoEnabled, h('div')),
                 h('div.cp-reg-form.col-md-6', [
                     h('div#userForm.form-group'+ssoEnforced, [
                         h('div.cp-register-instance', [
@@ -104,6 +106,7 @@ define([
                         h('div.cp-register-sso', Msg.sso_register_description)
                     ]),
                 ]),
+                h('div.col-md-3.cp-closed-filler'+ssoEnabled),
             ])
         ]);
     };
