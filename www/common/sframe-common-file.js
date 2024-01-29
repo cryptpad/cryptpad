@@ -96,6 +96,7 @@ define([
             var data = {};
 
             data.name = file.metadata.name;
+            data.fileType = file.metadata.type;
             data.url = href;
             data.password = file.password;
             if (file.metadata.type.slice(0,6) === 'image/') {

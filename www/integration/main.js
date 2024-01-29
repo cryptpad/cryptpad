@@ -14,7 +14,7 @@ define([
         console.warn('INIT');
         var p = window.parent;
         var txid = getTxid();
-        p.postMessage(JSON.stringify({ q: 'INTEGRATION_READY', txid: txid }), '*');
+        p.postMessage({ q: 'INTEGRATION_READY', txid: txid }, '*');
 
         var makeChan = function () {
             var handlers = {};
@@ -38,6 +38,7 @@ define([
 
                 // On new command
                 var msg = data.msg;
+                if (!msg) { return; }
                 var txid = data.txid;
                 if (commands[msg.q]) {
                     commands[msg.q](msg.data, function (args) {
@@ -122,6 +123,9 @@ define([
         var onHasUnsavedChanges = function (unsavedChanges, cb) {
             chan.send('HAS_UNSAVED_CHANGES', unsavedChanges, cb);
         };
+        var onInsertImage = function (data, cb) {
+            chan.send('ON_INSERT_IMAGE', data, cb);
+        };
 
         chan.on('START', function (data) {
             console.warn('INNER START', data);
@@ -139,7 +143,8 @@ define([
                 utils: {
                     save: save,
                     reload: reload,
-                    onHasUnsavedChanges: onHasUnsavedChanges
+                    onHasUnsavedChanges: onHasUnsavedChanges,
+                    onInsertImage: onInsertImage
                 }
             };
             require(['/common/sframe-app-outer.js'], function () {
