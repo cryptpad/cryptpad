@@ -112,7 +112,7 @@ define([
     // * Remove the drag&drop and resizers from the hyperjson
     var isWidget = function(el) {
         return typeof(el.getAttribute) === "function" &&
-            (el.getAttribute('data-cke-hidden-sel') ||
+            (el.getAttribute('data-cke-hidden-sel') || el.getAttribute('data-cke-temp') ||
                 (el.getAttribute('class') &&
                     (/cke_widget_drag/.test(el.getAttribute('class')) ||
                         /cke_image_resizer/.test(el.getAttribute('class')))
@@ -418,6 +418,10 @@ define([
                     info.node.getAttribute('class') &&
                     (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
                         info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1)) {
+                    return true;
+                }
+                // CkEditor temporary data (used when copy-paste large chunks for instance)
+                if (info.node && (info.node.tagName === 'SPAN' || info.node.tagName === 'DIV') && info.diff.name === 'data-cke-temp') {
                     return true;
                 }
 
