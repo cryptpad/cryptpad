@@ -692,7 +692,7 @@ define([
                         dataToAdd.forEach(function(mailbox) {
                             if (mailbox.notifications && mailbox.curvePublic) {
                                 common.mailbox.sendTo("ADD_TO_ACCESS_LIST", {
-                                    channel: channel,
+                                    channel: data.channel || priv.channel,
                                 }, {
                                     channel: mailbox.notifications,
                                     curvePublic: mailbox.curvePublic
@@ -700,7 +700,7 @@ define([
                             } else {
                                 return;
                             }
-                        })
+                        });
 
                         if (err) {
                             waitFor.abort();
