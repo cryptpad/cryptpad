@@ -1930,8 +1930,8 @@ Example
             // TODO Get "block" from pin log?
 
             var keyStr = $(userEdPublic).val().trim();
-            var parsed = keyStr && Keys.parseUser(keyStr);
-            if (!parsed || !parsed.edPublic) {
+            var edPublic = keyStr && Keys.canonicalize(keyStr);
+            if (!edPublic) {
                 done();
                 return void UI.warn(Messages.admin_invalKey);
             }
@@ -1941,8 +1941,7 @@ Example
                 alias,
                 email: $(userEmail).val(),
                 block: block,
-                edPublic: parsed.edPublic,
-                name: parsed.user
+                edPublic: edPublic,
             };
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADD_KNOWN_USER',
