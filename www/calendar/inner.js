@@ -1377,6 +1377,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         }
         if (m) {
             m = m.map(function (n) {
+                tmp.setDate(15);
+                tmp.setHours(12);
                 tmp.setMonth(n-1);
                 return tmp.toLocaleDateString(getDateLanguage(), { month: 'long' });
             });
@@ -1463,7 +1465,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 dayStr,
                 monthStr
             ]),
-            last: last ? '-1' + dayStr : undefined,
+            last: last ? '-1' + dayCode : undefined,
             lastStr: Messages._getKey('calendar_rec_'+key+'_nth', [
                 Messages['calendar_nth_last'],
                 dayStr,
