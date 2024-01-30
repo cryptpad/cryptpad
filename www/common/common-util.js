@@ -113,6 +113,10 @@
             var isEnter = e.type === 'keydown' && e.which === 13;
             var isSpace = e.type === 'keydown' && e.which === 32 && cfg && cfg.space;
             if (!isClick && !isEnter && !isSpace) { return; }
+
+            // "enter" on a button triggers a click, disable it
+            if (e.type === 'keydown') { e.preventDefault(); }
+
             handler();
         });
     };
