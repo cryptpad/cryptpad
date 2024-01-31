@@ -2308,7 +2308,9 @@ define([
 
             var sf = manager.hasSubfolder(element);
             var hasFiles = manager.hasFile(element);
-            var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(key);
+            var $name = $(h('span.cp-app-drive-element-name', [
+                h('span.cp-app-drive-element-name-text', key)
+            ]));
             var $subfolders = $('<span>', {
                 'class': 'cp-app-drive-element-folders cp-app-drive-element-list'
             }).text(sf);
