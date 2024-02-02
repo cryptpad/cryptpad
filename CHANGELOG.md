@@ -4,6 +4,121 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 5.7.0
+
+## Goals
+
+This release includes some features that could not be included into 5.6.0, namely instance invitations and support for images in diagrams. It also includes bug fixes in the drive, calendar and many other places.
+
+## Features
+
+- Instance administrators can now issue invitation links that can be used to create one account each, even if registration is closed on the instance. An optional User Directory can help keep track of the known accounts on the instance. This feature is designed for the needs of enterprise customers who use their own instance, hence allowing administrators access to more information than on a public-facing service [#1395](https://github.com/cryptpad/cryptpad/pull/1395)
+- Diagram documents now support images [#1295](https://github.com/cryptpad/cryptpad/pull/1295)
+
+## Fixes
+
+- Fix access modal issues after password change [#1394](https://github.com/cryptpad/cryptpad/pull/1394)
+- Drive
+  - Shared folder access list [#1388](https://github.com/cryptpad/cryptpad/pull/1388)
+  - File icons in drive [#1386](https://github.com/cryptpad/cryptpad/pull/1386)
+  - Emptying trash with multiple folders and files fails [#1344](https://github.com/cryptpad/cryptpad/issues/1344)
+  - Shared folder and drive, read-only link issue [#1238](https://github.com/cryptpad/cryptpad/issues/1238)
+  - Loss of access to a shared folder after a double password change [#1365](https://github.com/cryptpad/cryptpad/issues/1365)
+- Files
+  - PDFjs rendering issue with Firefox 121 [#1393](https://github.com/cryptpad/cryptpad/pull/1393)
+- Rich Text
+  - Fix richtext issues [#1392](https://github.com/cryptpad/cryptpad/pull/1392)
+    - Duplicated element in table of content (TOC) [#1336](https://github.com/cryptpad/cryptpad/issues/1336)
+    - Anchors don't work anymore [#1226](https://github.com/cryptpad/cryptpad/issues/1226)
+    - Rows and columns numbers in tables can't be modified anymore [#1358](https://github.com/cryptpad/cryptpad/issues/1358)
+- Forms
+  - Fix issue with duplicating choice/checkbox grid questions [#1359](https://github.com/cryptpad/cryptpad/pull/1359)
+  - Date question datepicker/input field now displays correctly  [#1357](https://github.com/cryptpad/cryptpad/pull/1357)
+  - Duplicated “Enter” event sent when navigating with keyboard [#1396](https://github.com/cryptpad/cryptpad/issues/1396)
+- Kanban
+  - Kanban item export [#1360](https://github.com/cryptpad/cryptpad/pull/1360)
+- Calendar
+  - Calendar datepicker on mobile now easily toggled  [#1368](https://github.com/cryptpad/cryptpad/pull/1368)
+  - Behaviour change: keep the offset between start and end date constant when updating the start date (otherwise it was possible to create events that end before even starting that thus don’t appear in the calendar) 
+  - Calendar yearly recurring event - wrong month name [#1398](https://github.com/cryptpad/cryptpad/issues/1398)
+- Admin
+  - Encoding issues in broadcast messages [#1379](https://github.com/cryptpad/cryptpad/issues/1379)
+- Deployment
+  - Fix Cryptpad is unhealthy on Docker [#1350](https://github.com/cryptpad/cryptpad/pull/1350) thanks to @llaumgui
+
+
+## Dependencies
+
+- Bump follow-redirects from 1.15.3 to 1.15.4 [#1378](https://github.com/cryptpad/cryptpad/pull/1378)
+
+
+## Upgrade notes
+
+If you are upgrading from a version older than `5.6.0` please read the upgrade notes of all versions between yours and `5.6.0` to avoid configuration issues.
+
+⚠️ Before proceeding note that this upgrade requires changes to the Nginx configuration, please see full diff below.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 5.7.0
+```
+3. Update dependencies
+
+```bash
+npm ci
+npm run install:components
+```
+
+4. Restart your server
+5. Review your instance's checkup page to ensure that you are passing all tests
+
+### Nginx config changes
+
+```diff
+diff --git a/docs/example-advanced.nginx.conf b/docs/example-advanced.nginx.conf
+index cb827b4b0..f2b32e959 100644
+--- a/docs/example-advanced.nginx.conf
++++ b/docs/example-advanced.nginx.conf
+@@ -14,6 +14,8 @@ server {
+ 
+     # Let's Encrypt webroot
+     include letsencrypt-webroot;
++    # Include mime.types to be able to support .mjs files (see "types" below)
++    include mime.types;
+ 
+     # CryptPad serves static assets over these two domains.
+     # `main_domain` is what users will enter in their address bar.
+@@ -166,11 +168,6 @@ server {
+     # We've applied other sandboxing techniques to mitigate the risk of running WebAssembly in this privileged scope
+     if ($uri ~ ^\/unsafeiframe\/inner\.html.*$) { set $unsafe 1; }
+ 
+-    # draw.io uses inline script tags in it's index.html. The hashes are added here.
+-    if ($uri ~ ^\/components\/drawio\/src\/main\/webapp\/index.html.*$) {
+-        set $scriptSrc "'self' 'sha256-dLMFD7ijAw6AVaqecS7kbPcFFzkxQ+yeZSsKpOdLxps=' 'sha256-6g514VrT/cZFZltSaKxIVNFF46+MFaTSDTPB8WfYK+c=' resource: https://${main_domain}";
+-    }
+-
+     # privileged contexts allow a few more rights than unprivileged contexts, though limits are still applied
+     if ($unsafe) {
+         set $scriptSrc "'self' 'unsafe-eval' 'unsafe-inline' resource: https://${main_domain}";
+@@ -179,6 +176,11 @@ server {
+     # Finally, set all the rules you composed above.
+     add_header Content-Security-Policy "default-src 'none'; child-src $childSrc; worker-src $workerSrc; media-src $mediaSrc; style-src $styleSrc; script-src $scriptSrc; connect-src $connectSrc; font-src $fontSrc; img-src $imgSrc; frame-src $frameSrc; frame-ancestors $frameAncestors";
+ 
++    # Add support for .mjs files used by pdfjs
++    types {
++        application/javascript mjs;
++    }
++
+     # The nodejs process can handle all traffic whether accessed over websocket or as static assets
+     # We prefer to serve static content from nginx directly and to leave the API server to handle
+     # the dynamic content that only it can manage. This is primarily an optimization
+```
+
 # 5.6.0
 
 
