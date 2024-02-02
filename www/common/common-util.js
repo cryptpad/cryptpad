@@ -107,6 +107,20 @@
         });
     };
 
+    Util.onClickEnter = function ($element, handler, cfg) {
+        $element.on('click keydown', function (e) {
+            var isClick = e.type === 'click';
+            var isEnter = e.type === 'keydown' && e.which === 13;
+            var isSpace = e.type === 'keydown' && e.which === 32 && cfg && cfg.space;
+            if (!isClick && !isEnter && !isSpace) { return; }
+
+            // "enter" on a button triggers a click, disable it
+            if (e.type === 'keydown') { e.preventDefault(); }
+
+            handler();
+        });
+    };
+
     Util.response = function (errorHandler) {
         var pending = {};
         var timeouts = {};
@@ -731,6 +745,11 @@
     };
     Util.supportsWasm = function () {
         return !(typeof(Atomics) === "undefined" || !supportsSharedArrayBuffers() || typeof(WebAssembly) === 'undefined');
+    };
+
+    //Returns an array of integers in range 0 to (length-1)
+    Util.getKeysArray = function (length) {
+        return [...Array(length).keys()];
     };
 
     if (typeof(module) !== 'undefined' && module.exports) {

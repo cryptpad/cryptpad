@@ -80,15 +80,11 @@ define([
             var shouldImport = $checkImport[0].checked;
             var uname = $uname.val();
             var passwd = $passwd.val();
-            Login.loginOrRegisterUI(uname, passwd, false, shouldImport,
-                UI.getOTPScreen, /*Test.testing */ false, function () {
-                /*
-                if (test) {
-                    localStorage.clear();
-                    //test.pass();
-                    return true;
-                }
-                */
+            Login.loginOrRegisterUI({
+                uname,
+                passwd,
+                shouldImport,
+                onOTP: UI.getOTPScreen
             });
         });
         $('#register').on('click', function () {

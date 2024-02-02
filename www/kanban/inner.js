@@ -1137,6 +1137,33 @@ define([
         if (framework.isReadOnly() || framework.isLocked()) {
             $container.addClass('cp-app-readonly');
         }
+
+        var cleanData = function (boards) {
+            if (typeof(boards) !== "object") { return; }
+            var items = boards.items || {};
+            var data = boards.data || {};
+            var list = boards.list || [];
+
+            // Remove duplicate boards
+            list = boards.list = Util.deduplicateString(list);
+
+            Object.keys(data).forEach(function (id) {
+                if (list.indexOf(Number(id)) === -1) {
+                    list.push(Number(id));
+                }
+                // Remove duplicate items
+                var b = data[id];
+                b.item = Util.deduplicateString(b.item || []);
+            });
+            Object.keys(items).forEach(function (eid) {
+                var exists = Object.keys(data).some(function (id) {
+                    return (data[id].item || []).indexOf(Number(eid)) !== -1;
+                });
+                if (!exists) { delete items[eid]; }
+            });
+            framework.localChange();
+        };
+
         framework.setFileImporter({accept: ['.json', 'application/json']}, function (content /*, file */) {
             var parsed;
             try { parsed = JSON.parse(content); }
@@ -1150,6 +1177,8 @@ define([
         });
 
         framework.setFileExporter('.json', function () {
+            var content = kanban.getBoardsJSON();
+            cleanData(content);
             return new Blob([JSON.stringify(kanban.getBoardsJSON(), 0, 2)], {
                 type: 'application/json',
             });
@@ -1290,32 +1319,6 @@ define([
                 content: content
             };
         });
-
-        var cleanData = function (boards) {
-            if (typeof(boards) !== "object") { return; }
-            var items = boards.items || {};
-            var data = boards.data || {};
-            var list = boards.list || [];
-
-            // Remove duplicate boards
-            list = boards.list = Util.deduplicateString(list);
-
-            Object.keys(data).forEach(function (id) {
-                if (list.indexOf(Number(id)) === -1) {
-                    list.push(Number(id));
-                }
-                // Remove duplicate items
-                var b = data[id];
-                b.item = Util.deduplicateString(b.item || []);
-            });
-            Object.keys(items).forEach(function (eid) {
-                var exists = Object.keys(data).some(function (id) {
-                    return (data[id].item || []).indexOf(Number(eid)) !== -1;
-                });
-                if (!exists) { delete items[eid]; }
-            });
-            framework.localChange();
-        };
 
         framework.onReady(function () {
             $("#cp-app-kanban-content").focus();

@@ -33,19 +33,22 @@ define([
             secretKey: Nacl.util.decodeBase64(b64Keys.s),
             publicKey: Nacl.util.decodeBase64(b64Keys.p)
         };
+        var inviteToken = b64Keys.token;
         ServerCommand(keys, {
             command: 'SSO_AUTH_CB',
             url: window.location.href
         }, function (err, data) {
             delete localStorage.CP_sso_auth;
             document.cookie = 'ssotoken=; Max-Age=-99999999;';
+            if (data) { data.inviteToken = inviteToken; }
             cb(err, data);
         });
     };
-    let ssoLoginRegister = function (seed, pw, jwt, name, isRegister) {
+    let ssoLoginRegister = function (seed, pw, jwt, name, isRegister, inviteToken) {
         Login.loginOrRegister({
             uname: seed,
             passwd: pw,
+            token: inviteToken,
             isRegister: isRegister,
             onOTP: UI.getOTPScreen,
             ssoAuth: {
@@ -97,7 +100,7 @@ define([
                     hideTips: true,
                 });
                 setTimeout(function () { // Second timeout for the loading screen befofe Scrypt
-                    ssoLoginRegister(seed, pw, jwt, name, data.register);
+                    ssoLoginRegister(seed, pw, jwt, name, data.register, data.inviteToken);
                 }, 100);
                 }, 100);
 
@@ -106,6 +109,10 @@ define([
             // Existing account, no CP password, continue
             if (!data.register && !data.password) {
                 return void next('');
+            }
+
+            if (data.register && ApiConfig.restrictSsoRegistration && !data.inviteToken) {
+                return void UI.errorLoadingScreen(Messages.register_registrationIsClosed);
             }
 
             // Registration and CP password disabled, continue
@@ -130,14 +137,17 @@ define([
 
             $button.click(() => {
                 let pw = $pw.val();
+                let warning = Messages._getKey('register_passwordTooShort', [
+                    Cred.MINIMUM_PASSWORD_LENGTH
+                ]);
                 if (data.register && pw !== $pw2.val()) {
                     return void UI.warn(Messages.register_passwordsDontMatch);
                 }
                 if (data.register && pw && !Cred.isLongEnoughPassword(pw)) {
-                    return void UI.warn(Messages.register_passwordTooShort);
+                    return void UI.warn(warning);
                 }
                 if (data.register && !pw && ApiConfig.sso.password === 2) {
-                    return void UI.warn(Messages.register_passwordTooShort);
+                    return void UI.warn(warning);
                 }
                 $button.prop('disabled', 'disabled');
 

@@ -53,7 +53,7 @@ special_rules.fr = function (s) {
     ignore instances where the following character is a '/'
     because this is probably a URL (http(s)://)
 */
-    return /\S[:;\?\!][^\/]{1,}/.test(s);
+    return /\S[:;\?\!][^\/]{1,}/.test(s.replace(/mailto:/g, " :"));
 };
 
 var noop = function () {};

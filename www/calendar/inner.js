@@ -1307,23 +1307,20 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             updateDateRange();
             updateRecurring();
         });
+        var f = Flatpickr(goDate, {
+            enableTime: false,
+            defaultDate: APP.calendar.getDate()._date,
+            clickOpens: false,
+            //dateFormat: dateFormat,
+            onChange: function (date) {
+                date[0].setHours(12);
+                APP.moveToDate(+date[0]);
+                updateDateRange();
+                updateRecurring();
+            },
+        });
         $(goDate).click(function () {
-            var f = Flatpickr(goDate, {
-                enableTime: false,
-                defaultDate: APP.calendar.getDate()._date,
-                //dateFormat: dateFormat,
-                onChange: function (date) {
-                    date[0].setHours(12);
-                    f.destroy();
-                    APP.moveToDate(+date[0]);
-                    updateDateRange();
-                    updateRecurring();
-                },
-                onClose: function () {
-                    setTimeout(f.destroy);
-                }
-            });
-            f.open();
+            return f.isOpen ? f.close() : f.open();
         });
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
             goLeft, goToday, goRight, goDate
@@ -1380,6 +1377,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         }
         if (m) {
             m = m.map(function (n) {
+                tmp.setDate(15);
+                tmp.setHours(12);
                 tmp.setMonth(n-1);
                 return tmp.toLocaleDateString(getDateLanguage(), { month: 'long' });
             });
@@ -1466,7 +1465,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 dayStr,
                 monthStr
             ]),
-            last: last ? '-1' + dayStr : undefined,
+            last: last ? '-1' + dayCode : undefined,
             lastStr: Messages._getKey('calendar_rec_'+key+'_nth', [
                 Messages['calendar_nth_last'],
                 dayStr,

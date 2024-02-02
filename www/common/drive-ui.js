@@ -636,7 +636,7 @@ define([
         // UI containers
         var $tree = APP.$tree = $("#cp-app-drive-tree");
         var $content = APP.$content = $("#cp-app-drive-content");
-        var $contentContainer = APP.$content = $("#cp-app-drive-content-container");
+        var $contentContainer = $("#cp-app-drive-content-container");
         var $appContainer = $(".cp-app-drive-container");
         var $driveToolbar = APP.toolbar.$bottom;
         var $contextMenu = createContextMenu(common).appendTo($appContainer);
@@ -2150,6 +2150,22 @@ define([
             } */
         };
         var thumbsUrls = {};
+
+        // This is duplicated in cryptpad-common, it should be unified
+        var getFileIcon = function (id) {
+            var data = manager.getFileData(id);
+            return UI.getFileIcon(data);
+        };
+        var getIcon = UI.getIcon;
+
+        var addTitleIcon = function (element, $name) {
+            var icon = getFileIcon(element);
+
+            $(icon).addClass('cp-app-drive-element-icon');
+            $name.addClass('cp-app-drive-element-name-icon');
+            $name.prepend($(icon));
+        };
+
         var addFileData = function (element, $element) {
             if (!manager.isFile(element)) { return; }
 
@@ -2201,13 +2217,15 @@ define([
             var name = manager.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
-            var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
+            var $name = $(h('span.cp-app-drive-element-name', [
+                h('span.cp-app-drive-element-name-text', name)
+            ]));
             $element.append($name);
             $element.append($state);
             if (APP.mobile()) {
                 $element.append($menu);
             }
-            
+
             if (getViewMode() === 'grid') {
                 $element.attr('title', name);
             }
@@ -2220,8 +2238,8 @@ define([
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
-            }
-            else {
+                addTitleIcon(element, $name);
+            } else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
                     // Called only if the thumbnail exists
                     // Remove the .hide() added by displayThumnail() because it hides the icon in list mode too
@@ -2229,6 +2247,7 @@ define([
                     $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                     $thumb.attr("draggable", false);
                     thumbsUrls[element] = $thumb[0].src;
+                    addTitleIcon(element, $name);
                 });
             }
 
@@ -2289,7 +2308,9 @@ define([
 
             var sf = manager.hasSubfolder(element);
             var hasFiles = manager.hasFile(element);
-            var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(key);
+            var $name = $(h('span.cp-app-drive-element-name', [
+                h('span.cp-app-drive-element-name-text', key)
+            ]));
             var $subfolders = $('<span>', {
                 'class': 'cp-app-drive-element-folders cp-app-drive-element-list'
             }).text(sf);
@@ -2307,13 +2328,6 @@ define([
                 $span.append($menu);
             }
         };
-
-        // This is duplicated in cryptpad-common, it should be unified
-        var getFileIcon = function (id) {
-            var data = manager.getFileData(id);
-            return UI.getFileIcon(data);
-        };
-        var getIcon = UI.getIcon;
 
         var createShareButton = function (id, $container) {
             var $shareBlock = $('<button>', {

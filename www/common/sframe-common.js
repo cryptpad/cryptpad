@@ -1012,6 +1012,7 @@ define([
             } catch (e) {}
 
             ctx.sframeChan.on('EV_LOGOUT', function () {
+                if (window.CP_ownAccountDeletion) { return; }
                 $(window).on('keyup', function (e) {
                     if (e.keyCode === 27) {
                         UI.removeLoadingScreen();

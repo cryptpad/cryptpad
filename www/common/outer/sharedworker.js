@@ -104,7 +104,7 @@ var init = function (client, cb) {
                             cfg.broadcast = function (excludes, cmd, data, cb) {
                                 cb = cb || function () {};
                                 Object.keys(self.tabs).forEach(function (cId) {
-                                    if (excludes.indexOf(cId) !== -1) { return; }
+                                    if (excludes.indexOf(+cId) !== -1) { return; }
                                     self.tabs[cId].chan.query(cmd, data, function (err, data2) {
                                         if (err) { return void cb({error: err}); }
                                         cb(data2);

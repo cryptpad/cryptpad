@@ -136,6 +136,7 @@ define([
                 }, dismissIcon);
                 $(dismiss).addClass("cp-clickable")
                     .on('click keypress', function (event) {
+                        event.stopPropagation();
                         if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                             data.content.dismissHandler();
                         }

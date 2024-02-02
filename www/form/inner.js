@@ -365,7 +365,7 @@ define([
             });
 
             if (!v.type || v.type === "text") {
-                $input.keyup(function (e) {
+                $input.keydown(function (e) {
                     try {
                         if (e.which === 13) {
                             var $line = $input.closest('.cp-form-edit-block-input');
@@ -572,7 +572,8 @@ define([
         }
 
         // "Add option" button handler
-        $add = $(add).click(function () {
+        $add = $(add);
+        Util.onClickEnter($add, function () {
             var txt = v.type ? '' : Messages.form_newOption;
             var el = getOption(txt, true, false, Util.uid());
             $add.before(el);
@@ -2065,6 +2066,7 @@ define([
                 var tag = h('input');
 
                 var picker = Flatpickr(tag, {
+                    disableMobile: true,
                     enableTime: true,
                     time_24hr: is24h,
                     dateFormat: dateFormat,
@@ -3295,7 +3297,7 @@ define([
         });
         sorted.forEach(function (uid) {
             var answer = answers[uid];
-
+            
             var viewOnly = content.answers.cantEdit || APP.isClosed;
 
             var action = h(viewOnly ? 'button.btn.btn-secondary' : 'button.btn.btn-primary', [
@@ -4109,9 +4111,27 @@ define([
                         idx = obj.idx;
                         _uid = Util.uid();
 
+                        var opts = Util.clone(content.form[uid].opts);
+                        if (type === 'multiradio' || type === 'multicheck') {
+                            var itemKeys = Util.getKeysArray(content.form[uid].opts.items.length);
+                            var valueKeys = Util.getKeysArray(content.form[uid].opts.values.length);
+                            opts.items = itemKeys.map(function (i) {
+                                    return {
+                                        uid: Util.uid(),
+                                        v: content.form[uid].opts.items[i].v
+                                    };
+                            });
+                            opts.values = valueKeys.map(function (i) {
+                                    return {
+                                        uid: Util.uid(),
+                                        v: content.form[uid].opts.values[i].v
+                                    };
+                            });
+                        }
+                        
                         content.form[_uid] = {
                             q: content.form[uid].q,
-                            opts: content.form[uid].opts,
+                            opts: opts,
                             type: type,
                         };
 

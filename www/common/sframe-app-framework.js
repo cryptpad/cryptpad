@@ -88,6 +88,7 @@ define([
         var state = STATE.DISCONNECTED;
         var firstConnection = true;
         var integration;
+        let integrationChannel;
 
         var toolbarContainer = options.toolbarContainer ||
             (function () { throw new Error("toolbarContainer must be specified"); }());
@@ -623,12 +624,12 @@ define([
 
                 if (privateDat.integration) {
                     common.openIntegrationChannel(onLocal);
-                    var sframeChan = common.getSframeChannel();
+                    integrationChannel = common.getSframeChannel();
                     var integrationSave = function (cb) {
                         var ext = privateDat.integrationConfig.fileType;
 
                         var upload = Util.once(function (_blob) {
-                            sframeChan.query('Q_INTEGRATION_SAVE', {
+                            integrationChannel.query('Q_INTEGRATION_SAVE', {
                                 blob: _blob
                             }, cb, {
                                 raw: true
@@ -645,7 +646,7 @@ define([
                         }
                     };
                     const integrationHasUnsavedChanges = function(unsavedChanges, cb) {
-                        sframeChan.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
+                        integrationChannel.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
                     };
                     var inte = common.createIntegration(onLocal, cpNfInner.chainpad,
                                                         integrationSave, integrationHasUnsavedChanges);
@@ -656,7 +657,7 @@ define([
                         });
                     }
                     if (firstConnection) {
-                        sframeChan.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
+                        integrationChannel.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
                             integrationSave(function (obj) {
                                 if (obj && obj.error) { console.error(obj.error); }
                                 cb();
@@ -1124,8 +1125,17 @@ define([
                 // Call this after all of the handlers are setup.
                 start: evStart.fire,
 
+                // Call this, when the user wants to add an image from drive.
+                insertImage: function(data, cb) {
+                    require(['/common/inner/image-dialog.js'], function(imageDialog) {
+                        imageDialog.openImageDialog(common, integrationChannel, data, cb);
+                    });
+                },
+
                 // Determine the internal state of the framework.
                 getState: function () { return state; },
+
+                isIntegrated: function() { return cpNfInner.metadataMgr.getPrivateData().integration; },
 
                 // Internals
                 _: {

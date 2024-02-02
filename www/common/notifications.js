@@ -498,6 +498,7 @@ define([
         if (!toShow) { return defaultDismiss(common, data)(); }
 
         var slice = toShow.length > 200;
+        var unsafe = toShow;
         toShow = Util.fixHTML(toShow);
 
         content.getFormatText = function () {
@@ -510,7 +511,7 @@ define([
             content.handler = function () {
                 var content = h('div', [
                     h('h4', Messages.broadcast_newCustom),
-                    h('div.cp-admin-message', toShow)
+                    h('div.cp-admin-message', unsafe) // Use unsafe string, hyperscript is safe
                 ]);
                 UI.alert(content);
             };

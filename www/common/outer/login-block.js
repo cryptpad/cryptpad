@@ -177,7 +177,7 @@ define([
         }, cb);
     };
     Block.writeLoginBlock = function (data, cb) {
-        const { content, blockKeys, oldBlockKeys, auth, pw, session } = data;
+        const { content, blockKeys, oldBlockKeys, auth, pw, session, token, userData } = data;
 
         var command = 'WRITE_BLOCK';
         if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
@@ -186,6 +186,8 @@ define([
         block.auth = auth && auth.data;
         block.hasPassword = pw;
         block.registrationProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+        if (token) { block.inviteToken = token; }
+        if (userData) { block.userData = userData; }
 
         ServerCommand(blockKeys.sign, {
             command: command,
@@ -194,7 +196,7 @@ define([
         }, cb);
     };
     Block.removeLoginBlock = function (data, cb) {
-        const { reason, blockKeys, auth } = data;
+        const { reason, blockKeys, auth, edPublic } = data;
 
         var command = 'REMOVE_BLOCK';
         if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
@@ -202,6 +204,7 @@ define([
         ServerCommand(blockKeys.sign, {
             command: command,
             auth: auth && auth.data,
+            edPublic: edPublic,
             reason: reason
         }, cb);
     };

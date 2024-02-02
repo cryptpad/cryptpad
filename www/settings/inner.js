@@ -626,10 +626,12 @@ define([
                             }
                         }));
                     }).nThen(function () {
+                        window.CP_ownAccountDeletion = true;
                         sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", {
                             bytes: bytes,
                             auth: auth
                         }, function(err, data) {
+                            if (err) { window.CP_ownAccountDeletion = false; }
                             UI.removeLoadingScreen();
                             if (data && data.error) {
                                 $button.prop('disabled', '');
