@@ -631,6 +631,7 @@ define([
             */
             editor.execCommand('print');
             framework.feedback('PRINT_PAD');
+            UI.clearTooltipsDelay();
         });
         framework._.toolbar.$drawer.append($printButton);
     };

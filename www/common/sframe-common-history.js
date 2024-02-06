@@ -512,10 +512,12 @@ define([
                 h('i.fa.fa-check'),
                 h('span', Messages.history_restore)
             ]);
-            var close = h('button', { title: Messages.history_closeTitle }, [
+            var close = h('button', 
+            { title: Messages.history_closeTitle }, [
                 h('i.fa.fa-times'),
                 h('span', Messages.history_close)
-            ]);
+            ]
+            );
             var actions = h('div.cp-toolbar-history-actions', [
                 h('span.cp-history-actions-first', [
                     snapshot,
@@ -651,6 +653,7 @@ define([
                 states = [];
                 onClose();
                 closeUI();
+                UI.clearTooltipsDelay();
             });
             $(restore).click(function () {
                 var restorePrompt = config.drive ? Messages.history_restoreDrivePrompt

@@ -1112,6 +1112,14 @@ define([
         });
     };
 
+    UI.clearTooltipsDelay = function () {
+        $.when(new Promise(res =>
+            setTimeout(res, 500)))
+               .then(() => {
+                 UI.clearTooltips();
+                });
+    };
+
     var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
     $.extend(true, Tippy.defaults, {
         placement: 'bottom',

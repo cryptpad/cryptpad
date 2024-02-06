@@ -113,6 +113,8 @@ define([
             window.focus();
             window.print();
             framework.feedback('PRINT_CODE');
+            UI.clearTooltipsDelay();
+
         });
         framework._.toolbar.$drawer.append($printButton);
     };

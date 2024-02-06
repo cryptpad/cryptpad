@@ -129,6 +129,7 @@ define([
             window.focus();
             window.print();
             framework.feedback('PRINT_SLIDES');
+            UI.clearTooltipsDelay();
         });
         framework._.toolbar.$drawer.append($printButton);
     };
