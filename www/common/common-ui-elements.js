@@ -994,7 +994,7 @@ define([
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.snapshots_button));
                 button
                 .click(common.prepareFeedback(type))
-                .click(function() {
+                .click(function () {
                     if (typeof(data.load) !== "function" || typeof(data.make) !== "function") {
                         return;
                     }
