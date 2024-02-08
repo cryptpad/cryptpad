@@ -1478,10 +1478,10 @@ define([
             $button.removeClass('cp-toolbar-button-active');
             if ($content.is(':visible')) {
                 $button.addClass('cp-toolbar-button-active');
+                $content.find(':first').focus();
                 var wh = $(window).height();
                 $content.css('max-height', Math.floor(wh - topPos - 1)+'px')
                 $content.children(':visible').addClass('active-element');
-                $content.find('.active-element').first().focus();
             } else {
                 $content.children().removeClass('active-element');
             }
