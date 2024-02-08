@@ -1480,22 +1480,13 @@ define([
                 $button.addClass('cp-toolbar-button-active');
                 var wh = $(window).height();
                 $content.css('max-height', Math.floor(wh - topPos - 1)+'px')
-                $content.children(':visible').each(function() {
-                    if ($(this).is('button')) {
-                        $(this).addClass('active-element');
-                    } else if ($(this).find('button').length > 0) {
-                        $(this).find('button').addClass('active-element');
-                    }
-                });
+                $content.children(':visible').addClass('active-element');
                 $content.find('.active-element').first().focus();
             } else {
-                if ($(this).is('button')) {
-                    $(this).removeClass('active-element');
-                } else if ($(this).find('button').length > 0) {
-                    $(this).find('button').removeClass('active-element');
-                }
+                $content.children().removeClass('active-element');
             }
         });
+
 
         var currentIndex = 0;
 
