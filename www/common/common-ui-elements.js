@@ -1488,7 +1488,7 @@ define([
         }
 
         if (!config.container) {
-            $container = $('<li>', containerConfig);
+            $container = $('<span>', containerConfig);
         }
 
         // Button
