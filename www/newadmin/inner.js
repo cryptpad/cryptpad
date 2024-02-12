@@ -19,7 +19,7 @@ define([
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
-    'less!/sidebar/app-sidebar.less',
+    'less!/newadmin/app-admin.less',
 ], function(
     $,
     Toolbar,
@@ -78,6 +78,19 @@ define([
     };
 
 
+    var createToolbar = function () {
+        var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
+        var configTb = {
+            displayed: displayed,
+            sfCommon: common,
+            $container: APP.$toolbar,
+            pageTitle: Messages.adminPage || 'Admin',
+            metadataMgr: common.getMetadataMgr(),
+        };
+        APP.toolbar = Toolbar.create(configTb);
+        APP.toolbar.$rightside.hide();
+    };
+
     nThen(function(waitFor) {
         $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function(c) { APP.common = common = c; }));
@@ -86,21 +99,20 @@ define([
         APP.$toolbar = $('#cp-toolbar');
         sframeChan = common.getSframeChannel();
         sframeChan.onReady(waitFor());
+    }).nThen(function (waitFor) {
+        if (!common.isAdmin()) { return; }
+        //updateStatus(waitFor()); // TODO re-add this
     }).nThen(function( /*waitFor*/ ) {
         metadataMgr = common.getMetadataMgr();
         privateData = metadataMgr.getPrivateData();
+        common.setTabTitle(Messages.adminPage || 'Administration');
 
-        // Toolbar
-        var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
-        var configTb = {
-            displayed: displayed,
-            sfCommon: common,
-            $container: APP.$toolbar,
-            pageTitle: 'TEST SIDEBAR',
-            metadataMgr: common.getMetadataMgr(),
-        };
-        APP.toolbar = Toolbar.create(configTb);
-        APP.toolbar.$rightside.hide();
+        if (!common.isAdmin()) {
+            return void UI.errorLoadingScreen(Messages.admin_authError || '403 Forbidden');
+        }
+
+        // Add toolbar
+        createToolbar();
 
         // Content
         andThen(common, APP.$container);
