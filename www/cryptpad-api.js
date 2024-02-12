@@ -166,6 +166,9 @@
                     config.events.onHasUnsavedChanges(unsavedChanges);
                     cb();
                 });
+                chan.on('ON_INSERT_IMAGE', function(data, cb) {
+                    config.events.onInsertImage(data, cb);
+                });
 
             });
             });
@@ -184,6 +187,7 @@
          *   @param {object} config.events Event handlers.
          *     @param {function} events.onSave (blob, callback) The save function to store the document when edited.
          *     @param {function} events.onNewKey (data, callback) The function called when a new key is used.
+         *     @param {function} events.onInsertImage (data, callback) The function called the user wants to add an image.
          *   @param {string} config.documentType The editor to load in CryptPad.
          * @return {promise}
          */
@@ -206,7 +210,7 @@
                 if (!config) { return reject('Missing args: no data provided'); }
                 if(['document.url', 'document.fileType', 'documentType',
                     'events.onSave', 'events.onHasUnsavedChanges',
-                    'events.onNewKey'].some(function (k) {
+                    'events.onNewKey', 'events.onInsertImage'].some(function (k) {
                     var s = k.split('.');
                     var c = config;
                     return s.some(function (key) {

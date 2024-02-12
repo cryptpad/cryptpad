@@ -2236,10 +2236,11 @@ define([
         };
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
-        var $survey = $userAdmin.find('.cp-toolbar-survey');
+        var $survey = $userAdmin.find('.cp-toolbar-survey').parent();;
+        var $surveyHr =  $survey.next('[role="separator"]');
         if (!surveyURL) {
             $survey.hide();
-            if (surveyAlone) { $survey.next('hr').hide(); }
+            if (surveyAlone) { $surveyHr.hide(); }
         }
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
@@ -2251,11 +2252,11 @@ define([
                 surveyURL = url;
                 if (!url) {
                     $survey.hide();
-                    if (surveyAlone) { $survey.next('hr').hide(); }
+                    if (surveyAlone) { $surveyHr.hide(); }
                     return;
                 }
                 $survey.show();
-                if (surveyAlone) { $survey.next('hr').show(); }
+                if (surveyAlone) { $surveyHr.show(); }
             }
         });
 

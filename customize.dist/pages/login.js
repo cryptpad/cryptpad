@@ -60,7 +60,7 @@ define([
                             h('button.login', Msg.login_login),
                         ]),
                     ]),
-                    h('div.col-md-3'),
+                    h('div.col-md-3'+ssoEnforced),
                     h('div.col-md-3'+ssoEnabled),
                     h('div#ssoForm.form-group.col-md-6'+ssoEnabled, [
                         h('div.cp-login-sso', Msg.sso_login_description)

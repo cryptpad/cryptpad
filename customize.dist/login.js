@@ -93,7 +93,6 @@ define([
 
     var hashing;
 
-    Messages.register_invalidToken = "Registration is closed and the invitation link is invalid"; // XXX
     Exports.loginOrRegisterUI = function (config) {
         let { uname, token, shouldImport, cb } = config;
         if (hashing) { return void console.log("hashing is already in progress"); }

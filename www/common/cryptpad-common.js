@@ -1527,6 +1527,7 @@ define([
                 hash: newHash,
                 href: newHref,
                 roHref: newRoHref,
+                channel: newSecret.channel
             });
         });
     };

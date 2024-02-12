@@ -365,7 +365,7 @@ define([
             });
 
             if (!v.type || v.type === "text") {
-                $input.keyup(function (e) {
+                $input.keydown(function (e) {
                     try {
                         if (e.which === 13) {
                             var $line = $input.closest('.cp-form-edit-block-input');
@@ -572,7 +572,8 @@ define([
         }
 
         // "Add option" button handler
-        $add = $(add).click(function () {
+        $add = $(add);
+        Util.onClickEnter($add, function () {
             var txt = v.type ? '' : Messages.form_newOption;
             var el = getOption(txt, true, false, Util.uid());
             $add.before(el);
