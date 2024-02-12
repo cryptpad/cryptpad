@@ -91,22 +91,32 @@
                 pre {
                     color: @cryptpad_text_col;
                 }
-                label.cp-item-label, .cp-default-label {
-                    display: block;
-                    font-weight: bold;
-                    margin-bottom: 0;
+
+                &:not([data-item]) { // Old sidebar-layout blocks
+                    label:not(.noTitle), .cp-default-label {
+                        display: block;
+                        font-weight: bold;
+                        margin-bottom: 0;
+                    }
                 }
-                .cp-sidebar-form {
-                    display: flex;
-                    flex-flow: column;
-                    align-items: baseline;
-                }
-                input {
-                    max-width: 25rem;
-                }
-                nav {
-                    display: flex;
-                    margin-top: 0.5rem;
+                &[data-item] { // New sidebar-layout blocks
+                    label.cp-item-label, .cp-default-label {
+                        display: block;
+                        font-weight: bold;
+                        margin-bottom: 0;
+                    }
+                    .cp-sidebar-form {
+                        display: flex;
+                        flex-flow: column;
+                        align-items: baseline;
+                    }
+                    input {
+                        max-width: 25rem;
+                    }
+                    nav {
+                        display: flex;
+                        margin-top: 0.5rem;
+                    }
                 }
 
                 .cp-sidebarlayout-description {
