@@ -98,6 +98,7 @@ define([
             'cp-admin-disk-usage',
         ],
         'support': [ // Msg.admin_cat_support
+            'cp-admin-support-new',
             'cp-admin-support-list',
             'cp-admin-support-init',
             'cp-admin-support-priv',
@@ -2914,51 +2915,125 @@ Example
         });
         return $div;
     };
+
+    // XXX
+    Messages.admin_supportNewHint = "Create or update the current support keys.";
+    Messages.admin_supportNewTitle = "Initialize support";
+    Messages.admin_supportNewEnabled = "Modern support system is enabled.";
+    Messages.admin_supportNewDisabled = "Modern support system is disabled.";
+    Messages.admin_supportNewInit = "Initialize support page on this instance";
+    Messages.admin_supportNewDelete = "Disable support";
+    Messages.admin_supportNewConfirm = "Are you sure? This will remove access to all current moderators.";
+    create['support-new'] = function () {
+        var $div = makeBlock('support-new'); // Msg.admin_supportNewHint, .admin_supportNewTitle
+        var newSupportKey = ApiConfig.newSupportMailbox;
+        (function () {
+            var state = h('div');
+            var $state = $(state).appendTo($div);
+            var button = h('button.btn.btn-primary', Messages.admin_supportNewInit);
+            var $button = $(button).appendTo($div);
+            var delButton = h('button.btn.btn-danger', Messages.admin_supportNewDelete);
+            var $delButton = $(delButton).appendTo($div).hide();;
+            var spinner = UI.makeSpinner($div);
+
+            var setState = function () {
+                $state.html('');
+                if (newSupportKey) {
+                    $button.hide();
+                    $delButton.show();
+                    return $state.append([
+                        h('i.fa.fa-check'),
+                        h('span', Messages.admin_supportNewEnabled)
+                    ]);
+                }
+                $button.show();
+                $state.append([
+                    h('i.fa.fa-times'),
+                    h('span', Messages.admin_supportNewDisabled)
+                ]);
+            };
+            setState();
+
+            Util.onClickEnter($delButton, function () {
+                UI.confirm(Messages.admin_supportNewConfirm, function (yes) {
+                    if (!yes) { return; }
+                    // Send the decree, don't delete data locally, we just want to remove
+                    // the support UI for the clients
+                    spinner.spin();
+                    $delButton.attr('disabled', 'disabled');
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['SET_SUPPORT_MAILBOX2', ['']]
+                    }, function (e, response) {
+                        $delButton.removeAttr('disabled');
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                            spinner.hide();
+                            return;
+                        }
+                        spinner.done();
+                        UI.log(Messages.saved);
+                        newSupportKey = undefined;
+                        setState();
+                    });
+                });
+            });
+            var next = function () {
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                var keyPair = Nacl.box.keyPair();
+                var pub = Nacl.util.encodeBase64(keyPair.publicKey);
+                var priv = Nacl.util.encodeBase64(keyPair.secretKey);
+                // Store the private key first. It won't be used until the decree is accepted.
+                sFrameChan.query("Q_ADMIN_MAILBOX", {
+                    version: 2,
+                    priv: priv
+                }, function (err, obj) {
+                    if (err || (obj && obj.error)) {
+                        console.error(err || obj.error);
+                        UI.warn(Messages.error);
+                        spinner.hide();
+                        return;
+                    }
+                    // Then send the decree
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['SET_SUPPORT_MAILBOX2', [pub]]
+                    }, function (e, response) {
+                        $button.removeAttr('disabled');
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                            spinner.hide();
+                            return;
+                        }
+                        spinner.done();
+                        UI.log(Messages.saved);
+                        newSupportKey = pub;
+                        setState();
+                        //$('.cp-admin-support-init').hide();
+                        //APP.$rightside.append(create['support-list']());
+                        //APP.$rightside.append(create['support-priv']());
+                    });
+                });
+            };
+            Util.onClickEnter($button, function () {
+                if (newSupportKey) {
+                    return void UI.confirm(Messages.admin_supportNewConfirm, function (yes) {
+                        if (yes) { next(); }
+                    });
+                }
+                next();
+            });
+        })();
+        return $div;
+    };
     create['support-init'] = function () {
         var $div = makeBlock('support-init'); // Msg.admin_supportInitHint, .admin_supportInitTitle
         if (!supportKey) {
             (function () {
-                $div.append(h('p', Messages.admin_supportInitHelp));
-                var button = h('button.btn.btn-primary', Messages.admin_supportInitGenerate);
-                var $button = $(button).appendTo($div);
-                $div.append($button);
-                var spinner = UI.makeSpinner($div);
-                $button.click(function () {
-                    spinner.spin();
-                    $button.attr('disabled', 'disabled');
-                    var keyPair = Nacl.box.keyPair();
-                    var pub = Nacl.util.encodeBase64(keyPair.publicKey);
-                    var priv = Nacl.util.encodeBase64(keyPair.secretKey);
-                    // Store the private key first. It won't be used until the decree is accepted.
-                    sFrameChan.query("Q_ADMIN_MAILBOX", priv, function (err, obj) {
-                        if (err || (obj && obj.error)) {
-                            console.error(err || obj.error);
-                            UI.warn(Messages.error);
-                            spinner.hide();
-                            return;
-                        }
-                        // Then send the decree
-                        sFrameChan.query('Q_ADMIN_RPC', {
-                            cmd: 'ADMIN_DECREE',
-                            data: ['SET_SUPPORT_MAILBOX', [pub]]
-                        }, function (e, response) {
-                            $button.removeAttr('disabled');
-                            if (e || response.error) {
-                                UI.warn(Messages.error);
-                                console.error(e, response);
-                                spinner.hide();
-                                return;
-                            }
-                            spinner.done();
-                            UI.log(Messages.saved);
-                            supportKey = pub;
-                            APP.privateKey = priv;
-                            $('.cp-admin-support-init').hide();
-                            APP.$rightside.append(create['support-list']());
-                            APP.$rightside.append(create['support-priv']());
-                        });
-                    });
-                });
+                return; // XXX old support can't be created anymore
             })();
             return $div;
         }

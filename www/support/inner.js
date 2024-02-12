@@ -47,6 +47,7 @@ define([
     var categories = {
         'tickets': [ // Msg.support_cat_tickets
             'cp-support-list',
+            'cp-support-listnew',
         ],
         'new': [ // Msg.support_cat_new
             'cp-support-subscribe',
@@ -151,6 +152,29 @@ define([
         return $div;
     };
 
+    create['listnew'] = function () {
+        var key = 'listnew';
+        var $div = makeBlock(key); // Msg.support_listHint, .support_listTitle
+        let refresh = function () {
+            APP.supportModule.execCommand('GET_MY_TICKETS', {}, function (obj) {
+                console.error(obj);
+                if (obj && obj.error) {
+                    console.error(obj.error);
+                    return void UI.warn(Messages.error);
+                }
+            });
+
+        };
+        var button = h('btn.btn-primary', 'refresh'); // XXX
+        Util.onClickEnter($(button), function () {
+            refresh();
+        });
+        $div.append([
+            button
+        ]);
+        return $div;
+    };
+
     create['language'] = function () {
         if (!Array.isArray(AppConfig.supportLanguages)) { return $(h('div')); }
         var languages = AppConfig.supportLanguages;
@@ -209,17 +233,19 @@ define([
         var id = Util.uid();
 
         $div.find('button').click(function () {
-            var metadataMgr = common.getMetadataMgr();
-            var privateData = metadataMgr.getPrivateData();
-            var user = metadataMgr.getUserData();
-            var sent = APP.support.sendForm(id, form, {
-                channel: privateData.support,
-                curvePublic: user.curvePublic
-            });
-            id = Util.uid();
-            if (sent) {
+            var data = APP.support.getFormData(form);
+            APP.supportModule.execCommand('MAKE_TICKET', {
+                channel: Hash.createChannelId(),
+                title: data.title,
+                ticket: data
+            }, function (obj) {
+                if (obj && obj.error) {
+                    console.error(obj.error);
+                    return void UI.warn(Messages.error);
+                }
+                id = Util.uid();
                 $('.cp-sidebarlayout-category[data-category="tickets"]').click();
-            }
+            });
         });
         $div.find('button').before(form);
         return $div;
@@ -345,6 +371,7 @@ define([
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
         APP.support = Support.create(common, false, APP.pinUsage, APP.teamsUsage);
+        APP.supportModule = common.makeUniversal('support');
 
         // Content
         var $rightside = APP.$rightside;

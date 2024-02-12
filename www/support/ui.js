@@ -22,6 +22,7 @@ define([
         var user = metadataMgr.getUserData();
         var teams = privateData.teams || {};
         data = data || {};
+        if (data.sender) { return data; }
 
         data.sender = {
             name: user.name,
@@ -101,7 +102,7 @@ define([
     };
 
 
-    var sendForm = function (ctx, id, form, dest) {
+    var getFormData = function (ctx, form) {
         var $form = $(form);
         var $cat = $form.find('.cp-support-form-category');
         var $title = $form.find('.cp-support-form-title');
@@ -110,14 +111,6 @@ define([
         var $attachments = $form.find('.cp-support-attachments');
 
         var category = $cat.val().trim();
-/*
-Messages.support_formCategoryError = "Please select a ticket category from the dropdown menu"; // TODO
-        if (!category) {
-            console.log($cat);
-            return void UI.alert(Messages.support_formCategoryError);
-        }
-*/
-
         var title = $title.val().trim();
         if (!title) {
             return void UI.alert(Messages.support_formTitleError);
@@ -140,13 +133,15 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         });
         $attachments.html('');
 
-        send(ctx, id, 'TICKET', {
+        return getDebuggingData(ctx, {
             category: category,
             title: title,
             attachments: attachments,
             message: content,
-        }, dest);
-
+        });
+    };
+    var sendForm = function (ctx, id, form, dest) {
+        send(ctx, id, 'TICKET', getFormData(ctx, form), dest, isNew);
         return true;
     };
 
@@ -167,9 +162,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             return {
                 tag: 'a',
                 content: h('span', Messages['support_cat_'+key]),
-                action: function () {
-                    onChange(key);
-                }
+                attributes: { 'data-value': key }
             };
         });
         var dropdownCfg = {
@@ -181,6 +174,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         };
         var $select = UIElements.createDropdown(dropdownCfg);
         $select.find('button').addClass('btn');
+        $select.onChange.reg(onChange);
         return $select;
     };
 
@@ -221,7 +215,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             ctx.common.openUnsafeURL(href);
         };
 
-        makeCategoryDropdown(ctx, catContainer, function (key) {
+        makeCategoryDropdown(ctx, catContainer, function (text, key) {
             $(category).val(key);
             if (!notice) { return; }
             //console.log(key);
@@ -532,6 +526,8 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             adminKeys: Array.isArray(ApiConfig.adminKeys)?  ApiConfig.adminKeys.slice(): [],
         };
 
+        ctx.supportModule = common.makeUniversal('support');
+
         var fmConfig = {
             body: $('body'),
             noStore: true, // Don't store attachments into our drive
@@ -543,8 +539,8 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         };
         ctx.FM = common.createFileManager(fmConfig);
 
-        ui.sendForm = function (id, form, dest) {
-            return sendForm(ctx, id, form, dest);
+        ui.getFormData = function (form) {
+            return getFormData(ctx, form);
         };
         ui.makeForm = function (cb, title, hideNotice) {
             return makeForm(ctx, cb, title, hideNotice);

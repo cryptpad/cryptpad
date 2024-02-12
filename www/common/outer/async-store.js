@@ -18,6 +18,7 @@ define([
     '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
+    '/common/outer/support.js',
     '/common/outer/integration.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
@@ -39,7 +40,7 @@ define([
     '/components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
-             SF, Cursor, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
+             SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, Block, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
@@ -1616,12 +1617,14 @@ define([
             });
         };
         Store.addAdminMailbox = function (clientId, data, cb) {
-            var priv = data;
+            var priv = data && data.priv;
             var pub = Hash.getBoxPublicFromSecret(priv);
+            var isNewSupport = data && data.version === 2;
             if (!priv || !pub) { return void cb({error: 'EINVAL'}); }
             var channel = Hash.getChannelIdFromKey(pub);
             var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
-            var box = mailboxes.supportadmin = {
+            var key = isNewSupport ? 'support2' : 'supportadmin';
+            var box = mailboxes['supportadmin'] = {
                 channel: channel,
                 viewed: [],
                 lastKnownHash: '',
@@ -1631,7 +1634,7 @@ define([
                 }
             };
             Store.pinPads(null, [channel], function () {});
-            store.mailbox.open('supportadmin', box, function () {
+            store.mailbox.open(key, box, function () {
                 console.log('ready');
             });
             onSync(null, cb);
@@ -2826,6 +2829,7 @@ define([
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
                 loadUniversal(Cursor, 'cursor', waitFor);
+                loadUniversal(Support, 'support', waitFor);
                 loadUniversal(Integration, 'integration', waitFor);
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
