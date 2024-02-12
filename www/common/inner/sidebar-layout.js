@@ -57,6 +57,12 @@ define([
         blocks.form = (content, nav) => {
             return h('div.cp-sidebar-form', [content, nav]);
         };
+        blocks.input = (attr) => {
+            return h('input', attr);
+        };
+        blocks.text = (value) => {
+            return h('span', value);
+        };
 
 
         sidebar.addItem = (key, get) => {
@@ -66,7 +72,7 @@ define([
                 const title = h('label.cp-item-label',
                     Messages[`${app}_${safeKey}Title`] || key);
                 const hint = h('span.cp-sidebarlayout-description',
-                    Messages[`${app}_+${safeKey}Hint`] || 'Coming soon...');
+                    Messages[`${app}_${safeKey}Hint`] || 'Coming soon...');
                 //const div = h(`div.cp-sidebarlayout-element.cp-${app}-${key}`, {
                 const div = h(`div.cp-sidebarlayout-element`, {
                     'data-item': key,

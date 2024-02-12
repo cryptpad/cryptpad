@@ -40,43 +40,114 @@ define([
     var common;
     var metadataMgr;
     var privateData;
-    var sframeChan;
+    var sFrameChan;
 
     var andThen = function (common, $container) {
-        const sidebar = Sidebar.create(common, 'sidebar', $container);
+        const sidebar = Sidebar.create(common, 'admin', $container);
         var categories = {
-            'users': {
-                icon: 'fa fa-users',
+            'general': {
+                icon: 'fa fa-user-o',
                 content: [
-                    'invitations',
-                    'directory'
+                    'flush-cache'
                 ]
             },
-            'test': {
-                icon: 'fa fa-bell',
+            'quota': {
+                icon: 'fa fa-hdd-o',
                 content: [
+                    'defaultlimit'
                 ]
             },
-            'click': {
-                icon: 'fa fa-file',
-                onClick: () => {
-                    common.openUnsafeURL('https://cryptpad.fr');
-                }
-            }
         };
 
         const blocks = sidebar.blocks;
-        sidebar.addItem('invitations', function (cb) {
-            var input = h('input', {type:'number'});
-            var label = blocks.labelledInput('Test Input label', input);
-            var button = blocks.button('secondary', 'fa-question', "My Button text");
-            var content = blocks.form(label, blocks.nav(button));
-            cb(content);
+        sidebar.addItem('flush-cache', function (cb) {
+            var button = blocks.button('primary', 'fa-ban', Messages.admin_flushCacheButton);
+            var called = false;
+            Util.onClickEnter($(button), function () {
+                if (called) { return; }
+                called = true;
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'FLUSH_CACHE',
+                }, function (e, data) {
+                    called = false;
+                    UI.alert(data ? Messages.admin_flushCacheDone || 'done' : 'error' + e);
+                });
+            });
+            cb(button);
         });
+
+        var getPrettySize = UIElements.prettySize;
+
+        sidebar.addItem('defaultlimit', function (cb) {
+
+            var _limit = APP.instanceStatus.defaultStorageLimit;
+            var _limitMB = Util.bytesToMegabytes(_limit);
+            var limit = getPrettySize(_limit);
+
+            // create input
+            var newLimit = blocks.input({
+                type: 'number',
+                min: 0,
+                value: _limitMB,
+                'aria-labelledby': 'cp-admin-defaultlimit'
+            });
+            // create button
+            var button = blocks.button('primary', '', Messages.admin_setlimitButton);
+            var nav = blocks.nav([button]);
+            // create current value text
+            var text = blocks.text(Messages._getKey('admin_limit', [limit]));
+
+            // add these items in a form
+            var form = blocks.form([
+                text,
+                newLimit
+            ], nav);
+
+            // Add button handler
+            UI.confirmButton(button, {
+                classes: 'btn-primary',
+                multiple: true,
+                validate: function () {
+                    var l = parseInt($(newLimit).val());
+                    if (isNaN(l)) { return false; }
+                    return true;
+                }
+            }, function () {
+                var lMB = parseInt($(newLimit).val()); // Megabytes
+                var l = lMB * 1024 * 1024; // Bytes
+                var data = [l];
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['UPDATE_DEFAULT_STORAGE', data]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        return void console.error(e, response);
+                    }
+                    var limit = getPrettySize(l);
+                    $(text).text(Messages._getKey('admin_limit', [limit]));
+                });
+            });
+
+            cb(form);
+        });
+
 
         sidebar.makeLeftside(categories);
     };
 
+
+    var updateStatus = APP.updateStatus = function (cb) {
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'INSTANCE_STATUS',
+        }, function (e, data) {
+            if (e) { console.error(e); return void cb(e); }
+            if (!Array.isArray(data)) { return void cb('EINVAL'); }
+            APP.instanceStatus = data[0];
+            console.log("Status", APP.instanceStatus);
+            cb();
+        });
+    };
 
     var createToolbar = function () {
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
@@ -97,11 +168,11 @@ define([
     }).nThen(function(waitFor) {
         APP.$container = $('#cp-sidebarlayout-container');
         APP.$toolbar = $('#cp-toolbar');
-        sframeChan = common.getSframeChannel();
-        sframeChan.onReady(waitFor());
+        sFrameChan = common.getSframeChannel();
+        sFrameChan.onReady(waitFor());
     }).nThen(function (waitFor) {
         if (!common.isAdmin()) { return; }
-        //updateStatus(waitFor()); // TODO re-add this
+        updateStatus(waitFor());
     }).nThen(function( /*waitFor*/ ) {
         metadataMgr = common.getMetadataMgr();
         privateData = metadataMgr.getPrivateData();
