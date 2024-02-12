@@ -26,6 +26,7 @@ define([
     '/common/outer/worker-channel.js',
     '/common/outer/x2t.js',
 
+    '/common/onlyoffice/oo-api.js',
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -53,7 +54,8 @@ define([
     EmptyDoc,
     EmptySlide,
     Channel,
-    X2T)
+    X2T,
+    OOApi)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -2116,7 +2118,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }, void 0, common.getCache());
             };
 
-            APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
+			console.log(OOApi);
+            APP.docEditor = new OOApi.OnlyOfficeEditor("cp-app-oo-placeholder-a", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
         };
