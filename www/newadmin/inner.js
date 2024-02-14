@@ -48,20 +48,129 @@ define([
             'general': {
                 icon: 'fa fa-user-o',
                 content: [
-                    'flush-cache'
+                    'flush-cache',
+                    'update-limit',
+                    'enableembeds',
+                    'forcemfa',
+                    'email',
+
+                    'instance-info-notice',
+
+                    'name',
+                    'description',
+                    'jurisdiction',
+                    'notice',
+                ]
+            },
+            'users' : {
+                icon : 'fa fa-address-card-o',
+                content : [
+                'registration',
+                'invitation',
+                'users'
                 ]
             },
             'quota': {
                 icon: 'fa fa-hdd-o',
                 content: [
-                    'defaultlimit'
+                    'defaultlimit',
+                    'setlimit',
+                    'getlimits',
                 ]
             },
+            'database' : {
+                icon : 'fa fa-database',
+                content : [
+                    'account-metadata',
+                    'document-metadata',
+                    'block-metadata',
+                    'totp-recovery',
+
+                ]
+            },
+            'stats' : {
+                icon : 'fa fa-line-chart',
+                content : [
+                    'refresh-stats',
+                    'uptime',
+                    'active-sessions',
+                    'active-pads',
+                    'open-files',
+                    'registered',
+                    'disk-usage',
+                ]
+            },
+            'support' : {
+                icon : 'fa fa-life-ring',
+                content : [
+                    'support-list',
+                    'support-init',
+                    'support-priv',
+                ]
+            },
+            'broadcast' : {
+                icon: 'fa fa-bullhorn',
+                content : [
+                    'maintenance',
+                    'survey',
+                    'broadcast',
+                ]
+            },
+            'performance' : {
+                icon : 'fa fa-heartbeat',
+                content : [
+                    'refresh-performance',
+                    'performance-profiling',
+                    'enable-disk-measurements',
+                    'bytes-written',
+                ]
+            },
+            'network' : {
+                icon : 'fa fa-sitemap',
+                content : [
+                    'update-available',
+                    'checkup',
+                    'block-daily-check',
+                    'provide-aggregate-statistics',
+                    'list-my-instance',
+
+                    'consent-to-contact',
+                    'remove-donate-button',
+                    'instance-purpose',
+                ]
+            }
         };
 
         const blocks = sidebar.blocks;
+        var makeAdminCheckbox = function (sidebar, data) {
+            return function () { 
+                var state = data.getState();
+                var key = data.key;
+              
+                sidebar.addItem(key, function (cb) {
+                    var labelKey = 'admin_' + keyToCamlCase(key) + 'Label';
+                    var titleKey = 'admin_' + keyToCamlCase(key) + 'Title';
+                    var label = Messages[labelKey] || Messages[titleKey];
+                    var box = blocks.checkbox(key, label, state, { spinner: true });
+                    var $cbox = $(box);
+                    var spinner = box.spinner;
+                    var $checkbox = $cbox.find('input').on('change', function() {
+                        spinner.spin();
+                        var val = $checkbox.is(':checked') || false;
+                        $checkbox.attr('disabled', 'disabled');
+                        data.query(val, function (state) {
+                            spinner.done();
+                            $checkbox[0].checked = state;
+                            $checkbox.removeAttr('disabled');
+                        });  
+                    });  
+                    cb(box);
+                });
+            };
+        }; 
+        //general blocks
         sidebar.addItem('flush-cache', function (cb) {
-            var button = blocks.button('primary', 'fa-ban', Messages.admin_flushCacheButton);
+            var button = blocks.button('primary', '', Messages.admin_flushCacheButton);
             var called = false;
             Util.onClickEnter($(button), function () {
                 if (called) { return; }
@@ -76,8 +185,26 @@ define([
             cb(button);
         });
 
-        var getPrettySize = UIElements.prettySize;
+        sidebar.addItem('update-limit', function (cb) {
+            var button = blocks.button('primary', '',  Messages.admin_updateLimitButton);
+            var called = false;
+            Util.onClickEnter($(button), function () {
+                if (called) { return; }
+                called = true;
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'Q_UPDATE_LIMIT',
+                }, function (e, data) {
+                    called = false;
+                    UI.alert(data ? Messages.admin_updateLimitDone  || 'done' : 'error' + e);
+                });
+            });
+            cb(button);
+        });
 
+    create['enableembeds'] = makeAdminCheckbox(sidebar, data);
+        var getPrettySize = UIElements.prettySize;
+        //user blocks
+        //storage blocks
         sidebar.addItem('defaultlimit', function (cb) {
 
             var _limit = APP.instanceStatus.defaultStorageLimit;
@@ -96,7 +223,6 @@ define([
             var nav = blocks.nav([button]);
             // create current value text
             var text = blocks.text(Messages._getKey('admin_limit', [limit]));
-
             // add these items in a form
             var form = blocks.form([
                 text,

@@ -63,7 +63,16 @@ define([
         blocks.text = (value) => {
             return h('span', value);
         };
-
+        blocks.checkbox = (key, label, state, opts) => {
+            var box = UI.createCheckbox(`cp-${app}-${key}`, 
+                label,
+                state, { label: { class: 'noTitle' } });
+            if (opts && opts.spinner) {
+                box.spinner = UI.makeSpinner($(box));
+            }
+            return box;          
+        };
+        
 
         sidebar.addItem = (key, get) => {
             const safeKey = key.replace(/-([a-z])/g, function(g) { return g[1].toUpperCase(); });
