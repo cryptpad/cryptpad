@@ -2933,7 +2933,7 @@ Example
             var button = h('button.btn.btn-primary', Messages.admin_supportNewInit);
             var $button = $(button).appendTo($div);
             var delButton = h('button.btn.btn-danger', Messages.admin_supportNewDelete);
-            var $delButton = $(delButton).appendTo($div).hide();;
+            var $delButton = $(delButton).appendTo($div).hide();
             var spinner = UI.makeSpinner($div);
 
             var setState = function () {
@@ -2953,6 +2953,10 @@ Example
                 ]);
             };
             setState();
+
+            // XXX TODO add/remove access
+            // XXX when removing access, send new private keys to everybody who should keep access AND move chainpad doc to the new one
+            //     ==> we'll need to delete the old chainpad doc using admin commands
 
             Util.onClickEnter($delButton, function () {
                 UI.confirm(Messages.admin_supportNewConfirm, function (yes) {

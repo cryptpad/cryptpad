@@ -1624,7 +1624,7 @@ define([
             var channel = Hash.getChannelIdFromKey(pub);
             var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
             var key = isNewSupport ? 'support2' : 'supportadmin';
-            var box = mailboxes['supportadmin'] = {
+            var box = mailboxes[key] = {
                 channel: channel,
                 viewed: [],
                 lastKnownHash: '',
@@ -2829,7 +2829,6 @@ define([
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
                 loadUniversal(Cursor, 'cursor', waitFor);
-                loadUniversal(Support, 'support', waitFor);
                 loadUniversal(Integration, 'integration', waitFor);
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
@@ -2937,6 +2936,7 @@ define([
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
 
+                loadUniversal(Support, 'support');
                 loadMailbox();
 
                 onReadyEvt.fire();
@@ -3033,6 +3033,12 @@ define([
                 if (!rt.proxy.form_seed && data.form_seed) {
                     rt.proxy.form_seed = data.form_seed;
                 }
+
+                if (rt.proxy.edPublic && Array.isArray(ApiConfig.adminKeys) &&
+                    ApiConfig.adminKeys.indexOf(rt.proxy.edPublic) !== -1) {
+                    store.isAdmin = true;
+                }
+
                 /*
                 // deprecating localStorage migration as of 4.2.0
                 var drive = rt.proxy.drive;
@@ -3048,11 +3054,6 @@ define([
                     return void onCacheReadyEvt.reg(function () {
                         onReady(clientId, returned, cb);
                     });
-                }
-
-                if (rt.proxy.edPublic && Array.isArray(ApiConfig.adminKeys) &&
-                    ApiConfig.adminKeys.indexOf(rt.proxy.edPublic) !== -1) {
-                    store.isAdmin = true;
                 }
 
                 onReady(clientId, returned, cb);

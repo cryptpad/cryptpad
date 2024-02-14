@@ -155,6 +155,8 @@ define([
     create['listnew'] = function () {
         var key = 'listnew';
         var $div = makeBlock(key); // Msg.support_listHint, .support_listTitle
+        var list = h('div.cp-support-container');
+        var $list = $(list);
         let refresh = function () {
             APP.supportModule.execCommand('GET_MY_TICKETS', {}, function (obj) {
                 console.error(obj);
@@ -162,6 +164,22 @@ define([
                     console.error(obj.error);
                     return void UI.warn(Messages.error);
                 }
+                if (!Array.isArray(obj.tickets)) { return void UI.warn(Messages.error); }
+                $list.empty();
+                obj.tickets.forEach((data) => {
+                    var title = data.title;
+                    var time = data.time;
+                    var messages = data.messages;
+                    var first = messages[0];
+                    first.id = data.id;
+                    var $ticket = APP.support.makeTicket($list, first, function () {
+                        // XXX delete
+                        console.log('ON DELETE');
+                    });
+                    messages.forEach(msg => {
+                        $ticket.append(APP.support.makeMessage(msg));
+                    });
+                });
             });
 
         };
@@ -170,7 +188,8 @@ define([
             refresh();
         });
         $div.append([
-            button
+            button,
+            list
         ]);
         return $div;
     };

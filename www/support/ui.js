@@ -141,7 +141,7 @@ define([
         });
     };
     var sendForm = function (ctx, id, form, dest) {
-        send(ctx, id, 'TICKET', getFormData(ctx, form), dest, isNew);
+        send(ctx, id, 'TICKET', getFormData(ctx, form), dest);
         return true;
     };
 

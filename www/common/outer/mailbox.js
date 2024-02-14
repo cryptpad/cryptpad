@@ -20,6 +20,7 @@ define([
         'notifications',
         'supportadmin',
         'support',
+        'support2',
         'broadcast'
     ];
     var BLOCKING_TYPES = [

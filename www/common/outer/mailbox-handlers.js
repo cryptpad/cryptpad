@@ -841,6 +841,21 @@ define([
         delete sfDeleted[id];
     };
 
+    // New support
+    handlers['NEW_TICKET'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        var i = 0;
+        var handle = function () {
+            var support = Util.find(ctx, ['store', 'modules', 'support']);
+            if (!support && i++ < 100) { setTimeout(handle, 600); }
+            if (!support) { return; }
+            support.addAdminTicket(content, cb);
+        };
+        handle();
+        console.warn(msg, content);
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**
