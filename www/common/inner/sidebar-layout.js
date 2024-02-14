@@ -64,18 +64,21 @@ define([
             return h('span', value);
         };
         blocks.checkbox = (key, label, state, opts) => {
-            var box = UI.createCheckbox(`cp-${app}-${key}`, 
+            var box = UI.createCheckbox(`cp-${app}-${key}`,
                 label,
                 state, { label: { class: 'noTitle' } });
             if (opts && opts.spinner) {
                 box.spinner = UI.makeSpinner($(box));
             }
-            return box;          
+            return box;
         };
-        
 
+
+        const keyToCamlCase = (key) => {
+            return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+        };
         sidebar.addItem = (key, get) => {
-            const safeKey = key.replace(/-([a-z])/g, function(g) { return g[1].toUpperCase(); });
+            const safeKey = keyToCamlCase(key);
             get((content, config) => {
                 config = config || {};
                 const title = h('label.cp-item-label',
@@ -93,6 +96,32 @@ define([
                 ]);
                 items[key] = div;
                 $rightside.append(div);
+            });
+        };
+
+        sidebar.addCheckboxItem = (data) => {
+            const state = data.getState();
+            const key = data.key;
+            const safeKey = keyToCamlCase(key);
+
+            sidebar.addItem(key, function (cb) {
+                var labelKey = `${app}_${safeKey}Label`;
+                var titleKey = `${app}_${safeKey}Title`;
+                var label = Messages[labelKey] || Messages[titleKey];
+                var box = sidebar.blocks.checkbox(key, label, state, { spinner: true });
+                var $cbox = $(box);
+                var spinner = box.spinner;
+                var $checkbox = $cbox.find('input').on('change', function() {
+                    spinner.spin();
+                    var val = $checkbox.is(':checked') || false;
+                    $checkbox.attr('disabled', 'disabled');
+                    data.query(val, function (state) {
+                        spinner.done();
+                        $checkbox[0].checked = state;
+                        $checkbox.removeAttr('disabled');
+                    });
+                });
+                cb(box);
             });
         };
 

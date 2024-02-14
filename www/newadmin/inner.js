@@ -42,6 +42,22 @@ define([
     var privateData;
     var sFrameChan;
 
+    var flushCacheNotice = function () {
+        var notice = UIElements.setHTML(h('p'), Messages.admin_reviewCheckupNotice);
+        $(notice).find('a').attr({
+            href: new URL('/checkup/', ApiConfig.httpUnsafeOrigin).href,
+        }).click(function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            common.openURL('/checkup/');
+        });
+        var content = h('span', [
+            UIElements.setHTML(h('p'), Messages.admin_cacheEvictionRequired),
+            notice,
+        ]);
+        UI.alert(content);
+    };
+
     var andThen = function (common, $container) {
         const sidebar = Sidebar.create(common, 'admin', $container);
         var categories = {
@@ -258,6 +274,27 @@ define([
             cb(form);
         });
 
+        sidebar.addCheckboxItem({
+            key: 'enableembeds',
+            getState: function () {
+                return APP.instanceStatus.enableEmbedding;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['ENABLE_EMBEDDING', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.enableEmbedding);
+                        flushCacheNotice();
+                    });
+                });
+            },
+        });
 
         sidebar.makeLeftside(categories);
     };
