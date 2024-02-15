@@ -14,35 +14,53 @@ define([
 ], function (Util, Hash, Realtime, nThen, Crypto, Listmap, ChainPad, CpNetflux) {
     var Support = {};
 
-    var getKeys = function (ctx, cb) {
+    // UTILS
+
+    var getKeys = function (ctx, isAdmin, data, _cb) {
+        var cb = Util.mkAsync(_cb);
+        if (isAdmin && !ctx.adminRdyEvt) { return void cb('EFORBIDDEN'); }
         require(['/api/config?' + (+new Date())], function (NewConfig) {
             var supportKey = NewConfig.newSupportMailbox;
             if (!supportKey) { return void cb('E_NOT_INIT'); }
-            var myCurve = ctx.store.proxy.curvePrivate;
+
+            // If admin, check key
+            if (isAdmin && Util.find(ctx.store.proxy, [
+                'mailboxes', 'support2', 'keys', 'curvePublic']) !== supportKey) {
+                return void cb('EFORBIDDEN');
+            }
+
+            if (isAdmin) {
+                return ctx.adminRdyEvt.reg(() => {
+                    cb(null, {
+                        myCurve: data.adminCurvePrivate || Util.find(ctx.store.proxy, [
+                                    'mailboxes', 'support2', 'keys', 'curvePrivate']),
+                        theirPublic: data.curvePublic
+                    });
+                });
+            }
+
             cb(null, {
-                supportKey,
-                myCurve
+                theirPublic: supportKey,
+                myCurve: ctx.store.proxy.curvePrivate
             });
         });
     };
 
-    // Get the content of a mailbox and close it
-    // Used for support tickets
-    var getContent = function (ctx, data, _cb) {
+    // Get the content of a ticket mailbox and close it
+    var getContent = function (ctx, data, isAdmin, _cb) {
         var cb = Util.once(Util.both(close, Util.mkAsync(_cb)));
-        var supportKey, myCurve;
+        var theirPublic, myCurve;
         nThen((waitFor) => {
-            // Send ticket to the admins and call back
-            getKeys(ctx, waitFor((err, obj) => {
+            getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
                 if (err) {
                     waitFor.abort();
                     return void cb({error: err});
                 }
-                supportKey = obj.supportKey;
+                theirPublic = obj.theirPublic;
                 myCurve = obj.myCurve;
             }));
         }).nThen((waitFor) => {
-            var keys = Crypto.Curve.deriveKeys(supportKey, myCurve);
+            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve);
             var crypto = Crypto.Curve.createEncryptor(keys);
             var cfg = {
                 network: ctx.store.network,
@@ -65,8 +83,8 @@ define([
                 } catch (e) {
                     console.error(e);
                 }
+                msg.time = time;
                 if (author) { msg.author = author; }
-                console.log(msg);
                 all.push(msg);
             };
             cfg.onError = cb;
@@ -76,107 +94,6 @@ define([
             };
             cpNf = CpNetflux.start(cfg);
         });
-    };
-
-    var loadAdminDoc = function (ctx, hash, cb) {
-        var secret = Hash.getSecrets('support', hash);
-        var listmapConfig = {
-            data: {},
-            channel: secret.channel,
-            crypto: Crypto.createEncryptor(secret.keys),
-            userName: 'support',
-            ChainPad: ChainPad,
-            classic: true,
-            network: ctx.store.network,
-            //Cache: Cache, // XXX XXX XXX
-            metadata: {
-                validateKey: secret.keys.validateKey || undefined,
-            },
-        };
-        var rt = ctx.adminDoc = Listmap.create(listmapConfig);
-        // XXX on change, tell current user that support has changed?
-        rt.onReady = Util.mkEvent(true);
-        rt.proxy.on('ready', function () {
-            var doc = rt.proxy;
-            doc.tickets = doc.tickets || {};
-            doc.tickets.active = doc.tickets.active || {};
-            doc.tickets.closed = doc.tickets.closed || {};
-            rt.onReady.fire();
-            cb();
-        });
-    };
-
-/*
-
-{
-    tickets: {
-        active: {},
-        closed: {}
-    }
-}
-
-*/
-
-    var addAdminTicket = function (ctx, data, cb) {
-        console.error(data);
-        if (!ctx.adminDoc) {
-            if (ctx.admin) {
-                return void setTimeout(() => { addAdminTicket(ctx, data, cb); }, 200);
-            }
-            // XXX You have an admin mailbox but wrong keys ==> delete the mailbox?
-            return void cb(false);
-        }
-        // Wait for the chainpad to be ready before adding the data
-        ctx.adminDoc.onReady.reg(() => {
-            // random timeout to avoid duplication wiht multiple admins
-            var rdmTo = Math.floor(Math.random() * 2000); // Between 0 and 2000ms
-            console.warn(rdmTo);
-            setTimeout(() => {
-                var doc = ctx.adminDoc.proxy;
-                console.warn(data.channel, doc.tickets.active);
-                if (doc.tickets.active[data.channel] || doc.tickets.closed[data.channel]) {
-                    console.warn('already there');
-                    return void cb(true); }
-                doc.tickets.active[data.channel] = {
-                    title: data.title,
-                    author: data.user && data.user.curvePublic
-                };
-                Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
-                    console.warn('synced');
-                    cb(true);
-                });
-            });
-        });
-    };
-    var initializeSupportAdmin = function (ctx) {
-        let proxy = ctx.store.proxy;
-        let supportKey = Util.find(proxy, ['mailboxes', 'support2', 'keys', 'curvePublic']);
-        let privateKey = Util.find(proxy, ['mailboxes', 'support2', 'keys', 'curvePrivate']);
-        nThen((waitFor) => {
-            getKeys(ctx, waitFor((err, obj) => {
-                if (err) { return void waitFor.abort(); }
-                if (obj.supportKey !== supportKey) {
-                    // Deprecated support key: no longer an admin!
-                    ctx.admin = false;
-                    // XXX delete the mailbox?
-                    return void waitFor.abort();
-                }
-            }));
-        }).nThen((waitFor) => {
-            ctx.admin = true;
-            let seed = privateKey.slice(0,24); // XXX better way to get seed?
-            let hash = Hash.getEditHashFromKeys({
-                version: 2,
-                type: 'support',
-                keys: {
-                    editKeyStr: seed
-                }
-            });
-            loadAdminDoc(ctx, hash, waitFor());
-        }).nThen(() => {
-            console.log(ctx.store.mailbox)
-        });
-
     };
 
     var makeTicket = function (ctx, data, cId, cb) {
@@ -191,12 +108,12 @@ define([
         var supportKey, myCurve;
         nThen((waitFor) => {
             // Send ticket to the admins and call back
-            getKeys(ctx, waitFor((err, obj) => {
+            getKeys(ctx, false, data, waitFor((err, obj) => {
                 if (err) {
                     waitFor.abort();
                     return void cb({error: err});
                 }
-                supportKey = obj.supportKey;
+                supportKey = obj.theirPublic;
                 myCurve = obj.myCurve;
             }));
         }).nThen((waitFor) => {
@@ -216,7 +133,6 @@ define([
             }));
         }).nThen((waitFor) => {
             // Store in our worker
-            console.error(channel);
             ctx.supportData[channel] = {
                 time: +new Date(),
                 title: title,
@@ -225,10 +141,10 @@ define([
             ctx.Store.onSync(null, waitFor());
         }).nThen(() => {
             var supportChannel = Hash.getChannelIdFromKey(supportKey);
-            console.error(supportChannel);
             mailbox.sendTo('NEW_TICKET', {
                 title: title,
-                channel: channel
+                channel: channel,
+                premium: Util.find(ctx, ['store', 'account', 'plan'])
             }, {
                 channel: supportChannel,
                 curvePublic: supportKey
@@ -240,6 +156,41 @@ define([
         });
     };
 
+    var replyTicket = function (ctx, data, isAdmin, cb) {
+        var mailbox = Util.find(ctx, [ 'store', 'mailbox' ]);
+        var anonRpc = Util.find(ctx, [ 'store', 'anon_rpc' ]);
+        if (!mailbox) { return void cb('E_NOT_READY'); }
+        if (!anonRpc) { return void cb("anonymous rpc session not ready"); }
+        var theirPublic, myCurve;
+        nThen((waitFor) => {
+            getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({error: err});
+                }
+                theirPublic = obj.theirPublic;
+                myCurve = obj.myCurve;
+            }));
+        }).nThen(() => {
+            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve);
+            var crypto = Crypto.Curve.createEncryptor(keys);
+            var text = JSON.stringify(data.ticket);
+            var ciphertext = crypto.encrypt(text);
+            anonRpc.send("WRITE_PRIVATE_MESSAGE", [
+                data.channel,
+                ciphertext
+            ], (err) => {
+                if (err) {
+                    waitFor.abort();
+                    return void cb(err);
+                }
+                cb();
+            });
+        });
+    };
+
+    // USER COMMANDS
+
     var getMyTickets = function (ctx, data, cId, cb) {
         var all = [];
         var n = nThen;
@@ -248,7 +199,7 @@ define([
                 var t = Util.clone(ctx.supportData[ticket]);
                 getContent(ctx, {
                     channel: ticket,
-                }, waitFor((err, messages) => {
+                }, false, waitFor((err, messages) => {
                     if (err) { t.error = err; }
                     else { t.messages = messages; }
                     t.id = ticket;
@@ -260,6 +211,135 @@ define([
             cb({tickets: all});
         });
     };
+
+    // ADMIN COMMANDS
+
+    var listTicketsAdmin = function (ctx, data, cId, cb) {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        ctx.adminRdyEvt.reg(() => {
+            var doc = ctx.adminDoc.proxy;
+            cb(Util.clone(doc.tickets.active));
+        });
+    };
+
+    var loadTicketAdmin = function (ctx, data, cId, cb) {
+        getContent(ctx, data, true, function (err, res) {
+            if (err) { return void cb({error: err}); }
+            ctx.adminRdyEvt.reg(() => {
+                var doc = ctx.adminDoc.proxy;
+                if (Array.isArray(res) && res.length) {
+                    res.sort((t1, t2) => { return t1.time - t2.time; });
+                    let last = res[res.length - 1];
+                    var entry = doc.tickets.active[data.channel];
+                    if (entry) { entry.time = last.time; }
+                }
+                cb(res);
+            });
+        });
+    };
+
+    var replyTicketAdmin = function (ctx, data, cId, cb) {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        replyTicket(ctx, data, true, (err) => {
+            if (err) { return void cb({error: err}); }
+            ctx.adminRdyEvt.reg(() => {
+                var doc = ctx.adminDoc.proxy;
+                var entry = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
+                entry.time = +new Date();
+                entry.lastAdmin = true;
+            });
+            cb({sent: true});
+        });
+    };
+
+    var addAdminTicket = function (ctx, data, cb) {
+        // Wait for the chainpad to be ready before adding the data
+        if (!ctx.adminRdyEvt) { return void cb(false); } // XXX not an admin, delete mailbox?
+
+        ctx.adminRdyEvt.reg(() => {
+            // random timeout to avoid duplication wiht multiple admins
+            var rdmTo = Math.floor(Math.random() * 2000); // Between 0 and 2000ms
+            setTimeout(() => {
+                var doc = ctx.adminDoc.proxy;
+                if (doc.tickets.active[data.channel] || doc.tickets.closed[data.channel]) {
+                    return void cb(true); }
+                doc.tickets.active[data.channel] = {
+                    title: data.title,
+                    premium: data.premium,
+                    time: data.time,
+                    author: data.user && data.user.displayName,
+                    authorKey: data.user && data.user.curvePublic
+                };
+                Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
+                    console.warn('synced');
+                    cb(true);
+                });
+            });
+        });
+    };
+
+    // INITIALIZE ADMIN
+
+    var loadAdminDoc = function (ctx, hash, cb) {
+        var secret = Hash.getSecrets('support', hash);
+        var listmapConfig = {
+            data: {},
+            channel: secret.channel,
+            crypto: Crypto.createEncryptor(secret.keys),
+            userName: 'support',
+            ChainPad: ChainPad,
+            classic: true,
+            network: ctx.store.network,
+            //Cache: Cache, // XXX XXX XXX
+            metadata: {
+                validateKey: secret.keys.validateKey || undefined,
+            },
+        };
+        var rt = ctx.adminDoc = Listmap.create(listmapConfig);
+        // XXX on change, tell current user that support has changed?
+        rt.proxy.on('ready', function () {
+            var doc = rt.proxy;
+            doc.tickets = doc.tickets || {};
+            doc.tickets.active = doc.tickets.active || {};
+            doc.tickets.closed = doc.tickets.closed || {};
+            ctx.adminRdyEvt.fire();
+            cb();
+        });
+    };
+
+
+    var initializeSupportAdmin = function (ctx, waitFor) {
+        let unlock = waitFor();
+        let proxy = ctx.store.proxy;
+        let supportKey = Util.find(proxy, ['mailboxes', 'support2', 'keys', 'curvePublic']);
+        let privateKey = Util.find(proxy, ['mailboxes', 'support2', 'keys', 'curvePrivate']);
+        ctx.adminRdyEvt = Util.mkEvent(true);
+        nThen((waitFor) => {
+            getKeys(ctx, false, {}, waitFor((err, obj) => {
+                setTimeout(unlock); // Unlock loading process
+                if (err) { return void waitFor.abort(); }
+                if (obj.theirPublic !== supportKey) {
+                    // Deprecated support key: no longer an admin!
+                    // XXX delete the mailbox?
+                    return void waitFor.abort();
+                }
+            }));
+        }).nThen((waitFor) => {
+            let seed = privateKey.slice(0,24); // XXX better way to get seed?
+            let hash = Hash.getEditHashFromKeys({
+                version: 2,
+                type: 'support',
+                keys: {
+                    editKeyStr: seed
+                }
+            });
+            loadAdminDoc(ctx, hash, waitFor());
+        }).nThen(() => {
+            console.log('Support admin loaded')
+        });
+
+    };
+
 
     Support.init = function (cfg, waitFor, emit) {
         var support = {};
@@ -282,8 +362,7 @@ define([
         };
 
         if (Util.find(store, ['proxy', 'mailboxes', 'support2'])) {
-            initializeSupportAdmin(ctx);
-
+            initializeSupportAdmin(ctx, waitFor);
         }
 
         support.ctx = ctx;
@@ -301,6 +380,15 @@ define([
             var data = obj.data;
             if (cmd === 'MAKE_TICKET') {
                 return void makeTicket(ctx, data, clientId, cb);
+            }
+            if (cmd === 'LIST_TICKETS_ADMIN') {
+                return void listTicketsAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'LOAD_TICKET_ADMIN') {
+                return void loadTicketAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'REPLY_TICKET_ADMIN') {
+                return void replyTicketAdmin(ctx, data, clientId, cb);
             }
             if (cmd === 'GET_MY_TICKETS') {
                 return void getMyTickets(ctx, data, clientId, cb);

@@ -374,7 +374,8 @@ proxy.mailboxes = {
                 // Message should be displayed
                 var message = {
                     msg: msg,
-                    hash: hash
+                    hash: hash,
+                    time: time
                 };
                 var notify = box.ready;
                 Handlers.add(ctx, box, message, function (dismissed, toDismiss, invalid) {

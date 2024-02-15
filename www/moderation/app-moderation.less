@@ -26,17 +26,30 @@
     display: flex;
     flex-flow: column;
 
-    .cp-sidebarlayout-element {
-        label:not(.cp-admin-label) {
-            font-weight: normal !important;
-        }
-        input {
-            max-width: 25rem;
-        }
-        nav {
-            display: flex;
-            margin-top: 0.5rem;
+    background: @cp_sidebar-right-bg;
+    color: @cp_sidebar-right-fg;
+
+    #cp-content-container {
+        overflow: auto;
+    }
+    .cp-support-container {
+        display: flex;
+        flex-wrap: wrap;
+        .cp-support-column {
+            min-width: 700px;
+            flex: 1 0 50%;
+            h1 {
+                display: flex;
+                align-items: center;
+                button {
+                    margin-left: 50px !important;
+                }
+            }
+            .cp-support-count {
+                margin-left: 10px;
+            }
         }
     }
+
 }
 

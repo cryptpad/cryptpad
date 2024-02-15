@@ -308,7 +308,7 @@ define([
             });
         };
 
-        var account = {};
+        var account = store.account = {};
 
         Store.getPinnedUsage = function (clientId, data, cb) {
             var s = getStore(data && data.teamId);
@@ -2837,6 +2837,7 @@ define([
                 loadUniversal(Calendar, 'calendar', waitFor);
                 if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(History, 'history', waitFor);
+                loadUniversal(Support, 'support', waitFor);
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -2936,7 +2937,6 @@ define([
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
 
-                loadUniversal(Support, 'support');
                 loadMailbox();
 
                 onReadyEvt.fire();

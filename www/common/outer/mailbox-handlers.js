@@ -845,7 +845,9 @@ define([
     handlers['NEW_TICKET'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
+        content.time = data.time;
         var i = 0;
+        console.error(msg);
         var handle = function () {
             var support = Util.find(ctx, ['store', 'modules', 'support']);
             if (!support && i++ < 100) { setTimeout(handle, 600); }

@@ -516,6 +516,66 @@ define([
         ]);
     };
 
+    var makeTicketAdmin = function (ctx, id, content, onShow, onClose, onReply) {
+        var show = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
+
+        var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
+        var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
+        var actions = h('div.cp-support-list-actions', [ answer, close ]);
+
+        var isPremium = content.premium ? '.cp-support-premium' : '';
+        var name = Util.fixHTML(content.author) || Messages.anonymous;
+        var ticket = h('div.cp-support-list-ticket.cp-not-loaded'+isPremium, {
+            'data-id': id
+        }, [
+            h('div.cp-support-ticket-header', [
+                h('span', content.title),
+                UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
+                h('span', new Date(content.time).toLocaleString()),
+                h('span', show),
+            ]),
+            actions
+        ]);
+
+        // Add button handlers
+
+        UI.confirmButton(close, {
+            classes: 'btn-danger'
+        }, function() {
+            $(close).remove();
+            onClose(ticket, id, content);
+        });
+
+        var $ticket = $(ticket);
+        $(answer).click(function () {
+            $ticket.find('.cp-support-form-container').remove();
+            $(actions).hide();
+            var form = makeForm(ctx, function () {
+                console.error(form);
+                onReply(ticket, id, content, form, function () {
+                    $(actions).css('display', '');
+                    $(form).remove();
+                });
+                /*
+                var sent = sendForm(ctx, content.id, form, content.sender);
+                if (sent) {
+                    $(actions).css('display', '');
+                    $(form).remove();
+                }
+                */
+            }, content.title, true);
+            $ticket.append(form);
+        });
+
+        var $show = $(show);
+        Util.onClickEnter($show, function () {
+            $ticket.removeClass('cp-not-loaded');
+            $show.remove();
+            onShow(ticket, id, content);
+        });
+        return ticket;
+    };
+
     var create = function (common, isAdmin, pinUsage, teamsUsage) {
         var ui = {};
         var ctx = {
@@ -550,6 +610,9 @@ define([
         };
         ui.makeTicket = function ($div, content, onHide) {
             return makeTicket(ctx, $div, content, onHide);
+        };
+        ui.makeTicketAdmin = function (id, content, onShow, onClose, onReply) {
+            return makeTicketAdmin(ctx, id, content, onShow, onClose, onReply);
         };
         ui.makeMessage = function (content, hash) {
             return makeMessage(ctx, content, hash);

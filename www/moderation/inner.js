@@ -42,7 +42,7 @@ define([
     Keys,
     Support,
     Clipboard,
-    Sortify,
+    Sortify
     )
 {
     var APP = {
@@ -53,11 +53,84 @@ define([
     var common;
     var sFrameChan;
 
-// XXX
-
     var andThen = function () {
+        var $body = $('#cp-content-container');
+        var $container = $(h('div.cp-support-container')).appendTo($body);
 
 
+        var refresh = () => {
+            APP.module.execCommand('LIST_TICKETS_ADMIN', {}, (tickets) => {
+                $container.empty();
+                var col1 = h('div.cp-support-column', h('h1', [
+                    h('span', Messages.admin_support_premium),
+                    h('span.cp-support-count'),
+                ]));
+                var col2 = h('div.cp-support-column', h('h1', [
+                    h('span', Messages.admin_support_normal),
+                    h('span.cp-support-count'),
+                ]));
+                var col3 = h('div.cp-support-column', h('h1', [
+                    h('span', Messages.admin_support_answered),
+                    h('span.cp-support-count'),
+                ]));
+                $container.append([col1, col2, col3]);
+                var sortTicket = function (c1, c2) {
+                    return tickets[c2].time - tickets[c1].time;
+                };
+
+                const onLoad = function (ticket, channel, data) {
+                    APP.module.execCommand('LOAD_TICKET_ADMIN', {
+                        channel: channel,
+                        curvePublic: data.authorKey
+                    }, function (obj) {
+                        if (!Array.isArray(obj)) {
+                            console.error(obj && obj.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        obj.forEach(function (msg) {
+                            $(ticket).append(APP.support.makeMessage(msg));
+                        });
+                    });
+                };
+                const onClose = function (ticket, channel, data) {
+                    APP.module.execCommand('CLOSE_TICKET_ADMIN', {
+                        channel: channel,
+                        curvePublic: data.authorKey
+                    }, function (obj) {
+                        // XXX TODO
+                    });
+                };
+                const onReply = function (ticket, channel, data, form, cb) {
+                    // XXX TODO
+                    var formData = APP.support.getFormData(form);
+                    APP.module.execCommand('REPLY_TICKET_ADMIN', {
+                        channel: channel,
+                        curvePublic: data.authorKey,
+                        ticket: formData
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj && obj.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        $(ticket).find('.cp-support-list-message').remove();
+                        refresh(); // XXX RE-open this ticket and scroll to?
+                    });
+                };
+
+
+                Object.keys(tickets).sort(sortTicket).forEach(function (channel) {
+                    var d = tickets[channel];
+                    var ticket = APP.support.makeTicketAdmin(channel, d, onLoad, onClose, onReply);
+                    var container;
+                    if (d.lastAdmin) { container = col3; }
+                    else if (d.premium) { container = col1; }
+                    else { container = col2; }
+                    $(container).append(ticket);
+                });
+                console.log(tickets);
+            });
+        };
+        refresh();
     };
 
     var createToolbar = function () {
@@ -81,8 +154,6 @@ define([
         APP.$toolbar = $('#cp-toolbar');
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
-    }).nThen(function (waitFor) {
-        if (!common.isAdmin()) { return; } // XXX moderator
     }).nThen(function (/*waitFor*/) {
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
@@ -96,8 +167,10 @@ define([
         APP.privateKey = privateData.supportPrivateKey;
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
+        APP.module = common.makeUniversal('support');
         APP.support = Support.create(common, true);
 
+        andThen();
         UI.removeLoadingScreen();
 
     });

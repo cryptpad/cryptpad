@@ -49,6 +49,16 @@
             max-width: 90%;
             margin: 5px auto;
             border-radius: @variables_radius;
+            .cp-support-ticket-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            &.cp-not-loaded {
+                .cp-support-list-actions {
+                    display: none;
+                }
+            }
             .cp-support-list-message {
                 background-color: @msg-bg;
                 padding: 5px 5px;
