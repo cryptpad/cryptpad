@@ -156,7 +156,6 @@ define([
                 ]
             }
         };
-
         const blocks = sidebar.blocks;
         var makeAdminCheckbox = function (sidebar, data) {
             return function () { 
@@ -216,8 +215,285 @@ define([
             });
             cb(button);
         });
+        //enableembedss
+        sidebar.addCheckboxItem({
+            key: 'enableembeds',
+            getState: function () {
+                return APP.instanceStatus.enableEmbedding;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['ENABLE_EMBEDDING', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.enableEmbedding);
+                        flushCacheNotice();
+                    });
+                });
+            },
+        });
 
-    create['enableembeds'] = makeAdminCheckbox(sidebar, data);
+        //2fa
+        sidebar.addCheckboxItem({
+            key: 'forcemfa',
+            getState: function () {
+                return APP.instanceStatus.enforceMFA;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['EENFORCE_MFA', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.enforceMFA);
+                        flushCacheNotice();
+                    });
+                });
+            },
+        });
+
+       
+        var getInstanceString = function (attr) {
+        var val = APP.instanceStatus[attr];
+        var type = typeof(val);
+        switch (type) {
+            case 'string': return val || '';
+            case 'object': return val.default || '';
+            default: return '';
+        }
+        };
+        //admin email
+        sidebar.addItem('email', function (cb) {
+            // create input
+            var input = blocks.input({
+                type: 'email',
+                value: ApiConfig.adminEmail || '',
+                'aria-labelledby': 'cp-admin-email'
+            });
+            var $input = $(input);
+            // create button
+            var button = blocks.button('primary', '',Messages.settings_save);
+            var $button = $(button);
+            var nav = blocks.nav([button]);
+            // create current value text
+    
+            // add these items in a form
+            var form = blocks.form([
+                input,
+            ], nav);
+            
+            var spinner = UI.makeSpinner($(form));//does not put the spinner in the right position
+            
+            Util.onClickEnter($(button), function () {
+                if (!$input.val()) { return; }
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_ADMIN_EMAIL', [$input.val()]]
+                }, function (e, response) {
+                    $button.removeAttr('disabled');
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        spinner.hide();
+                        return;
+                    }
+                    spinner.done();
+                    UI.log(Messages.saved);
+                });
+            });
+
+            cb(form);
+        });
+        //info notice
+        sidebar.addItem('instance-info-notice', function(cb){
+            var key = 'instance-info-notice';
+            var notice = blocks.alert( 'info', key, [Messages.admin_infoNotice1, ' ', Messages.admin_infoNotice2]);
+            cb(notice);
+        });
+        //instance name
+        sidebar.addItem('name', function(cb){
+             // create button
+             var button = blocks.button('primary', '',Messages.settings_save);
+             var $button = $(button);
+             var nav = blocks.nav([button]);
+
+             var inputName = blocks.input({
+                type: 'text',
+                value: getInstanceString('instanceName') || ApiConfig.httpUnsafeOrigin || '',
+                placeholder: ApiConfig.httpUnsafeOrigin,
+                'aria-labelledby': 'cp-admin-name'
+            });
+            var $input = $(inputName);
+
+            var form = blocks.form([
+                inputName,
+            ], nav);
+            
+            var spinner = UI.makeSpinner($(form));
+
+            Util.onClickEnter($(button), function () {
+                if (!$input.val()) { return; }
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_INSTANCE_NAME', [$input.val().trim()]]
+                }, function (e, response) {
+                    $button.removeAttr('disabled');
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        spinner.hide();
+                        return;
+                    }
+                    spinner.done();
+                    UI.log(Messages._getKey('ui_saved', [Messages.admin_nameTitle]));
+                });
+            });
+
+            cb(form);
+        });
+        //instance description
+        sidebar.addItem('description', function(cb){
+
+            var textarea = blocks.textArea('cp-admin-description-text', {
+                placeholder: Messages.home_host || '',
+                'aria-labelledby': 'cp-admin-description'
+            }, getInstanceString('instanceDescription'));
+            var $input = $(textarea);
+
+            var button = blocks.button('primary', '', Messages.settings_save);
+            var $button = $(button);
+            var nav = blocks.nav([button]);
+
+            var form = blocks.form([
+                textarea,
+            ], nav); 
+
+            var spinner = UI.makeSpinner($(form));
+
+            Util.onClickEnter($(button), function () {
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_INSTANCE_DESCRIPTION', [$input.val().trim()]]
+                }, function (e, response) {
+                    $button.removeAttr('disabled');
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        spinner.hide();
+                        return;
+                    }
+                    spinner.done();
+                    console.log("am salvat");
+                    UI.log(Messages._getKey('ui_saved', [Messages.admin_descriptionTitle]));
+                });
+            });
+            cb(form);
+        });
+
+        sidebar.addItem('jurisdiction', function (cb){
+
+            var button = blocks.button('primary', '', Messages.settings_save);
+            var $button = $(button);
+            var nav = blocks.nav([button]);
+
+            var input = blocks.input({
+                type: 'text',
+                value: getInstanceString('instanceJurisdiction'),
+                placeholder: Messages.owner_unknownUser || '',
+                'aria-labelledby': 'cp-admin-jurisdiction'
+            });
+            var $input = $(input);
+
+            var form = blocks.form([
+                input,
+            ], nav); 
+
+            var spinner = UI.makeSpinner($(form));
+
+            Util.onClickEnter($(button), function () {
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_INSTANCE_JURISDICTION', [$input.val().trim()]]
+                }, function (e, response) {
+                    $button.removeAttr('disabled');
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        spinner.hide();
+                        return;
+                    }
+                    spinner.done();
+                    console.log("am salvat");
+                    UI.log(Messages._getKey('ui_saved', [Messages.admin_jurisdictionTitle]));
+                });
+            });
+            cb(form);
+        });
+
+        sidebar.addItem('notice', function (cb){
+
+            var button = blocks.button('primary', '', Messages.settings_save);
+            var $button = $(button);
+            var nav = blocks.nav([button]);
+
+            var input = blocks.input({
+                type: 'text',
+                value: getInstanceString('instanceNotice'),
+                placeholder: '',
+                'aria-labelledby': 'cp-admin-notice'
+            });
+            var $input = $(input);
+
+            var form = blocks.form([
+                input,
+            ], nav); 
+
+            var spinner = UI.makeSpinner($(form));
+
+            Util.onClickEnter($(button), function () {
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_INSTANCE_NOTICE', [$input.val().trim()]]
+                }, function (e, response) {
+                    $button.removeAttr('disabled');
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        spinner.hide();
+                        return;
+                    }
+                    spinner.done();
+                    console.log("am salvat");
+                    UI.log(Messages._getKey('ui_saved', [Messages.admin_noticeTitle]));
+                });
+            });
+            cb(form);
+        });
+
         var getPrettySize = UIElements.prettySize;
         //user blocks
         //storage blocks
@@ -272,28 +548,6 @@ define([
             });
 
             cb(form);
-        });
-
-        sidebar.addCheckboxItem({
-            key: 'enableembeds',
-            getState: function () {
-                return APP.instanceStatus.enableEmbedding;
-            },
-            query: function (val, setState) {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'ADMIN_DECREE',
-                    data: ['ENABLE_EMBEDDING', [val]]
-                }, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                    }
-                    APP.updateStatus(function () {
-                        setState(APP.instanceStatus.enableEmbedding);
-                        flushCacheNotice();
-                    });
-                });
-            },
         });
 
         sidebar.makeLeftside(categories);

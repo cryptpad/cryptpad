@@ -63,6 +63,23 @@ define([
         blocks.text = (value) => {
             return h('span', value);
         };
+        blocks.alert = function (type, key, messages) {
+            return h('div.cp-admin' + key + '.cp-sidebar-layout-element',
+            h('div.alert.alert-' + type + '.cp-admin-bigger-alert', messages.map(function(message) {
+                    return message;
+                }))
+            );
+        };
+        
+        blocks.textArea = function (classes, attributes, placeholder, ariaLabelledBy, value, opts) {
+            var textarea = h('textarea.' + classes, Object.assign({
+                placeholder: placeholder || '',
+                'aria-labelledby': ariaLabelledBy || ''
+            }, attributes || {}), value || '');
+            return textarea;
+        };
+
+        
         blocks.checkbox = (key, label, state, opts) => {
             var box = UI.createCheckbox(`cp-${app}-${key}`,
                 label,
