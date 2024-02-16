@@ -63,20 +63,13 @@ define([
         blocks.text = (value) => {
             return h('span', value);
         };
-        blocks.alert = function (type, key, messages) {
-            return h('div.cp-admin' + key + '.cp-sidebar-layout-element',
-            h('div.alert.alert-' + type + '.cp-admin-bigger-alert', messages.map(function(message) {
-                    return message;
-                }))
-            );
+        blocks.alert = function (type, big, content) {
+            var isBigClass = big ? '.cp-sidebar-bigger-alert' : ''; // Add the class if we want a bigger font-size
+            return h('div.alert.alert-' + type + isBigClass, content);
         };
         
-        blocks.textArea = function (classes, attributes, placeholder, ariaLabelledBy, value, opts) {
-            var textarea = h('textarea.' + classes, Object.assign({
-                placeholder: placeholder || '',
-                'aria-labelledby': ariaLabelledBy || ''
-            }, attributes || {}), value || '');
-            return textarea;
+        blocks.textArea = function (attributes, value) {
+            return h('textarea', attributes, value || '');
         };
 
         
@@ -90,32 +83,50 @@ define([
             return box;
         };
 
+        blocks.clickableButton = function (type, icon, text, callback) {
+            var button = blocks.button(type, icon, text);
+            var $button = $(button);
+            button.spinner = h('span');
+            var spinner = UI.makeSpinner($(button.spinner));
+
+            Util.onClickEnter($button, function () {
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                callback(function (success) {
+                    $button.removeAttr('disabled');
+                    if (success) { return void spinner.done(); }
+                    spinner.hide();
+                });
+            });
+            return button;
+        };
 
         const keyToCamlCase = (key) => {
             return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
         };
-        sidebar.addItem = (key, get) => {
+        sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);
             get((content, config) => {
                 config = config || {};
-                const title = h('label.cp-item-label',
-                    Messages[`${app}_${safeKey}Title`] || key);
-                const hint = h('span.cp-sidebarlayout-description',
+                options = options || {};
+                const title = options.noTitle ? undefined : h('label.cp-item-label', {
+                    id: `cp-${app}-${key}`
+                }, Messages[`${app}_${safeKey}Title`] || key);
+                const hint = options.noHint ? undefined : h('span.cp-sidebarlayout-description',
                     Messages[`${app}_${safeKey}Hint`] || 'Coming soon...');
-                //const div = h(`div.cp-sidebarlayout-element.cp-${app}-${key}`, {
                 const div = h(`div.cp-sidebarlayout-element`, {
                     'data-item': key,
                     style: 'display:none;'
                 }, [
-                    !config.noTitle ? title : undefined,
-                    !config.noHint ? hint : undefined,
+                    title,
+                    hint,
                     content
                 ]);
                 items[key] = div;
                 $rightside.append(div);
             });
         };
-
+        
         sidebar.addCheckboxItem = (data) => {
             const state = data.getState();
             const key = data.key;
