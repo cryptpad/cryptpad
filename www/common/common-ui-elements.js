@@ -1590,7 +1590,6 @@ define([
 
                 $li.on('mouseenter', (e) => {
                     e.stopPropagation();
-                    $li.focus();
                 });
                 var onAction = function (e) {
                     if (config.isSelect) { return; }
@@ -1690,6 +1689,10 @@ define([
                 return;
             }
             show();
+        });
+
+        $innerblock.on('mouseover', function() {
+            $(document.activeElement).blur();
         });
 
         if (config.isSelect) {
