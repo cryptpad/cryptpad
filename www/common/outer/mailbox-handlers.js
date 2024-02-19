@@ -847,7 +847,6 @@ define([
         var content = msg.content;
         content.time = data.time;
         var i = 0;
-        console.error(msg);
         var handle = function () {
             var support = Util.find(ctx, ['store', 'modules', 'support']);
             if (!support && i++ < 100) { setTimeout(handle, 600); }
@@ -855,7 +854,34 @@ define([
             support.addAdminTicket(content, cb);
         };
         handle();
-        console.warn(msg, content);
+    };
+    var supportNotif;
+    handlers['NOTIF_TICKET'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        content.time = data.time;
+
+        if (!content.isAdmin) { // A user replied to an admin
+            // Update admin chainpad
+            let i = 0;
+            let handle = function () {
+                var support = Util.find(ctx, ['store', 'modules', 'support']);
+                if (!support && i++ < 100) { setTimeout(handle, 600); }
+                if (!support) { return; }
+                support.updateAdminTicket(content);
+            };
+            handle();
+        }
+
+        if (supportNotif) { return void cb(true); }
+        supportNotif = content.channel;
+
+        // XXX opt out of these notifications: cb(true);
+        cb(false);
+    };
+    removeHandlers['NOTIF_TICKET'] = function (ctx, box, data) {
+        var id = data.content.channel;
+        if (supportNotif === id) { supportNotif = undefined; }
     };
 
     return {

@@ -157,11 +157,31 @@ define([
         var $div = makeBlock(key); // Msg.support_listHint, .support_listTitle
         var list = h('div.cp-support-container');
         var $list = $(list);
+
+
         let refresh = function () {
+            const onClose = function (ticket, channel, data) {
+                APP.supportModule.execCommand('CLOSE_TICKET', {
+                    channel: channel,
+                    curvePublic: data.authorKey
+                }, function (obj) {
+                    // XXX TODO
+                });
+            };
+            const onReply = function (ticket, channel, data, form, cb) {
+                var formData = APP.support.getFormData(form);
+                APP.supportModule.execCommand('REPLY_TICKET', {
+                    channel: channel,
+                    curvePublic: data.curvePublic, // Support curve public for this ticket
+                    ticket: formData
+                }, function (obj) {
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    refresh(); // XXX RE-open this ticket and scroll to?
+                });
+            };
+
             APP.supportModule.execCommand('GET_MY_TICKETS', {}, function (obj) {
-                console.error(obj);
                 if (obj && obj.error) {
-                    console.error(obj.error);
                     return void UI.warn(Messages.error);
                 }
                 if (!Array.isArray(obj.tickets)) { return void UI.warn(Messages.error); }
@@ -172,21 +192,20 @@ define([
                     var messages = data.messages;
                     var first = messages[0];
                     first.id = data.id;
-                    var $ticket = APP.support.makeTicket($list, first, function () {
-                        // XXX delete
-                        console.log('ON DELETE');
-                    });
+                    var ticket = APP.support.makeTicket(data.id, data, null, onClose, onReply);
+                    $list.append(ticket);
                     messages.forEach(msg => {
-                        $ticket.append(APP.support.makeMessage(msg));
+                        $(ticket).append(APP.support.makeMessage(msg));
                     });
                 });
             });
 
         };
-        var button = h('btn.btn-primary', 'refresh'); // XXX
+        var button = h('button.btn.btn-primary', 'refresh'); // XXX
         Util.onClickEnter($(button), function () {
             refresh();
         });
+        refresh();
         $div.append([
             button,
             list

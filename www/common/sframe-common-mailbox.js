@@ -161,7 +161,7 @@ define([
 
         // Call the onMessage handlers
         var isNotification = function (type) {
-            return type === "notifications" || /^team-/.test(type) || type === "broadcast" || type === "reminders";
+            return type === "notifications" || /^team-/.test(type) || type === "broadcast" || type === "reminders" || type === "support2";
         };
         var pushMessage = function (data, handler) {
             var todo = function (f) {

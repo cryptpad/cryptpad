@@ -484,6 +484,27 @@ define([
         }
     };
 
+    // XXX
+    Messages.support_userNotification = "New support ticket or response: {0}";
+    handlers['NOTIF_TICKET'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        content.getFormatText = function () {
+            let title = Util.fixHTML(msg.title);
+            let text = msg.isAdmin ? Messages.support_notification :
+                        Messages._getKey('support_userNotification', [title]);
+            return text;
+        };
+        content.handler = function () {
+            let url = msg.isAdmin ? '/support/#tickets' : `/moderation/#support-${content.channel}`;
+            common.openURL(msg.url);
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     handlers['BROADCAST_CUSTOM'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;

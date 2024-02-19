@@ -55,6 +55,8 @@ define([
 
     var andThen = function () {
         var $body = $('#cp-content-container');
+        var button = h('button.btn.btn-primary', 'refresh'); // XXX
+        $body.append(h('div', button));
         var $container = $(h('div.cp-support-container')).appendTo($body);
 
 
@@ -88,6 +90,10 @@ define([
                             return void UI.warn(Messages.error);
                         }
                         obj.forEach(function (msg) {
+                            console.error(msg);
+                            if (!data.notifications) {
+                                data.notifications = Util.find(msg, ['sender', 'notifications']);
+                            }
                             $(ticket).append(APP.support.makeMessage(msg));
                         });
                     });
@@ -106,6 +112,7 @@ define([
                     APP.module.execCommand('REPLY_TICKET_ADMIN', {
                         channel: channel,
                         curvePublic: data.authorKey,
+                        notifChannel: data.notifications,
                         ticket: formData
                     }, function (obj) {
                         if (obj && obj.error) {
@@ -120,7 +127,7 @@ define([
 
                 Object.keys(tickets).sort(sortTicket).forEach(function (channel) {
                     var d = tickets[channel];
-                    var ticket = APP.support.makeTicketAdmin(channel, d, onLoad, onClose, onReply);
+                    var ticket = APP.support.makeTicket(channel, d, onLoad, onClose, onReply);
                     var container;
                     if (d.lastAdmin) { container = col3; }
                     else if (d.premium) { container = col1; }
@@ -130,6 +137,9 @@ define([
                 console.log(tickets);
             });
         };
+        Util.onClickEnter($(button), function () {
+            refresh();
+        });
         refresh();
     };
 

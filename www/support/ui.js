@@ -310,114 +310,78 @@ define([
         return form;
     };
 
-    var makeTicket = function (ctx, $div, content, onHide) {
+    var makeTicket = function (ctx, id, content, onShow, onClose, onReply) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
 
-        var ticketTitle = content.title + ' (#' + content.id + ')';
-        var ticketCategory;
         var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
         var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
-        var hide = h('button.btn.btn-danger.cp-support-hide', Messages.support_remove);
+        var actions = h('div.cp-support-list-actions', [ answer, close ]);
 
-        var actions = h('div.cp-support-list-actions', [
-            answer,
-            close,
-            hide
-        ]);
-
-        var url;
-        var copyKey;
-        var publicKey = Util.find(content, ['sender', 'edPublic']);
+        var adminActions;
+        var adminClasses = '';
         if (ctx.isAdmin) {
-            ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
-            url = h('button.btn', {
-                title: Messages.share_linkCopy,
-            }, [
+            // Admin custom style
+            let isPremium = content.premium ? '.cp-support-premium' : '';
+            adminClasses = `.cp-not-loaded${isPremium}`;
+            // Admin actions
+            let show = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
+            let $show = $(show);
+            let url = h('button.btn', { title: Messages.share_linkCopy, }, [
                 h('i.fa.fa-link', {
                     'aria-hidden': true,
                 }),
             ]);
             $(url).click(function (e) {
                 e.stopPropagation();
-                var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
+                var link = privateData.origin + privateData.pathname + '#' + 'support-' + id;
                 Clipboard.copy(link, (err) => {
                     if (!err) { UI.log(Messages.shareSuccess); }
                 });
             });
-            if (typeof(publicKey) === 'string') {
-                copyKey = h('button.btn', {
-                    title: Messages.profile_copyKey,
-                }, [
-                    h('i.fa.fa-key', {
-                        'aria-hidden': true,
-                    }),
-                ]);
-                $(copyKey).click(e => {
-                    e.stopPropagation();
-                    Clipboard.copy(publicKey, (err) => {
-                        if (!err) { return UI.log(Messages.shareSuccess); }
-                        UI.warn(Messages.error);
-                    });
-                });
-            }
+            Util.onClickEnter($show, function () {
+                $ticket.removeClass('cp-not-loaded');
+                $show.remove();
+                onShow(ticket, id, content);
+            });
+            adminActions = h('span.cp-support-title-buttons', [ url, show ])
         }
 
-        var $ticket = $(h('div.cp-support-list-ticket', {
-            'data-cat': content.category,
-            'data-id': content.id
+        var name = Util.fixHTML(content.author) || Messages.anonymous;
+        var ticket = h(`div.cp-support-list-ticket${adminClasses}`, {
+            'data-id': id
         }, [
-            h('h2', [
-                h('span', [ticketCategory, ticketTitle]),
-                h('span.cp-support-title-buttons', [
-                    copyKey,
-                    url,
-                ]),
+            h('div.cp-support-ticket-header', [
+                h('span', content.title),
+                ctx.isAdmin ? UI.setHTML(h('span'), Messages._getKey('support_from', [name])) : '',
+                h('span', new Date(content.time).toLocaleString()),
+                adminActions,
             ]),
             actions
-        ]));
+        ]);
 
-        /*
-        $(close).click(function () {
-            send(ctx, content.id, 'CLOSE', {}, content.sender);
-        });
-
-        $(hide).click(function () {
-            if (typeof(onHide) !== "function") { return; }
-            onHide();
-        });
-        */
-
+        // Add button handlers
+        var $ticket = $(ticket);
         UI.confirmButton(close, {
             classes: 'btn-danger'
         }, function() {
-            send(ctx, content.id, 'CLOSE', {}, content.sender);
-            $(close).hide();
+            $(close).remove();
+            onClose(ticket, id, content);
         });
-        UI.confirmButton(hide, {
-            classes: 'btn-danger'
-        }, function() {
-            if (typeof(onHide) !== "function") { return; }
-            onHide(hide);
-        });
-
         $(answer).click(function () {
             $ticket.find('.cp-support-form-container').remove();
             $(actions).hide();
-            var hideNotice = true;
             var form = makeForm(ctx, function () {
-                var sent = sendForm(ctx, content.id, form, content.sender);
-                if (sent) {
+                onReply(ticket, id, content, form, function () {
                     $(actions).css('display', '');
                     $(form).remove();
-                }
-            }, content.title, hideNotice);
+                });
+            }, content.title, true);
             $ticket.append(form);
         });
 
-        $div.append($ticket);
-        return $ticket;
+        return ticket;
     };
 
     var makeMessage = function (ctx, content, hash) {
@@ -516,66 +480,6 @@ define([
         ]);
     };
 
-    var makeTicketAdmin = function (ctx, id, content, onShow, onClose, onReply) {
-        var show = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
-
-        var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
-        var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
-        var actions = h('div.cp-support-list-actions', [ answer, close ]);
-
-        var isPremium = content.premium ? '.cp-support-premium' : '';
-        var name = Util.fixHTML(content.author) || Messages.anonymous;
-        var ticket = h('div.cp-support-list-ticket.cp-not-loaded'+isPremium, {
-            'data-id': id
-        }, [
-            h('div.cp-support-ticket-header', [
-                h('span', content.title),
-                UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
-                h('span', new Date(content.time).toLocaleString()),
-                h('span', show),
-            ]),
-            actions
-        ]);
-
-        // Add button handlers
-
-        UI.confirmButton(close, {
-            classes: 'btn-danger'
-        }, function() {
-            $(close).remove();
-            onClose(ticket, id, content);
-        });
-
-        var $ticket = $(ticket);
-        $(answer).click(function () {
-            $ticket.find('.cp-support-form-container').remove();
-            $(actions).hide();
-            var form = makeForm(ctx, function () {
-                console.error(form);
-                onReply(ticket, id, content, form, function () {
-                    $(actions).css('display', '');
-                    $(form).remove();
-                });
-                /*
-                var sent = sendForm(ctx, content.id, form, content.sender);
-                if (sent) {
-                    $(actions).css('display', '');
-                    $(form).remove();
-                }
-                */
-            }, content.title, true);
-            $ticket.append(form);
-        });
-
-        var $show = $(show);
-        Util.onClickEnter($show, function () {
-            $ticket.removeClass('cp-not-loaded');
-            $show.remove();
-            onShow(ticket, id, content);
-        });
-        return ticket;
-    };
-
     var create = function (common, isAdmin, pinUsage, teamsUsage) {
         var ui = {};
         var ctx = {
@@ -608,11 +512,8 @@ define([
         ui.makeCategoryDropdown = function (container, onChange, all) {
             return makeCategoryDropdown(ctx, container, onChange, all);
         };
-        ui.makeTicket = function ($div, content, onHide) {
-            return makeTicket(ctx, $div, content, onHide);
-        };
-        ui.makeTicketAdmin = function (id, content, onShow, onClose, onReply) {
-            return makeTicketAdmin(ctx, id, content, onShow, onClose, onReply);
+        ui.makeTicket = function (id, content, onShow, onClose, onReply) {
+            return makeTicket(ctx, id, content, onShow, onClose, onReply);
         };
         ui.makeMessage = function (content, hash) {
             return makeMessage(ctx, content, hash);

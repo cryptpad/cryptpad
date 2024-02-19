@@ -34,14 +34,16 @@ define([
                     cb(null, {
                         myCurve: data.adminCurvePrivate || Util.find(ctx.store.proxy, [
                                     'mailboxes', 'support2', 'keys', 'curvePrivate']),
-                        theirPublic: data.curvePublic
+                        theirPublic: data.curvePublic,
+                        notifKey: data.curvePublic
                     });
                 });
             }
 
             cb(null, {
-                theirPublic: supportKey,
-                myCurve: ctx.store.proxy.curvePrivate
+                theirPublic: data.curvePublic || supportKey, // old tickets may use deprecated key
+                myCurve: ctx.store.proxy.curvePrivate,
+                notifKey: supportKey
             });
         });
     };
@@ -141,6 +143,7 @@ define([
             ctx.Store.onSync(null, waitFor());
         }).nThen(() => {
             var supportChannel = Hash.getChannelIdFromKey(supportKey);
+            // XXX isAdmin
             mailbox.sendTo('NEW_TICKET', {
                 title: title,
                 channel: channel,
@@ -153,6 +156,14 @@ define([
                 if (obj && obj.error) { delete ctx.supportData[channel]; }
                 cb(obj);
             });
+            // XXX isAdmin
+            mailbox.sendTo('NOTIF_TICKET', {
+                title: title,
+                channel: channel,
+            }, {
+                channel: supportChannel,
+                curvePublic: supportKey
+            }, () => {});
         });
     };
 
@@ -161,8 +172,9 @@ define([
         var anonRpc = Util.find(ctx, [ 'store', 'anon_rpc' ]);
         if (!mailbox) { return void cb('E_NOT_READY'); }
         if (!anonRpc) { return void cb("anonymous rpc session not ready"); }
-        var theirPublic, myCurve;
+        var theirPublic, myCurve, notifKey;
         nThen((waitFor) => {
+            // Get correct keys
             getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
                 if (err) {
                     waitFor.abort();
@@ -170,8 +182,10 @@ define([
                 }
                 theirPublic = obj.theirPublic;
                 myCurve = obj.myCurve;
+                notifKey = obj.notifKey;
             }));
-        }).nThen(() => {
+        }).nThen((waitFor) => {
+            // Send message
             var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve);
             var crypto = Crypto.Curve.createEncryptor(keys);
             var text = JSON.stringify(data.ticket);
@@ -179,12 +193,26 @@ define([
             anonRpc.send("WRITE_PRIVATE_MESSAGE", [
                 data.channel,
                 ciphertext
-            ], (err) => {
+            ], waitFor((err) => {
                 if (err) {
                     waitFor.abort();
                     return void cb(err);
                 }
                 cb();
+            }));
+        }).nThen(() => {
+            // On success, notify
+            var notifChannel = isAdmin ? data.notifChannel : Hash.getChannelIdFromKey(notifKey);
+            if (!notifChannel) { return; }
+            mailbox.sendTo('NOTIF_TICKET', {
+                isAdmin: isAdmin,
+                title: data.ticket.title,
+                channel: data.channel,
+            }, {
+                channel: notifChannel,
+                curvePublic: notifKey
+            }, () => {
+                // Do nothing, not a problem if notifications fail
             });
         });
     };
@@ -209,6 +237,12 @@ define([
         });
         n(() => {
             cb({tickets: all});
+        });
+    };
+    var replyMyTicket = function (ctx, data, cId, cb) {
+        replyTicket(ctx, data, false, (err) => {
+            if (err) { return void cb({error: err}); }
+            cb({sent: true});
         });
     };
 
@@ -252,6 +286,8 @@ define([
         });
     };
 
+    // Mailbox events
+
     var addAdminTicket = function (ctx, data, cb) {
         // Wait for the chainpad to be ready before adding the data
         if (!ctx.adminRdyEvt) { return void cb(false); } // XXX not an admin, delete mailbox?
@@ -261,8 +297,9 @@ define([
             var rdmTo = Math.floor(Math.random() * 2000); // Between 0 and 2000ms
             setTimeout(() => {
                 var doc = ctx.adminDoc.proxy;
-                if (doc.tickets.active[data.channel] || doc.tickets.closed[data.channel]) {
-                    return void cb(true); }
+                if (doc.tickets.active[data.channel] || doc.tickets.closed[data.channel]
+                    || doc.tickets.pending[data.channel]) {
+                    return void cb(false); }
                 doc.tickets.active[data.channel] = {
                     title: data.title,
                     premium: data.premium,
@@ -271,9 +308,24 @@ define([
                     authorKey: data.user && data.user.curvePublic
                 };
                 Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
-                    console.warn('synced');
-                    cb(true);
+                    cb(false);
                 });
+            });
+        });
+    };
+    var updateAdminTicket = function (ctx, data) {
+        // Wait for the chainpad to be ready before adding the data
+        if (!ctx.adminRdyEvt) { return void cb(false); } // XXX not an admin, delete mailbox?
+
+        ctx.adminRdyEvt.reg(() => {
+            // random timeout to avoid duplication wiht multiple admins
+            var rdmTo = Math.floor(Math.random() * 2000); // Between 0 and 2000ms
+            setTimeout(() => {
+                var doc = ctx.adminDoc.proxy;
+                if (!doc.tickets.active[data.channel] && !doc.tickets.pending[data.channel]) {
+                    return; }
+                let t = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
+                t.time = data.time;
             });
         });
     };
@@ -375,6 +427,9 @@ define([
         support.addAdminTicket = function (content, cb) {
             addAdminTicket(ctx, content, cb);
         };
+        support.updateAdminTicket = function (content) {
+            updateAdminTicket(ctx, content);
+        };
         support.execCommand = function (clientId, obj, cb) {
             var cmd = obj.cmd;
             var data = obj.data;
@@ -393,6 +448,10 @@ define([
             if (cmd === 'GET_MY_TICKETS') {
                 return void getMyTickets(ctx, data, clientId, cb);
             }
+            if (cmd === 'REPLY_TICKET') {
+                return void replyMyTicket(ctx, data, clientId, cb);
+            }
+            cb({error: 'NOT_SUPPORTED'});
         };
 
         return support;
