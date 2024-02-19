@@ -148,12 +148,13 @@ MessengerUI, Messages, Pages) {
         var $file = $toolbar.find('.'+BOTTOM_LEFT_CLS);
 
         if (!config.hideDrawer) {
-            var $drawer = $(h('button.' + FILE_CLS, [
-                h('i.fa.fa-file-o'),
-                h('span.cp-button-name', Messages.toolbar_file)
-            ])).appendTo($file).hide();
-            var $drawerContent = $(h('ul.'+ DRAWER_CLS, {tabindex: 1})).hide();
-            UI.createDrawer($drawer, $drawerContent);
+            var $drawer = UIElements.createDropdown({
+                text: Messages.toolbar_file,
+                options: [],
+                common: Common
+            });
+            $drawer.addClass(FILE_CLS).appendTo($file);
+            $drawer.find('.cp-dropdown-content').addClass(DRAWER_CLS);
         }
 
         // The 'notitle' class removes the line added for the title with a small screen
@@ -1000,8 +1001,16 @@ MessengerUI, Messages, Pages) {
 
     var createNewPad = function (toolbar, config) {
         var $button = Common.createButton('newpad', true);
-        toolbar.$drawer.append($button);
-        return $button;
+        var $newPad = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': $button.attr('class') },
+            content: h('span', $button.text()),
+            action: function () {
+                $button.click();
+            }
+        });
+        toolbar.$drawer.append($newPad);
+        return $newPad;
     };
 
     var createUserAdmin = function (toolbar, config) {

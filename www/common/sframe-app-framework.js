@@ -709,7 +709,7 @@ define([
 
         var setFileExporter = function (extension, fe, async) {
             fileExporter = fe;
-            var $export = common.createButton('export', true, {}, function () {
+            var $exportButton = common.createButton('export', true, {}, function () {
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
                 ext = ext || '.txt';
@@ -773,6 +773,14 @@ define([
                 });
                 $select.find('button').addClass('btn');
             });
+            var $export = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: { 'class': $exportButton.attr('class') },
+                content: h('span', $exportButton.text()),
+                action: function () {
+                    $exportButton.click();
+                }
+            });
             toolbar.$drawer.append($export);
         };
 
@@ -802,9 +810,16 @@ define([
                     onLocal();
                 });
             };
-            toolbar.$drawer.append(
-                common.createButton('import', true, options, fileImporter)
-            );
+            var $importButton = common.createButton('import', true, options, fileImporter);
+            var $import = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: { 'class': $importButton.attr('class') },
+                content: h('span', $importButton.text()),
+                action: function () {
+                    $importButton.click();
+                },
+            });
+            toolbar.$drawer.append($import);
         };
 
         var feedback = function (action, force) {
@@ -997,17 +1012,42 @@ define([
                 },
                 $toolbar: $(toolbarContainer)
             };
-            var $hist = common.createButton('history', true, {histConfig: histConfig});
+            var $histButton = common.createButton('history', true, {histConfig: histConfig});
+            var $hist = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: {'class': $histButton.attr('class')},
+                content: h('span', $histButton.text()),
+                action: function () {
+                    $histButton.click();
+                },
+            });
             toolbar.$drawer.append($hist);
 
-            var $snapshot = common.createButton('snapshots', true, {
+            var $snapshotButton = common.createButton('snapshots', true, {
                 remove: deleteSnapshot,
                 make: makeSnapshot,
                 load: loadSnapshot
             });
+            var $snapshot = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: { 'class': $snapshotButton.attr('class') },
+                content: h('span', $snapshotButton.text()),
+                action: function () {
+                    $snapshotButton.click();
+                }
+            });
             toolbar.$drawer.append($snapshot);
 
-            var $copy = common.createButton('copy', true);
+
+            var $copyButton = common.createButton('copy', true);
+            var $copy = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: { 'class': $copyButton.attr('class') },
+                content: h('span', $copyButton.text()),
+                action: function () {
+                    $copyButton.click();
+                }
+            });
             toolbar.$drawer.append($copy);
 
             var $store = common.createButton('storeindrive', true);
@@ -1019,26 +1059,71 @@ define([
                     getTitle: function () { return cpNfInner.metadataMgr.getMetadata().title; }
                 };
                 var $templateButton = common.createButton('template', true, templateObj);
-                toolbar.$drawer.append($templateButton);
+                var $template = UIElements.createDropdownEntry({
+                    tag: 'a',
+                    attributes: { 'class': $templateButton.attr('class') },
+                    content: h('span', $templateButton.text()),
+                    action: function () {
+                        $templateButton.click();
+                    }
+                });
+                toolbar.$drawer.append($template);
+
             }
 
             var $importTemplateButton = common.createButton('importtemplate', true);
             if (!readOnly) {
-                toolbar.$drawer.append($importTemplateButton);
+                var $importTemplate = UIElements.createDropdownEntry({
+                    tag: 'a',
+                    attributes: { 'class': $importTemplateButton.attr('class') },
+                    content: h('span', $importTemplateButton.text()),
+                    action: function () {
+                        $importTemplateButton.click();
+                    }
+                });
+                toolbar.$drawer.append($importTemplate);
             }
 
-            /* add a forget button */
-            toolbar.$drawer.append(common.createButton('forget', true, {}, function (err) {
+            /* add a forget button = trash button */
+            var $forgetButton = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 stateChange(STATE.FORGOTTEN);
-            }));
+            });
+
+            var $forget = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: { 'class': $forgetButton.attr('class') },
+                content: h('span', $forgetButton.text()),
+                action: function () {
+                    $forgetButton.click();
+                }
+            });
+
+            toolbar.$drawer.append($forget);
+
 
             if (common.isLoggedIn()) {
-                var $tags = common.createButton('hashtag', true);
+                var $tagsButton = common.createButton('hashtag', true);
+                var $tags = UIElements.createDropdownEntry({
+                    tag: 'a',
+                    attributes: { 'class': $tagsButton.attr('class') },
+                    content: h('span', $tagsButton.text()),
+                    action: function () {
+                        $tagsButton.click();
+                    }
+                });
                 toolbar.$drawer.append($tags);
             }
 
-            var $properties = common.createButton('properties', true);
+            var $propertiesButton = common.createButton('properties', true);
+            var $properties = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: { 'class': $propertiesButton.attr('class') },
+                content: h('span', $propertiesButton.text()),
+                action: function () {
+                    $propertiesButton.click();
+                }
+            });
             toolbar.$drawer.append($properties);
 
             createFilePicker();

@@ -1455,6 +1455,92 @@ define([
         };
     };
 
+    UIElements.createDropdownEntry = function (config) {
+        var allowedTags = ['a', 'li', 'p', 'hr', 'div'];
+        var isValidOption = function (o) {
+            if (typeof o !== "object") { return false; }
+            if (isElement(o)) { return true; }
+            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
+            return true;
+        };
+
+        var isElement = function (o) {
+            return /HTML/.test(Object.prototype.toString.call(o)) &&
+                typeof(o.tagName) === 'string';
+        };
+        var entry;
+
+        if (!isValidOption(config)) {
+            return null;
+        }
+
+        if (isElement(config)) {
+            entry = $(config);
+        } else {
+            var $el = $(h(config.tag, (config.attributes || {})));
+
+            if (typeof(config.content) === 'string' || (config.content instanceof Element)) {
+                config.content = [config.content];
+            }
+
+            if (Array.isArray(config.content)) {
+                config.content.forEach(function (item) {
+                    if (item instanceof Element) {
+                        return void $el.append(item);
+                    }
+                    if (typeof(item) === 'string') {
+                        $el[0].appendChild(document.createTextNode(item));
+                    }
+                });
+            }
+
+            // Everything is added as an "li" tag
+            // Links and items with action are focusable
+            // Add correct "role" attribute
+            entry = $(h('li'));
+            if (config.tag === 'a') {
+                $el.attr('tabindex', '-1');
+                entry.attr('role', 'menuitem');
+                entry.attr('tabindex', '0');
+            } else if (config.tag === 'li') {
+                entry = $el;
+                entry.attr('role', 'menuitem');
+                entry.attr('tabindex', '0');
+            } else if (config.tag === 'hr') {
+                entry.attr('role', 'separator');
+            } else {
+                entry.attr('role', 'none');
+            }
+            entry.append($el);
+
+            // Action can be triggered with a click or keyboard event
+            if (config.tag !== 'a' && config.tag !== 'li') {
+                return null;
+            }
+
+            entry.on('mouseenter', (e) => {
+                e.stopPropagation();
+                entry.focus();
+            });
+
+            entry.on('click keydown', function(e) {
+                if (config.isSelect) { return; }
+                if (e.type === 'click' || (e.type === 'keydown' && e.keyCode === 13) || (e.type === 'keydown' && e.keyCode === 32)) {
+                    e.stopPropagation();
+                    if (typeof(config.action) === "function") {
+                        var close = config.action(e);
+                        if (close) { hide(); }
+                    } else {
+                        // Click on <a> with an href
+                        if (e.type === 'keydown'){ $el.get(0).click(); }
+                    }
+                }
+            });
+        }
+
+        return entry;
+    };
+
     // Create a button with a dropdown menu
     // input is a config object with parameters:
     //  - container (optional): the dropdown container (span)

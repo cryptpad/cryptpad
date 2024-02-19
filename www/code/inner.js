@@ -18,6 +18,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+    '/common/common-ui-elements.js',
 
 
     'css!cm/lib/codemirror.css',
@@ -64,7 +65,8 @@ define([
     Visible,
     TypingTest,
     Messages,
-    CMeditor)
+    CMeditor,
+    UIElements)
 {
     window.CodeMirror = CMeditor;
 
@@ -106,7 +108,7 @@ define([
         framework._.toolbar.$theme.append($showAuthorColorsButton);
         markers.setButton($showAuthorColorsButton);
     };
-    var mkPrintButton = function (framework, $content, $print) {
+    var mkPrintButton = function (framework, $content) {
         var $printButton = framework._.sfCommon.createButton('print', true);
         $printButton.click(function () {
             $print.html($content.html());
@@ -114,7 +116,15 @@ define([
             window.print();
             framework.feedback('PRINT_CODE');
         });
-        framework._.toolbar.$drawer.append($printButton);
+        var $print = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': $printButton.attr('class') },
+            content: h('span', $printButton.text()),
+            action: function () {
+                $printButton.click();
+            }
+        });
+        framework._.toolbar.$drawer.append($print);
     };
     var mkMarkdownTb = function (editor, framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
@@ -136,8 +146,15 @@ define([
         var $codeMirrorContainer = $('#cp-app-code-container');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'code']);
         $codeMirrorContainer.prepend(helpMenu.menu);
-
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        var $helpMenuButton = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': helpMenu.button.attr('class') },
+            content: h('span', helpMenu.button.text()),
+            action: function () {
+                helpMenu.button.click();
+            }
+        });
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     var previews = {};
