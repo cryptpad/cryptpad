@@ -861,17 +861,20 @@ define([
         var content = msg.content;
         content.time = data.time;
 
-        if (!content.isAdmin) { // A user replied to an admin
-            // Update admin chainpad
-            let i = 0;
-            let handle = function () {
-                var support = Util.find(ctx, ['store', 'modules', 'support']);
-                if (!support && i++ < 100) { setTimeout(handle, 600); }
-                if (!support) { return; }
+        let i = 0;
+        let handle = function () {
+            var support = Util.find(ctx, ['store', 'modules', 'support']);
+            if (!support && i++ < 100) { setTimeout(handle, 600); }
+            if (!support) { return; }
+            if (!content.isAdmin) { // A user replied to an admin
+                // Update admin chainpad
                 support.updateAdminTicket(content);
-            };
-            handle();
-        }
+            } else {
+                // Trigger realtime update of user support
+                support.updateUserTicket(content);
+            }
+        };
+        handle();
 
         if (supportNotif) { return void cb(true); }
         supportNotif = content.channel;

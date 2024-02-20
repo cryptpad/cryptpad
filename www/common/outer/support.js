@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
@@ -11,7 +12,7 @@ define([
     'chainpad-listmap',
     '/components/chainpad/chainpad.dist.js',
     'chainpad-netflux'
-], function (Util, Hash, Realtime, nThen, Crypto, Listmap, ChainPad, CpNetflux) {
+], function (ApiConfig, Util, Hash, Realtime, nThen, Crypto, Listmap, ChainPad, CpNetflux) {
     var Support = {};
 
     // UTILS
@@ -20,6 +21,8 @@ define([
         var cb = Util.mkAsync(_cb);
         if (isAdmin && !ctx.adminRdyEvt) { return void cb('EFORBIDDEN'); }
         require(['/api/config?' + (+new Date())], function (NewConfig) {
+            ctx.adminKeys = NewConfig.adminKeys; // Update admin keys // XXX MODERATOR
+
             var supportKey = NewConfig.newSupportMailbox;
             if (!supportKey) { return void cb('E_NOT_INIT'); }
 
@@ -222,6 +225,11 @@ define([
     var getMyTickets = function (ctx, data, cId, cb) {
         var all = [];
         var n = nThen;
+        if (!ctx.clients[cId]) {
+            ctx.clients[cId] = {
+                admin: false
+            };
+        }
         Object.keys(ctx.supportData).forEach(function (ticket) {
             n = n((waitFor) => {
                 var t = Util.clone(ctx.supportData[ticket]);
@@ -250,6 +258,11 @@ define([
 
     var listTicketsAdmin = function (ctx, data, cId, cb) {
         if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        if (!ctx.clients[cId]) {
+            ctx.clients[cId] = {
+                admin: true
+            };
+        }
         ctx.adminRdyEvt.reg(() => {
             var doc = ctx.adminDoc.proxy;
             cb(Util.clone(doc.tickets.active));
@@ -264,8 +277,22 @@ define([
                 if (Array.isArray(res) && res.length) {
                     res.sort((t1, t2) => { return t1.time - t2.time; });
                     let last = res[res.length - 1];
+                    let premium = res.some((msg) => {
+                        let curve = Util.find(msg, ['sender', 'curvePublic']);
+                        if (data.curvePublic !== curve) { return; }
+                        return Util.find(msg, ['sender', 'quota', 'plan']);
+                    });
+                    var senderKey = last.sender && last.sender.edPublic;
+
                     var entry = doc.tickets.active[data.channel];
-                    if (entry) { entry.time = last.time; }
+                    if (entry) {
+                        entry.time = last.time;
+                        entry.premium = premium;
+
+                        if (senderKey) {
+                            entry.lastAdmin = ctx.adminKeys.indexOf(senderKey) !== -1
+                        }
+                    }
                 }
                 cb(res);
             });
@@ -287,6 +314,14 @@ define([
     };
 
     // Mailbox events
+
+    var notifyClient = function (ctx, admin, type, channel) {
+        let notifyList = Object.keys(ctx.clients).filter((cId) => {
+            return Boolean(ctx.clients[cId].admin) === admin;
+        });
+        if (!notifyList.length) { return; }
+        ctx.emit(type, { channel }, [notifyList]);
+    };
 
     var addAdminTicket = function (ctx, data, cb) {
         // Wait for the chainpad to be ready before adding the data
@@ -310,6 +345,7 @@ define([
                 Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
                     cb(false);
                 });
+                notifyClient(ctx, true, 'NEW_TICKET', data.channel);
             });
         });
     };
@@ -325,9 +361,14 @@ define([
                 if (!doc.tickets.active[data.channel] && !doc.tickets.pending[data.channel]) {
                     return; }
                 let t = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
-                t.time = data.time;
+                if (data.time > (t.time + 2000)) { t.time = data.time; }
+                t.lastAdmin = false;
+                notifyClient(ctx, true, 'UPDATE_TICKET', data.channel);
             });
         });
+    };
+    var updateUserTicket = function (ctx, data) {
+        notifyClient(ctx, false, 'UPDATE_TICKET', data.channel);
     };
 
     // INITIALIZE ADMIN
@@ -354,6 +395,7 @@ define([
             doc.tickets = doc.tickets || {};
             doc.tickets.active = doc.tickets.active || {};
             doc.tickets.closed = doc.tickets.closed || {};
+            doc.tickets.pending = doc.tickets.pending || {};
             ctx.adminRdyEvt.fire();
             cb();
         });
@@ -405,11 +447,11 @@ define([
         var proxy = store.proxy.support = store.proxy.support || {};
 
         var ctx = {
+            adminKeys: ApiConfig.adminKeys,
             supportData: proxy,
             store: cfg.store,
             Store: cfg.Store,
             emit: emit,
-            channels: {},
             clients: {}
         };
 
@@ -419,7 +461,7 @@ define([
 
         support.ctx = ctx;
         support.removeClient = function (clientId) {
-            // XXX TODO
+            delete ctx.clients[clientId];
         };
         support.leavePad = function (padChan) {
             // XXX TODO
@@ -429,6 +471,9 @@ define([
         };
         support.updateAdminTicket = function (content) {
             updateAdminTicket(ctx, content);
+        };
+        support.updateUserTicket = function (content) {
+            updateUserTicket(ctx, content);
         };
         support.execCommand = function (clientId, obj, cb) {
             var cmd = obj.cmd;

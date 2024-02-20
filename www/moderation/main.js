@@ -16,20 +16,6 @@ define([
     }).nThen(function (waitFor) {
         SFCommonO.initIframe(waitFor);
     }).nThen(function (/*waitFor*/) {
-        var addRpc = function (sframeChan, Cryptpad/*, Utils*/) {
-            // Adding a new avatar from the profile: pin it and store it in the object
-            sframeChan.on('Q_ADMIN_MAILBOX', function (data, cb) {
-                Cryptpad.addAdminMailbox(data, cb);
-            });
-            sframeChan.on('Q_ADMIN_RPC', function (data, cb) {
-                Cryptpad.adminRpc(data, cb);
-            });
-            sframeChan.on('Q_UPDATE_LIMIT', function (data, cb) {
-                Cryptpad.updatePinLimit(function (e) {
-                    cb({error: e});
-                });
-            });
-        };
         var category;
         if (window.location.hash) {
             category = window.location.hash.slice(1);
@@ -40,7 +26,6 @@ define([
         };
         SFCommonO.start({
             noRealtime: true,
-            addRpc: addRpc,
             addData: addData
         });
     });

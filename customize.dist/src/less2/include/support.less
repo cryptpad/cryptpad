@@ -59,10 +59,29 @@
                     display: none;
                 }
             }
+            .cp-support-ispremium {
+                padding: 0 5px;
+                background-color: @cp_admin-premium-bg;
+            }
             .cp-support-list-message {
                 background-color: @msg-bg;
                 padding: 5px 5px;
                 border-radius: @variables_radius;
+                &.cp-support-fromadmin {
+                    background-color: @cp_admin-isadmin-bg !important;
+                    .cp-support-message-from, .cp-support-showdata {
+                        color: @cryptpad_text_col;
+                        background-color: fade(@cp_admin-isadmin-bg, 10%) !important;
+                    }
+                }
+                &:last-child {
+                    &.cp-support-frompremium {
+                        background-color: @cp_admin-premium-bg;
+                        .cp-support-showdata {
+                            background-color: fade(@cp_admin-premium-bg, 10%);
+                        }
+                    }
+                }
                 .cp-support-fromme {
                     background-color: @fromme-bg;
                 }
@@ -85,6 +104,9 @@
                         margin-top: 10px;
                         margin-bottom: 10px;
                     }
+                }
+                &:not(:last-child) {
+                    margin-bottom: 3px;
                 }
             }
             .cp-support-list-actions {

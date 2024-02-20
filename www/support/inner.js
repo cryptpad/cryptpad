@@ -152,12 +152,17 @@ define([
         return $div;
     };
 
+    var events = {
+        'UPDATE_TICKET': Util.mkEvent()
+    };
     create['listnew'] = function () {
         var key = 'listnew';
         var $div = makeBlock(key); // Msg.support_listHint, .support_listTitle
         var list = h('div.cp-support-container');
         var $list = $(list);
 
+
+        let activeForm = {}; // .channel and .form
 
         let refresh = function () {
             const onClose = function (ticket, channel, data) {
@@ -176,7 +181,8 @@ define([
                     ticket: formData
                 }, function (obj) {
                     if (obj && obj.error) { return void UI.warn(Messages.error); }
-                    refresh(); // XXX RE-open this ticket and scroll to?
+                    $(ticket).find('.cp-support-form-container').remove();
+                    refresh();
                 });
             };
 
@@ -185,6 +191,15 @@ define([
                     return void UI.warn(Messages.error);
                 }
                 if (!Array.isArray(obj.tickets)) { return void UI.warn(Messages.error); }
+
+                // Recover forms
+                let activeForms = {};
+                $list.find('.cp-support-form-container').each((i, el) => {
+                    let id = $(el).attr('data-id');
+                    if (!id) { return; }
+                    activeForms[id] = el;
+                });
+
                 $list.empty();
                 obj.tickets.forEach((data) => {
                     var title = data.title;
@@ -192,7 +207,12 @@ define([
                     var messages = data.messages;
                     var first = messages[0];
                     first.id = data.id;
-                    var ticket = APP.support.makeTicket(data.id, data, null, onClose, onReply);
+                    var ticket = APP.support.makeTicket({
+                        id: data.id,
+                        content: data,
+                        form: activeForms[data.id],
+                        onClose, onReply
+                    });
                     $list.append(ticket);
                     messages.forEach(msg => {
                         $(ticket).append(APP.support.makeMessage(msg));
@@ -205,6 +225,8 @@ define([
         Util.onClickEnter($(button), function () {
             refresh();
         });
+        let _refresh = Util.throttle(refresh, 500);;
+        events.UPDATE_TICKET.reg(_refresh);
         refresh();
         $div.append([
             button,
@@ -409,7 +431,14 @@ define([
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
         APP.support = Support.create(common, false, APP.pinUsage, APP.teamsUsage);
-        APP.supportModule = common.makeUniversal('support');
+        APP.supportModule = common.makeUniversal('support', {
+            onEvent: (obj) => {
+                let cmd = obj.ev;
+                let data = obj.data;
+                if (!events[cmd]) { return; }
+                events[cmd].fire(data);
+            }
+        });
 
         // Content
         var $rightside = APP.$rightside;
