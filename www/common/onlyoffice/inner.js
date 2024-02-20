@@ -2945,7 +2945,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var $helpMenuButton = UIElements.createDropdownEntry({
                     tag: 'a',
                     attributes: { 'class': helpMenu.button.attr('class') },
-                    content: h('span', helpMenu.button.text()),
+                    content: [
+                        h('i', { 'class': helpMenu.button.children('i').attr('class') }),
+                        h('span', helpMenu.button.text())
+                    ],
                     action: function () {
                         helpMenu.button.click();
                     }
