@@ -417,7 +417,7 @@ define([
         return ticket;
     };
 
-    var makeMessage = function (ctx, content, hash) {
+    var makeMessage = function (ctx, content) {
         var common = ctx.common;
         var isAdmin = ctx.isAdmin;
         var metadataMgr = common.getMetadataMgr();
@@ -481,9 +481,7 @@ define([
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
         var premiumClass = (ctx.isAdmin && fromPremium && !fromAdmin? '.cp-support-frompremium': '');
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
-        return h('div.cp-support-list-message' + adminClass + premiumClass, {
-            'data-hash': hash
-        }, [
+        return h('div.cp-support-list-message' + adminClass + premiumClass, {}, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
@@ -495,16 +493,18 @@ define([
         ]);
     };
 
-    var makeCloseMessage = function (ctx, content, hash) {
+    var makeCloseMessage = function (ctx, content) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
-        var fromMe = content.sender && content.sender.edPublic === privateData.edPublic;
+
+        var senderKey = content.sender && content.sender.edPublic;
+        var fromMe = senderKey === privateData.edPublic;
+        var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1;
+        var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
 
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
-        return h('div.cp-support-list-message', {
-            'data-hash': hash
-        }, [
+        return h('div.cp-support-list-message' + adminClass, {}, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
@@ -548,11 +548,11 @@ define([
         ui.makeTicket = function (opts) {
             return makeTicket(ctx, opts);
         };
-        ui.makeMessage = function (content, hash) {
-            return makeMessage(ctx, content, hash);
+        ui.makeMessage = function (content) {
+            return makeMessage(ctx, content);
         };
-        ui.makeCloseMessage = function (content, hash) {
-            return makeCloseMessage(ctx, content, hash);
+        ui.makeCloseMessage = function (content) {
+            return makeCloseMessage(ctx, content);
         };
         ui.getDebuggingData = function (data) {
             return getDebuggingData(ctx, data);

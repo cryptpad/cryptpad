@@ -59,14 +59,23 @@ define([
 
     var andThen = function (linkedTicket) {
         var $body = $('#cp-content-container');
+
         var button = h('button.btn.btn-primary', 'refresh'); // XXX
         $body.append(h('div', button));
-        var $container = $(h('div.cp-support-container')).appendTo($body);
+
+        $body.append(h('h1'), 'ACTIVE');
+        var $containerActive = $(h('div.cp-support-container')).appendTo($body);
+        $body.append(h('h1'), 'PENDING');
+        var $containerPending = $(h('div.cp-support-container')).appendTo($body);
+        $body.append(h('h1'), 'CLOSED');
+        var $containerClosed = $(h('div.cp-support-container')).appendTo($body);
 
 
         let open = [];
-        let refresh = () => {
-            APP.module.execCommand('LIST_TICKETS_ADMIN', {}, (tickets) => {
+        let refresh = ($container, type) => {
+            APP.module.execCommand('LIST_TICKETS_ADMIN', {
+                type: type
+            }, (tickets) => {
                 let activeForms = {};
                 $container.find('.cp-support-form-container').each((i, el) => {
                     let id = $(el).attr('data-id');
@@ -86,6 +95,14 @@ define([
                     h('span', Messages.admin_support_answered),
                     h('span.cp-support-count'),
                 ]));
+                var col4 = h('div.cp-support-column', h('h1', [
+                    h('span', Messages.admin_support_closed),
+                    h('span.cp-support-count'),
+                ]));
+                if (type === 'closed') {
+                    // Only one column
+                    col1 = col2 = col3 = col4;
+                }
                 $container.append([col1, col2, col3]);
                 var sortTicket = function (c1, c2) {
                     return tickets[c2].time - tickets[c1].time;
@@ -101,11 +118,16 @@ define([
                             done();
                             return void UI.warn(Messages.error);
                         }
+                        var $ticket = $(ticket);
                         obj.forEach(function (msg) {
                             if (!data.notifications) {
                                 data.notifications = Util.find(msg, ['sender', 'notifications']);
                             }
-                            $(ticket).append(APP.support.makeMessage(msg));
+                            if (msg.close) {
+                                $ticket.addClass('cp-support-list-closed');
+                                return $ticket.append(APP.support.makeCloseMessage(msg));
+                            }
+                            $ticket.append(APP.support.makeMessage(msg));
                         });
                         if (!open.includes(channel)) { open.push(channel); }
                         done();
@@ -117,14 +139,6 @@ define([
                         return chan !== channel;
                     });
                     done();
-                };
-                const onClose = function (ticket, channel, data) {
-                    APP.module.execCommand('CLOSE_TICKET_ADMIN', {
-                        channel: channel,
-                        curvePublic: data.authorKey
-                    }, function (obj) {
-                        // XXX TODO
-                    });
                 };
                 const onReply = function (ticket, channel, data, form, cb) {
                     // XXX TODO
@@ -141,7 +155,23 @@ define([
                         }
                         $(ticket).find('.cp-support-list-message').remove();
                         $(ticket).find('.cp-support-form-container').remove();
-                        refresh();
+                        refresh($container, type);
+                    });
+                };
+                const onClose = function (ticket, channel, data) {
+                    APP.module.execCommand('CLOSE_TICKET_ADMIN', {
+                        channel: channel,
+                        curvePublic: data.authorKey,
+                        notifChannel: data.notifications,
+                        ticket: APP.support.getDebuggingData({
+                            close: true
+                        })
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj && obj.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        refreshAll();
                     });
                 };
 
@@ -168,16 +198,21 @@ define([
                     }
                 });
                 open = [];
-                console.log(tickets);
+                console.log(type, tickets);
             });
         };
-        let _refresh = Util.throttle(refresh, 500);
-        Util.onClickEnter($(button), function () {
-            refresh();
-        });
+        var refreshAll = function () {
+            refresh($containerActive, 'active');
+            refresh($containerPending, 'pending');
+            refresh($containerClosed, 'closed');
+        };
+
+        let _refresh = Util.throttle(refreshAll, 500);
         events.NEW_TICKET.reg(_refresh);
-        events.UPDATE_TICKET.reg(_refresh); // XXX dont refresh all?
-        refresh();
+        events.UPDATE_TICKET.reg(_refresh);
+
+        Util.onClickEnter($(button), refreshAll); // XXX temp button?
+        refreshAll();
     };
 
     var createToolbar = function () {

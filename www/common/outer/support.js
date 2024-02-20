@@ -210,6 +210,7 @@ define([
             mailbox.sendTo('NOTIF_TICKET', {
                 isAdmin: isAdmin,
                 title: data.ticket.title,
+                isClose: data.ticket.close,
                 channel: data.channel,
             }, {
                 channel: notifChannel,
@@ -238,12 +239,25 @@ define([
                 }, false, waitFor((err, messages) => {
                     if (err) { t.error = err; }
                     else { t.messages = messages; }
+
+                    if (messages[messages.length -1].close) {
+                        t.closed = true;
+                    }
+
                     t.id = ticket;
                     all.push(t);
                 }));
             }).nThen;
         });
+
+
         n(() => {
+            all.sort((t1, t2) => {
+                if (t1.closed && t2.closed) { return t1.time - t2.time; }
+                if (t1.closed) { return 1; }
+                if (t2.closed) { return -1; }
+                return t1.time - t2.time;
+            });
             cb({tickets: all});
         });
     };
@@ -251,6 +265,12 @@ define([
         replyTicket(ctx, data, false, (err) => {
             if (err) { return void cb({error: err}); }
             cb({sent: true});
+        });
+    };
+    var closeMyTicket = function (ctx, data, cId, cb) {
+        replyTicket(ctx, data, false, (err) => {
+            if (err) { return void cb({error: err}); }
+            cb({closed: true});
         });
     };
 
@@ -265,6 +285,8 @@ define([
         }
         ctx.adminRdyEvt.reg(() => {
             var doc = ctx.adminDoc.proxy;
+            if (data.type === 'pending') { return cb(Util.clone(doc.tickets.pending)); }
+            if (data.type === 'closed') { return cb(Util.clone(doc.tickets.closed)); }
             cb(Util.clone(doc.tickets.active));
         });
     };
@@ -313,6 +335,23 @@ define([
         });
     };
 
+    var closeTicketAdmin = function (ctx, data, cId, cb) {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        // Reply with `data.ticket.close = true`
+        replyTicket(ctx, data, true, (err) => {
+            if (err) { return void cb({error: err}); }
+            ctx.adminRdyEvt.reg(() => {
+                var doc = ctx.adminDoc.proxy;
+                var entry = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
+                entry.time = +new Date();
+                entry.lastAdmin = true;
+                doc.tickets.closed[data.channel] = entry;
+                delete doc.tickets.active[data.channel];
+                delete doc.tickets.pending[data.channel];
+                cb({closed: true});
+            });
+        });
+    };
     // Mailbox events
 
     var notifyClient = function (ctx, admin, type, channel) {
@@ -362,9 +401,23 @@ define([
                     return; }
                 let t = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
                 if (data.time > (t.time + 2000)) { t.time = data.time; }
+                if (data.isClose) {
+                    doc.tickets.closed[data.channel] = t;
+                    delete doc.tickets.active[data.channel];
+                    delete doc.tickets.pending[data.channel];
+                }
                 t.lastAdmin = false;
                 notifyClient(ctx, true, 'UPDATE_TICKET', data.channel);
             });
+        });
+    };
+    var checkAdminTicket = function (ctx, data, cb) {
+        if (!ctx.adminRdyEvt) { return void cb(false); } // XXX not an admin, delete mailbox?
+
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            let exists = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
+            cb(exists);
         });
     };
     var updateUserTicket = function (ctx, data) {
@@ -472,6 +525,9 @@ define([
         support.updateAdminTicket = function (content) {
             updateAdminTicket(ctx, content);
         };
+        support.checkAdminTicket = function (content, cb) {
+            checkAdminTicket(ctx, content, cb);
+        };
         support.updateUserTicket = function (content) {
             updateUserTicket(ctx, content);
         };
@@ -490,11 +546,17 @@ define([
             if (cmd === 'REPLY_TICKET_ADMIN') {
                 return void replyTicketAdmin(ctx, data, clientId, cb);
             }
+            if (cmd === 'CLOSE_TICKET_ADMIN') {
+                return void closeTicketAdmin(ctx, data, clientId, cb);
+            }
             if (cmd === 'GET_MY_TICKETS') {
                 return void getMyTickets(ctx, data, clientId, cb);
             }
             if (cmd === 'REPLY_TICKET') {
                 return void replyMyTicket(ctx, data, clientId, cb);
+            }
+            if (cmd === 'CLOSE_TICKET') {
+                return void closeMyTicket(ctx, data, clientId, cb);
             }
             cb({error: 'NOT_SUPPORTED'});
         };

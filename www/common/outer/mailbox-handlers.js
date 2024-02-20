@@ -855,36 +855,57 @@ define([
         };
         handle();
     };
-    var supportNotif;
+    var supportNotif, adminSupportNotif;
     handlers['NOTIF_TICKET'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
         content.time = data.time;
 
-        let i = 0;
-        let handle = function () {
-            var support = Util.find(ctx, ['store', 'modules', 'support']);
-            if (!support && i++ < 100) { setTimeout(handle, 600); }
-            if (!support) { return; }
-            if (!content.isAdmin) { // A user replied to an admin
-                // Update admin chainpad
-                support.updateAdminTicket(content);
-            } else {
-                // Trigger realtime update of user support
-                support.updateUserTicket(content);
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+
+        // Admin to user
+        if (content.isAdmin) {
+            let exists = Util.find(ctx, ['store', 'proxy', 'support', content.channel]);
+
+            if (!exists) { return void cb(true); } // Deleted ticket
+            // Trigger realtime update of user support
+            support.updateUserTicket(content);
+
+            if (supportNotif) { return void cb(false, supportNotif); }
+            supportNotif = {
+                channel: content.channel,
+                type: box.type,
+                hash: data.hash
+            };
+            return void cb(false);
+        }
+
+        // User to admin
+        support.checkAdminTicket(content, (exists) => {
+            if (!exists) { return void cb(true); }
+            // Update ChainPad doc
+            support.updateAdminTicket(content);
+
+            // XXX TODO opt out
+            if (Util.find(ctx.store.proxy, ['settings', 'general', 'disableSupportNotif'])) {
+                return void cb(true);
             }
-        };
-        handle();
 
-        if (supportNotif) { return void cb(true); }
-        supportNotif = content.channel;
+            if (adminSupportNotif) { return void cb(false, adminSupportNotif); }
+            adminSupportNotif = {
+                channel: content.channel,
+                type: box.type,
+                hash: data.hash
+            };
 
-        // XXX opt out of these notifications: cb(true);
-        cb(false);
+            cb(false);
+        });
+
     };
     removeHandlers['NOTIF_TICKET'] = function (ctx, box, data) {
         var id = data.content.channel;
-        if (supportNotif === id) { supportNotif = undefined; }
+        if (supportNotif && supportNotif.channel === id) { supportNotif = undefined; }
+        if (adminSupportNotif && adminSupportNotif.channel === id) { adminSupportNotif = undefined; }
     };
 
     return {

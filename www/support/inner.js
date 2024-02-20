@@ -168,9 +168,11 @@ define([
             const onClose = function (ticket, channel, data) {
                 APP.supportModule.execCommand('CLOSE_TICKET', {
                     channel: channel,
-                    curvePublic: data.authorKey
+                    curvePublic: data.curvePublic, // Support curve public for this ticket
+                    ticket: APP.support.getDebuggingData({ close: true })
                 }, function (obj) {
-                    // XXX TODO
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    refresh();
                 });
             };
             const onReply = function (ticket, channel, data, form, cb) {
@@ -214,9 +216,15 @@ define([
                         onClose, onReply
                     });
                     $list.append(ticket);
+                    let $ticket = $(ticket);
                     messages.forEach(msg => {
-                        $(ticket).append(APP.support.makeMessage(msg));
+                        if (msg.close) {
+                            $ticket.addClass('cp-support-list-closed');
+                            return $ticket.append(APP.support.makeCloseMessage(msg));
+                        }
+                        $ticket.append(APP.support.makeMessage(msg));
                     });
+
                 });
             });
 
