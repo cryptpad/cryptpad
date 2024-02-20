@@ -16,6 +16,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+    '/common/common-ui-elements.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -61,7 +62,8 @@ define([
     UI,
     h,
     Messages,
-    CMeditor)
+    CMeditor,
+    UIElements)
 {
     window.CodeMirror = CMeditor;
 
@@ -123,14 +125,19 @@ define([
 
     var mkPrintButton = function (framework, editor, $content, $print) {
         var $printButton = framework._.sfCommon.createButton('print', true);
-        $printButton.click(function () {
-            Slide.update(editor.getValue(), true);
-            $print.html($content.html());
-            window.focus();
-            window.print();
-            framework.feedback('PRINT_SLIDES');
+        var $print = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': $printButton.attr('class') },
+            content: h('span', $printButton.text()),
+            action: function () {
+                Slide.update(editor.getValue(), true);
+                $print.html($content.html());
+                window.focus();
+                window.print();
+                framework.feedback('PRINT_SLIDES');
+            }
         });
-        framework._.toolbar.$drawer.append($printButton);
+        framework._.toolbar.$drawer.append($print);
     };
 
     // Flag to check if a file from the filepicker is a mediatag for the slides or a background image
@@ -436,9 +443,16 @@ define([
     var mkHelpMenu = function (framework) {
         var $codeMirrorContainer = $('#cp-app-slide-editor-container');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'slide']);
+        var $helpMenuButton = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': helpMenu.button.attr('class') },
+            content: h('span', helpMenu.button.text()),
+            action: function () {
+                helpMenu.button.click();
+            }
+        });
         $codeMirrorContainer.prepend(helpMenu.menu);
-
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     var activateLinks = function ($content, framework) {
