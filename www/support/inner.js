@@ -187,6 +187,15 @@ define([
                     refresh();
                 });
             };
+            const onDelete = function (ticket, channel, data) {
+                APP.supportModule.execCommand('DELETE_TICKET', {
+                    channel: channel
+                }, function (obj) {
+                    console.error(obj);
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    refresh();
+                });
+            };
 
             APP.supportModule.execCommand('GET_MY_TICKETS', {}, function (obj) {
                 if (obj && obj.error) {
@@ -213,7 +222,7 @@ define([
                         id: data.id,
                         content: data,
                         form: activeForms[data.id],
-                        onClose, onReply
+                        onClose, onReply, onDelete
                     });
                     $list.append(ticket);
                     let $ticket = $(ticket);

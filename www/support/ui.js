@@ -319,14 +319,21 @@ define([
     };
 
     var makeTicket = function (ctx, opts) {
-        let { id, content, form, onShow, onHide, onClose, onReply, onForm } = opts;
+        let { id, content, form, onShow, onHide, onClose, onReply, onForm, onDelete } = opts;
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
 
         var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
         var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
-        var actions = h('div.cp-support-list-actions', [ answer, close ]);
+        var remove = h('button.btn.btn-danger.cp-support-hide', Messages.support_remove);
+        var _actions = [answer, close];
+
+        if (content.closed && !ctx.isAdmin) {
+            _actions = [remove]; // XXX update key to "Delete permanently" ?
+        }
+
+        var actions = h('div.cp-support-list-actions', _actions);
 
         var adminActions;
         var adminClasses = '';
@@ -395,6 +402,13 @@ define([
         }, function() {
             $(close).remove();
             onClose(ticket, id, content);
+        });
+
+        UI.confirmButton(remove, {
+            classes: 'btn-danger'
+        }, function() {
+            $(remove).remove();
+            onDelete(ticket, id, content);
         });
 
         var addForm = function () {

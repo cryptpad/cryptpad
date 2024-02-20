@@ -241,6 +241,7 @@ define([
                     else { t.messages = messages; }
 
                     if (messages[messages.length -1].close) {
+                        ctx.supportData[ticket].closed = true;
                         t.closed = true;
                     }
 
@@ -272,6 +273,13 @@ define([
             if (err) { return void cb({error: err}); }
             cb({closed: true});
         });
+    };
+    var deleteMyTicket = function (ctx, data, cId, cb) {
+        let support = ctx.supportData;
+        let channel = data.channel;
+        if (!support[channel] || !support[channel].closed) { return void cb({error: 'ENOTCLOSED'}); }
+        delete support[channel];
+        cb({deleted: true});
     };
 
     // ADMIN COMMANDS
@@ -422,6 +430,11 @@ define([
     };
     var updateUserTicket = function (ctx, data) {
         notifyClient(ctx, false, 'UPDATE_TICKET', data.channel);
+        if (data.isClose) {
+            let ticket = ctx.supportData[data.channel];
+            if (!ticket) { return; }
+            ticket.closed = true;
+        }
     };
 
     // INITIALIZE ADMIN
@@ -557,6 +570,9 @@ define([
             }
             if (cmd === 'CLOSE_TICKET') {
                 return void closeMyTicket(ctx, data, clientId, cb);
+            }
+            if (cmd === 'DELETE_TICKET') {
+                return void deleteMyTicket(ctx, data, clientId, cb);
             }
             cb({error: 'NOT_SUPPORTED'});
         };
