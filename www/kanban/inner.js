@@ -1078,10 +1078,20 @@ define([
         var $toolbarContainer = $('#cp-app-kanban-container');
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['kanban']);
-        $toolbarContainer.prepend(helpMenu.menu);
 
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        var $helpMenuButton = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': helpMenu.button.attr('class') },
+            content: h('span', helpMenu.button.text()),
+            action: function () {
+                helpMenu.button.click();
+            }
+        });
+
+        $toolbarContainer.prepend(helpMenu.menu);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
+
 
     // Start of the main loop
     var andThen2 = function (framework) {
