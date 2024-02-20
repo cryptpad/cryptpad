@@ -17,6 +17,7 @@ define([
     '/whiteboard/colors.js',
     '/customize/application_config.js',
     '/components/chainpad/chainpad.dist.js',
+    '/common/common-ui-elements.js',
 
     '/lib/fabric.min.js',
     'less!/whiteboard/app-whiteboard.less'
@@ -34,7 +35,8 @@ define([
     Messages,
     Colors,
     AppConfig,
-    ChainPad)
+    ChainPad,
+    UIElements)
 {
 
     var APP = window.APP = {
@@ -298,8 +300,16 @@ define([
     var mkHelpMenu = function (framework) {
         var $appContainer = $('#cp-app-whiteboard-container');
         var helpMenu = framework._.sfCommon.createHelpMenu(['whiteboard']);
+        var $helpMenuButton = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': helpMenu.button.attr('class') },
+            content: h('span', helpMenu.button.text()),
+            action: function () {
+                helpMenu.button.click();
+            }
+        });
         $appContainer.prepend(helpMenu.menu);
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     // Start of the main loop
@@ -434,13 +444,24 @@ define([
             });
 
             // Export to drive as PNG
-            framework._.sfCommon.createButton('savetodrive', true, {}).click(function () {
-                var defaultName = framework._.title.getTitle();
-                UI.prompt(Messages.exportPrompt, defaultName + '.png', function (name) {
-                    if (name === null || !name.trim()) { return; }
-                    APP.upload(name);
-                });
-            }).appendTo($drawer);
+            var $saveToDriveButton = framework._.sfCommon.createButton('savetodrive', true, {});
+            var $saveToDrive = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: { 'class': $saveToDriveButton.attr('class') },
+                content: [
+                    h('i', { 'class': $saveToDriveButton.children('i').attr('class') }),
+                    h('span', $saveToDriveButton.text())
+                ],
+                action: function () {
+                    var defaultName = framework._.title.getTitle();
+                    UI.prompt(Messages.exportPrompt, defaultName + '.png', function (name) {
+                        if (name === null || !name.trim()) { return; }
+                        APP.upload(name);
+                    });
+                }
+            });
+            $saveToDrive.appendTo($drawer);
+
         } else {
             framework._.sfCommon.createButton('', true, {
                 title: Messages.canvas_imageEmbed,
