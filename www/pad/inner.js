@@ -345,15 +345,36 @@ define([
         }, function () {
             UI.alert(getSettings());
         });
-        framework._.toolbar.$drawer.append($settingsButton);
+        var $settings = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': $settingsButton.attr('class') },
+            content: [
+                h('i', { 'class': $settingsButton.children('i').attr('class') }),
+                h('span', $settingsButton.text())
+            ],
+            action: function () {
+                UI.alert(getSettings());
+            }
+        });
+
+        framework._.toolbar.$drawer.append($settings);
+
     };
 
     var mkHelpMenu = function(framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
-        $toolbarContainer.before(helpMenu.menu);
+        var $helpMenuButton = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': helpMenu.button.attr('class') },
+            content: h('span', helpMenu.button.text()),
+            action: function () {
+                helpMenu.button.click();
+            }
+        });
 
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        $toolbarContainer.before(helpMenu.menu);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     var mkDiffOptions = function(cursor, readOnly) {
@@ -618,17 +639,23 @@ define([
 
     var mkPrintButton = function (framework, editor) {
         var $printButton = framework._.sfCommon.createButton('print', true);
-        $printButton.click(function () {
-            /*
-            // NOTE: alternative print system in case we keep having more issues on Firefox
-            var $iframe = $('html').find('iframe');
-            var iframe = $iframe[0].contentWindow;
-            iframe.print();
-            */
-            editor.execCommand('print');
-            framework.feedback('PRINT_PAD');
+        var $print = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: { 'class': $printButton.attr('class') },
+            content: h('span', $printButton.text()),
+            action: function () {
+                /*
+                // NOTE: alternative print system in case we keep having more issues on Firefox
+                var $iframe = $('html').find('iframe');
+                var iframe = $iframe[0].contentWindow;
+                iframe.print();
+                */
+                editor.execCommand('print');
+                framework.feedback('PRINT_PAD');
+            }
         });
-        framework._.toolbar.$drawer.append($printButton);
+        framework._.toolbar.$drawer.append($print);
+
     };
 
     var andThen2 = function(editor, Ckeditor, framework) {
