@@ -53,7 +53,10 @@ define([
     Messages.support_pendingListHint = "List of tickets that may not be updated for a while but should not be closed";
 
     Messages.support_privacyTitle = "Answer anonymously";
-    Messages.support_privacyHint = "Check this option to reply as 'The Support Team' instead of your own usenrame";
+    Messages.support_privacyHint = "Check this option to reply as 'The Support Team' instead of your own username";
+
+    Messages.support_notificationsTitle = "Disable notifications";
+    Messages.support_notificationsHint = "Check this option to disable notifications on new or updated ticket";
 
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
@@ -193,11 +196,13 @@ define([
 
         let activeContainer, pendingContainer, closedContainer;
         var refreshAll = function () {
-            console.error('refresh');
             refresh($(activeContainer), 'active');
             refresh($(pendingContainer), 'pending');
             refresh($(closedContainer), 'closed');
         };
+        let _refresh = Util.throttle(refreshAll, 500);
+        events.NEW_TICKET.reg(_refresh);
+        events.UPDATE_TICKET.reg(_refresh);
 
         // Make sidebar layout
         const categories = {
@@ -215,9 +220,15 @@ define([
                     'closed-list'
                 ]
             },
+            'settings': {
+                icon: undefined,
+                content: [
+                    'notifications'
+                ]
+            },
             'refresh': {
                 icon: undefined,
-                action: refreshAll
+                onClick: refreshAll
             }
         };
 
@@ -242,12 +253,19 @@ define([
             let div = closedContainer = h('div.cp-support-container'); // XXX block
             cb(div);
         }, { noTitle: true, noHint: true });
-
-        let _refresh = Util.throttle(refreshAll, 500);
-        events.NEW_TICKET.reg(_refresh);
-        events.UPDATE_TICKET.reg(_refresh);
-
         refreshAll();
+
+        sidebar.addCheckboxItem({
+            key: 'notifications',
+            getState: () => APP.disableSupportNotif,
+            query: (val, setState) => {
+                common.setAttribute(['general', 'disableSupportNotif'], val, function (err) {
+                    if (err) { val = APP.disableSupportNotif; }
+                    APP.disableSupportNotif = val;
+                    setState(val);
+                });
+            }
+        });
 
         sidebar.makeLeftside(categories);
     };
@@ -273,6 +291,10 @@ define([
         APP.$toolbar = $('#cp-toolbar');
         sframeChan = common.getSframeChannel();
         sframeChan.onReady(waitFor());
+    }).nThen(function (waitFor) {
+        common.getAttribute(['general', 'disableSupportNotif'], waitFor(function (err, value) {
+            APP.disableSupportNotif = !!value;
+        }));
     }).nThen(function (/*waitFor*/) {
         createToolbar();
         var metadataMgr = common.getMetadataMgr();

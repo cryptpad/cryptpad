@@ -7,12 +7,13 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
+    '/common/pinpad.js',
     '/components/nthen/index.js',
     '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
     '/components/chainpad/chainpad.dist.js',
     'chainpad-netflux'
-], function (ApiConfig, Util, Hash, Realtime, nThen, Crypto, Listmap, ChainPad, CpNetflux) {
+], function (ApiConfig, Util, Hash, Realtime, Pinpad, nThen, Crypto, Listmap, ChainPad, CpNetflux) {
     var Support = {};
 
     // UTILS
@@ -396,6 +397,7 @@ define([
                     cb(false);
                 });
                 notifyClient(ctx, true, 'NEW_TICKET', data.channel);
+                if (ctx.adminRpc) { ctx.adminRpc.pin([data.channel], () => {}); }
             });
         });
     };
@@ -442,6 +444,43 @@ define([
 
     // INITIALIZE ADMIN
 
+    var getPinList = function (ctx) {
+        if (!ctx.adminDoc || !ctx.adminRpc) { return; }
+        let adminChan = ctx.adminDoc.metadata && ctx.adminDoc.metadata.channel;
+        let doc = ctx.adminDoc.proxy;
+        let t = doc.tickets;
+        let list = [
+            adminChan,
+            ...Object.keys(t.active),
+            ...Object.keys(t.pending),
+            ...Object.keys(t.closed)
+        ];
+        return Util.deduplicateString(list).sort();
+    };
+    var initAdminRpc = function (ctx, _cb) {
+        let cb = Util.mkAsync(_cb);
+        let Nacl = Crypto.Nacl;
+        let proxy = ctx.store.proxy;
+        let curvePrivate = Util.find(proxy, ['mailboxes', 'support2', 'keys', 'curvePrivate']);
+        if (!curvePrivate) { return void cb('EFORBIDDEN'); }
+        let edPrivate, edPublic
+        try {
+            let pair = Nacl.sign.keyPair.fromSeed(Nacl.util.decodeBase64(curvePrivate));
+            edPrivate = Nacl.util.encodeBase64(pair.secretKey);
+            edPublic = Nacl.util.encodeBase64(pair.publicKey);
+        } catch (e) {
+            return void cb(e);
+        }
+        Pinpad.create(ctx.store.network, {
+            edPublic: edPublic,
+            edPrivate: edPrivate
+        }, (e, call) => {
+            if (e) { return void cb(e); }
+            console.log("Support RPC ready, public key is ", edPublic);
+            ctx.adminRpc = call;
+            cb();
+        });
+    };
     var loadAdminDoc = function (ctx, hash, cb) {
         var secret = Hash.getSecrets('support', hash);
         var listmapConfig = {
@@ -467,6 +506,19 @@ define([
             doc.tickets.pending = doc.tickets.pending || {};
             ctx.adminRdyEvt.fire();
             cb();
+
+            if (!ctx.adminRpc) { return; }
+            // Check pin list
+            let list = getPinList(ctx);
+            let local = Hash.hashChannelList(list);
+            ctx.adminRpc.getServerHash(function (e, hash) {
+                if (e) { return void console.warn(e); }
+                if (hash !== local) {
+                    ctx.adminRpc.reset(list, function (e, hash) {
+                        if (e) { console.warn(e); }
+                    });
+                }
+            });
         });
     };
 
@@ -486,6 +538,10 @@ define([
                     // XXX delete the mailbox?
                     return void waitFor.abort();
                 }
+            }));
+        }).nThen((waitFor) => {
+            initAdminRpc(ctx, waitFor((err) => {
+                if (err) { console.error('Support RPC not ready', err); }
             }));
         }).nThen((waitFor) => {
             let seed = privateKey.slice(0,24); // XXX better way to get seed?

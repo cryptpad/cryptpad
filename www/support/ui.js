@@ -171,7 +171,8 @@ define([
             $(button).click(cb);
         }
 
-        var cancel = title ? h('button.btn.btn-secondary', Messages.cancel) : undefined;
+        var cancel = title ? h('button.btn.btn-secondary.cp-support-reply-cancel', Messages.cancel)
+                        : undefined;
 
         var category = h('input.cp-support-form-category', {
             type: 'hidden',
@@ -318,6 +319,7 @@ define([
         var adminActions;
         var adminClasses = '';
         var adminOpen;
+        var ticket;
         if (ctx.isAdmin) {
             // Admin custom style
             adminClasses = `.cp-not-loaded`;
@@ -345,6 +347,7 @@ define([
                     $ticket.toggleClass('cp-not-loaded', true);
                     return onHide(ticket, id, content, function () {
                         visible = false;
+                        $(ticket).find('.cp-support-reply-cancel').click();
                         $show.text(Messages.admin_support_open);
                         $show.prop('disabled', '');
                     });
@@ -362,7 +365,7 @@ define([
 
         let isPremium = content.premium ? '.cp-support-ispremium' : '';
         var name = Util.fixHTML(content.author) || Messages.anonymous;
-        var ticket = h(`div.cp-support-list-ticket${adminClasses}`, {
+        ticket = h(`div.cp-support-list-ticket${adminClasses}`, {
             'data-id': id
         }, [
             h('div.cp-support-ticket-header', [
