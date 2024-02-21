@@ -562,14 +562,12 @@ define([
             var $b = $(button);
 
             var inputAlias = blocks.input({
-                type: 'text',
-                'aria-labelledby': 'cp-admin-invitation-alias'
+                type: 'text'
             });
             var input = blocks.labelledInput(Messages.admin_invitationAlias, inputAlias);
 
             var email = blocks.input({
-                type: 'email',
-                'aria-labelledby': 'cp-admin-invitation-email'
+                type: 'email'
             });
             var inputEmail = blocks.labelledInput(Messages.admin_invitationEmail, email);
 
@@ -579,12 +577,13 @@ define([
                 refreshInvite();
             });
         
-            var list = blocks.list([]);
+            var list = blocks.list([], 'admin-all-limits');
             var $list = $(list);
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
                 input,
-                inputEmail
+                inputEmail,
+                list
             ], nav);
         
             var metadataMgr = common.getMetadataMgr();
@@ -753,21 +752,18 @@ define([
         sidebar.addItem('setlimit', function(cb){
 
             var userInput = blocks.input({
-                type:'key',
-                'aria-labelledby': 'cp-admin-setlimit-user'
+                type:'key'
             });
             var user = blocks.labelledInput(Messages.admin_limitUser, userInput);
             var $key = $(user);
             var limitInput = blocks.input({
                 type: 'number',
                 min: 0,
-                value: 0,
-                'aria-labelledby': 'cp-admin-setlimit-value'
+                value: 0
             });
             var limit = blocks.labelledInput(Messages.admin_limitMB, limitInput);
             var noteInput = blocks.input({
-                type: 'text',
-                'aria-labelledby': 'cp-admin-setlimit-note'
+                type: 'text'
             });
             var note = blocks.labelledInput(Messages.admin_limitSetNote, noteInput);
             var $note = $(note);
@@ -853,8 +849,6 @@ define([
             cb(form);
     
         });
-
-
 
         sidebar.makeLeftside(categories);
     };
