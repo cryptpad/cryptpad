@@ -1450,7 +1450,7 @@ Example
         return function () {
             var state = data.getState();
             var key = data.key;
-            var $div = makeBlock(key);
+            var $div = makeBlock(key); //sidebar.addItem(data.key);
             var $hint;
             if (data.hintElement) {
                 $hint = $div.find('.cp-sidebarlayout-description');
