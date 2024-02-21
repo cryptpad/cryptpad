@@ -483,7 +483,219 @@ define([
         });
 
         var getPrettySize = UIElements.prettySize;
-        //user blocks
+         //user blocks
+         //to determine functionilty for both sso reg and simpple one
+            sidebar.addCheckboxItem({
+                key: 'registration',
+                getState: function () {
+                    return APP.instanceStatus.restrictRegistration;
+                },
+                query: function (val, setState) {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['RESTRICT_REGISTRATION', [val]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                        }
+                        APP.updateStatus(function () {
+                            setState(APP.instanceStatus.restrictRegistration);
+                            refresh();
+                            flushCacheNotice();
+                        });
+                    });
+                },
+            });
+        
+        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
+
+        sidebar.addCheckboxItem({
+            key: 'registration',
+            getState: function () {
+                return APP.instanceStatus.restrictRegistration;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RESTRICT_REGISTRATION', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.restrictRegistration);
+                        flushCacheNotice();
+                    });
+                });
+            },
+        });
+
+        if (ssoEnabled) {
+            sidebar.addCheckboxItem({
+                key: 'registration-sso',
+                getState: function () {
+                    return APP.instanceStatus.restrictSsoRegistration;
+                },
+                query: function (val, setState) {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['RESTRICT_SSO_REGISTRATION', [val]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                        }
+                        APP.updateStatus(function () {
+                            setState(APP.instanceStatus.restrictSsoRegistration);
+                            flushCacheNotice();
+                        });
+                    });
+                },
+            });
+        }
+
+        //invitation
+        sidebar.addItem('invitation', function(cb){
+            var button = blocks.button('primary', '', Messages.admin_invitationCreate);
+            var $b = $(button);
+
+            var inputAlias = blocks.input({
+                type: 'text',
+                'aria-labelledby': 'cp-admin-invitation-alias'
+            });
+            var input = blocks.labelledInput(Messages.admin_invitationAlias, inputAlias);
+
+            var email = blocks.input({
+                type: 'email',
+                'aria-labelledby': 'cp-admin-invitation-email'
+            });
+            var inputEmail = blocks.labelledInput(Messages.admin_invitationEmail, email);
+
+            var refreshInvite = function () {};
+            var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
+            Util.onClickEnter($(refreshButton), function () {
+                refreshInvite();
+            });
+        
+            var list = blocks.list([]);
+            var $list = $(list);
+            var nav = blocks.nav([button, refreshButton]);
+            var form = blocks.form([
+                input,
+                inputEmail
+            ], nav);
+        
+            var metadataMgr = common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
+        
+            var deleteInvite = function (id) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'DELETE_INVITATION',
+                    data: id
+                }, function (e, response) {
+                    $b.prop('disabled', false);
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        return void console.error(e, response);
+                    }
+                    refreshInvite();
+                });
+            };
+        
+            refreshInvite = function () {
+                $list.empty();
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'GET_ALL_INVITATIONS',
+                }, function (e, response) {
+                    if (e || response.error) {
+                        if (!response || response.error !== "ENOENT") { UI.warn(Messages.error); }
+                        console.error(e, response);
+                        return;
+                    }
+                    if (!Array.isArray(response)) { return; }
+                    var all = response[0];
+                    Object.keys(all).forEach(function (key, i) {
+                        if (!i) { // First item: add header to table
+                            var trHead = h('tr', [
+                                h('th', Messages.admin_invitationLink),
+                                h('th', Messages.admin_invitationAlias),
+                                h('th', Messages.admin_invitationEmail),
+                                h('th', Messages.admin_documentCreationTime),
+                                h('th')
+                            ]);
+                            $list.append(trHead);
+                        }
+                        var data = all[key];
+                        var url = privateData.origin + Hash.hashToHref(key, 'register');
+        
+                        var del = blocks.button('danger', 'fa.fa-trash', Messages.kanban_delete )
+                        var $del = $(del);
+                        Util.onClickEnter($del, function () {
+                            $del.attr('disabled', 'disabled');
+                            UI.confirm(Messages.admin_invitationDeleteConfirm, function (yes) {
+                                $del.attr('disabled', '');
+                                if (!yes) { return; }
+                                deleteInvite(key);
+                            });
+                        });
+                        var copy = blocks.button('secondary', '', Messages.admin_invitationCopy )
+                        Util.onClickEnter($(copy), function () {
+                            Clipboard.copy(url, () => {
+                                UI.log(Messages.genericCopySuccess);
+                            });
+                        });
+                        var line = h('tr', [
+                            h('td', UI.dialog.selectable(url)),
+                            h('td', data.alias),
+                            h('td', data.email),
+                            h('td', new Date(data.time).toLocaleString()),
+                            //h('td', data.createdBy),
+                            h('td', [
+                                copy,
+                                del
+                            ])
+                        ]);
+                        $list.append(line);
+                    });
+                });
+            };
+        
+            refreshInvite();
+        
+            $b.on('click', () => {
+                var alias = $(input).val().trim();
+                if (!alias) { return void UI.warn(Messages.error); } // FIXME better error message
+                $b.prop('disabled', true);
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'CREATE_INVITATION',
+                    data: {
+                        alias,
+                        email: $(inputEmail).val()
+                    }
+                }, function (e, response) {
+                    $b.prop('disabled', false);
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        return void console.error(e, response);
+                    }
+                    $(input).val('').focus();
+                    $(inputEmail).val('');
+                    refreshInvite();
+                });
+            });
+        
+            cb(form);
+        });
+        
+        //user directory
+
+       
+
+        //QUOTA
+
+
         //storage blocks
         sidebar.addItem('defaultlimit', function (cb) {
 
@@ -537,6 +749,112 @@ define([
 
             cb(form);
         });
+
+        sidebar.addItem('setlimit', function(cb){
+
+            var userInput = blocks.input({
+                type:'key',
+                'aria-labelledby': 'cp-admin-setlimit-user'
+            });
+            var user = blocks.labelledInput(Messages.admin_limitUser, userInput);
+            var $key = $(user);
+            var limitInput = blocks.input({
+                type: 'number',
+                min: 0,
+                value: 0,
+                'aria-labelledby': 'cp-admin-setlimit-value'
+            });
+            var limit = blocks.labelledInput(Messages.admin_limitMB, limitInput);
+            var noteInput = blocks.input({
+                type: 'text',
+                'aria-labelledby': 'cp-admin-setlimit-note'
+            });
+            var note = blocks.labelledInput(Messages.admin_limitSetNote, noteInput);
+            var $note = $(note);
+            var remove = blocks.button('danger', '',Messages.fc_remove );
+            var set = blocks.button('primary', '',  Messages.admin_setlimitButton);
+            var nav = blocks.nav([set, remove]);
+            var form = blocks.form([
+                user,
+                limit,
+                note
+            ], nav);
+    
+            var getValues = function () {
+                var key = $key.val();
+                var _limit = parseInt($(limit).val());
+                if (key.length !== 44) {
+                    try {
+                        var u = Keys.parseUser(key);
+                        if (!u.domain || !u.user || !u.pubkey) {
+                            return void UI.warn(Messages.admin_invalKey);
+                        }
+                    } catch (e) {
+                        return void UI.warn(Messages.admin_invalKey);
+                    }
+                }
+                if (isNaN(_limit) || _limit < 0) {
+                    return void UI.warn(Messages.admin_invalLimit);
+                }
+                var _note = ($note.val() || "").trim();
+                return {
+                    key: key,
+                    data: {
+                        limit: _limit * 1024 * 1024,
+                        note: _note,
+                        plan: 'custom'
+                    }
+                };
+            };
+            UI.confirmButton(remove, {
+                classes: 'btn-danger',
+                multiple: true,
+                validate: function () {
+                    var obj = getValues();
+                    if (!obj || !obj.key) { return false; }
+                    return true;
+                }
+            }, function () {
+                var obj = getValues();
+                var data = [obj.key];
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RM_QUOTA', data]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return;
+                    }
+                    APP.refreshLimits();
+                    $key.val('');
+                });
+            });
+    
+            $(set).click(function () {
+                var obj = getValues();
+                if (!obj || !obj.key) { return; }
+                var data = [obj.key, obj.data];
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_QUOTA', data]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return;
+                    }
+                    APP.refreshLimits();
+                    $key.val('');
+                    $note.val('');
+                });
+            });
+            
+            cb(form);
+    
+        });
+
+
 
         sidebar.makeLeftside(categories);
     };

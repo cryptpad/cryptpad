@@ -83,6 +83,35 @@ define([
             return box;
         };
 
+        blocks.list = (items) => {
+            const table = h('table.cp-sidebar-list');
+
+            const headerRow = h('tr', [
+                h('th', 'Link'),
+                h('th', 'Alias'),
+                h('th', 'Email'),
+                h('th', 'Creation Time'),
+                h('th', 'Actions')
+            ]);
+            table.appendChild(headerRow);
+            items.forEach(item => {
+                const row = h('tr', [
+                    h('td', item.url),
+                    h('td', item.alias),
+                    h('td', item.email),
+                    h('td', new Date(item.time).toLocaleString()),
+                    h('td', [
+                        h('button', 'Copy'),
+                        h('button', 'Delete')
+                    ])
+                ]);
+                table.appendChild(row);
+            });
+        
+            return table;
+        };
+        
+
         blocks.clickableButton = function (type, icon, text, callback) {
             var button = blocks.button(type, icon, text);
             var $button = $(button);
