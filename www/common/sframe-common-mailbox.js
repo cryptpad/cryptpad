@@ -87,6 +87,8 @@ define([
                     e.stopPropagation();
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
                 });
+            } else if (userData && userData.supportTeam) {
+                avatar = h('span.cp-avatar-image', h('img', { src:'/customize/CryptPad_logo.svg' }));
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
             const tabIndexValue = undefined;//data.content.isDismissible ? undefined : '0';

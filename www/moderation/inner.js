@@ -6,7 +6,6 @@ define([
     'jquery',
     '/api/config',
     '/customize/application_config.js',
-    '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
@@ -16,20 +15,15 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/common-signing-keys.js',
+    '/common/inner/sidebar-layout.js',
     '/support/ui.js',
-    '/common/clipboard.js',
-    'json.sortify',
 
-    'css!/lib/datepicker/flatpickr.min.css',
-    'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/moderation/app-moderation.less',
 ], function (
     $,
     ApiConfig,
     AppConfig,
-    Crypto,
     Toolbar,
     nThen,
     SFCommon,
@@ -39,38 +33,33 @@ define([
     UIElements,
     Util,
     Hash,
-    Keys,
+    Sidebar,
     Support,
-    Clipboard,
-    Sortify
     )
 {
-    var APP = {
-        'instanceStatus': {}
-    };
+    var APP = {};
 
-    var Nacl = window.nacl;
     var common;
-    var sFrameChan;
+    var sframeChan;
     var events = {
         'NEW_TICKET': Util.mkEvent(),
         'UPDATE_TICKET': Util.mkEvent()
     };
 
-    var andThen = function (linkedTicket) {
-        var $body = $('#cp-content-container');
+    // XXX
+    Messages.support_activeListTitle = "Active tickets";
+    Messages.support_activeListHint = "List of tickets that are in an active state";
+    Messages.support_pendingListTitle = "Pending tickets";
+    Messages.support_pendingListHint = "List of tickets that may not be updated for a while but should not be closed";
 
-        var button = h('button.btn.btn-primary', 'refresh'); // XXX
-        $body.append(h('div', button));
+    Messages.support_privacyTitle = "Answer anonymously";
+    Messages.support_privacyHint = "Check this option to reply as 'The Support Team' instead of your own usenrame";
 
-        $body.append(h('h1'), 'ACTIVE');
-        var $containerActive = $(h('div.cp-support-container')).appendTo($body);
-        $body.append(h('h1'), 'PENDING');
-        var $containerPending = $(h('div.cp-support-container')).appendTo($body);
-        $body.append(h('h1'), 'CLOSED');
-        var $containerClosed = $(h('div.cp-support-container')).appendTo($body);
+    var andThen = function (common, $container, linkedTicket) {
+        const sidebar = Sidebar.create(common, 'support', $container);
+        const blocks = sidebar.blocks;
 
-
+        // Support panel functions
         let open = [];
         let refresh = ($container, type) => {
             APP.module.execCommand('LIST_TICKETS_ADMIN', {
@@ -201,18 +190,66 @@ define([
                 console.log(type, tickets);
             });
         };
+
+        let activeContainer, pendingContainer, closedContainer;
         var refreshAll = function () {
-            refresh($containerActive, 'active');
-            refresh($containerPending, 'pending');
-            refresh($containerClosed, 'closed');
+            console.error('refresh');
+            refresh($(activeContainer), 'active');
+            refresh($(pendingContainer), 'pending');
+            refresh($(closedContainer), 'closed');
         };
+
+        // Make sidebar layout
+        const categories = {
+            'open': {
+                icon: undefined,
+                content: [
+                    'privacy',
+                    'active-list',
+                    'pending-list',
+                ]
+            },
+            'closed': {
+                icon: undefined,
+                content: [
+                    'closed-list'
+                ]
+            },
+            'refresh': {
+                icon: undefined,
+                action: refreshAll
+            }
+        };
+
+
+        sidebar.addCheckboxItem({
+            key: 'privacy',
+            getState: () => false,
+            query: (val, setState) => {
+                APP.support.setAnonymous(val);
+                setState(val);
+            }
+        });
+        sidebar.addItem('active-list', cb => {
+            let div = activeContainer = h('div.cp-support-container'); // XXX block
+            cb(div);
+        });
+        sidebar.addItem('pending-list', cb => {
+            let div = pendingContainer = h('div.cp-support-container'); // XXX block
+            cb(div);
+        });
+        sidebar.addItem('closed-list', cb => {
+            let div = closedContainer = h('div.cp-support-container'); // XXX block
+            cb(div);
+        }, { noTitle: true, noHint: true });
 
         let _refresh = Util.throttle(refreshAll, 500);
         events.NEW_TICKET.reg(_refresh);
         events.UPDATE_TICKET.reg(_refresh);
 
-        Util.onClickEnter($(button), refreshAll); // XXX temp button?
         refreshAll();
+
+        sidebar.makeLeftside(categories);
     };
 
     var createToolbar = function () {
@@ -232,10 +269,10 @@ define([
         $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
-        APP.$container = $('#cp-content-container');
+        APP.$container = $('#cp-sidebarlayout-container');
         APP.$toolbar = $('#cp-toolbar');
-        sFrameChan = common.getSframeChannel();
-        sFrameChan.onReady(waitFor());
+        sframeChan = common.getSframeChannel();
+        sframeChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
@@ -266,7 +303,7 @@ define([
             active = active.split('-')[0];
         }
 
-        andThen(linkedTicket);
+        andThen(common, APP.$container, linkedTicket);
         UI.removeLoadingScreen();
 
     });

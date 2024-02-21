@@ -212,6 +212,9 @@ define([
                 title: data.ticket.title,
                 isClose: data.ticket.close,
                 channel: data.channel,
+                user: Util.find(data.ticket, ['sender', 'curvePublic']) ? undefined : {
+                    supportTeam: true
+                }
             }, {
                 channel: notifChannel,
                 curvePublic: notifKey

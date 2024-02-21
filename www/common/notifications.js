@@ -497,7 +497,7 @@ define([
         };
         content.handler = function () {
             let url = msg.isAdmin ? '/support/#tickets' : `/moderation/#support-${content.channel}`;
-            common.openURL(msg.url);
+            common.openURL(url);
             defaultDismiss(common, data)();
         };
         if (!content.archived) {

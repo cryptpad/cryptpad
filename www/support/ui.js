@@ -15,6 +15,9 @@ define([
     '/customize/pages.js',
 ], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages) {
 
+    Messages.support_team = "The Support Team"; // XXX
+    Messages.support_answerAs = "Answer as <b>{0}</b>"; // XXX
+
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -33,6 +36,14 @@ define([
             edPublic: privateData.edPublic,
             notifications: user.notifications,
         };
+
+        if (ctx.isAdmin && ctx.anonymous) {
+            data.sender = {
+                name: Messages.support_team,
+                accountName: 'support'
+                // XXX send edPublic? or keep it private
+            };
+        }
 
         if (typeof(ctx.pinUsage) === 'object') {
             // pass pin.usage, pin.limit, and pin.plan if supplied
@@ -62,45 +73,6 @@ define([
 
         return data;
     };
-
-    var send = function (ctx, id, type, data, dest) {
-        var common = ctx.common;
-        var supportKey = ApiConfig.supportMailbox;
-        var supportChannel = Hash.getChannelIdFromKey(supportKey);
-        var metadataMgr = common.getMetadataMgr();
-        var user = metadataMgr.getUserData();
-        var privateData = metadataMgr.getPrivateData();
-
-        data = getDebuggingData(ctx, data);
-
-        data.id = id;
-        data.time = +new Date();
-
-        if (!ctx.isAdmin) {
-            // "dest" is the recipient that is not the admin support mailbox.
-            // In the support page, make sure dest is always ourselves.
-            dest.channel = privateData.support;
-            dest.curvePublic = user.curvePublic;
-        }
-
-        // Send the message to the admin mailbox and to the user mailbox
-        common.mailbox.sendTo(type, data, {
-            channel: supportChannel,
-            curvePublic: supportKey
-        });
-        common.mailbox.sendTo(type, data, {
-            channel: dest.channel,
-            curvePublic: dest.curvePublic
-        });
-
-        if (ctx.isAdmin) {
-            common.mailbox.sendTo('SUPPORT_MESSAGE', {}, {
-                channel: dest.notifications,
-                curvePublic: dest.curvePublic
-            });
-        }
-    };
-
 
     var getFormData = function (ctx, form) {
         var $form = $(form);
@@ -139,10 +111,6 @@ define([
             attachments: attachments,
             message: content,
         });
-    };
-    var sendForm = function (ctx, id, form, dest) {
-        send(ctx, id, 'TICKET', getFormData(ctx, form), dest);
-        return true;
     };
 
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
@@ -185,6 +153,14 @@ define([
         document: documentIdDocs,
         drives: documentIdDocs,
         abuse: Pages.customURLs.terms,
+    };
+
+    var getAnswerAs = function (ctx) {
+        var common = ctx.common;
+        var metadataMgr = common.getMetadataMgr();
+        var user = metadataMgr.getUserData();
+        var answerName = Util.fixHTML(ctx.anonymous ? Messages.support_team : user.name);
+        return Messages._getKey('support_answerAs', [answerName]);
     };
 
     var makeForm = function (ctx, oldData, cb, title, hideNotice) {
@@ -239,6 +215,8 @@ define([
         var attachments, addAttachment;
 
 
+        var answerAs = UI.setHTML(h('span.cp-support-answeras'), getAnswerAs(ctx));
+
         var content = [
             h('hr'),
             category,
@@ -254,12 +232,14 @@ define([
             h('textarea.cp-support-form-msg', {
                 placeholder: Messages.support_formMessage
             }, (oldData && oldData.message) || ''),
+            h('br'),
             h('label', Messages.support_attachments),
             attachments = h('div.cp-support-attachments'),
             addAttachment = h('button.btn', Messages.support_addAttachment),
             h('hr'),
             button,
-            cancel
+            cancel,
+            ctx.isAdmin? answerAs : undefined
         ];
 
         var _addAttachment = (name, href) => {
@@ -440,7 +420,8 @@ define([
         // Check content.sender to see if it comes from us or from an admin
         var senderKey = content.sender && content.sender.edPublic;
         var fromMe = senderKey === privateData.edPublic;
-        var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1;
+        var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1
+                        || (!senderKey && content.sender.accountName === 'support'); // XXX anon key?
         var fromPremium = Boolean(content.sender.plan || Util.find(content, ['sender', 'quota', 'plan']));
 
         var userData = h('div.cp-support-showdata', [
@@ -550,6 +531,10 @@ define([
         };
         ctx.FM = common.createFileManager(fmConfig);
 
+        ui.setAnonymous = function (val) {
+            ctx.anonymous = ctx.isAdmin && val;
+            $('.cp-support-answeras').html(getAnswerAs(ctx));
+        };
         ui.getFormData = function (form) {
             return getFormData(ctx, form);
         };
