@@ -84,23 +84,23 @@ define([
         };
 
         
+        
         blocks.list = function (header, entries) {
             const table = h('table.cp-sidebar-list');
-        
+
             const headerValues = header.map(value => { return h('th', value); });
             const headerRow = h('thead', h('tr', headerValues));  
             table.appendChild(headerRow);
-        
-            const tbody = h('tbody');
-            table.appendChild(tbody);
-        
+
+
             table.updateContent = (newEntries) => {
                 $(table).find('tbody').remove();
                 let bodyContent = [];
                 newEntries.forEach(line => {
                     const row = h('tr', line.map(value => { return h('td', value); }));
-                    tbody.appendChild(row);
+                    bodyContent.push(row);
                 });
+                table.appendChild(h('tbody', bodyContent));
             };
             table.updateContent(entries);
         

@@ -624,10 +624,11 @@ define([
                     }
                     if (!Array.isArray(response)) { return; }
                     var all = response[0];
+                    var newEntries = [];
                     Object.keys(all).forEach(function (key) {
                         var data = all[key];
                         var url = privateData.origin + Hash.hashToHref(key, 'register');
-        
+              
                         var del = blocks.button('danger', 'fa fa-trash', Messages.kanban_delete )
                         var $del = $(del);
                         Util.onClickEnter($del, function () {
@@ -644,7 +645,7 @@ define([
                                 UI.log(Messages.genericCopySuccess);
                             });
                         });
-                        var newEntries = [];
+                        
                         newEntries.push([
                             UI.dialog.selectable(url),
                             data.alias,
@@ -652,9 +653,11 @@ define([
                             new Date(data.time).toLocaleString(),
                             [copy, del]
                         ]);
-                        list.updateContent(newEntries);
                     });
+                    list.updateContent(newEntries);  
+                    
                 });
+               
             };
             refreshInvite();
         
