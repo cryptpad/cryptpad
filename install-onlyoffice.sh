@@ -10,7 +10,7 @@ main () {
 	parse_arguments "$@"
 	validate_arguments
 
-	prepare_builds
+	mkdir -p "$OO_DIR"
 	install_version v1 4f370beb
 	install_version v2b d9da72fd
 	install_version v4 6ebc6938
@@ -84,39 +84,52 @@ EOF
 	exit 1
 }
 
-prepare_builds () {
+ensure_commit_exists () {
 	if [ -d "$BUILDS_DIR" ]; then
+		local LAST_DIR
+		LAST_DIR=$(pwd)
 		cd "$BUILDS_DIR"
-		git fetch
-		cd -
-	else
-		git clone --bare git@github.com:cryptpad/onlyoffice-builds.git "$BUILDS_DIR"  # TODO use https here, when repo is public
+		if ! git cat-file -e "$1"; then
+			git fetch
+		fi
+		cd "$LAST_DIR"
+		return
 	fi
-
-	mkdir -p "$OO_DIR"
+	
+	git clone --bare git@github.com:cryptpad/onlyoffice-builds.git "$BUILDS_DIR"  # TODO use https here, when repo is public
 }
 
 install_version () {
 	local DIR=$1
 	local COMMIT=$2
 	local FULL_DIR=$OO_DIR/$DIR
+	local LAST_DIR
+	LAST_DIR=$(pwd)
 
-	if [ ! -e "$FULL_DIR"/.git ]; then
-		rm -rf "$FULL_DIR"
-	fi
-	
-	if [ -d "$FULL_DIR" ]; then
-		cd "$FULL_DIR"
-		git checkout "$COMMIT"
-		cd -
-	else
-		cd "$BUILDS_DIR"
-		git worktree add "$FULL_DIR" "$COMMIT"
-		cd -
+	if [ ! -e "$FULL_DIR"/.commit ]; then
+		if [ "$(cat "$FULL_DIR"/.commit)" != "$COMMIT" ]; then
+			ensure_commit_exists "$COMMIT"
+
+			if [ ! -e "$FULL_DIR"/.git ]; then
+				rm -rf "$FULL_DIR"
+			fi
+			
+			if [ -d "$FULL_DIR" ]; then
+				cd "$FULL_DIR"
+				git checkout "$COMMIT"
+			else
+				cd "$BUILDS_DIR"
+				git worktree add "$FULL_DIR" "$COMMIT"
+			fi
+
+			cd "$LAST_DIR"
+
+			echo "$COMMIT" > "$FULL_DIR"/.commit
+		fi
 	fi
 
 	if [ ${CLEAR+x} ]; then
-		rm "$FULL_DIR"/.git
+		rm -f "$FULL_DIR"/.git
 	fi
 }
 
