@@ -32,3 +32,4 @@ lib/plugins/*
 !lib/plugins/README.md
 www/common/onlyoffice/v*
 
+/onlyoffice-builds.git/
