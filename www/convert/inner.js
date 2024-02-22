@@ -118,7 +118,7 @@ define([
     var loadOO = function (blob, type, name, cb) {
         var s = h('script', {
             type:'text/javascript',
-            src: '/common/onlyoffice/'+CURRENT_VERSION+'/web-apps/apps/api/documents/api.js'
+            src: '/common/onlyoffice/dist/'+CURRENT_VERSION+'/web-apps/apps/api/documents/api.js'
         });
         var file = getFileType(type);
         APP.$rightside.append(s);

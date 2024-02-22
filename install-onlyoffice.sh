@@ -4,11 +4,12 @@ set -euxo pipefail
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BUILDS_DIR=$SCRIPT_DIR/onlyoffice-builds.git
-OO_DIR=$SCRIPT_DIR/www/common/onlyoffice
+OO_DIR=$SCRIPT_DIR/www/common/onlyoffice/dist
 
 main () {
 	parse_arguments "$@"
 	validate_arguments
+
 	prepare_builds
 	install_version v1 4f370beb
 	install_version v2b d9da72fd
@@ -91,6 +92,8 @@ prepare_builds () {
 	else
 		git clone --bare git@github.com:cryptpad/onlyoffice-builds.git "$BUILDS_DIR"  # TODO use https here, when repo is public
 	fi
+
+	mkdir -p "$OO_DIR"
 }
 
 install_version () {
