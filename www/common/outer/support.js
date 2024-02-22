@@ -24,12 +24,12 @@ define([
         require(['/api/config?' + (+new Date())], function (NewConfig) {
             ctx.adminKeys = NewConfig.adminKeys; // Update admin keys // XXX MODERATOR
 
-            var supportKey = NewConfig.newSupportMailbox;
+            var supportKey = NewConfig.supportMailboxKey;
             if (!supportKey) { return void cb('E_NOT_INIT'); }
 
             // If admin, check key
             if (isAdmin && Util.find(ctx.store.proxy, [
-                'mailboxes', 'support2', 'keys', 'curvePublic']) !== supportKey) {
+                'mailboxes', 'supportteam', 'keys', 'curvePublic']) !== supportKey) {
                 return void cb('EFORBIDDEN');
             }
 
@@ -37,7 +37,7 @@ define([
                 return ctx.adminRdyEvt.reg(() => {
                     cb(null, {
                         myCurve: data.adminCurvePrivate || Util.find(ctx.store.proxy, [
-                                    'mailboxes', 'support2', 'keys', 'curvePrivate']),
+                                    'mailboxes', 'supportteam', 'keys', 'curvePrivate']),
                         theirPublic: data.curvePublic,
                         notifKey: data.curvePublic
                     });
@@ -461,7 +461,7 @@ define([
         let cb = Util.mkAsync(_cb);
         let Nacl = Crypto.Nacl;
         let proxy = ctx.store.proxy;
-        let curvePrivate = Util.find(proxy, ['mailboxes', 'support2', 'keys', 'curvePrivate']);
+        let curvePrivate = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
         if (!curvePrivate) { return void cb('EFORBIDDEN'); }
         let edPrivate, edPublic
         try {
@@ -526,8 +526,8 @@ define([
     var initializeSupportAdmin = function (ctx, waitFor) {
         let unlock = waitFor();
         let proxy = ctx.store.proxy;
-        let supportKey = Util.find(proxy, ['mailboxes', 'support2', 'keys', 'curvePublic']);
-        let privateKey = Util.find(proxy, ['mailboxes', 'support2', 'keys', 'curvePrivate']);
+        let supportKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
+        let privateKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
         ctx.adminRdyEvt = Util.mkEvent(true);
         nThen((waitFor) => {
             getKeys(ctx, false, {}, waitFor((err, obj) => {
@@ -580,7 +580,7 @@ define([
             clients: {}
         };
 
-        if (Util.find(store, ['proxy', 'mailboxes', 'support2'])) {
+        if (Util.find(store, ['proxy', 'mailboxes', 'supportteam'])) {
             initializeSupportAdmin(ctx, waitFor);
         }
 

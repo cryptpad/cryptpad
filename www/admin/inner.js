@@ -2926,7 +2926,7 @@ Example
     Messages.admin_supportNewConfirm = "Are you sure? This will remove access to all current moderators.";
     create['support-new'] = function () {
         var $div = makeBlock('support-new'); // Msg.admin_supportNewHint, .admin_supportNewTitle
-        var newSupportKey = ApiConfig.newSupportMailbox;
+        var newSupportKey = ApiConfig.supportMailboxKey;
         (function () {
             var state = h('div');
             var $state = $(state).appendTo($div);
@@ -2989,6 +2989,8 @@ Example
                 var keyPair = Nacl.box.keyPair();
                 var pub = Nacl.util.encodeBase64(keyPair.publicKey);
                 var priv = Nacl.util.encodeBase64(keyPair.secretKey);
+                var ed = Nacl.sign.keyPair.fromSeed(keypair.secretKey);
+                var edPub = Nacl.util.encodeBase64(ed.publicKey);
                 // Store the private key first. It won't be used until the decree is accepted.
                 sFrameChan.query("Q_ADMIN_MAILBOX", {
                     version: 2,
@@ -3003,7 +3005,7 @@ Example
                     // Then send the decree
                     sFrameChan.query('Q_ADMIN_RPC', {
                         cmd: 'ADMIN_DECREE',
-                        data: ['SET_SUPPORT_MAILBOX2', [pub]]
+                        data: ['SET_SUPPORT_MAILBOX2', [pub, edPub]]
                     }, function (e, response) {
                         $button.removeAttr('disabled');
                         if (e || response.error) {

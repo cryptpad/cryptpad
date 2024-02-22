@@ -1173,7 +1173,7 @@ MessengerUI, Messages, Pages) {
             $button.addClass('fa-bell');
         };
 
-        Common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders', 'support2'], {
+        Common.mailbox.subscribe(['notifications', 'team', 'broadcast', 'reminders', 'supportteam'], {
             onMessage: function (data, el) {
                 if (toolbar.$top.hasClass('toolbar-hidden')) {
                     $('.cp-collapsed-notif').css('display', '');

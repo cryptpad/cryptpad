@@ -1623,7 +1623,7 @@ define([
             if (!priv || !pub) { return void cb({error: 'EINVAL'}); }
             var channel = Hash.getChannelIdFromKey(pub);
             var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
-            var key = isNewSupport ? 'support2' : 'supportadmin';
+            var key = isNewSupport ? 'supportteam' : 'supportadmin';
             var box = mailboxes[key] = {
                 channel: channel,
                 viewed: [],
