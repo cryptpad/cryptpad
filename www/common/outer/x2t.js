@@ -19,7 +19,7 @@ define([
         var x2tReady = Util.mkEvent(true);
         var fetchFonts = function (x2t, obj, cb) {
             if (!obj.fonts) { return void cb(); }
-            var path = ApiConfig.httpSafeOrigin + '/common/onlyoffice/'+CURRENT_VERSION+'/fonts/';
+            var path = ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+CURRENT_VERSION+'/fonts/';
             var ver = '?' + ApiConfig.requireConf.urlArgs;
             var fonts = obj.fonts;
             var files = obj.fonts_files;
