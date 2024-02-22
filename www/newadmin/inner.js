@@ -14,6 +14,7 @@ define([
     '/common/inner/sidebar-layout.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/common/clipboard.js',
     '/customize/application_config.js',
     '/api/config',
 
@@ -32,6 +33,7 @@ define([
     Sidebar,
     Messages,
     h,
+    Clipboard,
     AppConfig,
     ApiConfig,
 ) {
@@ -564,12 +566,12 @@ define([
             var inputAlias = blocks.input({
                 type: 'text'
             });
-            var input = blocks.labelledInput(Messages.admin_invitationAlias, inputAlias);
+            var blockAlias = blocks.labelledInput(Messages.admin_invitationAlias, inputAlias);
 
-            var email = blocks.input({
+            var inputEmail = blocks.input({
                 type: 'email'
             });
-            var inputEmail = blocks.labelledInput(Messages.admin_invitationEmail, email);
+            var blockEmail = blocks.labelledInput(Messages.admin_invitationEmail, inputEmail);
 
             var refreshInvite = function () {};
             var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
@@ -577,12 +579,20 @@ define([
                 refreshInvite();
             });
         
-            var list = blocks.list([], 'admin-all-limits');
+            var header = [
+                Messages.admin_invitationLink,
+                Messages.admin_invitationAlias,
+                Messages.admin_invitationEmail,
+                Messages.admin_documentCreationTime,
+                ""
+            ];
+            var list = blocks.list(header, []);
             var $list = $(list);
+            
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
-                input,
-                inputEmail,
+                blockAlias,
+                blockEmail,
                 list
             ], nav);
         
@@ -604,7 +614,6 @@ define([
             };
         
             refreshInvite = function () {
-                $list.empty();
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_ALL_INVITATIONS',
                 }, function (e, response) {
@@ -615,21 +624,11 @@ define([
                     }
                     if (!Array.isArray(response)) { return; }
                     var all = response[0];
-                    Object.keys(all).forEach(function (key, i) {
-                        if (!i) { // First item: add header to table
-                            var trHead = h('tr', [
-                                h('th', Messages.admin_invitationLink),
-                                h('th', Messages.admin_invitationAlias),
-                                h('th', Messages.admin_invitationEmail),
-                                h('th', Messages.admin_documentCreationTime),
-                                h('th')
-                            ]);
-                            $list.append(trHead);
-                        }
+                    Object.keys(all).forEach(function (key) {
                         var data = all[key];
                         var url = privateData.origin + Hash.hashToHref(key, 'register');
         
-                        var del = blocks.button('danger', 'fa.fa-trash', Messages.kanban_delete )
+                        var del = blocks.button('danger', 'fa fa-trash', Messages.kanban_delete )
                         var $del = $(del);
                         Util.onClickEnter($del, function () {
                             $del.attr('disabled', 'disabled');
@@ -639,32 +638,28 @@ define([
                                 deleteInvite(key);
                             });
                         });
-                        var copy = blocks.button('secondary', '', Messages.admin_invitationCopy )
+                        var copy = blocks.button('secondary', 'fa fa-clipboard', Messages.admin_invitationCopy )
                         Util.onClickEnter($(copy), function () {
                             Clipboard.copy(url, () => {
                                 UI.log(Messages.genericCopySuccess);
                             });
                         });
-                        var line = h('tr', [
-                            h('td', UI.dialog.selectable(url)),
-                            h('td', data.alias),
-                            h('td', data.email),
-                            h('td', new Date(data.time).toLocaleString()),
-                            //h('td', data.createdBy),
-                            h('td', [
-                                copy,
-                                del
-                            ])
+                        var newEntries = [];
+                        newEntries.push([
+                            UI.dialog.selectable(url),
+                            data.alias,
+                            data.email,
+                            new Date(data.time).toLocaleString(),
+                            [copy, del]
                         ]);
-                        $list.append(line);
+                        list.updateContent(newEntries);
                     });
                 });
             };
-        
             refreshInvite();
         
             $b.on('click', () => {
-                var alias = $(input).val().trim();
+                var alias = $(inputAlias).val().trim();
                 if (!alias) { return void UI.warn(Messages.error); } // FIXME better error message
                 $b.prop('disabled', true);
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -679,7 +674,7 @@ define([
                         UI.warn(Messages.error);
                         return void console.error(e, response);
                     }
-                    $(input).val('').focus();
+                    $(inputAlias).val('').focus();
                     $(inputEmail).val('');
                     refreshInvite();
                 });

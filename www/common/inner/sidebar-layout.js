@@ -83,33 +83,30 @@ define([
             return box;
         };
 
-        blocks.list = (items) => {
+        
+        blocks.list = function (header, entries) {
             const table = h('table.cp-sidebar-list');
-
-            const headerRow = h('tr', [
-                h('th', 'Link'),
-                h('th', 'Alias'),
-                h('th', 'Email'),
-                h('th', 'Creation Time'),
-                h('th', 'Actions')
-            ]);
+        
+            const headerValues = header.map(value => { return h('th', value); });
+            const headerRow = h('thead', h('tr', headerValues));  
             table.appendChild(headerRow);
-            items.forEach(item => {
-                const row = h('tr', [
-                    h('td', item.url),
-                    h('td', item.alias),
-                    h('td', item.email),
-                    h('td', new Date(item.time).toLocaleString()),
-                    h('td', [
-                        h('button', 'Copy'),
-                        h('button', 'Delete')
-                    ])
-                ]);
-                table.appendChild(row);
-            });
+        
+            const tbody = h('tbody');
+            table.appendChild(tbody);
+        
+            table.updateContent = (newEntries) => {
+                $(table).find('tbody').remove();
+                let bodyContent = [];
+                newEntries.forEach(line => {
+                    const row = h('tr', line.map(value => { return h('td', value); }));
+                    tbody.appendChild(row);
+                });
+            };
+            table.updateContent(entries);
         
             return table;
         };
+        
         
 
         blocks.clickableButton = function (type, icon, text, callback) {
