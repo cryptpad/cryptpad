@@ -423,7 +423,7 @@ define([
         // Check content.sender to see if it comes from us or from an admin
         var senderKey = content.sender && content.sender.edPublic;
         var fromMe = senderKey === privateData.edPublic;
-        var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1
+        var fromAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1
                         || (!senderKey && content.sender.accountName === 'support'); // XXX anon key?
         var fromPremium = Boolean(content.sender.plan || Util.find(content, ['sender', 'quota', 'plan']));
 
@@ -498,7 +498,7 @@ define([
 
         var senderKey = content.sender && content.sender.edPublic;
         var fromMe = senderKey === privateData.edPublic;
-        var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1;
+        var fromAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1;
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
 
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
@@ -518,7 +518,7 @@ define([
             isAdmin: isAdmin,
             pinUsage: pinUsage || false,
             teamsUsage: teamsUsage || false,
-            adminKeys: Array.isArray(ApiConfig.adminKeys)?  ApiConfig.adminKeys.slice(): [],
+            moderatorKeys: Array.isArray(ApiConfig.moderatorKeys)?  ApiConfig.moderatorKeys.slice(): [],
         };
 
         ctx.supportModule = common.makeUniversal('support');

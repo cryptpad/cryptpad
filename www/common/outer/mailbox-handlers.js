@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/api/config',
     '/common/common-messaging.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/components/chainpad-crypto/crypto.js',
-], function (Messaging, Hash, Util, Crypto) {
+], function (ApiConfig, Messaging, Hash, Util, Crypto) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
     var getRandomTimeout = function (ctx) {
@@ -906,6 +907,24 @@ define([
         var id = data.content.channel;
         if (supportNotif && supportNotif.channel === id) { supportNotif = undefined; }
         if (adminSupportNotif && adminSupportNotif.channel === id) { adminSupportNotif = undefined; }
+    };
+
+    handlers['ADD_MODERATOR'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        var newKey = content.supportKey;
+        // check if it matches the server key
+        var pub = Hash.getBoxPublicFromSecret(newKey);
+        if (pub !== ApiConfig.supportMailboxKey) { return void cb(true); }
+        // We have a correct key: add support mailbox
+        ctx.Store.addAdminMailbox(null, {
+            version: 2,
+            priv: newKey,
+            lastKnownHash: content.lastKnownHash
+        }, function (err) {
+            if (err) { return void cb(true); }
+            cb(false);
+        });
     };
 
     return {

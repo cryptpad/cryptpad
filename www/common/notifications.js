@@ -486,6 +486,7 @@ define([
 
     // XXX
     Messages.support_userNotification = "New support ticket or response: {0}";
+    Messages.support_moderatorNotification = "You have been added to the moderators list";
     handlers['NOTIF_TICKET'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;
@@ -498,6 +499,19 @@ define([
         content.handler = function () {
             let url = msg.isAdmin ? '/support/#tickets' : `/moderation/#support-${content.channel}`;
             common.openURL(url);
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+    handlers['ADD_MODERATOR'] = function (common, data) {
+        var content = data.content;
+        content.getFormatText = function () {
+            return Messages.support_moderatorNotification;
+        };
+        content.handler = function () {
+            common.openURL('/moderation/');
             defaultDismiss(common, data)();
         };
         if (!content.archived) {

@@ -1627,7 +1627,7 @@ define([
             var box = mailboxes[key] = {
                 channel: channel,
                 viewed: [],
-                lastKnownHash: '',
+                lastKnownHash: data.lastKnownHash || '',
                 keys: {
                     curvePublic: pub,
                     curvePrivate: priv

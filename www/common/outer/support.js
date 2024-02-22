@@ -22,7 +22,7 @@ define([
         var cb = Util.mkAsync(_cb);
         if (isAdmin && !ctx.adminRdyEvt) { return void cb('EFORBIDDEN'); }
         require(['/api/config?' + (+new Date())], function (NewConfig) {
-            ctx.adminKeys = NewConfig.adminKeys; // Update admin keys // XXX MODERATOR
+            ctx.moderatorKeys = NewConfig.moderatorKeys; // Update admin keys // XXX MODERATOR
 
             var supportKey = NewConfig.supportMailboxKey;
             if (!supportKey) { return void cb('E_NOT_INIT'); }
@@ -324,7 +324,7 @@ define([
                         entry.premium = premium;
 
                         if (senderKey) {
-                            entry.lastAdmin = ctx.adminKeys.indexOf(senderKey) !== -1
+                            entry.lastAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1
                         }
                     }
                 }
@@ -544,7 +544,7 @@ define([
                 if (err) { console.error('Support RPC not ready', err); }
             }));
         }).nThen((waitFor) => {
-            let seed = privateKey.slice(0,24); // XXX better way to get seed?
+            let seed = privateKey.slice(0,24); // XXX better way to get seed? also in admin/inner.js
             let hash = Hash.getEditHashFromKeys({
                 version: 2,
                 type: 'support',
@@ -559,6 +559,44 @@ define([
 
     };
 
+    var getAdminKey = function (ctx, data, cId, cb) {
+        let proxy = ctx.store.proxy;
+        let supportKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
+        let privateKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
+        getKeys(ctx, false, {}, (err, obj) => {
+            if (err) { return void cb({error: err}); }
+            if (obj.theirPublic !== supportKey) { return void cb({ error: 'EFORBIDDEN' }); }
+            cb({
+                curvePrivate: privateKey
+            });
+        });
+    };
+    var addModerator = function (ctx, data, cId, cb) {
+        let proxy = ctx.store.proxy;
+        var mailbox = Util.find(ctx, [ 'store', 'mailbox' ]);
+
+        let supportKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
+        let privateKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
+        let lastKnownHash = Util.find(proxy, ['mailboxes', 'supportteam', 'lastKnownHash']);
+        let edPublic = proxy.edPublic;
+
+        // Confirm that I know the latest private key
+        getKeys(ctx, false, {}, (err, obj) => {
+            if (err) { return void cb({error: err}); }
+            if (obj.theirPublic !== supportKey) { return void cb({ error: 'EFORBIDDEN' }); }
+            if (!ctx.moderatorKeys.includes(edPublic)) { return void cb({ error: 'EFORBIDDEN' }); }
+            // Send this private key to the selected user
+            mailbox.sendTo('ADD_MODERATOR', {
+                supportKey: privateKey,
+                lastKnownHash
+            }, {
+                channel: data.mailbox,
+                curvePublic: data.curvePublic
+            }, () => {
+                cb();
+            });
+        });
+    };
 
     Support.init = function (cfg, waitFor, emit) {
         var support = {};
@@ -572,7 +610,7 @@ define([
         var proxy = store.proxy.support = store.proxy.support || {};
 
         var ctx = {
-            adminKeys: ApiConfig.adminKeys,
+            moderatorKeys: ApiConfig.moderatorKeys,
             supportData: proxy,
             store: cfg.store,
             Store: cfg.Store,
@@ -620,6 +658,12 @@ define([
             }
             if (cmd === 'CLOSE_TICKET_ADMIN') {
                 return void closeTicketAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_PRIVATE_KEY') {
+                return void getAdminKey(ctx, data, clientId, cb);
+            }
+            if (cmd === 'ADD_MODERATOR') {
+                return void addModerator(ctx, data, clientId, cb);
             }
             if (cmd === 'GET_MY_TICKETS') {
                 return void getMyTickets(ctx, data, clientId, cb);

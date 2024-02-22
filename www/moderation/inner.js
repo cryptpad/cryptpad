@@ -301,7 +301,8 @@ define([
         var privateData = metadataMgr.getPrivateData();
         common.setTabTitle(Messages.supportPage);
 
-        if (!common.isAdmin()) {
+        if (!Array.isArray(ApiConfig.moderatorKeys) ||
+            !ApiConfig.moderatorKeys.includes(privateData.edPublic)) {
             return void UI.errorLoadingScreen(Messages.admin_authError || '403 Forbidden');
         }
 

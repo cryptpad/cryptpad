@@ -2923,22 +2923,28 @@ Example
     Messages.admin_supportNewDisabled = "Modern support system is disabled.";
     Messages.admin_supportNewInit = "Initialize support page on this instance";
     Messages.admin_supportNewDelete = "Disable support";
-    Messages.admin_supportNewConfirm = "Are you sure? This will remove access to all current moderators.";
+    Messages.admin_supportNewConfirm = "Are you sure? This will remove access to all current moderators and delete all existing tickets.";
+    Messages.admin_supportMembers = "Current support team";
+    Messages.admin_supportAdd = "Add a contact to the support team";
     create['support-new'] = function () {
-        var $div = makeBlock('support-new'); // Msg.admin_supportNewHint, .admin_supportNewTitle
-        var newSupportKey = ApiConfig.supportMailboxKey;
-        (function () {
-            var state = h('div');
-            var $state = $(state).appendTo($div);
-            var button = h('button.btn.btn-primary', Messages.admin_supportNewInit);
-            var $button = $(button).appendTo($div);
-            var delButton = h('button.btn.btn-danger', Messages.admin_supportNewDelete);
-            var $delButton = $(delButton).appendTo($div).hide();
-            var spinner = UI.makeSpinner($div);
+        const $div = makeBlock('support-new'); // Msg.admin_supportNewHint, .admin_supportNewTitle
+        let supportKey = ApiConfig.supportMailboxKey;
+        let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
+        let refresh = function () {};
+        const redraw = function (membersData, oldPrivKey) {
+            $div.empty();
 
-            var setState = function () {
+            const state = h('div');
+            const $state = $(state).appendTo($div);
+            const button = h('button.btn.btn-primary', Messages.admin_supportNewInit);
+            const $button = $(button).appendTo($div);
+            const delButton = h('button.btn.btn-danger', Messages.admin_supportNewDelete);
+            const $delButton = $(delButton).appendTo($div).hide();
+            const spinner = UI.makeSpinner($div);
+
+            const setState = function () {
                 $state.html('');
-                if (newSupportKey) {
+                if (supportKey) {
                     $button.hide();
                     $delButton.show();
                     return $state.append([
@@ -2954,6 +2960,7 @@ Example
             };
             setState();
 
+
             // XXX TODO add/remove access
             // XXX when removing access, send new private keys to everybody who should keep access AND move chainpad doc to the new one
             //     ==> we'll need to delete the old chainpad doc using admin commands
@@ -2967,7 +2974,7 @@ Example
                     $delButton.attr('disabled', 'disabled');
                     sFrameChan.query('Q_ADMIN_RPC', {
                         cmd: 'ADMIN_DECREE',
-                        data: ['SET_SUPPORT_MAILBOX2', ['']]
+                        data: ['SET_SUPPORT_MAILBOX2', ['', '']]
                     }, function (e, response) {
                         $delButton.removeAttr('disabled');
                         if (e || response.error) {
@@ -2978,61 +2985,218 @@ Example
                         }
                         spinner.done();
                         UI.log(Messages.saved);
-                        newSupportKey = undefined;
+                        supportKey = undefined;
                         setState();
                     });
                 });
             });
-            var next = function () {
+
+            /*
+            const getEncryptor = (curvePrivate) => {
+                const seed = curvePrivate.slice(0,24);
+                const hash = Hash.getEditHashFromKeys({
+                    version: 2,
+                    type: 'support',
+                    keys: {
+                        editKeyStr: seed
+                    }
+                });
+                const secret = Hash.getSecrets('support', hash);
+                return Crypto.createEncryptor(secret.keys);
+            };
+            console.log(oldPrivKey, getEncryptor(oldPrivKey));
+            */
+            const getMemberData = (curve) => {
+                let friends = common.getFriends(true);
+                let f = friends[curve || 'me'];
+                return {
+                    name: f.displayName,
+                    edPublic: f.edPublic,
+                    curvePublic: f.curvePublic,
+                    mailbox: f.notifications,
+                    profile: f.profile
+                    // XXX add avatar?
+                };
+            };
+            const generateKey = function () {
+                if (supportKey && !membersData[edPublic]) {
+                    UI.alert("A support key already exists. You must be a moderator to generate a new one or delete the existing support data.");
+                    return;
+                }
                 spinner.spin();
                 $button.attr('disabled', 'disabled');
-                var keyPair = Nacl.box.keyPair();
-                var pub = Nacl.util.encodeBase64(keyPair.publicKey);
-                var priv = Nacl.util.encodeBase64(keyPair.secretKey);
-                var ed = Nacl.sign.keyPair.fromSeed(keypair.secretKey);
-                var edPub = Nacl.util.encodeBase64(ed.publicKey);
-                // Store the private key first. It won't be used until the decree is accepted.
-                sFrameChan.query("Q_ADMIN_MAILBOX", {
-                    version: 2,
-                    priv: priv
-                }, function (err, obj) {
-                    if (err || (obj && obj.error)) {
-                        console.error(err || obj.error);
-                        UI.warn(Messages.error);
-                        spinner.hide();
-                        return;
-                    }
-                    // Then send the decree
+                const keyPair = Nacl.box.keyPair();
+                const pub = Nacl.util.encodeBase64(keyPair.publicKey);
+                const priv = Nacl.util.encodeBase64(keyPair.secretKey);
+                const ed = Nacl.sign.keyPair.fromSeed(keypair.secretKey);
+                const edPub = Nacl.util.encodeBase64(ed.publicKey);
+                const onError = (waitFor, err, res) => {
+                    if (waitFor) { waitFor.abort(); }
+                    console.error(err, res);
+                    spinner.hide();
+                    UI.warn(Messages.error);
+                };
+
+                //const oldCrypto = supportKey ? getEncryptor(oldPrivKey) : undefined;
+                //const newCrypto = getEncryptor(priv);
+
+                nThen((waitFor) => {
+                    // Send new key to server
                     sFrameChan.query('Q_ADMIN_RPC', {
                         cmd: 'ADMIN_DECREE',
                         data: ['SET_SUPPORT_MAILBOX2', [pub, edPub]]
-                    }, function (e, response) {
+                    }, waitFor((e, response) => {
                         $button.removeAttr('disabled');
-                        if (e || response.error) {
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                            spinner.hide();
-                            return;
-                        }
+                        if (e || response.error) { return void onError(waitFor, e, response); }
+                    }));
+                }).nThen((waitFor) => {
+                    // Add to own mailbox
+                    sFrameChan.query("Q_ADMIN_MAILBOX", {
+                        version: 2,
+                        priv: priv
+                    }, waitFor((err, obj) => {
+                        if (err || (obj && obj.error)) { return void onError(waitFor, err, obj); }
+
                         spinner.done();
                         UI.log(Messages.saved);
-                        newSupportKey = pub;
+                        supportKey = pub;
                         setState();
-                        //$('.cp-admin-support-init').hide();
-                        //APP.$rightside.append(create['support-list']());
-                        //APP.$rightside.append(create['support-priv']());
+                    }));
+                }).nThen(() => {
+                    // Add myself to moderator role if not already there
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADD_MODERATOR',
+                        data: getMemberData()
+                    }, (e, response) => {
+                        console.error(e, response);
+                    });
+                }).nThen(() => {
+                    // XXX migrate chainpad doc
+                    // XXX delete old pin log
+                    // XXX send new keys to members
+                    console.error('XXX TODO send to members');
+                });
+            };
+
+            const addSupportMember = (curve, _cb) => {
+                let cb = Util.mkAsync(_cb);
+                let userData = getMemberData(curve);
+                if (!userData) { return void cb('INVALID_USER'); }
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADD_MODERATOR',
+                    data: userData
+                }, (e, response) => {
+                    if (e || (response && response.error)) {
+                        return void cb(e || response.error);
+                    }
+
+                    // User added to support team in database, send them the keys
+                    APP.supportModule.execCommand('ADD_MODERATOR', userData, (obj) => {
+                        // XXX IF ERROR, (can't notify) remove from DB?
+                        cb();
                     });
                 });
             };
+
             Util.onClickEnter($button, function () {
-                if (newSupportKey) {
+                /*
+                if (supportKey) {
                     return void UI.confirm(Messages.admin_supportNewConfirm, function (yes) {
-                        if (yes) { next(); }
+                        if (yes) { generateKey(); }
                     });
                 }
-                next();
+                */
+                generateKey();
             });
-        })();
+
+            const drawMembers = () => {
+                if (!supportKey) { return; }
+                const members = {};
+                const friends = Util.clone(common.getFriends(false))
+                Object.keys(membersData).forEach((ed) => {
+                    let m = membersData[ed];
+                    members[m.curvePublic] = {
+                        displayName: m.name,
+                        edPublic: m.edPublic,
+                        profile: m.profile,
+                        curvePublic: m.curvePublic,
+                        notificatons: m.mailbox
+                    };
+                });
+                Object.keys(friends).forEach((curve) => {
+                    if (members[curve]) { delete friends[curve]; }
+                });
+                let currentList = UIElements.getUserGrid(Messages.admin_supportMembers, {
+                    common: common,
+                    list: true,
+                    large: true,
+                    noSelect: true,
+                    data: members,
+                    remove: (el) => {
+                        console.error('REMOVE', el);
+                    }
+                });
+                let contactsGrid = UIElements.getUserGrid(Messages.admin_supportAdd, {
+                    common: common,
+                    list: true,
+                    large: true,
+                    data: friends
+                }, function () {});
+
+                let addBtn = h('button.btn.btn-primary', 'ADD');
+                Util.onClickEnter($(addBtn), () => {
+                    var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
+                    nThen((waitFor) => {
+                        $sel.each((i, el) => {
+                            let curve = $(el).attr('data-curve');
+                            if (!curve) {
+                                console.error('Missing data on selected user', el);
+                                return void UI.warn(Messages.error);
+                            }
+                            addSupportMember(curve, waitFor());
+                        });
+                    }).nThen(() => {
+                        refresh();
+                    });
+                });
+                // Only moderators can add new moderators
+                if (!membersData[edPublic]) {
+                    contactsGrid.div = undefined;
+                    addBtn = undefined;
+                }
+
+                const list = h('div', [
+                    currentList.div,
+                    contactsGrid.div,
+                    h('nev', addBtn)
+                ]);
+                $div.append(list);
+            };
+            drawMembers();
+        };
+        refresh = () => {
+            let oldKey, members;
+            nThen((waitFor) => {
+                APP.supportModule.execCommand('GET_PRIVATE_KEY', {}, waitFor((obj) => {
+                    oldKey = obj && obj.curvePrivate;
+                }));
+            }).nThen((waitFor) => {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'GET_MODERATORS',
+                    data: {}
+                }, waitFor((e, response) => {
+                    if (e || response.error) {
+                        console.error(e || response.error);
+                        UI.warn(Messages.error);
+                        return;
+                    }
+                    members = response[0];
+                }));
+            }).nThen(() => {
+                redraw(members, oldKey);
+            });
+        };
+        refresh();
         return $div;
     };
     create['support-init'] = function () {
@@ -4096,6 +4260,7 @@ Example
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
         APP.support = Support.create(common, true);
+        APP.supportModule = common.makeUniversal('support');
 
 
         // Content
