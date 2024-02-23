@@ -13,7 +13,8 @@ define([
     '/common/common-util.js',
     '/common/text-cursor.js',
     '/components/chainpad/chainpad.dist.js',
-], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
+    '/common/hyperscript.js',
+], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad, h) {
     var module = {};
 
      var cursorToPos = module.cursorToPos = function(cursor, oldText) {
@@ -390,7 +391,17 @@ define([
                 onLocal();
             });
 
-            if ($drawer) { $drawer.append($block); }
+            if ($drawer) {
+                var $blockButton = UIElements.createDropdownEntry({
+                    tag: 'a',
+                    attributes: {'class': $block.find('button').attr('class')},
+                    content: h('span', $block.find('button').text()),
+                    action: function () {
+                        $block.click();
+                    },
+                });
+                $drawer.append($blockButton);
+            }
             if (exp.highlightMode) { exp.setMode(exp.highlightMode); }
             if (cb) { cb(); }
         };
@@ -454,7 +465,18 @@ define([
                     Common.setAttribute(themeKey, theme);
                 });
 
-                if ($drawer) { $drawer.append($block); }
+                if ($drawer) {
+                    const $blockButton = UIElements.createDropdownEntry({
+                        tag: 'a',
+                        attributes: {'class': $block.find('button').attr('class')},
+                        content: h('span', $block.find('button').text()),
+                        action: function () {
+                            $block.click();
+                        },
+                    });
+                    // $blockButton.append($block.find('ul'));
+                    $drawer.append($blockButton);
+                }
                 if (cb) { cb(); }
             };
             Common.getAttribute(themeKey, todo);

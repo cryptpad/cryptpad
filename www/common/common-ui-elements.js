@@ -1600,7 +1600,6 @@ define([
             }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
         }
 
-
         if (config.caretDown) {
             $('<span>', {
                 'class': 'fa fa-caret-down',

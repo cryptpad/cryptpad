@@ -68,6 +68,7 @@ define([
     CMeditor,
     UIElements)
 {
+    var Common;
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
@@ -93,10 +94,13 @@ define([
         })).hide();
 
         // set up all the necessary events
-        UI.createDrawer($theme, $content);
-
-        framework._.toolbar.$theme = $content;
-        framework._.toolbar.$bottomL.append($theme);
+        const $drawer = UIElements.createDropdown({
+            text: Messages.toolbar_theme,
+            options: [],
+            common: Common
+        });
+        framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
+        framework._.toolbar.$bottomL.append($drawer);
     };
 
     var mkCbaButton = function (framework, markers) {
@@ -105,8 +109,17 @@ define([
             name: 'authormarks',
             icon: 'fa-paint-brush',
         }).hide();
-        framework._.toolbar.$theme.append($showAuthorColorsButton);
-        markers.setButton($showAuthorColorsButton);
+
+        var $showAuthorColors = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: {'class': $showAuthorColorsButton.attr('class')},
+            content: h('span', $showAuthorColorsButton.text()),
+            action: function () {
+                $showAuthorColorsButton.click();
+            },
+        });
+        framework._.toolbar.$theme.append($showAuthorColors);
+        markers.setButton($showAuthorColors);
     };
     var mkPrintButton = function (framework, $content) {
         var $printButton = framework._.sfCommon.createButton('print', true);
@@ -413,7 +426,15 @@ define([
             setButton(!markers.getState());
             UI.alert(content);
         });
-        framework._.toolbar.$theme.append($cbaButton);
+        var $cba = UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: {'class': $cbaButton.attr('class')},
+            content: h('span', $cbaButton.text()),
+            action: function () {
+                $cbaButton.click();
+            },
+        });
+        framework._.toolbar.$theme.append($cba);
     };
 
     var mkFilePicker = function (framework, editor, evModeChange) {
