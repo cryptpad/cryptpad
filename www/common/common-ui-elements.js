@@ -1559,8 +1559,9 @@ define([
 
         hide = function () {
             window.setTimeout(function () {
-                entry.closest('ul.cp-dropdown-content').hide();
+                entry.closest('.cp-dropdown-menu-container').find('.cp-dropdown-submenu').hide();
                 entry.parents('.cp-dropdown-content').hide();
+
             }, 0);
         };
 
@@ -1613,7 +1614,11 @@ define([
         }
 
         // Menu
-        var $innerblock = $('<ul>', {'class': 'cp-dropdown-content', 'role': 'menu'});
+        var $innerblock = $('<ul>', {
+            'class': 'cp-dropdown-content',
+            'role': 'menu',
+            'tabindex': '-1'
+        });
         var $outerblock = $(h('div.cp-dropdown-menu-container', $innerblock[0]));
         let $parentMenu = config.isSubmenuOf;
         $container.$menu = $innerblock;
@@ -1891,11 +1896,16 @@ define([
                 else { $button.focus(); }
             }
             if (e.which === 9) { // Tab
-                hide();
                 if (e.shiftKey) {
+                    hide();
                     if ($parentMenu) { $button.closest('li').focus(); }
                     else { $button.focus(); }
                 } else {
+                    // Hide parent only if we're not going to focus visible submenu
+                    if ($parentMenu ||
+                        !$container.find('.cp-dropdown-submenu:visible').length) {
+                        hide();
+                    }
                     if ($parentMenu) { $parentMenu.hide(); }
                     $innerblock.find('[role="menuitem"]').last().focus();
                 }

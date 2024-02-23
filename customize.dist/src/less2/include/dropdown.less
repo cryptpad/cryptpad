@@ -160,9 +160,12 @@
             li[role="menuitem"] {
                 border-radius: @variables_radius;
                 white-space: nowrap;
-                &:hover, &:focus {
+                &:hover {
                     background-color: @cp_dropdown-bg-hover !important;
-                    color: @cp_dropdown-fg;
+                    //color: @cp_dropdown-fg;
+                }
+                &:focus-visible {
+                    outline-color: @cp_dropdown-fg;
                 }
             }
             &> span {
