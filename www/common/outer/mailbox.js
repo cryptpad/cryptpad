@@ -276,6 +276,7 @@ proxy.mailboxes = {
 
 
     var leaveChannel = function (ctx, type, cb) {
+        cb = cb || function () {};
         var box = ctx.boxes[type];
         if (!box) { return void cb(); }
         if (!box.cpNf || typeof(box.cpNf.stop) !== "function") { return void cb('EINVAL'); }

@@ -8,13 +8,17 @@ define([
     '/common/common-hash.js',
     '/common/common-realtime.js',
     '/common/pinpad.js',
+    '/common/cryptget.js',
     '/components/nthen/index.js',
     '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
     '/components/chainpad/chainpad.dist.js',
     'chainpad-netflux'
-], function (ApiConfig, Util, Hash, Realtime, Pinpad, nThen, Crypto, Listmap, ChainPad, CpNetflux) {
+], function (ApiConfig, Util, Hash, Realtime, Pinpad, Crypt,
+            nThen, Crypto, Listmap, ChainPad, CpNetflux) {
     var Support = {};
+
+    var Nacl = Crypto.Nacl;
 
     // UTILS
 
@@ -22,7 +26,8 @@ define([
         var cb = Util.mkAsync(_cb);
         if (isAdmin && !ctx.adminRdyEvt) { return void cb('EFORBIDDEN'); }
         require(['/api/config?' + (+new Date())], function (NewConfig) {
-            ctx.moderatorKeys = NewConfig.moderatorKeys; // Update admin keys // XXX MODERATOR
+            ctx.moderatorKeys = NewConfig.moderatorKeys; // Update moderator keys
+            ctx.adminKeys = NewConfig.adminKeys; // Update moderator keys
 
             var supportKey = NewConfig.supportMailboxKey;
             if (!supportKey) { return void cb('E_NOT_INIT'); }
@@ -379,31 +384,44 @@ define([
         if (!ctx.adminRdyEvt) { return void cb(false); } // XXX not an admin, delete mailbox?
 
         ctx.adminRdyEvt.reg(() => {
-            // random timeout to avoid duplication wiht multiple admins
-            var rdmTo = Math.floor(Math.random() * 2000); // Between 0 and 2000ms
-            setTimeout(() => {
-                var doc = ctx.adminDoc.proxy;
-                if (doc.tickets.active[data.channel] || doc.tickets.closed[data.channel]
-                    || doc.tickets.pending[data.channel]) {
-                    return void cb(false); }
-                doc.tickets.active[data.channel] = {
-                    title: data.title,
-                    premium: data.premium,
-                    time: data.time,
-                    author: data.user && data.user.displayName,
-                    authorKey: data.user && data.user.curvePublic
-                };
-                Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
-                    cb(false);
+            let supportKey;
+            nThen((waitFor) => {
+                // Send ticket to the admins and call back
+                getKeys(ctx, false, data, waitFor((err, obj) => {
+                    if (err) {
+                        waitFor.abort();
+                        return void cb({error: err});
+                    }
+                    supportKey = obj.theirPublic;
+                }));
+            }).nThen(() => {
+                // random timeout to avoid duplication wiht multiple admins
+                var rdmTo = Math.floor(Math.random() * 2000); // Between 0 and 2000ms
+                setTimeout(() => {
+                    var doc = ctx.adminDoc.proxy;
+                    if (doc.tickets.active[data.channel] || doc.tickets.closed[data.channel]
+                        || doc.tickets.pending[data.channel]) {
+                        return void cb(false); }
+                    doc.tickets.active[data.channel] = {
+                        title: data.title,
+                        premium: data.premium,
+                        time: data.time,
+                        author: data.user && data.user.displayName,
+                        supportKey: supportKey, // Store current support key
+                        authorKey: data.user && data.user.curvePublic
+                    };
+                    Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
+                        cb(false);
+                    });
+                    notifyClient(ctx, true, 'NEW_TICKET', data.channel);
+                    if (ctx.supportRpc) { ctx.supportRpc.pin([data.channel], () => {}); }
                 });
-                notifyClient(ctx, true, 'NEW_TICKET', data.channel);
-                if (ctx.adminRpc) { ctx.adminRpc.pin([data.channel], () => {}); }
             });
         });
     };
     var updateAdminTicket = function (ctx, data) {
         // Wait for the chainpad to be ready before adding the data
-        if (!ctx.adminRdyEvt) { return void cb(false); } // XXX not an admin, delete mailbox?
+        if (!ctx.adminRdyEvt) { return; } // XXX not an admin, delete mailbox?
 
         ctx.adminRdyEvt.reg(() => {
             // random timeout to avoid duplication wiht multiple admins
@@ -442,10 +460,52 @@ define([
         }
     };
 
+    var updateAdminKey = (ctx, data, cb) => {
+        let newKey = data.supportKey;
+        let newKeyPub = Hash.getBoxPublicFromSecret(newKey);
+
+        let proxy = ctx.store.proxy;
+        const oldKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
+        const oldKeyPub = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
+
+        getKeys(ctx, false, {}, (err, obj) => {
+            if (err) { return void cb(true); }
+            // already deprecated? abort
+            if (newKeyPub !== obj.theirPublic) { return void cb(true); }
+            // already known? abort
+            if (oldKey === newKey || oldKeyPub === newKeyPub) { return void cb(true); }
+
+            // Close old data
+            let mailbox = Util.find(ctx, [ 'store', 'mailbox' ]);
+            try {
+                if (ctx.adminDoc) { ctx.adminDoc.stop(); }
+                if (mailbox) { mailbox.close('supportteam'); }
+                if (ctx.supportRpc) { ctx.supportRpc.destroy(); }
+                ctx.adminRdyEvt = Util.mkEvent(true);
+            } catch (e) { console.error(e); }
+
+            // Store new key
+            ctx.Store.addAdminMailbox(null, {
+                version: 2,
+                priv: newKey
+            }, (obj) => {
+                if (obj && obj.error) { return void cb(true); }
+                // Reload moderator data
+                nThen((waitFor) => {
+                    initializeSupportAdmin(ctx, true, waitFor);
+                    ctx.adminRdyEvt.reg(() => {
+                        notifyClient(ctx, true, 'UPDATE_RIGHTS');
+                        cb(false);
+                    });
+                });
+            });
+        });
+    };
+
     // INITIALIZE ADMIN
 
     var getPinList = function (ctx) {
-        if (!ctx.adminDoc || !ctx.adminRpc) { return; }
+        if (!ctx.adminDoc || !ctx.supportRpc) { return; }
         let adminChan = ctx.adminDoc.metadata && ctx.adminDoc.metadata.channel;
         let doc = ctx.adminDoc.proxy;
         let t = doc.tickets;
@@ -459,7 +519,6 @@ define([
     };
     var initAdminRpc = function (ctx, _cb) {
         let cb = Util.mkAsync(_cb);
-        let Nacl = Crypto.Nacl;
         let proxy = ctx.store.proxy;
         let curvePrivate = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
         if (!curvePrivate) { return void cb('EFORBIDDEN'); }
@@ -477,7 +536,7 @@ define([
         }, (e, call) => {
             if (e) { return void cb(e); }
             console.log("Support RPC ready, public key is ", edPublic);
-            ctx.adminRpc = call;
+            ctx.supportRpc = call;
             cb();
         });
     };
@@ -507,14 +566,14 @@ define([
             ctx.adminRdyEvt.fire();
             cb();
 
-            if (!ctx.adminRpc) { return; }
+            if (!ctx.supportRpc) { return; }
             // Check pin list
             let list = getPinList(ctx);
             let local = Hash.hashChannelList(list);
-            ctx.adminRpc.getServerHash(function (e, hash) {
+            ctx.supportRpc.getServerHash(function (e, hash) {
                 if (e) { return void console.warn(e); }
                 if (hash !== local) {
-                    ctx.adminRpc.reset(list, function (e, hash) {
+                    ctx.supportRpc.reset(list, function (e, hash) {
                         if (e) { console.warn(e); }
                     });
                 }
@@ -523,19 +582,22 @@ define([
     };
 
 
-    var initializeSupportAdmin = function (ctx, waitFor) {
+    var initializeSupportAdmin = function (ctx, isReset, waitFor) {
         let unlock = waitFor();
         let proxy = ctx.store.proxy;
         let supportKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
         let privateKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
-        ctx.adminRdyEvt = Util.mkEvent(true);
+        if (!isReset) { ctx.adminRdyEvt = Util.mkEvent(true); }
         nThen((waitFor) => {
             getKeys(ctx, false, {}, waitFor((err, obj) => {
                 setTimeout(unlock); // Unlock loading process
                 if (err) { return void waitFor.abort(); }
                 if (obj.theirPublic !== supportKey) {
-                    // Deprecated support key: no longer an admin!
-                    // XXX delete the mailbox?
+                    try {
+                        delete proxy.mailboxes.supportteam;
+                        ctx.store.mailbox.close('supportteam');
+                    } catch (e) {}
+                    delete ctx.adminRdyEvt;
                     return void waitFor.abort();
                 }
             }));
@@ -559,6 +621,182 @@ define([
 
     };
 
+    let updateServerKey = (ctx, curvePublic, curvePrivate, cb) => {
+        let edPrivate, edPublic
+        try {
+            let pair = Nacl.sign.keyPair.fromSeed(Nacl.util.decodeBase64(curvePrivate));
+            edPublic = Nacl.util.encodeBase64(pair.publicKey);
+        } catch (e) {
+            return void cb(e);
+        }
+        ctx.Store.adminRpc(null, {
+            cmd: 'ADMIN_DECREE',
+            data: ['SET_SUPPORT_KEYS', [curvePublic, edPublic]]
+        }, cb);
+    };
+    let getModerators = (ctx, data, cId, cb) => {
+        ctx.Store.adminRpc(null, {
+            cmd: 'GET_MODERATORS',
+            data: {}
+        }, cb);
+    };
+    let rotateKeys = function (ctx, data, cId, _cb) {
+        let cb = Util.once(Util.mkAsync(_cb));
+        let oldSupportKey;
+        let proxy = ctx.store.proxy;
+        let edPublic = proxy.edPublic;
+
+        const keyPair = Nacl.box.keyPair();
+        const newKeyPub = Nacl.util.encodeBase64(keyPair.publicKey);
+        const newKey = Nacl.util.encodeBase64(keyPair.secretKey);
+        const newEd = Nacl.sign.keyPair.fromSeed(keyPair.secretKey);
+        const newEdPub = Nacl.util.encodeBase64(newEd.publicKey);
+
+        const oldKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
+        const oldKeyPub = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
+
+        if (!newKey || !newKeyPub) { return void cb({ error: 'INVALID_KEY' }); }
+        let oldAdminChan;
+        nThen((waitFor) => {
+            // Check if support was already enabled
+            getKeys(ctx, false, {}, waitFor((err, obj) => {
+                if (err) {
+                    cb({error: err});
+                    return void waitFor.abort();
+                }
+                oldSupportKey = obj.theirPublic;
+            }));
+        }).nThen((waitFor) => {
+            // Only admins can rotate the keys
+            if (!ctx.adminKeys.includes(edPublic)) {
+                waitFor.abort();
+                return void cb({error: 'EFORBIDDEN'});
+            }
+        }).nThen((waitFor) => {
+            // If support is enabled, only current moderators can rotate keys.
+            // Other admins can only delete the support
+            if (!oldSupportKey) { return; } // support disabled
+            if (!ctx.moderatorKeys.includes(edPublic)) {
+                waitFor.abort();
+                return void cb({error: 'EINVAL'});
+            }
+            if (oldKeyPub !== oldSupportKey) {
+                waitFor.abort();
+                return void cb({error: 'EFORBIDDEN'});
+            }
+        }).nThen((waitFor) => {
+            // If support was enabled, migrate old chainpad
+            if (!oldSupportKey) { return; } // No old doc to copy
+            ctx.adminRdyEvt.reg(() => {
+                let oldDoc = ctx.adminDoc.proxy;
+                oldAdminChan = ctx.adminDoc.metadata && ctx.adminDoc.metadata.channel;
+
+                let seed = newKey.slice(0,24);
+                let hash = Hash.getEditHashFromKeys({
+                    version: 2,
+                    type: 'support',
+                    keys: {
+                        editKeyStr: seed
+                    }
+                });
+                let cfg = {
+                    network: ctx.store.network,
+                    initialState: '{}'
+                };
+                var oldKeys = oldDoc.oldKeys = oldDoc.oldKeys || {};
+                oldKeys[oldKeyPub] = {
+                    curvePrivate: oldKey,
+                    rotatedOn: +new Date(),
+                    rotatedBy: edPublic
+                };
+                Crypt.put(hash, JSON.stringify(oldDoc), waitFor((err) => {
+                    if (err) {
+                        waitFor.abort();
+                        return void cb({error: err});
+                    }
+                }), cfg);
+            });
+        }).nThen((waitFor) => {
+            // Send new key to server
+            updateServerKey(ctx, newKeyPub, newKey, waitFor((obj) => {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+            }));
+        }).nThen(() => {
+            // From now on, each error may cause issue because
+            // the server has already stored the new key
+
+            // Disconnect old doc and mailbox
+            if (!oldSupportKey) { return; } // support disabled
+
+            if (ctx.adminDoc) { ctx.adminDoc.stop(); }
+
+            let mailbox = Util.find(ctx, [ 'store', 'mailbox' ]);
+            if (mailbox) { mailbox.close('supportteam'); }
+
+            if (ctx.supportRpc) { ctx.supportRpc.destroy(); }
+
+            ctx.adminRdyEvt = Util.mkEvent(true);
+        }).nThen((waitFor) => {
+            // Add key to my proxy
+            ctx.Store.addAdminMailbox(null, {
+                version: 2,
+                priv: newKey
+            }, waitFor((obj) => {
+                if (obj && obj.error) { // Should never happen with the previous checks
+                    waitFor.abort();
+                    if (oldSupportKey) {
+                        // If we weren't able to store the new key, abort and restore old keys
+                        return updateServerKey(ctx, oldKeyPub, oldKey, () => {
+                            return void cb(obj);
+                        });
+                    }
+                    return void cb(obj);
+                }
+            }));
+        }).nThen((waitFor) => {
+            // Notify other moderators
+            if (!oldSupportKey) { return; }
+            let mailbox = Util.find(ctx, [ 'store', 'mailbox' ]);
+            getModerators(ctx, null, null, waitFor((obj) => {
+                if (obj && obj.error) {
+                    return void cb({
+                        success: true,
+                        noNotify: true
+                    });
+                }
+                let all = obj && obj[0];
+                Object.keys(all || {}).forEach((modEdPub) => {
+                    let modData = all[modEdPub];
+                    mailbox.sendTo('MODERATOR_NEW_KEY', {
+                        supportKey: newKey
+                    }, {
+                        channel: modData.mailbox,
+                        curvePublic: modData.curvePublic
+                    }, () => {});
+                });
+            }));
+        }).nThen((waitFor) => {
+            // Initialize new chainpad
+            initializeSupportAdmin(ctx, true, waitFor);
+        }).nThen((waitFor) => {
+            // Clean old data
+            if (!oldAdminChan) { return; }
+            ctx.Store.adminRpc(null, {
+                cmd: 'ARCHIVE_DOCUMENT',
+                data: {
+                    id: oldAdminChan,
+                    reason: 'Deprecated support pad'
+                }
+            }, waitFor());
+        }).nThen((waitFor) => {
+            // Call back
+            cb({success: true});
+        });
+    };
+
     var getAdminKey = function (ctx, data, cId, cb) {
         let proxy = ctx.store.proxy;
         let supportKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
@@ -567,7 +805,8 @@ define([
             if (err) { return void cb({error: err}); }
             if (obj.theirPublic !== supportKey) { return void cb({ error: 'EFORBIDDEN' }); }
             cb({
-                curvePrivate: privateKey
+                curvePrivate: privateKey,
+                curvePublic: supportKey
             });
         });
     };
@@ -611,6 +850,7 @@ define([
 
         var ctx = {
             moderatorKeys: ApiConfig.moderatorKeys,
+            adminKeys: ApiConfig.adminKeys,
             supportData: proxy,
             store: cfg.store,
             Store: cfg.Store,
@@ -619,7 +859,7 @@ define([
         };
 
         if (Util.find(store, ['proxy', 'mailboxes', 'supportteam'])) {
-            initializeSupportAdmin(ctx, waitFor);
+            initializeSupportAdmin(ctx, false, waitFor);
         }
 
         support.ctx = ctx;
@@ -634,6 +874,9 @@ define([
         };
         support.updateAdminTicket = function (content) {
             updateAdminTicket(ctx, content);
+        };
+        support.updateAdminKey = function (content, cb) {
+            updateAdminKey(ctx, content, cb);
         };
         support.checkAdminTicket = function (content, cb) {
             checkAdminTicket(ctx, content, cb);
@@ -661,6 +904,9 @@ define([
             }
             if (cmd === 'GET_PRIVATE_KEY') {
                 return void getAdminKey(ctx, data, clientId, cb);
+            }
+            if (cmd === 'ROTATE_KEYS') {
+                return void rotateKeys(ctx, data, clientId, cb);
             }
             if (cmd === 'ADD_MODERATOR') {
                 return void addModerator(ctx, data, clientId, cb);

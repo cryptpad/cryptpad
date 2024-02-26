@@ -43,7 +43,8 @@ define([
     var sframeChan;
     var events = {
         'NEW_TICKET': Util.mkEvent(),
-        'UPDATE_TICKET': Util.mkEvent()
+        'UPDATE_TICKET': Util.mkEvent(),
+        'UPDATE_RIGHTS': Util.mkEvent()
     };
 
     // XXX
@@ -68,6 +69,14 @@ define([
             APP.module.execCommand('LIST_TICKETS_ADMIN', {
                 type: type
             }, (tickets) => {
+                if (tickets.error) {
+                    if (tickets.error === 'EFORBIDDEN') {
+                        return void UI.errorLoadingScreen(Messages.admin_authError || '403 Forbidden');
+                    }
+                    return void UI.errorLoadingScreen(tickets.error);
+                }
+                UI.removeLoadingScreen();
+
                 let activeForms = {};
                 $container.find('.cp-support-form-container').each((i, el) => {
                     let id = $(el).attr('data-id');
@@ -203,6 +212,7 @@ define([
         let _refresh = Util.throttle(refreshAll, 500);
         events.NEW_TICKET.reg(_refresh);
         events.UPDATE_TICKET.reg(_refresh);
+        events.UPDATE_RIGHTS.reg(_refresh);
 
         // Make sidebar layout
         const categories = {
@@ -300,11 +310,6 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         common.setTabTitle(Messages.supportPage);
-
-        if (!Array.isArray(ApiConfig.moderatorKeys) ||
-            !ApiConfig.moderatorKeys.includes(privateData.edPublic)) {
-            return void UI.errorLoadingScreen(Messages.admin_authError || '403 Forbidden');
-        }
 
         APP.privateKey = privateData.supportPrivateKey;
         APP.origin = privateData.origin;

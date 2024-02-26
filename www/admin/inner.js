@@ -2926,12 +2926,13 @@ Example
     Messages.admin_supportNewConfirm = "Are you sure? This will remove access to all current moderators and delete all existing tickets.";
     Messages.admin_supportMembers = "Current support team";
     Messages.admin_supportAdd = "Add a contact to the support team";
+    Messages.admin_supportRotateNotify = "Warning: new keys have been generated but an unenexpected error prevented the system to send them to the moderators. You may have to remove and re-add all the other moderators";
     create['support-new'] = function () {
         const $div = makeBlock('support-new'); // Msg.admin_supportNewHint, .admin_supportNewTitle
         let supportKey = ApiConfig.supportMailboxKey;
         let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
         let refresh = function () {};
-        const redraw = function (membersData, oldPrivKey) {
+        const redraw = function (moderatorsData, oldPrivKey) {
             $div.empty();
 
             const state = h('div');
@@ -2986,7 +2987,7 @@ Example
                         spinner.done();
                         UI.log(Messages.saved);
                         supportKey = undefined;
-                        setState();
+                        refresh();
                     });
                 });
             });
@@ -3006,7 +3007,7 @@ Example
             };
             console.log(oldPrivKey, getEncryptor(oldPrivKey));
             */
-            const getMemberData = (curve) => {
+            const getContactData = (curve) => {
                 let friends = common.getFriends(true);
                 let f = friends[curve || 'me'];
                 return {
@@ -3019,17 +3020,12 @@ Example
                 };
             };
             const generateKey = function () {
-                if (supportKey && !membersData[edPublic]) {
+                if (supportKey && !moderatorsData[edPublic]) {
                     UI.alert("A support key already exists. You must be a moderator to generate a new one or delete the existing support data.");
                     return;
                 }
                 spinner.spin();
                 $button.attr('disabled', 'disabled');
-                const keyPair = Nacl.box.keyPair();
-                const pub = Nacl.util.encodeBase64(keyPair.publicKey);
-                const priv = Nacl.util.encodeBase64(keyPair.secretKey);
-                const ed = Nacl.sign.keyPair.fromSeed(keypair.secretKey);
-                const edPub = Nacl.util.encodeBase64(ed.publicKey);
                 const onError = (waitFor, err, res) => {
                     if (waitFor) { waitFor.abort(); }
                     console.error(err, res);
@@ -3041,46 +3037,36 @@ Example
                 //const newCrypto = getEncryptor(priv);
 
                 nThen((waitFor) => {
-                    // Send new key to server
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['SET_SUPPORT_MAILBOX2', [pub, edPub]]
-                    }, waitFor((e, response) => {
-                        $button.removeAttr('disabled');
-                        if (e || response.error) { return void onError(waitFor, e, response); }
-                    }));
-                }).nThen((waitFor) => {
-                    // Add to own mailbox
-                    sFrameChan.query("Q_ADMIN_MAILBOX", {
-                        version: 2,
-                        priv: priv
-                    }, waitFor((err, obj) => {
-                        if (err || (obj && obj.error)) { return void onError(waitFor, err, obj); }
-
-                        spinner.done();
-                        UI.log(Messages.saved);
-                        supportKey = pub;
-                        setState();
-                    }));
-                }).nThen(() => {
                     // Add myself to moderator role if not already there
+                    let me = getContactData();
+                    if (moderatorsData[me.edPublic]) { return; }
                     sFrameChan.query('Q_ADMIN_RPC', {
                         cmd: 'ADD_MODERATOR',
-                        data: getMemberData()
-                    }, (e, response) => {
+                        data: me
+                    }, waitFor((e, response) => {
                         console.error(e, response);
-                    });
+                    }));
+                }).nThen((waitFor) => {
+                    // Copy chainpad doc and pin
+                    APP.supportModule.execCommand('ROTATE_KEYS', {}, waitFor((obj) => {
+                        $button.removeAttr('disabled');
+                        if (obj && obj.error) { return void onError(waitFor, obj.error); }
+                        if (obj && obj.success && obj.noNotify) {
+                            UI.alert(Messages.admin_supportRotateNotify);
+                            onError(waitFor, 'NOTIFY_ERROR', obj);
+                            return;
+                        }
+                        spinner.done();
+                        UI.log(Messages.saved);
+                    }));
                 }).nThen(() => {
-                    // XXX migrate chainpad doc
-                    // XXX delete old pin log
-                    // XXX send new keys to members
-                    console.error('XXX TODO send to members');
+                    refresh();
                 });
             };
 
-            const addSupportMember = (curve, _cb) => {
+            const addModerator = (curve, _cb) => {
                 let cb = Util.mkAsync(_cb);
-                let userData = getMemberData(curve);
+                let userData = getContactData(curve);
                 if (!userData) { return void cb('INVALID_USER'); }
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADD_MODERATOR',
@@ -3097,6 +3083,18 @@ Example
                     });
                 });
             };
+            const removeModerator = (ed) => {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'REMOVE_MODERATOR',
+                    data: ed
+                }, (e, response) => {
+                    if (e || (response && response.error)) {
+                        console.error(e || response.error);
+                        return void UI.warn(Messages.error);
+                    }
+                    generateKey();
+                });
+            };
 
             Util.onClickEnter($button, function () {
                 /*
@@ -3109,12 +3107,12 @@ Example
                 generateKey();
             });
 
-            const drawMembers = () => {
+            const drawModerators = () => {
                 if (!supportKey) { return; }
                 const members = {};
                 const friends = Util.clone(common.getFriends(false))
-                Object.keys(membersData).forEach((ed) => {
-                    let m = membersData[ed];
+                Object.keys(moderatorsData).forEach((ed) => {
+                    let m = moderatorsData[ed];
                     members[m.curvePublic] = {
                         displayName: m.name,
                         edPublic: m.edPublic,
@@ -3133,7 +3131,8 @@ Example
                     noSelect: true,
                     data: members,
                     remove: (el) => {
-                        console.error('REMOVE', el);
+                        let ed = $(el).attr('data-ed');
+                        removeModerator(ed);
                     }
                 });
                 let contactsGrid = UIElements.getUserGrid(Messages.admin_supportAdd, {
@@ -3153,14 +3152,14 @@ Example
                                 console.error('Missing data on selected user', el);
                                 return void UI.warn(Messages.error);
                             }
-                            addSupportMember(curve, waitFor());
+                            addModerator(curve, waitFor());
                         });
                     }).nThen(() => {
                         refresh();
                     });
                 });
                 // Only moderators can add new moderators
-                if (!membersData[edPublic]) {
+                if (!moderatorsData[edPublic]) {
                     contactsGrid.div = undefined;
                     addBtn = undefined;
                 }
@@ -3172,13 +3171,14 @@ Example
                 ]);
                 $div.append(list);
             };
-            drawMembers();
+            drawModerators();
         };
         refresh = () => {
-            let oldKey, members;
+            let oldKey, moderators;
             nThen((waitFor) => {
                 APP.supportModule.execCommand('GET_PRIVATE_KEY', {}, waitFor((obj) => {
                     oldKey = obj && obj.curvePrivate;
+                    supportKey = obj && obj.curvePublic;
                 }));
             }).nThen((waitFor) => {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3190,10 +3190,10 @@ Example
                         UI.warn(Messages.error);
                         return;
                     }
-                    members = response[0];
+                    moderators = response[0];
                 }));
             }).nThen(() => {
-                redraw(members, oldKey);
+                redraw(moderators, oldKey);
             });
         };
         refresh();

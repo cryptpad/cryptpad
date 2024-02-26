@@ -913,17 +913,18 @@ define([
         var msg = data.msg;
         var content = msg.content;
         var newKey = content.supportKey;
-        // check if it matches the server key
-        var pub = Hash.getBoxPublicFromSecret(newKey);
-        if (pub !== ApiConfig.supportMailboxKey) { return void cb(true); }
-        // We have a correct key: add support mailbox
-        ctx.Store.addAdminMailbox(null, {
-            version: 2,
-            priv: newKey,
-            lastKnownHash: content.lastKnownHash
-        }, function (err) {
-            if (err) { return void cb(true); }
-            cb(false);
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+        support.updateAdminKey(content, cb);
+    };
+    handlers['MODERATOR_NEW_KEY'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        var newKey = content.supportKey;
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+        support.updateAdminKey(content, function () {
+            cb(true); // Always dismiss, this should be invisible
         });
     };
 
