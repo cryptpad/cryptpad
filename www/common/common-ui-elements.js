@@ -2236,7 +2236,7 @@ define([
         };
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
-        var $survey = $userAdmin.find('.cp-toolbar-survey').parent();;
+        var $survey = $userAdmin.find('.cp-toolbar-survey').parent();
         var $surveyHr =  $survey.next('[role="separator"]');
         if (!surveyURL) {
             $survey.hide();
