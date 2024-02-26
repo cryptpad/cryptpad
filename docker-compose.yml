@@ -15,6 +15,10 @@ services:
       - CPAD_SANDBOX_DOMAIN=https://your-sandbox-domain.com
       - CPAD_CONF=/cryptpad/config/config.js
 
+      # Uncomment the next line, when you want to use OnlyOffice on
+      # your installation. TODO add link to license
+      # - CPAD_INSTALL_ONLYOFFICE=yes
+
     volumes:
       - ./data/blob:/cryptpad/blob
       - ./data/block:/cryptpad/block
