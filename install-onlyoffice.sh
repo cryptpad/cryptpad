@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euxo pipefail
+set -euo pipefail
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BUILDS_DIR=$SCRIPT_DIR/onlyoffice-builds.git
@@ -90,12 +90,14 @@ ensure_commit_exists () {
 		LAST_DIR=$(pwd)
 		cd "$BUILDS_DIR"
 		if ! git cat-file -e "$1"; then
+			echo Fetch new OnlyOffice version...
 			git fetch
 		fi
 		cd "$LAST_DIR"
 		return
 	fi
 	
+	echo Downloading OnlyOffice...
 	git clone --bare git@github.com:cryptpad/onlyoffice-builds.git "$BUILDS_DIR"  # TODO use https here, when repo is public
 }
 
@@ -106,27 +108,30 @@ install_version () {
 	local LAST_DIR
 	LAST_DIR=$(pwd)
 
-	if [ ! -e "$FULL_DIR"/.commit ]; then
-		if [ "$(cat "$FULL_DIR"/.commit)" != "$COMMIT" ]; then
-			ensure_commit_exists "$COMMIT"
+	if [ ! -e "$FULL_DIR"/.commit ] || [ "$(cat "$FULL_DIR"/.commit)" != "$COMMIT" ]; then
+		ensure_commit_exists "$COMMIT"
 
-			if [ ! -e "$FULL_DIR"/.git ]; then
-				rm -rf "$FULL_DIR"
-			fi
-			
-			if [ -d "$FULL_DIR" ]; then
-				cd "$FULL_DIR"
-				git checkout "$COMMIT"
-			else
-				cd "$BUILDS_DIR"
-				git worktree add "$FULL_DIR" "$COMMIT"
-			fi
-
-			cd "$LAST_DIR"
-
-			echo "$COMMIT" > "$FULL_DIR"/.commit
+		if [ ! -e "$FULL_DIR"/.git ]; then
+			rm -rf "$FULL_DIR"
 		fi
+
+		if [ -d "$FULL_DIR" ]; then
+			cd "$FULL_DIR"
+			git checkout "$COMMIT"
+		else
+			cd "$BUILDS_DIR"
+			git worktree add "$FULL_DIR" "$COMMIT"
+		fi
+
+		cd "$LAST_DIR"
+
+		echo "$COMMIT" > "$FULL_DIR"/.commit
+
+		echo "$DIR" updated
+	else
+		echo "$DIR" was up to date
 	fi
+
 
 	if [ ${CLEAR+x} ]; then
 		rm -f "$FULL_DIR"/.git

@@ -29,12 +29,16 @@ if [ ! -f "$CPAD_CONF" ]; then
 fi
 
 cd $CPAD_HOME
-eval "$(ssh-agent -s)"  # TODO remove this when repo is public
-ssh-add install-onlyoffice-docker.key
-mkdir -p ~/.ssh
-chmod 0700 ~/.ssh
-ssh-keyscan github.com > ~/.ssh/known_hosts
-./install-onlyoffice.sh -c -l # TODO run only when OnlyOffice is enabled
+
+if [ "$CPAD_INSTALL_ONLYOFFICE" == "yes" ]; then
+	eval "$(ssh-agent -s)"  # TODO remove this when repo is public
+	ssh-add install-onlyoffice-docker.key
+	mkdir -p ~/.ssh
+	chmod 0700 ~/.ssh
+	ssh-keyscan github.com > ~/.ssh/known_hosts
+	./install-onlyoffice.sh -c -l
+fi
+
 npm run build
 
 exec "$@"
