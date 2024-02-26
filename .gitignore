@@ -34,3 +34,5 @@ www/common/onlyoffice/v*
 
 /onlyoffice-builds.git/
 /www/common/onlyoffice/dist/
+/install-onlyoffice-docker.key
+/onlyoffice-dist/
