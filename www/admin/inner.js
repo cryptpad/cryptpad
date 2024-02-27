@@ -2928,7 +2928,8 @@ Example
     Messages.admin_supportAdd = "Add a contact to the support team";
     Messages.admin_supportRotateNotify = "Warning: new keys have been generated but an unenexpected error prevented the system to send them to the moderators. You may have to remove and re-add all the other moderators";
     create['support-new'] = function () {
-        const $div = makeBlock('support-new'); // Msg.admin_supportNewHint, .admin_supportNewTitle
+        const $block = makeBlock('support-new'); // Msg.admin_supportNewHint, .admin_supportNewTitle
+        const $div = $(h('div')).appendTo($block);
         let supportKey = ApiConfig.supportMailboxKey;
         let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
         let refresh = function () {};
@@ -3164,7 +3165,7 @@ Example
             });
         };
         refresh();
-        return $div;
+        return $block;
     };
     create['support-init'] = function () {
         var $div = makeBlock('support-init'); // Msg.admin_supportInitHint, .admin_supportInitTitle
