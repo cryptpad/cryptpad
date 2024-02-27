@@ -2973,16 +2973,12 @@ Example
                     // the support UI for the clients
                     spinner.spin();
                     $delButton.attr('disabled', 'disabled');
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['SET_SUPPORT_MAILBOX2', ['', '']]
-                    }, function (e, response) {
+                    APP.supportModule.execCommand('DISABLE_SUPPORT', {}, (obj) => {
                         $delButton.removeAttr('disabled');
-                        if (e || response.error) {
+                        if (obj && obj.error) {
                             UI.warn(Messages.error);
-                            console.error(e, response);
-                            spinner.hide();
-                            return;
+                            console.error(obj.error);
+                            return void spinner.hide();
                         }
                         spinner.done();
                         UI.log(Messages.saved);

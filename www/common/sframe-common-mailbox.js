@@ -102,7 +102,7 @@ define([
                 h('div.cp-notification-content', {
                     tabindex: tabIndexValue
                 }, [
-                    h('p', formatData(data))
+                    h('p', data.content.msg.type + ' - ' +formatData(data))
                 ])
             ]);
 

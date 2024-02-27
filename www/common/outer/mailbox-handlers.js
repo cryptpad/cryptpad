@@ -860,7 +860,7 @@ define([
     handlers['NOTIF_TICKET'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
-        content.time = data.time;
+        if (!content.time) { content.time = data.time; }
 
         var support = Util.find(ctx, ['store', 'modules', 'support']);
 

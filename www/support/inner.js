@@ -321,6 +321,7 @@ define([
                     return void UI.warn(Messages.error);
                 }
                 id = Util.uid();
+                events.UPDATE_TICKET.fire();
                 $('.cp-sidebarlayout-category[data-category="tickets"]').click();
             });
         });

@@ -147,12 +147,14 @@ define([
             ctx.supportData[channel] = {
                 time: +new Date(),
                 title: title,
-                curvePublic: supportKey // XXX Should we store this value or delete the ticket on key rotation?
+                curvePublic: supportKey // Old tickets still use previous keys
             };
             ctx.Store.onSync(null, waitFor());
         }).nThen(() => {
             var supportChannel = Hash.getChannelIdFromKey(supportKey);
+            // XXX create tickt as an admin
             // XXX isAdmin
+            // First message to deal with the new ticket (store it in the list)
             mailbox.sendTo('NEW_TICKET', {
                 title: title,
                 channel: channel,
@@ -165,7 +167,9 @@ define([
                 if (obj && obj.error) { delete ctx.supportData[channel]; }
                 cb(obj);
             });
+            // XXX create tickt as an admin
             // XXX isAdmin
+            // Second message is only a notification to warn the user/admins
             mailbox.sendTo('NOTIF_TICKET', {
                 title: title,
                 channel: channel,
@@ -182,6 +186,7 @@ define([
         if (!mailbox) { return void cb('E_NOT_READY'); }
         if (!anonRpc) { return void cb("anonymous rpc session not ready"); }
         var theirPublic, myCurve, notifKey;
+        var time;
         nThen((waitFor) => {
             // Get correct keys
             getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
@@ -202,12 +207,13 @@ define([
             anonRpc.send("WRITE_PRIVATE_MESSAGE", [
                 data.channel,
                 ciphertext
-            ], waitFor((err) => {
+            ], waitFor((err, res) => {
                 if (err) {
                     waitFor.abort();
                     return void cb(err);
                 }
-                cb();
+                time = res && res[0];
+                cb(void 0, time);
             }));
         }).nThen(() => {
             // On success, notify
@@ -218,6 +224,7 @@ define([
                 title: data.ticket.title,
                 isClose: data.ticket.close,
                 channel: data.channel,
+                time: time,
                 user: Util.find(data.ticket, ['sender', 'curvePublic']) ? undefined : {
                     supportTeam: true
                 }
@@ -245,13 +252,20 @@ define([
                 var t = Util.clone(ctx.supportData[ticket]);
                 getContent(ctx, {
                     channel: ticket,
+                    curvePublic: t.curvePublic
                 }, false, waitFor((err, messages) => {
-                    if (err) { t.error = err; }
-                    else { t.messages = messages; }
-
-                    if (messages[messages.length -1].close) {
-                        ctx.supportData[ticket].closed = true;
-                        t.closed = true;
+                    if (err) {
+                        if (err.type === 'EDELETED') {
+                            delete ctx.supportData[ticket];
+                            return;
+                        }
+                        t.error = err;
+                    } else {
+                        t.messages = messages;
+                        if (messages.length && messages[messages.length -1].close) {
+                            ctx.supportData[ticket].closed = true;
+                            t.closed = true;
+                        }
                     }
 
                     t.id = ticket;
@@ -309,28 +323,37 @@ define([
     };
 
     var loadTicketAdmin = function (ctx, data, cId, cb) {
-        getContent(ctx, data, true, function (err, res) {
-            if (err) { return void cb({error: err}); }
-            ctx.adminRdyEvt.reg(() => {
+        let supportKey = data.supportKey;
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            // If this ticket was created with an older support key, use the old one
+            if (doc.oldKeys && doc.oldKeys[supportKey]) {
+                data.adminCurvePrivate = doc.oldKeys[supportKey].curvePrivate;
+            }
+
+            getContent(ctx, data, true, function (err, res) {
+                if (err) { return void cb({error: err}); }
                 var doc = ctx.adminDoc.proxy;
-                if (Array.isArray(res) && res.length) {
-                    res.sort((t1, t2) => { return t1.time - t2.time; });
-                    let last = res[res.length - 1];
-                    let premium = res.some((msg) => {
-                        let curve = Util.find(msg, ['sender', 'curvePublic']);
-                        if (data.curvePublic !== curve) { return; }
-                        return Util.find(msg, ['sender', 'quota', 'plan']);
-                    });
-                    var senderKey = last.sender && last.sender.edPublic;
+                if (!Array.isArray(res) || !res.length) { return void cb(res); }
 
-                    var entry = doc.tickets.active[data.channel];
-                    if (entry) {
-                        entry.time = last.time;
-                        entry.premium = premium;
+                // Sort messages by server time
+                res.sort((t1, t2) => { return t1.time - t2.time; });
+                let last = res[res.length - 1];
+                let premium = res.some((msg) => {
+                    let curve = Util.find(msg, ['sender', 'curvePublic']);
+                    if (data.curvePublic !== curve) { return; }
+                    return Util.find(msg, ['sender', 'quota', 'plan']);
+                });
+                var senderKey = last.sender && last.sender.edPublic;
 
-                        if (senderKey) {
-                            entry.lastAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1
-                        }
+                // Update ChainPad with latest ticket data
+                var entry = doc.tickets.active[data.channel];
+                if (entry) {
+                    entry.time = last.time;
+                    entry.premium = premium;
+
+                    if (senderKey) {
+                        entry.lastAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1
                     }
                 }
                 cb(res);
@@ -340,24 +363,36 @@ define([
 
     var replyTicketAdmin = function (ctx, data, cId, cb) {
         if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
-        replyTicket(ctx, data, true, (err) => {
-            if (err) { return void cb({error: err}); }
-            ctx.adminRdyEvt.reg(() => {
+        let supportKey = data.supportKey;
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            // If this ticket was created with an older support key, use the old one
+            if (doc.oldKeys && doc.oldKeys[supportKey]) {
+                data.adminCurvePrivate = doc.oldKeys[supportKey].curvePrivate;
+            }
+            replyTicket(ctx, data, true, (err, time) => {
+                if (err) { return void cb({error: err}); }
                 var doc = ctx.adminDoc.proxy;
                 var entry = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
-                entry.time = +new Date();
+                entry.time = time;
                 entry.lastAdmin = true;
+                cb({sent: true});
             });
-            cb({sent: true});
         });
     };
 
     var closeTicketAdmin = function (ctx, data, cId, cb) {
         if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
         // Reply with `data.ticket.close = true`
-        replyTicket(ctx, data, true, (err) => {
-            if (err) { return void cb({error: err}); }
-            ctx.adminRdyEvt.reg(() => {
+        let supportKey = data.supportKey;
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            // If this ticket was created with an older support key, use the old one
+            if (doc.oldKeys && doc.oldKeys[supportKey]) {
+                data.adminCurvePrivate = doc.oldKeys[supportKey].curvePrivate;
+            }
+            replyTicket(ctx, data, true, (err) => {
+                if (err) { return void cb({error: err}); }
                 var doc = ctx.adminDoc.proxy;
                 var entry = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
                 entry.time = +new Date();
@@ -381,7 +416,7 @@ define([
 
     var addAdminTicket = function (ctx, data, cb) {
         // Wait for the chainpad to be ready before adding the data
-        if (!ctx.adminRdyEvt) { return void cb(false); } // XXX not an admin, delete mailbox?
+        if (!ctx.adminRdyEvt) { return void cb(true); } // XXX not an admin, delete mailbox?
 
         ctx.adminRdyEvt.reg(() => {
             let supportKey;
@@ -390,7 +425,7 @@ define([
                 getKeys(ctx, false, data, waitFor((err, obj) => {
                     if (err) {
                         waitFor.abort();
-                        return void cb({error: err});
+                        return void cb(true);
                     }
                     supportKey = obj.theirPublic;
                 }));
@@ -401,7 +436,7 @@ define([
                     var doc = ctx.adminDoc.proxy;
                     if (doc.tickets.active[data.channel] || doc.tickets.closed[data.channel]
                         || doc.tickets.pending[data.channel]) {
-                        return void cb(false); }
+                        return void cb(true); }
                     doc.tickets.active[data.channel] = {
                         title: data.title,
                         premium: data.premium,
@@ -411,7 +446,9 @@ define([
                         authorKey: data.user && data.user.curvePublic
                     };
                     Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
-                        cb(false);
+                        // Call back only when synced. That way we can handle the mailbox message
+                        // later in case of network issues.
+                        cb(true);
                     });
                     notifyClient(ctx, true, 'NEW_TICKET', data.channel);
                     if (ctx.supportRpc) { ctx.supportRpc.pin([data.channel], () => {}); }
@@ -431,12 +468,14 @@ define([
                 if (!doc.tickets.active[data.channel] && !doc.tickets.pending[data.channel]) {
                     return; }
                 let t = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
-                if (data.time > (t.time + 2000)) { t.time = data.time; }
                 if (data.isClose) {
                     doc.tickets.closed[data.channel] = t;
                     delete doc.tickets.active[data.channel];
                     delete doc.tickets.pending[data.channel];
                 }
+                if (data.time < t.time) { return; }
+
+                t.time = data.time;
                 t.lastAdmin = false;
                 notifyClient(ctx, true, 'UPDATE_TICKET', data.channel);
             });
@@ -614,6 +653,7 @@ define([
                     editKeyStr: seed
                 }
             });
+            console.error(hash);
             loadAdminDoc(ctx, hash, waitFor());
         }).nThen(() => {
             console.log('Support admin loaded')
@@ -660,6 +700,7 @@ define([
         nThen((waitFor) => {
             // Check if support was already enabled
             getKeys(ctx, false, {}, waitFor((err, obj) => {
+                if (err === 'E_NOT_INIT') { return; } // We're going to set up a support key
                 if (err) {
                     cb({error: err});
                     return void waitFor.abort();
@@ -796,6 +837,76 @@ define([
             cb({success: true});
         });
     };
+    let disableSupport = function (ctx, data, cId, _cb) {
+        let cb = Util.once(Util.mkAsync(_cb));
+        let proxy = ctx.store.proxy;
+        let edPublic = proxy.edPublic;
+
+        let supportKey;
+        let moderators;
+        nThen((waitFor) => {
+            // Check if support is enabled
+            getKeys(ctx, false, {}, waitFor((err, obj) => {
+                if (err) {
+                    cb({error: err});
+                    return void waitFor.abort();
+                }
+                supportKey = obj.theirPublic;
+            }));
+        }).nThen((waitFor) => {
+            // Only admins can disable support
+            if (!ctx.adminKeys.includes(edPublic)) {
+                waitFor.abort();
+                return void cb({error: 'EFORBIDDEN'});
+            }
+        }).nThen((waitFor) => {
+            // Archive ChainPad and all the tickets (from pin log)
+            ctx.Store.adminRpc(null, {
+                cmd: 'ARCHIVE_SUPPORT',
+                data: {}
+            }, waitFor((obj) => {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+            }));
+        }).nThen((waitFor) => {
+            ctx.Store.adminRpc(null, {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_SUPPORT_KEYS', ['', '']]
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+            }));
+        }).nThen((waitFor) => {
+            getModerators(ctx, null, null, waitFor((obj) => {
+                if (!obj || obj.error) {
+                    waitFor.abort();
+                    return void cb();
+                }
+                moderators = obj[0] || {};
+            }));
+        }).nThen((waitFor) => {
+            let n = nThen;
+            Object.keys(moderators).forEach((ed) => {
+                n = n((waitFor) => {
+                    ctx.Store.adminRpc(null, {
+                        cmd: 'REMOVE_MODERATOR',
+                        data: ed
+                    }, waitFor(obj => {
+                        if (obj && obj.error) {
+                            console.error('Error removing moderator data', ed, obj.error);
+                        }
+                    }));
+                }).nThen;
+            });
+            n(() => {
+                cb();
+            });
+        });
+    };
 
     var getAdminKey = function (ctx, data, cId, cb) {
         let proxy = ctx.store.proxy;
@@ -803,10 +914,12 @@ define([
         let privateKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
         getKeys(ctx, false, {}, (err, obj) => {
             if (err) { return void cb({error: err}); }
-            if (obj.theirPublic !== supportKey) { return void cb({ error: 'EFORBIDDEN' }); }
+            if (supportKey && obj.theirPublic !== supportKey) {
+                privateKey = undefined;
+            }
             cb({
                 curvePrivate: privateKey,
-                curvePublic: supportKey
+                curvePublic: obj.theirPublic
             });
         });
     };
@@ -860,15 +973,14 @@ define([
 
         if (Util.find(store, ['proxy', 'mailboxes', 'supportteam'])) {
             initializeSupportAdmin(ctx, false, waitFor);
+            window.CryptPad_SupportCtx = ctx;
         }
 
         support.ctx = ctx;
         support.removeClient = function (clientId) {
             delete ctx.clients[clientId];
         };
-        support.leavePad = function (padChan) {
-            // XXX TODO
-        };
+        support.leavePad = function (padChan) {};
         support.addAdminTicket = function (content, cb) {
             addAdminTicket(ctx, content, cb);
         };
@@ -887,29 +999,9 @@ define([
         support.execCommand = function (clientId, obj, cb) {
             var cmd = obj.cmd;
             var data = obj.data;
+            // User commands
             if (cmd === 'MAKE_TICKET') {
                 return void makeTicket(ctx, data, clientId, cb);
-            }
-            if (cmd === 'LIST_TICKETS_ADMIN') {
-                return void listTicketsAdmin(ctx, data, clientId, cb);
-            }
-            if (cmd === 'LOAD_TICKET_ADMIN') {
-                return void loadTicketAdmin(ctx, data, clientId, cb);
-            }
-            if (cmd === 'REPLY_TICKET_ADMIN') {
-                return void replyTicketAdmin(ctx, data, clientId, cb);
-            }
-            if (cmd === 'CLOSE_TICKET_ADMIN') {
-                return void closeTicketAdmin(ctx, data, clientId, cb);
-            }
-            if (cmd === 'GET_PRIVATE_KEY') {
-                return void getAdminKey(ctx, data, clientId, cb);
-            }
-            if (cmd === 'ROTATE_KEYS') {
-                return void rotateKeys(ctx, data, clientId, cb);
-            }
-            if (cmd === 'ADD_MODERATOR') {
-                return void addModerator(ctx, data, clientId, cb);
             }
             if (cmd === 'GET_MY_TICKETS') {
                 return void getMyTickets(ctx, data, clientId, cb);
@@ -922,6 +1014,32 @@ define([
             }
             if (cmd === 'DELETE_TICKET') {
                 return void deleteMyTicket(ctx, data, clientId, cb);
+            }
+            // Moderator commands
+            if (cmd === 'LIST_TICKETS_ADMIN') {
+                return void listTicketsAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'LOAD_TICKET_ADMIN') {
+                return void loadTicketAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'REPLY_TICKET_ADMIN') {
+                return void replyTicketAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'CLOSE_TICKET_ADMIN') {
+                return void closeTicketAdmin(ctx, data, clientId, cb);
+            }
+            // Admin commands
+            if (cmd === 'GET_PRIVATE_KEY') {
+                return void getAdminKey(ctx, data, clientId, cb);
+            }
+            if (cmd === 'DISABLE_SUPPORT') {
+                return void disableSupport(ctx, data, clientId, cb);
+            }
+            if (cmd === 'ROTATE_KEYS') {
+                return void rotateKeys(ctx, data, clientId, cb);
+            }
+            if (cmd === 'ADD_MODERATOR') {
+                return void addModerator(ctx, data, clientId, cb);
             }
             cb({error: 'NOT_SUPPORTED'});
         };

@@ -110,9 +110,11 @@ define([
                 };
 
                 const onShow = function (ticket, channel, data, done) {
+                    let supportKey = data.supportKey;
                     APP.module.execCommand('LOAD_TICKET_ADMIN', {
                         channel: channel,
-                        curvePublic: data.authorKey
+                        curvePublic: data.authorKey,
+                        supportKey: data.supportKey
                     }, function (obj) {
                         if (!Array.isArray(obj)) {
                             console.error(obj && obj.error);
@@ -148,6 +150,7 @@ define([
                         channel: channel,
                         curvePublic: data.authorKey,
                         notifChannel: data.notifications,
+                        supportKey: data.supportKey,
                         ticket: formData
                     }, function (obj) {
                         if (obj && obj.error) {
@@ -164,6 +167,7 @@ define([
                         channel: channel,
                         curvePublic: data.authorKey,
                         notifChannel: data.notifications,
+                        supportKey: data.supportKey,
                         ticket: APP.support.getDebuggingData({
                             close: true
                         })
@@ -310,6 +314,10 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         common.setTabTitle(Messages.supportPage);
+
+        if (!ApiConfig.supportMailboxKey) {
+            return void UI.errorLoadingScreen(Messages.support_disabledTitle);
+        }
 
         APP.privateKey = privateData.supportPrivateKey;
         APP.origin = privateData.origin;
