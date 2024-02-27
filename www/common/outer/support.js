@@ -59,7 +59,7 @@ define([
 
     // Get the content of a ticket mailbox and close it
     var getContent = function (ctx, data, isAdmin, _cb) {
-        var cb = Util.once(Util.both(close, Util.mkAsync(_cb)));
+        var cb = Util.once(Util.mkAsync(_cb));
         var theirPublic, myCurve;
         nThen((waitFor) => {
             getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
@@ -87,6 +87,7 @@ define([
                 if (typeof(cpNf.stop) !== "function") { return; }
                 cpNf.stop();
             };
+            cb = Util.both(close, cb);
             cfg.onMessage = function (msg, user, vKey, isCp, hash, author, data) {
                 var time = data && data.time;
                 try {
@@ -102,7 +103,6 @@ define([
             cfg.onChannelError = cb;
             cfg.onReady = function () {
                 cb(null, all);
-                close();
             };
             cpNf = CpNetflux.start(cfg);
         });
