@@ -161,9 +161,6 @@ define([
         var list = h('div.cp-support-container');
         var $list = $(list);
 
-
-        let activeForm = {}; // .channel and .form
-
         let refresh = function () {
             const onClose = function (ticket, channel, data) {
                 APP.supportModule.execCommand('CLOSE_TICKET', {
@@ -175,7 +172,7 @@ define([
                     refresh();
                 });
             };
-            const onReply = function (ticket, channel, data, form, cb) {
+            const onReply = function (ticket, channel, data, form) {
                 var formData = APP.support.getFormData(form);
                 APP.supportModule.execCommand('REPLY_TICKET', {
                     channel: channel,
@@ -187,7 +184,7 @@ define([
                     refresh();
                 });
             };
-            const onDelete = function (ticket, channel, data) {
+            const onDelete = function (ticket, channel) {
                 APP.supportModule.execCommand('DELETE_TICKET', {
                     channel: channel
                 }, function (obj) {
@@ -213,8 +210,6 @@ define([
 
                 $list.empty();
                 obj.tickets.forEach((data) => {
-                    var title = data.title;
-                    var time = data.time;
                     var messages = data.messages;
                     var first = messages[0];
                     first.id = data.id;
@@ -238,17 +233,10 @@ define([
             });
 
         };
-        var button = h('button.btn.btn-primary', 'refresh'); // XXX
-        Util.onClickEnter($(button), function () {
-            refresh();
-        });
-        let _refresh = Util.throttle(refresh, 500);;
+        let _refresh = Util.throttle(refresh, 500);
         events.UPDATE_TICKET.reg(_refresh);
         refresh();
-        $div.append([
-            button,
-            list
-        ]);
+        $div.append(list);
         return $div;
     };
 

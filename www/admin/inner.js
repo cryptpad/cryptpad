@@ -2932,7 +2932,7 @@ Example
         let supportKey = ApiConfig.supportMailboxKey;
         let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
         let refresh = function () {};
-        const redraw = function (moderatorsData, oldPrivKey) {
+        const redraw = function (moderatorsData) {
             $div.empty();
 
             const state = h('div');
@@ -2988,21 +2988,6 @@ Example
                 });
             });
 
-            /*
-            const getEncryptor = (curvePrivate) => {
-                const seed = curvePrivate.slice(0,24);
-                const hash = Hash.getEditHashFromKeys({
-                    version: 2,
-                    type: 'support',
-                    keys: {
-                        editKeyStr: seed
-                    }
-                });
-                const secret = Hash.getSecrets('support', hash);
-                return Crypto.createEncryptor(secret.keys);
-            };
-            console.log(oldPrivKey, getEncryptor(oldPrivKey));
-            */
             const getContactData = (curve) => {
                 let friends = common.getFriends(true);
                 let f = friends[curve || 'me'];
@@ -3028,9 +3013,6 @@ Example
                     spinner.hide();
                     UI.warn(Messages.error);
                 };
-
-                //const oldCrypto = supportKey ? getEncryptor(oldPrivKey) : undefined;
-                //const newCrypto = getEncryptor(priv);
 
                 nThen((waitFor) => {
                     // Add myself to moderator role if not already there
@@ -3073,10 +3055,7 @@ Example
                     }
 
                     // User added to support team in database, send them the keys
-                    APP.supportModule.execCommand('ADD_MODERATOR', userData, (obj) => {
-                        // XXX IF ERROR, (can't notify) remove from DB?
-                        cb();
-                    });
+                    APP.supportModule.execCommand('ADD_MODERATOR', userData, cb);
                 });
             };
             const removeModerator = (ed) => {
@@ -3093,20 +3072,13 @@ Example
             };
 
             Util.onClickEnter($button, function () {
-                /*
-                if (supportKey) {
-                    return void UI.confirm(Messages.admin_supportNewConfirm, function (yes) {
-                        if (yes) { generateKey(); }
-                    });
-                }
-                */
                 generateKey();
             });
 
             const drawModerators = () => {
                 if (!supportKey) { return; }
                 const members = {};
-                const friends = Util.clone(common.getFriends(false))
+                const friends = Util.clone(common.getFriends(false));
                 Object.keys(moderatorsData).forEach((ed) => {
                     let m = moderatorsData[ed];
                     members[m.curvePublic] = {
@@ -3170,10 +3142,9 @@ Example
             drawModerators();
         };
         refresh = () => {
-            let oldKey, moderators;
+            let moderators;
             nThen((waitFor) => {
                 APP.supportModule.execCommand('GET_PRIVATE_KEY', {}, waitFor((obj) => {
-                    oldKey = obj && obj.curvePrivate;
                     supportKey = obj && obj.curvePublic;
                 }));
             }).nThen((waitFor) => {
@@ -3189,7 +3160,7 @@ Example
                     moderators = response[0];
                 }));
             }).nThen(() => {
-                redraw(moderators, oldKey);
+                redraw(moderators);
             });
         };
         refresh();

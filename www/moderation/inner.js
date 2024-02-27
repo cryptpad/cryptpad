@@ -34,7 +34,7 @@ define([
     Util,
     Hash,
     Sidebar,
-    Support,
+    Support
     )
 {
     var APP = {};
@@ -61,10 +61,10 @@ define([
 
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
-        const blocks = sidebar.blocks;
 
         // Support panel functions
         let open = [];
+        let refreshAll = function () {};
         let refresh = ($container, type) => {
             APP.module.execCommand('LIST_TICKETS_ADMIN', {
                 type: type
@@ -110,7 +110,6 @@ define([
                 };
 
                 const onShow = function (ticket, channel, data, done) {
-                    let supportKey = data.supportKey;
                     APP.module.execCommand('LOAD_TICKET_ADMIN', {
                         channel: channel,
                         curvePublic: data.authorKey,
@@ -143,8 +142,7 @@ define([
                     });
                     done();
                 };
-                const onReply = function (ticket, channel, data, form, cb) {
-                    // XXX TODO
+                const onReply = function (ticket, channel, data, form) {
                     var formData = APP.support.getFormData(form);
                     APP.module.execCommand('REPLY_TICKET_ADMIN', {
                         channel: channel,
@@ -208,7 +206,7 @@ define([
         };
 
         let activeContainer, pendingContainer, closedContainer;
-        var refreshAll = function () {
+        refreshAll = function () {
             refresh($(activeContainer), 'active');
             refresh($(pendingContainer), 'pending');
             refresh($(closedContainer), 'closed');
@@ -256,16 +254,16 @@ define([
             }
         });
         sidebar.addItem('active-list', cb => {
-            let div = activeContainer = h('div.cp-support-container'); // XXX block
-            cb(div);
+            activeContainer = h('div.cp-support-container'); // XXX block
+            cb(activeContainer);
         });
         sidebar.addItem('pending-list', cb => {
-            let div = pendingContainer = h('div.cp-support-container'); // XXX block
-            cb(div);
+            pendingContainer = h('div.cp-support-container');
+            cb(pendingContainer);
         });
         sidebar.addItem('closed-list', cb => {
-            let div = closedContainer = h('div.cp-support-container'); // XXX block
-            cb(div);
+            closedContainer = h('div.cp-support-container');
+            cb(closedContainer);
         }, { noTitle: true, noHint: true });
         refreshAll();
 

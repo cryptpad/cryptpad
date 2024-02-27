@@ -887,7 +887,6 @@ define([
             // Update ChainPad doc
             support.updateAdminTicket(content);
 
-            // XXX TODO opt out
             if (Util.find(ctx.store.proxy, ['settings', 'general', 'disableSupportNotif'])) {
                 return void cb(true);
             }
@@ -912,7 +911,6 @@ define([
     handlers['ADD_MODERATOR'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
-        var newKey = content.supportKey;
 
         var support = Util.find(ctx, ['store', 'modules', 'support']);
         support.updateAdminKey(content, cb);
@@ -920,7 +918,6 @@ define([
     handlers['MODERATOR_NEW_KEY'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
-        var newKey = content.supportKey;
 
         var support = Util.find(ctx, ['store', 'modules', 'support']);
         support.updateAdminKey(content, function () {

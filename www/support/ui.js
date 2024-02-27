@@ -300,7 +300,7 @@ define([
     };
 
     var makeTicket = function (ctx, opts) {
-        let { id, content, form, onShow, onHide, onClose, onReply, onForm, onDelete } = opts;
+        let { id, content, form, onShow, onHide, onClose, onReply, onDelete } = opts;
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -342,6 +342,7 @@ define([
 
             let visible = false;
             adminOpen = function (force) {
+                var $ticket = $(ticket);
                 $show.prop('disabled', 'disabled');
                 if (visible && !force) {
                     $ticket.toggleClass('cp-not-loaded', true);
@@ -360,7 +361,7 @@ define([
                 });
             };
             Util.onClickEnter($show, adminOpen);
-            adminActions = h('span.cp-support-title-buttons', [ url, show ])
+            adminActions = h('span.cp-support-title-buttons', [ url, show ]);
         }
 
         let isPremium = content.premium ? '.cp-support-ispremium' : '';
@@ -401,9 +402,7 @@ define([
             var oldData = form ? getFormData(ctx, form) : {};
             form = undefined;
             var newForm = makeForm(ctx, oldData, function () {
-                onReply(ticket, id, content, newForm, function () {
-                    $(actions).css('display', '');
-                });
+                onReply(ticket, id, content, newForm);
             }, content.title, true);
             $(newForm).attr('data-id', id);
             $ticket.append(newForm);
