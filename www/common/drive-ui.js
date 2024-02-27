@@ -1907,7 +1907,7 @@ define([
         };
 
         // create the folder structure before to upload files from folder
-        var uploadFolder = function (fileList) {
+        var uploadFolder = function (fileList, name) {
             var currentFolder = currentPath;
             // create an array of all the files relative path
             var files = Array.prototype.map.call(fileList, function (file) {
@@ -1917,7 +1917,7 @@ define([
                 };
             });
             // if folder name already exist in drive, rename it
-            var uploadedFolderName = files[0].path[0];
+            var uploadedFolderName = files.length ? files[0].path[0] : (name || '');
             var availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), uploadedFolderName);
 
             // ask for folder name and files options, then upload all the files!
@@ -1926,6 +1926,10 @@ define([
 
                 // verfify folder name is possible, and update files path
                 availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), folderUploadOptions.folderName);
+                if (!files.length) {
+                    return manager.addFolder(currentFolder, availableName, refresh);
+                }
+
                 if (uploadedFolderName !== availableName) {
                     files.forEach(function (file) {
                         file.path[0] = availableName;
@@ -2001,19 +2005,21 @@ define([
                 fileDrop = Array.prototype.slice.call(fileDrop).map(function (file) {
                     if (file.kind !== "file") { return; }
                     var f = file.getAsFile();
-                    if (!f.type && f.size % 4096 === 0) {
-                        // It's a folder!
-                        if (file.webkitGetAsEntry) { // IE and Opera don't support it
-                            f = file.webkitGetAsEntry();
-                            var files = [];
-                            nThen(function (w) {
-                                traverseFileTree(f, "", w, files);
-                            }).nThen(function () {
-                                uploadFolder(files);
-                            });
-                            return;
-                        } else {
-                            // Folder drop not supported by the browser
+                    if (file.webkitGetAsEntry) {
+                        let entry = file.webkitGetAsEntry();
+                        if (entry.isFile) { return f; }
+                        // It's a folder
+                        var files = [];
+                        nThen(function (w) {
+                            traverseFileTree(entry, "", w, files);
+                        }).nThen(function () {
+                            uploadFolder(files, f.name);
+                        });
+                        return;
+                    } else {
+                        // Old browsers: unreliable hack to detect folders
+                        if (!file.type && file.size%4096 === 0) {
+                            return; // Folder upload not supported
                         }
                     }
                     return f;
@@ -2025,7 +2031,7 @@ define([
                 }
             }
 
-            var oldPaths = JSON.parse(data).path;
+            var oldPaths = data && JSON.parse(data).path;
             if (!oldPaths) { return; }
             // A moved element should be removed from its previous location
             var movedPaths = [];
