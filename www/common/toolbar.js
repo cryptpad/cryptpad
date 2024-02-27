@@ -151,10 +151,12 @@ MessengerUI, Messages, Pages) {
             var $drawer = UIElements.createDropdown({
                 text: Messages.toolbar_file,
                 options: [],
-                common: Common
+                common: Common,
+                buttonCls: 'fa fa-file-o'
             });
             $drawer.addClass(FILE_CLS).appendTo($file);
             $drawer.find('.cp-dropdown-content').addClass(DRAWER_CLS);
+            $drawer.find('span').addClass('cp-button-name');
         }
 
         // The 'notitle' class removes the line added for the title with a small screen

@@ -85,22 +85,15 @@ define([
     ]);
 
     var mkThemeButton = function (framework) {
-        var $theme = $(h('button.cp-toolbar-appmenu', [
-            h('i.cptools.cptools-palette'),
-            h('span.cp-button-name', Messages.toolbar_theme)
-        ]));
-        var $content = $(h('ul.cp-toolbar-drawer-content', {
-            tabindex: 1
-        })).hide();
-
-        // set up all the necessary events
         const $drawer = UIElements.createDropdown({
             text: Messages.toolbar_theme,
             options: [],
-            common: Common
+            common: Common,
+            buttonCls: 'cptools cptools-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
         framework._.toolbar.$bottomL.append($drawer);
+        $drawer.find('span').addClass('cp-button-name');
     };
 
     var mkCbaButton = function (framework, markers) {
