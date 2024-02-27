@@ -2989,9 +2989,23 @@ Example
                 });
             });
 
+            const getMyData = () => {
+                let metadataMgr = common.getMetadataMgr();
+                let priv = metadataMgr.getPrivateData();
+                let user = metadataMgr.getUserData();
+                return {
+                    name: user.name,
+                    edPublic: priv.edPublic,
+                    curvePublic: user.curvePublic,
+                    mailbox: user.notifications,
+                    profile: user.profile
+                    // XXX add avatar?
+                };
+            };
             const getContactData = (curve) => {
+                if (!curve) { return getMyData(); }
                 let friends = common.getFriends(true);
-                let f = friends[curve || 'me'];
+                let f = friends[curve];
                 return {
                     name: f.displayName,
                     edPublic: f.edPublic,
