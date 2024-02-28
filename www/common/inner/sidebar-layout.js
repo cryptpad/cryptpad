@@ -50,7 +50,7 @@ define([
                 icon ? h('i', { 'class': icon }) : undefined,
                 h('span', text)
             ]);
-        }
+        };
         blocks.nav = (buttons) => {
             return h('nav', buttons);
         };
@@ -221,12 +221,16 @@ define([
                 var isActive = key === active ? '.cp-leftside-active' : '';
                 var item = h('li.cp-sidebarlayout-category'+isActive, {
                     'role': 'menuitem',
-                    'tabindex': 0
+                    'tabindex': 0,
+                    'data-category': key
                 }, [
                     icon,
                     Messages[`${app}_cat_${key}`] || key,
                 ]);
                 var $item = $(item).appendTo(container);
+                category.open = function () {
+                    $item.click();
+                };
 
                 Util.onClickEnter($item, function () {
                     if (!Array.isArray(category.content) && category.onClick) {
@@ -243,6 +247,10 @@ define([
             });
             showCategories(categories[active]);
             $leftside.append(container);
+        };
+
+        sidebar.openCategory = name => {
+            $(`.cp-sidebarlayout-category[data-category="${name}"]`).click();
         };
 
         sidebar.disableItem = (key) => {

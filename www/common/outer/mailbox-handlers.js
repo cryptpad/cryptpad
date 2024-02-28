@@ -846,15 +846,17 @@ define([
     handlers['NEW_TICKET'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
-        content.time = data.time;
-        var i = 0;
-        var handle = function () {
-            var support = Util.find(ctx, ['store', 'modules', 'support']);
-            if (!support && i++ < 100) { setTimeout(handle, 600); }
-            if (!support) { return; }
-            support.addAdminTicket(content, cb);
-        };
-        handle();
+        if (!content.time) { content.time = data.time; }
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+
+        // Admin to user
+        if (content.isAdmin) {
+            support.addUserTicket(content, cb);
+        }
+
+        // User to admin
+        support.addAdminTicket(content, cb);
     };
     var supportNotif, adminSupportNotif;
     handlers['NOTIF_TICKET'] = function (ctx, box, data, cb) {

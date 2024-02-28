@@ -39,6 +39,7 @@ define([
                 if (res.error) { console.error(res); }
             });
         }
+        // XXX XXX XXX no need for the "support" mailbox anymore
         if (!mailboxes['support'] && ctx.loggedIn) {
             mailboxes.support = {
                 channel: Hash.createChannelId(),

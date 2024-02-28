@@ -41,6 +41,7 @@ define([
             if (isAdmin) {
                 return ctx.adminRdyEvt.reg(() => {
                     cb(null, {
+                        supportKey: supportKey,
                         myCurve: data.adminCurvePrivate || Util.find(ctx.store.proxy, [
                                     'mailboxes', 'supportteam', 'keys', 'curvePrivate']),
                         theirPublic: data.curvePublic,
@@ -50,8 +51,9 @@ define([
             }
 
             cb(null, {
-                theirPublic: data.curvePublic || supportKey, // old tickets may use deprecated key
+                supportKey: supportKey,
                 myCurve: ctx.store.proxy.curvePrivate,
+                theirPublic: data.curvePublic || supportKey, // old tickets may use deprecated key
                 notifKey: supportKey
             });
         });
@@ -108,7 +110,7 @@ define([
         });
     };
 
-    var makeTicket = function (ctx, data, cId, cb) {
+    var makeTicket = function (ctx, data, isAdmin, cb) {
         var mailbox = Util.find(ctx, [ 'store', 'mailbox' ]);
         var anonRpc = Util.find(ctx, [ 'store', 'anon_rpc' ]);
         if (!mailbox) { return void cb({error: 'E_NOT_READY'}); }
@@ -117,34 +119,57 @@ define([
         var channel = data.channel;
         var title = data.title;
         var ticket = data.ticket;
-        var supportKey, myCurve;
+        var supportKey, theirPublic, myCurve, notifKey;
+        var time = +new Date();
         nThen((waitFor) => {
             // Send ticket to the admins and call back
-            getKeys(ctx, false, data, waitFor((err, obj) => {
+            getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
                 if (err) {
                     waitFor.abort();
                     return void cb({error: err});
                 }
-                supportKey = obj.theirPublic;
+                supportKey = obj.supportKey;
+                theirPublic = obj.theirPublic;
                 myCurve = obj.myCurve;
+                notifKey = obj.notifKey;
             }));
         }).nThen((waitFor) => {
             // Create ticket mailbox
-            var keys = Crypto.Curve.deriveKeys(supportKey, myCurve);
+            var keys = Crypto.Curve.deriveKeys(theirPublic, myCurve);
             var crypto = Crypto.Curve.createEncryptor(keys);
             var text = JSON.stringify(ticket);
             var ciphertext = crypto.encrypt(text);
             anonRpc.send("WRITE_PRIVATE_MESSAGE", [
                 channel,
                 ciphertext
-            ], waitFor((err) => {
+            ], waitFor((err, res) => {
                 if (err) {
                     waitFor.abort();
                     return void cb({error: err});
                 }
+                time = res && res[0];
             }));
         }).nThen((waitFor) => {
-            // Store in our worker
+            if (!isAdmin) { return; }
+            // ADMIN: Store in chainpad
+            var doc = ctx.adminDoc.proxy;
+            var active = doc.tickets.active;
+            if (active[channel]) {
+                waitFor.abort();
+                return void cb({error: 'EEXISTS'});
+            }
+            active[channel] = {
+                title: ticket.title,
+                premium: false,
+                time: time,
+                author: data.name,
+                supportKey: supportKey, // Store current support key
+                lastAdmin: true,
+                authorKey: data.curvePublic
+            };
+        }).nThen((waitFor) => {
+            if (isAdmin) { return; }
+            // USER: Store in my worker
             ctx.supportData[channel] = {
                 time: +new Date(),
                 title: title,
@@ -152,31 +177,41 @@ define([
             };
             ctx.Store.onSync(null, waitFor());
         }).nThen(() => {
-            var supportChannel = Hash.getChannelIdFromKey(supportKey);
-            // XXX create tickt as an admin
-            // XXX isAdmin
+            var notifChannel = isAdmin ? data.notifications
+                                    : Hash.getChannelIdFromKey(supportKey);
             // First message to deal with the new ticket (store it in the list)
             mailbox.sendTo('NEW_TICKET', {
                 title: title,
                 channel: channel,
-                premium: Util.find(ctx, ['store', 'account', 'plan'])
+                time,
+                isAdmin,
+                supportKey: supportKey, // Store current support key
+                premium: isAdmin ? '' : Util.find(ctx, ['store', 'account', 'plan']),
+                user: Util.find(data.ticket, ['sender', 'curvePublic']) ? undefined : {
+                    supportTeam: true
+                }
             }, {
-                channel: supportChannel,
-                curvePublic: supportKey
+                channel: notifChannel,
+                curvePublic: theirPublic
             }, (obj) => {
+                console.error(obj);
                 // Don't store the ticket in case of error
                 if (obj && obj.error) { delete ctx.supportData[channel]; }
                 cb(obj);
             });
-            // XXX create tickt as an admin
-            // XXX isAdmin
             // Second message is only a notification to warn the user/admins
             mailbox.sendTo('NOTIF_TICKET', {
                 title: title,
                 channel: channel,
+                time,
+                isAdmin,
+                isNewTicket: true,
+                user: Util.find(data.ticket, ['sender', 'curvePublic']) ? undefined : {
+                    supportTeam: true
+                }
             }, {
-                channel: supportChannel,
-                curvePublic: supportKey
+                channel: notifChannel,
+                curvePublic: theirPublic
             }, () => {});
         });
     };
@@ -403,6 +438,9 @@ define([
             cb({tickets: all});
         });
     };
+    var makeMyTicket = function (ctx, data, cId, cb) {
+        makeTicket(ctx, data, false, cb);
+    };
     var replyMyTicket = function (ctx, data, cId, cb) {
         replyTicket(ctx, data, false, (err) => {
             if (err) { return void cb({error: err}); }
@@ -476,6 +514,13 @@ define([
                 }
                 cb(res);
             });
+        });
+    };
+
+    var makeTicketAdmin = function (ctx, data, cId, cb) {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        ctx.adminRdyEvt.reg(() => {
+            makeTicket(ctx, data, true, cb);
         });
     };
 
@@ -561,12 +606,12 @@ define([
             let supportKey;
             nThen((waitFor) => {
                 // Send ticket to the admins and call back
-                getKeys(ctx, false, data, waitFor((err, obj) => {
+                getKeys(ctx, true, data, waitFor((err, obj) => {
                     if (err) {
                         waitFor.abort();
                         return void cb(true);
                     }
-                    supportKey = obj.theirPublic;
+                    supportKey = obj.supportKey;
                 }));
             }).nThen(() => {
                 // random timeout to avoid duplication wiht multiple admins
@@ -581,7 +626,7 @@ define([
                         premium: data.premium,
                         time: data.time,
                         author: data.user && data.user.displayName,
-                        supportKey: supportKey, // Store current support key
+                        supportKey: data.supportKey || supportKey, // Store current support key
                         authorKey: data.user && data.user.curvePublic
                     };
                     Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
@@ -627,6 +672,19 @@ define([
             let doc = ctx.adminDoc.proxy;
             let exists = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
             cb(exists);
+        });
+    };
+
+    var addUserTicket = function (ctx, data, cb) {
+        if (!ctx.supportData) { return void cb(true); }
+        let channel = data.channel;
+        ctx.supportData[channel] = {
+            time: data.time,
+            title: data.title,
+            curvePublic: data.supportKey // Old tickets still use previous keys
+        };
+        ctx.Store.onSync(null, function () {
+            cb(true);
         });
     };
     var updateUserTicket = function (ctx, data) {
@@ -1013,6 +1071,9 @@ define([
         support.checkAdminTicket = function (content, cb) {
             checkAdminTicket(ctx, content, cb);
         };
+        support.addUserTicket = function (content, cb) {
+            addUserTicket(ctx, content, cb);
+        };
         support.updateUserTicket = function (content) {
             updateUserTicket(ctx, content);
         };
@@ -1021,7 +1082,7 @@ define([
             var data = obj.data;
             // User commands
             if (cmd === 'MAKE_TICKET') {
-                return void makeTicket(ctx, data, clientId, cb);
+                return void makeMyTicket(ctx, data, clientId, cb);
             }
             if (cmd === 'GET_MY_TICKETS') {
                 return void getMyTickets(ctx, data, clientId, cb);
@@ -1036,6 +1097,9 @@ define([
                 return void deleteMyTicket(ctx, data, clientId, cb);
             }
             // Moderator commands
+            if (cmd === 'MAKE_TICKET_ADMIN') {
+                return void makeTicketAdmin(ctx, data, clientId, cb);
+            }
             if (cmd === 'LIST_TICKETS_ADMIN') {
                 return void listTicketsAdmin(ctx, data, clientId, cb);
             }

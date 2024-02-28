@@ -49,7 +49,28 @@
                 margin-left: 10px;
             }
         }
+
     }
 
+    .cp-moderation-userdata {
+        display: flex;
+        align-items: center;
+        input, textarea {
+            width: 25rem !important;
+            max-width: 25rem;
+        }
+        textarea {
+            margin: 0;
+            height: 5rem;
+        }
+        .cp-moderation-userdata-inputs {
+            display: flex;
+            flex-flow: column;
+            margin-right: 1rem;
+            :first-child {
+                margin-top: 0 !important;
+            }
+        }
+    }
 }
 

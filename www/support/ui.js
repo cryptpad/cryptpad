@@ -19,6 +19,7 @@ define([
     Messages.support_answerAs = "Answer as <b>{0}</b>"; // XXX
     Messages.support_movePending = "Move to pending";
     Messages.support_moveActive = "Move to active";
+    Messages.support_copyUserData = "Copy user data";
 
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
@@ -31,12 +32,9 @@ define([
 
         data.sender = {
             name: user.name,
-            accountName: privateData.accountName,
-            drive: privateData.driveChannel,
-            channel: privateData.support,
             curvePublic: user.curvePublic,
             edPublic: privateData.edPublic,
-            notifications: user.notifications,
+            notifications: user.notifications
         };
 
         if (ctx.isAdmin && ctx.anonymous) {
@@ -53,6 +51,8 @@ define([
         }
 
         if (!ctx.isAdmin) {
+            data.sender.drive = privateData.driveChannel;
+            data.sender.accountName = privateData.accountName;
             data.sender.userAgent = Util.find(window, ['navigator', 'userAgent']);
             data.sender.vendor = Util.find(window, ['navigator', 'vendor']);
             data.sender.appVersion = Util.find(window, ['navigator', 'appVersion']);
@@ -223,7 +223,7 @@ define([
         var content = [
             h('hr'),
             category,
-            catContainer,
+            !ctx.isAdmin ? catContainer : undefined,
             notice,
             //h('br'),
             h('input.cp-support-form-title' + (title ? '.cp-hidden' : ''), {
@@ -328,11 +328,7 @@ define([
             // Admin actions
             let show = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
             let $show = $(show);
-            let url = h('button.btn', { title: Messages.share_linkCopy, }, [
-                h('i.fa.fa-link', {
-                    'aria-hidden': true,
-                }),
-            ]);
+            let url = h('button.btn.fa.fa-link', { title: Messages.share_linkCopy, });
             $(url).click(function (e) {
                 e.stopPropagation();
                 var link = privateData.origin + privateData.pathname + '#' + 'active-' + id;
@@ -368,7 +364,7 @@ define([
             if (onMove) {
                 let text = onMove.isTicketActive ? Messages.support_movePending
                                                  : Messages.support_moveActive;
-                settings = h('button.btn.btn-secondary.fa.fa-hdd-o', { title: text });
+                settings = h('button.btn.btn-secondary.fa.fa-archive', { title: text });
                 Util.onClickEnter($(settings), function () {
                     onMove(ticket, id, content);
                 });
@@ -439,13 +435,26 @@ define([
                         || (!senderKey && content.sender.accountName === 'support'); // XXX anon key?
         var fromPremium = Boolean(content.sender.plan || Util.find(content, ['sender', 'quota', 'plan']));
 
+        var copyUser = h('button.btn.btn-secondary.fa.fa-clipboard.cp-support-copydata', {
+            title: Messages.support_copyUserData
+        });
+        Util.onClickEnter($(copyUser), () => {
+            let data = JSON.stringify({
+                name: content.sender.name,
+                curvePublic: content.sender.curvePublic,
+                notifications: content.sender.notifications
+            });
+            Clipboard.copy(data, (err) => {
+                if (!err) { UI.log(Messages.genericCopySuccess); }
+            });
+        });
         var userData = h('div.cp-support-showdata', [
             Messages.support_showData,
-            h('pre.cp-support-message-data', JSON.stringify(content.sender, 0, 2))
+            h('pre.cp-support-message-data', [copyUser, JSON.stringify(content.sender, 0, 2)])
         ]);
         $(userData).click(function () {
-            $(userData).find('pre').toggle();
-        }).find('pre').click(function (ev) {
+            $(userData).find('.cp-support-message-data').toggle();
+        }).find('*').click(function (ev) {
             ev.stopPropagation();
         });
 

@@ -59,8 +59,17 @@ define([
     Messages.support_notificationsTitle = "Disable notifications";
     Messages.support_notificationsHint = "Check this option to disable notifications on new or updated ticket";
 
+    Messages.support_openTicketTitle = "Open a ticket for a user";
+    Messages.support_openTicketHint = "Create a ticket for a user. They will receive a CryptPad notification to warn them. You can copy their user data from an existing support ticket, using the Copy button in the user data.";
+    Messages.support_userChannel = "User's notifications channel ID";
+    Messages.support_userKey = "User's curvePublic key";
+    Messages.support_invalChan = "Invalid notifications channel";
+
+    Messages.support_pasteUserData = "Paste user data here";
+
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
+        const blocks = sidebar.blocks;
 
         // Support panel functions
         let open = [];
@@ -177,7 +186,7 @@ define([
                         refreshAll();
                     });
                 };
-                const onMove = function (ticket, channel, data) {
+                const onMove = function (ticket, channel) {
                     APP.module.execCommand('MOVE_TICKET_ADMIN', {
                         channel: channel,
                         from: type,
@@ -253,6 +262,12 @@ define([
                     'notifications'
                 ]
             },
+            'ticket': {
+                icon: undefined,
+                content: [
+                    'open-ticket'
+                ]
+            },
             'refresh': {
                 icon: undefined,
                 onClick: refreshAll
@@ -292,6 +307,74 @@ define([
                     setState(val);
                 });
             }
+        });
+
+        sidebar.addItem('open-ticket', cb => {
+            let form = APP.support.makeForm();
+            let inputName = blocks.input({type: 'text', readonly: true});
+            let inputChan = blocks.input({type: 'text', readonly: true});
+            let inputKey = blocks.input({type: 'text', readonly: true});
+            let labelName = blocks.labelledInput(Messages.login_username, inputName);
+            let labelChan = blocks.labelledInput(Messages.support_userChannel, inputChan);
+            let labelKey = blocks.labelledInput(Messages.support_userKey, inputKey);
+
+            let send = blocks.button('primary', 'fa-paper-plane', Messages.support_formButton);
+            let nav = blocks.nav([send]);
+
+            let paste = blocks.textArea({
+                placeholder: Messages.support_pasteUserData
+            });
+            let inputs = h('div.cp-moderation-userdata-inputs', [ labelName, labelChan, labelKey ]);
+            let userData = h('div.cp-moderation-userdata', [inputs , paste]);
+
+
+            let $paste = $(paste).on('input', () => {
+                let text = $paste.val().trim();
+                let parsed = Util.tryParse(text);
+                $paste.val('');
+                if (!parsed || !parsed.name || !parsed.notifications || !parsed.curvePublic) {
+                    return void UI.warn(Messages.error);
+                }
+                $(inputName).val(parsed.name);
+                $(inputChan).val(parsed.notifications);
+                $(inputKey).val(parsed.curvePublic);
+                $paste.hide();
+            });
+            [inputName, inputChan, inputKey].forEach(input => {
+                $(input).on('input', () => { $paste.show(); });
+            });
+
+            let $send = $(send);
+            Util.onClickEnter($send, function () {
+                let name = $(inputName).val().trim();
+                let chan = $(inputChan).val().trim();
+                let key = $(inputKey).val().trim();
+                let data = APP.support.getFormData(form);
+
+                if (!name) { return void UI.warn(Messages.login_invalUser); }
+                if (!Hash.isValidChannel(chan)) { return void UI.warn(Messages.support_invalChan); }
+                if (key.length !== 44) { return void UI.warn(Messages.admin_invalKey); }
+
+                $send.attr('disabled', 'disabled');
+                APP.module.execCommand('MAKE_TICKET_ADMIN', {
+                    name: name,
+                    notifications: chan,
+                    curvePublic: key,
+                    channel: Hash.createChannelId(),
+                    title: data.title,
+                    ticket: data
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                        return void UI.warn(Messages.error);
+                    }
+                    refreshAll();
+                    sidebar.openCategory('open');
+                });
+            });
+
+            let div = blocks.form([userData, form], nav);
+            cb(div);
         });
 
         sidebar.makeLeftside(categories);

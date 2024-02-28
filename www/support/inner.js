@@ -295,8 +295,6 @@ define([
 
         var form = APP.support.makeForm();
 
-        var id = Util.uid();
-
         $div.find('button').click(function () {
             var data = APP.support.getFormData(form);
             APP.supportModule.execCommand('MAKE_TICKET', {
@@ -308,7 +306,6 @@ define([
                     console.error(obj.error);
                     return void UI.warn(Messages.error);
                 }
-                id = Util.uid();
                 events.UPDATE_TICKET.fire();
                 $('.cp-sidebarlayout-category[data-category="tickets"]').click();
             });
