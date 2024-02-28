@@ -106,11 +106,15 @@ define([
         var $showAuthorColors = UIElements.createDropdownEntry({
             tag: 'a',
             attributes: {'class': $showAuthorColorsButton.attr('class')},
-            content: h('span', $showAuthorColorsButton.text()),
+            content: [
+                h('i', { 'class': $showAuthorColorsButton.children('i').attr('class') }),
+                h('span', $showAuthorColorsButton.text())
+                ],
             action: function () {
                 $showAuthorColorsButton.click();
             },
         });
+        $showAuthorColors.find('span').addClass('cp-toolbar-name cp-toolbar-drawer-element');
         framework._.toolbar.$theme.append($showAuthorColors);
         markers.setButton($showAuthorColors);
     };
@@ -422,7 +426,10 @@ define([
         var $cba = UIElements.createDropdownEntry({
             tag: 'a',
             attributes: {'class': $cbaButton.attr('class')},
-            content: h('span', $cbaButton.text()),
+            content: [
+                h('i', { 'class': $cbaButton.children('i').attr('class') }),
+                h('span', $cbaButton.text())
+                ],
             action: function () {
                 $cbaButton.click();
             },
