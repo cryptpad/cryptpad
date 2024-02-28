@@ -2631,6 +2631,8 @@ Example
 
     create['support-list'] = function () {
         if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
+        // XXX NO NEED ANYMORE
+        return;
         var $container = makeBlock('support-list'); // Msg.admin_supportListHint, .admin_supportListTitle
         var $div = $(h('div.cp-support-container')).appendTo($container);
 

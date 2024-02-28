@@ -268,6 +268,12 @@ define([
                     'open-ticket'
                 ]
             },
+            'legacy': {
+                icon: undefined,
+                content: [
+                    'legacy'
+                ]
+            },
             'refresh': {
                 icon: undefined,
                 onClick: refreshAll
@@ -374,6 +380,69 @@ define([
             });
 
             let div = blocks.form([userData, form], nav);
+            cb(div);
+        });
+
+        // XXX
+        Messages.support_legacyTitle = "View old support data";
+        Messages.support_legacyHint = "View tickets from the legacy system. You'll be able to recreate thse tickets on the new support system.";
+        Messages.support_legacyButton = "Start";
+        Messages.support_legacyClear = "Delete from my account";
+        sidebar.addItem('legacy', cb => {
+            if (!APP.privateKey) { return void cb(false); }
+
+            let start = blocks.button('primary', 'fa-paper-plane', Messages.support_legacyButton);
+            let clean = blocks.button('danger', 'fa-trash-o', Messages.support_legacyClear);
+            let content = h('div.cp-support-container');
+            let nav = blocks.nav([start, clean]);
+
+            UI.confirmButton(clean, { classes: 'btn-danger' }, function () {
+                // XXX TODO remove my supportadmin mailbox
+                console.error('NOT IMPLEMENTED');
+            });
+
+            let run = () => {
+                let $div = $(content);
+                $div.empty();
+                common.mailbox.subscribe(['supportadmin'], {
+                    onMessage: function (data) {
+                        /*
+                            Get ID of the ticket
+                            If we already have a div for this ID
+                                Push the message to the end of the ticket
+                            If it's a new ticket ID
+                                Make a new div for this ID
+                        */
+                        var msg = data.content.msg;
+                        var hash = data.content.hash;
+                        var content = msg.content;
+                        console.error(content, msg, hash);
+                        var id = content.id;
+                        var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
+
+                        if (msg.type === 'CLOSE') {
+                            // A ticket has been closed by the admins...
+                            if (!$ticket.length) { return; }
+                            $ticket.addClass('cp-support-list-closed');
+                            $ticket.append(APP.support.makeCloseMessage(content, hash));
+                            return;
+                        }
+                        if (msg.type !== 'TICKET') { return; }
+                        $ticket.removeClass('cp-support-list-closed');
+
+                        if (!$ticket.length) {
+                            $ticket = APP.support.makeTicket({id, content});
+                            $div.append($ticket);
+                        }
+                        $ticket.append(APP.support.makeMessage(content));
+                        $ticket.find('.cp-support-showdata').attr('onclick', `showData();`);
+                        $ticket.find('.cp-support-showdata button').attr('onclick', `copyData();`);
+                    }
+                });
+            };
+            Util.onClickEnter($(start), run);
+
+            let div = blocks.form([content], nav);
             cb(div);
         });
 

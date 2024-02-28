@@ -136,6 +136,7 @@ define([
         sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);
             get((content, config) => {
+                if (content === false) { return; }
                 config = config || {};
                 options = options || {};
                 const title = options.noTitle ? undefined : h('label.cp-item-label', {
