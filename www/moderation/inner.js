@@ -177,6 +177,21 @@ define([
                         refreshAll();
                     });
                 };
+                const onMove = function (ticket, channel, data) {
+                    APP.module.execCommand('MOVE_TICKET_ADMIN', {
+                        channel: channel,
+                        from: type,
+                        to: onMove.isTicketActive ? 'pending' : 'active'
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj && obj.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        refreshAll();
+                    });
+
+                };
+                onMove.isTicketActive = type === 'active';
 
                 Object.keys(tickets).sort(sortTicket).forEach(function (channel) {
                     var d = tickets[channel];
@@ -184,7 +199,7 @@ define([
                         id: channel,
                         content: d,
                         form: activeForms[channel],
-                        onShow, onHide, onClose, onReply
+                        onShow, onHide, onClose, onReply, onMove
                     });
 
                     var container;

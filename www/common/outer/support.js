@@ -523,6 +523,26 @@ define([
         });
     };
 
+    var moveTicketAdmin = function (ctx, data, cId, cb) {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        let ticketId = data.channel;
+        let from = data.from;
+        let to = data.to;
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            let fromDoc = doc.tickets[from];
+            let toDoc = doc.tickets[to];
+            if (!from || !to) { return void cb({ error: 'EINVAL' }); }
+            let ticket = fromDoc[ticketId];
+            if (!ticket || toDoc[ticketId]) { return void cb({ error: 'CANT_MOVE' }); }
+            toDoc[ticketId] = ticket;
+            delete fromDoc[ticketId];
+            Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
+                cb({ moved: true });
+            });
+        });
+    };
+
     // Mailbox events
 
     var notifyClient = function (ctx, admin, type, channel) {
@@ -1027,6 +1047,9 @@ define([
             }
             if (cmd === 'CLOSE_TICKET_ADMIN') {
                 return void closeTicketAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'MOVE_TICKET_ADMIN') {
+                return void moveTicketAdmin(ctx, data, clientId, cb);
             }
             // Admin commands
             if (cmd === 'GET_PRIVATE_KEY') {

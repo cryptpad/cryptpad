@@ -17,6 +17,8 @@ define([
 
     Messages.support_team = "The Support Team"; // XXX
     Messages.support_answerAs = "Answer as <b>{0}</b>"; // XXX
+    Messages.support_movePending = "Move to pending";
+    Messages.support_moveActive = "Move to active";
 
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
@@ -300,7 +302,7 @@ define([
     };
 
     var makeTicket = function (ctx, opts) {
-        let { id, content, form, onShow, onHide, onClose, onReply, onDelete } = opts;
+        let { id, content, form, onShow, onHide, onClose, onReply, onMove, onDelete } = opts;
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -361,7 +363,18 @@ define([
                 });
             };
             Util.onClickEnter($show, adminOpen);
-            adminActions = h('span.cp-support-title-buttons', [ url, show ]);
+
+            let settings;
+            if (onMove) {
+                let text = onMove.isTicketActive ? Messages.support_movePending
+                                                 : Messages.support_moveActive;
+                settings = h('button.btn.btn-secondary.fa.fa-hdd-o', { title: text });
+                Util.onClickEnter($(settings), function () {
+                    onMove(ticket, id, content);
+                });
+            }
+
+            adminActions = h('span.cp-support-title-buttons', [ url, settings, show ]);
         }
 
         let isPremium = content.premium ? '.cp-support-ispremium' : '';
