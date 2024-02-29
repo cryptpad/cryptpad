@@ -67,21 +67,37 @@ define([
             var isBigClass = big ? '.cp-sidebar-bigger-alert' : ''; // Add the class if we want a bigger font-size
             return h('div.alert.alert-' + type + isBigClass, content);
         };
+        blocks.pre = (value) => {
+            return h('pre', value);
+        }
         
         blocks.textArea = function (attributes, value) {
             return h('textarea', attributes, value || '');
         };
 
+        blocks.unorderedList = function (entries) {
+            const ul = h('ul');
+            entries.forEach(entry => {
+                const li = h('li', [h('strong',  entry)]);
+                ul.appendChild(li);
+            });
+            return ul;
+        };
         
-        blocks.checkbox = (key, label, state, opts) => {
-            var box = UI.createCheckbox(`cp-${app}-${key}`,
-                label,
-                state, { label: { class: 'noTitle' } });
+        
+        blocks.checkbox = (key, label, state, opts, onChange) => {
+            var box = UI.createCheckbox(`cp-${app}-${key}`, label, state, { label: { class: 'noTitle' } });
             if (opts && opts.spinner) {
                 box.spinner = UI.makeSpinner($(box));
             }
+            // Attach event listener for checkbox change
+            $(box).on('change', function() {
+                // Invoke the provided onChange callback function with the new checkbox state
+                onChange(this.checked);
+            });
             return box;
         };
+        
 
         
         
@@ -125,6 +141,10 @@ define([
                 });
             });
             return button;
+        };
+
+        blocks.box = (content, className) => {
+            return h('div', { class: className }, content);
         };
 
         const keyToCamlCase = (key) => {
