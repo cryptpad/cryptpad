@@ -2717,6 +2717,7 @@ define([
                     window.addEventListener('unload', function () {
                         postMsg('CLOSE');
                     });
+                // eslint-disable-next-line no-constant-condition
                 } else if (false && !noWorker && !noSharedWorker && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready
