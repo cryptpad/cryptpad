@@ -47,7 +47,6 @@ define([
     var categories = {
         'tickets': [ // Msg.support_cat_tickets
             'cp-support-list',
-            'cp-support-listnew',
         ],
         'new': [ // Msg.support_cat_new
             'cp-support-subscribe',
@@ -92,71 +91,11 @@ define([
         return $div;
     };
 
-
-
-    // List existing (open?) tickets
-    create['list'] = function () {
-        var key = 'list';
-        var $div = makeBlock(key); // Msg.support_listHint, .support_listTitle
-        $div.addClass('cp-support-container');
-        var hashesById = {};
-
-        // Register to the "support" mailbox
-        common.mailbox.subscribe(['support'], {
-            onMessage: function (data) {
-                /*
-                    Get ID of the ticket
-                    If we already have a div for this ID
-                        Push the message to the end of the ticket
-                    If it's a new ticket ID
-                        Make a new div for this ID
-                */
-                var msg = data.content.msg;
-                var hash = data.content.hash;
-                var content = msg.content;
-                var id = content.id;
-                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
-
-                hashesById[id] = hashesById[id] || [];
-                if (hashesById[id].indexOf(hash) === -1) {
-                    hashesById[id].push(data);
-                }
-
-                if (msg.type === 'CLOSE') {
-                    // A ticket has been closed by the admins...
-                    if (!$ticket.length) { return; }
-                    $ticket.addClass('cp-support-list-closed');
-                    $ticket.append(APP.support.makeCloseMessage(content, hash));
-                    return;
-                }
-                if (msg.type !== 'TICKET') { return; }
-                $ticket.removeClass('cp-support-list-closed');
-
-                if (!$ticket.length) {
-                    $ticket = APP.support.makeTicket($div, content, function () {
-                        var error = false;
-                        hashesById[id].forEach(function (d) {
-                            common.mailbox.dismiss(d, function (err) {
-                                if (err) {
-                                    error = true;
-                                    console.error(err);
-                                }
-                            });
-                        });
-                        if (!error) { $ticket.remove(); }
-                    });
-                }
-                $ticket.append(APP.support.makeMessage(content, hash));
-            }
-        });
-        return $div;
-    };
-
     var events = {
         'UPDATE_TICKET': Util.mkEvent()
     };
-    create['listnew'] = function () {
-        var key = 'listnew';
+    create['list'] = function () {
+        var key = 'list';
         var $div = makeBlock(key); // Msg.support_listHint, .support_listTitle
         var list = h('div.cp-support-container');
         var $list = $(list);
@@ -225,6 +164,12 @@ define([
                         if (msg.close) {
                             $ticket.addClass('cp-support-list-closed');
                             return $ticket.append(APP.support.makeCloseMessage(msg));
+                        }
+                        if (msg.legacy && msg.messages) {
+                            msg.messages.forEach(c => {
+                                $ticket.append(APP.support.makeMessage(c));
+                            });
+                            return;
                         }
                         $ticket.append(APP.support.makeMessage(msg));
                     });

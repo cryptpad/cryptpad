@@ -165,7 +165,8 @@ define([
                 author: data.name,
                 supportKey: supportKey, // Store current support key
                 lastAdmin: true,
-                authorKey: data.curvePublic
+                authorKey: data.curvePublic,
+                notifications: data.notifications // Ticket created as admin, add user chan
             };
         }).nThen((waitFor) => {
             if (isAdmin) { return; }
@@ -584,6 +585,77 @@ define([
             delete fromDoc[ticketId];
             Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
                 cb({ moved: true });
+            });
+        });
+    };
+
+    var clearLegacy = function (ctx, data, cId, cb) {
+        let proxy = ctx.store.proxy;
+        ctx.store.mailbox.close('supportadmin', function () {
+            delete proxy.mailboxes.supportadmin;
+            ctx.Store.onSync(null, function () {
+                cb({done: true});
+            });
+        });
+    };
+
+    var dumpLegacy = function (ctx, data, cId, cb) {
+        let proxy = ctx.store.proxy;
+        let _legacy = Util.find(proxy, ['mailboxes', 'supportadmin']);
+        if (!_legacy) { return void cb({error: 'ENOENT'}); }
+        let legacy = Util.clone(_legacy);
+        legacy.lastKnownHash = undefined;
+        legacy.viewed = [];
+        ctx.store.mailbox.open('supportadmin', legacy, function (contentByHash) {
+            ctx.store.mailbox.close('supportadmin', function () {});
+            cb(contentByHash);
+        }, true, { // Opts
+            dump: true
+        });
+    };
+    var getLegacy = function (ctx, data, cId, cb) {
+        let proxy = ctx.store.proxy;
+        let legacy = Util.find(proxy, ['mailboxes', 'supportadmin']);
+        if (!legacy) { return void cb({error: 'ENOENT'}); }
+        ctx.store.mailbox.open('supportadmin', legacy, function (contentByHash) {
+            ctx.store.mailbox.close('supportadmin', function () {});
+            cb(contentByHash);
+        }, true, { // Opts
+            dump: true
+        });
+    };
+    var restoreLegacy = function (ctx, data, cId, cb) {
+        let proxy = ctx.store.proxy;
+        let legacy = Util.find(proxy, ['mailboxes', 'supportadmin']);
+        if (!legacy) { return void cb({error: 'ENOENT'}); }
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        let messages = data.messages;
+        let hashes = data.hashes;
+        let first = messages[0];
+        if (!first) { return void cb({error: 'EINVAL'}); }
+        ctx.adminRdyEvt.reg(() => {
+            let ticketData = {
+                name: Util.find(first, ['sender', 'name']),
+                notifications: Util.find(first, ['sender', 'notifications']),
+                curvePublic: Util.find(first, ['sender', 'curvePublic']),
+                channel: Hash.createChannelId(),
+                title: first.title,
+                time: first.time,
+                ticket: {
+                    legacy: true,
+                    title: first.title,
+                    sender: first.sender,
+                    messages: messages
+                }
+            };
+            makeTicket(ctx, ticketData, true, obj => {
+                if (obj && obj.error) { return void cb(obj); }
+                hashes.forEach(hash => {
+                    legacy.viewed.push(hash);
+                });
+                ctx.Store.onSync(null, function () {
+                    cb({done: true});
+                });
             });
         });
     };
@@ -1114,6 +1186,18 @@ define([
             }
             if (cmd === 'MOVE_TICKET_ADMIN') {
                 return void moveTicketAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_LEGACY') {
+                return void getLegacy(ctx, data, clientId, cb);
+            }
+            if (cmd === 'DUMP_LEGACY') {
+                return void dumpLegacy(ctx, data, clientId, cb);
+            }
+            if (cmd === 'CLEAR_LEGACY') {
+                return void clearLegacy(ctx, data, clientId, cb);
+            }
+            if (cmd === 'RESTORE_LEGACY') {
+                return void restoreLegacy(ctx, data, clientId, cb);
             }
             // Admin commands
             if (cmd === 'GET_PRIVATE_KEY') {

@@ -253,6 +253,9 @@ define([
         sidebar.openCategory = name => {
             $(`.cp-sidebarlayout-category[data-category="${name}"]`).click();
         };
+        sidebar.deleteCategory = name => {
+            $(`.cp-sidebarlayout-category[data-category="${name}"]`).remove();
+        };
 
         sidebar.disableItem = (key) => {
             $(items[key]).remove();

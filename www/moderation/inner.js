@@ -18,6 +18,8 @@ define([
     '/common/inner/sidebar-layout.js',
     '/support/ui.js',
 
+    '/components/file-saver/FileSaver.min.js',
+
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/moderation/app-moderation.less',
 ], function (
@@ -38,6 +40,7 @@ define([
     )
 {
     var APP = {};
+    var saveAs = window.saveAs;
 
     var common;
     var sframeChan;
@@ -131,12 +134,19 @@ define([
                         }
                         var $ticket = $(ticket);
                         obj.forEach(function (msg) {
-                            if (!data.notifications) {
+                            // Only add notifications channel if this is coming from the other user
+                            if (!data.notifications && msg.sender.drive) {
                                 data.notifications = Util.find(msg, ['sender', 'notifications']);
                             }
                             if (msg.close) {
                                 $ticket.addClass('cp-support-list-closed');
                                 return $ticket.append(APP.support.makeCloseMessage(msg));
+                            }
+                            if (msg.legacy && msg.messages) {
+                                msg.messages.forEach(c => {
+                                    $ticket.append(APP.support.makeMessage(c));
+                                });
+                                return;
                             }
                             $ticket.append(APP.support.makeMessage(msg));
                         });
@@ -386,61 +396,136 @@ define([
         // XXX
         Messages.support_legacyTitle = "View old support data";
         Messages.support_legacyHint = "View tickets from the legacy system. You'll be able to recreate thse tickets on the new support system.";
-        Messages.support_legacyButton = "Start";
+        Messages.support_legacyButton = "Get active";
+        Messages.support_legacyDump = "Export all";
         Messages.support_legacyClear = "Delete from my account";
         sidebar.addItem('legacy', cb => {
             if (!APP.privateKey) { return void cb(false); }
 
             let start = blocks.button('primary', 'fa-paper-plane', Messages.support_legacyButton);
+            let dump = blocks.button('secondary', 'fa-database', Messages.support_legacyDump);
             let clean = blocks.button('danger', 'fa-trash-o', Messages.support_legacyClear);
             let content = h('div.cp-support-container');
-            let nav = blocks.nav([start, clean]);
+            let nav = blocks.nav([start, dump, clean]);
 
-            UI.confirmButton(clean, { classes: 'btn-danger' }, function () {
-                // XXX TODO remove my supportadmin mailbox
-                console.error('NOT IMPLEMENTED');
+            let sortLegacyTickets = contentByHash => {
+                let all = {};
+                Object.keys(contentByHash).forEach(key => {
+                    let data = contentByHash[key];
+                    let content = data.content;
+                    let id = content.id;
+                    content.hash = key;
+                    if (data.ctime) { content.time = data.ctime; }
+                    if (content.sender && content.sender.curvePublic !== data.author) { return; }
+                    all[id] = all[id] || [];
+                    all[id].push(content);
+                    all[id].sort((c1, c2) => {
+                        return c1.time - c2.time;
+                    });
+                });
+                // sort
+                let sorted = Object.keys(all).sort((t1, t2) => {
+                    let a = t1[0];
+                    let b = t2[0];
+                    return (a.time || 0) - (b.time || 0);
+                });
+                return sorted.map(id => {
+                    return all[id];
+                });
+            };
+            UI.confirmButton(dump, { classes: 'btn-secondary' }, function () {
+                APP.module.execCommand('DUMP_LEGACY', {}, contentByHash => {
+                    // group by ticket id
+                    let sorted = sortLegacyTickets(contentByHash);
+                    let dump = '';
+                    sorted.forEach((t,i) => {
+                        if (!Array.isArray(t) || !t.length) { return; }
+                        let first = t[0];
+if (i) { dump += '\n\n'; }
+dump += `================================
+================================
+ID: #${first.id}
+Title: ${first.title}
+User: ${first.sender.name}
+Date: ${new Date(first.time).toISOString()}`;
+                        t.forEach(msg => {
+                            if (!msg.message) {
+dump += `
+--------------------------------
+CLOSED: ${new Date(msg.time).toISOString()}`;
+                                return;
+                            }
+dump += `
+--------------------------------
+From: ${msg.sender.name}
+Date: ${new Date(msg.time).toISOString()}
+---
+${msg.message}
+---
+Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
+                        });
+                    });
+                    saveAs(new Blob([dump], {type: 'text/plain'}), "cryptpad-support-dump.txt");
+                });
             });
-
+            UI.confirmButton(clean, { classes: 'btn-danger' }, function () {
+                APP.module.execCommand('CLEAR_LEGACY', {}, () => {
+                    delete APP.privateKey;
+                    sidebar.deleteCategory('legacy');
+                    sidebar.openCategory('open');
+                });
+            });
             let run = () => {
                 let $div = $(content);
                 $div.empty();
-                common.mailbox.subscribe(['supportadmin'], {
-                    onMessage: function (data) {
-                        /*
-                            Get ID of the ticket
-                            If we already have a div for this ID
-                                Push the message to the end of the ticket
-                            If it's a new ticket ID
-                                Make a new div for this ID
-                        */
-                        var msg = data.content.msg;
-                        var hash = data.content.hash;
-                        var content = msg.content;
-                        console.error(content, msg, hash);
-                        var id = content.id;
-                        var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
+                APP.module.execCommand('GET_LEGACY', {}, contentByHash => {
+                    // group by ticket id
+                    let sorted = sortLegacyTickets(contentByHash);
+                    sorted.forEach(ticket => {
+                        if (!Array.isArray(ticket) || !ticket.length) { return; }
+                        ticket.forEach(content => {
+                            var id = content.id;
+                            var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
 
-                        if (msg.type === 'CLOSE') {
-                            // A ticket has been closed by the admins...
-                            if (!$ticket.length) { return; }
-                            $ticket.addClass('cp-support-list-closed');
-                            $ticket.append(APP.support.makeCloseMessage(content, hash));
-                            return;
-                        }
-                        if (msg.type !== 'TICKET') { return; }
-                        $ticket.removeClass('cp-support-list-closed');
+                            if (!content.message) {
+                                // A ticket has been closed by the admins...
+                                if (!$ticket.length) { return; }
+                                $ticket.hide();
+                                $ticket.append(APP.support.makeCloseMessage(content));
+                                return;
+                            }
+                            $ticket.show();
 
-                        if (!$ticket.length) {
-                            $ticket = APP.support.makeTicket({id, content});
-                            $div.append($ticket);
-                        }
-                        $ticket.append(APP.support.makeMessage(content));
-                        $ticket.find('.cp-support-showdata').attr('onclick', `showData();`);
-                        $ticket.find('.cp-support-showdata button').attr('onclick', `copyData();`);
-                    }
+                            const onMove = function () {
+                                let hashes = [];
+                                let messages = [];
+                                ticket.forEach(content => {
+                                    hashes.push(content.hash);
+                                    let clone = Util.clone(content);
+                                    delete clone.hash;
+                                    messages.push(clone);
+                                });
+                                APP.module.execCommand('RESTORE_LEGACY', {
+                                    messages, hashes
+                                }, obj => {
+                                    if (obj && obj.error) {
+                                        console.error(obj.error);
+                                        return void UI.warn(Messages.error);
+                                    }
+                                });
+                            };
+                            if (!$ticket.length) {
+                                $ticket = APP.support.makeTicket({id, content, onMove});
+                                $div.append($ticket);
+                            }
+                            $ticket.append(APP.support.makeMessage(content));
+                        });
+                    });
                 });
             };
             Util.onClickEnter($(start), run);
+
+
 
             let div = blocks.form([content], nav);
             cb(div);

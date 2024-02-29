@@ -18,7 +18,7 @@ define([
 
     var TYPES = [
         'notifications',
-        'supportadmin',
+        //'supportadmin',
         'support',
         'supportteam',
         'broadcast'
@@ -397,6 +397,7 @@ proxy.mailboxes = {
                     }
                     msg.ctime = time || 0;
                     box.content[hash] = msg;
+                    if (opts.dump) { return; }
                     showMessage(ctx, type, message, null, function (obj) {
                         if (!obj || !obj.msg || !notify) { return; }
                         Notify.system(undefined, obj.msg);
@@ -450,7 +451,7 @@ proxy.mailboxes = {
             });
             box.ready = true;
             // Continue
-            onReady();
+            onReady(box.content);
         };
         box.cpNf = CpNetflux.start(cfg);
     };
