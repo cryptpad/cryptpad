@@ -69,7 +69,6 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-plugin-compat": "^4.2.0",
-    "jshint": "^2.13.4",
     "lesshint": "6.3.7"
   },
   "overrides": {
@@ -89,7 +88,6 @@
     "package": "PACKAGE=1 node server.js",
     "lint": "eslint . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "lint:js": "eslint .",
-    "lint:server": "jshint --config .jshintrc lib",
     "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "lint:translations": "node ./scripts/translations/lint-translations.js",
     "unused-translations": "node ./scripts/translations/unused-translations.js",

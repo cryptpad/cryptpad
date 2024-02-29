@@ -93,7 +93,7 @@ define([
     var CREATE_ID = "cp-app-profile-create";
     var HEADER_ID = "cp-app-profile-header";
     var HEADER_RIGHT_ID = "cp-app-profile-rightside";
-    var CREATE_INVITE_BUTTON = 'cp-app-profile-invite-button'; /* jshint ignore: line */
+    var CREATE_INVITE_BUTTON = 'cp-app-profile-invite-button';
     var VIEW_PROFILE_BUTTON = 'cp-app-profile-viewprofile-button';
 
     var common;

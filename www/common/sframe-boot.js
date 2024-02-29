@@ -45,7 +45,7 @@ if (typeof(Promise) !== 'function') {
 var caughtEval;
 console.log("Testing if CSP correctly blocks an 'eval' call");
 try {
-    eval('true'); // jshint ignore:line
+    eval('true');
 } catch (err) { caughtEval = true; }
 
 if (!/^\/(sheet|doc|presentation|unsafeiframe)/.test(window.location.pathname) && !caughtEval) {
