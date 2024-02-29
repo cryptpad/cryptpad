@@ -45,7 +45,7 @@ module.exports = {
 
         // TODO remove these exceptions from the eslint defaults
         'no-irregular-whitespace': ['off'],
-        'no-unused-vars': ['off'],
+        'no-unused-vars': ['warn'],
         'no-self-assign': ['off'],
         'no-empty': ['off'],
         'no-useless-escape': ['off'],
