@@ -68,6 +68,7 @@
   },
   "devDependencies": {
     "eslint": "^8.57.0",
+    "eslint-plugin-compat": "^4.2.0",
     "jshint": "^2.13.4",
     "lesshint": "6.3.7"
   },
@@ -98,5 +99,6 @@
     "build": "node scripts/build.js",
     "clear": "node scripts/clear.js",
     "installtoken": "node scripts/install.js"
-  }
+  },
+  "browserslist": ["> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"]
 }

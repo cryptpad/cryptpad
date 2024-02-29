@@ -4,7 +4,8 @@ module.exports = {
         'es2021': true,
         'node': true
     },
-    'extends': 'eslint:recommended',
+    'plugins': ['compat'],
+    'extends': ['eslint:recommended', 'plugin:compat/recommended'],
     "globals": {
         "define": "readonly",
     },
