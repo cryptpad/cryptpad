@@ -101,13 +101,16 @@ define([
 
         
         
-        blocks.list = function (header, entries) {
+        blocks.table = function (header, entries) {
             const table = h('table.cp-sidebar-list');
-
-            const headerValues = header.map(value => { return h('th', value); });
-            const headerRow = h('thead', h('tr', headerValues));  
-            table.appendChild(headerRow);
-
+            if (header) {
+                const headerValues = header.map(value => {
+                    const lastWord = value.split(' ').pop(); // Extracting the last word
+                    return h('th', { class: lastWord.toLowerCase() }, value); // Modified to use the last word
+                });
+                const headerRow = h('thead', h('tr', headerValues));
+                table.appendChild(headerRow);
+            }
 
             table.updateContent = (newEntries) => {
                 $(table).find('tbody').remove();

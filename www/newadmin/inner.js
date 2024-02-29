@@ -594,7 +594,7 @@ define([
                 Messages.admin_documentCreationTime,
                 ""
             ];
-            var list = blocks.list(header, []);
+            var list = blocks.table(header, []);
             var $list = $(list);
             
             var nav = blocks.nav([button, refreshButton]);
@@ -785,7 +785,7 @@ define([
             Messages.admin_usersBlock,
             ""
         ];
-        var list = blocks.list(header, []);
+        var list = blocks.table(header, []);
         var $list = $(list);
         
         var nav = blocks.nav([button, refreshButton]);
@@ -1135,15 +1135,24 @@ define([
     
         });
 
-        //getlimits
-        /*sidebar.addItem('getlimits', function(cb){
+        sidebar.addItem('getlimits', function(cb){
+            // Make the empty table
+            var header = [
+                Messages.settings_publicSigningKey,
+                Messages.admin_planlimit,
+                Messages.admin_planName,
+                Messages.admin_note
+            ];
+            var table = blocks.table(header, []);
+          
+            // Update the table content on each refresh
             APP.refreshLimits = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_LIMITS',
                 }, function (e, data) {
                     if (e) { return; }
                     if (!Array.isArray(data) || !data[0]) { return; }
-    
+
                     var obj = data[0];
                     if (obj && (obj.message || obj.location)) {
                         delete obj.message;
@@ -1152,7 +1161,7 @@ define([
                     var list = Object.keys(obj).sort(function (a, b) {
                         return obj[a].limit > obj[b].limit;
                     });
-    
+
                     var content = list.map(function (key) {
                         var user = obj[key];
                         var limit = getPrettySize(user.limit);
@@ -1167,21 +1176,22 @@ define([
                                  console.log(data);
                                  var table = renderAccountData(data);
                                  UI.alert(table, () => {
-    
+
                                  }, {
                                     wide: true,
                                  });
                              });
                         });
-    
+
                         var keyEl = h('code.cp-limit-key', key);
                         $(keyEl).click(function () {
                             $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
                             $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit / 1024 / 1024));
                             $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
                         });
-    
+
                         var attr = { title: title };
+                      /*
                         return h('tr.cp-admin-limit', [
                             h('td', [
                                 keyEl,
@@ -1191,21 +1201,23 @@ define([
                             h('td.plan', attr, user.plan),
                             h('td.note', attr, user.note)
                         ]);
+                      */
+                      // XXX NOTE: update the blocks.table function to be able to pass "attributes" for each value 
+                       var table = blocks.table()
+                        return [
+                            [keyEl, infoButton],
+                            limit,
+                            user.plan,
+                            user.note
+                          
+                        ];
                     });
-                    return $div.append(h('table.cp-admin-all-limits', [
-                        h('tr', [
-                            h('th', Messages.settings_publicSigningKey),
-                            h('th.limit', Messages.admin_planlimit),
-                            h('th.plan', Messages.admin_planName),
-                            h('th.note', Messages.admin_note)
-                        ]),
-                    ].concat(content)));
+                    table.updateContent(content);
                 });
             };
             APP.refreshLimits();
-            cb(form);
+            cb(table);
         });
-        */
 
         //database
         var disable = $el => $el.attr('disabled', 'disabled');
@@ -1676,9 +1688,9 @@ define([
             var nav = blocks.nav([button]);
             var list = blocks.unorderedList([]);
             var entries = [];
-            var form = blocks.form({
+            var form = blocks.form([
                 list
-            }, nav);
+            ], nav);
             var $button = $(button);
 
             form.updateContent = function(newList) {
@@ -1726,274 +1738,7 @@ define([
         });
         
 
-        var supportKey = ApiConfig.supportMailbox;
-        var checkAdminKey = function (priv) {
-            if (!supportKey) { return; }
-            return Hash.checkBoxKeyPair(priv, supportKey);
-        };
-
-        sidebar.addItem('support-list', function(cb){
-            if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
-            var header = [
-                Messages.admin_support_premium,
-                Messages.admin_support_normal,
-                Messages.admin_support_answered,
-                Messages.admin_support_closed,
-                ""
-            ];
-            var list = blocks.list(header, []);
-            var $list = $(list);
-            var entries = [];
-            var colapseButton = blocks.button('primary', '', Messages.admin_support_collapse);
-            $collapseButton = $(collapseButton);
-            entries.push([
-                ['support-count', colapseButton],
-                ['support-count', colapseButton],
-                ['support-count', colapseButton],
-                ['support-count', colapseButton]
-            ]);
-            $collapseButton.click(function () {
-                var $col = $(this).closest('.cp-support-column');
-                $col.toggleClass('cp-support-column-collapsed');
-                if ($col.hasClass('cp-support-column-collapsed')) {
-                    $(this).text(Messages.admin_support_open);
-                    $(this).toggleClass('btn-primary');
-                } else {
-                    $(this).text(Messages.admin_support_collapse);
-                    $(this).toggleClass('btn-primary');
-                }
-            });
-
-        var category = 'all';
-        var $drop = APP.support.makeCategoryDropdown(catContainer, function (key) {
-            category = key;
-            if (key === 'all') {
-                $div.find('.cp-support-list-ticket').show();
-                return;
-            }
-            $div.find('.cp-support-list-ticket').hide();
-            $div.find('.cp-support-list-ticket[data-cat="'+key+'"]').show();
-        }, true);
-        $drop.setValue('all');
-
-        var metadataMgr = common.getMetadataMgr();
-        var privateData = metadataMgr.getPrivateData();
-        var cat = privateData.category || '';
-        var linkedId = cat.indexOf('-') !== -1 && cat.slice(8);
-
-        var hashesById = {};
-
-        var getTicketData = function (id) {
-            var t = hashesById[id];
-            if (!Array.isArray(t) || !t.length) { return; }
-            var ed = Util.find(t[0], ['content', 'msg', 'content', 'sender', 'edPublic']);
-            // If one of their ticket was sent as a premium user, mark them as premium
-            var premium = t.some(function (msg) {
-                var _ed = Util.find(msg, ['content', 'msg', 'content', 'sender', 'edPublic']);
-                if (ed !== _ed) { return; }
-                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']) ||
-                       Util.find(msg, ['content', 'msg', 'content', 'sender', 'quota', 'plan']);
-            });
-            var lastMsg = t[t.length - 1];
-            var lastMsgEd = Util.find(lastMsg, ['content', 'msg', 'content', 'sender', 'edPublic']);
-            return {
-                lastMsg: lastMsg,
-                time: Util.find(lastMsg, ['content', 'msg', 'content', 'time']),
-                lastMsgEd: lastMsgEd,
-                lastAdmin: lastMsgEd !== ed && ApiConfig.adminKeys.indexOf(lastMsgEd) !== -1,
-                premium: premium,
-                authorEd: ed,
-                closed: Util.find(lastMsg, ['content', 'msg', 'type']) === 'CLOSE'
-            };
-        };
-
-        var addClickHandler = function ($ticket) {
-            $ticket.on('click', function () {
-                $ticket.toggleClass('cp-support-open', true);
-                $ticket.off('click');
-            });
-        };
-        var makeOpenButton = function ($ticket) {
-            var button = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
-            var collapse = h('button.btn.cp-support-collapse', Messages.admin_support_collapse);
-            $(button).click(function () {
-                $ticket.toggleClass('cp-support-open', true);
-            });
-            addClickHandler($ticket);
-            $(collapse).click(function (e) {
-                $ticket.toggleClass('cp-support-open', false);
-                e.stopPropagation();
-                setTimeout(function () {
-                    addClickHandler($ticket);
-                });
-            });
-            $ticket.find('.cp-support-title-buttons').prepend([button, collapse]);
-            $ticket.append(h('div.cp-support-collapsed'));
-        };
-        var updateTicketDetails = function ($ticket, isPremium) {
-            var $first = $ticket.find('.cp-support-message-from').first();
-            var user = $first.find('span').first().html();
-            var time = $first.find('.cp-support-message-time').text();
-            var last = $ticket.find('.cp-support-message-from').last().find('.cp-support-message-time').text();
-            var $c = $ticket.find('.cp-support-collapsed');
-            var txtClass = isPremium ? ".cp-support-ispremium" : "";
-            $c.html('').append([
-                UI.setHTML(h('span'+ txtClass), user),
-                h('span', [
-                    h('b', Messages.admin_support_first),
-                    h('span', time)
-                ]),
-                h('span', [
-                    h('b', Messages.admin_support_last),
-                    h('span', last)
-                ])
-            ]);
-
-        };
-
-        var sort = function (id1, id2) {
-            var t1 = getTicketData(id1);
-            var t2 = getTicketData(id2);
-            if (!t1) { return 1; }
-            if (!t2) { return -1; }
-            /*
-            // If one is answered and not the other, put the unanswered first
-            if (t1.lastAdmin && !t2.lastAdmin) { return 1; }
-            if (!t1.lastAdmin && t2.lastAdmin) { return -1; }
-            */
-            // Otherwise, sort them by time
-            return t1.time - t2.time;
-        };
-
-        var _reorder = function () {
-            var orderAnswered = [];
-            var orderPremium = [];
-            var orderNormal = [];
-            var orderClosed = [];
-
-            Object.keys(hashesById).forEach(function (id) {
-                var d = getTicketData(id);
-                if (!d) { return; }
-                if (d.closed) {
-                    return void orderClosed.push(id);
-                }
-                if (d.lastAdmin /* && !d.closed */) {
-                    return void orderAnswered.push(id);
-                }
-                if (d.premium /* && !d.lastAdmin && !d.closed */) {
-                    return void orderPremium.push(id);
-                }
-                orderNormal.push(id);
-                //if (!d.premium && !d.lastAdmin && !d.closed) { return void orderNormal.push(id); }
-            });
-
-            var cols = [$col1, $col2, $col3, $col4];
-            [orderPremium, orderNormal, orderAnswered, orderClosed].forEach(function (list, j) {
-                list.sort(sort);
-                list.forEach(function (id, i) {
-                    var $t = $div.find('[data-id="'+id+'"]');
-                    var d = getTicketData(id);
-                    $t.css('order', i).appendTo(cols[j]);
-                    updateTicketDetails($t, d.premium);
-                });
-                var len;
-                try {
-                    len = cols[j].find('div.cp-support-list-ticket').length;
-                } catch (err) {
-                    UI.warn(Messages.error);
-                    return void console.error(err);
-                }
-                if (!len) {
-                    cols[j].hide();
-                } else {
-                    cols[j].show();
-                    cols[j].find('.cp-support-count').text(len);
-                }
-            });
-        };
-        var reorder = Util.throttle(_reorder, 150);
-
-        var to = Util.throttle(function () {
-            var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]');
-            $ticket.addClass('cp-support-open');
-            $ticket[0].scrollIntoView();
-            linkedId = undefined;
-        }, 200);
-
-        // Register to the "support" mailbox
-        common.mailbox.subscribe(['supportadmin'], {
-            onMessage: function (data) {
-                /*
-                    Get ID of the ticket
-                    If we already have a div for this ID
-                        Push the message to the end of the ticket
-                    If it's a new ticket ID
-                        Make a new div for this ID
-                */
-                var msg = data.content.msg;
-                var hash = data.content.hash;
-                var content = msg.content;
-                var id = content.id;
-                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
-
-                hashesById[id] = hashesById[id] || [];
-                if (hashesById[id].indexOf(hash) === -1) {
-                    hashesById[id].push(data);
-                }
-
-                if (msg.type === 'CLOSE') {
-                    // A ticket has been closed by the admins...
-                    if (!$ticket.length) { return; }
-                    $ticket.addClass('cp-support-list-closed');
-                    $ticket.append(APP.support.makeCloseMessage(content, hash));
-                    reorder();
-                    return;
-                }
-                if (msg.type !== 'TICKET') { return; }
-                $ticket.removeClass('cp-support-list-closed');
-
-                if (!$ticket.length) {
-                    $ticket = APP.support.makeTicket($div, content, function (hideButton) {
-                        // the ticket will still be displayed until the worker confirms its deletion
-                        // so make it unclickable in the meantime
-                        hideButton.setAttribute('disabled', true);
-                        var error = false;
-                        nThen(function (w) {
-                            hashesById[id].forEach(function (d) {
-                                common.mailbox.dismiss(d, w(function (err) {
-                                    if (err) {
-                                        error = true;
-                                        console.error(err);
-                                    }
-                                }));
-                            });
-                        }).nThen(function () {
-                            if (!error) {
-                                $ticket.remove();
-                                delete hashesById[id];
-                                reorder();
-                                return;
-                            }
-                            // if deletion failed then reactivate the button and warn
-                            hideButton.removeAttribute('disabled');
-                            // and show a generic error message
-                            UI.alert(Messages.error);
-                        });
-                    });
-                    makeOpenButton($ticket);
-                    if (category !== 'all' && $ticket.attr('data-cat') !== category) {
-                        $ticket.hide();
-                    }
-                }
-                $ticket.append(APP.support.makeMessage(content, hash));
-                reorder();
-
-                if (linkedId) { to(); }
-            }
-        });
-        return $container;
-    });
-
+        
         sidebar.makeLeftside(categories);
     };
 
