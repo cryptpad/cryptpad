@@ -51,10 +51,13 @@ define([
     };
 
     // XXX
+    Messages.support_pending = "Pending tickets:";
+    /*
     Messages.support_activeListTitle = "Active tickets";
-    Messages.support_activeListHint = "List of tickets that are in an active state";
     Messages.support_pendingListTitle = "Pending tickets";
+    Messages.support_activeListHint = "List of tickets that are in an active state";
     Messages.support_pendingListHint = "List of tickets that may not be updated for a while but should not be closed";
+    */
 
     Messages.support_privacyTitle = "Answer anonymously";
     Messages.support_privacyHint = "Check this option to reply as 'The Support Team' instead of your own username";
@@ -112,9 +115,17 @@ define([
                     h('span', Messages.admin_support_closed),
                     h('span.cp-support-count'),
                 ]));
+                var col5 = h('div.cp-support-column', h('h1', [
+                    h('span', Messages.support_pending),
+                    h('span.cp-support-count'),
+                ]));
                 if (type === 'closed') {
                     // Only one column
                     col1 = col2 = col3 = col4;
+                }
+                if (type === 'pending') {
+                    // Only one column
+                    col1 = col2 = col3 = col5;
                 }
                 $container.append([col1, col2, col3]);
                 var sortTicket = function (c1, c2) {
@@ -302,11 +313,11 @@ define([
         sidebar.addItem('active-list', cb => {
             activeContainer = h('div.cp-support-container'); // XXX block
             cb(activeContainer);
-        });
+        }, { noTitle: true, noHint: true });
         sidebar.addItem('pending-list', cb => {
             pendingContainer = h('div.cp-support-container');
             cb(pendingContainer);
-        });
+        }, { noTitle: true, noHint: true });
         sidebar.addItem('closed-list', cb => {
             closedContainer = h('div.cp-support-container');
             cb(closedContainer);
