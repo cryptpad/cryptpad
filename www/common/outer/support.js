@@ -778,7 +778,7 @@ define([
                     delete doc.tickets.active[data.channel];
                     delete doc.tickets.pending[data.channel];
                 }
-                if (data.time < t.time) { return; }
+                if (data.time <= t.time) { return; }
 
                 t.time = data.time;
                 t.lastAdmin = false;

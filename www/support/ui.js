@@ -427,16 +427,16 @@ define([
                 var $ticket = $(ticket);
                 $show.prop('disabled', 'disabled');
                 if (visible && !force) {
-                    $ticket.toggleClass('cp-not-loaded', true);
                     return onHide(ticket, id, content, function () {
+                        $ticket.toggleClass('cp-not-loaded', true);
                         visible = false;
                         $(ticket).find('.cp-support-reply-cancel').click();
                         $show.text(Messages.admin_support_open);
                         $show.prop('disabled', '');
                     });
                 }
-                $ticket.toggleClass('cp-not-loaded', false);
                 onShow(ticket, id, content, function () {
+                    $ticket.toggleClass('cp-not-loaded', false);
                     visible = true;
                     $show.text(Messages.admin_support_collapse);
                     $show.prop('disabled', '');
