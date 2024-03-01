@@ -50,7 +50,6 @@ module.exports = {
         'no-empty': ['off'],
         'no-useless-escape': ['off'],
         'no-redeclare': ['off'],
-        'no-undef': ['off'],
         'no-extra-boolean-cast': ['off'],
         'no-global-assign': ['off'],
         'no-prototype-builtins': ['off'],
