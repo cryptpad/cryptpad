@@ -80,11 +80,13 @@ define([
         // Support panel functions
         let open = [];
         let refreshAll = function () {};
-        let refresh = ($container, type) => {
+        let refresh = ($container, type, _cb) => {
+            let cb = Util.mkAsync(_cb || function () {});
             APP.module.execCommand('LIST_TICKETS_ADMIN', {
                 type: type
             }, (tickets) => {
                 if (tickets.error) {
+                    cb();
                     if (tickets.error === 'EFORBIDDEN') {
                         return void UI.errorLoadingScreen(Messages.admin_authError || '403 Forbidden');
                     }
@@ -223,6 +225,9 @@ define([
                 };
                 onMove.isTicketActive = type === 'active';
 
+                // Show tickets, reload the previously open ones and cal back
+                // once everything is loaded
+                let n = nThen;
                 Object.keys(tickets).sort(sortTicket).forEach(function (channel) {
                     var d = tickets[channel];
                     var ticket = APP.support.makeTicket({
@@ -238,23 +243,45 @@ define([
                     else { container = col2; }
                     $(container).append(ticket);
 
-                    if (open.includes(channel)) { return void ticket.open(); }
-                    if (linkedTicket === channel) {
-                        linkedTicket = undefined;
-                        ticket.open();
-                        ticket.scrollIntoView();
+                    if (open.includes(channel)) {
+                        n = n(waitFor => {
+                            ticket.open(true, waitFor());
+                        }).nThen;
                     }
                 });
-                open = [];
-                console.log(type, tickets);
+                // Wait for all open tickets to be loaded before calling back
+                // otherwise we may have a wrong scroll position
+                n(() => {
+                    cb();
+                });
             });
         };
 
         let activeContainer, pendingContainer, closedContainer;
         refreshAll = function () {
-            refresh($(activeContainer), 'active');
-            refresh($(pendingContainer), 'pending');
-            refresh($(closedContainer), 'closed');
+            let $rightside = sidebar.$rightside;
+            let s = $rightside.scrollTop();
+            nThen(waitFor => {
+                refresh($(activeContainer), 'active', waitFor());
+                refresh($(pendingContainer), 'pending', waitFor());
+                refresh($(closedContainer), 'closed', waitFor());
+            }).nThen(waitFor => {
+                open = [];
+                if (!linkedTicket) { return; }
+                let $ticket = $container.find(`[data-link-id="${linkedTicket}"]`);
+                linkedTicket = undefined;
+                if ($ticket.length) {
+                    let ticket = $ticket[0];
+                    if (typeof(ticket.open) === "function") {
+                        waitFor.abort();
+                        ticket.open(true, () => {
+                            ticket.scrollIntoView();
+                        });
+                    }
+                }
+            }).nThen(() => {
+                $rightside.scrollTop(s);
+            });
         };
         let _refresh = Util.throttle(refreshAll, 500);
         events.NEW_TICKET.reg(_refresh);
@@ -348,13 +375,15 @@ define([
             let send = blocks.button('primary', 'fa-paper-plane', Messages.support_formButton);
             let nav = blocks.nav([send]);
 
+            let reset = blocks.button('danger-alt', 'fa-times', Messages.form_reset);
+
             let paste = blocks.textArea({
                 placeholder: Messages.support_pasteUserData
             });
             let inputs = h('div.cp-moderation-userdata-inputs', [ labelName, labelChan, labelKey ]);
-            let userData = h('div.cp-moderation-userdata', [inputs , paste]);
+            let userData = h('div.cp-moderation-userdata', [inputs , paste, reset]);
 
-
+            let $reset = $(reset).hide();
             let $paste = $(paste).on('input', () => {
                 let text = $paste.val().trim();
                 let parsed = Util.tryParse(text);
@@ -366,6 +395,15 @@ define([
                 $(inputChan).val(parsed.notifications);
                 $(inputKey).val(parsed.curvePublic);
                 $paste.hide();
+                $reset.show();
+            });
+            Util.onClickEnter($reset, () => {
+                $(inputName).val('');
+                $(inputChan).val('');
+                $(inputKey).val('');
+                $reset.hide();
+                $paste.show();
+                setTimeout(() => { $paste.focus() });
             });
             [inputName, inputChan, inputKey].forEach(input => {
                 $(input).on('input', () => { $paste.show(); });

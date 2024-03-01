@@ -316,6 +316,7 @@ define([
             _actions = [remove]; // XXX update key to "Delete permanently" ?
         }
 
+        let linkId =  Util.hexToBase64(id).slice(0,10);
         var actions = h('div.cp-support-list-actions', _actions);
 
         var adminActions;
@@ -331,7 +332,7 @@ define([
             let url = h('button.btn.fa.fa-link', { title: Messages.share_linkCopy, });
             $(url).click(function (e) {
                 e.stopPropagation();
-                var link = privateData.origin + privateData.pathname + '#' + 'active-' + id;
+                var link = privateData.origin + privateData.pathname + '#' + 'open-' + linkId;
                 Clipboard.copy(link, (err) => {
                     if (!err) { UI.log(Messages.shareSuccess); }
                 });
@@ -339,7 +340,7 @@ define([
 
 
             let visible = false;
-            adminOpen = function (force) {
+            adminOpen = function (force, cb) {
                 var $ticket = $(ticket);
                 $show.prop('disabled', 'disabled');
                 if (visible && !force) {
@@ -356,6 +357,7 @@ define([
                     visible = true;
                     $show.text(Messages.admin_support_collapse);
                     $show.prop('disabled', '');
+                    if (typeof(cb) === "function") { cb(); }
                 });
             };
             Util.onClickEnter($show, adminOpen);
@@ -374,12 +376,14 @@ define([
         }
 
         let isPremium = content.premium ? '.cp-support-ispremium' : '';
+        let title = content.title + ` (#${linkId})`;
         var name = Util.fixHTML(content.author) || Messages.anonymous;
         ticket = h(`div.cp-support-list-ticket${adminClasses}`, {
+            'data-link-id': linkId,
             'data-id': id
         }, [
             h('div.cp-support-ticket-header', [
-                h('span', content.title),
+                h('span', title),
                 ctx.isAdmin ? UI.setHTML(h(`span${isPremium}`), Messages._getKey('support_from', [name])) : '',
                 h('span', new Date(content.time).toLocaleString()),
                 adminActions,

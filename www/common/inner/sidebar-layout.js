@@ -27,7 +27,10 @@ define([
     Sidebar.create = function (common, app, $container) {
         const $leftside = $(h('div#cp-sidebarlayout-leftside')).appendTo($container);
         const $rightside = $(h('div#cp-sidebarlayout-rightside')).appendTo($container);
-        const sidebar = {};
+        const sidebar = {
+            $leftside,
+            $rightside
+        };
         const items = {};
 
         let blocks = sidebar.blocks = {};
@@ -246,6 +249,7 @@ define([
                 });
 
             });
+            common.setHash(active);
             showCategories(categories[active]);
             $leftside.append(container);
         };
