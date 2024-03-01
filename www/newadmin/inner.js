@@ -13,7 +13,9 @@ define([
     '/common/common-hash.js',
     '/common/inner/sidebar-layout.js',
     '/customize/messages.js',
+    '/common/common-signing-keys.js',
     '/common/hyperscript.js',
+    '/common/clipboard.js',
     '/customize/application_config.js',
     '/api/config',
 
@@ -32,6 +34,8 @@ define([
     Sidebar,
     Messages,
     h,
+    Keys,
+    Clipboard,
     AppConfig,
     ApiConfig,
 ) {
@@ -157,23 +161,28 @@ define([
             }
         };
         const blocks = sidebar.blocks;
-        var makeAdminCheckbox = function (sidebar, data) {
+        var makeAdminCheckbox = function (config) {
             return function () { 
-                var state = data.getState();
-                var key = data.key;
+                var state = config.getState();
+                var key = config.key;
               
                 sidebar.addItem(key, function (cb) {
                     var labelKey = 'admin_' + keyToCamlCase(key) + 'Label';
                     var titleKey = 'admin_' + keyToCamlCase(key) + 'Title';
                     var label = Messages[labelKey] || Messages[titleKey];
-                    var box = blocks.checkbox(key, label, state, { spinner: true });
+                    var box = blocks.checkbox({
+                        key: key,
+                        label: label,
+                        state: state,
+                        opts: { spinner: true }
+                    });
                     var $cbox = $(box);
                     var spinner = box.spinner;
                     var $checkbox = $cbox.find('input').on('change', function() {
                         spinner.spin();
                         var val = $checkbox.is(':checked') || false;
                         $checkbox.attr('disabled', 'disabled');
-                        data.query(val, function (state) {
+                        config.query(val, function (state) {
                             spinner.done();
                             $checkbox[0].checked = state;
                             $checkbox.removeAttr('disabled');
@@ -182,7 +191,8 @@ define([
                     cb(box);
                 });
             };
-        }; 
+        };
+        
         //general blocks
         sidebar.addItem('flush-cache', function (cb) {
             var button = blocks.button('primary', '', Messages.admin_flushCacheButton);
@@ -564,12 +574,12 @@ define([
             var inputAlias = blocks.input({
                 type: 'text'
             });
-            var input = blocks.labelledInput(Messages.admin_invitationAlias, inputAlias);
+            var blockAlias = blocks.labelledInput(Messages.admin_invitationAlias, inputAlias);
 
-            var email = blocks.input({
+            var inputEmail = blocks.input({
                 type: 'email'
             });
-            var inputEmail = blocks.labelledInput(Messages.admin_invitationEmail, email);
+            var blockEmail = blocks.labelledInput(Messages.admin_invitationEmail, inputEmail);
 
             var refreshInvite = function () {};
             var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
@@ -577,12 +587,20 @@ define([
                 refreshInvite();
             });
         
-            var list = blocks.list([], 'admin-all-limits');
+            var header = [
+                Messages.admin_invitationLink,
+                Messages.admin_invitationAlias,
+                Messages.admin_invitationEmail,
+                Messages.admin_documentCreationTime,
+                ""
+            ];
+            var list = blocks.list(header, []);
             var $list = $(list);
+            
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
-                input,
-                inputEmail,
+                blockAlias,
+                blockEmail,
                 list
             ], nav);
         
@@ -604,7 +622,6 @@ define([
             };
         
             refreshInvite = function () {
-                $list.empty();
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_ALL_INVITATIONS',
                 }, function (e, response) {
@@ -615,21 +632,12 @@ define([
                     }
                     if (!Array.isArray(response)) { return; }
                     var all = response[0];
-                    Object.keys(all).forEach(function (key, i) {
-                        if (!i) { // First item: add header to table
-                            var trHead = h('tr', [
-                                h('th', Messages.admin_invitationLink),
-                                h('th', Messages.admin_invitationAlias),
-                                h('th', Messages.admin_invitationEmail),
-                                h('th', Messages.admin_documentCreationTime),
-                                h('th')
-                            ]);
-                            $list.append(trHead);
-                        }
+                    var newEntries = [];
+                    Object.keys(all).forEach(function (key) {
                         var data = all[key];
                         var url = privateData.origin + Hash.hashToHref(key, 'register');
-        
-                        var del = blocks.button('danger', 'fa.fa-trash', Messages.kanban_delete )
+              
+                        var del = blocks.button('danger', 'fa fa-trash', Messages.kanban_delete )
                         var $del = $(del);
                         Util.onClickEnter($del, function () {
                             $del.attr('disabled', 'disabled');
@@ -639,32 +647,30 @@ define([
                                 deleteInvite(key);
                             });
                         });
-                        var copy = blocks.button('secondary', '', Messages.admin_invitationCopy )
+                        var copy = blocks.button('secondary', 'fa fa-clipboard', Messages.admin_invitationCopy )
                         Util.onClickEnter($(copy), function () {
                             Clipboard.copy(url, () => {
                                 UI.log(Messages.genericCopySuccess);
                             });
                         });
-                        var line = h('tr', [
-                            h('td', UI.dialog.selectable(url)),
-                            h('td', data.alias),
-                            h('td', data.email),
-                            h('td', new Date(data.time).toLocaleString()),
-                            //h('td', data.createdBy),
-                            h('td', [
-                                copy,
-                                del
-                            ])
+                        
+                        newEntries.push([
+                            UI.dialog.selectable(url),
+                            data.alias,
+                            data.email,
+                            new Date(data.time).toLocaleString(),
+                            [copy, del]
                         ]);
-                        $list.append(line);
                     });
+                    list.updateContent(newEntries);  
+                    
                 });
+               
             };
-        
             refreshInvite();
         
             $b.on('click', () => {
-                var alias = $(input).val().trim();
+                var alias = $(inputAlias).val().trim();
                 if (!alias) { return void UI.warn(Messages.error); } // FIXME better error message
                 $b.prop('disabled', true);
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -679,7 +685,7 @@ define([
                         UI.warn(Messages.error);
                         return void console.error(e, response);
                     }
-                    $(input).val('').focus();
+                    $(inputAlias).val('').focus();
                     $(inputEmail).val('');
                     refreshInvite();
                 });
@@ -690,11 +696,290 @@ define([
         
         //user directory
 
-       
+        Keys.canonicalize = function (input) {
+            if (typeof(input) !== 'string') { return; }
+            // key is already in simple form. ensure that it is an 'unsafeKey'
+            if (input.length === 44) {
+                return unescape(input);
+            }
+            try {
+                return Keys.parseUser(input).pubkey;
+            } catch (err) {
+                return;
+            }
+    };
+    
+   
+    
+       sidebar.addItem('users', function(cb){
+
+        var $invited = blocks.checkbox('store-invited', Messages.admin_storeInvited, !APP.instanceStatus.dontStoreInvitedUsers, {}, function(checked) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['DISABLE_STORE_INVITED_USERS', [!checked]]
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                }
+                APP.updateStatus(function () {
+                    $invited.prop('checked', !APP.instanceStatus.dontStoreInvitedUsers);
+                    flushCacheNotice();
+                });
+            });
+        });
+        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
+        if(ssoEnabled){
+            var $sso = blocks.checkbox('store-sso', Messages.admin_storeInvited, !APP.instanceStatus.dontStoreSSOUsers, {}, function(checked) {
+    
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['DISABLE_STORE_SSO_USERS', [!val]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                        }
+                        APP.updateStatus(function () {
+                            setState(!APP.instanceStatus.dontStoreSSOUsers);
+                            flushCacheNotice();
+                        });
+                    });
+                },
+            );
+        }
+        var button = blocks.button('primary', '', Messages.admin_usersAdd);
+        var $b = $(button);
+
+        var userAlias = blocks.input({
+            type: 'text'
+        });
+        var blockAlias = blocks.labelledInput(Messages.admin_invitationAlias, userAlias);
+
+        var userEmail = blocks.input({
+            type: 'email'
+        });
+        var blockEmail = blocks.labelledInput(Messages.admin_invitationEmail, userEmail);
+
+        var userEdPublic = blocks.input({
+            type: 'key'
+        });
+        var blockEdPublic = blocks.labelledInput(Messages.admin_limitUser, userEdPublic);
+
+        var userBlock = blocks.input({
+            type: 'text'
+        });
+        var blockUser = blocks.labelledInput(Messages.admin_usersBlock, userBlock);
+
+
+        var refreshUsers = function () {};
+        var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
+        Util.onClickEnter($(refreshButton), function () {
+            refreshUsers();
+        });
+    
+        var header = [
+            Messages.admin_invitationAlias,
+            Messages.admin_invitationEmail,
+            Messages.admin_limitUser,
+            Messages.admin_usersBlock,
+            ""
+        ];
+        var list = blocks.list(header, []);
+        var $list = $(list);
+        
+        var nav = blocks.nav([button, refreshButton]);
+
+        var form = blocks.form([
+            $invited,
+            blockAlias,
+            blockEmail,
+            blockEdPublic,
+            blockUser,
+            list
+        ], nav);
+    
+        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
+        if(ssoEnabled){
+            var $sso = blocks.checkbox('store-sso', '', !APP.instanceStatus.dontStoreSSOUsers, {}, function(checked) {
+    
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['DISABLE_STORE_SSO_USERS', [!val]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                        }
+                        APP.updateStatus(function () {
+                            setState(!APP.instanceStatus.dontStoreSSOUsers);
+                            flushCacheNotice();
+                        });
+                    });
+                },
+            );
+            form.append($sso);
+        }
+
+        var deleteUser = function (id) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'DELETE_KNOWN_USER',
+                data: id
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                refreshUsers();
+            });
+        };
+        var updateUser = function (key, changes) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'UPDATE_KNOWN_USER',
+                data: {
+                    edPublic: key,
+                    changes: changes
+                }
+            }, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                refreshUsers();
+            });
+        };
+        refreshUsers = function () {
+            $list.empty();
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_ALL_USERS',
+            }, function (e, response) {
+                if (e || response.error) {
+                    if (!response || response.error !== "ENOENT") { UI.warn(Messages.error); }
+                    console.error(e, response);
+                    return;
+                }
+                if (!Array.isArray(response)) { return; }
+                var all = response[0];
+                var newEntries = [];
+                Object.keys(all).forEach(function (key) {
+                    var data = all[key];
+                    var editUser = () => {};
+                    var del = blocks.button('danger', 'fa fa-trash', Messages.admin_usersRemove);
+                    var $del = $(del);
+                    Util.onClickEnter($del, function () {
+                        $del.attr('disabled', 'disabled');
+                        UI.confirm(Messages.admin_usersRemoveConfirm, function (yes) {
+                            $del.attr('disabled', '');
+                            if (!yes) { return; }
+                            deleteUser(key);
+                        });
+                    });
+                    var edit = blocks.button('secondary', 'fa fa-pencil', Messages.tag_edit);
+                    Util.onClickEnter($(edit), function () {
+                        editUser();
+                    });
+
+                    var alias = data.alias;
+                    var $alias = $(alias);
+                    var email = data.email;
+                    var $email = $(email);
+                    var actions = [edit, del];
+                    var $actions = $(actions);
+
+                    editUser = () => {
+                        var aliasInput = h('input');
+                        var emailInput = h('input');
+                        $(aliasInput).val(data.alias);
+                        $(emailInput).val(data.email);
+                        var save = blocks.button('primary', '', Messages.settings_save);
+                        var cancel = blocks.button('secondary', '', Messages.cancel);
+                        Util.onClickEnter($(save), function () {
+                            var aliasVal = $(aliasInput).val().trim();
+                            if (!aliasVal) { return void UI.warn(Messages.error); }
+                            var changes = {
+                                alias: aliasVal,
+                                email: $(emailInput).val().trim()
+                            };
+                            updateUser(key, changes);
+                        });
+                        Util.onClickEnter($(cancel), function () {
+                            refreshUsers();
+                        });
+                        $alias.html('').append(aliasInput);
+                        $email.html('').append(emailInput);
+                        $actions.html('').append([save, cancel]);
+                        console.warn(alias, email, $alias, $email, aliasInput);
+                    };
+
+                    var infoButton = blocks.button('primary.cp-report', 'fa fa-database', Messages.admin_diskUsageButton);
+                    $(infoButton).click(() => {
+                         getAccountData(key, (err, data) => {
+                             if (err) { return void console.error(err); }
+                             var table = renderAccountData(data);
+                             UI.alert(table, () => {
+
+                             }, {
+                                wide: true,
+                             });
+                         });
+                    });
+                    newEntries.push([
+                        UI.dialog.selectable(url),
+                        data.alias,
+                        data.email,
+                        infoButton,
+                        new Date(data.time).toLocaleString()
+                        [edit, del]
+                    ])
+                });
+                list.updateContent(newEntries);
+            });
+        };
+        refreshUsers();
+        $b.on('click', () => {
+            var alias = $(userAlias).val().trim();
+            if (!alias) { return void UI.warn(Messages.error); }
+            $b.prop('disabled', true);
+
+            var done = () => { $b.prop('disabled', false); };
+            // TODO Get "block" from pin log?
+
+            var keyStr = $(userEdPublic).val().trim();
+            var edPublic = keyStr && Keys.canonicalize(keyStr);
+            if (!edPublic) {
+                done();
+                return void UI.warn(Messages.admin_invalKey);
+            }
+            var block = getBlockId($(userBlock).val());
+
+            var obj = {
+                alias,
+                email: $(userEmail).val(),
+                block: block,
+                edPublic: edPublic,
+            };
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADD_KNOWN_USER',
+                data: obj
+            }, function (e, response) {
+                done();
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return void console.error(e, response);
+                }
+                $(userAlias).val('').focus();
+                $(userEmail).val('');
+                $(userBlock).val('');
+                $(userEdPublic).val('');
+                refreshUsers();
+            });
+        });
+
+        cb(form);
+       });
+
 
         //QUOTA
-
-
         //storage blocks
         sidebar.addItem('defaultlimit', function (cb) {
 
@@ -850,9 +1135,869 @@ define([
     
         });
 
+        //getlimits
+        /*sidebar.addItem('getlimits', function(cb){
+            APP.refreshLimits = function () {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'GET_LIMITS',
+                }, function (e, data) {
+                    if (e) { return; }
+                    if (!Array.isArray(data) || !data[0]) { return; }
+    
+                    var obj = data[0];
+                    if (obj && (obj.message || obj.location)) {
+                        delete obj.message;
+                        delete obj.location;
+                    }
+                    var list = Object.keys(obj).sort(function (a, b) {
+                        return obj[a].limit > obj[b].limit;
+                    });
+    
+                    var content = list.map(function (key) {
+                        var user = obj[key];
+                        var limit = getPrettySize(user.limit);
+                        var title = Messages._getKey('admin_limit', [limit]) + ', ' +
+                                    Messages._getKey('admin_limitPlan', [user.plan]) + ', ' +
+                                    Messages._getKey('admin_limitNote', [user.note]);
+                        var infoButton = blocks.button('primary.cp-report','',  Messages.admin_diskUsageButton);
+                        $(infoButton).click(() => {
+                             console.log(key);
+                             getAccountData(key, (err, data) => {
+                                 if (err) { return void console.error(err); }
+                                 console.log(data);
+                                 var table = renderAccountData(data);
+                                 UI.alert(table, () => {
+    
+                                 }, {
+                                    wide: true,
+                                 });
+                             });
+                        });
+    
+                        var keyEl = h('code.cp-limit-key', key);
+                        $(keyEl).click(function () {
+                            $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
+                            $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit / 1024 / 1024));
+                            $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
+                        });
+    
+                        var attr = { title: title };
+                        return h('tr.cp-admin-limit', [
+                            h('td', [
+                                keyEl,
+                                infoButton,
+                            ]),
+                            h('td.limit', attr, limit),
+                            h('td.plan', attr, user.plan),
+                            h('td.note', attr, user.note)
+                        ]);
+                    });
+                    return $div.append(h('table.cp-admin-all-limits', [
+                        h('tr', [
+                            h('th', Messages.settings_publicSigningKey),
+                            h('th.limit', Messages.admin_planlimit),
+                            h('th.plan', Messages.admin_planName),
+                            h('th.note', Messages.admin_note)
+                        ]),
+                    ].concat(content)));
+                });
+            };
+            APP.refreshLimits();
+            cb(form);
+        });
+        */
+
+        //database
+        var disable = $el => $el.attr('disabled', 'disabled');
+        sidebar.addItem('account-metadata', function(cb){
+
+            var input = blocks.input({
+                type: 'text',
+                placeholder: Messages.admin_accountMetadataPlaceholder,
+                value: '',
+            });
+            var $input = $(input);
+
+            var box = blocks.box(input, 'cp-admin-setter');
+
+            var pending = false;
+            var getInputState = function () {
+                var val = $input.val().trim();
+                var key = Keys.canonicalize(val);
+                var state = {
+                    value: val,
+                    key: key,
+                    valid: Boolean(key),
+                    pending: pending,
+                };
+    
+                return state;
+            };
+
+        var btn = blocks.button('primary', '', Messages.ui_generateReport);
+        var $btn = $(btn);
+
+        var nav = blocks.nav([btn]);
+        var form = blocks.form([
+            input,
+            box
+        ], nav);
+
+        disable($btn);
+
+        var setInterfaceState = function (state) {
+            state = state || getInputState();
+            var both = [$input, $btn];
+            if (state.pending) {
+                both.forEach(disable);
+            } else if (state.valid) {
+                both.forEach(enable);
+            } else {
+                enable($input);
+                disable($btn);
+            }
+        };
+
+        $input.on('keypress keyup change paste', function () {
+            setTimeout(setInterfaceState);
+        });
+
+        $btn.click(function (/* ev */) {
+            if (pending) { return; }
+            var state = getInputState();
+            if (!state.valid) {
+                results.innerHTML = '';
+                return void UI.warn(Messages.error);
+            }
+            var key = state.key;
+            pending = true;
+            setInterfaceState();
+
+            getAccountData(key, (err, data) => {
+                pending = false;
+                setInterfaceState();
+                if (!data) {
+                    results.innerHTML = '';
+                    return UI.warn(Messages.error);
+                }
+                var table = renderAccountData(data);
+                results.innerHTML = '';
+                results.appendChild(table);
+                });
+            });
+
+            cb(form);
+    
+        });
+
+        sidebar.addItem('document-metadata', function(cb){
+            var input = blocks.input({
+                type: 'text',
+                placeholder: Messages.admin_documentMetadataPlaceholder,
+                value: ''
+            });
+            var $input = $(input);
+            var passwordContainer = UI.passwordInput({
+                id: 'cp-database-document-pw',
+                placeholder: Messages.login_password,
+            });
+            var $passwordContainer = $(passwordContainer);
+            var getBlobId = pathname => {
+                var parts;
+                try {
+                    if (typeof(pathname) !== 'string') { return; }
+                    parts = pathname.split('/').filter(Boolean);
+                    if (parts.length !== 3) { return; }
+                    if (parts[0] !== 'blob') { return; }
+                    if (parts[1].length !== 2) { return; }
+                    if (parts[2].length !== 48) { return; }
+                    if (!parts[2].startsWith(parts[1])) { return; }
+                } catch (err) { return false; }
+                return parts[2];
+            };
+    
+            var pending = false;
+            var getInputState = function () {
+                var val = $input.val().trim();
+                var state = {
+                    valid: false,
+                    passwordRequired: false,
+                    id: undefined,
+                    input: val,
+                    password: $password.val().trim(),
+                    pending: false,
+                };
+    
+                if (!val) { return state; }
+                if (isHex(val) && [32, 48].includes(val.length)) {
+                    state.valid = true;
+                    state.id = val;
+                    return state;
+                }
+    
+                var url;
+                try {
+                    url = new URL(val, ApiConfig.httpUnsafeOrigin);
+                } catch (err) {}
+    
+                if (!url) { return state; } // invalid
+    
+                // recognize URLs of the form: /blob/f1/f1338921fe8a73ed5401780d2147f725deeb9e3329f0f01e
+                var blobId = getBlobId(url.pathname);
+                if (blobId) {
+                    state.valid = true;
+                    state.id = blobId;
+                    return state;
+                }
+    
+                var parsed = Hash.isValidHref(val);
+                if (!parsed || !parsed.hashData) { return state; }
+                if (parsed.hashData.version === 3) {
+                    state.id = parsed.hashData.channel;
+                    state.valid = true;
+                    return state;
+                }
+    
+                var secret;
+                if (parsed.hashData.password) {
+                    state.passwordRequired = true;
+                    secret = Hash.getSecrets(parsed.type, parsed.hash, state.password);
+                } else {
+                    secret = Hash.getSecrets(parsed.type, parsed.hash);
+                }
+                if (secret && secret.channel) {
+                    state.id = secret.channel;
+                    state.valid = true;
+                    return state;
+                }
+                return state;
+            };
+    
+            $passwordContainer.hide();
+        
+            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var $btn = $(btn);
+            disable($btn);
+            var nav = blocks.nav([btn]);
+            var form = blocks.form([
+                input, 
+                passwordContainer
+            ], nav);
+            var setInterfaceState = function () {
+                var state = getInputState();
+                var all = [ $btn, $password, $input ];
+                var text = [$password, $input];
+    
+                if (state.pending) {
+                    all.forEach(disable);
+                } else if (state.valid) {
+                    all.forEach(enable);
+                } else {
+                    text.forEach(enable);
+                    disable($btn);
+                }
+                if (state.passwordRequired) {
+                    $passwordContainer.show();
+                } else {
+                    $passwordContainer.hide();
+                }
+            };
+    
+            $input.on('keypress keyup change paste', function () {
+                setTimeout(setInterfaceState);
+            });
+    
+            $btn.click(function () {
+                if (pending) { return; }
+                pending = true;
+                var state = getInputState();
+                setInterfaceState(state);
+                getDocumentData(state.id, function (err, data) {
+                    pending = false;
+                    setInterfaceState();
+                    if (err) {
+                        results.innerHTML = '';
+                        return void UI.warn(err);
+                    }
+    
+                    var table = renderDocumentData(data);
+                    results.innerHTML = '';
+                    results.appendChild(table);
+                });
+            });
+    
+            cb(form);
+        });
+
+        var enable = $el => $el.removeAttr('disabled');
+        sidebar.addItem('block-metadata', function(cb){
+            var input = blocks.input({
+                type: 'text',
+                placeholder: Messages.admin_blockMetadataPlaceholder,
+                value: ''
+            });
+            var $input = $(input);
+            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var $btn = $(btn);
+            disable($btn);
+
+            var nav = blocks.nav([btn]);
+            var form = blocks.form([
+                input
+            ], nav);
+            var pending = false;
+            var getInputState = function () {
+                var val = $input.val().trim();
+                var state = {
+                    pending: pending,
+                    valid: false,
+                    value: val,
+                    key: '',
+                };
+
+                var key = getBlockId(val);
+                if (key) {
+                    state.valid = true;
+                    state.key = key;
+                }
+                return state;
+            };
+            var setInterfaceState = function () {
+                var state = getInputState();
+                var all = [$btn, $input];
+
+                if (state.pending) {
+                    all.forEach(disable);
+                } else if (state.valid) {
+                    all.forEach(enable);
+                } else {
+                    enable($input);
+                    disable($btn);
+                }
+            };
+
+            $input.on('keypress keyup change paste', function () {
+                setTimeout(setInterfaceState);
+            });
+
+            $btn.click(function () {
+                if (pending) { return; }
+                var state = getInputState();
+                pending = true;
+                setInterfaceState();
+                getBlockData(state.key, (err, data) => {
+                    pending = false;
+                    setInterfaceState();
+                    if (err || !data) {
+                        results.innerHTML = '';
+                        console.log(err, data);
+                        return UI.warn(Messages.error);
+                    }
+                    var table = renderBlockData(data);
+                    results.innerHTML = '';
+                    results.appendChild(table);
+                });
+            });
+
+            cb(form);
+
+            });
+        
+        sidebar.addItem('totp-recovery', function(cb){
+            var textarea = blocks.textArea({
+                id: 'textarea-input',
+                'aria-labelledby': 'cp-admin-totp-recovery'
+            });
+            var $input = $(textarea);
+            var btn = blocks.button('primary','', Messages.admin_totpDisable);
+            var $btn = $(btn);
+            disable($btn);
+            var nav = blocks.nav([btn]);
+            var form = blocks.form([
+                textarea
+            ], nav);
+
+            var pending = false;
+            var getInputState = function () {
+                var val = $input.val().trim();
+                var state = {
+                    pending: pending,
+                    value: undefined,
+                    key: '',
+                };
+
+                var json;
+                try { json = JSON.parse(val); } catch (err) { }
+                if (!json || json.intent !== "Disable TOTP" || !json.blockId || json.blockId.length !== 44 ||
+                !json.date || !json.proof) { return state; }
+
+                state.value = json;
+                state.key = json.blockId.replace(/\//g, '-');
+                return state;
+            };
+            var setInterfaceState = function () {
+                var state = getInputState();
+                var all = [$btn, $input];
+    
+                if (state.pending) {
+                    all.forEach(disable);
+                } else {
+                    all.forEach(enable);
+                }
+            };
+    
+            setInterfaceState();
+            $btn.click(function () {
+                if (pending) { return; }
+                var state = getInputState();
+                if (!state.value) { return; }
+                pending = true;
+                setInterfaceState();
+                getBlockData(state.key, (err, data) => {
+                    pending = false;
+                    setInterfaceState();
+                    console.warn(data);
+                    if (err || !data) {
+                        results.innerHTML = '';
+                        console.log(err, data);
+                        return UI.warn(Messages.error);
+                    }
+                    var check = checkTOTPRequest(state.value);
+                    if (!check) { UI.warn(Messages.admin_totpFailed); }
+                    data.totpCheck = check;
+                    var table = renderTOTPData(data);
+                    results.innerHTML = '';
+                    results.appendChild(table);
+                });
+            });
+    
+            cb(form);
+
+        });
+
+        //stats
+        sidebar.addItem('refresh-stats', function(cb){
+            var btn = blocks.button('primary', '',  Messages.oo_refresh);
+            var $btn = $(btn);
+            $btn.click(function () {
+                onRefreshStats.fire();
+            });
+            cb(btn);
+        },
+        {
+        noTitle: true,
+        noHint: true 
+        });
+
+        var onRefreshStats = Util.mkEvent();
+    sidebar.addItem('uptime', function(cb){
+
+            var pre = blocks.pre(Messages.admin_uptimeTitle);
+            var set = function () {
+                var uptime = APP.instanceStatus.launchTime;
+                if (typeof(uptime) !== 'number') { return; }
+                pre.innerText = new Date(uptime);
+            };
+            
+            set();
+            onRefreshStats.reg(function () {
+                APP.updateStatus(set);
+            });
+            cb(pre);
+            });
+        
+            sidebar.addItem('active-sessions', function(cb){
+                var pre = blocks.pre('');
+                var onRefresh = function () {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ACTIVE_SESSIONS',
+                    }, function (e, data) {
+                        var total = data[0];
+                        var ips = data[1];
+                        pre.append(total + ' (' + ips + ')');
+                    });
+                };
+                onRefresh();
+                onRefreshStats.reg(onRefresh);
+                cb(pre);
+            });
+
+            sidebar.addItem('active-pads', function(cb){
+                var pre = blocks.pre('');
+                var onRefresh = function () {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ACTIVE_PADS',
+                    }, function (e, data) {
+                        pre.append(String(data));
+                    });
+                };
+                onRefresh();
+                onRefreshStats.reg(onRefresh);
+                cb(pre);
+            });
+
+            sidebar.addItem('open-files', function(cb){
+                var pre = blocks.pre('');
+                var onRefresh = function () {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'GET_FILE_DESCRIPTOR_COUNT',
+                    }, function (e, data) {
+                        if (e || (data && data.error)) {
+                            console.error(e, data);
+                            pre.append(String(e || data.error));
+                            return;
+                        }
+                        pre.append(String(data));
+                    });
+                };
+                onRefresh();
+                onRefreshStats.reg(onRefresh);
+                cb(pre);
+            });
+
+            sidebar.addItem('registered', function(cb){
+                var pre = blocks.pre('');
+                var onRefresh = function () {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'REGISTERED_USERS',
+                    }, function (e, data) {
+                        pre.append(String(data));
+                    });
+                };
+                onRefresh();
+                onRefreshStats.reg(onRefresh);
+                cb(pre);
+            });
+
+           //TODO create list
+           sidebar.addItem('disk-usage', function(cb){
+            var called = false;
+            var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
+            var nav = blocks.nav([button]);
+            var list = blocks.unorderedList([]);
+            var entries = [];
+            var form = blocks.form({
+                list
+            }, nav);
+            var $button = $(button);
+
+            form.updateContent = function(newList) {
+                $(list).empty(); // Clear existing content
+                $(list).append(newList); // Append the new list
+            };
+
+            $button.click(function () {
+                UI.confirm(Messages.admin_diskUsageWarning, function (yes) {
+                    if (!yes) { return; }
+                    $button.hide();
+                    if (called) { return; }
+                    called = true;
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'DISK_USAGE',
+                    }, function (e, data) {
+                        console.log(e, data);
+                        if (e) { return void console.error(e); }
+                        var obj = data[0];
+                        Object.keys(obj).forEach(function (key) {
+                            var val = obj[key];
+                            var unit = Util.magnitudeOfBytes(val);
+                            if (unit === 'GB') {
+                                obj[key] = Util.bytesToGigabytes(val) + ' GB';
+                            } else if (unit === 'MB') {
+                                obj[key] = Util.bytesToMegabytes(val) + ' MB';
+                            } else {
+                                obj[key] = Util.bytesToKilobytes(val) + ' KB';
+                            }
+                        });
+                        entries = Object.keys(obj).map(function (k) {
+                            return [
+                                (k === 'total' ? k : '/' + k),
+                                ' : ',
+                                obj[k]
+                            ];
+                        });
+                        var newList = blocks.unorderedList(entries);
+                        form.updateContent(newList); // Update the content of the form with the new unordered list
+                    });
+                    
+                });
+            });
+            cb(form);
+        });
+        
+
+        var supportKey = ApiConfig.supportMailbox;
+        var checkAdminKey = function (priv) {
+            if (!supportKey) { return; }
+            return Hash.checkBoxKeyPair(priv, supportKey);
+        };
+
+        sidebar.addItem('support-list', function(cb){
+            if (!supportKey || !APP.privateKey || !checkAdminKey(APP.privateKey)) { return; }
+            var header = [
+                Messages.admin_support_premium,
+                Messages.admin_support_normal,
+                Messages.admin_support_answered,
+                Messages.admin_support_closed,
+                ""
+            ];
+            var list = blocks.list(header, []);
+            var $list = $(list);
+            var entries = [];
+            var colapseButton = blocks.button('primary', '', Messages.admin_support_collapse);
+            $collapseButton = $(collapseButton);
+            entries.push([
+                ['support-count', colapseButton],
+                ['support-count', colapseButton],
+                ['support-count', colapseButton],
+                ['support-count', colapseButton]
+            ]);
+            $collapseButton.click(function () {
+                var $col = $(this).closest('.cp-support-column');
+                $col.toggleClass('cp-support-column-collapsed');
+                if ($col.hasClass('cp-support-column-collapsed')) {
+                    $(this).text(Messages.admin_support_open);
+                    $(this).toggleClass('btn-primary');
+                } else {
+                    $(this).text(Messages.admin_support_collapse);
+                    $(this).toggleClass('btn-primary');
+                }
+            });
+
+        var category = 'all';
+        var $drop = APP.support.makeCategoryDropdown(catContainer, function (key) {
+            category = key;
+            if (key === 'all') {
+                $div.find('.cp-support-list-ticket').show();
+                return;
+            }
+            $div.find('.cp-support-list-ticket').hide();
+            $div.find('.cp-support-list-ticket[data-cat="'+key+'"]').show();
+        }, true);
+        $drop.setValue('all');
+
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var cat = privateData.category || '';
+        var linkedId = cat.indexOf('-') !== -1 && cat.slice(8);
+
+        var hashesById = {};
+
+        var getTicketData = function (id) {
+            var t = hashesById[id];
+            if (!Array.isArray(t) || !t.length) { return; }
+            var ed = Util.find(t[0], ['content', 'msg', 'content', 'sender', 'edPublic']);
+            // If one of their ticket was sent as a premium user, mark them as premium
+            var premium = t.some(function (msg) {
+                var _ed = Util.find(msg, ['content', 'msg', 'content', 'sender', 'edPublic']);
+                if (ed !== _ed) { return; }
+                return Util.find(msg, ['content', 'msg', 'content', 'sender', 'plan']) ||
+                       Util.find(msg, ['content', 'msg', 'content', 'sender', 'quota', 'plan']);
+            });
+            var lastMsg = t[t.length - 1];
+            var lastMsgEd = Util.find(lastMsg, ['content', 'msg', 'content', 'sender', 'edPublic']);
+            return {
+                lastMsg: lastMsg,
+                time: Util.find(lastMsg, ['content', 'msg', 'content', 'time']),
+                lastMsgEd: lastMsgEd,
+                lastAdmin: lastMsgEd !== ed && ApiConfig.adminKeys.indexOf(lastMsgEd) !== -1,
+                premium: premium,
+                authorEd: ed,
+                closed: Util.find(lastMsg, ['content', 'msg', 'type']) === 'CLOSE'
+            };
+        };
+
+        var addClickHandler = function ($ticket) {
+            $ticket.on('click', function () {
+                $ticket.toggleClass('cp-support-open', true);
+                $ticket.off('click');
+            });
+        };
+        var makeOpenButton = function ($ticket) {
+            var button = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
+            var collapse = h('button.btn.cp-support-collapse', Messages.admin_support_collapse);
+            $(button).click(function () {
+                $ticket.toggleClass('cp-support-open', true);
+            });
+            addClickHandler($ticket);
+            $(collapse).click(function (e) {
+                $ticket.toggleClass('cp-support-open', false);
+                e.stopPropagation();
+                setTimeout(function () {
+                    addClickHandler($ticket);
+                });
+            });
+            $ticket.find('.cp-support-title-buttons').prepend([button, collapse]);
+            $ticket.append(h('div.cp-support-collapsed'));
+        };
+        var updateTicketDetails = function ($ticket, isPremium) {
+            var $first = $ticket.find('.cp-support-message-from').first();
+            var user = $first.find('span').first().html();
+            var time = $first.find('.cp-support-message-time').text();
+            var last = $ticket.find('.cp-support-message-from').last().find('.cp-support-message-time').text();
+            var $c = $ticket.find('.cp-support-collapsed');
+            var txtClass = isPremium ? ".cp-support-ispremium" : "";
+            $c.html('').append([
+                UI.setHTML(h('span'+ txtClass), user),
+                h('span', [
+                    h('b', Messages.admin_support_first),
+                    h('span', time)
+                ]),
+                h('span', [
+                    h('b', Messages.admin_support_last),
+                    h('span', last)
+                ])
+            ]);
+
+        };
+
+        var sort = function (id1, id2) {
+            var t1 = getTicketData(id1);
+            var t2 = getTicketData(id2);
+            if (!t1) { return 1; }
+            if (!t2) { return -1; }
+            /*
+            // If one is answered and not the other, put the unanswered first
+            if (t1.lastAdmin && !t2.lastAdmin) { return 1; }
+            if (!t1.lastAdmin && t2.lastAdmin) { return -1; }
+            */
+            // Otherwise, sort them by time
+            return t1.time - t2.time;
+        };
+
+        var _reorder = function () {
+            var orderAnswered = [];
+            var orderPremium = [];
+            var orderNormal = [];
+            var orderClosed = [];
+
+            Object.keys(hashesById).forEach(function (id) {
+                var d = getTicketData(id);
+                if (!d) { return; }
+                if (d.closed) {
+                    return void orderClosed.push(id);
+                }
+                if (d.lastAdmin /* && !d.closed */) {
+                    return void orderAnswered.push(id);
+                }
+                if (d.premium /* && !d.lastAdmin && !d.closed */) {
+                    return void orderPremium.push(id);
+                }
+                orderNormal.push(id);
+                //if (!d.premium && !d.lastAdmin && !d.closed) { return void orderNormal.push(id); }
+            });
+
+            var cols = [$col1, $col2, $col3, $col4];
+            [orderPremium, orderNormal, orderAnswered, orderClosed].forEach(function (list, j) {
+                list.sort(sort);
+                list.forEach(function (id, i) {
+                    var $t = $div.find('[data-id="'+id+'"]');
+                    var d = getTicketData(id);
+                    $t.css('order', i).appendTo(cols[j]);
+                    updateTicketDetails($t, d.premium);
+                });
+                var len;
+                try {
+                    len = cols[j].find('div.cp-support-list-ticket').length;
+                } catch (err) {
+                    UI.warn(Messages.error);
+                    return void console.error(err);
+                }
+                if (!len) {
+                    cols[j].hide();
+                } else {
+                    cols[j].show();
+                    cols[j].find('.cp-support-count').text(len);
+                }
+            });
+        };
+        var reorder = Util.throttle(_reorder, 150);
+
+        var to = Util.throttle(function () {
+            var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]');
+            $ticket.addClass('cp-support-open');
+            $ticket[0].scrollIntoView();
+            linkedId = undefined;
+        }, 200);
+
+        // Register to the "support" mailbox
+        common.mailbox.subscribe(['supportadmin'], {
+            onMessage: function (data) {
+                /*
+                    Get ID of the ticket
+                    If we already have a div for this ID
+                        Push the message to the end of the ticket
+                    If it's a new ticket ID
+                        Make a new div for this ID
+                */
+                var msg = data.content.msg;
+                var hash = data.content.hash;
+                var content = msg.content;
+                var id = content.id;
+                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
+
+                hashesById[id] = hashesById[id] || [];
+                if (hashesById[id].indexOf(hash) === -1) {
+                    hashesById[id].push(data);
+                }
+
+                if (msg.type === 'CLOSE') {
+                    // A ticket has been closed by the admins...
+                    if (!$ticket.length) { return; }
+                    $ticket.addClass('cp-support-list-closed');
+                    $ticket.append(APP.support.makeCloseMessage(content, hash));
+                    reorder();
+                    return;
+                }
+                if (msg.type !== 'TICKET') { return; }
+                $ticket.removeClass('cp-support-list-closed');
+
+                if (!$ticket.length) {
+                    $ticket = APP.support.makeTicket($div, content, function (hideButton) {
+                        // the ticket will still be displayed until the worker confirms its deletion
+                        // so make it unclickable in the meantime
+                        hideButton.setAttribute('disabled', true);
+                        var error = false;
+                        nThen(function (w) {
+                            hashesById[id].forEach(function (d) {
+                                common.mailbox.dismiss(d, w(function (err) {
+                                    if (err) {
+                                        error = true;
+                                        console.error(err);
+                                    }
+                                }));
+                            });
+                        }).nThen(function () {
+                            if (!error) {
+                                $ticket.remove();
+                                delete hashesById[id];
+                                reorder();
+                                return;
+                            }
+                            // if deletion failed then reactivate the button and warn
+                            hideButton.removeAttribute('disabled');
+                            // and show a generic error message
+                            UI.alert(Messages.error);
+                        });
+                    });
+                    makeOpenButton($ticket);
+                    if (category !== 'all' && $ticket.attr('data-cat') !== category) {
+                        $ticket.hide();
+                    }
+                }
+                $ticket.append(APP.support.makeMessage(content, hash));
+                reorder();
+
+                if (linkedId) { to(); }
+            }
+        });
+        return $container;
+    });
+
         sidebar.makeLeftside(categories);
     };
 
+    
 
     var updateStatus = APP.updateStatus = function (cb) {
         sFrameChan.query('Q_ADMIN_RPC', {

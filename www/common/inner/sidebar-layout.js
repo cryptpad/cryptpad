@@ -70,49 +70,62 @@ define([
             var isBigClass = big ? '.cp-sidebar-bigger-alert' : ''; // Add the class if we want a bigger font-size
             return h('div.alert.alert-' + type + isBigClass, content);
         };
+        blocks.pre = (value) => {
+            return h('pre', value);
+        }
         
         blocks.textArea = function (attributes, value) {
             return h('textarea', attributes, value || '');
         };
 
+        blocks.unorderedList = function (entries) {
+            const ul = h('ul');
+            entries.forEach(entry => {
+                const li = h('li', [h('strong',  entry)]);
+                ul.appendChild(li);
+            });
+            return ul;
+        };
         
-        blocks.checkbox = (key, label, state, opts) => {
-            var box = UI.createCheckbox(`cp-${app}-${key}`,
-                label,
-                state, { label: { class: 'noTitle' } });
+        
+        blocks.checkbox = (key, label, state, opts, onChange) => {
+            var box = UI.createCheckbox(`cp-${app}-${key}`, label, state, { label: { class: 'noTitle' } });
             if (opts && opts.spinner) {
                 box.spinner = UI.makeSpinner($(box));
             }
+            // Attach event listener for checkbox change
+            $(box).on('change', function() {
+                // Invoke the provided onChange callback function with the new checkbox state
+                onChange(this.checked);
+            });
             return box;
         };
+        
 
-        blocks.list = (items) => {
+        
+        
+        blocks.list = function (header, entries) {
             const table = h('table.cp-sidebar-list');
 
-            const headerRow = h('tr', [
-                h('th', 'Link'),
-                h('th', 'Alias'),
-                h('th', 'Email'),
-                h('th', 'Creation Time'),
-                h('th', 'Actions')
-            ]);
+            const headerValues = header.map(value => { return h('th', value); });
+            const headerRow = h('thead', h('tr', headerValues));  
             table.appendChild(headerRow);
-            items.forEach(item => {
-                const row = h('tr', [
-                    h('td', item.url),
-                    h('td', item.alias),
-                    h('td', item.email),
-                    h('td', new Date(item.time).toLocaleString()),
-                    h('td', [
-                        h('button', 'Copy'),
-                        h('button', 'Delete')
-                    ])
-                ]);
-                table.appendChild(row);
-            });
+
+
+            table.updateContent = (newEntries) => {
+                $(table).find('tbody').remove();
+                let bodyContent = [];
+                newEntries.forEach(line => {
+                    const row = h('tr', line.map(value => { return h('td', value); }));
+                    bodyContent.push(row);
+                });
+                table.appendChild(h('tbody', bodyContent));
+            };
+            table.updateContent(entries);
         
             return table;
         };
+        
         
 
         blocks.clickableButton = function (type, icon, text, callback) {
@@ -131,6 +144,10 @@ define([
                 });
             });
             return button;
+        };
+
+        blocks.box = (content, className) => {
+            return h('div', { class: className }, content);
         };
 
         const keyToCamlCase = (key) => {
