@@ -21,8 +21,9 @@
             border-color: @msg-bg;
         }
         textarea {
+            box-sizing: border-box;
             width: 2*@sidebar_button-width;
-            max-width: 90%;
+            max-width: 100%;
             padding: 10px 15px;
             height: 300px;
         }
@@ -62,6 +63,9 @@
             .cp-support-ispremium {
                 padding: 0 5px;
                 background-color: @cp_admin-premium-bg;
+            }
+            .cp-support-recorded {
+                white-space: nowrap;
             }
             .cp-support-list-message {
                 background-color: @msg-bg;

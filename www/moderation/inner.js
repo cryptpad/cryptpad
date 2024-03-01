@@ -45,9 +45,10 @@ define([
     var common;
     var sframeChan;
     var events = {
-        'NEW_TICKET': Util.mkEvent(),
-        'UPDATE_TICKET': Util.mkEvent(),
-        'UPDATE_RIGHTS': Util.mkEvent()
+        NEW_TICKET: Util.mkEvent(),
+        UPDATE_TICKET: Util.mkEvent(),
+        UPDATE_RIGHTS: Util.mkEvent(),
+        RECORDED_CHANGE: Util.mkEvent()
     };
 
     // XXX
@@ -76,6 +77,8 @@ define([
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
         const blocks = sidebar.blocks;
+        APP.recorded = {};
+        APP.openTicketCategory = Util.mkEvent();
 
         // Support panel functions
         let open = [];
@@ -92,6 +95,10 @@ define([
                     }
                     return void UI.errorLoadingScreen(tickets.error);
                 }
+                open = open.filter(chan => {
+                    // Remove deleted tickets from memory
+                    return tickets[chan];
+                });
                 UI.removeLoadingScreen();
 
                 let activeForms = {};
@@ -234,6 +241,7 @@ define([
                         id: channel,
                         content: d,
                         form: activeForms[channel],
+                        recorded: APP.recorded,
                         onShow, onHide, onClose, onReply, onMove
                     });
 
@@ -262,11 +270,23 @@ define([
             let $rightside = sidebar.$rightside;
             let s = $rightside.scrollTop();
             nThen(waitFor => {
+                APP.module.execCommand('GET_RECORDED', {}, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        APP.recorded = {};
+                        return;
+                    }
+                    APP.recorded = {
+                        all: obj.messages,
+                        onClick: id => {
+                            APP.module.execCommand('USE_RECORDED', {id}, () => {});
+                        }
+                    };
+                }));
+            }).nThen(waitFor => {
                 refresh($(activeContainer), 'active', waitFor());
                 refresh($(pendingContainer), 'pending', waitFor());
                 refresh($(closedContainer), 'closed', waitFor());
             }).nThen(waitFor => {
-                open = [];
                 if (!linkedTicket) { return; }
                 let $ticket = $container.find(`[data-link-id="${linkedTicket}"]`);
                 linkedTicket = undefined;
@@ -286,6 +306,7 @@ define([
         let _refresh = Util.throttle(refreshAll, 500);
         events.NEW_TICKET.reg(_refresh);
         events.UPDATE_TICKET.reg(_refresh);
+        events.RECORDED_CHANGE.reg(_refresh);
         events.UPDATE_RIGHTS.reg(_refresh);
 
         // Make sidebar layout
@@ -307,14 +328,18 @@ define([
             'settings': {
                 icon: undefined,
                 content: [
-                    'notifications'
+                    'notifications',
+                    'recorded'
                 ]
             },
             'ticket': {
                 icon: undefined,
                 content: [
                     'open-ticket'
-                ]
+                ],
+                onOpen: () => {
+                    APP.openTicketCategory.fire();
+                }
             },
             'legacy': {
                 icon: undefined,
@@ -324,10 +349,11 @@ define([
             },
             'refresh': {
                 icon: undefined,
-                onClick: refreshAll
+                onClick: () => { refreshAll(); }
             }
         };
 
+        if (!APP.privateKey) { delete categories.legacy; }
 
         sidebar.addCheckboxItem({
             key: 'privacy',
@@ -363,8 +389,112 @@ define([
             }
         });
 
+        Messages.support_recordedTitle = "Prerecorded messages";
+        Messages.support_recordedHint = "You can store prerecorded message in order to insert them with one click in a support ticket.";
+        Messages.support_recordedList = "List of recorded messages";
+        Messages.support_recordedEmpty = "No recorded messages";
+        Messages.support_recordedId = "Unique Identifier";
+        Messages.support_recordedContent = "Content";
+        sidebar.addItem('recorded', cb => {
+            let empty = blocks.text(Messages.support_recordedEmpty);
+            let list = blocks.list([
+                Messages.support_recordedId,
+                Messages.support_recordedContent,
+                Messages.kanban_delete
+            ], []);
+            let labelledList = blocks.labelledInput(Messages.support_recordedList, list);
+            let inputId = blocks.input({type:'text', maxlength: 20 });
+            let inputContent = blocks.textArea();
+            let labelId = blocks.labelledInput(Messages.support_recordedId, inputId);
+            let labelContent = blocks.labelledInput(Messages.support_recordedContent, inputContent);
+
+            let create = blocks.button('primary', 'fa-plus', Messages.tag_add);
+            let nav = blocks.nav([create]);
+
+            let form = blocks.form([
+                empty,
+                labelledList,
+                labelId,
+                labelContent,
+            ], nav);
+
+            let $empty = $(empty);
+            let $list = $(labelledList).hide();
+            let $create = $(create);
+            let $inputId = $(inputId).on('input', () => {
+                let val = $inputId.val().toLowerCase().replace(/ /g, '-').replace(/[^a-z-_]/g, '');
+                $inputId.val(val);
+            });
+
+            let refresh = function () {};
+            let edit = (id, content, remove) => {
+                APP.module.execCommand('SET_RECORDED', {id, content, remove}, function (obj) {
+                    $create.removeAttr('disabled');
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                        return void UI.warn(Messages.error);
+                    }
+                    $(inputId).val('');
+                    $(inputContent).val('');
+                    events.RECORDED_CHANGE.fire();
+                });
+            };
+            refresh = () => {
+                APP.module.execCommand('GET_RECORDED', {}, function (obj) {
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                        return void UI.warn(Messages.error);
+                    }
+                    let lines = [];
+                    let messages = obj.messages;
+                    Object.keys(messages).forEach(id => {
+                        let del = blocks.button('danger-alt', 'fa-trash-o', Messages.kanban_delete);
+                        Util.onClickEnter($(del), () => {
+                            edit(id, '', true);
+                        });
+                        lines.push([id, h('pre', messages[id].content), del]);
+                    });
+                    list.updateContent(lines);
+                    if (!lines.length) {
+                        $list.hide();
+                        $empty.show();
+                        return;
+                    }
+                    $list.show();
+                    $empty.hide();
+                });
+            };
+
+            Util.onClickEnter($create, function () {
+                $create.attr('disabled', 'disabled');
+                let id = $(inputId).val().trim();
+                let content = $(inputContent).val().trim();
+                edit(id, content, false);
+            });
+
+            events.RECORDED_CHANGE.reg(refresh);
+
+            refresh();
+            cb(form);
+        });
+
         sidebar.addItem('open-ticket', cb => {
-            let form = APP.support.makeForm();
+            let form = APP.support.makeForm({});
+
+            let updateRecorded = () => {
+                APP.module.execCommand('GET_RECORDED', {}, function (obj) {
+                    if (obj && obj.error) { return; }
+                    form.updateRecorded({
+                        all: obj.messages,
+                        onClick: id => {
+                            APP.module.execCommand('USE_RECORDED', {id}, () => {});
+                        }
+                    });
+                });
+            };
+            events.RECORDED_CHANGE.reg(updateRecorded);
+            APP.openTicketCategory.reg(updateRecorded);
+
             let inputName = blocks.input({type: 'text', readonly: true});
             let inputChan = blocks.input({type: 'text', readonly: true});
             let inputKey = blocks.input({type: 'text', readonly: true});

@@ -22,6 +22,14 @@ define([
 
     // UTILS
 
+    var notifyClient = function (ctx, admin, type, channel) {
+        let notifyList = Object.keys(ctx.clients).filter((cId) => {
+            return Boolean(ctx.clients[cId].admin) === admin;
+        });
+        if (!notifyList.length) { return; }
+        ctx.emit(type, { channel }, [notifyList]);
+    };
+
     var getKeys = function (ctx, isAdmin, data, _cb) {
         var cb = Util.mkAsync(_cb);
         if (isAdmin && !ctx.adminRdyEvt) { return void cb('EFORBIDDEN'); }
@@ -349,6 +357,12 @@ define([
                 }
             });
         });
+        rt.proxy.on('change', ['recorded'], function () {
+            notifyClient(ctx, true, 'RECORDED_CHANGE', '');
+        });
+        rt.proxy.on('remove', ['recorded'], function () {
+            notifyClient(ctx, true, 'RECORDED_CHANGE', '');
+        });
     };
 
 
@@ -589,6 +603,49 @@ define([
         });
     };
 
+    var getRecorded = function (ctx, data, cId, cb) {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            let recorded = doc.recorded = doc.recorded || {};
+            cb({messages: Util.clone(recorded)});
+        });
+    };
+    var setRecorded = function (ctx, data, cId, cb) {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        let id = data.id;
+        let content = data.content;
+        let remove = Boolean(data.remove);
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            let recorded = doc.recorded = doc.recorded || {};
+            if (remove) {
+                delete recorded[id];
+            } else {
+                recorded[id] = {
+                    content,
+                    count: 0
+                };
+            }
+            Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
+                cb({done:true});
+            });
+        });
+    };
+    var useRecorded = function (ctx, data, cId, cb) {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        let id = data.id;
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            let recorded = doc.recorded = doc.recorded || {};
+            let entry = recorded[id];
+            if (entry) {
+                entry.count = (entry.count || 0) + 1;
+            }
+            cb();
+        });
+    };
+
     var clearLegacy = function (ctx, data, cId, cb) {
         let proxy = ctx.store.proxy;
         ctx.store.mailbox.close('supportadmin', function () {
@@ -661,14 +718,6 @@ define([
     };
 
     // Mailbox events
-
-    var notifyClient = function (ctx, admin, type, channel) {
-        let notifyList = Object.keys(ctx.clients).filter((cId) => {
-            return Boolean(ctx.clients[cId].admin) === admin;
-        });
-        if (!notifyList.length) { return; }
-        ctx.emit(type, { channel }, [notifyList]);
-    };
 
     var addAdminTicket = function (ctx, data, cb) {
         // Wait for the chainpad to be ready before adding the data
@@ -1186,6 +1235,15 @@ define([
             }
             if (cmd === 'MOVE_TICKET_ADMIN') {
                 return void moveTicketAdmin(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_RECORDED') {
+                return void getRecorded(ctx, data, clientId, cb);
+            }
+            if (cmd === 'SET_RECORDED') {
+                return void setRecorded(ctx, data, clientId, cb);
+            }
+            if (cmd === 'USE_RECORDED') {
+                return void useRecorded(ctx, data, clientId, cb);
             }
             if (cmd === 'GET_LEGACY') {
                 return void getLegacy(ctx, data, clientId, cb);

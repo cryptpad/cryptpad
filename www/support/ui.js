@@ -76,7 +76,7 @@ define([
         return data;
     };
 
-    var getFormData = function (ctx, form) {
+    var getFormData = function (ctx, form, restore) {
         var $form = $(form);
         var $cat = $form.find('.cp-support-form-category');
         var $title = $form.find('.cp-support-form-title');
@@ -86,11 +86,11 @@ define([
 
         var category = $cat.val().trim();
         var title = $title.val().trim();
-        if (!title) {
+        if (!title && !restore) {
             return void UI.alert(Messages.support_formTitleError);
         }
         var content = $content.val().trim();
-        if (!content) {
+        if (!content && !restore) {
             return void UI.alert(Messages.support_formContentError);
         }
         $cat.val('');
@@ -165,7 +165,8 @@ define([
         return Messages._getKey('support_answerAs', [answerName]);
     };
 
-    var makeForm = function (ctx, oldData, cb, title, hideNotice) {
+    var makeForm = function (ctx, opts, cb) {
+        let { oldData, recorded, title, hideNotice } = opts || {};
         var button;
 
         if (typeof(cb) === "function") {
@@ -220,6 +221,87 @@ define([
 
         var answerAs = UI.setHTML(h('span.cp-support-answeras'), getAnswerAs(ctx));
 
+        let textarea = h('textarea.cp-support-form-msg', {
+            placeholder: Messages.support_formMessage
+        }, (oldData && oldData.message) || '');
+
+        let insertText = (text) => {
+            let start = textarea.selectionStart;
+            let end = textarea.selectionEnd;
+            if (start > end) {
+                let _end = end;
+                end = start;
+                start = _end;
+            }
+            let oldVal = $(textarea).val();
+            let before = oldVal.slice(0, start);
+            let after = oldVal.slice(end);
+            $(textarea).val(`${before}${text}${after}`);
+            setTimeout(() => { $(textarea).focus(); });
+        };
+
+        let recordedContent = h('div.cp-support-recorded');
+        let $recorded = $(recordedContent);
+
+        let updateRecorded = (recorded) => {
+            $recorded.empty();
+            if (!recorded || !Object.keys(recorded.all).length) { return; }
+            let $span = $(h('span')).appendTo($recorded);
+            let $fakeMore = $(h('button.btn.btn-secondary.fa.fa-ellipsis-h')).appendTo($recorded);
+            let opts = [];
+
+            let all = recorded.all;
+            let sort = (a, b) => {
+                let diff = all[b].count - all[a].count;
+                if (diff !== 0) { return diff; }
+                return a - b;
+            };
+            let overflow = false;
+            let maxWidth = $recorded.width();
+            Object.keys(all).sort(sort).forEach((id, i) => {
+                let action = () => {
+                    insertText(all[id].content);
+                    if (typeof(recorded.onClick) === "function") { recorded.onClick(id); }
+                };
+
+                // Add one-click button until the list would overflow
+                // On overflow, use a dropdown instead
+                if (!overflow) {
+                    let button = h('button.btn.btn-secondary', id);
+                    $span.append(button);
+                    let margin = parseFloat(getComputedStyle($fakeMore[0]).marginRight);
+                    let buttonWidth = $fakeMore.width();
+                    let current = $span.width();
+                    if ((current + buttonWidth + margin) < maxWidth) {
+                        return Util.onClickEnter($(button), action);
+                    }
+                    $(button).remove();
+                    overflow = true;
+                }
+
+                opts.push({
+                    tag: 'a',
+                    content: h('span', id),
+                    action: () => {
+                        action();
+                        return true;
+                    }
+                });
+            });
+            let dropdownConfig = {
+                //buttonContent: [ h('i.fa.fa-ellipsis-h') ],
+                buttonCls: 'btn btn-secondary fa fa-ellipsis-h',
+                options: opts, // Entries displayed in the menu
+                left: true, // Open to the left of the button
+                common: ctx.common
+            };
+            let $more = UIElements.createDropdown(dropdownConfig);
+
+            $fakeMore.remove();
+            if (opts.length) { $recorded.append($more); }
+        };
+        setTimeout(() => { updateRecorded(recorded); });
+
         var content = [
             h('hr'),
             category,
@@ -232,9 +314,8 @@ define([
                 value: title || ''
             }),
             cb ? undefined : h('br'),
-            h('textarea.cp-support-form-msg', {
-                placeholder: Messages.support_formMessage
-            }, (oldData && oldData.message) || ''),
+            recordedContent,
+            textarea,
             h('br'),
             h('label', Messages.support_attachments),
             attachments = h('div.cp-support-attachments'),
@@ -298,11 +379,13 @@ define([
             $(form).remove();
         });
 
+        form.updateRecorded = updateRecorded;
         return form;
     };
 
     var makeTicket = function (ctx, opts) {
-        let { id, content, form, onShow, onHide, onClose, onReply, onMove, onDelete } = opts;
+        let { id, content, form, recorded,
+              onShow, onHide, onClose, onReply, onMove, onDelete } = opts;
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -412,11 +495,16 @@ define([
             $ticket.find('.cp-support-form-container').remove();
             $(actions).hide();
 
-            var oldData = form ? getFormData(ctx, form) : {};
+            var oldData = form ? getFormData(ctx, form, true) : {};
             form = undefined;
-            var newForm = makeForm(ctx, oldData, function () {
+            var newForm = makeForm(ctx, {
+                oldData,
+                recorded,
+                title: content.title,
+                hideNotice: true
+            }, function () {
                 onReply(ticket, id, content, newForm);
-            }, content.title, true);
+            });
             $(newForm).attr('data-id', id);
             $ticket.append(newForm);
         };
@@ -566,8 +654,8 @@ define([
         ui.getFormData = function (form) {
             return getFormData(ctx, form);
         };
-        ui.makeForm = function (cb, title, hideNotice) {
-            return makeForm(ctx, {}, cb, title, hideNotice);
+        ui.makeForm = function (opts, cb) {
+            return makeForm(ctx, opts, cb);
         };
         ui.makeCategoryDropdown = function (container, onChange, all) {
             return makeCategoryDropdown(ctx, container, onChange, all);

@@ -239,8 +239,7 @@ define([
                 var category = categories[key];
                 var icon;
                 if (category.icon) { icon = h('span', { class: category.icon }); }
-                var isActive = key === active ? '.cp-leftside-active' : '';
-                var item = h('li.cp-sidebarlayout-category'+isActive, {
+                var item = h('li.cp-sidebarlayout-category', {
                     'role': 'menuitem',
                     'tabindex': 0,
                     'data-category': key
@@ -249,10 +248,6 @@ define([
                     Messages[`${app}_cat_${key}`] || key,
                 ]);
                 var $item = $(item).appendTo(container);
-                category.open = function () {
-                    $item.click();
-                };
-
                 Util.onClickEnter($item, function () {
                     if (!Array.isArray(category.content) && category.onClick) {
                         category.onClick();
@@ -263,11 +258,13 @@ define([
                     $(container).find('.cp-leftside-active').removeClass('cp-leftside-active');
                     $(item).addClass('cp-leftside-active');
                     showCategories(category);
+                    if (category.onOpen) { category.onOpen(); }
                 });
 
             });
             common.setHash(active);
-            showCategories(categories[active]);
+
+            setTimeout(() => { sidebar.openCategory(active); });
             $leftside.append(container);
         };
 
