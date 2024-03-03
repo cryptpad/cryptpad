@@ -93,7 +93,7 @@ define([
             // Attach event listener for checkbox change
             $(box).on('change', function() {
                 // Invoke the provided onChange callback function with the new checkbox state
-                onChange(this.checked);
+                //onChange(this.checked);
             });
             return box;
         };
@@ -124,6 +124,32 @@ define([
             table.updateContent(entries);
         
             return table;
+        };
+        
+        blocks.chart = function (header, data) {
+            const chartContainer = h('div', { class: 'width-constrained' });
+            const chart = h('div', { id: 'profiling-chart', class: 'cp-charts cp-bar-table' });
+        
+            if (header) {
+                const headerRow = h('span', { class: 'cp-charts-row heading' }, header.map(value => h('span', value)));
+                chart.appendChild(headerRow);
+            }
+        
+            data.forEach(rowData => {
+                const row = h('span', { class: 'cp-charts-row' }, [
+                    h('span', rowData.key),
+                    h('span', rowData.value),
+                    h('span', { class: 'cp-bar-container' }, [
+                        h('span', { class: 'cp-bar profiling-percentage', style: `width: ${rowData.scaled}%` }, ' '),
+                        h('span', { class: 'profiling-label' }, `${rowData.percent}%`),
+                    ]),
+                ]);
+                chart.appendChild(row);
+            });
+        
+            chartContainer.appendChild(chart);
+        
+            return chartContainer;
         };
         
         

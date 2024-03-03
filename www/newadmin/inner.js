@@ -18,7 +18,9 @@ define([
     '/common/clipboard.js',
     '/customize/application_config.js',
     '/api/config',
+    '/lib/datepicker/flatpickr.js',
 
+    'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/newadmin/app-admin.less',
@@ -38,6 +40,7 @@ define([
     Clipboard,
     AppConfig,
     ApiConfig,
+    Flatpickr
 ) {
     var APP = window.APP = {};
 
@@ -669,7 +672,7 @@ define([
             };
             refreshInvite();
         
-            $b.on('click', () => {
+            Util.onClickEnter($b, function () {
                 var alias = $(inputAlias).val().trim();
                 if (!alias) { return void UI.warn(Messages.error); } // FIXME better error message
                 $b.prop('disabled', true);
@@ -912,7 +915,7 @@ define([
                     };
 
                     var infoButton = blocks.button('primary.cp-report', 'fa fa-database', Messages.admin_diskUsageButton);
-                    $(infoButton).click(() => {
+                    Util.onClickEnter($(infoButton), function () {
                          getAccountData(key, (err, data) => {
                              if (err) { return void console.error(err); }
                              var table = renderAccountData(data);
@@ -936,7 +939,7 @@ define([
             });
         };
         refreshUsers();
-        $b.on('click', () => {
+        Util.onClickEnter($b, function () {
             var alias = $(userAlias).val().trim();
             if (!alias) { return void UI.warn(Messages.error); }
             $b.prop('disabled', true);
@@ -1112,7 +1115,7 @@ define([
                 });
             });
     
-            $(set).click(function () {
+            Util.onClickEnter($(set), function () {
                 var obj = getValues();
                 if (!obj || !obj.key) { return; }
                 var data = [obj.key, obj.data];
@@ -1169,7 +1172,7 @@ define([
                                     Messages._getKey('admin_limitPlan', [user.plan]) + ', ' +
                                     Messages._getKey('admin_limitNote', [user.note]);
                         var infoButton = blocks.button('primary.cp-report','',  Messages.admin_diskUsageButton);
-                        $(infoButton).click(() => {
+                        Util.onClickEnter($(infoButton), function () {
                              console.log(key);
                              getAccountData(key, (err, data) => {
                                  if (err) { return void console.error(err); }
@@ -1274,7 +1277,7 @@ define([
             setTimeout(setInterfaceState);
         });
 
-        $btn.click(function (/* ev */) {
+        Util.onClickEnter($btn, function () {
             if (pending) { return; }
             var state = getInputState();
             if (!state.valid) {
@@ -1419,7 +1422,7 @@ define([
                 setTimeout(setInterfaceState);
             });
     
-            $btn.click(function () {
+            Util.onClickEnter($btn, function () {
                 if (pending) { return; }
                 pending = true;
                 var state = getInputState();
@@ -1492,7 +1495,7 @@ define([
                 setTimeout(setInterfaceState);
             });
 
-            $btn.click(function () {
+            Util.onClickEnter($btn, function () {
                 if (pending) { return; }
                 var state = getInputState();
                 pending = true;
@@ -1559,7 +1562,7 @@ define([
             };
     
             setInterfaceState();
-            $btn.click(function () {
+            Util.onClickEnter($btn, function () {
                 if (pending) { return; }
                 var state = getInputState();
                 if (!state.value) { return; }
@@ -1591,7 +1594,7 @@ define([
         sidebar.addItem('refresh-stats', function(cb){
             var btn = blocks.button('primary', '',  Messages.oo_refresh);
             var $btn = $(btn);
-            $btn.click(function () {
+            Util.onClickEnter($btn, function () {
                 onRefreshStats.fire();
             });
             cb(btn);
@@ -1602,7 +1605,7 @@ define([
         });
 
         var onRefreshStats = Util.mkEvent();
-    sidebar.addItem('uptime', function(cb){
+        sidebar.addItem('uptime', function(cb){
 
             var pre = blocks.pre(Messages.admin_uptimeTitle);
             var set = function () {
@@ -1681,64 +1684,830 @@ define([
                 cb(pre);
             });
 
-           //TODO create list
-           sidebar.addItem('disk-usage', function(cb){
-            var called = false;
-            var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
-            var nav = blocks.nav([button]);
-            var list = blocks.unorderedList([]);
-            var entries = [];
-            var form = blocks.form([
-                list
-            ], nav);
-            var $button = $(button);
+            sidebar.addItem('disk-usage', function(cb){
+                var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
+                var $button = $(button);
+    
+                var nav = blocks.nav([button]);
+             
+                var content = blocks.table(null, []);
+                var form = blocks.form([
+                    content
+                ], nav);
+    
+                Util.onClickEnter($button, function() {
+                    UI.confirm(Messages.admin_diskUsageWarning, function (yes) {
+                        if (!yes) { return; }
+                        $button.hide();
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'DISK_USAGE',
+                        }, function (e, data) {
+                            if (e) { return void console.error(e); }
+                            var obj = data[0];
+                            Object.keys(obj).forEach(function (key) {
+                                var val = obj[key];
+                                var unit = Util.magnitudeOfBytes(val);
+                                if (unit === 'GB') {
+                                    obj[key] = Util.bytesToGigabytes(val) + ' GB';
+                                } else if (unit === 'MB') {
+                                    obj[key] = Util.bytesToMegabytes(val) + ' MB';
+                                } else {
+                                    obj[key] = Util.bytesToKilobytes(val) + ' KB';
+                                }
+                            });
+                            let entries = Object.keys(obj).map(function (k) {
+                                return [
+                                    (k === 'total' ? k : '/' + k),
+                                    obj[k]
+                                ];
+                            });
+                            $content.updateContent(entries)
+                        });
+                    });
+                });
+                cb(form);
+            });
 
-            form.updateContent = function(newList) {
-                $(list).empty(); // Clear existing content
-                $(list).append(newList); // Append the new list
+        var getApi = function (cb) {
+            return function () {
+                require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
+                    cb(Broadcast);
+                    setTimeout(function () {
+                        try {
+                            var ctx = require.s.contexts._;
+                            var defined = ctx.defined;
+                            Object.keys(defined).forEach(function (href) {
+                                if (/^\/api\/broadcast\?[0-9]{13}/.test(href)) {
+                                    delete defined[href];
+                                    return;
+                                }
+                            });
+                        } catch (e) {}
+                    });
+                });
+            };
+        };
+        
+        sidebar.addItem('maintenance', function(cb){
+            var button = blocks.button('primary', '', Messages.admin_maintenanceButton );
+            var nav = blocks.nav([button]);
+            // Start and end date pickers
+            var start = blocks.input({
+                label :'cp-admin-start-input',
+                type:'date'
+            });
+            var startBlock = blocks.labelledInput('Start', start);
+            var end = blocks.input({
+                id:'cp-admin-end-input',
+                type:'date'
+            });
+            var endBlock = blocks.labelledInput('End', end);
+            var form = blocks.form([
+                startBlock,
+                endBlock
+            ], nav);
+        
+            var refresh = getApi(function (Broadcast) {
+                
+                var $button = $(button);
+                var removeButton = blocks.button('btn-danger', '', Messages.admin_maintenanceCancel );
+                var active;
+                if (Broadcast && Broadcast.maintenance) {
+                    var m = Broadcast.maintenance;
+                    if (m.start && m.end && m.end >= (+new Date())) {
+                        active = h('div.cp-broadcast-active', [
+                            UI.setHTML(h('p'), Messages._getKey('broadcast_maintenance', [
+                                new Date(m.start).toLocaleString(),
+                                new Date(m.end).toLocaleString(),
+                            ])),
+                            removeButton
+                        ]);
+                    }
+                }
+
+            var $start = $(start);
+            var $end = $(end);
+            var is24h = UIElements.is24h();
+            var dateFormat = "Y-m-d H:i";
+            if (!is24h) { dateFormat = "Y-m-d h:i K"; }
+
+            var endPickr = Flatpickr(end, {
+                enableTime: true,
+                time_24hr: is24h,
+                dateFormat: dateFormat,
+                minDate: new Date()
+            });
+            Flatpickr(start, {
+                enableTime: true,
+                time_24hr: is24h,
+                minDate: new Date(),
+                dateFormat: dateFormat,
+                /*onChange: function () {
+                    endPickr.set('minDate', new Date($start.val()));
+                }*/
+            });
+
+             // Extract form data
+             var getData = function () {
+                var start = +new Date($start.val());
+                var end = +new Date($end.val());
+                if (isNaN(start) || isNaN(end)) {
+                    console.error('Invalid dates');
+                    return false;
+                }
+                return {
+                    start: start,
+                    end: end
+                };
             };
 
-            $button.click(function () {
-                UI.confirm(Messages.admin_diskUsageWarning, function (yes) {
-                    if (!yes) { return; }
-                    $button.hide();
-                    if (called) { return; }
-                    called = true;
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'DISK_USAGE',
-                    }, function (e, data) {
-                        console.log(e, data);
-                        if (e) { return void console.error(e); }
-                        var obj = data[0];
-                        Object.keys(obj).forEach(function (key) {
-                            var val = obj[key];
-                            var unit = Util.magnitudeOfBytes(val);
-                            if (unit === 'GB') {
-                                obj[key] = Util.bytesToGigabytes(val) + ' GB';
-                            } else if (unit === 'MB') {
-                                obj[key] = Util.bytesToMegabytes(val) + ' MB';
-                            } else {
-                                obj[key] = Util.bytesToKilobytes(val) + ' KB';
-                            }
+            var send = function (data) {
+                $button.prop('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_MAINTENANCE', [data]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        $button.prop('disabled', '');
+                        return;
+                    }
+                    // Maintenance applied, send notification
+                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function () {
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
                         });
-                        entries = Object.keys(obj).map(function (k) {
-                            return [
-                                (k === 'total' ? k : '/' + k),
-                                ' : ',
-                                obj[k]
-                            ];
-                        });
-                        var newList = blocks.unorderedList(entries);
-                        form.updateContent(newList); // Update the content of the form with the new unordered list
                     });
+                });
+
+            };
+            Util.onClickEnter($(button), function () {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+                send(data);
+            });
+            UI.confirmButton(removeButton, {
+                classes: 'btn-danger',
+            }, function () {
+                send("");
+            });
+
+        });
+        refresh();
+
+        common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "MAINTENANCE") { return; }
+                refresh();
+            }
+        });
+
+        cb(form);
+
+        });
+
+        //solve h is not a function problem
+
+        sidebar.addItem('survey', function(cb){
+            var button = blocks.button('primary', '',Messages.admin_surveyButton); 
+            var $button = $(button);
+            var removeButton = blocks.button('btn-danger', '',Messages.admin_surveyCancel );
+            var active;
+            var nav = blocks.nav([button]);
+
+            var input = blocks.input({
+                type:'url'
+            });
+            var $input = $(input);
+            var label = blocks.labelledInput(Messages.broadcast_surveyURL, input);
+
+            var form = blocks.form([
+                active, 
+                label
+            ], nav);
+
+            var refresh = getApi(function (Broadcast) {
+                if (Broadcast && Broadcast.surveyURL) {
+                    var a = blocks.box(
+                        blocks.text(Messages.admin_surveyActive),
+                        'a',
+                        {
+                            href: Broadcast.surveyURL
+                        }
+                    );
                     
+                    $(a).click(function (e) {
+                        e.preventDefault();
+                        common.openUnsafeURL(Broadcast.surveyURL);
+                    });
+                    active = blocks.box([
+                        blocks.text(Messages.admin_surveyActive),
+                        removeButton
+                    ], 'cp-broadcast-active');
+                    
+                }
+                
+                // Extract form data
+                var getData = function () {
+                    var url = $input.val();
+                    if (!Util.isValidURL(url)) {
+                        console.error('Invalid URL', url);
+                        return false;
+                    }
+                    return url;
+                };
+
+                var send = function (data) {
+                    $button.prop('disabled', 'disabled');
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['SET_SURVEY_URL', [data]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            $button.prop('disabled', '');
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                            return;
+                        }
+                        // Maintenance applied, send notification
+                        common.mailbox.sendTo('BROADCAST_SURVEY', {
+                            url: data
+                        }, {}, function () {
+                            checkLastBroadcastHash(function () {
+                                setTimeout(refresh, 300);
+                            });
+                        });
+                    });
+
+            };
+            Util.onClickEnter($(button), function () {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+                send(data);
+            });
+            UI.confirmButton(removeButton, {
+                classes: 'btn-danger',
+            }, function () {
+                send("");
+            });
+
+            
+            
+        });
+        refresh();
+
+        common.makeUniversal('broadcast', {
+            onEvent: function (obj) {
+                var cmd = obj.ev;
+                if (cmd !== "SURVEY") { return; }
+                refresh();
+            }
+        });
+
+        cb(form);
+
+        });
+
+        sidebar.addItem('broadcast', function(cb) {
+            var formElements = [];
+            var langForm;
+            var refresh = getApi(function(Broadcast) {
+                var button = blocks.button('primary', '', Messages.admin_broadcastButton);
+                var $button = $(button);
+                var removeButton = blocks.button('btn-danger', '', Messages.admin_broadcastCancel);
+                var activeContent = Messages.admin_broadcastActive;
+                var active = blocks.box(
+                    blocks.text(activeContent),
+                    'cp-broadcast-active'
+                );
+                var $active = $(active);
+                var activeUid;
+                var deleted = [];
+                
+                // Render active message (if there is one)
+                var hash = Broadcast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
+                common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
+                    if (e) { return void console.error(e); }
+                    if (!Array.isArray(msgs)) { return; }
+                    if (!msgs.length) {
+                        $active.hide();
+                    }
+                    msgs.reverse().some(function (data) {
+                        var c = data.content;
+                        var msg = c && c.msg;
+                        if (!msg) { return; }
+                        if (msg.type === "BROADCAST_DELETE") {
+                            deleted.push(Util.find(msg, ['content', 'uid']));
+                        }
+                        if (msg.type !== "BROADCAST_CUSTOM") { return; }
+                        if (deleted.indexOf(msg.uid) !== -1) { return true; }
+        
+                        // We found an active custom message, show it
+                        var el = common.mailbox.createElement(data);
+                        var table = blocks.table("", []);
+                        // Populate the table with data
+                        var uid = Util.find(data, ['content', 'msg', 'uid']);
+                        var time = Util.find(data, ['content', 'msg', 'content', 'time']);
+                        var tr = [
+                            'ID: ' + uid,
+                            new Date(time || 0).toLocaleString(),
+                            el,
+                            removeButton
+                        ];
+                        table.updateContent([tr]);
+                        $active.append(table);
+                        activeUid = uid;
+                        return true;
+                    });
+                    if (!activeUid) { $active.hide(); }
+                });
+        
+                var languages = Messages._languages;
+                var keys = Object.keys(languages).sort();
+        
+                
+
+                // Add a textarea
+                var addLang = function (l) {
+                    if ($(langForm).find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
+                    var preview = blocks.button('secondary', '', Messages.broadcast_preview);
+                    $(preview).click(function () {
+                        onPreview(l);
+                    });
+                    var bcastDefault = Messages.broadcast_defaultLanguage;
+                    var first = !$container.find('.cp-broadcast-lang').length;
+                    var radio = UI.createRadio('broadcastDefault', null, bcastDefault, first, {
+                        'data-lang': l,
+                        label: {class: 'noTitle'}
+                    });
+                    var input = blocks.input({
+                        type: 'text',
+                        id: 'kanban-body'
+                    });
+                    var label = blocks.labelledInput(Messages.kanban_body, input);
+                    var textarea = blocks.textArea({ id: 'kanban-body' });
+        
+                    var reorder = function () {
+                        $(langForm).find('.cp-broadcast-lang').each(function (i, el) {
+                            var $el = $(el);
+                            var l = $el.attr('data-lang');
+                            $el.css('order', keys.indexOf(l));
+                        });
+                    };
+
+                    var langForm = blocks.form([
+                        blocks.box([
+                            blocks.text(languages[l]),
+                            label,
+                            textarea,
+                            radio,
+                            preview
+                        ], 'cp-broadcast-lang', {'data-lang': l})
+                    ]);
+                    formElements.push(langForm);
+                    reorder();
+                };
+        
+               
+
+                // Remove a textarea
+                var removeLang = function (l) {
+                    $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
+        
+                    var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
+                    if (!hasDefault) {
+                        $container.find('.cp-broadcast-lang').first().find('.cp-checkmark input').prop('checked', 'checked');
+                    }
+                };
+        
+                // Extract form data
+                var getData = function () {
+                    var map = {};
+                    var defaultLanguage;
+                    var error = false;
+                    $(form).find('.cp-broadcast-lang').each(function (i, el) {
+                        var $el = $(el);
+                        var l = $el.attr('data-lang');
+                        if (!l) { error = true; return; }
+                        var text = $el.find('textarea').val();
+                        if (!text.trim()) { error = true; return; }
+                        if ($el.find('.cp-checkmark input').is(':checked')) {
+                            defaultLanguage = l;
+                        }
+                        map[l] = text;
+                    });
+                    if (!Object.keys(map).length) {
+                        console.error('You must select at least one language');
+                        return false;
+                    }
+                    if (error) {
+                        console.error('One of the selected languages has no data');
+                        return false;
+                    }
+                    return {
+                        defaultLanguage: defaultLanguage,
+                        content: map
+                    };
+                };
+        
+                var send = function (data) {
+                    $button.prop('disabled', 'disabled');
+                    //data.time = +new Date(); // FIXME not used anymore?
+                    common.mailbox.sendTo('BROADCAST_CUSTOM', data, {}, function (err) {
+                        if (err) {
+                            $button.prop('disabled', '');
+                            console.error(err);
+                            return UI.warn(Messages.error);
+                        }
+                        UI.log(Messages.saved);
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
+                    });
+                };
+        
+                $button.click(function () {
+                    var data = getData();
+                    if (data === false) { return void UI.warn(Messages.error); }
+                    send(data);
+                });
+        
+                UI.confirmButton(removeButton, {
+                    classes: 'btn-danger',
+                }, function () {
+                    if (!activeUid) { return; }
+                    common.mailbox.sendTo('BROADCAST_DELETE', {
+                        uid: activeUid
+                    }, {}, function (err) {
+                        if (err) { return UI.warn(Messages.error); }
+                        UI.log(Messages.saved);
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
+                    });
+                });
+        
+                // Make the form
+                var nav = blocks.nav([button]);
+                var translationsLabel = blocks.labelledInput(Messages.broadcast_translations, blocks.text(''));
+                // Checkboxes to select translations
+                var boxes = keys.map(function (l) {
+                    var $cbox = $(UI.createCheckbox('cp-broadcast-custom-lang-'+l,
+                        languages[l], false, { label: { class: 'noTitle' } }));
+                    var $check = $cbox.find('input').on('change', function () {
+                        var c = $check.is(':checked');
+                        if (c) { return void addLang(l); }
+                        removeLang(l);
+                    });
+                    if (l === 'en') {
+                        setTimeout(function () {
+                            $check.click();
+                        });
+                    }
+                    return $cbox[0];
+                });
+                var languagesDiv = blocks.box(boxes, 'cp-broadcast-languages');
+                var form = blocks.form([
+                    active,
+                    translationsLabel,
+                    languagesDiv,
+                    langForm
+                ], nav);
+                
+                cb(form);
+            });
+        
+            refresh();
+        });
+        
+    
+        var onRefreshPerformance = Util.mkEvent();
+        sidebar.addItem('refresh-performance', function(cb){
+            var btn = blocks.button('primary', '', Messages.oo_refresh);
+            Util.onClickEnter($(btn), function () {
+                onRefreshPerformance.fire();
+            });
+            cb(btn);
+        },
+        {
+            noTitle: true,
+            noHint: true 
+        });
+
+        /*sidebar.addItem('performance-profiling', function(cb){
+            var header = [
+                Messages.admin_performanceKeyHeading,
+                Messages.admin_performanceTimeHeading,
+                Messages.admin_performancePercentHeading
+            ];
+        
+            var chart = blocks.chart(header, []);
+        
+            const onRefresh = function () {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'GET_WORKER_PROFILES',
+                }, function (e, data) {
+                    if (e || data.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, data);
+                        return;
+                    }
+        
+                    var o = data[0];
+                    var sorted = Object.keys(o).sort(function (a, b) {
+                        if (o[b] - o[a] <= 0) { return -1; }
+                        return 1;
+                    });
+        
+                    var values = sorted.map(function (k) { return o[k]; });
+                    var total = 0;
+                    values.forEach(function (value) { total += value; });
+                    var max = Math.max.apply(null, values);
+        
+                    const newRows = sorted.map(function (k) {
+                        var percent = Math.floor((o[k] / total) * 1000) / 10;
+                        return {
+                            key: k,
+                            value: o[k],
+                            percent: percent,
+                            scaled: (o[k] / max) * 100
+                        };
+                    });
+        
+                    // Update chart content
+                    chart.updateContent(newRows);
+                });
+            };
+        
+            onRefresh();
+            onRefreshPerformance.reg(onRefresh);
+        
+            // Call the callback function with the chart
+            cb(chart);
+        });*/
+
+    
+        sidebar.addCheckboxItem({
+            getState: function () {
+                return APP.instanceStatus.enableProfiling;
+            },
+            key: 'enable-disk-measurements',
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['ENABLE_PROFILING', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.enableProfiling);
+                    });
+                });
+            }
+        });
+
+        var isPositiveInteger = function (n) {
+            return n && typeof(n) === 'number'  && n % 1 === 0 && n > 0;
+        };
+
+        sidebar.addItem('bytes-written', function(cb){
+            var duration = APP.instanceStatus.profilingWindow;
+            if (!isPositiveInteger(duration)) { duration = 10000; }
+            var newDuration = blocks.input({
+                type:'number',
+                min: 0,
+                value: duration
+            });
+            var set = blocks.button('primary', '', Messages.admin_setDuration);
+            var label = blocks.labelledInput( Messages.ui_ms, newDuration);
+            var nav = blocks.nav([set]);
+            var form = blocks.form([
+                label
+            ], nav);
+            UI.confirmButton(set, {
+                classes: 'btn-primary',
+                multiple: true,
+                validate: function () {
+                    var l = parseInt($(newDuration).val());
+                    if (isNaN(l)) { return false; }
+                    return true;
+                }
+            }, function () {
+                var d = parseInt($(newDuration).val());
+                if (!isPositiveInteger(d)) { return void UI.warn(Messages.error); }
+    
+                var data = [d];
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_PROFILING_WINDOW', data]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        return void console.error(e, response);
+                    }
+                    $(form).find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_bytesWrittenDuration', [d]));
                 });
             });
             cb(form);
         });
         
+        //network
+        sidebar.addItem('update-available', function(cb){
+            if (!APP.instanceStatus.updateAvailable) { return; }
+
+            var updateURL = 'https://github.com/cryptpad/cryptpad/releases/latest';
+            if (typeof(APP.instanceStatus.updateAvailable) === 'string') {
+                updateURL = APP.instanceStatus.updateAvailable;
+            }
+            var button = blocks.button('primary', '', Messages.admin_updateAvailableButton);
+            Util.onClickEnter($(button), function () {
+                common.openURL(updateURL);
+            });
+
+            cb(button);
+        });
+        
+        sidebar.addItem('checkup', function(cb){
+            var button = blocks.button('primary', '', Messages.admin_checkupButton);
+            Util.onClickEnter($(button), function () {
+                common.openURL('/checkup/');
+            });
+            cb(button);
+        });
+
+
+        sidebar.addCheckboxItem({
+            key: 'block-daily-check',
+            getState: function () {
+                return  APP.instanceStatus.blockDailyCheck;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['BLOCK_DAILY_CHECK', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.blockDailyCheck);
+                    });
+                });
+            }
+        });
+
+        sidebar.addCheckboxItem({
+            key: 'provide-aggregate-statistics',
+            getState: function () {
+                return APP.instanceStatus.provideAggregateStatistics;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['PROVIDE_AGGREGATE_STATISTICS', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.provideAggregateStatistics);
+                    });
+                });
+            }
+        });
 
         
+        sidebar.addCheckboxItem({
+            key: 'list-my-instance',
+            getState: function () {
+                return APP.instanceStatus.listMyInstance;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['LIST_MY_INSTANCE', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.listMyInstance);
+                    });
+                });
+            }
+        });
+
+        sidebar.addCheckboxItem({
+            key: 'consent-to-contact',
+            getState: function () {
+                return APP.instanceStatus.consentToContact;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['CONSENT_TO_CONTACT', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.consentToContact);
+                    });
+                });
+            }
+        });
+
+        sidebar.addCheckboxItem({
+            key: 'remove-donate-button',
+            getState: function () {
+                return APP.instanceStatus.removeDonateButton;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['REMOVE_DONATE_BUTTON', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.removeDonateButton);
+                    });
+                });
+            }
+        });
+
+        
+        var sendDecree = function (data, cb) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: data,
+            }, cb);
+        };
+
+    sidebar.addItem('instance-purpose', function(cb){
+    var values = [
+        'noanswer', // Messages.admin_purpose_noanswer
+        'experiment', // Messages.admin_purpose_experiment
+        'personal', // Messages.admin_purpose_personal
+        'education', // Messages.admin_purpose_education
+        'org', // Messages.admin_purpose_org
+        'business', // Messages.admin_purpose_business
+        'public', // Messages.admin_purpose_public
+    ];
+    var defaultPurpose = 'noanswer';
+    var purpose = APP.instanceStatus.instancePurpose || defaultPurpose;
+    
+    var opts = values.map(function (key) {
+        var full_key = 'admin_purpose_' + key;
+        return UI.createRadio('cp-instance-purpose-radio', 'cp-instance-purpose-radio-'+key,
+            Messages[full_key] || Messages._getKey(full_key, [defaultPurpose]),
+            key === purpose, {
+                input: { value: key },
+                //label: { class: 'noTitle' }
+            });
+    });
+    
+    var $opts = $(opts);
+    
+    var setPurpose = function (value, cb) {
+        sendDecree([
+            'SET_INSTANCE_PURPOSE',
+            [ value]
+        ], cb);
+    };
+
+    $opts.on('change', function () {
+        var val = $opts.find('input:radio:checked').val();
+        console.log(val);
+        //spinner.spin();
+        setPurpose(val, function (e, response) {
+            if (e || response.error) {
+                UI.warn(Messages.error);
+                //spinner.hide();
+                return;
+            }
+            //spinner.done();
+            UI.log(Messages.saved);
+        });
+    });
+
+        cb(opts);
+    });
+
+
+
+
+
         sidebar.makeLeftside(categories);
     };
 
