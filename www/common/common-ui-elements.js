@@ -20,10 +20,11 @@ define([
     '/components/nthen/index.js',
     '/common/inner/invitation.js',
     '/common/visible.js',
+    '/common/pad-types.js',
 
     'css!/customize/fonts/cptools/style.css',
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
-             Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
+             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes) {
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -2375,7 +2376,7 @@ define([
         var $container = $('<div>');
         var i = 0;
 
-        var types = AppConfig.availablePadTypes.filter(function (p) {
+        var types = PadTypes.availableTypes.filter(function (p) {
             if (AppConfig.hiddenTypes.indexOf(p) !== -1) { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
