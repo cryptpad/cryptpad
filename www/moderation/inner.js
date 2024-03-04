@@ -48,7 +48,9 @@ define([
         NEW_TICKET: Util.mkEvent(),
         UPDATE_TICKET: Util.mkEvent(),
         UPDATE_RIGHTS: Util.mkEvent(),
-        RECORDED_CHANGE: Util.mkEvent()
+        RECORDED_CHANGE: Util.mkEvent(),
+        REFRESH_FILTER: Util.mkEvent(),
+        REFRESH_TAGS: Util.mkEvent()
     };
 
     // XXX
@@ -74,21 +76,35 @@ define([
 
     Messages.support_pasteUserData = "Paste user data here";
 
+    Messages.support_recordedTitle = "Prerecorded messages";
+    Messages.support_recordedHint = "You can store prerecorded message in order to insert them with one click in a support ticket.";
+    Messages.support_recordedList = "List of recorded messages";
+    Messages.support_recordedEmpty = "No recorded messages";
+    Messages.support_recordedId = "Unique Identifier";
+    Messages.support_recordedContent = "Content";
+
+    Messages.support_legacyTitle = "View old support data";
+    Messages.support_legacyHint = "View tickets from the legacy system. You'll be able to recreate thse tickets on the new support system.";
+    Messages.support_legacyButton = "Get active";
+    Messages.support_legacyDump = "Export all";
+    Messages.support_legacyClear = "Delete from my account";
+
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
         const blocks = sidebar.blocks;
         APP.recorded = {};
+        APP.allTags = [];
         APP.openTicketCategory = Util.mkEvent();
 
         // Support panel functions
         let open = [];
         let refreshAll = function () {};
-        let allTags = [];
         let refresh = ($container, type, _cb) => {
             let cb = Util.mkAsync(_cb || function () {});
             APP.module.execCommand('LIST_TICKETS_ADMIN', {
                 type: type
             }, (tickets) => {
+                console.error(tickets);
                 if (tickets.error) {
                     cb();
                     if (tickets.error === 'EFORBIDDEN') {
@@ -240,15 +256,17 @@ define([
                             console.error(obj && obj.error);
                             return void UI.warn(Messages.error);
                         }
+                        // XXX check deleted tags
                         (tags || []).forEach(tag => {
-                            if (!allTags.includes(tag)) { allTags.push(tag); }
+                            if (!APP.allTags.includes(tag)) { APP.allTags.push(tag); }
                         });
+                        events.REFRESH_TAGS.fire();
                         //UI.log(Messags.saved);
                         //refreshAll();
                     });
                 };
                 onTag.getAllTags = () => {
-                    return allTags || [];
+                    return APP.allTags || [];
                 };
 
                 // Show tickets, reload the previously open ones and cal back
@@ -258,7 +276,7 @@ define([
                     // Update allTags
                     var d = tickets[channel];
                     (d.tags || []).forEach(tag => {
-                        if (!allTags.includes(tag)) { allTags.push(tag); }
+                        if (!APP.allTags.includes(tag)) { APP.allTags.push(tag); }
                     });
                     // Make ticket
                     var ticket = APP.support.makeTicket({
@@ -288,6 +306,18 @@ define([
                 });
             });
         };
+        let onFilter = () => {
+            let tags = APP.filterTags || [];
+            APP.module.execCommand('FILTER_TAGS_ADMIN', { tags }, function (obj) {
+                if (!obj || obj.error) { return; }
+                $container.find('.cp-support-list-ticket').toggleClass('cp-filtered', false);
+                if (obj.all || !obj.tickets || !obj.tickets.length) { return; }
+                obj.tickets.forEach(id => {
+                    $container.find(`.cp-support-list-ticket[data-id="${id}"]`)
+                        .toggleClass('cp-filtered', true);
+                });
+            });
+        };
 
         let activeContainer, pendingContainer, closedContainer;
         refreshAll = function () {
@@ -307,10 +337,13 @@ define([
                     };
                 }));
             }).nThen(waitFor => {
-                allTags = [];
+                APP.allTags = [];
                 refresh($(activeContainer), 'active', waitFor());
                 refresh($(pendingContainer), 'pending', waitFor());
                 refresh($(closedContainer), 'closed', waitFor());
+            }).nThen(() => {
+                onFilter();
+                events.REFRESH_TAGS.fire();
             }).nThen(waitFor => {
                 if (!linkedTicket) { return; }
                 let $ticket = $container.find(`[data-link-id="${linkedTicket}"]`);
@@ -333,6 +366,7 @@ define([
         events.UPDATE_TICKET.reg(_refresh);
         events.RECORDED_CHANGE.reg(_refresh);
         events.UPDATE_RIGHTS.reg(_refresh);
+        events.REFRESH_FILTER.reg(onFilter);
 
         // Make sidebar layout
         const categories = {
@@ -340,6 +374,7 @@ define([
                 icon: undefined,
                 content: [
                     'privacy',
+                    'filter',
                     'active-list',
                     'pending-list',
                 ]
@@ -347,6 +382,7 @@ define([
             'closed': {
                 icon: undefined,
                 content: [
+                    'filter',
                     'closed-list'
                 ]
             },
@@ -414,12 +450,80 @@ define([
             }
         });
 
-        Messages.support_recordedTitle = "Prerecorded messages";
-        Messages.support_recordedHint = "You can store prerecorded message in order to insert them with one click in a support ticket.";
-        Messages.support_recordedList = "List of recorded messages";
-        Messages.support_recordedEmpty = "No recorded messages";
-        Messages.support_recordedId = "Unique Identifier";
-        Messages.support_recordedContent = "Content";
+        sidebar.addItem('filter', cb => {
+            let container = blocks.box([], 'cp-support-filter-container');
+            let $container = $(container);
+            let redrawTags = () => {
+                $container.empty();
+                var existing = APP.allTags;
+                var list = h('div.cp-tags-list');
+                var reset = h('button.btn.btn-cancel.cp-tags-filter-reset', [
+                    h('i.fa.fa-times'),
+                    Messages.kanban_clearFilter
+                ]);
+                var hint = h('span', Messages.kanban_tags);
+                var tags = h('div.cp-tags-filter', [
+                    h('span.cp-tags-filter-toggle', [
+                        hint,
+                        reset,
+                    ]),
+                    list,
+                ]);
+                var $reset = $(reset);
+                var $list = $(list);
+                var $hint = $(hint);
+                var setTagFilterState = function (bool) {
+                    $hint.css('visibility', bool? 'hidden': 'visible');
+                    $reset.css('visibility', bool? 'visible': 'hidden');
+                };
+
+                var getTags = function () {
+                    return $list.find('span.active').map(function () {
+                        return String($(this).data('tag'));
+                    }).get();
+                };
+                var commitTags = function () {
+                    var t = getTags();
+                    setTagFilterState(t.length);
+                    APP.filterTags = t;
+                    events.REFRESH_FILTER.fire();
+                };
+                APP.filterTags = (APP.filterTags || []).filter(tag => {
+                    return existing.includes(tag);
+                });
+
+                var redrawList = function (allTags) {
+                    if (!Array.isArray(allTags)) { return; }
+                    $list.empty();
+                    $list.removeClass('cp-empty');
+                    if (!allTags.length) {
+                        $list.addClass('cp-empty');
+                        $list.append(h('em', Messages.kanban_noTags));
+                        return;
+                    }
+                    allTags.forEach(function (t) {
+                        let active = APP.filterTags.includes(t) ? '.active' : '';
+                        var $tag = $(h('span'+active, {'data-tag':t}, t)).appendTo($list);
+                        Util.onClickEnter($tag, function () {
+                            $tag.toggleClass('active');
+                            commitTags();
+                        });
+                    });
+                };
+                redrawList(existing);
+                commitTags();
+
+                Util.onClickEnter($reset, function () {
+                    $list.find('span').removeClass('active');
+                    commitTags();
+                });
+
+                $container.append(tags);
+            };
+            events.REFRESH_TAGS.reg(redrawTags);
+            cb(container);
+        }, { noTitle: true, noHint: true });
+
         sidebar.addItem('recorded', cb => {
             let empty = blocks.text(Messages.support_recordedEmpty);
             let list = blocks.list([
@@ -558,7 +662,7 @@ define([
                 $(inputKey).val('');
                 $reset.hide();
                 $paste.show();
-                setTimeout(() => { $paste.focus() });
+                setTimeout(() => { $paste.focus(); });
             });
             [inputName, inputChan, inputKey].forEach(input => {
                 $(input).on('input', () => { $paste.show(); });
@@ -597,12 +701,6 @@ define([
             cb(div);
         });
 
-        // XXX
-        Messages.support_legacyTitle = "View old support data";
-        Messages.support_legacyHint = "View tickets from the legacy system. You'll be able to recreate thse tickets on the new support system.";
-        Messages.support_legacyButton = "Get active";
-        Messages.support_legacyDump = "Export all";
-        Messages.support_legacyClear = "Delete from my account";
         sidebar.addItem('legacy', cb => {
             if (!APP.privateKey) { return void cb(false); }
 

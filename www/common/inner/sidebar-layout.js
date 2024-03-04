@@ -212,7 +212,10 @@ define([
                 return UI.warn(Messages.error);
             }
             hideCategories();
-            cat.content.forEach(function (c) { $(items[c]).show(); });
+            cat.content.forEach(function (c) {
+                // Show and reorder for this category
+                $(items[c]).show().appendTo($rightside);
+            });
         };
         /*
         categories = {

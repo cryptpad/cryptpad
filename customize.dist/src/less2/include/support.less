@@ -56,6 +56,22 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                .cp-support-header-data {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    flex: 1;
+                    min-width: 0;
+                    .cp-tags-list {
+                        width: 100%;
+                    }
+                }
+                .cp-support-title-buttons {
+                    margin-left: 1em;
+                }
+            }
+            &.cp-filtered {
+                display: none;
             }
             &.cp-not-loaded {
                 .cp-support-list-actions {

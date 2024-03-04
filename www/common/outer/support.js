@@ -649,7 +649,6 @@ define([
 
     var setTagsAdmin = (ctx, data, cId, cb) => {
         if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
-        let id = data.id;
         ctx.adminRdyEvt.reg(() => {
             let doc = ctx.adminDoc.proxy;
             let t = doc.tickets;
@@ -661,7 +660,29 @@ define([
                 cb({done:true});
             });
         });
+    };
+    var filterTagsAdmin = (ctx, data, cId, cb) => {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        let tags = data.tags || [];
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            let t = doc.tickets;
 
+            if (!tags.length) { return void cb({ all: true }); }
+            let all = [];
+            ['active', 'pending', 'closed'].forEach(cat => {
+                let tickets = t[cat];
+                Object.keys(tickets).forEach(id => {
+                    let ticket = tickets[id];
+                    // Check if this ticket uses at least one selected tag
+                    let hasTag = (ticket.tags || []).some(tag => {
+                        return tags.includes(tag);
+                    });
+                    if (!hasTag) { all.push(id); }
+                });
+            });
+            cb({ tickets: all });
+        });
     };
 
     var clearLegacy = function (ctx, data, cId, cb) {
@@ -1262,6 +1283,9 @@ define([
             }
             if (cmd === 'USE_RECORDED') {
                 return void useRecorded(ctx, data, clientId, cb);
+            }
+            if (cmd === 'FILTER_TAGS_ADMIN') {
+                return void filterTagsAdmin(ctx, data, clientId, cb);
             }
             if (cmd === 'SET_TAGS_ADMIN') {
                 return void setTagsAdmin(ctx, data, clientId, cb);

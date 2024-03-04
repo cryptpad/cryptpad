@@ -114,4 +114,75 @@
             }
         }
     }
+    .cp-tags-list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        span {
+            padding: 0 5px;
+            margin-right: 5px;
+            border-radius: @variables_radius;
+            background-color: @cp_kanban-tags-bg;
+            display: inline-block;
+            font-size: 12px;
+        }
+    }
+    .cp-tags-filter {
+        @media (min-width: 505px) {
+            display: inline-flex;
+            .kanban-tag-btn-toggle {
+                margin-right: 10px;
+            }
+        }
+        align-items: center;
+        flex: 1;
+        //max-width: 80%;
+        min-width: 150px;
+        .cp-tags-filter-toggle {
+            min-width: 100px;
+            display: flex;
+            @media (max-width: 505px) {
+                margin-left: 10px;
+            }
+            flex-flow: column;
+            flex-shrink: 0;
+            & > * {
+                visibility: hidden;
+            }
+            & > span {
+                display: inline-flex;
+                height: 40px;
+                align-items: center;
+            }
+            & > button {
+                margin-top: -40px !important;
+            }
+        }
+        button.cp-tags-filter-reset {
+            white-space: normal !important;
+            @media (max-width: 505px) {
+                margin-bottom: 10px;
+                margin-right: 10px;
+            }
+            .tools_unselectable();
+            i {
+                margin-right: 5px;
+            }
+        }
+        .cp-tags-list {
+            em {
+                font-size: 14px;
+                color: lighten(@cp_kanban-fg, 10%);
+            }
+            span {
+                cursor: pointer;
+                font-size: 14px;
+                .tools_unselectable();
+                &.active {
+                    background-color: @cp_kanban-fg;
+                    color: @cp_kanban-item-bg;
+                }
+            }
+        }
+    }
 }

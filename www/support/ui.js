@@ -258,7 +258,7 @@ define([
             };
             let overflow = false;
             let maxWidth = $recorded.width();
-            Object.keys(all).sort(sort).forEach((id, i) => {
+            Object.keys(all).sort(sort).forEach(id => {
                 let action = () => {
                     insertText(all[id].content);
                     if (typeof(recorded.onClick) === "function") { recorded.onClick(id); }
@@ -406,7 +406,7 @@ define([
         var adminClasses = '';
         var adminOpen;
         var ticket;
-        let tagsContainer;
+        let tagsContainer, tagsList;
         if (ctx.isAdmin) {
             // Admin custom style
             adminClasses = `.cp-not-loaded`;
@@ -466,6 +466,16 @@ define([
                     title: Messages.fm_tagsName
                 });
                 tagsContainer = h('div');
+                tagsList = h('div.cp-tags-list');
+                let $list = $(tagsList);
+                let redrawTags = (tags) => {
+                    $list.empty();
+                    (tags || []).forEach(tag => {
+                        $list.append(h('span', tag));
+                    });
+                };
+                redrawTags(content.tags);
+
                 let $tags = $(tagsContainer).hide();
                 let input = UI.dialog.textInput({id: `cp-${Util.uid()}`});
                 $tags.append(input);
@@ -482,6 +492,7 @@ define([
                             return t.toLowerCase();
                         }));
                         $tags.find('.token').off('click');
+                        redrawTags(newTags);
                         onTag(id, newTags);
                     });
                 };
@@ -490,6 +501,7 @@ define([
                 _field.tokenfield.on('tokenfield:removedtoken', commitTags);
 
                 Util.onClickEnter($(tag), () => {
+                    $list.toggle();
                     $tags.toggle();
                 });
             }
@@ -505,9 +517,12 @@ define([
             'data-id': id
         }, [
             h('div.cp-support-ticket-header', [
-                h('span', title),
-                ctx.isAdmin ? UI.setHTML(h(`span${isPremium}`), Messages._getKey('support_from', [name])) : '',
-                h('span', new Date(content.time).toLocaleString()),
+                h('div.cp-support-header-data', [
+                    h('span', title),
+                    ctx.isAdmin ? UI.setHTML(h(`span${isPremium}`), Messages._getKey('support_from', [name])) : '',
+                    h('span', new Date(content.time).toLocaleString()),
+                    tagsList
+                ]),
                 adminActions,
             ]),
             tagsContainer,
