@@ -385,7 +385,7 @@ define([
 
     var makeTicket = function (ctx, opts) {
         let { id, content, form, recorded,
-              onShow, onHide, onClose, onReply, onMove, onDelete } = opts;
+              onShow, onHide, onClose, onReply, onMove, onDelete, onTag } = opts;
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -406,12 +406,13 @@ define([
         var adminClasses = '';
         var adminOpen;
         var ticket;
+        let tagsContainer;
         if (ctx.isAdmin) {
             // Admin custom style
             adminClasses = `.cp-not-loaded`;
             // Admin actions
-            let show = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
-            let $show = $(show);
+
+            // Copy URL
             let url = h('button.btn.fa.fa-link', { title: Messages.share_linkCopy, });
             $(url).click(function (e) {
                 e.stopPropagation();
@@ -422,6 +423,9 @@ define([
             });
 
 
+            // Load & open ticket
+            let show = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
+            let $show = $(show);
             let visible = false;
             adminOpen = function (force, cb) {
                 var $ticket = $(ticket);
@@ -445,17 +449,52 @@ define([
             };
             Util.onClickEnter($show, adminOpen);
 
-            let settings;
+            // Move active/pending
+            let move;
             if (onMove) {
                 let text = onMove.isTicketActive ? Messages.support_movePending
                                                  : Messages.support_moveActive;
-                settings = h('button.btn.btn-secondary.fa.fa-archive', { title: text });
-                Util.onClickEnter($(settings), function () {
+                move = h('button.btn.btn-secondary.fa.fa-archive', { title: text });
+                Util.onClickEnter($(move), function () {
                     onMove(ticket, id, content);
                 });
             }
 
-            adminActions = h('span.cp-support-title-buttons', [ url, settings, show ]);
+            let tag;
+            if (onTag && onTag.getAllTags) {
+                tag = h('button.btn.btn-secondary.fa.fa-tags', {
+                    title: Messages.fm_tagsName
+                });
+                tagsContainer = h('div');
+                let $tags = $(tagsContainer).hide();
+                let input = UI.dialog.textInput({id: `cp-${Util.uid()}`});
+                $tags.append(input);
+                let existing = onTag.getAllTags();
+                let _field = UI.tokenField(input, existing).preventDuplicates(function (val) {
+                    UI.warn(Messages._getKey('tags_duplicate', [val]));
+                });
+                _field.setTokens(content.tags || []);
+                $tags.find('.token').off('click');
+
+                let commitTags = function () {
+                    setTimeout(() => {
+                        let newTags = Util.deduplicateString(_field.getTokens().map(function (t) {
+                            return t.toLowerCase();
+                        }));
+                        $tags.find('.token').off('click');
+                        onTag(id, newTags);
+                    });
+                };
+                _field.tokenfield.on('tokenfield:createdtoken', commitTags);
+                _field.tokenfield.on('tokenfield:editedoken', commitTags);
+                _field.tokenfield.on('tokenfield:removedtoken', commitTags);
+
+                Util.onClickEnter($(tag), () => {
+                    $tags.toggle();
+                });
+            }
+
+            adminActions = h('span.cp-support-title-buttons', [ url, move, tag, show ]);
         }
 
         let isPremium = content.premium ? '.cp-support-ispremium' : '';
@@ -471,6 +510,7 @@ define([
                 h('span', new Date(content.time).toLocaleString()),
                 adminActions,
             ]),
+            tagsContainer,
             actions
         ]);
         ticket.open = adminOpen;

@@ -398,6 +398,7 @@ define([
                     editKeyStr: seed
                 }
             });
+            console.error(hash);
             loadAdminDoc(ctx, hash, waitFor());
         }).nThen(() => {
             console.log('Support admin loaded');
@@ -644,6 +645,23 @@ define([
             }
             cb();
         });
+    };
+
+    var setTagsAdmin = (ctx, data, cId, cb) => {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        let id = data.id;
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            let t = doc.tickets;
+            let chan = data.channel;
+
+            let ticket = t.active[chan] || t.pending[chan] || t.closed[chan];
+            ticket.tags = data.tags || [];
+            Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
+                cb({done:true});
+            });
+        });
+
     };
 
     var clearLegacy = function (ctx, data, cId, cb) {
@@ -1244,6 +1262,9 @@ define([
             }
             if (cmd === 'USE_RECORDED') {
                 return void useRecorded(ctx, data, clientId, cb);
+            }
+            if (cmd === 'SET_TAGS_ADMIN') {
+                return void setTagsAdmin(ctx, data, clientId, cb);
             }
             if (cmd === 'GET_LEGACY') {
                 return void getLegacy(ctx, data, clientId, cb);

@@ -5,10 +5,12 @@
  */
 
 @import (reference) "./colortheme-all.less";
+@import (reference) './tokenfield.less';
 .support_main () {
     @ticket-bg: @cp_support-bg;
     @msg-bg: @cp_support-msg-bg;
     @fromme-bg: @cp_support-header-bg;
+    .tokenfield_main();
     .cp-support-form-container {
         div {
             margin-bottom: 10px;

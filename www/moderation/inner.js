@@ -83,6 +83,7 @@ define([
         // Support panel functions
         let open = [];
         let refreshAll = function () {};
+        let allTags = [];
         let refresh = ($container, type, _cb) => {
             let cb = Util.mkAsync(_cb || function () {});
             APP.module.execCommand('LIST_TICKETS_ADMIN', {
@@ -228,21 +229,44 @@ define([
                         }
                         refreshAll();
                     });
-
                 };
                 onMove.isTicketActive = type === 'active';
+
+                const onTag = (channel, tags) => {
+                    APP.module.execCommand('SET_TAGS_ADMIN', {
+                        channel, tags
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj && obj.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        (tags || []).forEach(tag => {
+                            if (!allTags.includes(tag)) { allTags.push(tag); }
+                        });
+                        //UI.log(Messags.saved);
+                        //refreshAll();
+                    });
+                };
+                onTag.getAllTags = () => {
+                    return allTags || [];
+                };
 
                 // Show tickets, reload the previously open ones and cal back
                 // once everything is loaded
                 let n = nThen;
                 Object.keys(tickets).sort(sortTicket).forEach(function (channel) {
+                    // Update allTags
                     var d = tickets[channel];
+                    (d.tags || []).forEach(tag => {
+                        if (!allTags.includes(tag)) { allTags.push(tag); }
+                    });
+                    // Make ticket
                     var ticket = APP.support.makeTicket({
                         id: channel,
                         content: d,
                         form: activeForms[channel],
                         recorded: APP.recorded,
-                        onShow, onHide, onClose, onReply, onMove
+                        onShow, onHide, onClose, onReply, onMove, onTag
                     });
 
                     var container;
@@ -283,6 +307,7 @@ define([
                     };
                 }));
             }).nThen(waitFor => {
+                allTags = [];
                 refresh($(activeContainer), 'active', waitFor());
                 refresh($(pendingContainer), 'pending', waitFor());
                 refresh($(closedContainer), 'closed', waitFor());
