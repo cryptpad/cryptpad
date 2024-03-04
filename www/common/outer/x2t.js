@@ -6,10 +6,11 @@ define([
     '/api/config',
     '/components/nthen/index.js',
     '/common/common-util.js',
-], function (ApiConfig, nThen, Util) {
+    '/common/onlyoffice/current-version.js'
+], function (ApiConfig, nThen, Util, CurrentVersion) {
     var X2T = {};
 
-    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v7';
+    var CURRENT_VERSION = X2T.CURRENT_VERSION = CurrentVersion.currentVersion;
     var debug = function (str) {
         if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);

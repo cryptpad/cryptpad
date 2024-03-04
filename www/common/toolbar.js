@@ -17,8 +17,9 @@ define([
     '/common/messenger-ui.js',
     '/customize/messages.js',
     '/customize/pages.js',
+    '/common/pad-types.js',
 ], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, h,
-MessengerUI, Messages, Pages) {
+MessengerUI, Messages, Pages, PadTypes) {
     var Common;
 
     var Bar = {
@@ -545,7 +546,7 @@ MessengerUI, Messages, Pages) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the chat");
         }
-        if (Config.availablePadTypes.indexOf('contacts') === -1) { return; }
+        if (!PadTypes.isAvailable('contacts')) { return; }
         var $content = $('<div>', {'class': 'cp-toolbar-chat-drawer'});
         $content.on('drop dragover', function (e) {
             e.preventDefault();

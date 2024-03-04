@@ -10,10 +10,10 @@ define([
     '/common/common-messaging.js',
     '/common/common-constants.js',
     '/customize/messages.js',
-    '/customize/application_config.js',
+    '/common/pad-types.js',
 
     '/components/nthen/index.js',
-], function (Crypto, Hash, Util, Realtime, Messaging, Constants, Messages, AppConfig, nThen) {
+], function (Crypto, Hash, Util, Realtime, Messaging, Constants, Messages, PadTypes, nThen) {
     'use strict';
     var Curve = Crypto.Curve;
 
@@ -966,7 +966,7 @@ define([
             return store.messenger;
         }
 
-        if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
+        if (!PadTypes.isAvailable('contacts')) { return; }
         var ctx = {
             store: store,
             Store: cfg.Store,

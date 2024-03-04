@@ -9,7 +9,8 @@ define([
     '/common/requireconfig.js',
     '/customize/messages.js',
     'jquery',
-], function (nThen, ApiConfig, RequireConfig, Messages, $) {
+    '/common/pad-types.js',
+], function (nThen, ApiConfig, RequireConfig, Messages, $, PadTypes) {
     var common = {};
 
     var embeddableApps = [
@@ -819,7 +820,7 @@ define([
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
                     }
                     if (Utils.Constants.criticalApps.indexOf(parsed.type) === -1 &&
-                          AppConfig.availablePadTypes.indexOf(parsed.type) === -1) {
+                            !PadTypes.isAvailable(parsed.type)) {
                         additionalPriv.disabledApp = true;
                     }
                     if (!Utils.LocalStore.isLoggedIn() &&
