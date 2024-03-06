@@ -55,18 +55,24 @@
     .cp-moderation-userdata {
         display: flex;
         align-items: center;
-        input, textarea {
-            width: 25rem !important;
-            max-width: 25rem;
+        max-width: 100%;
+        width: 2*@sidebar_button-width;
+        input {
+            //width: @sidebar_button-width !important;
+            //max-width: @sidebar_button-width;
         }
         textarea {
             margin: 0;
             height: 5rem;
+            min-width: 5rem;
+            flex: 1;
         }
         .cp-moderation-userdata-inputs {
             display: flex;
             flex-flow: column;
             margin-right: 1rem;
+            min-width: 10rem;
+            width: 25rem;
             :first-child {
                 margin-top: 0 !important;
             }

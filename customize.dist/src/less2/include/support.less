@@ -6,12 +6,14 @@
 
 @import (reference) "./colortheme-all.less";
 @import (reference) './tokenfield.less';
+@import (reference) './sidebar-layout.less';
 .support_main () {
     @ticket-bg: @cp_support-bg;
     @msg-bg: @cp_support-msg-bg;
     @fromme-bg: @cp_support-header-bg;
     .tokenfield_main();
     .cp-support-form-container {
+        max-width: 100%;
         div {
             margin-bottom: 10px;
         }
