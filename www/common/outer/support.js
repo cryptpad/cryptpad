@@ -651,7 +651,6 @@ define([
         if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
         let tags = data.tags || [];
         let text = (data.text || '').toLowerCase();
-        console.error(tags, text);
         ctx.adminRdyEvt.reg(() => {
             let doc = ctx.adminDoc.proxy;
             let t = doc.tickets;

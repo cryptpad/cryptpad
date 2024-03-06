@@ -145,7 +145,6 @@ define([
             APP.module.execCommand('LIST_TICKETS_ADMIN', {
                 type: type
             }, (tickets) => {
-                console.error(tickets);
                 if (tickets.error) {
                     cb();
                     if (tickets.error === 'EFORBIDDEN') {
@@ -259,6 +258,7 @@ define([
                         refreshAll();
                     });
                 };
+                onMove.disableMove = type === 'closed';
                 onMove.isTicketActive = type === 'active';
 
                 const onTag = (channel, tags) => {
@@ -928,7 +928,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
                                 });
                             };
                             if (!$ticket.length) {
-                                content.category = 'closed'; // Consider ticket closed
+                                content.category = 'legacy'; // Hide invalid features
                                 $ticket = APP.support.makeTicket({id, content, onMove});
                                 $div.append($ticket);
                             }

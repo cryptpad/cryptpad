@@ -416,12 +416,13 @@ define([
             let url = h('button.btn.fa.fa-link', { title: Messages.share_linkCopy, });
             $(url).click(function (e) {
                 e.stopPropagation();
-                var link = privateData.origin + privateData.pathname + '#' + 'open-' + linkId;
+                let cat = content.category === 'closed' ? 'closed' : 'open';
+                var link = privateData.origin + privateData.pathname + `#${cat}-${linkId}`;
                 Clipboard.copy(link, (err) => {
                     if (!err) { UI.log(Messages.shareSuccess); }
                 });
             });
-            if (content.category === 'closed') { url = undefined; }
+            if (content.category === 'legacy') { url = undefined; }
 
 
             // Load & open ticket
@@ -453,7 +454,7 @@ define([
 
             // Move active/pending
             let move;
-            if (onMove) {
+            if (onMove && !onMove.disableMove) {
                 let text = onMove.isTicketActive ? Messages.support_movePending
                                                  : Messages.support_moveActive;
                 move = h('button.btn.btn-secondary.fa.fa-archive', { title: text });
@@ -478,7 +479,6 @@ define([
                     });
                 };
                 redrawTags(content.tags);
-                console.error(content.tags);
 
                 let $tags = $(tagsContainer).hide();
                 let input = UI.dialog.textInput({id: `cp-${Util.uid()}`});
