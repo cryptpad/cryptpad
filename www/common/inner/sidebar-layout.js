@@ -34,13 +34,13 @@ define([
         const items = {};
 
         let blocks = sidebar.blocks = {};
-        blocks.labelledInput = (label, input) => {
+        blocks.labelledInput = (label, input, inputBlock) => {
             let uid = Util.uid();
             let id = `cp-${app}-item-${uid}`;
             input.setAttribute('id', id);
             return [
                 h('label', { for: id }, label),
-                input,
+                inputBlock || input,
             ];
         };
         blocks.button = (type, icon, text) => {
@@ -62,6 +62,16 @@ define([
         };
         blocks.input = (attr) => {
             return h('input', attr);
+        };
+        blocks.inputButton = (input, button, opts) => {
+            if (opts.onEnterDelegate) {
+                $(input).on('keypress', e => {
+                    if (e.which === 13) {
+                        $(button).click();
+                    }
+                });
+            }
+            return h('div.cp-sidebar-input-block', [input, button]);
         };
         blocks.text = (value) => {
             return h('span', value);

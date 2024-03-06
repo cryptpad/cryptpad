@@ -55,6 +55,9 @@ define([
 
     // XXX
     Messages.support_pending = "Pending tickets:";
+    Messages.support_pending_tag = "Pending";
+    Messages.support_active_tag = "Active";
+    Messages.support_closed_tag = "Closed";
     /*
     Messages.support_activeListTitle = "Active tickets";
     Messages.support_pendingListTitle = "Pending tickets";
@@ -89,12 +92,50 @@ define([
     Messages.support_legacyDump = "Export all";
     Messages.support_legacyClear = "Delete from my account";
 
+    Messages.support_searchLabel = "Search (title or ticketId)";
+
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
         const blocks = sidebar.blocks;
         APP.recorded = {};
         APP.allTags = [];
         APP.openTicketCategory = Util.mkEvent();
+
+        var sortTicket = tickets => (c1, c2) => {
+            return tickets[c2].time - tickets[c1].time;
+        };
+        const onShowTicket = function (ticket, channel, data, done) {
+            APP.module.execCommand('LOAD_TICKET_ADMIN', {
+                channel: channel,
+                curvePublic: data.authorKey,
+                supportKey: data.supportKey
+            }, function (obj) {
+                if (!Array.isArray(obj)) {
+                    console.error(obj && obj.error);
+                    done(false);
+                    return void UI.warn(Messages.error);
+                }
+                var $ticket = $(ticket);
+                obj.forEach(function (msg) {
+                    // Only add notifications channel if this is coming from the other user
+                    if (!data.notifications && msg.sender.drive) {
+                        data.notifications = Util.find(msg, ['sender', 'notifications']);
+                    }
+                    if (msg.close) {
+                        $ticket.addClass('cp-support-list-closed');
+                        return $ticket.append(APP.support.makeCloseMessage(msg));
+                    }
+                    if (msg.legacy && msg.messages) {
+                        msg.messages.forEach(c => {
+                            $ticket.append(APP.support.makeMessage(c));
+                        });
+                        return;
+                    }
+                    $ticket.append(APP.support.makeMessage(msg));
+                });
+                done(true);
+            });
+        };
 
         // Support panel functions
         let open = [];
@@ -154,40 +195,12 @@ define([
                     col1 = col2 = col3 = col5;
                 }
                 $container.append([col1, col2, col3]);
-                var sortTicket = function (c1, c2) {
-                    return tickets[c2].time - tickets[c1].time;
-                };
 
                 const onShow = function (ticket, channel, data, done) {
-                    APP.module.execCommand('LOAD_TICKET_ADMIN', {
-                        channel: channel,
-                        curvePublic: data.authorKey,
-                        supportKey: data.supportKey
-                    }, function (obj) {
-                        if (!Array.isArray(obj)) {
-                            console.error(obj && obj.error);
-                            done();
-                            return void UI.warn(Messages.error);
+                    onShowTicket(ticket, channel, data, (success) => {
+                        if (success) {
+                            if (!open.includes(channel)) { open.push(channel); }
                         }
-                        var $ticket = $(ticket);
-                        obj.forEach(function (msg) {
-                            // Only add notifications channel if this is coming from the other user
-                            if (!data.notifications && msg.sender.drive) {
-                                data.notifications = Util.find(msg, ['sender', 'notifications']);
-                            }
-                            if (msg.close) {
-                                $ticket.addClass('cp-support-list-closed');
-                                return $ticket.append(APP.support.makeCloseMessage(msg));
-                            }
-                            if (msg.legacy && msg.messages) {
-                                msg.messages.forEach(c => {
-                                    $ticket.append(APP.support.makeMessage(c));
-                                });
-                                return;
-                            }
-                            $ticket.append(APP.support.makeMessage(msg));
-                        });
-                        if (!open.includes(channel)) { open.push(channel); }
                         done();
                     });
                 };
@@ -272,7 +285,7 @@ define([
                 // Show tickets, reload the previously open ones and cal back
                 // once everything is loaded
                 let n = nThen;
-                Object.keys(tickets).sort(sortTicket).forEach(function (channel) {
+                Object.keys(tickets).sort(sortTicket(tickets)).forEach(function (channel) {
                     // Update allTags
                     var d = tickets[channel];
                     (d.tags || []).forEach(tag => {
@@ -386,12 +399,30 @@ define([
                     'closed-list'
                 ]
             },
+            'search': {
+                icon: undefined,
+                content: [
+                    'filter',
+                    'search'
+                ],
+                onOpen: () => {
+                    APP.searchAutoRefresh = true;
+                    setTimeout(() => {
+                        $('.cp-support-search-input').focus();
+                    });
+                }
+            },
             'settings': {
                 icon: undefined,
                 content: [
                     'notifications',
                     'recorded'
-                ]
+                ],
+                onOpen: () => {
+                    setTimeout(() => {
+                        $('.cp-support-recorded-id').focus();
+                    });
+                }
             },
             'ticket': {
                 icon: undefined,
@@ -400,6 +431,9 @@ define([
                 ],
                 onOpen: () => {
                     APP.openTicketCategory.fire();
+                    setTimeout(() => {
+                        $('.cp-support-newticket-paste').focus();
+                    });
                 }
             },
             'legacy': {
@@ -449,6 +483,81 @@ define([
                 });
             }
         });
+
+        sidebar.addItem('search', cb => {
+
+            let inputSearch = blocks.input({type:'text', class: 'cp-support-search-input'});
+            let button = blocks.button('primary', 'fa-search');
+            let inputBlock = blocks.inputButton(inputSearch, button, { onEnterDelegate: true });
+            let searchBlock = blocks.labelledInput(Messages.support_searchLabel,
+                                                    inputSearch, inputBlock);
+
+            let list = blocks.box([], 'cp-support-container');
+            let container = blocks.box([searchBlock, list], 'cp-support-search-container');
+            let $list = $(list);
+            let searchText = '';
+            APP.searchAutoRefresh = false;
+
+            let redraw = (_cb) => {
+                let cb = _cb || function () {};
+                $list.empty();
+                let tags = APP.filterTags || [];
+                let text = searchText;
+                if (!text.length && !tags.length) { return void cb(); }
+                APP.module.execCommand('SEARCH_ADMIN', { text, tags }, function (obj) {
+                    cb();
+                    if (obj && obj.error) {
+                        console.error(obj && obj.error);
+                        return void UI.warn(Messages.error);
+                    }
+                    $list.empty();
+                    let tickets = obj.tickets || {};
+
+                    const onShow = onShowTicket;
+                    const onHide = function (ticket, channel, data, done) {
+                        $(ticket).find('.cp-support-list-message').remove();
+                        done();
+                    };
+                    const onTag = () => {};
+                    onTag.readOnly = true;
+                    onTag.getAllTags = () => [];
+                    Object.keys(tickets).sort(sortTicket(tickets)).forEach(id => {
+                        let content = tickets[id];
+                        content.tags = content.tags || [];
+
+                        let catTag = Messages[`support_${content.category}_tag`];
+                        if (catTag) {
+                            // Msg.support_active_tag.support_pending_tag.support_closed_tag
+                            content.tags.unshift(catTag.toUpperCase());
+                        }
+
+                        var ticket = APP.support.makeTicket({
+                            id,
+                            content,
+                            onTag, onShow, onHide
+                        });
+                        $list.append(ticket);
+                    });
+                });
+            };
+
+            let $input = $(inputSearch);
+            let $button = $(button);
+            Util.onClickEnter($button, function () {
+                $button.prop('disabled', 'disabled');
+                searchText = $input.val().trim();
+                redraw(() => {
+                    APP.searchAutoRefresh = true;
+                    $button.prop('disabled', false);
+                });
+            });
+
+            events.REFRESH_FILTER.reg(() => {
+                if (!APP.searchAutoRefresh) { return; }
+                redraw();
+            });
+            cb(container);
+        }, { noTitle: true, noHint: true });
 
         sidebar.addItem('filter', cb => {
             let container = blocks.box([], 'cp-support-filter-container');
@@ -532,7 +641,8 @@ define([
                 Messages.kanban_delete
             ], []);
             let labelledList = blocks.labelledInput(Messages.support_recordedList, list);
-            let inputId = blocks.input({type:'text', maxlength: 20 });
+            let inputId = blocks.input({type:'text', class: 'cp-support-recorded-id',
+                                        maxlength: 20 });
             let inputContent = blocks.textArea();
             let labelId = blocks.labelledInput(Messages.support_recordedId, inputId);
             let labelContent = blocks.labelledInput(Messages.support_recordedContent, inputContent);
@@ -637,6 +747,7 @@ define([
             let reset = blocks.button('danger-alt', 'fa-times', Messages.form_reset);
 
             let paste = blocks.textArea({
+                class: 'cp-support-newticket-paste',
                 placeholder: Messages.support_pasteUserData
             });
             let inputs = h('div.cp-moderation-userdata-inputs', [ labelName, labelChan, labelKey ]);
@@ -817,6 +928,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
                                 });
                             };
                             if (!$ticket.length) {
+                                content.category = 'closed'; // Consider ticket closed
                                 $ticket = APP.support.makeTicket({id, content, onMove});
                                 $div.append($ticket);
                             }

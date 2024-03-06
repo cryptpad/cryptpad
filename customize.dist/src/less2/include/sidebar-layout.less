@@ -133,6 +133,26 @@
                             margin: 0;
                         }
                     }
+                    .cp-sidebar-input-block {
+                        display: inline-flex;
+                        width: @sidebar_button-width;
+                        max-width: 100%;
+                        input {
+                            flex: 1;
+                            //border-radius: 0.25em 0 0 0.25em;
+                            border: 1px solid @cryptpad_color_grey_500;
+                            border-right: 0px;
+                            border-top-right-radius: 0px;
+                            border-bottom-right-radius: 0px;
+                        }
+                        button {
+                            border-top-left-radius: 0px;
+                            border-bottom-left-radius: 0px;
+                            border-left: 0px;
+                            height: 40px;
+                            margin: 0 !important;
+                        }
+                    }
                 }
 
                 .cp-sidebarlayout-description {

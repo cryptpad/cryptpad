@@ -421,6 +421,7 @@ define([
                     if (!err) { UI.log(Messages.shareSuccess); }
                 });
             });
+            if (content.category === 'closed') { url = undefined; }
 
 
             // Load & open ticket
@@ -448,6 +449,7 @@ define([
                 });
             };
             Util.onClickEnter($show, adminOpen);
+            if (!onShow) { show = undefined; }
 
             // Move active/pending
             let move;
@@ -465,6 +467,7 @@ define([
                 tag = h('button.btn.btn-secondary.fa.fa-tags', {
                     title: Messages.fm_tagsName
                 });
+                if (onTag.readOnly) { tag = undefined; }
                 tagsContainer = h('div');
                 tagsList = h('div.cp-tags-list');
                 let $list = $(tagsList);
@@ -475,6 +478,7 @@ define([
                     });
                 };
                 redrawTags(content.tags);
+                console.error(content.tags);
 
                 let $tags = $(tagsContainer).hide();
                 let input = UI.dialog.textInput({id: `cp-${Util.uid()}`});
@@ -538,6 +542,7 @@ define([
             $(close).remove();
             onClose(ticket, id, content);
         });
+        if (!onClose) { $(close).remove(); }
 
         UI.confirmButton(remove, {
             classes: 'btn-danger'
@@ -564,7 +569,8 @@ define([
             $ticket.append(newForm);
         };
         if (form) { addForm(); }
-        $(answer).click(addForm);
+        Util.onClickEnter($(answer), addForm);
+        if (!onReply) { $(answer).remove(); }
 
         return ticket;
     };

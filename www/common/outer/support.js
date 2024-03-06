@@ -647,6 +647,45 @@ define([
         });
     };
 
+    var searchAdmin = (ctx, data, cId, cb) => {
+        if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
+        let tags = data.tags || [];
+        let text = (data.text || '').toLowerCase();
+        console.error(tags, text);
+        ctx.adminRdyEvt.reg(() => {
+            let doc = ctx.adminDoc.proxy;
+            let t = doc.tickets;
+
+            let all = {};
+            let add = (id, data, category) => {
+                let clone = Util.clone(data);
+                clone.category = category;
+                all[id] = clone;
+            };
+            ['active', 'pending', 'closed'].some(cat => {
+                let tickets = t[cat];
+                return Object.keys(tickets).some(id => {
+                    let ticket = tickets[id];
+                    // Check if this ticket uses at least one selected tag
+                    let hasTag = !tags.length || (ticket.tags || []).some(tag => {
+                        return tags.includes(tag);
+                    });
+                    if (!hasTag) { return; }
+                    // Filter by searched text within these tags
+                    let id64 = Util.hexToBase64(id).slice(0,10);
+                    if (text === id64) { // If ticket ID found, stop search and return result
+                        all = {};
+                        add(id, ticket, cat);
+                        return true;
+                    }
+                    let hasText = !text || ticket.title.toLowerCase().includes(text);
+                    if (!hasText) { return; }
+                    add(id, ticket, cat);
+                });
+            });
+            cb({ tickets: all });
+        });
+    };
     var setTagsAdmin = (ctx, data, cId, cb) => {
         if (!ctx.adminRdyEvt) { return void cb({ error: 'EFORBIDDEN' }); }
         ctx.adminRdyEvt.reg(() => {
@@ -1283,6 +1322,9 @@ define([
             }
             if (cmd === 'USE_RECORDED') {
                 return void useRecorded(ctx, data, clientId, cb);
+            }
+            if (cmd === 'SEARCH_ADMIN') {
+                return void searchAdmin(ctx, data, clientId, cb);
             }
             if (cmd === 'FILTER_TAGS_ADMIN') {
                 return void filterTagsAdmin(ctx, data, clientId, cb);
