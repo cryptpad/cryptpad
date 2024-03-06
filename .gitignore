@@ -36,3 +36,4 @@ www/common/onlyoffice/v*
 /www/common/onlyoffice/dist/
 /install-onlyoffice-docker.key
 /onlyoffice-dist/
+/onlyoffice.properties

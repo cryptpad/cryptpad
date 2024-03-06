@@ -5,10 +5,16 @@ set -euo pipefail
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BUILDS_DIR=$SCRIPT_DIR/onlyoffice-builds.git
 OO_DIR=$SCRIPT_DIR/www/common/onlyoffice/dist
+PROPS_FILE="$SCRIPT_DIR"/onlyoffice.properties
+
+declare -A props
 
 main () {
+	load_props
 	parse_arguments "$@"
 	validate_arguments
+
+	ask_for_license
 
 	mkdir -p "$OO_DIR"
 	install_version v1 4f370beb
@@ -25,6 +31,22 @@ main () {
 	if [ ${MAKE_LINKS+x} ]; then
 		rdfind -makehardlinks true -makeresultsfile false $OO_DIR/v*
 	fi
+}
+
+load_props () {
+	if [ -e "$PROPS_FILE" ]; then
+		while IFS='=' read -r key value; do
+			props["$key"]="$value"
+		done < "$PROPS_FILE"
+	fi
+}
+
+set_prop () {
+	props["$1"]="$2"
+
+	for i in "${!props[@]}"; do
+		echo "$i=${props[$i]}"
+	done > "$PROPS_FILE"
 }
 
 parse_arguments () {
@@ -62,6 +84,19 @@ validate_arguments () {
 			exit 1
 		fi
 	fi
+}
+
+ask_for_license () {
+	if [ "${props[agree_license]:-no}" == yes ]; then
+		return
+	fi
+
+	less << EOF
+License
+EOF
+	read -rp "Do you acceppt the license? (Y/N): " confirm \
+		&& [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+	set_prop "agree_license" yes
 }
 
 show_help () {
