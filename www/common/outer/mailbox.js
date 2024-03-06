@@ -18,8 +18,6 @@ define([
 
     var TYPES = [
         'notifications',
-        //'supportadmin',
-        'support',
         'supportteam',
         'broadcast'
     ];
@@ -39,16 +37,10 @@ define([
                 if (res.error) { console.error(res); }
             });
         }
-        // XXX XXX XXX no need for the "support" mailbox anymore
-        if (!mailboxes['support'] && ctx.loggedIn) {
-            mailboxes.support = {
-                channel: Hash.createChannelId(),
-                lastKnownHash: '',
-                viewed: []
-            };
-            ctx.pinPads([mailboxes.support.channel], function (res) {
-                if (res.error) { console.error(res); }
-            });
+
+        // no need for the "support" mailbox anymore
+        if (mailboxes.support) {
+            delete mailboxes.support;
         }
 
         if (!mailboxes['broadcast']) {

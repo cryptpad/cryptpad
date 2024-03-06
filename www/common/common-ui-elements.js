@@ -2063,7 +2063,7 @@ define([
             },
             content: h('span', Messages.docs_link)
         });
-        if (padType !== 'support' && accountName && Config.supportMailbox) {
+        if (padType !== 'support' && accountName && Config.supportMailboxKey) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
