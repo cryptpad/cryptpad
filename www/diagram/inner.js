@@ -8,6 +8,7 @@ define([
     '/customize/messages.js', // translation keys
     '/components/pako/dist/pako.min.js',
     '/components/x2js/x2js.js',
+    '/diagram/util.js',
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
@@ -15,8 +16,11 @@ define([
     Framework,
     Messages,
     pako,
-    X2JS) {
+    X2JS,
+    DiagramUtil
+) {
     const Nacl = window.nacl;
+    const APP = window.APP = {};
 
     // As described here: https://drawio-app.com/extracting-the-xml-from-mxfiles/
     const decompressDrawioXml = function(xmlDocStr) {
@@ -125,6 +129,21 @@ define([
             autosave: onDrawioAutosave,
         };
 
+        APP.loadImage = DiagramUtil.loadImage;
+        APP.addImage = function() {
+            return new Promise((resolve) => {
+                framework.insertImage({}, (imageData) => {
+                    if (imageData.blob) {
+                        resolve(imageData.blob);
+                    } else if (imageData.url) {
+                        resolve(imageData.url);
+                    } else {
+                        resolve(DiagramUtil.getCryptPadUrl(imageData.src, imageData.key, imageData.fileType));
+                    }
+                });
+            });
+        };
+
         // This is the function from which you will receive updates from CryptPad
         framework.onContentUpdate(function (newContent) {
             lastContent = newContent;
@@ -151,9 +170,13 @@ define([
 
         framework.setFileExporter(
             '.drawio',
-            () => {
-                return new Blob([jsonContentAsXML(lastContent)], {type: 'application/x-drawio'});
-            }
+            (cb) => {
+                require(['/diagram/export.js'], (exporter) => {
+                    exporter.main(lastContent, (xml) => {
+                        cb(new Blob([xml], {type: 'application/x-drawio'}));
+                    });
+                });
+            }, true
         );
 
         framework.onEditableChange(function () {
@@ -170,13 +193,12 @@ define([
 
         drawioFrame.src = '/components/drawio/src/main/webapp/index.html?'
             + new URLSearchParams({
-                // pages: 0,
-                // dev: 1,
                 test: 1,
                 stealth: 1,
                 embed: 1,
                 drafts: 0,
-                plugins: 0,
+                p: 'cryptpad',
+                integrated: framework.isIntegrated() ? 'true' : 'false',
 
                 chrome: framework.isReadOnly() ? 0 : 1,
                 dark: window.CryptPad_theme === "dark" ? 1 : 0,
@@ -185,6 +207,10 @@ define([
                 noSaveBtn: 1,
                 saveAndExit: 0,
                 noExitBtn: 1,
+                browser: 0,
+
+                noDevice: 1,
+                filesupport: 0,
 
                 modified: 'unsavedChanges',
                 proto: 'json',

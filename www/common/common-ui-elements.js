@@ -2321,10 +2321,11 @@ define([
         };
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
-        var $survey = $userAdmin.find('.cp-toolbar-survey');
+        var $survey = $userAdmin.find('.cp-toolbar-survey').parent();
+        var $surveyHr =  $survey.next('[role="separator"]');
         if (!surveyURL) {
             $survey.hide();
-            if (surveyAlone) { $survey.next('hr').hide(); }
+            if (surveyAlone) { $surveyHr.hide(); }
         }
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
@@ -2336,11 +2337,11 @@ define([
                 surveyURL = url;
                 if (!url) {
                     $survey.hide();
-                    if (surveyAlone) { $survey.next('hr').hide(); }
+                    if (surveyAlone) { $surveyHr.hide(); }
                     return;
                 }
                 $survey.show();
-                if (surveyAlone) { $survey.next('hr').show(); }
+                if (surveyAlone) { $surveyHr.show(); }
             }
         });
 
@@ -3820,9 +3821,9 @@ define([
             });
         };
 
-        var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
         var todo = function (yes) {
             var priv = common.getMetadataMgr().getPrivateData();
+            var MAX_TEAMS_SLOTS = priv.plan ? Constants.MAX_PREMIUM_TEAMS_SLOTS : Constants.MAX_TEAMS_SLOTS;
             var numberOfTeams = Object.keys(priv.teams || {}).length;
             if (yes) {
                 if (numberOfTeams >= MAX_TEAMS_SLOTS) {
@@ -4259,6 +4260,21 @@ define([
         }
 
         modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
+    };
+
+    UIElements.onMissingMFA = (common, config, cb) => {
+        let content = h('div');
+        let msg = h('div.cp-loading-missing-mfa', [
+            h('div.alert.alert-warning', Messages.loading_mfa_required),
+            content
+        ]);
+        common.totpSetup(config, content, false, (newState) => {
+            if (!newState) {
+                return void UI.errorLoadingScreen(Messages.error);
+            }
+            cb({state: true});
+        });
+        return UI.errorLoadingScreen(msg, false, false);
     };
 
     return UIElements;

@@ -12,8 +12,8 @@ define([
     '/common/common-constants.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/lib/datepicker/flatpickr.js',
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, Flatpickr) {
+    'tui-date-picker'
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, DatePicker) {
 
     var handlers = {};
 
@@ -498,6 +498,7 @@ define([
         if (!toShow) { return defaultDismiss(common, data)(); }
 
         var slice = toShow.length > 200;
+        var unsafe = toShow;
         toShow = Util.fixHTML(toShow);
 
         content.getFormatText = function () {
@@ -510,7 +511,7 @@ define([
             content.handler = function () {
                 var content = h('div', [
                     h('h4', Messages.broadcast_newCustom),
-                    h('div.cp-admin-message', toShow)
+                    h('div.cp-admin-message', unsafe) // Use unsafe string, hyperscript is safe
                 ]);
                 UI.alert(content);
             };
@@ -548,7 +549,7 @@ define([
             var nowDateStr = new Date().toLocaleDateString();
             var startDate = new Date(start);
             if (msg.isAllDay && msg.startDay) {
-                startDate = Flatpickr.parseDate(msg.startDay);
+                startDate = DatePicker.parseDate(msg.startDay);
             }
 
             // Missed events

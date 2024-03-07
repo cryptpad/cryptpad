@@ -50,5 +50,6 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);
+    Fs.rmSync(destination, { recursive: true, force: true });
     Fs.cpSync(source, destination, { recursive: true });
 });

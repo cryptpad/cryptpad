@@ -121,7 +121,7 @@ define([
 
         // Sanitize file names
         var illegalRe = /[\/\?<>\\:\*\|"]/g;
-        var controlRe = /[\x00-\x1f\x80-\x9f]/g;
+        var controlRe = /[\x00-\x1f\x80-\x9f]/g; // eslint-disable-line no-control-regex
         var reservedRe = /^\.+$/;
         var safeRe = /[&'%!"{}[\]]/g;
         var sanitize = function (input) {
@@ -130,7 +130,6 @@ define([
             var ext = s.pop() || 'bin';
             var name = s.join('');
             var replacement = '';
-            console.error(name);
             var sanitized = name
                 .replace(illegalRe, replacement)
                 .replace(controlRe, replacement)

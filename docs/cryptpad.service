@@ -14,6 +14,10 @@ Restart=always
 # Restart service after 10 seconds if node service crashes
 RestartSec=2
 
+# Proper logging to journald
+StandardOutput=journal
+StandardError=journal+console
+
 User=cryptpad
 Group=cryptpad
 # modify to match your working directory

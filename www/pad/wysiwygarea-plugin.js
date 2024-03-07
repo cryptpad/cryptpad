@@ -31,9 +31,9 @@ define(['/api/config'], function (ApiConfig) {
             // trigger iframe's 'load' event.
             // Microsoft Edge throws "Permission Denied" if treated like an IE (http://dev.ckeditor.com/ticket/13441).
             if ( CKEDITOR.env.air ) {
-                src = 'javascript:void(0)'; // jshint ignore:line
+                src = 'javascript:void(0)';
             } else if ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) {
-                src = 'javascript:void(function(){' + encodeURIComponent( src ) + '}())'; // jshint ignore:line
+                src = 'javascript:void(function(){' + encodeURIComponent( src ) + '}())';
             } else {
                 src = '';
             }

@@ -573,7 +573,9 @@ define([
         if (!$blockContainer || !$blockContainer.length) {
             var id = '';
             if (cfg.id) { id = '#'+cfg.id; }
-            $blockContainer = $(h('div.cp-modal-container'+id, {}));
+            $blockContainer = $(h('div.cp-modal-container'+id, {
+                tabindex: 1
+            }));
         }
         var deleted = false;
         var hide = function () {

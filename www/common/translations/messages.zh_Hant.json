@@ -1,0 +1,21 @@
+{
+    "type": {
+        "pad": "Rich text",
+        "kanban": "看板",
+        "slide": "Markdown 投影片",
+        "drive": "CryptDrive",
+        "whiteboard": "白板",
+        "file": "檔案",
+        "media": "多媒體",
+        "todo": "Todo",
+        "contacts": "聯絡我們",
+        "sheet": "試算表",
+        "teams": "團隊",
+        "form": "表單",
+        "doc": "文件",
+        "diagram": "圖表"
+    },
+    "deletedError": "這份文件已被永久刪除。",
+    "common_connectionLost": "<b>伺服器連線中斷</b><br>在恢復連線前都會是唯讀模式。",
+    "inactiveError": "這份文件已因太久未被編輯而刪除，請按 Esc 鍵來創建一份新文件。"
+}

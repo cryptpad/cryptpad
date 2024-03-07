@@ -23,6 +23,7 @@ define([
     '/calendar/export.js',
     '/calendar/recurrence.js',
     '/lib/datepicker/flatpickr.js',
+    'tui-date-picker',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
@@ -64,17 +65,13 @@ define([
     Export,
     Rec,
     Flatpickr,
+    DatePicker,
     Share, Access, Properties,
     diffMk,
     SFCodeMirror,
     CodeMirror
     )
 {
-    // XXX New translation keys
-    Messages.calendar_rec_change_first = "You moved the first repeating event to different calendar. You can only apply this change to all repeated events."; // XXX New translation key
-    Messages.calendar_rec_change = "You moved a repeating event to different calendar. You can only apply this change to this event or all repeated events."; // XXX New translation key
-    Messages.calendar_desc = "Description"; // XXX maybe rename in `description`?
-    Messages.calendar_description = "Description:{0}{1}"; // XXX
 
     var SaveAs = window.saveAs;
     var APP = window.APP = {
@@ -124,6 +121,8 @@ define([
         var startDate = event.start._date;
         var endDate = event.end._date;
 
+        var timeZone;
+        try { timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
         var data = {
             id: Util.uid(),
             calendarId: event.calendarId,
@@ -135,6 +134,7 @@ define([
             end: +endDate,
             reminders: reminders,
             body: eventBody,
+            timeZone: timeZone,
             recurrenceRule: event.recurrenceRule
         };
 
@@ -306,9 +306,9 @@ define([
                 obj.title = obj.title || "";
                 obj.location = obj.location || "";
                 obj.body = obj.body || "";
-                if (obj.isAllDay && obj.startDay) { obj.start = +Flatpickr.parseDate((obj.startDay)); }
+                if (obj.isAllDay && obj.startDay) { obj.start = +DatePicker.parseDate((obj.startDay)); }
                 if (obj.isAllDay && obj.endDay) {
-                    var endDate = Flatpickr.parseDate(obj.endDay);
+                    var endDate = DatePicker.parseDate(obj.endDay);
                     endDate.setHours(23);
                     endDate.setMinutes(59);
                     endDate.setSeconds(59);
@@ -408,13 +408,13 @@ define([
                 str = `<a href="${l}" id="${uid}">${str}</a>`;
                 APP.nextLocationUid = uid;
             }
-
-            return Messages._getKey('calendar_location', [str]);
+            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-label': Messages.calendar_loc }, []);
+            return location_icon.outerHTML + str;
         },
         popupDetailBody: function(schedule) {
             var str = schedule.body;
             delete APP.eventBody;
-            return Messages._getKey('calendar_description', ['<br />', diffMk.render(str, true)]);
+            return diffMk.render(str, true);
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
@@ -1012,13 +1012,12 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         makeLeftside(cal, $(leftside));
 
         cal.on('beforeCreateSchedule', function(event) {
-            event.recurrenceRule = APP.recurrenceRule; // XXX Not sure about the consistency of data structures
+            event.recurrenceRule = APP.recurrenceRule;
             newEvent(event, function (err) {
                 if (err) {
                     console.error(err);
                     return void UI.warn(err);
                 }
-                //cal.createSchedules([schedule]); XXX Remove these occurrences elsewhere
             });
         });
         cal.on('beforeUpdateSchedule', function(event) {
@@ -1127,7 +1126,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                             console.error(err);
                             return void UI.warn(err);
                         }
-                        //cal.updateSchedule(old.id, old.calendarId, changes);
                     });
                 }
             };
@@ -1309,23 +1307,20 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             updateDateRange();
             updateRecurring();
         });
+        var f = Flatpickr(goDate, {
+            enableTime: false,
+            defaultDate: APP.calendar.getDate()._date,
+            clickOpens: false,
+            //dateFormat: dateFormat,
+            onChange: function (date) {
+                date[0].setHours(12);
+                APP.moveToDate(+date[0]);
+                updateDateRange();
+                updateRecurring();
+            },
+        });
         $(goDate).click(function () {
-            var f = Flatpickr(goDate, {
-                enableTime: false,
-                defaultDate: APP.calendar.getDate()._date,
-                //dateFormat: dateFormat,
-                onChange: function (date) {
-                    date[0].setHours(12);
-                    f.destroy();
-                    APP.moveToDate(+date[0]);
-                    updateDateRange();
-                    updateRecurring();
-                },
-                onClose: function () {
-                    setTimeout(f.destroy);
-                }
-            });
-            f.open();
+            return f.isOpen ? f.close() : f.open();
         });
         APP.toolbar.$bottomL.append(h('div.cp-calendar-browse', [
             goLeft, goToday, goRight, goDate
@@ -1382,6 +1377,8 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         }
         if (m) {
             m = m.map(function (n) {
+                tmp.setDate(15);
+                tmp.setHours(12);
                 tmp.setMonth(n-1);
                 return tmp.toLocaleDateString(getDateLanguage(), { month: 'long' });
             });
@@ -1468,7 +1465,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 dayStr,
                 monthStr
             ]),
-            last: last ? '-1' + dayStr : undefined,
+            last: last ? '-1' + dayCode : undefined,
             lastStr: Messages._getKey('calendar_rec_'+key+'_nth', [
                 Messages['calendar_nth_last'],
                 dayStr,
@@ -1670,7 +1667,7 @@ APP.recurrenceRule = {
                 minDate: date,
                 //dateFormat: dateFormat,
                 onChange: function () {
-                    //endPickr.set('minDate', startPickr.parseDate(s.value));
+                    //endPickr.set('minDate', DatePicker.parseDate(s.value));
                 }
             });
             var endDate = new Date(+date);
@@ -1848,7 +1845,7 @@ APP.recurrenceRule = {
                         if (until === "count") {
                             rec.count = $(radioCount).find('input[type="number"]').val();
                         } else if (until === "date") {
-                            var _date = Flatpickr.parseDate(pickr.value);
+                            var _date = DatePicker.parseDate(pickr.value);
                             _date.setDate(_date.getDate()+1);
                             rec.until = +_date - 1;
                         }
@@ -2182,7 +2179,7 @@ APP.recurrenceRule = {
             var $button = $el.find('.tui-full-calendar-section-button-save');
 
             var $startDate = $el.find('#tui-full-calendar-schedule-start-date');
-            var startDate = Flatpickr.parseDate($startDate.val());
+            var startDate = DatePicker.parseDate($startDate.val());
 
             var divRec = getRecurrenceInput(startDate);
             $button.before(divRec);

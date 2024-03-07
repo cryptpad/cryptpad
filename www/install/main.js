@@ -130,24 +130,31 @@ define([
             function (yes) {
                 if (!yes) { return; }
 
-                Login.loginOrRegisterUI(uname, passwd, true, shouldImport, false, function (data) {
-                    var proxy = data.proxy;
-                    if (!proxy || !proxy.edPublic) { UI.alert(Messages.error); return true; }
+                Login.loginOrRegisterUI({
+                    uname,
+                    passwd,
+                    isRegister: true,
+                    onOTP: UI.getOTPScreen,
+                    shouldImport,
+                    cb: function (data) {
+                        var proxy = data.proxy;
+                        if (!proxy || !proxy.edPublic) { UI.alert(Messages.error); return true; }
 
-                    Rpc.createAnonymous(data.network, function (e, call) {
-                        if (e) { UI.alert(Messages.error); return console.error(e); }
-                        var anon_rpc = call;
-
-                        anon_rpc.send('ADD_FIRST_ADMIN', {
-                            token: token,
-                            edPublic: proxy.edPublic
-                        }, function (e) {
+                        Rpc.createAnonymous(data.network, function (e, call) {
                             if (e) { UI.alert(Messages.error); return console.error(e); }
-                            window.location.href = '/drive/';
-                        });
-                    });
+                            var anon_rpc = call;
 
-                    return true;
+                            anon_rpc.send('ADD_FIRST_ADMIN', {
+                                token: token,
+                                edPublic: proxy.edPublic
+                            }, function (e) {
+                                if (e) { UI.alert(Messages.error); return console.error(e); }
+                                window.location.href = '/drive/';
+                            });
+                        });
+
+                        return true;
+                    }
                 });
                 registering = true;
             }, {

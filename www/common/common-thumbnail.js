@@ -150,7 +150,7 @@ define([
         video.src = url;
     };
     Thumb.fromPdfBlob = function (blob, cb) {
-        require.config({paths: {'pdfjs-dist': '/lib/pdfjs'}});
+        require.config({paths: {'pdfjs-dist': '/lib/pdfjs/legacy'}});
         require(['pdfjs-dist/build/pdf'], function (PDFJS) {
             var url = URL.createObjectURL(blob);
             var makeThumb = function (page) {
@@ -230,17 +230,17 @@ define([
     Thumb.fromDOM = function (opts, cb) {
         var element = opts.getContainer();
         if (!element) { return; }
-        var todo = function () {
+        var todo = function (html2canvas) {
+            if (!window.html2canvas) { window.html2canvas = html2canvas; }
             if (opts.filter) { opts.filter(element, true); }
             window.html2canvas(element, {
                 allowTaint: true,
-                onrendered: function (canvas) {
-                    if (opts.filter) { opts.filter(element, false); }
-                    setTimeout(function () {
-                        var D = getResizedDimensions(canvas, 'pad');
-                        Thumb.fromCanvas(canvas, D, cb);
-                    }, 10);
-                }
+            }).then(function (canvas) {
+                if (opts.filter) { opts.filter(element, false); }
+                setTimeout(function () {
+                    var D = getResizedDimensions(canvas, 'pad');
+                    Thumb.fromCanvas(canvas, D, cb);
+                }, 10);
             });
         };
         if (window.html2canvas) { return void todo(); }

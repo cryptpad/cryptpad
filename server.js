@@ -167,7 +167,7 @@ nThen(function (w) {
     var throttledEnvChange = Util.throttle(function () {
         Env.Log.info('WORKER_ENV_UPDATE', 'Updating HTTP workers with latest state');
         broadcast('ENV_UPDATE', Environment.serialize(Env));
-    }, 250);
+    }, 250); // NOTE: changing this value will impact lib/commands/admin-rpc.js#adminDecree callback
 
     var throttledCacheFlush = Util.throttle(function () {
         Env.Log.info('WORKER_CACHE_FLUSH', 'Instructing HTTP workers to flush cache');

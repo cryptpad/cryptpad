@@ -42,7 +42,7 @@ define([
         while (l-- > 1) {
         /*  our linter suspects this is unsafe because we lack types
             but as long as this is only used on nonces, it should be safe  */
-            if (N[l] !== 255) { return void N[l]++; } // jshint ignore:line
+            if (N[l] !== 255) { return void N[l]++; }
             if (l === 0) { throw new Error('E_NONCE_TOO_LARGE'); }
             N[l] = 0;
         }

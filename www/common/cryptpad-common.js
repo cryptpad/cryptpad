@@ -1527,6 +1527,7 @@ define([
                 hash: newHash,
                 href: newHref,
                 roHref: newRoHref,
+                channel: newSecret.channel
             });
         });
     };
@@ -1912,6 +1913,7 @@ define([
 
     common.deleteAccount = function (data, cb) {
         data = data || {};
+        common.CP_onAccountDeletion = true;
 
         var bytes = data.bytes; // From Scrypt
         var auth = data.auth; // MFA data
@@ -2005,6 +2007,11 @@ define([
                     console.log("no block found");
                     return;
                 }
+                if (err && err === 401) {
+                    // there is a protected block at the next location, abort FIXME check
+                    waitFor.abort();
+                    return void cb({ error: 'EEXISTS' });
+                }
 
                 response.arrayBuffer().then(waitFor(arraybuffer => {
                     var block = new Uint8Array(arraybuffer);
@@ -2053,21 +2060,44 @@ define([
                 User_hash: newHash,
                 edPublic: edPublic,
             };
+            var userData = [undefined, edPublic];
+            var sessionToken = LocalStore.getSessionToken() || undefined;
             Block.writeLoginBlock({
                 auth: auth,
+                userData: userData,
                 blockKeys: blockKeys,
                 oldBlockKeys: oldBlockKeys,
-                content: content
+                content: content,
+                session: sessionToken // Recover existing SSO session
             }, waitFor(function (err, data) {
                 if (err) {
                     waitFor.abort();
                     return void cb({error: err});
                 }
+                // Update the session if OTP is enabled
+                // If OTP is disabled, keep the existing SSO session
                 if (data && data.bearer) {
                     LocalStore.setSessionToken(data.bearer);
                 }
             }));
 
+        }).nThen(function (waitFor) {
+            var isSSO = Boolean(LocalStore.getSSOSeed());
+            if (!isSSO) { return; }
+
+            // Update "sso_block" data for SSO accounts
+            Block.updateSSOBlock({
+                blockKeys: blockKeys,
+                oldBlockKeys: oldBlockKeys
+            }, waitFor(function (err) {
+                if (err) {
+                    // If we can't move the sso_block data, we won't be able to log in later
+                    // so we must abort the password change.
+                    console.error(err);
+                    waitFor.abort();
+                    return void cb({error: err});
+                }
+            }));
         }).nThen(function (waitFor) {
             var blockUrl = Block.getBlockUrl(blockKeys);
             var sessionToken = LocalStore.getSessionToken() || undefined;
@@ -2097,6 +2127,7 @@ define([
             Block.removeLoginBlock({
                 reason: 'PASSWORD_CHANGE',
                 auth: auth,
+                edPublic: edPublic,
                 blockKeys: oldBlockKeys,
             }, waitFor(function (err) {
                 if (err) { return void console.error(err); }
@@ -2145,6 +2176,7 @@ define([
     // Loading events
     common.loading = {};
     common.loading.onDriveEvent = Util.mkEvent();
+    common.loading.onMissingMFAEvent = Util.mkEvent();
 
     // (Auto)store pads
     common.autoStore = {};
@@ -2311,7 +2343,7 @@ define([
         LocalStore.logout(function () {
             common.stopWorker();
             common.drive.onDeleted.fire(data.reason);
-        });
+        }, true);
     };
 
     var lastPing = +new Date();
@@ -2469,6 +2501,22 @@ define([
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
             }
+        }).nThen(function (waitFor) {
+            var blockHash = LocalStore.getBlockHash();
+            if (!blockHash || !Config.enforceMFA) { return; }
+
+            // If this instance is configured to enforce MFA for all registered users,
+            // request the login block with no credential to check if it is protected.
+            var parsed = Block.parseBlockHash(blockHash);
+            Util.getBlock(parsed.href, { }, waitFor((err, response) => {
+                // If this account is already protected, nothing to do
+                if (err === 401 && response.method) { return; }
+
+                // Missing MFA protection, show set up screen
+                common.loading.onMissingMFAEvent.fire({
+                    cb: waitFor()
+                });
+            }));
 
         }).nThen(function (waitFor) {
             // if a block URL is present then the user is probably logged in with a modern account
@@ -2669,6 +2717,7 @@ define([
                     window.addEventListener('unload', function () {
                         postMsg('CLOSE');
                     });
+                // eslint-disable-next-line no-constant-condition
                 } else if (false && !noWorker && !noSharedWorker && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready
@@ -2853,13 +2902,17 @@ define([
                 if (!o && n) {
                     LocalStore.loginReload();
                 } else if (o && !n) {
-                    LocalStore.logout();
+                    if (!common.CP_onAccountDeletion) { LocalStore.logout(); }
                 } else if (o && n && o !== n) {
                     common.passwordUpdated = true;
                     window.location.reload();
                 }
             });
+            common.drive.onDeleted.reg(function () {
+                common.CP_onAccountDeletion = true;
+            });
             LocalStore.onLogout(function () {
+                if (common.CP_onAccountDeletion) { return; }
                 console.log('onLogout: disconnect');
                 common.stopWorker();
             });

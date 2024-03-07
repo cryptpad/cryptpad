@@ -4,6 +4,235 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 5.7.0
+
+## Goals
+
+This release includes some features that could not be included into 5.6.0, namely instance invitations and support for images in diagrams. It also includes bug fixes in the drive, calendar and many other places.
+
+## Features
+
+- Instance administrators can now issue invitation links that can be used to create one account each, even if registration is closed on the instance. An optional User Directory can help keep track of the known accounts on the instance. This feature is designed for the needs of enterprise customers who use their own instance, hence allowing administrators access to more information than on a public-facing service [#1395](https://github.com/cryptpad/cryptpad/pull/1395)
+- Diagram documents now support images [#1295](https://github.com/cryptpad/cryptpad/pull/1295)
+
+## Fixes
+
+- Fix access modal issues after password change [#1394](https://github.com/cryptpad/cryptpad/pull/1394)
+- Drive
+  - Shared folder access list [#1388](https://github.com/cryptpad/cryptpad/pull/1388)
+  - File icons in drive [#1386](https://github.com/cryptpad/cryptpad/pull/1386)
+  - Emptying trash with multiple folders and files fails [#1344](https://github.com/cryptpad/cryptpad/issues/1344)
+  - Shared folder and drive, read-only link issue [#1238](https://github.com/cryptpad/cryptpad/issues/1238)
+  - Loss of access to a shared folder after a double password change [#1365](https://github.com/cryptpad/cryptpad/issues/1365)
+- Files
+  - PDFjs rendering issue with Firefox 121 [#1393](https://github.com/cryptpad/cryptpad/pull/1393)
+- Rich Text
+  - Fix richtext issues [#1392](https://github.com/cryptpad/cryptpad/pull/1392)
+    - Duplicated element in table of content (TOC) [#1336](https://github.com/cryptpad/cryptpad/issues/1336)
+    - Anchors don't work anymore [#1226](https://github.com/cryptpad/cryptpad/issues/1226)
+    - Rows and columns numbers in tables can't be modified anymore [#1358](https://github.com/cryptpad/cryptpad/issues/1358)
+- Forms
+  - Fix issue with duplicating choice/checkbox grid questions [#1359](https://github.com/cryptpad/cryptpad/pull/1359)
+  - Date question datepicker/input field now displays correctly  [#1357](https://github.com/cryptpad/cryptpad/pull/1357)
+  - Duplicated “Enter” event sent when navigating with keyboard [#1396](https://github.com/cryptpad/cryptpad/issues/1396)
+- Kanban
+  - Kanban item export [#1360](https://github.com/cryptpad/cryptpad/pull/1360)
+- Calendar
+  - Calendar datepicker on mobile now easily toggled  [#1368](https://github.com/cryptpad/cryptpad/pull/1368)
+  - Behaviour change: keep the offset between start and end date constant when updating the start date (otherwise it was possible to create events that end before even starting that thus don’t appear in the calendar) 
+  - Calendar yearly recurring event - wrong month name [#1398](https://github.com/cryptpad/cryptpad/issues/1398)
+- Admin
+  - Encoding issues in broadcast messages [#1379](https://github.com/cryptpad/cryptpad/issues/1379)
+- Deployment
+  - Fix Cryptpad is unhealthy on Docker [#1350](https://github.com/cryptpad/cryptpad/pull/1350) thanks to @llaumgui
+
+
+## Dependencies
+
+- Bump follow-redirects from 1.15.3 to 1.15.4 [#1378](https://github.com/cryptpad/cryptpad/pull/1378)
+
+
+## Upgrade notes
+
+If you are upgrading from a version older than `5.6.0` please read the upgrade notes of all versions between yours and `5.6.0` to avoid configuration issues.
+
+⚠️ Before proceeding note that this upgrade requires changes to the Nginx configuration, please see full diff below.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 5.7.0
+```
+3. Update dependencies
+
+```bash
+npm ci
+npm run install:components
+```
+
+4. Restart your server
+5. Review your instance's checkup page to ensure that you are passing all tests
+
+### Nginx config changes
+
+```diff
+diff --git a/docs/example-advanced.nginx.conf b/docs/example-advanced.nginx.conf
+index cb827b4b0..f2b32e959 100644
+--- a/docs/example-advanced.nginx.conf
++++ b/docs/example-advanced.nginx.conf
+@@ -14,6 +14,8 @@ server {
+ 
+     # Let's Encrypt webroot
+     include letsencrypt-webroot;
++    # Include mime.types to be able to support .mjs files (see "types" below)
++    include mime.types;
+ 
+     # CryptPad serves static assets over these two domains.
+     # `main_domain` is what users will enter in their address bar.
+@@ -166,11 +168,6 @@ server {
+     # We've applied other sandboxing techniques to mitigate the risk of running WebAssembly in this privileged scope
+     if ($uri ~ ^\/unsafeiframe\/inner\.html.*$) { set $unsafe 1; }
+ 
+-    # draw.io uses inline script tags in it's index.html. The hashes are added here.
+-    if ($uri ~ ^\/components\/drawio\/src\/main\/webapp\/index.html.*$) {
+-        set $scriptSrc "'self' 'sha256-dLMFD7ijAw6AVaqecS7kbPcFFzkxQ+yeZSsKpOdLxps=' 'sha256-6g514VrT/cZFZltSaKxIVNFF46+MFaTSDTPB8WfYK+c=' resource: https://${main_domain}";
+-    }
+-
+     # privileged contexts allow a few more rights than unprivileged contexts, though limits are still applied
+     if ($unsafe) {
+         set $scriptSrc "'self' 'unsafe-eval' 'unsafe-inline' resource: https://${main_domain}";
+@@ -179,6 +176,11 @@ server {
+     # Finally, set all the rules you composed above.
+     add_header Content-Security-Policy "default-src 'none'; child-src $childSrc; worker-src $workerSrc; media-src $mediaSrc; style-src $styleSrc; script-src $scriptSrc; connect-src $connectSrc; font-src $fontSrc; img-src $imgSrc; frame-src $frameSrc; frame-ancestors $frameAncestors";
+ 
++    # Add support for .mjs files used by pdfjs
++    types {
++        application/javascript mjs;
++    }
++
+     # The nodejs process can handle all traffic whether accessed over websocket or as static assets
+     # We prefer to serve static content from nginx directly and to leave the API server to handle
+     # the dynamic content that only it can manage. This is primarily an optimization
+```
+
+# 5.6.0
+
+
+## Goals
+
+This release introduces support for integrating CryptPad instances with Single-Sign On authentication. It  brings a lot of improvements and fixes to Form, Calendar, and other parts of CryptPad. This release begins to improve the accessibility of the toolbar towards full WCAG compliance which we hope to achieve in the near future.
+
+## Features
+
+- Authentication
+  - This version paves the way for SSO authentication for a CryptPad instance via a plugin (est. release Jan. 2024) [#1320](https://github.com/cryptpad/cryptpad/pull/1320)
+  - New setting to make Two-Factor Authentication mandatory for all user accounts on an instance [#1341](https://github.com/cryptpad/cryptpad/pull/1341)
+- Form
+  - New button to duplicate a question [#1305](https://github.com/cryptpad/cryptpad/pull/1305)
+- Calendar
+  - New description field for calendar events [#1299](https://github.com/cryptpad/cryptpad/pull/1299)
+
+## Improvements
+
+- Accessibility of toolbars and some drop-down menus [#1290](https://github.com/cryptpad/cryptpad/pull/1290)
+  -  "+ New" drop-down menu in Drive and Team Drive #1191 
+  -  New `Ctrl + e` modal #1192 
+  -  Code contact request notifications as headings #1197 
+  -  DOM order of toolbar #1198 
+  -  Notifications menu not accessible via Keyboard #1201 
+  -  Sidebar "tabs" not accessible via keyboard #1203 
+  -  Implement keyboard navigation of toolbar menus #1209 
+  -  CryptDrive page needs a logical tab order #1151 
+  -  Elements not accessible using the keyboard #1162 
+  -  Calendar event modal date-picker is cut-off at some screen resolutions #1280
+  -  Visible focus #1206
+- Rich Text
+  - Improvements to the Rich Text toolbar and layout for mobile usage [#1296](https://github.com/cryptpad/cryptpad/pull/1296)
+- Calendar
+  - Handling the move of repeating events from a calendar to another [#1308](https://github.com/cryptpad/cryptpad/pull/1308)
+- Kanban
+  - Changed positioning of kanban tag container on smaller screens [#1307](https://github.com/cryptpad/cryptpad/pull/1307)
+- New option to increase the number of teams slots for premium users only [#1315](https://github.com/cryptpad/cryptpad/pull/1315)
+- Improve licensing information, CryptPad code now complies with the [REUSE](https://reuse.software/) specifications [#1300](https://github.com/cryptpad/cryptpad/pull/1300)
+- Deployment
+  - Basic configuration for Apache HTTPd [#1332](https://github.com/cryptpad/cryptpad/pull/1332)
+  - Add Docker health check [#1287](https://github.com/cryptpad/cryptpad/pull/1287)
+- Cleanup
+  - Old // XXX comments [#1334](https://github.com/cryptpad/cryptpad/pull/1334)
+  - Outdated/misplaced files [#1327](https://github.com/cryptpad/cryptpad/pull/1327)
+
+## Fixes
+
+- Fix browser autocomplete issues (password, numbers, etc.) [#1342](https://github.com/cryptpad/cryptpad/pull/1342)
+- Drive
+  - Container height fills screen [#1304](https://github.com/cryptpad/cryptpad/pull/1304)
+  - Context menu on mobile [#1301](https://github.com/cryptpad/cryptpad/pull/1301)
+- OnlyOffice applications
+  - Use correct mime type for .wasm files (export functionality) [#1288](https://github.com/cryptpad/cryptpad/pull/1288)
+  - Fix filter functionality in Sheets [#1319](https://github.com/cryptpad/cryptpad/issues/1319)
+- Form
+  - Fix an error upon importing a template in forms [#1316](https://github.com/cryptpad/cryptpad/pull/1316)
+  - Can now set form closing date/time on mobile [#1305](https://github.com/cryptpad/cryptpad/pull/1305)
+  - Can now edit time options for poll questions on mobile [#1305](https://github.com/cryptpad/cryptpad/pull/1305)
+  - Dates in CSV exports of forms are now in ISO (not timestamp) format [#1305](https://github.com/cryptpad/cryptpad/pull/1305)
+  - Page breaks are no longer visible in conditional sections when condition is not met [#1305](https://github.com/cryptpad/cryptpad/pull/1305)
+  - Final submission page now has margins [#1305](https://github.com/cryptpad/cryptpad/pull/1305)
+  - Question blocks on mobile are now only draggable at the top of the block to make scrolling possible [#1305](https://github.com/cryptpad/cryptpad/pull/1305)
+- Whiteboard
+  - Fix a few export-related issues [#1328](https://github.com/cryptpad/cryptpad/pull/1328)
+- Calendar
+  - Reformat `www/calendar/export.js` [#1314](https://github.com/cryptpad/cryptpad/pull/1314)
+  - Fix a bug with stopping the recurrence of a calendar event [#1312](https://github.com/cryptpad/cryptpad/pull/1312)
+  - Calendar creates itself twice when navigating with the keyboard	[#1250](https://github.com/cryptpad/cryptpad/issues/1250)
+  - Fix timezone in Daylight Saving Time issues [#1317](https://github.com/cryptpad/cryptpad/pull/1317)
+- Translations
+  - Revise the translation of `zh` [#1329](https://github.com/cryptpad/cryptpad/pull/1329)
+
+## Dependencies
+- Added [Moment.js](http://momentjs.com/) for improved handling of dates in Calendar (added as part of [#1317](https://github.com/cryptpad/cryptpad/pull/1317))
+
+## Deployment
+We [fixed an issue with the Systemd service file and logging](https://github.com/cryptpad/cryptpad/commit/078095c3e25d39707bdaab7ec066ceed6cb7158b), you'll need to add the following lines to your `cryptpad.service` before continuing by following the upgrade notes below.
+
+```diff
+# Restart service after 10 seconds if node service crashes
+RestartSec=2
+
++ # Proper logging to journald
++ StandardOutput=journal
++ StandardError=journal+console
+
+User=cryptpad
+Group=cryptpad
+```
+
+## Upgrade notes
+
+If you are upgrading from a version older than `5.5.0` please read the upgrade notes of all versions between yours and `5.5.0` to avoid configuration issues.
+
+To upgrade:
+
+1. Reload the Systemd daemon, required due to the changes in the **Deployment** section
+```bash
+sudo systemctl daemon-reload
+```
+
+2. Stop your server
+3. Get the latest code with git
+```bash
+git fetch origin --tags
+git checkout 5.6.0
+```
+
+4. Restart your server
+5. Review your instance's checkup page to ensure that you are passing all tests
+
+
+
 # 5.5.0
 
 ## Features

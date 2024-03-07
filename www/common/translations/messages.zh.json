@@ -13,7 +13,7 @@
         "todo": "待办事项",
         "teams": "团队",
         "sheet": "工作表",
-        "contacts": "联系我们",
+        "contacts": "联系人",
         "form": "表单",
         "presentation": "演示文档",
         "doc": "文档"
@@ -1236,7 +1236,6 @@
     "calendar_hours": "小时",
     "calendar_minutes": "分钟",
     "calendar_allDay": "全天",
-    "calendar_location": "位置：{0}",
     "calendar_loc": "地点",
     "calendar_title": "标题",
     "calendar_update": "更新",

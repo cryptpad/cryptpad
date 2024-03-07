@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/api/config',
     'jquery',
+    '/common/hyperscript.js',
     '/common/cryptpad-common.js',
     '/customize/login.js',
     '/common/common-interface.js',
@@ -13,7 +15,7 @@ define([
     //'/common/test.js',
 
     'css!/components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
+], function (Config, $, h, Cryptpad, Login, UI, Realtime, Feedback, LocalStore /*, Test */) {
     if (window.top !== window) { return; }
     $(function () {
         var $checkImport = $('#import-recent');
@@ -21,6 +23,31 @@ define([
             // already logged in, redirect to drive
             document.location.href = '/drive/';
             return;
+        }
+
+        if (Config.sso) {
+            // TODO
+            // Config.sso.force => no legacy login allowed
+            // Config.sso.password => cp password required or forbidden
+            // Config.sso.list => list of configured identity providers
+            var $sso = $('div.cp-login-sso');
+            var list = Config.sso.list.map(function (name) {
+                var b = h('button.btn.btn-secondary', name);
+                var $b = $(b).click(function () {
+                    $b.prop('disabled', 'disabled');
+                    Login.ssoAuth(name, function (err, data) {
+                        if (data.url) {
+                            window.location.href = data.url;
+                        }
+                    });
+                });
+                return b;
+            });
+            $sso.append(list);
+
+            // Disable bfcache (back/forward cache) to prevent SSO button
+            // being disabled when using the browser "back" feature on the SSO page
+            $(window).on('unload', () => {});
         }
 
         /* Log in UI */
@@ -53,15 +80,11 @@ define([
             var shouldImport = $checkImport[0].checked;
             var uname = $uname.val();
             var passwd = $passwd.val();
-            Login.loginOrRegisterUI(uname, passwd, false, shouldImport,
-                UI.getOTPScreen, /*Test.testing */ false, function () {
-                /*
-                if (test) {
-                    localStorage.clear();
-                    //test.pass();
-                    return true;
-                }
-                */
+            Login.loginOrRegisterUI({
+                uname,
+                passwd,
+                shouldImport,
+                onOTP: UI.getOTPScreen
             });
         });
         $('#register').on('click', function () {

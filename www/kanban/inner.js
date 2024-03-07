@@ -56,6 +56,7 @@ define([
     jKanban,
     Export)
 {
+
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();
@@ -937,6 +938,8 @@ define([
                 //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
+            var toggleTagsButton = h('button.btn.btn-default.kanban-tag-btn-toggle', Messages.kanban_showTags);
+
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
@@ -946,12 +949,14 @@ define([
             ]);
             var hint = h('span.cp-kanban-filterTags-name', Messages.kanban_tags);
             var tags = h('div.cp-kanban-filterTags', [
+
                 h('span.cp-kanban-filterTags-toggle', [
                     hint,
                     reset,
                 ]),
                 list,
             ]);
+
             var $reset = $(reset);
             var $list = $(list);
             var $hint = $(hint);
@@ -967,6 +972,7 @@ define([
                     return String($(this).data('tag'));
                 }).get();
             };
+
             var commitTags = function () {
                 var t = getTags();
                 setTagFilterState(t.length);
@@ -1023,6 +1029,40 @@ define([
                 setTags([]);
                 commitTags();
             });
+
+
+            if ($(window).width() < 500) {
+
+                $(tags).append(toggleTagsButton);
+
+                var hideTags = function () {
+                    for (var tag of list.children) {
+                        if (existing.indexOf(tag.innerHTML) > 10) {
+                            $(tag).hide();                    
+                        }
+                    }
+                };
+                hideTags();
+    
+                var toggleTags = function () {
+                    for (var tag of list.children) {
+                        if (existing.indexOf(tag.innerHTML) > 10 && kanban.options.tags.indexOf(tag.innerHTML) === -1) {
+                            if ($(tag).is(":visible")) { 
+                                $(tag).hide();
+                                $(toggleTagsButton).text(Messages.kanban_showTags);
+                            } else {
+                                $(tag).show();
+                                $(toggleTagsButton).text(Messages.kanban_hideTags);
+                            }
+                        }
+                    }
+                };
+    
+                $(toggleTagsButton).click(function() {
+                    toggleTags();
+                });
+    
+            }
 
             var container = h('div#cp-kanban-controls', [
                 tags,
@@ -1110,6 +1150,33 @@ define([
         if (framework.isReadOnly() || framework.isLocked()) {
             $container.addClass('cp-app-readonly');
         }
+
+        var cleanData = function (boards) {
+            if (typeof(boards) !== "object") { return; }
+            var items = boards.items || {};
+            var data = boards.data || {};
+            var list = boards.list || [];
+
+            // Remove duplicate boards
+            list = boards.list = Util.deduplicateString(list);
+
+            Object.keys(data).forEach(function (id) {
+                if (list.indexOf(Number(id)) === -1) {
+                    list.push(Number(id));
+                }
+                // Remove duplicate items
+                var b = data[id];
+                b.item = Util.deduplicateString(b.item || []);
+            });
+            Object.keys(items).forEach(function (eid) {
+                var exists = Object.keys(data).some(function (id) {
+                    return (data[id].item || []).indexOf(Number(eid)) !== -1;
+                });
+                if (!exists) { delete items[eid]; }
+            });
+            framework.localChange();
+        };
+
         framework.setFileImporter({accept: ['.json', 'application/json']}, function (content /*, file */) {
             var parsed;
             try { parsed = JSON.parse(content); }
@@ -1123,6 +1190,8 @@ define([
         });
 
         framework.setFileExporter('.json', function () {
+            var content = kanban.getBoardsJSON();
+            cleanData(content);
             return new Blob([JSON.stringify(kanban.getBoardsJSON(), 0, 2)], {
                 type: 'application/json',
             });
@@ -1263,32 +1332,6 @@ define([
                 content: content
             };
         });
-
-        var cleanData = function (boards) {
-            if (typeof(boards) !== "object") { return; }
-            var items = boards.items || {};
-            var data = boards.data || {};
-            var list = boards.list || [];
-
-            // Remove duplicate boards
-            list = boards.list = Util.deduplicateString(list);
-
-            Object.keys(data).forEach(function (id) {
-                if (list.indexOf(Number(id)) === -1) {
-                    list.push(Number(id));
-                }
-                // Remove duplicate items
-                var b = data[id];
-                b.item = Util.deduplicateString(b.item || []);
-            });
-            Object.keys(items).forEach(function (eid) {
-                var exists = Object.keys(data).some(function (id) {
-                    return (data[id].item || []).indexOf(Number(eid)) !== -1;
-                });
-                if (!exists) { delete items[eid]; }
-            });
-            framework.localChange();
-        };
 
         framework.onReady(function () {
             $("#cp-app-kanban-content").focus();
