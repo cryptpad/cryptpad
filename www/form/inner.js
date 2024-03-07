@@ -1243,14 +1243,14 @@ define([
                         h('i.fa.fa-plus'),
                         h('span', Messages.form_conditional_addAnd)
                     ]);
-                    var $b = $(btn).click(function () {
-                        getConditions($container, true, rules, undefined, $b);
+                    $(btn).click(function () {
+                        getConditions($container, true, rules, undefined);
                     });
                     $container.append(btn);
-                    return $b;
+                    return;
                 };
                 var values = getConditionsValues();
-                getConditions = function ($container, isNew, rules, condition, $btn) {
+                getConditions = function ($container, isNew, rules, condition) {
                     condition = condition || {};
                     condition.uid = condition.uid || Util.uid();
 
@@ -1272,7 +1272,7 @@ define([
                             if (!Array.isArray(rules)) { // new set of rules (OR)
                                 rules = [condition];
                                 w.push(rules);
-                                $btn = getAddAndButton($container, rules);
+                                getAddAndButton($container, rules);
                             } else {
                                 rules.push(condition);
                             }
@@ -1473,9 +1473,9 @@ define([
                     w.forEach(function (rules) {
                         var rulesC = h('div.cp-form-condition-rule');
                         var $rulesC = $(rulesC);
-                        var $b = getAddAndButton($rulesC, rules);
+                        getAddAndButton($rulesC, rules);
                         rules.forEach(function (obj) {
-                            getConditions($rulesC, false, rules, obj, $b);
+                            getConditions($rulesC, false, rules, obj);
                         });
                         $addC.before($rulesC);
                     });
@@ -1585,11 +1585,11 @@ define([
                                 if (!$v.length) { return; }
                                 var dropV = $v[0] && $v[0].dropdown;
                                 if (!dropV) { return; }
-                                var res, type;
+                                var res;
                                 values.some(function (obj) {
                                     if (String(obj.uid) === String(val)) {
                                         res = obj.values;
-                                        type = obj.type;
+                                        //var type = obj.type;
                                         return true;
                                     }
                                 });

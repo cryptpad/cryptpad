@@ -44,9 +44,6 @@ define([
     };
     var Fabric = APP.Fabric = window.fabric;
 
-    var verbose = function (x) { console.log(x); };
-    verbose = function () {}; // comment out to enable verbose logging
-
     var mkControls = function (framework, canvas) {
         var $pickers = $('#cp-app-whiteboard-pickers');
         var $colors = $('#cp-app-whiteboard-colors');

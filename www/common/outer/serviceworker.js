@@ -169,12 +169,12 @@ self.addEventListener('message', function (e) {
         self.tabs[cId].msgEv.fire(e);
     }
 });
-self.addEventListener('install', function (e) {
+self.addEventListener('install', function () {
     debug('V1 installing…');
     self.skipWaiting();
 });
 
-self.addEventListener('activate', function (e) {
+self.addEventListener('activate', function () {
     debug('V1 now ready to handle fetches!');
 });
 

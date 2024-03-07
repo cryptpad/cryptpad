@@ -41,8 +41,6 @@ define([
         // checkboxes
         var $register = $('button#register');
 
-        var registering = false;
-
         var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
         var br = function () { return h('br'); };
 
@@ -103,9 +101,7 @@ define([
                 var warning = Messages._getKey('register_passwordTooShort', [
                     Cred.MINIMUM_PASSWORD_LENGTH
                 ]);
-                return void UI.alert(warning, function () {
-                    registering = false;
-                });
+                return void UI.alert(warning);
             }
 
             if (passwd !== confirmPassword) { // do their passwords match?
@@ -156,7 +152,6 @@ define([
                         return true;
                     }
                 });
-                registering = true;
             }, {
                 ok: Messages.register_writtenPassword,
                 cancel: Messages.register_cancel,

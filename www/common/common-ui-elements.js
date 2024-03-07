@@ -61,7 +61,6 @@ define([
                 existing = Object.keys(res.tags).sort();
             }));
         }).nThen(function (waitFor) {
-            var _err;
             hrefs.forEach(function (href) {
                 common.getPadAttribute('tags', waitFor(function (err, res) {
                     if (err) {
@@ -69,7 +68,6 @@ define([
                             UI.alert(Messages.tags_noentry);
                         }
                         waitFor.abort();
-                        _err = err;
                         return void console.error(err);
                     }
                     allTags[href] = res || [];
@@ -362,7 +360,7 @@ define([
             buttons: contactsButtons,
         });
 
-        var linkName, linkPassword, linkMessage, linkError, linkSpinText;
+        var linkName, linkPassword, linkMessage, linkError;
         var linkForm, linkSpin, linkResult, linkUses, linkRole;
         var linkWarning;
         // Invite from link
@@ -429,7 +427,7 @@ define([
                 style: 'display: none;'
             }, [
                 h('i.fa.fa-spinner.fa-spin'),
-                linkSpinText = h('span', Messages.team_inviteLinkLoading)
+                h('span', Messages.team_inviteLinkLoading)
             ]),
             linkResult = h('div', {
                 style: 'display: none;'

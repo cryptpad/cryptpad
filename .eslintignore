@@ -14,8 +14,9 @@ www/scratch
 www/accounts
 www/lib
 www/accounts
+www/worker
+www/todo
 
-www/common/toolbar.js
 www/common/hyperscript.js
 
 www/pad/wysiwygarea-plugin.js

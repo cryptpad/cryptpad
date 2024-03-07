@@ -73,7 +73,7 @@ define([
         };
         var chan = makeChan();
 
-        var isNew = false;
+        //var isNew = false;
         var checkSession = function (oldKey, cb) {
             var channel = Hash.hrefToHexChannelId(Hash.hashToHref(oldKey));
             var prefix = channel.slice(0,2);
@@ -97,7 +97,7 @@ define([
         };
         chan.on('GET_SESSION', function (data, cb) {
             var getHash = function () {
-                isNew = true;
+                //isNew = true;
                 return Hash.createRandomHash('integration');
             };
             var oldKey = data.key;

@@ -757,7 +757,7 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var user = common.getMetadataMgr().getUserData();
         var edPublic = priv.edPublic;
-        var strangers = 0;
+        //var strangers = 0;
         var _owners = {};
         list.forEach(function (ed) {
             // If a friend is an owner, add their name to the list
@@ -808,7 +808,7 @@ define([
                 // in the pad itself (as is the case of the uid in rich text comments)
                 // TODO or just implement "Acquaintances"
             };
-            strangers++;
+            //strangers++;
         });
         if (!Object.keys(_owners).length) { return; }
         /*

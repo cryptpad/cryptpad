@@ -226,14 +226,12 @@ define([
         var $textarea = exp.$textarea = textarea ? $(textarea) : $('#editor1');
         if (!$textarea.length) { $textarea = exp.$textarea = $pad.contents().find('#editor1'); }
 
-        var Title;
         var onLocal = function () {};
         var $drawer;
         exp.init = function (local, title, toolbar) {
             if (typeof local === "function") {
                 onLocal = local;
             }
-            Title = title;
             $drawer = toolbar.$theme || $();
         };
 
