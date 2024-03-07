@@ -297,6 +297,7 @@ define([
                 var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
+                exp.$language.find('span.cp-language-text').text(name);
             }
 
                 if (mode === "orgmode") {
@@ -341,6 +342,7 @@ define([
                     var name = theme || undefined;
                     name = name ? Messages.themeButton + ' ('+theme+')' : Messages.themeButton;
                     $select.setValue(theme, name);
+                    $select.find('span.cp-theme-text').text(name);
                 }
             };
         }());
@@ -369,7 +371,9 @@ define([
                 common: Common
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
-            $block.find('button').attr('title', Messages.languageButtonTitle);
+            $block.find('button').attr('title', Messages.languageButtonTitle).hide();
+            $block.prepend(h('span.cp-language-text', Messages.languageButton));
+            $block.addClass('cp-dropdown-recursive');
 
             var isHovering = false;
             var $aLanguages = $block.find('li');
@@ -382,20 +386,21 @@ define([
                     setMode($block.find(".cp-dropdown-element-active").attr('data-value'));
                 }
             });
-            $aLanguages.click(function () {
+            //$aLanguages.click(function () {
+            $block.onChange.reg(() => {
                 isHovering = false;
-                var mode = $(this).find('a').attr('data-value');
+                var mode = $block.getValue();
                 setMode(mode, onModeChanged);
+                $block.close();
                 onLocal();
             });
 
             if ($drawer) {
                 var $blockButton = UIElements.createDropdownEntry({
                     tag: 'a',
-                    attributes: {'class': $block.find('button').attr('class')},
-                    content: h('span', $block.find('button').text()),
+                    content: $block[0],
                     action: function () {
-                        $block.click();
+                        $block.find('button').click();
                     },
                 });
                 $drawer.append($blockButton);
@@ -432,14 +437,17 @@ define([
                     common: Common
                 };
                 var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
-                $block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
+                /*$block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
                     var state = $block.find('.cp-dropdown-content').is(':visible');
                     var $c = $block.closest('.cp-toolbar-drawer-content');
                     $c.removeClass('cp-dropdown-visible');
                     if (!state) {
                         $c.addClass('cp-dropdown-visible');
                     }
-                });
+                });*/
+                $block.find('button').hide();
+                $block.prepend(h('span.cp-theme-text', Messages.languageButton));
+                $block.addClass('cp-dropdown-recursive');
 
                 setTheme(lastTheme, $block);
 
@@ -456,9 +464,9 @@ define([
                         Common.setAttribute(themeKey, lastTheme);
                     }
                 });
-                $aThemes.click(function () {
+                $block.onChange.reg(() => {
                     isHovering = false;
-                    var theme = $(this).find('a').attr('data-value');
+                    var theme = $block.getValue();
                     setTheme(theme, $block);
                     Common.setAttribute(themeKey, theme);
                 });
@@ -466,10 +474,9 @@ define([
                 if ($drawer) {
                     const $blockButton = UIElements.createDropdownEntry({
                         tag: 'a',
-                        attributes: {'class': $block.find('button').attr('class')},
-                        content: h('span', $block.find('button').text()),
+                        content: $block[0],
                         action: function () {
-                            $block.click();
+                            $block.find('button').click();
                         },
                     });
                     // $blockButton.append($block.find('ul'));

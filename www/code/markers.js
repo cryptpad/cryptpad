@@ -624,11 +624,11 @@ define([
             if (Env.opacity) {
                 Env.opacity = 0;
                 $button.find('.cp-toolbar-drawer-element').text(Messages.cba_show);
-                $button.removeClass("cp-toolbar-button-active");
+                //$button.removeClass("cp-toolbar-button-active");
             } else {
                 Env.opacity = MARK_OPACITY;
                 $button.find('.cp-toolbar-drawer-element').text(Messages.cba_hide);
-                $button.addClass("cp-toolbar-button-active");
+                //$button.addClass("cp-toolbar-button-active");
             }
         };
         toggle();

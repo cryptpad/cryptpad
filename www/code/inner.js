@@ -89,11 +89,11 @@ define([
             text: Messages.toolbar_theme,
             options: [],
             common: Common,
-            buttonCls: 'cptools cptools-palette'
+            iconCls: 'cptools cptools-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
         framework._.toolbar.$bottomL.append($drawer);
-        $drawer.find('span').addClass('cp-button-name');
+        $drawer.addClass('cp-toolbar-appmenu');
     };
 
     var mkCbaButton = function (framework, markers) {
@@ -105,15 +105,12 @@ define([
 
         var $showAuthorColors = UIElements.createDropdownEntry({
             tag: 'a',
-            attributes: {'class': $showAuthorColorsButton.attr('class')},
-            content: [
-                h('i', { 'class': $showAuthorColorsButton.children('i').attr('class') }),
-                h('span', $showAuthorColorsButton.text())
-                ],
+            attributes: {'class': 'fa fa-paint-brush ' + $showAuthorColorsButton.attr('class')},
+            content: h('span', $showAuthorColorsButton.text()),
             action: function () {
                 $showAuthorColorsButton.click();
             },
-        });
+        }).hide();
         $showAuthorColors.find('span').addClass('cp-toolbar-name cp-toolbar-drawer-element');
         framework._.toolbar.$theme.append($showAuthorColors);
         markers.setButton($showAuthorColors);
@@ -425,16 +422,13 @@ define([
         });
         var $cba = UIElements.createDropdownEntry({
             tag: 'a',
-            attributes: {'class': $cbaButton.attr('class')},
-            content: [
-                h('i', { 'class': $cbaButton.children('i').attr('class') }),
-                h('span', $cbaButton.text())
-                ],
+            attributes: {'class': 'fa fa-paint-brush ' + $cbaButton.attr('class')},
+            content: h('span', $cbaButton.text()),
             action: function () {
                 $cbaButton.click();
             },
         });
-        framework._.toolbar.$theme.append($cba);
+        framework._.toolbar.$theme.prepend($cba); // Put at the top
     };
 
     var mkFilePicker = function (framework, editor, evModeChange) {

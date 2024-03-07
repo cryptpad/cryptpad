@@ -859,10 +859,9 @@ define([
                 ])).click(common.prepareFeedback(type));
                 break;
             case 'storeindrive':
-                button = $(h('button.cp-toolbar-storeindrive', {
+                button = $(h('button.cp-toolbar-storeindrive.fa.fa-hdd-o', {
                     style: 'display:none;'
                 }, [
-                    h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $(button).hide();
@@ -1454,7 +1453,12 @@ define([
     };
 
     UIElements.createDropdownEntry = function (config) {
+        var hide = function () {};
         var allowedTags = ['a', 'li', 'p', 'hr', 'div'];
+        var isElement = function (o) {
+            return /HTML/.test(Object.prototype.toString.call(o)) &&
+                typeof(o.tagName) === 'string';
+        };
         var isValidOption = function (o) {
             if (typeof o !== "object") { return false; }
             if (isElement(o)) { return true; }
@@ -1462,15 +1466,8 @@ define([
             return true;
         };
 
-        var isElement = function (o) {
-            return /HTML/.test(Object.prototype.toString.call(o)) &&
-                typeof(o.tagName) === 'string';
-        };
         var entry;
-
-        if (!isValidOption(config)) {
-            return null;
-        }
+        if (!isValidOption(config)) { return; }
 
         if (isElement(config)) {
             entry = $(config);
@@ -1512,18 +1509,14 @@ define([
             entry.append($el);
 
             // Action can be triggered with a click or keyboard event
-            if (config.tag !== 'a' && config.tag !== 'li') {
-                return null;
-            }
+            if (config.tag === 'a' || config.tag === 'li') {
+                entry.on('mouseenter', (e) => {
+                    e.stopPropagation();
+                    entry.focus();
+                });
 
-            entry.on('mouseenter', (e) => {
-                e.stopPropagation();
-                entry.focus();
-            });
-
-            entry.on('click keydown', function(e) {
-                if (config.isSelect) { return; }
-                if (e.type === 'click' || (e.type === 'keydown' && e.keyCode === 13) || (e.type === 'keydown' && e.keyCode === 32)) {
+                Util.onClickEnter(entry, function(e) {
+                    if (config.isSelect) { return; }
                     e.stopPropagation();
                     if (typeof(config.action) === "function") {
                         var close = config.action(e);
@@ -1532,9 +1525,16 @@ define([
                         // Click on <a> with an href
                         if (e.type === 'keydown'){ $el.get(0).click(); }
                     }
-                }
-            });
+                }, {space: true});
+            }
         }
+
+        hide = function () {
+            window.setTimeout(function () {
+                entry.closest('ul.cp-dropdown-content').hide();
+                entry.parents('.cp-dropdown-content').removeClass('cp-dropdown-has-submenu').hide();
+            }, 0);
+        };
 
         return entry;
     };
@@ -1576,37 +1576,23 @@ define([
         }
 
         // Button
-        var $button;
-
-        if (config.buttonContent) {
-            $button = $(h('button', {
-                class: config.buttonCls || '',
-                'aria-haspopup': 'menu',
-                'aria-expanded': 'false',
-                'title': config.buttonTitle || '',
-                'aria-label': config.buttonTitle || '',
-            }, [
-                h('span.cp-dropdown-button-title', config.buttonContent),
-            ]));
-        } else {
-            $button = $('<button>', {
-                'class': config.buttonCls || '',
-                'aria-haspopup': 'menu',
-                'aria-expanded': 'false',
-                'title': config.buttonTitle || '',
-                'aria-label': config.buttonTitle || '',
-            }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
-        }
+        let icon = config.iconCls ? h('i', {class:config.iconCls}) : undefined;
+        var $button = $(h('button', {
+            class: config.buttonCls || '',
+            'aria-haspopup': 'menu',
+            'aria-expanded': 'false',
+            'title': config.buttonTitle || '',
+            'aria-label': config.buttonTitle || '',
+        }, config.buttonContent || [
+            icon,
+            h('span.cp-dropdown-button-title', config.text),
+        ]));
 
         if (config.caretDown) {
-            $('<span>', {
-                'class': 'fa fa-caret-down',
-            }).prependTo($button);
+            $button.append(h('i.fa.fa-caret-down'));
         }
         if (config.angleDown) {
-            $('<span>', {
-                'class': 'fa fa-angle-down',
-            }).prependTo($button);
+            $button.append(h('i.fa.fa-angle-down'));
         }
 
         // Menu
@@ -1614,7 +1600,11 @@ define([
         if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
 
         var hide = function () {
-            window.setTimeout(function () { $innerblock.hide(); }, 0);
+            window.setTimeout(function () {
+                $innerblock.hide();
+                $innerblock.parents('.cp-dropdown-content').removeClass('cp-dropdown-has-submenu')
+                        .hide();
+            }, 0);
         };
 
         // When the menu is collapsed, update aria-expanded
@@ -1629,72 +1619,20 @@ define([
         observer.observe($innerblock[0], { attributes: true });
 
         // Add the dropdown content
-        var setOptions = function (options) {
+        var setOptions = $container.setOptions = function (options) {
+            $innerblock.empty();
             options.forEach(function (o) {
-                if (!isValidOption(o)) { return; }
-                if (isElement(o)) { return void $innerblock.append(o); }
-                var $el = $(h(o.tag, (o.attributes || {})));
-                if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
-                    o.content = [o.content];
-                }
-                if (Array.isArray(o.content)) {
-                    o.content.forEach(function (item) {
-                        if (item instanceof Element) {
-                            return void $el.append(item);
-                        }
-                        if (typeof(item) === 'string') {
-                            $el[0].appendChild(document.createTextNode(item));
-                        }
-                    });
-                }
-
-                // Everything is added as an "li" tag
-                // Links and items with action are focusable
-                // Add correct "role" attribute
-                var $li = $(h('li'));
-                if (o.tag === 'a') {
-                    $el.attr('tabindex', '-1');
-                    $li.attr('role', 'menuitem');
-                    $li.attr('tabindex', '0');
-                } else if (o.tag === 'li') {
-                    $li = $el;
-                    $li.attr('role', 'menuitem');
-                    $li.attr('tabindex', '0');
-                } else if (o.tag === 'hr') {
-                    $li.attr('role', 'separator');
-                } else {
-                    $li.attr('role', 'none');
-                }
-                $li.append($el);
-                $li.appendTo($innerblock);
-
-                // Action can be triggered with a click or keyboard event
-                if (o.tag !== 'a' && o.tag !== 'li') { return; }
-
-                $li.on('mouseenter', (e) => {
-                    e.stopPropagation();
-                    $li.focus();
-                });
-                var onAction = function (e) {
-                    if (config.isSelect) { return; }
-                    if (e.type === 'click' || (e.type === 'keydown' && e.keyCode === 13) || (e.type === 'keydown' && e.keyCode === 32)) {
-                        e.stopPropagation();
-                        if (typeof(o.action) === "function") {
-                            var close = o.action(e);
-                            if (close) { hide(); }
-                        } else {
-                            // Click on <a> with an href
-                            if (e.type === 'keydown'){ $el.get(0).click(); }
-                        }
-                    }
-                };
-                $li.on('click keydown', onAction);
+                o.isSelect = config.isSelect;
+                let $entry = UIElements.createDropdownEntry(o);
+                if (!$entry) { return void console.error('Error adding dropdown entry', o); }
+                $entry.appendTo($innerblock);
             });
         };
         setOptions(config.options);
-        $container.setOptions = function (options) {
-            $innerblock.empty();
-            setOptions(options);
+
+        $container.addOption = function (config) {
+            let $entry = UIElements.createDropdownEntry(config);
+            $entry.appendTo($innerblock);
         };
 
         $container.append($button).append($innerblock);
@@ -1729,10 +1667,16 @@ define([
                 if ((topPos + h) > wh) {
                     $innerblock.css('bottom', button.height+'px');
                 }
+            } else if ($innerblock.parents('.cp-dropdown-content').length) {
+                let $p = $innerblock.parents('.cp-dropdown-content');
+                let max = $p.css('max-height');
+                $innerblock.css('max-height', max);
             } else {
                 $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
             $innerblock.show();
+            $innerblock.parents('.cp-dropdown-content').addClass('cp-dropdown-has-submenu')
+                    .show(); // keep parent open when recursive
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             setTimeout(() => {
                 if (config.isSelect && value) {
@@ -1755,11 +1699,11 @@ define([
             var state = $innerblock.is(':visible');
             $('.cp-dropdown-content').hide();
 
-            var $c = $container.closest('.cp-toolbar-drawer-content');
+            /*var $c = $container.closest('.cp-toolbar-drawer-content');
             $c.removeClass('cp-dropdown-visible');
             if (!state) {
                 $c.addClass('cp-dropdown-visible');
-            }
+            }*/
 
             try {
                 $('iframe').each(function (idx, ifrw) {
@@ -1923,6 +1867,8 @@ define([
                 pressed = '';
             }, 1000);
         });
+
+        $container.close = hide;
 
 
         return $container;
@@ -2309,7 +2255,7 @@ define([
             };
         });
         var dropdownConfigUser = {
-            buttonContent: $userButton[0],
+            text: $userButton[0],
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
             container: config.$initBlock, // optional

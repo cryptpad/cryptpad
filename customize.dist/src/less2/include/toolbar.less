@@ -523,11 +523,6 @@
                             &::before {
                                 padding-top: 1px;
                             }
-                            // .cp-dropdown-button-title {
-                            //     transform: scale(0.5);
-                            //     bottom: -5px;
-                            //     right: -5px;
-                            // }
                         }
                     }
                     .cp-toolbar-user-dropdown {
@@ -1053,7 +1048,7 @@
 
         &.cp-toolbar-small {
             button {
-                .cp-toolbar-name, .cp-button-name {
+                .cp-toolbar-name, .cp-button-name, .cp-dropdown-button-title {
                     display: none;
                 }
                 i, span {
@@ -1127,27 +1122,29 @@
                 order: 8;
             }
             .cp-toolbar-file {
-                button {
-                    &.fa-plus { order: 0; }
-                    &.fa-history { order: 5; }
-                    &.fa-hashtag { order: 10; }
-                    &.fa-bookmark { order: 15; }
-                    &.fa-upload { order: 20; }
-                    &.fa-files-o { order: 25; }
-                    &.fa-download { order: 30; }
-                    &.fa-print { order: 35; }
-                    &.fa-trash { order: 40; }
-                    &.cp-toolbar-icon-pad-settings { order: 75; }
-                    &.fa-info-circle { order: 100; }
+                li, button {
+                    .fa-plus { order: 0; }
+                    .fa-history { order: 5; }
+                    .fa-hashtag { order: 10; }
+                    .fa-bookmark { order: 15; }
+                    .fa-upload { order: 20; }
+                    .fa-files-o { order: 25; }
+                    .fa-download { order: 30; }
+                    .fa-print { order: 35; }
+                    .fa-trash { order: 40; }
+                    .cp-toolbar-icon-pad-settings { order: 75; }
+                    .fa-info-circle { order: 100; }
 
-                    &.cp-toolbar-icon-help { order: 150; }
+                    .fa-question { order: 150; }
+
+                    span { order: 1000; } // text always after icon
                 }
             }
 
-            .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
+            .cp-toolbar-drawer-contentsss:empty ~ .cp-toolbar-drawer-button {
                 display: none;
             }
-            .cp-toolbar-drawer-content {
+            .cp-toolbar-drawer-contentsss {
                 box-shadow: 0px 1px 5px 0px @cp_shadow-color;
                 border-radius: @variables_radius;
                 overflow-y: auto;

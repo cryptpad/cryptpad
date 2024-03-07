@@ -113,11 +113,11 @@ define([
             text: Messages.toolbar_theme,
             options: [],
             common: Common,
-            buttonCls: 'cptools cptools-palette'
+            iconCls: 'cptools cptools-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
         framework._.toolbar.$bottomL.append($drawer);
-        $drawer.find('span').addClass('cp-button-name');
+        $drawer.addClass('cp-toolbar-appmenu');
     };
 
     var mkPrintButton = function (framework, editor, $content, $print) {

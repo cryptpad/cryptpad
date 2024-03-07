@@ -48,6 +48,14 @@
         position: relative;
         display: inline-block;
 
+        &.cp-dropdown-recursive {
+            position: unset;
+            .cp-dropdown-content {
+                top: 0;
+                left: 100%;
+            }
+        }
+
         .fa {
             font-family: FontAwesome;
         }
@@ -75,6 +83,10 @@
             overflow-y: auto;
             font: @dropdown_font;
             line-height: 1em;
+
+            &.cp-dropdown-has-submenu {
+                overflow: visible;
+            }
 
             &.cp-dropdown-left {
                 right: 0;

@@ -1052,7 +1052,15 @@ define([
             toolbar.$drawer.append($copy);
 
             var $store = common.createButton('storeindrive', true);
-            toolbar.$drawer.append($store);
+            var $storeEntry = UIElements.createDropdownEntry({
+                tag: 'a',
+                attributes: { 'class': $store.attr('class') },
+                content: h('span', $store.text()),
+                action: function () {
+                    $store.click();
+                }
+            });
+            toolbar.$drawer.append($storeEntry);
 
             if (!cpNfInner.metadataMgr.getPrivateData().isTemplate) {
                 var templateObj = {

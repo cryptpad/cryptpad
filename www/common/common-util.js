@@ -117,7 +117,7 @@
             // "enter" on a button triggers a click, disable it
             if (e.type === 'keydown') { e.preventDefault(); }
 
-            handler();
+            handler(e);
         });
     };
 
