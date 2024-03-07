@@ -582,7 +582,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             delete ref.internal.checkpointTimeout;
         };
 
-        var webChannel;
         roster.stop = function () {
             if (ref.internal.cpNetflux && typeof(ref.internal.cpNetflux.stop) === "function") {
                 ref.internal.cpNetflux.stop();
@@ -604,9 +603,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             }
             config.onCacheReady(roster);
         };
-        var onReady = function (info) {
+        var onReady = function () {
             //console.log("READY");
-            webChannel = info;
             ready = true;
             cb(void 0, roster);
         };

@@ -278,6 +278,7 @@ define([
                         if (code.length !== 6 || /\D/.test(code)) {
                             return void UI.warn(Messages.settings_otp_invalid);
                         }
+                        if (lock) { return; }
                         confirmOTP.disabled = true;
                         lock = true;
 
