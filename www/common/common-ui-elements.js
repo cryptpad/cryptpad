@@ -1550,18 +1550,6 @@ define([
         if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
         if (config.feedback && !config.common) { return void console.error("feedback in a dropdown requires sframe-common"); }
 
-        var isElement = function (o) {
-            return /HTML/.test(Object.prototype.toString.call(o)) &&
-                typeof(o.tagName) === 'string';
-        };
-        var allowedTags = ['a', 'li', 'p', 'hr', 'div'];
-        var isValidOption = function (o) {
-            if (typeof o !== "object") { return false; }
-            if (isElement(o)) { return true; }
-            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
-            return true;
-        };
-
         // Container
         var $container = $(config.container);
         var containerConfig = {
