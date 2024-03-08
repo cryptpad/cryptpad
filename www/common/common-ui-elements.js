@@ -1563,6 +1563,7 @@ define([
             $container = $('<span>', containerConfig);
         }
 
+
         // Button
         let icon = config.iconCls ? h('i', {class:config.iconCls}) : undefined;
         var $button = $(h('button', {
@@ -1585,13 +1586,17 @@ define([
 
         // Menu
         var $innerblock = $('<ul>', {'class': 'cp-dropdown-content', 'role': 'menu'});
-        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
+        var $outerblock = $(h('div.cp-dropdown-menu-container', $innerblock[0]));
+        let $parentMenu = config.isSubmenuOf;
+        $container.$menu = $innerblock;
+        if (config.left) { $outerblock.addClass('cp-dropdown-left'); }
+        if (config.isSubmenuOf && config.isSubmenuOf.length) {
+            $innerblock.addClass('cp-dropdown-submenu');
+        }
 
         var hide = function () {
             window.setTimeout(function () {
                 $innerblock.hide();
-                $innerblock.parents('.cp-dropdown-content').removeClass('cp-dropdown-has-submenu')
-                        .hide();
             }, 0);
         };
 
@@ -1623,7 +1628,8 @@ define([
             $entry.appendTo($innerblock);
         };
 
-        $container.append($button).append($innerblock);
+        $container.append($button).append($outerblock);
+        if ($parentMenu) { $parentMenu.after($innerblock); }
 
         var value = config.initialValue || '';
 
@@ -1655,16 +1661,14 @@ define([
                 if ((topPos + h) > wh) {
                     $innerblock.css('bottom', button.height+'px');
                 }
-            } else if ($innerblock.parents('.cp-dropdown-content').length) {
-                let $p = $innerblock.parents('.cp-dropdown-content');
-                let max = $p.css('max-height');
+            } else if ($parentMenu) {
+                let max = $parentMenu.css('max-height');
                 $innerblock.css('max-height', max);
             } else {
                 $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
             $innerblock.show();
-            $innerblock.parents('.cp-dropdown-content').addClass('cp-dropdown-has-submenu')
-                    .show(); // keep parent open when recursive
+            if ($parentMenu) { $parentMenu.show(); } // keep parent open when recursive
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             setTimeout(() => {
                 if (config.isSelect && value) {
@@ -1709,7 +1713,7 @@ define([
 
         if (config.isSelect) {
             $container.onChange = Util.mkEvent();
-            $container.on('click', 'li', function () {
+            $innerblock.on('click', 'li', function () {
                 var $val = $(this).find('a');
                 value = $val.data('value');
                 var textValue = $val.text() || value;
@@ -1772,7 +1776,10 @@ define([
             var next = (idx + 1) % $all.length;
             return $($all.get(next));
         };
-        $container.keydown(function (e) {
+
+        let $listener = $container;
+        if ($parentMenu) { $listener = $innerblock; }
+        $listener.keydown(function (e) {
             e.stopPropagation(); // don't propagate event to window if the dropdown is focused
 
             var visible = $innerblock.is(':visible');
@@ -1781,6 +1788,7 @@ define([
                 $container.click();
                 visible = true;
             }
+
             if (!visible) { return; }
             if (e.which === 38) { // Up
                 e.preventDefault();
@@ -1824,18 +1832,21 @@ define([
                 e.preventDefault();
                 $value.mouseleave();
                 hide();
-                $button.focus();
+                if ($parentMenu) { $button.closest('li').focus(); }
+                else { $button.focus(); }
             }
             if (e.which === 9) { // Tab
                 hide();
                 if (e.shiftKey) {
-                    $button.focus();
+                    if ($parentMenu) { $button.closest('li').focus(); }
+                    else { $button.focus(); }
                 } else {
+                    if ($parentMenu) { $parentMenu.hide(); }
                     $innerblock.find('[role="menuitem"]').last().focus();
                 }
             }
         });
-        $container.keypress(function (e) {
+        $listener.keypress(function (e) {
             e.stopPropagation(); // Don't propagate to window
             window.clearTimeout(to);
             var c = String.fromCharCode(e.which);

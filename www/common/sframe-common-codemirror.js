@@ -367,16 +367,16 @@ define([
                 text: Messages.languageButton, // Button initial text
                 options: options, // Entries displayed in the menu
                 isSelect: true,
+                isSubmenuOf: $drawer,
                 feedback: 'CODE_LANGUAGE',
                 common: Common
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle).hide();
             $block.prepend(h('span.cp-language-text', Messages.languageButton));
-            $block.addClass('cp-dropdown-recursive');
 
             var isHovering = false;
-            var $aLanguages = $block.find('li');
+            var $aLanguages = $block.$menu.find('li');
             $aLanguages.mouseenter(function () {
                 isHovering = true;
                 setMode($(this).find('a').attr('data-value'));
@@ -432,6 +432,7 @@ define([
                     text: Messages.code_editorTheme, // Button initial text
                     options: options, // Entries displayed in the menu
                     isSelect: true,
+                    isSubmenuOf: $drawer,
                     initialValue: lastTheme,
                     feedback: 'CODE_THEME',
                     common: Common
@@ -447,12 +448,11 @@ define([
                 });*/
                 $block.find('button').hide();
                 $block.prepend(h('span.cp-theme-text', Messages.languageButton));
-                $block.addClass('cp-dropdown-recursive');
 
                 setTheme(lastTheme, $block);
 
                 var isHovering = false;
-                var $aThemes = $block.find('li');
+                var $aThemes = $block.$menu.find('li');
                 $aThemes.mouseenter(function () {
                     isHovering = true;
                     var theme = $(this).find('a').attr('data-value');
