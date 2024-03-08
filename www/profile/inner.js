@@ -555,7 +555,7 @@ define([
                 if (!err) { UI.log(Messages.genericCopySuccess); }
             });
         };
-        APP.$copyData.show();
+        if (APP.$copyData) { APP.$copyData.show(); }
     };
 
     var createLeftside = function () {
