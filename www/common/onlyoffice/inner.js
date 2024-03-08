@@ -2763,7 +2763,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         $historyButton.click();
                     }
                 });
-
                 $historyDropdown.appendTo(toolbar.$drawer);
 
                 // Snapshots
@@ -2772,27 +2771,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     make: makeSnapshot,
                     load: loadSnapshot
                 });
-                var $snapshot = UIElements.createDropdownEntry({
-                    tag: 'a',
-                    attributes: { 'class': $snapshotButton.attr('class') },
-                    content: h('span', $snapshotButton.text()),
-                    action: function () {
-                        $snapshotButton.click();
-                    }
-                });
+                var $snapshot = UIElements.getEntryFromButton($snapshotButton);
                 toolbar.$drawer.append($snapshot);
 
                 // Import template
                 var $templateButton = common.createButton('importtemplate', true, {}, openTemplatePicker);
                 if ($templateButton && typeof($templateButton.appendTo) === 'function') {
-                    var $template = UIElements.createDropdownEntry({
-                        tag: 'a',
-                        attributes: { 'class': $templateButton.attr('class') },
-                        content: h('span', $templateButton.text()),
-                        action: function () {
-                            openTemplatePicker();
-                        }
-                    });
+                    var $template = UIElements.getEntryFromButton($templateButton);
                     $template.appendTo(toolbar.$drawer);
                 }
 
@@ -2816,14 +2801,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         }
                     };
                     var $templateButton = common.createButton('template', true, templateObj);
-                    var $template = UIElements.createDropdownEntry({
-                        tag: 'a',
-                        attributes: { 'class': $templateButton.attr('class') },
-                        content: h('span', $templateButton.text()),
-                        action: function () {
-                            $templateButton.click();
-                        }
-                    });
+                    var $template = UIElements.getEntryFromButton($templateButton);
                     toolbar.$drawer.append($template);
                 }
             })();
@@ -2849,14 +2827,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
 
             var $exportXLSXButton = common.createButton('export', true, {}, exportXLSXFile);
-            var $exportXLSX = UIElements.createDropdownEntry({
-                tag: 'a',
-                attributes: { 'class': $exportXLSXButton.attr('class') },
-                content: h('span', $exportXLSXButton.text()),
-                action: function () {
-                    exportXLSXFile();
-                }
-            });
+            var $exportXLSX = UIElements.getEntryFromButton($exportXLSXButton);
             $exportXLSX.appendTo(toolbar.$drawer);
 
             var type = privateData.ooType;
@@ -2889,24 +2860,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     binary: ["ods", "xlsx", "odt", "docx", "odp", "pptx"],
                     first: first,
                 }, importXLSXFile);
-                var $importXLSX = UIElements.createDropdownEntry({
-                    tag: 'a',
-                    attributes: { 'class': $importXLSXButton.attr('class') },
-                    content: h('span', $importXLSXButton.text()),
-                    action: function () {
-                        importXLSXFile();
-                    }
-                });
+                var $importXLSX = UIElements.getEntryFromButton($importXLSXButton);
                 // tag button
                 var $hashtagButton = common.createButton('hashtag', true);
-                var $hashtag = UIElements.createDropdownEntry({
-                    tag: 'a',
-                    attributes: { 'class': $hashtagButton.attr('class') },
-                    content: h('span', $hashtagButton.text()),
-                    action: function () {
-                        $hashtagButton.click();
-                    }
-                });
+                var $hashtag = UIElements.getEntryFromButton($hashtagButton);
                 $importXLSX.appendTo(toolbar.$drawer);
                 $hashtag.appendTo(toolbar.$drawer);
             }
@@ -2919,14 +2876,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 if (err) { return; }
                 setEditable(false);
             });
-            var $forget = UIElements.createDropdownEntry({
-                tag: 'a',
-                attributes: { 'class': $forgetButton.attr('class') },
-                content: h('span', $forgetButton.text()),
-                action: function () {
-                    $forgetButton.click();
-                }
-            });
+            var $forget = UIElements.getEntryFromButton($forgetButton);
             toolbar.$drawer.append($forget);
 
             if (!privateData.isEmbed) {
@@ -2948,25 +2898,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
 
             var $propertiesButton = common.createButton('properties', true);
-            var $properties = UIElements.createDropdownEntry({
-                tag: 'a',
-                attributes: { 'class': $propertiesButton.attr('class') },
-                content: h('span', $propertiesButton.text()),
-                action: function () {
-                    $propertiesButton.click();
-                }
-            });
+            var $properties = UIElements.getEntryFromButton($propertiesButton);
             toolbar.$drawer.append($properties);
 
             var $copyButton = common.createButton('copy', true);
-            var $copy = UIElements.createDropdownEntry({
-                tag: 'a',
-                attributes: { 'class': $copyButton.attr('class') },
-                content: h('span', $copyButton.text()),
-                action: function () {
-                    $copyButton.click();
-                }
-            });
+            var $copy = UIElements.getEntryFromButton($copyButton);
             toolbar.$drawer.append($copy);
         };
 

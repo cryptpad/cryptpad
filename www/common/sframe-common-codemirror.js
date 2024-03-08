@@ -479,7 +479,6 @@ define([
                             $block.find('button').click();
                         },
                     });
-                    // $blockButton.append($block.find('ul'));
                     $drawer.append($blockButton);
                 }
                 if (cb) { cb(); }

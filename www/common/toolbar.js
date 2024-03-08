@@ -1008,14 +1008,7 @@ MessengerUI, Messages, Pages) {
 
     var createNewPad = function (toolbar) {
         var $button = Common.createButton('newpad', true);
-        var $newPad = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': $button.attr('class') },
-            content: h('span', $button.text()),
-            action: function () {
-                $button.click();
-            }
-        });
+        var $newPad = UIElements.getEntryFromButton($button);
         toolbar.$drawer.append($newPad);
         return $newPad;
     };

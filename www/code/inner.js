@@ -123,14 +123,15 @@ define([
             window.print();
             framework.feedback('PRINT_CODE');
         });
-        var $print = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': $printButton.attr('class') },
-            content: h('span', $printButton.text()),
-            action: function () {
-                $printButton.click();
-            }
-        });
+        // var $print = UIElements.createDropdownEntry({
+        //     tag: 'a',
+        //     attributes: { 'class': $printButton.attr('class') },
+        //     content: h('span', $printButton.text()),
+        //     action: function () {
+        //         $printButton.click();
+        //     }
+        // });
+        var $print = UIElements.getEntryFromButton($printButton);
         framework._.toolbar.$drawer.append($print);
     };
     var mkMarkdownTb = function (editor, framework) {

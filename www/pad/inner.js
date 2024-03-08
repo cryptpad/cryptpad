@@ -646,23 +646,8 @@ define([
 
     var mkPrintButton = function (framework, editor) {
         var $printButton = framework._.sfCommon.createButton('print', true);
-        var $print = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': $printButton.attr('class') },
-            content: h('span', $printButton.text()),
-            action: function () {
-                /*
-                // NOTE: alternative print system in case we keep having more issues on Firefox
-                var $iframe = $('html').find('iframe');
-                var iframe = $iframe[0].contentWindow;
-                iframe.print();
-                */
-                editor.execCommand('print');
-                framework.feedback('PRINT_PAD');
-            }
-        });
+        var $print = UIElements.getEntryFromButton($printButton);
         framework._.toolbar.$drawer.append($print);
-
     };
 
     var andThen2 = function(editor, Ckeditor, framework) {

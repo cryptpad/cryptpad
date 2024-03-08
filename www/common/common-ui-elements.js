@@ -576,6 +576,25 @@ define([
         });
     };
 
+    UIElements.getEntryFromButton = function ($button) {
+        // If the button contains an icon, clone it and re-use it
+        let $icon = $button.find('> i');
+        let icon = $icon.length ? $icon.clone() : undefined;
+
+        return UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: {'class': $button.attr('class')},
+            content: [
+                icon,
+                h('span', $button.text())
+            ],
+            action: function () {
+                $button.click();
+                return true;
+            }
+        });
+    };
+    
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;

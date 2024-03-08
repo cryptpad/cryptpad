@@ -122,18 +122,19 @@ define([
 
     var mkPrintButton = function (framework, editor, $content, $print) {
         var $printButton = framework._.sfCommon.createButton('print', true);
-        var $print = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': $printButton.attr('class') },
-            content: h('span', $printButton.text()),
-            action: function () {
-                Slide.update(editor.getValue(), true);
-                $print.html($content.html());
-                window.focus();
-                window.print();
-                framework.feedback('PRINT_SLIDES');
-            }
-        });
+        // var $print = UIElements.createDropdownEntry({
+        //     tag: 'a',
+        //     attributes: { 'class': $printButton.attr('class') },
+        //     content: h('span', $printButton.text()),
+        //     action: function () {
+        //         Slide.update(editor.getValue(), true);
+        //         $print.html($content.html());
+        //         window.focus();
+        //         window.print();
+        //         framework.feedback('PRINT_SLIDES');
+        //     }
+        // });
+        var $print = UIElements.getEntryFromButton($printButton);
         framework._.toolbar.$drawer.append($print);
     };
 
