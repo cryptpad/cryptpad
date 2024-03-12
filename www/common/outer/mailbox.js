@@ -468,7 +468,7 @@ proxy.mailboxes = {
             if (type === 'HISTORY_RANGE') {
                 if (!Array.isArray(_msg)) { return; }
                 var message;
-                if (req.box.type === 'broadcast') {
+                if (req.box.type === 'broadcast') {
                     message = Util.tryParse(_msg[4]);
                 } else {
                     try {
