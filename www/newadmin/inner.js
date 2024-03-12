@@ -16,10 +16,11 @@ define([
     '/common/common-signing-keys.js',
     '/common/hyperscript.js',
     '/common/clipboard.js',
+    'json.sortify',
     '/customize/application_config.js',
     '/api/config',
     '/lib/datepicker/flatpickr.js',
-
+    '/common/hyperscript.js',
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -40,30 +41,16 @@ define([
     Clipboard,
     AppConfig,
     ApiConfig,
+    Sortify,
     Flatpickr
 ) {
     var APP = window.APP = {};
 
+    var Nacl = window.nacl;
     var common;
     var metadataMgr;
     var privateData;
     var sFrameChan;
-
-    var flushCacheNotice = function () {
-        var notice = UIElements.setHTML(h('p'), Messages.admin_reviewCheckupNotice);
-        $(notice).find('a').attr({
-            href: new URL('/checkup/', ApiConfig.httpUnsafeOrigin).href,
-        }).click(function (ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            common.openURL('/checkup/');
-        });
-        var content = h('span', [
-            UIElements.setHTML(h('p'), Messages.admin_cacheEvictionRequired),
-            notice,
-        ]);
-        UI.alert(content);
-    };
 
     var andThen = function (common, $container) {
         const sidebar = Sidebar.create(common, 'admin', $container);
@@ -163,38 +150,18 @@ define([
                 ]
             }
         };
+
         const blocks = sidebar.blocks;
-        var makeAdminCheckbox = function (config) {
-            return function () { 
-                var state = config.getState();
-                var key = config.key;
-              
-                sidebar.addItem(key, function (cb) {
-                    var labelKey = 'admin_' + keyToCamlCase(key) + 'Label';
-                    var titleKey = 'admin_' + keyToCamlCase(key) + 'Title';
-                    var label = Messages[labelKey] || Messages[titleKey];
-                    var box = blocks.checkbox({
-                        key: key,
-                        label: label,
-                        state: state,
-                        opts: { spinner: true }
-                    });
-                    var $cbox = $(box);
-                    var spinner = box.spinner;
-                    var $checkbox = $cbox.find('input').on('change', function() {
-                        spinner.spin();
-                        var val = $checkbox.is(':checked') || false;
-                        $checkbox.attr('disabled', 'disabled');
-                        config.query(val, function (state) {
-                            spinner.done();
-                            $checkbox[0].checked = state;
-                            $checkbox.removeAttr('disabled');
-                        });  
-                    });  
-                    cb(box);
-                });
-            };
+    
+        var flushCacheNotice = function () {
+            var notice = blocks.text(Messages.admin_reviewCheckupNotice);
+            var link = blocks.link(Messages.admin_cacheEvictionRequiredLinkText, new URL('/checkup/', ApiConfig.httpUnsafeOrigin).href);
+            $(notice).append(link);
+        
+            var content = blocks.alertHTML(Messages.admin_cacheEvictionRequired, notice);
+            UI.alert(content);
         };
+        
         
         //general blocks
         sidebar.addItem('flush-cache', function (cb) {
@@ -213,6 +180,425 @@ define([
             cb(button);
         });
 
+        var isHex = s => !/[^0-9a-f]/.test(s);
+
+        var sframeCommand = function (command, data, cb) {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: command,
+                data: data,
+            }, function (err, response) {
+                if (err) { return void cb(err); }
+                if (response && response.error) { return void cb(response.error); }
+                try {
+                    cb(void 0, response);
+                } catch (err2) {
+                    console.error(err2);
+                }
+            });
+        };
+    
+        var makeMetadataTable = function (cls) {
+            var table = h(`table.${cls || 'cp-account-stats'}`);
+            var row = (label, value) => {
+                table.appendChild(h('tr', [
+                    h('td', h('strong', label)),
+                    h('td', value)
+                ]));
+            };
+    
+            return {
+                row: row,
+                table: table,
+            };
+        };
+        var getPrettySize = UIElements.prettySize;
+    
+        var getAccountData = function (key, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var data = {
+                generated: +new Date(),
+                key: key,
+                safeKey: Util.escapeKeyCharacters(key),
+            };
+    
+            return void nThen(function (w) {
+                sframeCommand('GET_PIN_ACTIVITY', key, w((err, response) => {
+                    if (err === 'ENOENT') { return; }
+                    if (err || !response || !response[0]) {
+                        console.error(err);
+                        console.error(response);
+                        UI.warn(Messages.error);
+                    } else {
+                        data.first = response[0].first;
+                        data.latest = response[0].latest;
+                        console.info(err, response);
+                    }
+                }));
+            }).nThen(function (w) {
+                sframeCommand('IS_USER_ONLINE', key, w((err, response) => {
+                    console.log('online', err, response);
+                    if (!Array.isArray(response) || typeof(response[0]) !== 'boolean') { return; }
+                    data.currentlyOnline = response[0];
+                }));
+            }).nThen(function (w) {
+                if (!data.first) { return; }
+                sframeCommand('GET_USER_QUOTA', key, w((err, response) => {
+                    if (err || !response) {
+                        return void console.error('quota', err, response);
+                    } else {
+                        data.plan = response[1];
+                        data.note = response[2];
+                        data.limit = response[0];
+                    }
+                }));
+            }).nThen(function (w) {
+                if (!data.first) { return; }
+                // storage used
+                sframeCommand('GET_USER_TOTAL_SIZE', key, w((err, response) => {
+                    if (err || !Array.isArray(response)) {
+                        //console.error('size', err, response);
+                    } else {
+                        //console.info('size', response);
+                        data.usage = response[0];
+                    }
+                }));
+            }).nThen(function (w) {
+                if (!data.first) { return; }
+                // channels pinned
+                // files pinned
+                sframeCommand('GET_USER_STORAGE_STATS', key, w((err, response) => {
+                    if (err || !Array.isArray(response) || !response[0]) {
+                        UI.warn(Messages.error);
+                        return void console.error('storage stats', err, response);
+                    } else {
+                        data.channels = response[0].channels;
+                        data.files = response[0].files;
+                    }
+                }));
+            }).nThen(function (w) { // pin log status (live, archived, unknown)
+                sframeCommand('GET_PIN_LOG_STATUS', key, w((err, response) => {
+                    if (err || !Array.isArray(response) || !response[0]) {
+                        console.error('pin log status', err, response);
+                        return void UI.warn(Messages.error);
+                    } else {
+                        console.info('pin log status', response);
+                        data.live = response[0].live;
+                        data.archived = response[0].archived;
+                    }
+                }));
+            }).nThen(function (w) {
+                if (data.first) { return; }
+                // Account is probably deleted
+                sframeCommand('GET_ACCOUNT_ARCHIVE_STATUS', {key}, w((err, response) => {
+                    if (err || !Array.isArray(response) || !response[0]) {
+                        console.error('account status', err, response);
+                    } else {
+                        console.info('account status', response);
+                        data.archiveReport = response[0];
+                    }
+                }));
+            }).nThen(function () {
+                //console.log(data);
+                try {
+                    ['generated', 'first', 'latest'].forEach(k => {
+                        var val = data[k];
+                        if (typeof(val) !== 'number') { return; }
+                        data[`${k}_formatted`] = new Date(val);
+                    });
+                    ['limit', 'usage'].forEach(k => {
+                        var val = data[k];
+                        if (typeof(val) !== 'number') { return; }
+                        data[`${k}_formatted`] = getPrettySize(val);
+                    });
+                    if (data.archiveReport) {
+                        let formatted = Util.clone(data.archiveReport);
+                        formatted.channels = data.archiveReport.channels.length;
+                        formatted.blobs = data.archiveReport.blobs.length;
+                        data['archiveReport_formatted'] = JSON.stringify(formatted, 0, 2);
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+    
+                cb(void 0, data);
+            });
+        };
+    
+        var localizeState = state => {
+            var o = {
+                'true': Messages.ui_true,
+                'false': Messages.ui_false,
+                'undefined': Messages.ui_undefined,
+            };
+            return o[state] || Messages.error;
+        };
+    
+        var disable = $el => $el.attr('disabled', 'disabled');
+        var enable = $el => $el.removeAttr('disabled');
+    
+        var maybeDate = function (d) {
+            return d? new Date(d): Messages.ui_undefined;
+        };
+    
+        var justifyDialog = (message, suggestion, implicit, explicit) => {
+            UI.prompt(message, suggestion, result => {
+                if (result === null) { return; }
+                if (typeof(result) !== 'string') { result = ''; }
+                else { result = result.trim(); }
+                implicit(result); // remember the justification for next time
+                explicit(result); // follow up with the action
+            }, {
+                ok: Messages.ui_confirm,
+                inputOpts: {
+                    placeholder: Messages.admin_archiveNote || '',
+                },
+            });
+        };
+    
+        var archiveReason = "";
+        var justifyArchivalDialog = (customMessage, action) => {
+            var message = customMessage || Messages.admin_archiveReason;
+            justifyDialog(message, archiveReason, reason => { archiveReason = reason; }, action);
+        };
+    
+        var restoreReason = "";
+        var justifyRestorationDialog = (customMessage, action) => {
+            var message = customMessage || Messages.admin_restoreReason;
+            justifyDialog(message, restoreReason, reason => { restoreReason = reason; }, action);
+        };
+    
+        var customButton = function (cls, text, handler, opt) {
+            var btn = h(`button.btn.btn-${cls}`, opt, text);
+            if (handler) { $(btn).click(handler); }
+            return btn;
+        };
+    
+        var primary = (text, handler, opt) => customButton('primary', text, handler, opt);
+        var danger = (text, handler, opt) => customButton('danger', text, handler, opt);
+    
+        var copyToClipboard = (content) => {
+            var button = primary(Messages.copyToClipboard, () => {
+                var toCopy = JSON.stringify(content, null, 2);
+                Clipboard.copy(toCopy, (err) => {
+                    if (err) { return UI.warn(Messages.error); }
+                    UI.log(Messages.genericCopySuccess);
+                });
+            });
+            return button;
+        };
+    
+        var reportContentLabel = () => {
+            return h('span', [
+                Messages.admin_reportContent,
+                ' (JSON) ',
+                h('br'),
+                h('small', Messages.ui_experimental),
+            ]);
+        };
+    
+        var DOCUMENT_TYPES = {
+            32: 'channel',
+            48: 'file',
+            33: 'ephemeral',
+            34: 'broadcast',
+        };
+        var inferDocumentType = id => {
+            return DOCUMENT_TYPES[typeof(id) === 'string' && id.length] || 'unknown';
+        };
+    
+        var renderAccountData = function (data) {
+            var tableObj = makeMetadataTable('cp-account-stats');
+            var row = tableObj.row;
+    
+        // info
+            row(Messages.admin_generatedAt, new Date(data.generated));
+    
+            // signing key
+            if (data.key === data.safeKey) {
+                row(Messages.settings_publicSigningKey, h('code', data.key));
+            } else {
+                row(Messages.settings_publicSigningKey, h('span', [
+                    h('code', data.key),
+                    ', ',
+                    h('br'),
+                    h('code', data.safeKey),
+                ]));
+            }
+    
+            if (data.first || data.latest) {
+                // First pin activity time
+                row(Messages.admin_firstPinTime, maybeDate(data.first));
+    
+                // last pin activity time
+                row(Messages.admin_lastPinTime, maybeDate(data.latest));
+            }
+    
+            // currently online
+            row(Messages.admin_currentlyOnline, localizeState(data.currentlyOnline));
+    
+            // plan name
+            row(Messages.admin_planName, data.plan || Messages.ui_none);
+    
+            // plan note
+            row(Messages.admin_note, data.note || Messages.ui_none);
+    
+            // storage limit
+            if (data.limit) { row(Messages.admin_planlimit, getPrettySize(data.limit)); }
+    
+            // data stored
+            if (data.usage) { row(Messages.admin_storageUsage, getPrettySize(data.usage)); }
+    
+            // number of channels
+            if (typeof(data.channel) === "number") {
+                row(Messages.admin_channelCount, data.channels);
+            }
+    
+            // number of files pinned
+            if (typeof(data.channel) === "number") {
+                row(Messages.admin_fileCount, data.files);
+            }
+    
+            row(Messages.admin_pinLogAvailable, localizeState(data.live));
+    
+            // pin log archived
+            row(Messages.admin_pinLogArchived, localizeState(data.archived));
+    
+            if (data.archiveReport) {
+                row(Messages.admin_accountSuspended, localizeState(Boolean(data.archiveReport)));
+            }
+            if (data.archiveReport_formatted) {
+                let button, pre;
+                row(Messages.admin_accountReport, h('div', [
+                    pre = h('pre', data.archiveReport_formatted),
+                    button = primary(Messages.admin_accountReportFull, () => {
+                        $(button).remove();
+                        $(pre).html(JSON.stringify(data.archiveReport, 0, 2));
+                    })
+                ]));
+            }
+    
+    
+        // actions
+            if (data.archived && data.live === false && data.archiveReport) {
+                row(Messages.admin_restoreAccount, primary(Messages.ui_restore, function () {
+                    justifyRestorationDialog('', reason => {
+                        sframeCommand('RESTORE_ACCOUNT', {
+                            key: data.key,
+                            reason: reason,
+                        }, function (err) {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.ui_success);
+                        });
+                    });
+                }));
+            }
+    
+            if (data.live === true) {
+                var getPins = () => {
+                    sframeCommand('GET_PIN_LIST', data.key, (err, pins) => {
+                        if (err || !Array.isArray(pins)) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+    
+                        var table = makeMetadataTable('cp-pin-list').table;
+                        var row = id => {
+                            var type = inferDocumentType(id);
+                            table.appendChild(h('tr', [
+                                h('td', h('code', id)),
+                                h('td', type),
+                            ]));
+                        };
+    
+                        var P = pins.slice().sort((a, b) => a.length - b.length);
+                        P.map(row);
+    
+                        UI.confirm(table, yes => {
+                            if (!yes) { return; }
+                            var content = P.join('\n');
+                            Clipboard.copy(content, (err) => {
+                                if (err) { return UI.warn(Messages.error); }
+                                UI.log(Messages.genericCopySuccess);
+                            });
+                        }, {
+                            wide: true,
+                            ok: Messages.copyToClipboard,
+                        });
+                    });
+                };
+    
+                // get full pin list
+                row(Messages.admin_getPinList, primary(Messages.ui_fetch, getPins));
+    
+                // get full pin history
+                var getHistoryHandler = () => {
+                    sframeCommand('GET_PIN_HISTORY', data.key, (err, history) => {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                        UI.alert(history); // TODO NOT_IMPLEMENTED
+                    });
+                };
+                var pinHistoryButton =  primary(Messages.ui_fetch, getHistoryHandler);
+                disable($(pinHistoryButton));
+    
+                // TODO pin history is not implemented
+                //row(Messages.admin_getFullPinHistory, pinHistoryButton);
+    
+                // archive pin log
+                var archiveHandler = () => {
+                    justifyArchivalDialog(Messages.admin_archiveAccountConfirm, reason => {
+                        sframeCommand('ARCHIVE_ACCOUNT', {
+                            key: data.key,
+                            block: data.blockId,
+                            reason: reason,
+                        }, (err /*, response */) => {
+                            console.error(err);
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.ui_success);
+                        });
+                    });
+                };
+    
+                var archiveAccountLabel = h('span', [
+                    Messages.admin_archiveAccount,
+                    h('br'),
+                    h('small', Messages.admin_archiveAccountInfo)
+                ]);
+                row(archiveAccountLabel, danger(Messages.admin_archiveButton, archiveHandler));
+    
+                // archive owned documents
+        	    /* // TODO not implemented
+                var archiveDocuments = () => {
+                    justifyRestorationDialog(Messages.admin_archiveDocumentsConfirm, reason => {
+                        sframeCommand('ARCHIVE_OWNED_DOCUMENTS', {
+                            key: data.key,
+                            reason: reason,
+                        }, (err, response) => {
+                            if (err) { return void UI.warn(err); }
+                            UI.log(response);
+                        });
+                    });
+                };
+    
+                var archiveDocumentsButton = danger(Messages.admin_archiveButton, archiveDocuments);
+                disable($(archiveDocumentsButton));
+                row(Messages.admin_archiveOwnedAccountDocuments, archiveDocumentsButton);
+             */
+            }
+    
+            row(reportContentLabel, copyToClipboard(data));
+    
+            return tableObj.table;
+        };
+    
         sidebar.addItem('update-limit', function (cb) {
             var button = blocks.button('primary', '',  Messages.admin_updateLimitButton);
             var called = false;
@@ -291,6 +677,12 @@ define([
         
         //admin email
         sidebar.addItem('email', function (cb){
+            var input = blocks.input({
+                type: 'email',
+                value: ApiConfig.adminEmail || '',
+                'aria-labelledby': 'cp-admin-email'
+            });
+            var $input = $(input);
 
             var button = blocks.clickableButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -309,15 +701,7 @@ define([
                 });
             });
             
-            var $button = $(button);
             var nav = blocks.nav([button]);
-
-            var input = blocks.input({
-                type: 'email',
-                value: ApiConfig.adminEmail || '',
-                'aria-labelledby': 'cp-admin-email'
-            });
-            var $input = $(input);
 
             var form = blocks.form([
                 input,
@@ -339,6 +723,13 @@ define([
         });
         //instance name
         sidebar.addItem('name', function (cb){
+            var input = blocks.input({
+                type: 'text',
+                value: getInstanceString('instanceName')|| ApiConfig.httpUnsafeOrigin || '',
+                placeholder: ApiConfig.httpUnsafeOrigin,
+                'aria-labelledby': 'cp-admin-name'
+            });
+            var $input = $(input);
 
             var button = blocks.clickableButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -357,17 +748,7 @@ define([
                 });
             });
             
-            var $button = $(button);
             var nav = blocks.nav([button]);
-
-            var input = blocks.input({
-                type: 'text',
-                value: getInstanceString('instanceName')|| ApiConfig.httpUnsafeOrigin || '',
-                placeholder: ApiConfig.httpUnsafeOrigin,
-                'aria-labelledby': 'cp-admin-name'
-            });
-            var $input = $(input);
-
             var form = blocks.form([
                 input,
             ], nav); 
@@ -379,6 +760,13 @@ define([
 
         //instance description
         sidebar.addItem('description', function (cb){
+            var input = blocks.input({
+                type: 'text',
+                value: getInstanceString('instanceDescription'),
+                placeholder: '',
+                'aria-labelledby': 'cp-admin-description'
+            });
+            var $input = $(input);
 
             var button = blocks.clickableButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -397,17 +785,8 @@ define([
                 });
             });
             
-            var $button = $(button);
             var nav = blocks.nav([button]);
-
-            var input = blocks.input({
-                type: 'text',
-                value: getInstanceString('instanceDescription'),
-                placeholder: '',
-                'aria-labelledby': 'cp-admin-description'
-            });
-            var $input = $(input);
-
+         
             var form = blocks.form([
                 input,
             ], nav); 
@@ -418,6 +797,13 @@ define([
         });
 
         sidebar.addItem('jurisdiction', function (cb){
+            var input = blocks.input({
+                type: 'text',
+                value: getInstanceString('instanceJurisdiction'),
+                placeholder: '',
+                'aria-labelledby': 'cp-admin-jurisdiction'
+            });
+            var $input = $(input);
 
             var button = blocks.clickableButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -436,16 +822,7 @@ define([
                 });
             });
             
-            var $button = $(button);
             var nav = blocks.nav([button]);
-
-            var input = blocks.input({
-                type: 'text',
-                value: getInstanceString('instanceJurisdiction'),
-                placeholder: '',
-                'aria-labelledby': 'cp-admin-jurisdiction'
-            });
-            var $input = $(input);
 
             var form = blocks.form([
                 input,
@@ -457,6 +834,13 @@ define([
         });
 
         sidebar.addItem('notice', function (cb){
+            var input = blocks.input({
+                type: 'text',
+                value: getInstanceString('instanceNotice'),
+                placeholder: '',
+                'aria-labelledby': 'cp-admin-notice'
+            });
+            var $input = $(input);
 
             var button = blocks.clickableButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -475,16 +859,7 @@ define([
                 });
             });
             
-            var $button = $(button);
             var nav = blocks.nav([button]);
-
-            var input = blocks.input({
-                type: 'text',
-                value: getInstanceString('instanceNotice'),
-                placeholder: '',
-                'aria-labelledby': 'cp-admin-notice'
-            });
-            var $input = $(input);
 
             var form = blocks.form([
                 input,
@@ -495,32 +870,30 @@ define([
             cb(form);
         });
 
-        var getPrettySize = UIElements.prettySize;
-         //user blocks
          //to determine functionilty for both sso reg and simpple one
-            sidebar.addCheckboxItem({
-                key: 'registration',
-                getState: function () {
-                    return APP.instanceStatus.restrictRegistration;
-                },
-                query: function (val, setState) {
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['RESTRICT_REGISTRATION', [val]]
-                    }, function (e, response) {
-                        if (e || response.error) {
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                        }
-                        APP.updateStatus(function () {
-                            setState(APP.instanceStatus.restrictRegistration);
-                            refresh();
-                            flushCacheNotice();
-                        });
+        sidebar.addCheckboxItem({
+            key: 'registration',
+            getState: function () {
+                return APP.instanceStatus.restrictRegistration;
+            },
+            query: function (val, setState) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RESTRICT_REGISTRATION', [val]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        setState(APP.instanceStatus.restrictRegistration);
+                        refresh();
+                        flushCacheNotice();
                     });
-                },
-            });
-        
+                });
+            },
+        });
+    
         var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
 
         sidebar.addCheckboxItem({
@@ -598,7 +971,6 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
-            var $list = $(list);
             
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
@@ -696,8 +1068,25 @@ define([
         
             cb(form);
         });
-        
-        //user directory
+      
+        var getBlockId = (val) => {
+            var url;
+            try {
+                url = new URL(val, ApiConfig.httpUnsafeOrigin);
+            } catch (err) { }
+            var getKey = function () {
+                var parts = val.split('/');
+                return parts[parts.length - 1];
+            };
+            var isValidBlockURL = function (url) {
+                if (!url) { return; }
+                return /* url.origin === ApiConfig.httpUnsafeOrigin && */ /^\/block\/.*/.test(url.pathname) && getKey().length === 44;
+            };
+            if (isValidBlockURL(url)) {
+                return getKey();
+            }
+            return;
+        };
 
         Keys.canonicalize = function (input) {
             if (typeof(input) !== 'string') { return; }
@@ -710,13 +1099,10 @@ define([
             } catch (err) {
                 return;
             }
-    };
-    
-   
-    
-       sidebar.addItem('users', function(cb){
+        };
 
-        var $invited = blocks.checkbox('store-invited', Messages.admin_storeInvited, !APP.instanceStatus.dontStoreInvitedUsers, {}, function(checked) {
+        sidebar.addItem('users', function(cb){
+          var invited = blocks.checkbox('store-invited', Messages.admin_storeInvited, false, null, function(checked) {
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
                 data: ['DISABLE_STORE_INVITED_USERS', [!checked]]
@@ -726,261 +1112,244 @@ define([
                     console.error(e, response);
                 }
                 APP.updateStatus(function () {
-                    $invited.prop('checked', !APP.instanceStatus.dontStoreInvitedUsers);
                     flushCacheNotice();
+                    $(invited).prop('checked', !APP.instanceStatus.dontStoreInvitedUsers);
                 });
             });
         });
+        var $invited = $(invited);
+
         var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
-        if(ssoEnabled){
-            var $sso = blocks.checkbox('store-sso', Messages.admin_storeInvited, !APP.instanceStatus.dontStoreSSOUsers, {}, function(checked) {
-    
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['DISABLE_STORE_SSO_USERS', [!val]]
-                    }, function (e, response) {
-                        if (e || response.error) {
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                        }
-                        APP.updateStatus(function () {
-                            setState(!APP.instanceStatus.dontStoreSSOUsers);
-                            flushCacheNotice();
-                        });
+        if (ssoEnabled) {
+            var sso = blocks.checkbox('store-sso', Messages.admin_storeSSO, false, null, function(checked) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['DISABLE_STORE_SSO_USERS', [!checked]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                    }
+                    APP.updateStatus(function () {
+                        flushCacheNotice();
+                        $sso.prop('checked', !APP.instanceStatus.dontStoreSSOUsers);
                     });
-                },
-            );
-        }
-        var button = blocks.button('primary', '', Messages.admin_usersAdd);
-        var $b = $(button);
-
-        var userAlias = blocks.input({
-            type: 'text'
-        });
-        var blockAlias = blocks.labelledInput(Messages.admin_invitationAlias, userAlias);
-
-        var userEmail = blocks.input({
-            type: 'email'
-        });
-        var blockEmail = blocks.labelledInput(Messages.admin_invitationEmail, userEmail);
-
-        var userEdPublic = blocks.input({
-            type: 'key'
-        });
-        var blockEdPublic = blocks.labelledInput(Messages.admin_limitUser, userEdPublic);
-
-        var userBlock = blocks.input({
-            type: 'text'
-        });
-        var blockUser = blocks.labelledInput(Messages.admin_usersBlock, userBlock);
-
-
-        var refreshUsers = function () {};
-        var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
-        Util.onClickEnter($(refreshButton), function () {
-            refreshUsers();
-        });
-    
-        var header = [
-            Messages.admin_invitationAlias,
-            Messages.admin_invitationEmail,
-            Messages.admin_limitUser,
-            Messages.admin_usersBlock,
-            ""
-        ];
-        var list = blocks.table(header, []);
-        var $list = $(list);
-        
-        var nav = blocks.nav([button, refreshButton]);
-
-        var form = blocks.form([
-            $invited,
-            blockAlias,
-            blockEmail,
-            blockEdPublic,
-            blockUser,
-            list
-        ], nav);
-    
-        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
-        if(ssoEnabled){
-            var $sso = blocks.checkbox('store-sso', '', !APP.instanceStatus.dontStoreSSOUsers, {}, function(checked) {
-    
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['DISABLE_STORE_SSO_USERS', [!val]]
-                    }, function (e, response) {
-                        if (e || response.error) {
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                        }
-                        APP.updateStatus(function () {
-                            setState(!APP.instanceStatus.dontStoreSSOUsers);
-                            flushCacheNotice();
-                        });
-                    });
-                },
-            );
-            form.append($sso);
-        }
-
-        var deleteUser = function (id) {
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'DELETE_KNOWN_USER',
-                data: id
-            }, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    return void console.error(e, response);
-                }
-                refreshUsers();
-            });
-        };
-        var updateUser = function (key, changes) {
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'UPDATE_KNOWN_USER',
-                data: {
-                    edPublic: key,
-                    changes: changes
-                }
-            }, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    return void console.error(e, response);
-                }
-                refreshUsers();
-            });
-        };
-        refreshUsers = function () {
-            $list.empty();
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'GET_ALL_USERS',
-            }, function (e, response) {
-                if (e || response.error) {
-                    if (!response || response.error !== "ENOENT") { UI.warn(Messages.error); }
-                    console.error(e, response);
-                    return;
-                }
-                if (!Array.isArray(response)) { return; }
-                var all = response[0];
-                var newEntries = [];
-                Object.keys(all).forEach(function (key) {
-                    var data = all[key];
-                    var editUser = () => {};
-                    var del = blocks.button('danger', 'fa fa-trash', Messages.admin_usersRemove);
-                    var $del = $(del);
-                    Util.onClickEnter($del, function () {
-                        $del.attr('disabled', 'disabled');
-                        UI.confirm(Messages.admin_usersRemoveConfirm, function (yes) {
-                            $del.attr('disabled', '');
-                            if (!yes) { return; }
-                            deleteUser(key);
-                        });
-                    });
-                    var edit = blocks.button('secondary', 'fa fa-pencil', Messages.tag_edit);
-                    Util.onClickEnter($(edit), function () {
-                        editUser();
-                    });
-
-                    var alias = data.alias;
-                    var $alias = $(alias);
-                    var email = data.email;
-                    var $email = $(email);
-                    var actions = [edit, del];
-                    var $actions = $(actions);
-
-                    editUser = () => {
-                        var aliasInput = h('input');
-                        var emailInput = h('input');
-                        $(aliasInput).val(data.alias);
-                        $(emailInput).val(data.email);
-                        var save = blocks.button('primary', '', Messages.settings_save);
-                        var cancel = blocks.button('secondary', '', Messages.cancel);
-                        Util.onClickEnter($(save), function () {
-                            var aliasVal = $(aliasInput).val().trim();
-                            if (!aliasVal) { return void UI.warn(Messages.error); }
-                            var changes = {
-                                alias: aliasVal,
-                                email: $(emailInput).val().trim()
-                            };
-                            updateUser(key, changes);
-                        });
-                        Util.onClickEnter($(cancel), function () {
-                            refreshUsers();
-                        });
-                        $alias.html('').append(aliasInput);
-                        $email.html('').append(emailInput);
-                        $actions.html('').append([save, cancel]);
-                        console.warn(alias, email, $alias, $email, aliasInput);
-                    };
-
-                    var infoButton = blocks.button('primary.cp-report', 'fa fa-database', Messages.admin_diskUsageButton);
-                    Util.onClickEnter($(infoButton), function () {
-                         getAccountData(key, (err, data) => {
-                             if (err) { return void console.error(err); }
-                             var table = renderAccountData(data);
-                             UI.alert(table, () => {
-
-                             }, {
-                                wide: true,
-                             });
-                         });
-                    });
-                    newEntries.push([
-                        UI.dialog.selectable(url),
-                        data.alias,
-                        data.email,
-                        infoButton,
-                        new Date(data.time).toLocaleString()
-                        [edit, del]
-                    ])
                 });
-                list.updateContent(newEntries);
             });
-        };
-        refreshUsers();
-        Util.onClickEnter($b, function () {
-            var alias = $(userAlias).val().trim();
-            if (!alias) { return void UI.warn(Messages.error); }
-            $b.prop('disabled', true);
-
-            var done = () => { $b.prop('disabled', false); };
-            // TODO Get "block" from pin log?
-
-            var keyStr = $(userEdPublic).val().trim();
-            var edPublic = keyStr && Keys.canonicalize(keyStr);
-            if (!edPublic) {
-                done();
-                return void UI.warn(Messages.admin_invalKey);
+            var $sso = $(sso);
             }
-            var block = getBlockId($(userBlock).val());
-
-            var obj = {
-                alias,
-                email: $(userEmail).val(),
-                block: block,
-                edPublic: edPublic,
-            };
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'ADD_KNOWN_USER',
-                data: obj
-            }, function (e, response) {
-                done();
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    return void console.error(e, response);
-                }
-                $(userAlias).val('').focus();
-                $(userEmail).val('');
-                $(userBlock).val('');
-                $(userEdPublic).val('');
+        
+            var button = blocks.button('primary', '', Messages.admin_usersAdd);
+            var $b = $(button);
+        
+            var userAlias = blocks.input({
+                type: 'text'
+            });
+            var blockAlias = blocks.labelledInput(Messages.admin_invitationAlias, userAlias);
+        
+            var userEmail = blocks.input({
+                type: 'email'
+            });
+            var blockEmail = blocks.labelledInput(Messages.admin_invitationEmail, userEmail);
+        
+            var userEdPublic = blocks.input({
+                type: 'key'
+            });
+            var blockEdPublic = blocks.labelledInput(Messages.admin_limitUser, userEdPublic);
+        
+            var userBlock = blocks.input({
+                type: 'text'
+            });
+            var blockUser = blocks.labelledInput(Messages.admin_usersBlock, userBlock);
+        
+        
+            var refreshUsers = function () {};
+            var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
+            Util.onClickEnter($(refreshButton), function () {
                 refreshUsers();
             });
+        
+            var header = [
+                Messages.admin_invitationAlias,
+                Messages.admin_invitationEmail,
+                Messages.admin_limitUser,
+                Messages.admin_usersBlock,
+                ""
+            ];
+            var list = blocks.table(header, []);
+            var $list = $(list);
+        
+            var nav = blocks.nav([button, refreshButton]);
+        
+            var form = blocks.form([
+                invited,
+                blockAlias,
+                blockEmail,
+                blockEdPublic,
+                blockUser,
+                list
+            ], nav);
+
+            if(ssoEnabled)
+                form.appendChild(sso);
+        
+            var deleteUser = function (id) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'DELETE_KNOWN_USER',
+                    data: id
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        return void console.error(e, response);
+                    }
+                    refreshUsers();
+                });
+            };
+            var updateUser = function (key, changes) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'UPDATE_KNOWN_USER',
+                    data: {
+                        edPublic: key,
+                        changes: changes
+                    }
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        return void console.error(e, response);
+                    }
+                    refreshUsers();
+                });
+            };
+            refreshUsers = function () {
+                $list.empty();
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'GET_ALL_USERS',
+                }, function (e, response) {
+                    if (e || response.error) {
+                        if (!response || response.error !== "ENOENT") { UI.warn(Messages.error); }
+                        console.error(e, response);
+                        return;
+                    }
+                    if (!Array.isArray(response)) { return; }
+                    var all = response[0];
+                    var newEntries = [];
+                    Object.keys(all).forEach(function (key) {
+                        var data = all[key];
+                        var editUser = () => {};
+                        var del = blocks.button('danger', 'fa fa-trash', Messages.admin_usersRemove);
+                        var $del = $(del);
+                        Util.onClickEnter($del, function () {
+                            $del.attr('disabled', 'disabled');
+                            UI.confirm(Messages.admin_usersRemoveConfirm, function (yes) {
+                                $del.attr('disabled', '');
+                                if (!yes) { return; }
+                                deleteUser(key);
+                            });
+                        });
+                        var edit = blocks.button('secondary', 'fa fa-pencil', Messages.tag_edit);
+                        Util.onClickEnter($(edit), function () {
+                            editUser();
+                        });
+        
+                        var alias = data.alias;
+                        var $alias = $(alias);
+                        var email = data.email;
+                        var $email = $(email);
+                        var actions = [edit, del];
+                        var $actions = $(actions);
+        
+                        editUser = () => {
+                            var aliasInput = h('input');
+                            var emailInput = h('input');
+                            $(aliasInput).val(data.alias);
+                            $(emailInput).val(data.email);
+                            var save = blocks.button('primary', '', Messages.settings_save);
+                            var cancel = blocks.button('secondary', '', Messages.cancel);
+                            Util.onClickEnter($(save), function () {
+                                var aliasVal = $(aliasInput).val().trim();
+                                if (!aliasVal) { return void UI.warn(Messages.error); }
+                                var changes = {
+                                    alias: aliasVal,
+                                    email: $(emailInput).val().trim()
+                                };
+                                updateUser(key, changes);
+                            });
+                            Util.onClickEnter($(cancel), function () {
+                                refreshUsers();
+                            });
+                            $alias.html('').append(aliasInput);
+                            $email.html('').append(emailInput);
+                            $actions.html('').append([save, cancel]);
+                            console.warn(alias, email, $alias, $email, aliasInput);
+                        };
+        
+                        var infoButton = blocks.button('primary.cp-report', 'fa fa-database', Messages.admin_diskUsageButton);
+                        Util.onClickEnter($(infoButton), function () {
+                             getAccountData(key, (err, data) => {
+                                 if (err) { return void console.error(err); }
+                                 var table = renderAccountData(data);
+                                 UI.alert(table, () => {
+        
+                                 }, {
+                                    wide: true,
+                                 });
+                             });
+                        });
+                        newEntries.push([
+                            UI.dialog.selectable(url),
+                            data.alias,
+                            data.email,
+                            infoButton,
+                            new Date(data.time).toLocaleString(),
+                            [edit, del]
+                        ]);
+                    });
+                    list.updateContent(newEntries);
+                });
+            };
+            refreshUsers();
+            Util.onClickEnter($b, function () {
+                var alias = $(userAlias).val().trim();
+                if (!alias) { return void UI.warn(Messages.error); }
+                $b.prop('disabled', true);
+        
+                var done = () => { $b.prop('disabled', false); };
+                // TODO Get "block" from pin log?
+        
+                var keyStr = $(userEdPublic).val().trim();
+                var edPublic = keyStr && Keys.canonicalize(keyStr);
+                if (!edPublic) {
+                    done();
+                    return void UI.warn(Messages.admin_invalKey);
+                }
+                var block = getBlockId($(userBlock).val());
+        
+                var obj = {
+                    alias,
+                    email: $(userEmail).val(),
+                    block: block,
+                    edPublic: edPublic,
+                };
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADD_KNOWN_USER',
+                    data: obj
+                }, function (e, response) {
+                    done();
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        return void console.error(e, response);
+                    }
+                    $(userAlias).val('').focus();
+                    $(userEmail).val('');
+                    $(userBlock).val('');
+                    $(userEdPublic).val('');
+                    refreshUsers();
+                });
+            });
+        
+            cb(form);
         });
-
-        cb(form);
-       });
-
+        
 
         //QUOTA
         //storage blocks
@@ -1192,8 +1561,6 @@ define([
                             $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit / 1024 / 1024));
                             $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
                         });
-
-                        var attr = { title: title };
                       /*
                         return h('tr.cp-admin-limit', [
                             h('td', [
@@ -1206,7 +1573,6 @@ define([
                         ]);
                       */
                       // XXX NOTE: update the blocks.table function to be able to pass "attributes" for each value 
-                       var table = blocks.table()
                         return [
                             [keyEl, infoButton],
                             limit,
@@ -1221,11 +1587,8 @@ define([
             APP.refreshLimits();
             cb(table);
         });
-
-        //database
-        var disable = $el => $el.attr('disabled', 'disabled');
+        //result is not defined
         sidebar.addItem('account-metadata', function(cb){
-
             var input = blocks.input({
                 type: 'text',
                 placeholder: Messages.admin_accountMetadataPlaceholder,
@@ -1304,6 +1667,292 @@ define([
             cb(form);
     
         });
+        var getDocumentData = function (id, cb) {
+            var data = {
+                generated: +new Date(),
+                id: id,
+            };
+            data.type = inferDocumentType(id);
+    
+            nThen(function (w) {
+                if (data.type !== 'channel') { return; }
+                sframeCommand('GET_STORED_METADATA', id, w(function (err, res) {
+                    if (err) { return void console.error(err); }
+                    if (!(Array.isArray(res) && res[0])) { return void console.error("NO_METADATA"); }
+                    var metadata = res[0];
+                    data.metadata = metadata;
+                    data.created = Util.find(data, ['metadata', 'created']);
+                }));
+            }).nThen(function (w) {
+                sframeCommand("GET_DOCUMENT_SIZE", id, w(function (err, res) {
+                    if (err) { return void console.error(err); }
+                    if (!(Array.isArray(res) && typeof(res[0]) === 'number')) {
+                        return void console.error("NO_SIZE");
+                    }
+                    data.size = res[0];
+                }));
+            }).nThen(function (w) {
+                if (data.type !== 'channel') { return; }
+                sframeCommand('GET_LAST_CHANNEL_TIME', id, w(function (err, res) {
+                    if (err) { return void console.error(err); }
+                    if (!Array.isArray(res) || typeof(res[0]) !== 'number') { return void console.error(res); }
+                    data.lastModified = res[0];
+                }));
+            }).nThen(function (w) {
+                // whether currently open
+                if (data.type !== 'channel') { return; }
+                sframeCommand('GET_CACHED_CHANNEL_METADATA', id, w(function (err, res) {
+                    //console.info("cached channel metadata", err, res);
+                    if (err === 'ENOENT') {
+                        data.currentlyOpen = false;
+                        return;
+                    }
+    
+                    if (err) { return void console.error(err); }
+                    if (!Array.isArray(res) || !res[0]) { return void console.error(res); }
+                    data.currentlyOpen = true;
+                }));
+            }).nThen(function (w) {
+                // status (live, archived, unknown)
+                if (!['channel', 'file'].includes(data.type)) { return; }
+                sframeCommand('GET_DOCUMENT_STATUS', id, w(function (err, res) {
+                    if (err) { return void console.error(err); }
+                    if (!Array.isArray(res) || !res[0]) {
+                        UI.warn(Messages.error);
+                        return void console.error(err, res);
+                    }
+                    data.live = res[0].live;
+                    data.archived = res[0].archived;
+                    data.placeholder = res[0].placeholder;
+                    //console.error("get channel status", err, res);
+                }));
+            }).nThen(function () {
+                // for easy readability when copying to clipboard
+                try {
+                    ['generated', 'created', 'lastModified'].forEach(k => {
+                        data[`${k}_formatted`] = new Date(data[k]);
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+    
+                cb(void 0, data);
+            });
+        };
+    
+    /* FIXME
+        Messages.admin_getFullPinHistory = 'Pin history';
+        Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)";
+        Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored.";
+    */
+    
+        var localizeType = function (type) {
+            var o = {
+                channel: Messages.type.doc,
+                file: Messages.type.file,
+            };
+            return o[type] || Messages.ui_undefined;
+        };
+    
+        var renderDocumentData = function (data) {
+            var tableObj = makeMetadataTable('cp-document-stats');
+            var row = tableObj.row;
+    
+            row(Messages.admin_generatedAt, maybeDate(data.generated));
+            row(Messages.documentID, h('code', data.id));
+            row(Messages.admin_documentType, localizeType(data.type));
+            row(Messages.admin_documentSize, data.size? getPrettySize(data.size): Messages.ui_undefined);
+    
+            if (data.type === 'channel') {
+                try {
+                    row(Messages.admin_documentMetadata, h('pre', JSON.stringify(data.metadata || {}, null, 2)));
+                } catch (err2) {
+                    UI.warn(Messages.error);
+                    console.error(err2);
+                }
+    
+            // actions
+                // get raw metadata history
+                var metadataHistoryButton = primary(Messages.ui_fetch, function () {
+                    sframeCommand('GET_METADATA_HISTORY', data.id, (err, result) => {
+                        if (err) {
+                            UI.warn(Messages.error);
+                            return void console.error(err);
+                        }
+                        if (!Array.isArray(result)) {
+                            UI.warn(Messages.error);
+                            return void console.error("Expected an array");
+                        }
+                        var tableObj = makeMetadataTable('cp-metadata-history');
+                        var row = items => {
+                            tableObj.table.appendChild(h('tr', items.map(item => {
+                                return h('td', item);
+                            })));
+                        };
+                        var scroll = el => h('div.scroll', el);
+                        result.forEach(item => {
+                            var raw = JSON.stringify(item);
+                            var time;
+                            var last;
+                            if (Array.isArray(item)) {
+                                last = item[item.length - 1];
+                                if (typeof(last) === 'number') { time = last; }
+                            } else if (item && typeof(item) === 'object') {
+                                time = item.created;
+                            }
+                            row([
+                                h('small', maybeDate(time)), // time
+                                scroll(h('code', raw)), // Raw
+                            ]);
+                        });
+    
+                        UI.confirm(tableObj.table, (yes) => {
+                            if (!yes) { return; }
+                            var content = result.map(line => JSON.stringify(line)).join('\n');
+                            Clipboard.copy(content, (err) => {
+                                if (err) { return UI.warn(Messages.error); }
+                                UI.log(Messages.genericCopySuccess);
+                            });
+                        }, {
+                            wide: true,
+                            ok: Messages.copyToClipboard,
+                        });
+                    });
+                });
+                row(Messages.admin_getRawMetadata, metadataHistoryButton);
+    
+                row(Messages.admin_documentCreationTime, maybeDate(data.created));
+                row(Messages.admin_documentModifiedTime, maybeDate(data.lastModified));
+                row(Messages.admin_currentlyOpen, localizeState(data.currentlyOpen));
+            }
+            if (['file', 'channel'].includes(data.type)) {
+                row(Messages.admin_channelAvailable, localizeState(data.live));
+                row(Messages.admin_channelArchived, localizeState(data.archived));
+            }
+    
+            if (data.type === 'file') {
+                // TODO what to do for files?
+    
+            }
+    
+            if (data.placeholder) {
+                console.warn('Placeholder code', data.placeholder);
+                row(Messages.admin_channelPlaceholder, UI.getDestroyedPlaceholderMessage(data.placeholder));
+            }
+    
+            if (data.live && data.archived) {
+                let disableButtons;
+                let restoreButton = danger(Messages.admin_unarchiveButton, function () {
+                    justifyRestorationDialog('', reason => {
+                        nThen(function (w) {
+                            sframeCommand('REMOVE_DOCUMENT', {
+                                id: data.id,
+                                reason: reason,
+                            }, w(err => {
+                                if (err) {
+                                    w.abort();
+                                    return void UI.warn(Messages.error);
+                                }
+                            }));
+                        }).nThen(function () {
+                            sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
+                                id: data.id,
+                                reason: reason,
+                            }, (err /*, response */) => {
+                                if (err) {
+                                    console.error(err);
+                                    return void UI.warn(Messages.error);
+                                }
+                                UI.log(Messages.restoredFromServer);
+                                disableButtons();
+                            });
+                        });
+                    });
+                });
+    
+                let archiveButton = danger(Messages.admin_archiveButton, function () {
+                    justifyArchivalDialog('', result => {
+                        sframeCommand('ARCHIVE_DOCUMENT', {
+                            id: data.id,
+                            reason: result,
+                        }, (err /*, response */) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.archivedFromServer);
+                            disableButtons();
+                        });
+                    });
+                });
+    
+                disableButtons = function () {
+                    [archiveButton, restoreButton].forEach(el => {
+                        disable($(el));
+                    });
+                };
+    
+                row(h('span', [
+                    Messages.admin_documentConflict,
+                    h('br'),
+                    h('small', Messages.ui_experimental),
+                ]), h('span', [
+                    h('div.alert.alert-danger.cp-admin-bigger-alert', [
+                        Messages.admin_conflictExplanation,
+                    ]),
+                    h('p', [
+                        restoreButton,
+                        archiveButton,
+                    ]),
+                ]));
+            } else if (data.live) {
+            // archive
+                var archiveDocumentButton = danger(Messages.admin_archiveButton, function () {
+                    justifyArchivalDialog('', result => {
+                        sframeCommand('ARCHIVE_DOCUMENT', {
+                            id: data.id,
+                            reason: result,
+                        }, (err /*, response */) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.archivedFromServer);
+                            disable($(archiveDocumentButton));
+                        });
+                    });
+                });
+                row(Messages.admin_archiveDocument, h('span', [
+                    archiveDocumentButton,
+                    h('small', Messages.admin_archiveHint),
+                ]));
+            } else if (data.archived) {
+                var restoreDocumentButton = primary(Messages.admin_unarchiveButton, function () {
+                    justifyRestorationDialog('', reason => {
+                        sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
+                            id: data.id,
+                            reason: reason,
+                        }, (err /*, response */) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.restoredFromServer);
+                            disable($(restoreDocumentButton));
+                        });
+                    });
+                });
+                row(Messages.admin_restoreDocument, h('span', [
+                    restoreDocumentButton,
+                    h('small', Messages.admin_unarchiveHint),
+                ]));
+            }
+    
+            row(reportContentLabel, copyToClipboard(data));
+    
+            return tableObj.table;
+        };
+    
 
         sidebar.addItem('document-metadata', function(cb){
             var input = blocks.input({
@@ -1317,6 +1966,7 @@ define([
                 placeholder: Messages.login_password,
             });
             var $passwordContainer = $(passwordContainer);
+            var $password = $(passwordContainer).find('input');
             var getBlobId = pathname => {
                 var parts;
                 try {
@@ -1444,7 +2094,101 @@ define([
             cb(form);
         });
 
-        var enable = $el => $el.removeAttr('disabled');
+        var getBlockData = function (key, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var data = {
+                generated: +new Date(),
+                key: key,
+            };
+    
+            nThen(function (w) {
+                sframeCommand('GET_DOCUMENT_STATUS', key, w((err, res) => {
+                    if (err) { 
+                        console.error(err);
+                        return void UI.warn(Messages.error);
+                    }
+                    if (!Array.isArray(res) || !res[0]) {
+                        UI.warn(Messages.error);
+                        return void console.error(err, res);
+                    }
+                    data.live = res[0].live;
+                    data.archived = res[0].archived;
+                    data.totp = res[0].totp;
+                    data.placeholder = res[0].placeholder;
+                }));
+            }).nThen(function () {
+                try {
+                    ['generated'].forEach(k => {
+                        data[`${k}_formatted`] = new Date(data[k]);
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+    
+                cb(void 0, data);
+            });
+        };
+    
+        var renderBlockData  = function (data) {
+            var tableObj = makeMetadataTable('cp-block-stats');
+            var row = tableObj.row;
+    
+            row(Messages.admin_generatedAt, maybeDate(data.generated));
+            row(Messages.admin_blockKey, h('code', data.key));
+            row(Messages.admin_blockAvailable, localizeState(data.live));
+            row(Messages.admin_blockArchived, localizeState(data.archived));
+    
+            row(Messages.admin_totpEnabled, localizeState(Boolean(data.totp.enabled)));
+            row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
+    
+            if (data.live) {
+                var archiveButton = danger(Messages.ui_archive, function () {
+                    justifyArchivalDialog('', reason => {
+                        sframeCommand('ARCHIVE_BLOCK', {
+                            key: data.key,
+                            reason: reason,
+                        }, (err, res) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            disable($(archiveButton));
+                            UI.log(Messages.ui_success);
+                            console.log('archive block', err, res);
+                        });
+                    });
+                });
+                row(Messages.admin_archiveBlock, archiveButton);
+            }
+            if (data.placeholder) {
+                console.warn('Placeholder code', data.placeholder);
+                row(Messages.admin_channelPlaceholder, UI.getDestroyedPlaceholderMessage(data.placeholder, true));
+            }
+            if (data.archived && !data.live) {
+                var restoreButton = danger(Messages.ui_restore, function () {
+                    justifyRestorationDialog('', reason => {
+                        sframeCommand('RESTORE_ARCHIVED_BLOCK', {
+                            key: data.key,
+                            reason: reason,
+                        }, (err, res) => {
+                            if (err) {
+                                console.error(err);
+                                return void UI.warn(Messages.error);
+                            }
+                            disable($(restoreButton));
+                            console.log('restore archived block', err, res);
+                            UI.log(Messages.ui_success);
+                        });
+                    });
+                });
+                row(Messages.admin_restoreBlock, restoreButton);
+            }
+    
+            row(reportContentLabel, copyToClipboard(data));
+    
+            return tableObj.table;
+        };
+    
         sidebar.addItem('block-metadata', function(cb){
             var input = blocks.input({
                 type: 'text',
@@ -1517,7 +2261,58 @@ define([
             cb(form);
 
             });
-        
+        var renderTOTPData  = function (data) {
+            var tableObj = makeMetadataTable('cp-block-stats');
+            var row = tableObj.row;
+    
+            row(Messages.admin_generatedAt, maybeDate(data.generated));
+            row(Messages.admin_blockKey, h('code', data.key));
+            row(Messages.admin_blockAvailable, localizeState(data.live));
+    
+            if (!data.live || !data.totp) { return tableObj.table; }
+    
+            row(Messages.admin_totpCheck, localizeState(data.totpCheck));
+    
+            if (!data.totpCheck) { return tableObj.table; }
+    
+            row(Messages.admin_totpEnabled, localizeState(Boolean(data.totp.enabled)));
+            if (data.totp && data.totp.enabled) {
+                row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
+            }
+    
+            if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }
+    
+            // TOTP is enabled and the signature is correct: display "disable TOTP" button
+            var disableButton = h('button.btn.btn-danger', Messages.admin_totpDisableButton);
+            UI.confirmButton(disableButton, { classes: 'btn-danger' }, function () {
+                sframeCommand('DISABLE_MFA', data.key, (err, res) => {
+                    if (err) {
+                        console.error(err);
+                        return void UI.warn(Messages.error);
+                    }
+                    if (!Array.isArray(res) || !res[0] || !res[0].success) {
+                        return UI.warn(Messages.error);
+                    }
+                    UI.log(Messages.ui_success);
+                });
+    
+    
+            });
+            row(Messages.admin_totpDisable, disableButton);
+    
+            return tableObj.table;
+        };
+    
+        var checkTOTPRequest = function (json) {
+            var clone = Util.clone(json);
+            delete clone.proof;
+    
+            var msg = Nacl.util.decodeUTF8(Sortify(clone));
+            var sig = Nacl.util.decodeBase64(json.proof);
+            var pub = Nacl.util.decodeBase64(json.blockId);
+            return Nacl.sign.detached.verify(msg, sig, pub);
+        };
+    
         sidebar.addItem('totp-recovery', function(cb){
             var textarea = blocks.textArea({
                 id: 'textarea-input',
@@ -1590,7 +2385,8 @@ define([
 
         });
 
-        //stats
+        var onRefreshStats = Util.mkEvent();
+  
         sidebar.addItem('refresh-stats', function(cb){
             var btn = blocks.button('primary', '',  Messages.oo_refresh);
             var $btn = $(btn);
@@ -1604,7 +2400,6 @@ define([
         noHint: true 
         });
 
-        var onRefreshStats = Util.mkEvent();
         sidebar.addItem('uptime', function(cb){
 
             var pre = blocks.pre(Messages.admin_uptimeTitle);
@@ -1621,112 +2416,113 @@ define([
             cb(pre);
             });
         
-            sidebar.addItem('active-sessions', function(cb){
-                var pre = blocks.pre('');
-                var onRefresh = function () {
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ACTIVE_SESSIONS',
-                    }, function (e, data) {
-                        var total = data[0];
-                        var ips = data[1];
-                        pre.append(total + ' (' + ips + ')');
-                    });
-                };
-                onRefresh();
-                onRefreshStats.reg(onRefresh);
-                cb(pre);
-            });
+        sidebar.addItem('active-sessions', function(cb){
+            var pre = blocks.pre('');
+            var onRefresh = function () {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ACTIVE_SESSIONS',
+                }, function (e, data) {
+                    var total = data[0];
+                    var ips = data[1];
+                    pre.append(total + ' (' + ips + ')');
+                });
+            };
+            onRefresh();
+            onRefreshStats.reg(onRefresh);
+            cb(pre);
+        });
 
-            sidebar.addItem('active-pads', function(cb){
-                var pre = blocks.pre('');
-                var onRefresh = function () {
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ACTIVE_PADS',
-                    }, function (e, data) {
-                        pre.append(String(data));
-                    });
-                };
-                onRefresh();
-                onRefreshStats.reg(onRefresh);
-                cb(pre);
-            });
+        sidebar.addItem('active-pads', function(cb){
+            var pre = blocks.pre('');
+            var onRefresh = function () {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ACTIVE_PADS',
+                }, function (e, data) {
+                    pre.append(String(data));
+                });
+            };
+            onRefresh();
+            onRefreshStats.reg(onRefresh);
+            cb(pre);
+        });
 
-            sidebar.addItem('open-files', function(cb){
-                var pre = blocks.pre('');
-                var onRefresh = function () {
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'GET_FILE_DESCRIPTOR_COUNT',
-                    }, function (e, data) {
-                        if (e || (data && data.error)) {
-                            console.error(e, data);
-                            pre.append(String(e || data.error));
-                            return;
-                        }
-                        pre.append(String(data));
-                    });
-                };
-                onRefresh();
-                onRefreshStats.reg(onRefresh);
-                cb(pre);
-            });
+        sidebar.addItem('open-files', function(cb){
+            var pre = blocks.pre('');
+            var onRefresh = function () {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'GET_FILE_DESCRIPTOR_COUNT',
+                }, function (e, data) {
+                    if (e || (data && data.error)) {
+                        console.error(e, data);
+                        pre.append(String(e || data.error));
+                        return;
+                    }
+                    pre.append(String(data));
+                });
+            };
+            onRefresh();
+            onRefreshStats.reg(onRefresh);
+            cb(pre);
+        });
 
-            sidebar.addItem('registered', function(cb){
-                var pre = blocks.pre('');
-                var onRefresh = function () {
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'REGISTERED_USERS',
-                    }, function (e, data) {
-                        pre.append(String(data));
-                    });
-                };
-                onRefresh();
-                onRefreshStats.reg(onRefresh);
-                cb(pre);
-            });
+        sidebar.addItem('registered', function(cb){
+            var pre = blocks.pre('');
+            var onRefresh = function () {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'REGISTERED_USERS',
+                }, function (e, data) {
+                    pre.append(String(data));
+                });
+            };
+            onRefresh();
+            onRefreshStats.reg(onRefresh);
+            cb(pre);
+        });
 
-            sidebar.addItem('disk-usage', function(cb){
-                var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
-                var $button = $(button);
-    
-                var nav = blocks.nav([button]);
-             
-                var content = blocks.table(null, []);
-                var form = blocks.form([
-                    content
-                ], nav);
-    
-                Util.onClickEnter($button, function() {
-                    UI.confirm(Messages.admin_diskUsageWarning, function (yes) {
-                        if (!yes) { return; }
-                        $button.hide();
-                        sFrameChan.query('Q_ADMIN_RPC', {
-                            cmd: 'DISK_USAGE',
-                        }, function (e, data) {
-                            if (e) { return void console.error(e); }
-                            var obj = data[0];
-                            Object.keys(obj).forEach(function (key) {
-                                var val = obj[key];
-                                var unit = Util.magnitudeOfBytes(val);
-                                if (unit === 'GB') {
-                                    obj[key] = Util.bytesToGigabytes(val) + ' GB';
-                                } else if (unit === 'MB') {
-                                    obj[key] = Util.bytesToMegabytes(val) + ' MB';
-                                } else {
-                                    obj[key] = Util.bytesToKilobytes(val) + ' KB';
-                                }
-                            });
-                            let entries = Object.keys(obj).map(function (k) {
-                                return [
-                                    (k === 'total' ? k : '/' + k),
-                                    obj[k]
-                                ];
-                            });
-                            $content.updateContent(entries)
+        sidebar.addItem('disk-usage', function(cb){
+            var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
+            var $button = $(button);
+
+            var nav = blocks.nav([button]);
+            
+            var content = blocks.table(null, []);
+            var form = blocks.form([
+                content
+            ], nav);
+            var $content = $(content);
+
+            Util.onClickEnter($button, function() {
+                UI.confirm(Messages.admin_diskUsageWarning, function (yes) {
+                    if (!yes) { return; }
+                    $button.hide();
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'DISK_USAGE',
+                    }, function (e, data) {
+                        if (e) { return void console.error(e); }
+                        var obj = data[0];
+                        Object.keys(obj).forEach(function (key) {
+                            var val = obj[key];
+                            var unit = Util.magnitudeOfBytes(val);
+                            if (unit === 'GB') {
+                                obj[key] = Util.bytesToGigabytes(val) + ' GB';
+                            } else if (unit === 'MB') {
+                                obj[key] = Util.bytesToMegabytes(val) + ' MB';
+                            } else {
+                                obj[key] = Util.bytesToKilobytes(val) + ' KB';
+                            }
                         });
+                        let entries = Object.keys(obj).map(function (k) {
+                            return [
+                                (k === 'total' ? k : '/' + k),
+                                obj[k]
+                            ];
+                        });
+                        $content.updateContent(entries)
                     });
                 });
-                cb(form);
             });
+            cb(form);
+        });
 
         var getApi = function (cb) {
             return function () {
@@ -1747,6 +2543,81 @@ define([
                 });
             };
         };
+        var checkLastBroadcastHash = function (cb) {
+            var deleted = [];
+    
+            require(['/api/broadcast?'+ (+new Date())], function (BCast) {
+                var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
+                common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
+                    if (e) { console.error(e); return void cb(e); }
+    
+                    // No history, nothing to change
+                    if (!Array.isArray(msgs)) { return void cb(); }
+                    if (!msgs.length) { return void cb(); }
+    
+                    var lastHash;
+                    var next = false;
+    
+                    // Start from the most recent messages until you find a CUSTOM message and
+                    // check if it has been deleted
+                    msgs.reverse().some(function (data) {
+                        var c = data.content;
+    
+                        // This is the hash we want to keep
+                        if (next) {
+                            if (!c || !c.hash) { return; }
+                            lastHash = c.hash;
+                            next = false;
+                            return true;
+                        }
+    
+                        // initialize with the most recent hash
+                        if (!lastHash && c && c.hash) { lastHash = c.hash; }
+    
+                        var msg = c && c.msg;
+                        if (!msg) { return; }
+    
+                        // Remember all deleted messages
+                        if (msg.type === "BROADCAST_DELETE") {
+                            deleted.push(Util.find(msg, ['content', 'uid']));
+                        }
+    
+                        // Only check custom messages
+                        if (msg.type !== "BROADCAST_CUSTOM") { return; }
+    
+                        // If the most recent CUSTOM message has been deleted, it means we don't
+                        // need to keep any message and we can continue with lastHash as the most
+                        // recent broadcast message.
+                        if (deleted.indexOf(msg.uid) !== -1) { return true; }
+    
+                        // We just found the oldest message we want to keep, move one iteration
+                        // further into the loop to get the next message's hash.
+                        // If this is the end of the loop, don't bump lastBroadcastHash at all.
+                        next = true;
+                    });
+    
+                    // If we don't have to bump our lastBroadcastHash, abort
+                    if (next) { return void cb(); }
+    
+                    // Otherwise, bump to lastHash
+                    console.warn('Updating last broadcast hash to', lastHash);
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['SET_LAST_BROADCAST_HASH', [lastHash]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                            return;
+                        }
+                        console.log('lastBroadcastHash updated');
+                        if (typeof(cb) === "function") { cb(); }
+                    });
+                });
+            });
+    
+        };
+    
         
         sidebar.addItem('maintenance', function(cb){
             var button = blocks.button('primary', '', Messages.admin_maintenanceButton );
@@ -1802,9 +2673,9 @@ define([
                 time_24hr: is24h,
                 minDate: new Date(),
                 dateFormat: dateFormat,
-                /*onChange: function () {
+                onChange: function () {
                     endPickr.set('minDate', new Date($start.val()));
-                }*/
+                }
             });
 
              // Extract form data
@@ -1867,8 +2738,6 @@ define([
         cb(form);
 
         });
-
-        //solve h is not a function problem
 
         sidebar.addItem('survey', function(cb){
             var button = blocks.button('primary', '',Messages.admin_surveyButton); 
@@ -2027,7 +2896,57 @@ define([
                 var languages = Messages._languages;
                 var keys = Object.keys(languages).sort();
         
+                 // Extract form data
+                 var getData = function () {
+                    var map = {};
+                    var defaultLanguage;
+                    var error = false;
+                    $(form).find('.cp-broadcast-lang').each(function (i, el) {
+                        var $el = $(el);
+                        var l = $el.attr('data-lang');
+                        if (!l) { error = true; return; }
+                        var text = $el.find('textarea').val();
+                        if (!text.trim()) { error = true; return; }
+                        if ($el.find('.cp-checkmark input').is(':checked')) {
+                            defaultLanguage = l;
+                        }
+                        map[l] = text;
+                    });
+                    if (!Object.keys(map).length) {
+                        console.error('You must select at least one language');
+                        return false;
+                    }
+                    if (error) {
+                        console.error('One of the selected languages has no data');
+                        return false;
+                    }
+                    return {
+                        defaultLanguage: defaultLanguage,
+                        content: map
+                    };
+                };
+        
                 
+                var onPreview = function (l) {
+                    var data = getData();
+                    if (data === false) { return void UI.warn(Messages.error); }
+    
+                    var msg = {
+                        uid: Util.uid(),
+                        type: 'BROADCAST_CUSTOM',
+                        content: data
+                    };
+                    common.mailbox.onMessage({
+                        lang: l,
+                        type: 'broadcast',
+                        content: {
+                            msg: msg,
+                            hash: 'LOCAL|' + JSON.stringify(msg).slice(0,58)
+                        }
+                    }, function () {
+                        UI.log(Messages.saved);
+                    });
+                };
 
                 // Add a textarea
                 var addLang = function (l) {
@@ -2082,36 +3001,7 @@ define([
                     }
                 };
         
-                // Extract form data
-                var getData = function () {
-                    var map = {};
-                    var defaultLanguage;
-                    var error = false;
-                    $(form).find('.cp-broadcast-lang').each(function (i, el) {
-                        var $el = $(el);
-                        var l = $el.attr('data-lang');
-                        if (!l) { error = true; return; }
-                        var text = $el.find('textarea').val();
-                        if (!text.trim()) { error = true; return; }
-                        if ($el.find('.cp-checkmark input').is(':checked')) {
-                            defaultLanguage = l;
-                        }
-                        map[l] = text;
-                    });
-                    if (!Object.keys(map).length) {
-                        console.error('You must select at least one language');
-                        return false;
-                    }
-                    if (error) {
-                        console.error('One of the selected languages has no data');
-                        return false;
-                    }
-                    return {
-                        defaultLanguage: defaultLanguage,
-                        content: map
-                    };
-                };
-        
+               
                 var send = function (data) {
                     $button.prop('disabled', 'disabled');
                     //data.time = +new Date(); // FIXME not used anymore?

@@ -67,6 +67,13 @@ define([
             var isBigClass = big ? '.cp-sidebar-bigger-alert' : ''; // Add the class if we want a bigger font-size
             return h('div.alert.alert-' + type + isBigClass, content);
         };
+
+        blocks.alertHTML = function (message, element) {
+            return h('span', [
+                UIElements.setHTML(h('p'), message),
+                element
+        ]);
+        };
         blocks.pre = (value) => {
             return h('pre', value);
         }
@@ -84,21 +91,24 @@ define([
             return ul;
         };
         
-        
         blocks.checkbox = (key, label, state, opts, onChange) => {
-            var box = UI.createCheckbox(`cp-${app}-${key}`, label, state, { label: { class: 'noTitle' } });
-            if (opts && opts.spinner) {
-                box.spinner = UI.makeSpinner($(box));
-            }
-            // Attach event listener for checkbox change
-            $(box).on('change', function() {
-                // Invoke the provided onChange callback function with the new checkbox state
-                //onChange(this.checked);
-            });
-            return box;
-        };
-        
+            var checkbox = UI.createCheckbox(`cp-${app}-${key}`, '', state);
+            var labelElement = document.createElement('label');
+            labelElement.setAttribute('for', `cp-${app}-${key}`);
+            labelElement.innerText = label;
 
+            checkbox.appendChild(labelElement);
+    
+            if (opts && opts.spinner) {
+                checkbox.spinner = UI.makeSpinner($(checkbox));
+            }
+    
+            $(checkbox).on('change', function() {
+                onChange(this.checked);
+            });
+        
+            return checkbox;
+        };
         
         
         blocks.table = function (header, entries) {
@@ -126,6 +136,17 @@ define([
             return table;
         };
         
+        blocks.link = function (text, url) {
+            var link = h('a', { href: url}, text);
+            $(link).click(function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                var path = url.pathname;
+                common.openURL(path);
+            });
+            return link;
+        };
+
         blocks.chart = function (header, data) {
             const chartContainer = h('div', { class: 'width-constrained' });
             const chart = h('div', { id: 'profiling-chart', class: 'cp-charts cp-bar-table' });
