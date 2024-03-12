@@ -90,26 +90,19 @@ define([
             });
             return ul;
         };
-        
+    
         blocks.checkbox = (key, label, state, opts, onChange) => {
-            var checkbox = UI.createCheckbox(`cp-${app}-${key}`, '', state);
-            var labelElement = document.createElement('label');
-            labelElement.setAttribute('for', `cp-${app}-${key}`);
-            labelElement.innerText = label;
-
-            checkbox.appendChild(labelElement);
-    
+            var box = UI.createCheckbox(`cp-${app}-${key}`, label, state, { label: { class: 'noTitle' } });
             if (opts && opts.spinner) {
-                checkbox.spinner = UI.makeSpinner($(checkbox));
+                box.spinner = UI.makeSpinner($(box));
             }
-    
-            $(checkbox).on('change', function() {
-                onChange(this.checked);
-            });
-        
-            return checkbox;
+            if (typeof(onChange) === "function"){
+                $(box).on('change', function() {
+                    onChange(this.checked);
+                });
+            }
+            return box;
         };
-        
         
         blocks.table = function (header, entries) {
             const table = h('table.cp-sidebar-list');
@@ -223,32 +216,40 @@ define([
             });
         };
         
-        sidebar.addCheckboxItem = (data) => {
+        blocks.checkboxItem = (data, cb) => {
             const state = data.getState();
             const key = data.key;
             const safeKey = keyToCamlCase(key);
-
-            sidebar.addItem(key, function (cb) {
-                var labelKey = `${app}_${safeKey}Label`;
-                var titleKey = `${app}_${safeKey}Title`;
-                var label = Messages[labelKey] || Messages[titleKey];
-                var box = sidebar.blocks.checkbox(key, label, state, { spinner: true });
-                var $cbox = $(box);
-                var spinner = box.spinner;
-                var $checkbox = $cbox.find('input').on('change', function() {
-                    spinner.spin();
-                    var val = $checkbox.is(':checked') || false;
-                    $checkbox.attr('disabled', 'disabled');
-                    data.query(val, function (state) {
-                        spinner.done();
-                        $checkbox[0].checked = state;
-                        $checkbox.removeAttr('disabled');
-                    });
+            var labelKey = `${app}_${safeKey}Label`;
+            var titleKey = `${app}_${safeKey}Title`;
+            var label = Messages[labelKey] || Messages[titleKey];
+            var box = sidebar.blocks.checkbox(key, label, state, { spinner: true });
+            var $cbox = $(box);
+            var spinner = box.spinner;
+            var $checkbox = $cbox.find('input').on('change', function() {
+                spinner.spin();
+                var val = $checkbox.is(':checked') || false;
+                $checkbox.attr('disabled', 'disabled');
+                data.query(val, function (state) {
+                    spinner.done();
+                    $checkbox[0].checked = state;
+                    $checkbox.removeAttr('disabled');
                 });
-                cb(box);
+            });
+            cb(box);
+        };
+        
+        sidebar.addCheckboxItem = (data) => {
+            const state = data.getState();
+            const key = data.key;
+        
+            blocks.checkboxItem(data, function(box) {
+                sidebar.addItem(key, function (cb) {
+                    cb(box);
+                });
             });
         };
-
+        
         var hideCategories = function () {
             Object.keys(items).forEach(key => { $(items[key]).hide(); });
         };

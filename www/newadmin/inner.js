@@ -36,12 +36,12 @@ define([
     Hash,
     Sidebar,
     Messages,
-    h,
     Keys,
+    h,
     Clipboard,
+    Sortify,
     AppConfig,
     ApiConfig,
-    Sortify,
     Flatpickr
 ) {
     var APP = window.APP = {};
@@ -154,14 +154,20 @@ define([
         const blocks = sidebar.blocks;
     
         var flushCacheNotice = function () {
-            var notice = blocks.text(Messages.admin_reviewCheckupNotice);
-            var link = blocks.link(Messages.admin_cacheEvictionRequiredLinkText, new URL('/checkup/', ApiConfig.httpUnsafeOrigin).href);
-            $(notice).append(link);
-        
-            var content = blocks.alertHTML(Messages.admin_cacheEvictionRequired, notice);
+            var notice = UIElements.setHTML(h('p'), Messages.admin_reviewCheckupNotice);
+            $(notice).find('a').attr({
+                href: new URL('/checkup/', ApiConfig.httpUnsafeOrigin).href,
+            }).click(function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                common.openURL('/checkup/');
+            });
+            var content = h('span', [
+                UIElements.setHTML(h('p'), Messages.admin_cacheEvictionRequired),
+                notice,
+            ]);
             UI.alert(content);
         };
-        
         
         //general blocks
         sidebar.addItem('flush-cache', function (cb) {
@@ -211,6 +217,7 @@ define([
                 table: table,
             };
         };
+
         var getPrettySize = UIElements.prettySize;
     
         var getAccountData = function (key, _cb) {
@@ -367,14 +374,8 @@ define([
             justifyDialog(message, restoreReason, reason => { restoreReason = reason; }, action);
         };
     
-        var customButton = function (cls, text, handler, opt) {
-            var btn = h(`button.btn.btn-${cls}`, opt, text);
-            if (handler) { $(btn).click(handler); }
-            return btn;
-        };
-    
-        var primary = (text, handler, opt) => customButton('primary', text, handler, opt);
-        var danger = (text, handler, opt) => customButton('danger', text, handler, opt);
+        var primary = (text, handler, opt) => clickableButton('primary', text, handler, opt);
+        var danger = (text, handler, opt) => clickableButton('danger', text, handler, opt);
     
         var copyToClipboard = (content) => {
             var button = primary(Messages.copyToClipboard, () => {
@@ -402,6 +403,7 @@ define([
             33: 'ephemeral',
             34: 'broadcast',
         };
+
         var inferDocumentType = id => {
             return DOCUMENT_TYPES[typeof(id) === 'string' && id.length] || 'unknown';
         };
@@ -410,7 +412,7 @@ define([
             var tableObj = makeMetadataTable('cp-account-stats');
             var row = tableObj.row;
     
-        // info
+            // info
             row(Messages.admin_generatedAt, new Date(data.generated));
     
             // signing key
@@ -478,7 +480,7 @@ define([
             }
     
     
-        // actions
+            // actions
             if (data.archived && data.live === false && data.archiveReport) {
                 row(Messages.admin_restoreAccount, primary(Messages.ui_restore, function () {
                     justifyRestorationDialog('', reason => {
@@ -615,7 +617,6 @@ define([
             cb(button);
         });
 
-        //enableembedss
         sidebar.addCheckboxItem({
             key: 'enableembeds',
             getState: function () {
@@ -638,7 +639,6 @@ define([
             },
         });
 
-        //2fa
         sidebar.addCheckboxItem({
             key: 'forcemfa',
             getState: function () {
@@ -675,7 +675,6 @@ define([
             }
         };
         
-        //admin email
         sidebar.addItem('email', function (cb){
             var input = blocks.input({
                 type: 'email',
@@ -712,7 +711,6 @@ define([
             cb(form);
         });
 
-        //info notice
         sidebar.addItem('instance-info-notice', function(cb){
             var key = 'instance-info-notice';
             var notice = blocks.alert( 'info', key, [Messages.admin_infoNotice1, ' ', Messages.admin_infoNotice2]);
@@ -721,7 +719,7 @@ define([
             noTitle: true,
             noHint: true
         });
-        //instance name
+
         sidebar.addItem('name', function (cb){
             var input = blocks.input({
                 type: 'text',
@@ -758,7 +756,6 @@ define([
             cb(form);
         });
 
-        //instance description
         sidebar.addItem('description', function (cb){
             var input = blocks.input({
                 type: 'text',
@@ -767,7 +764,6 @@ define([
                 'aria-labelledby': 'cp-admin-description'
             });
             var $input = $(input);
-
             var button = blocks.clickableButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
@@ -786,12 +782,11 @@ define([
             });
             
             var nav = blocks.nav([button]);
-         
+            $(nav).append(button.spinner);
+
             var form = blocks.form([
                 input,
             ], nav); 
-
-            $(nav).append(button.spinner);
 
             cb(form);
         });
@@ -823,12 +818,11 @@ define([
             });
             
             var nav = blocks.nav([button]);
+            $(nav).append(button.spinner);
 
             var form = blocks.form([
                 input,
             ], nav); 
-
-            $(nav).append(button.spinner);
 
             cb(form);
         });
@@ -860,17 +854,15 @@ define([
             });
             
             var nav = blocks.nav([button]);
+            $(nav).append(button.spinner);
 
             var form = blocks.form([
                 input,
             ], nav); 
 
-            $(nav).append(button.spinner);
-
             cb(form);
         });
 
-         //to determine functionilty for both sso reg and simpple one
         sidebar.addCheckboxItem({
             key: 'registration',
             getState: function () {
@@ -894,8 +886,6 @@ define([
             },
         });
     
-        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
-
         sidebar.addCheckboxItem({
             key: 'registration',
             getState: function () {
@@ -918,6 +908,7 @@ define([
             },
         });
 
+        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
         if (ssoEnabled) {
             sidebar.addCheckboxItem({
                 key: 'registration-sso',
@@ -942,7 +933,6 @@ define([
             });
         }
 
-        //invitation
         sidebar.addItem('invitation', function(cb){
             var button = blocks.button('primary', '', Messages.admin_invitationCreate);
             var $b = $(button);
@@ -1088,43 +1078,11 @@ define([
             return;
         };
 
-        Keys.canonicalize = function (input) {
-            if (typeof(input) !== 'string') { return; }
-            // key is already in simple form. ensure that it is an 'unsafeKey'
-            if (input.length === 44) {
-                return unescape(input);
-            }
-            try {
-                return Keys.parseUser(input).pubkey;
-            } catch (err) {
-                return;
-            }
-        };
-
         sidebar.addItem('users', function(cb){
-          var invited = blocks.checkbox('store-invited', Messages.admin_storeInvited, false, null, function(checked) {
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'ADMIN_DECREE',
-                data: ['DISABLE_STORE_INVITED_USERS', [!checked]]
-            }, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                }
-                APP.updateStatus(function () {
-                    flushCacheNotice();
-                    $(invited).prop('checked', !APP.instanceStatus.dontStoreInvitedUsers);
-                });
-            });
-        });
-        var $invited = $(invited);
-
-        var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
-        if (ssoEnabled) {
-            var sso = blocks.checkbox('store-sso', Messages.admin_storeSSO, false, null, function(checked) {
+            var invited = blocks.checkbox('store-invited', Messages.admin_storeInvited, false, null, function(checked) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
-                    data: ['DISABLE_STORE_SSO_USERS', [!checked]]
+                    data: ['DISABLE_STORE_INVITED_USERS', [!checked]]
                 }, function (e, response) {
                     if (e || response.error) {
                         UI.warn(Messages.error);
@@ -1132,11 +1090,28 @@ define([
                     }
                     APP.updateStatus(function () {
                         flushCacheNotice();
-                        $sso.prop('checked', !APP.instanceStatus.dontStoreSSOUsers);
+                        $(invited).prop('checked', !APP.instanceStatus.dontStoreInvitedUsers);
                     });
                 });
             });
-            var $sso = $(sso);
+
+            var ssoEnabled = ApiConfig.sso && ApiConfig.sso.list && ApiConfig.sso.list.length;
+            if (ssoEnabled) {
+                var sso = blocks.checkbox('store-sso', Messages.admin_storeSSO, false, null, function(checked) {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['DISABLE_STORE_SSO_USERS', [!checked]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                        }
+                        APP.updateStatus(function () {
+                            flushCacheNotice();
+                            $(sso).prop('checked', !APP.instanceStatus.dontStoreSSOUsers);
+                        });
+                    });
+                });
             }
         
             var button = blocks.button('primary', '', Messages.admin_usersAdd);
@@ -1161,7 +1136,6 @@ define([
                 type: 'text'
             });
             var blockUser = blocks.labelledInput(Messages.admin_usersBlock, userBlock);
-        
         
             var refreshUsers = function () {};
             var refreshButton = blocks.button('secondary', '', Messages.oo_refresh);
@@ -1205,6 +1179,7 @@ define([
                     refreshUsers();
                 });
             };
+
             var updateUser = function (key, changes) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'UPDATE_KNOWN_USER',
@@ -1350,34 +1325,26 @@ define([
             cb(form);
         });
         
-
-        //QUOTA
-        //storage blocks
         sidebar.addItem('defaultlimit', function (cb) {
-
             var _limit = APP.instanceStatus.defaultStorageLimit;
             var _limitMB = Util.bytesToMegabytes(_limit);
             var limit = getPrettySize(_limit);
 
-            // create input
             var newLimit = blocks.input({
                 type: 'number',
                 min: 0,
                 value: _limitMB,
                 'aria-labelledby': 'cp-admin-defaultlimit'
             });
-            // create button
             var button = blocks.button('primary', '', Messages.admin_setlimitButton);
             var nav = blocks.nav([button]);
-            // create current value text
             var text = blocks.text(Messages._getKey('admin_limit', [limit]));
-            // add these items in a form
+
             var form = blocks.form([
                 text,
                 newLimit
             ], nav);
 
-            // Add button handler
             UI.confirmButton(button, {
                 classes: 'btn-primary',
                 multiple: true,
@@ -1407,12 +1374,12 @@ define([
         });
 
         sidebar.addItem('setlimit', function(cb){
-
             var userInput = blocks.input({
                 type:'key'
             });
             var user = blocks.labelledInput(Messages.admin_limitUser, userInput);
             var $key = $(user);
+
             var limitInput = blocks.input({
                 type: 'number',
                 min: 0,
@@ -1424,8 +1391,10 @@ define([
             });
             var note = blocks.labelledInput(Messages.admin_limitSetNote, noteInput);
             var $note = $(note);
+
             var remove = blocks.button('danger', '',Messages.fc_remove );
             var set = blocks.button('primary', '',  Messages.admin_setlimitButton);
+
             var nav = blocks.nav([set, remove]);
             var form = blocks.form([
                 user,
@@ -1504,11 +1473,9 @@ define([
             });
             
             cb(form);
-    
         });
 
         sidebar.addItem('getlimits', function(cb){
-            // Make the empty table
             var header = [
                 Messages.settings_publicSigningKey,
                 Messages.admin_planlimit,
@@ -1517,7 +1484,6 @@ define([
             ];
             var table = blocks.table(header, []);
           
-            // Update the table content on each refresh
             APP.refreshLimits = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_LIMITS',
@@ -1561,17 +1527,6 @@ define([
                             $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit / 1024 / 1024));
                             $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
                         });
-                      /*
-                        return h('tr.cp-admin-limit', [
-                            h('td', [
-                                keyEl,
-                                infoButton,
-                            ]),
-                            h('td.limit', attr, limit),
-                            h('td.plan', attr, user.plan),
-                            h('td.note', attr, user.note)
-                        ]);
-                      */
                       // XXX NOTE: update the blocks.table function to be able to pass "attributes" for each value 
                         return [
                             [keyEl, infoButton],
@@ -1587,7 +1542,7 @@ define([
             APP.refreshLimits();
             cb(table);
         });
-        //result is not defined
+
         sidebar.addItem('account-metadata', function(cb){
             var input = blocks.input({
                 type: 'text',
@@ -1595,7 +1550,6 @@ define([
                 value: '',
             });
             var $input = $(input);
-
             var box = blocks.box(input, 'cp-admin-setter');
 
             var pending = false;
@@ -1612,61 +1566,62 @@ define([
                 return state;
             };
 
-        var btn = blocks.button('primary', '', Messages.ui_generateReport);
-        var $btn = $(btn);
+            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var $btn = $(btn);
 
-        var nav = blocks.nav([btn]);
-        var form = blocks.form([
-            input,
-            box
-        ], nav);
+            var nav = blocks.nav([btn]);
+            var form = blocks.form([
+                input,
+                box
+            ], nav);
 
-        disable($btn);
+            disable($btn);
 
-        var setInterfaceState = function (state) {
-            state = state || getInputState();
-            var both = [$input, $btn];
-            if (state.pending) {
-                both.forEach(disable);
-            } else if (state.valid) {
-                both.forEach(enable);
-            } else {
-                enable($input);
-                disable($btn);
-            }
-        };
-
-        $input.on('keypress keyup change paste', function () {
-            setTimeout(setInterfaceState);
-        });
-
-        Util.onClickEnter($btn, function () {
-            if (pending) { return; }
-            var state = getInputState();
-            if (!state.valid) {
-                results.innerHTML = '';
-                return void UI.warn(Messages.error);
-            }
-            var key = state.key;
-            pending = true;
-            setInterfaceState();
-
-            getAccountData(key, (err, data) => {
-                pending = false;
-                setInterfaceState();
-                if (!data) {
-                    results.innerHTML = '';
-                    return UI.warn(Messages.error);
+            var setInterfaceState = function (state) {
+                state = state || getInputState();
+                var both = [$input, $btn];
+                if (state.pending) {
+                    both.forEach(disable);
+                } else if (state.valid) {
+                    both.forEach(enable);
+                } else {
+                    enable($input);
+                    disable($btn);
                 }
-                var table = renderAccountData(data);
-                results.innerHTML = '';
-                results.appendChild(table);
-                });
+            };
+
+            $input.on('keypress keyup change paste', function () {
+                setTimeout(setInterfaceState);
             });
 
+            Util.onClickEnter($btn, function () {
+                if (pending) { return; }
+                var state = getInputState();
+                if (!state.valid) {
+                    results.innerHTML = '';
+                    return void UI.warn(Messages.error);
+                }
+                var key = state.key;
+                pending = true;
+                setInterfaceState();
+
+                getAccountData(key, (err, data) => {
+                    pending = false;
+                    setInterfaceState();
+                    if (!data) {
+                        results.innerHTML = '';
+                        return UI.warn(Messages.error);
+                    }
+                    var table = renderAccountData(data);
+                    results.innerHTML = '';
+                    results.appendChild(table);
+                    });
+                });
+
             cb(form);
-    
+        
         });
+
         var getDocumentData = function (id, cb) {
             var data = {
                 generated: +new Date(),
@@ -1740,11 +1695,11 @@ define([
             });
         };
     
-    /* FIXME
-        Messages.admin_getFullPinHistory = 'Pin history';
-        Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)";
-        Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored.";
-    */
+        /* FIXME
+            Messages.admin_getFullPinHistory = 'Pin history';
+            Messages.admin_archiveOwnedAccountDocuments = "Archive this account's owned documents (not implemented)";
+            Messages.admin_archiveOwnedDocumentsConfirm = "All content owned exclusively by this user will be archived. This means their documents, drive, and accounts will be made inaccessible.  This action cannot be undone. Please save the full pin list before proceeding to ensure individual documents can be restored.";
+        */
     
         var localizeType = function (type) {
             var o = {
@@ -1771,7 +1726,7 @@ define([
                     console.error(err2);
                 }
     
-            // actions
+                // actions
                 // get raw metadata history
                 var metadataHistoryButton = primary(Messages.ui_fetch, function () {
                     sframeCommand('GET_METADATA_HISTORY', data.id, (err, result) => {
@@ -1967,6 +1922,7 @@ define([
             });
             var $passwordContainer = $(passwordContainer);
             var $password = $(passwordContainer).find('input');
+
             var getBlobId = pathname => {
                 var parts;
                 try {
@@ -2260,7 +2216,8 @@ define([
 
             cb(form);
 
-            });
+        });
+
         var renderTOTPData  = function (data) {
             var tableObj = makeMetadataTable('cp-block-stats');
             var row = tableObj.row;
@@ -2382,7 +2339,6 @@ define([
             });
     
             cb(form);
-
         });
 
         var onRefreshStats = Util.mkEvent();
@@ -2401,7 +2357,6 @@ define([
         });
 
         sidebar.addItem('uptime', function(cb){
-
             var pre = blocks.pre(Messages.admin_uptimeTitle);
             var set = function () {
                 var uptime = APP.instanceStatus.launchTime;
@@ -2413,8 +2368,9 @@ define([
             onRefreshStats.reg(function () {
                 APP.updateStatus(set);
             });
+
             cb(pre);
-            });
+        });
         
         sidebar.addItem('active-sessions', function(cb){
             var pre = blocks.pre('');
@@ -2429,6 +2385,7 @@ define([
             };
             onRefresh();
             onRefreshStats.reg(onRefresh);
+
             cb(pre);
         });
 
@@ -2443,6 +2400,7 @@ define([
             };
             onRefresh();
             onRefreshStats.reg(onRefresh);
+
             cb(pre);
         });
 
@@ -2462,6 +2420,7 @@ define([
             };
             onRefresh();
             onRefreshStats.reg(onRefresh);
+
             cb(pre);
         });
 
@@ -2476,6 +2435,7 @@ define([
             };
             onRefresh();
             onRefreshStats.reg(onRefresh);
+
             cb(pre);
         });
 
@@ -2484,7 +2444,6 @@ define([
             var $button = $(button);
 
             var nav = blocks.nav([button]);
-            
             var content = blocks.table(null, []);
             var form = blocks.form([
                 content
@@ -2724,18 +2683,18 @@ define([
                 send("");
             });
 
-        });
-        refresh();
+            });
+            refresh();
 
-        common.makeUniversal('broadcast', {
-            onEvent: function (obj) {
-                var cmd = obj.ev;
-                if (cmd !== "MAINTENANCE") { return; }
-                refresh();
-            }
-        });
+            common.makeUniversal('broadcast', {
+                onEvent: function (obj) {
+                    var cmd = obj.ev;
+                    if (cmd !== "MAINTENANCE") { return; }
+                    refresh();
+                }
+            });
 
-        cb(form);
+            cb(form);
 
         });
 
@@ -2810,33 +2769,32 @@ define([
                         });
                     });
 
-            };
-            Util.onClickEnter($(button), function () {
-                var data = getData();
-                if (data === false) { return void UI.warn(Messages.error); }
-                send(data);
+                };
+
+                Util.onClickEnter($(button), function () {
+                    var data = getData();
+                    if (data === false) { return void UI.warn(Messages.error); }
+                    send(data);
+                });
+                UI.confirmButton(removeButton, {
+                    classes: 'btn-danger',
+                }, function () {
+                    send("");
+                });
+
             });
-            UI.confirmButton(removeButton, {
-                classes: 'btn-danger',
-            }, function () {
-                send("");
+
+            refresh();
+
+            common.makeUniversal('broadcast', {
+                onEvent: function (obj) {
+                    var cmd = obj.ev;
+                    if (cmd !== "SURVEY") { return; }
+                    refresh();
+                }
             });
 
-            
-            
-        });
-        refresh();
-
-        common.makeUniversal('broadcast', {
-            onEvent: function (obj) {
-                var cmd = obj.ev;
-                if (cmd !== "SURVEY") { return; }
-                refresh();
-            }
-        });
-
-        cb(form);
-
+            cb(form);
         });
 
         sidebar.addItem('broadcast', function(cb) {
@@ -3072,8 +3030,8 @@ define([
             refresh();
         });
         
-    
         var onRefreshPerformance = Util.mkEvent();
+
         sidebar.addItem('refresh-performance', function(cb){
             var btn = blocks.button('primary', '', Messages.oo_refresh);
             Util.onClickEnter($(btn), function () {
@@ -3086,14 +3044,14 @@ define([
             noHint: true 
         });
 
-        /*sidebar.addItem('performance-profiling', function(cb){
+        sidebar.addItem('performance-profiling', function(cb){
             var header = [
                 Messages.admin_performanceKeyHeading,
                 Messages.admin_performanceTimeHeading,
                 Messages.admin_performancePercentHeading
             ];
         
-            var chart = blocks.chart(header, []);
+            var table = blocks.table(header, []);
         
             const onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3111,33 +3069,24 @@ define([
                         return 1;
                     });
         
-                    var values = sorted.map(function (k) { return o[k]; });
                     var total = 0;
-                    values.forEach(function (value) { total += value; });
-                    var max = Math.max.apply(null, values);
+                    sorted.forEach(function (key) { total += o[key]; });
         
-                    const newRows = sorted.map(function (k) {
-                        var percent = Math.floor((o[k] / total) * 1000) / 10;
-                        return {
-                            key: k,
-                            value: o[k],
-                            percent: percent,
-                            scaled: (o[k] / max) * 100
-                        };
+                    const newRows = sorted.map(function (key) {
+                        var percent = Math.floor((o[key] / total) * 1000) / 10;
+                        return [key, o[key], percent + '%'];
                     });
         
-                    // Update chart content
-                    chart.updateContent(newRows);
+                    table.updateContent(newRows);
                 });
             };
         
             onRefresh();
             onRefreshPerformance.reg(onRefresh);
         
-            // Call the callback function with the chart
-            cb(chart);
-        });*/
-
+            cb(table);
+        });
+        
     
         sidebar.addCheckboxItem({
             getState: function () {
@@ -3205,7 +3154,6 @@ define([
             cb(form);
         });
         
-        //network
         sidebar.addItem('update-available', function(cb){
             if (!APP.instanceStatus.updateAvailable) { return; }
 
@@ -3226,6 +3174,7 @@ define([
             Util.onClickEnter($(button), function () {
                 common.openURL('/checkup/');
             });
+
             cb(button);
         });
 
@@ -3336,7 +3285,7 @@ define([
             }
         });
 
-        
+            
         var sendDecree = function (data, cb) {
             sFrameChan.query('Q_ADMIN_RPC', {
                 cmd: 'ADMIN_DECREE',
@@ -3344,64 +3293,59 @@ define([
             }, cb);
         };
 
-    sidebar.addItem('instance-purpose', function(cb){
-    var values = [
-        'noanswer', // Messages.admin_purpose_noanswer
-        'experiment', // Messages.admin_purpose_experiment
-        'personal', // Messages.admin_purpose_personal
-        'education', // Messages.admin_purpose_education
-        'org', // Messages.admin_purpose_org
-        'business', // Messages.admin_purpose_business
-        'public', // Messages.admin_purpose_public
-    ];
-    var defaultPurpose = 'noanswer';
-    var purpose = APP.instanceStatus.instancePurpose || defaultPurpose;
-    
-    var opts = values.map(function (key) {
-        var full_key = 'admin_purpose_' + key;
-        return UI.createRadio('cp-instance-purpose-radio', 'cp-instance-purpose-radio-'+key,
-            Messages[full_key] || Messages._getKey(full_key, [defaultPurpose]),
-            key === purpose, {
-                input: { value: key },
-                //label: { class: 'noTitle' }
+        sidebar.addItem('instance-purpose', function(cb){
+            var values = [
+                'noanswer', // Messages.admin_purpose_noanswer
+                'experiment', // Messages.admin_purpose_experiment
+                'personal', // Messages.admin_purpose_personal
+                'education', // Messages.admin_purpose_education
+                'org', // Messages.admin_purpose_org
+                'business', // Messages.admin_purpose_business
+                'public', // Messages.admin_purpose_public
+            ];
+            var defaultPurpose = 'noanswer';
+            var purpose = APP.instanceStatus.instancePurpose || defaultPurpose;
+        
+            var opts = values.map(function (key) {
+                var full_key = 'admin_purpose_' + key;
+                return UI.createRadio('cp-instance-purpose-radio', 'cp-instance-purpose-radio-'+key,
+                    Messages[full_key] || Messages._getKey(full_key, [defaultPurpose]),
+                    key === purpose, {
+                        input: { value: key },
+                        //label: { class: 'noTitle' }
+                    });
             });
-    });
-    
-    var $opts = $(opts);
-    
-    var setPurpose = function (value, cb) {
-        sendDecree([
-            'SET_INSTANCE_PURPOSE',
-            [ value]
-        ], cb);
-    };
+        
+            var $opts = $(opts);
+            
+            var setPurpose = function (value, cb) {
+                sendDecree([
+                    'SET_INSTANCE_PURPOSE',
+                    [ value]
+                ], cb);
+            };
 
-    $opts.on('change', function () {
-        var val = $opts.find('input:radio:checked').val();
-        console.log(val);
-        //spinner.spin();
-        setPurpose(val, function (e, response) {
-            if (e || response.error) {
-                UI.warn(Messages.error);
-                //spinner.hide();
-                return;
-            }
-            //spinner.done();
-            UI.log(Messages.saved);
+            $opts.on('change', function () {
+                var val = $opts.find('input:radio:checked').val();
+                console.log(val);
+                //spinner.spin();
+                setPurpose(val, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        //spinner.hide();
+                        return;
+                    }
+                    //spinner.done();
+                    UI.log(Messages.saved);
+                });
+            });
+
+            cb(opts);
         });
-    });
-
-        cb(opts);
-    });
-
-
-
-
 
         sidebar.makeLeftside(categories);
     };
 
-    
 
     var updateStatus = APP.updateStatus = function (cb) {
         sFrameChan.query('Q_ADMIN_RPC', {
