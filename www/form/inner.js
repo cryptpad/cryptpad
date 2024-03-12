@@ -4645,17 +4645,7 @@ define([
         var $toolbarContainer = $('#cp-toolbar');
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
-        var $helpMenuButton = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': helpMenu.button.attr('class') },
-            content: [
-                h('i', { 'class': helpMenu.button.children('i').attr('class') }),
-                h('span', helpMenu.button.text())
-            ],
-            action: function () {
-                helpMenu.button.click();
-            }
-        });
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $toolbarContainer.after(helpMenu.menu);
         framework._.toolbar.$drawer.append($helpMenuButton);
         if (!APP.isEditor && !priv.form_auditorKey) {

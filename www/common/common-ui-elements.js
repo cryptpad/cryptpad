@@ -576,16 +576,19 @@ define([
         });
     };
 
-    UIElements.getEntryFromButton = function ($button) {
-        // If the button contains an icon, clone it and re-use it
+    UIElements.getEntryFromButton = function ($button, id = undefined) {
         let $icon = $button.find('> i');
-        let icon = $icon.length ? $icon.clone() : undefined;
-
+        let attributes = {
+            'class': $button.attr('class')
+        };
+        if (id !== undefined) {
+            attributes['id'] = id;
+        }
         return UIElements.createDropdownEntry({
             tag: 'a',
-            attributes: {'class': $button.attr('class')},
+            attributes: attributes,
             content: [
-                icon,
+                h('i',{ 'class': $icon.attr('class') }),
                 h('span', $button.text())
             ],
             action: function () {
@@ -594,7 +597,8 @@ define([
             }
         });
     };
-    
+
+
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;

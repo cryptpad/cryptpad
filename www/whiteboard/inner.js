@@ -297,17 +297,8 @@ define([
     var mkHelpMenu = function (framework) {
         var $appContainer = $('#cp-app-whiteboard-container');
         var helpMenu = framework._.sfCommon.createHelpMenu(['whiteboard']);
-        var $helpMenuButton = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': helpMenu.button.attr('class') },
-            content: [
-                h('i', { 'class': helpMenu.button.children('i').attr('class') }),
-                h('span', helpMenu.button.text())
-            ],
-            action: function () {
-                helpMenu.button.click();
-            }
-        });
+        
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $appContainer.prepend(helpMenu.menu);
         framework._.toolbar.$drawer.append($helpMenuButton);
     };
@@ -445,21 +436,7 @@ define([
 
             // Export to drive as PNG
             var $saveToDriveButton = framework._.sfCommon.createButton('savetodrive', true, {});
-            var $saveToDrive = UIElements.createDropdownEntry({
-                tag: 'a',
-                attributes: { 'class': $saveToDriveButton.attr('class') },
-                content: [
-                    h('i', { 'class': $saveToDriveButton.children('i').attr('class') }),
-                    h('span', $saveToDriveButton.text())
-                ],
-                action: function () {
-                    var defaultName = framework._.title.getTitle();
-                    UI.prompt(Messages.exportPrompt, defaultName + '.png', function (name) {
-                        if (name === null || !name.trim()) { return; }
-                        APP.upload(name);
-                    });
-                }
-            });
+            var $saveToDrive = UIElements.getEntryFromButton($saveToDriveButton);
             $saveToDrive.appendTo($drawer);
 
         } else {

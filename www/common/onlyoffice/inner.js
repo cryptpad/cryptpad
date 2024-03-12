@@ -2751,18 +2751,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     History.create(common, histConfig);
                 });
 
-                var $historyDropdown = UIElements.createDropdownEntry({
-                    tag: 'a',
-                    attributes: { 'class': $historyButton.attr('class') },
-                    content: [
-                        h('i', { 'class': $historyButton.children('i').attr('class') }),
-                        h('span', $historyButton.text())
-                    ],
-
-                    action: function () {
-                        $historyButton.click();
-                    }
-                });
+                var $historyDropdown = UIElements.getEntryFromButton($historyButton);
                 $historyDropdown.appendTo(toolbar.$drawer);
 
                 // Snapshots
@@ -2883,17 +2872,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
                 $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
                 $('#cp-app-oo-editor').prepend(helpMenu.menu);
-                var $helpMenuButton = UIElements.createDropdownEntry({
-                    tag: 'a',
-                    attributes: { 'class': helpMenu.button.attr('class') },
-                    content: [
-                        h('i', { 'class': helpMenu.button.children('i').attr('class') }),
-                        h('span', helpMenu.button.text())
-                    ],
-                    action: function () {
-                        helpMenu.button.click();
-                    }
-                });
+                var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
                 toolbar.$drawer.append($helpMenuButton);
             }
 

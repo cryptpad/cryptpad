@@ -345,18 +345,8 @@ define([
         }, function () {
             UI.alert(getSettings());
         });
-        var $settings = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': $settingsButton.attr('class') },
-            content: [
-                h('i', { 'class': $settingsButton.children('i').attr('class') }),
-                h('span', $settingsButton.text())
-            ],
-            action: function () {
-                UI.alert(getSettings());
-            }
-        });
 
+        var $settings = UIElements.getEntryFromButton($settingsButton);
         framework._.toolbar.$drawer.append($settings);
 
     };
@@ -364,17 +354,7 @@ define([
     var mkHelpMenu = function(framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
-        var $helpMenuButton = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': helpMenu.button.attr('class') },
-            content: [
-                h('i', { 'class': helpMenu.button.children('i').attr('class') }),
-                h('span', helpMenu.button.text())
-            ],
-            action: function () {
-                helpMenu.button.click();
-            }
-        });
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
 
         $toolbarContainer.before(helpMenu.menu);
         framework._.toolbar.$drawer.append($helpMenuButton);

@@ -332,19 +332,7 @@ define([
             text: Messages.slideOptionsText,
             name: 'options'
         });
-        var $options = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': $optionsButton.attr('class') },
-            content: [
-                h('i', { 'class': $optionsButton.children('i').attr('class') }),
-                h('span', $optionsButton.text())
-            ],
-            action: function () {
-                $options.click(function () {
-                    $('body').append(createPrintDialog());
-                });
-            }
-        });
+        var $options = UIElements.getEntryFromButton($optionsButton);
         framework._.toolbar.$theme.append($options);
 
         metadataMgr.onChange(function () {
@@ -400,17 +388,7 @@ define([
             $backgroundPicker.val(backColor);
             $backgroundPicker.click();
         });
-        var $backButton = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': $back.attr('class'), 'id': SLIDE_BACKCOLOR_ID },
-            content: [
-                h('i', { 'class': $back.children('i').attr('class')}),
-                h('span', $back.text())
-            ],
-            action: function () {
-                $back.click();
-            }
-        });
+        var $backButton = UIElements.getEntryFromButton($back, SLIDE_BACKCOLOR_ID);
 
         var $foregroundPicker = $('<input>', { type: 'color', value: textColor })
             .css({ display: 'none', })
@@ -427,17 +405,7 @@ define([
             $foregroundPicker.click();
         });
 
-        var $textButton = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': $text.attr('class'),'id': SLIDE_COLOR_ID },
-            content: [
-                h('i', { 'class': $text.children('i').attr('class') }),
-                h('span', $text.text())
-            ],
-            action: function () {
-                $text.click();
-            }
-        });
+        var $textButton = UIElements.getEntryFromButton($text, SLIDE_COLOR_ID);
         var $testColor = $('<input>', { type: 'color', value: '!' });
         if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
 
@@ -474,17 +442,7 @@ define([
     var mkHelpMenu = function (framework) {
         var $codeMirrorContainer = $('#cp-app-slide-editor-container');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'slide']);
-        var $helpMenuButton = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': helpMenu.button.attr('class') },
-            content: [
-                h('i', { 'class': helpMenu.button.children('i').attr('class') }),
-                h('span', helpMenu.button.text())
-            ],
-            action: function () {
-                helpMenu.button.click();
-            }
-        });
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $codeMirrorContainer.prepend(helpMenu.menu);
         framework._.toolbar.$drawer.append($helpMenuButton);
     };

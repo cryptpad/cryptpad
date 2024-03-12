@@ -1119,18 +1119,7 @@ define([
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['kanban']);
 
-        var $helpMenuButton = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: { 'class': helpMenu.button.attr('class') },
-            content: [
-                h('i', { 'class': helpMenu.button.children('i').attr('class') }),
-                h('span', helpMenu.button.text())
-            ],
-            action: function () {
-                helpMenu.button.click();
-            }
-        });
-
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $toolbarContainer.prepend(helpMenu.menu);
         framework._.toolbar.$drawer.append($helpMenuButton);
     };
