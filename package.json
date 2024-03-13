@@ -22,7 +22,7 @@
     "chainpad-crypto": "^0.2.5",
     "chainpad-listmap": "^1.0.0",
     "chainpad-netflux": "^1.0.0",
-    "chainpad-server": "^5.1.0",
+    "chainpad-server": "^5.2.0",
     "ckeditor": "npm:ckeditor4@~4.22.1",
     "codemirror": "^5.19.0",
     "components-font-awesome": "^4.6.3",
