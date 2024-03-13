@@ -122,20 +122,15 @@ define([
 
     var mkPrintButton = function (framework, editor, $content, $print) {
         var $printButton = framework._.sfCommon.createButton('print', true);
-        // var $print = UIElements.createDropdownEntry({
-        //     tag: 'a',
-        //     attributes: { 'class': $printButton.attr('class') },
-        //     content: h('span', $printButton.text()),
-        //     action: function () {
-        //         Slide.update(editor.getValue(), true);
-        //         $print.html($content.html());
-        //         window.focus();
-        //         window.print();
-        //         framework.feedback('PRINT_SLIDES');
-        //     }
-        // });
-        var $print = UIElements.getEntryFromButton($printButton);
-        framework._.toolbar.$drawer.append($print);
+        $printButton.click(function () {
+            Slide.update(editor.getValue(), true);
+            $print.html($content.html());
+            window.focus();
+            window.print();
+            framework.feedback('PRINT_SLIDES');
+        });
+        var $printEntry = UIElements.getEntryFromButton($printButton);
+        framework._.toolbar.$drawer.append($printEntry);
     };
 
     // Flag to check if a file from the filepicker is a mediatag for the slides or a background image
