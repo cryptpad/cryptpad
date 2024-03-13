@@ -576,14 +576,15 @@ define([
         });
     };
 
-    UIElements.getEntryFromButton = function ($button, id = undefined) {
+    UIElements.getEntryFromButton = function ($button) {
         let $icon = $button.find('> i');
-        let attributes = {
-            'class': $button.attr('class')
-        };
-        if (id !== undefined) {
-            attributes['id'] = id;
-        }
+
+        let attributes = {};
+        let btnClass = $button.attr('class');
+        let btnId = $button.attr('id');
+        if (btnClass) { attributes['class'] = btnClass; }
+        if (btnId) { attributes['id'] = btnId; }
+
         return UIElements.createDropdownEntry({
             tag: 'a',
             attributes: attributes,
@@ -605,6 +606,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         data = data || {};
+        if (!callback && data.callback) { callback = data.callback; }
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -1015,7 +1017,7 @@ define([
                     h('span.cp-toolbar-name'+drawerCls, data.text)
                 ]));
                 var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');
-                button[0].addEventListener('click', function () {
+                Util.onClickEnter(button, function () {
                     feedbackHandler();
                     if (typeof(callback) !== 'function') { return; }
                     callback();

@@ -330,7 +330,10 @@ define([
             title: Messages.slideOptionsTitle,
             hiddenReadOnly: true,
             text: Messages.slideOptionsText,
-            name: 'options'
+            name: 'options',
+            callback: function () {
+                $('body').append(createPrintDialog());
+            }
         });
         var $options = UIElements.getEntryFromButton($optionsButton);
         framework._.toolbar.$theme.append($options);
@@ -388,7 +391,7 @@ define([
             $backgroundPicker.val(backColor);
             $backgroundPicker.click();
         });
-        var $backButton = UIElements.getEntryFromButton($back, SLIDE_BACKCOLOR_ID);
+        var $backButton = UIElements.getEntryFromButton($back);
 
         var $foregroundPicker = $('<input>', { type: 'color', value: textColor })
             .css({ display: 'none', })
@@ -405,7 +408,7 @@ define([
             $foregroundPicker.click();
         });
 
-        var $textButton = UIElements.getEntryFromButton($text, SLIDE_COLOR_ID);
+        var $textButton = UIElements.getEntryFromButton($text);
         var $testColor = $('<input>', { type: 'color', value: '!' });
         if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
 
