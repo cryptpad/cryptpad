@@ -34,8 +34,6 @@ MessengerUI, Messages, Pages) {
     var BOTTOM_LEFT_CLS = Bar.constants.bottomL = 'cp-toolbar-bottom-left';
     var BOTTOM_MID_CLS = Bar.constants.bottomM = 'cp-toolbar-bottom-mid';
     var BOTTOM_RIGHT_CLS = Bar.constants.bottomR = 'cp-toolbar-bottom-right';
-    var LEFTSIDE_CLS = Bar.constants.leftside = 'cp-toolbar-leftside';
-    var RIGHTSIDE_CLS = Bar.constants.rightside = 'cp-toolbar-rightside';
     var FILE_CLS = Bar.constants.file = 'cp-toolbar-file';
     var DRAWER_CLS = Bar.constants.drawer = 'cp-toolbar-drawer-content';
     var HISTORY_CLS = Bar.constants.history = 'cp-toolbar-history';
@@ -137,7 +135,7 @@ MessengerUI, Messages, Pages) {
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer);
-        var $bottom = $(h('div.'+BOTTOM_CLS, [
+        $(h('div.'+BOTTOM_CLS, [
             h('div.'+BOTTOM_LEFT_CLS),
             h('div.'+BOTTOM_MID_CLS),
             h('div.'+BOTTOM_RIGHT_CLS)
@@ -506,7 +504,7 @@ MessengerUI, Messages, Pages) {
         return $container;
     };
 
-    createCollapse = function (toolbar) {
+    var createCollapse = function (toolbar) {
         var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
         var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
         var notif = h('span.cp-collapsed-notif');
@@ -979,7 +977,6 @@ MessengerUI, Messages, Pages) {
             if (overLimit) {
                 $limit.show().click(function () {
                     if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
-                        var key = 'pinLimitReachedAlert'; // Msg.pinLimitReachedAlert
                         var msg = Pages.setHTML(h('span'), Messages.pinLimitReachedAlert);
                         $(msg).find('a').attr({
                             target: '_blank',
@@ -998,7 +995,7 @@ MessengerUI, Messages, Pages) {
         return $limit;
     };
 
-    var createNewPad = function (toolbar, config) {
+    var createNewPad = function (toolbar) {
         var $button = Common.createButton('newpad', true);
         toolbar.$drawer.append($button);
         return $button;
@@ -1008,7 +1005,6 @@ MessengerUI, Messages, Pages) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the user menu");
         }
-        var metadataMgr = config.metadataMgr;
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
             $initBlock: $userAdmin,
@@ -1028,7 +1024,7 @@ MessengerUI, Messages, Pages) {
         return $userAdmin;
     };
 
-    var createMaintenance = function (toolbar, config) {
+    var createMaintenance = function (toolbar) {
         var $notif = toolbar.$top.find('.'+MAINTENANCE_CLS);
         var button = h('button.cp-maintenance-wrench.fa.fa-wrench');
         $notif.append(button);
