@@ -65,7 +65,6 @@ define([
     CMeditor,
     UIElements)
 {
-    var Common;
     window.CodeMirror = CMeditor;
 
     var SLIDE_BACKCOLOR_ID = "cp-app-slide-toolbar-backcolor";
@@ -112,7 +111,7 @@ define([
         const $drawer = UIElements.createDropdown({
             text: Messages.toolbar_theme,
             options: [],
-            common: Common,
+            common: framework._.sfCommon,
             iconCls: 'cptools cptools-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');

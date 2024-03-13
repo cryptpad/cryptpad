@@ -68,7 +68,6 @@ define([
     CMeditor,
     UIElements)
 {
-    var Common;
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
@@ -88,7 +87,7 @@ define([
         const $drawer = UIElements.createDropdown({
             text: Messages.toolbar_theme,
             options: [],
-            common: Common,
+            common: framework._.sfCommon,
             iconCls: 'cptools cptools-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');

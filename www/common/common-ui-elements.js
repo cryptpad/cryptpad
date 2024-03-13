@@ -577,6 +577,7 @@ define([
     };
 
     UIElements.getEntryFromButton = function ($button) {
+        if (!$button || !$button.length) { return; }
         let $icon = $button.find('> i');
 
         let attributes = {};
@@ -882,6 +883,7 @@ define([
                     h('i.fa.fa-file-image-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
                 ])).click(common.prepareFeedback(type));
+                if (callback) { button.click(callback); }
                 break;
             case 'storeindrive':
                 button = $(h('button.cp-toolbar-storeindrive.fa.fa-hdd-o', {
