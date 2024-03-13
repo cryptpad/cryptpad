@@ -127,7 +127,7 @@ define([
         var channel = data.channel;
         var title = data.title;
         var ticket = data.ticket;
-        var supportKey, theirPublic, myCurve, notifKey;
+        var supportKey, theirPublic, myCurve;
         var time = +new Date();
         nThen((waitFor) => {
             // Send ticket to the admins and call back
@@ -139,7 +139,8 @@ define([
                 supportKey = obj.supportKey;
                 theirPublic = obj.theirPublic;
                 myCurve = obj.myCurve;
-                notifKey = obj.notifKey;
+                // No need for notifKey here: users can only create tickets for the
+                // currently used key
             }));
         }).nThen((waitFor) => {
             // Create ticket mailbox
@@ -1118,16 +1119,15 @@ define([
         let proxy = ctx.store.proxy;
         let edPublic = proxy.edPublic;
 
-        let supportKey;
         let moderators;
         nThen((waitFor) => {
             // Check if support is enabled
-            getKeys(ctx, false, {}, waitFor((err, obj) => {
+            // and update ctx.adminKeys
+            getKeys(ctx, false, {}, waitFor((err) => {
                 if (err) {
                     cb({error: err});
                     return void waitFor.abort();
                 }
-                supportKey = obj.theirPublic;
             }));
         }).nThen((waitFor) => {
             // Only admins can disable support
