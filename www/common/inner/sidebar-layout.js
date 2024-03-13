@@ -19,7 +19,7 @@ define([
     Util,
     Hash,
     Messages,
-    h,
+    h
 ) {
     const Sidebar = {};
 
@@ -50,7 +50,7 @@ define([
                 icon ? h('i', { 'class': icon }) : undefined,
                 h('span', text)
             ]);
-        }
+        };
         blocks.nav = (buttons) => {
             return h('nav', buttons);
         };
@@ -63,6 +63,13 @@ define([
         blocks.text = (value) => {
             return h('span', value);
         };
+        blocks.code = val => {
+            return h('code', val);
+        };
+        blocks.box = (content, className) => { // XXX rename blocks.block?
+            return h('div', { class: className }, content);
+        };
+
         blocks.alert = function (type, big, content) {
             var isBigClass = big ? '.cp-sidebar-bigger-alert' : ''; // Add the class if we want a bigger font-size
             return h('div.alert.alert-' + type + isBigClass, content);
@@ -76,8 +83,8 @@ define([
         };
         blocks.pre = (value) => {
             return h('pre', value);
-        }
-        
+        };
+
         blocks.textArea = function (attributes, value) {
             return h('textarea', attributes, value || '');
         };
@@ -90,20 +97,20 @@ define([
             });
             return ul;
         };
-    
+
         blocks.checkbox = (key, label, state, opts, onChange) => {
             var box = UI.createCheckbox(`cp-${app}-${key}`, label, state, { label: { class: 'noTitle' } });
             if (opts && opts.spinner) {
                 box.spinner = UI.makeSpinner($(box));
             }
             if (typeof(onChange) === "function"){
-                $(box).on('change', function() {
+                $(box).find('input').on('change', function() {
                     onChange(this.checked);
                 });
             }
             return box;
         };
-        
+
         blocks.table = function (header, entries) {
             const table = h('table.cp-sidebar-list');
             if (header) {
@@ -125,10 +132,10 @@ define([
                 table.appendChild(h('tbody', bodyContent));
             };
             table.updateContent(entries);
-        
+
             return table;
         };
-        
+
         blocks.link = function (text, url) {
             var link = h('a', { href: url}, text);
             $(link).click(function (ev) {
@@ -143,12 +150,12 @@ define([
         blocks.chart = function (header, data) {
             const chartContainer = h('div', { class: 'width-constrained' });
             const chart = h('div', { id: 'profiling-chart', class: 'cp-charts cp-bar-table' });
-        
+
             if (header) {
                 const headerRow = h('span', { class: 'cp-charts-row heading' }, header.map(value => h('span', value)));
                 chart.appendChild(headerRow);
             }
-        
+
             data.forEach(rowData => {
                 const row = h('span', { class: 'cp-charts-row' }, [
                     h('span', rowData.key),
@@ -160,15 +167,15 @@ define([
                 ]);
                 chart.appendChild(row);
             });
-        
+
             chartContainer.appendChild(chart);
-        
+
             return chartContainer;
         };
-        
-        
 
-        blocks.clickableButton = function (type, icon, text, callback) {
+
+
+        blocks.activeButton = function (type, icon, text, callback) {
             var button = blocks.button(type, icon, text);
             var $button = $(button);
             button.spinner = h('span');
@@ -186,13 +193,32 @@ define([
             return button;
         };
 
-        blocks.box = (content, className) => {
-            return h('div', { class: className }, content);
-        };
-
         const keyToCamlCase = (key) => {
             return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
         };
+        blocks.activeCheckbox = (data) => {
+            const state = data.getState();
+            const key = data.key;
+            const safeKey = keyToCamlCase(key);
+            var labelKey = `${app}_${safeKey}Label`;
+            var titleKey = `${app}_${safeKey}Title`;
+            var label = Messages[labelKey] || Messages[titleKey];
+            var box = blocks.checkbox(key, label, state, { spinner: true }, checked => {
+                var $cbox = $(box);
+                var $checkbox = $cbox.find('input');
+                let spinner = box.spinner;
+                spinner.spin();
+                $checkbox.attr('disabled', 'disabled');
+                var val = !!checked;
+                data.query(val, function (state) {
+                    spinner.done();
+                    $checkbox[0].checked = state;
+                    $checkbox.removeAttr('disabled');
+                });
+            });
+            return box;
+        };
+
         sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);
             get((content, config) => {
@@ -215,41 +241,15 @@ define([
                 $rightside.append(div);
             });
         };
-        
-        blocks.checkboxItem = (data, cb) => {
-            const state = data.getState();
-            const key = data.key;
-            const safeKey = keyToCamlCase(key);
-            var labelKey = `${app}_${safeKey}Label`;
-            var titleKey = `${app}_${safeKey}Title`;
-            var label = Messages[labelKey] || Messages[titleKey];
-            var box = sidebar.blocks.checkbox(key, label, state, { spinner: true });
-            var $cbox = $(box);
-            var spinner = box.spinner;
-            var $checkbox = $cbox.find('input').on('change', function() {
-                spinner.spin();
-                var val = $checkbox.is(':checked') || false;
-                $checkbox.attr('disabled', 'disabled');
-                data.query(val, function (state) {
-                    spinner.done();
-                    $checkbox[0].checked = state;
-                    $checkbox.removeAttr('disabled');
-                });
-            });
-            cb(box);
-        };
-        
+
         sidebar.addCheckboxItem = (data) => {
-            const state = data.getState();
             const key = data.key;
-        
-            blocks.checkboxItem(data, function(box) {
-                sidebar.addItem(key, function (cb) {
-                    cb(box);
-                });
+            let box = blocks.activeCheckbox(data);
+            sidebar.addItem(key, function (cb) {
+                cb(box);
             });
         };
-        
+
         var hideCategories = function () {
             Object.keys(items).forEach(key => { $(items[key]).hide(); });
         };
