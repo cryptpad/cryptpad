@@ -175,7 +175,7 @@ define([
 
 
 
-        blocks.activeButton = function (type, icon, text, callback) {
+        blocks.activeButton = function (type, icon, text, callback, keepEnabled) {
             var button = blocks.button(type, icon, text);
             var $button = $(button);
             button.spinner = h('span');
@@ -183,12 +183,15 @@ define([
 
             Util.onClickEnter($button, function () {
                 spinner.spin();
-                $button.attr('disabled', 'disabled');
-                callback(function (success) {
+                if (!keepEnabled) { $button.attr('disabled', 'disabled'); }
+                let done = success => {
                     $button.removeAttr('disabled');
                     if (success) { return void spinner.done(); }
                     spinner.hide();
-                });
+                };
+                // The callback can be synchrnous or async, handle "done" in both ways
+                let success = callback(done); // Async
+                if (typeof(success) === "boolean") { done(success); } // Sync
             });
             return button;
         };

@@ -270,7 +270,7 @@ define([
                     if (err) { return UI.warn(Messages.error); }
                     UI.log(Messages.genericCopySuccess);
                 });
-            });
+            }, true);
             return button;
         };
 
@@ -358,17 +358,19 @@ define([
                 let button, pre;
                 row(Messages.admin_accountReport, h('div', [
                     pre = h('pre', data.archiveReport_formatted),
-                    button = blocks.activeButton('primary', '',Messages.admin_accountReportFull, () => {
+                    button = blocks.activeButton('primary', '',
+                            Messages.admin_accountReportFull, () => {
                         $(button).remove();
                         $(pre).html(JSON.stringify(data.archiveReport, 0, 2));
-                    })
+                    }, true)
                 ]));
             }
 
 
             // actions
             if (data.archived && data.live === false && data.archiveReport) {
-                row(Messages.admin_restoreAccount, blocks.activeButton('primary', '',Messages.ui_restore, function () {
+                let button = blocks.activeButton('primary', '',
+                        Messages.ui_restore, () => {
                     justifyRestorationDialog('', reason => {
                         sframeCommand('RESTORE_ACCOUNT', {
                             key: data.key,
@@ -381,12 +383,14 @@ define([
                             UI.log(Messages.ui_success);
                         });
                     });
-                }));
+                }, true);
+                row(Messages.admin_restoreAccount, button);
             }
 
             if (data.live === true) {
-                var getPins = () => {
+                var getPins = (done) => {
                     sframeCommand('GET_PIN_LIST', data.key, (err, pins) => {
+                        done(!err && Array.isArray(pins));
                         if (err || !Array.isArray(pins)) {
                             console.error(err);
                             return void UI.warn(Messages.error);
@@ -422,8 +426,9 @@ define([
                 row(Messages.admin_getPinList, blocks.activeButton('primary', '', Messages.ui_fetch, getPins));
 
                 // get full pin history
-                var getHistoryHandler = () => {
+                var getHistoryHandler = (done) => {
                     sframeCommand('GET_PIN_HISTORY', data.key, (err, history) => {
+                        done(!err);
                         if (err) {
                             console.error('Error retrieving pin history:', err);
                             return void UI.warn(Messages.error);
@@ -431,7 +436,7 @@ define([
                         UI.alert(history); // TODO NOT_IMPLEMENTED
                     });
                 };
-                var pinHistoryButton =  blocks.activeButton('primary','', Messages.ui_fetch, getHistoryHandler);
+                var pinHistoryButton = blocks.activeButton('primary', '', Messages.ui_fetch, getHistoryHandler);
                 disable($(pinHistoryButton));
 
                 // TODO pin history is not implemented
@@ -460,7 +465,9 @@ define([
                     h('br'),
                     h('small', Messages.admin_archiveAccountInfo)
                 ]);
-                row(archiveAccountLabel, blocks.activeButton('danger', '', Messages.admin_archiveButton, archiveHandler));
+                let archiveAccountButton = blocks.activeButton('danger', '',
+                                Messages.admin_archiveButton, archiveHandler, true);
+                row(archiveAccountLabel, archiveAccountButton);
 
                 // archive owned documents
         	    /* // TODO not implemented
@@ -1221,7 +1228,7 @@ define([
                             });
                         });
                         var edit = blocks.activeButton('secondary', 'fa fa-pencil',
-                                    Messages.tag_edit, () => { editUser(); });
+                                    Messages.tag_edit, () => { editUser(); }, true);
 
                         let aliasCell = blocks.text(data.alias);
                         let emailCell = blocks.text(data.email);
@@ -1256,14 +1263,15 @@ define([
                         };
 
                         let infoBtn = blocks.activeButton('primary', 'fa fa-database',
-                                Messages.admin_diskUsageButton, function () {
-                             getAccountData(key, (err, data) => {
-                                 if (err) { return void console.error(err); }
-                                 var table = renderAccountData(data);
-                                 UI.alert(table, () => {}, {
+                                Messages.admin_diskUsageButton, function (done) {
+                            getAccountData(key, (err, data) => {
+                                done(!err);
+                                if (err) { return void console.error(err); }
+                                var table = renderAccountData(data);
+                                UI.alert(table, () => {}, {
                                     wide: true,
-                                 });
-                             });
+                                });
+                            });
                         });
                         newEntries.push([
                             aliasCell,
@@ -1499,10 +1507,8 @@ define([
                         var limit = getPrettySize(user.limit);
                         var infoButton = blocks.button('primary.cp-report','',  Messages.admin_diskUsageButton);
                         Util.onClickEnter($(infoButton), function () {
-                             console.log(key);
                              getAccountData(key, (err, data) => {
                                  if (err) { return void console.error(err); }
-                                 console.log(data);
                                  var table = renderAccountData(data);
                                  UI.alert(table, () => {
 
@@ -1721,8 +1727,9 @@ define([
 
                 // actions
                 // get raw metadata history
-                var metadataHistoryButton = blocks.activeButton('primary', '', Messages.ui_fetch, function () {
+                var metadataHistoryButton = blocks.activeButton('primary', '', Messages.ui_fetch, done => {
                     sframeCommand('GET_METADATA_HISTORY', data.id, (err, result) => {
+                        done(!err);
                         if (err) {
                             UI.warn(Messages.error);
                             return void console.error(err);
@@ -1816,7 +1823,7 @@ define([
                             });
                         });
                     });
-                });
+                }, true);
 
                 let archiveButton = blocks.activeButton('danger', '',Messages.admin_archiveButton, function () {
                     justifyArchivalDialog('', result => {
@@ -1832,7 +1839,7 @@ define([
                             disableButtons();
                         });
                     });
-                });
+                }, true);
 
                 disableButtons = function () {
                     [archiveButton, restoreButton].forEach(el => {
@@ -1869,7 +1876,7 @@ define([
                             disable($(archiveDocumentButton));
                         });
                     });
-                });
+                }, true);
                 row(Messages.admin_archiveDocument, h('span', [
                     archiveDocumentButton,
                     h('small', Messages.admin_archiveHint),
@@ -1889,7 +1896,7 @@ define([
                             disable($(restoreDocumentButton));
                         });
                     });
-                });
+                }, true);
                 row(Messages.admin_restoreDocument, h('span', [
                     restoreDocumentButton,
                     h('small', Messages.admin_unarchiveHint),
@@ -2112,7 +2119,7 @@ define([
                             console.log('archive block', err, res);
                         });
                     });
-                });
+                }, true);
                 row(Messages.admin_archiveBlock, archiveButton);
             }
             if (data.placeholder) {
@@ -2135,7 +2142,7 @@ define([
                             UI.log(Messages.ui_success);
                         });
                     });
-                });
+                }, true);
                 row(Messages.admin_restoreBlock, restoreButton);
             }
 
@@ -2154,7 +2161,7 @@ define([
             var btn = blocks.button('primary', '', Messages.ui_generateReport);
             var $btn = $(btn);
             disable($btn);
-            
+
             var results = h('span');
             var nav = blocks.nav([btn]);
             var form = blocks.form([
@@ -2242,9 +2249,10 @@ define([
             if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }
 
             // TOTP is enabled and the signature is correct: display "disable TOTP" button
-            var disableButton = blocks.activeButton('danger','', Messages.admin_totpDisableButton);
-            UI.confirmButton(disableButton, { classes: 'btn-danger' }, function () {
+            var disableButton = blocks.activeButton('danger', '', Messages.admin_totpDisableButton);
+            UI.confirmButton(disableButton, { classes: 'btn-danger' }, done => {
                 sframeCommand('DISABLE_MFA', data.key, (err, res) => {
+                    done(!err);
                     if (err) {
                         console.error(err);
                         return void UI.warn(Messages.error);
@@ -2254,7 +2262,6 @@ define([
                     }
                     UI.log(Messages.ui_success);
                 });
-
 
             });
             row(Messages.admin_totpDisable, disableButton);
