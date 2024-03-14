@@ -220,118 +220,7 @@ define([
 
         var getPrettySize = UIElements.prettySize;
 
-        var getAccountData = function (key, _cb) {
-            var cb = Util.once(Util.mkAsync(_cb));
-            var data = {
-                generated: +new Date(),
-                key: key,
-                safeKey: Util.escapeKeyCharacters(key),
-            };
-
-            return void nThen(function (w) {
-                sframeCommand('GET_PIN_ACTIVITY', key, w((err, response) => {
-                    if (err === 'ENOENT') { return; }
-                    if (err || !response || !response[0]) {
-                        console.error(err);
-                        console.error(response);
-                        UI.warn(Messages.error);
-                    } else {
-                        data.first = response[0].first;
-                        data.latest = response[0].latest;
-                        console.info(err, response);
-                    }
-                }));
-            }).nThen(function (w) {
-                sframeCommand('IS_USER_ONLINE', key, w((err, response) => {
-                    console.log('online', err, response);
-                    if (!Array.isArray(response) || typeof(response[0]) !== 'boolean') { return; }
-                    data.currentlyOnline = response[0];
-                }));
-            }).nThen(function (w) {
-                if (!data.first) { return; }
-                sframeCommand('GET_USER_QUOTA', key, w((err, response) => {
-                    if (err || !response) {
-                        return void console.error('quota', err, response);
-                    } else {
-                        data.plan = response[1];
-                        data.note = response[2];
-                        data.limit = response[0];
-                    }
-                }));
-            }).nThen(function (w) {
-                if (!data.first) { return; }
-                // storage used
-                sframeCommand('GET_USER_TOTAL_SIZE', key, w((err, response) => {
-                    if (err || !Array.isArray(response)) {
-                        //console.error('size', err, response);
-                    } else {
-                        //console.info('size', response);
-                        data.usage = response[0];
-                    }
-                }));
-            }).nThen(function (w) {
-                if (!data.first) { return; }
-                // channels pinned
-                // files pinned
-                sframeCommand('GET_USER_STORAGE_STATS', key, w((err, response) => {
-                    if (err || !Array.isArray(response) || !response[0]) {
-                        UI.warn(Messages.error);
-                        return void console.error('storage stats', err, response);
-                    } else {
-                        data.channels = response[0].channels;
-                        data.files = response[0].files;
-                    }
-                }));
-            }).nThen(function (w) { // pin log status (live, archived, unknown)
-                sframeCommand('GET_PIN_LOG_STATUS', key, w((err, response) => {
-                    if (err || !Array.isArray(response) || !response[0]) {
-                        console.error('pin log status', err, response);
-                        return void UI.warn(Messages.error);
-                    } else {
-                        console.info('pin log status', response);
-                        data.live = response[0].live;
-                        data.archived = response[0].archived;
-                    }
-                }));
-            }).nThen(function (w) {
-                if (data.first) { return; }
-                // Account is probably deleted
-                sframeCommand('GET_ACCOUNT_ARCHIVE_STATUS', {key}, w((err, response) => {
-                    if (err || !Array.isArray(response) || !response[0]) {
-                        console.error('account status', err, response);
-                    } else {
-                        console.info('account status', response);
-                        data.archiveReport = response[0];
-                    }
-                }));
-            }).nThen(function () {
-                //console.log(data);
-                try {
-                    ['generated', 'first', 'latest'].forEach(k => {
-                        var val = data[k];
-                        if (typeof(val) !== 'number') { return; }
-                        data[`${k}_formatted`] = new Date(val);
-                    });
-                    ['limit', 'usage'].forEach(k => {
-                        var val = data[k];
-                        if (typeof(val) !== 'number') { return; }
-                        data[`${k}_formatted`] = getPrettySize(val);
-                    });
-                    if (data.archiveReport) {
-                        let formatted = Util.clone(data.archiveReport);
-                        formatted.channels = data.archiveReport.channels.length;
-                        formatted.blobs = data.archiveReport.blobs.length;
-                        data['archiveReport_formatted'] = JSON.stringify(formatted, 0, 2);
-                    }
-                } catch (err) {
-                    console.error(err);
-                }
-
-                cb(void 0, data);
-            });
-        };
-
-        var localizeState = state => {
+                var localizeState = state => {
             var o = {
                 'true': Messages.ui_true,
                 'false': Messages.ui_false,
@@ -374,11 +263,8 @@ define([
             justifyDialog(message, restoreReason, reason => { restoreReason = reason; }, action);
         };
 
-        var primary = (text, handler, opt) => blocks.activeButton('primary', text, handler, opt);
-        var danger = (text, handler, opt) => blocks.activeButton('danger', text, handler, opt);
-
         var copyToClipboard = (content) => {
-            var button = primary(Messages.copyToClipboard, () => {
+            var button = blocks.activeButton('primary','', Messages.copyToClipboard, () => {
                 var toCopy = JSON.stringify(content, null, 2);
                 Clipboard.copy(toCopy, (err) => {
                     if (err) { return UI.warn(Messages.error); }
@@ -472,7 +358,7 @@ define([
                 let button, pre;
                 row(Messages.admin_accountReport, h('div', [
                     pre = h('pre', data.archiveReport_formatted),
-                    button = primary(Messages.admin_accountReportFull, () => {
+                    button = blocks.activeButton('primary', '',Messages.admin_accountReportFull, () => {
                         $(button).remove();
                         $(pre).html(JSON.stringify(data.archiveReport, 0, 2));
                     })
@@ -482,7 +368,7 @@ define([
 
             // actions
             if (data.archived && data.live === false && data.archiveReport) {
-                row(Messages.admin_restoreAccount, primary(Messages.ui_restore, function () {
+                row(Messages.admin_restoreAccount, blocks.activeButton('primary', '',Messages.ui_restore, function () {
                     justifyRestorationDialog('', reason => {
                         sframeCommand('RESTORE_ACCOUNT', {
                             key: data.key,
@@ -533,19 +419,19 @@ define([
                 };
 
                 // get full pin list
-                row(Messages.admin_getPinList, primary(Messages.ui_fetch, getPins));
+                row(Messages.admin_getPinList, blocks.activeButton('primary', '', Messages.ui_fetch, getPins));
 
                 // get full pin history
                 var getHistoryHandler = () => {
                     sframeCommand('GET_PIN_HISTORY', data.key, (err, history) => {
                         if (err) {
-                            console.error(err);
+                            console.error('Error retrieving pin history:', err);
                             return void UI.warn(Messages.error);
                         }
                         UI.alert(history); // TODO NOT_IMPLEMENTED
                     });
                 };
-                var pinHistoryButton =  primary(Messages.ui_fetch, getHistoryHandler);
+                var pinHistoryButton =  blocks.activeButton('primary','', Messages.ui_fetch, getHistoryHandler);
                 disable($(pinHistoryButton));
 
                 // TODO pin history is not implemented
@@ -559,7 +445,7 @@ define([
                             block: data.blockId,
                             reason: reason,
                         }, (err /*, response */) => {
-                            console.error(err);
+                            //console.error(err);
                             if (err) {
                                 console.error(err);
                                 return void UI.warn(Messages.error);
@@ -574,7 +460,7 @@ define([
                     h('br'),
                     h('small', Messages.admin_archiveAccountInfo)
                 ]);
-                row(archiveAccountLabel, danger(Messages.admin_archiveButton, archiveHandler));
+                row(archiveAccountLabel, blocks.activeButton('danger', '', Messages.admin_archiveButton, archiveHandler));
 
                 // archive owned documents
         	    /* // TODO not implemented
@@ -1073,6 +959,117 @@ define([
             return;
         };
 
+        var getAccountData = function (key, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var data = {
+                generated: +new Date(),
+                key: key,
+                safeKey: Util.escapeKeyCharacters(key),
+            };
+
+            return void nThen(function (w) {
+                sframeCommand('GET_PIN_ACTIVITY', key, w((err, response) => {
+                    if (err === 'ENOENT') { return; }
+                    if (err || !response || !response[0]) {
+                        console.error(err);
+                        console.error(response);
+                        UI.warn(Messages.error);
+                    } else {
+                        data.first = response[0].first;
+                        data.latest = response[0].latest;
+                        console.info(err, response);
+                    }
+                }));
+            }).nThen(function (w) {
+                sframeCommand('IS_USER_ONLINE', key, w((err, response) => {
+                    console.log('online', err, response);
+                    if (!Array.isArray(response) || typeof(response[0]) !== 'boolean') { return; }
+                    data.currentlyOnline = response[0];
+                }));
+            }).nThen(function (w) {
+                if (!data.first) { return; }
+                sframeCommand('GET_USER_QUOTA', key, w((err, response) => {
+                    if (err || !response) {
+                        return void console.error('quota', err, response);
+                    } else {
+                        data.plan = response[1];
+                        data.note = response[2];
+                        data.limit = response[0];
+                    }
+                }));
+            }).nThen(function (w) {
+                if (!data.first) { return; }
+                // storage used
+                sframeCommand('GET_USER_TOTAL_SIZE', key, w((err, response) => {
+                    if (err || !Array.isArray(response)) {
+                        //console.error('size', err, response);
+                    } else {
+                        //console.info('size', response);
+                        data.usage = response[0];
+                    }
+                }));
+            }).nThen(function (w) {
+                if (!data.first) { return; }
+                // channels pinned
+                // files pinned
+                sframeCommand('GET_USER_STORAGE_STATS', key, w((err, response) => {
+                    if (err || !Array.isArray(response) || !response[0]) {
+                        UI.warn(Messages.error);
+                        return void console.error('storage stats', err, response);
+                    } else {
+                        data.channels = response[0].channels;
+                        data.files = response[0].files;
+                    }
+                }));
+            }).nThen(function (w) { // pin log status (live, archived, unknown)
+                sframeCommand('GET_PIN_LOG_STATUS', key, w((err, response) => {
+                    if (err || !Array.isArray(response) || !response[0]) {
+                        console.error('pin log status', err, response);
+                        return void UI.warn(Messages.error);
+                    } else {
+                        console.info('pin log status', response);
+                        data.live = response[0].live;
+                        data.archived = response[0].archived;
+                    }
+                }));
+            }).nThen(function (w) {
+                if (data.first) { return; }
+                // Account is probably deleted
+                sframeCommand('GET_ACCOUNT_ARCHIVE_STATUS', {key}, w((err, response) => {
+                    if (err || !Array.isArray(response) || !response[0]) {
+                        console.error('account status', err, response);
+                    } else {
+                        console.info('account status', response);
+                        data.archiveReport = response[0];
+                    }
+                }));
+            }).nThen(function () {
+                //console.log(data);
+                try {
+                    ['generated', 'first', 'latest'].forEach(k => {
+                        var val = data[k];
+                        if (typeof(val) !== 'number') { return; }
+                        data[`${k}_formatted`] = new Date(val);
+                    });
+                    ['limit', 'usage'].forEach(k => {
+                        var val = data[k];
+                        if (typeof(val) !== 'number') { return; }
+                        data[`${k}_formatted`] = getPrettySize(val);
+                    });
+                    if (data.archiveReport) {
+                        let formatted = Util.clone(data.archiveReport);
+                        formatted.channels = data.archiveReport.channels.length;
+                        formatted.blobs = data.archiveReport.blobs.length;
+                        data['archiveReport_formatted'] = JSON.stringify(formatted, 0, 2);
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+
+                cb(void 0, data);
+            });
+        };
+
         sidebar.addItem('users', function(cb){
 
             var invited = blocks.activeCheckbox({
@@ -1470,7 +1467,7 @@ define([
             });
 
             cb(form);
-        });
+        }); 
 
         sidebar.addItem('getlimits', function(cb){
             var header = [
@@ -1500,9 +1497,6 @@ define([
                     var content = list.map(function (key) {
                         var user = obj[key];
                         var limit = getPrettySize(user.limit);
-                        var title = Messages._getKey('admin_limit', [limit]) + ', ' +
-                                    Messages._getKey('admin_limitPlan', [user.plan]) + ', ' +
-                                    Messages._getKey('admin_limitNote', [user.note]);
                         var infoButton = blocks.button('primary.cp-report','',  Messages.admin_diskUsageButton);
                         Util.onClickEnter($(infoButton), function () {
                              console.log(key);
@@ -1539,7 +1533,7 @@ define([
             APP.refreshLimits();
             cb(table);
         });
-
+        
         sidebar.addItem('account-metadata', function(cb){
             var input = blocks.input({
                 type: 'text',
@@ -1547,7 +1541,18 @@ define([
                 value: '',
             });
             var $input = $(input);
-            var box = blocks.box(input, 'cp-admin-setter');
+
+            var btn = blocks.button('primary', '', Messages.ui_generateReport);
+            var $btn = $(btn);
+
+            var nav = blocks.nav([btn]);
+            var results = h('span');
+
+            var form = blocks.form([
+                input
+            ], nav);
+
+            form.append(results);
 
             var pending = false;
             var getInputState = function () {
@@ -1562,15 +1567,6 @@ define([
 
                 return state;
             };
-
-            var btn = blocks.button('primary', '', Messages.ui_generateReport);
-            var $btn = $(btn);
-
-            var nav = blocks.nav([btn]);
-            var form = blocks.form([
-                input,
-                box
-            ], nav);
 
             disable($btn);
 
@@ -1725,7 +1721,7 @@ define([
 
                 // actions
                 // get raw metadata history
-                var metadataHistoryButton = primary(Messages.ui_fetch, function () {
+                var metadataHistoryButton = blocks.activeButton('primary', '', Messages.ui_fetch, function () {
                     sframeCommand('GET_METADATA_HISTORY', data.id, (err, result) => {
                         if (err) {
                             UI.warn(Messages.error);
@@ -1794,7 +1790,7 @@ define([
 
             if (data.live && data.archived) {
                 let disableButtons;
-                let restoreButton = danger(Messages.admin_unarchiveButton, function () {
+                let restoreButton = blocks.activeButton('danger', '', Messages.admin_unarchiveButton, function () {
                     justifyRestorationDialog('', reason => {
                         nThen(function (w) {
                             sframeCommand('REMOVE_DOCUMENT', {
@@ -1822,7 +1818,7 @@ define([
                     });
                 });
 
-                let archiveButton = danger(Messages.admin_archiveButton, function () {
+                let archiveButton = blocks.activeButton('danger', '',Messages.admin_archiveButton, function () {
                     justifyArchivalDialog('', result => {
                         sframeCommand('ARCHIVE_DOCUMENT', {
                             id: data.id,
@@ -1859,7 +1855,7 @@ define([
                 ]));
             } else if (data.live) {
             // archive
-                var archiveDocumentButton = danger(Messages.admin_archiveButton, function () {
+                var archiveDocumentButton = blocks.activeButton('danger', '' ,Messages.admin_archiveButton, function () {
                     justifyArchivalDialog('', result => {
                         sframeCommand('ARCHIVE_DOCUMENT', {
                             id: data.id,
@@ -1879,7 +1875,7 @@ define([
                     h('small', Messages.admin_archiveHint),
                 ]));
             } else if (data.archived) {
-                var restoreDocumentButton = primary(Messages.admin_unarchiveButton, function () {
+                var restoreDocumentButton = blocks.activeButton('primary', '',Messages.admin_unarchiveButton, function () {
                     justifyRestorationDialog('', reason => {
                         sframeCommand("RESTORE_ARCHIVED_DOCUMENT", {
                             id: data.id,
@@ -1919,6 +1915,7 @@ define([
             });
             var $passwordContainer = $(passwordContainer);
             var $password = $(passwordContainer).find('input');
+            $password.attr('placeholder', Messages.admin_archiveInput2);
 
             var getBlobId = pathname => {
                 var parts;
@@ -1991,16 +1988,22 @@ define([
                 return state;
             };
 
-            $passwordContainer.hide();
+    
+            var results = h('span');
 
             var btn = blocks.button('primary', '', Messages.ui_generateReport);
             var $btn = $(btn);
-            disable($btn);
+         
             var nav = blocks.nav([btn]);
             var form = blocks.form([
                 input,
-                passwordContainer
+                passwordContainer,
+                results
             ], nav);
+
+            $passwordContainer.hide();
+            disable($btn);
+
             var setInterfaceState = function () {
                 var state = getInputState();
                 var all = [ $btn, $password, $input ];
@@ -2037,7 +2040,6 @@ define([
                         results.innerHTML = '';
                         return void UI.warn(err);
                     }
-
                     var table = renderDocumentData(data);
                     results.innerHTML = '';
                     results.appendChild(table);
@@ -2095,7 +2097,7 @@ define([
             row(Messages.admin_totpRecoveryMethod, data.totp.recovery);
 
             if (data.live) {
-                var archiveButton = danger(Messages.ui_archive, function () {
+                var archiveButton = blocks.activeButton('danger', '', Messages.ui_archive, function () {
                     justifyArchivalDialog('', reason => {
                         sframeCommand('ARCHIVE_BLOCK', {
                             key: data.key,
@@ -2118,7 +2120,7 @@ define([
                 row(Messages.admin_channelPlaceholder, UI.getDestroyedPlaceholderMessage(data.placeholder, true));
             }
             if (data.archived && !data.live) {
-                var restoreButton = danger(Messages.ui_restore, function () {
+                var restoreButton = blocks.activeButton('danger', '', Messages.ui_restore, function () {
                     justifyRestorationDialog('', reason => {
                         sframeCommand('RESTORE_ARCHIVED_BLOCK', {
                             key: data.key,
@@ -2152,11 +2154,14 @@ define([
             var btn = blocks.button('primary', '', Messages.ui_generateReport);
             var $btn = $(btn);
             disable($btn);
-
+            
+            var results = h('span');
             var nav = blocks.nav([btn]);
             var form = blocks.form([
-                input
+                input,
+                results
             ], nav);
+
             var pending = false;
             var getInputState = function () {
                 var val = $input.val().trim();
@@ -2237,7 +2242,7 @@ define([
             if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }
 
             // TOTP is enabled and the signature is correct: display "disable TOTP" button
-            var disableButton = h('button.btn.btn-danger', Messages.admin_totpDisableButton);
+            var disableButton = blocks.activeButton('danger','', Messages.admin_totpDisableButton);
             UI.confirmButton(disableButton, { classes: 'btn-danger' }, function () {
                 sframeCommand('DISABLE_MFA', data.key, (err, res) => {
                     if (err) {
@@ -2275,11 +2280,14 @@ define([
             var $input = $(textarea);
             var btn = blocks.button('primary','', Messages.admin_totpDisable);
             var $btn = $(btn);
-            disable($btn);
+            var results = h('span');
+
             var nav = blocks.nav([btn]);
             var form = blocks.form([
-                textarea
+                textarea,
+                results
             ], nav);
+            disable($btn);
 
             var pending = false;
             var getInputState = function () {
@@ -2473,7 +2481,7 @@ define([
                                 obj[k]
                             ];
                         });
-                        $content.updateContent(entries)
+                        $content.updateContent(entries);
                     });
                 });
             });
@@ -2795,12 +2803,12 @@ define([
         });
 
         sidebar.addItem('broadcast', function(cb) {
-            var formElements = [];
-            var langForm;
+            var form = blocks.box([], 'cp-admin-broadcast-form');
+            var $form = $(form);
             var refresh = getApi(function(Broadcast) {
                 var button = blocks.button('primary', '', Messages.admin_broadcastButton);
                 var $button = $(button);
-                var removeButton = blocks.button('btn-danger', '', Messages.admin_broadcastCancel);
+                var removeButton = blocks.button('danger', '', Messages.admin_broadcastCancel);
                 var activeContent = Messages.admin_broadcastActive;
                 var active = blocks.box(
                     blocks.text(activeContent),
@@ -2830,17 +2838,18 @@ define([
 
                         // We found an active custom message, show it
                         var el = common.mailbox.createElement(data);
-                        var table = blocks.table("", []);
-                        // Populate the table with data
+                        
                         var uid = Util.find(data, ['content', 'msg', 'uid']);
                         var time = Util.find(data, ['content', 'msg', 'content', 'time']);
-                        var tr = [
+    
+                        var formattedTime = new Date(time || 0).toLocaleString();
+                        var rowContent = [
                             'ID: ' + uid,
-                            new Date(time || 0).toLocaleString(),
+                            formattedTime,
                             el,
                             removeButton
                         ];
-                        table.updateContent([tr]);
+                        var table = blocks.table([], [rowContent]);
                         $active.append(table);
                         activeUid = uid;
                         return true;
@@ -2848,40 +2857,35 @@ define([
                     if (!activeUid) { $active.hide(); }
                 });
 
+                var container = blocks.box([], 'cp-broadcast-container');
+                var $container = $(container);
                 var languages = Messages._languages;
                 var keys = Object.keys(languages).sort();
 
-                 // Extract form data
-                 var getData = function () {
-                    var map = {};
-                    var defaultLanguage;
-                    var error = false;
-                    $(form).find('.cp-broadcast-lang').each(function (i, el) {
+                 // Always keep the textarea ordered by language code
+                var reorder = function () {
+                    $container.find('.cp-broadcast-lang').each(function (i, el) {
                         var $el = $(el);
                         var l = $el.attr('data-lang');
-                        if (!l) { error = true; return; }
-                        var text = $el.find('textarea').val();
-                        if (!text.trim()) { error = true; return; }
-                        if ($el.find('.cp-checkmark input').is(':checked')) {
-                            defaultLanguage = l;
+                        var index = keys.indexOf(l);
+                        if (index !== -1) {
+                            $el.css('order', index * 2);
+                        } else {
+                            console.error('Language key not found:', l);
                         }
-                        map[l] = text;
                     });
-                    if (!Object.keys(map).length) {
-                        console.error('You must select at least one language');
-                        return false;
+                };
+                // Remove a textarea
+                var removeLang = function (l) {
+                    $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
+
+                    var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
+                    if (!hasDefault) {
+                        $container.find('.cp-broadcast-lang').first().find('.cp-checkmark input').prop('checked', 'checked');
                     }
-                    if (error) {
-                        console.error('One of the selected languages has no data');
-                        return false;
-                    }
-                    return {
-                        defaultLanguage: defaultLanguage,
-                        content: map
-                    };
                 };
 
-
+                var getData = function () { return false; };
                 var onPreview = function (l) {
                     var data = getData();
                     if (data === false) { return void UI.warn(Messages.error); }
@@ -2905,7 +2909,7 @@ define([
 
                 // Add a textarea
                 var addLang = function (l) {
-                    if ($(langForm).find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
+                    if ($container.find('.cp-broadcast-lang[data-lang="'+l+'"]').length) { return; }
                     var preview = blocks.button('secondary', '', Messages.broadcast_preview);
                     $(preview).click(function () {
                         onPreview(l);
@@ -2916,46 +2920,66 @@ define([
                         'data-lang': l,
                         label: {class: 'noTitle'}
                     });
-                    var input = blocks.input({
-                        type: 'text',
-                        id: 'kanban-body'
-                    });
-                    var label = blocks.labelledInput(Messages.kanban_body, input);
+
+                    var label = h('label', Messages.kanban_body);
                     var textarea = blocks.textArea({ id: 'kanban-body' });
 
-                    var reorder = function () {
-                        $(langForm).find('.cp-broadcast-lang').each(function (i, el) {
-                            var $el = $(el);
-                            var l = $el.attr('data-lang');
-                            $el.css('order', keys.indexOf(l));
-                        });
-                    };
-
-                    var langForm = blocks.form([
-                        blocks.box([
-                            blocks.text(languages[l]),
-                            label,
-                            textarea,
-                            radio,
-                            preview
-                        ], 'cp-broadcast-lang', {'data-lang': l})
-                    ]);
-                    formElements.push(langForm);
+                    $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
+                        h('h4', languages[l]),
+                        label,
+                        textarea,
+                        radio,
+                        preview
+                    ]));               
+                    
                     reorder();
                 };
-
-
-
-                // Remove a textarea
-                var removeLang = function (l) {
-                    $container.find('.cp-broadcast-lang[data-lang="'+l+'"]').remove();
-
-                    var hasDefault = $container.find('.cp-broadcast-lang .cp-checkmark input:checked').length;
-                    if (!hasDefault) {
-                        $container.find('.cp-broadcast-lang').first().find('.cp-checkmark input').prop('checked', 'checked');
+                 // Checkboxes to select translations
+                var boxes = keys.map(function (l) {
+                    var $cbox = $(UI.createCheckbox('cp-broadcast-custom-lang-'+l,
+                        languages[l], false, { label: { class: 'noTitle' } }));
+                    var $check = $cbox.find('input').on('change', function () {
+                        var c = $check.is(':checked');
+                        if (c) { return void addLang(l); }
+                        removeLang(l);
+                    });
+                    if (l === 'en') {
+                        setTimeout(function () {
+                            $check.click();
+                        });
                     }
-                };
+                    return $cbox[0];
+                });
 
+                 // Extract form data
+                getData = function () {
+                    var map = {};
+                    var defaultLanguage;
+                    var error = false;
+                    $container.find('.cp-broadcast-lang').each(function (i, el) {
+                        var $el = $(el);
+                        var l = $el.attr('data-lang');
+                        if (!l) { error = true; return; }
+                        var text = $el.find('textarea').val();
+                        if (!text.trim()) { error = true; return; }
+                        if ($el.find('.cp-checkmark input').is(':checked')) {
+                            defaultLanguage = l;
+                        }
+                        map[l] = text;
+                    });
+                    if (!Object.keys(map).length) {
+                        console.error('You must select at least one language');
+                        return false;
+                    }
+                    if (error) {
+                        console.error('One of the selected languages has no data');
+                        return false;
+                    }
+                    return {
+                        defaultLanguage: defaultLanguage,
+                        content: map
+                    };
+                };
 
                 var send = function (data) {
                     $button.prop('disabled', 'disabled');
@@ -2993,38 +3017,23 @@ define([
                         });
                     });
                 });
-
+                
                 // Make the form
-                var nav = blocks.nav([button]);
-                var translationsLabel = blocks.labelledInput(Messages.broadcast_translations, blocks.text(''));
-                // Checkboxes to select translations
-                var boxes = keys.map(function (l) {
-                    var $cbox = $(UI.createCheckbox('cp-broadcast-custom-lang-'+l,
-                        languages[l], false, { label: { class: 'noTitle' } }));
-                    var $check = $cbox.find('input').on('change', function () {
-                        var c = $check.is(':checked');
-                        if (c) { return void addLang(l); }
-                        removeLang(l);
-                    });
-                    if (l === 'en') {
-                        setTimeout(function () {
-                            $check.click();
-                        });
-                    }
-                    return $cbox[0];
-                });
-                var languagesDiv = blocks.box(boxes, 'cp-broadcast-languages');
-                var form = blocks.form([
+                $form.empty().append([
                     active,
-                    translationsLabel,
-                    languagesDiv,
-                    langForm
-                ], nav);
-
-                cb(form);
+                    h('label', Messages.broadcast_translations),
+                    h('div.cp-broadcast-languages', boxes),
+                    container,
+                    h('div.cp-broadcast-form-submit', [
+                        h('br'),
+                        button
+                    ])
+                ]);
+              
             });
+           refresh();
+           cb(form);
 
-            refresh();
         });
 
         var onRefreshPerformance = Util.mkEvent();
