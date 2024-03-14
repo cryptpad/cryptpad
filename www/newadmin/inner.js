@@ -1466,7 +1466,7 @@ define([
                 Messages.admin_note
             ];
             var table = blocks.table(header, []);
-            let $table = $(table).hide();;
+            let $table = $(table).hide();
 
             APP.refreshLimits = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
