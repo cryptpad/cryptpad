@@ -171,15 +171,12 @@ define([
 
         //general blocks
         sidebar.addItem('flush-cache', function (cb) {
-            var button = blocks.button('primary', '', Messages.admin_flushCacheButton);
-            var called = false;
-            Util.onClickEnter($(button), function () {
-                if (called) { return; }
-                called = true;
+            var button = blocks.activeButton('primary', '',
+                    Messages.admin_flushCacheButton, done => {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'FLUSH_CACHE',
                 }, function (e, data) {
-                    called = false;
+                    done(!!data);
                     UI.alert(data ? Messages.admin_flushCacheDone || 'done' : 'error' + e);
                 });
             });
@@ -203,6 +200,7 @@ define([
             });
         };
 
+        // XXX make this use blocks
         var makeMetadataTable = function (cls) {
             var table = h(`table.${cls || 'cp-account-stats'}`);
             var row = (label, value) => {
@@ -220,7 +218,7 @@ define([
 
         var getPrettySize = UIElements.prettySize;
 
-                var localizeState = state => {
+        var localizeState = state => {
             var o = {
                 'true': Messages.ui_true,
                 'false': Messages.ui_false,
@@ -495,15 +493,12 @@ define([
         };
 
         sidebar.addItem('update-limit', function (cb) {
-            var button = blocks.button('primary', '',  Messages.admin_updateLimitButton);
-            var called = false;
-            Util.onClickEnter($(button), function () {
-                if (called) { return; }
-                called = true;
+            var button = blocks.activeButton('primary', '',
+                    Messages.admin_updateLimitButton, done => {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'Q_UPDATE_LIMIT',
                 }, function (e, data) {
-                    called = false;
+                    done(!!data);
                     UI.alert(data ? Messages.admin_updateLimitDone  || 'done' : 'error' + e);
                 });
             });
@@ -1230,8 +1225,8 @@ define([
                         var edit = blocks.activeButton('secondary', 'fa fa-pencil',
                                     Messages.tag_edit, () => { editUser(); }, true);
 
-                        let aliasCell = blocks.text(data.alias);
-                        let emailCell = blocks.text(data.email);
+                        let aliasCell = blocks.inline(data.alias);
+                        let emailCell = blocks.inline(data.email);
                         var actions = blocks.nav([edit, del]);
 
                         let $alias = $(aliasCell);
@@ -1340,7 +1335,7 @@ define([
             });
             var button = blocks.button('primary', '', Messages.admin_setlimitButton);
             var nav = blocks.nav([button]);
-            var text = blocks.text(Messages._getKey('admin_limit', [limit]));
+            var text = blocks.inline(Messages._getKey('admin_limit', [limit]));
 
             var form = blocks.form([
                 text,
@@ -1475,7 +1470,7 @@ define([
             });
 
             cb(form);
-        }); 
+        });
 
         sidebar.addItem('getlimits', function(cb){
             var header = [
@@ -1539,8 +1534,8 @@ define([
             APP.refreshLimits();
             cb(table);
         });
-        
-        sidebar.addItem('account-metadata', function(cb){
+
+        sidebar.addItem('account-metadata', function(cb) {
             var input = blocks.input({
                 type: 'text',
                 placeholder: Messages.admin_accountMetadataPlaceholder,
@@ -1995,12 +1990,11 @@ define([
                 return state;
             };
 
-    
             var results = h('span');
 
             var btn = blocks.button('primary', '', Messages.ui_generateReport);
             var $btn = $(btn);
-         
+
             var nav = blocks.nav([btn]);
             var form = blocks.form([
                 input,
@@ -2730,20 +2724,10 @@ define([
 
             var refresh = getApi(function (Broadcast) {
                 if (Broadcast && Broadcast.surveyURL) {
-                    var a = blocks.box(
-                        blocks.text(Messages.admin_surveyActive),
-                        'a',
-                        {
-                            href: Broadcast.surveyURL
-                        }
-                    );
-
-                    $(a).click(function (e) {
-                        e.preventDefault();
-                        common.openUnsafeURL(Broadcast.surveyURL);
-                    });
-                    active = blocks.box([
-                        blocks.text(Messages.admin_surveyActive),
+                    let a = blocks.link(Messages.admin_surveyActive,
+                                        Broadcast.surveyURL, false);
+                    active = blocks.block([
+                        blocks.paragraph(a),
                         removeButton
                     ], 'cp-broadcast-active');
 
@@ -2810,16 +2794,14 @@ define([
         });
 
         sidebar.addItem('broadcast', function(cb) {
-            var form = blocks.box([], 'cp-admin-broadcast-form');
+            var form = blocks.block([], 'cp-admin-broadcast-form');
             var $form = $(form);
             var refresh = getApi(function(Broadcast) {
                 var button = blocks.button('primary', '', Messages.admin_broadcastButton);
                 var $button = $(button);
                 var removeButton = blocks.button('danger', '', Messages.admin_broadcastCancel);
                 var activeContent = Messages.admin_broadcastActive;
-                var active = blocks.box(
-                    blocks.text(activeContent),
-                    'cp-broadcast-active'
+                var active = blocks.block( blocks.inline(activeContent), 'cp-broadcast-active'
                 );
                 var $active = $(active);
                 var activeUid;
@@ -2845,10 +2827,10 @@ define([
 
                         // We found an active custom message, show it
                         var el = common.mailbox.createElement(data);
-                        
+
                         var uid = Util.find(data, ['content', 'msg', 'uid']);
                         var time = Util.find(data, ['content', 'msg', 'content', 'time']);
-    
+
                         var formattedTime = new Date(time || 0).toLocaleString();
                         var rowContent = [
                             'ID: ' + uid,
@@ -2864,7 +2846,7 @@ define([
                     if (!activeUid) { $active.hide(); }
                 });
 
-                var container = blocks.box([], 'cp-broadcast-container');
+                var container = blocks.block([], 'cp-broadcast-container');
                 var $container = $(container);
                 var languages = Messages._languages;
                 var keys = Object.keys(languages).sort();
@@ -2937,8 +2919,8 @@ define([
                         textarea,
                         radio,
                         preview
-                    ]));               
-                    
+                    ]));
+
                     reorder();
                 };
                  // Checkboxes to select translations
@@ -3024,7 +3006,7 @@ define([
                         });
                     });
                 });
-                
+
                 // Make the form
                 $form.empty().append([
                     active,
@@ -3036,7 +3018,7 @@ define([
                         button
                     ])
                 ]);
-              
+
             });
            refresh();
            cb(form);
@@ -3106,6 +3088,7 @@ define([
                 return APP.instanceStatus.enableProfiling;
             },
             key: 'enable-disk-measurements',
+            options: { htmlHint: true },
             query: function (val, setState) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',

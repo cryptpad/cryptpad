@@ -60,14 +60,17 @@ define([
         blocks.input = (attr) => {
             return h('input', attr);
         };
-        blocks.text = (value) => {
-            return h('span', value);
-        };
         blocks.code = val => {
             return h('code', val);
         };
-        blocks.box = (content, className) => { // XXX rename blocks.block?
+        blocks.inline = (value) => {
+            return h('span', value);
+        };
+        blocks.block = (content, className) => {
             return h('div', { class: className }, content);
+        };
+        blocks.paragraph = (content) => {
+            return h('p', content);
         };
 
         blocks.alert = function (type, big, content) {
@@ -136,13 +139,16 @@ define([
             return table;
         };
 
-        blocks.link = function (text, url) {
-            var link = h('a', { href: url}, text);
+        blocks.link = function (text, url, isSafe) {
+            var link = h('a', { href: url }, text);
             $(link).click(function (ev) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                var path = url.pathname;
-                common.openURL(path);
+                if (isSafe) {
+                    common.openURL(url);
+                } else {
+                    common.openUnsafeURL(url);
+                }
             });
             return link;
         };
@@ -232,6 +238,9 @@ define([
                 }, Messages[`${app}_${safeKey}Title`] || key);
                 const hint = options.noHint ? undefined : h('span.cp-sidebarlayout-description',
                     Messages[`${app}_${safeKey}Hint`] || 'Coming soon...');
+                if (hint && options.htmlHint) {
+                    hint.innerHTML = Messages[`${app}_${safeKey}Hint`];
+                }
                 const div = h(`div.cp-sidebarlayout-element`, {
                     'data-item': key,
                     style: 'display:none;'
@@ -250,7 +259,7 @@ define([
             let box = blocks.activeCheckbox(data);
             sidebar.addItem(key, function (cb) {
                 cb(box);
-            });
+            }, data.options);
         };
 
         var hideCategories = function () {
