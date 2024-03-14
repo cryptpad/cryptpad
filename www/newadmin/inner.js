@@ -601,7 +601,7 @@ define([
 
         sidebar.addItem('instance-info-notice', function(cb){
             var key = 'instance-info-notice';
-            var notice = blocks.alert( 'info', key, [Messages.admin_infoNotice1, ' ', Messages.admin_infoNotice2]);
+            var notice = blocks.alert('info', key, [Messages.admin_infoNotice1, ' ', Messages.admin_infoNotice2]);
             cb(notice);
         },  {
             noTitle: true,
@@ -645,13 +645,11 @@ define([
         });
 
         sidebar.addItem('description', function (cb){
-            var input = blocks.input({
-                type: 'text',
-                value: getInstanceString('instanceDescription'),
-                placeholder: '',
+            var textarea = blocks.textarea({
+                placeholder: Messages.home_host || '',
                 'aria-labelledby': 'cp-admin-description'
-            });
-            var $input = $(input);
+            }, getInstanceString('instanceDescription'));
+            var $input = $(textarea);
             var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
@@ -673,7 +671,7 @@ define([
             $(nav).append(button.spinner);
 
             var form = blocks.form([
-                input,
+                textarea,
             ], nav);
 
             cb(form);
@@ -683,7 +681,7 @@ define([
             var input = blocks.input({
                 type: 'text',
                 value: getInstanceString('instanceJurisdiction'),
-                placeholder: '',
+                placeholder: Messages.owner_unknownUser || '',
                 'aria-labelledby': 'cp-admin-jurisdiction'
             });
             var $input = $(input);
@@ -880,7 +878,6 @@ define([
                     var all = response[0];
                     var newEntries = [];
 
-                    // XXX Sort Users By Time
                     Object.keys(all).forEach(function (key) {
                         var data = all[key];
                         var url = privateData.origin + Hash.hashToHref(key, 'register');
@@ -1122,24 +1119,16 @@ define([
             var button = blocks.button('primary', '', Messages.admin_usersAdd);
             var $b = $(button);
 
-            var userAlias = blocks.input({
-                type: 'text'
-            });
+            var userAlias = blocks.input({ type: 'text' });
             var blockAlias = blocks.labelledInput(Messages.admin_invitationAlias, userAlias);
 
-            var userEmail = blocks.input({
-                type: 'email'
-            });
+            var userEmail = blocks.input({ type: 'email' });
             var blockEmail = blocks.labelledInput(Messages.admin_invitationEmail, userEmail);
 
-            var userEdPublic = blocks.input({
-                type: 'key'
-            });
+            var userEdPublic = blocks.input({ type: 'key' });
             var blockEdPublic = blocks.labelledInput(Messages.admin_limitUser, userEdPublic);
 
-            var userBlock = blocks.input({
-                type: 'text'
-            });
+            var userBlock = blocks.input({ type: 'text' });
             var blockUser = blocks.labelledInput(Messages.admin_usersBlock, userBlock);
 
             var refreshUsers = function () {};
@@ -1371,21 +1360,18 @@ define([
         });
 
         sidebar.addItem('setlimit', function(cb){
-            var userInput = blocks.input({
-                type:'key'
-            });
+            var userInput = blocks.input({ type:'key', class: 'cp-setlimit-user'});
             var user = blocks.labelledInput(Messages.admin_limitUser, userInput);
             var $key = $(user);
 
             var limitInput = blocks.input({
                 type: 'number',
                 min: 0,
-                value: 0
+                value: 0,
+                class: 'cp-setlimit-limit'
             });
             var limit = blocks.labelledInput(Messages.admin_limitMB, limitInput);
-            var noteInput = blocks.input({
-                type: 'text'
-            });
+            var noteInput = blocks.input({ type: 'text', class: 'cp-setlimit-note' });
             var note = blocks.labelledInput(Messages.admin_limitSetNote, noteInput);
             var $note = $(note);
 
@@ -1480,13 +1466,16 @@ define([
                 Messages.admin_note
             ];
             var table = blocks.table(header, []);
+            let $table = $(table).hide();;
 
             APP.refreshLimits = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_LIMITS',
                 }, function (e, data) {
+                    $table.hide();
                     if (e) { return; }
                     if (!Array.isArray(data) || !data[0]) { return; }
+                    $table.show();
 
                     var obj = data[0];
                     if (obj && (obj.message || obj.location)) {
@@ -1500,7 +1489,7 @@ define([
                     var content = list.map(function (key) {
                         var user = obj[key];
                         var limit = getPrettySize(user.limit);
-                        var infoButton = blocks.button('primary.cp-report','',  Messages.admin_diskUsageButton);
+                        var infoButton = blocks.button('primary','',  Messages.admin_diskUsageButton);
                         Util.onClickEnter($(infoButton), function () {
                              getAccountData(key, (err, data) => {
                                  if (err) { return void console.error(err); }
@@ -1515,17 +1504,19 @@ define([
 
                         var keyEl = h('code.cp-limit-key', key);
                         $(keyEl).click(function () {
-                            $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
-                            $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit / 1024 / 1024));
-                            $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
+                            $('[data-item="setlimit"]').find('.cp-setlimit-user').val(key);
+                            $('[data-item="setlimit"]').find('.cp-setlimit-limit').val(Math.floor(user.limit / 1024 / 1024));
+                            $('[data-item="setlimit"]').find('.cp-setlimit-note').val(user.note);
                         });
-                      // XXX NOTE: update the blocks.table function to be able to pass "attributes" for each value
+                        var title = Messages._getKey('admin_limit', [limit]) + ', ' +
+                            Messages._getKey('admin_limitPlan', [user.plan]) + ', ' +
+                            Messages._getKey('admin_limitNote', [user.note]);
+                        var attr = { title: title };
                         return [
                             [keyEl, infoButton],
-                            limit,
-                            user.plan,
-                            user.note
-
+                            {attr, content: limit},
+                            {attr, content: user.plan},
+                            {attr, content: user.note}
                         ];
                     });
                     table.updateContent(content);
@@ -1547,7 +1538,7 @@ define([
             var $btn = $(btn);
 
             var nav = blocks.nav([btn]);
-            var results = h('span');
+            var results = blocks.inline([]);
 
             var form = blocks.form([
                 input
@@ -1913,11 +1904,10 @@ define([
             var $input = $(input);
             var passwordContainer = UI.passwordInput({
                 id: 'cp-database-document-pw',
-                placeholder: Messages.login_password,
+                placeholder: Messages.admin_archiveInput2,
             });
             var $passwordContainer = $(passwordContainer);
             var $password = $(passwordContainer).find('input');
-            $password.attr('placeholder', Messages.admin_archiveInput2);
 
             var getBlobId = pathname => {
                 var parts;
@@ -1990,7 +1980,7 @@ define([
                 return state;
             };
 
-            var results = h('span');
+            var results = blocks.inline([]);
 
             var btn = blocks.button('primary', '', Messages.ui_generateReport);
             var $btn = $(btn);
@@ -2156,7 +2146,7 @@ define([
             var $btn = $(btn);
             disable($btn);
 
-            var results = h('span');
+            var results = blocks.inline([]);
             var nav = blocks.nav([btn]);
             var form = blocks.form([
                 input,
@@ -2243,10 +2233,9 @@ define([
             if (!data.totpCheck || !data.totp.enabled) { return tableObj.table; }
 
             // TOTP is enabled and the signature is correct: display "disable TOTP" button
-            var disableButton = blocks.activeButton('danger', '', Messages.admin_totpDisableButton);
-            UI.confirmButton(disableButton, { classes: 'btn-danger' }, done => {
+            var disableButton = blocks.button('danger', '', Messages.admin_totpDisableButton);
+            UI.confirmButton(disableButton, { classes: 'btn-danger' }, () => {
                 sframeCommand('DISABLE_MFA', data.key, (err, res) => {
-                    done(!err);
                     if (err) {
                         console.error(err);
                         return void UI.warn(Messages.error);
@@ -2274,14 +2263,14 @@ define([
         };
 
         sidebar.addItem('totp-recovery', function(cb){
-            var textarea = blocks.textArea({
+            var textarea = blocks.textarea({
                 id: 'textarea-input',
                 'aria-labelledby': 'cp-admin-totp-recovery'
             });
             var $input = $(textarea);
             var btn = blocks.button('primary','', Messages.admin_totpDisable);
             var $btn = $(btn);
-            var results = h('span');
+            var results = blocks.inline([]);
 
             var nav = blocks.nav([btn]);
             var form = blocks.form([
@@ -2329,7 +2318,6 @@ define([
                 getBlockData(state.key, (err, data) => {
                     pending = false;
                     setInterfaceState();
-                    console.warn(data);
                     if (err || !data) {
                         results.innerHTML = '';
                         console.log(err, data);
@@ -2356,10 +2344,9 @@ define([
                 onRefreshStats.fire();
             });
             cb(btn);
-        },
-        {
-        noTitle: true,
-        noHint: true
+        }, {
+            noTitle: true,
+            noHint: true
         });
 
         sidebar.addItem('uptime', function(cb){
@@ -2476,9 +2463,10 @@ define([
                                 obj[key] = Util.bytesToKilobytes(val) + ' KB';
                             }
                         });
+                        let attr = {'class': 'cp-strong'};
                         let entries = Object.keys(obj).map(function (k) {
                             return [
-                                (k === 'total' ? k : '/' + k),
+                                {attr, content:(k === 'total' ? k : '/' + k)},
                                 obj[k]
                             ];
                         });
@@ -2621,73 +2609,73 @@ define([
                     }
                 }
 
-            var $start = $(start);
-            var $end = $(end);
-            var is24h = UIElements.is24h();
-            var dateFormat = "Y-m-d H:i";
-            if (!is24h) { dateFormat = "Y-m-d h:i K"; }
+                var $start = $(start);
+                var $end = $(end);
+                var is24h = UIElements.is24h();
+                var dateFormat = "Y-m-d H:i";
+                if (!is24h) { dateFormat = "Y-m-d h:i K"; }
 
-            var endPickr = Flatpickr(end, {
-                enableTime: true,
-                time_24hr: is24h,
-                dateFormat: dateFormat,
-                minDate: new Date()
-            });
-            Flatpickr(start, {
-                enableTime: true,
-                time_24hr: is24h,
-                minDate: new Date(),
-                dateFormat: dateFormat,
-                onChange: function () {
-                    endPickr.set('minDate', new Date($start.val()));
-                }
-            });
-
-             // Extract form data
-             var getData = function () {
-                var start = +new Date($start.val());
-                var end = +new Date($end.val());
-                if (isNaN(start) || isNaN(end)) {
-                    console.error('Invalid dates');
-                    return false;
-                }
-                return {
-                    start: start,
-                    end: end
-                };
-            };
-
-            var send = function (data) {
-                $button.prop('disabled', 'disabled');
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'ADMIN_DECREE',
-                    data: ['SET_MAINTENANCE', [data]]
-                }, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                        $button.prop('disabled', '');
-                        return;
+                var endPickr = Flatpickr(end, {
+                    enableTime: true,
+                    time_24hr: is24h,
+                    dateFormat: dateFormat,
+                    minDate: new Date()
+                });
+                Flatpickr(start, {
+                    enableTime: true,
+                    time_24hr: is24h,
+                    minDate: new Date(),
+                    dateFormat: dateFormat,
+                    onChange: function () {
+                        endPickr.set('minDate', new Date($start.val()));
                     }
-                    // Maintenance applied, send notification
-                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function () {
-                        checkLastBroadcastHash(function () {
-                            setTimeout(refresh, 300);
-                        });
-                    });
                 });
 
-            };
-            Util.onClickEnter($(button), function () {
-                var data = getData();
-                if (data === false) { return void UI.warn(Messages.error); }
-                send(data);
-            });
-            UI.confirmButton(removeButton, {
-                classes: 'btn-danger',
-            }, function () {
-                send("");
-            });
+                // Extract form data
+                var getData = function () {
+                    var start = +new Date($start.val());
+                    var end = +new Date($end.val());
+                    if (isNaN(start) || isNaN(end)) {
+                        console.error('Invalid dates');
+                        return false;
+                    }
+                    return {
+                        start: start,
+                        end: end
+                    };
+                };
+
+                var send = function (data) {
+                    $button.prop('disabled', 'disabled');
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['SET_MAINTENANCE', [data]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                            $button.prop('disabled', '');
+                            return;
+                        }
+                        // Maintenance applied, send notification
+                        common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function () {
+                            checkLastBroadcastHash(function () {
+                                setTimeout(refresh, 300);
+                            });
+                        });
+                    });
+
+                };
+                Util.onClickEnter($(button), function () {
+                    var data = getData();
+                    if (data === false) { return void UI.warn(Messages.error); }
+                    send(data);
+                });
+                UI.confirmButton(removeButton, {
+                    classes: 'btn-danger',
+                }, function () {
+                    send("");
+                });
 
             });
             refresh();
@@ -2846,12 +2834,13 @@ define([
                     if (!activeUid) { $active.hide(); }
                 });
 
+                // Custom message
                 var container = blocks.block([], 'cp-broadcast-container');
                 var $container = $(container);
                 var languages = Messages._languages;
                 var keys = Object.keys(languages).sort();
 
-                 // Always keep the textarea ordered by language code
+                // Always keep the textarea ordered by language code
                 var reorder = function () {
                     $container.find('.cp-broadcast-lang').each(function (i, el) {
                         var $el = $(el);
@@ -2910,13 +2899,12 @@ define([
                         label: {class: 'noTitle'}
                     });
 
-                    var label = h('label', Messages.kanban_body);
-                    var textarea = blocks.textArea({ id: 'kanban-body' });
+                    var textarea = blocks.textarea();
+                    var label = blocks.labelledInput(Messages.kanban_body, textarea);
 
                     $container.append(h('div.cp-broadcast-lang', { 'data-lang': l }, [
                         h('h4', languages[l]),
                         label,
-                        textarea,
                         radio,
                         preview
                     ]));
@@ -3033,8 +3021,7 @@ define([
                 onRefreshPerformance.fire();
             });
             cb(btn);
-        },
-        {
+        }, {
             noTitle: true,
             noHint: true
         });

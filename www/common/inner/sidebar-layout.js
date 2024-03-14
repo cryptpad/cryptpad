@@ -88,7 +88,7 @@ define([
             return h('pre', value);
         };
 
-        blocks.textArea = function (attributes, value) {
+        blocks.textarea = function (attributes, value) {
             return h('textarea', attributes, value || '');
         };
 
@@ -125,16 +125,28 @@ define([
                 table.appendChild(headerRow);
             }
 
+            let getRow = line => {
+                return h('tr', line.map(value => {
+                    if (typeof(value) === "object" && value.content) {
+                        return h('td', value.attr || {}, value.content);
+                    }
+                    return h('td', value);
+                }));
+            };
             table.updateContent = (newEntries) => {
                 $(table).find('tbody').remove();
                 let bodyContent = [];
                 newEntries.forEach(line => {
-                    const row = h('tr', line.map(value => { return h('td', value); }));
+                    const row = getRow(line);
                     bodyContent.push(row);
                 });
                 table.appendChild(h('tbody', bodyContent));
             };
             table.updateContent(entries);
+            table.addLine = (line) => {
+                const row = getRow(line);
+                $(table).find('tbody').append(row);
+            };
 
             return table;
         };
@@ -152,34 +164,6 @@ define([
             });
             return link;
         };
-
-        blocks.chart = function (header, data) {
-            const chartContainer = h('div', { class: 'width-constrained' });
-            const chart = h('div', { id: 'profiling-chart', class: 'cp-charts cp-bar-table' });
-
-            if (header) {
-                const headerRow = h('span', { class: 'cp-charts-row heading' }, header.map(value => h('span', value)));
-                chart.appendChild(headerRow);
-            }
-
-            data.forEach(rowData => {
-                const row = h('span', { class: 'cp-charts-row' }, [
-                    h('span', rowData.key),
-                    h('span', rowData.value),
-                    h('span', { class: 'cp-bar-container' }, [
-                        h('span', { class: 'cp-bar profiling-percentage', style: `width: ${rowData.scaled}%` }, ' '),
-                        h('span', { class: 'profiling-label' }, `${rowData.percent}%`),
-                    ]),
-                ]);
-                chart.appendChild(row);
-            });
-
-            chartContainer.appendChild(chart);
-
-            return chartContainer;
-        };
-
-
 
         blocks.activeButton = function (type, icon, text, callback, keepEnabled) {
             var button = blocks.button(type, icon, text);
