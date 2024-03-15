@@ -2254,6 +2254,8 @@ define([
 
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
                 if (!isNewFile || rtStarted) { return; }
+                let feedbackKey = 'APP_' + parsed.type.toUpperCase() + '_CREATE';
+                Utils.Feedback.send(feedbackKey);
                 // Create a new hash
                 password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
