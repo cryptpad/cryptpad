@@ -115,7 +115,10 @@
                     }
                     nav {
                         display: flex;
-                        margin-top: 0.5rem;
+                        align-items: baseline;
+                        .btn.btn-primary {
+                            margin: 5px 0.5rem 0 0;
+                        }
                     }
                     .cp-sidebar-bigger-alert {
                             font-size: 16px;
@@ -123,6 +126,29 @@
                     label {
                         margin-bottom: 0;
                         margin-top: 0.5rem;
+                    }
+                    th{
+                        max-width: 60vw;
+                        border: 1px solid #777;
+                        padding: 7px;
+                    }
+                    td{
+                        padding: 2px;
+                    }
+                    .cp-checkmark{
+                        padding: 0.5rem;
+                    }
+                    .cp-broadcast-container{
+                        display: flex;
+                        flex-flow: column;
+                    }
+                    .cp-broadcast-lang{
+                        order: 4;
+                        margin: 30px;
+                        margin-bottom: 0;
+                        display: flex;
+                        flex-flow: column;
+                        align-items: baseline;
                     }
                     .button.btn.primary.cp-report{
                         margin-left: 10px; 
@@ -153,8 +179,12 @@
                             margin: 0 !important;
                         }
                     }
+                    table {
+                        .cp-strong {
+                            font-weight: bold;
+                        }
+                    }
                 }
-
                 .cp-sidebarlayout-description {
                     display: block;
                     color: @cp_sidebar-hint;

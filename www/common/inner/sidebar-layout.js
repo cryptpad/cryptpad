@@ -19,7 +19,7 @@ define([
     Util,
     Hash,
     Messages,
-    h,
+    h
 ) {
     const Sidebar = {};
 
@@ -73,18 +73,35 @@ define([
             }
             return h('div.cp-sidebar-input-block', [input, button]);
         };
-        blocks.text = (value) => {
+        blocks.code = val => {
+            return h('code', val);
+        };
+        blocks.inline = (value) => {
             return h('span', value);
         };
+        blocks.block = (content, className) => {
+            return h('div', { class: className }, content);
+        };
+        blocks.paragraph = (content) => {
+            return h('p', content);
+        };
+
         blocks.alert = function (type, big, content) {
             var isBigClass = big ? '.cp-sidebar-bigger-alert' : ''; // Add the class if we want a bigger font-size
             return h('div.alert.alert-' + type + isBigClass, content);
         };
+
+        blocks.alertHTML = function (message, element) {
+            return h('span', [
+                UIElements.setHTML(h('p'), message),
+                element
+        ]);
+        };
         blocks.pre = (value) => {
             return h('pre', value);
-        }
-        
-        blocks.textArea = function (attributes, value) {
+        };
+
+        blocks.textarea = function (attributes, value) {
             return h('textarea', attributes, value || '');
         };
 
@@ -96,49 +113,72 @@ define([
             });
             return ul;
         };
-        
-        
+
         blocks.checkbox = (key, label, state, opts, onChange) => {
             var box = UI.createCheckbox(`cp-${app}-${key}`, label, state, { label: { class: 'noTitle' } });
             if (opts && opts.spinner) {
                 box.spinner = UI.makeSpinner($(box));
             }
-            // Attach event listener for checkbox change
-            $(box).on('change', function() {
-                // Invoke the provided onChange callback function with the new checkbox state
-                onChange(this.checked);
-            });
+            if (typeof(onChange) === "function"){
+                $(box).find('input').on('change', function() {
+                    onChange(this.checked);
+                });
+            }
             return box;
         };
-        
 
-        
-        
-        blocks.list = function (header, entries) {
+        blocks.table = function (header, entries) {
             const table = h('table.cp-sidebar-list');
+            if (header) {
+                const headerValues = header.map(value => {
+                    const lastWord = value.split(' ').pop(); // Extracting the last word
+                    return h('th', { class: lastWord.toLowerCase() }, value); // Modified to use the last word
+                });
+                const headerRow = h('thead', h('tr', headerValues));
+                table.appendChild(headerRow);
+            }
 
-            const headerValues = header.map(value => { return h('th', value); });
-            const headerRow = h('thead', h('tr', headerValues));  
-            table.appendChild(headerRow);
-
-
+            let getRow = line => {
+                return h('tr', line.map(value => {
+                    if (typeof(value) === "object" && value.content) {
+                        return h('td', value.attr || {}, value.content);
+                    }
+                    return h('td', value);
+                }));
+            };
             table.updateContent = (newEntries) => {
                 $(table).find('tbody').remove();
                 let bodyContent = [];
                 newEntries.forEach(line => {
-                    const row = h('tr', line.map(value => { return h('td', value); }));
+                    const row = getRow(line);
                     bodyContent.push(row);
                 });
                 table.appendChild(h('tbody', bodyContent));
             };
             table.updateContent(entries);
-        
+            table.addLine = (line) => {
+                const row = getRow(line);
+                $(table).find('tbody').append(row);
+            };
+
             return table;
         };
-        
-        
 
-        blocks.clickableButton = function (type, icon, text, callback) {
+        blocks.link = function (text, url, isSafe) {
+            var link = h('a', { href: url }, text);
+            $(link).click(function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                if (isSafe) {
+                    common.openURL(url);
+                } else {
+                    common.openUnsafeURL(url);
+                }
+            });
+            return link;
+        };
+
+        blocks.activeButton = function (type, icon, text, callback, keepEnabled) {
             var button = blocks.button(type, icon, text);
             var $button = $(button);
             button.spinner = h('span');
@@ -146,23 +186,45 @@ define([
 
             Util.onClickEnter($button, function () {
                 spinner.spin();
-                $button.attr('disabled', 'disabled');
-                callback(function (success) {
+                if (!keepEnabled) { $button.attr('disabled', 'disabled'); }
+                let done = success => {
                     $button.removeAttr('disabled');
                     if (success) { return void spinner.done(); }
                     spinner.hide();
-                });
+                };
+                // The callback can be synchrnous or async, handle "done" in both ways
+                let success = callback(done); // Async
+                if (typeof(success) === "boolean") { done(success); } // Sync
             });
             return button;
-        };
-
-        blocks.box = (content, className) => {
-            return h('div', { class: className }, content);
         };
 
         const keyToCamlCase = (key) => {
             return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
         };
+        blocks.activeCheckbox = (data) => {
+            const state = data.getState();
+            const key = data.key;
+            const safeKey = keyToCamlCase(key);
+            var labelKey = `${app}_${safeKey}Label`;
+            var titleKey = `${app}_${safeKey}Title`;
+            var label = Messages[labelKey] || Messages[titleKey];
+            var box = blocks.checkbox(key, label, state, { spinner: true }, checked => {
+                var $cbox = $(box);
+                var $checkbox = $cbox.find('input');
+                let spinner = box.spinner;
+                spinner.spin();
+                $checkbox.attr('disabled', 'disabled');
+                var val = !!checked;
+                data.query(val, function (state) {
+                    spinner.done();
+                    $checkbox[0].checked = state;
+                    $checkbox.removeAttr('disabled');
+                });
+            });
+            return box;
+        };
+
         sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);
             get((content, config) => {
@@ -174,6 +236,9 @@ define([
                 }, Messages[`${app}_${safeKey}Title`] || key);
                 const hint = options.noHint ? undefined : h('span.cp-sidebarlayout-description',
                     Messages[`${app}_${safeKey}Hint`] || 'Coming soon...');
+                if (hint && options.htmlHint) {
+                    hint.innerHTML = Messages[`${app}_${safeKey}Hint`];
+                }
                 const div = h(`div.cp-sidebarlayout-element`, {
                     'data-item': key,
                     style: 'display:none;'
@@ -186,31 +251,13 @@ define([
                 $rightside.append(div);
             });
         };
-        
-        sidebar.addCheckboxItem = (data) => {
-            const state = data.getState();
-            const key = data.key;
-            const safeKey = keyToCamlCase(key);
 
+        sidebar.addCheckboxItem = (data) => {
+            const key = data.key;
+            let box = blocks.activeCheckbox(data);
             sidebar.addItem(key, function (cb) {
-                var labelKey = `${app}_${safeKey}Label`;
-                var titleKey = `${app}_${safeKey}Title`;
-                var label = Messages[labelKey] || Messages[titleKey];
-                var box = sidebar.blocks.checkbox(key, label, state, { spinner: true });
-                var $cbox = $(box);
-                var spinner = box.spinner;
-                var $checkbox = $cbox.find('input').on('change', function() {
-                    spinner.spin();
-                    var val = $checkbox.is(':checked') || false;
-                    $checkbox.attr('disabled', 'disabled');
-                    data.query(val, function (state) {
-                        spinner.done();
-                        $checkbox[0].checked = state;
-                        $checkbox.removeAttr('disabled');
-                    });
-                });
                 cb(box);
-            });
+            }, data.options);
         };
 
         var hideCategories = function () {

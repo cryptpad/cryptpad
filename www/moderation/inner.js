@@ -492,8 +492,8 @@ define([
             let searchBlock = blocks.labelledInput(Messages.support_searchLabel,
                                                     inputSearch, inputBlock);
 
-            let list = blocks.box([], 'cp-support-container');
-            let container = blocks.box([searchBlock, list], 'cp-support-search-container');
+            let list = blocks.block([], 'cp-support-container');
+            let container = blocks.block([searchBlock, list], 'cp-support-search-container');
             let $list = $(list);
             let searchText = '';
             APP.searchAutoRefresh = false;
@@ -634,7 +634,7 @@ define([
         }, { noTitle: true, noHint: true });
 
         sidebar.addItem('recorded', cb => {
-            let empty = blocks.text(Messages.support_recordedEmpty);
+            let empty = blocks.inline(Messages.support_recordedEmpty);
             let list = blocks.list([
                 Messages.support_recordedId,
                 Messages.support_recordedContent,
@@ -643,7 +643,7 @@ define([
             let labelledList = blocks.labelledInput(Messages.support_recordedList, list);
             let inputId = blocks.input({type:'text', class: 'cp-support-recorded-id',
                                         maxlength: 20 });
-            let inputContent = blocks.textArea();
+            let inputContent = blocks.textarea();
             let labelId = blocks.labelledInput(Messages.support_recordedId, inputId);
             let labelContent = blocks.labelledInput(Messages.support_recordedContent, inputContent);
 
@@ -746,7 +746,7 @@ define([
 
             let reset = blocks.button('danger-alt', 'fa-times', Messages.form_reset);
 
-            let paste = blocks.textArea({
+            let paste = blocks.textarea({
                 class: 'cp-support-newticket-paste',
                 placeholder: Messages.support_pasteUserData
             });
