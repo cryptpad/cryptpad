@@ -48,8 +48,6 @@ define([
 
     var Nacl = window.nacl;
     var common;
-    var metadataMgr;
-    var privateData;
     var sFrameChan;
 
     var andThen = function (common, $container) {
@@ -468,7 +466,7 @@ define([
                 row(archiveAccountLabel, archiveAccountButton);
 
                 // archive owned documents
-        	    /* // TODO not implemented
+                /* // TODO not implemented
                 var archiveDocuments = () => {
                     justifyRestorationDialog(Messages.admin_archiveDocumentsConfirm, reason => {
                         sframeCommand('ARCHIVE_OWNED_DOCUMENTS', {
@@ -3395,8 +3393,6 @@ define([
         if (!common.isAdmin()) { return; }
         updateStatus(waitFor());
     }).nThen(function( /*waitFor*/ ) {
-        metadataMgr = common.getMetadataMgr();
-        privateData = metadataMgr.getPrivateData();
         common.setTabTitle(Messages.adminPage || 'Administration');
 
         if (!common.isAdmin()) {

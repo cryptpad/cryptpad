@@ -35,7 +35,7 @@ define([
             category = window.location.hash.slice(1);
             window.location.hash = '';
         }
-        var addData = function (obj, Cryptpad, user, Utils) {
+        var addData = function (obj) {
             if (category) { obj.category = category; }
         };
         SFCommonO.start({
