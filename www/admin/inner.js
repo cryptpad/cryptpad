@@ -72,6 +72,9 @@ define([
             'cp-admin-jurisdiction',
             'cp-admin-notice',
         ],
+        'customize': [
+            'cp-admin-logo'
+        ],
         'users': [ // Msg.admin_cat_quota
             'cp-admin-registration',
             'cp-admin-invitation',
@@ -3890,6 +3893,54 @@ Example
                 //spinner.done();
                 UI.log(Messages.saved);
             });
+        });
+
+        return $div;
+    };
+
+    Messages.admin_logoTitle = "Upload Logo";
+    Messages.admin_logoHint = "Max 200KB, svg, png or jpg";
+    Messages.admin_logoButton = "Upload";
+    create['logo'] = function () {
+        var key = 'logo';
+        var $div = makeBlock(key, true); // Msg.admin_emailHint, Msg.admin_emailTitle
+
+        let $button = $div.find('button');
+
+        var input = h('input', {
+            type: 'file',
+            accept: 'image/*',
+            'aria-labelledby': 'cp-admin-logo'
+        });
+        $(h('div', input)).insertBefore($button);
+
+        var spinner = UI.makeSpinner($div);
+
+        Util.onClickEnter($button, function () {
+            let files = input.files;
+            if (files.length !== 1) {
+                UI.warn(Messages.error);
+                return;
+            }
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            let reader = new FileReader();
+            reader.onloadend = function () {
+                let dataURL = this.result;
+                sframeCommand('UPLOAD_LOGO', {dataURL}, (err, response) => {
+                    $button.removeAttr('disabled');
+                    if (err) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(err, response);
+                        spinner.hide();
+                        return;
+                    }
+                    spinner.done();
+                    UI.log(Messages.saved);
+                });
+            };
+            reader.readAsDataURL(files[0]);
         });
 
         return $div;
