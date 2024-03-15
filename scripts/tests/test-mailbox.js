@@ -149,11 +149,10 @@ var createUser = function (config, cb) {
             //wc.leave();
         }));
     }).nThen(function () {
-        user.cleanup = function (cb) {
+        user.cleanup = function (/* cb */) {
             //console.log("Destroying user");
             // TODO remove your mailbox
             user.destroy.fire();
-            cb = cb;
         };
 
         cb(void 0, user);

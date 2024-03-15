@@ -13,9 +13,6 @@ define([
     var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?
         AppConfig.badStateTimeout : 30000;
 
-    var verbose = function (x) { console.log(x); };
-    verbose = function () {}; // comment out to enable verbose logging
-
     module.exports.start = function (config) {
         var onConnectionChange = config.onConnectionChange || function () { };
         var onRemote = config.onRemote || function () { };

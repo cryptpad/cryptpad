@@ -349,9 +349,7 @@ var factory = function () {
         increment: function (N) {
             var l = N.length;
             while (l-- > 1) {
-                /* .jshint probably suspects this is unsafe because we lack types
-                   but as long as this is only used on nonces, it should be safe  */
-                if (N[l] !== 255) { return void N[l]++; } // jshint ignore:line
+                if (N[l] !== 255) { return void N[l]++; }
 
                 // you don't need to worry about this running out.
                 // you'd need a REAAAALLY big file

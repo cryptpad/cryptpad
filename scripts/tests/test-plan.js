@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/*jshint esversion: 6 */
 const Plan = require("../../lib/plan");
 
 var rand_delay = function (f) {

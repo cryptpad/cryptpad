@@ -51,7 +51,7 @@ define([
     const loadCryptPadImages = (doc) => {
         return Array.from(doc .querySelectorAll('mxCell'))
             .map((element) => [element, parseDrawioStyle(element.getAttribute('style'))])
-            .filter(([element, style]) => style && style.image && style.image.startsWith('cryptpad://'))
+            .filter(([, style]) => style && style.image && style.image.startsWith('cryptpad://'))
             .map(([element, style]) => {
                 return loadImage(style.image)
                     .then((dataUrl) => {

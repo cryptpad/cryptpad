@@ -467,9 +467,6 @@ define([
                 type = "text/markdown";
             }
 
-            // Can't upload folder here
-            if (!file.type && file.size%4096 === 0) { return; }
-
             var thumb;
             var preview;
             var alt;

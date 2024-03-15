@@ -114,7 +114,6 @@ define([
         var SecureIframe;
         var UnsafeIframe;
         var OOIframe;
-        var Messaging;
         var Notifier;
         var Utils = {
             nThen: nThen
@@ -142,7 +141,6 @@ define([
                 '/secureiframe/main.js',
                 '/unsafeiframe/main.js',
                 '/common/onlyoffice/ooiframe.js',
-                '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
                 '/common/common-util.js',
@@ -158,7 +156,7 @@ define([
                 '/common/userObject.js',
                 'optional!/api/instance'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
+            _SecureIframe, _UnsafeIframe, _OOIframe, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
             _Instance) {
                 CpNfOuter = _CpNfOuter;
@@ -169,7 +167,6 @@ define([
                 SecureIframe = _SecureIframe;
                 UnsafeIframe = _UnsafeIframe;
                 OOIframe = _OOIframe;
-                Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
                 Utils.Util = _Util;
@@ -2047,6 +2044,7 @@ define([
 
             sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
                 if (!Utils.Notify.isSupported()) { return void cb(false); }
+                // eslint-disable-next-line compat/compat
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
                 });
