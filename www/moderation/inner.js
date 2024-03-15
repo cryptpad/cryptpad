@@ -560,7 +560,7 @@ define([
         }, { noTitle: true, noHint: true });
 
         sidebar.addItem('filter', cb => {
-            let container = blocks.box([], 'cp-support-filter-container');
+            let container = blocks.block([], 'cp-support-filter-container');
             let $container = $(container);
             let redrawTags = () => {
                 $container.empty();
@@ -635,7 +635,7 @@ define([
 
         sidebar.addItem('recorded', cb => {
             let empty = blocks.inline(Messages.support_recordedEmpty);
-            let list = blocks.list([
+            let list = blocks.table([
                 Messages.support_recordedId,
                 Messages.support_recordedContent,
                 Messages.kanban_delete
