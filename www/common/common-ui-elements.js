@@ -1642,6 +1642,7 @@ define([
         var setOptions = $container.setOptions = function (options) {
             $innerblock.empty();
             options.forEach(function (o) {
+                if (!o) { return; }
                 o.isSelect = config.isSelect;
                 let $entry = UIElements.createDropdownEntry(o);
                 if (!$entry) { return void console.error('Error adding dropdown entry', o); }
