@@ -134,7 +134,7 @@ define([
                 content: h('span', Messages['support_cat_'+key]),
                 attributes: { 'data-value': key }
             };
-        });
+        }).filter(Boolean);
         var dropdownCfg = {
             text: Messages.support_category,
             angleDown: 1,
