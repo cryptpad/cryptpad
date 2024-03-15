@@ -1360,19 +1360,25 @@ define([
         });
 
         sidebar.addItem('setlimit', function(cb){
-            var userInput = blocks.input({ type:'key', class: 'cp-setlimit-user'});
-            var user = blocks.labelledInput(Messages.admin_limitUser, userInput);
+            var user = blocks.input({
+                type:'text',
+                id: 'cp-admin-setlimit-user',
+                value: ''
+            });
+            var userBlock = blocks.labelledInput(Messages.admin_limitUser, user);
             var $key = $(user);
-
-            var limitInput = blocks.input({
+            var limit = blocks.input({
                 type: 'number',
                 min: 0,
                 value: 0,
-                class: 'cp-setlimit-limit'
+                id: 'cp-admin-setlimit-value'
             });
-            var limit = blocks.labelledInput(Messages.admin_limitMB, limitInput);
-            var noteInput = blocks.input({ type: 'text', class: 'cp-setlimit-note' });
-            var note = blocks.labelledInput(Messages.admin_limitSetNote, noteInput);
+            var limitBlock = blocks.labelledInput(Messages.admin_limitMB, limit);
+            var note = blocks.input({
+                type: 'text',
+                id: 'cp-admin-setlimit-note'
+            });
+            var noteBlock = blocks.labelledInput(Messages.admin_limitSetNote, note);
             var $note = $(note);
 
             var remove = blocks.button('danger', '',Messages.fc_remove );
@@ -1380,9 +1386,9 @@ define([
 
             var nav = blocks.nav([set, remove]);
             var form = blocks.form([
-                user,
-                limit,
-                note
+                userBlock,
+                limitBlock,
+                noteBlock
             ], nav);
 
             var getValues = function () {
@@ -2354,6 +2360,7 @@ define([
             var set = function () {
                 var uptime = APP.instanceStatus.launchTime;
                 if (typeof(uptime) !== 'number') { return; }
+                pre.innerText = '';
                 pre.innerText = new Date(uptime);
             };
 
@@ -2371,6 +2378,7 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ACTIVE_SESSIONS',
                 }, function (e, data) {
+                    pre.innerText = '';
                     var total = data[0];
                     var ips = data[1];
                     pre.append(total + ' (' + ips + ')');
@@ -2388,6 +2396,7 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ACTIVE_PADS',
                 }, function (e, data) {
+                    pre.innerText = '';
                     pre.append(String(data));
                 });
             };
@@ -2405,6 +2414,7 @@ define([
                 }, function (e, data) {
                     if (e || (data && data.error)) {
                         console.error(e, data);
+                        pre.innerText = '';
                         pre.append(String(e || data.error));
                         return;
                     }
@@ -2423,6 +2433,7 @@ define([
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'REGISTERED_USERS',
                 }, function (e, data) {
+                    pre.innerText = '';
                     pre.append(String(data));
                 });
             };
@@ -2432,21 +2443,33 @@ define([
             cb(pre);
         });
 
+        function updateUnorderedList(ul, entries) {
+            ul.innerHTML = '';
+            entries.forEach(entry => {
+                const li = document.createElement('li');
+                const strong = document.createElement('strong');
+                strong.textContent = entry[0] + ': ' + entry[1];
+                li.appendChild(strong);
+                ul.appendChild(li);
+            });
+        }
+
         sidebar.addItem('disk-usage', function(cb){
             var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
             var $button = $(button);
-
+            var called = false;
             var nav = blocks.nav([button]);
-            var content = blocks.table(null, []);
+            var content = blocks.unorderedList([]);
             var form = blocks.form([
                 content
             ], nav);
-            var $content = $(content);
 
             Util.onClickEnter($button, function() {
                 UI.confirm(Messages.admin_diskUsageWarning, function (yes) {
                     if (!yes) { return; }
                     $button.hide();
+                    if (called) { return; }
+                    called = true;
                     sFrameChan.query('Q_ADMIN_RPC', {
                         cmd: 'DISK_USAGE',
                     }, function (e, data) {
@@ -2470,7 +2493,7 @@ define([
                                 obj[k]
                             ];
                         });
-                        $content.updateContent(entries);
+                        updateUnorderedList(content, entries);
                     });
                 });
             });
@@ -2571,31 +2594,15 @@ define([
 
         };
 
-
         sidebar.addItem('maintenance', function(cb){
-            var button = blocks.button('primary', '', Messages.admin_maintenanceButton );
-            var nav = blocks.nav([button]);
-            // Start and end date pickers
-            var start = blocks.input({
-                label :'cp-admin-start-input',
-                type:'date'
-            });
-            var startBlock = blocks.labelledInput('Start', start);
-            var end = blocks.input({
-                id:'cp-admin-end-input',
-                type:'date'
-            });
-            var endBlock = blocks.labelledInput('End', end);
-            var form = blocks.form([
-                startBlock,
-                endBlock
-            ], nav);
+            var form = blocks.form([]);
 
             var refresh = getApi(function (Broadcast) {
-
+                var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
                 var $button = $(button);
                 var removeButton = blocks.button('btn-danger', '', Messages.admin_maintenanceCancel );
                 var active;
+
                 if (Broadcast && Broadcast.maintenance) {
                     var m = Broadcast.maintenance;
                     if (m.start && m.end && m.end >= (+new Date())) {
@@ -2608,7 +2615,16 @@ define([
                         ]);
                     }
                 }
-
+                var start = blocks.input({
+                    type: 'text', // Change the input type to text
+                    id: 'cp-admin-start-input',
+                    class: 'flatpickr-input' // Add a class for Flatpickr initialization
+                });
+                var end = blocks.input({
+                    type: 'text', // Change the input type to text
+                    id: 'cp-admin-end-input',
+                    class: 'flatpickr-input' // Add a class for Flatpickr initialization
+                });
                 var $start = $(start);
                 var $end = $(end);
                 var is24h = UIElements.is24h();
@@ -2676,6 +2692,18 @@ define([
                 }, function () {
                     send("");
                 });
+               $(form).empty().append([
+                    active,
+                    h('label', Messages.broadcast_start),
+                    start,
+                    h('label', Messages.broadcast_end),
+                    end,
+                    h('br'),
+                    h('div.cp-broadcast-form-submit', [
+                        button
+                    ])
+                ]);
+
 
             });
             refresh();
