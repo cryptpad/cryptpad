@@ -214,8 +214,7 @@ define([
 
         sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);
-            get((content, config) => {
-                config = config || {};
+            get((content) => {
                 options = options || {};
                 const title = options.noTitle ? undefined : h('label.cp-item-label', {
                     id: `cp-${app}-${key}`

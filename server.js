@@ -157,8 +157,7 @@ nThen(function (w) {
         });
     };
 
-    var broadcast = (command, data, cb) => {
-        cb = cb; // TODO nThen/concurrency
+    var broadcast = (command, data/*, cb*/) => {
         for (const worker of Object.values(Cluster.workers)) {
             sendCommand(worker, command, data /*, cb */);
         }

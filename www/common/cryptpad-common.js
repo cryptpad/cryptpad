@@ -1566,7 +1566,6 @@ define([
         var oldChannel;
         var warning;
 
-        var FileCrypto;
         var MediaTag;
         var Upload;
         Nthen(function (waitFor) {
@@ -1577,12 +1576,10 @@ define([
             }
         }).nThen(function (waitFor) {
             require([
-                '/file/file-crypto.js',
                 '/common/media-tag.js',
                 '/common/outer/upload.js',
                 '/components/tweetnacl/nacl-fast.min.js'
-            ], waitFor(function (_FileCrypto, _MT, _Upload) {
-                FileCrypto = _FileCrypto;
+            ], waitFor(function (_MT, _Upload) {
                 MediaTag = _MT;
                 Upload = _Upload;
             }));
@@ -1952,7 +1949,7 @@ define([
         var oldBytes = data.oldBytes; // From Scrypt
         var newBytes = data.newBytes; // From Scrypt
         var secret = Hash.getSecrets('drive', hash);
-        var newHash, newHref, newSecret;
+        var newHash, newSecret;
         var oldIsOwned = false;
 
         var blockHash = LocalStore.getBlockHash();
@@ -2031,7 +2028,6 @@ define([
             // Get the current content, store it in the new user file
             // and make sure the new user drive is owned
             newHash = Hash.createRandomHash('drive');
-            newHref = '/drive/#' + newHash;
             newSecret = Hash.getSecrets('drive', newHash);
 
             var optsPut = {
@@ -2717,6 +2713,7 @@ define([
                     window.addEventListener('unload', function () {
                         postMsg('CLOSE');
                     });
+                // eslint-disable-next-line no-constant-condition
                 } else if (false && !noWorker && !noSharedWorker && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready

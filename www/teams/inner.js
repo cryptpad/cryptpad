@@ -1485,7 +1485,6 @@ define([
 
     var main = function () {
         var common;
-        var readOnly;
 
         nThen(function (waitFor) {
             $(waitFor(function () {
@@ -1507,7 +1506,7 @@ define([
             var privateData = metadataMgr.getPrivateData();
             var user = metadataMgr.getUserData();
 
-            readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
+            driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
             driveAPP.loggedIn = common.isLoggedIn();
             //if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }

@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+/* eslint compat/compat: "off" */
+
 define(['/api/config'], function (ApiConfig) {
     var Module = {};
 
