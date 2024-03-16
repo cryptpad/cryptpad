@@ -1994,10 +1994,9 @@ define([
             var nav = blocks.nav([btn]);
             var form = blocks.form([
                 input,
-                passwordContainer,
-                results
+                passwordContainer
             ], nav);
-
+            form.append(results);
             $passwordContainer.hide();
             disable($btn);
 
@@ -2155,9 +2154,9 @@ define([
             var results = blocks.inline([]);
             var nav = blocks.nav([btn]);
             var form = blocks.form([
-                input,
-                results
+                input
             ], nav);
+            form.append(results);
 
             var pending = false;
             var getInputState = function () {
@@ -2280,9 +2279,9 @@ define([
 
             var nav = blocks.nav([btn]);
             var form = blocks.form([
-                textarea,
-                results
+                textarea
             ], nav);
+            form.append(results);
             disable($btn);
 
             var pending = false;
@@ -2489,7 +2488,7 @@ define([
                         let attr = {'class': 'cp-strong'};
                         let entries = Object.keys(obj).map(function (k) {
                             return [
-                                {attr, content:(k === 'total' ? k : '/' + k)},
+                                k === 'total' ? k : '/' + k,
                                 obj[k]
                             ];
                         });
@@ -2596,11 +2595,10 @@ define([
 
         sidebar.addItem('maintenance', function(cb){
             var form = blocks.form([]);
-
             var refresh = getApi(function (Broadcast) {
                 var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
                 var $button = $(button);
-                var removeButton = blocks.button('btn-danger', '', Messages.admin_maintenanceCancel );
+                var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel );
                 var active;
 
                 if (Broadcast && Broadcast.maintenance) {
@@ -2616,14 +2614,14 @@ define([
                     }
                 }
                 var start = blocks.input({
-                    type: 'text', // Change the input type to text
+                    type: 'date',
                     id: 'cp-admin-start-input',
-                    class: 'flatpickr-input' // Add a class for Flatpickr initialization
+                    class: 'flatpickr-input' 
                 });
                 var end = blocks.input({
-                    type: 'text', // Change the input type to text
+                    type: 'date',
                     id: 'cp-admin-end-input',
-                    class: 'flatpickr-input' // Add a class for Flatpickr initialization
+                    class: 'flatpickr-input'
                 });
                 var $start = $(start);
                 var $end = $(end);
@@ -2721,33 +2719,31 @@ define([
         });
 
         sidebar.addItem('survey', function(cb){
-            var button = blocks.button('primary', '',Messages.admin_surveyButton);
-            var $button = $(button);
-            var removeButton = blocks.button('btn-danger', '',Messages.admin_surveyCancel );
-            var active;
-            var nav = blocks.nav([button]);
-
-            var input = blocks.input({
-                type:'url'
-            });
-            var $input = $(input);
-            var label = blocks.labelledInput(Messages.broadcast_surveyURL, input);
-
-            var form = blocks.form([
-                active,
-                label
-            ], nav);
-
+            var form = blocks.form([]);
             var refresh = getApi(function (Broadcast) {
-                if (Broadcast && Broadcast.surveyURL) {
-                    let a = blocks.link(Messages.admin_surveyActive,
-                                        Broadcast.surveyURL, false);
-                    active = blocks.block([
-                        blocks.paragraph(a),
-                        removeButton
-                    ], 'cp-broadcast-active');
+                var button = blocks.button('primary', '', Messages.admin_surveyButton);
+                var $button = $(button);
+                var removeButton = blocks.button('danger', '', Messages.admin_surveyCancel);
+                var active;
 
+                if (Broadcast && Broadcast.surveyURL) {
+                    var a = h('a', {href: Broadcast.surveyURL}, Messages.admin_surveyActive);
+                    $(a).click(function (e) {
+                        e.preventDefault();
+                        common.openUnsafeURL(Broadcast.surveyURL);
+                    });
+                    active = h('div.cp-broadcast-active', [
+                        h('p', a),
+                        removeButton
+                    ]);
                 }
+
+                var input = blocks.input({
+                    type: 'text',
+                    id: 'cp-admin-survey-url-input'
+                });
+                var label = h('label', { for: 'cp-admin-survey-url-input' }, Messages.broadcast_surveyURL);
+                var $input = $(input);
 
                 // Extract form data
                 var getData = function () {
@@ -2793,6 +2789,16 @@ define([
                 }, function () {
                     send("");
                 });
+
+                $(form).empty().append([
+                    active,
+                    label,
+                    input,
+                    h('br'),
+                    h('div.cp-broadcast-form-submit', [
+                        button
+                    ])
+                ]);
 
             });
 
