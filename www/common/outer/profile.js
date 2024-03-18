@@ -74,8 +74,7 @@ define([
         });
     };
 
-    var setName = function (ctx, value, cb) {
-        cb = cb || function () {};
+    var setName = function (ctx, value) {
         ctx.listmap.proxy.name = value;
         Realtime.whenRealtimeSyncs(ctx.listmap.realtime, function () {
             if (!ctx.listmap) { return; }

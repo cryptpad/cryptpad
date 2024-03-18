@@ -15,6 +15,10 @@ var config = require("../lib/load-config");
 
 var Env = Environment.create(config);
 
+// Set DRY_RUN to true to run the script without deleting anything. A log file
+// will be created.
+Env.DRY_RUN = false;
+
 var loadPremiumAccounts = function (Env, cb) {
     nThen(function (w) {
         // load premium accounts

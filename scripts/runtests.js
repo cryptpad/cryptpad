@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// jshint esversion: 6, browser: false, node: true
 // This file is for automated testing, it should probably not be invoked for any other purpose.
 // It will:
 // 1. npm install

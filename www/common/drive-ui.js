@@ -636,7 +636,7 @@ define([
         // UI containers
         var $tree = APP.$tree = $("#cp-app-drive-tree");
         var $content = APP.$content = $("#cp-app-drive-content");
-        var $contentContainer = APP.$content = $("#cp-app-drive-content-container");
+        var $contentContainer = $("#cp-app-drive-content-container");
         var $appContainer = $(".cp-app-drive-container");
         var $driveToolbar = APP.toolbar.$bottom;
         var $contextMenu = createContextMenu(common).appendTo($appContainer);
@@ -1907,7 +1907,7 @@ define([
         };
 
         // create the folder structure before to upload files from folder
-        var uploadFolder = function (fileList) {
+        var uploadFolder = function (fileList, name) {
             var currentFolder = currentPath;
             // create an array of all the files relative path
             var files = Array.prototype.map.call(fileList, function (file) {
@@ -1917,7 +1917,7 @@ define([
                 };
             });
             // if folder name already exist in drive, rename it
-            var uploadedFolderName = files[0].path[0];
+            var uploadedFolderName = files.length ? files[0].path[0] : (name || '');
             var availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), uploadedFolderName);
 
             // ask for folder name and files options, then upload all the files!
@@ -1926,6 +1926,10 @@ define([
 
                 // verfify folder name is possible, and update files path
                 availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), folderUploadOptions.folderName);
+                if (!files.length) {
+                    return manager.addFolder(currentFolder, availableName, refresh);
+                }
+
                 if (uploadedFolderName !== availableName) {
                     files.forEach(function (file) {
                         file.path[0] = availableName;
@@ -2001,19 +2005,21 @@ define([
                 fileDrop = Array.prototype.slice.call(fileDrop).map(function (file) {
                     if (file.kind !== "file") { return; }
                     var f = file.getAsFile();
-                    if (!f.type && f.size % 4096 === 0) {
-                        // It's a folder!
-                        if (file.webkitGetAsEntry) { // IE and Opera don't support it
-                            f = file.webkitGetAsEntry();
-                            var files = [];
-                            nThen(function (w) {
-                                traverseFileTree(f, "", w, files);
-                            }).nThen(function () {
-                                uploadFolder(files);
-                            });
-                            return;
-                        } else {
-                            // Folder drop not supported by the browser
+                    if (file.webkitGetAsEntry) {
+                        let entry = file.webkitGetAsEntry();
+                        if (entry.isFile) { return f; }
+                        // It's a folder
+                        var files = [];
+                        nThen(function (w) {
+                            traverseFileTree(entry, "", w, files);
+                        }).nThen(function () {
+                            uploadFolder(files, f.name);
+                        });
+                        return;
+                    } else {
+                        // Old browsers: unreliable hack to detect folders
+                        if (!file.type && file.size%4096 === 0) {
+                            return; // Folder upload not supported
                         }
                     }
                     return f;
@@ -2025,7 +2031,7 @@ define([
                 }
             }
 
-            var oldPaths = JSON.parse(data).path;
+            var oldPaths = data && JSON.parse(data).path;
             if (!oldPaths) { return; }
             // A moved element should be removed from its previous location
             var movedPaths = [];
@@ -2150,6 +2156,22 @@ define([
             } */
         };
         var thumbsUrls = {};
+
+        // This is duplicated in cryptpad-common, it should be unified
+        var getFileIcon = function (id) {
+            var data = manager.getFileData(id);
+            return UI.getFileIcon(data);
+        };
+        var getIcon = UI.getIcon;
+
+        var addTitleIcon = function (element, $name) {
+            var icon = getFileIcon(element);
+
+            $(icon).addClass('cp-app-drive-element-icon');
+            $name.addClass('cp-app-drive-element-name-icon');
+            $name.prepend($(icon));
+        };
+
         var addFileData = function (element, $element) {
             if (!manager.isFile(element)) { return; }
 
@@ -2201,13 +2223,15 @@ define([
             var name = manager.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
-            var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
+            var $name = $(h('span.cp-app-drive-element-name', [
+                h('span.cp-app-drive-element-name-text', name)
+            ]));
             $element.append($name);
             $element.append($state);
             if (APP.mobile()) {
                 $element.append($menu);
             }
-            
+
             if (getViewMode() === 'grid') {
                 $element.attr('title', name);
             }
@@ -2220,8 +2244,8 @@ define([
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
-            }
-            else {
+                addTitleIcon(element, $name);
+            } else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
                     // Called only if the thumbnail exists
                     // Remove the .hide() added by displayThumnail() because it hides the icon in list mode too
@@ -2229,6 +2253,7 @@ define([
                     $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                     $thumb.attr("draggable", false);
                     thumbsUrls[element] = $thumb[0].src;
+                    addTitleIcon(element, $name);
                 });
             }
 
@@ -2289,7 +2314,9 @@ define([
 
             var sf = manager.hasSubfolder(element);
             var hasFiles = manager.hasFile(element);
-            var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(key);
+            var $name = $(h('span.cp-app-drive-element-name', [
+                h('span.cp-app-drive-element-name-text', key)
+            ]));
             var $subfolders = $('<span>', {
                 'class': 'cp-app-drive-element-folders cp-app-drive-element-list'
             }).text(sf);
@@ -2307,13 +2334,6 @@ define([
                 $span.append($menu);
             }
         };
-
-        // This is duplicated in cryptpad-common, it should be unified
-        var getFileIcon = function (id) {
-            var data = manager.getFileData(id);
-            return UI.getFileIcon(data);
-        };
-        var getIcon = UI.getIcon;
 
         var createShareButton = function (id, $container) {
             var $shareBlock = $('<button>', {
@@ -4357,7 +4377,10 @@ define([
             if (collapsable) {
                 $collapse = $expandIcon.clone().attr('tabindex', 0);
             }
-            var $elementRow = $('<span>', {'class': 'cp-app-drive-element-row', 'tabindex': 0}).append($collapse).append($icon).append($name).on('click keypress', function (e) {
+            var $elementRow = $('<span>', {
+                'class': 'cp-app-drive-element-row cp-app-drive-element-folder',
+                'tabindex': 0
+            }).append($collapse).append($icon).append($name).on('click keypress', function (e) {
                 if (e.type === 'keypress' && e.which !== 13) {
                     return;
                 }

@@ -114,7 +114,6 @@ define([
         var SecureIframe;
         var UnsafeIframe;
         var OOIframe;
-        var Messaging;
         var Notifier;
         var Utils = {
             nThen: nThen
@@ -142,7 +141,6 @@ define([
                 '/secureiframe/main.js',
                 '/unsafeiframe/main.js',
                 '/common/onlyoffice/ooiframe.js',
-                '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
                 '/common/common-util.js',
@@ -158,7 +156,7 @@ define([
                 '/common/userObject.js',
                 'optional!/api/instance'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _SecureIframe, _UnsafeIframe, _OOIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime, _Notify,
+            _SecureIframe, _UnsafeIframe, _OOIframe, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
             _Instance) {
                 CpNfOuter = _CpNfOuter;
@@ -169,7 +167,6 @@ define([
                 SecureIframe = _SecureIframe;
                 UnsafeIframe = _UnsafeIframe;
                 OOIframe = _OOIframe;
-                Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
                 Utils.Util = _Util;
@@ -231,6 +228,61 @@ define([
                         }
                     }
                 };
+
+                var addFirstHandlers = () => {
+                    sframeChan.on('Q_SETTINGS_CHECK_PASSWORD', function (data, cb) {
+                        var blockHash = Utils.LocalStore.getBlockHash();
+                        var userHash = Utils.LocalStore.getUserHash();
+                        var correct = (blockHash && blockHash === data.blockHash) ||
+                                      (!blockHash && userHash === data.userHash);
+                        cb({correct: correct});
+                    });
+                    sframeChan.on('Q_SETTINGS_TOTP_SETUP', function (obj, cb) {
+                        require([
+                            '/common/outer/http-command.js',
+                        ], function (ServerCommand) {
+                            var data = obj.data;
+                            data.command = 'TOTP_SETUP';
+                            data.session = Utils.LocalStore.getSessionToken();
+                            ServerCommand(obj.key, data, function (err, response) {
+                                cb({ success: Boolean(!err && response && response.bearer) });
+                                if (response && response.bearer) {
+                                    Utils.LocalStore.setSessionToken(response.bearer);
+                                }
+                            });
+                        });
+                    });
+                    sframeChan.on('Q_SETTINGS_TOTP_REVOKE', function (obj, cb) {
+                        require([
+                            '/common/outer/http-command.js',
+                        ], function (ServerCommand) {
+                            ServerCommand(obj.key, obj.data, function (err, response) {
+                                cb({ success: Boolean(!err && response && response.success) });
+                                if (response && response.success) {
+                                    Utils.LocalStore.setSessionToken('');
+                                }
+                            });
+                        });
+                    });
+                    sframeChan.on('Q_SETTINGS_GET_SSO_SEED', function (obj, _cb) {
+                        var cb = Utils.Util.mkAsync(_cb);
+                        cb({
+                            seed: Utils.LocalStore.getSSOSeed()
+                        });
+                    });
+                    Cryptpad.loading.onMissingMFAEvent.reg((data) => {
+                        var cb = data.cb;
+                        if (!sframeChan) { return void cb('EINVAL'); }
+                        sframeChan.query('Q_LOADING_MISSING_AUTH', {
+                            accountName: Utils.LocalStore.getAccountName(),
+                            origin: window.location.origin,
+                        }, (err, obj) => {
+                            if (obj && obj.state) { return void cb(true); }
+                            console.error(err || obj);
+                        });
+                    });
+                };
+
                 var whenReady = waitFor(function (msg) {
                     if (msg.source !== iframe) { return; }
                     var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
@@ -247,6 +299,7 @@ define([
                     });
                     SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) {
                         Utils.sframeChan = sframeChan = sfc;
+                        addFirstHandlers();
                         window.CryptPad_loadingError = function (e) {
                             sfc.event('EV_LOADING_ERROR', e);
                         };
@@ -271,6 +324,7 @@ define([
                                                                   : '';
                     }
                 } catch (e) { console.error(e); }
+
 
                 // NOTE: Driveless mode should only work for existing pads, but we can't check that
                 // before creating the worker because we need the anon RPC to do so.
@@ -1990,6 +2044,7 @@ define([
 
             sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
                 if (!Utils.Notify.isSupported()) { return void cb(false); }
+                // eslint-disable-next-line compat/compat
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
                 });
@@ -2022,6 +2077,11 @@ define([
                 sframeChan.on('Q_INTEGRATION_HAS_UNSAVED_CHANGES', function (obj, cb) {
                     if (cfg.integrationUtils && cfg.integrationUtils.onHasUnsavedChanges) {
                         cfg.integrationUtils.onHasUnsavedChanges(obj, cb);
+                    }
+                });
+                sframeChan.on('Q_INTEGRATION_ON_INSERT_IMAGE', function (data, cb) {
+                    if (cfg.integrationUtils && cfg.integrationUtils.onInsertImage) {
+                        cfg.integrationUtils.onInsertImage(data, cb);
                     }
                 });
                 integrationSave = function (cb) {

@@ -88,6 +88,13 @@ define([
         safeSet(Constants.sessionJWT, token);
     };
 
+    LocalStore.getSSOSeed = function () {
+        return localStorage[Constants.ssoSeed];
+    };
+    LocalStore.setSSOSeed = function (seed) {
+        safeSet(Constants.ssoSeed, seed);
+    };
+
     LocalStore.getAccountName = function () {
         return localStorage[Constants.userNameKey];
     };
@@ -134,6 +141,7 @@ define([
             Constants.userHashKey,
             Constants.blockHashKey,
             Constants.sessionJWT,
+            Constants.ssoSeed,
             'loginToken',
             'plan',
         ].forEach(function (k) {

@@ -648,6 +648,12 @@
                             display: flex;
                             justify-content: space-between;
                         }
+                        .cp-form-copy-button {
+                            margin-right: 5px;
+                        }
+                        .cp-empty-poll-edit-buttons {
+                            padding-top: 40px
+                        }
                         input:invalid {
                             border: 2px solid @cryptpad_color_red;
                             color: @cp_form-invalid;
@@ -780,6 +786,9 @@
                         &.sortable-drag { opacity: 0.9 !important; }
                         display: flex;
                         width: 400px;
+                        @media (max-width:460px) {
+                            width: 100%
+                        }
                         input {
                             flex: 1;
                             min-width: 100px;
@@ -815,6 +824,7 @@
                 padding-bottom: 20px;
             }
             .cp-form-submit-success {
+                margin: 20px;
                 div.cp-form-submit-success-actions {
                     button:not(:last-child) {
                         margin-right: 10px;

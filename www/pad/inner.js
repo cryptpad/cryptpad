@@ -112,7 +112,7 @@ define([
     // * Remove the drag&drop and resizers from the hyperjson
     var isWidget = function(el) {
         return typeof(el.getAttribute) === "function" &&
-            (el.getAttribute('data-cke-hidden-sel') ||
+            (el.getAttribute('data-cke-hidden-sel') || el.getAttribute('data-cke-temp') ||
                 (el.getAttribute('class') &&
                     (/cke_widget_drag/.test(el.getAttribute('class')) ||
                         /cke_image_resizer/.test(el.getAttribute('class')))
@@ -345,15 +345,19 @@ define([
         }, function () {
             UI.alert(getSettings());
         });
-        framework._.toolbar.$drawer.append($settingsButton);
+
+        var $settings = UIElements.getEntryFromButton($settingsButton);
+        framework._.toolbar.$drawer.append($settings);
+
     };
 
     var mkHelpMenu = function(framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
-        $toolbarContainer.before(helpMenu.menu);
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
 
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        $toolbarContainer.before(helpMenu.menu);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     var mkDiffOptions = function(cursor, readOnly) {
@@ -418,6 +422,10 @@ define([
                     info.node.getAttribute('class') &&
                     (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
                         info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1)) {
+                    return true;
+                }
+                // CkEditor temporary data (used when copy-paste large chunks for instance)
+                if (info.node && (info.node.tagName === 'SPAN' || info.node.tagName === 'DIV') && info.diff.name === 'data-cke-temp') {
                     return true;
                 }
 
@@ -628,7 +636,8 @@ define([
             editor.execCommand('print');
             framework.feedback('PRINT_PAD');
         });
-        framework._.toolbar.$drawer.append($printButton);
+        var $print = UIElements.getEntryFromButton($printButton);
+        framework._.toolbar.$drawer.append($print);
     };
 
     var andThen2 = function(editor, Ckeditor, framework) {

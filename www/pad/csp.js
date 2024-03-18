@@ -18,11 +18,12 @@ define(['jquery'], function ($) {
         CKEDITOR.tools.callFunction(Number(m[1]), e.currentTarget);
         $iframe.scrollTop(s);
     });
-
+    
     // Buttons
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
     $a.each(function (i, el) {
         var $el = $(el);
+        $el.attr('tabindex', '0');
         var $icon = $el.find('span.cke_button_icon');
         if ($icon.length) {
             try {
@@ -34,7 +35,16 @@ define(['jquery'], function ($) {
             } catch (e) { console.error(e); }
         }
         $el.on('keydown blur focus click dragstart', function (e) {
-            e.preventDefault();
+            if (e.key !== 'Tab') { e.preventDefault(); }
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                var focusedButton = document.activeElement;
+        
+                // Simulate a click event on the focused button
+                if (focusedButton) {
+                    focusedButton.click();
+                }
+            }
             var attr = $(el).attr('oon'+e.type);
             if (!attr) { return; }
             if (['blur', 'dragstart'].indexOf(e.type) !== -1) { return false; }
@@ -48,7 +58,7 @@ define(['jquery'], function ($) {
             $iframe.scrollTop(s);
         });
     });
-
+    
 
     // Dropdown menus
 
@@ -175,8 +185,8 @@ define(['jquery'], function ($) {
             // for other browers, the 'src' attribute should be left empty to
             // trigger iframe's 'load' event.
             var src =
-                CKEDITOR.env.air ? 'javascript:void(0)' : // jshint ignore:line
-                ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) ? 'javascript:void(function(){' + encodeURIComponent( // jshint ignore:line
+                CKEDITOR.env.air ? 'javascript:void(0)' :
+                ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) ? 'javascript:void(function(){' + encodeURIComponent(
                     'document.open();' +
                     // In IE, the document domain must be set any time we call document.open().
                     '(' + CKEDITOR.tools.fixDomain + ')();' +

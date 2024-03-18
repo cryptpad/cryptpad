@@ -6,8 +6,8 @@
     var Util = {};
 
     // polyfill for atob in case you're using this from node...
-    window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); }; // jshint ignore:line
-    window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); }; // jshint ignore:line
+    window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); };
+    window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); };
 
     Util.slice = function (A, start, end) {
         return Array.prototype.slice.call(A, start, end);
@@ -104,6 +104,20 @@
 
         return Util.both(f, function () {
             clearTimeout(timeout);
+        });
+    };
+
+    Util.onClickEnter = function ($element, handler, cfg) {
+        $element.on('click keydown', function (e) {
+            var isClick = e.type === 'click';
+            var isEnter = e.type === 'keydown' && e.which === 13;
+            var isSpace = e.type === 'keydown' && e.which === 32 && cfg && cfg.space;
+            if (!isClick && !isEnter && !isSpace) { return; }
+
+            // "enter" on a button triggers a click, disable it
+            if (e.type === 'keydown') { e.preventDefault(); }
+
+            handler(e);
         });
     };
 
@@ -731,6 +745,11 @@
     };
     Util.supportsWasm = function () {
         return !(typeof(Atomics) === "undefined" || !supportsSharedArrayBuffers() || typeof(WebAssembly) === 'undefined');
+    };
+
+    //Returns an array of integers in range 0 to (length-1)
+    Util.getKeysArray = function (length) {
+        return [...Array(length).keys()];
     };
 
     if (typeof(module) !== 'undefined' && module.exports) {

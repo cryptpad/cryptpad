@@ -13,7 +13,8 @@ define([
     '/common/common-util.js',
     '/common/text-cursor.js',
     '/components/chainpad/chainpad.dist.js',
-], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
+    '/common/hyperscript.js',
+], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad, h) {
     var module = {};
 
      var cursorToPos = module.cursorToPos = function(cursor, oldText) {
@@ -225,14 +226,12 @@ define([
         var $textarea = exp.$textarea = textarea ? $(textarea) : $('#editor1');
         if (!$textarea.length) { $textarea = exp.$textarea = $pad.contents().find('#editor1'); }
 
-        var Title;
         var onLocal = function () {};
         var $drawer;
         exp.init = function (local, title, toolbar) {
             if (typeof local === "function") {
                 onLocal = local;
             }
-            Title = title;
             $drawer = toolbar.$theme || $();
         };
 
@@ -298,6 +297,8 @@ define([
                 var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
+                exp.$language.find('span.cp-language-text').text(name);
+                exp.$language.find('span.cp-language-text').prepend('<i class="fa fa-chevron-right"></i>');
             }
 
                 if (mode === "orgmode") {
@@ -342,6 +343,8 @@ define([
                     var name = theme || undefined;
                     name = name ? Messages.themeButton + ' ('+theme+')' : Messages.themeButton;
                     $select.setValue(theme, name);
+                    $select.find('span.cp-theme-text').text(name);
+                    $select.find('span.cp-theme-text').prepend('<i class="fa fa-chevron-right"></i>');
                 }
             };
         }());
@@ -366,14 +369,17 @@ define([
                 text: Messages.languageButton, // Button initial text
                 options: options, // Entries displayed in the menu
                 isSelect: true,
+                isSubmenuOf: $drawer,
                 feedback: 'CODE_LANGUAGE',
                 common: Common
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
-            $block.find('button').attr('title', Messages.languageButtonTitle);
+            $block.find('button').attr('title', Messages.languageButtonTitle).hide();
+            $block.prepend(h('span.cp-language-text', Messages.languageButton));
+            $block.find('span.cp-language-text').prepend('<i class="fa fa-chevron-right"></i>');
 
             var isHovering = false;
-            var $aLanguages = $block.find('li');
+            var $aLanguages = $block.$menu.find('li');
             $aLanguages.mouseenter(function () {
                 isHovering = true;
                 setMode($(this).find('a').attr('data-value'));
@@ -383,14 +389,25 @@ define([
                     setMode($block.find(".cp-dropdown-element-active").attr('data-value'));
                 }
             });
-            $aLanguages.click(function () {
+            //$aLanguages.click(function () {
+            $block.onChange.reg(() => {
                 isHovering = false;
-                var mode = $(this).find('a').attr('data-value');
+                var mode = $block.getValue();
                 setMode(mode, onModeChanged);
+                $block.close();
                 onLocal();
             });
 
-            if ($drawer) { $drawer.append($block); }
+            if ($drawer) {
+                var $blockButton = UIElements.createDropdownEntry({
+                    tag: 'a',
+                    content: $block[0],
+                    action: function () {
+                        $block.find('button').click();
+                    },
+                });
+                $drawer.append($blockButton);
+            }
             if (exp.highlightMode) { exp.setMode(exp.highlightMode); }
             if (cb) { cb(); }
         };
@@ -418,24 +435,27 @@ define([
                     text: Messages.code_editorTheme, // Button initial text
                     options: options, // Entries displayed in the menu
                     isSelect: true,
+                    isSubmenuOf: $drawer,
                     initialValue: lastTheme,
                     feedback: 'CODE_THEME',
                     common: Common
                 };
                 var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
-                $block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
+                /*$block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
                     var state = $block.find('.cp-dropdown-content').is(':visible');
                     var $c = $block.closest('.cp-toolbar-drawer-content');
                     $c.removeClass('cp-dropdown-visible');
                     if (!state) {
                         $c.addClass('cp-dropdown-visible');
                     }
-                });
+                });*/
+                $block.find('button').hide();
+                $block.prepend(h('span.cp-theme-text', Messages.languageButton));
 
                 setTheme(lastTheme, $block);
 
                 var isHovering = false;
-                var $aThemes = $block.find('li');
+                var $aThemes = $block.$menu.find('li');
                 $aThemes.mouseenter(function () {
                     isHovering = true;
                     var theme = $(this).find('a').attr('data-value');
@@ -447,14 +467,23 @@ define([
                         Common.setAttribute(themeKey, lastTheme);
                     }
                 });
-                $aThemes.click(function () {
+                $block.onChange.reg(() => {
                     isHovering = false;
-                    var theme = $(this).find('a').attr('data-value');
+                    var theme = $block.getValue();
                     setTheme(theme, $block);
                     Common.setAttribute(themeKey, theme);
                 });
 
-                if ($drawer) { $drawer.append($block); }
+                if ($drawer) {
+                    const $blockButton = UIElements.createDropdownEntry({
+                        tag: 'a',
+                        content: $block[0],
+                        action: function () {
+                            $block.find('button').click();
+                        },
+                    });
+                    $drawer.append($blockButton);
+                }
                 if (cb) { cb(); }
             };
             Common.getAttribute(themeKey, todo);

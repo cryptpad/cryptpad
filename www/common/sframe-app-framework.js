@@ -88,6 +88,7 @@ define([
         var state = STATE.DISCONNECTED;
         var firstConnection = true;
         var integration;
+        let integrationChannel;
 
         var toolbarContainer = options.toolbarContainer ||
             (function () { throw new Error("toolbarContainer must be specified"); }());
@@ -623,12 +624,12 @@ define([
 
                 if (privateDat.integration) {
                     common.openIntegrationChannel(onLocal);
-                    var sframeChan = common.getSframeChannel();
+                    integrationChannel = common.getSframeChannel();
                     var integrationSave = function (cb) {
                         var ext = privateDat.integrationConfig.fileType;
 
                         var upload = Util.once(function (_blob) {
-                            sframeChan.query('Q_INTEGRATION_SAVE', {
+                            integrationChannel.query('Q_INTEGRATION_SAVE', {
                                 blob: _blob
                             }, cb, {
                                 raw: true
@@ -645,7 +646,7 @@ define([
                         }
                     };
                     const integrationHasUnsavedChanges = function(unsavedChanges, cb) {
-                        sframeChan.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
+                        integrationChannel.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
                     };
                     var inte = common.createIntegration(onLocal, cpNfInner.chainpad,
                                                         integrationSave, integrationHasUnsavedChanges);
@@ -656,7 +657,7 @@ define([
                         });
                     }
                     if (firstConnection) {
-                        sframeChan.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
+                        integrationChannel.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
                             integrationSave(function (obj) {
                                 if (obj && obj.error) { console.error(obj.error); }
                                 cb();
@@ -709,7 +710,7 @@ define([
 
         var setFileExporter = function (extension, fe, async) {
             fileExporter = fe;
-            var $export = common.createButton('export', true, {}, function () {
+            var $exportButton = common.createButton('export', true, {}, function () {
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
                 ext = ext || '.txt';
@@ -773,6 +774,7 @@ define([
                 });
                 $select.find('button').addClass('btn');
             });
+            var $export = UIElements.getEntryFromButton($exportButton);
             toolbar.$drawer.append($export);
         };
 
@@ -802,9 +804,9 @@ define([
                     onLocal();
                 });
             };
-            toolbar.$drawer.append(
-                common.createButton('import', true, options, fileImporter)
-            );
+            var $importButton = common.createButton('import', true, options, fileImporter);
+            var $import = UIElements.getEntryFromButton($importButton);
+            toolbar.$drawer.append($import);
         };
 
         var feedback = function (action, force) {
@@ -997,21 +999,26 @@ define([
                 },
                 $toolbar: $(toolbarContainer)
             };
-            var $hist = common.createButton('history', true, {histConfig: histConfig});
+            var $histButton = common.createButton('history', true, {histConfig: histConfig});
+            var $hist = UIElements.getEntryFromButton($histButton);
             toolbar.$drawer.append($hist);
 
-            var $snapshot = common.createButton('snapshots', true, {
+            var $snapshotButton = common.createButton('snapshots', true, {
                 remove: deleteSnapshot,
                 make: makeSnapshot,
                 load: loadSnapshot
             });
+            var $snapshot = UIElements.getEntryFromButton($snapshotButton);
             toolbar.$drawer.append($snapshot);
 
-            var $copy = common.createButton('copy', true);
+
+            var $copyButton = common.createButton('copy', true);
+            var $copy = UIElements.getEntryFromButton($copyButton);
             toolbar.$drawer.append($copy);
 
             var $store = common.createButton('storeindrive', true);
-            toolbar.$drawer.append($store);
+            var $storeButton = UIElements.getEntryFromButton($store);
+            toolbar.$drawer.append($storeButton);
 
             if (!cpNfInner.metadataMgr.getPrivateData().isTemplate) {
                 var templateObj = {
@@ -1019,26 +1026,34 @@ define([
                     getTitle: function () { return cpNfInner.metadataMgr.getMetadata().title; }
                 };
                 var $templateButton = common.createButton('template', true, templateObj);
-                toolbar.$drawer.append($templateButton);
+                var $template = UIElements.getEntryFromButton($templateButton);
+                toolbar.$drawer.append($template);
+
             }
 
             var $importTemplateButton = common.createButton('importtemplate', true);
             if (!readOnly) {
-                toolbar.$drawer.append($importTemplateButton);
+                var $importTemplate = UIElements.getEntryFromButton($importTemplateButton);
+                toolbar.$drawer.append($importTemplate);
             }
 
-            /* add a forget button */
-            toolbar.$drawer.append(common.createButton('forget', true, {}, function (err) {
+            /* add a forget button = trash button */
+            var $forgetButton = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 stateChange(STATE.FORGOTTEN);
-            }));
+            });
+            var $forget = UIElements.getEntryFromButton($forgetButton);
+            toolbar.$drawer.append($forget);
+
 
             if (common.isLoggedIn()) {
-                var $tags = common.createButton('hashtag', true);
+                var $tagsButton = common.createButton('hashtag', true);
+                var $tags = UIElements.getEntryFromButton($tagsButton);
                 toolbar.$drawer.append($tags);
             }
 
-            var $properties = common.createButton('properties', true);
+            var $propertiesButton = common.createButton('properties', true);
+            var $properties = UIElements.getEntryFromButton($propertiesButton);
             toolbar.$drawer.append($properties);
 
             createFilePicker();
@@ -1124,8 +1139,17 @@ define([
                 // Call this after all of the handlers are setup.
                 start: evStart.fire,
 
+                // Call this, when the user wants to add an image from drive.
+                insertImage: function(data, cb) {
+                    require(['/common/inner/image-dialog.js'], function(imageDialog) {
+                        imageDialog.openImageDialog(common, integrationChannel, data, cb);
+                    });
+                },
+
                 // Determine the internal state of the framework.
                 getState: function () { return state; },
+
+                isIntegrated: function() { return cpNfInner.metadataMgr.getPrivateData().integration; },
 
                 // Internals
                 _: {

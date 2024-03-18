@@ -39,6 +39,10 @@ Files: www/lib/mermaid/*
 Copyright: (c) 2014 - 2021 Knut Sveidqvist
 License: MIT
 
+Files: www/lib/calendar/moment.min.js
+Copyright: (c) JS Foundation and other contributors
+License: MIT
+
 Files: www/lib/pdfjs/*
 Copyright: 2017 Mozilla Foundation
 License: Apache-2.0

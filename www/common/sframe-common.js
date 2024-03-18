@@ -19,6 +19,7 @@ define([
     '/common/sframe-common-mailbox.js',
     '/common/inner/cache.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/mfa.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -50,6 +51,7 @@ define([
     Mailbox,
     Cache,
     MT,
+    MFA,
     MetadataMgr,
     AppConfig,
     Pages,
@@ -123,6 +125,7 @@ define([
     funcs.importMediaTagMenu = callWithCommon(MT.importMediaTagMenu);
     funcs.getMediaTagPreview = callWithCommon(MT.getMediaTagPreview);
     funcs.getMediaTag = callWithCommon(MT.getMediaTag);
+    funcs.totpSetup = callWithCommon(MFA.totpSetup);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -893,6 +896,10 @@ define([
                 UI.updateLoadingProgress(data);
             });
 
+            ctx.sframeChan.on('Q_LOADING_MISSING_AUTH', function (data, cb) {
+                UIElements.onMissingMFA(funcs, data, cb);
+            });
+
             ctx.sframeChan.on('EV_NEW_VERSION', function () {
                 // TODO lock the UI and do the same in non-framework apps
                 var $err = $('<div>').append(Messages.newVersionError);
@@ -1005,6 +1012,7 @@ define([
             } catch (e) {}
 
             ctx.sframeChan.on('EV_LOGOUT', function () {
+                if (window.CP_ownAccountDeletion) { return; }
                 $(window).on('keyup', function (e) {
                     if (e.keyCode === 27) {
                         UI.removeLoadingScreen();

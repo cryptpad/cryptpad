@@ -68,7 +68,6 @@ define([], function () {
             }
         };
 
-        // jshint -W103
         var errProto = (new Error()).__proto__;
         var doLog = function (o) {
             var s;

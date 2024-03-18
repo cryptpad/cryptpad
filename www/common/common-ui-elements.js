@@ -61,7 +61,6 @@ define([
                 existing = Object.keys(res.tags).sort();
             }));
         }).nThen(function (waitFor) {
-            var _err;
             hrefs.forEach(function (href) {
                 common.getPadAttribute('tags', waitFor(function (err, res) {
                     if (err) {
@@ -69,7 +68,6 @@ define([
                             UI.alert(Messages.tags_noentry);
                         }
                         waitFor.abort();
-                        _err = err;
                         return void console.error(err);
                     }
                     allTags[href] = res || [];
@@ -362,7 +360,7 @@ define([
             buttons: contactsButtons,
         });
 
-        var linkName, linkPassword, linkMessage, linkError, linkSpinText;
+        var linkName, linkPassword, linkMessage, linkError;
         var linkForm, linkSpin, linkResult, linkUses, linkRole;
         var linkWarning;
         // Invite from link
@@ -429,7 +427,7 @@ define([
                 style: 'display: none;'
             }, [
                 h('i.fa.fa-spinner.fa-spin'),
-                linkSpinText = h('span', Messages.team_inviteLinkLoading)
+                h('span', Messages.team_inviteLinkLoading)
             ]),
             linkResult = h('div', {
                 style: 'display: none;'
@@ -578,12 +576,38 @@ define([
         });
     };
 
+    UIElements.getEntryFromButton = function ($button) {
+        if (!$button || !$button.length) { return; }
+        let $icon = $button.find('> i');
+
+        let attributes = {};
+        let btnClass = $button.attr('class');
+        let btnId = $button.attr('id');
+        if (btnClass) { attributes['class'] = btnClass; }
+        if (btnId) { attributes['id'] = btnId; }
+
+        return UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: attributes,
+            content: [
+                h('i',{ 'class': $icon.attr('class') }),
+                h('span', $button.text())
+            ],
+            action: function () {
+                $button.click();
+                return true;
+            }
+        });
+    };
+
+
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;
         var sframeChan = common.getSframeChannel();
         var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         data = data || {};
+        if (!callback && data.callback) { callback = data.callback; }
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -859,12 +883,12 @@ define([
                     h('i.fa.fa-file-image-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
                 ])).click(common.prepareFeedback(type));
+                if (callback) { button.click(callback); }
                 break;
             case 'storeindrive':
-                button = $(h('button.cp-toolbar-storeindrive', {
+                button = $(h('button.cp-toolbar-storeindrive.fa.fa-hdd-o', {
                     style: 'display:none;'
                 }, [
-                    h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $(button).hide();
@@ -995,7 +1019,7 @@ define([
                     h('span.cp-toolbar-name'+drawerCls, data.text)
                 ]));
                 var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');
-                button[0].addEventListener('click', function () {
+                Util.onClickEnter(button, function () {
                     feedbackHandler();
                     if (typeof(callback) !== 'function') { return; }
                     callback();
@@ -1455,6 +1479,93 @@ define([
         };
     };
 
+    UIElements.createDropdownEntry = function (config) {
+        var hide = function () {};
+        var allowedTags = ['a', 'li', 'p', 'hr', 'div'];
+        var isElement = function (o) {
+            return /HTML/.test(Object.prototype.toString.call(o)) &&
+                typeof(o.tagName) === 'string';
+        };
+        var isValidOption = function (o) {
+            if (typeof o !== "object") { return false; }
+            if (isElement(o)) { return true; }
+            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
+            return true;
+        };
+
+        var entry;
+        if (!isValidOption(config)) { return; }
+
+        if (isElement(config)) {
+            entry = $(config);
+        } else {
+            var $el = $(h(config.tag, (config.attributes || {})));
+
+            if (typeof(config.content) === 'string' || (config.content instanceof Element)) {
+                config.content = [config.content];
+            }
+
+            if (Array.isArray(config.content)) {
+                config.content.forEach(function (item) {
+                    if (item instanceof Element) {
+                        return void $el.append(item);
+                    }
+                    if (typeof(item) === 'string') {
+                        $el[0].appendChild(document.createTextNode(item));
+                    }
+                });
+            }
+
+            // Everything is added as an "li" tag
+            // Links and items with action are focusable
+            // Add correct "role" attribute
+            entry = $(h('li'));
+            if (config.tag === 'a') {
+                $el.attr('tabindex', '-1');
+                entry.attr('role', 'menuitem');
+                entry.attr('tabindex', '0');
+            } else if (config.tag === 'li') {
+                entry = $el;
+                entry.attr('role', 'menuitem');
+                entry.attr('tabindex', '0');
+            } else if (config.tag === 'hr') {
+                entry.attr('role', 'separator');
+            } else {
+                entry.attr('role', 'none');
+            }
+            entry.append($el);
+
+            // Action can be triggered with a click or keyboard event
+            if (config.tag === 'a' || config.tag === 'li') {
+                entry.on('mouseenter', (e) => {
+                    e.stopPropagation();
+                    entry.focus();
+                });
+
+                Util.onClickEnter(entry, function(e) {
+                    if (config.isSelect) { return; }
+                    e.stopPropagation();
+                    if (typeof(config.action) === "function") {
+                        var close = config.action(e);
+                        if (close) { hide(); }
+                    } else {
+                        // Click on <a> with an href
+                        if (e.type === 'keydown'){ $el.get(0).click(); }
+                    }
+                }, {space: true});
+            }
+        }
+
+        hide = function () {
+            window.setTimeout(function () {
+                entry.closest('ul.cp-dropdown-content').hide();
+                entry.parents('.cp-dropdown-content').removeClass('cp-dropdown-has-submenu').hide();
+            }, 0);
+        };
+
+        return entry;
+    };
+
     // Create a button with a dropdown menu
     // input is a config object with parameters:
     //  - container (optional): the dropdown container (span)
@@ -1465,18 +1576,6 @@ define([
     UIElements.createDropdown = function (config) {
         if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
         if (config.feedback && !config.common) { return void console.error("feedback in a dropdown requires sframe-common"); }
-
-        var isElement = function (o) {
-            return /HTML/.test(Object.prototype.toString.call(o)) &&
-                typeof(o.tagName) === 'string';
-        };
-        var allowedTags = ['a', 'li', 'p', 'hr', 'div'];
-        var isValidOption = function (o) {
-            if (typeof o !== "object") { return false; }
-            if (isElement(o)) { return true; }
-            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
-            return true;
-        };
 
         // Container
         var $container = $(config.container);
@@ -1491,47 +1590,41 @@ define([
             $container = $('<span>', containerConfig);
         }
 
+
         // Button
-        var $button;
-
-        if (config.buttonContent) {
-            $button = $(h('button', {
-                class: config.buttonCls || '',
-                'aria-haspopup': 'menu',
-                'aria-expanded': 'false',
-                'title': config.buttonTitle || '',
-                'aria-label': config.buttonTitle || '',
-            }, [
-                h('span.cp-dropdown-button-title', config.buttonContent),
-            ]));
-        } else {
-            $button = $('<button>', {
-                'class': config.buttonCls || '',
-                'aria-haspopup': 'menu',
-                'aria-expanded': 'false',
-                'title': config.buttonTitle || '',
-                'aria-label': config.buttonTitle || '',
-            }).append($('<span>', {'class': 'cp-dropdown-button-title'}).text(config.text || ""));
-        }
-
+        let icon = config.iconCls ? h('i', {class:config.iconCls}) : undefined;
+        var $button = $(h('button', {
+            class: config.buttonCls || '',
+            'aria-haspopup': 'menu',
+            'aria-expanded': 'false',
+            'title': config.buttonTitle || '',
+            'aria-label': config.buttonTitle || '',
+        }, config.buttonContent || [
+            icon,
+            h('span.cp-dropdown-button-title', config.text),
+        ]));
 
         if (config.caretDown) {
-            $('<span>', {
-                'class': 'fa fa-caret-down',
-            }).prependTo($button);
+            $button.append(h('i.fa.fa-caret-down'));
         }
         if (config.angleDown) {
-            $('<span>', {
-                'class': 'fa fa-angle-down',
-            }).prependTo($button);
+            $button.append(h('i.fa.fa-angle-down'));
         }
 
         // Menu
         var $innerblock = $('<ul>', {'class': 'cp-dropdown-content', 'role': 'menu'});
-        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
+        var $outerblock = $(h('div.cp-dropdown-menu-container', $innerblock[0]));
+        let $parentMenu = config.isSubmenuOf;
+        $container.$menu = $innerblock;
+        if (config.left) { $outerblock.addClass('cp-dropdown-left'); }
+        if (config.isSubmenuOf && config.isSubmenuOf.length) {
+            $innerblock.addClass('cp-dropdown-submenu');
+        }
 
         var hide = function () {
-            window.setTimeout(function () { $innerblock.hide(); }, 0);
+            window.setTimeout(function () {
+                $innerblock.hide();
+            }, 0);
         };
 
         // When the menu is collapsed, update aria-expanded
@@ -1546,74 +1639,25 @@ define([
         observer.observe($innerblock[0], { attributes: true });
 
         // Add the dropdown content
-        var setOptions = function (options) {
+        var setOptions = $container.setOptions = function (options) {
+            $innerblock.empty();
             options.forEach(function (o) {
-                if (!isValidOption(o)) { return; }
-                if (isElement(o)) { return void $innerblock.append(o); }
-                var $el = $(h(o.tag, (o.attributes || {})));
-                if (typeof(o.content) === 'string' || (o.content instanceof Element)) {
-                    o.content = [o.content];
-                }
-                if (Array.isArray(o.content)) {
-                    o.content.forEach(function (item) {
-                        if (item instanceof Element) {
-                            return void $el.append(item);
-                        }
-                        if (typeof(item) === 'string') {
-                            $el[0].appendChild(document.createTextNode(item));
-                        }
-                    });
-                }
-
-                // Everything is added as an "li" tag
-                // Links and items with action are focusable
-                // Add correct "role" attribute
-                var $li = $(h('li'));
-                if (o.tag === 'a') {
-                    $el.attr('tabindex', '-1');
-                    $li.attr('role', 'menuitem');
-                    $li.attr('tabindex', '0');
-                } else if (o.tag === 'li') {
-                    $li = $el;
-                    $li.attr('role', 'menuitem');
-                    $li.attr('tabindex', '0');
-                } else if (o.tag === 'hr') {
-                    $li.attr('role', 'separator');
-                } else {
-                    $li.attr('role', 'none');
-                }
-                $li.append($el);
-                $li.appendTo($innerblock);
-
-                // Action can be triggered with a click or keyboard event
-                if (o.tag !== 'a' && o.tag !== 'li') { return; }
-
-                $li.on('mouseenter', (e) => {
-                    e.stopPropagation();
-                });
-                var onAction = function (e) {
-                    if (config.isSelect) { return; }
-                    if (e.type === 'click' || (e.type === 'keydown' && e.keyCode === 13) || (e.type === 'keydown' && e.keyCode === 32)) {
-                        e.stopPropagation();
-                        if (typeof(o.action) === "function") {
-                            var close = o.action(e);
-                            if (close) { hide(); }
-                        } else {
-                            // Click on <a> with an href
-                            if (e.type === 'keydown'){ $el.get(0).click(); }
-                        }
-                    }
-                };
-                $li.on('click keydown', onAction);
+                if (!o) { return; }
+                o.isSelect = config.isSelect;
+                let $entry = UIElements.createDropdownEntry(o);
+                if (!$entry) { return void console.error('Error adding dropdown entry', o); }
+                $entry.appendTo($innerblock);
             });
         };
         setOptions(config.options);
-        $container.setOptions = function (options) {
-            $innerblock.empty();
-            setOptions(options);
+
+        $container.addOption = function (config) {
+            let $entry = UIElements.createDropdownEntry(config);
+            $entry.appendTo($innerblock);
         };
 
-        $container.append($button).append($innerblock);
+        $container.append($button).append($outerblock);
+        if ($parentMenu) { $parentMenu.after($innerblock); }
 
         var value = config.initialValue || '';
 
@@ -1645,10 +1689,14 @@ define([
                 if ((topPos + h) > wh) {
                     $innerblock.css('bottom', button.height+'px');
                 }
+            } else if ($parentMenu) {
+                let max = $parentMenu.css('max-height');
+                $innerblock.css('max-height', max);
             } else {
                 $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
             $innerblock.show();
+            if ($parentMenu) { $parentMenu.show(); } // keep parent open when recursive
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             setTimeout(() => {
                 if (config.isSelect && value) {
@@ -1671,11 +1719,11 @@ define([
             var state = $innerblock.is(':visible');
             $('.cp-dropdown-content').hide();
 
-            var $c = $container.closest('.cp-toolbar-drawer-content');
+            /*var $c = $container.closest('.cp-toolbar-drawer-content');
             $c.removeClass('cp-dropdown-visible');
             if (!state) {
                 $c.addClass('cp-dropdown-visible');
-            }
+            }*/
 
             try {
                 $('iframe').each(function (idx, ifrw) {
@@ -1691,13 +1739,9 @@ define([
             show();
         });
 
-        $innerblock.on('mouseover', function() {
-            $(document.activeElement).blur();
-        });
-
         if (config.isSelect) {
             $container.onChange = Util.mkEvent();
-            $container.on('click', 'li', function () {
+            $innerblock.on('click', 'li', function () {
                 var $val = $(this).find('a');
                 value = $val.data('value');
                 var textValue = $val.text() || value;
@@ -1760,7 +1804,10 @@ define([
             var next = (idx + 1) % $all.length;
             return $($all.get(next));
         };
-        $container.keydown(function (e) {
+
+        let $listener = $container;
+        if ($parentMenu) { $listener = $innerblock; }
+        $listener.keydown(function (e) {
             e.stopPropagation(); // don't propagate event to window if the dropdown is focused
 
             var visible = $innerblock.is(':visible');
@@ -1769,6 +1816,7 @@ define([
                 $container.click();
                 visible = true;
             }
+
             if (!visible) { return; }
             if (e.which === 38) { // Up
                 e.preventDefault();
@@ -1812,18 +1860,21 @@ define([
                 e.preventDefault();
                 $value.mouseleave();
                 hide();
-                $button.focus();
+                if ($parentMenu) { $button.closest('li').focus(); }
+                else { $button.focus(); }
             }
             if (e.which === 9) { // Tab
                 hide();
                 if (e.shiftKey) {
-                    $button.focus();
+                    if ($parentMenu) { $button.closest('li').focus(); }
+                    else { $button.focus(); }
                 } else {
+                    if ($parentMenu) { $parentMenu.hide(); }
                     $innerblock.find('[role="menuitem"]').last().focus();
                 }
             }
         });
-        $container.keypress(function (e) {
+        $listener.keypress(function (e) {
             e.stopPropagation(); // Don't propagate to window
             window.clearTimeout(to);
             var c = String.fromCharCode(e.which);
@@ -1843,6 +1894,8 @@ define([
                 pressed = '';
             }, 1000);
         });
+
+        $container.close = hide;
 
 
         return $container;
@@ -2229,7 +2282,7 @@ define([
             };
         });
         var dropdownConfigUser = {
-            buttonContent: $userButton[0],
+            text: $userButton[0],
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
             container: config.$initBlock, // optional
@@ -2239,10 +2292,11 @@ define([
         };
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
-        var $survey = $userAdmin.find('.cp-toolbar-survey');
+        var $survey = $userAdmin.find('.cp-toolbar-survey').parent();
+        var $surveyHr =  $survey.next('[role="separator"]');
         if (!surveyURL) {
             $survey.hide();
-            if (surveyAlone) { $survey.next('hr').hide(); }
+            if (surveyAlone) { $surveyHr.hide(); }
         }
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
@@ -2254,11 +2308,11 @@ define([
                 surveyURL = url;
                 if (!url) {
                     $survey.hide();
-                    if (surveyAlone) { $survey.next('hr').hide(); }
+                    if (surveyAlone) { $surveyHr.hide(); }
                     return;
                 }
                 $survey.show();
-                if (surveyAlone) { $survey.next('hr').show(); }
+                if (surveyAlone) { $surveyHr.show(); }
             }
         });
 
@@ -3738,9 +3792,9 @@ define([
             });
         };
 
-        var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
         var todo = function (yes) {
             var priv = common.getMetadataMgr().getPrivateData();
+            var MAX_TEAMS_SLOTS = priv.plan ? Constants.MAX_PREMIUM_TEAMS_SLOTS : Constants.MAX_TEAMS_SLOTS;
             var numberOfTeams = Object.keys(priv.teams || {}).length;
             if (yes) {
                 if (numberOfTeams >= MAX_TEAMS_SLOTS) {
@@ -4177,6 +4231,21 @@ define([
         }
 
         modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
+    };
+
+    UIElements.onMissingMFA = (common, config, cb) => {
+        let content = h('div');
+        let msg = h('div.cp-loading-missing-mfa', [
+            h('div.alert.alert-warning', Messages.loading_mfa_required),
+            content
+        ]);
+        common.totpSetup(config, content, false, (newState) => {
+            if (!newState) {
+                return void UI.errorLoadingScreen(Messages.error);
+            }
+            cb({state: true});
+        });
+        return UI.errorLoadingScreen(msg, false, false);
     };
 
     return UIElements;

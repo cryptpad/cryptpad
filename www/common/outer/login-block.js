@@ -104,8 +104,7 @@ define([
         };
     };
 
-    Block.proveAncestor = function (O /* oldBlockKeys */, N /* newBlockKeys */) {
-        N = N;
+    Block.proveAncestor = function (O /* oldBlockKeys, N, newBlockKeys */) {
         var u8_pub = Util.find(O, ['sign', 'publicKey']);
         var u8_secret = Util.find(O, ['sign', 'secretKey']);
         try {
@@ -169,9 +168,7 @@ define([
         const { blockKeys, auth } = data;
 
         var command = 'MFA_CHECK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_CHECK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         ServerCommand(blockKeys.sign, {
             command: command,
@@ -179,35 +176,47 @@ define([
         }, cb);
     };
     Block.writeLoginBlock = function (data, cb) {
-        const { content, blockKeys, oldBlockKeys, auth } = data;
+        const { content, blockKeys, oldBlockKeys, auth, pw, session, token, userData } = data;
 
         var command = 'WRITE_BLOCK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_WRITE_BLOCK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         var block = Block.serialize(JSON.stringify(content), blockKeys);
         block.auth = auth && auth.data;
+        block.hasPassword = pw;
         block.registrationProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+        if (token) { block.inviteToken = token; }
+        if (userData) { block.userData = userData; }
 
         ServerCommand(blockKeys.sign, {
             command: command,
-            content: block
+            content: block,
+            session: session // sso session
         }, cb);
     };
     Block.removeLoginBlock = function (data, cb) {
-        const { reason, blockKeys, auth } = data;
+        const { reason, blockKeys, auth, edPublic } = data;
 
         var command = 'REMOVE_BLOCK';
-        if (auth && auth.type === 'TOTP') {
-            command = 'TOTP_REMOVE_BLOCK';
-        }
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
 
         ServerCommand(blockKeys.sign, {
             command: command,
             auth: auth && auth.data,
+            edPublic: edPublic,
             reason: reason
         }, cb);
+    };
+
+    Block.updateSSOBlock = function (data, cb) {
+        const { blockKeys, oldBlockKeys } = data;
+        var oldProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+
+        ServerCommand(blockKeys.sign, {
+            command: 'SSO_UPDATE_BLOCK',
+            ancestorProof: oldProof
+        }, cb);
+
     };
 
     return Block;

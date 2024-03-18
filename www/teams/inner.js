@@ -398,7 +398,6 @@ define([
         ]);
     });
 
-    var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
     var openTeam = function (common, id, team) {
         var sframeChan = common.getSframeChannel();
         APP.module.execCommand('SUBSCRIBE', id, function () {
@@ -426,14 +425,18 @@ define([
             });
         });
     };
-    var canCreateTeams = function (teams) {
+    var canCreateTeams = function (common, teams) {
         var owned = Object.keys(teams || {}).filter(function (id) {
             return teams[id].owner;
         }).length;
-        return Constants.MAX_TEAMS_OWNED - owned;
+        var priv = common.getMetadataMgr().getPrivateData();
+        var MAX_TEAMS_OWNED = priv.plan ? Constants.MAX_PREMIUM_TEAMS_OWNED : Constants.MAX_TEAMS_OWNED;
+        return MAX_TEAMS_OWNED - owned;
     };
     var refreshList = function (common, cb) {
         var content = [];
+        var priv = common.getMetadataMgr().getPrivateData();
+        var MAX_TEAMS_SLOTS = priv.plan ? Constants.MAX_PREMIUM_TEAMS_SLOTS : Constants.MAX_TEAMS_SLOTS;
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
             if (!obj) { return; }
             if (obj.error === "OFFLINE") { return UI.alert(Messages.driveOfflineError); }
@@ -441,7 +444,7 @@ define([
             var list = [];
             var keys = Object.keys(obj).slice(0,MAX_TEAMS_SLOTS);
             var slots = '('+Math.min(keys.length, MAX_TEAMS_SLOTS)+'/'+MAX_TEAMS_SLOTS+')';
-            var createSlots = canCreateTeams(obj);
+            var createSlots = canCreateTeams(common, obj);
             for (var i = keys.length; i < MAX_TEAMS_SLOTS; i++) {
                 obj[i] = {
                     empty: true
@@ -526,9 +529,12 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var content = [];
 
+        var MAX_TEAMS_OWNED = privateData.plan ? Constants.MAX_PREMIUM_TEAMS_OWNED : Constants.MAX_TEAMS_OWNED;
+        var MAX_TEAMS_SLOTS = privateData.plan ? Constants.MAX_PREMIUM_TEAMS_SLOTS : Constants.MAX_TEAMS_SLOTS;
+
         var isOwner = Object.keys(privateData.teams || {}).filter(function (id) {
             return privateData.teams[id].owner;
-        }).length >= Constants.MAX_TEAMS_OWNED && !privateData.devMode;
+        }).length >= MAX_TEAMS_OWNED && !privateData.devMode;
 
         var getWarningBox = function () {
             return h('div.alert.alert-warning', {
@@ -536,7 +542,7 @@ define([
             }, Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
         };
 
-        if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS || isOwner) {
+        if (Object.keys(privateData.teams || {}).length >= MAX_TEAMS_SLOTS || isOwner) {
             content.push(getWarningBox());
             return void cb(content);
         }
@@ -1266,12 +1272,13 @@ define([
         var password = hashData.password;
         var seeds = InviteInner.deriveSeeds(hashData.key);
         var sframeChan = common.getSframeChannel();
+        var MAX_TEAMS_SLOTS = privateData.plan ? Constants.MAX_PREMIUM_TEAMS_SLOTS : Constants.MAX_TEAMS_SLOTS;
 
-        if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS) {
+        if (Object.keys(privateData.teams || {}).length >= MAX_TEAMS_SLOTS) {
             return void cb([
                 h('div.alert.alert-danger', {
                     role: 'alert'
-                }, Messages._getKey('team_maxTeams', [Constants.MAX_TEAMS_SLOTS]))
+                }, Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]))
             ]);
         }
 
@@ -1478,7 +1485,6 @@ define([
 
     var main = function () {
         var common;
-        var readOnly;
 
         nThen(function (waitFor) {
             $(waitFor(function () {
@@ -1500,7 +1506,7 @@ define([
             var privateData = metadataMgr.getPrivateData();
             var user = metadataMgr.getUserData();
 
-            readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
+            driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
             driveAPP.loggedIn = common.isLoggedIn();
             //if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }

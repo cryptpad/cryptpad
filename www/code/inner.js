@@ -18,6 +18,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+    '/common/common-ui-elements.js',
 
 
     'css!cm/lib/codemirror.css',
@@ -64,7 +65,8 @@ define([
     Visible,
     TypingTest,
     Messages,
-    CMeditor)
+    CMeditor,
+    UIElements)
 {
     window.CodeMirror = CMeditor;
 
@@ -82,19 +84,15 @@ define([
     ]);
 
     var mkThemeButton = function (framework) {
-        var $theme = $(h('button.cp-toolbar-appmenu', [
-            h('i.cptools.cptools-palette'),
-            h('span.cp-button-name', Messages.toolbar_theme)
-        ]));
-        var $content = $(h('div.cp-toolbar-drawer-content', {
-            tabindex: 1
-        })).hide();
-
-        // set up all the necessary events
-        UI.createDrawer($theme, $content);
-
-        framework._.toolbar.$theme = $content;
-        framework._.toolbar.$bottomL.append($theme);
+        const $drawer = UIElements.createDropdown({
+            text: Messages.toolbar_theme,
+            options: [],
+            common: framework._.sfCommon,
+            iconCls: 'cptools cptools-palette'
+        });
+        framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
+        framework._.toolbar.$bottomL.append($drawer);
+        $drawer.addClass('cp-toolbar-appmenu');
     };
 
     var mkCbaButton = function (framework, markers) {
@@ -103,10 +101,12 @@ define([
             name: 'authormarks',
             icon: 'fa-paint-brush',
         }).hide();
-        framework._.toolbar.$theme.append($showAuthorColorsButton);
-        markers.setButton($showAuthorColorsButton);
+        var $showAuthorColors = UIElements.getEntryFromButton($showAuthorColorsButton).hide();
+        $showAuthorColors.find('span').addClass('cp-toolbar-name cp-toolbar-drawer-element');
+        framework._.toolbar.$theme.append($showAuthorColors);
+        markers.setButton($showAuthorColors);
     };
-    var mkPrintButton = function (framework, $content, $print) {
+    var mkPrintButton = function (framework, $content) {
         var $printButton = framework._.sfCommon.createButton('print', true);
         $printButton.click(function () {
             $print.html($content.html());
@@ -114,7 +114,8 @@ define([
             window.print();
             framework.feedback('PRINT_CODE');
         });
-        framework._.toolbar.$drawer.append($printButton);
+        var $print = UIElements.getEntryFromButton($printButton);
+        framework._.toolbar.$drawer.append($print);
     };
     var mkMarkdownTb = function (editor, framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
@@ -137,7 +138,8 @@ define([
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'code']);
         $codeMirrorContainer.prepend(helpMenu.menu);
 
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     var previews = {};
@@ -393,7 +395,8 @@ define([
             setButton(!markers.getState());
             UI.alert(content);
         });
-        framework._.toolbar.$theme.append($cbaButton);
+        var $cba = UIElements.getEntryFromButton($cbaButton);
+        framework._.toolbar.$theme.prepend($cba);
     };
 
     var mkFilePicker = function (framework, editor, evModeChange) {

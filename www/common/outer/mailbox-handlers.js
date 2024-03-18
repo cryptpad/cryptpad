@@ -347,6 +347,26 @@ define([
         cb(false);
     };
 
+    handlers['ADD_TO_ACCESS_LIST'] = function(ctx, common, data, cb) {
+
+        var msg = data.msg;
+        var content = msg.content;
+        var channel = content.channel;
+
+        ctx.Store.getAllStores().forEach(function (store) {
+            var res = store.manager.findChannel(channel);
+            if (!res.length) { return; }
+            
+            var data = res[0].data;
+            var id = res[0].id;
+            var teamId = store.id;
+            ctx.Store.loadSharedFolder(teamId, id, data, function () {
+
+            }, false);
+        });
+        cb(true);
+    };
+
     // Hide duplicates when receiving an ADD_OWNER notification:
     var addOwners = {};
     handlers['ADD_OWNER'] = function (ctx, box, data, cb) {
@@ -525,12 +545,10 @@ define([
         // Make sure we are a member of this team
         var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']) || {};
         var teamId;
-        var team;
         Object.keys(myTeams).some(function (k) {
             var _team = myTeams[k];
             if (_team.channel === content.teamData.channel) {
                 teamId = k;
-                team = _team;
                 return true;
             }
         });

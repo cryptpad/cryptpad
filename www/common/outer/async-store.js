@@ -861,7 +861,6 @@ define([
                 // Owned drive
                 if (metadata && metadata.owners && metadata.owners.length === 1 &&
                     metadata.owners.indexOf(edPublic) !== -1) {
-                    var token;
                     nThen(function (waitFor) {
                         Block.checkRights({
                             auth: auth,
@@ -876,8 +875,7 @@ define([
                     }).nThen(function (waitFor) {
                         self.accountDeletion = clientId;
                         // Log out from other workers
-                        var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
-                        store.proxy[Constants.tokenKey] = token;
+                        store.proxy[Constants.tokenKey] = 'DELETED';
                         onSync(null, waitFor());
                     }).nThen(function (waitFor) {
                         // Delete Pin Store
@@ -886,6 +884,7 @@ define([
                         }));
                     }).nThen(function (waitFor) {
                         // Delete Drive
+                        store.ownDeletion = true;
                         Store.removeOwnedChannel(clientId, {
                             channel: store.driveChannel,
                             force: true
@@ -895,6 +894,7 @@ define([
                         Block.removeLoginBlock({
                             reason: 'ARCHIVE_OWNED',
                             auth: auth,
+                            edPublic: edPublic,
                             blockKeys: blockKeys,
                         }, waitFor(function (err) {
                             if (err) { console.error(err); }
@@ -903,7 +903,8 @@ define([
                         removeOwnedPads(true, waitFor);
                     }).nThen(function () {
                         // Log out current worker
-                        postMessage(clientId, "DELETE_ACCOUNT", token, function () {});
+                        broadcast([clientId], "DRIVE_DELETED", 'ARCHIVE_OWNED');
+                        postMessage(clientId, "DELETE_ACCOUNT", 'DELETED', function () {});
                         store.network.disconnect();
                         cb({
                             state: true
@@ -1402,7 +1403,7 @@ define([
 
         // Hidden hash: if a pad is deleted, we may have to switch back to full hash
         // in some tabs
-        Store.checkDeletedPad = function (channel) {
+        Store.checkDeletedPad = function (channel, cb) {
             if (!channel) { return; }
 
             // Check if the pad is still stored in one of our drives
@@ -1410,6 +1411,7 @@ define([
                 channel: channel,
                 isFile: true // we don't care if it's view or edit
             }, function (res) {
+                if (typeof(cb) === "function") { setTimeout(cb); }
                 // If it is stored, abort
                 if (Object.keys(res).length) { return; }
                 // Otherwise, tell all the tabs that this channel was deleted and give them the hrefs
@@ -2398,6 +2400,8 @@ define([
         Store.loadSharedFolder = function (teamId, id, data, cb, isNew) {
             var s = getStore(teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
+            if (!parsed && !parsed.hashData) { return void cb({error: 'EINVAL'}); }
             SF.load({
                 isNew: isNew,
                 network: store.network || store.networkPromise,
@@ -2925,6 +2929,7 @@ define([
                     broadcast([], "UPDATE_METADATA");
                 });
                 proxy.on('change', [Constants.tokenKey], function () {
+                    if (store.isDeleted || proxy[Constants.tokenKey] === 'DELETED') { return; }
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
 
@@ -3059,9 +3064,9 @@ define([
             })
             .on('error', function (info) {
                 if (info.error && info.error === 'EDELETED') {
-                    broadcast([], "LOGOUT", {
-                        reason: info.message
-                    });
+                    if (store.ownDeletion) { return; }
+                    store.isDeleted = true;
+                    broadcast([], "DRIVE_DELETED", info.message);
                 }
             });
 

@@ -96,6 +96,7 @@ define([
             var data = {};
 
             data.name = file.metadata.name;
+            data.fileType = file.metadata.type;
             data.url = href;
             data.password = file.password;
             if (file.metadata.type.slice(0,6) === 'image/') {
@@ -465,9 +466,6 @@ define([
             if (!file.type && /\.md$/.test(file.name)) {
                 type = "text/markdown";
             }
-
-            // Can't upload folder here
-            if (!file.type && file.size%4096 === 0) { return; }
 
             var thumb;
             var preview;

@@ -16,6 +16,7 @@ This file is intended to be used as a log of what third-party source we have ven
 * [jscolor v2.0.5](https://jscolor.com/) for providing a consistent color picker across all browsers
 * [less.min.js v3.11.1](https://github.com/less/less.js/releases/tag/v3.11.1) with a minor modification to produce slightly more compact CSS
 * [mermaid 10.2.4](https://github.com/mermaid-js/mermaid/releases/tag/v10.2.4) extends our markdown integration to support a variety of diagram types
+* [Moment v2.29.4](http://momentjs.com/) for providing a date parser
 * [our fork of tippy.js v1.2.0](https://github.com/xwiki-labs/tippyjs) for adding tooltips.
 * [pdfjs](https://mozilla.github.io/pdf.js/) with some minor modifications to prevent CSP errors
 * [qrcode.js](https://github.com/davidshimjs/qrcodejs) from [this commit](https://github.com/davidshimjs/qrcodejs/commit/06c7a5e134f116402699f03cda5819e10a0e5787) since the repo doesn't use tags

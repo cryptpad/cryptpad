@@ -34,8 +34,6 @@ MessengerUI, Messages, Pages) {
     var BOTTOM_LEFT_CLS = Bar.constants.bottomL = 'cp-toolbar-bottom-left';
     var BOTTOM_MID_CLS = Bar.constants.bottomM = 'cp-toolbar-bottom-mid';
     var BOTTOM_RIGHT_CLS = Bar.constants.bottomR = 'cp-toolbar-bottom-right';
-    var LEFTSIDE_CLS = Bar.constants.leftside = 'cp-toolbar-leftside';
-    var RIGHTSIDE_CLS = Bar.constants.rightside = 'cp-toolbar-rightside';
     var FILE_CLS = Bar.constants.file = 'cp-toolbar-file';
     var DRAWER_CLS = Bar.constants.drawer = 'cp-toolbar-drawer-content';
     var HISTORY_CLS = Bar.constants.history = 'cp-toolbar-history';
@@ -65,7 +63,7 @@ MessengerUI, Messages, Pages) {
         return 'cp-toolbar-uid-' + String(Math.random()).substring(2);
     };
 
-    var observeChildren = function ($content) {
+    var observeChildren = function ($content, isDrawer) {
         var reorderDOM = Util.throttle(function ($content, observer) {
             if (!$content.length) { return; }
 
@@ -74,7 +72,15 @@ MessengerUI, Messages, Pages) {
             $content[0].childNodes.forEach((node) => {
                 try {
                     if (!node.attributes) { return; }
-                    var order = getComputedStyle(node).getPropertyValue("order");
+                    let nodeWithOrder;
+                    if (isDrawer) { // HACK: the order is set on their inner "a" tag
+                        let $n = $(node);
+                        if (!$n.attr('class') &&
+                            ($n.find('.fa').length || $n.find('.cptools').length)) {
+                            nodeWithOrder = $n.find('.fa')[0] || $n.find('.cptools')[0];
+                        }
+                    }
+                    var order = getComputedStyle(nodeWithOrder || node).getPropertyValue("order");
                     var a = map[order] = map[order] || [];
                     a.push(node);
                 } catch (e) { console.error(e, node); }
@@ -103,6 +109,7 @@ MessengerUI, Messages, Pages) {
             });
         });
         observer.start = function () {
+            if (!$content.length) { return; }
             observer.observe($content[0], {
                 childList: true
             });
@@ -137,7 +144,7 @@ MessengerUI, Messages, Pages) {
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer);
-        var $bottom = $(h('div.'+BOTTOM_CLS, [
+        $(h('div.'+BOTTOM_CLS, [
             h('div.'+BOTTOM_LEFT_CLS),
             h('div.'+BOTTOM_MID_CLS),
             h('div.'+BOTTOM_RIGHT_CLS)
@@ -147,13 +154,16 @@ MessengerUI, Messages, Pages) {
 
         var $file = $toolbar.find('.'+BOTTOM_LEFT_CLS);
 
-        if (!config.hideDrawer) {
-            var $drawer = $(h('button.' + FILE_CLS, [
-                h('i.fa.fa-file-o'),
-                h('span.cp-button-name', Messages.toolbar_file)
-            ])).appendTo($file).hide();
-            var $drawerContent = $(h('div.'+ DRAWER_CLS, {tabindex: 1})).hide();
-            UI.createDrawer($drawer, $drawerContent);
+        if (config.addFileMenu) {
+            var $drawer = UIElements.createDropdown({
+                text: Messages.toolbar_file,
+                options: [],
+                common: Common,
+                iconCls: 'fa fa-file-o'
+            }).hide();
+            $drawer.addClass(FILE_CLS).appendTo($file);
+            $drawer.find('.cp-dropdown-content').addClass(DRAWER_CLS);
+            $drawer.find('span').addClass('cp-button-name');
         }
 
         // The 'notitle' class removes the line added for the title with a small screen
@@ -284,7 +294,7 @@ MessengerUI, Messages, Pages) {
         var fa_editusers = '<span class="fa fa-users"></span>';
         var fa_viewusers = numberOfViewUsers === '' ? '' : '<span class="fa fa-eye"></span>';
         var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
+        $userButtons.find('.cp-toolbar-userlist-button').html('').append($spansmall);
 
         if (!online || toolbar.isDeleted) { return; }
 
@@ -463,7 +473,7 @@ MessengerUI, Messages, Pages) {
         var $container = $('<span>', {id: 'cp-toolbar-userlist-drawer-open', title: Messages.userListButton});
 
         var $button = $('<button>').appendTo($container);
-        $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
+        $('<span>',{'class': 'cp-toolbar-userlist-button'}).appendTo($button);
 
         toolbar.$bottomR.prepend($container);
 
@@ -506,7 +516,7 @@ MessengerUI, Messages, Pages) {
         return $container;
     };
 
-    createCollapse = function (toolbar) {
+    var createCollapse = function (toolbar) {
         var up = h('i.fa.fa-chevron-up', {title: Messages.toolbar_collapse});
         var down = h('i.fa.fa-chevron-down', {title: Messages.toolbar_expand});
         var notif = h('span.cp-collapsed-notif');
@@ -979,7 +989,6 @@ MessengerUI, Messages, Pages) {
             if (overLimit) {
                 $limit.show().click(function () {
                     if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
-                        var key = 'pinLimitReachedAlert'; // Msg.pinLimitReachedAlert
                         var msg = Pages.setHTML(h('span'), Messages.pinLimitReachedAlert);
                         $(msg).find('a').attr({
                             target: '_blank',
@@ -998,17 +1007,17 @@ MessengerUI, Messages, Pages) {
         return $limit;
     };
 
-    var createNewPad = function (toolbar, config) {
+    var createNewPad = function (toolbar) {
         var $button = Common.createButton('newpad', true);
-        toolbar.$drawer.append($button);
-        return $button;
+        var $newPad = UIElements.getEntryFromButton($button);
+        toolbar.$drawer.append($newPad);
+        return $newPad;
     };
 
     var createUserAdmin = function (toolbar, config) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the user menu");
         }
-        var metadataMgr = config.metadataMgr;
         var $userAdmin = toolbar.$userAdmin.find('.'+USERADMIN_CLS).show();
         var userMenuCfg = {
             $initBlock: $userAdmin,
@@ -1028,7 +1037,7 @@ MessengerUI, Messages, Pages) {
         return $userAdmin;
     };
 
-    var createMaintenance = function (toolbar, config) {
+    var createMaintenance = function (toolbar) {
         var $notif = toolbar.$top.find('.'+MAINTENANCE_CLS);
         var button = h('button.cp-maintenance-wrench.fa.fa-wrench');
         $notif.append(button);
@@ -1356,6 +1365,10 @@ MessengerUI, Messages, Pages) {
         toolbar.connected = false;
         toolbar.firstConnection = true;
 
+        if (Array.isArray(cfg.displayed) && cfg.displayed.includes('pad')) {
+            cfg.addFileMenu = true;
+        }
+
         var $toolbar = toolbar.$toolbar = createRealtimeToolbar(config);
         toolbar.$bottom = $toolbar.find('.'+Bar.constants.bottom);
         toolbar.$bottomL = $toolbar.find('.'+Bar.constants.bottomL);
@@ -1369,7 +1382,7 @@ MessengerUI, Messages, Pages) {
         toolbar.$history = $toolbar.find('.'+Bar.constants.history);
         toolbar.$user = $toolbar.find('.'+Bar.constants.userAdmin);
 
-        observeChildren(toolbar.$drawer);
+        observeChildren(toolbar.$drawer, true);
         observeChildren(toolbar.$bottomL);
         observeChildren(toolbar.$bottomM);
         observeChildren(toolbar.$bottomR);
