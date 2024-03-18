@@ -576,14 +576,16 @@ define([
         });
     };
 
-    UIElements.getEntryFromButton = function ($button, id = undefined) {
+    UIElements.getEntryFromButton = function ($button) {
+        if (!$button || !$button.length) { return; }
         let $icon = $button.find('> i');
-        let attributes = {
-            'class': $button.attr('class')
-        };
-        if (id !== undefined) {
-            attributes['id'] = id;
-        }
+
+        let attributes = {};
+        let btnClass = $button.attr('class');
+        let btnId = $button.attr('id');
+        if (btnClass) { attributes['class'] = btnClass; }
+        if (btnId) { attributes['id'] = btnId; }
+
         return UIElements.createDropdownEntry({
             tag: 'a',
             attributes: attributes,
@@ -605,6 +607,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         data = data || {};
+        if (!callback && data.callback) { callback = data.callback; }
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -880,6 +883,7 @@ define([
                     h('i.fa.fa-file-image-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
                 ])).click(common.prepareFeedback(type));
+                if (callback) { button.click(callback); }
                 break;
             case 'storeindrive':
                 button = $(h('button.cp-toolbar-storeindrive.fa.fa-hdd-o', {
@@ -1015,7 +1019,7 @@ define([
                     h('span.cp-toolbar-name'+drawerCls, data.text)
                 ]));
                 var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');
-                button[0].addEventListener('click', function () {
+                Util.onClickEnter(button, function () {
                     feedbackHandler();
                     if (typeof(callback) !== 'function') { return; }
                     callback();
@@ -1638,6 +1642,7 @@ define([
         var setOptions = $container.setOptions = function (options) {
             $innerblock.empty();
             options.forEach(function (o) {
+                if (!o) { return; }
                 o.isSelect = config.isSelect;
                 let $entry = UIElements.createDropdownEntry(o);
                 if (!$entry) { return void console.error('Error adding dropdown entry', o); }

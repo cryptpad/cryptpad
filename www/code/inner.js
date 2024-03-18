@@ -68,7 +68,6 @@ define([
     CMeditor,
     UIElements)
 {
-    var Common;
     window.CodeMirror = CMeditor;
 
     var MEDIA_TAG_MODES = Object.freeze([
@@ -88,7 +87,7 @@ define([
         const $drawer = UIElements.createDropdown({
             text: Messages.toolbar_theme,
             options: [],
-            common: Common,
+            common: framework._.sfCommon,
             iconCls: 'cptools cptools-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
@@ -102,15 +101,7 @@ define([
             name: 'authormarks',
             icon: 'fa-paint-brush',
         }).hide();
-
-        var $showAuthorColors = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: {'class': 'fa fa-paint-brush ' + $showAuthorColorsButton.attr('class')},
-            content: h('span', $showAuthorColorsButton.text()),
-            action: function () {
-                $showAuthorColorsButton.click();
-            },
-        }).hide();
+        var $showAuthorColors = UIElements.getEntryFromButton($showAuthorColorsButton).hide();
         $showAuthorColors.find('span').addClass('cp-toolbar-name cp-toolbar-drawer-element');
         framework._.toolbar.$theme.append($showAuthorColors);
         markers.setButton($showAuthorColors);
@@ -123,14 +114,6 @@ define([
             window.print();
             framework.feedback('PRINT_CODE');
         });
-        // var $print = UIElements.createDropdownEntry({
-        //     tag: 'a',
-        //     attributes: { 'class': $printButton.attr('class') },
-        //     content: h('span', $printButton.text()),
-        //     action: function () {
-        //         $printButton.click();
-        //     }
-        // });
         var $print = UIElements.getEntryFromButton($printButton);
         framework._.toolbar.$drawer.append($print);
     };
@@ -412,15 +395,8 @@ define([
             setButton(!markers.getState());
             UI.alert(content);
         });
-        var $cba = UIElements.createDropdownEntry({
-            tag: 'a',
-            attributes: {'class': 'fa fa-paint-brush ' + $cbaButton.attr('class')},
-            content: h('span', $cbaButton.text()),
-            action: function () {
-                $cbaButton.click();
-            },
-        });
-        framework._.toolbar.$theme.prepend($cba); // Put at the top
+        var $cba = UIElements.getEntryFromButton($cbaButton);
+        framework._.toolbar.$theme.prepend($cba);
     };
 
     var mkFilePicker = function (framework, editor, evModeChange) {

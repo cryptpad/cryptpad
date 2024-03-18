@@ -2764,9 +2764,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 toolbar.$drawer.append($snapshot);
 
                 // Import template
-                var $templateButton = common.createButton('importtemplate', true, {}, openTemplatePicker);
-                if ($templateButton && typeof($templateButton.appendTo) === 'function') {
-                    var $template = UIElements.getEntryFromButton($templateButton);
+                var $importTemplateButton = common.createButton('importtemplate', true, {}, openTemplatePicker);
+                if ($importTemplateButton && $importTemplateButton.length) {
+                    let $template = UIElements.getEntryFromButton($importTemplateButton);
                     $template.appendTo(toolbar.$drawer);
                 }
 
@@ -2789,8 +2789,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             APP.FM.handleFile(blob, data);
                         }
                     };
-                    var $templateButton = common.createButton('template', true, templateObj);
-                    var $template = UIElements.getEntryFromButton($templateButton);
+                    let $templateButton = common.createButton('template', true, templateObj);
+                    let $template = UIElements.getEntryFromButton($templateButton);
                     toolbar.$drawer.append($template);
                 }
             })();

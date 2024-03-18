@@ -435,7 +435,16 @@ define([
             });
 
             // Export to drive as PNG
-            var $saveToDriveButton = framework._.sfCommon.createButton('savetodrive', true, {});
+            var $saveToDriveButton = framework._.sfCommon.createButton('savetodrive', true, {
+                callback: function () {
+                    var defaultName = framework._.title.getTitle()
+                                    || framework._.title.defaultTitle;
+                    UI.prompt(Messages.exportPrompt, defaultName + '.png', function (name) {
+                        if (name === null || !name.trim()) { return; }
+                        APP.upload(name);
+                    });
+                }
+            });
             var $saveToDrive = UIElements.getEntryFromButton($saveToDriveButton);
             $saveToDrive.appendTo($drawer);
 

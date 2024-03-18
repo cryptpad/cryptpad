@@ -109,6 +109,7 @@ MessengerUI, Messages, Pages) {
             });
         });
         observer.start = function () {
+            if (!$content.length) { return; }
             observer.observe($content[0], {
                 childList: true
             });
@@ -153,13 +154,13 @@ MessengerUI, Messages, Pages) {
 
         var $file = $toolbar.find('.'+BOTTOM_LEFT_CLS);
 
-        if (!config.hideDrawer) {
+        if (config.addFileMenu) {
             var $drawer = UIElements.createDropdown({
                 text: Messages.toolbar_file,
                 options: [],
                 common: Common,
                 iconCls: 'fa fa-file-o'
-            });
+            }).hide();
             $drawer.addClass(FILE_CLS).appendTo($file);
             $drawer.find('.cp-dropdown-content').addClass(DRAWER_CLS);
             $drawer.find('span').addClass('cp-button-name');
@@ -1363,6 +1364,10 @@ MessengerUI, Messages, Pages) {
 
         toolbar.connected = false;
         toolbar.firstConnection = true;
+
+        if (Array.isArray(cfg.displayed) && cfg.displayed.includes('pad')) {
+            cfg.addFileMenu = true;
+        }
 
         var $toolbar = toolbar.$toolbar = createRealtimeToolbar(config);
         toolbar.$bottom = $toolbar.find('.'+Bar.constants.bottom);

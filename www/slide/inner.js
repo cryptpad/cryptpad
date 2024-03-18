@@ -65,7 +65,6 @@ define([
     CMeditor,
     UIElements)
 {
-    var Common;
     window.CodeMirror = CMeditor;
 
     var SLIDE_BACKCOLOR_ID = "cp-app-slide-toolbar-backcolor";
@@ -112,7 +111,7 @@ define([
         const $drawer = UIElements.createDropdown({
             text: Messages.toolbar_theme,
             options: [],
-            common: Common,
+            common: framework._.sfCommon,
             iconCls: 'cptools cptools-palette'
         });
         framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
@@ -122,20 +121,15 @@ define([
 
     var mkPrintButton = function (framework, editor, $content, $print) {
         var $printButton = framework._.sfCommon.createButton('print', true);
-        // var $print = UIElements.createDropdownEntry({
-        //     tag: 'a',
-        //     attributes: { 'class': $printButton.attr('class') },
-        //     content: h('span', $printButton.text()),
-        //     action: function () {
-        //         Slide.update(editor.getValue(), true);
-        //         $print.html($content.html());
-        //         window.focus();
-        //         window.print();
-        //         framework.feedback('PRINT_SLIDES');
-        //     }
-        // });
-        var $print = UIElements.getEntryFromButton($printButton);
-        framework._.toolbar.$drawer.append($print);
+        $printButton.click(function () {
+            Slide.update(editor.getValue(), true);
+            $print.html($content.html());
+            window.focus();
+            window.print();
+            framework.feedback('PRINT_SLIDES');
+        });
+        var $printEntry = UIElements.getEntryFromButton($printButton);
+        framework._.toolbar.$drawer.append($printEntry);
     };
 
     // Flag to check if a file from the filepicker is a mediatag for the slides or a background image
@@ -330,7 +324,10 @@ define([
             title: Messages.slideOptionsTitle,
             hiddenReadOnly: true,
             text: Messages.slideOptionsText,
-            name: 'options'
+            name: 'options',
+            callback: function () {
+                $('body').append(createPrintDialog());
+            }
         });
         var $options = UIElements.getEntryFromButton($optionsButton);
         framework._.toolbar.$theme.append($options);
@@ -388,7 +385,7 @@ define([
             $backgroundPicker.val(backColor);
             $backgroundPicker.click();
         });
-        var $backButton = UIElements.getEntryFromButton($back, SLIDE_BACKCOLOR_ID);
+        var $backButton = UIElements.getEntryFromButton($back);
 
         var $foregroundPicker = $('<input>', { type: 'color', value: textColor })
             .css({ display: 'none', })
@@ -405,7 +402,7 @@ define([
             $foregroundPicker.click();
         });
 
-        var $textButton = UIElements.getEntryFromButton($text, SLIDE_COLOR_ID);
+        var $textButton = UIElements.getEntryFromButton($text);
         var $testColor = $('<input>', { type: 'color', value: '!' });
         if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
 
