@@ -1,8 +1,8 @@
+#!/bin/bash
+
 # SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
-#/bin/bash
 
 ## Required vars
 # CPAD_MAIN_DOMAIN
@@ -31,10 +31,9 @@ fi
 cd $CPAD_HOME
 
 if [ "$CPAD_INSTALL_ONLYOFFICE" == "yes" ]; then
-	./install-onlyoffice.sh
+	./install-onlyoffice.sh --accept-license
 fi
 
 npm run build
 
 exec "$@"
-

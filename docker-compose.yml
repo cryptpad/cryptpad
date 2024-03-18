@@ -26,6 +26,7 @@ services:
       - ./data/data:/cryptpad/data
       - ./data/files:/cryptpad/datastore
       - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
+      - ./onlyoffice-conf:/cryptpad/onlyoffice-conf
 
     ports:
       - "3000:3000"
