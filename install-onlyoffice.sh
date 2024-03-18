@@ -3,17 +3,25 @@
 set -euo pipefail
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-BUILDS_DIR=$SCRIPT_DIR/onlyoffice-builds.git
+CONF_DIR=$SCRIPT_DIR/onlyoffice-conf
+BUILDS_DIR=$CONF_DIR/onlyoffice-builds.git
 OO_DIR=$SCRIPT_DIR/www/common/onlyoffice/dist
-PROPS_FILE="$SCRIPT_DIR"/onlyoffice.properties
+PROPS_FILE="$CONF_DIR"/onlyoffice.properties
 
 declare -A PROPS
 
 main () {
+	mkdir -p "$CONF_DIR"
+
 	load_props
+
 	parse_arguments "$@"
 
 	ask_for_license
+
+	# Remeber the 1st version that is installed. This will help us install only
+	# needed OnlyOffice versions in a later version of this script.
+	set_prop oldest_needed_version v1
 
 	mkdir -p "$OO_DIR"
 	install_version v1 4f370beb
@@ -23,13 +31,10 @@ main () {
 	install_version v6 abd8a309
 	install_version v7 9d8b914a
 
-	if ! [ ${KEEP_REPO+x} ]; then
-		rm -rf "$BUILDS_DIR"
-		if command -v rdfind &> /dev/null; then
-			rdfind -makehardlinks true -makeresultsfile false $OO_DIR/v*
-		fi
+	rm -rf "$BUILDS_DIR"
+	if command -v rdfind &> /dev/null; then
+		rdfind -makehardlinks true -makeresultsfile false $OO_DIR/v*
 	fi
-
 }
 
 load_props () {
@@ -53,10 +58,6 @@ parse_arguments () {
 		case $1 in
 			-h|--help)
 				show_help
-				shift
-				;;
-			-k|--keep)
-				KEEP_REPO="1"
 				shift
 				;;
 			-a|--accept-license)
@@ -97,10 +98,6 @@ OPTIONS:
     -h, --help
             Show this help.
 
-    -k, --keep
-            Keep the onlyoffice-builds repo. This will use ~300MB and will make
-            future OnlyOffice upgrades faster.
-
     -a, --accept-license
             Accept the license of OnlyOffice and do not ask when running this
             script. Read and accept this before using this option:
@@ -109,23 +106,13 @@ EOF
 	exit 1
 }
 
-ensure_commit_exists () {
+ensure_oo_is_downloaded () {
 	ensure_command_available git
 
-	if [ -d "$BUILDS_DIR" ]; then
-		local LAST_DIR
-		LAST_DIR=$(pwd)
-		cd "$BUILDS_DIR"
-		if ! git cat-file -e "$1"; then
-			echo Fetch new OnlyOffice version...
-			git fetch
-		fi
-		cd "$LAST_DIR"
-		return
+	if ! [ -d "$BUILDS_DIR" ]; then
+		echo Downloading OnlyOffice...
+		git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
 	fi
-	
-	echo Downloading OnlyOffice...
-	git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
 }
 
 install_version () {
@@ -136,19 +123,12 @@ install_version () {
 	LAST_DIR=$(pwd)
 
 	if [ ! -e "$FULL_DIR"/.commit ] || [ "$(cat "$FULL_DIR"/.commit)" != "$COMMIT" ]; then
-		ensure_commit_exists "$COMMIT"
+		ensure_oo_is_downloaded
 
-		if [ ! -e "$FULL_DIR"/.git ]; then
-			rm -rf "$FULL_DIR"
-		fi
+		rm -rf "$FULL_DIR"
 
-		if [ -d "$FULL_DIR" ]; then
-			cd "$FULL_DIR"
-			git checkout "$COMMIT"
-		else
-			cd "$BUILDS_DIR"
-			git worktree add "$FULL_DIR" "$COMMIT"
-		fi
+		cd "$BUILDS_DIR"
+		git worktree add "$FULL_DIR" "$COMMIT"
 
 		cd "$LAST_DIR"
 
