@@ -7,12 +7,11 @@ BUILDS_DIR=$SCRIPT_DIR/onlyoffice-builds.git
 OO_DIR=$SCRIPT_DIR/www/common/onlyoffice/dist
 PROPS_FILE="$SCRIPT_DIR"/onlyoffice.properties
 
-declare -A props
+declare -A PROPS
 
 main () {
 	load_props
 	parse_arguments "$@"
-	validate_arguments
 
 	ask_for_license
 
@@ -24,28 +23,28 @@ main () {
 	install_version v6 abd8a309
 	install_version v7 9d8b914a
 
-	if [ ${CLEAR+x} ]; then
+	if ! [ ${KEEP_REPO+x} ]; then
 		rm -rf "$BUILDS_DIR"
+		if command -v rdfind &> /dev/null; then
+			rdfind -makehardlinks true -makeresultsfile false $OO_DIR/v*
+		fi
 	fi
 
-	if [ ${MAKE_LINKS+x} ]; then
-		rdfind -makehardlinks true -makeresultsfile false $OO_DIR/v*
-	fi
 }
 
 load_props () {
 	if [ -e "$PROPS_FILE" ]; then
 		while IFS='=' read -r key value; do
-			props["$key"]="$value"
+			PROPS["$key"]="$value"
 		done < "$PROPS_FILE"
 	fi
 }
 
 set_prop () {
-	props["$1"]="$2"
+	PROPS["$1"]="$2"
 
-	for i in "${!props[@]}"; do
-		echo "$i=${props[$i]}"
+	for i in "${!PROPS[@]}"; do
+		echo "$i=${PROPS[$i]}"
 	done > "$PROPS_FILE"
 }
 
@@ -56,12 +55,12 @@ parse_arguments () {
 				show_help
 				shift
 				;;
-			-c|--clear)
-				CLEAR="1"
+			-k|--keep)
+				KEEP_REPO="1"
 				shift
 				;;
-			-l|--make-links)
-				MAKE_LINKS="1"
+			-a|--accept-license)
+				ACCEPT_LICENSE="1"
 				shift
 				;;
 			*)
@@ -72,30 +71,18 @@ parse_arguments () {
 	done 
 }
 
-validate_arguments () {
-	if [ ${MAKE_LINKS+x} ]; then
-		if [ -z ${CLEAR+x} ]; then
-			echo "--make-links has to be combined with --clear"
-			exit 1
-		fi
-
-		if ! command -v rdfind &> /dev/null; then
-			echo "rdfind has to be installed for --make-links"
-			exit 1
-		fi
-	fi
-}
-
 ask_for_license () {
-	if [ "${props[agree_license]:-no}" == yes ]; then
+	if [ ${ACCEPT_LICENSE+x} ] || [ "${PROPS[agree_license]:-no}" == yes ]; then
 		return
 	fi
 
-	less << EOF
-License
-EOF
-	read -rp "Do you acceppt the license? (Y/N): " confirm \
+	ensure_command_available curl
+
+	(echo -e "Please review the license of OnlyOffice:\n\n" ; curl https://raw.githubusercontent.com/ONLYOFFICE/web-apps/master/LICENSE.txt 2>/dev/null) | less
+
+	read -rp "Do you accept the license? (Y/N): " confirm \
 		&& [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+
 	set_prop "agree_license" yes
 }
 
@@ -103,23 +90,28 @@ show_help () {
 	cat << EOF
 install-onlyoffice installs or upgrades OnlyOffice.
 
+NOTE: When you have rdfind installed, it will be used to save ~650MB of disk
+space.
+
 OPTIONS:
     -h, --help
             Show this help.
 
-    -c, --clear
-            Safe ~300MB of disk space. However, the next run of
-            install-onlyoffice will have to download OnlyOffice again.
+    -k, --keep
+            Keep the onlyoffice-builds repo. This will use ~300MB and will make
+            future OnlyOffice upgrades faster.
 
-    -l, --make-links
-            This argument has to be combined with --clear. It will
-            replace duplicate files with hard links. This will save
-            another ~650MB. The command rdfind has to be installed.
+    -a, --accept-license
+            Accept the license of OnlyOffice and do not ask when running this
+            script. Read and accept this before using this option:
+            https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE.txt
 EOF
 	exit 1
 }
 
 ensure_commit_exists () {
+	ensure_command_available git
+
 	if [ -d "$BUILDS_DIR" ]; then
 		local LAST_DIR
 		LAST_DIR=$(pwd)
@@ -133,7 +125,7 @@ ensure_commit_exists () {
 	fi
 	
 	echo Downloading OnlyOffice...
-	git clone --bare git@github.com:cryptpad/onlyoffice-builds.git "$BUILDS_DIR"  # TODO use https here, when repo is public
+	git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
 }
 
 install_version () {
@@ -170,6 +162,13 @@ install_version () {
 
 	if [ ${CLEAR+x} ]; then
 		rm -f "$FULL_DIR"/.git
+	fi
+}
+
+ensure_command_available () {
+	if ! command -v "$1" &> /dev/null; then
+		echo "$1" needs to be installed to run this script
+		exit 1
 	fi
 }
 
