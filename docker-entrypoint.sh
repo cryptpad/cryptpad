@@ -31,12 +31,7 @@ fi
 cd $CPAD_HOME
 
 if [ "$CPAD_INSTALL_ONLYOFFICE" == "yes" ]; then
-	eval "$(ssh-agent -s)"  # TODO remove this when repo is public
-	ssh-add install-onlyoffice-docker.key
-	mkdir -p ~/.ssh
-	chmod 0700 ~/.ssh
-	ssh-keyscan github.com > ~/.ssh/known_hosts
-	./install-onlyoffice.sh -c -l
+	./install-onlyoffice.sh
 fi
 
 npm run build
