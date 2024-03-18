@@ -1358,29 +1358,22 @@ define([
         });
 
         sidebar.addItem('setlimit', function(cb){
-            var user = blocks.input({
-                type:'text',
-                id: 'cp-admin-setlimit-user',
-                value: ''
-            });
+            var user = blocks.input({ type:'text', class: 'cp-setlimit-user'});
             var userBlock = blocks.labelledInput(Messages.admin_limitUser, user);
             var $key = $(user);
             var limit = blocks.input({
                 type: 'number',
                 min: 0,
                 value: 0,
-                id: 'cp-admin-setlimit-value'
+                class: 'cp-setlimit-limit'
             });
             var limitBlock = blocks.labelledInput(Messages.admin_limitMB, limit);
-            var note = blocks.input({
-                type: 'text',
-                id: 'cp-admin-setlimit-note'
-            });
+            var note = blocks.input({ type: 'text', class: 'cp-setlimit-note' });
             var noteBlock = blocks.labelledInput(Messages.admin_limitSetNote, note);
             var $note = $(note);
 
-            var remove = blocks.button('danger', '',Messages.fc_remove );
-            var set = blocks.button('primary', '',  Messages.admin_setlimitButton);
+            var remove = blocks.button('danger', '', Messages.fc_remove );
+            var set = blocks.button('primary', '', Messages.admin_setlimitButton);
 
             var nav = blocks.nav([set, remove]);
             var form = blocks.form([
@@ -2486,7 +2479,7 @@ define([
                         let attr = {'class': 'cp-strong'};
                         let entries = Object.keys(obj).map(function (k) {
                             return [
-                                k === 'total' ? k : '/' + k,
+                                {attr, content: (k === 'total' ? k : '/' + k)},
                                 obj[k]
                             ];
                         });
