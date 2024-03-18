@@ -298,6 +298,7 @@ define([
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
                 exp.$language.find('span.cp-language-text').text(name);
+                exp.$language.find('span.cp-language-text').prepend('<i class="fa fa-chevron-right"></i>');
             }
 
                 if (mode === "orgmode") {
@@ -343,6 +344,7 @@ define([
                     name = name ? Messages.themeButton + ' ('+theme+')' : Messages.themeButton;
                     $select.setValue(theme, name);
                     $select.find('span.cp-theme-text').text(name);
+                    $select.find('span.cp-theme-text').prepend('<i class="fa fa-chevron-right"></i>');
                 }
             };
         }());
@@ -374,6 +376,7 @@ define([
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle).hide();
             $block.prepend(h('span.cp-language-text', Messages.languageButton));
+            $block.find('span.cp-language-text').prepend('<i class="fa fa-chevron-right"></i>');
 
             var isHovering = false;
             var $aLanguages = $block.$menu.find('li');
