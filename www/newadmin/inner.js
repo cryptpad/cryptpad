@@ -111,9 +111,7 @@ define([
             'support' : {
                 icon : 'fa fa-life-ring',
                 content : [
-                    'support-list',
-                    'support-init',
-                    'support-priv',
+                    'support-setup',
                 ]
             },
             'broadcast' : {
@@ -2574,6 +2572,266 @@ define([
 
         };
 
+    // XXX DUPLICATE FROM ADMIN/INNER.JS
+    Messages.admin_supportSetupHint = "Create or update the current support keys.";
+    Messages.admin_supportSetupTitle = "Initialize support";
+    Messages.admin_supportEnabled = "Modern support system is enabled.";
+    Messages.admin_supportDisabled = "Modern support system is disabled.";
+    Messages.admin_supportInit = "Initialize support page on this instance";
+    Messages.admin_supportDelete = "Disable support";
+    Messages.admin_supportConfirm = "Are you sure? This will remove access to all current moderators and delete all existing tickets.";
+    Messages.admin_supportMembers = "Current support team";
+    Messages.admin_supportAdd = "Add a contact to the support team";
+    Messages.admin_supportRotateNotify = "Warning: new keys have been generated but an unenexpected error prevented the system to send them to the moderators. You may have to remove and re-add all the other moderators";
+        sidebar.addItem('support-setup', function (cb) {
+            let supportKey = ApiConfig.supportMailboxKey;
+            let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
+            let refresh = function () {};
+            let content = blocks.block();
+            const $div = $(content);
+            const redraw = function (moderatorsData) {
+                $div.empty();
+
+                const state = blocks.block();
+                const $state = $(state).appendTo($div);
+                const button = blocks.button('primary', '', Messages.admin_supportInit);
+                const $button = $(button).appendTo($div);
+                const delButton = blocks.button('danger', '', Messages.admin_supportDelete);
+                const $delButton = $(delButton).appendTo($div).hide();
+                const spinner = UI.makeSpinner($div);
+
+                const setState = function () {
+                    $state.html('');
+                    if (supportKey) {
+                        $button.hide();
+                        $delButton.show();
+                        return $state.append([
+                            blocks.icon('fa-check'),
+                            blocks.inline(Messages.admin_supportEnabled)
+                        ]);
+                    }
+                    $button.show();
+                    $state.append([
+                        blocks.icon('fa-times'),
+                        blocks.inline(Messages.admin_supportDisabled)
+                    ]);
+                };
+                setState();
+
+                Util.onClickEnter($delButton, function () {
+                    UI.confirm(Messages.admin_supportConfirm, function (yes) {
+                        if (!yes) { return; }
+                        // Send the decree, don't delete data locally, we just want to remove
+                        // the support UI for the clients
+                        spinner.spin();
+                        $delButton.attr('disabled', 'disabled');
+                        APP.supportModule.execCommand('DISABLE_SUPPORT', {}, (obj) => {
+                            $delButton.removeAttr('disabled');
+                            if (obj && obj.error) {
+                                UI.warn(Messages.error);
+                                console.error(obj.error);
+                                return void spinner.hide();
+                            }
+                            spinner.done();
+                            UI.log(Messages.saved);
+                            supportKey = undefined;
+                            refresh();
+                        });
+                    });
+                });
+
+                const getMyData = () => {
+                    let metadataMgr = common.getMetadataMgr();
+                    let priv = metadataMgr.getPrivateData();
+                    let user = metadataMgr.getUserData();
+                    return {
+                        name: user.name,
+                        edPublic: priv.edPublic,
+                        curvePublic: user.curvePublic,
+                        mailbox: user.notifications,
+                        profile: user.profile
+                    };
+                };
+                const getContactData = (curve) => {
+                    if (!curve) { return getMyData(); }
+                    let friends = common.getFriends(true);
+                    let f = friends[curve];
+                    return {
+                        name: f.displayName,
+                        edPublic: f.edPublic,
+                        curvePublic: f.curvePublic,
+                        mailbox: f.notifications,
+                        profile: f.profile
+                    };
+                };
+                const generateKey = function () {
+                    if (supportKey && !moderatorsData[edPublic]) {
+                        UI.alert("A support key already exists. You must be a moderator to generate a new one or delete the existing support data.");
+                        return;
+                    }
+                    spinner.spin();
+                    $button.attr('disabled', 'disabled');
+                    const onError = (waitFor, err, res) => {
+                        if (waitFor) { waitFor.abort(); }
+                        console.error(err, res);
+                        spinner.hide();
+                        UI.warn(Messages.error);
+                    };
+
+                    nThen((waitFor) => {
+                        // Add myself to moderator role if not already there
+                        let me = getContactData();
+                        if (moderatorsData[me.edPublic]) { return; }
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADD_MODERATOR',
+                            data: me
+                        }, waitFor((e, response) => {
+                            console.error(e, response);
+                        }));
+                    }).nThen((waitFor) => {
+                        // Copy chainpad doc and pin
+                        APP.supportModule.execCommand('ROTATE_KEYS', {}, waitFor((obj) => {
+                            $button.removeAttr('disabled');
+                            if (obj && obj.error) { return void onError(waitFor, obj.error); }
+                            if (obj && obj.success && obj.noNotify) {
+                                UI.alert(Messages.admin_supportRotateNotify);
+                                onError(waitFor, 'NOTIFY_ERROR', obj);
+                                return;
+                            }
+                            spinner.done();
+                            UI.log(Messages.saved);
+                        }));
+                    }).nThen(() => {
+                        refresh();
+                    });
+                };
+
+                const addModerator = (curve, _cb) => {
+                    let cb = Util.mkAsync(_cb);
+                    let userData = getContactData(curve);
+                    if (!userData) { return void cb('INVALID_USER'); }
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADD_MODERATOR',
+                        data: userData
+                    }, (e, response) => {
+                        if (e || (response && response.error)) {
+                            return void cb(e || response.error);
+                        }
+
+                        // User added to support team in database, send them the keys
+                        APP.supportModule.execCommand('ADD_MODERATOR', userData, cb);
+                    });
+                };
+                const removeModerator = (ed) => {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'REMOVE_MODERATOR',
+                        data: ed
+                    }, (e, response) => {
+                        if (e || (response && response.error)) {
+                            console.error(e || response.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        generateKey();
+                    });
+                };
+
+                Util.onClickEnter($button, function () {
+                    generateKey();
+                });
+
+                const drawModerators = () => {
+                    if (!supportKey) { return; }
+                    const members = {};
+                    const friends = Util.clone(common.getFriends(false));
+                    Object.keys(moderatorsData).forEach((ed) => {
+                        let m = moderatorsData[ed];
+                        members[m.curvePublic] = {
+                            displayName: m.name,
+                            edPublic: m.edPublic,
+                            profile: m.profile,
+                            curvePublic: m.curvePublic,
+                            notificatons: m.mailbox
+                        };
+                    });
+                    Object.keys(friends).forEach((curve) => {
+                        if (members[curve]) { delete friends[curve]; }
+                    });
+                    let currentList = UIElements.getUserGrid(Messages.admin_supportMembers, {
+                        common: common,
+                        list: true,
+                        large: true,
+                        noSelect: true,
+                        data: members,
+                        remove: (el) => {
+                            let ed = $(el).attr('data-ed');
+                            removeModerator(ed);
+                        }
+                    });
+                    let contactsGrid = UIElements.getUserGrid(Messages.admin_supportAdd, {
+                        common: common,
+                        list: true,
+                        large: true,
+                        data: friends
+                    }, function () {});
+
+                    let addBtn = blocks.button('primary', '', Messages.tag_add);
+                    Util.onClickEnter($(addBtn), () => {
+                        var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
+                        nThen((waitFor) => {
+                            $sel.each((i, el) => {
+                                let curve = $(el).attr('data-curve');
+                                if (!curve) {
+                                    console.error('Missing data on selected user', el);
+                                    return void UI.warn(Messages.error);
+                                }
+                                addModerator(curve, waitFor());
+                            });
+                        }).nThen(() => {
+                            refresh();
+                        });
+                    });
+                    // Only moderators can add new moderators
+                    if (!moderatorsData[edPublic]) {
+                        contactsGrid.div = undefined;
+                        addBtn = undefined;
+                    }
+
+                    const list = blocks.block([
+                        currentList.div,
+                        contactsGrid.div,
+                        blocks.nav([addBtn])
+                    ]);
+                    $div.append(list);
+                };
+                drawModerators();
+            };
+            refresh = () => {
+                let moderators;
+                nThen((waitFor) => {
+                    APP.supportModule.execCommand('GET_PRIVATE_KEY', {}, waitFor((obj) => {
+                        supportKey = obj && obj.curvePublic;
+                    }));
+                }).nThen((waitFor) => {
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'GET_MODERATORS',
+                        data: {}
+                    }, waitFor((e, response) => {
+                        if (e || response.error) {
+                            console.error(e || response.error);
+                            UI.warn(Messages.error);
+                            return;
+                        }
+                        moderators = response[0];
+                    }));
+                }).nThen(() => {
+                    redraw(moderators);
+                });
+            };
+            refresh();
+
+            cb(content);
+        });
+
         sidebar.addItem('maintenance', function(cb){
             var form = blocks.form([]);
             var refresh = getApi(function (Broadcast) {
@@ -3377,10 +3635,11 @@ define([
         // Add toolbar
         createToolbar();
 
+        APP.supportModule = common.makeUniversal('support');
+
         // Content
         andThen(common, APP.$container);
 
-        common.setTabTitle(Messages.settings_title);
         UI.removeLoadingScreen();
     });
 });

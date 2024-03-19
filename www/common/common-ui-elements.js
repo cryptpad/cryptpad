@@ -2037,7 +2037,7 @@ define([
 
         options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
-        if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
+        if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.includes(priv.edPublic)) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs'},
@@ -2048,6 +2048,19 @@ define([
                     } else {
                         Common.gotoURL(origin+'/admin/');
                     }
+                },
+            });
+        }
+        // Add moderation panel link if the user is a moderator and support is enabled
+        if (priv.edPublic && Config.supportMailboxKey && Array.isArray(Config.moderatorKeys) && Config.moderatorKeys.includes(priv.edPublic)) {
+            Messages.moderationPage = "Support panel"; // XXX already in moderation/inner.js
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-admin fa fa-comments-o'},
+                content: h('span', Messages.moderationPage || 'Support panel'),
+                action: function () {
+                    Common.openURL(origin+'/moderation/');
+                    return true;
                 },
             });
         }

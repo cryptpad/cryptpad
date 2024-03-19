@@ -44,14 +44,15 @@ define([
             ]);
         };
 
+        blocks.icon = (icon) => {
+            let prefix = icon.slice(0, icon.indexOf('-'));
+            let cls = `.${prefix}.${icon}`;
+            return h(`i${cls}`);
+        };
         blocks.button = (type, icon, text) => {
             type = type || 'primary';
-            if (icon && icon.indexOf('-') !== -1) {
-                let prefix = icon.slice(0, icon.indexOf('-'));
-                icon = `${prefix} ${icon}`;
-            }
             return h(`button.btn.btn-${type}`, [
-                icon ? h('i', { 'class': icon }) : undefined,
+                icon ? blocks.icon(icon) : undefined,
                 h('span', text)
             ]);
         };
@@ -81,7 +82,9 @@ define([
             return h('span', value);
         };
         blocks.block = (content, className) => {
-            return h('div', { class: className }, content);
+            let attr = {};
+            if (className) { attr.class = className; }
+            return h('div', attr, content);
         };
         blocks.paragraph = (content) => {
             return h('p', content);

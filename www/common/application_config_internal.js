@@ -215,6 +215,7 @@ define(function() {
         teams: 'fa-users',
         admin: 'fa-gears',
         settings: 'fa-gear',
+        moderation: 'fa-comments-o',
         profile: 'fa-user-circle',
         support: 'fa-life-ring',
         accounts: 'fa-ticket'

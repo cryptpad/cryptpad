@@ -2621,18 +2621,18 @@ Example
     };
 
     // XXX
-    Messages.admin_supportNewHint = "Create or update the current support keys.";
-    Messages.admin_supportNewTitle = "Initialize support";
-    Messages.admin_supportNewEnabled = "Modern support system is enabled.";
-    Messages.admin_supportNewDisabled = "Modern support system is disabled.";
-    Messages.admin_supportNewInit = "Initialize support page on this instance";
-    Messages.admin_supportNewDelete = "Disable support";
-    Messages.admin_supportNewConfirm = "Are you sure? This will remove access to all current moderators and delete all existing tickets.";
+    Messages.admin_supportSetupHint = "Create or update the current support keys.";
+    Messages.admin_supportSetupTitle = "Initialize support";
+    Messages.admin_supportEnabled = "Modern support system is enabled.";
+    Messages.admin_supportDisabled = "Modern support system is disabled.";
+    Messages.admin_supportInit = "Initialize support page on this instance";
+    Messages.admin_supportDelete = "Disable support";
+    Messages.admin_supportConfirm = "Are you sure? This will remove access to all current moderators and delete all existing tickets.";
     Messages.admin_supportMembers = "Current support team";
     Messages.admin_supportAdd = "Add a contact to the support team";
     Messages.admin_supportRotateNotify = "Warning: new keys have been generated but an unenexpected error prevented the system to send them to the moderators. You may have to remove and re-add all the other moderators";
-    create['support-new'] = function () {
-        const $block = makeBlock('support-new'); // Msg.admin_supportNewHint, .admin_supportNewTitle
+    create['support-setup'] = function () {
+        const $block = makeBlock('support-setup'); // Msg.admin_supportNewHint, .admin_supportNewTitle
         const $div = $(h('div')).appendTo($block);
         let supportKey = ApiConfig.supportMailboxKey;
         let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
@@ -2642,9 +2642,9 @@ Example
 
             const state = h('div');
             const $state = $(state).appendTo($div);
-            const button = h('button.btn.btn-primary', Messages.admin_supportNewInit);
+            const button = h('button.btn.btn-primary', Messages.admin_supportInit);
             const $button = $(button).appendTo($div);
-            const delButton = h('button.btn.btn-danger', Messages.admin_supportNewDelete);
+            const delButton = h('button.btn.btn-danger', Messages.admin_supportDelete);
             const $delButton = $(delButton).appendTo($div).hide();
             const spinner = UI.makeSpinner($div);
 
@@ -2655,24 +2655,19 @@ Example
                     $delButton.show();
                     return $state.append([
                         h('i.fa.fa-check'),
-                        h('span', Messages.admin_supportNewEnabled)
+                        h('span', Messages.admin_supportEnabled)
                     ]);
                 }
                 $button.show();
                 $state.append([
                     h('i.fa.fa-times'),
-                    h('span', Messages.admin_supportNewDisabled)
+                    h('span', Messages.admin_supportDisabled)
                 ]);
             };
             setState();
 
-
-            // XXX TODO add/remove access
-            // XXX when removing access, send new private keys to everybody who should keep access AND move chainpad doc to the new one
-            //     ==> we'll need to delete the old chainpad doc using admin commands
-
             Util.onClickEnter($delButton, function () {
-                UI.confirm(Messages.admin_supportNewConfirm, function (yes) {
+                UI.confirm(Messages.admin_supportConfirm, function (yes) {
                     if (!yes) { return; }
                     // Send the decree, don't delete data locally, we just want to remove
                     // the support UI for the clients

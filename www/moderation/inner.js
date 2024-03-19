@@ -54,6 +54,8 @@ define([
     };
 
     // XXX
+    Messages.moderationPage = "Support panel"; // XXX
+
     Messages.support_pending = "Pending tickets:";
     Messages.support_pending_tag = "Pending";
     Messages.support_active_tag = "Active";
@@ -954,7 +956,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             displayed: displayed,
             sfCommon: common,
             $container: APP.$toolbar,
-            pageTitle: Messages.supportPage,
+            pageTitle: Messages.moderationPage,
             metadataMgr: common.getMetadataMgr(),
         };
         APP.toolbar = Toolbar.create(configTb);
@@ -977,7 +979,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
-        common.setTabTitle(Messages.supportPage);
+        common.setTabTitle(Messages.moderationPage);
 
         if (!ApiConfig.supportMailboxKey) {
             return void UI.errorLoadingScreen(Messages.support_disabledTitle);
