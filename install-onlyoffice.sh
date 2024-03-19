@@ -110,7 +110,7 @@ ensure_oo_is_downloaded () {
 	ensure_command_available git
 
 	if ! [ -d "$BUILDS_DIR" ]; then
-		echo Downloading OnlyOffice...
+		echo "Downloading OnlyOffice..."
 		git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
 	fi
 }
@@ -134,9 +134,9 @@ install_version () {
 
 		echo "$COMMIT" > "$FULL_DIR"/.commit
 
-		echo "$DIR" updated
+		echo "$DIR updated"
 	else
-		echo "$DIR" was up to date
+		echo "$DIR was up to date"
 	fi
 
 
@@ -147,7 +147,7 @@ install_version () {
 
 ensure_command_available () {
 	if ! command -v "$1" &> /dev/null; then
-		echo "$1" needs to be installed to run this script
+		echo "$1 needs to be installed to run this script"
 		exit 1
 	fi
 }
