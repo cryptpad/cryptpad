@@ -2700,84 +2700,76 @@ define([
         });
 
         sidebar.addItem('survey', function(cb){
-            var form = blocks.form([]);
-            var $form = $(form);
+            var button = blocks.button('primary', '', Messages.admin_surveyButton);
+            var $button = $(button);
+            let nav = blocks.nav([button]);
+            let active = blocks.block([], '');
+            let $active = $(active);
+
+            var input = blocks.input({
+                type: 'text',
+                id: 'cp-admin-survey-url-input'
+            });
+            var labelledInput = blocks.labelledInput(Messages.broadcast_surveyURL, input);
+            var $input = $(input);
+
+            let send = function () {};
             var refresh = getApi(function (Broadcast) {
-                var button = blocks.button('primary', '', Messages.admin_surveyButton);
-                let nav = blocks.nav([button]);
                 var removeButton = blocks.button('danger', '', Messages.admin_surveyCancel);
-                var active;
-                var $button = $(button);
-                if (Broadcast && Broadcast.surveyURL) {
-                    var a = blocks.link(Messages.admin_surveyActive, Broadcast.surveyURL);
-                    $(a).click(function (e) {
-                        e.preventDefault();
-                        common.openUnsafeURL(Broadcast.surveyURL);
-                    });
-                    active = blocks.nav([a, removeButton]);
-                }
-
-                var input = blocks.input({
-                    type: 'text',
-                    id: 'cp-admin-survey-url-input'
-                });
-                var labelledInput = blocks.labelledInput(Messages.broadcast_surveyURL, input);
-                var $input = $(input);
-
-                // Extract form data
-                var getData = function () {
-                    var url = $input.val();
-                    if (!Util.isValidURL(url)) {
-                        console.error('Invalid URL', url);
-                        return false;
-                    }
-                    return url;
-                };
-
-                var send = function (data) {
-                    $button.prop('disabled', 'disabled');
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['SET_SURVEY_URL', [data]]
-                    }, function (e, response) {
-                        if (e || response.error) {
-                            $button.prop('disabled', '');
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                            return;
-                        }
-                        // Maintenance applied, send notification
-                        common.mailbox.sendTo('BROADCAST_SURVEY', {
-                            url: data
-                        }, {}, function () {
-                            checkLastBroadcastHash(function () {
-                                setTimeout(refresh, 300);
-                            });
-                        });
-                    });
-
-                };
-
-                Util.onClickEnter($(button), function () {
-                    var data = getData();
-                    if (data === false) { return void UI.warn(Messages.error); }
-                    send(data);
-                });
                 UI.confirmButton(removeButton, {
                     classes: 'btn-danger',
                 }, function () {
                     send("");
                 });
 
-                $form.empty().append([
-                    active,
-                    labelledInput,
-                    nav
-                ]);
-
+                $active.empty();
+                if (Broadcast && Broadcast.surveyURL) {
+                    var a = blocks.link(Messages.admin_surveyActive, Broadcast.surveyURL);
+                    $(a).click(function (e) {
+                        e.preventDefault();
+                        common.openUnsafeURL(Broadcast.surveyURL);
+                    });
+                    $active.append(blocks.block([a, removeButton]));
+                }
             });
-
             refresh();
+
+            send = function (data) {
+                $button.prop('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_SURVEY_URL', [data]]
+                }, function (e, response) {
+                    $button.prop('disabled', '');
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return;
+                    }
+                    // Maintenance applied, send notification
+                    common.mailbox.sendTo('BROADCAST_SURVEY', {
+                        url: data
+                    }, {}, function () {
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
+                    });
+                });
+            };
+            // Extract form data
+            var getData = function () {
+                var url = $input.val();
+                if (!Util.isValidURL(url)) {
+                    console.error('Invalid URL', url);
+                    return false;
+                }
+                return url;
+            };
+            Util.onClickEnter($(button), function () {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+                send(data);
+            });
 
             common.makeUniversal('broadcast', {
                 onEvent: function (obj) {
@@ -2787,6 +2779,7 @@ define([
                 }
             });
 
+            var form = blocks.form([active, labelledInput], nav);
             cb(form);
         });
 
