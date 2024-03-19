@@ -1358,29 +1358,22 @@ define([
         });
 
         sidebar.addItem('setlimit', function(cb){
-            var user = blocks.input({
-                type:'text',
-                id: 'cp-admin-setlimit-user',
-                value: ''
-            });
+            var user = blocks.input({ type:'text', class: 'cp-setlimit-user'});
             var userBlock = blocks.labelledInput(Messages.admin_limitUser, user);
             var $key = $(user);
             var limit = blocks.input({
                 type: 'number',
                 min: 0,
                 value: 0,
-                id: 'cp-admin-setlimit-value'
+                class: 'cp-setlimit-limit'
             });
             var limitBlock = blocks.labelledInput(Messages.admin_limitMB, limit);
-            var note = blocks.input({
-                type: 'text',
-                id: 'cp-admin-setlimit-note'
-            });
+            var note = blocks.input({ type: 'text', class: 'cp-setlimit-note' });
             var noteBlock = blocks.labelledInput(Messages.admin_limitSetNote, note);
             var $note = $(note);
 
-            var remove = blocks.button('danger', '',Messages.fc_remove );
-            var set = blocks.button('primary', '',  Messages.admin_setlimitButton);
+            var remove = blocks.button('danger', '', Messages.fc_remove );
+            var set = blocks.button('primary', '', Messages.admin_setlimitButton);
 
             var nav = blocks.nav([set, remove]);
             var form = blocks.form([
@@ -1992,10 +1985,9 @@ define([
             var nav = blocks.nav([btn]);
             var form = blocks.form([
                 input,
-                passwordContainer,
-                results
+                passwordContainer
             ], nav);
-
+            form.append(results);
             $passwordContainer.hide();
             disable($btn);
 
@@ -2153,9 +2145,9 @@ define([
             var results = blocks.inline([]);
             var nav = blocks.nav([btn]);
             var form = blocks.form([
-                input,
-                results
+                input
             ], nav);
+            form.append(results);
 
             var pending = false;
             var getInputState = function () {
@@ -2278,9 +2270,9 @@ define([
 
             var nav = blocks.nav([btn]);
             var form = blocks.form([
-                textarea,
-                results
+                textarea
             ], nav);
+            form.append(results);
             disable($btn);
 
             var pending = false;
@@ -2416,6 +2408,7 @@ define([
                         pre.append(String(e || data.error));
                         return;
                     }
+                    pre.innerText='';
                     pre.append(String(data));
                 });
             };
@@ -2441,23 +2434,12 @@ define([
             cb(pre);
         });
 
-        function updateUnorderedList(ul, entries) {
-            ul.innerHTML = '';
-            entries.forEach(entry => {
-                const li = document.createElement('li');
-                const strong = document.createElement('strong');
-                strong.textContent = entry[0] + ': ' + entry[1];
-                li.appendChild(strong);
-                ul.appendChild(li);
-            });
-        }
-
         sidebar.addItem('disk-usage', function(cb){
             var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
             var $button = $(button);
             var called = false;
             var nav = blocks.nav([button]);
-            var content = blocks.unorderedList([]);
+            var content = blocks.table([], []);
             var form = blocks.form([
                 content
             ], nav);
@@ -2487,11 +2469,11 @@ define([
                         let attr = {'class': 'cp-strong'};
                         let entries = Object.keys(obj).map(function (k) {
                             return [
-                                {attr, content:(k === 'total' ? k : '/' + k)},
+                                {attr, content: (k === 'total' ? k : '/' + k)},
                                 obj[k]
                             ];
                         });
-                        updateUnorderedList(content, entries);
+                        content.updateContent(entries);
                     });
                 });
             });
@@ -2594,11 +2576,10 @@ define([
 
         sidebar.addItem('maintenance', function(cb){
             var form = blocks.form([]);
-
             var refresh = getApi(function (Broadcast) {
                 var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
                 var $button = $(button);
-                var removeButton = blocks.button('btn-danger', '', Messages.admin_maintenanceCancel );
+                var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel );
                 var active;
 
                 if (Broadcast && Broadcast.maintenance) {
@@ -2614,14 +2595,14 @@ define([
                     }
                 }
                 var start = blocks.input({
-                    type: 'text', // Change the input type to text
+                    type: 'date',
                     id: 'cp-admin-start-input',
-                    class: 'flatpickr-input' // Add a class for Flatpickr initialization
+                    class: 'flatpickr-input' 
                 });
                 var end = blocks.input({
-                    type: 'text', // Change the input type to text
+                    type: 'date',
                     id: 'cp-admin-end-input',
-                    class: 'flatpickr-input' // Add a class for Flatpickr initialization
+                    class: 'flatpickr-input'
                 });
                 var $start = $(start);
                 var $end = $(end);
@@ -2719,82 +2700,76 @@ define([
         });
 
         sidebar.addItem('survey', function(cb){
-            var button = blocks.button('primary', '',Messages.admin_surveyButton);
+            var button = blocks.button('primary', '', Messages.admin_surveyButton);
             var $button = $(button);
-            var removeButton = blocks.button('btn-danger', '',Messages.admin_surveyCancel );
-            var active;
-            var nav = blocks.nav([button]);
+            let nav = blocks.nav([button]);
+            let active = blocks.block([], '');
+            let $active = $(active);
 
             var input = blocks.input({
-                type:'url'
+                type: 'text',
+                id: 'cp-admin-survey-url-input'
             });
+            var labelledInput = blocks.labelledInput(Messages.broadcast_surveyURL, input);
             var $input = $(input);
-            var label = blocks.labelledInput(Messages.broadcast_surveyURL, input);
 
-            var form = blocks.form([
-                active,
-                label
-            ], nav);
-
+            let send = function () {};
             var refresh = getApi(function (Broadcast) {
-                if (Broadcast && Broadcast.surveyURL) {
-                    let a = blocks.link(Messages.admin_surveyActive,
-                                        Broadcast.surveyURL, false);
-                    active = blocks.block([
-                        blocks.paragraph(a),
-                        removeButton
-                    ], 'cp-broadcast-active');
-
-                }
-
-                // Extract form data
-                var getData = function () {
-                    var url = $input.val();
-                    if (!Util.isValidURL(url)) {
-                        console.error('Invalid URL', url);
-                        return false;
-                    }
-                    return url;
-                };
-
-                var send = function (data) {
-                    $button.prop('disabled', 'disabled');
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['SET_SURVEY_URL', [data]]
-                    }, function (e, response) {
-                        if (e || response.error) {
-                            $button.prop('disabled', '');
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                            return;
-                        }
-                        // Maintenance applied, send notification
-                        common.mailbox.sendTo('BROADCAST_SURVEY', {
-                            url: data
-                        }, {}, function () {
-                            checkLastBroadcastHash(function () {
-                                setTimeout(refresh, 300);
-                            });
-                        });
-                    });
-
-                };
-
-                Util.onClickEnter($(button), function () {
-                    var data = getData();
-                    if (data === false) { return void UI.warn(Messages.error); }
-                    send(data);
-                });
+                var removeButton = blocks.button('danger', '', Messages.admin_surveyCancel);
                 UI.confirmButton(removeButton, {
                     classes: 'btn-danger',
                 }, function () {
                     send("");
                 });
 
+                $active.empty();
+                if (Broadcast && Broadcast.surveyURL) {
+                    var a = blocks.link(Messages.admin_surveyActive, Broadcast.surveyURL);
+                    $(a).click(function (e) {
+                        e.preventDefault();
+                        common.openUnsafeURL(Broadcast.surveyURL);
+                    });
+                    $active.append(blocks.block([a, removeButton]));
+                }
             });
-
             refresh();
+
+            send = function (data) {
+                $button.prop('disabled', 'disabled');
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_SURVEY_URL', [data]]
+                }, function (e, response) {
+                    $button.prop('disabled', '');
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return;
+                    }
+                    // Maintenance applied, send notification
+                    common.mailbox.sendTo('BROADCAST_SURVEY', {
+                        url: data
+                    }, {}, function () {
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
+                    });
+                });
+            };
+            // Extract form data
+            var getData = function () {
+                var url = $input.val();
+                if (!Util.isValidURL(url)) {
+                    console.error('Invalid URL', url);
+                    return false;
+                }
+                return url;
+            };
+            Util.onClickEnter($(button), function () {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+                send(data);
+            });
 
             common.makeUniversal('broadcast', {
                 onEvent: function (obj) {
@@ -2804,6 +2779,7 @@ define([
                 }
             });
 
+            var form = blocks.form([active, labelledInput], nav);
             cb(form);
         });
 
@@ -2815,8 +2791,7 @@ define([
                 var $button = $(button);
                 var removeButton = blocks.button('danger', '', Messages.admin_broadcastCancel);
                 var activeContent = Messages.admin_broadcastActive;
-                var active = blocks.block( blocks.inline(activeContent), 'cp-broadcast-active'
-                );
+                var active = blocks.block(blocks.inline(activeContent), 'cp-broadcast-active');
                 var $active = $(active);
                 var activeUid;
                 var deleted = [];

@@ -23,7 +23,6 @@ define([
 ) {
     const Sidebar = {};
 
-
     Sidebar.create = function (common, app, $container) {
         const $leftside = $(h('div#cp-sidebarlayout-leftside')).appendTo($container);
         const $rightside = $(h('div#cp-sidebarlayout-rightside')).appendTo($container);
@@ -38,11 +37,13 @@ define([
             let uid = Util.uid();
             let id = `cp-${app}-item-${uid}`;
             input.setAttribute('id', id);
-            return [
-                h('label', { for: id }, label),
-                inputBlock || input,
-            ];
+            let labelElement = h('label', { for: id }, label);
+            return h('div', { class: 'cp-labelled-input' }, [
+                labelElement,
+                inputBlock || input
+            ]);
         };
+
         blocks.button = (type, icon, text) => {
             type = type || 'primary';
             if (icon && icon.indexOf('-') !== -1) {
@@ -107,10 +108,16 @@ define([
 
         blocks.unorderedList = function (entries) {
             const ul = h('ul');
-            entries.forEach(entry => {
-                const li = h('li', [h('strong',  entry)]);
-                ul.appendChild(li);
-            });
+
+            ul.updateContent = (entries) => {
+                ul.innerHTML = '';
+                entries.forEach(entry => {
+                    const li = h('li', entry);
+                    ul.appendChild(li);
+                });
+            };
+            ul.updateContent(entries);
+
             return ul;
         };
 
