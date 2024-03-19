@@ -2408,6 +2408,7 @@ define([
                         pre.append(String(e || data.error));
                         return;
                     }
+                    pre.innerText='';
                     pre.append(String(data));
                 });
             };
@@ -2433,23 +2434,12 @@ define([
             cb(pre);
         });
 
-        function updateUnorderedList(ul, entries) {
-            ul.innerHTML = '';
-            entries.forEach(entry => {
-                const li = document.createElement('li');
-                const strong = document.createElement('strong');
-                strong.textContent = entry[0] + ': ' + entry[1];
-                li.appendChild(strong);
-                ul.appendChild(li);
-            });
-        }
-
         sidebar.addItem('disk-usage', function(cb){
             var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
             var $button = $(button);
             var called = false;
             var nav = blocks.nav([button]);
-            var content = blocks.unorderedList([]);
+            var content = blocks.table([], []);
             var form = blocks.form([
                 content
             ], nav);
@@ -2483,7 +2473,7 @@ define([
                                 obj[k]
                             ];
                         });
-                        updateUnorderedList(content, entries);
+                        content.updateContent(entries);
                     });
                 });
             });
@@ -2711,29 +2701,27 @@ define([
 
         sidebar.addItem('survey', function(cb){
             var form = blocks.form([]);
+            var $form = $(form);
             var refresh = getApi(function (Broadcast) {
                 var button = blocks.button('primary', '', Messages.admin_surveyButton);
-                var $button = $(button);
+                let nav = blocks.nav([button]);
                 var removeButton = blocks.button('danger', '', Messages.admin_surveyCancel);
                 var active;
-
+                var $button = $(button);
                 if (Broadcast && Broadcast.surveyURL) {
-                    var a = h('a', {href: Broadcast.surveyURL}, Messages.admin_surveyActive);
+                    var a = blocks.link(Messages.admin_surveyActive, Broadcast.surveyURL);
                     $(a).click(function (e) {
                         e.preventDefault();
                         common.openUnsafeURL(Broadcast.surveyURL);
                     });
-                    active = h('div.cp-broadcast-active', [
-                        h('p', a),
-                        removeButton
-                    ]);
+                    active = blocks.nav([a, removeButton]);
                 }
 
                 var input = blocks.input({
                     type: 'text',
                     id: 'cp-admin-survey-url-input'
                 });
-                var label = h('label', { for: 'cp-admin-survey-url-input' }, Messages.broadcast_surveyURL);
+                var labelledInput = blocks.labelledInput(Messages.broadcast_surveyURL, input);
                 var $input = $(input);
 
                 // Extract form data
@@ -2781,14 +2769,10 @@ define([
                     send("");
                 });
 
-                $(form).empty().append([
+                $form.empty().append([
                     active,
-                    label,
-                    input,
-                    h('br'),
-                    h('div.cp-broadcast-form-submit', [
-                        button
-                    ])
+                    labelledInput,
+                    nav
                 ]);
 
             });
@@ -2814,8 +2798,7 @@ define([
                 var $button = $(button);
                 var removeButton = blocks.button('danger', '', Messages.admin_broadcastCancel);
                 var activeContent = Messages.admin_broadcastActive;
-                var active = blocks.block( blocks.inline(activeContent), 'cp-broadcast-active'
-                );
+                var active = blocks.block(blocks.inline(activeContent), 'cp-broadcast-active');
                 var $active = $(active);
                 var activeUid;
                 var deleted = [];
