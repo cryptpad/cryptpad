@@ -9,8 +9,9 @@ const require = define;
 */
 define([
     '/api/config',
+    '/api/instance',
     '/components/nthen/index.js'
-], function (Config, nThen) { /*::});module.exports = (function() {
+], function (Config, Instance, nThen) { /*::});module.exports = (function() {
     const Config = (undefined:any);
     const nThen = (undefined:any);
     */
@@ -152,6 +153,10 @@ define([
                                     '@cryptpad_text_col: #FF0000;'
                                 ].join('\n');
                                 text += '\n'+custom;
+                            }
+                            if (Instance && Instance.color) {
+                                let pattern = /_color_brand: ([0-9a-zA-Z#]+);/gm;
+                                text = text.replace(pattern, `_color_brand: ${Instance.color};`);
                             }
                         }
                         cached.res = [ text, lastModified ];

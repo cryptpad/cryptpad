@@ -19,6 +19,7 @@ define([
     'json.sortify',
     '/customize/application_config.js',
     '/api/config',
+    '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/common/hyperscript.js',
     'css!/lib/datepicker/flatpickr.min.css',
@@ -42,6 +43,7 @@ define([
     Sortify,
     AppConfig,
     ApiConfig,
+    Instance,
     Flatpickr
 ) {
     var APP = window.APP = {};
@@ -760,8 +762,15 @@ define([
         Messages.admin_logoHint = "Max 200KB, svg, png or jpg";
         Messages.admin_logoButton = "Upload new";
         Messages.admin_logoRemoveButton = "Restore default";
+        Messages.admin_colorTitle = "Main color";
+        Messages.admin_colorHint = "Change the main color of your CryptPad instance. Please pick a color with good contrast with the rest of CryptPad.";
+        Messages.admin_colorCurrent = "Current main color";
+        Messages.admin_colorChange = "Change color";
+        Messages.admin_colorPick = "Pick a color";
+        Messages.admin_colorPreview = "Preview color";
+
         sidebar.addItem('logo', (cb) => {
-            // Msg.admin_emailHint, Msg.admin_emailTitle
+            // Msg.admin_logoHint, Msg.admin_logoTitle
 
             let input = blocks.input({
                 type: 'file',
@@ -838,6 +847,84 @@ define([
             });
 
             cb(form);
+        });
+
+        sidebar.addItem('color', cb => {
+            let input = blocks.input({
+                type: 'color',
+                value: (Instance && Instance.color) || '#0087FF'
+            });
+            let label = blocks.labelledInput(Messages.admin_colorPick, input);
+            let current = blocks.block([], 'cp-admin-color-current');
+            let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
+            let preview = blocks.block([
+                blocks.block([
+                    blocks.link('CryptPad', '/admin/#customize')
+                ]),
+                blocks.nav([
+                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save),
+                ])
+            ], 'cp-admin-color-preview');
+            let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
+            let $preview = $(preview);
+
+            let remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+            let $remove = $(remove);
+
+            let setColor = (color, done) => {
+                sframeCommand('CHANGE_COLOR', {color}, (err, response) => {
+                    if (err) {
+                        UI.warn(Messages.error);
+                        console.error(err, response);
+                        done(false);
+                        return;
+                    }
+                    done(true);
+                    flushCacheNotice();
+                    UI.log(Messages.saved);
+                });
+            };
+
+            let btn = blocks.activeButton('primary', '',
+              Messages.admin_colorChange, (done) => {
+                let color = $input.val();
+                setColor(color, done);
+            });
+
+            let $input = $(input).on('change', () => {
+                require(['/lib/less.min.js'], (Less) => {
+                    let color = $input.val();
+                    let lColor = Less.color(color.slice(1));
+                    let lighten = Less.functions.functionRegistry._data.lighten;
+                    let lightColor = lighten(lColor, {value:30}).toRGB();
+                    $preview.find('.btn-primary').css({
+                        'background-color': color
+                    });
+                    $preview.find('.btn-secondary').css({
+                        'border-color': lightColor,
+                        'color': lightColor,
+                    });
+                    $preview.find('a').css({
+                        'color': lightColor,
+                    });
+                });
+            });
+
+            UI.confirmButton($remove, {
+                classes: 'btn-danger',
+                multiple: true
+            }, function () {
+                $remove.attr('disabled', 'disabled');
+                setColor('', () => {});
+            });
+
+            let form = blocks.form([
+                labelCurrent,
+                label
+            ], blocks.nav([btn, remove, btn.spinner]));
+
+            cb([form, labelPreview]);
         });
 
         sidebar.addItem('registration', function(cb){
