@@ -91,10 +91,71 @@
                 pre {
                     color: @cryptpad_text_col;
                 }
-                label:not(.noTitle), .cp-default-label {
-                    display: block;
-                    font-weight: bold;
-                    margin-bottom: 0;
+
+                &:not([data-item]) { // Old sidebar-layout blocks
+                    label:not(.noTitle), .cp-default-label {
+                        display: block;
+                        font-weight: bold;
+                        margin-bottom: 0;
+                    }
+                }
+                &[data-item] { // New sidebar-layout blocks
+                    label.cp-item-label, .cp-default-label {
+                        display: block;
+                        font-weight: bold;
+                        margin-bottom: 0;
+                    }
+                    .cp-sidebar-form {
+                        display: flex;
+                        flex-flow: column;
+                        align-items: baseline;
+                    }
+                    input {
+                        max-width: 25rem;
+                    }
+                    nav {
+                        display: flex;
+                        align-items: baseline;
+                        .btn.btn-primary {
+                            margin: 5px 0.5rem 0 0;
+                        }
+                    }
+                    .cp-sidebar-bigger-alert {
+                            font-size: 16px;
+                        }
+                    label {
+                        margin-bottom: 0;
+                        margin-top: 0.5rem;
+                    }
+                    th {
+                        max-width: 60vw;
+                        border: 1px solid #777;
+                        padding: 7px;
+                    }
+                    td {
+                        padding: 0.3rem;
+                        margin-right: 2px;
+                    }
+                    .cp-checkmark {
+                        padding: 0.5rem;
+                    }
+                    .cp-broadcast-container {
+                        display: flex;
+                        flex-flow: column;
+                    }
+                    .cp-broadcast-lang {
+                        order: 4;
+                        margin: 30px;
+                        margin-bottom: 0;
+                        display: flex;
+                        flex-flow: column;
+                        align-items: baseline;
+                    }
+                    table {
+                        .cp-strong {
+                            font-weight: bold;
+                        }
+                    }
                 }
                 .cp-sidebarlayout-description {
                     display: block;
