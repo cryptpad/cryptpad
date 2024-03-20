@@ -4,17 +4,26 @@
 
 # ----> SOURCE CODE
 # ---> CryptPad
-blob
-block
-config/config.js
-config/sso.js
-customize
-data
 datastore
-www/accounts
+tasks
 www/components/*
-lib/plugins/*
-!lib/plugins/README.md
+www/bower_components/*
+www/accounts
+/config.js
+customization
+*.db
+/customize/
+customize
+messages.log
+www/scratch
+data
+pins/
+blob/
+block/
+blobstage/
+block/
+logs/
+privileged.conf
 
 # ---> Node
 # Logs
