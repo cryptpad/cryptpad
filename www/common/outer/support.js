@@ -696,7 +696,17 @@ define([
             let ticket = t.active[chan] || t.pending[chan] || t.closed[chan];
             ticket.tags = data.tags || [];
             Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
-                cb({done:true});
+                let allTags = [];
+                ['active', 'pending', 'closed'].forEach(cat => {
+                    let tickets = t[cat];
+                    Object.keys(tickets).forEach(id => {
+                        let ticket = tickets[id];
+                        (ticket.tags || []).forEach(tag => {
+                            if (!allTags.includes(tag)) { allTags.push(tag); }
+                        });
+                    });
+                });
+                cb({done:true, allTags});
             });
         });
     };

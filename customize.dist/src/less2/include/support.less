@@ -44,12 +44,13 @@
             padding: 10px;
         }
     }
+    @ticket-padding: 10px;
     .cp-support-container {
         .cp-support-list-ticket {
             display: flex;
             flex-flow: column;
             background-color: @ticket-bg;
-            padding: 10px;
+            padding: @ticket-padding;
             width: 1200px;
             max-width: 90%;
             margin: 5px auto;
@@ -76,8 +77,20 @@
                 display: none;
             }
             &.cp-not-loaded {
+                cursor: pointer;
+                .cp-support-ticket-tags {
+                    cursor: default;
+                }
                 .cp-support-list-actions {
                     display: none;
+                }
+            }
+            &:not(.cp-not-loaded) {
+                .cp-support-ticket-header {
+                    margin-bottom: @ticket-padding;
+                }
+                .cp-support-ticket-tags {
+                    margin-bottom: @ticket-padding;
                 }
             }
             .cp-support-ispremium {

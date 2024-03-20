@@ -16,7 +16,7 @@ define([
 ], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages) {
 
     Messages.support_team = "The Support Team"; // XXX
-    Messages.support_answerAs = "Answer as <b>{0}</b>"; // XXX
+    Messages.support_answerAs = "Answering as <b>{0}</b>"; // XXX
     Messages.support_movePending = "Move to pending";
     Messages.support_moveActive = "Move to active";
     Messages.support_copyUserData = "Copy user data";
@@ -407,6 +407,7 @@ define([
         var adminOpen;
         var ticket;
         let tagsContainer, tagsList;
+        let visible = false;
         if (ctx.isAdmin) {
             // Admin custom style
             adminClasses = `.cp-not-loaded`;
@@ -428,7 +429,6 @@ define([
             // Load & open ticket
             let show = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
             let $show = $(show);
-            let visible = false;
             adminOpen = function (force, cb) {
                 var $ticket = $(ticket);
                 $show.prop('disabled', 'disabled');
@@ -469,7 +469,7 @@ define([
                     title: Messages.fm_tagsName
                 });
                 if (onTag.readOnly) { tag = undefined; }
-                tagsContainer = h('div');
+                tagsContainer = h('div.cp-support-ticket-tags');
                 tagsList = h('div.cp-tags-list');
                 let $list = $(tagsList);
                 let redrawTags = (tags) => {
@@ -504,6 +504,9 @@ define([
                 _field.tokenfield.on('tokenfield:editedoken', commitTags);
                 _field.tokenfield.on('tokenfield:removedtoken', commitTags);
 
+                $(tagsContainer).click(e => {
+                    e.stopPropagation();
+                });
                 Util.onClickEnter($(tag), () => {
                     $list.toggle();
                     $tags.toggle();
@@ -536,6 +539,16 @@ define([
 
         // Add button handlers
         var $ticket = $(ticket);
+
+        if (adminOpen) {
+            $ticket.click(function (e) {
+                if ($(e.target).is('button')) { return; }
+                e.preventDefault();
+                e.stopPropagation();
+                if (!visible) { adminOpen(true); }
+            });
+        }
+
         UI.confirmButton(close, {
             classes: 'btn-danger'
         }, function() {

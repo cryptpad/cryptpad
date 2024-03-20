@@ -56,6 +56,12 @@ define([
     // XXX
     Messages.moderationPage = "Support panel"; // XXX
 
+    Messages.support_cat_open = "Inbox";
+    Messages.support_cat_closed = "Closed";
+    Messages.support_cat_search = "Search";
+    Messages.support_cat_settings = "Settings";
+    Messages.support_cat_legacy = "Legacy";
+
     Messages.support_pending = "Pending tickets:";
     Messages.support_pending_tag = "Pending";
     Messages.support_active_tag = "Active";
@@ -271,13 +277,8 @@ define([
                             console.error(obj && obj.error);
                             return void UI.warn(Messages.error);
                         }
-                        // XXX check deleted tags
-                        (tags || []).forEach(tag => {
-                            if (!APP.allTags.includes(tag)) { APP.allTags.push(tag); }
-                        });
+                        if (obj.allTags) { APP.allTags = obj.allTags; }
                         events.REFRESH_TAGS.fire();
-                        //UI.log(Messags.saved);
-                        //refreshAll();
                     });
                 };
                 onTag.getAllTags = () => {
@@ -386,23 +387,24 @@ define([
         // Make sidebar layout
         const categories = {
             'open': {
-                icon: undefined,
+                icon: 'fa fa-inbox',
                 content: [
-                    'privacy',
+                    'refresh',
                     'filter',
                     'active-list',
                     'pending-list',
                 ]
             },
             'closed': {
-                icon: undefined,
+                icon: 'fa fa-archive',
                 content: [
+                    'refresh',
                     'filter',
                     'closed-list'
                 ]
             },
             'search': {
-                icon: undefined,
+                icon: 'fa fa-search',
                 content: [
                     'filter',
                     'search'
@@ -414,20 +416,8 @@ define([
                     });
                 }
             },
-            'settings': {
-                icon: undefined,
-                content: [
-                    'notifications',
-                    'recorded'
-                ],
-                onOpen: () => {
-                    setTimeout(() => {
-                        $('.cp-support-recorded-id').focus();
-                    });
-                }
-            },
-            'ticket': {
-                icon: undefined,
+            'new': {
+                icon: 'fa fa-envelope',
                 content: [
                     'open-ticket'
                 ],
@@ -439,18 +429,36 @@ define([
                 }
             },
             'legacy': {
-                icon: undefined,
+                icon: 'fa fa-server',
                 content: [
                     'legacy'
                 ]
             },
-            'refresh': {
-                icon: undefined,
-                onClick: () => { refreshAll(); }
-            }
+            'settings': {
+                icon: 'fa fa-cogs',
+                content: [
+                    'privacy',
+                    'notifications',
+                    'recorded'
+                ],
+                onOpen: () => {
+                    setTimeout(() => {
+                        $('.cp-support-recorded-id').focus();
+                    });
+                }
+            },
         };
 
         if (!APP.privateKey) { delete categories.legacy; }
+
+        sidebar.addItem('refresh', cb => {
+            let button = blocks.button('secondary', 'fa-refresh', Messages.oo_refresh);
+            Util.onClickEnter($(button), () => {
+                refreshAll();
+            });
+            let content = blocks.block([button]);
+            cb(content);
+        }, { noTitle: true, noHint: true });
 
         sidebar.addCheckboxItem({
             key: 'privacy',
@@ -604,7 +612,17 @@ define([
                 });
 
                 var redrawList = function (allTags) {
-                    if (!Array.isArray(allTags)) { return; }
+                    if (!Array.isArray(allTags) || !allTags.length) {
+                        setTimeout(() => {
+                            $list.closest('.cp-sidebarlayout-element')
+                                .toggleClass('cp-sidebar-force-hide', true);
+                        });
+                        return;
+                    }
+                    setTimeout(() => {
+                        $list.closest('.cp-sidebarlayout-element')
+                            .toggleClass('cp-sidebar-force-hide', false);
+                    });
                     $list.empty();
                     $list.removeClass('cp-empty');
                     if (!allTags.length) {
