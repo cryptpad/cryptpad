@@ -5,11 +5,13 @@
 # ----> SOURCE CODE
 # ---> CryptPad
 blob
+block
 config/config.js
 config/sso.js
 customize
 data
 datastore
+www/accounts
 www/components/*
 lib/plugins/*
 !lib/plugins/README.md
