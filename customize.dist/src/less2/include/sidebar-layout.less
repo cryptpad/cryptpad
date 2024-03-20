@@ -179,6 +179,10 @@
                             margin: 0 !important;
                         }
                     }
+                    a {
+                        color: @cryptpad_color_link;
+                        text-decoration: underline;
+                    }
                     table {
                         .cp-strong {
                             font-weight: bold;
@@ -209,6 +213,11 @@
                 min-width: 40px;
                 height: 40px;
                 box-sizing: border-box;
+            }
+            [type="file"] { // XXX hack, to fix with sidebar layout refactoring
+                height: auto;
+                box-sizing: border-box;
+                padding: 6.5px;
             }
             .cp-sidebarlayout-input-block {
                 display: inline-flex;

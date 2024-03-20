@@ -19,6 +19,7 @@ define([
     'json.sortify',
     '/customize/application_config.js',
     '/api/config',
+    '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/common/hyperscript.js',
     'css!/lib/datepicker/flatpickr.min.css',
@@ -42,6 +43,7 @@ define([
     Sortify,
     AppConfig,
     ApiConfig,
+    Instance,
     Flatpickr
 ) {
     var APP = window.APP = {};
@@ -68,6 +70,13 @@ define([
                     'description',
                     'jurisdiction',
                     'notice',
+                ]
+            },
+            'customize': {
+                icon: 'fa fa-paint-brush',
+                content: [
+                    'logo',
+                    'color'
                 ]
             },
             'users' : {
@@ -743,6 +752,177 @@ define([
             ], nav);
 
             cb(form);
+        });
+
+        // XXX
+        Messages.admin_cat_customize = "Customize";
+        Messages.admin_logoTitle = "Upload Logo";
+        Messages.admin_logoHint = "Max 200KB, svg, png or jpg";
+        Messages.admin_logoButton = "Upload new";
+        Messages.admin_logoRemoveButton = "Restore default";
+        Messages.admin_colorTitle = "Main color";
+        Messages.admin_colorHint = "Change the main color of your CryptPad instance. Please pick a color with good contrast with the rest of CryptPad.";
+        Messages.admin_colorCurrent = "Current main color";
+        Messages.admin_colorChange = "Change color";
+        Messages.admin_colorPick = "Pick a color";
+        Messages.admin_colorPreview = "Preview color";
+
+        sidebar.addItem('logo', (cb) => {
+            // Msg.admin_logoHint, Msg.admin_logoTitle
+
+            let input = blocks.input({
+                type: 'file',
+                accept: 'image/*',
+                'aria-labelledby': 'cp-admin-logo'
+            });
+
+            var currentContainer = blocks.block();
+            let redraw = () => {
+                var current = h('img', {src: '/api/logo?'+(+new Date())});
+                $(currentContainer).empty().append(current);
+            };
+            redraw();
+
+            var upload = blocks.button('primary', '', Messages.admin_logoButton);
+            var remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+
+            let spinnerBlock = blocks.inline();
+            let spinner = UI.makeSpinner($(spinnerBlock));
+            let form = blocks.form([
+                currentContainer,
+                blocks.block(input),
+                blocks.nav([upload, remove, spinnerBlock])
+            ]);
+
+            let $button = $(upload);
+            let $remove = $(remove);
+
+            Util.onClickEnter($button, function () {
+                let files = input.files;
+                if (files.length !== 1) {
+                    UI.warn(Messages.error);
+                    return;
+                }
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                let reader = new FileReader();
+                reader.onloadend = function () {
+                    let dataURL = this.result;
+                    sframeCommand('UPLOAD_LOGO', {dataURL}, (err, response) => {
+                        $button.removeAttr('disabled');
+                        if (err) {
+                            UI.warn(Messages.error);
+                            $(input).val('');
+                            console.error(err, response);
+                            spinner.hide();
+                            return;
+                        }
+                        redraw();
+                        spinner.done();
+                        UI.log(Messages.saved);
+                    });
+                };
+                reader.readAsDataURL(files[0]);
+            });
+            UI.confirmButton($remove, {
+                classes: 'btn-danger',
+                multiple: true
+            }, function () {
+                spinner.spin();
+                $remove.attr('disabled', 'disabled');
+                sframeCommand('REMOVE_LOGO', {}, (err, response) => {
+                    $remove.removeAttr('disabled');
+                    if (err) {
+                        UI.warn(Messages.error);
+                        console.error(err, response);
+                        spinner.hide();
+                        return;
+                    }
+                    redraw();
+                    spinner.done();
+                    UI.log(Messages.saved);
+                });
+            });
+
+            cb(form);
+        });
+
+        sidebar.addItem('color', cb => {
+            let input = blocks.input({
+                type: 'color',
+                value: (Instance && Instance.color) || '#0087FF'
+            });
+            let label = blocks.labelledInput(Messages.admin_colorPick, input);
+            let current = blocks.block([], 'cp-admin-color-current');
+            let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
+            let preview = blocks.block([
+                blocks.block([
+                    blocks.link('CryptPad', '/admin/#customize')
+                ]),
+                blocks.nav([
+                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save),
+                ])
+            ], 'cp-admin-color-preview');
+            let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
+            let $preview = $(preview);
+
+            let remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+            let $remove = $(remove);
+
+            let setColor = (color, done) => {
+                sframeCommand('CHANGE_COLOR', {color}, (err, response) => {
+                    if (err) {
+                        UI.warn(Messages.error);
+                        console.error(err, response);
+                        done(false);
+                        return;
+                    }
+                    done(true);
+                    flushCacheNotice();
+                    UI.log(Messages.saved);
+                });
+            };
+
+            let btn = blocks.activeButton('primary', '',
+              Messages.admin_colorChange, (done) => {
+                let color = $input.val();
+                setColor(color, done);
+            });
+
+            let $input = $(input).on('change', () => {
+                require(['/lib/less.min.js'], (Less) => {
+                    let color = $input.val();
+                    let lColor = Less.color(color.slice(1));
+                    let lighten = Less.functions.functionRegistry._data.lighten;
+                    let lightColor = lighten(lColor, {value:30}).toRGB();
+                    $preview.find('.btn-primary').css({
+                        'background-color': color
+                    });
+                    $preview.find('.btn-secondary').css({
+                        'border-color': lightColor,
+                        'color': lightColor,
+                    });
+                    $preview.find('a').css({
+                        'color': lightColor,
+                    });
+                });
+            });
+
+            UI.confirmButton($remove, {
+                classes: 'btn-danger',
+                multiple: true
+            }, function () {
+                $remove.attr('disabled', 'disabled');
+                setColor('', () => {});
+            });
+
+            let form = blocks.form([
+                labelCurrent,
+                label
+            ], blocks.nav([btn, remove, btn.spinner]));
+
+            cb([form, labelPreview]);
         });
 
         sidebar.addItem('registration', function(cb){

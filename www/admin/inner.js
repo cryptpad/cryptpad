@@ -72,6 +72,9 @@ define([
             'cp-admin-jurisdiction',
             'cp-admin-notice',
         ],
+        'customize': [
+            'cp-admin-logo'
+        ],
         'users': [ // Msg.admin_cat_quota
             'cp-admin-registration',
             'cp-admin-invitation',
@@ -3772,6 +3775,91 @@ Example
                     return;
                 }
                 //spinner.done();
+                UI.log(Messages.saved);
+            });
+        });
+
+        return $div;
+    };
+
+    // XXX
+    Messages.admin_logoTitle = "Upload Logo";
+    Messages.admin_logoHint = "Max 200KB, svg, png or jpg";
+    Messages.admin_logoButton = "Upload new";
+    Messages.admin_logoRemoveButton = "Restore default";
+    create['logo'] = function () {
+        var key = 'logo';
+        var $div = makeBlock(key, false); // Msg.admin_emailHint, Msg.admin_emailTitle
+
+        var input = h('input', {
+            type: 'file',
+            accept: 'image/*',
+            'aria-labelledby': 'cp-admin-logo'
+        });
+
+        var currentContainer = h('div');
+        let redraw = () => {
+            var current = h('img', {src: '/api/logo?'+(+new Date())});
+            $(currentContainer).empty().append(current);
+        };
+        redraw();
+
+        var upload = h('button.btn.btn-primary', Messages.admin_logoButton);
+        var remove = h('button.btn.btn-danger', Messages.admin_logoRemoveButton);
+
+        $div.append([
+            currentContainer,
+            h('div', input),
+            h('nav', [upload, remove])
+        ]);
+
+        let $button = $(upload);
+        let $remove = $(remove);
+        var spinner = UI.makeSpinner($div);
+
+        Util.onClickEnter($button, function () {
+            let files = input.files;
+            if (files.length !== 1) {
+                UI.warn(Messages.error);
+                return;
+            }
+            spinner.spin();
+            $button.attr('disabled', 'disabled');
+            let reader = new FileReader();
+            reader.onloadend = function () {
+                let dataURL = this.result;
+                sframeCommand('UPLOAD_LOGO', {dataURL}, (err, response) => {
+                    $button.removeAttr('disabled');
+                    if (err) {
+                        UI.warn(Messages.error);
+                        $(input).val('');
+                        console.error(err, response);
+                        spinner.hide();
+                        return;
+                    }
+                    redraw();
+                    spinner.done();
+                    UI.log(Messages.saved);
+                });
+            };
+            reader.readAsDataURL(files[0]);
+        });
+        UI.confirmButton($remove, {
+            classes: 'btn-danger',
+            multiple: true
+        }, function () {
+            spinner.spin();
+            $remove.attr('disabled', 'disabled');
+            sframeCommand('REMOVE_LOGO', {}, (err, response) => {
+                $remove.removeAttr('disabled');
+                if (err) {
+                    UI.warn(Messages.error);
+                    console.error(err, response);
+                    spinner.hide();
+                    return;
+                }
+                redraw();
+                spinner.done();
                 UI.log(Messages.saved);
             });
         });

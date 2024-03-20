@@ -78,8 +78,10 @@ define([
         blocks.code = val => {
             return h('code', val);
         };
-        blocks.inline = (value) => {
-            return h('span', value);
+        blocks.inline = (value, className) => {
+            let attr = {};
+            if (className) { attr.class = className; }
+            return h('span', attr, value);
         };
         blocks.block = (content, className) => {
             let attr = {};
