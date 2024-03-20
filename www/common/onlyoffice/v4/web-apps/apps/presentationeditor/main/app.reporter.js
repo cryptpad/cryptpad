@@ -1,9 +1,0 @@
-/*
- * Copyright (C) Ascensio System SIA 2012-2021. All rights reserved
- *
- * https://www.onlyoffice.com/ 
- *
- * Version: 0.0.0 (build:0)
- */
-
-"use strict";var reqerr;require.config({baseUrl:"../../",paths:{jquery:"../vendor/jquery/jquery.min",underscore:"../vendor/underscore/underscore-min",xregexp:"../vendor/xregexp/xregexp-all-min",sockjs:"../vendor/sockjs/sockjs.min",allfonts:"../../sdkjs/common/AllFonts",sdk:"../../sdkjs/slide/sdk-all-min"},shim:{underscore:{exports:"_"},sdk:{deps:["jquery","underscore","allfonts","xregexp","sockjs"]}}}),require(["sdk"],function(){function e(e){var r,e=e.data;try{r=window.JSON.parse(e)}catch(e){}r&&"file:open"==r.type&&function(e){var r={};e&&((r=new Asc.asc_CDocInfo).put_Id(e.key),r.put_Url(e.url),r.put_Title(e.title),r.put_Format(e.fileType),r.put_VKey(e.vkey),r.put_Options(e.options),r.put_Token(e.token),r.put_Permissions(e.permissions||{}),s(e.title));o.preloadReporter(e),o.SetThemesPath("../../../../sdkjs/slide/themes/"),o.asc_setDocInfo(r),o.asc_getEditorPermissions(),o.asc_setViewMode(!0)}(r.data)}window.attachEvent?window.attachEvent("onmessage",e):window.addEventListener("message",e,!1);var o=new Asc.asc_docs_api({"id-view":"editor_sdk",using:"reporter"}),s=function(e){e&&(window.document.title+=" - "+e)};o.asc_registerCallback("asc_onDocumentContentReady",function(){o.SetDrawingFreeze(!1),$("#loading-mask").hide().remove()}),o.asc_registerCallback("asc_onGetEditorPermissions",function(e){o.asc_LoadDocument()}),setTimeout(function(){o.sendFromReporter("i:am:ready")},500)},function(e){"timeout"==e.requireType&&!reqerr&&window.requireTimeourError&&(reqerr=window.requireTimeourError(),window.alert(reqerr),window.location.reload())});
