@@ -776,7 +776,7 @@ define([
                 'aria-labelledby': 'cp-admin-logo'
             });
 
-            var currentContainer = blocks.block();
+            var currentContainer = blocks.block([], 'cp-admin-customize-logo');
             let redraw = () => {
                 var current = h('img', {src: '/api/logo?'+(+new Date())});
                 $(currentContainer).empty().append(current);
@@ -856,14 +856,10 @@ define([
             let current = blocks.block([], 'cp-admin-color-current');
             let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
             let preview = blocks.block([
-                blocks.block([
-                    blocks.link('CryptPad', '/admin/#customize')
-                ]),
-                blocks.nav([
-                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save),
-                ])
-            ], 'cp-admin-color-preview');
+                blocks.link('CryptPad', '/admin/#customize'),
+                blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+                blocks.button('secondary', 'fa-floppy-o', Messages.settings_save),
+            ], 'cp-admin-color-preview cp-sidebar-flex-block');
             let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
             let $preview = $(preview);
 

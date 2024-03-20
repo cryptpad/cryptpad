@@ -8,7 +8,8 @@
 @import (reference) "/customize/src/less2/include/leftside-menu.less";
 @import (reference) "/customize/src/less2/include/browser.less";
 
-@sidebar_button-width: 25rem;;
+@sidebar_block-width: 25rem;;
+@sidebar_base-margin: 0.5rem;
 
 .sidebar-layout_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -113,22 +114,53 @@
                         flex-flow: column;
                         align-items: baseline;
                     }
-                    input {
-                        max-width: 25rem;
+                    label {
+                        margin-bottom: 0;
+                    }
+                    input, textarea {
+                        font-family: inherit;
+                    }
+                    input, textarea {
+                        max-width: @sidebar_block-width;
+                    }
+                    [type="color"] {
+                        width: @sidebar_block-width/5;
+                    }
+                    .cp-labelled-input {
+                        margin-top: @sidebar_base-margin;
+                        max-width: ~"min(100%, 25rem)";
+                        width: @sidebar_block-width;
+                        label {
+                            width: 100%;
+                        }
                     }
                     nav {
                         display: flex;
                         align-items: baseline;
-                        .btn.btn-primary {
-                            margin: 5px 0.5rem 0 0;
+                        margin-top: @sidebar_base-margin;
+                        .btn {
+                            margin-top: 0;
+                            margin-bottom: 0;
+                            margin-left: 0;
+                        }
+                    }
+                    .cp-sidebar-flex-block {
+                        display: flex;
+                        align-items: center;
+                        nav {
+                            margin-top: 0;
+                        }
+                    }
+                    nav, .cp-sidebar-flex-block {
+                        & > * {
+                            margin-right: @sidebar_base-margin;
+                            &:last-child {
+                                margin-right: 0;
+                            }
                         }
                     }
                     .cp-sidebar-bigger-alert {
-                            font-size: 16px;
-                        }
-                    label {
-                        margin-bottom: 0;
-                        margin-top: 0.5rem;
+                        font-size: 16px;
                     }
                     th {
                         max-width: 60vw;
@@ -140,7 +172,7 @@
                         margin-right: 2px;
                     }
                     .cp-checkmark {
-                        padding: 0.5rem;
+                        padding: @sidebar_base-margin;
                     }
                     .cp-broadcast-container {
                         display: flex;
@@ -161,7 +193,7 @@
                     }
                     .cp-sidebar-input-block {
                         display: inline-flex;
-                        width: @sidebar_button-width;
+                        width: @sidebar_block-width;
                         max-width: 100%;
                         input {
                             flex: 1;
@@ -192,7 +224,7 @@
                 .cp-sidebarlayout-description {
                     display: block;
                     color: @cp_sidebar-hint;
-                    margin-bottom: 0.5rem;
+                    margin-bottom: @sidebar_base-margin;
                     p {
                         margin-bottom: 0;
                     }
@@ -221,7 +253,7 @@
             }
             .cp-sidebarlayout-input-block {
                 display: inline-flex;
-                width: @sidebar_button-width;
+                width: @sidebar_block-width;
                 max-width: 100%;
                 input {
                     flex: 1;
@@ -243,7 +275,7 @@
                 margin: 10px 0;
             }
             button.btn {
-                margin: 0 0.5rem 0 0;
+                margin: 0 @sidebar_base-margin 0 0;
                 &:last-child {
                     margin-right: 0;
                 }
@@ -260,7 +292,7 @@
                 padding-bottom: 20px;
                 .cp-sidebarlayout-categories {
                     .cp-sidebarlayout-category {
-                        margin: 0 0 0.5rem 0;
+                        margin: 0 0 @sidebar_base-margin 0;
                         span.cp-sidebar-layout-category-name {
                             display: inline !important; // override "narrow" mode
                         }
