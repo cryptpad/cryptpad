@@ -26,7 +26,7 @@ define(['/customize/application_config.js'], function (AppConfig) {
         MAX_PREMIUM_TEAMS_SLOTS: Math.max(AppConfig.maxTeamsSlots || 0, AppConfig.maxPremiumTeamsSlots || 0) || 5,
         MAX_PREMIUM_TEAMS_OWNED: Math.max(AppConfig.maxTeamsOwned || 0, AppConfig.maxPremiumTeamsOwned || 0) || 5,
         // Apps
-        criticalApps: ['profile', 'settings', 'debug', 'admin', 'support', 'notifications', 'calendar', 'newadmin'], // XXX
+        criticalApps: ['profile', 'settings', 'debug', 'admin', 'support', 'notifications', 'calendar', 'oldadmin'], // XXX
         earlyAccessApps: ['doc', 'presentation']
     };
 });
