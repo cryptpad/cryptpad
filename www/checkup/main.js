@@ -20,13 +20,15 @@ define([
     '/customize/pages.js',
     '/checkup/checkup-tools.js',
     '/customize/application_config.js',
+    '/common/onlyoffice/current-version.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, ApiConfig, Assertions, h, Messages, DomReady,
             nThen, SFCommonO, Login, Hash, Util, Pinpad,
-            NetConfig, Block, Pages, Tools, AppConfig) {
+            NetConfig, Block, Pages, Tools, AppConfig,
+            OOCurrentVersion) {
     window.CHECKUP_MAIN_LOADED = true;
 
     var Assert = Assertions();
@@ -421,7 +423,7 @@ define([
         });
     });
 
-    var sheetURL = '/common/onlyoffice/dist/v7/web-apps/apps/spreadsheeteditor/main/index.html';
+    var sheetURL = `/common/onlyoffice/dist/${OOCurrentVersion.currentVersion}/web-apps/apps/spreadsheeteditor/main/index.html`;
 
     assert(function (cb, msg) {
         msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
@@ -718,7 +720,7 @@ define([
     });
 
     assert(function (cb, msg) { // FIXME possibly superseded by more advanced CSP tests?
-        var url = '/common/onlyoffice/dist/v7/web-apps/apps/spreadsheeteditor/main/index.html';
+        var url = `/common/onlyoffice/dist/${OOCurrentVersion.currentVersion}/web-apps/apps/spreadsheeteditor/main/index.html`;
         msg.appendChild(CSP_WARNING(url));
         deferredPostMessage({
             command: 'GET_HEADER',
