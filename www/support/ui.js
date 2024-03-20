@@ -449,7 +449,7 @@ define([
                     if (typeof(cb) === "function") { cb(); }
                 });
             };
-            Util.onClickEnter($show, adminOpen);
+            Util.onClickEnter($show, () => { adminOpen(); });
             if (!onShow) { show = undefined; }
 
             // Move active/pending
