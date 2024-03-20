@@ -24,6 +24,8 @@ blobstage/
 block/
 logs/
 privileged.conf
+lib/plugins/*
+!lib/plugins/README.md
 
 # ---> Node
 # Logs
