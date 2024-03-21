@@ -104,13 +104,15 @@ define([
 
     var COLORTHEME = '/customize/src/less2/include/colortheme.less';
     var COLORTHEME_DARK = '/customize/src/less2/include/colortheme-dark.less';
-    //COLORTHEME_DARK = '/customize/src/less2/include/colortheme.less'; // TODO
     var getColortheme = function () {
         return window.CryptPad_theme;
     };
     var getColorthemeURL = function () {
         if (window.CryptPad_theme === 'dark') { return COLORTHEME_DARK; }
         return COLORTHEME;
+    };
+    var isForcedColortheme = url => {
+        return url === COLORTHEME+'?force' || url === COLORTHEME_DARK+'?force';
     };
 
     var lessEngine;
@@ -135,6 +137,8 @@ define([
                         col = true;
                         url = getColorthemeURL();
                         //console.warn(url);
+                    } else if (isForcedColortheme(url)) {
+                        col = true;
                     }
                     url = fixURL(url);
                     var cached = tempCache[_url];

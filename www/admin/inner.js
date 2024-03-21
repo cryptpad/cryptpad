@@ -856,10 +856,17 @@ define([
             let current = blocks.block([], 'cp-admin-color-current');
             let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
             let preview = blocks.block([
-                blocks.link('CryptPad', '/admin/#customize'),
-                blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                blocks.button('secondary', 'fa-floppy-o', Messages.settings_save),
-            ], 'cp-admin-color-preview cp-sidebar-flex-block');
+                blocks.block([
+                    blocks.link('CryptPad', '/admin/#customize'),
+                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+                ], 'cp-admin-color-preview-dark cp-sidebar-flex-block'),
+                blocks.block([
+                    blocks.link('CryptPad', '/admin/#customize'),
+                    blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+                    blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+                ], 'cp-admin-color-preview-light cp-sidebar-flex-block')
+            ], 'cp-admin-color-preview');
             let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
             let $preview = $(preview);
 
@@ -895,13 +902,16 @@ define([
                     $preview.find('.btn-primary').css({
                         'background-color': color
                     });
-                    $preview.find('.btn-secondary').css({
+                    $preview.find('.cp-admin-color-preview-dark .btn-secondary').css({
                         'border-color': lightColor,
                         'color': lightColor,
                     });
-                    $preview.find('a').css({
-                        'color': lightColor,
+                    $preview.find('.cp-admin-color-preview-light .btn-secondary').css({
+                        'border-color': color,
+                        'color': color,
                     });
+                    $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
+                    $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
                 });
             });
 
@@ -1054,7 +1064,7 @@ define([
                         var data = all[key];
                         var url = privateData.origin + Hash.hashToHref(key, 'register');
 
-                        var del = blocks.button('danger', 'fa fa-trash', Messages.kanban_delete );
+                        var del = blocks.button('danger', 'fa-trash', Messages.kanban_delete );
                         var $del = $(del);
                         Util.onClickEnter($del, function () {
                             $del.attr('disabled', 'disabled');
@@ -1064,7 +1074,7 @@ define([
                                 deleteInvite(key);
                             });
                         });
-                        var copy = blocks.button('secondary', 'fa fa-clipboard', Messages.admin_invitationCopy);
+                        var copy = blocks.button('secondary', 'fa-clipboard', Messages.admin_invitationCopy);
                         Util.onClickEnter($(copy), function () {
                             Clipboard.copy(url, () => {
                                 UI.log(Messages.genericCopySuccess);
@@ -3009,117 +3019,117 @@ define([
         });
 
         sidebar.addItem('maintenance', function(cb){
-            var form = blocks.form([]);
+            var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
+            var $button = $(button);
+            var start = blocks.input({
+                type: 'date',
+                id: 'cp-admin-start-input',
+                class: 'flatpickr-input'
+            });
+            var end = blocks.input({
+                type: 'date',
+                id: 'cp-admin-end-input',
+                class: 'flatpickr-input'
+            });
+            var labelStart = blocks.labelledInput(Messages.broadcast_start, start);
+            var labelEnd = blocks.labelledInput(Messages.broadcast_end, end);
+            let active = blocks.block([], 'cp-broadcast-active');
+            let $active = $(active);
+
+            var form = blocks.form([
+                active,
+                labelStart,
+                labelEnd,
+            ], blocks.nav([button]));
+
             var refresh = getApi(function (Broadcast) {
-                var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
-                var $button = $(button);
-                var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel );
-                var active;
+                $active.empty();
+                var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel);
 
                 if (Broadcast && Broadcast.maintenance) {
                     var m = Broadcast.maintenance;
                     if (m.start && m.end && m.end >= (+new Date())) {
-                        active = h('div.cp-broadcast-active', [
-                            UI.setHTML(h('p'), Messages._getKey('broadcast_maintenance', [
+                        $active.append([
+                            UI.setHTML(h('div'), Messages._getKey('broadcast_maintenance', [
                                 new Date(m.start).toLocaleString(),
                                 new Date(m.end).toLocaleString(),
                             ])),
-                            removeButton
+                            blocks.nav([removeButton])
                         ]);
                     }
                 }
-                var start = blocks.input({
-                    type: 'date',
-                    id: 'cp-admin-start-input',
-                    class: 'flatpickr-input' 
-                });
-                var end = blocks.input({
-                    type: 'date',
-                    id: 'cp-admin-end-input',
-                    class: 'flatpickr-input'
-                });
-                var $start = $(start);
-                var $end = $(end);
-                var is24h = UIElements.is24h();
-                var dateFormat = "Y-m-d H:i";
-                if (!is24h) { dateFormat = "Y-m-d h:i K"; }
-
-                var endPickr = Flatpickr(end, {
-                    enableTime: true,
-                    time_24hr: is24h,
-                    dateFormat: dateFormat,
-                    minDate: new Date()
-                });
-                Flatpickr(start, {
-                    enableTime: true,
-                    time_24hr: is24h,
-                    minDate: new Date(),
-                    dateFormat: dateFormat,
-                    onChange: function () {
-                        endPickr.set('minDate', new Date($start.val()));
-                    }
-                });
-
-                // Extract form data
-                var getData = function () {
-                    var start = +new Date($start.val());
-                    var end = +new Date($end.val());
-                    if (isNaN(start) || isNaN(end)) {
-                        console.error('Invalid dates');
-                        return false;
-                    }
-                    return {
-                        start: start,
-                        end: end
-                    };
-                };
-
-                var send = function (data) {
-                    $button.prop('disabled', 'disabled');
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['SET_MAINTENANCE', [data]]
-                    }, function (e, response) {
-                        if (e || response.error) {
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                            $button.prop('disabled', '');
-                            return;
-                        }
-                        // Maintenance applied, send notification
-                        common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function () {
-                            checkLastBroadcastHash(function () {
-                                setTimeout(refresh, 300);
-                            });
-                        });
-                    });
-
-                };
-                Util.onClickEnter($(button), function () {
-                    var data = getData();
-                    if (data === false) { return void UI.warn(Messages.error); }
-                    send(data);
-                });
                 UI.confirmButton(removeButton, {
                     classes: 'btn-danger',
                 }, function () {
                     send("");
                 });
-               $(form).empty().append([
-                    active,
-                    h('label', Messages.broadcast_start),
-                    start,
-                    h('label', Messages.broadcast_end),
-                    end,
-                    h('br'),
-                    h('div.cp-broadcast-form-submit', [
-                        button
-                    ])
-                ]);
-
 
             });
             refresh();
+
+            var $start = $(start);
+            var $end = $(end);
+            var is24h = UIElements.is24h();
+            var dateFormat = "Y-m-d H:i";
+            if (!is24h) { dateFormat = "Y-m-d h:i K"; }
+
+            var endPickr = Flatpickr(end, {
+                enableTime: true,
+                time_24hr: is24h,
+                dateFormat: dateFormat,
+                minDate: new Date()
+            });
+            Flatpickr(start, {
+                enableTime: true,
+                time_24hr: is24h,
+                minDate: new Date(),
+                dateFormat: dateFormat,
+                onChange: function () {
+                    endPickr.set('minDate', new Date($start.val()));
+                }
+            });
+
+            // Extract form data
+            var getData = function () {
+                var start = +new Date($start.val());
+                var end = +new Date($end.val());
+                if (isNaN(start) || isNaN(end)) {
+                    console.error('Invalid dates');
+                    return false;
+                }
+                return {
+                    start: start,
+                    end: end
+                };
+            };
+
+            var send = function (data) {
+                disable($button);
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['SET_MAINTENANCE', [data]]
+                }, function (e, response) {
+                    enable($button);
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        $button.prop('disabled', '');
+                        return;
+                    }
+                    // Maintenance applied, send notification
+                    common.mailbox.sendTo('BROADCAST_MAINTENANCE', {}, {}, function () {
+                        checkLastBroadcastHash(function () {
+                            setTimeout(refresh, 300);
+                        });
+                    });
+                });
+
+            };
+            Util.onClickEnter($(button), function () {
+                var data = getData();
+                if (data === false) { return void UI.warn(Messages.error); }
+                send(data);
+            });
 
             common.makeUniversal('broadcast', {
                 onEvent: function (obj) {
@@ -3137,7 +3147,7 @@ define([
             var button = blocks.button('primary', '', Messages.admin_surveyButton);
             var $button = $(button);
             let nav = blocks.nav([button]);
-            let active = blocks.block([], '');
+            let active = blocks.block([], 'cp-sidebar-flex-block');
             let $active = $(active);
 
             var input = blocks.input({
@@ -3163,7 +3173,7 @@ define([
                         e.preventDefault();
                         common.openUnsafeURL(Broadcast.surveyURL);
                     });
-                    $active.append(blocks.block([a, removeButton]));
+                    $active.append([a, removeButton]);
                 }
             });
             refresh();
@@ -3258,7 +3268,7 @@ define([
                         var rowContent = [
                             'ID: ' + uid,
                             formattedTime,
-                            el,
+                            $(el).find('.cp-notification-content').text(),
                             removeButton
                         ];
                         var table = blocks.table([], [rowContent]);
@@ -3433,18 +3443,16 @@ define([
                 // Make the form
                 $form.empty().append([
                     active,
-                    h('label', Messages.broadcast_translations),
+                    h('div', Messages.broadcast_translations),
                     h('div.cp-broadcast-languages', boxes),
                     container,
                     h('div.cp-broadcast-form-submit', [
-                        h('br'),
                         button
                     ])
                 ]);
-
             });
-           refresh();
-           cb(form);
+            refresh();
+            cb(form);
 
         });
 

@@ -45,8 +45,14 @@ define([
         };
 
         blocks.icon = (icon) => {
-            let prefix = icon.slice(0, icon.indexOf('-'));
-            let cls = `.${prefix}.${icon}`;
+            let s = icon.split(' ');
+            let cls;
+            if (s.length > 1) {
+                cls = '.' + s.join('.');
+            } else {
+                let prefix = icon.slice(0, icon.indexOf('-'));
+                cls = `.${prefix}.${icon}`;
+            }
             return h(`i${cls}`);
         };
         blocks.button = (type, icon, text) => {
@@ -140,7 +146,7 @@ define([
         };
 
         blocks.table = function (header, entries) {
-            const table = h('table.cp-sidebar-list');
+            const table = h('table.cp-sidebar-table');
             if (header) {
                 const headerValues = header.map(value => {
                     const lastWord = value.split(' ').pop(); // Extracting the last word

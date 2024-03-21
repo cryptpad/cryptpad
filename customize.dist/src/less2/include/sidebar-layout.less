@@ -123,12 +123,11 @@
                     }
                     input, textarea {
                         font-family: inherit;
-                    }
-                    input, textarea {
                         max-width: @sidebar_block-width;
                     }
                     [type="color"] {
                         width: @sidebar_block-width/5;
+                        padding: 3px;
                     }
                     .cp-labelled-input {
                         margin-top: @sidebar_base-margin;
@@ -166,33 +165,32 @@
                     .cp-sidebar-bigger-alert {
                         font-size: 16px;
                     }
-                    th {
-                        max-width: 60vw;
-                        border: 1px solid #777;
-                        padding: 7px;
-                    }
-                    td {
-                        padding: 0.3rem;
-                        margin-right: 2px;
-                    }
                     .cp-checkmark {
                         padding: @sidebar_base-margin;
+                        padding-left: 0;
                     }
-                    .cp-broadcast-container {
-                        display: flex;
-                        flex-flow: column;
+                    code {
+                        color: @cryptpad_text_col;
                     }
-                    .cp-broadcast-lang {
-                        order: 4;
-                        margin: 30px;
-                        margin-bottom: 0;
-                        display: flex;
-                        flex-flow: column;
-                        align-items: baseline;
-                    }
-                    .cp-sidebar-list {
+                    .cp-sidebar-table {
+                        margin-top: @sidebar_base-margin;
                         pre {
                             margin: 0;
+                        }
+                        th {
+                            border: 1px solid @cp_drive-icon-border;
+                            padding: 7px;
+                        }
+                        td {
+                            border: 1px solid @cp_drive-icon-border;
+                            padding: 0.3rem;
+                            margin-right: 2px;
+                            *:not(:last-child) {
+                                margin-right: @sidebar_base-margin;
+                            }
+                        }
+                        tr:nth-child(odd) {
+                            background-color: @cp_sidebar-left-item-bg;
                         }
                     }
                     .cp-sidebar-input-block {

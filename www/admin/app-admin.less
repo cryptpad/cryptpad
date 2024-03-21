@@ -32,5 +32,48 @@
         border-radius: 5px;
         background-color: @cryptpad_color_brand;
     }
+    .cp-admin-color-preview {
+        & > div {
+            margin-top: @sidebar_base-margin;
+            padding: 2*@sidebar_base-margin;
+        }
+        .cp-admin-color-preview-dark {
+            @import (reference) '../../customize/src/less2/include/colortheme-dark.less?force';
+            background-color: @cp_sidebar-right-bg;
+            border: 1px solid @cryptpad_text_col;
+            a {
+                color: @cryptpad_color_link !important;
+            }
+        }
+        .cp-admin-color-preview-light {
+            @import (reference) '../../customize/src/less2/include/colortheme.less?force';
+            @import '../../customize/src/less2/include/forms.less?force';
+            background-color: @cp_sidebar-right-bg;
+            border: 1px solid @cryptpad_text_col;
+            a {
+                color: @cryptpad_color_link !important;
+            }
+        }
+    }
+
+    .cp-admin-broadcast-form {
+        & > *:not(:last-child) {
+            margin-bottom: @sidebar_base-margin;
+            margin-top: 0;
+        }
+        .cp-broadcast-container {
+            display: flex;
+            flex-flow: column;
+        }
+        .cp-broadcast-lang {
+            margin-left: 30px;
+            display: flex;
+            flex-flow: column;
+            align-items: baseline;
+            &:not(:last-child) {
+                margin-bottom: @sidebar_base-margin;
+            }
+        }
+    }
 }
 
