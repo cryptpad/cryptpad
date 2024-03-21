@@ -1690,7 +1690,8 @@ define([
                     $innerblock.css('bottom', button.height+'px');
                 }
             } else if ($parentMenu) {
-                $innerblock.css('max-height', Math.floor(wh - topPos - 400)+'px');
+                let max = $parentMenu.css('max-height');
+                $innerblock.css('max-height', max);
             } else {
                 $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
