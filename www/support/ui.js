@@ -261,7 +261,7 @@ define([
             };
             let overflow = false;
             let maxWidth = $recorded.width();
-            Object.keys(all).sort(sort).forEach((id, i) => {
+            Object.keys(all).sort(sort).forEach(id => {
                 let action = () => {
                     insertText(all[id].content);
                     if (typeof(recorded.onClick) === "function") { recorded.onClick(id); }

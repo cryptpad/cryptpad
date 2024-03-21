@@ -698,7 +698,6 @@ define([
                         console.error(obj.error);
                         return void UI.warn(Messages.error);
                     }
-                    let lines = [];
                     let messages = obj.messages;
                     $list.empty();
                     Object.keys(messages).forEach(id => {
