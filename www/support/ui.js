@@ -20,6 +20,7 @@ define([
     Messages.support_movePending = "Move to pending";
     Messages.support_moveActive = "Move to active";
     Messages.support_copyUserData = "Copy user data";
+    Messages.support_insertRecorded = "Insert snippet";
 
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
@@ -246,6 +247,8 @@ define([
         let updateRecorded = (recorded) => {
             $recorded.empty();
             if (!recorded || !Object.keys(recorded.all).length) { return; }
+            $recorded.append(h('span.cp-support-recorded-insert',
+                                    Messages.support_insertRecorded));
             let $span = $(h('span')).appendTo($recorded);
             let $fakeMore = $(h('button.btn.btn-secondary.fa.fa-ellipsis-h')).appendTo($recorded);
             let opts = [];
@@ -258,7 +261,7 @@ define([
             };
             let overflow = false;
             let maxWidth = $recorded.width();
-            Object.keys(all).sort(sort).forEach(id => {
+            Object.keys(all).sort(sort).forEach((id, i) => {
                 let action = () => {
                     insertText(all[id].content);
                     if (typeof(recorded.onClick) === "function") { recorded.onClick(id); }
@@ -314,9 +317,8 @@ define([
                 value: title || ''
             }),
             cb ? undefined : h('br'),
-            recordedContent,
             textarea,
-            h('br'),
+            recordedContent,
             h('label', Messages.support_attachments),
             attachments = h('div.cp-support-attachments'),
             addAttachment = h('button.btn', Messages.support_addAttachment),

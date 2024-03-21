@@ -14,14 +14,21 @@
     .tokenfield_main();
     .cp-support-form-container {
         max-width: 100%;
-        div {
-            margin-bottom: 10px;
-        }
         [type="text"] {
             width: @sidebar_block-width;
-            margin-bottom: 10px;
+        }
+        div, [type="text"], textarea, label {
+            margin-bottom: @sidebar_base-margin !important;
+        }
+        div.cp-support-attachments:empty {
+            display: none;
+        }
+        label {
+            display: block;
+            margin-top: 0 !important;
         }
         hr {
+            margin: @sidebar_base-margin 0;
             border-color: @msg-bg;
         }
         textarea {
@@ -42,6 +49,12 @@
             border: 1px solid @fromme-bg;
             margin-right: 5px;
             padding: 10px;
+        }
+    }
+    .cp-support-recorded {
+        white-space: nowrap;
+        .cp-support-recorded-insert {
+            margin-right: @sidebar_base-margin
         }
     }
     @ticket-padding: 10px;
@@ -96,9 +109,6 @@
             .cp-support-ispremium {
                 padding: 0 5px;
                 background-color: @cp_admin-premium-bg;
-            }
-            .cp-support-recorded {
-                white-space: nowrap;
             }
             .cp-support-list-message {
                 background-color: @msg-bg;

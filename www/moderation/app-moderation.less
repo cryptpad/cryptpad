@@ -74,6 +74,42 @@
             }
         }
     }
+
+    .cp-moderation-recorded-list {
+        display: flex;
+        flex-flow: column;
+        max-width: @sidebar_block-width;
+        width: @sidebar_block-width;
+        .cp-moderation-recorded {
+            @margin: @sidebar_base-margin;
+            .cp-moderation-recorded-header {
+                display: inline-flex;
+                align-items: center;
+                background-color: @cp_support-bg;
+                padding: 0 @margin;
+                border-radius: @margin @margin 0 0;
+                font-weight: bold;
+            }
+            .cp-moderation-recorded-body {
+                background-color: @cp_support-bg;
+                display: flex;
+                justify-content: space-between;
+                padding: @margin;
+                align-items: center;
+                border-radius: 0 @margin @margin @margin;
+                nav {
+                    margin: 0 !important;
+                }
+                .cp-moderation-recorded-content {
+                    white-space: pre-line;
+                }
+            }
+            &:not(:last-child) {
+                margin-bottom: @margin;
+            }
+        }
+    }
+
     .cp-support-search-container {
         display: flex;
         flex-flow: column;

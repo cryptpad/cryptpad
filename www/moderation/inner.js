@@ -89,7 +89,6 @@ define([
 
     Messages.support_recordedTitle = "Prerecorded messages";
     Messages.support_recordedHint = "You can store prerecorded message in order to insert them with one click in a support ticket.";
-    Messages.support_recordedList = "List of recorded messages";
     Messages.support_recordedEmpty = "No recorded messages";
     Messages.support_recordedId = "Unique Identifier";
     Messages.support_recordedContent = "Content";
@@ -443,7 +442,7 @@ define([
                 ],
                 onOpen: () => {
                     setTimeout(() => {
-                        $('.cp-support-recorded-id').focus();
+                        $('.cp-moderation-recorded-id').focus();
                     });
                 }
             },
@@ -655,13 +654,8 @@ define([
 
         sidebar.addItem('recorded', cb => {
             let empty = blocks.inline(Messages.support_recordedEmpty);
-            let list = blocks.table([
-                Messages.support_recordedId,
-                Messages.support_recordedContent,
-                Messages.kanban_delete
-            ], []);
-            let labelledList = blocks.labelledInput(Messages.support_recordedList, list);
-            let inputId = blocks.input({type:'text', class: 'cp-support-recorded-id',
+            let list = blocks.block([], 'cp-moderation-recorded-list');
+            let inputId = blocks.input({type:'text', class: 'cp-moderation-recorded-id',
                                         maxlength: 20 });
             let inputContent = blocks.textarea();
             let labelId = blocks.labelledInput(Messages.support_recordedId, inputId);
@@ -672,13 +666,13 @@ define([
 
             let form = blocks.form([
                 empty,
-                labelledList,
+                list,
                 labelId,
                 labelContent,
             ], nav);
 
             let $empty = $(empty);
-            let $list = $(labelledList).hide();
+            let $list = $(list).hide();
             let $create = $(create);
             let $inputId = $(inputId).on('input', () => {
                 let val = $inputId.val().toLowerCase().replace(/ /g, '-').replace(/[^a-z-_]/g, '');
@@ -706,15 +700,21 @@ define([
                     }
                     let lines = [];
                     let messages = obj.messages;
+                    $list.empty();
                     Object.keys(messages).forEach(id => {
                         let del = blocks.button('danger-alt', 'fa-trash-o', Messages.kanban_delete);
                         Util.onClickEnter($(del), () => {
                             edit(id, '', true);
                         });
-                        lines.push([id, h('pre', messages[id].content), del]);
+                        $list.append(h('div.cp-moderation-recorded', [
+                            h('span.cp-moderation-recorded-header', id),
+                            h('div.cp-moderation-recorded-body', [
+                                h('div.cp-moderation-recorded-content', messages[id].content),
+                                h('nav', del)
+                            ])
+                        ]));
                     });
-                    list.updateContent(lines);
-                    if (!lines.length) {
+                    if (!Object.keys(messages).length) {
                         $list.hide();
                         $empty.show();
                         return;

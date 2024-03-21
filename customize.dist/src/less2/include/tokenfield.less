@@ -12,10 +12,12 @@
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
+    @tokens_margin: 0.5rem;
     ul.ui-autocomplete {
         z-index: 100001; // alertify + 1
     }
     .tokenfield {
+
         .tools_unselectable();
         display: flex;
         flex-wrap: wrap;
@@ -56,7 +58,7 @@
             background-color: @cp_token-bg;
             white-space: nowrap;
             margin: 2px 0;
-            margin-right: 5px;
+            margin-right: @tokens_margin;
             height: 24px;
             border-radius: @variables_radius;
             vertical-align: middle;
@@ -120,7 +122,7 @@
         flex-wrap: wrap;
         span {
             padding: 0 5px;
-            margin-right: 5px;
+            margin-right: @tokens_margin;
             border-radius: @variables_radius;
             background-color: @cp_kanban-tags-bg;
             display: inline-block;
@@ -130,9 +132,6 @@
     .cp-tags-filter {
         @media (min-width: 505px) {
             display: inline-flex;
-            .kanban-tag-btn-toggle {
-                margin-right: 10px;
-            }
         }
         align-items: center;
         flex: 1;
@@ -141,8 +140,9 @@
         .cp-tags-filter-toggle {
             min-width: 100px;
             display: flex;
+            margin-right: @tokens_margin;
             @media (max-width: 505px) {
-                margin-left: 10px;
+                margin-right: 0;
             }
             flex-flow: column;
             flex-shrink: 0;
@@ -161,8 +161,8 @@
         button.cp-tags-filter-reset {
             white-space: normal !important;
             @media (max-width: 505px) {
-                margin-bottom: 10px;
-                margin-right: 10px;
+                margin-bottom: @tokens_margin;
+                margin-right: @tokens_margin;
             }
             .tools_unselectable();
             i {
