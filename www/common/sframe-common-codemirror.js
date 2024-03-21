@@ -275,6 +275,7 @@ define([
         module.handleImagePaste(editor);
 
         var setMode = exp.setMode = function (mode, cb) {
+            if (!mode) { return; }
             exp.highlightMode = mode;
             if (mode === 'markdown') { mode = 'gfm'; }
             if (/text\/x/.test(mode)) {
@@ -294,7 +295,7 @@ define([
                 editor.setOption('mode', mode);
             }
             if (exp.$language) {
-                var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
+                var name = exp.$language.$menu.find('a[data-value="' + mode + '"]').text() || undefined;
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
                 exp.$language.find('span.cp-language-text').text(name);
@@ -376,7 +377,6 @@ define([
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle).hide();
             $block.prepend(h('span.cp-language-text', Messages.languageButton));
-            $block.find('span.cp-language-text').prepend('<i class="fa fa-chevron-right"></i>');
 
             var isHovering = false;
             var $aLanguages = $block.$menu.find('li');
@@ -386,7 +386,7 @@ define([
             });
             $aLanguages.mouseleave(function () {
                 if (isHovering) {
-                    setMode($block.find(".cp-dropdown-element-active").attr('data-value'));
+                    setMode($block.$menu.find(".cp-dropdown-element-active").attr('data-value'));
                 }
             });
             //$aLanguages.click(function () {
@@ -406,6 +406,7 @@ define([
                         $block.find('button').click();
                     },
                 });
+                dropdownConfig.$parentButton = $blockButton;
                 $drawer.append($blockButton);
             }
             if (exp.highlightMode) { exp.setMode(exp.highlightMode); }
@@ -482,6 +483,7 @@ define([
                             $block.find('button').click();
                         },
                     });
+                    dropdownConfig.$parentButton = $blockButton;
                     $drawer.append($blockButton);
                 }
                 if (cb) { cb(); }
