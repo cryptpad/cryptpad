@@ -30,3 +30,8 @@ config/config.js
 config/sso.js
 lib/plugins/*
 !lib/plugins/README.md
+www/common/onlyoffice/v*
+
+/www/common/onlyoffice/dist/
+/onlyoffice-conf/
+/onlyoffice-dist/

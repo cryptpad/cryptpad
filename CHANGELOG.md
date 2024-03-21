@@ -4,6 +4,18 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 5.8.0
+
+## OnlyOffice
+
+Since version 5.8 OnlyOffice is not bundled with CryptPad anymore. You can install/update OnlyOffice by running the installation script we provide:
+
+```bash
+   ./install-onlyoffice.sh
+```
+
+For Docker users that want to use OnlyOffice, please read our updated [Docker installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html#admin-docker-install).
+
 # 5.7.0
 
 ## Goals

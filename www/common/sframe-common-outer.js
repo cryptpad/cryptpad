@@ -154,11 +154,12 @@ define([
                 '/customize/application_config.js',
                 //'/common/test.js',
                 '/common/userObject.js',
-                'optional!/api/instance'
+                'optional!/api/instance',
+                '/common/pad-types.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
-            _Instance) {
+            _Instance, _PadTypes) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -180,6 +181,7 @@ define([
                 Utils.currentPad = currentPad;
                 Utils.Instance = _Instance;
                 Utils.Block = _Block;
+                Utils.PadTypes = _PadTypes;
                 AppConfig = _AppConfig;
                 //Test = _Test;
 
@@ -819,7 +821,7 @@ define([
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
                     }
                     if (Utils.Constants.criticalApps.indexOf(parsed.type) === -1 &&
-                          AppConfig.availablePadTypes.indexOf(parsed.type) === -1) {
+                            !Utils.PadTypes.isAvailable(parsed.type)) {
                         additionalPriv.disabledApp = true;
                     }
                     if (!Utils.LocalStore.isLoggedIn() &&
@@ -2254,6 +2256,8 @@ define([
 
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
                 if (!isNewFile || rtStarted) { return; }
+                let feedbackKey = 'APP_' + parsed.type.toUpperCase() + '_CREATE';
+                Utils.Feedback.send(feedbackKey);
                 // Create a new hash
                 password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);

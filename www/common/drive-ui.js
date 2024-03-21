@@ -24,6 +24,7 @@ define([
     '/customize/application_config.js',
     '/customize/messages.js',
     '/customize/pages.js',
+    '/common/pad-types.js',
 ], function (
     $,
     ApiConfig,
@@ -43,7 +44,8 @@ define([
     ProxyManager,
     AppConfig,
     Messages,
-    Pages)
+    Pages,
+    PadTypes)
 {
 
     var APP = window.APP = {
@@ -338,7 +340,7 @@ define([
 
         var getNewPadTypes = function () {
             var arr = [];
-            AppConfig.availablePadTypes.forEach(function (type) {
+            PadTypes.availableTypes.forEach(function (type) {
                 if (AppConfig.hiddenTypes.indexOf(type) !== -1) { return; }
                 if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
@@ -369,7 +371,7 @@ define([
             if (!Array.isArray(AppConfig.availablePadTypes)) { return void enabled.push(app); }
             var registered = common.isLoggedIn() || !(AppConfig.registeredOnlyTypes || []).includes(app);
             restricted[app] = common.checkRestrictedApp(app);
-            var e = AppConfig.availablePadTypes.includes(app) && registered && restricted[app] >= 0;
+            var e = PadTypes.isAvailable(app) && registered && restricted[app] >= 0;
             if (e) { enabled.push(app); }
         });
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [

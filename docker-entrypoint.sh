@@ -1,8 +1,8 @@
+#!/bin/bash
+
 # SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
-
-#/bin/bash
 
 ## Required vars
 # CPAD_MAIN_DOMAIN
@@ -22,14 +22,18 @@ if [ ! -f "$CPAD_CONF" ]; then
          eg: docker run -v /path/to/config.js:/cryptpad/config/config.js \n\
          #################################################################### \n"
 
-cp "$CPAD_HOME"/config/config.example.js "$CPAD_CONF"
+	cp "$CPAD_HOME"/config/config.example.js "$CPAD_CONF"
 
-sed -i  -e "s@\(httpUnsafeOrigin:\).*[^,]@\1 '$CPAD_MAIN_DOMAIN'@" \
-        -e "s@\(^ *\).*\(httpSafeOrigin:\).*[^,]@\1\2 '$CPAD_SANDBOX_DOMAIN'@" $CPAD_CONF
+	sed -i  -e "s@\(httpUnsafeOrigin:\).*[^,]@\1 '$CPAD_MAIN_DOMAIN'@" \
+        -e "s@\(^ *\).*\(httpSafeOrigin:\).*[^,]@\1\2 '$CPAD_SANDBOX_DOMAIN'@" "$CPAD_CONF"
 fi
 
 cd $CPAD_HOME
+
+if [ "$CPAD_INSTALL_ONLYOFFICE" == "yes" ]; then
+	./install-onlyoffice.sh --accept-license
+fi
+
 npm run build
 
 exec "$@"
-
