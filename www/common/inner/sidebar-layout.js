@@ -165,7 +165,10 @@ define([
                 }));
             };
             table.updateContent = (newEntries) => {
-                $(table).find('tbody').remove();
+                $(table).show().find('tbody').remove();
+                if (!newEntries.length) {
+                    return void $(table).hide();
+                }
                 let bodyContent = [];
                 newEntries.forEach(line => {
                     const row = getRow(line);

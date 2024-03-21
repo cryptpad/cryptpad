@@ -1047,6 +1047,11 @@ define([
                 });
             };
 
+            let sort = all => {
+                return (k1, k2) => {
+                    return all[k1].time - all[k2].time;
+                };
+            };
             refreshInvite = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_ALL_INVITATIONS',
@@ -1060,7 +1065,7 @@ define([
                     var all = response[0];
                     var newEntries = [];
 
-                    Object.keys(all).forEach(function (key) {
+                    Object.keys(all).sort(sort(all)).forEach(function (key) {
                         var data = all[key];
                         var url = privateData.origin + Hash.hashToHref(key, 'register');
 
@@ -1368,6 +1373,11 @@ define([
                     refreshUsers();
                 });
             };
+            let sort = all => {
+                return (k1, k2) => {
+                    return all[k2].time - all[k1].time;
+                };
+            };
             refreshUsers = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_ALL_USERS',
@@ -1380,7 +1390,7 @@ define([
                     if (!Array.isArray(response)) { return; }
                     var all = response[0];
                     var newEntries = [];
-                    Object.keys(all).forEach(function (key) {
+                    Object.keys(all).sort(sort(all)).forEach(function (key) {
                         var data = all[key];
                         var editUser = () => {};
                         var del = blocks.button('danger', 'fa fa-trash', Messages.admin_usersRemove);
