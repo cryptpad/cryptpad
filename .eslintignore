@@ -1,14 +1,8 @@
 node_modules/
 www/components/
 www/bower_components/
-www/common/onlyoffice/sdkjs
-www/common/onlyoffice/web-apps
+www/common/onlyoffice/dist
 www/common/onlyoffice/x2t
-www/common/onlyoffice/v1
-www/common/onlyoffice/v2*
-www/common/onlyoffice/v4
-www/common/onlyoffice/v5
-www/common/onlyoffice/v*/
 
 www/scratch
 www/accounts

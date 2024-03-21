@@ -14,13 +14,9 @@ define([
     '/customize/application_config.js',
     '/common/outer/local-store.js',
     '/customize/pages.js',
-], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages) {
+    '/common/pad-types.js',
+], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages, PadTypes) {
     var urlArgs = Config.requireConf.urlArgs;
-
-    var isAvailableType = function (x) {
-        if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
-        return AppConfig.availablePadTypes.indexOf(x) !== -1;
-    };
 
     var checkEarlyAccess = function (x) {
         // Check if this is an early access app and if they are allowed.
@@ -51,7 +47,7 @@ define([
                 [ 'diagram', Msg.type.diagram],
                 [ 'slide', Msg.type.slide]
             ].filter(function (x) {
-                return isAvailableType(x[0]);
+                return PadTypes.isAvailable(x[0]);
             })
             .map(function (x) {
                 var s = 'div.bs-callout.cp-callout-' + x[0];
