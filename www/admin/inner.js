@@ -58,25 +58,21 @@ define([
             'general': {
                 icon: 'fa fa-user-o',
                 content: [
-                    'flush-cache',
-                    'update-limit',
-                    'enableembeds',
-                    'forcemfa',
-                    'email',
-
                     'instance-info-notice',
-
                     'name',
                     'description',
+                    'email',
                     'jurisdiction',
-                    'notice',
+                    'logo',
+                    'color',
+                    'flush-cache',
                 ]
             },
             'customize': {
                 icon: 'fa fa-paint-brush',
                 content: [
-                    'logo',
-                    'color'
+                    'enableembeds',
+                    'forcemfa',
                 ]
             },
             'users' : {
@@ -90,6 +86,7 @@ define([
             'quota': {
                 icon: 'fa fa-hdd-o',
                 content: [
+                    'update-limit',
                     'defaultlimit',
                     'setlimit',
                     'getlimits',
@@ -126,9 +123,10 @@ define([
             'broadcast' : {
                 icon: 'fa fa-bullhorn',
                 content : [
+                    'notice',
                     'maintenance',
                     'survey',
-                    'broadcast',
+                    'broadcast'
                 ]
             },
             'performance' : {
