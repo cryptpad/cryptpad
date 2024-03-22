@@ -2054,11 +2054,10 @@ define([
         }
         // Add moderation panel link if the user is a moderator and support is enabled
         if (priv.edPublic && Config.supportMailboxKey && Array.isArray(Config.moderatorKeys) && Config.moderatorKeys.includes(priv.edPublic)) {
-            Messages.moderationPage = "Support panel"; // XXX already in moderation/inner.js
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-admin fa fa-comments-o'},
-                content: h('span', Messages.moderationPage || 'Support panel'),
+                attributes: {'class': 'cp-toolbar-menu-admin fa  fa-ambulance'},
+                content: h('span', Messages.moderationPage || 'Support mailbox'),
                 action: function () {
                     Common.openURL(origin+'/moderation/');
                     return true;

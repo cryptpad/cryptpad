@@ -54,7 +54,7 @@ define([
     };
 
     // XXX
-    Messages.moderationPage = "Support panel"; // XXX
+    Messages.moderationPage = "Support mailbox"; // XXX
 
     Messages.support_cat_open = "Inbox";
     Messages.support_cat_closed = "Closed";
@@ -62,9 +62,9 @@ define([
     Messages.support_cat_settings = "Settings";
     Messages.support_cat_legacy = "Legacy";
 
-    Messages.support_pending = "Pending tickets:";
-    Messages.support_pending_tag = "Pending";
-    Messages.support_active_tag = "Active";
+    Messages.support_pending = "Archived tickets:";
+    Messages.support_pending_tag = "Archived";
+    Messages.support_active_tag = "Inbox";
     Messages.support_closed_tag = "Closed";
     /*
     Messages.support_activeListTitle = "Active tickets";
@@ -77,24 +77,23 @@ define([
     Messages.support_privacyHint = "Check this option to reply as 'The Support Team' instead of your own username";
 
     Messages.support_notificationsTitle = "Disable notifications";
-    Messages.support_notificationsHint = "Check this option to disable notifications on new or updated ticket";
-
-    Messages.support_openTicketTitle = "Open a ticket for a user";
-    Messages.support_openTicketHint = "Create a ticket for a user. They will receive a CryptPad notification to warn them. You can copy their user data from an existing support ticket, using the Copy button in the user data.";
+    Messages.support_notificationsHint = "Check this option to disable notifications for new tickets and replies";
+    Messages.support_openTicketTitle = "Open a ticket with a user";
+    Messages.support_openTicketHint = "Copy the recipient user's data from their profile page or an existing support ticket. They will receive a CryptPad notification about this message.";
     Messages.support_userChannel = "User's notifications channel ID";
-    Messages.support_userKey = "User's curvePublic key";
+    Messages.support_userKey = "User's public key";
     Messages.support_invalChan = "Invalid notifications channel";
 
     Messages.support_pasteUserData = "Paste user data here";
 
-    Messages.support_recordedTitle = "Prerecorded messages";
-    Messages.support_recordedHint = "You can store prerecorded message in order to insert them with one click in a support ticket.";
-    Messages.support_recordedEmpty = "No recorded messages";
-    Messages.support_recordedId = "Unique Identifier";
+    Messages.support_recordedTitle = "Snippets";
+    Messages.support_recordedHint = "Store common text as one-click shortcuts to insert in support messages.";
+    Messages.support_recordedEmpty = "No snippets";
+    Messages.support_recordedId = "Snippet ID (unique)";
     Messages.support_recordedContent = "Content";
 
     Messages.support_legacyTitle = "View old support data";
-    Messages.support_legacyHint = "View tickets from the legacy system. You'll be able to recreate thse tickets on the new support system.";
+    Messages.support_legacyHint = "View tickets from the legacy support system and recreate them in the new one.";
     Messages.support_legacyButton = "Get active";
     Messages.support_legacyDump = "Export all";
     Messages.support_legacyClear = "Delete from my account";

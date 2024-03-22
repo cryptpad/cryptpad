@@ -2767,16 +2767,16 @@ define([
         };
 
     // XXX DUPLICATE FROM ADMIN/INNER.JS
-    Messages.admin_supportSetupHint = "Create or update the current support keys.";
+    Messages.admin_supportSetupHint = "Create or update the support keys.";
     Messages.admin_supportSetupTitle = "Initialize support";
     Messages.admin_supportEnabled = "Modern support system is enabled.";
     Messages.admin_supportDisabled = "Modern support system is disabled.";
     Messages.admin_supportInit = "Initialize support page on this instance";
     Messages.admin_supportDelete = "Disable support";
-    Messages.admin_supportConfirm = "Are you sure? This will remove access to all current moderators and delete all existing tickets.";
-    Messages.admin_supportMembers = "Current support team";
+    Messages.admin_supportConfirm = "Are you sure? This will delete all existing tickets and block access for all moderators.";
+    Messages.admin_supportMembers = "Support team";
     Messages.admin_supportAdd = "Add a contact to the support team";
-    Messages.admin_supportRotateNotify = "Warning: new keys have been generated but an unenexpected error prevented the system to send them to the moderators. You may have to remove and re-add all the other moderators";
+    Messages.admin_supportRotateNotify = "Warning: new keys have been generated but an unenexpected error prevented the system to send them to the moderators. Please remove and re-add all members of the support team";
         sidebar.addItem('support-setup', function (cb) {
             let supportKey = ApiConfig.supportMailboxKey;
             let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
