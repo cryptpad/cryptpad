@@ -754,13 +754,13 @@ define([
 
         // XXX
         Messages.admin_cat_customize = "Customize";
-        Messages.admin_logoTitle = "Upload Logo";
-        Messages.admin_logoHint = "Max 200KB, svg, png or jpg";
+        Messages.admin_logoTitle = "Custom Logo";
+        Messages.admin_logoHint = "SVG, PNG or JPG, maximum size 200KB";
         Messages.admin_logoButton = "Upload new";
         Messages.admin_logoRemoveButton = "Restore default";
-        Messages.admin_colorTitle = "Main color";
-        Messages.admin_colorHint = "Change the main color of your CryptPad instance. Please pick a color with good contrast with the rest of CryptPad.";
-        Messages.admin_colorCurrent = "Current main color";
+        Messages.admin_colorTitle = "Accent color";
+        Messages.admin_colorHint = "Change the accent color of your CryptPad instance. Please ensure text and buttons are readable with sufficient contrast in both light and dark themes.";
+        Messages.admin_colorCurrent = "Current accent color";
         Messages.admin_colorChange = "Change color";
         Messages.admin_colorPick = "Pick a color";
         Messages.admin_colorPreview = "Preview color";
