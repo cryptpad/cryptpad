@@ -17,7 +17,7 @@ define([
 
     Messages.support_team = "The Support Team"; // XXX
     Messages.support_answerAs = "Answering as <b>{0}</b>"; // XXX
-    Messages.support_movePending = "Move to pending";
+    Messages.support_movePending = "Move to archive";
     Messages.support_moveActive = "Move to active";
     Messages.support_copyUserData = "Copy user data";
     Messages.support_insertRecorded = "Insert snippet";
@@ -41,7 +41,7 @@ define([
         if (ctx.isAdmin && ctx.anonymous) {
             data.sender = {
                 name: Messages.support_team,
-                accountName: 'support'
+                accountName: 'support' // XXX hard-coded text? DB
                 // XXX send edPublic? or keep it private
             };
         }
