@@ -63,13 +63,27 @@ define([
                     'description',
                     'email',
                     'jurisdiction',
-                    'logo',
-                    'color',
-                    'flush-cache',
+                    'flush-cache'
                 ]
             },
             'customize': {
                 icon: 'fa fa-paint-brush',
+                content: [
+                    'logo',
+                    'color',
+                ]
+            },
+            'broadcast' : {
+                icon: 'fa fa-bullhorn',
+                content : [
+                    'notice',
+                    'maintenance',
+                    'survey',
+                    'broadcast'
+                ]
+            },
+            'security': {
+                icon: 'fa fa-lock',
                 content: [
                     'enableembeds',
                     'forcemfa',
@@ -81,6 +95,12 @@ define([
                 'registration',
                 'invitation',
                 'users'
+                ]
+            },
+            'support' : {
+                icon : 'fa fa-ambulance',
+                content : [
+                    'support-setup',
                 ]
             },
             'quota': {
@@ -112,21 +132,6 @@ define([
                     'open-files',
                     'registered',
                     'disk-usage',
-                ]
-            },
-            'support' : {
-                icon : 'fa fa-life-ring',
-                content : [
-                    'support-setup',
-                ]
-            },
-            'broadcast' : {
-                icon: 'fa fa-bullhorn',
-                content : [
-                    'notice',
-                    'maintenance',
-                    'survey',
-                    'broadcast'
                 ]
             },
             'performance' : {
@@ -754,6 +759,7 @@ define([
 
         // XXX
         Messages.admin_cat_customize = "Customize";
+        Messages.admin_cat_security = "Security";
         Messages.admin_logoTitle = "Custom Logo";
         Messages.admin_logoHint = "SVG, PNG or JPG, maximum size 200KB";
         Messages.admin_logoButton = "Upload new";
