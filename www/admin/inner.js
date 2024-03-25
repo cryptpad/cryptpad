@@ -107,7 +107,7 @@ define([
             'quota': {
                 icon: 'fa fa-hdd-o',
                 content: [
-                    'update-limit',
+                    //'update-limit',
                     'defaultlimit',
                     'setlimit',
                     'getlimits',
@@ -162,6 +162,13 @@ define([
 
         const blocks = sidebar.blocks;
 
+        const flushCache = (cb) => {
+            cb = cb || function () {};
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'FLUSH_CACHE',
+            }, cb);
+        };
+        /*
         var flushCacheNotice = function () {
             var notice = UIElements.setHTML(h('p'), Messages.admin_reviewCheckupNotice);
             $(notice).find('a').attr({
@@ -177,14 +184,13 @@ define([
             ]);
             UI.alert(content);
         };
+        */
 
         //general blocks
         sidebar.addItem('flush-cache', function (cb) {
             var button = blocks.activeButton('primary', '',
                     Messages.admin_flushCacheButton, done => {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'FLUSH_CACHE',
-                }, function (e, data) {
+                flushCache(function (e, data) {
                     done(!!data);
                     UI.alert(data ? Messages.admin_flushCacheDone || 'done' : 'error' + e);
                 });
@@ -530,7 +536,7 @@ define([
                     }
                     APP.updateStatus(function () {
                         setState(APP.instanceStatus.enableEmbedding);
-                        flushCacheNotice();
+                        flushCache();
                     });
                 });
             },
@@ -552,7 +558,7 @@ define([
                     }
                     APP.updateStatus(function () {
                         setState(APP.instanceStatus.enforceMFA);
-                        flushCacheNotice();
+                        flushCache();
                     });
                 });
             },
@@ -592,6 +598,7 @@ define([
                         done(false);
                         return;
                     }
+                    flushCache();
                     done(true);
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_emailTitle]));
                 });
@@ -638,6 +645,7 @@ define([
                         done(false);
                         return;
                     }
+                    flushCache();
                     done(true);
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_nameTitle]));
                 });
@@ -671,6 +679,7 @@ define([
                         done(false);
                         return;
                     }
+                    flushCache();
                     done(true);
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_descriptionTitle]));
                 });
@@ -707,6 +716,7 @@ define([
                         done(false);
                         return;
                     }
+                    flushCache();
                     done(true);
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_jurisdictionTitle]));
                 });
@@ -743,6 +753,7 @@ define([
                         done(false);
                         return;
                     }
+                    flushCache();
                     done(true);
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_noticeTitle]));
                 });
@@ -887,7 +898,6 @@ define([
                         return;
                     }
                     done(true);
-                    flushCacheNotice();
                     UI.log(Messages.saved);
                 });
             };
@@ -956,7 +966,7 @@ define([
                         APP.updateStatus(function () {
                             setState(APP.instanceStatus.restrictRegistration);
                             refresh();
-                            flushCacheNotice();
+                            flushCache();
                         });
                     });
                 },
@@ -978,7 +988,7 @@ define([
                         }
                         APP.updateStatus(function () {
                             setState(APP.instanceStatus.restrictSsoRegistration);
-                            flushCacheNotice();
+                            flushCache();
                         });
                     });
                 }
@@ -1279,7 +1289,7 @@ define([
                         }
                         APP.updateStatus(function () {
                             setState(!APP.instanceStatus.dontStoreInvitedUsers);
-                            flushCacheNotice();
+                            flushCache();
                         });
                     });
                 }
@@ -1301,7 +1311,7 @@ define([
                         }
                         APP.updateStatus(function () {
                             setState(!APP.instanceStatus.dontStoreSSOUsers);
-                            flushCacheNotice();
+                            flushCache();
                         });
                     });
                 }
