@@ -338,7 +338,7 @@ define([
 
         // Make sidebar layout
         const categories = {
-            'open': {
+            'open': { // Msg.support_cat_open
                 icon: 'fa fa-inbox',
                 content: [
                     'refresh',
@@ -347,7 +347,7 @@ define([
                     'pending-list',
                 ]
             },
-            'closed': {
+            'closed': { // Msg.support_cat_closed
                 icon: 'fa fa-archive',
                 content: [
                     'refresh',
@@ -355,7 +355,7 @@ define([
                     'closed-list'
                 ]
             },
-            'search': {
+            'search': { // Msg.support_cat_search
                 icon: 'fa fa-search',
                 content: [
                     'filter',
@@ -368,7 +368,7 @@ define([
                     });
                 }
             },
-            'new': {
+            'new': { // Msg.support_cat_new
                 icon: 'fa fa-envelope',
                 content: [
                     'open-ticket'
@@ -380,13 +380,13 @@ define([
                     });
                 }
             },
-            'legacy': {
+            'legacy': { // Msg.support_cat_legacy
                 icon: 'fa fa-server',
                 content: [
                     'legacy'
                 ]
             },
-            'settings': {
+            'settings': { // Msg.support_cat_settings
                 icon: 'fa fa-cogs',
                 content: [
                     'privacy',
@@ -412,6 +412,7 @@ define([
             cb(content);
         }, { noTitle: true, noHint: true });
 
+        // Msg.support_privacyHint.support_privacyTitle
         sidebar.addCheckboxItem({
             key: 'privacy',
             getState: () => false,
@@ -434,6 +435,7 @@ define([
         }, { noTitle: true, noHint: true });
         refreshAll();
 
+        // Msg.support_notificationsHint.support_notificationsTitle.support_notificationsLabel
         sidebar.addCheckboxItem({
             key: 'notifications',
             getState: () => APP.disableSupportNotif,
@@ -605,6 +607,7 @@ define([
             cb(container);
         }, { noTitle: true, noHint: true });
 
+        // Msg.support_recordedHint.support_recordedTitle
         sidebar.addItem('recorded', cb => {
             let empty = blocks.inline(Messages.support_recordedEmpty);
             let list = blocks.block([], 'cp-moderation-recorded-list');
@@ -689,6 +692,7 @@ define([
             cb(form);
         });
 
+        // Msg.support_openTicketHint.support_openTicketTitle
         sidebar.addItem('open-ticket', cb => {
             let form = APP.support.makeForm({});
 
@@ -784,6 +788,7 @@ define([
             cb(div);
         });
 
+        // Msg.support_legacyHint.support_legacyTitle
         sidebar.addItem('legacy', cb => {
             if (!APP.privateKey) { return void cb(false); }
 

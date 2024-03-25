@@ -17,7 +17,7 @@ var ignoreLines = function (source, pattern) {
 };
 
 var GENERATED_PATTERNS = [
-   /(team|admin|settings|support)_.*(Hint|Title|Button)/,
+   /(team|admin|settings|support)_.*(Hint|Title|Button|Label)/,
    /settings_colortheme/,
    /loading_(state|drive|pad)_/,
    /(admin|notifications|support|team|settings)_cat_/,
@@ -53,6 +53,7 @@ var grep = function (pattern, cb) {
         '*.svg',
         '*.md',
         './config/*',
+        'www/oldadmin/*', // XXX
     ].map(function (patt) {
         return "':(exclude)" + patt + "'";
     }).join(' ');

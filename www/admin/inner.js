@@ -54,8 +54,9 @@ define([
 
     var andThen = function (common, $container) {
         const sidebar = Sidebar.create(common, 'admin', $container);
+        // UNUSED-TRANSLATIONS:START
         var categories = {
-            'general': {
+            'general': { // Msg.admin_cat_general
                 icon: 'fa fa-user-o',
                 content: [
                     'instance-info-notice',
@@ -66,14 +67,14 @@ define([
                     'flush-cache'
                 ]
             },
-            'customize': {
+            'customize': { // Msg.admin_cat_customize
                 icon: 'fa fa-paint-brush',
                 content: [
                     'logo',
                     'color',
                 ]
             },
-            'broadcast' : {
+            'broadcast' : { // Msg.admin_cat_broadcast
                 icon: 'fa fa-bullhorn',
                 content : [
                     'notice',
@@ -82,14 +83,14 @@ define([
                     'broadcast'
                 ]
             },
-            'security': {
+            'security': { // Msg.admin_cat_security
                 icon: 'fa fa-lock',
                 content: [
                     'enableembeds',
                     'forcemfa',
                 ]
             },
-            'users' : {
+            'users' : { // Msg.admin_cat_users
                 icon : 'fa fa-address-card-o',
                 content : [
                 'registration',
@@ -97,23 +98,22 @@ define([
                 'users'
                 ]
             },
-            'support' : {
+            'support' : { // Msg.admin_cat_support
                 icon : 'fa fa-ambulance',
                 content : [
                     'support-setup',
                     'support-team',
                 ]
             },
-            'quota': {
+            'quota': { // Msg.admin_cat_quota
                 icon: 'fa fa-hdd-o',
                 content: [
-                    //'update-limit',
                     'defaultlimit',
                     'setlimit',
                     'getlimits',
                 ]
             },
-            'database' : {
+            'database' : { // Msg.admin_cat_database
                 icon : 'fa fa-database',
                 content : [
                     'account-metadata',
@@ -123,7 +123,7 @@ define([
 
                 ]
             },
-            'stats' : {
+            'stats' : { // Msg.admin_cat_stats
                 icon : 'fa fa-line-chart',
                 content : [
                     'refresh-stats',
@@ -135,7 +135,7 @@ define([
                     'disk-usage',
                 ]
             },
-            'performance' : {
+            'performance' : { // Msg.admin_cat_performance
                 icon : 'fa fa-heartbeat',
                 content : [
                     'refresh-performance',
@@ -144,7 +144,7 @@ define([
                     'bytes-written',
                 ]
             },
-            'network' : {
+            'network' : { // Msg.admin_cat_network
                 icon : 'fa fa-sitemap',
                 content : [
                     'update-available',
@@ -187,6 +187,8 @@ define([
         */
 
         //general blocks
+
+        // Msg.admin_flushCacheHint, .admin_flushCacheTitle, .admin_flushCacheButton
         sidebar.addItem('flush-cache', function (cb) {
             var button = blocks.activeButton('primary', '',
                     Messages.admin_flushCacheButton, done => {
@@ -507,6 +509,7 @@ define([
             return tableObj.table;
         };
 
+        // Msg.admin_updateLimitHint, .admin_updateLimitTitle, .admin_updateLimitButton
         sidebar.addItem('update-limit', function (cb) {
             var button = blocks.activeButton('primary', '',
                     Messages.admin_updateLimitButton, done => {
@@ -520,6 +523,7 @@ define([
             cb(button);
         });
 
+        // Msg.admin_enableembedsHint, .admin_enableembedsTitle
         sidebar.addCheckboxItem({
             key: 'enableembeds',
             getState: function () {
@@ -542,6 +546,7 @@ define([
             },
         });
 
+        // Msg.admin_forcemfaHint, .admin_forcemfaTitle
         sidebar.addCheckboxItem({
             key: 'forcemfa',
             getState: function () {
@@ -578,6 +583,7 @@ define([
             }
         };
 
+        // Msg.admin_emailHint, Msg.admin_emailTitle
         sidebar.addItem('email', function (cb){
             var input = blocks.input({
                 type: 'email',
@@ -624,6 +630,7 @@ define([
             noHint: true
         });
 
+        // Msg.admin_nameHint, Msg.admin_nameTitle, Msg.admin_nameButton
         sidebar.addItem('name', function (cb){
             var input = blocks.input({
                 type: 'text',
@@ -661,6 +668,7 @@ define([
             cb(form);
         });
 
+        // Msg.admin_descriptionHint, Msg.admin_descriptionTitle
         sidebar.addItem('description', function (cb){
             var textarea = blocks.textarea({
                 placeholder: Messages.home_host || '',
@@ -695,6 +703,7 @@ define([
             cb(form);
         });
 
+        // Msg.admin_jurisdictionHint, Msg.admin_jurisdictionTitle
         sidebar.addItem('jurisdiction', function (cb){
             var input = blocks.input({
                 type: 'text',
@@ -732,6 +741,7 @@ define([
             cb(form);
         });
 
+        // Messages.admin_noticeHint, Messages.admin_noticeTitle
         sidebar.addItem('notice', function (cb){
             var input = blocks.input({
                 type: 'text',
@@ -769,8 +779,8 @@ define([
             cb(form);
         });
 
+        // Msg.admin_logoHint, Msg.admin_logoTitle
         sidebar.addItem('logo', (cb) => {
-            // Msg.admin_logoHint, Msg.admin_logoTitle
 
             let input = blocks.input({
                 type: 'file',
@@ -849,6 +859,7 @@ define([
             cb(form);
         });
 
+        // Msg.admin_colorHint, Msg.admin_colorTitle
         sidebar.addItem('color', cb => {
             let input = blocks.input({
                 type: 'color',
@@ -932,6 +943,8 @@ define([
             cb([form, labelPreview]);
         });
 
+        // Msg.admin_registrationHint, .admin_registrationTitle
+        // Msg.admin_registrationSsoTitle
         sidebar.addItem('registration', function(cb){
             var refresh = function () {};
 
@@ -996,6 +1009,7 @@ define([
             cb(blocks.form([restrict, restrictSSO], []));
         });
 
+        // Msg.admin_invitationHint, admin_invitationTitle
         sidebar.addItem('invitation', function(cb){
             var button = blocks.button('primary', '', Messages.admin_invitationCreate);
             var $b = $(button);
@@ -1257,6 +1271,9 @@ define([
             });
         };
 
+        // Msg.admin_usersHint, admin_usersTitle
+        // Msg.admin_storeInvitedLabel
+        // Msg.admin_storeSsoLabel
         sidebar.addItem('users', function(cb){
 
             var invited = blocks.activeCheckbox({
@@ -1504,6 +1521,7 @@ define([
             cb([form, list]);
         });
 
+        // Msg.admin_defaultlimitHint, .admin_defaultlimitTitle
         sidebar.addItem('defaultlimit', function (cb) {
             var _limit = APP.instanceStatus.defaultStorageLimit;
             var _limitMB = Util.bytesToMegabytes(_limit);
@@ -1552,6 +1570,7 @@ define([
             cb(form);
         });
 
+        // Msg.admin_setlimitHint, .admin_setlimitTitle
         sidebar.addItem('setlimit', function(cb){
             var user = blocks.input({ type:'text', class: 'cp-setlimit-user'});
             var userBlock = blocks.labelledInput(Messages.admin_limitUser, user);
@@ -1650,6 +1669,7 @@ define([
             cb(form);
         });
 
+        // Msg.admin_getlimitsHint, .admin_getlimitsTitle
         sidebar.addItem('getlimits', function(cb){
             var header = [
                 Messages.settings_publicSigningKey,
@@ -1718,6 +1738,7 @@ define([
             cb(table);
         });
 
+        // Msg.admin_accountMetadataHint.admin_accountMetadataTitle
         sidebar.addItem('account-metadata', function(cb) {
             var input = blocks.input({
                 type: 'text',
@@ -2087,6 +2108,7 @@ define([
         };
 
 
+        // Msg.admin_documentMetadataHint.admin_documentMetadataTitle
         sidebar.addItem('document-metadata', function(cb){
             var input = blocks.input({
                 type: 'text',
@@ -2326,6 +2348,7 @@ define([
             return tableObj.table;
         };
 
+        // Msg.admin_blockMetadataHint.admin_blockMetadataTitle
         sidebar.addItem('block-metadata', function(cb){
             var input = blocks.input({
                 type: 'text',
@@ -2453,6 +2476,7 @@ define([
             return Nacl.sign.detached.verify(msg, sig, pub);
         };
 
+        // Msg.admin_totpRecoveryHint.admin_totpRecoveryTitle
         sidebar.addItem('totp-recovery', function(cb){
             var textarea = blocks.textarea({
                 id: 'textarea-input',
@@ -2540,6 +2564,7 @@ define([
             noHint: true
         });
 
+        // Msg.admin_uptimeTitle, .admin_uptimeHint
         sidebar.addItem('uptime', function(cb){
             var pre = blocks.pre(Messages.admin_uptimeTitle);
             var set = function () {
@@ -2557,6 +2582,7 @@ define([
             cb(pre);
         });
 
+        // Msg.admin_activeSessionsHint, .admin_activeSessionsTitle
         sidebar.addItem('active-sessions', function(cb){
             var pre = blocks.pre('');
             var onRefresh = function () {
@@ -2575,6 +2601,7 @@ define([
             cb(pre);
         });
 
+        // Msg.admin_activePadsHint, .admin_activePadsTitle
         sidebar.addItem('active-pads', function(cb){
             var pre = blocks.pre('');
             var onRefresh = function () {
@@ -2591,6 +2618,7 @@ define([
             cb(pre);
         });
 
+        // Msg.admin_openFilesHint, .admin_openFilesTitle
         sidebar.addItem('open-files', function(cb){
             var pre = blocks.pre('');
             var onRefresh = function () {
@@ -2613,6 +2641,7 @@ define([
             cb(pre);
         });
 
+        // Msg.admin_registeredHint, .admin_registeredTitle
         sidebar.addItem('registered', function(cb){
             var pre = blocks.pre('');
             var onRefresh = function () {
@@ -2629,6 +2658,7 @@ define([
             cb(pre);
         });
 
+        // Msg.admin_diskUsageHint, .admin_diskUsageTitle, .admin_diskUsageButton
         sidebar.addItem('disk-usage', function(cb){
             var button = blocks.button('primary', '', Messages.admin_diskUsageButton);
             var $button = $(button);
@@ -2761,6 +2791,7 @@ define([
                 refreshSupport();
             });
         };
+        // Msg.admin_supportSetupHint, .admin_supportSetupTitle
         sidebar.addItem('support-setup', function (cb) {
             let content = blocks.block();
             const $div = $(content);
@@ -2830,6 +2861,7 @@ define([
             cb(content);
         });
 
+        // Msg.admin_supportTeamHint, .admin_supportTeamTitle
         sidebar.addItem('support-team', function (cb) {
             let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
             let content = blocks.block();
@@ -3039,6 +3071,7 @@ define([
             });
 
         };
+        // Msg.admin_maintenanceHint, admin_maintenanceTitle
         sidebar.addItem('maintenance', function(cb){
             var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
             var $button = $(button);
@@ -3164,6 +3197,7 @@ define([
 
         });
 
+        // Msg.admin_surveyHint, admin_surveyTitle
         sidebar.addItem('survey', function(cb){
             var button = blocks.button('primary', '', Messages.admin_surveyButton);
             var $button = $(button);
@@ -3248,6 +3282,7 @@ define([
             cb(form);
         });
 
+        // Msg.admin_broadcastHint, admin_broadcastTitle
         sidebar.addItem('broadcast', function(cb) {
             var form = blocks.block([], 'cp-admin-broadcast-form');
             var $form = $(form);
@@ -3490,6 +3525,7 @@ define([
             noHint: true
         });
 
+        // Msg.admin_performanceProfilingHint, .admin_performanceProfilingTitle
         sidebar.addItem('performance-profiling', function(cb){
             var header = [
                 Messages.admin_performanceKeyHeading,
@@ -3534,6 +3570,7 @@ define([
         });
 
 
+        // Msg.admin_enableDiskMeasurementsTitle.admin_enableDiskMeasurementsHint
         sidebar.addCheckboxItem({
             getState: function () {
                 return APP.instanceStatus.enableProfiling;
@@ -3560,6 +3597,7 @@ define([
             return n && typeof(n) === 'number'  && n % 1 === 0 && n > 0;
         };
 
+        // Msg.admin_bytesWrittenTitle.admin_bytesWrittenHint
         sidebar.addItem('bytes-written', function(cb){
             var duration = APP.instanceStatus.profilingWindow;
             if (!isPositiveInteger(duration)) { duration = 10000; }
@@ -3601,6 +3639,7 @@ define([
             cb(form);
         });
 
+        // Messages.admin_updateAvailableTitle.admin_updateAvailableHint.admin_updateAvailableLabel.admin_updateAvailableButton
         sidebar.addItem('update-available', function(cb){
             if (!APP.instanceStatus.updateAvailable) { return; }
 
@@ -3616,6 +3655,7 @@ define([
             cb(button);
         });
 
+        // Messages.admin_checkupButton.admin_checkupHint.admin_checkupTitle
         sidebar.addItem('checkup', function(cb){
             var button = blocks.button('primary', '', Messages.admin_checkupButton);
             Util.onClickEnter($(button), function () {
@@ -3626,6 +3666,7 @@ define([
         });
 
 
+        // Messages.admin_blockDailyCheckTitle.admin_blockDailyCheckHint.admin_blockDailyCheckLabel
         sidebar.addCheckboxItem({
             key: 'block-daily-check',
             getState: function () {
@@ -3647,6 +3688,7 @@ define([
             }
         });
 
+        // Messages.admin_provideAggregateStatisticsTitle.admin_provideAggregateStatisticsHint.admin_provideAggregateStatisticsLabel
         sidebar.addCheckboxItem({
             key: 'provide-aggregate-statistics',
             getState: function () {
@@ -3668,7 +3710,7 @@ define([
             }
         });
 
-
+        // Messages.admin_listMyInstanceTitle.admin_listMyInstanceHint.admin_listMyInstanceLabel
         sidebar.addCheckboxItem({
             key: 'list-my-instance',
             getState: function () {
@@ -3690,6 +3732,7 @@ define([
             }
         });
 
+        // Messages.admin_consentToContactTitle.admin_consentToContactHint.admin_consentToContactLabel
         sidebar.addCheckboxItem({
             key: 'consent-to-contact',
             getState: function () {
@@ -3711,6 +3754,7 @@ define([
             }
         });
 
+        // Messages.admin_removeDonateButtonTitle.admin_removeDonateButtonHint.admin_removeDonateButtonLabel
         sidebar.addCheckboxItem({
             key: 'remove-donate-button',
             getState: function () {
@@ -3740,6 +3784,7 @@ define([
             }, cb);
         };
 
+        // Messages.admin_instancePurposeTitle.admin_instancePurposeHint
         sidebar.addItem('instance-purpose', function(cb){
             var values = [
                 'noanswer', // Messages.admin_purpose_noanswer
