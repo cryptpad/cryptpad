@@ -533,7 +533,6 @@ define([
         };
     };
 
-    Messages.support_copyUserData = "Copy user data"; // XXX Already added in support/ui.js
     var addCopyData = function ($container) {
         if (!APP.isModerator) { return; }
 

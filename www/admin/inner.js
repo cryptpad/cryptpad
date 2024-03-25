@@ -769,20 +769,6 @@ define([
             cb(form);
         });
 
-        // XXX
-        Messages.admin_cat_customize = "Customize";
-        Messages.admin_cat_security = "Security";
-        Messages.admin_logoTitle = "Custom Logo";
-        Messages.admin_logoHint = "SVG, PNG or JPG, maximum size 200KB";
-        Messages.admin_logoButton = "Upload new";
-        Messages.admin_logoRemoveButton = "Restore default";
-        Messages.admin_colorTitle = "Accent color";
-        Messages.admin_colorHint = "Change the accent color of your CryptPad instance. Please ensure text and buttons are readable with sufficient contrast in both light and dark themes.";
-        Messages.admin_colorCurrent = "Current accent color";
-        Messages.admin_colorChange = "Change color";
-        Messages.admin_colorPick = "Pick a color";
-        Messages.admin_colorPreview = "Preview color";
-
         sidebar.addItem('logo', (cb) => {
             // Msg.admin_logoHint, Msg.admin_logoTitle
 
@@ -2689,115 +2675,6 @@ define([
             cb(form);
         });
 
-        var getApi = function (cb) {
-            return function () {
-                require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
-                    cb(Broadcast);
-                    setTimeout(function () {
-                        try {
-                            var ctx = require.s.contexts._;
-                            var defined = ctx.defined;
-                            Object.keys(defined).forEach(function (href) {
-                                if (/^\/api\/broadcast\?[0-9]{13}/.test(href)) {
-                                    delete defined[href];
-                                    return;
-                                }
-                            });
-                        } catch (e) {}
-                    });
-                });
-            };
-        };
-        var checkLastBroadcastHash = function (cb) {
-            var deleted = [];
-
-            require(['/api/broadcast?'+ (+new Date())], function (BCast) {
-                var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
-                common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
-                    if (e) { console.error(e); return void cb(e); }
-
-                    // No history, nothing to change
-                    if (!Array.isArray(msgs)) { return void cb(); }
-                    if (!msgs.length) { return void cb(); }
-
-                    var lastHash;
-                    var next = false;
-
-                    // Start from the most recent messages until you find a CUSTOM message and
-                    // check if it has been deleted
-                    msgs.reverse().some(function (data) {
-                        var c = data.content;
-
-                        // This is the hash we want to keep
-                        if (next) {
-                            if (!c || !c.hash) { return; }
-                            lastHash = c.hash;
-                            next = false;
-                            return true;
-                        }
-
-                        // initialize with the most recent hash
-                        if (!lastHash && c && c.hash) { lastHash = c.hash; }
-
-                        var msg = c && c.msg;
-                        if (!msg) { return; }
-
-                        // Remember all deleted messages
-                        if (msg.type === "BROADCAST_DELETE") {
-                            deleted.push(Util.find(msg, ['content', 'uid']));
-                        }
-
-                        // Only check custom messages
-                        if (msg.type !== "BROADCAST_CUSTOM") { return; }
-
-                        // If the most recent CUSTOM message has been deleted, it means we don't
-                        // need to keep any message and we can continue with lastHash as the most
-                        // recent broadcast message.
-                        if (deleted.indexOf(msg.uid) !== -1) { return true; }
-
-                        // We just found the oldest message we want to keep, move one iteration
-                        // further into the loop to get the next message's hash.
-                        // If this is the end of the loop, don't bump lastBroadcastHash at all.
-                        next = true;
-                    });
-
-                    // If we don't have to bump our lastBroadcastHash, abort
-                    if (next) { return void cb(); }
-
-                    // Otherwise, bump to lastHash
-                    console.warn('Updating last broadcast hash to', lastHash);
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'ADMIN_DECREE',
-                        data: ['SET_LAST_BROADCAST_HASH', [lastHash]]
-                    }, function (e, response) {
-                        if (e || response.error) {
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                            return;
-                        }
-                        console.log('lastBroadcastHash updated');
-                        if (typeof(cb) === "function") { cb(); }
-                    });
-                });
-            });
-
-        };
-
-    // XXX
-    Messages.admin_supportSetupHint = "Create or update the support keys.";
-    Messages.admin_supportSetupTitle = "Initialize support";
-    Messages.admin_supportEnabled = "Modern support system is enabled.";
-    Messages.admin_supportDisabled = "Modern support system is disabled.";
-    Messages.admin_supportInit = "Initialize support page on this instance";
-    Messages.admin_supportDelete = "Disable support";
-    Messages.admin_supportConfirm = "Are you sure? This will delete all existing tickets and block access for all moderators.";
-    Messages.admin_supportMembers = "Support team";
-    Messages.admin_supportAdd = "Add a contact to the support team";
-    Messages.admin_supportRotateNotify = "Warning: new keys have been generated but an unenexpected error prevented the system to send them to the moderators. Please remove and re-add all members of the support team";
-
-    Messages.admin_supportTeamTitle = "admin_supportTeamTitle";
-    Messages.admin_supportTeamHint = "admin_supportTeamHint";
-    Messages.admin_supportOpen = "Open helpdesk";
         let onRefreshSupportEvt = Util.mkEvent();
         let refreshSupport = () => {
             let moderators, supportKey;
@@ -3069,6 +2946,99 @@ define([
         });
         setTimeout(refreshSupport);
 
+        var getApi = function (cb) {
+            return function () {
+                require(['/api/broadcast?'+ (+new Date())], function (Broadcast) {
+                    cb(Broadcast);
+                    setTimeout(function () {
+                        try {
+                            var ctx = require.s.contexts._;
+                            var defined = ctx.defined;
+                            Object.keys(defined).forEach(function (href) {
+                                if (/^\/api\/broadcast\?[0-9]{13}/.test(href)) {
+                                    delete defined[href];
+                                    return;
+                                }
+                            });
+                        } catch (e) {}
+                    });
+                });
+            };
+        };
+        var checkLastBroadcastHash = function (cb) {
+            var deleted = [];
+
+            require(['/api/broadcast?'+ (+new Date())], function (BCast) {
+                var hash = BCast.lastBroadcastHash || '1'; // Truthy value if no lastKnownHash
+                common.mailbox.getNotificationsHistory('broadcast', null, hash, function (e, msgs) {
+                    if (e) { console.error(e); return void cb(e); }
+
+                    // No history, nothing to change
+                    if (!Array.isArray(msgs)) { return void cb(); }
+                    if (!msgs.length) { return void cb(); }
+
+                    var lastHash;
+                    var next = false;
+
+                    // Start from the most recent messages until you find a CUSTOM message and
+                    // check if it has been deleted
+                    msgs.reverse().some(function (data) {
+                        var c = data.content;
+
+                        // This is the hash we want to keep
+                        if (next) {
+                            if (!c || !c.hash) { return; }
+                            lastHash = c.hash;
+                            next = false;
+                            return true;
+                        }
+
+                        // initialize with the most recent hash
+                        if (!lastHash && c && c.hash) { lastHash = c.hash; }
+
+                        var msg = c && c.msg;
+                        if (!msg) { return; }
+
+                        // Remember all deleted messages
+                        if (msg.type === "BROADCAST_DELETE") {
+                            deleted.push(Util.find(msg, ['content', 'uid']));
+                        }
+
+                        // Only check custom messages
+                        if (msg.type !== "BROADCAST_CUSTOM") { return; }
+
+                        // If the most recent CUSTOM message has been deleted, it means we don't
+                        // need to keep any message and we can continue with lastHash as the most
+                        // recent broadcast message.
+                        if (deleted.indexOf(msg.uid) !== -1) { return true; }
+
+                        // We just found the oldest message we want to keep, move one iteration
+                        // further into the loop to get the next message's hash.
+                        // If this is the end of the loop, don't bump lastBroadcastHash at all.
+                        next = true;
+                    });
+
+                    // If we don't have to bump our lastBroadcastHash, abort
+                    if (next) { return void cb(); }
+
+                    // Otherwise, bump to lastHash
+                    console.warn('Updating last broadcast hash to', lastHash);
+                    sFrameChan.query('Q_ADMIN_RPC', {
+                        cmd: 'ADMIN_DECREE',
+                        data: ['SET_LAST_BROADCAST_HASH', [lastHash]]
+                    }, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                            return;
+                        }
+                        console.log('lastBroadcastHash updated');
+                        if (typeof(cb) === "function") { cb(); }
+                    });
+                });
+            });
+
+        };
         sidebar.addItem('maintenance', function(cb){
             var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
             var $button = $(button);

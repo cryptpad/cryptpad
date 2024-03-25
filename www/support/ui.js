@@ -15,13 +15,6 @@ define([
     '/customize/pages.js',
 ], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, UIElements, Messages, Pages) {
 
-    Messages.support_team = "The Support Team"; // XXX
-    Messages.support_answerAs = "Answering as <b>{0}</b>"; // XXX
-    Messages.support_movePending = "Move to archive";
-    Messages.support_moveActive = "Move to active";
-    Messages.support_copyUserData = "Copy user data";
-    Messages.support_insertRecorded = "Insert snippet";
-
     var getDebuggingData = function (ctx, data) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
@@ -41,7 +34,7 @@ define([
         if (ctx.isAdmin && ctx.anonymous) {
             data.sender = {
                 name: Messages.support_team,
-                accountName: 'support' // XXX hard-coded text? DB
+                accountName: 'support'
                 // XXX send edPublic? or keep it private
             };
         }

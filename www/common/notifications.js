@@ -484,9 +484,6 @@ define([
         }
     };
 
-    // XXX
-    Messages.support_userNotification = "New support ticket or response: {0}";
-    Messages.support_moderatorNotification = "You have been added to the moderators list";
     handlers['NOTIF_TICKET'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;

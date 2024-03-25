@@ -53,52 +53,6 @@ define([
         REFRESH_TAGS: Util.mkEvent()
     };
 
-    // XXX
-    Messages.moderationPage = "Support mailbox"; // XXX
-
-    Messages.support_cat_open = "Inbox";
-    Messages.support_cat_closed = "Closed";
-    Messages.support_cat_search = "Search";
-    Messages.support_cat_settings = "Settings";
-    Messages.support_cat_legacy = "Legacy";
-
-    Messages.support_pending = "Archived tickets:";
-    Messages.support_pending_tag = "Archived";
-    Messages.support_active_tag = "Inbox";
-    Messages.support_closed_tag = "Closed";
-    /*
-    Messages.support_activeListTitle = "Active tickets";
-    Messages.support_pendingListTitle = "Pending tickets";
-    Messages.support_activeListHint = "List of tickets that are in an active state";
-    Messages.support_pendingListHint = "List of tickets that may not be updated for a while but should not be closed";
-    */
-
-    Messages.support_privacyTitle = "Answer anonymously";
-    Messages.support_privacyHint = "Check this option to reply as 'The Support Team' instead of your own username";
-
-    Messages.support_notificationsTitle = "Disable notifications";
-    Messages.support_notificationsHint = "Check this option to disable notifications for new tickets and replies";
-    Messages.support_openTicketTitle = "Open a ticket with a user";
-    Messages.support_openTicketHint = "Copy the recipient user's data from their profile page or an existing support ticket. They will receive a CryptPad notification about this message.";
-    Messages.support_userChannel = "User's notifications channel ID";
-    Messages.support_userKey = "User's public key";
-    Messages.support_invalChan = "Invalid notifications channel";
-
-    Messages.support_pasteUserData = "Paste user data here";
-
-    Messages.support_recordedTitle = "Snippets";
-    Messages.support_recordedHint = "Store common text as one-click shortcuts to insert in support messages.";
-    Messages.support_recordedEmpty = "No snippets";
-    Messages.support_recordedId = "Snippet ID (unique)";
-    Messages.support_recordedContent = "Content";
-
-    Messages.support_legacyTitle = "View old support data";
-    Messages.support_legacyHint = "View tickets from the legacy support system and recreate them in the new one.";
-    Messages.support_legacyButton = "Get active";
-    Messages.support_legacyDump = "Export all";
-    Messages.support_legacyClear = "Delete from my account";
-
-    Messages.support_searchLabel = "Search (title or ticketId)";
 
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
