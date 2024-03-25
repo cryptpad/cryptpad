@@ -101,6 +101,7 @@ define([
                 icon : 'fa fa-ambulance',
                 content : [
                     'support-setup',
+                    'support-team',
                 ]
             },
             'quota': {
@@ -2783,22 +2784,133 @@ define([
     Messages.admin_supportMembers = "Support team";
     Messages.admin_supportAdd = "Add a contact to the support team";
     Messages.admin_supportRotateNotify = "Warning: new keys have been generated but an unenexpected error prevented the system to send them to the moderators. Please remove and re-add all members of the support team";
+
+    Messages.admin_supportTeamTitle = "admin_supportTeamTitle";
+    Messages.admin_supportTeamHint = "admin_supportTeamHint";
+        let onRefreshSupportEvt = Util.mkEvent();
+        let refreshSupport = () => {
+            let moderators;
+            nThen((waitFor) => {
+                APP.supportModule.execCommand('GET_PRIVATE_KEY', {}, waitFor((obj) => {
+                    supportKey = obj && obj.curvePublic;
+                }));
+            }).nThen((waitFor) => {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'GET_MODERATORS',
+                    data: {}
+                }, waitFor((e, response) => {
+                    if (e || response.error) {
+                        console.error(e || response.error);
+                        UI.warn(Messages.error);
+                        return;
+                    }
+                    moderators = response[0];
+                }));
+            }).nThen(() => {
+                onRefreshSupportEvt.fire({moderators, supportKey});
+            });
+        };
+        const getMyData = () => {
+            let metadataMgr = common.getMetadataMgr();
+            let priv = metadataMgr.getPrivateData();
+            let user = metadataMgr.getUserData();
+            return {
+                name: user.name,
+                edPublic: priv.edPublic,
+                curvePublic: user.curvePublic,
+                mailbox: user.notifications,
+                profile: user.profile
+            };
+        };
+        const getContactData = (curve) => {
+            if (!curve) { return getMyData(); }
+            let friends = common.getFriends(true);
+            let f = friends[curve];
+            return {
+                name: f.displayName,
+                edPublic: f.edPublic,
+                curvePublic: f.curvePublic,
+                mailbox: f.notifications,
+                profile: f.profile
+            };
+        };
+        let generateSupportKey = (moderatorsData, supportKey, cb) => {
+            let edPublic = common.getMetadataMgr().getPrivateData().edPublic;
+            if (supportKey && !moderatorsData[edPublic]) {
+                UI.alert("A support key already exists. You must be a moderator to generate a new one or delete the existing support data.");
+                return;
+            }
+            cb = cb || function () {};
+            const onError = (waitFor, err, res) => {
+                if (waitFor) { waitFor.abort(); }
+                console.error(err, res);
+                UI.warn(Messages.error);
+                cb(err);
+            };
+
+            nThen((waitFor) => {
+                // Add myself to moderator role if not already there
+                let me = getContactData();
+                if (moderatorsData[me.edPublic]) { return; }
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADD_MODERATOR',
+                    data: me
+                }, waitFor((e, response) => {
+                    console.error(e, response);
+                }));
+            }).nThen((waitFor) => {
+                // Copy chainpad doc and pin
+                APP.supportModule.execCommand('ROTATE_KEYS', {}, waitFor((obj) => {
+                    if (obj && obj.error) { return void onError(waitFor, obj.error); }
+                    if (obj && obj.success && obj.noNotify) {
+                        UI.alert(Messages.admin_supportRotateNotify);
+                        onError(waitFor, 'NOTIFY_ERROR', obj);
+                        return;
+                    }
+                    UI.log(Messages.saved);
+                }));
+            }).nThen(() => {
+                refreshSupport();
+            });
+        };
         sidebar.addItem('support-setup', function (cb) {
-            let supportKey = ApiConfig.supportMailboxKey;
-            let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
-            let refresh = function () {};
             let content = blocks.block();
             const $div = $(content);
-            const redraw = function (moderatorsData) {
+            const redraw = function (moderatorsData, supportKey) {
                 $div.empty();
 
-                const state = blocks.block();
+                const state = blocks.block([], 'cp-admin-support-state');
                 const $state = $(state).appendTo($div);
-                const button = blocks.button('primary', '', Messages.admin_supportInit);
+                const button = blocks.activeButton('primary', '',
+                                    Messages.admin_supportInit, done => {
+                    generateSupportKey(moderatorsData, supportKey, (err) => {
+                        done(!err);
+                    });
+                });
                 const $button = $(button).appendTo($div);
-                const delButton = blocks.button('danger', '', Messages.admin_supportDelete);
+
+                const delButton = blocks.activeButton('danger', '',
+                                    Messages.admin_supportDelete, done => {
+                    UI.confirm(Messages.admin_supportConfirm, function (yes) {
+                        if (!yes) { return void done(false); }
+                        // Send the decree, don't delete data locally, we just want to remove
+                        // the support UI for the clients
+                        APP.supportModule.execCommand('DISABLE_SUPPORT', {}, (obj) => {
+                            done(!(obj && obj.error));
+                            if (obj && obj.error) {
+                                console.error(obj.error);
+                                return void UI.warn(Messages.error);
+                            }
+                            UI.log(Messages.saved);
+                            refreshSupport();
+                        });
+                    });
+                });
                 const $delButton = $(delButton).appendTo($div).hide();
-                const spinner = UI.makeSpinner($div);
+
+                let nav = blocks.nav([button, delButton,
+                                      button.spinner, delButton.spinner]);
+                $div.append(nav);
 
                 const setState = function () {
                     $state.html('');
@@ -2817,94 +2929,19 @@ define([
                     ]);
                 };
                 setState();
+            };
+            onRefreshSupportEvt.reg(obj => {
+                redraw(obj.moderators, obj.supportKey);
+            });
+            cb(content);
+        });
 
-                Util.onClickEnter($delButton, function () {
-                    UI.confirm(Messages.admin_supportConfirm, function (yes) {
-                        if (!yes) { return; }
-                        // Send the decree, don't delete data locally, we just want to remove
-                        // the support UI for the clients
-                        spinner.spin();
-                        $delButton.attr('disabled', 'disabled');
-                        APP.supportModule.execCommand('DISABLE_SUPPORT', {}, (obj) => {
-                            $delButton.removeAttr('disabled');
-                            if (obj && obj.error) {
-                                UI.warn(Messages.error);
-                                console.error(obj.error);
-                                return void spinner.hide();
-                            }
-                            spinner.done();
-                            UI.log(Messages.saved);
-                            supportKey = undefined;
-                            refresh();
-                        });
-                    });
-                });
-
-                const getMyData = () => {
-                    let metadataMgr = common.getMetadataMgr();
-                    let priv = metadataMgr.getPrivateData();
-                    let user = metadataMgr.getUserData();
-                    return {
-                        name: user.name,
-                        edPublic: priv.edPublic,
-                        curvePublic: user.curvePublic,
-                        mailbox: user.notifications,
-                        profile: user.profile
-                    };
-                };
-                const getContactData = (curve) => {
-                    if (!curve) { return getMyData(); }
-                    let friends = common.getFriends(true);
-                    let f = friends[curve];
-                    return {
-                        name: f.displayName,
-                        edPublic: f.edPublic,
-                        curvePublic: f.curvePublic,
-                        mailbox: f.notifications,
-                        profile: f.profile
-                    };
-                };
-                const generateKey = function () {
-                    if (supportKey && !moderatorsData[edPublic]) {
-                        UI.alert("A support key already exists. You must be a moderator to generate a new one or delete the existing support data.");
-                        return;
-                    }
-                    spinner.spin();
-                    $button.attr('disabled', 'disabled');
-                    const onError = (waitFor, err, res) => {
-                        if (waitFor) { waitFor.abort(); }
-                        console.error(err, res);
-                        spinner.hide();
-                        UI.warn(Messages.error);
-                    };
-
-                    nThen((waitFor) => {
-                        // Add myself to moderator role if not already there
-                        let me = getContactData();
-                        if (moderatorsData[me.edPublic]) { return; }
-                        sFrameChan.query('Q_ADMIN_RPC', {
-                            cmd: 'ADD_MODERATOR',
-                            data: me
-                        }, waitFor((e, response) => {
-                            console.error(e, response);
-                        }));
-                    }).nThen((waitFor) => {
-                        // Copy chainpad doc and pin
-                        APP.supportModule.execCommand('ROTATE_KEYS', {}, waitFor((obj) => {
-                            $button.removeAttr('disabled');
-                            if (obj && obj.error) { return void onError(waitFor, obj.error); }
-                            if (obj && obj.success && obj.noNotify) {
-                                UI.alert(Messages.admin_supportRotateNotify);
-                                onError(waitFor, 'NOTIFY_ERROR', obj);
-                                return;
-                            }
-                            spinner.done();
-                            UI.log(Messages.saved);
-                        }));
-                    }).nThen(() => {
-                        refresh();
-                    });
-                };
+        sidebar.addItem('support-team', function (cb) {
+            let edPublic = common.getMetadataMgr().getPrivateData().edPublic; // My edPublic
+            let content = blocks.block();
+            const $div = $(content);
+            const redraw = function (moderatorsData, supportKey) {
+                $div.empty();
 
                 const addModerator = (curve, _cb) => {
                     let cb = Util.mkAsync(_cb);
@@ -2931,13 +2968,9 @@ define([
                             console.error(e || response.error);
                             return void UI.warn(Messages.error);
                         }
-                        generateKey();
+                        generateSupportKey(moderatorsData, supportKey);
                     });
                 };
-
-                Util.onClickEnter($button, function () {
-                    generateKey();
-                });
 
                 const drawModerators = () => {
                     if (!supportKey) { return; }
@@ -2987,7 +3020,7 @@ define([
                                 addModerator(curve, waitFor());
                             });
                         }).nThen(() => {
-                            refresh();
+                            refreshSupport();
                         });
                     });
                     // Only moderators can add new moderators
@@ -3005,32 +3038,12 @@ define([
                 };
                 drawModerators();
             };
-            refresh = () => {
-                let moderators;
-                nThen((waitFor) => {
-                    APP.supportModule.execCommand('GET_PRIVATE_KEY', {}, waitFor((obj) => {
-                        supportKey = obj && obj.curvePublic;
-                    }));
-                }).nThen((waitFor) => {
-                    sFrameChan.query('Q_ADMIN_RPC', {
-                        cmd: 'GET_MODERATORS',
-                        data: {}
-                    }, waitFor((e, response) => {
-                        if (e || response.error) {
-                            console.error(e || response.error);
-                            UI.warn(Messages.error);
-                            return;
-                        }
-                        moderators = response[0];
-                    }));
-                }).nThen(() => {
-                    redraw(moderators);
-                });
-            };
-            refresh();
-
+            onRefreshSupportEvt.reg(obj => {
+                redraw(obj.moderators, obj.supportKey);
+            });
             cb(content);
         });
+        setTimeout(refreshSupport);
 
         sidebar.addItem('maintenance', function(cb){
             var button = blocks.button('primary', '', Messages.admin_maintenanceButton);
