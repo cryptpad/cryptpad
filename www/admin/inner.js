@@ -2773,7 +2773,7 @@ define([
 
         };
 
-    // XXX DUPLICATE FROM ADMIN/INNER.JS
+    // XXX
     Messages.admin_supportSetupHint = "Create or update the support keys.";
     Messages.admin_supportSetupTitle = "Initialize support";
     Messages.admin_supportEnabled = "Modern support system is enabled.";
@@ -2787,9 +2787,10 @@ define([
 
     Messages.admin_supportTeamTitle = "admin_supportTeamTitle";
     Messages.admin_supportTeamHint = "admin_supportTeamHint";
+    Messages.admin_supportOpen = "Open helpdesk";
         let onRefreshSupportEvt = Util.mkEvent();
         let refreshSupport = () => {
-            let moderators;
+            let moderators, supportKey;
             nThen((waitFor) => {
                 APP.supportModule.execCommand('GET_PRIVATE_KEY', {}, waitFor((obj) => {
                     supportKey = obj && obj.curvePublic;
@@ -2856,7 +2857,7 @@ define([
                     cmd: 'ADD_MODERATOR',
                     data: me
                 }, waitFor((e, response) => {
-                    console.error(e, response);
+                    if (e) { console.error(e, response); }
                 }));
             }).nThen((waitFor) => {
                 // Copy chainpad doc and pin
@@ -2906,9 +2907,15 @@ define([
                         });
                     });
                 });
-                const $delButton = $(delButton).appendTo($div).hide();
+                const $delButton = $(delButton).hide();
 
-                let nav = blocks.nav([button, delButton,
+                const openButton = blocks.button('primary', '', Messages.admin_supportOpen);
+                const $openButton = $(openButton).hide();
+                Util.onClickEnter($(openButton), () => {
+                    common.openURL('/moderation/');
+                });
+
+                let nav = blocks.nav([button, openButton, delButton,
                                       button.spinner, delButton.spinner]);
                 $div.append(nav);
 
@@ -2917,12 +2924,12 @@ define([
                     if (supportKey) {
                         $button.hide();
                         $delButton.show();
+                        $openButton.show();
                         return $state.append([
                             blocks.icon('fa-check'),
                             blocks.inline(Messages.admin_supportEnabled)
                         ]);
                     }
-                    $button.show();
                     $state.append([
                         blocks.icon('fa-times'),
                         blocks.inline(Messages.admin_supportDisabled)
@@ -2973,7 +2980,14 @@ define([
                 };
 
                 const drawModerators = () => {
-                    if (!supportKey) { return; }
+                    if (!supportKey) {
+                        const list = blocks.block([
+                            blocks.icon('fa-times'),
+                            blocks.inline(Messages.admin_supportDisabled)
+                        ], 'cp-admin-support-state');
+                        $div.append(list);
+                        return;
+                    }
                     const members = {};
                     const friends = Util.clone(common.getFriends(false));
                     Object.keys(moderatorsData).forEach((ed) => {

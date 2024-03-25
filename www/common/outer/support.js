@@ -391,7 +391,7 @@ define([
                 if (err) { console.error('Support RPC not ready', err); }
             }));
         }).nThen((waitFor) => {
-            let seed = privateKey.slice(0,24); // XXX better way to get seed? also in admin/inner.js
+            let seed = privateKey.slice(0,24); // also in admin/inner.js
             let hash = Hash.getEditHashFromKeys({
                 version: 2,
                 type: 'support',
@@ -399,7 +399,6 @@ define([
                     editKeyStr: seed
                 }
             });
-            console.error(hash);
             loadAdminDoc(ctx, hash, waitFor());
         }).nThen(() => {
             console.log('Support admin loaded');
