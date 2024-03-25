@@ -4645,8 +4645,9 @@ define([
         var $toolbarContainer = $('#cp-toolbar');
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $toolbarContainer.after(helpMenu.menu);
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
         if (!APP.isEditor && !priv.form_auditorKey) {
             $(helpMenu.menu).hide();
         }

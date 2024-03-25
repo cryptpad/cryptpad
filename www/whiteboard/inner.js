@@ -17,6 +17,7 @@ define([
     '/whiteboard/colors.js',
     '/customize/application_config.js',
     '/components/chainpad/chainpad.dist.js',
+    '/common/common-ui-elements.js',
 
     '/lib/fabric.min.js',
     'less!/whiteboard/app-whiteboard.less'
@@ -34,7 +35,8 @@ define([
     Messages,
     Colors,
     AppConfig,
-    ChainPad)
+    ChainPad,
+    UIElements)
 {
 
     var APP = window.APP = {
@@ -295,8 +297,10 @@ define([
     var mkHelpMenu = function (framework) {
         var $appContainer = $('#cp-app-whiteboard-container');
         var helpMenu = framework._.sfCommon.createHelpMenu(['whiteboard']);
+        
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $appContainer.prepend(helpMenu.menu);
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     // Start of the main loop
@@ -431,13 +435,19 @@ define([
             });
 
             // Export to drive as PNG
-            framework._.sfCommon.createButton('savetodrive', true, {}).click(function () {
-                var defaultName = framework._.title.getTitle();
-                UI.prompt(Messages.exportPrompt, defaultName + '.png', function (name) {
-                    if (name === null || !name.trim()) { return; }
-                    APP.upload(name);
-                });
-            }).appendTo($drawer);
+            var $saveToDriveButton = framework._.sfCommon.createButton('savetodrive', true, {
+                callback: function () {
+                    var defaultName = framework._.title.getTitle()
+                                    || framework._.title.defaultTitle;
+                    UI.prompt(Messages.exportPrompt, defaultName + '.png', function (name) {
+                        if (name === null || !name.trim()) { return; }
+                        APP.upload(name);
+                    });
+                }
+            });
+            var $saveToDrive = UIElements.getEntryFromButton($saveToDriveButton);
+            $saveToDrive.appendTo($drawer);
+
         } else {
             framework._.sfCommon.createButton('', true, {
                 title: Messages.canvas_imageEmbed,

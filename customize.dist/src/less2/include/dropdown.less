@@ -48,6 +48,16 @@
         position: relative;
         display: inline-block;
 
+        // If a menu is displayed "left", pour the submenus on the left too
+        .cp-dropdown-left {
+            .cp-dropdown-submenu {
+                .cp-dropdown-content {
+                    left: unset;
+                    right: 100%;
+                }
+            }
+        }
+
         .fa {
             font-family: FontAwesome;
         }
@@ -61,6 +71,16 @@
             }
         }
 
+        .cp-dropdown-left {
+            .cp-dropdown-content {
+                right: 0;
+                margin-right: 5px;
+                &.cp-dropdown-submenu {
+                    left: unset;
+                    right: 250px;
+                }
+            }
+        }
         .cp-dropdown-content {
             list-style-type: none;
             display: none;
@@ -76,9 +96,8 @@
             font: @dropdown_font;
             line-height: 1em;
 
-            &.cp-dropdown-left {
-                right: 0;
-                margin-right: 5px;
+            &.cp-dropdown-submenu {
+                left: 250px;
             }
 
             &:hover {
@@ -140,9 +159,13 @@
             }
             li[role="menuitem"] {
                 border-radius: @variables_radius;
-                &:hover, &:focus {
+                white-space: nowrap;
+                &:hover {
                     background-color: @cp_dropdown-bg-hover !important;
-                    color: @cp_dropdown-fg;
+                    //color: @cp_dropdown-fg;
+                }
+                &:focus-visible {
+                    outline-color: @cp_dropdown-fg;
                 }
             }
             &> span {

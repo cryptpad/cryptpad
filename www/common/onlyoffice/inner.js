@@ -2724,12 +2724,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     });
                 };
 
-                common.createButton('', true, {
+                var $historyButton = common.createButton('', true, {
                     name: 'history',
                     icon: 'fa-history',
                     text: Messages.historyText,
                     tippy: Messages.historyButton
-                }).click(function () {
+                });
+
+                $historyButton.click(function () {
                     ooChannel.historyLastHash = ooChannel.lastHash;
                     ooChannel.currentIndex = ooChannel.cpIndex;
                     Feedback.send('OO_HISTORY');
@@ -2747,19 +2749,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         $toolbar: $('.cp-toolbar-container')
                     };
                     History.create(common, histConfig);
-                }).appendTo(toolbar.$drawer);
+                });
+
+                var $historyDropdown = UIElements.getEntryFromButton($historyButton);
+                $historyDropdown.appendTo(toolbar.$drawer);
 
                 // Snapshots
-                var $snapshot = common.createButton('snapshots', true, {
+                var $snapshotButton = common.createButton('snapshots', true, {
                     remove: deleteSnapshot,
                     make: makeSnapshot,
                     load: loadSnapshot
                 });
+                var $snapshot = UIElements.getEntryFromButton($snapshotButton);
                 toolbar.$drawer.append($snapshot);
 
                 // Import template
-                var $template = common.createButton('importtemplate', true, {}, openTemplatePicker);
-                if ($template && typeof($template.appendTo) === 'function') {
+                var $importTemplateButton = common.createButton('importtemplate', true, {}, openTemplatePicker);
+                if ($importTemplateButton && $importTemplateButton.length) {
+                    let $template = UIElements.getEntryFromButton($importTemplateButton);
                     $template.appendTo(toolbar.$drawer);
                 }
 
@@ -2782,8 +2789,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             APP.FM.handleFile(blob, data);
                         }
                     };
-                    var $templateButton = common.createButton('template', true, templateObj);
-                    toolbar.$drawer.append($templateButton);
+                    let $templateButton = common.createButton('template', true, templateObj);
+                    let $template = UIElements.getEntryFromButton($templateButton);
+                    toolbar.$drawer.append($template);
                 }
             })();
             }
@@ -2807,7 +2815,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }).attr('title', 'Restore last checkpoint').appendTo(toolbar.$bottomM);
             }
 
-            var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
+            var $exportXLSXButton = common.createButton('export', true, {}, exportXLSXFile);
+            var $exportXLSX = UIElements.getEntryFromButton($exportXLSXButton);
             $exportXLSX.appendTo(toolbar.$drawer);
 
             var type = privateData.ooType;
@@ -2835,35 +2844,44 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             if (common.isLoggedIn()) {
                 window.CryptPad_deleteLastCp = deleteLastCp;
-                var $importXLSX = common.createButton('import', true, {
+                var $importXLSXButton = common.createButton('import', true, {
                     accept: accept,
-                    binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"],
+                    binary: ["ods", "xlsx", "odt", "docx", "odp", "pptx"],
                     first: first,
                 }, importXLSXFile);
+                var $importXLSX = UIElements.getEntryFromButton($importXLSXButton);
+                // tag button
+                var $hashtagButton = common.createButton('hashtag', true);
+                var $hashtag = UIElements.getEntryFromButton($hashtagButton);
                 $importXLSX.appendTo(toolbar.$drawer);
-                common.createButton('hashtag', true).appendTo(toolbar.$drawer);
+                $hashtag.appendTo(toolbar.$drawer);
             }
 
             var $store = common.createButton('storeindrive', true);
             toolbar.$drawer.append($store);
 
-            var $forget = common.createButton('forget', true, {}, function (err) {
+            // Move to trash button
+            var $forgetButton = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
             });
+            var $forget = UIElements.getEntryFromButton($forgetButton);
             toolbar.$drawer.append($forget);
 
             if (!privateData.isEmbed) {
                 var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
                 $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
                 $('#cp-app-oo-editor').prepend(helpMenu.menu);
-                toolbar.$drawer.append(helpMenu.button);
+                var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
+                toolbar.$drawer.append($helpMenuButton);
             }
 
-            var $properties = common.createButton('properties', true);
+            var $propertiesButton = common.createButton('properties', true);
+            var $properties = UIElements.getEntryFromButton($propertiesButton);
             toolbar.$drawer.append($properties);
-            
-            var $copy = common.createButton('copy', true);
+
+            var $copyButton = common.createButton('copy', true);
+            var $copy = UIElements.getEntryFromButton($copyButton);
             toolbar.$drawer.append($copy);
         };
 
