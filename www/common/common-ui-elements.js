@@ -618,7 +618,9 @@ define([
                     title: Messages.exportButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.exportButton));
 
-                button.click(common.prepareFeedback(type));
+                button
+                .click(common.prepareFeedback(type))
+                .click(UI.clearTooltipsDelay);
                 if (callback) {
                     button.click(callback);
                 }
@@ -628,38 +630,6 @@ define([
                     'class': 'fa fa-upload cp-toolbar-icon-import',
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
-                /*if (data.types) {
-                    // New import button in the toolbar
-                    var importFunction = {
-                        template: function () {
-                            UIElements.openTemplatePicker(common, true);
-                        },
-                        file: function (cb) {
-                            importContent('text/plain', function (content, file) {
-                                cb(content, file);
-                            }, {accept: data ? data.accept : undefined})
-                        }
-                    };
-                    var toImport = [];
-                    Object.keys(data.types).forEach(function (importType) {
-                        if (!importFunction[importType] || !data.types[importType]) { return; }
-                        var option = h('button', importType);
-                        $(option).click(function () {
-                            importFunction[importType](data.types[importType]);
-                        });
-                        toImport.push(options);
-                    });
-
-                    button.click(common.prepareFeedback(type));
-
-                    if (toImport.length === 1) {
-                        button.click(function () { $(toImport[0]).click(); });
-                    } else {
-                        Cryptpad.alert(h('p.cp-import-container', toImport));
-                    }
-                }
-                else if (callback) {*/
-                    // Old import button, used in settings
                     var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                         accept: data ? data.accept : undefined,
                         binary: data ? data.binary : undefined
@@ -675,6 +645,7 @@ define([
                     .click(common.prepareFeedback(type))
                     .click(function () {
                         handler();
+                        UI.clearTooltipsDelay();
                     });
                 //}
                 break;
@@ -708,7 +679,10 @@ define([
                     if (callback) { callback(); }
                 });
                 if (data.accept) { $input.attr('accept', data.accept); }
-                button.click(function () { $input.click(); });
+                button.click(function () {
+                    $input.click();
+                    UI.clearTooltipsDelay();
+                });
                 break;
             case 'copy':
                 button = $('<button>', {
@@ -718,6 +692,7 @@ define([
                 .click(common.prepareFeedback(type))
                 .click(function () {
                     sframeChan.query('EV_MAKE_A_COPY');
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'importtemplate':
@@ -731,6 +706,7 @@ define([
                 .click(function () {
                     if (callback) { return void callback(); }
                     UIElements.openTemplatePicker(common, true);
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'template':
@@ -781,6 +757,7 @@ define([
                             });
                         };
                         UI.prompt(Messages.saveTemplatePrompt, title, todo);
+                        UI.clearTooltipsDelay();
                     });
                 }
                 break;
@@ -868,6 +845,7 @@ define([
                         .click(common.prepareFeedback(type))
                         .on('click', function () {
                         common.getHistory(data.histConfig);
+                        UI.clearTooltipsDelay();
                     });
                 }
                 break;
@@ -924,6 +902,7 @@ define([
                         }
                         UIElements.updateTags(common, null);
                     });
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'toggle':
@@ -975,6 +954,7 @@ define([
                     }
 
                     sframeChan.event('EV_PROPERTIES_OPEN');
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'save': // OnlyOffice save
@@ -983,7 +963,10 @@ define([
                     title: Messages.settings_save,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
                 .text(Messages.settings_save))
-                .click(common.prepareFeedback(type));
+                .click(function() {
+                    common.prepareFeedback(type);
+                    UI.clearTooltipsDelay();
+                });
                 if (callback) { button.click(callback); }
                 break;
             case 'newpad':
@@ -995,6 +978,7 @@ define([
                 .click(common.prepareFeedback(type))
                 .click(function () {
                     common.createNewPadModal();
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'snapshots':
@@ -1009,6 +993,7 @@ define([
                         return;
                     }
                     UIElements.openSnapshotsModal(common, data.load, data.make, data.remove);
+                    UI.clearTooltipsDelay();
                 });
                 break;
             default:
@@ -1331,6 +1316,7 @@ define([
         });
         $toolbarButton.click(function () {
             common.openUnsafeURL(href);
+            UI.clearTooltipsDelay();
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
