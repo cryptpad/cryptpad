@@ -584,8 +584,10 @@ define([
         let attributes = {};
         let btnClass = $button.attr('class');
         let btnId = $button.attr('id');
+        let btnTitle = $button.attr('title');
         if (btnClass) { attributes['class'] = btnClass; }
         if (btnId) { attributes['id'] = btnId; }
+        if (btnTitle && !attributes.title) { attributes['title'] = btnTitle; }
 
         return UIElements.createDropdownEntry({
             tag: 'a',
