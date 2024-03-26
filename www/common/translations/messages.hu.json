@@ -330,5 +330,6 @@
     "fm_deleteOwnedPad": "Biztos vagy benne, hogy végleg meg akarod semmisíteni ezt a dokumentumot?",
     "status": "Állapotlap",
     "access_passwordUsed": "Ennek a dokumentumnak ez már volt jelszava . Nem használható többször.",
-    "admin_diskUsageWarning": "Figyelem! A példányon tárolt adatmennyiségtől függően ez a riport elhasználhatja akár a server teljes memóriáját és lefagyáshoz vezethet."
+    "admin_diskUsageWarning": "Figyelem! A példányon tárolt adatmennyiségtől függően ez a riport elhasználhatja akár a server teljes memóriáját és lefagyáshoz vezethet.",
+    "poll_comment_disabled": "A ✓ gommbal tudod a kérdőívet publikálni, ezután lehet kommentálni."
 }
