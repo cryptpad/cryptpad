@@ -2228,8 +2228,7 @@ define([
         // Check for CryptPad updates
         var urlArgs = newUrlArgs || (Config.requireConf ? Config.requireConf.urlArgs : null);
         if (!urlArgs) { return; }
-        var arr = /ver=([0-9.]+)(-[0-9]*)?/.exec(urlArgs);
-        var ver = arr[1];
+        let ver = Util.getVersionFromUrlArgs(urlArgs);
         if (!ver) { return; }
         var verArr = ver.split('.');
         //verArr[2] = 0;
