@@ -114,7 +114,7 @@ define([
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
 
-        var startOO = function () {};
+        let startOO = function () {};
 
         var supportsXLSX = function () {
             return privateData.supportsWasm;
@@ -681,51 +681,51 @@ define([
             }
             return new Blob([newText], {type: 'text/plain'});
         };
-        var loadLastDocument = function (lastCp, onCpError, cb) {
-            if (!lastCp || !lastCp.file) {
-                return void onCpError('EEMPTY');
-            }
-            ooChannel.cpIndex = lastCp.index || 0;
-            ooChannel.lastHash = lastCp.hash;
-            var parsed = Hash.parsePadUrl(lastCp.file);
-            var secret = Hash.getSecrets('file', parsed.hash);
-            if (!secret || !secret.channel) { return; }
-            var hexFileName = secret.channel;
-            var fileHost = privateData.fileHost || privateData.origin;
-            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
-            var key = secret.keys && secret.keys.cryptKey;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', src, true);
-            if (window.sendCredentials) { xhr.withCredentials = true; }
-            xhr.responseType = 'arraybuffer';
-            xhr.onload = function () {
-                if (/^4/.test('' + this.status)) {
-                    onCpError(this.status);
-                    return void console.error('XHR error', this.status);
+
+        const loadLastDocument = function (lastCp) {
+            return new Promise((resolve, reject) => {
+                if (!lastCp || !lastCp.file) {
+                    return void reject('EEMPTY');
                 }
-                var arrayBuffer = xhr.response;
-                if (arrayBuffer) {
-                    var u8 = new Uint8Array(arrayBuffer);
-                    FileCrypto.decrypt(u8, key, function (err, decrypted) {
-                        if (err) {
-                            if (err === "DECRYPTION_ERROR") {
-                                console.warn(err);
-                                return void onCpError(err);
+                ooChannel.cpIndex = lastCp.index || 0;
+                ooChannel.lastHash = lastCp.hash;
+                var parsed = Hash.parsePadUrl(lastCp.file);
+                var secret = Hash.getSecrets('file', parsed.hash);
+                if (!secret || !secret.channel) { return; }
+                var hexFileName = secret.channel;
+                var fileHost = privateData.fileHost || privateData.origin;
+                var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+                var key = secret.keys && secret.keys.cryptKey;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', src, true);
+                if (window.sendCredentials) { xhr.withCredentials = true; }
+                xhr.responseType = 'arraybuffer';
+                xhr.onload = function () {
+                    if (/^4/.test('' + this.status)) {
+                        reject(this.status);
+                        return void console.error('XHR error', this.status);
+                    }
+                    var arrayBuffer = xhr.response;
+                    if (arrayBuffer) {
+                        var u8 = new Uint8Array(arrayBuffer);
+                        FileCrypto.decrypt(u8, key, function (err, decrypted) {
+                            if (err) {
+                                if (err === "DECRYPTION_ERROR") {
+                                    console.warn(err);
+                                    return void reject(err);
+                                }
+                                return void console.error(err);
                             }
-                            return void console.error(err);
-                        }
-                        var blob = new Blob([decrypted.content], {type: 'plain/text'});
-                        if (cb) {
-                            return cb(blob, getFileType());
-                        }
-                        startOO(blob, getFileType());
-                    });
-                }
-            };
-            xhr.onerror = function (err) {
-                onCpError(err);
-            };
-            xhr.send(null);
+                            var blob = new Blob([decrypted.content], {type: 'plain/text'});
+                            resolve({blob, fileType: getFileType()});
+                        });
+                    }
+                };
+                xhr.onerror = function (err) {
+                    reject(err);
+                };
+                xhr.send(null);
+            });
         };
 
         /*
@@ -825,26 +825,28 @@ define([
 
                 if (!exists) { return void UI.removeLoadingScreen(); }
 
-                loadLastDocument(cp, function () {
-                    if (cp.hash && vHashEl) {
-                        // We requested a checkpoint but we can't find it...
+                loadLastDocument(cp)
+                    .then(({blob, fileType}) => {
+                        ooChannel.queue = messages;
+                        resetData(blob, fileType);
                         UI.removeLoadingScreen();
-                        vHashEl.innerText = Messages.oo_deletedVersion;
-                        $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
-                        return;
-                    }
-                    var file = getFileType();
-                    var type = common.getMetadataMgr().getPrivateData().ooType;
-                    if (APP.downloadType) { type = APP.downloadType; }
-                    var blob = loadInitDocument(type, true);
-                    ooChannel.queue = messages;
-                    resetData(blob, file);
-                    UI.removeLoadingScreen();
-                }, function (blob, file) {
-                    ooChannel.queue = messages;
-                    resetData(blob, file);
-                    UI.removeLoadingScreen();
-                });
+                    })
+                    .catch(() => {
+                        if (cp.hash && vHashEl) {
+                            // We requested a checkpoint but we can't find it...
+                            UI.removeLoadingScreen();
+                            vHashEl.innerText = Messages.oo_deletedVersion;
+                            $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
+                            return;
+                        }
+                        var file = getFileType();
+                        var type = common.getMetadataMgr().getPrivateData().ooType;
+                        if (APP.downloadType) { type = APP.downloadType; }
+                        var blob = loadInitDocument(type, true);
+                        ooChannel.queue = messages;
+                        resetData(blob, file);
+                        UI.removeLoadingScreen();
+                    });
             });
         };
 
@@ -1675,7 +1677,8 @@ define([
                         chat: false,
                         logo: {
                             url: "/bounce/#" + encodeURIComponent('https://www.onlyoffice.com')
-                        }
+                        },
+                        comments: !lock && !readOnly
                     },
                     "user": {
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
@@ -1998,14 +2001,13 @@ define([
                     APP.themeRemote = true;
                 */
             };
-            APP.changeTheme = function (id) {
+            APP.changeTheme = function (/*id*/) {
                 /*
                 // disabled:
 Uncaught TypeError: Cannot read property 'calculatedType' of null
     at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
                 */
 
-                id = id;
                 /*
                 APP.themeChanged = {
                     id: id
@@ -2359,25 +2361,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 // If the last checkpoint is empty, load the "initial" doc instead
                 if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault); }
                 // Load latest checkpoint
-                return void loadLastDocument(lastCp, function () {
-                    // Checkpoint error: load the previous one
-                    i = i || 0;
-                    loadDocument(noCp, useNewDefault, ++i);
-                });
-            }
-            var newText;
-            switch (type) {
-                case 'sheet' :
-                    newText = EmptyCell(useNewDefault);
-                    break;
-                case 'doc':
-                    newText = EmptyDoc();
-                    break;
-                case 'presentation':
-                    newText = EmptySlide();
-                    break;
-                default:
-                    newText = '';
+                loadLastDocument(lastCp)
+                    .then(({blob, fileType}) => {
+                        startOO(blob, fileType);
+                    })
+                    .catch(() => {
+                        // Checkpoint error: load the previous one
+                        i = i || 0;
+                        loadDocument(noCp, useNewDefault, ++i);
+                    });
             }
             var blob = loadInitDocument(type, useNewDefault);
             startOO(blob, file);
@@ -2427,7 +2419,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
         };
 
-        var wasEditing = false;
         var setStrictEditing = function () {
             if (APP.isFast) { return; }
             var editor = getEditor();
@@ -2437,12 +2428,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             } else {
                 evOnSync.fire();
             }
-            wasEditing = Boolean(editing);
         };
         APP.onFastChange = function (isFast) {
             APP.isFast = isFast;
             if (isFast) {
-                wasEditing = false;
                 if (APP.hasChangedInterval) {
                     window.clearInterval(APP.hasChangedInterval);
                 }
@@ -2464,20 +2453,21 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             pinImages();
         };
 
-        var loadCp = function (cp, keepQueue) {
+        const loadCp = async function (cp, keepQueue) {
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
-            loadLastDocument(cp, function () {
+            try {
+                const {blob, fileType} = await loadLastDocument(cp);
+                if (!keepQueue) { ooChannel.queue = []; }
+                resetData(blob, fileType);
+            } catch (e) {
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
                 resetData(blob, file);
-            }, function (blob, file) {
-                if (!keepQueue) { ooChannel.queue = []; }
-                resetData(blob, file);
-            });
+            }
         };
 
         var loadTemplate = function (href, pw, parsed) {
@@ -2592,7 +2582,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                           (content.version <= 3 ? 'v2b/' : CURRENT_VERSION+'/');
             var s = h('script', {
                 type:'text/javascript',
-                src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
+                src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
             });
             $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a')).append(s);
 
@@ -2678,6 +2668,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
+                    console.log('XXX onCheckpoint', JSON.stringify(cp));
                     loadCp(cp);
                 };
                 var setHistoryMode = function (bool) {
@@ -2733,12 +2724,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     });
                 };
 
-                common.createButton('', true, {
+                var $historyButton = common.createButton('', true, {
                     name: 'history',
                     icon: 'fa-history',
                     text: Messages.historyText,
                     tippy: Messages.historyButton
-                }).click(function () {
+                });
+
+                $historyButton.click(function () {
                     ooChannel.historyLastHash = ooChannel.lastHash;
                     ooChannel.currentIndex = ooChannel.cpIndex;
                     Feedback.send('OO_HISTORY');
@@ -2756,19 +2749,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         $toolbar: $('.cp-toolbar-container')
                     };
                     History.create(common, histConfig);
-                }).appendTo(toolbar.$drawer);
+                });
+
+                var $historyDropdown = UIElements.getEntryFromButton($historyButton);
+                $historyDropdown.appendTo(toolbar.$drawer);
 
                 // Snapshots
-                var $snapshot = common.createButton('snapshots', true, {
+                var $snapshotButton = common.createButton('snapshots', true, {
                     remove: deleteSnapshot,
                     make: makeSnapshot,
                     load: loadSnapshot
                 });
+                var $snapshot = UIElements.getEntryFromButton($snapshotButton);
                 toolbar.$drawer.append($snapshot);
 
                 // Import template
-                var $template = common.createButton('importtemplate', true, {}, openTemplatePicker);
-                if ($template && typeof($template.appendTo) === 'function') {
+                var $importTemplateButton = common.createButton('importtemplate', true, {}, openTemplatePicker);
+                if ($importTemplateButton && $importTemplateButton.length) {
+                    let $template = UIElements.getEntryFromButton($importTemplateButton);
                     $template.appendTo(toolbar.$drawer);
                 }
 
@@ -2791,8 +2789,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             APP.FM.handleFile(blob, data);
                         }
                     };
-                    var $templateButton = common.createButton('template', true, templateObj);
-                    toolbar.$drawer.append($templateButton);
+                    let $templateButton = common.createButton('template', true, templateObj);
+                    let $template = UIElements.getEntryFromButton($templateButton);
+                    toolbar.$drawer.append($template);
                 }
             })();
             }
@@ -2816,7 +2815,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }).attr('title', 'Restore last checkpoint').appendTo(toolbar.$bottomM);
             }
 
-            var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
+            var $exportXLSXButton = common.createButton('export', true, {}, exportXLSXFile);
+            var $exportXLSX = UIElements.getEntryFromButton($exportXLSXButton);
             $exportXLSX.appendTo(toolbar.$drawer);
 
             var type = privateData.ooType;
@@ -2844,35 +2844,44 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             if (common.isLoggedIn()) {
                 window.CryptPad_deleteLastCp = deleteLastCp;
-                var $importXLSX = common.createButton('import', true, {
+                var $importXLSXButton = common.createButton('import', true, {
                     accept: accept,
-                    binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"],
+                    binary: ["ods", "xlsx", "odt", "docx", "odp", "pptx"],
                     first: first,
                 }, importXLSXFile);
+                var $importXLSX = UIElements.getEntryFromButton($importXLSXButton);
+                // tag button
+                var $hashtagButton = common.createButton('hashtag', true);
+                var $hashtag = UIElements.getEntryFromButton($hashtagButton);
                 $importXLSX.appendTo(toolbar.$drawer);
-                common.createButton('hashtag', true).appendTo(toolbar.$drawer);
+                $hashtag.appendTo(toolbar.$drawer);
             }
 
             var $store = common.createButton('storeindrive', true);
             toolbar.$drawer.append($store);
 
-            var $forget = common.createButton('forget', true, {}, function (err) {
+            // Move to trash button
+            var $forgetButton = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
             });
+            var $forget = UIElements.getEntryFromButton($forgetButton);
             toolbar.$drawer.append($forget);
 
             if (!privateData.isEmbed) {
                 var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
                 $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
                 $('#cp-app-oo-editor').prepend(helpMenu.menu);
-                toolbar.$drawer.append(helpMenu.button);
+                var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
+                toolbar.$drawer.append($helpMenuButton);
             }
 
-            var $properties = common.createButton('properties', true);
+            var $propertiesButton = common.createButton('properties', true);
+            var $properties = UIElements.getEntryFromButton($propertiesButton);
             toolbar.$drawer.append($properties);
-            
-            var $copy = common.createButton('copy', true);
+
+            var $copyButton = common.createButton('copy', true);
+            var $copy = UIElements.getEntryFromButton($copyButton);
             toolbar.$drawer.append($copy);
         };
 
@@ -3015,7 +3024,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var s = h('script', {
                 type:'text/javascript',
-                src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
+                src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
             });
             $('#cp-app-oo-editor').append(s);
 
@@ -3213,13 +3222,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             var lastCp = getLastCp();
-            loadLastDocument(lastCp, function (err) {
-                console.error(err);
-                // On error, do nothing
-                // FIXME lock the document or ask for a page reload?
-            }, function (blob, type) {
-                resetData(blob, type);
-            });
+            loadLastDocument(lastCp)
+                .then(({blob, fileType}) => {
+                    resetData(blob, fileType);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    // On error, do nothing
+                    // FIXME lock the document or ask for a page reload?
+                });
         };
 
         config.onRemote = function () {

@@ -34,7 +34,7 @@ define([
         };
         SFCommonO.start({
             noRealtime: true,
-            addData: addData
+            addData: addData,
         });
     });
 });

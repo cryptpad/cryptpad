@@ -18,8 +18,7 @@ define([
 
     var TYPES = [
         'notifications',
-        'supportadmin',
-        'support',
+        'supportteam',
         'broadcast'
     ];
     var BLOCKING_TYPES = [
@@ -38,15 +37,10 @@ define([
                 if (res.error) { console.error(res); }
             });
         }
-        if (!mailboxes['support'] && ctx.loggedIn) {
-            mailboxes.support = {
-                channel: Hash.createChannelId(),
-                lastKnownHash: '',
-                viewed: []
-            };
-            ctx.pinPads([mailboxes.support.channel], function (res) {
-                if (res.error) { console.error(res); }
-            });
+
+        // no need for the "support" mailbox anymore
+        if (mailboxes.support) {
+            delete mailboxes.support;
         }
 
         if (!mailboxes['broadcast']) {
@@ -275,6 +269,7 @@ proxy.mailboxes = {
 
 
     var leaveChannel = function (ctx, type, cb) {
+        cb = cb || function () {};
         var box = ctx.boxes[type];
         if (!box) { return void cb(); }
         if (!box.cpNf || typeof(box.cpNf.stop) !== "function") { return void cb('EINVAL'); }
@@ -373,7 +368,8 @@ proxy.mailboxes = {
                 // Message should be displayed
                 var message = {
                     msg: msg,
-                    hash: hash
+                    hash: hash,
+                    time: time
                 };
                 var notify = box.ready;
                 Handlers.add(ctx, box, message, function (dismissed, toDismiss, invalid) {
@@ -393,6 +389,7 @@ proxy.mailboxes = {
                     }
                     msg.ctime = time || 0;
                     box.content[hash] = msg;
+                    if (opts.dump) { return; }
                     showMessage(ctx, type, message, null, function (obj) {
                         if (!obj || !obj.msg || !notify) { return; }
                         Notify.system(undefined, obj.msg);
@@ -446,7 +443,7 @@ proxy.mailboxes = {
             });
             box.ready = true;
             // Continue
-            onReady();
+            onReady(box.content);
         };
         box.cpNf = CpNetflux.start(cfg);
     };
@@ -468,7 +465,7 @@ proxy.mailboxes = {
             if (type === 'HISTORY_RANGE') {
                 if (!Array.isArray(_msg)) { return; }
                 var message;
-                if (req.box.type === 'broadcast') {
+                if (req.box.type === 'broadcast') {
                     message = Util.tryParse(_msg[4]);
                 } else {
                     try {
@@ -480,20 +477,12 @@ proxy.mailboxes = {
                     }
                 }
                 var hash = _msg[4].slice(0,64);
-                Handlers.add(ctx, req.box, {
-                    hash,
-                    msg: message
-                }, function (dismissed, toDismiss, invalid) {
-                    // Show dismissed messages, hide invalid messages
-                    // Invalid: no content or impersonation attempt
-                    if (invalid) { return; }
-                    ctx.emit('HISTORY', {
-                        txid: txid,
-                        time: _msg[5],
-                        message: message,
-                        hash: hash
-                    }, [req.cId]);
-                });
+                ctx.emit('HISTORY', {
+                    txid: txid,
+                    time: _msg[5],
+                    message: message,
+                    hash: hash
+                }, [req.cId]);
             } else if (type === 'HISTORY_RANGE_END') {
                 ctx.emit('HISTORY', {
                     txid: txid,

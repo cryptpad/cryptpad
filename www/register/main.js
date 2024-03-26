@@ -59,8 +59,6 @@ define([
 
         var $register = $('button#register');
 
-        var registering = false;
-
         var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
         var br = function () { return h('br'); };
 
@@ -96,9 +94,7 @@ define([
             $uname.val(uname);
             if (uname.length > Cred.MAXIMUM_NAME_LENGTH) {
                 let nameWarning = Messages._getKey('register_nameTooLong', [ Cred.MAXIMUM_NAME_LENGTH ]);
-                return void UI.alert(nameWarning, function () {
-                    registering = false;
-                });
+                return void UI.alert(nameWarning);
             }
 
             var passwd = $passwd.val();
@@ -139,9 +135,7 @@ define([
                 var warning = Messages._getKey('register_passwordTooShort', [
                     Cred.MINIMUM_PASSWORD_LENGTH
                 ]);
-                return void UI.alert(warning, function () {
-                    registering = false;
-                });
+                return void UI.alert(warning);
             }
 
             if (passwd !== confirmPassword) { // do their passwords match?
@@ -174,7 +168,6 @@ define([
                     shouldImport,
                     onOTP: UI.getOTPScreen
                 });
-                registering = true;
             }, {
                 ok: Messages.register_writtenPassword,
                 cancel: Messages.register_cancel,

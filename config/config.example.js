@@ -140,6 +140,21 @@ module.exports = {
     //enforceMFA: false,
 
     /* =====================
+     *       Privacy
+     * ===================== */
+
+    /*  Depending on where your instance is hosted, you may be required to log IP
+     *  addresses of the users who make a change to a document. This setting allows you
+     *  to do so. You can configure the logging system below in this config file.
+     *  Setting this value to true will include a log for each websocket connection
+     *  including this connection's unique ID, the user public key and the IP.
+     *  NOTE: this option requires a log level of "info" or below.
+     *
+     *  defaults to false
+     */
+    //logIP: false,
+
+    /* =====================
      *         Admin
      * ===================== */
 

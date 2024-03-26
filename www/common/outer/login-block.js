@@ -104,8 +104,7 @@ define([
         };
     };
 
-    Block.proveAncestor = function (O /* oldBlockKeys */, N /* newBlockKeys */) {
-        N = N;
+    Block.proveAncestor = function (O /* oldBlockKeys, N, newBlockKeys */) {
         var u8_pub = Util.find(O, ['sign', 'publicKey']);
         var u8_secret = Util.find(O, ['sign', 'secretKey']);
         try {

@@ -15,7 +15,7 @@ define([
 
     elem.innerHTML = [
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '" alt="' + Messages.label_logo + '">',
+            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="' + Messages.label_logo + '">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
@@ -64,7 +64,6 @@ define([
         return bar;
     };
 
-    var hasErrored = false;
     var isOffline = false;
     var updateLoadingProgress = function (data) {
         if (!built || !data) { return; }
@@ -102,7 +101,6 @@ define([
             var el3 = document.querySelector('.cp-loading-progress-container');
             if (el3) { el3.innerHTML = makeBar(data); }
         } catch (e) {
-            //if (!hasErrored) { console.error(e); }
         }
     };
     window.CryptPad_updateLoadingProgress = updateLoadingProgress;
@@ -115,7 +113,6 @@ define([
             return;
         }
 
-        hasErrored = true;
         var err2;
         if (err === 'Script error.') {
             err2 = Messages.error_unhelpfulScriptError;

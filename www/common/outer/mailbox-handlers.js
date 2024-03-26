@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/api/config',
     '/common/common-messaging.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/components/chainpad-crypto/crypto.js',
-], function (Messaging, Hash, Util, Crypto) {
+], function (ApiConfig, Messaging, Hash, Util, Crypto) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
     var getRandomTimeout = function (ctx) {
@@ -545,12 +546,10 @@ define([
         // Make sure we are a member of this team
         var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']) || {};
         var teamId;
-        var team;
         Object.keys(myTeams).some(function (k) {
             var _team = myTeams[k];
             if (_team.channel === content.teamData.channel) {
                 teamId = k;
-                team = _team;
                 return true;
             }
         });
@@ -839,6 +838,91 @@ define([
     removeHandlers['SF_DELETED'] = function (ctx, box, data) {
         var id = data.content.sfId;
         delete sfDeleted[id];
+    };
+
+    // New support
+    handlers['NEW_TICKET'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        if (!content.time) { content.time = data.time; }
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+
+        // Admin to user
+        if (content.isAdmin) {
+            support.addUserTicket(content, cb);
+        }
+
+        // User to admin
+        support.addAdminTicket(content, cb);
+    };
+    var supportNotif, adminSupportNotif;
+    handlers['NOTIF_TICKET'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        if (!content.time) { content.time = data.time; }
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+
+        // Admin to user
+        if (content.isAdmin) {
+            let exists = Util.find(ctx, ['store', 'proxy', 'support', content.channel]);
+
+            if (!exists) { return void cb(true); } // Deleted ticket
+            // Trigger realtime update of user support
+            support.updateUserTicket(content);
+
+            if (supportNotif) { return void cb(false, supportNotif); }
+            supportNotif = {
+                channel: content.channel,
+                type: box.type,
+                hash: data.hash
+            };
+            return void cb(false);
+        }
+
+        // User to admin
+        support.checkAdminTicket(content, (exists) => {
+            if (!exists) { return void cb(true); }
+            // Update ChainPad doc
+            support.updateAdminTicket(content);
+
+            if (Util.find(ctx.store.proxy, ['settings', 'general', 'disableSupportNotif'])) {
+                return void cb(true);
+            }
+
+            if (adminSupportNotif) { return void cb(false, adminSupportNotif); }
+            adminSupportNotif = {
+                channel: content.channel,
+                type: box.type,
+                hash: data.hash
+            };
+
+            cb(false);
+        });
+
+    };
+    removeHandlers['NOTIF_TICKET'] = function (ctx, box, data) {
+        var id = data.content.channel;
+        if (supportNotif && supportNotif.channel === id) { supportNotif = undefined; }
+        if (adminSupportNotif && adminSupportNotif.channel === id) { adminSupportNotif = undefined; }
+    };
+
+    handlers['ADD_MODERATOR'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+        support.updateAdminKey(content, cb);
+    };
+    handlers['MODERATOR_NEW_KEY'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+        support.updateAdminKey(content, function () {
+            cb(true); // Always dismiss, this should be invisible
+        });
     };
 
     return {

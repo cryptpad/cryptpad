@@ -345,15 +345,19 @@ define([
         }, function () {
             UI.alert(getSettings());
         });
-        framework._.toolbar.$drawer.append($settingsButton);
+
+        var $settings = UIElements.getEntryFromButton($settingsButton);
+        framework._.toolbar.$drawer.append($settings);
+
     };
 
     var mkHelpMenu = function(framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
-        $toolbarContainer.before(helpMenu.menu);
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
 
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        $toolbarContainer.before(helpMenu.menu);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     var mkDiffOptions = function(cursor, readOnly) {
@@ -633,7 +637,8 @@ define([
             framework.feedback('PRINT_PAD');
             UI.clearTooltipsDelay();
         });
-        framework._.toolbar.$drawer.append($printButton);
+        var $print = UIElements.getEntryFromButton($printButton);
+        framework._.toolbar.$drawer.append($print);
     };
 
     var andThen2 = function(editor, Ckeditor, framework) {

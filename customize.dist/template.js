@@ -69,7 +69,7 @@ $(function () {
                 require([ '/install/main.js' ], function () {});
             } else if (/^\/recovery\//.test(pathname)) {
                 require([ '/recovery/main.js' ], function () {});
-            } else if (/^\/ssoauth\//.test(pathname)) {
+            } else if (/^\/ssoauth/.test(pathname)) {
                 require([ '/ssoauth/main.js' ], function () {});
             } else if (/^\/login\//.test(pathname)) {
                 require([ '/login/main.js' ], function () {});

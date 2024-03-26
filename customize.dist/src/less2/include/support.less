@@ -5,24 +5,36 @@
  */
 
 @import (reference) "./colortheme-all.less";
+@import (reference) './tokenfield.less';
+@import (reference) './sidebar-layout.less';
 .support_main () {
     @ticket-bg: @cp_support-bg;
     @msg-bg: @cp_support-msg-bg;
     @fromme-bg: @cp_support-header-bg;
+    .tokenfield_main();
     .cp-support-form-container {
-        div {
-            margin-bottom: 10px;
-        }
+        max-width: 100%;
         [type="text"] {
-            width: @sidebar_button-width;
-            margin-bottom: 10px;
+            width: @sidebar_block-width;
+        }
+        div, [type="text"], textarea, label {
+            margin-bottom: @sidebar_base-margin !important;
+        }
+        div.cp-support-attachments:empty {
+            display: none;
+        }
+        label {
+            display: block;
+            margin-top: 0 !important;
         }
         hr {
+            margin: @sidebar_base-margin 0;
             border-color: @msg-bg;
         }
         textarea {
-            width: 2*@sidebar_button-width;
-            max-width: 90%;
+            box-sizing: border-box;
+            width: 2*@sidebar_block-width !important;
+            max-width: 100% !important;
             padding: 10px 15px;
             height: 300px;
         }
@@ -39,20 +51,84 @@
             padding: 10px;
         }
     }
+    .cp-support-recorded {
+        white-space: nowrap;
+        .cp-support-recorded-insert {
+            margin-right: @sidebar_base-margin;
+        }
+    }
+    @ticket-padding: 10px;
     .cp-support-container {
         .cp-support-list-ticket {
             display: flex;
             flex-flow: column;
             background-color: @ticket-bg;
-            padding: 10px;
+            padding: @ticket-padding;
             width: 1200px;
             max-width: 90%;
             margin: 5px auto;
             border-radius: @variables_radius;
+            .cp-support-ticket-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .cp-support-header-data {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    flex: 1;
+                    min-width: 0;
+                    .cp-tags-list {
+                        width: 100%;
+                    }
+                }
+                .cp-support-title-buttons {
+                    margin-left: 1em;
+                }
+            }
+            &.cp-filtered {
+                display: none;
+            }
+            &.cp-not-loaded {
+                cursor: pointer;
+                .cp-support-ticket-tags {
+                    cursor: default;
+                }
+                .cp-support-list-actions {
+                    display: none;
+                }
+            }
+            &:not(.cp-not-loaded) {
+                .cp-support-ticket-header {
+                    margin-bottom: @ticket-padding;
+                }
+                .cp-support-ticket-tags {
+                    margin-bottom: @ticket-padding;
+                }
+            }
+            .cp-support-ispremium {
+                padding: 0 5px;
+                background-color: @cp_admin-premium-bg;
+            }
             .cp-support-list-message {
                 background-color: @msg-bg;
                 padding: 5px 5px;
                 border-radius: @variables_radius;
+                &.cp-support-fromadmin {
+                    background-color: @cp_admin-isadmin-bg !important;
+                    .cp-support-message-from, .cp-support-showdata {
+                        color: @cryptpad_text_col;
+                        background-color: fade(@cp_admin-isadmin-bg, 10%) !important;
+                    }
+                }
+                &:last-child {
+                    &.cp-support-frompremium {
+                        background-color: @cp_admin-premium-bg;
+                        .cp-support-showdata {
+                            background-color: fade(@cp_admin-premium-bg, 10%);
+                        }
+                    }
+                }
                 .cp-support-fromme {
                     background-color: @fromme-bg;
                 }
@@ -62,6 +138,12 @@
                     .cp-support-message-data {
                         display: none;
                         cursor: default;
+                        position: relative;
+                        .cp-support-copydata {
+                            position: absolute;
+                            right: 0;
+                            margin-right: 0px;
+                        }
                     }
                 }
                 .cp-support-message-time {
@@ -75,6 +157,9 @@
                         margin-top: 10px;
                         margin-bottom: 10px;
                     }
+                }
+                &:not(:last-child) {
+                    margin-bottom: 3px;
                 }
             }
             .cp-support-list-actions {
@@ -101,10 +186,6 @@
                 .cp-support-form-container {
                     display: none;
                 }
-            }
-            button {
-                margin-left: 2px;
-                margin-right: 5px;
             }
         }
     }

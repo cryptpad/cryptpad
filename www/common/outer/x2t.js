@@ -6,10 +6,11 @@ define([
     '/api/config',
     '/components/nthen/index.js',
     '/common/common-util.js',
-], function (ApiConfig, nThen, Util) {
+    '/common/onlyoffice/current-version.js'
+], function (ApiConfig, nThen, Util, CurrentVersion) {
     var X2T = {};
 
-    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v7';
+    var CURRENT_VERSION = X2T.CURRENT_VERSION = CurrentVersion.currentVersion;
     var debug = function (str) {
         if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);
@@ -19,7 +20,7 @@ define([
         var x2tReady = Util.mkEvent(true);
         var fetchFonts = function (x2t, obj, cb) {
             if (!obj.fonts) { return void cb(); }
-            var path = ApiConfig.httpSafeOrigin + '/common/onlyoffice/'+CURRENT_VERSION+'/fonts/';
+            var path = ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+CURRENT_VERSION+'/fonts/';
             var ver = '?' + ApiConfig.requireConf.urlArgs;
             var fonts = obj.fonts;
             var files = obj.fonts_files;
@@ -121,7 +122,7 @@ define([
 
         // Sanitize file names
         var illegalRe = /[\/\?<>\\:\*\|"]/g;
-        var controlRe = /[\x00-\x1f\x80-\x9f]/g;
+        var controlRe = /[\x00-\x1f\x80-\x9f]/g; // eslint-disable-line no-control-regex
         var reservedRe = /^\.+$/;
         var safeRe = /[&'%!"{}[\]]/g;
         var sanitize = function (input) {
