@@ -1113,11 +1113,7 @@ define([
     };
 
     UI.clearTooltipsDelay = function () {
-        $.when(new Promise(res =>
-            setTimeout(res, 500)))
-               .then(() => {
-                 UI.clearTooltips();
-                });
+        setTimeout(UI.clearTooltips, 500);
     };
 
     var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;

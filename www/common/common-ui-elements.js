@@ -616,9 +616,9 @@ define([
                     title: Messages.exportButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.exportButton));
 
-                button.click(function() {common.prepareFeedback(type);
-                    UI.clearTooltipsDelay();
-                });
+                button
+                .click(common.prepareFeedback(type))
+                .click(UI.clearTooltipsDelay);
                 if (callback) {
                     button.click(callback);
                 }
@@ -628,38 +628,6 @@ define([
                     'class': 'fa fa-upload cp-toolbar-icon-import',
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
-                /*if (data.types) {
-                    // New import button in the toolbar
-                    var importFunction = {
-                        template: function () {
-                            UIElements.openTemplatePicker(common, true);
-                        },
-                        file: function (cb) {
-                            importContent('text/plain', function (content, file) {
-                                cb(content, file);
-                            }, {accept: data ? data.accept : undefined})
-                        }
-                    };
-                    var toImport = [];
-                    Object.keys(data.types).forEach(function (importType) {
-                        if (!importFunction[importType] || !data.types[importType]) { return; }
-                        var option = h('button', importType);
-                        $(option).click(function () {
-                            importFunction[importType](data.types[importType]);
-                        });
-                        toImport.push(options);
-                    });
-
-                    button.click(common.prepareFeedback(type));
-
-                    if (toImport.length === 1) {
-                        button.click(function () { $(toImport[0]).click(); });
-                    } else {
-                        Cryptpad.alert(h('p.cp-import-container', toImport));
-                    }
-                }
-                else if (callback) {*/
-                    // Old import button, used in settings
                     var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                         accept: data ? data.accept : undefined,
                         binary: data ? data.binary : undefined
@@ -709,7 +677,8 @@ define([
                     if (callback) { callback(); }
                 });
                 if (data.accept) { $input.attr('accept', data.accept); }
-                button.click(function () { $input.click(); 
+                button.click(function () {
+                    $input.click();
                     UI.clearTooltipsDelay();
                 });
                 break;
@@ -984,7 +953,6 @@ define([
 
                     sframeChan.event('EV_PROPERTIES_OPEN');
                     UI.clearTooltipsDelay();
-
                 });
                 break;
             case 'save': // OnlyOffice save
@@ -1009,7 +977,6 @@ define([
                 .click(function () {
                     common.createNewPadModal();
                     UI.clearTooltipsDelay();
-
                 });
                 break;
             case 'snapshots':
