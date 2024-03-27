@@ -16,7 +16,6 @@ define([
     '/common/hyperscript.js',
     '/api/config',
     '/customize/messages.js',
-    '/customize/application_config.js',
     '/components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
     '/common/onlyoffice/history.js',
@@ -46,7 +45,6 @@ define([
     h,
     ApiConfig,
     Messages,
-    AppConfig,
     ChainPad,
     FileCrypto,
     History,
@@ -1652,24 +1650,228 @@ define([
         // to be downloaded and decrypted before converting to xlsx
         var downloadImages = {};
 
-        var firstOO = true;
-        startOO = function (blob, file, force) {
-            if (APP.ooconfig && !force) { return void console.error('already started'); }
-            var url = URL.createObjectURL(blob);
-            var lock = !APP.history && (APP.migrate);
+        const onAppReady = function() {
+            APP.docEditor.getIframe().setAttribute('tabindex', '-1');
+            var css = // Old OO
+                        //'#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
+                        //'#fm-btn-save { display: none !important; }' +
+                        //'#panel-settings-general tr.autosave { display: none !important; }' +
+                        //'#panel-settings-general tr.coauth { display: none !important; }' +
+                        //'#header { display: none !important; }' +
+                        '#title-doc-name { display: none !important; }' +
+                        '#title-user-name { display: none !important; }' +
+    (supportsXLSX() ? '' : '#slot-btn-dt-print { display: none !important; }') +
+                        // New OO:
+                        'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
+                        '#slot-btn-insequation { display: none !important; }' + // Insert equation
+                        //'#asc-gen125 { display: none !important; }' + // Disable presenter mode
+                        //'.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
+                        '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
+                        '#panel-info { display: none !important; }' + // Same but content
+                        '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
+                        '.cp-from-url, #textart-button-from-url { display: none !important; }' + // Spellcheck language
+                        '.statusbar .cnt-lang { display: none !important; }' + // Spellcheck language
+                        '.statusbar #btn-doc-spell { display: none !important; }' + // Spellcheck button
+                        '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
+                        '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
+                        'div.btn-users.dropdown-toggle { display: none; !important }';
+            if (readOnly) {
+                css += '#toolbar { display: none !important; }';
+                //css += '#app-title { display: none !important; }'; // OnlyOffice logo + doc title
+                //css += '#file-menu-panel { top: 28px !important; }'; // Position of the "File" menu
+            }
+            APP.docEditor.injectCSS(css);
+            setTimeout(function () {
+                $(window).trigger('resize');
+            });
+            if (UI.findOKButton().length) {
+                UI.findOKButton().on('focusout', function () {
+                    window.setTimeout(function () { UI.findOKButton().focus(); });
+                });
+            }
+        };
 
-            var fromContent = metadataMgr.getPrivateData().fromContent;
-            if (!firstOO) { fromContent = undefined; }
-            firstOO = false;
+        const onError = function() {
+            console.error(arguments);
+            if (APP.isDownload) {
+                var sframeChan = common.getSframeChannel();
+                sframeChan.event('EV_OOIFRAME_DONE', '');
+            }
+        };
 
-            // Starting from version 3, we can use the view mode again
-            // defined but never used
-            //var mode = (content && content.version > 2 && lock) ? "view" : "edit";
+        const onDocumentReady = function(lock, lang, fromContent, file, force) {
+            evOnSync.fire();
+            var onMigrateRdy = Util.mkEvent();
+            onMigrateRdy.reg(function () {
+                var div = h('div.cp-oo-x2tXls', [
+                    h('span.fa.fa-spin.fa-spinner'),
+                    h('span', Messages.oo_sheetMigration_loading)
+                ]);
+                APP.migrateModal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+                makeCheckpoint(true);
+            });
+            // DEPRECATED: from version 3, the queue is sent again during init
+            if (APP.migrate && ((content.version || 1) <= 2)) {
+                // The doc is ready, fix the worksheets IDs and push the queue
+                fixSheets();
+                // Push changes since last cp
+                ooChannel.ready = true;
+                var changes = [];
+                var changesIndex;
+                ooChannel.queue.forEach(function (data) {
+                    Array.prototype.push.apply(changes, data.msg.changes);
+                    changesIndex = data.msg.changesIndex;
+                    //ooChannel.send(data.msg);
+                });
+                ooChannel.cpIndex += ooChannel.queue.length;
+                var last = ooChannel.queue.pop();
+                if (last) { ooChannel.lastHash = last.hash; }
 
-            var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2);
+                var onDocUnlock = function () {
+                    // Migration required but read-only: continue...
+                    if (readOnly) {
+                        setEditable(true);
+                        try { getEditor().asc_setRestriction(true); } catch (e) {}
+                    } else {
+                        // No changes after the cp: migrate now
+                        onMigrateRdy.fire();
+                    }
+                };
 
-            // Config
-            APP.ooconfig = {
+
+                // Send the changes all at once
+                if (changes.length) {
+                    setTimeout(function () {
+                        ooChannel.send({
+                            type: 'saveChanges',
+                            changesIndex: changesIndex,
+                            changes: changes,
+                            locks: []
+                        });
+                        APP.onDocumentUnlock = onDocUnlock;
+                    }, 5000);
+                    return;
+                }
+                onDocUnlock();
+                return;
+            }
+
+            if (lock || readOnly) {
+                try { getEditor().asc_setRestriction(true); } catch (e) {}
+                //getEditor().setViewModeDisconnect(); // can't be used anymore, display an OO error popup
+            } else {
+                setEditable(true);
+                deleteOfflineLocks();
+                handleNewLocks({}, content.locks);
+                if (APP.unsavedChanges) {
+                    var unsaved = APP.unsavedChanges;
+                    delete APP.unsavedChanges;
+                    rtChannel.sendMsg(unsaved, null, function (err, hash) {
+                        if (err) { return void UI.alert(Messages.oo_lostEdits); }
+                        // This is supposed to be a "send" function to tell our OO
+                        // to unlock the cell. We use this to know that the patch was
+                        // correctly sent so that we can apply it to our OO too.
+                        ooChannel.send(unsaved);
+                        ooChannel.cpIndex++;
+                        ooChannel.lastHash = hash;
+                    });
+                }
+
+                if (APP.startNew) {
+                    var w = getWindow();
+                    if (lang === "fr") { lang = 'fr-fr'; }
+                    var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
+                    getEditor().asc_setDefaultLanguage(l);
+                }
+
+                if (APP.oldCursor) {
+                    var app = common.getMetadataMgr().getPrivateData().ooType;
+                    var d;
+                    if (app === 'doc') {
+                        d = getEditor().GetDocument().Document;
+                    } else if (app === 'presentation') {
+                        d = getEditor().GetPresentation().Presentation;
+                    }
+                    if (d) {
+                        d.SetSelectionState(APP.oldCursor);
+                        d.UpdateSelection();
+                    }
+                    delete APP.oldCursor;
+                }
+            }
+            delete APP.startNew;
+
+            if (fromContent && !lock && Array.isArray(fromContent.content)) {
+                makePatch(fromContent.content);
+            }
+
+            if (APP.isDownload) {
+                delete APP.isDownload;
+                var bin = getContent();
+                if (!supportsXLSX()) {
+                    return void sframeChan.event('EV_OOIFRAME_DONE', bin, {raw: true});
+                }
+                nThen(function (waitFor) {
+                    // wait for all the images to be loaded before converting
+                    Object.keys(downloadImages).forEach(function (name) {
+                        downloadImages[name].reg(waitFor());
+                    });
+                }).nThen(function () {
+                    x2tConvertData(bin, 'filename.bin', file.type, function (xlsData) {
+                        sframeChan.event('EV_OOIFRAME_DONE', xlsData, {raw: true});
+                    });
+                });
+                return;
+            }
+
+
+            if (isLockedModal.modal && force) {
+                isLockedModal.modal.closeModal();
+                delete isLockedModal.modal;
+                if (!APP.history) {
+                    $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                }
+            }
+
+            if (APP.template) {
+                try { getEditor().asc_setRestriction(true); } catch (e) {}
+                //getEditor().setViewModeDisconnect();
+                UI.removeLoadingScreen();
+                makeCheckpoint(true);
+                return;
+            }
+
+            APP.onLocal(); // Add our data to the userlist
+
+            if (APP.history) {
+                try {
+                    getEditor().asc_setRestriction(true);
+                } catch (e) {}
+            }
+
+            if (lock && !readOnly) { // Lock = !history && migrate
+                onMigrateRdy.fire();
+            }
+
+            if (APP.initCheckpoint) {
+                getEditor().asc_setRestriction(true);
+                makeCheckpoint(true);
+            }
+
+            // Check if history can/should be trimmed
+            var cp = getLastCp();
+            if (cp && cp.file && cp.hash) {
+                var channels = [{
+                    channel: content.channel,
+                    lastKnownHash: cp.hash
+                }];
+                common.checkTrimHistory(channels);
+            }
+        };
+
+        const createOOConfig = function(blob, file, lock, fromContent, lang, force) {
+            const url = URL.createObjectURL(blob);
+            return {
                 "document": {
                     "fileType": file.type,
                     "key": "fresh",
@@ -1698,226 +1900,30 @@ define([
                     "lang": lang
                 },
                 "events": {
-                    "onAppReady": function(/*evt*/) {
-                        var $iframe = $('iframe[name="frameEditor"]').contents();
-                        $iframe.prop('tabindex', '-1');
-                        var $tb = $iframe.find('head');
-                        var css = // Old OO
-                                  //'#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
-                                  //'#fm-btn-save { display: none !important; }' +
-                                  //'#panel-settings-general tr.autosave { display: none !important; }' +
-                                  //'#panel-settings-general tr.coauth { display: none !important; }' +
-                                  //'#header { display: none !important; }' +
-                                  '#title-doc-name { display: none !important; }' +
-                                  '#title-user-name { display: none !important; }' +
-           (supportsXLSX() ? '' : '#slot-btn-dt-print { display: none !important; }') +
-                                  // New OO:
-                                  'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
-                                  '#slot-btn-insequation { display: none !important; }' + // Insert equation
-                                  //'#asc-gen125 { display: none !important; }' + // Disable presenter mode
-                                  //'.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
-                                  '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
-                                  '#panel-info { display: none !important; }' + // Same but content
-                                  '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
-                                  '.cp-from-url, #textart-button-from-url { display: none !important; }' + // Spellcheck language
-                                  '.statusbar .cnt-lang { display: none !important; }' + // Spellcheck language
-                                  '.statusbar #btn-doc-spell { display: none !important; }' + // Spellcheck button
-                                  '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
-                                  '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
-                                  'div.btn-users.dropdown-toggle { display: none; !important }';
-                        if (readOnly) {
-                            css += '#toolbar { display: none !important; }';
-                            //css += '#app-title { display: none !important; }'; // OnlyOffice logo + doc title
-                            //css += '#file-menu-panel { top: 28px !important; }'; // Position of the "File" menu
-                        }
-                        $('<style>').text(css).appendTo($tb);
-                        setTimeout(function () {
-                            $(window).trigger('resize');
-                        });
-                        if (UI.findOKButton().length) {
-                            UI.findOKButton().on('focusout', function () {
-                                window.setTimeout(function () { UI.findOKButton().focus(); });
-                            });
-                        }
-                    },
-                    "onError": function () {
-                        console.error(arguments);
-                        if (APP.isDownload) {
-                            var sframeChan = common.getSframeChannel();
-                            sframeChan.event('EV_OOIFRAME_DONE', '');
-                        }
-                    },
-                    "onDocumentReady": function () {
-                        evOnSync.fire();
-                        var onMigrateRdy = Util.mkEvent();
-                        onMigrateRdy.reg(function () {
-                            var div = h('div.cp-oo-x2tXls', [
-                                h('span.fa.fa-spin.fa-spinner'),
-                                h('span', Messages.oo_sheetMigration_loading)
-                            ]);
-                            APP.migrateModal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
-                            makeCheckpoint(true);
-                        });
-                        // DEPRECATED: from version 3, the queue is sent again during init
-                        if (APP.migrate && ((content.version || 1) <= 2)) {
-                            // The doc is ready, fix the worksheets IDs and push the queue
-                            fixSheets();
-                            // Push changes since last cp
-                            ooChannel.ready = true;
-                            var changes = [];
-                            var changesIndex;
-                            ooChannel.queue.forEach(function (data) {
-                                Array.prototype.push.apply(changes, data.msg.changes);
-                                changesIndex = data.msg.changesIndex;
-                                //ooChannel.send(data.msg);
-                            });
-                            ooChannel.cpIndex += ooChannel.queue.length;
-                            var last = ooChannel.queue.pop();
-                            if (last) { ooChannel.lastHash = last.hash; }
-
-                            var onDocUnlock = function () {
-                                // Migration required but read-only: continue...
-                                if (readOnly) {
-                                    setEditable(true);
-                                    try { getEditor().asc_setRestriction(true); } catch (e) {}
-                                } else {
-                                    // No changes after the cp: migrate now
-                                    onMigrateRdy.fire();
-                                }
-                            };
-
-
-                            // Send the changes all at once
-                            if (changes.length) {
-                                setTimeout(function () {
-                                    ooChannel.send({
-                                        type: 'saveChanges',
-                                        changesIndex: changesIndex,
-                                        changes: changes,
-                                        locks: []
-                                    });
-                                    APP.onDocumentUnlock = onDocUnlock;
-                                }, 5000);
-                                return;
-                            }
-                            onDocUnlock();
-                            return;
-                        }
-
-                        if (lock || readOnly) {
-                            try { getEditor().asc_setRestriction(true); } catch (e) {}
-                            //getEditor().setViewModeDisconnect(); // can't be used anymore, display an OO error popup
-                        } else {
-                            setEditable(true);
-                            deleteOfflineLocks();
-                            handleNewLocks({}, content.locks);
-                            if (APP.unsavedChanges) {
-                                var unsaved = APP.unsavedChanges;
-                                delete APP.unsavedChanges;
-                                rtChannel.sendMsg(unsaved, null, function (err, hash) {
-                                    if (err) { return void UI.alert(Messages.oo_lostEdits); }
-                                    // This is supposed to be a "send" function to tell our OO
-                                    // to unlock the cell. We use this to know that the patch was
-                                    // correctly sent so that we can apply it to our OO too.
-                                    ooChannel.send(unsaved);
-                                    ooChannel.cpIndex++;
-                                    ooChannel.lastHash = hash;
-                                });
-                            }
-
-                            if (APP.startNew) {
-                                var w = getWindow();
-                                if (lang === "fr") { lang = 'fr-fr'; }
-                                var l = w.Common.util.LanguageInfo.getLocalLanguageCode(lang);
-                                getEditor().asc_setDefaultLanguage(l);
-                            }
-
-                            if (APP.oldCursor) {
-                                var app = common.getMetadataMgr().getPrivateData().ooType;
-                                var d;
-                                if (app === 'doc') {
-                                    d = getEditor().GetDocument().Document;
-                                } else if (app === 'presentation') {
-                                    d = getEditor().GetPresentation().Presentation;
-                                }
-                                if (d) {
-                                    d.SetSelectionState(APP.oldCursor);
-                                    d.UpdateSelection();
-                                }
-                                delete APP.oldCursor;
-                            }
-                        }
-                        delete APP.startNew;
-
-                        if (fromContent && !lock && Array.isArray(fromContent.content)) {
-                            makePatch(fromContent.content);
-                        }
-
-                        if (APP.isDownload) {
-                            delete APP.isDownload;
-                            var bin = getContent();
-                            if (!supportsXLSX()) {
-                                return void sframeChan.event('EV_OOIFRAME_DONE', bin, {raw: true});
-                            }
-                            nThen(function (waitFor) {
-                                // wait for all the images to be loaded before converting
-                                Object.keys(downloadImages).forEach(function (name) {
-                                    downloadImages[name].reg(waitFor());
-                                });
-                            }).nThen(function () {
-                                x2tConvertData(bin, 'filename.bin', file.type, function (xlsData) {
-                                    sframeChan.event('EV_OOIFRAME_DONE', xlsData, {raw: true});
-                                });
-                            });
-                            return;
-                        }
-
-
-                        if (isLockedModal.modal && force) {
-                            isLockedModal.modal.closeModal();
-                            delete isLockedModal.modal;
-                            if (!APP.history) {
-                                $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
-                            }
-                        }
-
-                        if (APP.template) {
-                            try { getEditor().asc_setRestriction(true); } catch (e) {}
-                            //getEditor().setViewModeDisconnect();
-                            UI.removeLoadingScreen();
-                            makeCheckpoint(true);
-                            return;
-                        }
-
-                        APP.onLocal(); // Add our data to the userlist
-
-                        if (APP.history) {
-                            try {
-                                getEditor().asc_setRestriction(true);
-                            } catch (e) {}
-                        }
-
-                        if (lock && !readOnly) { // Lock = !history && migrate
-                            onMigrateRdy.fire();
-                        }
-
-                        if (APP.initCheckpoint) {
-                            getEditor().asc_setRestriction(true);
-                            makeCheckpoint(true);
-                        }
-
-                        // Check if history can/should be trimmed
-                        var cp = getLastCp();
-                        if (cp && cp.file && cp.hash) {
-                            var channels = [{
-                                channel: content.channel,
-                                lastKnownHash: cp.hash
-                            }];
-                            common.checkTrimHistory(channels);
-                        }
-                    }
+                    "onAppReady": onAppReady,
+                    "onError": onError,
+                    "onDocumentReady": () => onDocumentReady(lock, lang, fromContent, file, force),
                 }
             };
+        };
+
+        var firstOO = true;
+        startOO = function (blob, file, force) {
+            if (APP.ooconfig && !force) { return void console.error('already started'); }
+            const lock = !APP.history && (APP.migrate);
+
+            let fromContent = metadataMgr.getPrivateData().fromContent;
+            if (!firstOO) { fromContent = undefined; }
+            firstOO = false;
+
+            // Starting from version 3, we can use the view mode again
+            // defined but never used
+            //var mode = (content && content.version > 2 && lock) ? "view" : "edit";
+
+            const lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2);
+
+            // Config
+            APP.ooconfig = createOOConfig(blob, file, lock, fromContent, lang, force);
             /*
             // NOTE: Make sure it won't break anaything new (Firefox setTimeout bug)
             window.onbeforeunload = function () {
@@ -2118,7 +2124,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }, void 0, common.getCache());
             };
 
-			console.log(OOApi);
             APP.docEditor = new OOApi.OnlyOfficeEditor("cp-app-oo-placeholder-a", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
@@ -2372,6 +2377,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var loadDocument = function (noCp, useNewDefault, i) {
+            console.log('XXX loadDocument');
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
@@ -3130,6 +3136,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
 
                 var next = function () {
+                    console.log('XXX next');
                     loadDocument(newDoc, useNewDefault);
                     setEditable(!readOnly);
                     UI.removeLoadingScreen();

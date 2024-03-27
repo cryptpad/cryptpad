@@ -758,6 +758,35 @@
         return ver || undefined;
     };
 
+    Util.get = function(obj, key, defaultValue = undefined) {
+        if (typeof key === "string") {
+            key = key.split(".");
+        }
+
+        for (const k of key) {
+            if (obj == null) {
+                return defaultValue;
+            }
+            obj = obj[k];
+        }
+
+        if (obj == null) {
+            return defaultValue;
+        }
+        return obj;
+    };
+
+    Util.deepAssign = function(target, source) {
+        if (typeof target != "object") {
+            return source;
+        }
+
+        const result = Object.assign({}, target);
+        for (const key of Object.keys(source)) {
+            result[key] = Util.deepAssign(target[key], source[key]);
+        }
+        return result;
+    };
 
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;
