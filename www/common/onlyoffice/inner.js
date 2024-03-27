@@ -2361,7 +2361,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 // If the last checkpoint is empty, load the "initial" doc instead
                 if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault); }
                 // Load latest checkpoint
-                loadLastDocument(lastCp)
+                return void loadLastDocument(lastCp)
                     .then(({blob, fileType}) => {
                         startOO(blob, fileType);
                     })
