@@ -243,7 +243,7 @@ define([
             $recorded.append(h('span.cp-support-recorded-insert',
                                     Messages.support_insertRecorded));
             let $span = $(h('span')).appendTo($recorded);
-            let $fakeMore = $(h('button.btn.btn-secondary.fa.fa-ellipsis-h')).appendTo($recorded);
+            let $fakeMore = $(h('button.btn.btn-secondary.fa.fa-ellipsis-h.cp-fake-dropdown')).appendTo($recorded);
             let opts = [];
 
             let all = recorded.all;
@@ -253,7 +253,9 @@ define([
                 return a - b;
             };
             let overflow = false;
-            let maxWidth = $recorded.width();
+            let $label = $recorded.find('.cp-support-recorded-insert');
+            let maxWidth = $recorded.width() - $label.outerWidth(true)
+                                            - $fakeMore.outerWidth(true);
             Object.keys(all).sort(sort).forEach(id => {
                 let action = () => {
                     insertText(all[id].content);
@@ -265,10 +267,8 @@ define([
                 if (!overflow) {
                     let button = h('button.btn.btn-secondary', id);
                     $span.append(button);
-                    let margin = parseFloat(getComputedStyle($fakeMore[0]).marginRight);
-                    let buttonWidth = $fakeMore.width();
                     let current = $span.width();
-                    if ((current + buttonWidth + margin) < maxWidth) {
+                    if (current < maxWidth) {
                         return Util.onClickEnter($(button), action);
                     }
                     $(button).remove();
