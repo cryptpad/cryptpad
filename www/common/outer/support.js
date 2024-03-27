@@ -527,6 +527,7 @@ define([
                         let lastMsg = Array.isArray(last.messages)
                                     && last.messages[last.messages.length - 1];
                         entry.time = lastMsg.time || entry.time;
+                        senderKey = lastMsg.sender && lastMsg.sender.edPublic;
                     }
                     entry.premium = premium;
 
