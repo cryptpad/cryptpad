@@ -8,7 +8,7 @@ define([
     "/common/onlyoffice/current-version.js",
 ], function (AppConfig, ApiConfig, OOCurrentVersion) {
     const OO_APPS = ["sheet", "doc", "presentation"];
-    const ooEnabled = ApiConfig.onlyOffice.availableVersions.includes(
+    const ooEnabled = ApiConfig.onlyOffice && ApiConfig.onlyOffice.availableVersions.includes(
         OOCurrentVersion.currentVersion,
     );
 
