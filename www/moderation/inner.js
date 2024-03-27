@@ -902,11 +902,12 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
                                         console.error(obj.error);
                                         return void UI.warn(Messages.error);
                                     }
+                                    $ticket.remove();
                                 });
                             };
                             if (!$ticket.length) {
                                 content.category = 'legacy'; // Hide invalid features
-                                $ticket = APP.support.makeTicket({id, content, onMove});
+                                $ticket = $(APP.support.makeTicket({id, content, onMove}));
                                 $div.append($ticket);
                             }
                             $ticket.append(APP.support.makeMessage(content));
