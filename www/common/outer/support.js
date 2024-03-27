@@ -522,6 +522,11 @@ define([
                 var entry = doc.tickets.active[data.channel];
                 if (entry) {
                     entry.time = last.time;
+                    if (last.legacy) {
+                        let lastMsg = Array.isArray(last.messages)
+                                    && last.messages[last.messages.length - 1];
+                        entry.time = lastMsg.time || entry.time;
+                    }
                     entry.premium = premium;
 
                     if (senderKey) {
@@ -776,6 +781,7 @@ define([
         let messages = data.messages;
         let hashes = data.hashes;
         let first = messages[0];
+        let last = messages[messages.length - 1];
         if (!first) { return void cb({error: 'EINVAL'}); }
         ctx.adminRdyEvt.reg(() => {
             let ticketData = {
@@ -784,7 +790,7 @@ define([
                 curvePublic: Util.find(first, ['sender', 'curvePublic']),
                 channel: Hash.createChannelId(),
                 title: first.title,
-                time: first.time,
+                time: last.time,
                 ticket: {
                     legacy: true,
                     title: first.title,
