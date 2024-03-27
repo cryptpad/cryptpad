@@ -868,7 +868,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             let run = () => {
                 let $div = $(content);
                 $div.empty();
-                $(start).prop('disabled', 'disabled');
+                $(start).prop('disabled', 'disabled').blur();
                 APP.module.execCommand('GET_LEGACY', {}, contentByHash => {
                     $(start).prop('disabled', false);
                     // group by ticket id
