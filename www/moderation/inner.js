@@ -868,7 +868,9 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             let run = () => {
                 let $div = $(content);
                 $div.empty();
+                $(start).prop('disabled', 'disabled');
                 APP.module.execCommand('GET_LEGACY', {}, contentByHash => {
+                    $button.prop('disabled', false);
                     // group by ticket id
                     let sorted = sortLegacyTickets(contentByHash);
                     sorted.forEach(ticket => {
