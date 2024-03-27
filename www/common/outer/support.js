@@ -169,6 +169,7 @@ define([
             }
             active[channel] = {
                 title: ticket.title,
+                restored: ticket.legacy,
                 premium: false,
                 time: time,
                 author: data.name,
@@ -762,13 +763,47 @@ define([
             dump: true
         });
     };
+    let findLegacy = (ctx, author, title) => {
+        let doc = ctx.adminDoc.proxy;
+        return ['active', 'pending', 'closed'].some(k => {
+            let all = doc.tickets[k];
+            return Object.keys(all).some(id => {
+                let ticket = all[id];
+                return ticket.authorKey === author && ticket.title === title && ticket.restored;
+            });
+        });
+    };
     var getLegacy = function (ctx, data, cId, cb) {
         let proxy = ctx.store.proxy;
         let legacy = Util.find(proxy, ['mailboxes', 'supportadmin']);
         if (!legacy) { return void cb({error: 'ENOENT'}); }
         ctx.store.mailbox.open('supportadmin', legacy, function (contentByHash) {
             ctx.store.mailbox.close('supportadmin', function () {});
-            cb(contentByHash);
+            let c = Util.clone(contentByHash || {});
+            let toFilter = [];
+            Object.keys(c).forEach(h => {
+                let msg = c[h];
+                if (msg.type === 'CLOSE') {
+                    if (!toFilter.includes(msg.content.id)) {
+                        toFilter.push(msg.content.id);
+                    }
+                    return;
+                }
+                let author = msg.author;
+                let title = msg.content && msg.content.title;
+                if (findLegacy(ctx, author, title)) {
+                    if (!toFilter.includes(msg.content.id)) {
+                        toFilter.push(msg.content.id);
+                    }
+                }
+            });
+            Object.keys(c).forEach(h => {
+                let msg = c[h];
+                if (msg.content && toFilter.includes(msg.content.id)) {
+                    delete c[h];
+                }
+            });
+            cb(c);
         }, true, { // Opts
             dump: true
         });
