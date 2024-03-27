@@ -1682,7 +1682,7 @@
     "admin_forcemfaTitle": "Mandatory Two-Factor Authentication",
     "admin_forcemfaHint": "All users on this instance will be asked to set up two-factor authentication to log in to their account.",
     "loading_mfa_required": "Two-factor authentication is required on this instance. Please update your account using an authenticator app and the form below.",
-    "admin_cat_users": "User Directory",
+    "admin_cat_users": "User directory",
     "admin_registrationSsoTitle": "Close SSO registration",
     "admin_invitationTitle": "Invitation links",
     "admin_invitationCreate": "Create invitation link",
