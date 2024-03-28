@@ -1762,5 +1762,6 @@
     "support_moveActive": "Move to active",
     "support_copyUserData": "Copy user data",
     "support_insertRecorded": "Insert snippet",
-    "admin_supportOpen": "Open help-desk"
+    "admin_supportOpen": "Open help-desk",
+    "support_userNotification": "New support ticket or response: {0}"
 }
