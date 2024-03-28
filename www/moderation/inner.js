@@ -992,7 +992,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
         let active = privateData.category || 'active';
         let linkedTicket;
         if (active.indexOf('-') !== -1) {
-            linkedTicket = active.split('-')[1];
+            linkedTicket = active.slice(active.indexOf('-')+1);
             active = active.split('-')[0];
         }
 
