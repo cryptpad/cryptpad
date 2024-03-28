@@ -1762,5 +1762,6 @@
     "support_cat_search": "Rechercher",
     "support_openTicketHint": "Copiez les données de l'utilisateur·ices destinataire depuis leur page de profil ou depuis un ticket de support existant. Iels recevront une notification CryptPad à propos de ce message.",
     "support_invalChan": "Canal de notifications invalide",
-    "support_legacyHint": "Voir les tickets de l'ancien système de support et les recréer dans le nouveau."
+    "support_legacyHint": "Voir les tickets de l'ancien système de support et les recréer dans le nouveau.",
+    "support_userNotification": "Nouveau ticket de support ou réponse : {0}"
 }
