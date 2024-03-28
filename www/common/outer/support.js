@@ -239,7 +239,7 @@ define([
             getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
                 if (err) {
                     waitFor.abort();
-                    return void cb({error: err});
+                    return void cb(err);
                 }
                 theirPublic = obj.theirPublic;
                 myCurve = obj.myCurve;
@@ -517,23 +517,26 @@ define([
                     if (data.curvePublic !== curve) { return; }
                     return Util.find(msg, ['sender', 'quota', 'plan']);
                 });
-                var senderKey = last.sender && last.sender.edPublic;
 
                 // Update ChainPad with latest ticket data
                 var entry = doc.tickets.active[data.channel];
                 if (entry) {
-                    entry.time = last.time;
                     if (last.legacy) {
                         let lastMsg = Array.isArray(last.messages)
                                     && last.messages[last.messages.length - 1];
-                        entry.time = lastMsg.time || entry.time;
-                        senderKey = lastMsg.sender && lastMsg.sender.edPublic;
+                        last = lastMsg;
                     }
+                    entry.time = last.time;
                     entry.premium = premium;
-
+                    if (last.sender) {
+                        entry.lastAdmin = !last.sender.blockLocation;
+                    }
+                    /*
+                    let senderKey = last.sender && last.sender.edPublic;
                     if (senderKey) {
                         entry.lastAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1;
                     }
+                    */
                 }
                 cb(res);
             });
@@ -899,15 +902,14 @@ define([
             var rdmTo = Math.floor(Math.random() * 2000); // Between 0 and 2000ms
             setTimeout(() => {
                 var doc = ctx.adminDoc.proxy;
-                if (!doc.tickets.active[data.channel] && !doc.tickets.pending[data.channel]) {
-                    return; }
                 let t = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
+                if (!t) { return; }
+                if (data.time <= t.time) { return; }
                 if (data.isClose) {
                     doc.tickets.closed[data.channel] = t;
                     delete doc.tickets.active[data.channel];
                     delete doc.tickets.pending[data.channel];
                 }
-                if (data.time <= t.time) { return; }
 
                 t.time = data.time;
                 t.lastAdmin = false;
