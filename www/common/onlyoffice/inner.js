@@ -2857,7 +2857,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 $hashtag.appendTo(toolbar.$drawer);
             }
 
-            var $store = common.createButton('storeindrive', true);
+            var $storeButton = common.createButton('storeindrive', true);
+            var $store = UIElements.getEntryFromButton($storeButton);
             toolbar.$drawer.append($store);
 
             // Move to trash button
