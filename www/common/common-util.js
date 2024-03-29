@@ -752,6 +752,13 @@
         return [...Array(length).keys()];
     };
 
+    Util.getVersionFromUrlArgs = urlArgs => {
+        let arr = /ver=([0-9.]+)(-[0-9]*)?/.exec(urlArgs);
+        let ver = Array.isArray(arr) && arr[1];
+        return ver || undefined;
+    };
+
+
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {

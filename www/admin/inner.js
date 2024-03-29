@@ -98,13 +98,6 @@ define([
                 'users'
                 ]
             },
-            'support' : { // Msg.admin_cat_support
-                icon : 'fa fa-ambulance',
-                content : [
-                    'support-setup',
-                    'support-team',
-                ]
-            },
             'quota': { // Msg.admin_cat_quota
                 icon: 'fa fa-hdd-o',
                 content: [
@@ -121,6 +114,13 @@ define([
                     'block-metadata',
                     'totp-recovery',
 
+                ]
+            },
+            'support' : { // Msg.admin_cat_support
+                icon : 'fa fa-ambulance',
+                content : [
+                    'support-setup',
+                    'support-team',
                 ]
             },
             'stats' : { // Msg.admin_cat_stats

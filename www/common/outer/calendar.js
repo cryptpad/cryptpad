@@ -113,7 +113,7 @@ define([
     var clearDismissed = function (ctx, uid) {
         var h = Util.find(ctx, ['store', 'proxy', 'hideReminders']) || {};
         Object.keys(h).filter(function (id) {
-            return id.indexOf(uid) === 0;
+            return id === uid;
         }).forEach(function (id) {
             delete h[id];
         });

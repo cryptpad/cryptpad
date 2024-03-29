@@ -651,6 +651,7 @@ define([
                 states = [];
                 onClose();
                 closeUI();
+                UI.clearTooltipsDelay();
             });
             $(restore).click(function () {
                 var restorePrompt = config.drive ? Messages.history_restoreDrivePrompt

@@ -99,7 +99,9 @@ define([
 
         // Support panel functions
         let open = [];
-        let refreshAll = function () {};
+        let refreshAll = function () {
+            APP.$refreshButton.prop('disabled', false);
+        };
         let refresh = ($container, type, _cb) => {
             let cb = Util.mkAsync(_cb || function () {});
             APP.module.execCommand('LIST_TICKETS_ADMIN', {
@@ -313,6 +315,7 @@ define([
                 onFilter();
                 events.REFRESH_TAGS.fire();
             }).nThen(waitFor => {
+                APP.$refreshButton.prop('disabled', false);
                 if (!linkedTicket) { return; }
                 let $ticket = $container.find(`[data-link-id="${linkedTicket}"]`);
                 linkedTicket = undefined;
@@ -405,7 +408,9 @@ define([
 
         sidebar.addItem('refresh', cb => {
             let button = blocks.button('secondary', 'fa-refresh', Messages.oo_refresh);
+            APP.$refreshButton = $(button);
             Util.onClickEnter($(button), () => {
+                APP.$refreshButton.prop('disabled', 'disabled');
                 refreshAll();
             });
             let content = blocks.block([button]);
@@ -797,6 +802,7 @@ define([
             let clean = blocks.button('danger', 'fa-trash-o', Messages.support_legacyClear);
             let content = h('div.cp-support-container');
             let nav = blocks.nav([start, dump, clean]);
+            let spinner = UI.makeSpinner($(nav));
 
             let sortLegacyTickets = contentByHash => {
                 let all = {};
@@ -823,8 +829,13 @@ define([
                     return all[id];
                 });
             };
+            let $dumpBtn = $(dump);
             UI.confirmButton(dump, { classes: 'btn-secondary' }, function () {
+                spinner.spin();
+                $dumpBtn.prop('disabled', 'disabled').blur();
                 APP.module.execCommand('DUMP_LEGACY', {}, contentByHash => {
+                    $dumpBtn.prop('disabled', false);
+                    spinner.done();
                     // group by ticket id
                     let sorted = sortLegacyTickets(contentByHash);
                     let dump = '';
@@ -868,7 +879,11 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
             let run = () => {
                 let $div = $(content);
                 $div.empty();
+                spinner.spin();
+                $(start).prop('disabled', 'disabled').blur();
                 APP.module.execCommand('GET_LEGACY', {}, contentByHash => {
+                    $(start).prop('disabled', false);
+                    spinner.done();
                     // group by ticket id
                     let sorted = sortLegacyTickets(contentByHash);
                     sorted.forEach(ticket => {
@@ -902,11 +917,12 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
                                         console.error(obj.error);
                                         return void UI.warn(Messages.error);
                                     }
+                                    $ticket.remove();
                                 });
                             };
                             if (!$ticket.length) {
                                 content.category = 'legacy'; // Hide invalid features
-                                $ticket = APP.support.makeTicket({id, content, onMove});
+                                $ticket = $(APP.support.makeTicket({id, content, onMove}));
                                 $div.append($ticket);
                             }
                             $ticket.append(APP.support.makeMessage(content));
@@ -976,7 +992,7 @@ Attachments:${JSON.stringify(msg.attachments, 0, 2)}`;
         let active = privateData.category || 'active';
         let linkedTicket;
         if (active.indexOf('-') !== -1) {
-            linkedTicket = active.split('-')[1];
+            linkedTicket = active.slice(active.indexOf('-')+1);
             active = active.split('-')[0];
         }
 

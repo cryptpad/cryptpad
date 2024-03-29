@@ -6,6 +6,7 @@
 
 @import (reference) "./colortheme-all.less";
 @import (reference) './tokenfield.less';
+@import (reference) './variables.less';
 @import (reference) './sidebar-layout.less';
 .support_main () {
     @ticket-bg: @cp_support-bg;
@@ -33,7 +34,8 @@
         }
         textarea {
             box-sizing: border-box;
-            width: 2*@sidebar_block-width !important;
+            resize: vertical;
+            width: 100%;
             max-width: 100% !important;
             padding: 10px 15px;
             height: 300px;
@@ -78,12 +80,26 @@
                     justify-content: space-between;
                     flex: 1;
                     min-width: 0;
+                    .cp-support-ticket-title {
+                        width: 100%;
+                        margin-bottom: @sidebar_base-margin;
+                        word-break: break-word;
+                    }
                     .cp-tags-list {
+                        &:empty {
+                            display: none !important;
+                        }
+                        margin-top: @sidebar_base-margin;
                         width: 100%;
                     }
                 }
                 .cp-support-title-buttons {
                     margin-left: 1em;
+                }
+            }
+            .cp-support-ticket-tags {
+                .cp-tokenfield-form button.cp-token-close {
+                    border-radius: @variables_radius !important;
                 }
             }
             &.cp-filtered {

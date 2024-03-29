@@ -297,7 +297,6 @@ define([
     var mkHelpMenu = function (framework) {
         var $appContainer = $('#cp-app-whiteboard-container');
         var helpMenu = framework._.sfCommon.createHelpMenu(['whiteboard']);
-        
         var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $appContainer.prepend(helpMenu.menu);
         framework._.toolbar.$drawer.append($helpMenuButton);

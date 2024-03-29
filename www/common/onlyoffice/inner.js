@@ -2361,7 +2361,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 // If the last checkpoint is empty, load the "initial" doc instead
                 if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault); }
                 // Load latest checkpoint
-                loadLastDocument(lastCp)
+                return void loadLastDocument(lastCp)
                     .then(({blob, fileType}) => {
                         startOO(blob, fileType);
                     })
@@ -2857,7 +2857,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 $hashtag.appendTo(toolbar.$drawer);
             }
 
-            var $store = common.createButton('storeindrive', true);
+            var $storeButton = common.createButton('storeindrive', true);
+            var $store = UIElements.getEntryFromButton($storeButton);
             toolbar.$drawer.append($store);
 
             // Move to trash button

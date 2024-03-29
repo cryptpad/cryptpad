@@ -5,12 +5,13 @@
 define([
     '/common/hyperscript.js',
     '/common/common-language.js',
+    '/common/common-util.js',
     '/customize/application_config.js',
     '/customize/messages.js',
     'jquery',
     '/api/config',
     'optional!/api/instance',
-], function (h, Language, AppConfig, Msg, $, ApiConfig, Instance) {
+], function (h, Language, Util, AppConfig, Msg, $, ApiConfig, Instance) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
@@ -98,7 +99,8 @@ define([
         return h('a', attrs, [icon, text]);
     };
 
-    Pages.versionString = "5.7.0";
+    let urlArgs = ApiConfig.requireConf && ApiConfig.requireConf.urlArgs;
+    Pages.versionString = Util.getVersionFromUrlArgs(urlArgs);
 
     var customURLs = Pages.customURLs = {};
     (function () {

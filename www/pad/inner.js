@@ -635,6 +635,7 @@ define([
             */
             editor.execCommand('print');
             framework.feedback('PRINT_PAD');
+            UI.clearTooltipsDelay();
         });
         var $print = UIElements.getEntryFromButton($printButton);
         framework._.toolbar.$drawer.append($print);

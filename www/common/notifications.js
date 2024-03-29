@@ -494,7 +494,8 @@ define([
             return text;
         };
         content.handler = function () {
-            let url = msg.isAdmin ? '/support/#tickets' : `/moderation/#support-${content.channel}`;
+            let id =  Util.hexToBase64(msg.channel).slice(0,10);
+            let url = msg.isAdmin ? '/support/#tickets' : `/moderation/#open-${id}`;
             common.openURL(url);
             defaultDismiss(common, data)();
         };

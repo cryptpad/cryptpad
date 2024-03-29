@@ -169,6 +169,7 @@ define([
             }
             active[channel] = {
                 title: ticket.title,
+                restored: ticket.legacy,
                 premium: false,
                 time: time,
                 author: data.name,
@@ -238,7 +239,7 @@ define([
             getKeys(ctx, isAdmin, data, waitFor((err, obj) => {
                 if (err) {
                     waitFor.abort();
-                    return void cb({error: err});
+                    return void cb(err);
                 }
                 theirPublic = obj.theirPublic;
                 myCurve = obj.myCurve;
@@ -516,17 +517,26 @@ define([
                     if (data.curvePublic !== curve) { return; }
                     return Util.find(msg, ['sender', 'quota', 'plan']);
                 });
-                var senderKey = last.sender && last.sender.edPublic;
 
                 // Update ChainPad with latest ticket data
                 var entry = doc.tickets.active[data.channel];
                 if (entry) {
+                    if (last.legacy) {
+                        let lastMsg = Array.isArray(last.messages)
+                                    && last.messages[last.messages.length - 1];
+                        last = lastMsg;
+                    }
                     entry.time = last.time;
                     entry.premium = premium;
-
+                    if (last.sender) {
+                        entry.lastAdmin = !last.sender.blockLocation;
+                    }
+                    /*
+                    let senderKey = last.sender && last.sender.edPublic;
                     if (senderKey) {
                         entry.lastAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1;
                     }
+                    */
                 }
                 cb(res);
             });
@@ -757,13 +767,47 @@ define([
             dump: true
         });
     };
+    let findLegacy = (ctx, author, title) => {
+        let doc = ctx.adminDoc.proxy;
+        return ['active', 'pending', 'closed'].some(k => {
+            let all = doc.tickets[k];
+            return Object.keys(all).some(id => {
+                let ticket = all[id];
+                return ticket.authorKey === author && ticket.title === title && ticket.restored;
+            });
+        });
+    };
     var getLegacy = function (ctx, data, cId, cb) {
         let proxy = ctx.store.proxy;
         let legacy = Util.find(proxy, ['mailboxes', 'supportadmin']);
         if (!legacy) { return void cb({error: 'ENOENT'}); }
         ctx.store.mailbox.open('supportadmin', legacy, function (contentByHash) {
             ctx.store.mailbox.close('supportadmin', function () {});
-            cb(contentByHash);
+            let c = Util.clone(contentByHash || {});
+            let toFilter = [];
+            Object.keys(c).forEach(h => {
+                let msg = c[h];
+                if (msg.type === 'CLOSE') {
+                    if (!toFilter.includes(msg.content.id)) {
+                        toFilter.push(msg.content.id);
+                    }
+                    return;
+                }
+                let author = msg.author;
+                let title = msg.content && msg.content.title;
+                if (findLegacy(ctx, author, title)) {
+                    if (!toFilter.includes(msg.content.id)) {
+                        toFilter.push(msg.content.id);
+                    }
+                }
+            });
+            Object.keys(c).forEach(h => {
+                let msg = c[h];
+                if (msg.content && toFilter.includes(msg.content.id)) {
+                    delete c[h];
+                }
+            });
+            cb(c);
         }, true, { // Opts
             dump: true
         });
@@ -776,6 +820,7 @@ define([
         let messages = data.messages;
         let hashes = data.hashes;
         let first = messages[0];
+        let last = messages[messages.length - 1];
         if (!first) { return void cb({error: 'EINVAL'}); }
         ctx.adminRdyEvt.reg(() => {
             let ticketData = {
@@ -784,7 +829,7 @@ define([
                 curvePublic: Util.find(first, ['sender', 'curvePublic']),
                 channel: Hash.createChannelId(),
                 title: first.title,
-                time: first.time,
+                time: last.time,
                 ticket: {
                     legacy: true,
                     title: first.title,
@@ -857,15 +902,14 @@ define([
             var rdmTo = Math.floor(Math.random() * 2000); // Between 0 and 2000ms
             setTimeout(() => {
                 var doc = ctx.adminDoc.proxy;
-                if (!doc.tickets.active[data.channel] && !doc.tickets.pending[data.channel]) {
-                    return; }
                 let t = doc.tickets.active[data.channel] || doc.tickets.pending[data.channel];
+                if (!t) { return; }
+                if (data.time <= t.time) { return; }
                 if (data.isClose) {
                     doc.tickets.closed[data.channel] = t;
                     delete doc.tickets.active[data.channel];
                     delete doc.tickets.pending[data.channel];
                 }
-                if (data.time <= t.time) { return; }
 
                 t.time = data.time;
                 t.lastAdmin = false;
