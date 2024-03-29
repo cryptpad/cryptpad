@@ -185,8 +185,8 @@ define(['jquery'], function ($) {
             // for other browers, the 'src' attribute should be left empty to
             // trigger iframe's 'load' event.
             var src =
-                CKEDITOR.env.air ? 'javascript:void(0)' : // jshint ignore:line
-                ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) ? 'javascript:void(function(){' + encodeURIComponent( // jshint ignore:line
+                CKEDITOR.env.air ? 'javascript:void(0)' :
+                ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) ? 'javascript:void(function(){' + encodeURIComponent(
                     'document.open();' +
                     // In IE, the document domain must be set any time we call document.open().
                     '(' + CKEDITOR.tools.fixDomain + ')();' +

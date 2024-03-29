@@ -87,6 +87,8 @@ define([
                     e.stopPropagation();
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
                 });
+            } else if (userData && userData.supportTeam) {
+                avatar = h('span.cp-avatar-image', h('img', { src:'/customize/CryptPad_logo.svg' }));
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
             const tabIndexValue = undefined;//data.content.isDismissible ? undefined : '0';
@@ -100,7 +102,7 @@ define([
                 h('div.cp-notification-content', {
                     tabindex: tabIndexValue
                 }, [
-                    h('p', formatData(data))
+                    h('p', data.content.msg.type + ' - ' +formatData(data))
                 ])
             ]);
 
@@ -161,7 +163,7 @@ define([
 
         // Call the onMessage handlers
         var isNotification = function (type) {
-            return type === "notifications" || /^team-/.test(type) || type === "broadcast" || type === "reminders";
+            return type === "notifications" || /^team-/.test(type) || type === "broadcast" || type === "reminders" || type === "supportteam";
         };
         var pushMessage = function (data, handler) {
             var todo = function (f) {

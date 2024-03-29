@@ -2,7 +2,8 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* jshint ignore:start */
+/* global importScripts */
+
 importScripts('/components/requirejs/require.js');
 
 window = self;
@@ -161,10 +162,10 @@ var init = function (client, cb) {
     });
 };
 
-onconnect = function(e) {
+addEventListener('connect', function(e) {
     debug('New SharedWorker client');
     var port = e.ports[0];
-    var cId = Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
+    var cId = Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
     var client = self.tabs[cId] = {
         id: cId,
         port: port
@@ -186,5 +187,5 @@ onconnect = function(e) {
             client.msgEv.fire(e);
         }
     };
-};
+});
 

@@ -9,8 +9,9 @@ const require = define;
 */
 define([
     '/api/config',
+    '/api/instance',
     '/components/nthen/index.js'
-], function (Config, nThen) { /*::});module.exports = (function() {
+], function (Config, Instance, nThen) { /*::});module.exports = (function() {
     const Config = (undefined:any);
     const nThen = (undefined:any);
     */
@@ -103,13 +104,15 @@ define([
 
     var COLORTHEME = '/customize/src/less2/include/colortheme.less';
     var COLORTHEME_DARK = '/customize/src/less2/include/colortheme-dark.less';
-    //COLORTHEME_DARK = '/customize/src/less2/include/colortheme.less'; // TODO
     var getColortheme = function () {
         return window.CryptPad_theme;
     };
     var getColorthemeURL = function () {
         if (window.CryptPad_theme === 'dark') { return COLORTHEME_DARK; }
         return COLORTHEME;
+    };
+    var isForcedColortheme = url => {
+        return url === COLORTHEME+'?force' || url === COLORTHEME_DARK+'?force';
     };
 
     var lessEngine;
@@ -134,6 +137,8 @@ define([
                         col = true;
                         url = getColorthemeURL();
                         //console.warn(url);
+                    } else if (isForcedColortheme(url)) {
+                        col = true;
                     }
                     url = fixURL(url);
                     var cached = tempCache[_url];
@@ -152,6 +157,10 @@ define([
                                     '@cryptpad_text_col: #FF0000;'
                                 ].join('\n');
                                 text += '\n'+custom;
+                            }
+                            if (Instance && Instance.color) {
+                                let pattern = /_color_brand: ([0-9a-zA-Z#]+);/gm;
+                                text = text.replace(pattern, `_color_brand: ${Instance.color};`);
                             }
                         }
                         cached.res = [ text, lastModified ];

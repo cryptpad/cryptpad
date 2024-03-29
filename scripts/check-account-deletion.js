@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* jshint esversion: 6, node: true */
 const Fs = require('fs');
 const nThen = require('nthen');
 const Nacl = require('tweetnacl/nacl-fast');

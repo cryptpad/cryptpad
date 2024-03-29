@@ -18,6 +18,7 @@ define([
     '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
+    '/common/outer/support.js',
     '/common/outer/integration.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
@@ -39,7 +40,7 @@ define([
     '/components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
-             SF, Cursor, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
+             SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, Block, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
@@ -307,7 +308,7 @@ define([
             });
         };
 
-        var account = {};
+        var account = store.account = {};
 
         Store.getPinnedUsage = function (clientId, data, cb) {
             var s = getStore(data && data.teamId);
@@ -631,7 +632,6 @@ define([
                     settings: proxy.settings || NEW_USER_SETTINGS,
                     thumbnails: disableThumbnails === false,
                     isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
-                    support: Util.find(proxy, ['mailboxes', 'support', 'channel']),
                     driveChannel: store.driveChannel,
                     pendingFriends: proxy.friends_pending || {},
                     supportPrivateKey: Util.find(proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
@@ -1616,22 +1616,24 @@ define([
             });
         };
         Store.addAdminMailbox = function (clientId, data, cb) {
-            var priv = data;
+            var priv = data && data.priv;
             var pub = Hash.getBoxPublicFromSecret(priv);
+            var isNewSupport = data && data.version === 2;
             if (!priv || !pub) { return void cb({error: 'EINVAL'}); }
             var channel = Hash.getChannelIdFromKey(pub);
             var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
-            var box = mailboxes.supportadmin = {
+            var key = isNewSupport ? 'supportteam' : 'supportadmin';
+            var box = mailboxes[key] = {
                 channel: channel,
                 viewed: [],
-                lastKnownHash: '',
+                lastKnownHash: data.lastKnownHash || '',
                 keys: {
                     curvePublic: pub,
                     curvePrivate: priv
                 }
             };
             Store.pinPads(null, [channel], function () {});
-            store.mailbox.open('supportadmin', box, function () {
+            store.mailbox.open(key, box, function () {
                 console.log('ready');
             });
             onSync(null, cb);
@@ -2834,6 +2836,7 @@ define([
                 loadUniversal(Calendar, 'calendar', waitFor);
                 if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(History, 'history', waitFor);
+                loadUniversal(Support, 'support', waitFor);
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -3029,6 +3032,12 @@ define([
                 if (!rt.proxy.form_seed && data.form_seed) {
                     rt.proxy.form_seed = data.form_seed;
                 }
+
+                if (rt.proxy.edPublic && Array.isArray(ApiConfig.adminKeys) &&
+                    ApiConfig.adminKeys.indexOf(rt.proxy.edPublic) !== -1) {
+                    store.isAdmin = true;
+                }
+
                 /*
                 // deprecating localStorage migration as of 4.2.0
                 var drive = rt.proxy.drive;
@@ -3044,11 +3053,6 @@ define([
                     return void onCacheReadyEvt.reg(function () {
                         onReady(clientId, returned, cb);
                     });
-                }
-
-                if (rt.proxy.edPublic && Array.isArray(ApiConfig.adminKeys) &&
-                    ApiConfig.adminKeys.indexOf(rt.proxy.edPublic) !== -1) {
-                    store.isAdmin = true;
                 }
 
                 onReady(clientId, returned, cb);

@@ -141,7 +141,6 @@ define([
         var common;
         var proxy = {};
         var folders = {};
-        var readOnly;
 
         var startOnline = false;
         var onReco;
@@ -168,7 +167,7 @@ define([
             }
             metadataMgr.onChange(function () {
                 if (typeof(metadataMgr.getPrivateData().readOnly) === 'boolean') {
-                    readOnly = APP.readOnly = metadataMgr.getPrivateData().readOnly;
+                    APP.readOnly = metadataMgr.getPrivateData().readOnly;
                     privReady();
                 }
             });
@@ -200,7 +199,7 @@ define([
 
             APP.disableSF = !privateData.enableSF && AppConfig.disableSharedFolders;
             if (APP.newSharedFolder && !APP.loggedIn) {
-                readOnly = APP.readOnly = true;
+                APP.readOnly = true;
                 var data = folders[APP.newSharedFolder];
                 if (data) {
                     sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', {

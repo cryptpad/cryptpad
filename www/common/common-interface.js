@@ -1112,6 +1112,10 @@ define([
         });
     };
 
+    UI.clearTooltipsDelay = function () {
+        setTimeout(UI.clearTooltips, 500);
+    };
+
     var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
     $.extend(true, Tippy.defaults, {
         placement: 'bottom',
@@ -1464,44 +1468,6 @@ define([
             hide: hide,
             remove: remove
         };
-    };
-
-    /*  Given two jquery objects (a 'button' and a 'drawer')
-        add handlers to make it such that clicking the button
-        displays the drawer contents, and blurring the button
-        hides the drawer content. Used for toolbar buttons at the moment.
-    */
-    UI.createDrawer = function ($button, $content) {
-        $button.click(function () {
-            var topPos = $button[0].getBoundingClientRect().bottom;
-            $content.toggle();
-            $button.removeClass('cp-toolbar-button-active');
-            if ($content.is(':visible')) {
-                $button.addClass('cp-toolbar-button-active');
-                $content.focus();
-                var wh = $(window).height();
-                $content.css('max-height', Math.floor(wh - topPos - 1)+'px');
-            }
-        });
-        var onBlur = function (e) {
-            if (e.relatedTarget) {
-                var $relatedTarget = $(e.relatedTarget);
-
-                if ($relatedTarget.is('.cp-toolbar-drawer-button')) { return; }
-                if ($relatedTarget.parents('.cp-toolbar-drawer-content').length) {
-                    $relatedTarget.blur(onBlur);
-                    return;
-                }
-            }
-            $button.removeClass('cp-toolbar-button-active');
-            $content.hide();
-        };
-        $content.blur(onBlur).appendTo($button);
-        $('body').keydown(function (e) {
-            if (e.which === 27) {
-                $content.blur();
-            }
-        });
     };
 
 /*  QR code generation is synchronous once the library is loaded

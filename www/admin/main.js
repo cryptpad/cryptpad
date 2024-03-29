@@ -7,7 +7,7 @@ define([
     '/components/nthen/index.js',
     '/api/config',
     '/common/dom-ready.js',
-    '/common/sframe-common-outer.js',
+    '/common/sframe-common-outer.js'
 ], function (nThen, ApiConfig, DomReady, SFCommonO) {
 
     // Loaded in load #2

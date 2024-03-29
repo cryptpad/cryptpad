@@ -16,6 +16,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+    '/common/common-ui-elements.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -61,7 +62,8 @@ define([
     UI,
     h,
     Messages,
-    CMeditor)
+    CMeditor,
+    UIElements)
 {
     window.CodeMirror = CMeditor;
 
@@ -106,19 +108,15 @@ define([
     };
 
     var mkThemeButton = function (framework) {
-        var $theme = $(h('button.cp-toolbar-appmenu', [
-            h('i.cptools.cptools-palette'),
-            h('span.cp-button-name', Messages.toolbar_theme)
-        ]));
-        var $content = $(h('div.cp-toolbar-drawer-content', {
-            tabindex: 1
-        })).hide();
-
-        // set up all the necessary events
-        UI.createDrawer($theme, $content);
-
-        framework._.toolbar.$theme = $content;
-        framework._.toolbar.$bottomL.append($theme);
+        const $drawer = UIElements.createDropdown({
+            text: Messages.toolbar_theme,
+            options: [],
+            common: framework._.sfCommon,
+            iconCls: 'cptools cptools-palette'
+        });
+        framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
+        framework._.toolbar.$bottomL.append($drawer);
+        $drawer.addClass('cp-toolbar-appmenu');
     };
 
     var mkPrintButton = function (framework, editor, $content, $print) {
@@ -129,8 +127,10 @@ define([
             window.focus();
             window.print();
             framework.feedback('PRINT_SLIDES');
+            UI.clearTooltipsDelay();
         });
-        framework._.toolbar.$drawer.append($printButton);
+        var $printEntry = UIElements.getEntryFromButton($printButton);
+        framework._.toolbar.$drawer.append($printEntry);
     };
 
     // Flag to check if a file from the filepicker is a mediatag for the slides or a background image
@@ -325,12 +325,13 @@ define([
             title: Messages.slideOptionsTitle,
             hiddenReadOnly: true,
             text: Messages.slideOptionsText,
-            name: 'options'
+            name: 'options',
+            callback: function () {
+                $('body').append(createPrintDialog());
+            }
         });
-        $optionsButton.click(function () {
-            $('body').append(createPrintDialog());
-        });
-        framework._.toolbar.$theme.append($optionsButton);
+        var $options = UIElements.getEntryFromButton($optionsButton);
+        framework._.toolbar.$theme.append($options);
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
@@ -385,6 +386,7 @@ define([
             $backgroundPicker.val(backColor);
             $backgroundPicker.click();
         });
+        var $backButton = UIElements.getEntryFromButton($back);
 
         var $foregroundPicker = $('<input>', { type: 'color', value: textColor })
             .css({ display: 'none', })
@@ -400,13 +402,15 @@ define([
             $foregroundPicker.val(textColor);
             $foregroundPicker.click();
         });
+
+        var $textButton = UIElements.getEntryFromButton($text);
         var $testColor = $('<input>', { type: 'color', value: '!' });
         if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
 
         $check.append($backgroundPicker);
         $check.append($foregroundPicker);
 
-        framework._.toolbar.$theme.append($text).append($back);
+        framework._.toolbar.$theme.append($textButton).append($backButton);
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
@@ -436,9 +440,9 @@ define([
     var mkHelpMenu = function (framework) {
         var $codeMirrorContainer = $('#cp-app-slide-editor-container');
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'slide']);
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $codeMirrorContainer.prepend(helpMenu.menu);
-
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     var activateLinks = function ($content, framework) {

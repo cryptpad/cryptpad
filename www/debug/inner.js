@@ -18,6 +18,7 @@ define([
     '/common/common-realtime.js',
     '/customize/messages.js',
     '/customize/application_config.js',
+    '/common/common-ui-elements.js',
     '/debug/chainpad.dist.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -39,6 +40,7 @@ define([
     CommonRealtime,
     Messages,
     AppConfig,
+    UIElements,
     ChainWalk)
 {
     var APP = window.APP = {
@@ -701,7 +703,8 @@ define([
             };
             var $hist = common.createButton('history', true, {histConfig: histConfig});
             $hist.addClass('cp-hidden-if-readonly');
-            toolbar.$drawer.append($hist);
+            var $histEntry = UIElements.getEntryFromButton($hist);
+            toolbar.$drawer.append($histEntry);
 
             var $content = common.createButton(null, true, {
                 icon: 'fa-question',
@@ -710,7 +713,9 @@ define([
                 id: 'cp-app-debug-get-content'
             });
             $content.click(getContent);
-            toolbar.$drawer.append($content);
+            var $contentEntry = UIElements.getEntryFromButton($content);
+            console.error($contentEntry);
+            toolbar.$drawer.append($contentEntry);
         };
 
         config.onReady = function (info) {

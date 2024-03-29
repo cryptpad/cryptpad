@@ -9,6 +9,7 @@ define([
     '/common/sframe-common.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/customize/messages.js',
 
     '/common/media-tag.js',
@@ -26,6 +27,7 @@ define([
     SFCommon,
     Hash,
     UI,
+    UIElements,
     Messages,
     MediaTag)
 {
@@ -93,10 +95,10 @@ define([
                 MediaTag($mt[0]).on('complete', function (decrypted) {
                     $mt.css('transform', '');
                     if (!rightsideDisplayed) {
-                        toolbar.$drawer
-                        .append(common.createButton('export', true, {}, function () {
+                        let $exportBtn = common.createButton('export', true, {}, function () {
                             saveAs(decrypted.content, decrypted.metadata.name);
-                        }));
+                        });
+                        toolbar.$drawer.append(UIElements.getEntryFromButton($exportBtn));
                         rightsideDisplayed = true;
                     }
 
@@ -140,10 +142,13 @@ define([
                     if (toolbar.updatePageTitle) {
                         toolbar.updatePageTitle(title);
                     }
-                    toolbar.$drawer.append(common.createButton('forget', true));
-                    toolbar.$drawer.append(common.createButton('properties', true));
+                    let $forget = common.createButton('forget', true);
+                    let $prop = common.createButton('properties', true);
+                    toolbar.$drawer.append(UIElements.getEntryFromButton($forget));
+                    toolbar.$drawer.append(UIElements.getEntryFromButton($prop));
                     if (common.isLoggedIn()) {
-                        toolbar.$drawer.append(common.createButton('hashtag', true));
+                        let $tags = common.createButton('hashtag', true);
+                        toolbar.$drawer.append(UIElements.getEntryFromButton($tags));
                     }
                     toolbar.$file.show();
                 }).on('error', function (err) {

@@ -5,7 +5,7 @@
 (function () {
 var logoPath = '/customize/CryptPad_logo.svg';
 if (location.pathname === '/' || location.pathname === '/index.html') {
-    logoPath = '/customize/CryptPad_logo_hero.svg';
+    logoPath = '/api/logo';
 }
 
 var elem = document.createElement('div');

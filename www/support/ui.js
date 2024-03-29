@@ -22,16 +22,22 @@ define([
         var user = metadataMgr.getUserData();
         var teams = privateData.teams || {};
         data = data || {};
+        if (data.sender) { return data; }
 
         data.sender = {
             name: user.name,
-            accountName: privateData.accountName,
-            drive: privateData.driveChannel,
-            channel: privateData.support,
             curvePublic: user.curvePublic,
             edPublic: privateData.edPublic,
-            notifications: user.notifications,
+            notifications: user.notifications
         };
+
+        if (ctx.isAdmin && ctx.anonymous) {
+            data.sender = {
+                name: Messages.support_team,
+                accountName: 'support'
+                // XXX send edPublic? or keep it private
+            };
+        }
 
         if (typeof(ctx.pinUsage) === 'object') {
             // pass pin.usage, pin.limit, and pin.plan if supplied
@@ -39,6 +45,8 @@ define([
         }
 
         if (!ctx.isAdmin) {
+            data.sender.drive = privateData.driveChannel;
+            data.sender.accountName = privateData.accountName;
             data.sender.userAgent = Util.find(window, ['navigator', 'userAgent']);
             data.sender.vendor = Util.find(window, ['navigator', 'vendor']);
             data.sender.appVersion = Util.find(window, ['navigator', 'appVersion']);
@@ -62,46 +70,7 @@ define([
         return data;
     };
 
-    var send = function (ctx, id, type, data, dest) {
-        var common = ctx.common;
-        var supportKey = ApiConfig.supportMailbox;
-        var supportChannel = Hash.getChannelIdFromKey(supportKey);
-        var metadataMgr = common.getMetadataMgr();
-        var user = metadataMgr.getUserData();
-        var privateData = metadataMgr.getPrivateData();
-
-        data = getDebuggingData(ctx, data);
-
-        data.id = id;
-        data.time = +new Date();
-
-        if (!ctx.isAdmin) {
-            // "dest" is the recipient that is not the admin support mailbox.
-            // In the support page, make sure dest is always ourselves.
-            dest.channel = privateData.support;
-            dest.curvePublic = user.curvePublic;
-        }
-
-        // Send the message to the admin mailbox and to the user mailbox
-        common.mailbox.sendTo(type, data, {
-            channel: supportChannel,
-            curvePublic: supportKey
-        });
-        common.mailbox.sendTo(type, data, {
-            channel: dest.channel,
-            curvePublic: dest.curvePublic
-        });
-
-        if (ctx.isAdmin) {
-            common.mailbox.sendTo('SUPPORT_MESSAGE', {}, {
-                channel: dest.notifications,
-                curvePublic: dest.curvePublic
-            });
-        }
-    };
-
-
-    var sendForm = function (ctx, id, form, dest) {
+    var getFormData = function (ctx, form, restore) {
         var $form = $(form);
         var $cat = $form.find('.cp-support-form-category');
         var $title = $form.find('.cp-support-form-title');
@@ -110,20 +79,12 @@ define([
         var $attachments = $form.find('.cp-support-attachments');
 
         var category = $cat.val().trim();
-/*
-Messages.support_formCategoryError = "Please select a ticket category from the dropdown menu"; // TODO
-        if (!category) {
-            console.log($cat);
-            return void UI.alert(Messages.support_formCategoryError);
-        }
-*/
-
         var title = $title.val().trim();
-        if (!title) {
+        if (!title && !restore) {
             return void UI.alert(Messages.support_formTitleError);
         }
         var content = $content.val().trim();
-        if (!content) {
+        if (!content && !restore) {
             return void UI.alert(Messages.support_formContentError);
         }
         $cat.val('');
@@ -140,14 +101,12 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         });
         $attachments.html('');
 
-        send(ctx, id, 'TICKET', {
+        return getDebuggingData(ctx, {
             category: category,
             title: title,
             attachments: attachments,
             message: content,
-        }, dest);
-
-        return true;
+        });
     };
 
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
@@ -167,11 +126,9 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             return {
                 tag: 'a',
                 content: h('span', Messages['support_cat_'+key]),
-                action: function () {
-                    onChange(key);
-                }
+                attributes: { 'data-value': key }
             };
-        });
+        }).filter(Boolean);
         var dropdownCfg = {
             text: Messages.support_category,
             angleDown: 1,
@@ -181,6 +138,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         };
         var $select = UIElements.createDropdown(dropdownCfg);
         $select.find('button').addClass('btn');
+        $select.onChange.reg(onChange);
         return $select;
     };
 
@@ -193,7 +151,16 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         abuse: Pages.customURLs.terms,
     };
 
-    var makeForm = function (ctx, cb, title, hideNotice) {
+    var getAnswerAs = function (ctx) {
+        var common = ctx.common;
+        var metadataMgr = common.getMetadataMgr();
+        var user = metadataMgr.getUserData();
+        var answerName = Util.fixHTML(ctx.anonymous ? Messages.support_team : user.name);
+        return Messages._getKey('support_answerAs', [answerName]);
+    };
+
+    var makeForm = function (ctx, opts, cb) {
+        let { oldData, recorded, title, hideNotice } = opts || {};
         var button;
 
         if (typeof(cb) === "function") {
@@ -201,7 +168,8 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             $(button).click(cb);
         }
 
-        var cancel = title ? h('button.btn.btn-secondary', Messages.cancel) : undefined;
+        var cancel = title ? h('button.btn.btn-secondary.cp-support-reply-cancel', Messages.cancel)
+                        : undefined;
 
         var category = h('input.cp-support-form-category', {
             type: 'hidden',
@@ -221,7 +189,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             ctx.common.openUnsafeURL(href);
         };
 
-        makeCategoryDropdown(ctx, catContainer, function (key) {
+        makeCategoryDropdown(ctx, catContainer, function (text, key) {
             $(category).val(key);
             if (!notice) { return; }
             //console.log(key);
@@ -245,10 +213,95 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         var attachments, addAttachment;
 
 
+        var answerAs = UI.setHTML(h('span.cp-support-answeras'), getAnswerAs(ctx));
+
+        let textarea = h('textarea.cp-support-form-msg', {
+            placeholder: Messages.support_formMessage
+        }, (oldData && oldData.message) || '');
+
+        let insertText = (text) => {
+            let start = textarea.selectionStart;
+            let end = textarea.selectionEnd;
+            if (start > end) {
+                let _end = end;
+                end = start;
+                start = _end;
+            }
+            let oldVal = $(textarea).val();
+            let before = oldVal.slice(0, start);
+            let after = oldVal.slice(end);
+            $(textarea).val(`${before}${text}${after}`);
+            setTimeout(() => { $(textarea).focus(); });
+        };
+
+        let recordedContent = h('div.cp-support-recorded');
+        let $recorded = $(recordedContent);
+
+        let updateRecorded = (recorded) => {
+            $recorded.empty();
+            if (!recorded || !Object.keys(recorded.all).length) { return; }
+            $recorded.append(h('span.cp-support-recorded-insert',
+                                    Messages.support_insertRecorded));
+            let $span = $(h('span')).appendTo($recorded);
+            let $fakeMore = $(h('button.btn.btn-secondary.fa.fa-ellipsis-h.cp-fake-dropdown')).appendTo($recorded);
+            let opts = [];
+
+            let all = recorded.all;
+            let sort = (a, b) => {
+                let diff = all[b].count - all[a].count;
+                if (diff !== 0) { return diff; }
+                return a - b;
+            };
+            let overflow = false;
+            let $label = $recorded.find('.cp-support-recorded-insert');
+            let maxWidth = $recorded.width() - $label.outerWidth(true)
+                                            - $fakeMore.outerWidth(true);
+            Object.keys(all).sort(sort).forEach(id => {
+                let action = () => {
+                    insertText(all[id].content);
+                    if (typeof(recorded.onClick) === "function") { recorded.onClick(id); }
+                };
+
+                // Add one-click button until the list would overflow
+                // On overflow, use a dropdown instead
+                if (!overflow) {
+                    let button = h('button.btn.btn-secondary', id);
+                    $span.append(button);
+                    let current = $span.width();
+                    if (current < maxWidth) {
+                        return Util.onClickEnter($(button), action);
+                    }
+                    $(button).remove();
+                    overflow = true;
+                }
+
+                opts.push({
+                    tag: 'a',
+                    content: h('span', id),
+                    action: () => {
+                        action();
+                        return true;
+                    }
+                });
+            });
+            let dropdownConfig = {
+                //buttonContent: [ h('i.fa.fa-ellipsis-h') ],
+                buttonCls: 'btn btn-secondary fa fa-ellipsis-h',
+                options: opts, // Entries displayed in the menu
+                left: true, // Open to the left of the button
+                common: ctx.common
+            };
+            let $more = UIElements.createDropdown(dropdownConfig);
+
+            $fakeMore.remove();
+            if (opts.length) { $recorded.append($more); }
+        };
+        setTimeout(() => { updateRecorded(recorded); });
+
         var content = [
             h('hr'),
             category,
-            catContainer,
+            !ctx.isAdmin ? catContainer : undefined,
             notice,
             //h('br'),
             h('input.cp-support-form-title' + (title ? '.cp-hidden' : ''), {
@@ -257,17 +310,43 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
                 value: title || ''
             }),
             cb ? undefined : h('br'),
-            h('textarea.cp-support-form-msg', {
-                placeholder: Messages.support_formMessage
-            }),
+            textarea,
+            recordedContent,
             h('label', Messages.support_attachments),
             attachments = h('div.cp-support-attachments'),
             addAttachment = h('button.btn', Messages.support_addAttachment),
             h('hr'),
             button,
-            cancel
+            cancel,
+            ctx.isAdmin? answerAs : undefined
         ];
 
+        var _addAttachment = (name, href) => {
+            var x, a;
+            var span = h('span', {
+                'data-name': name,
+                'data-href': href
+            }, [
+                x = h('i.fa.fa-times'),
+                a = h('a', {
+                    href: '#'
+                }, name)
+            ]);
+            $(x).click(function () {
+                $(span).remove();
+            });
+            $(a).click(function (e) {
+                e.preventDefault();
+                ctx.common.openURL(href);
+            });
+
+            $(attachments).append(span);
+        };
+        if (oldData && Array.isArray(oldData.attachments)) {
+            oldData.attachments.forEach((data) => {
+                _addAttachment(data.name, data.href);
+            });
+        }
         $(addAttachment).click(function () {
             var $input = $('<input>', {
                 'type': 'file',
@@ -279,25 +358,7 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
                 files.forEach(function (file) {
                     var ev = {};
                     ev.callback = function (data) {
-                        var x, a;
-                        var span = h('span', {
-                            'data-name': data.name,
-                            'data-href': data.url
-                        }, [
-                            x = h('i.fa.fa-times'),
-                            a = h('a', {
-                                href: '#'
-                            }, data.name)
-                        ]);
-                        $(x).click(function () {
-                            $(span).remove();
-                        });
-                        $(a).click(function (e) {
-                            e.preventDefault();
-                            ctx.common.openURL(data.url);
-                        });
-
-                        $(attachments).append(span);
+                        _addAttachment(data.name, data.url);
                     };
                     // The empty object allows us to bypass the file upload modal
                     ctx.FM.handleFile(file, ev, {});
@@ -313,120 +374,229 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             $(form).remove();
         });
 
+        form.updateRecorded = updateRecorded;
         return form;
     };
 
-    var makeTicket = function (ctx, $div, content, onHide) {
+    var makeTicket = function (ctx, opts) {
+        let { id, content, form, recorded,
+              onShow, onHide, onClose, onReply, onMove, onDelete, onTag } = opts;
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
 
-        var ticketTitle = content.title + ' (#' + content.id + ')';
-        var ticketCategory;
         var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
         var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
-        var hide = h('button.btn.btn-danger.cp-support-hide', Messages.support_remove);
+        var remove = h('button.btn.btn-danger.cp-support-hide', Messages.support_remove);
+        var _actions = [answer, close];
 
-        var actions = h('div.cp-support-list-actions', [
-            answer,
-            close,
-            hide
-        ]);
+        if (content.closed && !ctx.isAdmin) {
+            _actions = [remove]; // XXX update key to "Delete permanently" ?
+        }
 
-        var url;
-        var copyKey;
-        var publicKey = Util.find(content, ['sender', 'edPublic']);
+        let linkId =  Util.hexToBase64(id).slice(0,10);
+        var actions = h('div.cp-support-list-actions', _actions);
+
+        var adminActions;
+        var adminClasses = '';
+        var adminOpen;
+        var ticket;
+        let tagsContainer, tagsList;
+        let visible = false;
         if (ctx.isAdmin) {
-            ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
-            url = h('button.btn', {
-                title: Messages.share_linkCopy,
-            }, [
-                h('i.fa.fa-link', {
-                    'aria-hidden': true,
-                }),
-            ]);
+            // Admin custom style
+            adminClasses = `.cp-not-loaded`;
+            // Admin actions
+
+            // Copy URL
+            let url = h('button.btn.fa.fa-link', { title: Messages.share_linkCopy, });
             $(url).click(function (e) {
                 e.stopPropagation();
-                var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
+                let cat = content.category === 'closed' ? 'closed' : 'open';
+                var link = privateData.origin + privateData.pathname + `#${cat}-${linkId}`;
                 Clipboard.copy(link, (err) => {
                     if (!err) { UI.log(Messages.shareSuccess); }
                 });
             });
-            if (typeof(publicKey) === 'string') {
-                copyKey = h('button.btn', {
-                    title: Messages.profile_copyKey,
-                }, [
-                    h('i.fa.fa-key', {
-                        'aria-hidden': true,
-                    }),
-                ]);
-                $(copyKey).click(e => {
-                    e.stopPropagation();
-                    Clipboard.copy(publicKey, (err) => {
-                        if (!err) { return UI.log(Messages.shareSuccess); }
-                        UI.warn(Messages.error);
+            if (content.category === 'legacy') { url = undefined; }
+
+
+            // Load & open ticket
+            let show = h('button.btn.btn-primary.cp-support-expand', Messages.admin_support_open);
+            let $show = $(show);
+            adminOpen = function (force, cb) {
+                var $ticket = $(ticket);
+                $show.prop('disabled', 'disabled');
+                if (visible && !force) {
+                    return onHide(ticket, id, content, function () {
+                        $(tagsContainer).hide();
+                        $(tagsList).show();
+                        $ticket.toggleClass('cp-not-loaded', true);
+                        visible = false;
+                        $(ticket).find('.cp-support-reply-cancel').click();
+                        $show.text(Messages.admin_support_open);
+                        $show.prop('disabled', '');
                     });
+                }
+                onShow(ticket, id, content, function () {
+                    $ticket.toggleClass('cp-not-loaded', false);
+                    visible = true;
+                    $show.text(Messages.admin_support_collapse);
+                    $show.prop('disabled', '');
+                    if (typeof(cb) === "function") { cb(); }
+                });
+            };
+            Util.onClickEnter($show, () => { adminOpen(); });
+            if (!onShow) { show = undefined; }
+
+            // Move active/pending
+            let move;
+            if (onMove && !onMove.disableMove) {
+                let text = onMove.isTicketActive ? Messages.support_movePending
+                                                 : Messages.support_moveActive;
+                move = h('button.btn.btn-secondary.fa.fa-archive', { title: text });
+                Util.onClickEnter($(move), function () {
+                    onMove(ticket, id, content);
                 });
             }
+
+            let tag;
+            if (onTag && onTag.getAllTags) {
+                tag = h('button.btn.btn-secondary.fa.fa-tags', {
+                    title: Messages.fm_tagsName
+                });
+                if (onTag.readOnly) { tag = undefined; }
+                tagsContainer = h('div.cp-support-ticket-tags');
+                tagsList = h('div.cp-tags-list');
+                let $list = $(tagsList);
+                let redrawTags = (tags) => {
+                    $list.empty();
+                    (tags || []).forEach(tag => {
+                        $list.append(h('span', tag));
+                    });
+                };
+                redrawTags(content.tags);
+
+                let $tags = $(tagsContainer).hide();
+                let input = UI.dialog.textInput({id: `cp-${Util.uid()}`});
+                $tags.append(input);
+                let existing = onTag.getAllTags();
+                let _field = UI.tokenField(input, existing).preventDuplicates(function (val) {
+                    UI.warn(Messages._getKey('tags_duplicate', [val]));
+                });
+                _field.setTokens(content.tags || []);
+                $tags.find('.token').off('click');
+
+                let commitTags = function () {
+                    setTimeout(() => {
+                        let newTags = Util.deduplicateString(_field.getTokens().map(function (t) {
+                            return t.toLowerCase();
+                        }));
+                        $tags.find('.token').off('click');
+                        redrawTags(newTags);
+                        onTag(id, newTags);
+                    });
+                };
+                _field.tokenfield.on('tokenfield:createdtoken', commitTags);
+                _field.tokenfield.on('tokenfield:editedoken', commitTags);
+                _field.tokenfield.on('tokenfield:removedtoken', commitTags);
+
+                $(tagsContainer).click(e => {
+                    e.stopPropagation();
+                });
+                Util.onClickEnter($(tag), () => {
+                    $list.toggle();
+                    $tags.toggle();
+                });
+                let close = h('button.btn.btn-secondary.cp-token-close', [
+                    h('i.fa.fa-times'),
+                    h('span', Messages.filePicker_close)
+                ]);
+                Util.onClickEnter($(close), () => {
+                    $list.toggle(true);
+                    $tags.toggle(false);
+                });
+                setTimeout(() => {
+                    $tags.find('.cp-tokenfield-form').append(close);
+                });
+            }
+
+            adminActions = h('span.cp-support-title-buttons', [ url, move, tag, show ]);
         }
 
-        var $ticket = $(h('div.cp-support-list-ticket', {
-            'data-cat': content.category,
-            'data-id': content.id
+        let isPremium = content.premium ? '.cp-support-ispremium' : '';
+        let title = content.title + ` (#${linkId})`;
+        var name = Util.fixHTML(content.author) || Messages.anonymous;
+        ticket = h(`div.cp-support-list-ticket${adminClasses}`, {
+            'data-link-id': linkId,
+            'data-id': id
         }, [
-            h('h2', [
-                h('span', [ticketCategory, ticketTitle]),
-                h('span.cp-support-title-buttons', [
-                    copyKey,
-                    url,
+            h('div.cp-support-ticket-header', [
+                h('div.cp-support-header-data', [
+                    h('span.cp-support-ticket-title', title),
+                    ctx.isAdmin ? UI.setHTML(h(`span${isPremium}`), Messages._getKey('support_from', [name])) : '',
+                    h('span', new Date(content.time).toLocaleString()),
+                    tagsList
                 ]),
+                adminActions,
             ]),
+            tagsContainer,
             actions
-        ]));
+        ]);
+        ticket.open = adminOpen;
 
-        /*
-        $(close).click(function () {
-            send(ctx, content.id, 'CLOSE', {}, content.sender);
-        });
+        // Add button handlers
+        var $ticket = $(ticket);
 
-        $(hide).click(function () {
-            if (typeof(onHide) !== "function") { return; }
-            onHide();
-        });
-        */
+        if (adminOpen) {
+            $ticket.click(function (e) {
+                if ($(e.target).is('button')) { return; }
+                e.preventDefault();
+                e.stopPropagation();
+                if (!visible) { adminOpen(true); }
+            });
+        }
 
         UI.confirmButton(close, {
             classes: 'btn-danger'
         }, function() {
-            send(ctx, content.id, 'CLOSE', {}, content.sender);
-            $(close).hide();
+            $(close).remove();
+            onClose(ticket, id, content);
         });
-        UI.confirmButton(hide, {
+        if (!onClose) { $(close).remove(); }
+
+        UI.confirmButton(remove, {
             classes: 'btn-danger'
         }, function() {
-            if (typeof(onHide) !== "function") { return; }
-            onHide(hide);
+            $(remove).remove();
+            onDelete(ticket, id, content);
         });
 
-        $(answer).click(function () {
+        var addForm = function () {
             $ticket.find('.cp-support-form-container').remove();
             $(actions).hide();
-            var hideNotice = true;
-            var form = makeForm(ctx, function () {
-                var sent = sendForm(ctx, content.id, form, content.sender);
-                if (sent) {
-                    $(actions).css('display', '');
-                    $(form).remove();
-                }
-            }, content.title, hideNotice);
-            $ticket.append(form);
-        });
 
-        $div.append($ticket);
-        return $ticket;
+            var oldData = form ? getFormData(ctx, form, true) : {};
+            form = undefined;
+            var newForm = makeForm(ctx, {
+                oldData,
+                recorded,
+                title: content.title,
+                hideNotice: true
+            }, function () {
+                onReply(ticket, id, content, newForm);
+            });
+            $(newForm).attr('data-id', id);
+            $ticket.append(newForm);
+        };
+        if (form) { addForm(); }
+        Util.onClickEnter($(answer), addForm);
+        if (!onReply) { $(answer).remove(); }
+
+        return ticket;
     };
 
-    var makeMessage = function (ctx, content, hash) {
+    var makeMessage = function (ctx, content) {
         var common = ctx.common;
         var isAdmin = ctx.isAdmin;
         var metadataMgr = common.getMetadataMgr();
@@ -435,16 +605,30 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         // Check content.sender to see if it comes from us or from an admin
         var senderKey = content.sender && content.sender.edPublic;
         var fromMe = senderKey === privateData.edPublic;
-        var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1;
+        var fromAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1
+                        || (!senderKey && content.sender.accountName === 'support'); // XXX anon key?
         var fromPremium = Boolean(content.sender.plan || Util.find(content, ['sender', 'quota', 'plan']));
 
+        var copyUser = h('button.btn.btn-secondary.fa.fa-clipboard.cp-support-copydata', {
+            title: Messages.support_copyUserData
+        });
+        Util.onClickEnter($(copyUser), () => {
+            let data = JSON.stringify({
+                name: content.sender.name,
+                curvePublic: content.sender.curvePublic,
+                notifications: content.sender.notifications
+            });
+            Clipboard.copy(data, (err) => {
+                if (!err) { UI.log(Messages.genericCopySuccess); }
+            });
+        });
         var userData = h('div.cp-support-showdata', [
             Messages.support_showData,
-            h('pre.cp-support-message-data', JSON.stringify(content.sender, 0, 2))
+            h('pre.cp-support-message-data', [copyUser, JSON.stringify(content.sender, 0, 2)])
         ]);
         $(userData).click(function () {
-            $(userData).find('pre').toggle();
-        }).find('pre').click(function (ev) {
+            $(userData).find('.cp-support-message-data').toggle();
+        }).find('*').click(function (ev) {
             ev.stopPropagation();
         });
 
@@ -488,11 +672,9 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         $pre.text(displayed);
 
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
-        var premiumClass = (fromPremium && !fromAdmin? '.cp-support-frompremium': '');
+        var premiumClass = (ctx.isAdmin && fromPremium && !fromAdmin? '.cp-support-frompremium': '');
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
-        return h('div.cp-support-list-message' + adminClass + premiumClass, {
-            'data-hash': hash
-        }, [
+        return h('div.cp-support-list-message' + adminClass + premiumClass, {}, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
@@ -504,16 +686,18 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         ]);
     };
 
-    var makeCloseMessage = function (ctx, content, hash) {
+    var makeCloseMessage = function (ctx, content) {
         var common = ctx.common;
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
-        var fromMe = content.sender && content.sender.edPublic === privateData.edPublic;
+
+        var senderKey = content.sender && content.sender.edPublic;
+        var fromMe = senderKey === privateData.edPublic;
+        var fromAdmin = ctx.moderatorKeys.indexOf(senderKey) !== -1;
+        var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
 
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
-        return h('div.cp-support-list-message', {
-            'data-hash': hash
-        }, [
+        return h('div.cp-support-list-message' + adminClass, {}, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
                 UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
@@ -529,8 +713,10 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
             isAdmin: isAdmin,
             pinUsage: pinUsage || false,
             teamsUsage: teamsUsage || false,
-            adminKeys: Array.isArray(ApiConfig.adminKeys)?  ApiConfig.adminKeys.slice(): [],
+            moderatorKeys: Array.isArray(ApiConfig.moderatorKeys)?  ApiConfig.moderatorKeys.slice(): [],
         };
+
+        ctx.supportModule = common.makeUniversal('support');
 
         var fmConfig = {
             body: $('body'),
@@ -543,23 +729,27 @@ Messages.support_formCategoryError = "Please select a ticket category from the d
         };
         ctx.FM = common.createFileManager(fmConfig);
 
-        ui.sendForm = function (id, form, dest) {
-            return sendForm(ctx, id, form, dest);
+        ui.setAnonymous = function (val) {
+            ctx.anonymous = ctx.isAdmin && val;
+            $('.cp-support-answeras').html(getAnswerAs(ctx));
         };
-        ui.makeForm = function (cb, title, hideNotice) {
-            return makeForm(ctx, cb, title, hideNotice);
+        ui.getFormData = function (form) {
+            return getFormData(ctx, form);
+        };
+        ui.makeForm = function (opts, cb) {
+            return makeForm(ctx, opts, cb);
         };
         ui.makeCategoryDropdown = function (container, onChange, all) {
             return makeCategoryDropdown(ctx, container, onChange, all);
         };
-        ui.makeTicket = function ($div, content, onHide) {
-            return makeTicket(ctx, $div, content, onHide);
+        ui.makeTicket = function (opts) {
+            return makeTicket(ctx, opts);
         };
-        ui.makeMessage = function (content, hash) {
-            return makeMessage(ctx, content, hash);
+        ui.makeMessage = function (content) {
+            return makeMessage(ctx, content);
         };
-        ui.makeCloseMessage = function (content, hash) {
-            return makeCloseMessage(ctx, content, hash);
+        ui.makeCloseMessage = function (content) {
+            return makeCloseMessage(ctx, content);
         };
         ui.getDebuggingData = function (data) {
             return getDebuggingData(ctx, data);

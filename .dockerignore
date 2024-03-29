@@ -11,3 +11,10 @@ docker-compose.yml
 traefik2.yml
 Dockerfile*
 *.png
+/onlyoffice-builds.git/
+/www/common/onlyoffice/dist/
+blob
+block
+customize
+data
+datastore

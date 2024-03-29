@@ -8,7 +8,8 @@
 @import (reference) "/customize/src/less2/include/leftside-menu.less";
 @import (reference) "/customize/src/less2/include/browser.less";
 
-@sidebar_button-width: 400px;
+@sidebar_block-width: 25rem;;
+@sidebar_base-margin: 0.5rem;
 
 .sidebar-layout_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -24,6 +25,9 @@
         display: flex;
         flex: 1;
         min-height: 0;
+        * {
+            box-sizing: border-box;
+        }
         @media(min-width:800px) {
             #cp-sidebarlayout-leftside {
                 overflow-y: scroll;
@@ -91,15 +95,140 @@
                 pre {
                     color: @cryptpad_text_col;
                 }
-                label:not(.noTitle), .cp-default-label {
-                    display: block;
-                    font-weight: bold;
-                    margin-bottom: 0;
+
+                &.cp-sidebar-force-hide {
+                    display: none !important;
+                }
+
+                &:not([data-item]) { // Old sidebar-layout blocks
+                    label:not(.noTitle), .cp-default-label {
+                        display: block;
+                        font-weight: bold;
+                        margin-bottom: 0;
+                    }
+                }
+                &[data-item] { // New sidebar-layout blocks
+                    label.cp-item-label, .cp-default-label {
+                        display: block;
+                        font-weight: bold;
+                        margin-bottom: 0;
+                    }
+                    .cp-sidebar-form {
+                        display: flex;
+                        flex-flow: column;
+                        align-items: baseline;
+                    }
+                    label {
+                        margin-bottom: 0;
+                    }
+                    input, textarea {
+                        font-family: inherit;
+                        max-width: @sidebar_block-width;
+                    }
+                    [type="color"] {
+                        width: @sidebar_block-width/5;
+                        padding: 3px;
+                    }
+                    .cp-labelled-input {
+                        margin-top: @sidebar_base-margin;
+                        max-width: ~"min(100%, 25rem)";
+                        width: @sidebar_block-width;
+                        label {
+                            width: 100%;
+                        }
+                    }
+                    nav {
+                        display: flex;
+                        align-items: baseline;
+                        margin-top: @sidebar_base-margin;
+                        .btn {
+                            margin-top: 0;
+                            margin-bottom: 0;
+                            margin-left: 0;
+                        }
+                    }
+                    .cp-sidebar-flex-block {
+                        display: flex;
+                        align-items: center;
+                        nav {
+                            margin-top: 0;
+                        }
+                    }
+                    nav, .cp-sidebar-flex-block {
+                        & > * {
+                            margin-right: @sidebar_base-margin;
+                            &:last-child {
+                                margin-right: 0;
+                            }
+                        }
+                    }
+                    .cp-sidebar-bigger-alert {
+                        font-size: 16px;
+                    }
+                    .cp-checkmark {
+                        padding: @sidebar_base-margin;
+                        padding-left: 0;
+                    }
+                    code {
+                        color: @cryptpad_text_col;
+                    }
+                    .cp-sidebar-table {
+                        margin-top: @sidebar_base-margin;
+                        pre {
+                            margin: 0;
+                        }
+                        th {
+                            border: 1px solid @cp_drive-icon-border;
+                            padding: 7px;
+                        }
+                        td {
+                            border: 1px solid @cp_drive-icon-border;
+                            padding: 0.3rem;
+                            margin-right: 2px;
+                            *:not(:last-child) {
+                                margin-right: @sidebar_base-margin;
+                            }
+                        }
+                        tbody {
+                            tr:nth-child(odd) {
+                                background-color: @cp_sidebar-left-item-bg;
+                            }
+                        }
+                    }
+                    .cp-sidebar-input-block {
+                        display: inline-flex;
+                        width: @sidebar_block-width;
+                        max-width: 100%;
+                        input {
+                            flex: 1;
+                            //border-radius: 0.25em 0 0 0.25em;
+                            border: 1px solid @cryptpad_color_grey_500;
+                            border-right: 0px;
+                            border-top-right-radius: 0px;
+                            border-bottom-right-radius: 0px;
+                        }
+                        button {
+                            border-top-left-radius: 0px;
+                            border-bottom-left-radius: 0px;
+                            border-left: 0px;
+                            height: 40px;
+                            margin: 0 !important;
+                        }
+                    }
+                    a {
+                        color: @cryptpad_color_link;
+                        text-decoration: underline;
+                    }
+                    table {
+                        .cp-strong {
+                            font-weight: bold;
+                        }
+                    }
                 }
                 .cp-sidebarlayout-description {
                     display: block;
                     color: @cp_sidebar-hint;
-                    margin-bottom: 0.5rem;
+                    margin-bottom: @sidebar_base-margin;
                     p {
                         margin-bottom: 0;
                     }
@@ -121,9 +250,14 @@
                 height: 40px;
                 box-sizing: border-box;
             }
+            [type="file"] { // XXX hack, to fix with sidebar layout refactoring
+                height: auto;
+                box-sizing: border-box;
+                padding: 6.5px;
+            }
             .cp-sidebarlayout-input-block {
                 display: inline-flex;
-                width: @sidebar_button-width;
+                width: @sidebar_block-width;
                 max-width: 100%;
                 input {
                     flex: 1;
@@ -145,7 +279,10 @@
                 margin: 10px 0;
             }
             button.btn {
-                margin: 0 0.5rem 0 0;
+                margin: 0 @sidebar_base-margin 0 0;
+                &:last-child {
+                    margin-right: 0;
+                }
             }
             span.cp-password-container {
                 margin-bottom: 1rem;
@@ -159,7 +296,7 @@
                 padding-bottom: 20px;
                 .cp-sidebarlayout-categories {
                     .cp-sidebarlayout-category {
-                        margin: 0 0 0.5rem 0;
+                        margin: 0 0 @sidebar_base-margin 0;
                         span.cp-sidebar-layout-category-name {
                             display: inline !important; // override "narrow" mode
                         }

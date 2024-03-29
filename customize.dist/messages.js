@@ -29,11 +29,11 @@ var map = {
     'zh': '中文(簡體)',
 };
 
-var messages = {};
+var Messages = {};
 var LS_LANG = "CRYPTPAD_LANG";
 var getStoredLanguage = function () { return localStorage && localStorage.getItem(LS_LANG); };
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
-var getLanguage = messages._getLanguage = function () {
+var getLanguage = Messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
     try {
         if (getStoredLanguage()) { return getStoredLanguage(); }
@@ -103,19 +103,19 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    extend(messages, Default);
+    extend(Messages, Default);
     if (Language && language !== defaultLanguage) {
         // Add the translated keys to the returned object
-        extend(messages, Language);
+        extend(Messages, Language);
     }
 
-    messages._languages = map;
-    messages._languageUsed = language;
+    Messages._languages = map;
+    Messages._languageUsed = language;
 
     // Get keys with parameters
-    messages._getKey = function (key, argArray) {
-        if (!messages[key]) { return '?'; }
-        var text = messages[key];
+    Messages._getKey = function (key, argArray) {
+        if (!Messages[key]) { return '?'; }
+        var text = Messages[key];
         if (typeof(text) === 'string') {
             return text.replace(/\{(\d+)\}/g, function (str, p1) {
                 if (typeof(argArray[p1]) === 'string' || typeof(argArray[p1]) === "number") {
@@ -129,7 +129,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    return messages;
+
+    return Messages;
 
 });
 }());

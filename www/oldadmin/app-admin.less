@@ -1,0 +1,380 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+@import (reference) '../../customize/src/less2/include/support.less';
+@import (reference) '../../customize/src/less2/include/charts.less';
+&.cp-app-admin {
+
+    .framework_min_main();
+    .sidebar-layout_main();
+    .support_main();
+    .charts_main();
+
+    .cp-hidden {
+        display: none !important;
+    }
+
+    label{
+        margin-top:0.5rem;
+    }
+
+    display: flex;
+    flex-flow: column;
+
+    a {
+        color: @cryptpad_color_link;
+        text-decoration: underline;
+    }
+
+    .alert.alert-info, .alert.alert-danger {
+        &.cp-admin-bigger-alert {
+            font-size: 16px;
+        }
+    }
+
+    .cp-sidebarlayout-element {
+        label:not(.cp-admin-label) {
+            font-weight: normal !important;
+        }
+        input {
+            max-width: 25rem;
+        }
+        nav {
+            display: flex;
+            margin-top: 0.5rem;
+        }
+    }
+    .cp-admin-setlimit-form,
+    .cp-admin-setter {
+        + button {
+            margin-top: 5px !important;
+        }
+    }
+    .cp-admin-getlimits {
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        code {
+            cursor: pointer;
+        }
+        table {
+            td:not(:last-child) {
+                padding-right: 20px;
+                white-space: nowrap;
+            }
+            td:last-child {
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 500px;
+            }
+            @media screen and (max-width: 1200px) {
+                button.cp-report {
+                    display: none;
+                }
+                :is(td, th).note {
+                    display: none;
+                }
+            }
+            @media screen and (max-width: 1400px) {
+                :is(td, th).plan {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .cp-support-container {
+        display: flex;
+        flex-wrap: wrap;
+        .cp-support-column {
+            min-width: 700px;
+            flex: 1 0 50%;
+            h1 {
+                display: flex;
+                align-items: center;
+                button {
+                    margin-left: 50px !important;
+                }
+            }
+            .cp-support-count {
+                margin-left: 10px;
+            }
+            &.cp-support-column-collapsed {
+                .cp-support-list-ticket {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .cp-support-list-actions {
+        margin: 10px 0px 10px 2px;
+    }
+
+    .cp-support-list-ticket {
+        h2 {
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: top;
+            .cp-support-title-buttons {
+                flex-shrink: 0;
+                button i {
+                    margin-right: 0px;
+                }
+            }
+        }
+        .cp-support-collapsed {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            color: fade(@cryptpad_text_col, 80%);
+            .cp-support-ispremium {
+                padding: 0 5px;
+                background-color: @cp_admin-premium-bg;
+            }
+        }
+        &.cp-support-list-closed {
+            .cp-support-list-actions {
+                .cp-support-answer {
+                    display: inline !important;
+                }
+            }
+            .cp-support-form-container {
+                display: block !important;
+            }
+        }
+    }
+
+    .cp-support-list-ticket:not(.cp-support-list-closed) {
+        .cp-support-list-actions {
+            .cp-button-confirm, .cp-support-close {
+                order: 20;
+                margin-left: auto !important;
+            }
+        }
+        .cp-support-list-message {
+            .cp-support-showdata {
+                background-color: lighten(@cp_admin-last-bg, 5%);
+            }
+            .cp-support-attachments {
+                a {
+                    color: @cryptpad_color_link;
+                    text-decoration: underline;
+                }
+            }
+            &:last-child:not(.cp-support-fromadmin)  {
+                color: @cp_admin-last-fg;
+                background-color: @cp_admin-last-bg;
+            }
+
+            &:last-child {
+                &.cp-support-frompremium {
+                    background-color: @cp_admin-premium-bg;
+                    .cp-support-showdata {
+                        background-color: fade(@cp_admin-premium-bg, 10%);
+                    }
+                }
+            }
+        }
+    }
+    .cp-support-list-ticket:not(.cp-support-open) {
+        span:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        & > :not(h2):not(.cp-support-collapsed) {
+            display: none;
+        }
+        .cp-support-collapse {
+            display: none;
+        }
+        cursor: pointer;
+    }
+    .cp-support-list-ticket.cp-support-open {
+        .cp-support-collapsed {
+            display: none;
+        }
+        .cp-support-expand {
+            display: none;
+        }
+    }
+
+    .cp-support-fromadmin {
+        background-color: @cp_admin-isadmin-bg !important;
+        .cp-support-message-from, .cp-support-showdata {
+            color: @cryptpad_text_col;
+            background-color: fade(@cp_admin-isadmin-bg, 10%) !important;
+        }
+    }
+
+    table#cp-performance-table {
+        td, th {
+            padding: 5px;
+            color: @cryptpad_text_col;
+            border: 1px solid @cryptpad_text_col;
+        }
+    }
+
+    input.cp-admin-inval {
+        border-color: red !important;
+    }
+
+    .cp-admin-nopassword {
+        .cp-admin-pw {
+            display: none !important;
+        }
+    }
+
+    .cp-admin-radio-container {
+        display: flex;
+        align-items: left; //center;
+        flex-wrap: wrap;
+        flex-direction: column;
+        label {
+            margin-right: 40px;
+            margin-top: 5px;
+        }
+    }
+
+    .cp-admin-users {
+        .cp-admin-store-invited, .cp-admin-store-sso {
+            margin-bottom: 0 !important;
+        }
+    }
+
+    .cp-admin-broadcast-form {
+        input.flatpickr-input {
+            width: 307.875px !important; // same width as flatpickr calendar
+        }
+        .cp-broadcast-active {
+            display: flex;
+            flex-flow: column;
+            align-items: start;
+            padding: 10px;
+            background-color: @cp_sidebar-left-bg;
+            color: @cp_sidebar-left-fg;
+            p {
+                margin: 0;
+            }
+        }
+        .cp-broadcast-form-submit {
+            margin-top: 30px;
+            button {
+                margin-bottom: 10px !important;
+            }
+        }
+        .cp-broadcast-container {
+            display: flex;
+            flex-flow: column;
+        }
+        .cp-broadcast-lang {
+            margin: 30px;
+            margin-bottom: 0;
+            display: flex;
+            flex-flow: column;
+            align-items: baseline;
+            .cp-checkmark {
+                margin: 5px 0;
+            }
+        }
+        div.cp-broadcast-languages {
+            & > label.cp-checkmark:not(:last-child) {
+                margin-right: 20px;
+            }
+        }
+        .cp-broadcast-preview {
+            vertical-align: bottom !important;
+        }
+        .cp-broadcast-delete {
+            width: 100%;
+            min-width: 600px;
+            tbody {
+                tr {
+                    background-color: @cp_support-msg-bg;
+                    padding: 5px;
+                    td {
+                        padding: 5px;
+                        button {
+                            margin: 0 !important;
+                        }
+                    }
+                }
+            }
+            .cp-notification {
+                display: flex;
+                align-items: center;
+                .cp-avatar, .cp-broadcast, .cp-notification-dismiss {
+                    display: none;
+                }
+                p {
+                    margin: 0 !important;
+                }
+                .cp-notification-content {
+                    width: 100%;
+                    padding: 10px;
+                }
+                .cp-clickable {
+                    cursor: pointer;
+                    &:hover {
+                        background-color: @cp_dropdown-bg-hover;
+                    }
+                }
+            }
+        }
+    }
+    span.cp-bar.profiling-percentage {
+        text-align: center;
+        padding: 5px;
+    }
+    span.profiling-label {
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+        text-align: center;
+        padding: 5px;
+    }
+    #profiling-chart {
+        .cp-bar-container {
+            max-width: 400px;
+        }
+    }
+    .width-constrained {
+        max-width: 800px;
+    }
+    .cp-charts-row.heading {
+        font-weight: bold;
+    }
+    table.cp-admin-all-limits,
+    table.cp-metadata-history,
+    table.cp-account-stats,
+    table.cp-block-stats,
+    table.cp-pin-list,
+    table.cp-document-stats {
+        @color: #777; // TODO use a colotheme variable
+        border: 1px solid @color;
+        margin: 15px;
+        td, pre {
+            color: @cryptpad_text_col;
+        }
+        td, th {
+            max-width: 60vw;
+            border: 1px solid @color;
+            padding: 5px;
+            .scroll {
+                max-width: 500px;
+                overflow-x: auto;
+            }
+        }
+    }
+}
+

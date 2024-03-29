@@ -7,7 +7,7 @@ version: '3.8'
 
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:version-5.7.0"
+    image: "cryptpad/cryptpad:version-5.8.0"
     hostname: cryptpad
 
     environment:
@@ -15,12 +15,18 @@ services:
       - CPAD_SANDBOX_DOMAIN=https://your-sandbox-domain.com
       - CPAD_CONF=/cryptpad/config/config.js
 
+      # Read and accept the license before uncommenting the following line:
+      # https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE.txt
+      # - CPAD_INSTALL_ONLYOFFICE=yes
+
     volumes:
       - ./data/blob:/cryptpad/blob
       - ./data/block:/cryptpad/block
       - ./customize:/cryptpad/customize
       - ./data/data:/cryptpad/data
       - ./data/files:/cryptpad/datastore
+      - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
+      - ./onlyoffice-conf:/cryptpad/onlyoffice-conf
 
     ports:
       - "3000:3000"
