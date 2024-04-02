@@ -2645,7 +2645,7 @@ define([
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
 
         var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs });
-        var fill1 = h('div.cp-creation-fill.cp-creation-logo', logo);
+        var fill1 = h('div.cp-creation-fill.cp-creation-logo',{ role: 'presentation' }, logo);
         var fill2 = h('div.cp-creation-fill');
         var $creation = $('<div>', { id: 'cp-creation', tabindex:1 });
         $creationContainer.append([fill1, $creation, fill2]);
