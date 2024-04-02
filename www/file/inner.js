@@ -71,6 +71,7 @@ define([
             $container: $bar,
             metadataMgr: metadataMgr,
             pageTitle: Messages.upload_title,
+            addFileMenu: true,
             sfCommon: common,
         };
         var toolbar = APP.toolbar = Toolbar.create(configTb);
