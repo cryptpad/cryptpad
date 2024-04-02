@@ -2246,6 +2246,7 @@ define([
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
+                $(img).attr("role", "presentation");
                 addTitleIcon(element, $name);
             } else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
