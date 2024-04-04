@@ -59,9 +59,6 @@ Starting with this version, OnlyOffice applications (Sheets, Document, Presentat
 # and Y ⏎ to accept the OnlyOffice license
 ```
 
-<!-- XXX missing instructions for existing installs? -->
-
-
 For Docker users that want to use OnlyOffice, please read our updated [Docker installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html#admin-docker-install).
  
 
