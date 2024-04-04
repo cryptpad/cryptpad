@@ -1762,5 +1762,6 @@
     "support_moveActive": "Zu aktiven Tickets verschieben",
     "support_movePending": "In das Archiv verschieben",
     "support_cat_legacy": "Alte Daten",
-    "support_legacyTitle": "Alte Support-Daten ansehen"
+    "support_legacyTitle": "Alte Support-Daten ansehen",
+    "support_userNotification": "Neues Support-Ticket oder neue Antwort: {0}"
 }
