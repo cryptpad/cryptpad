@@ -4,17 +4,91 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# 5.8.0
+# 2024.3.0
 
-## OnlyOffice
+## Goals
 
-Since version 5.8 OnlyOffice is not bundled with CryptPad anymore. You can install/update OnlyOffice by running the installation script we provide:
+This release is aimed at instance administrators with new features and changes in the way CryptPad is installed. This marks a major release and we are also taking the opportunity to change the way we number CryptPad versions, moving to a date-based format (from semver to [calver](https://calver.org/)). For full details on the reasons behind this change please read [our March 2024 status blog post](https://blog.cryptpad.org/2024/03/29/status-2024-03/). The short version is that this is our Spring 2024 release with number `2024.3.0` and that we are aiming for the following schedule going forward, sticking to the `YYYY.MM.micro` format: 
+
+- 💐 Spring `2024.3.0`  
+- 🌻 Summer `2024.6.0` end June 2024
+- 🍁 Autumn `2024.9.0` end September 2024
+- ❄️ Winter `2024.12.0` end December 2024
+
+
+## Features
+
+- Admin and moderation changes [#1438](https://github.com/cryptpad/cryptpad/pull/1438)
+  - Support system refactoring with a new help-desk functionality, allowing non-admins to be moderators and handle support tickets
+  - New instance customization features from the admin panel
+    - Instance logo
+    - Instance accent color
+  - Admin panel code refactoring
+
+## Improvements
+
+- Completed accessibility improvements for all dropdown menus [#1380](https://github.com/cryptpad/cryptpad/pull/1380)
+- Developer experience [#1436](https://github.com/cryptpad/cryptpad/pull/1436) with new `.editorconfig` and updated `.gitignore` files
+
+## Fixes
+
+- Fix Notifications replaying (#1399) [#1428](https://github.com/cryptpad/cryptpad/pull/1428)
+- Fix hover and focus styling of toolbar menus [#1417](https://github.com/cryptpad/cryptpad/pull/1417)
+- Fix ssoauth path regex [#1411](https://github.com/cryptpad/cryptpad/pull/1411)
+- File upload broken with a specific size [#1419](https://github.com/cryptpad/cryptpad/issues/1419)
+- User menu displays may include consecutive separators [#1402](https://github.com/cryptpad/cryptpad/issues/1402)
+
+- Diagram
+  - Enable and fix internal drawio exports [#1439](https://github.com/cryptpad/cryptpad/pull/1439)
+- OnlyOffice
+  - Do not allow OnlyOffice comments in view mode [#1424](https://github.com/cryptpad/cryptpad/pull/1424)
+
+## Dependencies
+
+### OnlyOffice
+
+- OnlyOffice is now a separate module [#1435](https://github.com/cryptpad/cryptpad/pull/1435)
+  - avoids having compiled binaries in the main code repository
+  - first step towards new instances only downloading the current version + any future updates (i.e. avoiding 1.7GB of historical  OnlyOffice versions they will never use).
+
+Starting with this version, OnlyOffice applications (Sheets, Document, Presentation) are not bundled with CryptPad anymore. You can install/update them by running the installation script we provide:
 
 ```bash
-   ./install-onlyoffice.sh
+./install-onlyoffice.sh
+# press q to close the license screen
+# and Y ⏎ to accept the OnlyOffice license
 ```
 
 For Docker users that want to use OnlyOffice, please read our updated [Docker installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html#admin-docker-install).
+ 
+
+### Others
+
+- Bump follow-redirects from 1.15.4 to 1.15.6 [#1432](https://github.com/cryptpad/cryptpad/pull/1432)
+- Bump jose from 4.15.3 to 4.15.5 [#1426](https://github.com/cryptpad/cryptpad/pull/1426)
+- Bump express from 4.18.2 to 4.19.2 [#1451](https://github.com/cryptpad/cryptpad/pull/1451)
+
+
+## Upgrade notes
+
+If you are upgrading from a version older than `5.7` please read the upgrade notes of all versions between yours and `5.7` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.3.0
+./install-onlyoffice.sh
+# press q to close the license screen
+# and Y ⏎ to accept the OnlyOffice license
+```
+
+1. Restart your server
+2. Review your instance's checkup page to ensure that you are passing all tests
+
 
 # 5.7.0
 
