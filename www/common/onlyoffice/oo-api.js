@@ -32,6 +32,14 @@ define([
             style.innerText = css;
             head.appendChild(style);
         }
+
+        sendMessageToOO(msg) {
+
+        }
+
+        addOnMessageFromOOHandler(onMessage) {
+
+        }
 	}
 
 	return {
