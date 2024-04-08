@@ -34,6 +34,7 @@ main () {
 	install_version v5 88a356f0
 	install_version v6 abd8a309
 	install_version v7 9d8b914a
+	install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1
 
 	rm -rf "$BUILDS_DIR"
 	if command -v rdfind &> /dev/null; then
@@ -146,6 +147,41 @@ install_version () {
 
 	if [ ${CLEAR+x} ]; then
 		rm -f "$FULL_DIR"/.git
+	fi
+}
+
+install_x2t () {
+	ensure_command_available curl
+	ensure_command_available sha512sum
+	ensure_command_available unzip
+
+	local VERSION=$1
+	local HASH=$2
+	local LAST_DIR
+	LAST_DIR=$(pwd)
+	local X2T_DIR=$OO_DIR/x2t
+
+	if [ ! -e "$X2T_DIR"/.version ] || [ "$(cat "$X2T_DIR"/.version)" != "$VERSION" ]; then
+		rm -rf "$X2T_DIR"
+		mkdir -p "$X2T_DIR"
+
+		cd "$X2T_DIR"
+
+		curl "https://github.com/cryptpad/onlyoffice-x2t-wasm/releases/download/$VERSION/x2t.zip" --location --output x2t.zip
+		# curl "https://github.com/cryptpad/onlyoffice-x2t-wasm/releases/download/v7.3%2B1/x2t.zip" --location --output x2t.zip
+		echo "$HASH x2t.zip" > x2t.zip.sha512
+		if ! sha512sum --check x2t.zip.sha512; then
+			echo "x2t.zip does not match expected checksum"
+			exit 1
+		fi
+		unzip x2t.zip
+		rm x2t.zip*
+
+		echo "$VERSION" > "$X2T_DIR"/.version
+
+		echo "x2t updated"
+	else
+		echo "x2t was up to date"
 	fi
 }
 
