@@ -1195,6 +1195,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                     if (![13,32,46].includes(e.which)) { return; }
                     e.stopPropagation();
                     if (e.which === 46) {
+                        $(div).find('li').focus();
                         return $(el).find('.cp-notification-dismiss').click();
                     }
                     $(el).find('.cp-notification-content').click();
