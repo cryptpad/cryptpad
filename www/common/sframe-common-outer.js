@@ -78,6 +78,7 @@ define([
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
         $i.attr('allowfullscreen', 'true');
         $i.attr('allow', 'clipboard-write');
+        $i.attr('title', 'iframe');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
