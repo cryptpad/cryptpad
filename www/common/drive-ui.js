@@ -1197,7 +1197,7 @@ define([
             });
         };
 
-        // `app`: true (force open wiht the app), false (force open in preview),
+        // `app`: true (force open with the app), false (force open in preview),
         //        falsy (open in preview if default is not using the app)
         var defaultInApp = ['application/pdf'];
         var openFile = function (el, isRo, app) {
