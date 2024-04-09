@@ -1201,7 +1201,8 @@ define([
         //        falsy (open in preview if default is not using the app)
         var defaultInApp = ['application/pdf'];
         var openFile = function (el, isRo, app) {
-            var data = manager.getFileData(el);
+            // On anonymous drive, `el` already contains file data
+            var data = el.channel ? el : manager.getFileData(el);
 
             if (data.static) {
                 if (data.href) {
