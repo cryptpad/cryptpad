@@ -3,8 +3,8 @@ define([
 ], function(
     Util
 ) {
-	class OnlyOfficeEditor {
-		constructor(placeholderId, config) {
+    class OnlyOfficeEditor {
+        constructor(placeholderId, config) {
             let onAppReady;
 
             this.waitForAppReady = new Promise((resolve) => {
@@ -16,11 +16,17 @@ define([
             config = Util.deepAssign(config, {events: {onAppReady}});
 
             this.editor = new window.DocsAPI.DocEditor(placeholderId, config);
-		}
 
-		destroyEditor() {
-			this.editor.destroyEditor();
-		}
+            this.fromOOHandlers = new EventHandlers();
+            this.toOOHandlers = new EventHandlers();
+
+            window.APP = window.APP || {};
+            window.APP.addToOOHandler = (h) => this.toOOHandlers.add(h);
+        }
+
+        destroyEditor() {
+            this.editor.destroyEditor();
+        }
 
         getIframe() {
             return document.querySelector('iframe[name="frameEditor"]');
@@ -34,15 +40,38 @@ define([
         }
 
         sendMessageToOO(msg) {
-
+            this.toOOHandlers.fire(msg);
         }
 
         addOnMessageFromOOHandler(onMessage) {
-
+            this.fromOOHandlers.add(onMessage);
         }
-	}
+    }
 
-	return {
-		OnlyOfficeEditor
-	};
+    class EventHandlers {
+        constructor() {
+            this.handlers = [];
+        }
+
+        add(handler) {
+            this.handlers.push(handler);
+        }
+
+        remove(handler) {
+            const index = this.handlers.indexOf(handler);
+            if (index > -1) {
+                this.handlers.splice(index, 1);
+            }
+        }
+
+        fire(...args) {
+            for (const h of this.handlers) {
+                h(...args);
+            }
+        }
+    }
+
+    return {
+        OnlyOfficeEditor
+    };
 });

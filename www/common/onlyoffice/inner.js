@@ -1406,7 +1406,7 @@ define([
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
-                iframe.postMessage(data, ApiConfig.httpSafeOrigin);
+                APP.docEditor.sendMessageToOO(data);
             };
             Channel.create(msgEv, postMsg, function (chan) {
                 APP.chan = chan;
