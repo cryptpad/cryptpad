@@ -21,7 +21,10 @@ define([
             this.toOOHandlers = new EventHandlers();
 
             window.APP = window.APP || {};
-            window.APP.addToOOHandler = (h) => this.toOOHandlers.add(h);
+            window.APP.addToOOHandler = (h) => {
+                console.log('XXX addToOOHandler', h);
+                this.toOOHandlers.add(h);
+            };
         }
 
         destroyEditor() {
@@ -40,6 +43,7 @@ define([
         }
 
         sendMessageToOO(msg) {
+            console.log('XXX sendMessageToOO', msg);
             this.toOOHandlers.fire(msg);
         }
 

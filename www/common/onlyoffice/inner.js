@@ -1403,6 +1403,7 @@ define([
             var type = common.getMetadataMgr().getPrivateData().ooType;
             window.addEventListener('message', function (msg) {
                 if (msg.source !== iframe) { return; }
+                console.log('XXX message', msg.source === iframe, msg);
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
@@ -1426,6 +1427,7 @@ define([
                 };
 
                 chan.on('CMD', function (obj) {
+                    console.log('XXX fromOO', obj);
                     debug(obj, 'fromOO');
                     switch (obj.type) {
                         case "auth":
