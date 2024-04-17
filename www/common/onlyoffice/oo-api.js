@@ -55,10 +55,18 @@ define([
     class EventHandlers {
         constructor() {
             this.handlers = [];
+            this.queue = [];
         }
 
         add(handler) {
             this.handlers.push(handler);
+            if (this.queue.length > 0) {
+                for (const e of this.queue) {
+                    console.log('XXX queue', ...e);
+                    handler(...e);
+                }
+                this.queue = [];
+            }
         }
 
         remove(handler) {
@@ -69,6 +77,10 @@ define([
         }
 
         fire(...args) {
+            if (this.handlers.length===0) {
+                console.log('XXX fire no handlers', ...args);
+                this.queue.push(args);
+            }
             for (const h of this.handlers) {
                 h(...args);
             }
