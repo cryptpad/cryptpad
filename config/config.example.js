@@ -192,7 +192,7 @@ module.exports = {
      *  This archived data still takes up space and so you'll probably still want to
      *  remove these files after a brief period.
      *
-     *  cryptpad/scripts/evict-inactive.js is intended to be run daily
+     *  cryptpad/scripts/evict-archived.js is intended to be run daily
      *  from a crontab or similar scheduling service.
      *
      *  The intent with this feature is to provide a safety net in case of accidental
