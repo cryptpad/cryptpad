@@ -1403,11 +1403,10 @@ define([
             var type = common.getMetadataMgr().getPrivateData().ooType;
             window.addEventListener('message', function (msg) {
                 if (msg.source !== iframe) { return; }
-                console.log('XXX message', msg.source === iframe, msg);
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
-                APP.docEditor.sendMessageToOO(data);
+                iframe.postMessage(data, ApiConfig.httpSafeOrigin);
             };
             Channel.create(msgEv, postMsg, function (chan) {
                 APP.chan = chan;
