@@ -25,7 +25,7 @@ define([
     '/common/outer/worker-channel.js',
     '/common/outer/x2t.js',
 
-    '/common/onlyoffice/oo-api.js',
+    '/components/onlyoffice-api/dist/bundle.js',
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -55,6 +55,7 @@ define([
     X2T,
     OOApi)
 {
+    OOApi.helloWorld();
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
     var APP = window.APP = {

@@ -47,6 +47,7 @@
     "netflux-websocket": "^1.0.0",
     "notp": "^2.0.3",
     "nthen": "0.1.8",
+    "onlyoffice-api": "file:../onlyoffice-api",
     "open-sans-fontface": "^1.4.0",
     "openid-client": "^5.4.2",
     "pako": "^2.1.0",
@@ -98,5 +99,7 @@
     "clear": "node scripts/clear.js",
     "installtoken": "node scripts/install.js"
   },
-  "browserslist": ["> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"]
+  "browserslist": [
+    "> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"
+  ]
 }
