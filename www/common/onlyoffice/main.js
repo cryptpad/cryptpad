@@ -11,12 +11,15 @@ define([
     '/common/sframe-common-outer.js'
 ], function (nThen, ApiConfig, DomReady, Hash, SFCommonO) {
 
+    var isIntegration = Boolean(window.CP_integration_outer);
+    var integration = window.CP_integration_outer || {};
+
     // Loaded in load #2
     var hash, href, version;
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
-        var obj = SFCommonO.initIframe(waitFor, true);
+        var obj = SFCommonO.initIframe(waitFor, true, integration.pathname);
         href = obj.href;
         hash = obj.hash;
         var parsed = Hash.parsePadUrl(href);
@@ -24,9 +27,14 @@ define([
             var opts = parsed.getOptions();
             version = opts.versionHash;
         }
+        if (isIntegration) {
+            href = integration.href;
+            hash = integration.hash;
+        }
     }).nThen(function (/*waitFor*/) {
         var addData = function (obj) {
-            obj.ooType = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+            let path = (integration && integration.pathname) || window.location.pathname;
+            obj.ooType = path.replace(/^\//, '').replace(/\/$/, '');
             obj.ooVersionHash = version;
             obj.ooForceVersion = localStorage.CryptPad_ooVersion || "";
         };
@@ -161,11 +169,16 @@ define([
             hash: hash,
             href: href,
             type: 'oo',
-            useCreationScreen: true,
             addData: addData,
             addRpc: addRpc,
             getPropChannels: getPropChannels,
-            messaging: true
+            messaging: true,
+            useCreationScreen: !isIntegration,
+            noDrive: true,
+            integration: isIntegration,
+            integrationUtils: integration.utils,
+            integrationConfig: integration.config || {},
+            initialState: integration.initialState || undefined
         });
     });
 });

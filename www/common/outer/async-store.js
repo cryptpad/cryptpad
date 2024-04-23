@@ -3156,6 +3156,7 @@ define([
                 loadUniversal(Cursor, 'cursor', function () {});
                 loadUniversal(Integration, 'integration', function () {});
                 loadUniversal(Messenger, 'messenger', function () {});
+                loadOnlyOffice();
                 store.messenger = store.modules['messenger'];
 
                 // And now we're ready

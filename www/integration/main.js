@@ -147,7 +147,11 @@ define([
                     onInsertImage: onInsertImage
                 }
             };
-            require(['/common/sframe-app-outer.js'], function () {
+            let path = "/common/sframe-app-outer.js";
+            if (['sheet', 'doc', 'presentation'].includes(data.application)) {
+                path = '/common/onlyoffice/main.js';
+            }
+            require([path], function () {
                 console.warn('SAO REQUIRED');
                 delete window.CP_integration_outer;
             });
