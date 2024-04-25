@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-@colortheme_font: 'Open Sans', 'Helvetica Neue', sans-serif;
-@colortheme_app-font-size: 16px;
-@colortheme_app-font-size-small: 13px;
+@colortheme_font: 'Inter', 'Open Sans', 'Helvetica Neue', sans-serif;
+@colortheme_app-font-size: .85rem;
+@colortheme_app-font-size-small: .6rem;
 @colortheme_app-font: @colortheme_app-font-size @colortheme_font;
 
 // Colors
@@ -183,8 +183,8 @@
 @cp_sidebar-left-item-bg: @cryptpad_color_grey_200;
 @cp_sidebar-right-bg: @cryptpad_color_white;
 @cp_sidebar-right-fg: @cryptpad_text_col;
-@cp_sidebar-left-active: @cryptpad_color_grey_700;
-@cp_sidebar-left-active-fg: @cryptpad_color_grey_200;
+@cp_sidebar-left-active: @cryptpad_color_grey_300;
+@cp_sidebar-left-active-fg: @cryptpad_text_col;
 @cp_sidebar-hint: @cryptpad_color_grey_600;
 
 // Settings
@@ -192,21 +192,21 @@
 @cp_settings_disabled: @cryptpad_color_dark_red;
 
 // Drive
+@cp_drive-infobox-bg: @cryptpad_color_brand_fadest;
+@cp_drive-infobox-fg: @cryptpad_text_col;
 @cp_drive-bg: @cp_sidebar-right-bg;
 @cp_drive-fg: @cp_sidebar-right-fg;
 @cp_drive-header-fg: fade(@cryptpad_text_col, 70%);
 @cp_drive-icon-hover: fade(@cryptpad_text_col, 15%);
 @cp_drive-icon-border: fade(@cryptpad_text_col, 20%);
 @cp_drive-thumb-bg: transparent;
-@cp_drive-selected-bg: fade(@cryptpad_text_col, 10%);
+@cp_drive-selected-bg: @cp_drive-infobox-bg;
 @cp_drive-selected-fg: @cryptpad_text_col;
 @cp_drive-selection-overlay: fade(@cryptpad_text_col, 5%);
 @cp_drive-selection-bg: @cryptpad_color_grey_200;
 @cp_drive-selection-fg: @cryptpad_text_col;
 @cp_drive-droppable-bg: @cryptpad_color_grey_400;
 @cp_drive-droppable-fg: @cryptpad_text_col;
-@cp_drive-infobox-bg: @cryptpad_color_brand_fadest;
-@cp_drive-infobox-fg: @cryptpad_text_col;
 @cp_drive-warnbox-bg: @cryptpad_color_light_red_fade;
 @cp_drive-warnbox-fg:  darken(@cp_alerts-danger-fg, 55%);
 @cp_drive-tree-branch: @cryptpad_text_col;

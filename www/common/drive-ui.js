@@ -128,7 +128,7 @@ define([
     var $trashIcon = $('<span>', {"class": "fa " + faTrash});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
-    var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o cp-app-drive-icon-expcol"});
+    var $expandIcon = $('<span>', {"class": "fa fa-caret-down cp-app-drive-icon-expcol"});
     //var $listIcon = $('<button>', {"class": "fa fa-list"});
     //var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
@@ -1640,15 +1640,15 @@ define([
                 if (($(e.target).offset().top + $(e.target).height()) > ($(window).height()-$menu.height())) {
                     if ( $(e.target).offset().top < $menu.height()) {
                         menuPositionTop = 0;
-                        
+
                     } else {
-                        menuPositionTop = ($(e.target).offset().top - $menu.height()); 
-                    } 
+                        menuPositionTop = ($(e.target).offset().top - $menu.height());
+                    }
                 } else {
                     menuPositionTop = $(e.target).offset().top + $(e.target).outerHeight();
                 }
                 if (($(e.target).offset().left + $(e.target).width()) < $menu.width()) {
-                    menuPositionLeft = $(e.target).offset().left; 
+                    menuPositionLeft = $(e.target).offset().left;
                 } else {
                     menuPositionLeft = $(e.target).offset().left - ($menu.width() - $(e.target).width()) + 10;
                 }
@@ -4382,7 +4382,7 @@ define([
             var $elementRow = $('<span>', {
                 'class': 'cp-app-drive-element-row cp-app-drive-element-folder',
                 'tabindex': 0
-            }).append($collapse).append($icon).append($name).on('click keypress', function (e) {
+            }).append($icon).append($name).on('click keypress', function (e) {
                 if (e.type === 'keypress' && e.which !== 13) {
                     return;
                 }

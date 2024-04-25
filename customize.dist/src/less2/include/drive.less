@@ -18,7 +18,7 @@
     .limit-bar_main();
     .tokenfield_main();
 
-    @colortheme_drive-bg-active: lighten(@colortheme_static_apps[default], 20%);
+    @colortheme_drive-bg-active: lighten(@colortheme_static_apps[default], 50%);
 
     /* PAGE */
 
@@ -168,16 +168,8 @@
 
     .cp-app-drive-element-selected {
         background: @cp_drive-selected-bg !important;
-        color: @cp_drive-selected-fg;
-        .fa-minus-square-o, .fa-plus-square-o {
-            color: @cp_sidebar-left-fg;
-        }
-        .cptools {
-            color: @cp_drive-selected-fg;
-        }
         &.cp-app-drive-element-active {
             background: @cp_drive-selected-bg !important;
-            color: @cryptpad_text_col !important;
         }
     }
 
@@ -276,7 +268,7 @@
 
     #cp-app-drive-tree {
         font-size: @colortheme_app-font-size;
-        //border-right: 1px solid #ccc;
+        border-right: 1px solid @cryptpad_color_grey_200;
         box-sizing: border-box;
         background: @cp_sidebar-left-bg;
         overflow: auto;
@@ -310,7 +302,6 @@
             margin-top: 15px;
             //padding: 0 0 0 20px;
             padding: 0;
-            background-color: @cp_sidebar-left-item-bg;
             border-radius: @variables_radius;
             cursor: auto;
             &li, li {
@@ -333,7 +324,6 @@
                     display: flex;
                     align-items: center;
                     cursor: pointer;
-                    margin-left: -5px;
                     padding-left: 5px;
                     .fa, .cptools {
                         display: inline-block;
@@ -357,9 +347,7 @@
         .cp-app-drive-tree-category {
             margin: 0;
             margin-top: 10px;
-            background-color: @cp_sidebar-left-item-bg;
             border-radius: @variables_radius;
-            box-shadow: @cryptpad_ui_shadow;
             .cp-app-drive-tree-root {
                 .droppable-tree-element();
                 .fa-trash-o {
@@ -370,7 +358,6 @@
                 padding: 0;
                 .cp-app-drive-element-row {
                     display: block;
-                    padding-left: 20px;
                     .leftside-menu-category_main();
                     margin: 0;
                 }
@@ -401,8 +388,6 @@
             }
         }
         .cp-app-drive-tree-docs {
-            box-shadow: @cryptpad_ui_shadow;
-
             .cp-app-drive-element-row {
                 &.cp-leftside-active {
                     .cp-app-drive-icon-expcol {
@@ -425,56 +410,14 @@
                 background-color: transparent;
             }
             .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-folder {
-                margin-left: -5px;
+                margin-left: 5px;
             }
             .cp-app-drive-tree-root {
                 &> .cp-app-drive-element-row {
-                    padding-left: 15px;
+                    // padding-left: 15px;
                 }
-                &> ul {
+                &> ul li {
                     padding-left: 30px;
-                }
-            }
-        }
-
-        // Expand/collapse lines
-        .cp-app-drive-tree-docs ul {
-            margin: 0px 0px 0px 10px;
-            list-style: none;
-            padding-left: 10px;
-            li {
-                position: relative;
-                &:before {
-                    position: absolute;
-                    left: -12px;
-                    top: -10px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: ~"calc(1em + 11px)";
-                    border-bottom: 1px solid @cp_drive-tree-branch;
-                    width: 15px;
-                }
-                &:after {
-                    position: absolute;
-                    left: -12px;
-                    bottom: -7px;
-                    content: '';
-                    display: block;
-                    border-left: 1px solid @cp_drive-tree-branch;
-                    height: 100%;
-                }
-                &.cp-app-drive-tree-root {
-                    margin: 0px 0px 0px -10px;
-                    &:before {
-                        display: none;
-                    }
-                    &:after {
-                        display: none;
-                    }
-                }
-                &:last-child:after {
-                    display: none;
                 }
             }
         }
@@ -542,7 +485,7 @@
             line-height: 2em;
             padding: 0.25em 0.75em;
             margin: 1em;
-            background: @cp_drive-infobox-bg;
+            background: linear-gradient(90deg, fade(@cp_drive-infobox-bg, 25%), @cp_drive-infobox-bg);
             color: @cp_drive-infobox-fg;
             border-radius: @variables_radius;
             cursor: default;
