@@ -198,7 +198,7 @@ define([
                 myOOId = Util.createRandomInteger();
                 // f: function used in .some(f) but defined outside of the while
                 var f = function (id) {
-                    return ids[id] === myOOId;
+                    return ids[id].ooid === myOOId;
                 };
                 while (Object.keys(ids).some(f)) {
                     myOOId = Util.createRandomInteger();
