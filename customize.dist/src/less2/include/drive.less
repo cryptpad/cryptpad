@@ -273,7 +273,6 @@
         white-space: nowrap;
         max-width: 500px;
         min-width: 200px;
-        padding: 10px 0px 0px 0px;
         color: @cp_sidebar-left-fg;
         display: flex;
         flex-flow: column;
@@ -345,6 +344,9 @@
             margin: 0;
             margin-top: 10px;
             border-radius: @variables_radius;
+            &:first-child {
+                margin-top: 0;
+            }
             .cp-app-drive-tree-root {
                 .droppable-tree-element();
                 .fa-trash-o {
@@ -354,7 +356,8 @@
             li {
                 padding: 0;
                 .cp-app-drive-element-row {
-                    display: block;
+                    display: flex;
+                    align-items: center;
                     .leftside-menu-category_main();
                     margin: 0;
                 }
