@@ -40,13 +40,13 @@
             display: flex;
             flex-flow: column;
             padding: 0px 5px;
+            border-right: 1px solid @cryptpad_color_grey_200;
             .cp-sidebarlayout-categories {
                 flex: 1;
                 .cp-sidebarlayout-category {
                     display: flex;
                     align-items: center;
                     .leftside-menu-category_main();
-                    box-shadow: @cryptpad_ui_shadow;
                 }
             }
             &.cp-leftside-narrow {
@@ -57,7 +57,8 @@
                     max-width: 100%;
                     align-items: center;
                     .fa, .cptools {
-                        margin-right: 0;
+                        transition: 125ms margin;
+                        margin: 0 auto;
                         flex: 0;
                     }
                     span.cp-sidebarlayout-category-name {
@@ -76,6 +77,9 @@
                     transition: width 0.5s;
                     width: 250px;
                     .cp-sidebarlayout-category {
+                        .fa, .cp-tools{
+                            margin: 0;
+                        }
                         span.cp-sidebarlayout-category-name {
                             display: inline;
                         }
@@ -294,6 +298,7 @@
             #cp-sidebarlayout-leftside {
                 width: 100% !important; // Override "narrow" mode
                 padding-bottom: 20px;
+                border-right: 1px solid @cryptpad_color_grey_200;
                 .cp-sidebarlayout-categories {
                     .cp-sidebarlayout-category {
                         margin: 0 0 @sidebar_base-margin 0;
