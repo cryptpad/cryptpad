@@ -259,16 +259,30 @@
     // mediatag preview
     #cp-mediatag-preview-modal {
         .cp-modal {
+            box-shadow: none;
+            background: transparent;
             display: flex;
             justify-content: center;
+            overflow: visible;
+            .cp-modal-close {
+                position: fixed;
+                margin: 0;
+                padding: 1rem;
+                font-size: 3rem;
+                color: @cryptpad_color_white;
+                &:hover {
+                    background: #0003;
+                }
+            }
             .cp-mediatag-container {
                 width: 100%;
                 flex: 1;
                 min-width: 0;
-                overflow: auto;
+                overflow: visible;
                 .mediatag_cryptpad();
                 media-tag {
                     & > * {
+                        box-shadow: 0 5px 10px #000a, 0 15px 25px #0003;
                         max-width: 100%;
                         max-height: 100%;
                     }
@@ -317,9 +331,18 @@
             }
             .cp-mediatag-control {
                 align-self: center;
+                flex-grow: 1;
+                max-width: 5vw;
+
                 .fa {
-                    margin: 10px;
+                    font-size: 3rem;
+                    color: @cryptpad_color_white;
+                    padding: 3rem;
                     cursor: pointer;
+                    &:hover {
+                        background: #0003;
+                    }
+
                 }
             }
             .cp-mediatag-outer {

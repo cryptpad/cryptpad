@@ -45,11 +45,8 @@
             text-overflow: ellipsis;
             padding-top: 5px;
             padding-bottom: 5px;
-            border: 1px solid transparent;
+            transition: 125ms background-color;
 
-            &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-selected-tmp) {
-                border: 1px solid @cp_drive-icon-border;
-            }
             .cp-app-drive-element-name {
                 width: 100%;
                 height: 24px;
@@ -585,7 +582,6 @@
             }
             .drive_fileIcon;
             li {
-                border-radius: @variables_radius;
                 &.cp-app-drive-element {
                     position: relative;
                 }
@@ -632,7 +628,10 @@
                 .cp-app-drive-element-thumbnail {
                     max-width: 100px;
                     max-height: 100px;
-                    background: @cp_drive-thumb-bg;
+                    background: @cryptpad_color_white;
+                    box-shadow: 0 2px 5px #0003, 0 10px 5px -5px #0003;
+                    padding: .24rem;
+                    margin-bottom: .5rem;
                     & ~ .fa, & ~ .cptools {
                         display: none;
                         font-size: 17px;
