@@ -913,7 +913,7 @@ define([
                   .find((user) => user.ooid === ooId);
         };
 
-        const myOOIndex = function() {
+        const getMyOOIndex = function() {
             return findUserByOOId(myOOId).index;
         };
 
@@ -948,20 +948,19 @@ define([
                 isCloseCoAuthoring:false,
                 view: false
             });
-            i++;
-            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + myOOIndex(); }
-            console.log('XXX send userdata to OO', {i, myOOIndex: myOOIndex()});
+            const myOOIndex = getMyOOIndex();
+            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + myOOIndex; }
             p.push({
-                id: myUniqueOOId,
+                id: String(myOOId),
                 idOriginal: String(myOOId),
                 username: metadataMgr.getUserData().name || Messages.anonymous,
-                indexUser: myOOIndex(),
+                indexUser: myOOIndex,
                 connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
                 isCloseCoAuthoring:false,
                 view: false
             });
             return {
-                index: myOOIndex(),
+                index: myOOIndex,
                 list: p.filter(Boolean)
             };
         };
@@ -1142,7 +1141,6 @@ define([
             }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var b = obj.block && obj.block[0];
-            console.log('XXX new lock', {myUniqueOOId, myOOIndex: myOOIndex()});
             var msg = {
                 time: now(),
                 user: myUniqueOOId,
@@ -2675,7 +2673,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    console.log('XXX onCheckpoint', JSON.stringify(cp));
                     loadCp(cp);
                 };
                 var setHistoryMode = function (bool) {
