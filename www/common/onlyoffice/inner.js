@@ -1422,10 +1422,11 @@ define([
                     }
 
                     debug(obj, 'toOO');
-                    chan.event('CMD', obj);
+                    // chan.event('CMD', obj);
+                    APP.docEditor.sendMessageToOO(obj);
                 };
 
-                chan.on('CMD', function (obj) {
+                const fromOOHandler = function (obj) {
                     console.log('XXX fromOO', obj);
                     debug(obj, 'fromOO');
                     switch (obj.type) {
@@ -1592,7 +1593,10 @@ define([
                             }
                             break;
                     }
-                });
+                };
+
+                // chan.on('CMD', fromOOHandler);
+                APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
             });
         };
 
