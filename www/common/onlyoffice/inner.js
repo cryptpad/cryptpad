@@ -2125,9 +2125,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }, void 0, common.getCache());
             };
 
-            APP.docEditor = new OOApi.OnlyOfficeEditor("cp-app-oo-placeholder-a", "TODO url", APP.ooconfig);
-            ooLoaded = true;
-            makeChannel();
+            APP.docEditor.init(APP.ooconfig).then(() => {
+                ooLoaded = true;
+                makeChannel();
+            });
         };
 
         APP.printPdf = function (obj, cb) {
@@ -3049,12 +3050,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 checkCheckpoint();
             }
 
-            console.log('XXX load OO 1');
-            var s = h('script', {
-                type:'text/javascript',
-                src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
-            });
-            $('#cp-app-oo-editor').append(s);
+            APP.docEditor = new OOApi.OnlyOfficeEditor("cp-app-oo-placeholder-a", '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js');
 
             if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
                 sframeChan.event('EV_BURN_PAD', content.channel);
