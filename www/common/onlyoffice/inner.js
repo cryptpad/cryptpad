@@ -1396,208 +1396,190 @@ define([
             });
         };
 
+        const send = ooChannel.send = function (obj, force) {
+            // can't push to OO before reloading cp
+            if (APP.onStrictSaveChanges && !force) { return; }
+            // We only need to release locks for sheets
+            const type = common.getMetadataMgr().getPrivateData().ooType;
+            if (type !== "sheet" && obj.type === "releaseLock") { return; }
+            if (type === "presentation" && obj.type === "cp_theme") {
+                console.error(obj);
+                return;
+            }
 
-        var makeChannel = function () {
-            var msgEv = Util.mkEvent();
-            var iframe = $('#cp-app-oo-editor > iframe')[0].contentWindow;
-            var type = common.getMetadataMgr().getPrivateData().ooType;
-            window.addEventListener('message', function (msg) {
-                if (msg.source !== iframe) { return; }
-                msgEv.fire(msg);
-            });
-            var postMsg = function (data) {
-                iframe.postMessage(data, ApiConfig.httpSafeOrigin);
-            };
-            Channel.create(msgEv, postMsg, function (chan) {
-                APP.chan = chan;
+            debug(obj, 'toOO');
+            // chan.event('CMD', obj);
+            APP.docEditor.sendMessageToOO(obj);
+        };
 
-                var send = ooChannel.send = function (obj, force) {
-                    // can't push to OO before reloading cp
-                    if (APP.onStrictSaveChanges && !force) { return; }
-                    // We only need to release locks for sheets
-                    if (type !== "sheet" && obj.type === "releaseLock") { return; }
-                    if (type === "presentation" && obj.type === "cp_theme") {
+        const fromOOHandler = function (obj) {
+            console.log('XXX fromOO', obj);
+            debug(obj, 'fromOO');
+            switch (obj.type) {
+                case "auth":
+                    handleAuth(obj, send);
+                    break;
+                case "isSaveLock":
+                    // TODO ping the server to check if we're online first?
+                    if (!offline) {
+                        if (APP.waitLock) {
+                            APP.waitLock.reg(function () {
+                                send({
+                                    type: "saveLock",
+                                    saveLock: false
+                                }, true);
+                            });
+                        } else {
+                            send({
+                                type: "saveLock",
+                                saveLock: false
+                            }, true);
+                        }
+                    }
+                    break;
+                case "cursor":
+                    if (cursor && cursor.updateCursor) {
+                        cursor.updateCursor({
+                            type: "cursor",
+                            messages: [{
+                                cursor: obj.cursor,
+                                time: +new Date(),
+                                user: myUniqueOOId,
+                                useridoriginal: myOOId
+                            }]
+                        });
+                    }
+                    break;
+                case "getLock":
+                    handleLock(obj, send);
+                    break;
+                case "getMessages":
+                    // OO chat messages?
+                    send({ type: "message" });
+                    break;
+                case "saveChanges":
+                    // If we have unsaved data before reloading for a checkpoint...
+                    if (APP.onStrictSaveChanges) {
+                        const type = common.getMetadataMgr().getPrivateData().ooType;
+                        delete APP.unsavedLocks;
+                        APP.unsavedChanges = {
+                            type: "saveChanges",
+                            changes: parseChanges(obj.changes),
+                            changesIndex: ooChannel.cpIndex || 0,
+                            locks: type === "sheet" ? [] : APP.unsavedLocks,
+                            excelAdditionalInfo: null,
+                            recover: true
+                        };
+                        APP.onStrictSaveChanges();
+                        return;
+                    }
+                    var AscCommon = window.frames[0] && window.frames[0].AscCommon;
+                    if (Util.find(AscCommon, ['CollaborativeEditing','m_bFast'])
+                                && APP.themeLocked) {
+                        obj = APP.themeLocked;
+                        APP.themeLocked = undefined;
+                        obj.type = "cp_theme";
                         console.error(obj);
+                    }
+                    if (APP.themeRemote) {
+                        delete APP.themeRemote;
+                        send({
+                            type: "unSaveLock",
+                            index: ooChannel.cpIndex,
+                            time: +new Date()
+                        });
                         return;
                     }
 
-                    debug(obj, 'toOO');
-                    // chan.event('CMD', obj);
-                    APP.docEditor.sendMessageToOO(obj);
-                };
-
-                const fromOOHandler = function (obj) {
-                    console.log('XXX fromOO', obj);
-                    debug(obj, 'fromOO');
-                    switch (obj.type) {
-                        case "auth":
-                            handleAuth(obj, send);
-                            break;
-                        case "isSaveLock":
-                            // TODO ping the server to check if we're online first?
-                            if (!offline) {
-                                if (APP.waitLock) {
-                                    APP.waitLock.reg(function () {
-                                        send({
-                                            type: "saveLock",
-                                            saveLock: false
-                                        }, true);
-                                    });
-                                } else {
-                                    send({
-                                        type: "saveLock",
-                                        saveLock: false
-                                    }, true);
+                    // We're sending our changes to netflux
+                    handleChanges(obj, send);
+                    // If we're alone, clean up the medias
+                    var m = metadataMgr.getChannelMembers().slice().filter(function (nId) {
+                        return nId.length === 32;
+                    });
+                    if (m.length === 1 && APP.loadingImage <= 0) {
+                        try {
+                            // "docs" contains the correct images that we've just uploaded
+                            // "docs2" contains the correct images from the .bin checkpoint
+                            // both of them are not reliable in the other case
+                            var docs = getWindow().AscCommon.g_oDocumentUrls.urls;
+                            var docs2 = getEditor().ImageLoader.map_image_index;
+                            var mediasSources = getMediasSources();
+                            Object.keys(mediasSources).forEach(function (name) {
+                                if (!docs && !docs2) { return; }
+                                if (!docs['media/'+name] && !docs2[name]) {
+                                    delete mediasSources[name];
                                 }
-                            }
-                            break;
-                        case "cursor":
-                            if (cursor && cursor.updateCursor) {
-                                cursor.updateCursor({
-                                    type: "cursor",
-                                    messages: [{
-                                        cursor: obj.cursor,
-                                        time: +new Date(),
-                                        user: myUniqueOOId,
-                                        useridoriginal: myOOId
-                                    }]
-                                });
-                            }
-                            break;
-                        case "getLock":
-                            handleLock(obj, send);
-                            break;
-                        case "getMessages":
-                            // OO chat messages?
-                            send({ type: "message" });
-                            break;
-                        case "saveChanges":
-                            // If we have unsaved data before reloading for a checkpoint...
-                            if (APP.onStrictSaveChanges) {
-                                delete APP.unsavedLocks;
-                                APP.unsavedChanges = {
-                                    type: "saveChanges",
-                                    changes: parseChanges(obj.changes),
-                                    changesIndex: ooChannel.cpIndex || 0,
-                                    locks: type === "sheet" ? [] : APP.unsavedLocks,
-                                    excelAdditionalInfo: null,
-                                    recover: true
-                                };
-                                APP.onStrictSaveChanges();
-                                return;
-                            }
-                            var AscCommon = window.frames[0] && window.frames[0].AscCommon;
-                            if (Util.find(AscCommon, ['CollaborativeEditing','m_bFast'])
-                                        && APP.themeLocked) {
-                                obj = APP.themeLocked;
-                                APP.themeLocked = undefined;
-                                obj.type = "cp_theme";
-                                console.error(obj);
-                            }
-                            if (APP.themeRemote) {
-                                delete APP.themeRemote;
-                                send({
-                                    type: "unSaveLock",
-                                    index: ooChannel.cpIndex,
-                                    time: +new Date()
-                                });
-                                return;
-                            }
-
-                            // We're sending our changes to netflux
-                            handleChanges(obj, send);
-                            // If we're alone, clean up the medias
-                            var m = metadataMgr.getChannelMembers().slice().filter(function (nId) {
-                                return nId.length === 32;
                             });
-                            if (m.length === 1 && APP.loadingImage <= 0) {
-                                try {
-                                    // "docs" contains the correct images that we've just uploaded
-                                    // "docs2" contains the correct images from the .bin checkpoint
-                                    // both of them are not reliable in the other case
-                                    var docs = getWindow().AscCommon.g_oDocumentUrls.urls;
-                                    var docs2 = getEditor().ImageLoader.map_image_index;
-                                    var mediasSources = getMediasSources();
-                                    Object.keys(mediasSources).forEach(function (name) {
-                                        if (!docs && !docs2) { return; }
-                                        if (!docs['media/'+name] && !docs2[name]) {
-                                            delete mediasSources[name];
-                                        }
-                                    });
-                                    APP.onLocal();
-                                } catch (e) {}
-                            }
-                            break;
-                        case "unLockDocument":
-                            if (obj.releaseLocks && content.locks && content.locks[getId()]) {
-                                send({
-                                    type: "releaseLock",
-                                    locks: getUserLock(getId())
-                                });
-                                delete content.locks[getId()];
-                                APP.onLocal();
-                            }
-                            if (obj.isSave) {
-                                send({
-                                    type: "unSaveLock",
-                                    time: -1,
-                                    index: -1
-                                });
-                            }
-                            if (APP.onDocumentUnlock) {
-                                APP.onDocumentUnlock();
-                                APP.onDocumentUnlock = undefined;
-                            }
-                            break;
-                        case 'openDocument':
-                            // When duplicating a slide, OO may ask the URLs of the images
-                            // in that slide
-                            var _obj = obj.message;
-                            if (_obj.c === "imgurls") {
-                                var _mediasSources = getMediasSources();
-                                var images = _obj.data || [];
-                                if (!Array.isArray(images)) { return; }
-                                var urls = [];
-                                nThen(function (waitFor) {
-                                    images.forEach(function (name) {
-                                        if (/^data\:image/.test(name)) {
-                                            Util.fetch(name, waitFor(function (err, u8) {
-                                                if (err) { return; }
-                                                var b = new Blob([u8]);
-                                                urls.push(URL.createObjectURL(b));
-                                            }));
-                                            return;
-                                        }
-                                        var data = _mediasSources[name];
-                                        if (!data) { return; }
-                                        var media = mediasData[data.src];
-                                        if (!media) { return; }
-                                        urls.push({
-                                            path: name,
-                                            url: media.blobUrl,
-                                        });
-                                    });
-                                }).nThen(function () {
-                                    send({
-                                        type: "documentOpen",
-                                        data: {
-                                            type: "imgurls",
-                                            status: "ok",
-                                            data: {
-                                                urls: urls,
-                                                error: 0
-                                            }
-                                        }
-                                    });
-                                });
-                            }
-                            break;
+                            APP.onLocal();
+                        } catch (e) {}
                     }
-                };
-
-                // chan.on('CMD', fromOOHandler);
-                APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
-            });
+                    break;
+                case "unLockDocument":
+                    if (obj.releaseLocks && content.locks && content.locks[getId()]) {
+                        send({
+                            type: "releaseLock",
+                            locks: getUserLock(getId())
+                        });
+                        delete content.locks[getId()];
+                        APP.onLocal();
+                    }
+                    if (obj.isSave) {
+                        send({
+                            type: "unSaveLock",
+                            time: -1,
+                            index: -1
+                        });
+                    }
+                    if (APP.onDocumentUnlock) {
+                        APP.onDocumentUnlock();
+                        APP.onDocumentUnlock = undefined;
+                    }
+                    break;
+                case 'openDocument':
+                    // When duplicating a slide, OO may ask the URLs of the images
+                    // in that slide
+                    var _obj = obj.message;
+                    if (_obj.c === "imgurls") {
+                        var _mediasSources = getMediasSources();
+                        var images = _obj.data || [];
+                        if (!Array.isArray(images)) { return; }
+                        var urls = [];
+                        nThen(function (waitFor) {
+                            images.forEach(function (name) {
+                                if (/^data\:image/.test(name)) {
+                                    Util.fetch(name, waitFor(function (err, u8) {
+                                        if (err) { return; }
+                                        var b = new Blob([u8]);
+                                        urls.push(URL.createObjectURL(b));
+                                    }));
+                                    return;
+                                }
+                                var data = _mediasSources[name];
+                                if (!data) { return; }
+                                var media = mediasData[data.src];
+                                if (!media) { return; }
+                                urls.push({
+                                    path: name,
+                                    url: media.blobUrl,
+                                });
+                            });
+                        }).nThen(function () {
+                            send({
+                                type: "documentOpen",
+                                data: {
+                                    type: "imgurls",
+                                    status: "ok",
+                                    data: {
+                                        urls: urls,
+                                        error: 0
+                                    }
+                                }
+                            });
+                        });
+                    }
+                    break;
+            }
         };
 
         var x2tConvertData = function (data, fileName, format, cb) {
@@ -2129,9 +2111,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }, void 0, common.getCache());
             };
 
+            APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
+
             APP.docEditor.init(APP.ooconfig).then(() => {
                 ooLoaded = true;
-                makeChannel();
             });
         };
 
