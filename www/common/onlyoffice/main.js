@@ -162,8 +162,6 @@ define([
                 Utils.initUnsafeIframe(obj, cb);
             });
 
-
-
         };
         SFCommonO.start({
             hash: hash,

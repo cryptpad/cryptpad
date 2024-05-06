@@ -2076,6 +2076,16 @@ define([
                         cfg.integrationUtils.save(obj, cb);
                     }
                 });
+                sframeChan.on('EV_INTEGRATION_READY', function () {
+                    if (cfg.integrationUtils && cfg.integrationUtils.onReady) {
+                        cfg.integrationUtils.onReady();
+                    }
+                });
+                sframeChan.on('EV_INTEGRATION_ON_DOWNLOADAS', function (obj) {
+                    if (cfg.integrationUtils && cfg.integrationUtils.onDownloadAs) {
+                        cfg.integrationUtils.onDownloadAs(obj);
+                    }
+                });
                 sframeChan.on('Q_INTEGRATION_HAS_UNSAVED_CHANGES', function (obj, cb) {
                     if (cfg.integrationUtils && cfg.integrationUtils.onHasUnsavedChanges) {
                         cfg.integrationUtils.onHasUnsavedChanges(obj, cb);
@@ -2089,6 +2099,15 @@ define([
                 integrationSave = function (cb) {
                     sframeChan.query('Q_INTEGRATION_NEEDSAVE', null, cb);
                 };
+
+                if (cfg.integrationUtils) {
+                    if (cfg.integrationUtils.setDownloadAs) {
+                        cfg.integrationUtils.setDownloadAs(format => {
+                            sframeChan.event('EV_INTEGRATION_DOWNLOADAS', format);
+                        });
+                    }
+                }
+
             }
 
             if (cfg.messaging) {

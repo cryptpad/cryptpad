@@ -133,6 +133,24 @@ define([
         var onInsertImage = function (data, cb) {
             chan.send('ON_INSERT_IMAGE', data, cb);
         };
+        var onReady = function () {
+            chan.send('DOCUMENT_READY', {});
+        };
+
+        let downloadAs;
+        chan.on('DOWNLOAD_AS', function (format) {
+            if (typeof(downloadAs) !== "function") {
+                console.error('UNSUPPORTED COMMAND', 'downloadAs');
+                return;
+            }
+            downloadAs(format);
+        });
+        let setDownloadAs = f => {
+            downloadAs = f;
+        };
+        let onDownloadAs = function (blob) { // DownloadAs callback
+            chan.send('ON_DOWNLOADAS', blob);
+        };
 
         chan.on('START', function (data) {
             console.warn('INNER START', data);
@@ -148,6 +166,9 @@ define([
                     autosave: data.autosave
                 },
                 utils: {
+                    onReady: onReady,
+                    onDownloadAs,
+                    setDownloadAs,
                     save: save,
                     reload: reload,
                     onHasUnsavedChanges: onHasUnsavedChanges,

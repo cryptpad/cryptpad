@@ -1845,6 +1845,11 @@ define([
                                 }
                                 delete APP.oldCursor;
                             }
+                            if (integrationChannel) {
+                                APP.onDocumentUnlock = () => {
+                                    integrationChannel.event('EV_INTEGRATION_READY');
+                                };
+                            }
                         }
                         delete APP.startNew;
 
@@ -2572,6 +2577,22 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             });
         };
 
+        sframeChan.on('EV_INTEGRATION_DOWNLOADAS', function (format) {
+            console.error('DOWNLOAD AS RECEIVED');
+            var data = getContent();
+            x2tConvertData(data, "document.bin", format, function (xlsData) {
+                UI.removeModals();
+                if (xlsData) {
+                    var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                    if (integrationChannel) {
+                        integrationChannel.event('EV_INTEGRATION_ON_DOWNLOADAS',
+                                                blob, { raw: true });
+                    }
+                    return;
+                }
+                UI.warn(Messages.error);
+            });
+        });
         sframeChan.on('EV_OOIFRAME_REFRESH', function (data) {
             // We want to get the "bin" content of a sheet from its json in order to download
             // something useful from a non-onlyoffice app (download from drive or settings).

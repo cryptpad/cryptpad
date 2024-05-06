@@ -82,6 +82,7 @@
 
         var makeIframe = function () {}; // placeholder
 
+        let onDocumentReady = [];
         var start = function (config, chan) {
             return new Promise(function (resolve, reject) {
             setTimeout(function () {
@@ -170,6 +171,31 @@
                 };
                 getSession(onKeyValidated);
 
+                chan.on('DOCUMENT_READY', function () {
+                    if (config.events.onAppReady) {
+                        config.events.onAppReady();
+                    }
+                    if (config.events.onReady) {
+                        config.events.onReady();
+                    }
+                    if (config.events.onDocumentReady) {
+                        config.events.onDocumentReady();
+                    }
+                    onDocumentReady.forEach(f => {
+                        try { f(); } catch (e) { console.error(e); }
+                    });
+                });
+
+                chan.on('ON_DOWNLOADAS', blob => {
+                    let url = URL.createObjectURL(blob);
+                    config.events.onDownloadAs({
+                        data: {
+                            fileType: config.document && config.document.fileType,
+                            url
+                        }
+                    });
+                });
+
                 chan.on('SAVE', function (data, cb) {
                     blob = data;
                     config.events.onSave(data, cb);
@@ -235,7 +261,8 @@
                 config.documentType = "doc";
             }
 
-            return new Promise(function (resolve, reject) {
+            let chan;
+            let ret = new Promise(function (resolve, reject) {
             setTimeout(function () {
 
                 if (!cryptpadURL || typeof(cryptpadURL) !== "string") {
@@ -294,7 +321,7 @@
                         var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
                         if (!data || data.q !== 'INTEGRATION_READY') { return; }
                         window.removeEventListener('message', onMsg);
-                        var chan = makeChan(iframe, parsed.origin);
+                        chan = makeChan(iframe, parsed.origin);
                         start(config, chan).then(resolve).catch(reject);
                     };
                     window.addEventListener('message', onMsg);
@@ -302,6 +329,18 @@
                 makeIframe(config);
             });
             });
+
+            ret.downloadAs = (arg) => {
+                if (!chan) {
+                    return void onDocumentReady.push(() => {
+                        ret.downloadAs(arg);
+                    });
+                }
+
+                chan.send('DOWNLOAD_AS', arg);
+            };
+
+            return ret;
         };
 
         init.version = () => { return '7.3.0'; };
