@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define({
-    currentVersion: 'v7'
+define(() => {
+    const version = 6;
+    return {
+        currentVersionNumber: version,
+        currentVersion: 'v' + version
+    };
 });

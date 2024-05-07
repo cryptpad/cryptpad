@@ -22,10 +22,10 @@ define([
     '/common/onlyoffice/oocell_base.js',
     '/common/onlyoffice/oodoc_base.js',
     '/common/onlyoffice/ooslide_base.js',
-    '/common/outer/worker-channel.js',
     '/common/outer/x2t.js',
 
     '/components/onlyoffice-api/dist/bundle.js',
+    '/common/onlyoffice/current-version.js',
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -51,9 +51,9 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    Channel,
     X2T,
-    OOApi)
+    OOApi,
+    OOCurrentVersion)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -65,9 +65,7 @@ define([
     var CHECKPOINT_INTERVAL = 100;
     var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 7; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
-    var CURRENT_VERSION = X2T.CURRENT_VERSION;
 
     //var READONLY_REFRESH_TO = 15000;
 
@@ -98,7 +96,7 @@ define([
             hashes: {},
             ids: {},
             mediasSources: {},
-            version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : NEW_VERSION
+            version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : OOCurrentVersion.currentVersionNumber
         };
         var oldHashes = {};
         var oldIds = {};
@@ -393,9 +391,9 @@ define([
                 _content.hashes[1] = {
                     file: data.url,
                     index: 0,
-                    version: NEW_VERSION
+                    version: OOCurrentVersion.currentVersionNumber
                 };
-                _content.version = NEW_VERSION;
+                _content.version = OOCurrentVersion.currentVersionNumber;
                 _content.channel = Hash.createChannelId();
                 _content.ids = {};
                 sframeChan.query('Q_SAVE_AS_TEMPLATE', {
@@ -449,7 +447,7 @@ define([
                 file: data.url,
                 hash: ev.hash,
                 index: ev.index,
-                version: NEW_VERSION
+                version: OOCurrentVersion.currentVersionNumber
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
             content.locks = {};
@@ -457,7 +455,7 @@ define([
             // If this is a migration, set the new version
             if (APP.migrate) {
                 delete content.migration;
-                content.version = NEW_VERSION;
+                content.version = OOCurrentVersion.currentVersionNumber;
             }
             APP.onLocal();
             APP.realtime.onSettle(function () {
@@ -2593,7 +2591,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             content = json.content;
             readOnly = true;
             var version = (!content.version || content.version === 1) ? 'v1/' :
-                          (content.version <= 3 ? 'v2b/' : CURRENT_VERSION+'/');
+                          (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
             console.log('XXX load OO 2');
             var s = h('script', {
                 type:'text/javascript',
@@ -2953,7 +2951,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             APP.startNew = isNew;
 
-            var version = CURRENT_VERSION + '/';
+            var version = OOCurrentVersion.currentVersion + '/';
             var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {
