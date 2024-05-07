@@ -28,7 +28,6 @@ main() {
     set_prop oldest_needed_version v1
 
     mkdir -p "$OO_DIR"
-    install_version v1 4f370beb
     install_version v2b d9da72fd
     install_version v4 6ebc6938
     install_version v5 88a356f0
@@ -58,6 +57,7 @@ set_prop() {
     done >"$PROPS_FILE"
 }
 
+<<<<<<< HEAD
 parse_arguments() {
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -75,6 +75,43 @@ parse_arguments() {
             ;;
         esac
     done
+||||||| parent of cd416b4a4 (Use channels for old OnlyOffice versions)
+parse_arguments () {
+	while [[ $# -gt 0 ]]; do
+		case $1 in
+			-h|--help)
+				show_help
+				shift
+				;;
+			-a|--accept-license)
+				ACCEPT_LICENSE="1"
+				shift
+				;;
+			*)
+				show_help
+				shift
+				;;
+		esac
+	done 
+=======
+parse_arguments () {
+	while [[ $# -gt 0 ]]; do
+		case $1 in
+			-h|--help)
+				show_help
+				shift
+				;;
+			-a|--accept-license)
+				ACCEPT_LICENSE="1"
+				shift
+				;;
+			*)
+				show_help
+				shift
+				;;
+		esac
+	done
+>>>>>>> cd416b4a4 (Use channels for old OnlyOffice versions)
 }
 
 ask_for_license() {

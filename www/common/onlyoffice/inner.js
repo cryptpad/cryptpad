@@ -22,6 +22,7 @@ define([
     '/common/onlyoffice/oocell_base.js',
     '/common/onlyoffice/oodoc_base.js',
     '/common/onlyoffice/ooslide_base.js',
+    '/common/outer/worker-channel.js',
     '/common/outer/x2t.js',
 
     '/components/onlyoffice-api/dist/bundle.js',
@@ -51,6 +52,7 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
+    Channel,
     X2T,
     OOApi,
     OOCurrentVersion)
@@ -1406,8 +1408,13 @@ define([
             }
 
             debug(obj, 'toOO');
-            // chan.event('CMD', obj);
-            APP.docEditor.sendMessageToOO(obj);
+            if (content.version < 7) {
+                // Old OO version -> use channels
+                APP.chan.event('CMD', obj);
+            } else {
+                // New OO version -> use API
+                APP.docEditor.sendMessageToOO(obj);
+            }
         };
 
         const fromOOHandler = function (obj) {
@@ -1578,6 +1585,40 @@ define([
                     }
                     break;
             }
+        };
+
+        const makeChannel = function () {
+            var msgEv = Util.mkEvent();
+            var iframe = $('#cp-app-oo-editor > iframe')[0].contentWindow;
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            window.addEventListener('message', function (msg) {
+                if (msg.source !== iframe) { return; }
+                msgEv.fire(msg);
+            });
+            var postMsg = function (data) {
+                iframe.postMessage(data, ApiConfig.httpSafeOrigin);
+            };
+            Channel.create(msgEv, postMsg, function (chan) {
+                APP.chan = chan;
+
+                console.log('XXX init old send()');
+                ooChannel.send = function (obj, force) {
+                    // can't push to OO before reloading cp
+                    if (APP.onStrictSaveChanges && !force) { return; }
+                    // We only need to release locks for sheets
+                    if (type !== "sheet" && obj.type === "releaseLock") { return; }
+                    if (type === "presentation" && obj.type === "cp_theme") {
+                        console.error(obj);
+                        return;
+                    }
+
+                    debug(obj, 'toOO');
+                    console.log('XXX channel toOO', obj);
+                    chan.event('CMD', obj);
+                };
+
+                chan.on('CMD', fromOOHandler);
+            });
         };
 
         var x2tConvertData = function (data, fileName, format, cb) {
@@ -2113,6 +2154,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             APP.docEditor.init(APP.ooconfig).then(() => {
                 ooLoaded = true;
+                console.log('XXX content.version', content.version);
+                if (content.version < 7) {
+                    console.log('XXX old version');
+                    makeChannel();  // Use channels instead of APP.docEditor for old OnlyOffice versions
+                }
             });
         };
 
