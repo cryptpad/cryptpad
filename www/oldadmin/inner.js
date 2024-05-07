@@ -2323,7 +2323,7 @@ Example
                     }, Messages.admin_diskUsageButton);
 
                     $(infoButton).click(() => {
-                         //console.log(key);
+                         console.log(key);
                          getAccountData(key, (err, data) => {
                              if (err) { return void console.error(err); }
                              console.log(data);

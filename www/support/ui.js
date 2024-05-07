@@ -192,7 +192,7 @@ define([
         makeCategoryDropdown(ctx, catContainer, function (text, key) {
             $(category).val(key);
             if (!notice) { return; }
-            // console.log(key);
+            //console.log(key);
             // Msg.support_warning_abuse.support_warning_account.support_warning_bug.support_warning_document.support_warning_drives.support_warning_other
             var warning = Messages['support_warning_' + key] || '';
             var warningLink = warningLinks[key];
