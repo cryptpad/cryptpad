@@ -34,6 +34,7 @@ define([
     '/common/common-constants.js',
     '/components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
+    '/common/extensions.js'
 ], function (
     $,
     ApiConfig,
@@ -64,7 +65,8 @@ define([
     Language,
     Constants,
     localForage,
-    h
+    h,
+    Ext
 ) {
     // Chainpad Netflux Inner
     var funcs = {};

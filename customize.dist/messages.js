@@ -45,6 +45,7 @@ var getLanguage = Messages._getLanguage = function () {
                 (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
 };
 var language = getLanguage();
+window.cryptpadLanguage = language;
 
 // Translations files were migrated from requirejs modules to json.
 // To avoid asking every administrator to update their customized translation files,

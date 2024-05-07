@@ -13,7 +13,7 @@ define("optional", [], {
         var onLoadFailure = function(err){
             // optional module failed to load.
             var failedId = err.requireModules && err.requireModules[0];
-            console.warn("Could not load optional module: " + failedId);
+            //console.warn("Could not load optional module: " + failedId);
 
             // Undefine the module to cleanup internal stuff in requireJS
             requirejs.undef(failedId);
