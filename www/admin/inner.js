@@ -46,6 +46,13 @@ define([
     Instance,
     Flatpickr
 ) {
+
+    //XXX 
+    Messages.admin_appSelection = 'App configuration saved'
+    Messages.admin_appsTitle = "Choose your applications"
+    Messages.admin_appsHint = "Choose which apps are available to users on your instance."
+    Messages.admin_cat_apps = "Apps"
+
     var APP = window.APP = {};
 
     var Nacl = window.nacl;
@@ -653,8 +660,6 @@ define([
                 $(appBlock).on('click', () => select(app))
             }); 
 
-			
-            Messages.admin_appSelection = 'App configuration saved'
             var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',

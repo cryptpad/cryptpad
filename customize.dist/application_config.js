@@ -14,7 +14,6 @@ define([
   '/common/application_config_internal.js',
   '/api/config'
   ], function (AppConfig, ApiConfig ) {
-//  const Path = require("path");
 
     // Example: If you want to remove the survey link in the menu:
     // AppConfig.surveyURL = "";
