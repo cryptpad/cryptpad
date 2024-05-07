@@ -9,12 +9,19 @@
  * If you want to check all the configurable values, you can open the internal configuration file
    but you should not change it directly (/common/application_config_internal.js)
 */
-define(['/common/application_config_internal.js'], function (AppConfig) {
+
+define([
+  '/common/application_config_internal.js',
+  '/api/config'
+  ], function (AppConfig, ApiConfig ) {
+//  const Path = require("path");
+
     // Example: If you want to remove the survey link in the menu:
     // AppConfig.surveyURL = "";
 
     // To inform users of the support ticket panel which languages your admins speak:
     //AppConfig.supportLanguages = [ 'en', 'fr' ];
-
+    AppConfig.availablePadTypes = ['drive', 'teams', 'file', 'contacts', 'convert'].concat(ApiConfig.availableApps)
+    
     return AppConfig;
 });

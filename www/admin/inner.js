@@ -631,22 +631,22 @@ define([
 
             const grid = blocks.block([], 'cp-admin-customize-apps-grid');
 
-            const availableApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
-			const activeApps = []
+            const allApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
+			const availableApps = []
             
             function select(app) {
 
-				if (activeApps.indexOf(app) === -1) {
-					activeApps.push(app);
+				if (availableApps.indexOf(app) === -1) {
+					availableApps.push(app);
 					$(`#${app}-block`).attr('class', 'active-app') 
 				} else {
-					activeApps.splice(activeApps.indexOf(app), 1)
+					availableApps.splice(availableApps.indexOf(app), 1)
 					$(`#${app}-block`).attr('class', 'inactive-app')
 				}
                     
             }
 
-            availableApps.forEach(app => { 
+            allApps.forEach(app => { 
                 let appBlock = h('div', {class: 'inactive-app', id: `${app}-block`}, app)
                 $(appBlock).addClass('cp-app-drive-element-grid')
                 $(grid).append(appBlock);
@@ -656,10 +656,9 @@ define([
 			
             Messages.admin_appSelection = 'App configuration saved'
             var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-                const appsToDisable = availableApps.filter(x => !activeApps.includes(x)).concat(activeApps.filter(x => !availableApps.includes(x)));
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
-                    data: ['DISABLE_APPS', appsToDisable]
+                    data: ['DISABLE_APPS', availableApps]
                 }, function (e, response) {
                     if (e || response.error) {
                         UI.warn(Messages.error);
