@@ -90,6 +90,12 @@ define([
                     'forcemfa',
                 ]
             },
+            'apps': { // Msg.admin_cat_apps
+                icon: 'fa fa-cog',
+                content: [
+                    'apps',
+                ]
+            },
             'users' : { // Msg.admin_cat_users
                 icon : 'fa fa-address-card-o',
                 content : [
@@ -609,7 +615,7 @@ define([
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_emailTitle]));
                 });
             });
-
+        
             var nav = blocks.nav([button]);
 
             var form = blocks.form([
@@ -620,6 +626,61 @@ define([
 
             cb(form);
         });
+
+        sidebar.addItem('apps', function (cb) {
+
+            const grid = blocks.block([], 'cp-admin-customize-apps-grid');
+
+            const availableApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
+			const activeApps = []
+            
+            function select(app) {
+
+				if (activeApps.indexOf(app) === -1) {
+					activeApps.push(app);
+					$(`#${app}-block`).attr('class', 'active-app') 
+				} else {
+					activeApps.splice(activeApps.indexOf(app), 1)
+					$(`#${app}-block`).attr('class', 'inactive-app')
+				}
+                    
+            }
+
+            availableApps.forEach(app => { 
+                let appBlock = h('div', {class: 'inactive-app', id: `${app}-block`}, app)
+                $(appBlock).addClass('cp-app-drive-element-grid')
+                $(grid).append(appBlock);
+                $(appBlock).on('click', () => select(app))
+            }); 
+
+			
+            Messages.admin_appSelection = 'App configuration saved'
+            var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+                const appsToDisable = availableApps.filter(x => !activeApps.includes(x)).concat(activeApps.filter(x => !availableApps.includes(x)));
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['DISABLE_APPS', appsToDisable]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        done(false);
+                        return;
+                    }
+                    flushCache();
+                    done(true);
+                    UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
+                });
+            });
+            
+            let form = blocks.form([
+                grid 
+            ], blocks.nav([save]));
+
+            cb(form);
+        }); 
+
 
         sidebar.addItem('instance-info-notice', function(cb){
             var key = 'instance-info-notice';
