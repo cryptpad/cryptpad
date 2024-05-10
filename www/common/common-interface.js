@@ -564,6 +564,33 @@ define([
         setTimeout(function () {
             Notifier.notify();
         });
+
+        $(frame).on('keydown', function(e) {
+            if (e.which === 9) {
+                e.preventDefault();
+
+                const modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"])').filter(':visible');
+                const length = modalElements.length;
+                const firstElement = modalElements[0];
+                const lastElement = modalElements[length - 1];
+
+                if (e.shiftKey) {
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                    } else {
+                        const currentIndex = modalElements.index(document.activeElement);
+                        modalElements[currentIndex - 1].focus();
+                    }
+                } else {
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                    } else {
+                        const currentIndex = modalElements.index(document.activeElement);
+                        modalElements[currentIndex + 1].focus();
+                    }
+                }
+            }
+        });
         return frame;
     };
 
