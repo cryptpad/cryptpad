@@ -104,7 +104,7 @@ module.exports = {
  *
  *  In production environments, your reverse proxy (usually NGINX)
  *  will need to forward websocket traffic (/cryptpad_websocket)
- *  to this port.
+ *  to this port - it cannot be disabled.
  *
  */
     // websocketPort: 3003,
