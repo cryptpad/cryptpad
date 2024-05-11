@@ -102,6 +102,7 @@ module.exports = {
  *  You can change this to a different port if it is in use by a
  *  different service, but under most circumstances you can leave this
  *  commented and it will work.
+ *  Setting this to 0 disables this listener.
  *
  *  In production environments, your reverse proxy (usually NGINX)
  *  will need to forward websocket traffic (/cryptpad_websocket)
