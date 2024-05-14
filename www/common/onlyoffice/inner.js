@@ -1408,13 +1408,7 @@ define([
             }
 
             debug(obj, 'toOO');
-            if (content.version < 7) {
-                // Old OO version -> use channels
-                APP.chan.event('CMD', obj);
-            } else {
-                // New OO version -> use API
-                APP.docEditor.sendMessageToOO(obj);
-            }
+            APP.docEditor.sendMessageToOO(obj);
         };
 
         const fromOOHandler = function (obj) {
@@ -2150,14 +2144,16 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }, void 0, common.getCache());
             };
 
-            APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
 
             APP.docEditor.init(APP.ooconfig).then(() => {
                 ooLoaded = true;
                 console.log('XXX content.version', content.version);
                 if (content.version < 7) {
                     console.log('XXX old version');
-                    makeChannel();  // Use channels instead of APP.docEditor for old OnlyOffice versions
+                    APP.docEditor.installLegacyChannel();
+                    // makeChannel();  // Use channels instead of APP.docEditor for old OnlyOffice versions
+                } else {
+                    APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
                 }
             });
         };
@@ -3052,23 +3048,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     readOnly = true;
                 }
-            } else if (content && content.version <= 6) {
-                version = 'v6/';
-                APP.migrate = true;
-                // Registedred ~~users~~ editors can start the migration
-                if (common.isLoggedIn() && !readOnly) {
-                    content.migration = true;
-                    APP.onLocal();
-                } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
-                    if (APP.helpMenu) {
-                        $(APP.helpMenu.menu).after(msg);
-                    } else {
-                        $('#cp-app-oo-editor').prepend(msg);
-                    }
-                    readOnly = true;
-                }
             }
+            // else if (content && content.version <= 6) {
+            //     version = 'v6/';
+            //     APP.migrate = true;
+            //     // Registedred ~~users~~ editors can start the migration
+            //     if (common.isLoggedIn() && !readOnly) {
+            //         content.migration = true;
+            //         APP.onLocal();
+            //     } else {
+            //         msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+            //         if (APP.helpMenu) {
+            //             $(APP.helpMenu.menu).after(msg);
+            //         } else {
+            //             $('#cp-app-oo-editor').prepend(msg);
+            //         }
+            //         readOnly = true;
+            //     }
+            // }
             // NOTE: don't forget to also update the version in 'EV_OOIFRAME_REFRESH'
 
             // If the sheet is locked by an offline user, remove it
