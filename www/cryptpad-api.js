@@ -188,6 +188,7 @@
 
                 chan.on('ON_DOWNLOADAS', blob => {
                     let url = URL.createObjectURL(blob);
+                    if (!config.events.onDownloadAs) { return; }
                     config.events.onDownloadAs({
                         data: {
                             fileType: config.document && config.document.fileType,
@@ -198,6 +199,7 @@
 
                 chan.on('SAVE', function (data, cb) {
                     blob = data;
+                    if (!config.events.onSave) { return void cb(); }
                     config.events.onSave(data, cb);
                 });
                 chan.on('RELOAD', function () {

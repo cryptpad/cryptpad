@@ -392,6 +392,10 @@ define([
         };
 
         var onUploaded = function (ev, data, err) {
+            if (!ev && err) {
+                console.error(err);
+                return void UI.warn(Messages.error);
+            }
             if (ev.newTemplate) {
                 if (err) {
                     console.error(err);
@@ -549,7 +553,7 @@ define([
 
         var saveToServer = function (blob, title) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
-            var text = getContent();
+            var text = !blob && getContent();
             if (!text && !blob) {
                 setEditable(false, true);
                 sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
@@ -3154,9 +3158,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                 return void UI.errorLoadingScreen(Messages.error);
                             }
                             var blob = new Blob([bin], {type: 'text/plain'});
-                            var file = getFileType();
-                            resetData(blob, file);
-                            //saveToServer(blob, title);
+                            //var file = getFileType();
+                            //resetData(blob, file);
+                            saveToServer(blob, title);
                             Title.updateTitle(title);
                             UI.removeLoadingScreen();
                         });
@@ -3205,7 +3209,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             cb();
                         });
                     });
-                    if (privateData.initialState) {
+                    if (privateData.initialState && (!content || !content.hashes)) {
                         var blob = privateData.initialState;
                         let title = `document.${cfg.fileType}`;
                         console.error(blob, title);
