@@ -22,8 +22,6 @@ define([
     '/common/onlyoffice/oocell_base.js',
     '/common/onlyoffice/oodoc_base.js',
     '/common/onlyoffice/ooslide_base.js',
-    '/common/outer/worker-channel.js',
-    '/common/outer/x2t.js',
 
     '/components/onlyoffice-api/dist/bundle.js',
     '/common/onlyoffice/current-version.js',
@@ -52,8 +50,6 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    Channel,
-    X2T,
     OOApi,
     OOCurrentVersion)
 {
@@ -1412,7 +1408,6 @@ define([
         };
 
         const fromOOHandler = function (obj) {
-            console.log('XXX fromOO', obj);
             debug(obj, 'fromOO');
             switch (obj.type) {
                 case "auth":
@@ -1579,40 +1574,6 @@ define([
                     }
                     break;
             }
-        };
-
-        const makeChannel = function () {
-            var msgEv = Util.mkEvent();
-            var iframe = $('#cp-app-oo-editor > iframe')[0].contentWindow;
-            var type = common.getMetadataMgr().getPrivateData().ooType;
-            window.addEventListener('message', function (msg) {
-                if (msg.source !== iframe) { return; }
-                msgEv.fire(msg);
-            });
-            var postMsg = function (data) {
-                iframe.postMessage(data, ApiConfig.httpSafeOrigin);
-            };
-            Channel.create(msgEv, postMsg, function (chan) {
-                APP.chan = chan;
-
-                console.log('XXX init old send()');
-                ooChannel.send = function (obj, force) {
-                    // can't push to OO before reloading cp
-                    if (APP.onStrictSaveChanges && !force) { return; }
-                    // We only need to release locks for sheets
-                    if (type !== "sheet" && obj.type === "releaseLock") { return; }
-                    if (type === "presentation" && obj.type === "cp_theme") {
-                        console.error(obj);
-                        return;
-                    }
-
-                    debug(obj, 'toOO');
-                    console.log('XXX channel toOO', obj);
-                    chan.event('CMD', obj);
-                };
-
-                chan.on('CMD', fromOOHandler);
-            });
         };
 
         var x2tConvertData = function (data, fileName, format, cb) {
@@ -2147,14 +2108,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             APP.docEditor.init(APP.ooconfig).then(() => {
                 ooLoaded = true;
-                console.log('XXX content.version', content.version);
                 if (content.version < 7) {
-                    console.log('XXX old version');
                     APP.docEditor.installLegacyChannel();
-                    // makeChannel();  // Use channels instead of APP.docEditor for old OnlyOffice versions
-                } else {
-                    APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
                 }
+                APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
             });
         };
 
@@ -2406,7 +2363,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var loadDocument = function (noCp, useNewDefault, i) {
-            console.log('XXX loadDocument');
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
@@ -2634,7 +2590,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             readOnly = true;
             var version = (!content.version || content.version === 1) ? 'v1/' :
                           (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
-            console.log('XXX load OO 2');
             var s = h('script', {
                 type:'text/javascript',
                 src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
@@ -3163,7 +3118,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
 
                 var next = function () {
-                    console.log('XXX next');
                     loadDocument(newDoc, useNewDefault);
                     setEditable(!readOnly);
                     UI.removeLoadingScreen();
