@@ -1671,6 +1671,10 @@ define([
 
             var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2);
 
+            let username = Util.find(privateData, ['integrationConfig', 'user', 'name'])
+                            || metadataMgr.getUserData().name
+                            || Messages.anonymous;
+
             // Config
             APP.ooconfig = {
                 "document": {
@@ -1694,8 +1698,8 @@ define([
                     },
                     "user": {
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
-                        "firstname": metadataMgr.getUserData().name || Messages.anonymous,
-                        "name": metadataMgr.getUserData().name || Messages.anonymous,
+                        "firstname": username,
+                        "name": username
                     },
                     "mode": "edit",
                     "lang": lang

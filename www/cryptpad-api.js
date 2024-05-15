@@ -116,7 +116,8 @@
                         application: config.documentType,
                         document: blob,
                         ext: config.document.fileType,
-                        autosave: config.autosave || 10
+                        autosave: config.autosave || 10,
+                        editorConfig: config.editorConfig || {}
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         resolve({});
