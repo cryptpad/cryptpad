@@ -15,7 +15,8 @@ define([
     '/common/outer/local-store.js',
     '/customize/pages.js',
     '/common/pad-types.js',
-], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages, PadTypes) {
+    '/common/extensions.js'
+], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages, PadTypes, Extensions) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var checkEarlyAccess = function (x) {
@@ -164,9 +165,18 @@ define([
         };
 
 
+        let popup = h('div.cp-extensions-popups');
+        let utils = { h, Util, Hash };
+        Extensions.getExtensions('HOMEPAGE_POPUP').forEach(ext => {
+            ext.getContent(utils, content => {
+                $(popup).append(h('div.cp-extensions-popup', content));
+            });
+        });
+
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
+                popup,
                 notice,
                 h('div.container.cp-container', [
                     h('div.row.cp-home-hero', [

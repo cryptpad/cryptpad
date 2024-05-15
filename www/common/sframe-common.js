@@ -777,6 +777,8 @@ define([
         return Util.checkRestrictedApp(app, AppConfig, ea, priv.plan, priv.loggedIn);
     };
 
+    funcs.getExtensions = Ext.getExtensions;
+
     funcs.mailbox = {};
 
     Object.freeze(funcs);
