@@ -565,11 +565,12 @@ define([
             Notifier.notify();
         });
 
+        const modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"])').filter(':visible');
+        modalElements[0].focus();
+
         $(frame).on('keydown', function(e) {
             if (e.which === 9) {
                 e.preventDefault();
-
-                const modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"])').filter(':visible');
                 const length = modalElements.length;
                 const firstElement = modalElements[0];
                 const lastElement = modalElements[length - 1];
