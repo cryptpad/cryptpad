@@ -330,7 +330,6 @@ define([
                 if (isEdit) { $button.find('span').text(Messages.tag_edit); }
                 else { $button.find('span').text(Messages.add); }
                 $container.append($form);
-                $input.focus();
                 isEdit = false;
                 called = false;
             });
