@@ -717,12 +717,14 @@ define([
             //add button
             var addTopBoardItem = document.createElement('span');
             addTopBoardItem.classList.add('kanban-title-button');
+            $(addTopBoardItem).attr('tabindex', '0');
             addTopBoardItem.setAttribute('data-top', "1");
             addTopBoardItem.innerHTML = '<i class="cptools cptools-add-top">';
             footerBoard.appendChild(addTopBoardItem);
             __onAddItemClickHandler(addTopBoardItem);
             var addBoardItem = document.createElement('span');
             addBoardItem.classList.add('kanban-title-button');
+            $(addBoardItem).attr('tabindex', '0');
             addBoardItem.innerHTML = '<i class="cptools cptools-add-bottom">';
             footerBoard.appendChild(addBoardItem);
             __onAddItemClickHandler(addBoardItem);
