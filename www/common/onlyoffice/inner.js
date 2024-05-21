@@ -3213,10 +3213,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             cb();
                         });
                     });
-                    if (privateData.initialState && (!content || !content.hashes)) {
+                    if (privateData.initialState && (!content || !content.hashes || !Object.keys(content.hashes).length)) {
                         var blob = privateData.initialState;
                         let title = `document.${cfg.fileType}`;
-                        console.error(blob, title);
                         return convertImportBlob(blob, title);
                     }
                 }
