@@ -179,15 +179,11 @@ define([
             });
         };
 
-        var getUserIndex = function () {
-            var i = 1;
-            var ids = content.ids || {};
-            Object.keys(ids).forEach(function (k) {
-                if (ids[k] && ids[k].index && ids[k].index >= i) {
-                    i = ids[k].index + 1;
-                }
-            });
-            return i;
+        const getNewUserIndex = function () {
+            const ids = content.ids || {};
+            const indexes = Object.values(ids).map((user) => user.index);
+            const maxIndex = Math.max(...indexes);
+            return maxIndex === -Infinity ? 1 : maxIndex+1;
         };
 
         var setMyId = function () {
@@ -198,7 +194,7 @@ define([
                 myOOId = Util.createRandomInteger();
                 // f: function used in .some(f) but defined outside of the while
                 var f = function (id) {
-                    return ids[id] === myOOId;
+                    return ids[id].ooid === myOOId;
                 };
                 while (Object.keys(ids).some(f)) {
                     myOOId = Util.createRandomInteger();
@@ -207,7 +203,7 @@ define([
             var myId = getId();
             ids[myId] = {
                 ooid: myOOId,
-                index: getUserIndex(),
+                index: getNewUserIndex(),
                 netflux: metadataMgr.getNetfluxId()
             };
             oldIds = JSON.parse(JSON.stringify(ids));
@@ -912,6 +908,15 @@ define([
             });
         };
 
+        const findUserByOOId = function(ooId) {
+            return Object.values(content.ids)
+                  .find((user) => user.ooid === ooId);
+        };
+
+        const getMyOOIndex = function() {
+            return findUserByOOId(myOOId).index;
+        };
+
         var getParticipants = function () {
             var users = metadataMgr.getMetadata().users;
             var i = 1;
@@ -943,19 +948,19 @@ define([
                 isCloseCoAuthoring:false,
                 view: false
             });
-            i++;
-            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + i; }
+            const myOOIndex = getMyOOIndex();
+            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + myOOIndex; }
             p.push({
-                id: myUniqueOOId,
+                id: String(myOOId),
                 idOriginal: String(myOOId),
                 username: metadataMgr.getUserData().name || Messages.anonymous,
-                indexUser: i,
+                indexUser: myOOIndex,
                 connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
                 isCloseCoAuthoring:false,
                 view: false
             });
             return {
-                index: i,
+                index: myOOIndex,
                 list: p.filter(Boolean)
             };
         };
@@ -2668,7 +2673,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    console.log('XXX onCheckpoint', JSON.stringify(cp));
                     loadCp(cp);
                 };
                 var setHistoryMode = function (bool) {
