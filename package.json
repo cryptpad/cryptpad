@@ -47,7 +47,7 @@
     "netflux-websocket": "^1.0.0",
     "notp": "^2.0.3",
     "nthen": "0.1.8",
-    "onlyoffice-api": "file:../onlyoffice-api",
+    "onlyoffice-editor": "file:../onlyoffice-editor",
     "open-sans-fontface": "^1.4.0",
     "openid-client": "^5.4.2",
     "pako": "^2.1.0",

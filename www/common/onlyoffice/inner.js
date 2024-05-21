@@ -23,7 +23,7 @@ define([
     '/common/onlyoffice/oodoc_base.js',
     '/common/onlyoffice/ooslide_base.js',
 
-    '/components/onlyoffice-api/dist/bundle.js',
+    '/components/onlyoffice-editor/dist/bundle.js',
     '/common/onlyoffice/current-version.js',
     '/components/file-saver/FileSaver.min.js',
 
@@ -50,7 +50,7 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    OOApi,
+    OOEditor,
     OOCurrentVersion)
 {
     var saveAs = window.saveAs;
@@ -3033,7 +3033,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 checkCheckpoint();
             }
 
-            APP.docEditor = new OOApi.OnlyOfficeEditor("cp-app-oo-placeholder-a", '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js');
+            APP.docEditor = new OOEditor.OnlyOfficeEditor("cp-app-oo-placeholder-a", '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js');
 
             if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
                 sframeChan.event('EV_BURN_PAD', content.channel);

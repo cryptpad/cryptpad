@@ -47,7 +47,7 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "drawio",
     "pako",
     "x2js",
-    "onlyoffice-api"
+    "onlyoffice-editor"
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);
