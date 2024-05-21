@@ -54,25 +54,12 @@ var AppConfigScreen = {}
 AppConfigScreen.addConfigScreen = function (config) {
         var LOADING = 'cp-loading';
         config = config || {};
-        var loadingText = config.loadingText;
-        var todo = function () {
-            var $loading = $('#' + LOADING);
-            // Show the loading screen
-            $loading.css('display', '');
-            $loading.removeClass('cp-loading-hidden');
-            $loading.removeClass('cp-loading-transparent');
 
-        };
         if ($('#' + LOADING).length) {
-            todo();
         } else {
             ConfigScreen();
-            todo();
         }
 
-        $('html').toggleClass('cp-loading-noscroll', true);
-        // Remove the inner placeholder (iframe)
-        $('#placeholder').remove();
     };
 
 return AppConfigScreen

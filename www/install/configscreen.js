@@ -30,6 +30,7 @@ define([
 
 
     '/customize/messages.js',
+    // '/install/configscreen.css',
     'less!/customize/src/less2/include/loading.less'
 ], function ($,
     Toolbar,
@@ -63,154 +64,71 @@ define([
     var Nacl = window.nacl;
     var common;
     var sFrameChan;
+    // SFCommon.create(waitFor(function(c) { APP.common = common = c; }));
 
-    var andThen = function (common, $container) {
-        const sidebar = Sidebar.create(common, 'admin', $container);
+    // sFrameChan = common.getSframeChannel();
+    // sFrameChan.onReady(waitFor());
 
-        var categories = {
-            'apps': { // Msg.admin_cat_apps
-                icon: 'fa fa-cog',
-                content: [
-                    'apps',
-                ]
-            },
-            
-        };
+    const blocks = Sidebar.blocks;
+    const grid = blocks.block([], 'cp-admin-customize-apps-grid');
 
-        const blocks = sidebar.blocks;
-
-        const flushCache = (cb) => {
-            cb = cb || function () {};
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'FLUSH_CACHE',
-            }, cb);
-        };
-
-        sidebar.addItem('apps', function (cb) {
-
-        const grid = blocks.block([], 'cp-admin-customize-apps-grid');
-
-        const allApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
-        const availableApps = []
+    const allApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
+    const availableApps = []
         
-        function select(app) {
-            if (availableApps.indexOf(app) === -1) {
-                availableApps.push(app);
-                $(`#${app}-block`).attr('class', 'active-app') 
-            } else {
-                availableApps.splice(availableApps.indexOf(app), 1)
-                $(`#${app}-block`).attr('class', 'inactive-app')
-            } 
-        }
+    function select(app) {
+        if (availableApps.indexOf(app) === -1) {
+            availableApps.push(app);
+            $(`#${app}-block`).attr('class', 'active-app') 
+        } else {
+            availableApps.splice(availableApps.indexOf(app), 1)
+            $(`#${app}-block`).attr('class', 'inactive-app')
+        } 
+    }
 
-        allApps.forEach(app => { 
-            let appBlock = h('div', {class: 'inactive-app', id: `${app}-block`}, app)
-            $(appBlock).addClass('cp-app-drive-element-grid')
-            $(grid).append(appBlock);
-            $(appBlock).on('click', () => select(app))
-        }); 
-
-        var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            sFrameChan.query('Q_ADMIN_RPC', {
-                cmd: 'ADMIN_DECREE',
-                data: ['DISABLE_APPS', availableApps]
-            }, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    $input.val('');
-                    console.error(e, response);
-                    done(false);
-                    return;
-                }
-                flushCache();
-                done(true);
-                UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
-            });
-        });
-        
-        let form = blocks.form([
-            grid 
-        ], blocks.nav([save]));
-
-        cb(form);
-        }); 
-
-        sidebar.makeLeftside(categories);
-    };
+    allApps.forEach(app => { 
+    // 'width: 50%; height: 80px; margin: 5px'
+    // width:200px;height:20px;float:left;border:1px solid red
+        let appBlock = h('div',  {style: 'width:50%;height:20px;float:left;border:1px solid red'}, {class: 'inactive-app', id: `${app}-block`}, app)
+        $(appBlock).addClass('cp-app-drive-element-grid')
+        $(appBlock).addClass('cp-app-drive-element-row')
+        $(appBlock).addClass('cp-app-drive-new-doc')
 
 
-    var updateStatus = APP.updateStatus = function (cb) {
+        $(grid).append(appBlock);
+        $(appBlock).on('click', () => select(app))
+    }); 
+
+    var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
         sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'INSTANCE_STATUS',
-        }, function (e, data) {
-            if (e) { console.error(e); return void cb(e); }
-            if (!Array.isArray(data)) { return void cb('EINVAL'); }
-            APP.instanceStatus = data[0];
-            console.log("Status", APP.instanceStatus);
-            cb();
+            cmd: 'ADMIN_DECREE',
+            data: ['DISABLE_APPS', availableApps]
+        }, function (e, response) {
+            if (e || response.error) {
+                UI.warn(Messages.error);
+                $input.val('');
+                console.error(e, response);
+                done(false);
+                return;
+            }
+            flushCache();
+            done(true);
+            UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
         });
-    };
-
-    var createToolbar = function () {
-        var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
-        var configTb = {
-            displayed: displayed,
-            sfCommon: common,
-            $container: APP.$toolbar,
-            pageTitle: Messages.adminPage || 'Admin',
-            metadataMgr: common.getMetadataMgr(),
-        };
-        APP.toolbar = Toolbar.create(configTb);
-        APP.toolbar.$rightside.hide();
-    };
-
-    nThen(function(waitFor) {
-    //     $(waitFor(UI.addLoadingScreen));
-        SFCommon.create(waitFor(function(c) { APP.common = common = c; }));
-    }).nThen(function(waitFor) {
-        APP.$container = $('#cp-sidebarlayout-container');
-        APP.$toolbar = $('#cp-toolbar');
-        sFrameChan = common.getSframeChannel();
-        sFrameChan.onReady(waitFor());
-    })
-    .nThen(function (waitFor) {
-        if (!common.isAdmin()) { return; }
-        updateStatus(waitFor());
-    })
-    .nThen(function( /*waitFor*/ ) {
-        common.setTabTitle(Messages.adminPage || 'Administration');
-
-        createToolbar();
-
-        APP.supportModule = common.makeUniversal('support');
-
-    //     // Content
-        andThen(common, APP.$container);
-
-    //     UI.removeLoadingScreen();
     });
+    
+    
+    let form = blocks.form([
+        grid 
+    ], blocks.nav([save]));
 
-    var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');
     elem.setAttribute('id', 'cp-loading');
 
-    elem.innerHTML = [
-        '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="' + Messages.label_logo + '">',
-        '</div>',
-        '<div class="cp-loading-container">',
-            '<div class="cp-loading-spinner-container">',
-                '<span class="cp-spinner"></span>',
-            '</div>',
-            '<div class="cp-loading-progress">',
-                '<div class="cp-loading-progress-list"></div>',
-                '<div class="cp-loading-progress-container"></div>',
-            '</div>',
-            '<p id="cp-loading-message"></p>',
-        '</div>'
-    ].join('');
-    var built = false;
+    let frame = h('div.configscreen',  {style: 'width: 70%; height: 75%; background-color: white'}, form)
 
+    elem.append(frame)
+
+    var built = false;
 
 
     return function () {

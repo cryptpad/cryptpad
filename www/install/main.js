@@ -23,11 +23,11 @@ define([
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {
-        if (LocalStore.isLoggedIn()) {
-            // already logged in, redirect to drive
-            document.location.href = '/drive/';
-            return;
-        }
+        // if (LocalStore.isLoggedIn()) {
+        //     // already logged in, redirect to drive
+        //     document.location.href = '/drive/';
+        //     return;
+        // }
 
 
         // text and password input fields
