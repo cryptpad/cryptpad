@@ -1717,5 +1717,21 @@
     "admin_supportEnabled": "Laguntza-sistema gaituta dago.",
     "admin_supportDisabled": "Laguntza-sistema desgaituta dago.",
     "admin_supportDelete": "Desgaitu laguntza",
-    "admin_colorHint": "Aldatu zure CryptPad instantziaren nabarmentze kolorea. Ziurtatu testua eta botoiak kontraste nahikoarekin irakur daitezkeela gai argietan zein ilunetan."
+    "admin_colorHint": "Aldatu zure CryptPad instantziaren nabarmentze kolorea. Ziurtatu testua eta botoiak kontraste nahikoarekin irakur daitezkeela gai argietan zein ilunetan.",
+    "admin_supportAdd": "Gehitu kontaktu bat laguntza-taldeari",
+    "admin_supportConfirm": "Ziur zaude? Honek lehendik dauden sarrera guztiak ezabatuko ditu eta moderatzaile guztien sarbidea blokeatuko da.",
+    "admin_supportMembers": "Laguntza taldea",
+    "admin_supportRotateNotify": "Abisua: gako berriak sortu dira baina ustekabeko errore batek sistemak moderatzaileei bidaltzea eragotzi du. Mesedez, kendu eta gehitu berriro laguntza-taldeko kide guztiak",
+    "support_cat_settings": "Ezarpenak",
+    "support_cat_search": "Bilatu",
+    "support_cat_closed": "Itxita",
+    "support_cat_open": "Sarrera-ontzia",
+    "support_cat_legacy": "Zaharra",
+    "support_pending": "Artxibatutako sarrerak:",
+    "support_pending_tag": "Artxibatuta",
+    "support_active_tag": "Sarrera-ontzia",
+    "support_closed_tag": "Itxita",
+    "support_privacyTitle": "Erantzun anonimoki",
+    "moderationPage": "Laguntza mahaia",
+    "admin_supportInit": "Hasieratu laguntza mahaia instantzia honetan"
 }
