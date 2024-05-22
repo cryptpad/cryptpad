@@ -33,7 +33,7 @@ main () {
 	install_version v4 6ebc6938
 	install_version v5 88a356f0
 	install_version v6 abd8a309
-	install_version v7 9d8b914a
+	install_version v7 ba82142f
 
 	rm -rf "$BUILDS_DIR"
 	if command -v rdfind &> /dev/null; then
