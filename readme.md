@@ -56,9 +56,10 @@ A correctly configured instance has safeguards to prevent collaborators from doi
 nasty things like injecting scripts into collaborative documents or uploads. The project
 is actively maintained and bugs that our safeguards don't catch tend to get fixed quickly.
 For this reason it is best to only use instances that are running the most recent version,
-which is currently on a three-week release cycle. It is difficult for a non-expert to
+which is currently on a three-month release cycle. It is difficult for a non-expert to
 determine whether an instance is otherwise configured correctly, so we are actively
-working on allowing administrators to opt in to a public directory of servers that
+working on allowing administrators to opt in to a [public directory of
+ervers](https://cryptpad.org/instances/) that
 meet our strict criteria for safety.
 
 # Translations
