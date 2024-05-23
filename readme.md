@@ -62,6 +62,11 @@ working on allowing administrators to opt in to a [public directory of
 ervers](https://cryptpad.org/instances/) that
 meet our strict criteria for safety.
 
+For end-users, a [guide](https://blog.cryptpad.org/2024/03/14/Most-Secure-CryptPad-Usage/)
+is provided in our blog to help understanding the security of CryptPad. This blog post
+also explains and show the best practices when using CryptPad and clarify what end-to-end
+encryption entails and not.
+
 # Translations
 
 CryptPad can be translated with nothing more than a web browser via our
