@@ -36,7 +36,7 @@ Previously, Docker images were community maintained, had their own repository an
 
 CryptPad offers a variety of collaborative tools that encrypt your data in your browser
 before it is sent to the server and your collaborators. In the event that the server is
-compromized the database holds encrypted data that is not of much value to attackers.
+compromized, the database holds encrypted data that is not of much value to attackers.
 
 The code which performs the encryption is still loaded from the host server like any
 other web page, so you still need to trust the administrator to keep their server secure
@@ -44,13 +44,13 @@ and to send you the right code. An expert can download code from the server and 
 that it isn't doing anything malicious like leaking your encryption keys, which is why
 this is considered an [active attack].
 
-The platform is designed to minimize what data is exposed to its operators. User registration
-and account access is based on a cryptographic key that is derived from your username
-and password so the server never needs to see either and you don't need to worry about
-whether they are being stored securely. It is impossible to verify whether a server's
-operators are logging your IP or other activity, so if you consider this information
-sensitive it is safest to assume it is being recorded and access your preferred instance
-via [Tor browser].
+The platform is designed to minimize what data is exposed to its operators. User
+registration and account access are based on cryptographic keys that are derived from your
+username and password. Hence, the server never needs to see either, and you don't need to
+worry about whether they are being stored securely. It is impossible to verify whether a
+server's operators are logging your IP or other activity, so if you consider this
+information sensitive it is safest to assume it is being recorded and access your
+preferred instance via [Tor browser].
 
 A correctly configured instance has safeguards to prevent collaborators from doing some
 nasty things like injecting scripts into collaborative documents or uploads. The project
@@ -62,7 +62,7 @@ working on allowing administrators to opt in to a [public directory of
 ervers](https://cryptpad.org/instances/) that
 meet our strict criteria for safety.
 
-For end-users, a [guide](https://blog.cryptpad.org/2024/03/14/Most-Secure-CryptPad-Usage/)
+For end users, a [guide](https://blog.cryptpad.org/2024/03/14/Most-Secure-CryptPad-Usage/)
 is provided in our blog to help understanding the security of CryptPad. This blog post
 also explains and show the best practices when using CryptPad and clarify what end-to-end
 encryption entails and not.
