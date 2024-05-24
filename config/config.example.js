@@ -172,7 +172,7 @@ module.exports = {
      */
     adminKeys: [
 
-    "[sproing@localhost:3000/ieibXenySscYFjdntu0mFglpvQLSrbBiy0V+wzizaGA=]"
+    // "[sproing@localhost:3000/ieibXenySscYFjdntu0mFglpvQLSrbBiy0V+wzizaGA=]"
 
     ],
 

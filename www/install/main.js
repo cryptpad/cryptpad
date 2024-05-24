@@ -29,11 +29,11 @@ define([
         Messages.admin_appsTitle = "Choose your applications"
         Messages.admin_appsHint = "Choose which apps are available to users on your instance."
         Messages.admin_cat_apps = "Apps"
-        // if (LocalStore.isLoggedIn()) {
-        //     // already logged in, redirect to drive
-        //     document.location.href = '/drive/';
-        //     return;
-        // }
+        if (LocalStore.isLoggedIn()) {
+            // already logged in, redirect to drive
+            document.location.href = '/drive/';
+            return;
+        }
 
 
         // text and password input fields
@@ -62,15 +62,28 @@ define([
             }
         }
 
-        var bloop = function (sendAdminDecree) {
+        var showScreen = function (sendAdminDecree) {
 
             const blocks = Sidebar.blocks;
-            var grid = AppConfigScreen
+            var availableApps = AppConfigScreen[0]
+            var grid = AppConfigScreen[1]
             
             var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-                console.log('hello!');
-                console.log(sendAdminDecree)
-                sendAdminDecree()
+                sendAdminDecree('DISABLE_APPS', availableApps, function (e, response) {
+                  
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        done(false);
+                        return;
+                    }
+                    // flushCache();
+                    done(true);
+                    UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
+                    window.location.href = '/drive/';
+
+                })
                 UI.log('Messages._getKey(, [Messages.admin_appSelection])');
             });
 
@@ -85,43 +98,156 @@ define([
             elem.append(frame)
 
             built = true;
-        var intr;
-        var append = function () {
-            if (!document.body) { return; }
-            clearInterval(intr);
-            document.body.appendChild(elem);
-        };
-        intr = setInterval(append, 100);
-        append();
+            var intr;
+            var append = function () {
+                if (!document.body) { return; }
+                clearInterval(intr);
+                document.body.appendChild(elem);
+            };
+            intr = setInterval(append, 100);
+            append();
 
 
-            // return function () {
-            //     built = true;
-            //     var intr;
-            //     var append = function () {
-            //         if (!document.body) { return; }
-            //         clearInterval(intr);
-            //         document.body.appendChild(elem);
-            //     };
-            //     intr = setInterval(append, 100);
-            //     append();
-            // };
         }
 
         var registerClick = function () {
-        // AppConfigScreen
-        // console.log(AppConfigScreen)
-            // var sendAdminDecree = 'bleeop'
-                            let sendAdminDecree = function (command, data, callback) {
-                            console.log('belp')
-                    // var params = ['ADMIN_DECREE', [command, data]];  
-                    // rpc.send('ADMIN', params, callback)
-                };
-            bloop(sendAdminDecree)
 
-            // AppConfigScreen
-            // console.log(AppConfigScreen)
-            // console.log(AppConfigScreen)
+            var uname = $uname.val().trim();
+            // trim whitespace surrounding the username since it is otherwise included in key derivation
+            // most people won't realize that its presence is significant
+            $uname.val(uname);
+
+            var passwd = $passwd.val();
+            var confirmPassword = $confirm.val();
+
+            if (!token) { token = $token.val().trim(); }
+
+            var shouldImport = false;
+            var doesAccept;
+            try {
+                // if this throws there's either a horrible bug (which someone will report)
+                // or the instance admins did not configure a terms page.
+                doesAccept = true;
+            } catch (err) {
+                console.error(err);
+            }
+
+            if (Cred.isEmail(uname) && !I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME) {
+                var emailWarning = [
+                    Messages.register_emailWarning0,
+                    br(), br(),
+                    Messages.register_emailWarning1,
+                    br(), br(),
+                    Messages.register_emailWarning2,
+                    br(), br(),
+                    Messages.register_emailWarning3,
+                ];
+
+                Feedback.send("EMAIL_USERNAME_WARNING", true);
+
+                return void UI.confirm(emailWarning, function (yes) {
+                    if (!yes) { return; }
+                    I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = true;
+                    registerClick();
+                });
+            }
+
+            /* basic validation */
+            if (!Cred.isLongEnoughPassword(passwd)) {
+                var warning = Messages._getKey('register_passwordTooShort', [
+                    Cred.MINIMUM_PASSWORD_LENGTH
+                ]);
+                return void UI.alert(warning);
+            }
+
+            if (passwd !== confirmPassword) { // do their passwords match?
+                return void UI.alert(Messages.register_passwordsDontMatch);
+            }
+
+            if (Pages.customURLs.terms && !doesAccept) { // do they accept the terms of service? (if they exist)
+                return void UI.alert(Messages.register_mustAcceptTerms);
+            }
+
+            let startOnboarding = function (network, proxy) {
+             Rpc.create(network, proxy.edPrivate, proxy.edPublic, function (e, rpc) {
+                if (e) {
+                  // TODO: handle error
+                  return;
+                }
+
+                let sendAdminDecree = function (command, data, callback) {
+                    var params = ['ADMIN_DECREE', [command, data]];  
+                    rpc.send('ADMIN', params, callback)
+                };
+
+                showScreen(sendAdminDecree)
+              
+            });
+  
+    };
+
+            setTimeout(function () {
+                var span = h('span', [
+                    h('h2', [
+                        h('i.fa.fa-warning'),
+                        ' ',
+                        Messages.register_warning,
+                    ]),
+                    Messages.register_warning_note
+                ]);
+
+            UI.confirm(span,
+            function (yes) {
+                if (!yes) { return; }
+
+                Login.loginOrRegisterUI({
+                    uname,
+                    passwd,
+                    isRegister: true,
+                    onOTP: UI.getOTPScreen,
+                    shouldImport,
+                    cb: function (data) {
+                        var proxy = data.proxy;
+                        if (!proxy || !proxy.edPublic) { UI.alert(Messages.error); return true; }
+
+                        Rpc.createAnonymous(data.network, function (e, call) {
+                            if (e) { UI.alert(Messages.error); return console.error(e); }
+                            var anon_rpc = call;
+
+                            anon_rpc.send('ADD_FIRST_ADMIN', {
+                                token: token,
+                                edPublic: proxy.edPublic
+                            }, function (e) {
+                                if (e) { UI.alert(Messages.error); return console.error(e); }
+                                            // bloop(sendAdminDecree)
+
+                                startOnboarding(data.network, proxy);
+                            });
+                        });
+
+                        return true;
+                    }
+                });
+            }, {
+                ok: Messages.register_writtenPassword,
+                cancel: Messages.register_cancel,
+/*  If we're certain that we aren't using these "*Class" APIs
+    anywhere else then we can deprecate them and make this a
+    custom modal in common-interface (or here).  */
+                cancelClass: 'btn.btn-cancel.btn-register',
+                okClass: 'btn.btn-danger.btn-register',
+                reverseOrder: true,
+                done: function ($dialog) {
+                    $dialog.find('> div').addClass('half');
+                },
+            });
+            }, 150);
+
+            //                 let sendAdminDecree = function (command, data, callback) {
+ 
+            //     };
+            // bloop(sendAdminDecree)
+
 
         };
 
