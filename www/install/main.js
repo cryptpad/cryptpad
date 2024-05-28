@@ -221,8 +221,6 @@ define([
                 };
 
                 showTitleScreen(sendAdminDecree)
-
-                // showAppScreen(sendAdminDecree)
               
             });
   
