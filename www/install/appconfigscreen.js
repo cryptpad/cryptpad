@@ -27,70 +27,7 @@ define([
 
     const blocks = Sidebar.blocks;
 
-    AppConfigScreen.mfaRegistrationScreen = function(sendAdminDecree) {
-                console.log('mreao1')
-
-
-
-        var restrict = blocks.activeCheckbox({
-            key: 'registration',
-            getState: function () {
-                return false
-            },
-            query: function (val, setState) {
-            //     sendAdminDecree('RESTRICT_REGISTRATION', [val], function (e, response) {
-                
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         $input.val('');
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     // flushCache();
-            //     done(true);
-            //     UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
-
-            // })
-            },
-        });
-
-        var forceMFA = blocks.activeCheckbox({
-            key: 'forcemfa',
-            getState: function () {
-                return false
-            },
-            query: function (val, setState) {
-            
-            //     sendAdminDecree('ENFORCE_MFA', [val], function (e, response) {
-                
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         $input.val('');
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     // flushCache();
-            //     done(true);
-            //     UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
-
-            // })
-            },
-        });
-
-        var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            // document.location.href = '/drive/';
-            return;
-        })
-
-        var form = blocks.form([restrict, forceMFA], [button])
-        return form
-    
-    
-    }
-
-    AppConfigScreen.titleConfig = function (sendAdminDecree) {
+        AppConfigScreen.titleConfig = function (sendAdminDecree) {
     
         const blocks = Sidebar.blocks;
 
@@ -145,7 +82,6 @@ define([
                 let reader = new FileReader();
                 reader.onloadend = function () {
 
-                console.log('belp')
                 let dataURL = this.result;
                 sendAdminDecree('UPLOAD_LOGO', {dataURL}, function (e, response) {
                     $button.removeAttr('disabled');
@@ -268,37 +204,36 @@ define([
             // ], blocks.nav([btn, remove, btn.spinner]));
 
         var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            console.log('mreao')
             
-            // sendAdminDecree('SET_INSTANCE_NAME', [$input.val().trim()], function (e, response) {
+            sendAdminDecree('SET_INSTANCE_NAME', [$input.val().trim()], function (e, response) {
                 
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         $input.val('');
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     // flushCache();
-            //     done(true);
-            //     UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    done(false);
+                    return;
+                }
+                // flushCache();
+                done(true);
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
 
-            // })
-            // sendAdminDecree('SET_INSTANCE_DESCRIPTION', [$description.val().trim()], function (e, response) {
+            })
+            sendAdminDecree('SET_INSTANCE_DESCRIPTION', [$description.val().trim()], function (e, response) {
                 
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         $input.val('');
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     // flushCache();
-            //     done(true);
-            //     UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    done(false);
+                    return;
+                }
+                // flushCache();
+                done(true);
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
 
-            // })
-            var nextPageForm = AppConfigScreen.appConfig()
+            })
+            var nextPageForm = AppConfigScreen.appConfig(sendAdminDecree)
             var elem = document.createElement('div');
             elem.setAttribute('id', 'cp-loading');
             let frame = h('div.configscreen',  {style: 'width: 70%; height: 75%; background-color: white'}, nextPageForm)
@@ -323,6 +258,67 @@ define([
         return form
     
     }
+
+    AppConfigScreen.mfaRegistrationScreen = function(sendAdminDecree) {
+
+        var restrict = blocks.activeCheckbox({
+            key: 'registration',
+            getState: function () {
+                return false
+            },
+            query: function (val, setState) {
+                sendAdminDecree('RESTRICT_REGISTRATION', [val], function (e, response) {
+                
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    done(false);
+                    return;
+                }
+                // flushCache();
+                done(true);
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
+
+            })
+            },
+        });
+
+        var forceMFA = blocks.activeCheckbox({
+            key: 'forcemfa',
+            getState: function () {
+                return false
+            },
+            query: function (val, setState) {
+            
+                sendAdminDecree('ENFORCE_MFA', [val], function (e, response) {
+                
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    done(false);
+                    return;
+                }
+                // flushCache();
+                done(true);
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
+
+            })
+            },
+        });
+
+        var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+            document.location.href = '/drive/';
+            return;
+        })
+
+        var form = blocks.form([restrict, forceMFA], [button])
+        return form
+    
+    
+    }
+
 
     AppConfigScreen.appConfig = function (sendAdminDecree) {
 
@@ -353,23 +349,22 @@ define([
         }); 
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            // sendAdminDecree('DISABLE_APPS', availableApps, function (e, response) {
+            sendAdminDecree('DISABLE_APPS', availableApps, function (e, response) {
                 
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         $input.val('');
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     // flushCache();
-            //     done(true);
-            //     UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
-            //     window.location.href = '/drive/';
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    done(false);
+                    return;
+                }
+                // flushCache();
+                done(true);
+                UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
 
-            // })
+            })
             UI.log('Messages._getKey(, [Messages.admin_appSelection])');
-            var nextPageForm = AppConfigScreen.mfaRegistrationScreen()
+            var nextPageForm = AppConfigScreen.mfaRegistrationScreen(sendAdminDecree)
             var elem = document.createElement('div');
             elem.setAttribute('id', 'cp-loading');
             let frame = h('div.configscreen',  {style: 'width: 70%; height: 75%; background-color: white'}, nextPageForm)
