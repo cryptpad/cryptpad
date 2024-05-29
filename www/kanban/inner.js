@@ -378,7 +378,7 @@ define([
             });
         };
         palette.forEach(function (color) {
-            var $color = $(h('span.cp-kanban-palette.fa'));
+            var $color = $(h('button.cp-kanban-palette.fa'));
             $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
             $color.click(function () {
                 if (offline) { return; }

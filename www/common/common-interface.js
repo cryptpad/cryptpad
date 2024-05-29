@@ -327,6 +327,7 @@ define([
                 }
                 $form.append($input);
                 $form.append($button);
+                $button.attr('tabindex', '-1');
                 if (isEdit) { $button.find('span').text(Messages.tag_edit); }
                 else { $button.find('span').text(Messages.add); }
                 $container.append($form);
@@ -567,26 +568,67 @@ define([
         const modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"])').filter(':visible');
         modalElements[0].focus();
 
+        let insideColorButtons = false;
         $(frame).on('keydown', function(e) {
-            if (e.which === 9) {
-                e.preventDefault();
-                const length = modalElements.length;
-                const firstElement = modalElements[0];
-                const lastElement = modalElements[length - 1];
+            const colors = $('#cp-kanban-edit-colors button:visible');
 
-                if (e.shiftKey) {
-                    if (document.activeElement === firstElement) {
-                        lastElement.focus();
+            const currentActiveElement = document.activeElement;
+            const currentActiveIndex = colors.index(currentActiveElement);
+
+            if (currentActiveIndex !== -1) {
+                insideColorButtons = true;
+
+                if (e.which === 37) {
+                    e.preventDefault();
+                    if (currentActiveIndex > 0) {
+                        colors.index(currentActiveIndex - 1).focus();
                     } else {
-                        const currentIndex = modalElements.index(document.activeElement);
-                        modalElements[currentIndex - 1].focus();
+                        colors.last().focus();
                     }
-                } else {
-                    if (document.activeElement === lastElement) {
-                        firstElement.focus();
+                }
+
+                else if (e.which === 39) {
+                    e.preventDefault();
+                    if (currentActiveIndex < colors.length - 1) {
+                        colors.index(currentActiveIndex + 1).focus();
                     } else {
-                        const currentIndex = modalElements.index(document.activeElement);
-                        modalElements[currentIndex + 1].focus();
+                        colors.first().focus();
+                    }
+                }
+
+                else if (e.shiftKey && e.which === 9) {
+                    e.preventDefault();
+                    $(frame).find('input:visible').last().focus();
+                    insideColorButtons = false;
+                }
+
+                else if (e.which === 9) {
+                    e.preventDefault();
+                    $(frame).find('.cp-button-confirm-placeholder:visible').first().focus();
+                    insideColorButtons = false;
+                }
+            }
+            else{
+                if (e.which === 9 && !insideColorButtons) {
+                    e.preventDefault();
+                    console.log(modalElements);
+                    const firstElement = modalElements.first()[0];
+                    const lastElement = modalElements.last()[0];
+
+                    if (e.shiftKey) {
+                        if (currentActiveElement === firstElement) {
+                            lastElement.focus();
+                        } else {
+                            const currentIndex = modalElements.index(currentActiveElement);
+                            modalElements.get(currentIndex - 1).focus();
+                        }
+                    } else {
+                        if (currentActiveElement === lastElement) {
+                            firstElement.focus();
+                        } else {
+                            const currentIndex = modalElements.index(currentActiveElement);
+                            modalElements.get(currentIndex + 1).focus();
+                        }
                     }
                 }
             }
