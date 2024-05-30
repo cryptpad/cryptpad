@@ -240,22 +240,25 @@ define([
             if (!(tab.content || tab.disabled) || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title.toLowerCase(), 'aria-hidden':"true"}, tab.title));
+            $(title).attr('tabindex', '0');
             if (tab.icon) {
                 var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
                 $(title).prepend(' ').prepend(icon);
             }
-            $(title).click(function () {
-                if (tab.disabled) { return; }
-                var old = tabs[active];
-                if (old.onHide) { old.onHide(); }
-                titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
-                contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
-                if (tab.onShow) {
-                    tab.onShow();
+            $(title).on('click keydown', function (event) {
+                if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
+                    if (tab.disabled) { return; }
+                    var old = tabs[active];
+                    if (old.onHide) { old.onHide(); }
+                    titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
+                    contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
+                    if (tab.onShow) {
+                        tab.onShow();
+                    }
+                    $(title).addClass('alertify-tabs-active');
+                    $(content).addClass('alertify-tabs-content-active');
+                    active = i;
                 }
-                $(title).addClass('alertify-tabs-active');
-                $(content).addClass('alertify-tabs-content-active');
-                active = i;
             });
             titles.push(title);
             contents.push(content);
@@ -486,7 +489,7 @@ define([
         var navs = [];
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
-            var button = h('button', { tabindex: '1', 'class': b.className || '' }, [
+            var button = h('button', { 'class': b.className || '' }, [
                 b.iconClass ? h('i' + b.iconClass) : undefined,
                 b.name
             ]);
@@ -565,15 +568,15 @@ define([
             Notifier.notify();
         });
 
-        const modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"])').filter(':visible');
+        let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible');
         modalElements[0].focus();
 
         let insideColorButtons = false;
         $(frame).on('keydown', function(e) {
             const colors = $('#cp-kanban-edit-colors button:visible');
-
             const currentActiveElement = document.activeElement;
             const currentActiveIndex = colors.index(currentActiveElement);
+            modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible'); // for modals with dynamic content
 
             if (currentActiveIndex !== -1) {
                 insideColorButtons = true;
@@ -581,7 +584,7 @@ define([
                 if (e.which === 37) {
                     e.preventDefault();
                     if (currentActiveIndex > 0) {
-                        colors.index(currentActiveIndex - 1).focus();
+                        colors.eq(currentActiveIndex - 1).focus();
                     } else {
                         colors.last().focus();
                     }
@@ -590,7 +593,7 @@ define([
                 else if (e.which === 39) {
                     e.preventDefault();
                     if (currentActiveIndex < colors.length - 1) {
-                        colors.index(currentActiveIndex + 1).focus();
+                        colors.eq(currentActiveIndex + 1).focus();
                     } else {
                         colors.first().focus();
                     }
@@ -884,14 +887,18 @@ define([
         };
 
         var newCls2 = config.new ? 'new' : '';
-        $(originalBtn).addClass('cp-button-confirm-placeholder').addClass(newCls2).click(function (e) {
-            e.stopPropagation();
-            // If we have a validation function, continue only if it's true
-            if (config.validate && !config.validate()) { return; }
-            i = 1;
-            to = setTimeout(todo, INTERVAL);
-            $(originalBtn).hide().after(content);
+        $(originalBtn).addClass('cp-button-confirm-placeholder').addClass(newCls2).on('click keydown', function (e) {
+            if (e.type === 'click' || (e.type === 'keydown' && e.key === 'Enter')) {
+                e.stopPropagation();
+                // If we have a validation function, continue only if it's true
+                if (config.validate && !config.validate()) { return; }
+                i = 1;
+                to = setTimeout(todo, INTERVAL);
+                $(originalBtn).hide().after(content);
+                $(button).focus();
+            }
         });
+
 
         return {
             reset: function () {

@@ -184,6 +184,7 @@ define([
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
+                'tabindex': '0',
                 style: 'order:'+i+';'
             },[
                 avatar,
