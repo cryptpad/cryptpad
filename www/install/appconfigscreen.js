@@ -23,6 +23,14 @@ define([
 
 ) {
 
+    Messages.admin_onboardingTitle = 'Welcome to your CryptPad instance'
+    Messages.admin_onboardingDesc = 'Please choose a title and description'
+
+    Messages.admin_appSelection = 'App configuration saved'
+    Messages.admin_appsTitle = "Choose your applications"
+    Messages.admin_appsHint = "Choose which apps are available to users on your instance."
+    Messages.admin_cat_apps = "Apps"
+
     var AppConfigScreen = {};
     const blocks = Sidebar.blocks;
 
@@ -30,173 +38,262 @@ define([
 
         const blocks = Sidebar.blocks;
 
-        var input = blocks.input({
-            type: 'text',
-            value:  '',
-            placeholder: 'ApiConfig.httpUnsafeOrigin,',
-            'aria-labelledby': 'cp-admin-name'
-        });
-        var $input = $(input);
-        var textarea = blocks.textarea({
-            placeholder: Messages.home_host || '',
-            'aria-labelledby': 'cp-admin-description'
-        }, 'instanceDescription');
-        var $description = $(textarea);
+        var titleDescBlock = function() {
 
-        let inputLogo = blocks.input({
-            type: 'file',
-            accept: 'image/*',
-            'aria-labelledby': 'cp-admin-logo'
-        });
+            var input = blocks.input({
+                type: 'text',
+                value:  '',
+                placeholder: 'Instance title',
+                'aria-labelledby': 'cp-admin-name'
+            });
+            var textarea = blocks.textarea({
+                placeholder: 'Placeholder description text',
+                value:  '',
+                'aria-labelledby': 'cp-admin-description'
+            });
 
-        var currentContainer = blocks.block([], 'cp-admin-customize-logo');
-        let redraw = () => {
-            var current = h('img', {src: '/api/logo?'+(+new Date())});
-            $(currentContainer).empty().append(current);
-        };
-        redraw();
+            return [input, textarea]
+        }
 
-        var upload = blocks.button('primary', '', Messages.admin_logoButton);
-        var remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+        var logoBlock = function() {
 
-        let spinnerBlock = blocks.inline();
-        let spinner = UI.makeSpinner($(spinnerBlock));
-        let formLogo = blocks.form([
-            currentContainer,
-            blocks.block(inputLogo),
-            blocks.nav([upload, remove, spinnerBlock])
-        ]);
+            let inputLogo = blocks.input({
+                type: 'file',
+                accept: 'image/*',
+                'aria-labelledby': 'cp-admin-logo'
+            });
 
-        let $button = $(upload);
-        let $remove = $(remove);
+            var currentContainer = blocks.block([], 'cp-admin-customize-logo');
+            let redraw = () => {
+                var current = h('img', {src: '/api/logo?'+(+new Date())});
+                $(currentContainer).empty().append(current);
+            };
+            redraw();
 
-        Util.onClickEnter($button, function () {
-            let files = input.files;
-            if (files.length !== 1) {
-                UI.warn(Messages.error);
-                return;
-            }
-            spinner.spin();
-            $button.attr('disabled', 'disabled');
-            let reader = new FileReader();
-            reader.onloadend = function () {
-                let dataURL = this.result;
-                sendAdminDecree('UPLOAD_LOGO', {dataURL}, function (e, response) {
-                    $button.removeAttr('disabled');
-                    if (e || response.error) {
+            var upload = blocks.button('primary', '', Messages.admin_logoButton);
+            var remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+
+            let spinnerBlock = blocks.inline();
+            let spinner = UI.makeSpinner($(spinnerBlock));
+            let formLogo = blocks.form([
+                currentContainer,
+                blocks.block(inputLogo),
+                blocks.nav([upload, remove, spinnerBlock])
+            ]);
+
+            let $button = $(upload);
+            let $remove = $(remove);
+
+            Util.onClickEnter($button, function () {
+                let files = inputLogo.files;
+                if (files.length !== 1) {
+                    UI.warn(Messages.error);
+                    return;
+                }
+                spinner.spin();
+                $button.attr('disabled', 'disabled');
+                let reader = new FileReader();
+                reader.onloadend = function () {
+                    let dataURL = this.result;
+                    console.log(dataURL, 'dataulr')
+                    sendAdminDecree('UPLOAD_LOGO', {dataURL}, function (e, response) {
+                        $button.removeAttr('disabled');
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            $(inputLogo).val('');
+                            console.error(e, response);
+                            // done(false);
+                            return;
+                        }
+                        // flushCache();
+                        // done(true);
+                        redraw();
+                        spinner.done();
+                        UI.log(Messages.saved);
+                    })
+
+                };
+                reader.readAsDataURL(files[0]);
+            });
+            UI.confirmButton($remove, {
+                classes: 'btn-danger',
+                multiple: true
+            }, function () {
+                spinner.spin();
+                $remove.attr('disabled', 'disabled');
+                
+                sendAdminDecree('REMOVE_LOGO', {}, function (e, response) {
+                    $remove.removeAttr('disabled');
+                    if (err) {
                         UI.warn(Messages.error);
-                        $input.val('');
-                        console.error(e, response);
-                        done(false);
+                        console.error(err, response);
+                        spinner.hide();
                         return;
                     }
-                    // flushCache();
-                    done(true);
                     redraw();
                     spinner.done();
                     UI.log(Messages.saved);
-                })
+                });
+            });
 
-            };
-            reader.readAsDataURL(files[0]);
-        });
-        UI.confirmButton($remove, {
-            classes: 'btn-danger',
-            multiple: true
-        }, function () {
-            spinner.spin();
-            $remove.attr('disabled', 'disabled');
+            return formLogo
+        
+        }
+
+        // let inputLogo = blocks.input({
+        //     type: 'file',
+        //     accept: 'image/*',
+        //     'aria-labelledby': 'cp-admin-logo'
+        // });
+
+        // var currentContainer = blocks.block([], 'cp-admin-customize-logo');
+        // let redraw = () => {
+        //     var current = h('img', {src: '/api/logo?'+(+new Date())});
+        //     $(currentContainer).empty().append(current);
+        // };
+        // redraw();
+
+        // var upload = blocks.button('primary', '', Messages.admin_logoButton);
+        // var remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+
+        // let spinnerBlock = blocks.inline();
+        // let spinner = UI.makeSpinner($(spinnerBlock));
+        // let formLogo = blocks.form([
+        //     currentContainer,
+        //     blocks.block(inputLogo),
+        //     blocks.nav([upload, remove, spinnerBlock])
+        // ]);
+
+        // let $button = $(upload);
+        // let $remove = $(remove);
+
+        // Util.onClickEnter($button, function () {
+        //     let files = input.files;
+        //     if (files.length !== 1) {
+        //         UI.warn(Messages.error);
+        //         return;
+        //     }
+        //     spinner.spin();
+        //     $button.attr('disabled', 'disabled');
+        //     let reader = new FileReader();
+        //     reader.onloadend = function () {
+        //         let dataURL = this.result;
+        //         console.log(dataURL, 'dataulr')
+        //         sendAdminDecree('UPLOAD_LOGO', {dataURL}, function (e, response) {
+        //             $button.removeAttr('disabled');
+        //             if (e || response.error) {
+        //                 UI.warn(Messages.error);
+        //                 $input.val('');
+        //                 console.error(e, response);
+        //                 done(false);
+        //                 return;
+        //             }
+        //             // flushCache();
+        //             done(true);
+        //             redraw();
+        //             spinner.done();
+        //             UI.log(Messages.saved);
+        //         })
+
+        //     };
+        //     reader.readAsDataURL(files[0]);
+        // });
+        // UI.confirmButton($remove, {
+        //     classes: 'btn-danger',
+        //     multiple: true
+        // }, function () {
+        //     spinner.spin();
+        //     $remove.attr('disabled', 'disabled');
             
-            sendAdminDecree('REMOVE_LOGO', {}, function (e, response) {
-                $remove.removeAttr('disabled');
-                if (err) {
-                    UI.warn(Messages.error);
-                    console.error(err, response);
-                    spinner.hide();
-                    return;
-                }
-                redraw();
-                spinner.done();
-                UI.log(Messages.saved);
-            });
-        });
+        //     sendAdminDecree('REMOVE_LOGO', {}, function (e, response) {
+        //         $remove.removeAttr('disabled');
+        //         if (err) {
+        //             UI.warn(Messages.error);
+        //             console.error(err, response);
+        //             spinner.hide();
+        //             return;
+        //         }
+        //         redraw();
+        //         spinner.done();
+        //         UI.log(Messages.saved);
+        //     });
+        // });
 
-        let inputColor = blocks.input({
-            type: 'color',
-            value: (Instance && Instance.color) || '#0087FF'
-        });
-        let label = blocks.labelledInput(Messages.admin_colorPick, inputColor);
-        let current = blocks.block([], 'cp-admin-color-current');
-        let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
-        let preview = blocks.block([
-            blocks.block([
-                blocks.link('CryptPad', '/admin/#customize'),
-                blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
-            ], 'cp-admin-color-preview-dark cp-sidebar-flex-block'),
-            blocks.block([
-                blocks.link('CryptPad', '/admin/#customize'),
-                blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
-            ], 'cp-admin-color-preview-light cp-sidebar-flex-block')
-        ], 'cp-admin-color-preview');
-        let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
-        let $preview = $(preview);
+        // var colorText = Messages.admin_colorTitle
 
-        let removeColor = blocks.button('danger', '', Messages.admin_logoRemoveButton);
-        let $removeColor = $(removeColor);
+        // let inputColor = blocks.input({
+        //     type: 'color',
+        //     value: (Instance && Instance.color) || '#0087FF'
+        // });
+        // let label = blocks.labelledInput(Messages.admin_colorPick, inputColor);
+        // let current = blocks.block([], 'cp-admin-color-current');
+        // let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
+        // let preview = blocks.block([
+        //     blocks.block([
+        //         blocks.link('CryptPad', '/admin/#customize'),
+        //         blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+        //         blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+        //     ], 'cp-admin-color-preview-dark cp-sidebar-flex-block'),
+        //     blocks.block([
+        //         blocks.link('CryptPad', '/admin/#customize'),
+        //         blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+        //         blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+        //     ], 'cp-admin-color-preview-light cp-sidebar-flex-block')
+        // ], 'cp-admin-color-preview');
+        // let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
+        // let $preview = $(preview);
 
-        let setColor = (color, done) => {
-            sendAdminDecree('CHANGE_COLOR', {color}, function (e, response) {
-                if (err) {
-                    UI.warn(Messages.error);
-                    console.error(err, response);
-                    done(false);
-                    return;
-                }
-                done(true);
-                UI.log(Messages.saved);
-            });
-        };
+        // let removeColor = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+        // let $removeColor = $(removeColor);
 
-        let btn = blocks.activeButton('primary', '',
-            Messages.admin_colorChange, (done) => {
-            let color = $input.val();
-            setColor(color, done);
-        });
+        // let setColor = (color, done) => {
+        //     sendAdminDecree('CHANGE_COLOR', {color}, function (e, response) {
+        //         if (err) {
+        //             UI.warn(Messages.error);
+        //             console.error(err, response);
+        //             done(false);
+        //             return;
+        //         }
+        //         done(true);
+        //         UI.log(Messages.saved);
+        //     });
+        // };
 
-        let $inputColor = $(inputColor).on('change', () => {
-            require(['/lib/less.min.js'], (Less) => {
-                let color = $inputColor.val();
-                let lColor = Less.color(color.slice(1));
-                let lighten = Less.functions.functionRegistry._data.lighten;
-                let lightColor = lighten(lColor, {value:30}).toRGB();
-                $preview.find('.btn-primary').css({
-                    'background-color': color
-                });
-                $preview.find('.cp-admin-color-preview-dark .btn-secondary').css({
-                    'border-color': lightColor,
-                    'color': lightColor,
-                });
-                $preview.find('.cp-admin-color-preview-light .btn-secondary').css({
-                    'border-color': color,
-                    'color': color,
-                });
-                $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
-                $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
-            });
-        });
+        // //color picker
+        // let $inputColor = $(inputColor).on('change', () => {
+        //     require(['/lib/less.min.js'], (Less) => {
+        //         let color = $inputColor.val();
+        //         let lColor = Less.color(color.slice(1));
+        //         let lighten = Less.functions.functionRegistry._data.lighten;
+        //         let lightColor = lighten(lColor, {value:30}).toRGB();
+        //         $preview.find('.btn-primary').css({
+        //             'background-color': color
+        //         });
+        //         $preview.find('.cp-admin-color-preview-dark .btn-secondary').css({
+        //             'border-color': lightColor,
+        //             'color': lightColor,
+        //         });
+        //         $preview.find('.cp-admin-color-preview-light .btn-secondary').css({
+        //             'border-color': color,
+        //             'color': color,
+        //         });
+        //         $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
+        //         $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
+        //     });
+        // });
 
-        UI.confirmButton($removeColor, {
-            classes: 'btn-danger',
-            multiple: true
-        }, function () {
-            $removeColor.attr('disabled', 'disabled');
-            setColor('', () => {});
-        });
+        // remove color
+        // UI.confirmButton($removeColor, {
+        //     classes: 'btn-danger',
+        //     multiple: true
+        // }, function () {
+        //     $removeColor.attr('disabled', 'disabled');
+        //     setColor('', () => {});
+        // });
 
         var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            sendAdminDecree('SET_INSTANCE_NAME', [$input.val().trim()], function (e, response) {
+
+            sendAdminDecree('SET_INSTANCE_NAME', [$(titleInput).val().trim()], function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
                     $input.val('');
@@ -209,7 +306,7 @@ define([
                 UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
 
             })
-            sendAdminDecree('SET_INSTANCE_DESCRIPTION', [$description.val().trim()], function (e, response) {
+            sendAdminDecree('SET_INSTANCE_DESCRIPTION', [$(descriptionInput).val().trim()], function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
                     $input.val('');
@@ -222,6 +319,36 @@ define([
                 UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
 
             })
+
+             //         sendAdminDecree('UPLOAD_LOGO', {dataURL}, function (e, response) {
+        //         console.log('ehllo')
+        //             $button.removeAttr('disabled');
+        //             if (e || response.error) {
+        //                 UI.warn(Messages.error);
+        //                 $input.val('');
+        //                 console.error(e, response);
+        //                 done(false);
+        //                 return;
+        //             }
+        //             // flushCache();
+        //             done(true);
+        //             redraw();
+        //             spinner.done();
+        //             UI.log(Messages.saved);
+        //         })
+
+
+            // sendAdminDecree('CHANGE_COLOR', {colorPick}, function (e, response) {
+            //     if (e || response.error) {
+            //         UI.warn(Messages.error);
+            //         console.error(e, response);
+            //         done(false);
+            //         return;
+            //     }
+            //     done(true);
+            //     UI.log(Messages.saved);
+            // });
+
             var nextPageForm = AppConfigScreen.appConfig(sendAdminDecree)
             var elem = document.createElement('div');
             elem.setAttribute('id', 'cp-loading');
@@ -239,9 +366,18 @@ define([
             append();
         });
 
+        var titleInput = titleDescBlock()[0]
+        var logoInput = logoBlock()
+        console.log(titleInput)
+        var descriptionInput = titleDescBlock()[1]
+
+        var screenTitle = h('div', Messages.admin_onboardingTitle, Messages.admin_onboardingDesc)
         var nav = blocks.nav([button]);
         var form = blocks.form([
-            input,textarea, inputLogo, label, labelCurrent
+        screenTitle, 
+        titleInput, descriptionInput, logoInput
+            // $(titleInput),descriptionInput, inputLogo
+            // , label, labelCurrent
         ], nav);
 
         return form
@@ -264,7 +400,7 @@ define([
                         return;
                     }
                     // flushCache();
-                    done(true);
+                    // done(true);
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
 
                 })

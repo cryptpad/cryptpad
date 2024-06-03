@@ -60,26 +60,7 @@ define([
             }
         }
 
-        var showAppScreen = function (sendAdminDecree) {
 
-            var appScreen = AppConfigScreen.appConfig
-            var form = appScreen(sendAdminDecree)
-            var elem = document.createElement('div');
-            elem.setAttribute('id', 'cp-loading');
-            let frame = h('div.configscreen',  {style: 'width: 70%; height: 75%; background-color: white'}, form)
-            elem.append(frame)
-
-            built = true;
-            var intr;
-            var append = function () {
-                if (!document.body) { return; }
-                clearInterval(intr);
-                document.body.appendChild(elem);
-            };
-            intr = setInterval(append, 100);
-            append();
-
-        }
 
         var showTitleScreen = function (sendAdminDecree) {
 
@@ -103,53 +84,10 @@ define([
 
         }
 
-        var showTitleScreen = function (sendAdminDecree) {
-
-            var titleScreen = AppConfigScreen.titleConfig
-            var form = titleScreen(sendAdminDecree)
-
-            var elem = document.createElement('div');
-            elem.setAttribute('id', 'cp-loading');
-            let frame = h('div.configscreen',  {style: 'width: 70%; height: 75%; background-color: white'}, form)
-            elem.append(frame)
-
-            built = true;
-            var intr;
-            var append = function () {
-                if (!document.body) { return; }
-                clearInterval(intr);
-                document.body.appendChild(elem);
-            };
-            intr = setInterval(append, 100);
-            append();
-
-        }
-
-        var showMFARegistrationScreen = function (sendAdminDecree) {
-
-            var mfaRegistrationScreen = AppConfigScreen.mfaRegistrationScreen
-            var form = mfaRegistrationScreen(sendAdminDecree)
-
-            var elem = document.createElement('div');
-            elem.setAttribute('id', 'cp-loading');
-            let frame = h('div.configscreen',  {style: 'width: 70%; height: 75%; background-color: white'}, form)
-            elem.append(frame)
-
-            built = true;
-            var intr;
-            var append = function () {
-                if (!document.body) { return; }
-                clearInterval(intr);
-                document.body.appendChild(elem);
-            };
-            intr = setInterval(append, 100);
-            append();
-
-        }
 
         var registerClick = function () {
             // showTitleScreen()
-                        // document.location.href = '/drive/';
+//                         // document.location.href = '/drive/';
 
 
             var uname = $uname.val().trim();
