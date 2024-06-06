@@ -191,6 +191,11 @@
         border: 0;
         background: transparent;
         align-self: flex-start;
+        outline-style: none;
+        border-radius: 5px;
+        &:focus {
+            outline: @cryptpad_color_brand solid 2px;
+        }
         @media (hover: none) {
             margin-right: 20px;
         }
