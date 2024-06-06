@@ -152,8 +152,12 @@
             line-height: 30px;
             color: @cp_kanban-fg;
             border: 1px solid fade(@cp_kanban-fg, 40%);
-            &.fa-check { // tick on selected color
+            // tick on selected color
+            &.cp-kanban-palette-card.fa-check {
                 color: @cryptpad_text_col;
+            }
+            &.cp-kanban-palette-board.fa-check {
+                color: @cryptpad_text_col_inv;
             }
         }
     }
