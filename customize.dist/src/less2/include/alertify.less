@@ -263,6 +263,10 @@
 
             input {
                 .tools_placeholder-color();
+                outline: none;
+                &:focus-visible {
+                    outline: @cryptpad_color_brand solid 2px;
+                }
             }
 
             span.cp-password-container {
