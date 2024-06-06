@@ -330,7 +330,6 @@ define([
                 }
                 $form.append($input);
                 $form.append($button);
-                $button.attr('tabindex', '-1');
                 if (isEdit) { $button.find('span').text(Messages.tag_edit); }
                 else { $button.find('span').text(Messages.add); }
                 $container.append($form);
@@ -601,7 +600,7 @@ define([
 
                 else if (e.shiftKey && e.which === 9) {
                     e.preventDefault();
-                    $(frame).find('input:visible').last().focus();
+                    $(frame).find('input:visible, .btn-primary:visible').last().focus();
                     insideColorButtons = false;
                 }
 
