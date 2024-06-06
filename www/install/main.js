@@ -19,6 +19,7 @@ define([
     'appconfigscreen.js',
     '/common/inner/sidebar-layout.js',
 
+    'css!/install/configscreen.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, AppConfigScreen, Sidebar) {
     if (window.top !== window) { return; }
@@ -69,7 +70,7 @@ define([
 
             var elem = document.createElement('div');
             elem.setAttribute('id', 'cp-loading');
-            let frame = h('div.configscreen',  {style: 'width: 70%; height: 75%; background-color: white'}, form)
+            let frame = h('div.configscreen', form)
             elem.append(frame)
 
             built = true;
@@ -86,138 +87,138 @@ define([
 
 
         var registerClick = function () {
-            // showTitleScreen()
+            showTitleScreen()
 //                         // document.location.href = '/drive/';
 
 
-            var uname = $uname.val().trim();
-            // trim whitespace surrounding the username since it is otherwise included in key derivation
-            // most people won't realize that its presence is significant
-            $uname.val(uname);
+//             var uname = $uname.val().trim();
+//             // trim whitespace surrounding the username since it is otherwise included in key derivation
+//             // most people won't realize that its presence is significant
+//             $uname.val(uname);
 
-            var passwd = $passwd.val();
-            var confirmPassword = $confirm.val();
+//             var passwd = $passwd.val();
+//             var confirmPassword = $confirm.val();
 
-            if (!token) { token = $token.val().trim(); }
+//             if (!token) { token = $token.val().trim(); }
 
-            var shouldImport = false;
-            var doesAccept;
-            try {
-                // if this throws there's either a horrible bug (which someone will report)
-                // or the instance admins did not configure a terms page.
-                doesAccept = true;
-            } catch (err) {
-                console.error(err);
-            }
+//             var shouldImport = false;
+//             var doesAccept;
+//             try {
+//                 // if this throws there's either a horrible bug (which someone will report)
+//                 // or the instance admins did not configure a terms page.
+//                 doesAccept = true;
+//             } catch (err) {
+//                 console.error(err);
+//             }
 
-            if (Cred.isEmail(uname) && !I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME) {
-                var emailWarning = [
-                    Messages.register_emailWarning0,
-                    br(), br(),
-                    Messages.register_emailWarning1,
-                    br(), br(),
-                    Messages.register_emailWarning2,
-                    br(), br(),
-                    Messages.register_emailWarning3,
-                ];
+//             if (Cred.isEmail(uname) && !I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME) {
+//                 var emailWarning = [
+//                     Messages.register_emailWarning0,
+//                     br(), br(),
+//                     Messages.register_emailWarning1,
+//                     br(), br(),
+//                     Messages.register_emailWarning2,
+//                     br(), br(),
+//                     Messages.register_emailWarning3,
+//                 ];
 
-                Feedback.send("EMAIL_USERNAME_WARNING", true);
+//                 Feedback.send("EMAIL_USERNAME_WARNING", true);
 
-                return void UI.confirm(emailWarning, function (yes) {
-                    if (!yes) { return; }
-                    I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = true;
-                    registerClick();
-                });
-            }
+//                 return void UI.confirm(emailWarning, function (yes) {
+//                     if (!yes) { return; }
+//                     I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = true;
+//                     registerClick();
+//                 });
+//             }
 
-            /* basic validation */
-            if (!Cred.isLongEnoughPassword(passwd)) {
-                var warning = Messages._getKey('register_passwordTooShort', [
-                    Cred.MINIMUM_PASSWORD_LENGTH
-                ]);
-                return void UI.alert(warning);
-            }
+//             /* basic validation */
+//             if (!Cred.isLongEnoughPassword(passwd)) {
+//                 var warning = Messages._getKey('register_passwordTooShort', [
+//                     Cred.MINIMUM_PASSWORD_LENGTH
+//                 ]);
+//                 return void UI.alert(warning);
+//             }
 
-            if (passwd !== confirmPassword) { // do their passwords match?
-                return void UI.alert(Messages.register_passwordsDontMatch);
-            }
+//             if (passwd !== confirmPassword) { // do their passwords match?
+//                 return void UI.alert(Messages.register_passwordsDontMatch);
+//             }
 
-            if (Pages.customURLs.terms && !doesAccept) { // do they accept the terms of service? (if they exist)
-                return void UI.alert(Messages.register_mustAcceptTerms);
-            }
+//             if (Pages.customURLs.terms && !doesAccept) { // do they accept the terms of service? (if they exist)
+//                 return void UI.alert(Messages.register_mustAcceptTerms);
+//             }
 
-            let startOnboarding = function (network, proxy) {
-             Rpc.create(network, proxy.edPrivate, proxy.edPublic, function (e, rpc) {
-                if (e) {
-                  // TODO: handle error
-                  return;
-                }
+//             let startOnboarding = function (network, proxy) {
+//              Rpc.create(network, proxy.edPrivate, proxy.edPublic, function (e, rpc) {
+//                 if (e) {
+//                   // TODO: handle error
+//                   return;
+//                 }
 
-                let sendAdminDecree = function (command, data, callback) {
-                    var params = ['ADMIN_DECREE', [command, data]];  
-                    rpc.send('ADMIN', params, callback)
-                };
+//                 let sendAdminDecree = function (command, data, callback) {
+//                     var params = ['ADMIN_DECREE', [command, data]];  
+//                     rpc.send('ADMIN', params, callback)
+//                 };
 
-                showTitleScreen(sendAdminDecree)
+//                 showTitleScreen(sendAdminDecree)
               
-            });
+//             });
   
-    };
+//     };
 
-            setTimeout(function () {
-                var span = h('span', [
-                    h('h2', [
-                        h('i.fa.fa-warning'),
-                        ' ',
-                        Messages.register_warning,
-                    ]),
-                    Messages.register_warning_note
-                ]);
+//             setTimeout(function () {
+//                 var span = h('span', [
+//                     h('h2', [
+//                         h('i.fa.fa-warning'),
+//                         ' ',
+//                         Messages.register_warning,
+//                     ]),
+//                     Messages.register_warning_note
+//                 ]);
 
-            UI.confirm(span,
-            function (yes) {
-                if (!yes) { return; }
+//             UI.confirm(span,
+//             function (yes) {
+//                 if (!yes) { return; }
 
-                Login.loginOrRegisterUI({
-                    uname,
-                    passwd,
-                    isRegister: true,
-                    onOTP: UI.getOTPScreen,
-                    shouldImport,
-                    cb: function (data) {
-                        var proxy = data.proxy;
-                        if (!proxy || !proxy.edPublic) { UI.alert(Messages.error); return true; }
+//                 Login.loginOrRegisterUI({
+//                     uname,
+//                     passwd,
+//                     isRegister: true,
+//                     onOTP: UI.getOTPScreen,
+//                     shouldImport,
+//                     cb: function (data) {
+//                         var proxy = data.proxy;
+//                         if (!proxy || !proxy.edPublic) { UI.alert(Messages.error); return true; }
 
-                        Rpc.createAnonymous(data.network, function (e, call) {
-                            if (e) { UI.alert(Messages.error); return console.error(e); }
-                            var anon_rpc = call;
+//                         Rpc.createAnonymous(data.network, function (e, call) {
+//                             if (e) { UI.alert(Messages.error); return console.error(e); }
+//                             var anon_rpc = call;
 
-                            anon_rpc.send('ADD_FIRST_ADMIN', {
-                                token: token,
-                                edPublic: proxy.edPublic
-                            }, function (e) {
-                                if (e) { UI.alert(Messages.error); return console.error(e); }
-                                startOnboarding(data.network, proxy);
-                            });
-                        });
+//                             anon_rpc.send('ADD_FIRST_ADMIN', {
+//                                 token: token,
+//                                 edPublic: proxy.edPublic
+//                             }, function (e) {
+//                                 if (e) { UI.alert(Messages.error); return console.error(e); }
+//                                 startOnboarding(data.network, proxy);
+//                             });
+//                         });
 
-                        return true;
-                    }
-                });
-            }, {
-                ok: Messages.register_writtenPassword,
-                cancel: Messages.register_cancel,
-/*  If we're certain that we aren't using these "*Class" APIs
-    anywhere else then we can deprecate them and make this a
-    custom modal in common-interface (or here).  */
-                cancelClass: 'btn.btn-cancel.btn-register',
-                okClass: 'btn.btn-danger.btn-register',
-                reverseOrder: true,
-                done: function ($dialog) {
-                    $dialog.find('> div').addClass('half');
-                },
-            });
-            }, 150);
+//                         return true;
+//                     }
+//                 });
+//             }, {
+//                 ok: Messages.register_writtenPassword,
+//                 cancel: Messages.register_cancel,
+// /*  If we're certain that we aren't using these "*Class" APIs
+//     anywhere else then we can deprecate them and make this a
+//     custom modal in common-interface (or here).  */
+//                 cancelClass: 'btn.btn-cancel.btn-register',
+//                 okClass: 'btn.btn-danger.btn-register',
+//                 reverseOrder: true,
+//                 done: function ($dialog) {
+//                     $dialog.find('> div').addClass('half');
+//                 },
+//             });
+//             }, 150);
         };
 
         $register.click(registerClick);
