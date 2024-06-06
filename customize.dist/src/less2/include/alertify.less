@@ -198,6 +198,12 @@
                         text-decoration: none;
                     }
                 }
+                .cp-usergrid-user, textarea  {
+                    outline: none;
+                    &:focus {
+                        outline: @cryptpad_color_brand solid 2px;
+                    }
+                }
             }
             .cp-alertify-type-container {
                 overflow: visible !important;
@@ -236,6 +242,10 @@
                                     display: none;
                                 }
                             }
+                        }
+                        outline: none;
+                        &:focus {
+                            outline: @cryptpad_color_brand solid 2px;
                         }
                     }
                     span.alertify-tabs-active {
