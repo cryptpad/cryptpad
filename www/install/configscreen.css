@@ -81,9 +81,10 @@
 
 .cp-admin-customize-apps-grid {
 
-    width: 40%;
-    color: blue;
+    width: 80%;
+    color: white;
     height: 10px !important;
+    margin:auto;
 
 
 }
@@ -102,12 +103,37 @@
     width: 50% !important; */
 
     display: inline-block !important;
-    /* height: 40% !important */
+    height: 60px !important;
+    /* background-color: #212121!important; */
+
+    /* margin: 10px !important; */
 
 }
 
-.configscreen {
 
-background: red
+
+.cp-bloop {
+
+    width:60% !important;
+    /* height:400% !important; */
+    float:left !important;
+    
+    padding: 5% !important;
+    /* border:1px solid red !important; */
+    background-color: #212121!important;
+    border-color:white;
+
+}
+
+.active-app {
+
+background-color: #212121!important;
+
+}
+
+.cp-onboardscreen-checkmark {
+
+text-align:right !important;
+color: white !important;
 
 }

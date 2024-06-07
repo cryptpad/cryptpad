@@ -26,8 +26,6 @@ define([
     var Messages = Cryptpad.Messages;
     $(function () {
 
-        Messages.admin_appSelection = 'App configuration saved'
-
         if (LocalStore.isLoggedIn()) {
             // already logged in, redirect to drive
             document.location.href = '/drive/';
@@ -63,10 +61,10 @@ define([
 
 
 
-        var showTitleScreen = function (sendAdminDecree) {
+        var showTitleScreen = function (sendAdminDecree, sendAdminRpc) {
 
             var titleScreen = AppConfigScreen.titleConfig
-            var form = titleScreen(sendAdminDecree)
+            var form = titleScreen(sendAdminDecree, sendAdminRpc)
 
             var elem = document.createElement('div');
             elem.setAttribute('id', 'cp-loading');
@@ -159,7 +157,12 @@ define([
 //                     rpc.send('ADMIN', params, callback)
 //                 };
 
-//                 showTitleScreen(sendAdminDecree)
+//                 let sendAdminRpc = function (command, data, callback) {
+//                     var params = [command, data];  
+//                     rpc.send('ADMIN', params, callback)
+//                 };
+
+//                 showTitleScreen(sendAdminDecree, sendAdminRpc)
               
 //             });
   
