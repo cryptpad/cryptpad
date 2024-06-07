@@ -172,88 +172,150 @@ define([
 
         var colorBlock = function () {
         
-            let input = blocks.input({
-                    type: 'color',
-                    value: (Instance && Instance.color) || '#0087FF'
-                });
-                let label = blocks.labelledInput(Messages.admin_colorPick, input);
-                let current = blocks.block([], 'cp-admin-color-current');
-                let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
-                let preview = blocks.block([
-                    blocks.block([
-                        blocks.link('CryptPad', '/admin/#customize'),
-                        blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                        blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
-                    ], 'cp-admin-color-preview-dark cp-sidebar-flex-block'),
-                    blocks.block([
-                        blocks.link('CryptPad', '/admin/#customize'),
-                        blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-                        blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
-                    ], 'cp-admin-color-preview-light cp-sidebar-flex-block')
-                ], 'cp-admin-color-preview');
-                let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
-                let $preview = $(preview);
+            // let input = blocks.input({
+            //         type: 'color',
+            //         value: (Instance && Instance.color) || '#0087FF'
+            //     });
+            //     let label = blocks.labelledInput(Messages.admin_colorPick, input);
+            //     let current = blocks.block([], 'cp-admin-color-current');
+            //     let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
+            //     let preview = blocks.block([
+            //         blocks.block([
+            //             blocks.link('CryptPad', '/admin/#customize'),
+            //             blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+            //             blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+            //         ], 'cp-admin-color-preview-dark cp-sidebar-flex-block'),
+            //         blocks.block([
+            //             blocks.link('CryptPad', '/admin/#customize'),
+            //             blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
+            //             blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
+            //         ], 'cp-admin-color-preview-light cp-sidebar-flex-block')
+            //     ], 'cp-admin-color-preview');
+            //     let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
+            //     let $preview = $(preview);
 
-                let remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
-                let $remove = $(remove);
+            //     let remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+            //     let $remove = $(remove);
 
-                let setColor = (color, done) => {
-                    sframeCommand('CHANGE_COLOR', {color}, (err, response) => {
-                        if (err) {
-                            UI.warn(Messages.error);
-                            console.error(err, response);
-                            done(false);
-                            return;
-                        }
-                        done(true);
-                        UI.log(Messages.saved);
-                    });
-                };
+            //     let setColor = (color, done) => {
+            //         sframeCommand('CHANGE_COLOR', {color}, (err, response) => {
+            //             if (err) {
+            //                 UI.warn(Messages.error);
+            //                 console.error(err, response);
+            //                 done(false);
+            //                 return;
+            //             }
+            //             done(true);
+            //             UI.log(Messages.saved);
+            //         });
+            //     };
 
-                let btn = blocks.activeButton('primary', '',
-                Messages.admin_colorChange, (done) => {
-                    let color = $input.val();
-                    setColor(color, done);
-                });
+            //     let btn = blocks.activeButton('primary', '',
+            //     Messages.admin_colorChange, (done) => {
+            //         let color = $input.val();
+            //         setColor(color, done);
+            //     });
 
-                let $input = $(input).on('change', () => {
-                    require(['/lib/less.min.js'], (Less) => {
-                        let color = $input.val();
-                        let lColor = Less.color(color.slice(1));
-                        let lighten = Less.functions.functionRegistry._data.lighten;
-                        let lightColor = lighten(lColor, {value:30}).toRGB();
-                        $preview.find('.btn-primary').css({
-                            'background-color': color
-                        });
-                        $preview.find('.cp-admin-color-preview-dark .btn-secondary').css({
-                            'border-color': lightColor,
-                            'color': lightColor,
-                        });
-                        $preview.find('.cp-admin-color-preview-light .btn-secondary').css({
-                            'border-color': color,
-                            'color': color,
-                        });
-                        $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
-                        $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
+            //     let $input = $(input).on('change', () => {
+            //         require(['/lib/less.min.js'], (Less) => {
+            //             let color = $input.val();
+            //             let lColor = Less.color(color.slice(1));
+            //             let lighten = Less.functions.functionRegistry._data.lighten;
+            //             let lightColor = lighten(lColor, {value:30}).toRGB();
+            //             $preview.find('.btn-primary').css({
+            //                 'background-color': color
+            //             });
+            //             $preview.find('.cp-admin-color-preview-dark .btn-secondary').css({
+            //                 'border-color': lightColor,
+            //                 'color': lightColor,
+            //             });
+            //             $preview.find('.cp-admin-color-preview-light .btn-secondary').css({
+            //                 'border-color': color,
+            //                 'color': color,
+            //             });
+            //             $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
+            //             $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
                     
-                    });
-                });
+            //         });
+            //     });
 
-                UI.confirmButton($remove, {
-                    classes: 'btn-danger',
-                    multiple: true
-                }, function () {
-                    $remove.attr('disabled', 'disabled');
-                    setColor('', () => {});
-                });
+            //     UI.confirmButton($remove, {
+            //         classes: 'btn-danger',
+            //         multiple: true
+            //     }, function () {
+            //         $remove.attr('disabled', 'disabled');
+            //         setColor('', () => {});
+            //     });
 
-                // let form = blocks.form([
-                    var form = [labelCurrent,
-                    label]
-                // ], blocks.nav([btn, remove, btn.spinner]));
+            //     // let form = blocks.form([
+            //         var form = [labelCurrent,
+            //         label]
+            //     // ], blocks.nav([btn, remove, btn.spinner]));
+                    // Colors
 
+        var conflicts, conflictContainer, titleInput, tagsDiv, colors, text;
+        var content = h('div', [
+            // conflictContainer = h('div#cp-kanban-edit-conflicts', [
+            //     h('div', Messages.kanban_conflicts),
+            //     conflicts = h('div.cp-kanban-cursors')
+            // ]),
+            // h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
+            // titleInput = h('input#cp-kanban-edit-title'),
+            // h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
+            // h('div#cp-kanban-edit-body', [
+            //     text = h('textarea')
+            // ]),
+            // h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
+            // tagsDiv = h('div#cp-kanban-edit-tags'),
+            h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
+            colors = h('div#cp-kanban-edit-colors'),
+        ]);
 
-            return form
+        var $colors = $(colors);
+        var palette = [''];
+        for (var i=1; i<=8; i++) { palette.push('color'+i); }
+        var selectedColor = '';
+        var resetThemeClass = function () {
+            $colors.find('.cp-kanban-palette').each(function (i, el) {
+                var $c = $(el);
+                $c.removeClass('cp-kanban-palette-card');
+                $c.removeClass('cp-kanban-palette-board');
+                // if (isBoard) {
+                //     $c.addClass('cp-kanban-palette-board');
+                // } else {
+                    $c.addClass('cp-kanban-palette-card');
+                // }
+            });
+        };
+        palette.forEach(function (color) {
+            var $color = $(h('span.cp-kanban-palette.fa'));
+            $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
+            $color.click(function () {
+                if (offline) { return; }
+                if (color === selectedColor) { return; }
+                selectedColor = color;
+                $colors.find('.cp-kanban-palette').removeClass('fa-check');
+                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
+                $col.addClass('fa-check');
+
+                dataObject.color = color;
+                commit();
+            }).appendTo($colors);
+        });
+        var color = {
+            getValue: function () {
+                return selectedColor;
+            },
+            setValue: function (color) {
+                resetThemeClass();
+                $colors.find('.cp-kanban-palette').removeClass('fa-check');
+                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
+                $col.addClass('fa-check');
+                selectedColor = color;
+            }
+        };
+
+            return color
         
         }
 
@@ -305,7 +367,7 @@ define([
         var titleInput = h('div.cp-onboardscreen-name', titleDescBlock()[0])
         var logoInput = h('div.cp-onboardscreen-logo', logoBlock(), {style:'width:20%;height:20%'})
         var descriptionInput = h('div.cp-onboardscreen-description', titleDescBlock()[1])
-        var colorInput =  h('div', colorBlock()[0], colorBlock()[1], {style:'width:50%;height:20%;position:absolute;right:0;bottom:0;margin-right:17%;margin-bottom:10%'})
+        var colorInput =  h('div', colorBlock(), {style:'width:50%;height:20%;position:absolute;right:0;bottom:0;margin-right:17%;margin-bottom:10%'})
         // var colorInputLabel = h('div', colorBlock()[0],  {style:'width:20%;height:20%'})
         // var colorInputLabel2 = h('div', colorBlock()[1], {style:'width:20%;height:20%'})
 
