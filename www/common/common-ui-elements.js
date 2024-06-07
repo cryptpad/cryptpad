@@ -232,6 +232,13 @@ define([
                 }
                 onSelect();
             });
+            $div.on('keydown', '.cp-usergrid-user', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).trigger('click');
+                }
+            });
         }
 
         return {

@@ -247,6 +247,8 @@ define([
             }
             $(title).on('click keydown', function (event) {
                 if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
+                    event.preventDefault();
+                    event.stopPropagation();
                     if (tab.disabled) { return; }
                     var old = tabs[active];
                     if (old.onHide) { old.onHide(); }
@@ -1291,7 +1293,7 @@ define([
 
         $mark.keydown(function (e) {
             if ($input.is(':disabled')) { return; }
-            if (e.which === 32) {
+            if (e.which === 32 || e.which === 13){
                 e.stopPropagation();
                 e.preventDefault();
                 $input.prop('checked', !$input.is(':checked'));
