@@ -1342,7 +1342,7 @@ define([
 
         $(mark).keydown(function (e) {
             if ($input.is(':disabled')) { return; }
-            if (e.which === 32) {
+            if (e.which === 13 || e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
                 if ($input.is(':checked')) { return; }
