@@ -622,7 +622,6 @@ define([
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_emailTitle]));
                 });
             });
-        
             var nav = blocks.nav([button]);
 
             var form = blocks.form([
@@ -635,22 +634,18 @@ define([
         });
 
         sidebar.addItem('apps', function (cb) {
-
             const grid = blocks.block([], 'cp-admin-customize-apps-grid');
-
             const allApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
-			const availableApps = []
+			const availableApps = [];
             
             function select(app) {
-
 				if (availableApps.indexOf(app) === -1) {
 					availableApps.push(app);
 					$(`#${app}-block`).attr('class', 'active-app') 
 				} else {
 					availableApps.splice(availableApps.indexOf(app), 1)
 					$(`#${app}-block`).attr('class', 'inactive-app')
-				}
-                    
+				}     
             }
 
             allApps.forEach(app => { 

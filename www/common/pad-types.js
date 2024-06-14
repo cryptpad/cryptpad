@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-
 define([
     "/customize/application_config.js",
     "/api/config",

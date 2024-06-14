@@ -19,9 +19,7 @@ define([
     'appconfigscreen.js',
     '/common/inner/sidebar-layout.js',
 
-    // 'css!/install/configscreen.css',
-        'less!/install/onboarding.less',
-
+    'less!/install/onboarding.less',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, AppConfigScreen, Sidebar) {
     if (window.top !== window) { return; }
