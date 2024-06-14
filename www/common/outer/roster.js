@@ -205,8 +205,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
     };
 
     commands.RM = function (args, author, roster) {
-        if (!Array.isArray(args)) { 
-        throw new Error("INVALID_ARGS"); }
+        if (!Array.isArray(args)) { throw new Error("INVALID_ARGS"); }
 
         if (typeof(roster.state.members) === 'undefined') {
             throw new Error("CANNOT_RM_FROM_UNITIALIZED_ROSTER");
@@ -349,8 +348,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
 
     // only admin/owner can change group metadata
     commands.METADATA = function (args, author, roster) {
-        if (!isMap(args)) { console.log('here27')
-        throw new Error("INVALID_ARGS"); }
+        if (!isMap(args)) { throw new Error("INVALID_ARGS"); }
 
         if (!canUpdateMetadata(author, roster.state.members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
 
@@ -388,8 +386,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         // that key is ultimately given to the user you'd like on your team
         // that user can exploit their possession of the public key to remove
         // the pending invitation with their actual data.
-        if (!isMap(args)) {console.log('here28')
-         throw new Error('INVALID_ARGS'); }
+        if (!isMap(args)) { throw new Error('INVALID_ARGS'); }
         if (!roster.internal.initialized) { throw new Error("UNINITIALIED"); }
         if (typeof(roster.state.members) === 'undefined') {
             throw new Error("CANNOT+INVITE_TO_UNINITIALIED_ROSTER");
@@ -460,8 +457,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         if (!members[author].pending) { throw new Error("ALREADY_PRESENT"); }
 
         // args should be a string
-        if (typeof(args) !== 'string') { console.log('here29')
-        throw new Error("INVALID_ARGS"); }
+        if (typeof(args) !== 'string') { throw new Error("INVALID_ARGS"); }
         // ...and a valid curve key
         if (!isValidId(args)) { throw new Error("INVALID_CURVE_KEY"); }
 

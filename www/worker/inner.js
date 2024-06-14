@@ -75,6 +75,7 @@ define([
 
         // Service worker
         if ('serviceWorker' in navigator) {
+            console.log('here');
             var initializing = true;
             var worker;
             var postMessage = function (data) {

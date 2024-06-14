@@ -384,7 +384,6 @@ define([
                 if (offline) { return; }
                 if (color === selectedColor) { return; }
                 selectedColor = color;
-                console.log('clodlo', selectedColor)
                 $colors.find('.cp-kanban-palette').removeClass('fa-check');
                 var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
                 $col.addClass('fa-check');

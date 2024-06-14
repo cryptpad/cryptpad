@@ -20,7 +20,7 @@ define([
 
     // To inform users of the support ticket panel which languages your admins speak:
     //AppConfig.supportLanguages = [ 'en', 'fr' ];
-    AppConfig.availablePadTypes = ['drive', 'teams', 'file', 'contacts', 'convert'].concat(ApiConfig.availableApps)
+    AppConfig.availablePadTypes = ['drive', 'teams', 'file', 'contacts', 'convert'].concat(ApiConfig.availableApps);
     
     return AppConfig;
 });

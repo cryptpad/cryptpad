@@ -14,7 +14,7 @@ define([
     );
 
     let availableTypes = AppConfig.availablePadTypes.filter(
-        (t) => ooEnabled || !OO_APPS.includes(t)
+        (t) => ooEnabled || !OO_APPS.includes(t),
     );
 
     return {
