@@ -37,7 +37,6 @@ onconnect = function(e) {
     console.log(e);
     console.log(i);
     var port = e.ports[0];
-    console.log('here');
     //require([
     //    '/common/outer/async-store.js'
     //], function (Store) {

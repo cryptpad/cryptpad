@@ -1,0 +1,183 @@
+@import (reference) "../../customize/src/less2/include/browser.less";
+@import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/tools.less";
+@import (reference) "../../customize/src/less2/include/markdown.less";
+@import (reference) "../../customize/src/less2/include/avatar.less";
+
+@cp_palette:
+    #FFD4D4,
+    #FFDECA,
+    #FFE69C,
+    #DBFFB7,
+    #AFFDC2,
+    #C9FFFE,
+    #C8D6FF,
+    #E4CAFF;    
+
+
+.cp_palette(@cp_palette; @index) when (@index > 0){
+        // loop through the @colors
+        .cp_palette(@cp_palette; (@index - 1));
+        @color: extract(@cp_palette, @index);
+        // make a numbered class selector for each color
+        .cp-kanban-palette-color@{index}{
+            background-color: @color !important;
+            &.cp-kanban-palette-board {
+                background-color: @color !important;
+            }
+            &.kanban-board-inner {
+                background-color: fade(@color, 50%) !important;
+            }
+        }
+    }
+ 
+// .kanban-colors(@kanban-colors; @index) when (@index > 0){
+//         // loop through the @colors
+//         .kanban-colors(@kanban-colors; (@index - 1));
+//         @color: extract(@kanban-colors, @index);
+//         // make a numbered class selector for each color
+//         .cp-kanban-palette-color@{index}{
+//             background-color: @color !important;
+//             &.cp-kanban-palette-board {
+//                 background-color: @color !important;
+//             }
+//             &.kanban-board-inner {
+//                 background-color: fade(@color, 50%) !important;
+//             }
+//         }
+//     }
+
+
+.configscreen {
+    width: 70%; 
+    height: 75%; 
+    background-color: #424242 !important;
+}
+
+.cp-onboardscreen-name {
+    width:70%; 
+    float:right; 
+    padding:10px
+}
+
+.cp-onboardscreen-logo {
+    width:20%; 
+    height:30%;
+    float:left;
+    margin-left:10px;
+}
+
+.cp-onboardscreen-desc {
+    width:67% !important;
+    float:right !important;
+    padding:20px !important;
+    margin-right:10px !important;
+}
+
+.cp-kanban-palette {
+    width:30px; 
+    height:30px;
+    display: inline-block;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    background-color: green !important;
+}
+
+.cp-onboardscreen-screentitle {
+    margin:auto;
+    padding:10px;
+    text-align:center;
+}
+
+.cp-onboardscreen-title {
+    font-family: "IBM Plex Mono";
+    font-weight: 500;
+}
+
+.cp-admin-customize-apps-grid {
+    width: 80%;
+    color: white;
+    height: 10px !important;
+    margin:auto;
+}
+
+.cp-onboardscreen-save {
+
+right:0;
+bottom:0;
+padding-left:90%;
+margin-top:5%;
+
+}
+
+.cp-app-drive-element-grid {
+    display: inline-block !important;
+    height: 60px !important;
+}
+
+.cp-appblock {
+    width:60% !important;
+    float:left !important;
+    padding: 5% !important;
+    background-color: #212121!important;
+    border-color:white;
+    height:20px;
+}
+
+.active-app {
+    background-color: #212121!important;
+}
+
+.cp-onboardscreen-checkmark {
+    text-align:right !important;
+    color: white !important;
+}
+
+.cp-onboardscreen-save {
+    margin-right: -2px !important;
+    margin-top: 5%;
+    right:0 !important;
+    bottom:0 !important;
+}
+
+.cp-form-setting-title {
+    float:center;
+    padding:10px;
+    color: #fff;
+}
+
+.cp-onboardscreen-maintitle {
+    float:center;
+    padding:10px;  
+}
+
+.cp-onboardscreen-form {
+    padding:10px;   
+}
+
+.cp-kanban-palette {
+    display: inline-block;
+    border-radius: 50%;
+    height: 30px !important;
+    width: 30px !important;
+    text-align: center;
+    line-height: 30px;
+    /* color: @cp_kanban-fg;
+    border: 1px solid fade(@cp_kanban-fg, 40%);
+    &.fa-check { // tick on selected color
+        color: @cryptpad_text_col;
+    } */
+}
+
+.cp-onboardscreen-color {
+    width:200%;
+    height:20%;
+    margin-top: 30%;
+    margin-left: -65%;
+    /* position:absolute;
+    right:0;
+    bottom:0; */
+    /* margin-right:17%;
+    margin-bottom:10% */
+}

@@ -10,8 +10,9 @@ define([
     '/common/hyperscript.js',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
-    'less!/admin/app-admin.less',
-    'css!/install/configscreen.css'
+
+    // 'less!/admin/app-admin.less',
+    // 'css!/install/configscreen.css'
 ], function(
     $,
     Sidebar,
@@ -19,40 +20,30 @@ define([
     h,
     UI,
     Util,
-    Instance
-
 ) {
 
     //XXX
-    Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance'
-    Messages.admin_onboardingNameHint = 'Please choose a title and description'
-
-    Messages.admin_onboardingAppsTitle = "Choose your applications"
-    Messages.admin_onboardingAppsHint = "Choose which apps are available to users on your instance"
-
-    Messages.admin_onboardingRegistrationTitle = "Options"
-    Messages.admin_onboardingRegistrationHint = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id tristique justo"
-
-
-    Messages.admin_onboardingRegistration = "Visitors to the instance are not able to create accounts. Invitations can be created by administrators"
-    Messages.admin_onboardingRegistration = "All accounts on the instance have to use 2-factor authentication"
-
+    Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance';
+    Messages.admin_onboardingNameHint = 'Please choose a title and description';
+    Messages.admin_onboardingAppsTitle = "Choose your applications";
+    Messages.admin_onboardingAppsHint = "Choose which apps are available to users on your instance";
+    Messages.admin_onboardingRegistrationTitle = "Options";
+    Messages.admin_onboardingRegistrationHint = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id tristique justo";
+    Messages.admin_onboardingRegistration = "Visitors to the instance are not able to create accounts. Invitations can be created by administrators";
+    Messages.admin_onboardingRegistration = "All accounts on the instance have to use 2-factor authentication";
 
     var AppConfigScreen = {};
     const blocks = Sidebar.blocks;
 
     var displayForm = function(sendAdminDecree, page) {
 
-        var pages = [AppConfigScreen.appConfig, AppConfigScreen.mfaRegistrationScreen, AppConfigScreen.titleConfig]
-        var nextPageFunction = pages[page]
-        console.log('here', typeof nextPageFunction)
-        var nextPageForm = nextPageFunction(sendAdminDecree)
+        var pages = [AppConfigScreen.appConfig, AppConfigScreen.mfaRegistrationScreen, AppConfigScreen.titleConfig];
+        var nextPageFunction = pages[page];
+        var nextPageForm = nextPageFunction(sendAdminDecree);
         var elem = document.createElement('div');
         elem.setAttribute('id', 'cp-loading');
-        let frame = h('div.configscreen', nextPageForm)
-        elem.append(frame)
-
-        built = true;
+        let frame = h('div.configscreen', nextPageForm);
+        elem.append(frame);
         var intr;
         var append = function () {
             if (!document.body) { return; }
@@ -62,7 +53,7 @@ define([
         intr = setInterval(append, 100);
         append();
     
-    }
+    };
 
     AppConfigScreen.titleConfig = function (sendAdminDecree, sendAdminRpc) {
 
@@ -76,14 +67,17 @@ define([
                 placeholder: 'Instance title',
                 'aria-labelledby': 'cp-admin-name'
             });
-            var textarea = blocks.textarea({
+
+            var desc =  blocks.textarea({
                 placeholder: 'Placeholder description text',
                 value:  '',
                 'aria-labelledby': 'cp-admin-description'
             });
 
-            return [input, textarea]
-        }
+            $(desc).addClass('cp-onboardscreen-desc');
+
+            return [input, desc];
+        };
 
         var logoBlock = function() {
 
@@ -96,6 +90,7 @@ define([
             var currentContainer = blocks.block([], 'cp-admin-customize-logo');
             let redraw = () => {
                 var current = h('img', {src: '/api/logo?'+(+new Date())});
+                $(current).css({'max-width':'30px'});
                 $(currentContainer).empty().append(current);
             };
             redraw();
@@ -125,7 +120,6 @@ define([
                 let reader = new FileReader();
                 reader.onloadend = function () {
                     let dataURL = this.result;
-                    console.log(dataURL, 'dataulr')
                     sendAdminRpc('UPLOAD_LOGO', {dataURL}, function (e, response) {
                         $button.removeAttr('disabled');
                         if (e || response.error) {
@@ -140,7 +134,7 @@ define([
                         redraw();
                         spinner.done();
                         UI.log(Messages.saved);
-                    })
+                    });
 
                 };
                 reader.readAsDataURL(files[0]);
@@ -151,8 +145,8 @@ define([
             }, function () {
                 spinner.spin();
                 $remove.attr('disabled', 'disabled');
-                
-                sendAdminDecree('REMOVE_LOGO', {}, function (e, response) {
+
+                sendAdminRpc('REMOVE_LOGO', {dataURL}, function (e, response) {
                     $remove.removeAttr('disabled');
                     if (err) {
                         UI.warn(Messages.error);
@@ -166,159 +160,51 @@ define([
                 });
             });
 
-            return formLogo
+            return formLogo;
         
-        }
+        };
 
         var colorBlock = function () {
-        
-            // let input = blocks.input({
-            //         type: 'color',
-            //         value: (Instance && Instance.color) || '#0087FF'
-            //     });
-            //     let label = blocks.labelledInput(Messages.admin_colorPick, input);
-            //     let current = blocks.block([], 'cp-admin-color-current');
-            //     let labelCurrent = blocks.labelledInput(Messages.admin_colorCurrent, current);
-            //     let preview = blocks.block([
-            //         blocks.block([
-            //             blocks.link('CryptPad', '/admin/#customize'),
-            //             blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-            //             blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
-            //         ], 'cp-admin-color-preview-dark cp-sidebar-flex-block'),
-            //         blocks.block([
-            //             blocks.link('CryptPad', '/admin/#customize'),
-            //             blocks.button('primary', 'fa-floppy-o', Messages.settings_save),
-            //             blocks.button('secondary', 'fa-floppy-o', Messages.settings_save)
-            //         ], 'cp-admin-color-preview-light cp-sidebar-flex-block')
-            //     ], 'cp-admin-color-preview');
-            //     let labelPreview = blocks.labelledInput(Messages.admin_colorPreview, preview);
-            //     let $preview = $(preview);
 
-            //     let remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
-            //     let $remove = $(remove);
+            var colors;
+            var content = h('div', [
+                h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
+                colors = h('div#cp-kanban-edit-colors'),
+            ], {style: 'padding-left:50%'});
 
-            //     let setColor = (color, done) => {
-            //         sframeCommand('CHANGE_COLOR', {color}, (err, response) => {
-            //             if (err) {
-            //                 UI.warn(Messages.error);
-            //                 console.error(err, response);
-            //                 done(false);
-            //                 return;
-            //             }
-            //             done(true);
-            //             UI.log(Messages.saved);
-            //         });
-            //     };
-
-            //     let btn = blocks.activeButton('primary', '',
-            //     Messages.admin_colorChange, (done) => {
-            //         let color = $input.val();
-            //         setColor(color, done);
-            //     });
-
-            //     let $input = $(input).on('change', () => {
-            //         require(['/lib/less.min.js'], (Less) => {
-            //             let color = $input.val();
-            //             let lColor = Less.color(color.slice(1));
-            //             let lighten = Less.functions.functionRegistry._data.lighten;
-            //             let lightColor = lighten(lColor, {value:30}).toRGB();
-            //             $preview.find('.btn-primary').css({
-            //                 'background-color': color
-            //             });
-            //             $preview.find('.cp-admin-color-preview-dark .btn-secondary').css({
-            //                 'border-color': lightColor,
-            //                 'color': lightColor,
-            //             });
-            //             $preview.find('.cp-admin-color-preview-light .btn-secondary').css({
-            //                 'border-color': color,
-            //                 'color': color,
-            //             });
-            //             $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
-            //             $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
-                    
-            //         });
-            //     });
-
-            //     UI.confirmButton($remove, {
-            //         classes: 'btn-danger',
-            //         multiple: true
-            //     }, function () {
-            //         $remove.attr('disabled', 'disabled');
-            //         setColor('', () => {});
-            //     });
-
-            //     // let form = blocks.form([
-            //         var form = [labelCurrent,
-            //         label]
-            //     // ], blocks.nav([btn, remove, btn.spinner]));
-                    // Colors
-
-        var conflicts, conflictContainer, titleInput, tagsDiv, colors, text;
-        var content = h('div', [
-            // conflictContainer = h('div#cp-kanban-edit-conflicts', [
-            //     h('div', Messages.kanban_conflicts),
-            //     conflicts = h('div.cp-kanban-cursors')
-            // ]),
-            // h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
-            // titleInput = h('input#cp-kanban-edit-title'),
-            // h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
-            // h('div#cp-kanban-edit-body', [
-            //     text = h('textarea')
-            // ]),
-            // h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
-            // tagsDiv = h('div#cp-kanban-edit-tags'),
-            h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
-            colors = h('div#cp-kanban-edit-colors'),
-        ]);
-
-        var $colors = $(colors);
-        var palette = [''];
-        for (var i=1; i<=8; i++) { palette.push('color'+i); }
-        var selectedColor = '';
-        var resetThemeClass = function () {
-            $colors.find('.cp-kanban-palette').each(function (i, el) {
-                var $c = $(el);
-                $c.removeClass('cp-kanban-palette-card');
-                $c.removeClass('cp-kanban-palette-board');
-                // if (isBoard) {
-                //     $c.addClass('cp-kanban-palette-board');
-                // } else {
-                    $c.addClass('cp-kanban-palette-card');
-                // }
+            var $colors = $(colors);
+            var palette = [''];
+            for (var i=1; i<=8; i++) { palette.push('color'+i); }
+            var selectedColor = '';
+            palette.forEach(function (color) {
+                var $color = $(h('div.cp-kanban-palette.cp-kanban-palette-card.fa'), );
+                $color.css({'width':'30px', 'height':'30px', 'display': 'inline-block', 'border-radius': '50%', 'text-align': 'center', 'line-height': '30px', 'margin-right':'1%'})
+                $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
+                $color.click(function () {
+                    if (color === selectedColor) { return; }
+                    selectedColor = $color.css('background-color');
+                    $colors.find('.cp-kanban-palette').removeClass('fa-check');
+                    var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
+                    $col.addClass('fa-check');
+                    sendAdminRpc('CHANGE_COLOR', {selectedColor}, function (e, response) {
+                        if (e || response.error) {
+                            UI.warn(Messages.error);
+                            console.error(e, response);
+                            // done(false);
+                            return;
+                        }
+                        // flushCache();
+                        // done(true);
+                        // redraw();
+                        // spinner.done();
+                        UI.log(Messages.saved);
+                    });
+                }).appendTo($colors);
             });
-        };
-        palette.forEach(function (color) {
-            var $color = $(h('span.cp-kanban-palette.fa'));
-            $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
-            $color.click(function () {
-                if (offline) { return; }
-                if (color === selectedColor) { return; }
-                selectedColor = color;
-                $colors.find('.cp-kanban-palette').removeClass('fa-check');
-                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-                $col.addClass('fa-check');
-
-                dataObject.color = color;
-                commit();
-            }).appendTo($colors);
-        });
-        var color = {
-            getValue: function () {
-                return selectedColor;
-            },
-            setValue: function (color) {
-                resetThemeClass();
-                $colors.find('.cp-kanban-palette').removeClass('fa-check');
-                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-                $col.addClass('fa-check');
-                selectedColor = color;
-            }
-        };
-
-            return color
         
-        }
-
+            return content;
+        
+        };
 
         var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
 
@@ -349,52 +235,39 @@ define([
 
             // })
 
-
-            // sendAdminDecree('CHANGE_COLOR', {colorPick}, function (e, response) {
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     done(true);
-            //     UI.log(Messages.saved);
-            // });
-
-            displayForm(sendAdminDecree, 0)
+            displayForm(sendAdminDecree, 0);
         });
 
-        var titleInput = h('div.cp-onboardscreen-name', titleDescBlock()[0])
-        var logoInput = h('div.cp-onboardscreen-logo', logoBlock(), {style:'width:20%;height:20%'})
-        var descriptionInput = h('div.cp-onboardscreen-description', titleDescBlock()[1])
-        var colorInput =  h('div', colorBlock(), {style:'width:50%;height:20%;position:absolute;right:0;bottom:0;margin-right:17%;margin-bottom:10%'})
-        // var colorInputLabel = h('div', colorBlock()[0],  {style:'width:20%;height:20%'})
-        // var colorInputLabel2 = h('div', colorBlock()[1], {style:'width:20%;height:20%'})
+        var titleInput = h('div.cp-onboardscreen-name', titleDescBlock()[0]);
+        var logoInput = h('div.cp-onboardscreen-logo', logoBlock());
+        var desc = h('div', titleDescBlock()[1]);
+        var colorInput =  h('div.cp-onboardscreen-color', colorBlock());
 
-        var screenTitleDiv = h('div.cp-onboardscreen-screentitle')
-        $(screenTitleDiv).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingNameTitle), h('br'), h('span', Messages.admin_onboardingNameHint)))
+        var screenTitle = h('div.cp-onboardscreen-screentitle');
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingNameTitle), h('br'), h('span', Messages.admin_onboardingNameHint)));
         var nav = blocks.nav([button]);
+        $(nav).addClass('cp-onboardscreen-save');
+ 
         var form = blocks.form([
-            screenTitleDiv, 
-            titleInput, descriptionInput, 
+            screenTitle, 
+            titleInput, 
+            desc,
             logoInput, 
             colorInput,
         ], nav);
 
-        $(form).addClass('cp-onboardscreen-form')
+        $(form).addClass('cp-onboardscreen-form');
 
-        var wrapper = h('div', form,  {style:'width:100%'})
+        return form;
 
-        return wrapper
-    
-    }
+    };
 
     AppConfigScreen.mfaRegistrationScreen = function(sendAdminDecree) {
 
         var restrict = blocks.activeCheckbox({
             key: 'registration',
             getState: function () {
-                return false
+                return false;
             },
             query: function (val, setState) {
                 sendAdminDecree('RESTRICT_REGISTRATION', [val], function (e, response) {
@@ -409,14 +282,14 @@ define([
                     // // done(true);
                     // UI.log(Messages.saved);
 
-                })
+                });
             },
         });
 
         var forceMFA = blocks.activeCheckbox({
             key: 'forcemfa',
             getState: function () {
-                return false
+                return false;
             },
             query: function (val, setState) {
                 // sendAdminDecree('ENFORCE_MFA', [val], function (e, response) {
@@ -436,37 +309,37 @@ define([
         });
 
         const grid = blocks.block([], 'cp-admin-customize-apps-grid');
-        const allApps = [restrict, forceMFA];
+        const options = [restrict, forceMFA];
 
-        allApps.forEach(app => { 
-            let appBlock = h('div.cp-bloop', {style: 'width:50%;height:20px;float:left'}, {class: 'inactive-app', id: `${app}-block`}, app)
-            $(grid).append(appBlock);
+        options.forEach(app => { 
+            let optionBlock = h('div.cp-appblock', {class: 'inactive-app', id: `${app}-block`}, app);
+            $(grid).append(optionBlock);
         }); 
 
-
-        var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+        var save = blocks.activeButton('primary', '', Messages.settings_save, function () {
             document.location.href = '/drive/';
             return;
-        })
+        });
 
-        var prev = blocks.activeButton('primary', '', Messages.settings_prev, function (done) {
-        
-            displayForm(sendAdminDecree, 2)
-        })
+        var prev = blocks.activeButton('primary', '', Messages.settings_prev, function () {
+            displayForm(sendAdminDecree, 0);
+        });
 
-        var screenTitleDiv = h('div.cp-onboardscreen-screentitle')
-        $(screenTitleDiv).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingRegistrationTitle), h('br'), h('span', Messages.admin_onboardingRegistrationHint)))
-        
+        var screenTitle = h('div.cp-onboardscreen-screentitle');
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingRegistrationTitle), h('br'), h('span', Messages.admin_onboardingRegistrationHint)));
+        var nav = blocks.nav([prev, save]);
+        $(nav).addClass('cp-onboardscreen-save');
+
         var form = blocks.form([
-        screenTitleDiv,
-        grid], 
-        [prev, save])
+            screenTitle,
+            grid], 
+        );
 
-        $(form).addClass('cp-onboardscreen-form')
+        $(form).addClass('cp-onboardscreen-form');
 
-        return form
+        return form;
     
-    }
+    };
 
 
     AppConfigScreen.appConfig = function (sendAdminDecree) {
@@ -474,20 +347,18 @@ define([
         const blocks = Sidebar.blocks;
         const grid = blocks.block([], 'cp-admin-customize-apps-grid');
         const allApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
-        const availableApps = []
+        const availableApps = [];
             
         function select(app, appBlock) {
             if (availableApps.indexOf(app) === -1) {
                 availableApps.push(app);
-                console.log(appBlock)
-                console.log(appBlock.innerHTML)
-                var checkMark = h('div.cp-onboardscreen-checkmark', "V", {style:'color:white'})
-                appBlock.append(checkMark)
+                var checkMark = h('div.cp-onboardscreen-checkmark', "V", {style:'color:white'});
+                appBlock.append(checkMark);
                 $(`#${app}-block`).attr('class', 'active-app') 
             } else {
-                availableApps.splice(availableApps.indexOf(app), 1)
-                $(`#${app}-block`).attr('class', 'inactive-app')
-                appBlock.remove('.cp-onboardscreen-checkmark')
+                availableApps.splice(availableApps.indexOf(app), 1);
+                $(`#${app}-block`).attr('class', 'inactive-app');
+                appBlock.remove('.cp-onboardscreen-checkmark');
             } 
         }
 
@@ -495,10 +366,9 @@ define([
             let appBlock = h('div.cp-bloop', {style: 'width:50%;height:20px;'}, {class: 'inactive-app', id: `${app}-block`}, app.charAt(0).toUpperCase() + app.slice(1))
             $(appBlock).addClass('cp-app-drive-element-grid')
             $(appBlock).addClass('cp-app-drive-element-row')
-            $(appBlock).addClass('cp-app-drive-new-doc')
 
             $(grid).append(appBlock);
-            $(appBlock).on('click', () => select(app, $(appBlock)))
+            $(appBlock).on('click', () => select(app, $(appBlock)));
         }); 
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
@@ -519,27 +389,27 @@ define([
             UI.log(Messages.saved);
             displayForm(sendAdminDecree, 1)
         });
-        Messages.settings_prev = 'Back'
-        var prev = blocks.activeButton('primary', '', Messages.settings_prev, function (done) {
-        
-            displayForm(sendAdminDecree, 2)
-        })
 
-        var screenTitleDiv = h('div.cp-onboardscreen-screentitle')
-        $(screenTitleDiv).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingAppsTitle), h('br'), h('span', Messages.admin_onboardingAppsHint)))
-                
+        var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
+            displayForm(sendAdminDecree, 2);
+        });
+
+        var screenTitle = h('div.cp-onboardscreen-screentitle');
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingAppsTitle), h('br'), h('span', Messages.admin_onboardingAppsHint)))
+        var nav = blocks.nav([prev, save]);
+        $(nav).addClass('cp-onboardscreen-save');  
+        
         let form = blocks.form([
-            screenTitleDiv,
+            screenTitle,
             grid 
-        ], blocks.nav([prev, save]));
+        ], nav);
 
-        $(form).addClass('cp-onboardscreen-form')
+        $(form).addClass('cp-onboardscreen-form');
         
-        return form
+        return form;
     }    
 
-    return AppConfigScreen
-
+    return AppConfigScreen;
 
 });
 

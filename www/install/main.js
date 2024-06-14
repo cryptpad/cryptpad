@@ -19,7 +19,9 @@ define([
     'appconfigscreen.js',
     '/common/inner/sidebar-layout.js',
 
-    'css!/install/configscreen.css',
+    // 'css!/install/configscreen.css',
+        'less!/install/onboarding.less',
+
     'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, AppConfigScreen, Sidebar) {
     if (window.top !== window) { return; }
@@ -59,19 +61,15 @@ define([
             }
         }
 
-
-
         var showTitleScreen = function (sendAdminDecree, sendAdminRpc) {
 
-            var titleScreen = AppConfigScreen.titleConfig
-            var form = titleScreen(sendAdminDecree, sendAdminRpc)
+            var titleScreen = AppConfigScreen.titleConfig;
+            var form = titleScreen(sendAdminDecree, sendAdminRpc);
 
             var elem = document.createElement('div');
             elem.setAttribute('id', 'cp-loading');
-            let frame = h('div.configscreen', form)
-            elem.append(frame)
-
-            built = true;
+            let frame = h('div.configscreen', form);
+            elem.append(frame);
             var intr;
             var append = function () {
                 if (!document.body) { return; }
@@ -81,13 +79,10 @@ define([
             intr = setInterval(append, 100);
             append();
 
-        }
-
+        };
 
         var registerClick = function () {
             showTitleScreen()
-//                         // document.location.href = '/drive/';
-
 
 //             var uname = $uname.val().trim();
 //             // trim whitespace surrounding the username since it is otherwise included in key derivation
