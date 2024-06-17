@@ -8,12 +8,16 @@
         "file": "Dosya",
         "whiteboard": "Beyaz Tahta",
         "drive": "CryptSürücü",
-        "slide": "Sunum",
+        "slide": "Markdown Sunumları",
         "poll": "Anket",
         "code": "Kod",
         "pad": "Zengin metin biçimi",
         "doc": "Doküman",
-        "presentation": "Sunum"
+        "presentation": "Sunum",
+        "diagram": "Diyagram",
+        "sheet": "Sheet",
+        "kanban": "Kanban",
+        "form": "Form"
     },
     "main_catch_phrase": "Ekip iş birliği sistemi, <br>şifreli ve açık kaynak",
     "main_title": "CryptPad: Tamamen Gizli, İşbirliğine Dayalı Gerçek Zamanlı Düzenleme",
