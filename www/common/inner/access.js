@@ -467,7 +467,8 @@ define([
         var setLock = function (locked) {
             $(link).find('.cp-overlay').toggle(locked);
             $(link).find('.cp-usergrid-user').attr('tabindex', locked ? -1 : 0);
-            $(link).find('.cp-access-add').attr('tabindex', locked ? -1 : 0);
+            $(link).find('.cp-usergrid-filter input').attr('tabindex', locked ? -1 : 0); //tbd
+            $(link).find('.cp-access-add').attr('tabindex', locked ? -1 : 0); //tbd
         };
 
         // Remove owner column
