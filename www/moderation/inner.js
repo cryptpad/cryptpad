@@ -56,7 +56,7 @@ define([
 
     var andThen = function (common, $container, linkedTicket) {
         const sidebar = Sidebar.create(common, 'support', $container);
-        const blocks = sidebar.blocks;
+        const blocks = sidebar.blocks();
         APP.recorded = {};
         APP.allTags = [];
         APP.openTicketCategory = Util.mkEvent();

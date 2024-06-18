@@ -79,6 +79,7 @@ define([
                 content: [
                     'logo',
                     'color',
+                    'colorpalette'
                 ]
             },
             'broadcast' : { // Msg.admin_cat_broadcast
@@ -173,7 +174,7 @@ define([
             }
         };
 
-        const blocks = sidebar.blocks;
+        const blocks = Sidebar.blocks('admin');
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -203,6 +204,7 @@ define([
 
         // Msg.admin_flushCacheHint, .admin_flushCacheTitle, .admin_flushCacheButton
         sidebar.addItem('flush-cache', function (cb) {
+            const blocks = Sidebar.blocks('admin');
             var button = blocks.activeButton('primary', '',
                     Messages.admin_flushCacheButton, done => {
                 flushCache(function (e, data) {
@@ -638,22 +640,27 @@ define([
             const allApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
 			const availableApps = [];
             
-            function select(app) {
-				if (availableApps.indexOf(app) === -1) {
-					availableApps.push(app);
-					$(`#${app}-block`).attr('class', 'active-app') 
-				} else {
-					availableApps.splice(availableApps.indexOf(app), 1)
-					$(`#${app}-block`).attr('class', 'inactive-app')
-				}     
-            }
+        function select(app, appBlock) {
+            if (availableApps.indexOf(app) === -1) {
+                availableApps.push(app);
+                var checkMark = h('div.cp-onboardscreen-checkmark');
+                $(checkMark).addClass('fa-check');
+                appBlock.append(checkMark);
+                $(`#${app}-block`).addClass('active-app')
+                $(`#${app}-block`).removeClass('inactive-app')
+            } else {
+                availableApps.splice(availableApps.indexOf(app), 1);
+                $(`#${app}-block`).addClass('inactive-app') 
+                $(`#${app}-block`).removeClass('active-app')
+                appBlock.find('.cp-onboardscreen-checkmark').remove();
+            } 
+        }
 
-            allApps.forEach(app => { 
-                let appBlock = h('div', {class: 'inactive-app', id: `${app}-block`}, app)
-                $(appBlock).addClass('cp-app-drive-element-grid')
-                $(grid).append(appBlock);
-                $(appBlock).on('click', () => select(app))
-            }); 
+        allApps.forEach(app => { 
+            let appBlock = h('div.cp-appblock.inactive-app', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1))
+            $(grid).append(appBlock);
+            $(appBlock).on('click', () => select(app, $(appBlock)));
+        }); 
 
             var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -995,13 +1002,84 @@ define([
                 setColor('', () => {});
             });
 
+            var colors;
+            var content = h('div.cp-onboardscreen-colorpick', [
+                h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
+                colors = h('div#cp-kanban-edit-colors'),
+            ]);
+
+            // var $colors = $(colors);
+            // var palette = [''];
+            // for (var i=1; i<=8; i++) { palette.push('color'+i); }
+            // var selectedColor = '';
+            // palette.forEach(function (color) {
+            //     var $color = $(h('div.cp-kanban-palette.cp-kanban-palette-card.fa'), );
+            //     $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
+            //     $color.click(function () {
+            //         if (color === selectedColor) { return; }
+            //         selectedColor = $color.css('background-color');
+            //         $colors.find('.cp-kanban-palette').removeClass('fa-check');
+            //         var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
+            //         $col.addClass('fa-check');
+            //         sframeCommand('CHANGE_COLOR', {selectedColor}, (err, response) => {
+            //         if (err) {
+            //             UI.warn(Messages.error);
+            //             console.error(err, response);
+            //             // done(false);
+            //             return;
+            //         }
+            //         done(true);
+            //         UI.log(Messages.saved);
+            //     });
+            //     }).appendTo($colors);
+            // });
+        
             let form = blocks.form([
                 labelCurrent,
                 label
             ], blocks.nav([btn, remove, btn.spinner]));
 
-            cb([form, labelPreview]);
+            cb([form, labelPreview, content]);
         });
+
+        // sidebar.addItem('colorpalette', cb => {
+        //     var colors;
+        //     var content = h('div.cp-onboardscreen-colorpick', [
+        //         h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
+        //         colors = h('div#cp-kanban-edit-colors'),
+        //     ]);
+
+        //     var $colors = $(colors);
+        //     var palette = [''];
+        //     for (var i=1; i<=8; i++) { palette.push('color'+i); }
+        //     var selectedColor = '';
+        //     palette.forEach(function (color) {
+        //         var $color = $(h('div.cp-kanban-palette.cp-kanban-palette-card.fa'), );
+        //         $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
+        //         $color.click(function () {
+        //             if (color === selectedColor) { return; }
+        //             selectedColor = $color.css('background-color');
+        //             $colors.find('.cp-kanban-palette').removeClass('fa-check');
+        //             var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
+        //             $col.addClass('fa-check');
+        //             sendAdminRpc('CHANGE_COLOR', {selectedColor}, function (e, response) {
+        //                 if (e || response.error) {
+        //                     UI.warn(Messages.error);
+        //                     console.error(e, response);
+        //                     // done(false);
+        //                     return;
+        //                 }
+        //                 // flushCache();
+        //                 // done(true);
+        //                 // redraw();
+        //                 // spinner.done();
+        //                 UI.log(Messages.saved);
+        //             });
+        //         }).appendTo($colors);
+        //     });
+        
+        //     cb([content]);
+        // });
 
         // Msg.admin_registrationHint, .admin_registrationTitle
         // Msg.admin_registrationSsoTitle

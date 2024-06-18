@@ -16,12 +16,12 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
     '/common/rpc.js',
-    'appconfigscreen.js',
+    'onboardscreen.js',
     '/common/inner/sidebar-layout.js',
 
     'less!/install/onboarding.less',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, AppConfigScreen, Sidebar) {
+], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, OnboardScreen, Sidebar) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {
@@ -61,7 +61,7 @@ define([
 
         var showTitleScreen = function (sendAdminDecree, sendAdminRpc) {
 
-            var titleScreen = AppConfigScreen.titleConfig;
+            var titleScreen = OnboardScreen.titleConfig;
             var form = titleScreen(sendAdminDecree, sendAdminRpc);
 
             var elem = document.createElement('div');
@@ -80,6 +80,7 @@ define([
         };
 
         var registerClick = function () {
+
             showTitleScreen()
 
 //             var uname = $uname.val().trim();

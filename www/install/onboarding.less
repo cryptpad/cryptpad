@@ -12,8 +12,73 @@
     #AFFDC2,
     #C9FFFE,
     #C8D6FF,
-    #E4CAFF;    
+    #E4CAFF;  
+    
+.configscreen {
+    width: 70%; 
+    height: 75%; 
+    background-color: #424242 !important;
+}
 
+.cp-onboardscreen-form {
+    padding:10px;   
+    position:relative;
+    height: 90%;
+}
+
+.cp-onboardscreen-maintitle {
+    float:center;
+    padding:10px;  
+}
+
+.cp-onboardscreen-screentitle {
+    margin:auto;
+    padding:10px;
+    text-align:center;
+    float:center;
+}
+
+.cp-onboardscreen-title {
+    font-family: "IBM Plex Mono";
+    font-weight: 500;
+}
+
+.cp-onboardscreen-name {
+    width:70%; 
+    float:right; 
+    padding:10px
+}
+
+.cp-onboardscreen-desc {
+    width:67% !important;
+    float:right !important;
+    padding:20px !important;
+    margin-right:10px !important;
+}
+
+.cp-onboardscreen-logo {
+    width:20%; 
+    height:30%;
+    float:left;
+    margin-left:10px;
+}
+
+.cp-kanban-palette {
+    display: inline-block;
+    border-radius: 50%;
+    height: 30px !important;
+    width: 30px !important;
+    text-align: center;
+    line-height: 30px;
+    background-color: green !important;
+    border: 1px solid fade(green, 40%);
+    margin-right: 1%;
+    /* color: @cp_kanban-fg;
+    
+    &.fa-check { // tick on selected color
+        color: @cryptpad_text_col;
+    } */
+}
 
 .cp_palette(@cp_palette; @index) when (@index > 0){
         // loop through the @colors
@@ -47,84 +112,15 @@
 //         }
 //     }
 
-
-.configscreen {
-    width: 70%; 
-    height: 75%; 
-    background-color: #424242 !important;
+.cp-onboardscreen-colorpick {
+    padding-left:50%
 }
 
-.cp-onboardscreen-name {
-    width:70%; 
-    float:right; 
-    padding:10px
-}
-
-.cp-onboardscreen-logo {
-    width:20%; 
-    height:30%;
-    float:left;
-    margin-left:10px;
-}
-
-.cp-onboardscreen-desc {
-    width:67% !important;
-    float:right !important;
-    padding:20px !important;
-    margin-right:10px !important;
-}
-
-.cp-kanban-palette {
-    width:30px; 
-    height:30px;
-    display: inline-block;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 30px;
-    background-color: green !important;
-}
-
-.cp-onboardscreen-screentitle {
-    margin:auto;
-    padding:10px;
-    text-align:center;
-}
-
-.cp-onboardscreen-title {
-    font-family: "IBM Plex Mono";
-    font-weight: 500;
-}
-
-.cp-admin-customize-apps-grid {
-    width: 80%;
-    color: white;
-    height: 10px !important;
-    margin:auto;
-}
-
-.cp-onboardscreen-save {
-    right:0;
-    bottom:0;
-    padding-left:90%;
-    margin-top:5%;
-}
-
-.cp-app-drive-element-grid {
-    display: inline-block !important;
-    height: 60px !important;
-}
-
-.cp-appblock {
-    width:60% !important;
-    float:left !important;
-    padding: 5% !important;
-    background-color: #212121!important;
-    border-color:white;
-    height:20px;
-}
-
-.active-app {
-    background-color: #212121!important;
+.cp-onboardscreen-color {
+    width:200%;
+    height:20%;
+    margin-left: -65%;
+    margin-bottom: -10%;
 }
 
 .cp-onboardscreen-checkmark {
@@ -132,50 +128,68 @@
     color: white !important;
 }
 
-.cp-onboardscreen-save {
+.cp-onboardscreen-nav {
+    padding-left:90%;
     margin-right: -2px !important;
-    margin-top: 5%;
-    right:0 !important;
-    bottom:0 !important;
+    margin-top: 300px;
+    position:absolute;
+    width:100%;
+    display:float;
 }
 
-.cp-form-setting-title {
+.cp-onboardscreen-prev {
+    margin-left: 20px;
+    left: 0;
+    position: absolute;
+}
+
+.cp-onboardscreen-save {
+    right: 0;
+    position: absolute;
+    margin-right: 40px
+}
+
+.cp-admin-customize-apps-grid {
+    padding: 10px;
+    margin-left: 10px;
+    width: 105%;
+}
+
+.cp-appblock {
+    width:30%;
+    float:left !important;
+    display:block !important;
+    margin: 2px !important;
+    background-color: #212121!important;
+    border-color:white;
+    height: 60px !important;
+    padding: 10px;
+}
+
+.active-app {
+    background-color: #212121!important;
+    max-width:30%;
+}
+
+.cp-admin-customize-options-grid {
+    height:40%;
     float:center;
-    padding:10px;
-    color: #fff;
+    margin-left: 20px;
+    width: 105%;
+    margin-bottom: -180px;
+
 }
 
-.cp-onboardscreen-maintitle {
-    float:center;
-    padding:10px;  
+.cp-optionblock {
+    width:40%;
+    float:left !important;
+    display:block !important;
+    margin: 2px !important;
+    background-color: #212121!important;
+    border-color:white;
+    height: 60% !important;
+    padding: 10px;
+
+
 }
 
-.cp-onboardscreen-form {
-    padding:10px;   
-}
-
-.cp-kanban-palette {
-    display: inline-block;
-    border-radius: 50%;
-    height: 30px !important;
-    width: 30px !important;
-    text-align: center;
-    line-height: 30px;
-    /* color: @cp_kanban-fg;
-    border: 1px solid fade(@cp_kanban-fg, 40%);
-    &.fa-check { // tick on selected color
-        color: @cryptpad_text_col;
-    } */
-}
-
-.cp-onboardscreen-color {
-    width:200%;
-    height:20%;
-    margin-top: 30%;
-    margin-left: -65%;
-    /* position:absolute;
-    right:0;
-    bottom:0; */
-    /* margin-right:17%;
-    margin-bottom:10% */
-}

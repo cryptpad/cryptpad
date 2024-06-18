@@ -23,11 +23,11 @@ define([
 ) {
     const Sidebar = {};
 
-    let blocks = Sidebar.blocks = {};
+    Sidebar.blocks = function (app) {
 
-    var app = 'admin'
+        let blocks = {}
 
-    blocks.labelledInput = (label, input, inputBlock) => {
+        blocks.labelledInput = (label, input, inputBlock) => {
             let uid = Util.uid();
             let id = `cp-${app}-item-${uid}`;
             input.setAttribute('id', id);
@@ -103,7 +103,7 @@ define([
                 element
         ]);
         };
-        blocks.pre = (value) => {
+       blocks.pre = (value) => {
             return h('pre', value);
         };
 
@@ -218,6 +218,7 @@ define([
             return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
         };
         blocks.activeCheckbox = (data) => {
+            console.log('APP', app)
             const state = data.getState();
             const key = data.key;
             const safeKey = keyToCamlCase(key);
@@ -240,6 +241,12 @@ define([
             return box;
         };
 
+        return blocks
+    
+    }
+
+    // let blocks = Sidebar.blocks(app) = {};
+
 
     Sidebar.create = function (common, app, $container) {
         const $leftside = $(h('div#cp-sidebarlayout-leftside')).appendTo($container);
@@ -249,9 +256,12 @@ define([
             $rightside
         };
         const items = {};
-        sidebar.blocks = Sidebar.blocks
+        sidebar.blocks = Sidebar.blocks(app)
 
         sidebar.addItem = (key, get, options) => {
+            const keyToCamlCase = (key) => {
+                return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+            };
             const safeKey = keyToCamlCase(key);
             get((content) => {
                 if (content === false) { return; }
@@ -279,6 +289,8 @@ define([
 
         sidebar.addCheckboxItem = (data) => {
             const key = data.key;
+            let blocks = Sidebar.blocks(app)
+            console.log('blocks', blocks, typeof blocks)
             let box = blocks.activeCheckbox(data);
             sidebar.addItem(key, function (cb) {
                 cb(box);
