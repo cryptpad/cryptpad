@@ -112,6 +112,9 @@ define([
             var boardContainer = document.createElement('div');
             boardContainer.classList.add('kanban-container');
             boardContainerOuter.appendChild(boardContainer);
+            self.container = boardContainer;
+            //add boards
+            self.addBoards();
             var addBoard = document.createElement('div');
             addBoard.id = 'kanban-addboard';
             addBoard.innerHTML = '<i class="fa fa-plus"></i>';
@@ -126,9 +129,6 @@ define([
             trash.appendChild(trashBg);
             self.boardContainer.push(trash);
 
-            self.container = boardContainer;
-            //add boards
-            self.addBoards();
             //appends to container
             self.element.appendChild(boardContainerOuter);
             self.element.appendChild(trash);
