@@ -46,6 +46,7 @@
     "mathjax": "3.0.5",
     "netflux-websocket": "^1.0.0",
     "notp": "^2.0.3",
+    "npm": "^10.8.1",
     "nthen": "0.1.8",
     "open-sans-fontface": "^1.4.0",
     "openid-client": "^5.4.2",
@@ -63,7 +64,7 @@
     "thirty-two": "^1.0.2",
     "tweetnacl": "~0.12.2",
     "ulimit": "0.0.2",
-    "ws": "^3.3.1",
+    "ws": "^5.2.4",
     "x2js": "^3.4.4"
   },
   "devDependencies": {
@@ -98,5 +99,7 @@
     "clear": "node scripts/clear.js",
     "installtoken": "node scripts/install.js"
   },
-  "browserslist": ["> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"]
+  "browserslist": [
+    "> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"
+  ]
 }
