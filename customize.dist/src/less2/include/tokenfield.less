@@ -1,14 +1,23 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./colortheme-all.less";
 @import (reference) "./tools.less";
+@import (reference) "./variables.less";
 
 .tokenfield_main () {
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
+    @tokens_margin: 0.5rem;
     ul.ui-autocomplete {
         z-index: 100001; // alertify + 1
     }
     .tokenfield {
+
         .tools_unselectable();
         display: flex;
         flex-wrap: wrap;
@@ -35,6 +44,12 @@
                 flex: 1;
                 min-width: 0 !important;
             }
+            button {
+                // no radius in input + button combo
+                // input .token-input is styled at the bottom of this file
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+            }
         }
         .token {
             box-sizing: border-box;
@@ -43,8 +58,9 @@
             background-color: @cp_token-bg;
             white-space: nowrap;
             margin: 2px 0;
-            margin-right: 5px;
+            margin-right: @tokens_margin;
             height: 24px;
+            border-radius: @variables_radius;
             vertical-align: middle;
             cursor: default;
             color: @cp_token-fg;
@@ -92,9 +108,80 @@
             max-width: 100%;
             width: 100%;
             min-width: 100% !important;
+            border-top-right-radius: 0px !important;
+            border-bottom-right-radius: 0px !important;
             &:focus {
                 outline: 0;
                 box-shadow: none;
+            }
+        }
+    }
+    .cp-tags-list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        span {
+            padding: 0 5px;
+            margin-right: @tokens_margin;
+            border-radius: @variables_radius;
+            background-color: @cp_kanban-tags-bg;
+            display: inline-block;
+            font-size: 12px;
+        }
+    }
+    .cp-tags-filter {
+        @media (min-width: 505px) {
+            display: inline-flex;
+        }
+        align-items: center;
+        flex: 1;
+        //max-width: 80%;
+        min-width: 150px;
+        .cp-tags-filter-toggle {
+            min-width: 100px;
+            display: flex;
+            margin-right: @tokens_margin;
+            @media (max-width: 505px) {
+                margin-right: 0;
+            }
+            flex-flow: column;
+            flex-shrink: 0;
+            & > * {
+                visibility: hidden;
+            }
+            & > span {
+                display: inline-flex;
+                height: 40px;
+                align-items: center;
+            }
+            & > button {
+                margin-top: -40px !important;
+            }
+        }
+        button.cp-tags-filter-reset {
+            white-space: normal !important;
+            @media (max-width: 505px) {
+                margin-bottom: @tokens_margin;
+                margin-right: @tokens_margin;
+            }
+            .tools_unselectable();
+            i {
+                margin-right: 5px;
+            }
+        }
+        .cp-tags-list {
+            em {
+                font-size: 14px;
+                color: lighten(@cp_kanban-fg, 10%);
+            }
+            span {
+                cursor: pointer;
+                font-size: 14px;
+                .tools_unselectable();
+                &.active {
+                    background-color: @cp_kanban-fg;
+                    color: @cp_kanban-item-bg;
+                }
             }
         }
     }

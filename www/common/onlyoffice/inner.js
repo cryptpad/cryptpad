@@ -1,8 +1,12 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/toolbar.js',
     'json.sortify',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
@@ -13,7 +17,7 @@ define([
     '/api/config',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
     '/common/onlyoffice/history.js',
     '/common/onlyoffice/oocell_base.js',
@@ -22,10 +26,10 @@ define([
     '/common/outer/worker-channel.js',
     '/common/outer/x2t.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'less!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/common/onlyoffice/app-oo.less',
 ], function (
     $,
@@ -61,7 +65,7 @@ define([
     var CHECKPOINT_INTERVAL = 100;
     var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 5; // version of the .bin, patches and ChainPad formats
+    var NEW_VERSION = 7; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
 
@@ -110,7 +114,7 @@ define([
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
 
-        var startOO = function () {};
+        let startOO = function () {};
 
         var supportsXLSX = function () {
             return privateData.supportsWasm;
@@ -175,15 +179,11 @@ define([
             });
         };
 
-        var getUserIndex = function () {
-            var i = 1;
-            var ids = content.ids || {};
-            Object.keys(ids).forEach(function (k) {
-                if (ids[k] && ids[k].index && ids[k].index >= i) {
-                    i = ids[k].index + 1;
-                }
-            });
-            return i;
+        const getNewUserIndex = function () {
+            const ids = content.ids || {};
+            const indexes = Object.values(ids).map((user) => user.index);
+            const maxIndex = Math.max(...indexes);
+            return maxIndex === -Infinity ? 1 : maxIndex+1;
         };
 
         var setMyId = function () {
@@ -194,7 +194,7 @@ define([
                 myOOId = Util.createRandomInteger();
                 // f: function used in .some(f) but defined outside of the while
                 var f = function (id) {
-                    return ids[id] === myOOId;
+                    return ids[id].ooid === myOOId;
                 };
                 while (Object.keys(ids).some(f)) {
                     myOOId = Util.createRandomInteger();
@@ -203,7 +203,7 @@ define([
             var myId = getId();
             ids[myId] = {
                 ooid: myOOId,
-                index: getUserIndex(),
+                index: getNewUserIndex(),
                 netflux: metadataMgr.getNetfluxId()
             };
             oldIds = JSON.parse(JSON.stringify(ids));
@@ -235,11 +235,18 @@ define([
 
 
         var getFileType = function () {
-            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var priv = common.getMetadataMgr().getPrivateData();
+            var type = priv.ooType;
             var title = common.getMetadataMgr().getMetadataLazy().title;
             if (APP.downloadType) {
                 type = APP.downloadType;
                 title = "download";
+            }
+            if(title === "" && APP.startWithTemplate && priv.fromFileData) {
+                var metadata = APP.startWithTemplate.content.metadata;
+                var copyTitle = Messages._getKey('copy_title', [metadata.title || metadata.defaultTitle]);
+                common.getMetadataMgr().updateTitle(copyTitle);
+                title = copyTitle;
             }
             var file = {};
             switch(type) {
@@ -670,50 +677,51 @@ define([
             }
             return new Blob([newText], {type: 'text/plain'});
         };
-        var loadLastDocument = function (lastCp, onCpError, cb) {
-            if (!lastCp || !lastCp.file) {
-                return void onCpError('EEMPTY');
-            }
-            ooChannel.cpIndex = lastCp.index || 0;
-            ooChannel.lastHash = lastCp.hash;
-            var parsed = Hash.parsePadUrl(lastCp.file);
-            var secret = Hash.getSecrets('file', parsed.hash);
-            if (!secret || !secret.channel) { return; }
-            var hexFileName = secret.channel;
-            var fileHost = privateData.fileHost || privateData.origin;
-            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
-            var key = secret.keys && secret.keys.cryptKey;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', src, true);
-            xhr.responseType = 'arraybuffer';
-            xhr.onload = function () {
-                if (/^4/.test('' + this.status)) {
-                    onCpError(this.status);
-                    return void console.error('XHR error', this.status);
+
+        const loadLastDocument = function (lastCp) {
+            return new Promise((resolve, reject) => {
+                if (!lastCp || !lastCp.file) {
+                    return void reject('EEMPTY');
                 }
-                var arrayBuffer = xhr.response;
-                if (arrayBuffer) {
-                    var u8 = new Uint8Array(arrayBuffer);
-                    FileCrypto.decrypt(u8, key, function (err, decrypted) {
-                        if (err) {
-                            if (err === "DECRYPTION_ERROR") {
-                                console.warn(err);
-                                return void onCpError(err);
+                ooChannel.cpIndex = lastCp.index || 0;
+                ooChannel.lastHash = lastCp.hash;
+                var parsed = Hash.parsePadUrl(lastCp.file);
+                var secret = Hash.getSecrets('file', parsed.hash);
+                if (!secret || !secret.channel) { return; }
+                var hexFileName = secret.channel;
+                var fileHost = privateData.fileHost || privateData.origin;
+                var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+                var key = secret.keys && secret.keys.cryptKey;
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', src, true);
+                if (window.sendCredentials) { xhr.withCredentials = true; }
+                xhr.responseType = 'arraybuffer';
+                xhr.onload = function () {
+                    if (/^4/.test('' + this.status)) {
+                        reject(this.status);
+                        return void console.error('XHR error', this.status);
+                    }
+                    var arrayBuffer = xhr.response;
+                    if (arrayBuffer) {
+                        var u8 = new Uint8Array(arrayBuffer);
+                        FileCrypto.decrypt(u8, key, function (err, decrypted) {
+                            if (err) {
+                                if (err === "DECRYPTION_ERROR") {
+                                    console.warn(err);
+                                    return void reject(err);
+                                }
+                                return void console.error(err);
                             }
-                            return void console.error(err);
-                        }
-                        var blob = new Blob([decrypted.content], {type: 'plain/text'});
-                        if (cb) {
-                            return cb(blob, getFileType());
-                        }
-                        startOO(blob, getFileType());
-                    });
-                }
-            };
-            xhr.onerror = function (err) {
-                onCpError(err);
-            };
-            xhr.send(null);
+                            var blob = new Blob([decrypted.content], {type: 'plain/text'});
+                            resolve({blob, fileType: getFileType()});
+                        });
+                    }
+                };
+                xhr.onerror = function (err) {
+                    reject(err);
+                };
+                xhr.send(null);
+            });
         };
 
         /*
@@ -813,26 +821,28 @@ define([
 
                 if (!exists) { return void UI.removeLoadingScreen(); }
 
-                loadLastDocument(cp, function () {
-                    if (cp.hash && vHashEl) {
-                        // We requested a checkpoint but we can't find it...
+                loadLastDocument(cp)
+                    .then(({blob, fileType}) => {
+                        ooChannel.queue = messages;
+                        resetData(blob, fileType);
                         UI.removeLoadingScreen();
-                        vHashEl.innerText = Messages.oo_deletedVersion;
-                        $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
-                        return;
-                    }
-                    var file = getFileType();
-                    var type = common.getMetadataMgr().getPrivateData().ooType;
-                    if (APP.downloadType) { type = APP.downloadType; }
-                    var blob = loadInitDocument(type, true);
-                    ooChannel.queue = messages;
-                    resetData(blob, file);
-                    UI.removeLoadingScreen();
-                }, function (blob, file) {
-                    ooChannel.queue = messages;
-                    resetData(blob, file);
-                    UI.removeLoadingScreen();
-                });
+                    })
+                    .catch(() => {
+                        if (cp.hash && vHashEl) {
+                            // We requested a checkpoint but we can't find it...
+                            UI.removeLoadingScreen();
+                            vHashEl.innerText = Messages.oo_deletedVersion;
+                            $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
+                            return;
+                        }
+                        var file = getFileType();
+                        var type = common.getMetadataMgr().getPrivateData().ooType;
+                        if (APP.downloadType) { type = APP.downloadType; }
+                        var blob = loadInitDocument(type, true);
+                        ooChannel.queue = messages;
+                        resetData(blob, file);
+                        UI.removeLoadingScreen();
+                    });
             });
         };
 
@@ -848,6 +858,10 @@ define([
                 lastCpHash: getLastCp().hash
             }, function (err, obj) {
                 if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+                // XXX an error loading a checkpoint was ignored, causing a sheet
+                // to load incorrectly. There's a risk of a new checkpoint being created
+                // with the resulting (incorrect) state. Errors like this should be reported
+                // to the user so they realize something is wrong.
             });
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
@@ -894,6 +908,15 @@ define([
             });
         };
 
+        const findUserByOOId = function(ooId) {
+            return Object.values(content.ids)
+                  .find((user) => user.ooid === ooId);
+        };
+
+        const getMyOOIndex = function() {
+            return findUserByOOId(myOOId).index;
+        };
+
         var getParticipants = function () {
             var users = metadataMgr.getMetadata().users;
             var i = 1;
@@ -925,19 +948,19 @@ define([
                 isCloseCoAuthoring:false,
                 view: false
             });
-            i++;
-            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + i; }
+            const myOOIndex = getMyOOIndex();
+            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + myOOIndex; }
             p.push({
-                id: myUniqueOOId,
+                id: String(myOOId),
                 idOriginal: String(myOOId),
                 username: metadataMgr.getUserData().name || Messages.anonymous,
-                indexUser: i,
+                indexUser: myOOIndex,
                 connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
                 isCloseCoAuthoring:false,
                 view: false
             });
             return {
-                index: i,
+                index: myOOIndex,
                 list: p.filter(Boolean)
             };
         };
@@ -1253,7 +1276,9 @@ define([
                 changes: parseChanges(changes, obj.type === "cp_theme"),
                 changesIndex: ooChannel.cpIndex || 0,
                 locks: getUserLock(getId(), true),
-                excelAdditionalInfo: obj.excelAdditionalInfo
+                excelAdditionalInfo: obj.excelAdditionalInfo,
+                startSaveChanges: obj.startSaveChanges,
+                endSaveChanges: obj.endSaveChanges
             }, null, function (err, hash) {
                 if (err) {
                     return void console.error(err);
@@ -1263,15 +1288,27 @@ define([
                     clearTimeout(pendingChanges[uid]);
                     delete pendingChanges[uid];
                 }
-                // Call unSaveLock to tell onlyoffice that the patch was sent.
-                // It will allow you to make changes to another cell.
-                // If there is an error and unSaveLock is not called, onlyoffice
-                // will try to send the patch again
-                send({
-                    type: "unSaveLock",
-                    index: ooChannel.cpIndex,
-                    time: +new Date()
-                });
+
+                // If endSaveChanges is false, it means the patch is split into
+                // several set of changes and this is only a part of it. The last
+                // part will have this value to "true"
+                if (!obj.endSaveChanges) {
+                    send({
+                        type: "savePartChanges",
+                        changesIndex: -1,
+                        time: +new Date()
+                    });
+                } else {
+                    // Call unSaveLock to tell onlyoffice that the patch was sent.
+                    // It will allow you to make changes to another cell.
+                    // If there is an error and unSaveLock is not called, onlyoffice
+                    // will try to send the patch again
+                    send({
+                        type: "unSaveLock",
+                        index: ooChannel.cpIndex,
+                        time: +new Date()
+                    });
+                }
                 // Increment index and update latest hash
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;
@@ -1327,7 +1364,7 @@ define([
             var oMemory = new w.AscCommon.CMemory();
             var aRes = [];
             patches.forEach(function (item) {
-                editor.GetSheet(0).worksheet.workbook._SerializeHistoryBase64(oMemory, item, aRes);
+                editor.GetSheet(0).worksheet.workbook._SerializeHistory(oMemory, item, aRes);
             });
 
             // Make the patch
@@ -1335,6 +1372,14 @@ define([
                 type: "saveChanges",
                 changes: parseChanges(JSON.stringify(aRes)),
                 changesIndex: ooChannel.cpIndex || 0,
+                startSaveChanges: true,
+                endSaveChanges: true,
+                isExcel: true,
+                deleteIndex: null,
+                unlock: false,
+                releaseLocks: true,
+                reSave: true,
+                isCoAuthoring: true,
                 locks: getUserLock(getId(), true),
                 excelAdditionalInfo: null
             };
@@ -1361,7 +1406,7 @@ define([
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
-                iframe.postMessage(data, '*');
+                iframe.postMessage(data, ApiConfig.httpSafeOrigin);
             };
             Channel.create(msgEv, postMsg, function (chan) {
                 APP.chan = chan;
@@ -1372,7 +1417,6 @@ define([
                     // We only need to release locks for sheets
                     if (type !== "sheet" && obj.type === "releaseLock") { return; }
                     if (type === "presentation" && obj.type === "cp_theme") {
-                        // XXX
                         console.error(obj);
                         return;
                     }
@@ -1553,13 +1597,15 @@ define([
 
         var x2tConvertData = function (data, fileName, format, cb) {
             var sframeChan = common.getSframeChannel();
-            var e = getEditor();
-            var fonts = e && e.FontLoader.fontInfos;
-            var files = e && e.FontLoader.fontFiles.map(function (f) {
+            var editor = getEditor();
+            var fonts = editor && editor.FontLoader.fontInfos;
+            var files = editor && editor.FontLoader.fontFiles.map(function (f) {
                 return { 'Id': f.Id, };
             });
             var type = common.getMetadataMgr().getPrivateData().ooType;
-            var images = (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {};
+            const images = editor
+                ? structuredClone(window.frames[0].AscCommon.g_oDocumentUrls.getUrls())
+                : {};
 
             // Fix race condition which could drop images sometimes
             // ==> make sure each image has a 'media/image_name.ext' entry as well
@@ -1570,7 +1616,7 @@ define([
             });
 
             // Add theme images
-            var theme = e && window.frames[0].AscCommon.g_image_loader.map_image_index;
+            var theme = editor && window.frames[0].AscCommon.g_image_loader.map_image_index;
             if (theme) {
                 Object.keys(theme).forEach(function (url) {
                     if (!/^(\/|blob:|data:)/.test(url)) {
@@ -1584,7 +1630,7 @@ define([
                 type: type,
                 fileName: fileName,
                 outputFormat: format,
-                images: (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
+                images: (editor && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
                 fonts: fonts,
                 fonts_files: files,
                 mediasSources: getMediasSources(),
@@ -1638,7 +1684,8 @@ define([
                         chat: false,
                         logo: {
                             url: "/bounce/#" + encodeURIComponent('https://www.onlyoffice.com')
-                        }
+                        },
+                        comments: !lock && !readOnly
                     },
                     "user": {
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
@@ -1805,6 +1852,7 @@ define([
                         }
 
                         if (APP.isDownload) {
+                            delete APP.isDownload;
                             var bin = getContent();
                             if (!supportsXLSX()) {
                                 return void sframeChan.event('EV_OOIFRAME_DONE', bin, {raw: true});
@@ -1960,14 +2008,13 @@ define([
                     APP.themeRemote = true;
                 */
             };
-            APP.changeTheme = function (id) {
+            APP.changeTheme = function (/*id*/) {
                 /*
-                // XXX disabled:
+                // disabled:
 Uncaught TypeError: Cannot read property 'calculatedType' of null
     at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
                 */
 
-                id = id;
                 /*
                 APP.themeChanged = {
                     id: id
@@ -2009,7 +2056,17 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                 var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].blobUrl;
                 if (blobUrl) {
+                    delete downloadImages[name];
                     debug("CryptPad Image already loaded " + blobUrl);
+
+                    // Fix: https://github.com/cryptpad/cryptpad/issues/1500
+                    // Maybe OO was reloaded, but the CryptPad cache is still intact?
+                    // -> Add the image to OnlyOffice again.
+                    const documentUrls = window.frames[0].AscCommon.g_oDocumentUrls;
+                    if (!(data.name in documentUrls.getUrls())) {
+                        documentUrls.addImageUrl(data.name, blobUrl);
+                    }
+
                     return void callback(blobUrl);
                 }
 
@@ -2106,9 +2163,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 return void e.asc_Print({});
             }
             x2tConvertData(data, filename, extension, function (xlsData) {
+                UI.removeModals();
                 if (xlsData) {
                     var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
-                    UI.removeModals();
                     saveAs(blob, finalFilename);
                     return;
                 }
@@ -2119,9 +2176,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
-            var ext = ['.xlsx', '.ods', '.bin',
-            //'.csv', // XXX 4.11.0
-            '.pdf'];
+            var ext = ['.xlsx', '.ods', '.bin', '.pdf'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var warning = '';
             if (type==="presentation") {
@@ -2322,25 +2377,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 // If the last checkpoint is empty, load the "initial" doc instead
                 if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault); }
                 // Load latest checkpoint
-                return void loadLastDocument(lastCp, function () {
-                    // Checkpoint error: load the previous one
-                    i = i || 0;
-                    loadDocument(noCp, useNewDefault, ++i);
-                });
-            }
-            var newText;
-            switch (type) {
-                case 'sheet' :
-                    newText = EmptyCell(useNewDefault);
-                    break;
-                case 'doc':
-                    newText = EmptyDoc();
-                    break;
-                case 'presentation':
-                    newText = EmptySlide();
-                    break;
-                default:
-                    newText = '';
+                return void loadLastDocument(lastCp)
+                    .then(({blob, fileType}) => {
+                        startOO(blob, fileType);
+                    })
+                    .catch(() => {
+                        // Checkpoint error: load the previous one
+                        i = i || 0;
+                        loadDocument(noCp, useNewDefault, ++i);
+                    });
             }
             var blob = loadInitDocument(type, useNewDefault);
             startOO(blob, file);
@@ -2390,7 +2435,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
         };
 
-        var wasEditing = false;
         var setStrictEditing = function () {
             if (APP.isFast) { return; }
             var editor = getEditor();
@@ -2400,12 +2444,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             } else {
                 evOnSync.fire();
             }
-            wasEditing = Boolean(editing);
         };
         APP.onFastChange = function (isFast) {
             APP.isFast = isFast;
             if (isFast) {
-                wasEditing = false;
                 if (APP.hasChangedInterval) {
                     window.clearInterval(APP.hasChangedInterval);
                 }
@@ -2427,20 +2469,21 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             pinImages();
         };
 
-        var loadCp = function (cp, keepQueue) {
+        const loadCp = async function (cp, keepQueue) {
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
-            loadLastDocument(cp, function () {
+            try {
+                const {blob, fileType} = await loadLastDocument(cp);
+                if (!keepQueue) { ooChannel.queue = []; }
+                resetData(blob, fileType);
+            } catch (e) {
                 var file = getFileType();
                 var type = common.getMetadataMgr().getPrivateData().ooType;
                 var blob = loadInitDocument(type, true);
                 if (!keepQueue) { ooChannel.queue = []; }
                 resetData(blob, file);
-            }, function (blob, file) {
-                if (!keepQueue) { ooChannel.queue = []; }
-                resetData(blob, file);
-            });
+            }
         };
 
         var loadTemplate = function (href, pw, parsed) {
@@ -2555,9 +2598,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                           (content.version <= 3 ? 'v2b/' : CURRENT_VERSION+'/');
             var s = h('script', {
                 type:'text/javascript',
-                src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
+                src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
             });
-            $('#cp-app-oo-editor').append(s);
+            $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a')).append(s);
 
             var hashes = content.hashes || {};
             var idx = sortCpIndex(hashes);
@@ -2608,7 +2651,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     name: 'dlmedias',
                     icon: 'fa-download',
                 }, function () {
-                    require(['/bower_components/jszip/dist/jszip.min.js'], function (JsZip) {
+                    require(['/components/jszip/dist/jszip.min.js'], function (JsZip) {
                         var zip = new JsZip();
                         Object.keys(mediasData || {}).forEach(function (url) {
                             var obj = mediasData[url];
@@ -2696,12 +2739,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     });
                 };
 
-                common.createButton('', true, {
+                var $historyButton = common.createButton('', true, {
                     name: 'history',
                     icon: 'fa-history',
                     text: Messages.historyText,
                     tippy: Messages.historyButton
-                }).click(function () {
+                });
+
+                $historyButton.click(function () {
                     ooChannel.historyLastHash = ooChannel.lastHash;
                     ooChannel.currentIndex = ooChannel.cpIndex;
                     Feedback.send('OO_HISTORY');
@@ -2719,19 +2764,24 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         $toolbar: $('.cp-toolbar-container')
                     };
                     History.create(common, histConfig);
-                }).appendTo(toolbar.$drawer);
+                });
+
+                var $historyDropdown = UIElements.getEntryFromButton($historyButton);
+                $historyDropdown.appendTo(toolbar.$drawer);
 
                 // Snapshots
-                var $snapshot = common.createButton('snapshots', true, {
+                var $snapshotButton = common.createButton('snapshots', true, {
                     remove: deleteSnapshot,
                     make: makeSnapshot,
                     load: loadSnapshot
                 });
+                var $snapshot = UIElements.getEntryFromButton($snapshotButton);
                 toolbar.$drawer.append($snapshot);
 
                 // Import template
-                var $template = common.createButton('importtemplate', true, {}, openTemplatePicker);
-                if ($template && typeof($template.appendTo) === 'function') {
+                var $importTemplateButton = common.createButton('importtemplate', true, {}, openTemplatePicker);
+                if ($importTemplateButton && $importTemplateButton.length) {
+                    let $template = UIElements.getEntryFromButton($importTemplateButton);
                     $template.appendTo(toolbar.$drawer);
                 }
 
@@ -2754,8 +2804,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                             APP.FM.handleFile(blob, data);
                         }
                     };
-                    var $templateButton = common.createButton('template', true, templateObj);
-                    toolbar.$drawer.append($templateButton);
+                    let $templateButton = common.createButton('template', true, templateObj);
+                    let $template = UIElements.getEntryFromButton($templateButton);
+                    toolbar.$drawer.append($template);
                 }
             })();
             }
@@ -2779,7 +2830,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }).attr('title', 'Restore last checkpoint').appendTo(toolbar.$bottomM);
             }
 
-            var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
+            var $exportXLSXButton = common.createButton('export', true, {}, exportXLSXFile);
+            var $exportXLSX = UIElements.getEntryFromButton($exportXLSXButton);
             $exportXLSX.appendTo(toolbar.$drawer);
 
             var type = privateData.ooType;
@@ -2807,33 +2859,46 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             if (common.isLoggedIn()) {
                 window.CryptPad_deleteLastCp = deleteLastCp;
-                var $importXLSX = common.createButton('import', true, {
+                var $importXLSXButton = common.createButton('import', true, {
                     accept: accept,
-                    binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"],
+                    binary: ["ods", "xlsx", "odt", "docx", "odp", "pptx"],
                     first: first,
                 }, importXLSXFile);
+                var $importXLSX = UIElements.getEntryFromButton($importXLSXButton);
+                // tag button
+                var $hashtagButton = common.createButton('hashtag', true);
+                var $hashtag = UIElements.getEntryFromButton($hashtagButton);
                 $importXLSX.appendTo(toolbar.$drawer);
-                common.createButton('hashtag', true).appendTo(toolbar.$drawer);
+                $hashtag.appendTo(toolbar.$drawer);
             }
 
-            var $store = common.createButton('storeindrive', true);
+            var $storeButton = common.createButton('storeindrive', true);
+            var $store = UIElements.getEntryFromButton($storeButton);
             toolbar.$drawer.append($store);
 
-            var $forget = common.createButton('forget', true, {}, function (err) {
+            // Move to trash button
+            var $forgetButton = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
             });
+            var $forget = UIElements.getEntryFromButton($forgetButton);
             toolbar.$drawer.append($forget);
 
             if (!privateData.isEmbed) {
                 var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
                 $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
                 $('#cp-app-oo-editor').prepend(helpMenu.menu);
-                toolbar.$drawer.append(helpMenu.button);
+                var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
+                toolbar.$drawer.append($helpMenuButton);
             }
 
-            var $properties = common.createButton('properties', true);
+            var $propertiesButton = common.createButton('properties', true);
+            var $properties = UIElements.getEntryFromButton($propertiesButton);
             toolbar.$drawer.append($properties);
+
+            var $copyButton = common.createButton('copy', true);
+            var $copy = UIElements.getEntryFromButton($copyButton);
+            toolbar.$drawer.append($copy);
         };
 
         var noCache = false; // Prevent reload loops
@@ -2928,6 +2993,38 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     readOnly = true;
                 }
+            } else if (content && content.version <= 5) {
+                version = 'v5/';
+                APP.migrate = true;
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
+                    content.migration = true;
+                    APP.onLocal();
+                } else {
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
+                    readOnly = true;
+                }
+            } else if (content && content.version <= 6) {
+                version = 'v6/';
+                APP.migrate = true;
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
+                    content.migration = true;
+                    APP.onLocal();
+                } else {
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    if (APP.helpMenu) {
+                        $(APP.helpMenu.menu).after(msg);
+                    } else {
+                        $('#cp-app-oo-editor').prepend(msg);
+                    }
+                    readOnly = true;
+                }
             }
             // NOTE: don't forget to also update the version in 'EV_OOIFRAME_REFRESH'
 
@@ -2943,7 +3040,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var s = h('script', {
                 type:'text/javascript',
-                src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
+                src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
             });
             $('#cp-app-oo-editor').append(s);
 
@@ -2978,7 +3075,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 var m = metadataMgr.getChannelMembers().filter(function (str) {
                     return str.length === 32;
                 }).length;
-                if ((m - v) === 1 && !readOnly) {
+                if ((m - v) === 1 && !readOnly && common.isLoggedIn()) {
                     var needCp = ooChannel.queue.length > CHECKPOINT_INTERVAL;
                     APP.initCheckpoint = needCp;
                 }
@@ -3141,13 +3238,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
             var lastCp = getLastCp();
-            loadLastDocument(lastCp, function (err) {
-                console.error(err);
-                // On error, do nothing
-                // FIXME lock the document or ask for a page reload?
-            }, function (blob, type) {
-                resetData(blob, type);
-            });
+            loadLastDocument(lastCp)
+                .then(({blob, fileType}) => {
+                    resetData(blob, fileType);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    // On error, do nothing
+                    // FIXME lock the document or ask for a page reload?
+                });
         };
 
         config.onRemote = function () {

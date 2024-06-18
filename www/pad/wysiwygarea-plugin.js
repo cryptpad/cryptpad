@@ -31,15 +31,26 @@ define(['/api/config'], function (ApiConfig) {
             // trigger iframe's 'load' event.
             // Microsoft Edge throws "Permission Denied" if treated like an IE (http://dev.ckeditor.com/ticket/13441).
             if ( CKEDITOR.env.air ) {
-                src = 'javascript:void(0)'; // jshint ignore:line
+                src = 'javascript:void(0)';
             } else if ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) {
-                src = 'javascript:void(function(){' + encodeURIComponent( src ) + '}())'; // jshint ignore:line
+                src = 'javascript:void(function(){' + encodeURIComponent( src ) + '}())';
             } else {
                 src = '';
             }
             
             // CryptPad
-            src = '/pad/ckeditor-inner.html?' + ApiConfig.requireConf.urlArgs;
+/*
+    As of version 16, Safari (Desktop) and all browsers on iOS cannot load rich text.
+    Their release notes claim they "Fixed incorrect CORP/COEP check in 304 responses",
+    and it seems whatever they did interacts poorly with our recent (CryptPad@5.1.0)
+    changes to caching rules in our example NGINX config. Hardcoding a cache-busting string
+    which does not include "ver=" lets us treat 'ckeditor-inner.html' as a special case,
+    so that we don't have to revert our minor caching improvements solely for one terrible
+    browser engine.
+*/
+
+            // src = '/pad/ckeditor-inner.html?' + ApiConfig.requireConf.urlArgs;
+            src = ApiConfig.httpSafeOrigin + '/pad/ckeditor-inner.html?0.0.0';
 
             iframe = CKEDITOR.dom.element.createFromHtml( '<iframe src="' + src + '" frameBorder="0"></iframe>' );
             iframe.setStyles( { width: '100%', height: '100%' } );

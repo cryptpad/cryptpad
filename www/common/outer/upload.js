@@ -1,10 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/file/file-crypto.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/outer/cache-store.js',
-    '/bower_components/nthen/index.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/nthen/index.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (FileCrypto, Hash, Util, Cache, nThen) {
     var Nacl = window.nacl;
     var module = {};

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: BSD-3-Clause
+
 /*
   Highlight.js 10.2.0 (da7d149b)
   License: BSD-3-Clause

@@ -1,6 +1,10 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/api/config',
     'jquery',
     '/common/requireconfig.js',
@@ -15,15 +19,17 @@ define([
     var create = function (config) {
         // Loaded in load #2
         var sframeChan;
+        var Util = config.modules.Utils.Util;
+        var _onReadyEvt = Util.mkEvent(true);
         var refresh = function (data, cb) {
             if (currentCb) {
                 queue.push({data: data, cb: cb});
                 return;
             }
             if (!ready) {
-                ready = function () {
+                _onReadyEvt.reg(function () {
                     refresh(data, cb);
-                };
+                });
                 return;
             }
             currentCb = cb;
@@ -152,10 +158,8 @@ define([
 
                 sframeChan.onReady(function () {
                     if (ready === true) { return; }
-                    if (typeof ready === "function") {
-                        ready();
-                    }
                     ready = true;
+                    _onReadyEvt.fire();
                 });
             });
         });

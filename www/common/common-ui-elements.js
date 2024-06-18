@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -13,13 +17,14 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/customize/pages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/inner/invitation.js',
     '/common/visible.js',
+    '/common/pad-types.js',
 
     'css!/customize/fonts/cptools/style.css',
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
-             Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
+             Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes) {
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -57,7 +62,6 @@ define([
                 existing = Object.keys(res.tags).sort();
             }));
         }).nThen(function (waitFor) {
-            var _err;
             hrefs.forEach(function (href) {
                 common.getPadAttribute('tags', waitFor(function (err, res) {
                     if (err) {
@@ -65,7 +69,6 @@ define([
                             UI.alert(Messages.tags_noentry);
                         }
                         waitFor.abort();
-                        _err = err;
                         return void console.error(err);
                     }
                     allTags[href] = res || [];
@@ -128,14 +131,8 @@ define([
     };
 
     var importContent = UIElements.importContent = function (type, f, cfg) {
-        return function () {
-            var $files = $('<input>', {type:"file"});
-            if (cfg && cfg.accept) {
-                $files.attr('accept', cfg.accept);
-            }
-            $files.click();
-            $files.on('change', function (e) {
-                var file = e.target.files[0];
+        return function (_file) {
+            var todo = function (file) {
                 var reader = new FileReader();
                 var parsed = file && file.name && /.+\.([^.]+)$/.exec(file.name);
                 var ext = parsed && parsed[1];
@@ -144,7 +141,19 @@ define([
                    reader.readAsArrayBuffer(file, type);
                 } else {
                    reader.readAsText(file, type);
-               }
+                }
+            };
+
+            if (_file) { return void todo(_file); }
+
+            var $files = $('<input>', {type:"file"});
+            if (cfg && cfg.accept) {
+                $files.attr('accept', cfg.accept);
+            }
+            $files.click();
+            $files.on('change', function (e) {
+                var file = e.target.files[0];
+                todo(file);
             });
         };
     };
@@ -243,8 +252,9 @@ define([
                     name: Messages.share_copyProfileLink,
                     onClick: function () {
                         var profile = data.profile ? (origin + '/profile/#' + data.profile) : '';
-                        var success = Clipboard.copy(profile);
-                        if (success) { UI.log(Messages.shareSuccess); }
+                        Clipboard.copy(profile, (err) => {
+                            if (!err) { UI.log(Messages.shareSuccess); }
+                        });
                     },
                     keys: [13]
                   }]
@@ -351,11 +361,22 @@ define([
             buttons: contactsButtons,
         });
 
-        var linkName, linkPassword, linkMessage, linkError, linkSpinText;
-        var linkForm, linkSpin, linkResult;
+        var linkName, linkPassword, linkMessage, linkError;
+        var linkForm, linkSpin, linkResult, linkUses, linkRole;
         var linkWarning;
         // Invite from link
         var dismissButton = h('span.fa.fa-times');
+
+        var roleViewer = UI.createRadio('cp-team-role', 'cp-team-role-viewer',
+                Messages.team_viewers, true, {
+                    input: { value: 'VIEWER' },
+                });
+        var roleMember = UI.createRadio('cp-team-role', 'cp-team-role-member',
+                Messages.team_members, false, {
+                    input: { value: 'MEMBER' },
+                });
+
+
         var linkContent = h('div.cp-share-modal', [
             h('p', Messages.team_inviteLinkTitle ),
             linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
@@ -372,7 +393,7 @@ define([
                 h('div.cp-teams-invite-block', [
                     h('span', Messages.team_inviteLinkSetPassword),
                     h('a.cp-teams-help.fa.fa-question-circle', {
-                        href: origin + Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders'),
+                        href: Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/security.html#passwords-for-documents-and-folders'),
                         target: "_blank",
                         'data-tippy-placement': "right"
                     })
@@ -387,13 +408,27 @@ define([
                 linkMessage = h('textarea.cp-teams-invite-message', {
                     placeholder: Messages.team_inviteLinkNoteMsg,
                     rows: 3
-                })
+                }),
+                linkRole = h('div.cp-teams-invite-block.cp-teams-invite-role',
+                    h('span', Messages.team_inviteRole),
+                    roleViewer,
+                    roleMember
+                ),
+                h('div.cp-teams-invite-block.cp-teams-invite-uses',
+                    linkUses = h('input', {
+                        type: 'number',
+                        min: 0,
+                        max: 999,
+                        value: 1
+                    }),
+                    h('span', Messages.team_inviteUses)
+                ),
             ]),
             linkSpin = h('div.cp-teams-invite-spinner', {
                 style: 'display: none;'
             }, [
                 h('i.fa.fa-spinner.fa-spin'),
-                linkSpinText = h('span', Messages.team_inviteLinkLoading)
+                h('span', Messages.team_inviteLinkLoading)
             ]),
             linkResult = h('div', {
                 style: 'display: none;'
@@ -407,10 +442,11 @@ define([
                 dismissButton
             ])
         ]);
+        $(linkUses).on('change keyup', function(e) {
+            if (e.target.value === '') { e.target.value = 0; }
+        });
         $(linkMessage).keydown(function (e) {
-            if (e.which === 13) {
-                e.stopPropagation();
-            }
+            if (e.which === 13) { e.stopPropagation(); }
         });
         var localStore = window.cryptpadStore;
         localStore.get('hide-alert-teamInvite', function (val) {
@@ -428,6 +464,12 @@ define([
             var $nav = $linkContent.closest('.alertify').find('nav');
             $(linkError).text('').hide();
             var name = $(linkName).val();
+
+            var uses = Number($(linkUses).val());
+            if (isNaN(uses) || !uses) { uses = -1; }
+
+            var role = $(linkRole).find("input[name='cp-team-role']:checked").val() || 'VIEWER';
+
             var pw = $(linkPassword).find('input').val();
             var msg = $(linkMessage).val();
             var hash = Hash.createRandomHash('invite', pw);
@@ -461,6 +503,8 @@ define([
                     hash: hash,
                     teamId: config.teamId,
                     seeds: seeds,
+                    role: role,
+                    uses: uses
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
                         waitFor.abort();
@@ -495,8 +539,9 @@ define([
             name: Messages.team_inviteLinkCopy,
             onClick: function () {
                 if (!href) { return; }
-                var success = Clipboard.copy(href);
-                if (success) { UI.log(Messages.shareSuccess); }
+                Clipboard.copy(href, (err) => {
+                    if (!err) { UI.log(Messages.shareSuccess); }
+                });
             },
             keys: []
         }];
@@ -523,12 +568,49 @@ define([
         UI.openCustomModal(modal);
     };
 
+    UIElements.openDirectlyConfirmation = function (common, cb) {
+        cb = cb || Util.noop;
+        UI.confirm(h('p', Messages.ui_openDirectly), yes => {
+            if (!yes) { return void cb(yes); }
+            common.openDirectly();
+            cb(yes);
+        });
+    };
+
+    UIElements.getEntryFromButton = function ($button) {
+        if (!$button || !$button.length) { return; }
+        let $icon = $button.find('> i');
+
+        let attributes = {};
+        let btnClass = $button.attr('class');
+        let btnId = $button.attr('id');
+        let btnTitle = $button.attr('title');
+        if (btnClass) { attributes['class'] = btnClass; }
+        if (btnId) { attributes['id'] = btnId; }
+        if (btnTitle && !attributes.title) { attributes['title'] = btnTitle; }
+
+        return UIElements.createDropdownEntry({
+            tag: 'a',
+            attributes: attributes,
+            content: [
+                h('i',{ 'class': $icon.attr('class') }),
+                h('span', $button.text())
+            ],
+            action: function () {
+                $button.click();
+                return true;
+            }
+        });
+    };
+
+
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;
         var sframeChan = common.getSframeChannel();
         var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         data = data || {};
+        if (!callback && data.callback) { callback = data.callback; }
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -536,7 +618,9 @@ define([
                     title: Messages.exportButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.exportButton));
 
-                button.click(common.prepareFeedback(type));
+                button
+                .click(common.prepareFeedback(type))
+                .click(UI.clearTooltipsDelay);
                 if (callback) {
                     button.click(callback);
                 }
@@ -546,50 +630,23 @@ define([
                     'class': 'fa fa-upload cp-toolbar-icon-import',
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
-                /*if (data.types) {
-                    // New import button in the toolbar
-                    var importFunction = {
-                        template: function () {
-                            UIElements.openTemplatePicker(common, true);
-                        },
-                        file: function (cb) {
-                            importContent('text/plain', function (content, file) {
-                                cb(content, file);
-                            }, {accept: data ? data.accept : undefined})
-                        }
-                    };
-                    var toImport = [];
-                    Object.keys(data.types).forEach(function (importType) {
-                        if (!importFunction[importType] || !data.types[importType]) { return; }
-                        var option = h('button', importType);
-                        $(option).click(function () {
-                            importFunction[importType](data.types[importType]);
-                        });
-                        toImport.push(options);
-                    });
-
-                    button.click(common.prepareFeedback(type));
-
-                    if (toImport.length === 1) {
-                        button.click(function () { $(toImport[0]).click(); });
-                    } else {
-                        Cryptpad.alert(h('p.cp-import-container', toImport));
-                    }
-                }
-                else if (callback) {*/
-                    // Old import button, used in settings
                     var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                         accept: data ? data.accept : undefined,
                         binary: data ? data.binary : undefined
                     });
 
                     var handler = data.first? function () {
-                        data.first(importer);
+                        data.first(function () {
+                            importer(); // Make sure we don't pass arguments to importer
+                        });
                     }: importer; //importContent;
 
                     button
                     .click(common.prepareFeedback(type))
-                    .click(handler);
+                    .click(function () {
+                        handler();
+                        UI.clearTooltipsDelay();
+                    });
                 //}
                 break;
             case 'upload':
@@ -622,7 +679,10 @@ define([
                     if (callback) { callback(); }
                 });
                 if (data.accept) { $input.attr('accept', data.accept); }
-                button.click(function () { $input.click(); });
+                button.click(function () {
+                    $input.click();
+                    UI.clearTooltipsDelay();
+                });
                 break;
             case 'copy':
                 button = $('<button>', {
@@ -632,6 +692,7 @@ define([
                 .click(common.prepareFeedback(type))
                 .click(function () {
                     sframeChan.query('EV_MAKE_A_COPY');
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'importtemplate':
@@ -645,6 +706,7 @@ define([
                 .click(function () {
                     if (callback) { return void callback(); }
                     UIElements.openTemplatePicker(common, true);
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'template':
@@ -695,6 +757,7 @@ define([
                             });
                         };
                         UI.prompt(Messages.saveTemplatePrompt, title, todo);
+                        UI.clearTooltipsDelay();
                     });
                 }
                 break;
@@ -774,6 +837,7 @@ define([
                 }
                 button = $('<button>', {
                     title: Messages.historyButton,
+                    'aria-label': Messages.historyButton,
                     'class': "fa fa-history cp-toolbar-icon-history",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
                 if (data.histConfig) {
@@ -781,6 +845,7 @@ define([
                         .click(common.prepareFeedback(type))
                         .on('click', function () {
                         common.getHistory(data.histConfig);
+                        UI.clearTooltipsDelay();
                     });
                 }
                 break;
@@ -799,16 +864,18 @@ define([
                     h('i.fa.fa-file-image-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
                 ])).click(common.prepareFeedback(type));
+                if (callback) { button.click(callback); }
                 break;
             case 'storeindrive':
-                button = $(h('button.cp-toolbar-storeindrive', {
+                button = $(h('button.cp-toolbar-storeindrive.fa.fa-hdd-o', {
                     style: 'display:none;'
                 }, [
-                    h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $(button).hide();
-                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                    common.getSframeChannel().query("Q_AUTOSTORE_STORE", {
+                        forceOwnDrive: true,
+                    }, function (err, obj) {
                         var error = err || (obj && obj.error);
                         if (error) {
                             $(button).show();
@@ -835,6 +902,7 @@ define([
                         }
                         UIElements.updateTags(common, null);
                     });
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'toggle':
@@ -877,7 +945,16 @@ define([
                 .text(Messages.propertiesButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
+                    var isTop;
+                    try {
+                        isTop = common.getMetadataMgr().getPrivateData().isTop;
+                    } catch (err) { console.error(err); }
+                    if (!isTop) {
+                        return void UIElements.openDirectlyConfirmation(common);
+                    }
+
                     sframeChan.event('EV_PROPERTIES_OPEN');
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'save': // OnlyOffice save
@@ -886,7 +963,10 @@ define([
                     title: Messages.settings_save,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
                 .text(Messages.settings_save))
-                .click(common.prepareFeedback(type));
+                .click(function() {
+                    common.prepareFeedback(type);
+                    UI.clearTooltipsDelay();
+                });
                 if (callback) { button.click(callback); }
                 break;
             case 'newpad':
@@ -898,6 +978,7 @@ define([
                 .click(common.prepareFeedback(type))
                 .click(function () {
                     common.createNewPadModal();
+                    UI.clearTooltipsDelay();
                 });
                 break;
             case 'snapshots':
@@ -912,6 +993,7 @@ define([
                         return;
                     }
                     UIElements.openSnapshotsModal(common, data.load, data.make, data.remove);
+                    UI.clearTooltipsDelay();
                 });
                 break;
             default:
@@ -925,7 +1007,7 @@ define([
                     h('span.cp-toolbar-name'+drawerCls, data.text)
                 ]));
                 var feedbackHandler = common.prepareFeedback(data.name || 'DEFAULT');
-                button[0].addEventListener('click', function () {
+                Util.onClickEnter(button, function () {
                     feedbackHandler();
                     if (typeof(callback) !== 'function') { return; }
                     callback();
@@ -1088,11 +1170,13 @@ define([
             editor.focus();
         };
         for (var k in actions) {
-            $('<button>', {
+            let $b = $('<button>', {
                 'data-type': k,
                 'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
-            }).click(onClick).appendTo($toolbar);
+            }).click(onClick);
+            if (k === "embed") { $toolbar.prepend($b); }
+            else { $toolbar.append($b); }
         }
         $('<button>', {
             'class': 'pure-button fa fa-question cp-markdown-help',
@@ -1186,12 +1270,12 @@ define([
             whiteboard: 'whiteboard',
         };
 
-        var href = "https://docs.cryptpad.fr/en/user_guide/applications.html";
+        var href = "https://docs.cryptpad.org/en/user_guide/applications.html";
         if (apps[type]) {
-            href = "https://docs.cryptpad.fr/en/user_guide/apps/" + apps[type] + ".html";
+            href = "https://docs.cryptpad.org/en/user_guide/apps/" + apps[type] + ".html";
         }
         if (type === 'drive') {
-            href = "https://docs.cryptpad.fr/en/user_guide/drive.html";
+            href = "https://docs.cryptpad.org/en/user_guide/drive.html";
         }
         href = Pages.localizeDocsLink(href);
 
@@ -1232,6 +1316,7 @@ define([
         });
         $toolbarButton.click(function () {
             common.openUnsafeURL(href);
+            UI.clearTooltipsDelay();
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
@@ -1346,7 +1431,7 @@ define([
             else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
             else { $usage.addClass('cp-limit-usage-above'); }
             var $text = $('<span>', {'class': 'cp-limit-usage-text'});
-            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit]));
+            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit])); // TODO avoid use of .html() if possible
             $container.prepend($text);
             $limit.append($usage);
         };
@@ -1383,6 +1468,94 @@ define([
         };
     };
 
+    UIElements.createDropdownEntry = function (config) {
+        var hide = function () {};
+        var allowedTags = ['a', 'li', 'p', 'hr', 'div'];
+        var isElement = function (o) {
+            return /HTML/.test(Object.prototype.toString.call(o)) &&
+                typeof(o.tagName) === 'string';
+        };
+        var isValidOption = function (o) {
+            if (typeof o !== "object") { return false; }
+            if (isElement(o)) { return true; }
+            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
+            return true;
+        };
+
+        var entry;
+        if (!isValidOption(config)) { return; }
+
+        if (isElement(config)) {
+            entry = $(config);
+        } else {
+            var $el = $(h(config.tag, (config.attributes || {})));
+
+            if (typeof(config.content) === 'string' || (config.content instanceof Element)) {
+                config.content = [config.content];
+            }
+
+            if (Array.isArray(config.content)) {
+                config.content.forEach(function (item) {
+                    if (item instanceof Element) {
+                        return void $el.append(item);
+                    }
+                    if (typeof(item) === 'string') {
+                        $el[0].appendChild(document.createTextNode(item));
+                    }
+                });
+            }
+
+            // Everything is added as an "li" tag
+            // Links and items with action are focusable
+            // Add correct "role" attribute
+            entry = $(h('li'));
+            if (config.tag === 'a') {
+                $el.attr('tabindex', '-1');
+                entry.attr('role', 'menuitem');
+                entry.attr('tabindex', '0');
+            } else if (config.tag === 'li') {
+                entry = $el;
+                entry.attr('role', 'menuitem');
+                entry.attr('tabindex', '0');
+            } else if (config.tag === 'hr') {
+                entry.attr('role', 'separator');
+            } else {
+                entry.attr('role', 'none');
+            }
+            entry.append($el);
+
+            // Action can be triggered with a click or keyboard event
+            if (config.tag === 'a' || config.tag === 'li') {
+                entry.on('mouseenter', (e) => {
+                    e.stopPropagation();
+                    entry.focus();
+                });
+
+                Util.onClickEnter(entry, function(e) {
+                    if (config.isSelect) { return; }
+                    e.stopPropagation();
+                    if (typeof(config.action) === "function") {
+                        var close = config.action(e);
+                        if (close) { hide(); }
+                    } else {
+                        // Click on <a> with an href
+                        if (e.type === 'keydown'){ $el.get(0).click(); }
+                    }
+                }, {space: true});
+            }
+        }
+
+        hide = function () {
+            window.setTimeout(function () {
+                entry.closest('.cp-dropdown-menu-container').find('.cp-dropdown-submenu').hide();
+                entry.parents('.cp-dropdown-content').hide();
+
+            }, 0);
+        };
+
+        return entry;
+    };
+
     // Create a button with a dropdown menu
     // input is a config object with parameters:
     //  - container (optional): the dropdown container (span)
@@ -1393,18 +1566,6 @@ define([
     UIElements.createDropdown = function (config) {
         if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
         if (config.feedback && !config.common) { return void console.error("feedback in a dropdown requires sframe-common"); }
-
-        var isElement = function (o) {
-            return /HTML/.test(Object.prototype.toString.call(o)) &&
-                typeof(o.tagName) === 'string';
-        };
-        var allowedTags = ['a', 'p', 'hr', 'div'];
-        var isValidOption = function (o) {
-            if (typeof o !== "object") { return false; }
-            if (isElement(o)) { return true; }
-            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
-            return true;
-        };
 
         // Container
         var $container = $(config.container);
@@ -1419,50 +1580,82 @@ define([
             $container = $('<span>', containerConfig);
         }
 
+
         // Button
-        var $button = $('<button>', {
-            'class': config.buttonCls || ''
-        }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
+        let icon = config.iconCls ? h('i', {class:config.iconCls}) : undefined;
+        var $button = $(h('button', {
+            class: config.buttonCls || '',
+            'aria-haspopup': 'menu',
+            'aria-expanded': 'false',
+            'title': config.buttonTitle || '',
+            'aria-label': config.buttonTitle || '',
+        }, config.buttonContent || [
+            icon,
+            h('span.cp-dropdown-button-title', config.text),
+        ]));
+
         if (config.caretDown) {
-            $('<span>', {
-                'class': 'fa fa-caret-down',
-            }).prependTo($button);
+            $button.append(h('i.fa.fa-caret-down'));
         }
         if (config.angleDown) {
-            $('<span>', {
-                'class': 'fa fa-angle-down',
-            }).prependTo($button);
+            $button.append(h('i.fa.fa-angle-down'));
         }
 
         // Menu
-        var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
-        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
+        var $innerblock = $('<ul>', {
+            'class': 'cp-dropdown-content',
+            'role': 'menu',
+            'tabindex': '-1'
+        });
+        var $outerblock = $(h('div.cp-dropdown-menu-container', $innerblock[0]));
+        let $parentMenu = config.isSubmenuOf;
+        $container.$menu = $innerblock;
+        if (config.left) { $outerblock.addClass('cp-dropdown-left'); }
+        if (config.isSubmenuOf && config.isSubmenuOf.length) {
+            $innerblock.addClass('cp-dropdown-submenu');
+        }
 
         var hide = function () {
-            window.setTimeout(function () { $innerblock.hide(); }, 0);
+            window.setTimeout(function () {
+                $innerblock.hide();
+            }, 0);
         };
 
-        var setOptions = function (options) {
-            options.forEach(function (o) {
-                if (!isValidOption(o)) { return; }
-                if (isElement(o)) { return $innerblock.append($(o)); }
-                var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
-                $el.appendTo($innerblock);
-                if (typeof(o.action) === 'function') {
-                    $el.click(function (e) {
-                        var close = o.action(e);
-                        if (close) { hide(); }
-                    });
+        // When the menu is collapsed, update aria-expanded
+        var observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.attributeName !== 'style') { return; }
+                if ($innerblock[0].style.display === 'none') {
+                    $button.attr('aria-expanded', 'false');
+                    if (config.$parentButton) {
+                        config.$parentButton.find('a')
+                            .toggleClass('cp-dropdown-element-active', false);
+                    }
                 }
+            });
+        });
+        observer.observe($innerblock[0], { attributes: true });
+
+        // Add the dropdown content
+        var setOptions = $container.setOptions = function (options) {
+            $innerblock.empty();
+            options.forEach(function (o) {
+                if (!o) { return; }
+                o.isSelect = config.isSelect;
+                let $entry = UIElements.createDropdownEntry(o);
+                if (!$entry) { return void console.error('Error adding dropdown entry', o); }
+                $entry.appendTo($innerblock);
             });
         };
         setOptions(config.options);
-        $container.setOptions = function (options) {
-            $innerblock.empty();
-            setOptions(options);
+
+        $container.addOption = function (config) {
+            let $entry = UIElements.createDropdownEntry(config);
+            $entry.appendTo($innerblock);
         };
 
-        $container.append($button).append($innerblock);
+        $container.append($button).append($outerblock);
+        if ($parentMenu) { $parentMenu.after($innerblock); }
 
         var value = config.initialValue || '';
 
@@ -1470,6 +1663,11 @@ define([
             if ($el.length !== 1) { return; }
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             $el.addClass('cp-dropdown-element-active');
+            $el.closest('li').focus();
+        };
+        var setFocus = function ($el) {
+            if ($el.length !== 1) { return; }
+            $el.focus();
             var scroll = $el.position().top + $innerblock.scrollTop();
             if (scroll < $innerblock.scrollTop()) {
                 $innerblock.scrollTop(scroll);
@@ -1482,24 +1680,56 @@ define([
             var wh = $(window).height();
             var button = $button[0].getBoundingClientRect();
             var topPos = button.bottom;
+            $button.attr('aria-expanded', 'true');
             $innerblock.css('bottom', '');
+            $innerblock.show();
+            if ($parentMenu) {
+                // keep parent open when recursive
+                $parentMenu.show();
+                if (config.$parentButton) {
+                    config.$parentButton.find('a')
+                        .toggleClass('cp-dropdown-element-active', true);
+                }
+            }
+
             if (config.noscroll) {
                 var h = $innerblock.outerHeight();
                 if ((topPos + h) > wh) {
                     $innerblock.css('bottom', button.height+'px');
                 }
+            } else if ($parentMenu) {
+                let max = $parentMenu.css('max-height');
+                let css = {
+                    'max-height': max
+                };
+                if (config.$parentButton) {
+                    let pos = config.$parentButton.position();
+                    let diff = pos.top;
+                    css['margin-top'] = diff+'px';
+                    css['max-height'] = (parseFloat(max)-diff)+'px';
+                }
+                $innerblock.css(css);
+                if ($innerblock.height() < 50) {
+                    $innerblock.css('max-height', max);
+                    $innerblock.css('margin-top', '');
+                }
             } else {
                 $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
-            $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
-            if (config.isSelect && value) {
-                var $val = $innerblock.find('[data-value="'+value+'"]');
-                setActive($val);
-                try {
-                    $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
-                } catch (e) {}
-            }
+            setTimeout(() => {
+                if (config.isSelect && value) {
+                    // We use JSON.stringify here to escape quotes
+                    if (typeof(value) === "object") { value = JSON.stringify(value); }
+                    var $val = $innerblock.find('[data-value='+JSON.stringify(value)+']');
+                    setActive($val);
+                    try {
+                        $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                    } catch (e) {}
+                } else {
+                    setFocus($innerblock.find('[role="menuitem"]').first());
+                }
+            });
             if (config.feedback) { Feedback.send(config.feedback); }
         };
 
@@ -1507,10 +1737,6 @@ define([
             e.stopPropagation();
             var state = $innerblock.is(':visible');
             $('.cp-dropdown-content').hide();
-
-            var $c = $container.closest('.cp-toolbar-drawer-content');
-            $c.removeClass('cp-dropdown-visible');
-            if (!state) { $c.addClass('cp-dropdown-visible'); }
 
             try {
                 $('iframe').each(function (idx, ifrw) {
@@ -1527,86 +1753,175 @@ define([
         });
 
         if (config.isSelect) {
-            var pressed = '';
-            var to;
             $container.onChange = Util.mkEvent();
-            $container.on('click', 'a', function () {
-                value = $(this).data('value');
-                var $val = $(this);
-                var textValue = $val.html() || value;
-                $button.find('.cp-dropdown-button-title').html(textValue);
+            $innerblock.on('click', 'li', function () {
+                var $val = $(this).find('a');
+                value = $val.data('value');
+                var textValue = $val.text() || value;
+                $button.find('.cp-dropdown-button-title').text(textValue);
                 $container.onChange.fire(textValue, value);
             });
-            $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
-                if (!$value.length) {
-                    $value = $innerblock.find('[data-value]').first();
-                }
-                if (e.which === 38) { // Up
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if ($value.length) {
-                        $value.mouseleave();
-                        var $prev = $value.prev();
-                        $prev.mouseenter();
-                        setActive($prev);
-                    }
-                }
-                if (e.which === 40) { // Down
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if ($value.length) {
-                        $value.mouseleave();
-                        var $next = $value.next();
-                        $next.mouseenter();
-                        setActive($next);
-                    }
-                }
-                if (e.which === 13) { //Enter
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if ($value.length) {
-                        $value.click();
-                        hide();
-                    }
-                }
-                if (e.which === 27) { // Esc
-                    e.preventDefault();
-                    e.stopPropagation();
-                    $value.mouseleave();
-                    hide();
-                }
-            });
-            $container.keypress(function (e) {
-                window.clearTimeout(to);
-                var c = String.fromCharCode(e.which);
-                pressed += c;
-                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
-                if ($value.length) {
-                    setActive($value);
-                    $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
-                }
-                to = window.setTimeout(function () {
-                    pressed = '';
-                }, 1000);
-            });
-
             $container.setValue = function (val, name, sync) {
                 value = val;
-                var $val = $innerblock.find('[data-value="'+val+'"]');
-                var textValue = name || $val.html() || val;
-                if (sync) {
-                    $button.find('.cp-dropdown-button-title').html(textValue);
-                    return;
-                }
-                setTimeout(function () {
-                    $button.find('.cp-dropdown-button-title').html(textValue);
-                });
+                // We use JSON.stringify here to escape quotes
+                var $val = $innerblock.find('[data-value='+JSON.stringify(val)+']');
+                var textValue = name || $val.text() || val;
+                var f = function () {
+                    $button.find('.cp-dropdown-button-title').text(textValue);
+                };
+
+                if (sync) { return void f(); }
+                setTimeout(f);
             };
             $container.getValue = function () {
                 return typeof(value) === "undefined" ? '' : value;
             };
         }
+
+        var pressed = '';
+        var to;
+        var findItem = function () {
+            var $value = $();
+            $innerblock.find('[role="menuitem"]').each((i, el) => {
+                var $el = $(el);
+                var $item = $el.find('> *');
+                if ($item.length && !$item.is(':visible')) { return false; }
+                var text = $el.text().toLowerCase();
+                var p = pressed.toLowerCase();
+                if (text.indexOf(p) === 0) {
+                    $value = $el;
+                    return false;
+                }
+            });
+            return $value;
+        };
+        var getAll = () => {
+            return $innerblock.find('[role="menuitem"]').filter((i, el) => {
+                var $item = $(el).find('> *');
+                return !$item.length || $item.is(':visible');
+            });
+        };
+        var getPrev = ($el) => {
+            var $all = getAll();
+            if (!$all.length) { return $(); }
+            var idx = $all.index($el[0]);
+            if (idx === -1) { return $(); }
+            var prev = (idx - 1 + $all.length) % $all.length;
+            return $($all.get(prev));
+        };
+        var getNext = ($el) => {
+            var $all = getAll();
+            if (!$all.length) { return $(); }
+            var idx = $all.index($el[0]);
+            if (idx === -1) { return $(); }
+            var next = (idx + 1) % $all.length;
+            return $($all.get(next));
+        };
+
+        let $listener = $container;
+        if ($parentMenu) { $listener = $innerblock; }
+        $listener.keydown(function (e) {
+            e.stopPropagation(); // don't propagate event to window if the dropdown is focused
+
+            var visible = $innerblock.is(':visible');
+            var $value = $innerblock.find('li:focus');
+            if (!visible && [38,40].includes(e.which) && !config.isSelect) {
+                $container.click();
+                visible = true;
+            }
+
+            if (!visible) { return; }
+            if (e.which === 38) { // Up
+                e.preventDefault();
+                var $prev;
+                if (!$value.length) {
+                    $prev = getAll().last();
+                } else {
+                    $prev = getPrev($value);
+                }
+                $value.mouseleave();
+                $prev.mouseenter();
+                setTimeout(() => {
+                    setFocus($prev);
+                });
+            }
+            if (e.which === 40) { // Down
+                e.preventDefault();
+                var $next;
+                if (!$value.length) {
+                    $next = getAll().first();
+                } else {
+                    $next = getNext($value);
+                }
+                $value.mouseleave();
+                $next.mouseenter();
+                setTimeout(() => {
+                    setFocus($next);
+                });
+            }
+            if (e.which === 13 || e.which === 32) { //Enter or space
+                e.preventDefault();
+                if ($value.length) {
+                    $value.click();
+                    hide();
+                    $button.focus();
+                } else {
+                    setFocus(getAll().first());
+                }
+            }
+            if (e.which === 27) { // Esc
+                e.preventDefault();
+                $value.mouseleave();
+                if ($container.find('.cp-dropdown-submenu:visible').length) {
+                    let $submenu = $container.find('.cp-dropdown-submenu:visible');
+                    if ($submenu[0] !== $innerblock[0]) {
+                        $submenu.hide();
+                        return;
+                    }
+                }
+                hide();
+                if ($parentMenu) { $button.closest('li').focus(); }
+                else { $button.focus(); }
+            }
+            if (e.which === 9) { // Tab
+                if (e.shiftKey) {
+                    hide();
+                    if ($parentMenu) { $button.closest('li').focus(); }
+                    else { $button.focus(); }
+                } else {
+                    // Hide parent only if we're not going to focus visible submenu
+                    if ($parentMenu ||
+                        !$container.find('.cp-dropdown-submenu:visible').length) {
+                        hide();
+                    }
+                    if ($parentMenu) { $parentMenu.hide(); }
+                    $innerblock.find('[role="menuitem"]').last().focus();
+                }
+            }
+        });
+        $listener.keypress(function (e) {
+            e.stopPropagation(); // Don't propagate to window
+            window.clearTimeout(to);
+            var c = String.fromCharCode(e.which);
+            pressed += c;
+            // We use JSON.stringify here to escape quotes
+            var $value;
+            if (config.isSelect) {
+                $value = $innerblock.find('[data-value^='+JSON.stringify(pressed)+']:first').closest('li');
+            } else {
+                $value = findItem();
+            }
+            if ($value.length) {
+                setFocus($value);
+                $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
+            }
+            to = window.setTimeout(function () {
+                pressed = '';
+            }, 1000);
+        });
+
+        $container.close = hide;
+
 
         return $container;
     };
@@ -1617,44 +1932,49 @@ define([
         var origin = priv.origin;
 
         // TODO link to the most recent changelog/release notes
-        // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
+        // https://github.com/cryptpad/cryptpad/releases/latest/ ?
 
         var template = function (line, link) {
             if (!line || !link) { return; }
-            var p = $('<p>').html(line)[0];
+            var p = Pages.setHTML(h('p'), line);
             var sub = link.cloneNode(true);
-
-/*  This is a hack to make relative URLs point to the main domain
-    instead of the sandbox domain. It will break if the admins have specified
-    some less common URL formats for their customizable links, such as if they've
-    used a protocal-relative absolute URL. The URL API isn't quite safe to use
-    because of IE (thanks, Bill).  */
-            var href = sub.getAttribute('href');
-            if (/^\//.test(href)) { sub.setAttribute('href', origin + href); }
+            var href;
+            try {
+                href = new URL(sub.getAttribute('href'), origin).href;
+            } catch (err) {
+                return; // don't return anything to display if their href causes URL to throw
+            }
             var a = p.querySelector('a');
             if (!a) { return; }
             sub.innerText = a.innerText;
+            sub.setAttribute('href', href);
             p.replaceChild(sub, a);
             return p;
         };
 
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
-
         var faqLine = template(Messages.help_genericMore, Pages.docsLink);
+        var termsLine = template(Messages.info_termsFlavour, Pages.termsLink);
+        var sourceLine = template(Messages.info_sourceFlavour, Pages.sourceLink);
 
         var content = h('div.cp-info-menu-container', [
-            h('div.logo-block', [
-                h('img', {
-                    src: '/customize/CryptPad_logo.svg?' + urlArgs
-                }),
+                h('div.logo-block', [
+                    h('img', {
+                        src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                        alt: Messages.label_logo
+                    }),
                 h('h6', "CryptPad"),
                 h('span', Pages.versionString)
             ]),
             h('hr'),
-            legalLine,
-            privacyLine,
+            h('p', Pages.hostDescription),
+            h('hr'),
             faqLine,
+            termsLine,
+            privacyLine,
+            legalLine,
+            sourceLine,
         ]);
 
         $(content).find('a').attr('target', '_blank');
@@ -1668,7 +1988,7 @@ define([
             },
         ];
 
-        var modal = UI.dialog.customModal(content, {buttons: buttons });
+        var modal = UI.dialog.customModal(content, {scrollable: true, buttons: buttons });
         UI.openCustomModal(modal);
     };
 
@@ -1676,33 +1996,48 @@ define([
         var metadataMgr = Common.getMetadataMgr();
 
         var displayNameCls = config.displayNameCls || 'cp-toolbar-user-name';
-        var $displayedName = $('<span>', {'class': displayNameCls});
 
         var priv = metadataMgr.getPrivateData();
         var accountName = Util.fixHTML(priv.accountName);
         var origin = priv.origin;
         var padType = metadataMgr.getMetadata().type;
 
-        var $userName = $('<span>');
         var options = [];
+        options.push({
+            tag: 'div',
+            attributes: {'class': 'cp-user-menu-logo'},
+            content: h('span', [
+                h('img', {
+                    src: '/customize/CryptPad_logo_grey.svg',
+                    "aria-hidden": true,
+                }),
+                h('span.cp-user-menu-logo-text', "CryptPad")
+            ]),
+        });
         if (config.displayNameCls) {
-            var $userAdminContent = $('<p>');
+            var userAdminContent = [];
             if (accountName) {
-                var $userAccount = $('<span>').append(Messages.user_accountName + ': ');
-
-                $userAdminContent.append($userAccount).append(accountName);
-                $userAdminContent.append($('<br>'));
+                userAdminContent.push(h('span', [
+                    Messages.user_accountName,
+                    ': ',
+                    h('span', accountName),
+                ]));
+                userAdminContent.push(h('br'));
             }
             if (config.displayName && !AppConfig.disableProfile) {
                 // Hide "Display name:" in read only mode
-                $userName.append(Messages.user_displayName + ': ');
-                $userName.append($displayedName);
+                userAdminContent.push(h('span', [
+                    Messages.user_displayName,
+                    ': ',
+                    h('span', {
+                        class: displayNameCls,
+                    }),
+                ]));
             }
-            $userAdminContent.append($userName);
             options.push({
-                tag: 'p',
+                tag: 'div',
                 attributes: {'class': 'cp-toolbar-account'},
-                content: $userAdminContent.html()
+                content: userAdminContent,
             });
         }
 
@@ -1724,7 +2059,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-hdd-o'
+                    'class': 'fa fa-hdd-o',
                 },
                 content: h('span', Messages.type.drive),
                 action: function () {
@@ -1736,7 +2071,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-users'
+                    'class': 'fa fa-users',
                 },
                 content: h('span', Messages.type.teams),
                 action: function () {
@@ -1760,7 +2095,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-address-book'
+                    'class': 'fa fa-address-book',
                 },
                 content: h('span', Messages.type.contacts),
                 action: function () {
@@ -1785,7 +2120,7 @@ define([
 
         options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
-        if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
+        if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.includes(priv.edPublic)) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs'},
@@ -1799,17 +2134,29 @@ define([
                 },
             });
         }
+        // Add moderation panel link if the user is a moderator and support is enabled
+        if (priv.edPublic && Config.supportMailboxKey && Array.isArray(Config.moderatorKeys) && Config.moderatorKeys.includes(priv.edPublic)) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-admin fa  fa-ambulance'},
+                content: h('span', Messages.moderationPage || 'Support mailbox'),
+                action: function () {
+                    Common.openURL(origin+'/moderation/');
+                    return true;
+                },
+            });
+        }
         options.push({
             tag: 'a',
             attributes: {
                 'target': '_blank',
                 'rel': 'noopener',
-                'href': 'https://docs.cryptpad.fr',
-                'class': 'fa fa-book'
+                'href': 'https://docs.cryptpad.org',
+                'class': 'fa fa-book',
             },
             content: h('span', Messages.docs_link)
         });
-        if (padType !== 'support' && accountName && Config.supportMailbox) {
+        if (padType !== 'support' && accountName && Config.supportMailboxKey) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
@@ -1838,7 +2185,7 @@ define([
         options.push({
             tag: 'a',
             attributes: {
-                'class': 'fa fa-home'
+                'class': 'fa fa-home',
             },
             content: h('span', Messages.homePage),
             action: function () {
@@ -1879,7 +2226,7 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-gift'
+                    'class': 'fa fa-gift',
                 },
                 content: h('span', Messages.crowdfunding_button2),
                 action: function () {
@@ -1952,8 +2299,7 @@ define([
             }
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
-        //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
-        var $userButton = $('<div>').append($icon);//.append($userbig);
+        var $userButton = $('<div>').append($icon);
         if (accountName) {
             $userButton = $('<div>').append(accountName);
         }
@@ -1963,20 +2309,31 @@ define([
             // If no display name, do not display the parentheses
             $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
         }*/
+
+        options.forEach(function (option) {
+            var f = option.action;
+            if (!f) { return; }
+            option.action = function () {
+                f();
+                return true;
+            };
+        });
         var dropdownConfigUser = {
-            text: $userButton.html(), // Button initial text
+            text: $userButton[0],
             options: options, // Entries displayed in the menu
             left: true, // Open to the left of the button
             container: config.$initBlock, // optional
+            buttonTitle: config.buttonTitle,
             feedback: "USER_ADMIN",
             common: Common
         };
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
-        var $survey = $userAdmin.find('.cp-toolbar-survey');
+        var $survey = $userAdmin.find('.cp-toolbar-survey').parent();
+        var $surveyHr =  $survey.next('[role="separator"]');
         if (!surveyURL) {
             $survey.hide();
-            if (surveyAlone) { $survey.next('hr').hide(); }
+            if (surveyAlone) { $surveyHr.hide(); }
         }
         Common.makeUniversal('broadcast', {
             onEvent: function (obj) {
@@ -1988,11 +2345,11 @@ define([
                 surveyURL = url;
                 if (!url) {
                     $survey.hide();
-                    if (surveyAlone) { $survey.next('hr').hide(); }
+                    if (surveyAlone) { $surveyHr.hide(); }
                     return;
                 }
                 $survey.show();
-                if (surveyAlone) { $survey.next('hr').show(); }
+                if (surveyAlone) { $surveyHr.show(); }
             }
         });
 
@@ -2066,7 +2423,9 @@ define([
                     'data-value': l,
                     'href': '#',
                 },
-                content: languages[l] // Pretty name of the language value
+                content: [ // supplying content as an array ensures it's a text node, not parsed HTML
+                    languages[l] // Pretty name of the language value
+                ],
             });
         });
         var dropdownConfig = {
@@ -2104,14 +2463,14 @@ define([
         var $modal = modal.$modal;
         var $title = $(h('h3', [ h('i.fa.fa-plus'), ' ', Messages.fm_newButton ]));
 
-        var $description = $('<p>').html(Messages.creation_newPadModalDescription);
+        var $description = $(Pages.setHTML(h('p'), Messages.creation_newPadModalDescription));
         $modal.find('.cp-modal').append($title);
         $modal.find('.cp-modal').append($description);
 
         var $container = $('<div>');
         var i = 0;
 
-        var types = AppConfig.availablePadTypes.filter(function (p) {
+        var types = PadTypes.availableTypes.filter(function (p) {
             if (AppConfig.hiddenTypes.indexOf(p) !== -1) { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
@@ -2309,7 +2668,7 @@ define([
             UI.getFileIcon({type: type})[0],
             h('div.cp-creation-title-text', [
                 h('span', newPadH3Title),
-                createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
+                createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/apps/general.html#new-document'), Messages.creation_helperText)
             ])
         ]);
         $creation.append(title);
@@ -2392,7 +2751,7 @@ define([
             UI.createCheckbox('cp-creation-expire', Messages.creation_expiration, false, {
                 labelAlt: Messages.creation_expiresIn
             }),
-            h('span.cp-creation-expire-picker.cp-creation-slider', [
+            h('form.cp-creation-expire-picker.cp-creation-slider', { autocomplete: "off" }, [
                 h('input#cp-creation-expire-val', {
                     type: "number",
                     min: 1,
@@ -2479,14 +2838,12 @@ define([
                     icon: h('span.cptools.cptools-new-template')
                 });
             }*/
-            if (!privateData.newTemplate) {
-                allData.unshift({
-                    name: Messages.creation_noTemplate,
-                    id: 0,
-                    //icon: h('span.fa.fa-file')
-                    icon: UI.getFileIcon({type: type})
-                });
-            }
+            allData.unshift({
+                name: Messages.creation_noTemplate,
+                id: 0,
+                //icon: h('span.fa.fa-file')
+                icon: UI.getFileIcon({type: type})
+            });
             var redraw = function (index) {
                 if (index < 0) { i = 0; }
                 else if (index > allData.length - 1) { return; }
@@ -2656,7 +3013,7 @@ define([
                     case "month": unit = 3600 * 24 * 30; break;
                     default: unit = 0;
                 }
-                expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
+                expireVal = (Math.min(Number($('#cp-creation-expire-val').val()), 100) || 0) * unit;
             }
             // Password
             var passwordVal = $('#cp-creation-password').is(':checked') ?
@@ -2738,11 +3095,15 @@ define([
     UIElements.onServerError = function (common, err, toolbar, cb) {
         //if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
+        var viewer = priv.readOnly || err.viewer;
         var sframeChan = common.getSframeChannel();
         var msg = err.type;
+        var exitable = Boolean(err.loaded);
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
+                // You can still use the current version in read-only mode by pressing Esc.
+                // what if they don't have a keyboard (ie. mobile)
                 msg += Messages.errorCopy;
             }
             if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
@@ -2754,6 +3115,23 @@ define([
                 delete autoStoreModal[priv.channel];
             }
 
+            if (err.message && err.drive) {
+                let msg = UI.getDestroyedPlaceholder(err.message, true);
+                return UI.errorLoadingScreen(msg, false, () => {
+                    // When closing error screen
+                    if (err.message === 'PASSWORD_CHANGE') {
+                        return common.setLoginRedirect('login');
+                    }
+                    return common.setLoginRedirect('');
+                });
+            }
+            if (err.message && (err.message !== "PASSWORD_CHANGE" || viewer)) {
+                // If readonly, tell the viewer that their link won't work with the new password
+                UI.errorLoadingScreen(UI.getDestroyedPlaceholder(err.message, false),
+                    exitable, exitable);
+                return;
+            }
+
             if (err.ownDeletion) {
                 if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
                 (cb || function () {})();
@@ -2762,7 +3140,7 @@ define([
 
             // View users have the wrong seed, thay can't retireve access directly
             // Version 1 hashes don't support passwords
-            if (!priv.readOnly && !priv.oldVersionHash) {
+            if (!viewer && !priv.oldVersionHash) {
                 sframeChan.event('EV_SHARE_OPEN', {hidden: true}); // Close share modal
                 UIElements.displayPasswordPrompt(common, {
                     fromServerError: true,
@@ -2797,9 +3175,17 @@ define([
 
     UIElements.displayPasswordPrompt = function (common, cfg, isError) {
         var error;
-        if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
+        if (isError) {
+            let msg = isError === 'PASSWORD_CHANGE' ? Messages.drive_sfPasswordError : Messages.password_error;
+            error = setHTML(h('p.cp-password-error'), msg);
+        }
 
-        var info = h('p.cp-password-info', Messages.password_info);
+        var pwMsg = UI.getDestroyedPlaceholderMessage('PASSWORD_CHANGE', false);
+        if (cfg.legacy) {
+            // Legacy mode: we don't know if the pad has been destroyed or its password has changed
+            pwMsg = Messages.password_info;
+        }
+        var info = h('p.cp-password-info', pwMsg);
         var info_loaded = setHTML(h('p.cp-password-info'), Messages.errorCopy);
 
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
@@ -2836,8 +3222,16 @@ define([
                 });
             }
             common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
-                if (!data) {
-                    return void UIElements.displayPasswordPrompt(common, cfg, true);
+                data = data || {};
+                if (!data.state && data.view && data.reason === "PASSWORD_CHANGE") {
+                    return UIElements.onServerError(common, {
+                        type: 'EDELETED',
+                        message: data.reason,
+                        viewer: data.view
+                    });
+                }
+                if (!data.state) {
+                    return void UIElements.displayPasswordPrompt(common, cfg, (data && data.reason) || 1);
                 }
             });
         };
@@ -3435,9 +3829,9 @@ define([
             });
         };
 
-        var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
         var todo = function (yes) {
             var priv = common.getMetadataMgr().getPrivateData();
+            var MAX_TEAMS_SLOTS = priv.plan ? Constants.MAX_PREMIUM_TEAMS_SLOTS : Constants.MAX_TEAMS_SLOTS;
             var numberOfTeams = Object.keys(priv.teams || {}).length;
             if (yes) {
                 if (numberOfTeams >= MAX_TEAMS_SLOTS) {
@@ -3874,6 +4268,21 @@ define([
         }
 
         modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
+    };
+
+    UIElements.onMissingMFA = (common, config, cb) => {
+        let content = h('div');
+        let msg = h('div.cp-loading-missing-mfa', [
+            h('div.alert.alert-warning', Messages.loading_mfa_required),
+            content
+        ]);
+        common.totpSetup(config, content, false, (newState) => {
+            if (!newState) {
+                return void UI.errorLoadingScreen(Messages.error);
+            }
+            cb({state: true});
+        });
+        return UI.errorLoadingScreen(msg, false, false);
     };
 
     return UIElements;

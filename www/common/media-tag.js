@@ -1,8 +1,13 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function (window) {
 var factory = function () {
     var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
+    var sendCredentials = window.sendCredentials || false; // SSO find a logical place to infer whether this should be set
 
     // Save a blob on the file system
     var saveFile = function (blob, url, fileName) {
@@ -46,6 +51,7 @@ var factory = function () {
             'text/plain',
             'image/png',
             'image/jpeg',
+            'image/webp',
             'image/jpg',
             'image/gif',
             'audio/mpeg',
@@ -115,6 +121,12 @@ var factory = function () {
                 if (cfg.pdf.viewer) { // PDFJS
                     var viewerUrl = cfg.pdf.viewer + '?file=' + url;
                     iframe.src = viewerUrl + '#' + window.encodeURIComponent(metadata.name);
+                    iframe.onload = function () {
+                        if (!metadata.name) { return; }
+                        try {
+                            iframe.contentWindow.PDFViewerApplication.setTitleUsingUrl(metadata.name);
+                        } catch (e) { console.warn(e); }
+                    };
                     return void cb (void 0, iframe);
                 }
                 iframe.src = url + '#' + window.encodeURIComponent(metadata.name);
@@ -149,6 +161,7 @@ var factory = function () {
     justify-content: center;
     box-sizing: border-box;
     vertical-align: top;
+    border-radius: 5px;
 }
 .mediatag-progress-bar {
     position: absolute;
@@ -232,6 +245,22 @@ var factory = function () {
         config.Cache.setBlobCache(id, u8, cb);
     };
 
+    var headRequest = function (src, cb) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("HEAD", src);
+        if (sendCredentials) { xhr.withCredentials = true; }
+        xhr.onerror = function () { return void cb("XHR_ERROR"); };
+        xhr.onreadystatechange = function() {
+            if (this.readyState === this.DONE) {
+                cb(null, Number(xhr.getResponseHeader("Content-Length")));
+            }
+        };
+        xhr.onload = function () {
+            if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+        };
+        xhr.send();
+
+    };
     var getFileSize = function (src, _cb) {
         var cb = function (e, res) {
             _cb(e, res);
@@ -241,24 +270,14 @@ var factory = function () {
         var cacheKey = getCacheKey(src);
 
         var check = function () {
-            var xhr = new XMLHttpRequest();
-            xhr.open("HEAD", src);
-            xhr.onerror = function () { return void cb("XHR_ERROR"); };
-            xhr.onreadystatechange = function() {
-                if (this.readyState === this.DONE) {
-                    cb(null, Number(xhr.getResponseHeader("Content-Length")));
-                }
-            };
-            xhr.onload = function () {
-                if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
-            };
-            xhr.send();
+            headRequest(src, cb);
         };
 
         if (!cacheKey) { return void check(); }
 
         getBlobCache(cacheKey, function (err, u8) {
-            if (err || !u8) { return void check(); }
+            check(); // send the HEAD request to update the blob activity
+            if (err || !u8) { return; }
             cb(null, 0);
         });
     };
@@ -275,6 +294,7 @@ var factory = function () {
         var fetch = function () {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
+            if (sendCredentials) { xhr.withCredentials = true; }
             xhr.responseType = 'arraybuffer';
 
             var progress = function (offset) {
@@ -329,9 +349,7 @@ var factory = function () {
         increment: function (N) {
             var l = N.length;
             while (l-- > 1) {
-                /* .jshint probably suspects this is unsafe because we lack types
-                   but as long as this is only used on nonces, it should be safe  */
-                if (N[l] !== 255) { return void N[l]++; } // jshint ignore:line
+                if (N[l] !== 255) { return void N[l]++; }
 
                 // you don't need to worry about this running out.
                 // you'd need a REAAAALLY big file
@@ -386,6 +404,7 @@ var factory = function () {
         var fetch = function () {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);
+            if (sendCredentials) { xhr.withCredentials = true; }
             xhr.setRequestHeader('Range', 'bytes=0-1');
             xhr.responseType = 'arraybuffer';
 
@@ -398,6 +417,7 @@ var factory = function () {
                 var xhr2 = new XMLHttpRequest();
 
                 xhr2.open("GET", src, true);
+                if (sendCredentials) { xhr2.withCredentials = true; }
                 xhr2.setRequestHeader('Range', 'bytes=2-' + (size + 2));
                 xhr2.responseType = 'arraybuffer';
                 xhr2.onload = function () {
@@ -742,7 +762,11 @@ var factory = function () {
             });
         };
 
-        if (cfg.force) { dl(); return mediaObject; }
+        if (cfg.force) {
+            headRequest(src, function () {}); // Update activity
+            dl();
+            return mediaObject;
+        }
 
         var maxSize = typeof(config.maxDownloadSize) === "number" ? config.maxDownloadSize
                                 : (5 * 1024 * 1024);

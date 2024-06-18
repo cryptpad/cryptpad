@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/customize/application_config.js',
     '/common/common-util.js',
@@ -5,7 +9,7 @@ define([
     '/common/common-constants.js',
     '/common/outer/userObject.js',
     '/customize/messages.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
 ], function (AppConfig, Util, Hash, Constants, OuterFO, Messages, Crypto) {
     var module = {};
 

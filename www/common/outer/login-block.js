@@ -1,8 +1,13 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/api/config',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (Util, ApiConfig) {
+    '/common/outer/http-command.js',
+    '/components/tweetnacl/nacl-fast.min.js',
+], function (Util, ApiConfig, ServerCommand) {
     var Nacl = window.nacl;
 
     var Block = {};
@@ -99,8 +104,7 @@ define([
         };
     };
 
-    Block.proveAncestor = function (O /* oldBlockKeys */, N /* newBlockKeys */) {
-        N = N;
+    Block.proveAncestor = function (O /* oldBlockKeys, N, newBlockKeys */) {
         var u8_pub = Util.find(O, ['sign', 'publicKey']);
         var u8_secret = Util.find(O, ['sign', 'secretKey']);
         try {
@@ -113,17 +117,6 @@ define([
         }
     };
 
-    Block.remove = function (keys) {
-        // sign the hash of the text 'DELETE_BLOCK'
-        var sig = Nacl.sign.detached(Nacl.hash(
-            Nacl.util.decodeUTF8('DELETE_BLOCK')), keys.sign.secretKey);
-
-        return {
-            publicKey: Nacl.util.encodeBase64(keys.sign.publicKey),
-            signature: Nacl.util.encodeBase64(sig),
-        };
-    };
-
     var urlSafeB64 = function (u8) {
         return Nacl.util.encodeBase64(u8).replace(/\//g, '-');
     };
@@ -133,7 +126,7 @@ define([
         // 'block/' here is hardcoded because it's hardcoded on the server
         // if we want to make CryptPad work in server subfolders, we'll need
         // to update this path derivation
-        return (ApiConfig.fileHost || window.location.origin)
+        return (ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin || window.location.origin)
             + '/block/' + publicKey.slice(0, 2) + '/' +  publicKey;
     };
 
@@ -168,6 +161,62 @@ define([
             console.error(e);
             return;
         }
+    };
+
+    Block.checkRights = function (data, _cb) {
+        const cb = Util.mkAsync(_cb);
+        const { blockKeys, auth } = data;
+
+        var command = 'MFA_CHECK';
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
+
+        ServerCommand(blockKeys.sign, {
+            command: command,
+            auth: auth && auth.data
+        }, cb);
+    };
+    Block.writeLoginBlock = function (data, cb) {
+        const { content, blockKeys, oldBlockKeys, auth, pw, session, token, userData } = data;
+
+        var command = 'WRITE_BLOCK';
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
+
+        var block = Block.serialize(JSON.stringify(content), blockKeys);
+        block.auth = auth && auth.data;
+        block.hasPassword = pw;
+        block.registrationProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+        if (token) { block.inviteToken = token; }
+        if (userData) { block.userData = userData; }
+
+        ServerCommand(blockKeys.sign, {
+            command: command,
+            content: block,
+            session: session // sso session
+        }, cb);
+    };
+    Block.removeLoginBlock = function (data, cb) {
+        const { reason, blockKeys, auth, edPublic } = data;
+
+        var command = 'REMOVE_BLOCK';
+        if (auth && auth.type) { command = `${auth.type.toUpperCase()}_` + command; }
+
+        ServerCommand(blockKeys.sign, {
+            command: command,
+            auth: auth && auth.data,
+            edPublic: edPublic,
+            reason: reason
+        }, cb);
+    };
+
+    Block.updateSSOBlock = function (data, cb) {
+        const { blockKeys, oldBlockKeys } = data;
+        var oldProof = oldBlockKeys && Block.proveAncestor(oldBlockKeys);
+
+        ServerCommand(blockKeys.sign, {
+            command: 'SSO_UPDATE_BLOCK',
+            ancestorProof: oldProof
+        }, cb);
+
     };
 
     return Block;

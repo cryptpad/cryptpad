@@ -1,0 +1,107 @@
+# SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: Bug report
+description: Report a bug, otherwise see the links below
+labels: ["bug"]
+body:
+  - type: markdown
+    id: coc
+    attributes:
+      value: |
+        # Contribution guidelines
+        Please read the [code of conduct](https://github.com/cryptpad/cryptpad/blob/main/CODE_OF_CONDUCT.md) before proceeding.
+  - type: markdown
+    id: terms
+    attributes:
+      value: |
+        You've found a bug and checked that ...
+        - You understand that not following the below instructions will result in immediate closure and/or deletion of your issue.
+        - You have understood that this bug report is dedicated for bugs, and not for support-related inquiries.
+        - You have understood that answers are voluntary and community-driven, and not commercial support.
+        - You have verified that your issue has not been already answered in the past. You've read the [Common issues documentation section](https://docs.cryptpad.org/en/FAQ.html#common-issues) and you also checked [previous issues](https://github.com/cryptpad/cryptpad/issues).
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Please provide a brief description of the bug in 1-2 sentences. If applicable, add screenshots to help explain your problem. Very useful for bugs in CryptPad UI.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Please describe the steps to reproduce the bug.
+      placeholder: |-
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Which operating system are you using?
+      multiple: true
+      options:
+        - Linux/BSD/UNIX
+        - Microsoft Windows
+        - Apple macOS
+        - Apple iOS
+        - Google ChromeOS
+        - Google Android
+        - Other
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Mozilla Firefox
+        - Google Chrome
+        - Apple Safari
+        - Microsoft Edge
+        - Other
+  - type: textarea
+    id: extensions
+    attributes:
+      label: Extensions
+      description: Web browser extensions installed
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: What version of CryptPad are you running?
+      options:
+        - 2024.3.0
+        - 5.7.0
+        - 5.6.0
+        - 5.5.0
+        - 5.4.1
+        - 5.4.0
+        - 5.3.0
+        - 5.2.1
+        - 5.2.0
+        - 5.1.0
+        - 5.0.0
+        - 4.14.1
+        - 4.14.0
+        - Other
+    validations:
+      required: true

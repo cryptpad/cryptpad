@@ -1,4 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
 
 .contextmenu_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -11,10 +18,13 @@
         & > ul {
             border: 1px solid @cp_context-border;
             background-color: @cp_context-bg;
-            border-radius: 0px;
+            border-radius: @variables_radius;
             .dropdown-divider {
                 border-top: 1px solid @cp_context-border;
             }
+        }
+        .dropdown-menu {
+            padding: 6px 0px;
         }
         li {
             padding: 0;
@@ -38,7 +48,7 @@
                     top: -0.7rem;
                     left: 100%;
                     background-color: @cp_context-bg;
-                    border-radius: 0px;
+                    border-radius: @variables_radius;
                     border: 1px solid @cp_context-border;
                 }
             }
@@ -46,6 +56,7 @@
                 cursor: pointer;
                 color: @cp_context-fg;
                 padding-left: 10px;
+                border-radius: @variables_radius;
                 &:hover {
                     background-color: @cp_context-bg-hover;
                     color: @cp_context-fg;

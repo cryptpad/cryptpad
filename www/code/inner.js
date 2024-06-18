@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/diffMarked.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/common/sframe-app-framework.js',
@@ -14,6 +18,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+    '/common/common-ui-elements.js',
 
 
     'css!cm/lib/codemirror.css',
@@ -60,7 +65,8 @@ define([
     Visible,
     TypingTest,
     Messages,
-    CMeditor)
+    CMeditor,
+    UIElements)
 {
     window.CodeMirror = CMeditor;
 
@@ -68,6 +74,7 @@ define([
         'markdown',
         'gfm',
         'html',
+        'asciidoc',
         'htmlembedded',
         'htmlmixed',
         'index.html',
@@ -77,19 +84,15 @@ define([
     ]);
 
     var mkThemeButton = function (framework) {
-        var $theme = $(h('button.cp-toolbar-appmenu', [
-            h('i.cptools.cptools-palette'),
-            h('span.cp-button-name', Messages.toolbar_theme)
-        ]));
-        var $content = $(h('div.cp-toolbar-drawer-content', {
-            tabindex: 1
-        })).hide();
-
-        // set up all the necessary events
-        UI.createDrawer($theme, $content);
-
-        framework._.toolbar.$theme = $content;
-        framework._.toolbar.$bottomL.append($theme);
+        const $drawer = UIElements.createDropdown({
+            text: Messages.toolbar_theme,
+            options: [],
+            common: framework._.sfCommon,
+            iconCls: 'cptools cptools-palette'
+        });
+        framework._.toolbar.$theme = $drawer.find('ul.cp-dropdown-content');
+        framework._.toolbar.$bottomL.append($drawer);
+        $drawer.addClass('cp-toolbar-appmenu');
     };
 
     var mkCbaButton = function (framework, markers) {
@@ -98,18 +101,22 @@ define([
             name: 'authormarks',
             icon: 'fa-paint-brush',
         }).hide();
-        framework._.toolbar.$theme.append($showAuthorColorsButton);
-        markers.setButton($showAuthorColorsButton);
+        var $showAuthorColors = UIElements.getEntryFromButton($showAuthorColorsButton).hide();
+        $showAuthorColors.find('span').addClass('cp-toolbar-name cp-toolbar-drawer-element');
+        framework._.toolbar.$theme.append($showAuthorColors);
+        markers.setButton($showAuthorColors);
     };
-    var mkPrintButton = function (framework, $content, $print) {
+    var mkPrintButton = function (framework, $content) {
         var $printButton = framework._.sfCommon.createButton('print', true);
         $printButton.click(function () {
             $print.html($content.html());
             window.focus();
             window.print();
             framework.feedback('PRINT_CODE');
+            UI.clearTooltipsDelay();
         });
-        framework._.toolbar.$drawer.append($printButton);
+        var $print = UIElements.getEntryFromButton($printButton);
+        framework._.toolbar.$drawer.append($print);
     };
     var mkMarkdownTb = function (editor, framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
@@ -132,7 +139,8 @@ define([
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'code']);
         $codeMirrorContainer.prepend(helpMenu.menu);
 
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     var previews = {};
@@ -142,6 +150,31 @@ define([
     previews['markdown'] = previews['gfm'];
     previews['htmlmixed'] = function (val, $div, common) {
         DiffMd.apply(val, $div, common);
+    };
+    previews['asciidoc'] = function (val, $div, common) {
+        require([
+            'asciidoctor',
+            '/lib/highlight/highlight.pack.js',
+            'css!/lib/highlight/styles/' + (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
+        ], function (asciidoctor) {
+            var reg = asciidoctor.Extensions.create();
+            var Highlight = window.hljs;
+
+            reg.inlineMacro('media-tag', function () {
+                var t = this;
+                t.process(function (parent, target) {
+                    var d = target.split('|');
+                    return t.createInline(parent, 'quoted', `<media-tag src="${d[0]}" data-crypto-key="${d[1]}"></media-tag>`).convert();
+                });
+            });
+
+            var html = asciidoctor.convert(val, { attributes: 'showtitle', extension_registry: reg });
+
+            DiffMd.apply(html, $div, common);
+            $div.find('pre code').each(function (i, el) {
+                Highlight.highlightBlock(el);
+            });
+        });
     };
 
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
@@ -235,6 +268,7 @@ define([
                         $codeMirrorContainer.removeClass('cp-app-code-fullpage');
                         if (isPresentMode) {
                             $editorContainer.addClass('cp-app-code-present');
+                            $previewButton.hide();
                         }
                     }
                 });
@@ -362,16 +396,25 @@ define([
             setButton(!markers.getState());
             UI.alert(content);
         });
-        framework._.toolbar.$theme.append($cbaButton);
+        var $cba = UIElements.getEntryFromButton($cbaButton);
+        framework._.toolbar.$theme.prepend($cba);
     };
 
     var mkFilePicker = function (framework, editor, evModeChange) {
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
                 // Embedding is enabled
-                framework.setMediaTagEmbedder(function (mt) {
+                framework.setMediaTagEmbedder(function (mt, d) {
                     editor.focus();
-                    editor.replaceSelection($(mt)[0].outerHTML);
+                    var txt = $(mt)[0].outerHTML;
+                    if (editor.getMode().name === "asciidoc") {
+                        if (d.static) {
+                            txt = d.href + `[${d.name}]`;
+                        } else {
+                            txt = `media-tag:${d.src}|${d.key}[]`;
+                        }
+                    }
+                    editor.replaceSelection(txt);
                 });
             } else {
                 // Embedding is disabled
@@ -525,7 +568,7 @@ define([
                 I used 'apply' with 'arguments' to avoid breaking things if this API ever changes.
             */
             var ret = CodeMirror.fileImporter.apply(null, Array.prototype.slice.call(arguments));
-            previewPane.modeChange(ret.mode);
+            previewPane.modeChange(ret.highlightMode);
             return ret;
         });
 
@@ -581,6 +624,14 @@ define([
                     }
                 }
             }, waitFor(function (fw) { framework = fw; }));
+
+            $('#cp-app-code-editor').append([
+                h('div#cp-app-code-container', h('textarea#editor1', {name:'editor1'})),
+                h('div#cp-app-code-preview', [
+                    h('div#cp-app-code-preview-content'),
+                    h('div#cp-app-code-print')
+                ])
+            ]);
 
             nThen(function (waitFor) {
                 $(waitFor());

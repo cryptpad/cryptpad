@@ -1,4 +1,7 @@
-/* jshint esversion: 6, node: true */
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 const nThen = require("nthen");
 const Pins = require("../lib/pins");
 const Assert = require("assert");

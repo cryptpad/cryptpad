@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/nthen/index.js',
+    '/components/chainpad-crypto/crypto.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',

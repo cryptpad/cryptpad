@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/visible.js',
-    '/bower_components/dragula.js/dist/dragula.min.js',
+    '/components/dragula/dist/dragula.min.js',
 ], function ($, Messages, Util, Visible, Dragula) {
         /**
          * jKanban

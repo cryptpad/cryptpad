@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "../include/infopages.less";
 @import (reference) "../include/colortheme-all.less";
 
@@ -22,10 +28,11 @@
             .cp-shadow();
             border: none;
             background-color: @cp_static-card-bg;
-            border-radius: 0px;;
+            border-radius: @infopages-radius;
             .title-card {
                 background-color: @cryptpad_color_brand;
                 padding: 20px;
+                border-radius: @infopages-radius @infopages-radius 0 0;
             }
             .card-body, .title-card {
                 display: flex;

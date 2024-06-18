@@ -1,15 +1,21 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-constants.js',
     '/common/common-realtime.js',
     '/common/outer/cache-store.js',
+    '/calendar/recurrence.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     'chainpad-listmap',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad/chainpad.dist.js',
-], function (Util, Hash, Constants, Realtime, Cache, Messages, nThen, Listmap, Crypto, ChainPad) {
+    '/lib/datepicker/flatpickr.js',
+    '/components/chainpad-crypto/crypto.js',
+    '/components/chainpad/chainpad.dist.js',
+], function (Util, Hash, Constants, Realtime, Cache, Rec, Messages, nThen, Listmap, FP, Crypto, ChainPad) {
     var Calendar = {};
 
     var getStore = function (ctx, id) {
@@ -90,7 +96,29 @@ define([
         });
     };
 
-    var updateEventReminders = function (ctx, reminders, _ev, useLastVisit) {
+    var getRecurring = function (ev) {
+        var mid = new Date();
+        var start = new Date(mid.getFullYear(), mid.getMonth()-1, 15);
+        var end = new Date(mid.getFullYear(), mid.getMonth()+1, 15);
+        var startId = Rec.getMonthId(start);
+        var midId = Rec.getMonthId(mid);
+        var endId = Rec.getMonthId(end);
+
+        var toAdd = Rec.getRecurring([startId, midId, endId], [ev]);
+
+        var all = [ev];
+        Array.prototype.push.apply(all, toAdd);
+        return Rec.applyUpdates(all);
+    };
+    var clearDismissed = function (ctx, uid) {
+        var h = Util.find(ctx, ['store', 'proxy', 'hideReminders']) || {};
+        Object.keys(h).filter(function (id) {
+            return id === uid;
+        }).forEach(function (id) {
+            delete h[id];
+        });
+    };
+    var _updateEventReminders = function (ctx, reminders, _ev, useLastVisit) {
         var now = +new Date();
         var ev = Util.clone(_ev);
         var uid = ev.id;
@@ -101,12 +129,16 @@ define([
         }
         reminders[uid] = [];
 
+        if (_ev.deleted) { return; }
+
+        var d = Util.find(ctx, ['store', 'proxy', 'hideReminders', uid]) || []; // dismissed
+
         var last = ctx.store.data.lastVisit;
 
         if (ev.isAllDay) {
-            if (ev.startDay) { ev.start = +new Date(ev.startDay); }
+            if (ev.startDay) { ev.start = +FP.parseDate(ev.startDay); }
             if (ev.endDay) {
-                var endDate = new Date(ev.endDay);
+                var endDate = FP.parseDate(ev.endDay);
                 endDate.setHours(23);
                 endDate.setMinutes(59);
                 endDate.setSeconds(59);
@@ -119,10 +151,11 @@ define([
         if (ev.end <= now && !missed) {
             // No reminder for past events
             delete reminders[uid];
+            clearDismissed(ctx, uid);
             return;
         }
 
-        var send = function () {
+        var send = function (d) {
             var hide = Util.find(ctx, ['store', 'proxy', 'settings', 'general', 'calendar', 'hideNotif']);
             if (hide) { return; }
             var ctime = ev.start <= now ? ev.start : +new Date(); // Correct order for past events
@@ -133,11 +166,18 @@ define([
                     missed: Boolean(missed),
                     content: ev
                 },
-                hash: 'REMINDER|'+uid
+                hash: 'REMINDER|'+uid+'-'+d
             }, null, function () {
             });
         };
-        var sendNotif = function () { ctx.Store.onReadyEvt.reg(send); };
+        var sent = false;
+        var sendNotif = function (delay) {
+            sent = true;
+
+            ctx.Store.onReadyEvt.reg(function () {
+                send(delay);
+            });
+        };
 
         var notifs = ev.reminders || [];
         notifs.sort(function (a, b) {
@@ -148,6 +188,10 @@ define([
             var delay = delayMinutes * 60000;
             var time = now + delay;
 
+            if (d.some(function (minutes) {
+                return delayMinutes >= minutes;
+            })) { return; }
+
             // setTimeout only work with 32bit timeout values. If the event is too far away,
             // ignore this event for now
             // FIXME: call this function again in xxx days to reload these missing timeout?
@@ -156,18 +200,35 @@ define([
             // If we're too late to send a notification, send it instantly and ignore
             // all notifications that were supposed to be sent even earlier
             if (ev.start <= time) {
-                sendNotif();
+                sendNotif(delayMinutes);
                 return true;
             }
 
             // It starts in more than "delay": prepare the notification
             reminders[uid].push(setTimeout(function () {
-                sendNotif();
+                sendNotif(delayMinutes);
             }, (ev.start - time)));
+        });
+
+        if (!sent) {
+            // Remone any existing notification from the UI
+            ctx.Store.onReadyEvt.reg(function () {
+                ctx.store.mailbox.hideMessage('reminders', {
+                    hash: 'REMINDER|'+uid
+                }, null, function () {
+                });
+            });
+        }
+    };
+    var updateEventReminders = function (ctx, reminders, ev, useLastVisit) {
+        var all = getRecurring(Util.clone(ev));
+        all.forEach(function (_ev) {
+            _updateEventReminders(ctx, reminders, _ev, useLastVisit);
         });
     };
     var addReminders = function (ctx, id, ev) {
         var calendar = ctx.calendars[id];
+        if (!ev) { return; }
         if (!calendar || !calendar.reminders) { return; }
         if (calendar.stores.length === 1 && calendar.stores[0] === 0) { return; }
 
@@ -352,10 +413,20 @@ define([
             c.lm = lm;
             var proxy = c.proxy = lm.proxy;
 
+            var _updateCalled = false;
+            var _update = function () {
+                if (_updateCalled) { return; }
+                _updateCalled = true;
+                setTimeout(function () {
+                    _updateCalled = false;
+                    update();
+                });
+            };
+
             lm.proxy.on('cacheready', function () {
                 if (!proxy.metadata) { return; }
                 c.cacheready = true;
-                setTimeout(update);
+                _update();
                 if (cb) { cb(null, lm.proxy); }
                 addInitialReminders(ctx, channel, cfg.lastVisitNotif);
             }).on('ready', function (info) {
@@ -372,24 +443,39 @@ define([
                         title: data.title
                     };
                 }
-                setTimeout(update);
+                _update();
                 if (cb) { cb(null, lm.proxy); }
                 addInitialReminders(ctx, channel, cfg.lastVisitNotif);
             }).on('change', [], function () {
                 if (!c.ready) { return; }
-                setTimeout(update);
+                _update();
             }).on('change', ['content'], function (o, n, p) {
                 if (p.length === 2 && n && !o) { // New event
-                    addReminders(ctx, channel, n);
+                    return void addReminders(ctx, channel, n);
                 }
                 if (p.length === 2 && !n && o) { // Deleted event
-                    addReminders(ctx, channel, {
+                    return void addReminders(ctx, channel, {
                         id: p[1],
                         start: 0
                     });
                 }
-                if (p.length === 3 && n && o && p[2] === 'start') { // Update event start
-                    setTimeout(function () {
+                if (p.length >= 3 && ['start','reminders','isAllDay'].includes(p[2])) {
+                    // Updated event
+                    return void setTimeout(function () {
+                        addReminders(ctx, channel, proxy.content[p[1]]);
+                    });
+                }
+                if (p.length >= 6 && ['start','reminders','isAllDay'].includes(p[5])) {
+                    // Updated recurring event
+                    return void setTimeout(function () {
+                        addReminders(ctx, channel, proxy.content[p[1]]);
+                    });
+                }
+            }).on('remove', ['content'], function (x, p) {
+                _update();
+                if ((p.length >= 3 && p[2] === 'reminders') ||
+                    (p.length >= 6 && p[5] === 'reminders')) {
+                    return void setTimeout(function () {
                         addReminders(ctx, channel, proxy.content[p[1]]);
                     });
                 }
@@ -400,10 +486,10 @@ define([
                 updateLocalCalendars(ctx, c, md);
             }).on('disconnect', function () {
                 c.offline = true;
-                setTimeout(update);
+                _update();
             }).on('reconnect', function () {
                 c.offline = false;
-                setTimeout(update);
+                _update();
             }).on('error', function (info) {
                 if (!info || !info.error) { return; }
                 if (info.error === "EDELETED" ) {
@@ -411,7 +497,7 @@ define([
                 }
                 if (info.error === "ERESTRICTED" ) {
                     c.restricted = true;
-                    setTimeout(update);
+                    _update();
                 }
                 cb(info);
             });
@@ -543,7 +629,7 @@ define([
         var hash = Hash.getEditHashFromKeys(secret);
         var roHash = Hash.getViewHashFromKeys(secret);
 
-        if (!ctx.loggedIn) { hash = undefined; }
+        //if (!ctx.loggedIn) { hash = undefined; }
 
         var cal = {
             href: hash && Hash.hashToHref(hash, 'calendar'),
@@ -760,8 +846,11 @@ define([
         var ev = c.proxy.content[data.ev.id];
         if (!ev) { return void cb({error: "EINVAL"}); }
 
+        data.rawData = data.rawData || {};
+
         // update the event
         var changes = data.changes || {};
+        var type = data.type || {};
 
         var newC;
         if (changes.calendarId) {
@@ -770,7 +859,128 @@ define([
             newC.proxy.content = newC.proxy.content || {};
         }
 
+        var RECUPDATE = {
+            one: {},
+            from: {}
+        };
+        if (['one','from','all'].includes(type.which)) {
+            ev.recUpdate = ev.recUpdate || RECUPDATE;
+            if (!ev.recUpdate.one) { ev.recUpdate.one = {}; }
+            if (!ev.recUpdate.from) { ev.recUpdate.from = {}; }
+        }
+        var update = ev.recUpdate;
+        var alwaysAll = ['calendarId'];
+        var keys = Object.keys(changes).filter(function (s) {
+            // we can only change the calendar or recurrence rule on the origin
+            return !alwaysAll.includes(s);
+        });
+
+        // Delete (future) affected keys
+        var cleanAfter = function (time) {
+            [update.from, update.one].forEach(function (obj) {
+                Object.keys(obj).forEach(function (d) {
+                    if (Number(d) < time) { return; }
+                    delete obj[d];
+                });
+            });
+        };
+        var cleanKeys = function (obj, when) {
+            Object.keys(obj).forEach(function (d) {
+                if (when && Number(d) < when) { return; }
+                keys.forEach(function (k) {
+                    delete obj[d][k];
+                });
+            });
+        };
+
+
+        // Update recurrence rule. We may create a new event here
+        var dontSendUpdate = false;
+        if (typeof(changes.recurrenceRule) !== "undefined") {
+            if (type.which === "all" && changes.recurrenceRule.until) {
+                // Remove changes after the last iteration
+                cleanAfter(changes.recurrenceRule.until);
+            }
+            else if (['one','from'].includes(type.which) && !data.rawData.isOrigin) {
+                // Start cleaning after the event (otherwise it resets the current event)
+                cleanAfter(type.when + 1);
+            } else {
+                // Else wipe everything
+                update = ev.recUpdate = RECUPDATE;
+            }
+        }
+
+        if (type.which === "one") {
+            update.one[type.when] = update.one[type.when] || {};
+            // Nothing to delete
+        } else if (type.which === "from") {
+            update.from[type.when] = update.from[type.when] || {};
+            // Delete all "single/from" updates (affected keys only) after this "from" date
+            cleanKeys(update.from, type.when);
+            cleanKeys(update.one, type.when);
+        } else if (type.which === "all") {
+            // Delete all "single/from" updates (affected keys only) after
+            cleanKeys(update.from);
+            cleanKeys(update.one);
+        }
+
+        if (changes.start && update && (!type.which || type.which === "all")) {
+            var diff = changes.start - ev.start;
+            var newOne = {};
+            var newFrom = {};
+            Object.keys(update.one || {}).forEach(function (time) {
+                newOne[Number(time)+diff] = update.one[time];
+            });
+            Object.keys(update.from || {}).forEach(function (time) {
+                newFrom[Number(time)+diff] = update.from[time];
+            });
+            update.one = newOne;
+            update.from = newFrom;
+        }
+
+
+        // Clear the "dismissed" reminders when the user is updating reminders
+        var h = Util.find(ctx, ['store', 'proxy', 'hideReminders']) || {};
+        if (changes.reminders) {
+            if (type.which === 'one') {
+                if (!type.when || type.when === ev.start) { delete h[data.ev.id]; }
+                else { delete h[data.ev.id +'|'+ type.when]; }
+            } else if (type.which === "from") {
+                Object.keys(h).filter(function (id) {
+                    return id.indexOf(data.ev.id) === 0;
+                }).forEach(function (id) {
+                    var time = Number(id.split('|')[1]);
+                    if (!time) { return; }
+                    if (time < type.when) { return; }
+                    delete h[id];
+                });
+            } else {
+                Object.keys(h).filter(function (id) {
+                    return id.indexOf(data.ev.id) === 0;
+                }).forEach(function (id) {
+                    delete h[id];
+                });
+            }
+        }
+
+        // Apply the changes
         Object.keys(changes).forEach(function (key) {
+            if (!alwaysAll.includes(key) && type.which === "one") {
+                if (key === "recurrenceRule") {
+                    if (data.rawData && data.rawData.isOrigin) {
+                        return (ev[key] = changes[key]);
+                    }
+                    // Always "from", never "one" for recurrence rules
+                    update.from[type.when] = update.from[type.when] || {};
+                    return (update.from[type.when][key] = changes[key]);
+                }
+                update.one[type.when][key] = changes[key];
+                return;
+            }
+            if (!alwaysAll.includes(key) && type.which === "from") {
+                update.from[type.when][key] = changes[key];
+                return;
+            }
             ev[key] = changes[key];
         });
 
@@ -790,6 +1000,7 @@ define([
             delete c.proxy.content[data.ev.id];
         }
 
+
         nThen(function (waitFor) {
             Realtime.whenRealtimeSyncs(c.lm.realtime, waitFor());
             if (newC) { Realtime.whenRealtimeSyncs(newC.lm.realtime, waitFor()); }
@@ -806,8 +1017,8 @@ define([
                 addReminders(ctx, id, ev);
             }
 
-            sendUpdate(ctx, c);
-            if (newC) { sendUpdate(ctx, newC); }
+            if (!dontSendUpdate || newC) { sendUpdate(ctx, c); }
+            if (newC && !dontSendUpdate) { sendUpdate(ctx, newC); }
             cb();
         });
     };
@@ -816,7 +1027,22 @@ define([
         var c = ctx.calendars[id];
         if (!c) { return void cb({error: "ENOENT"}); }
         c.proxy.content = c.proxy.content || {};
-        delete c.proxy.content[data.id];
+        var evId = data.id.split('|')[0];
+        if (data.id === evId) {
+            delete c.proxy.content[data.id];
+        } else {
+            var ev = c.proxy.content[evId];
+            var s = data.raw && data.raw.start;
+            if (s) {
+                ev.recUpdate = ev.recUpdate || {
+                    one: {},
+                    from: {}
+                };
+                ev.recUpdate.one[s] = {
+                    deleted: true
+                };
+            }
+        }
         Realtime.whenRealtimeSyncs(c.lm.realtime, function () {
             addReminders(ctx, id, {
                 id: data.id,
@@ -848,7 +1074,6 @@ define([
     Calendar.init = function (cfg, waitFor, emit) {
         var calendar = {};
         var store = cfg.store;
-        //if (!store.loggedIn || !store.proxy.edPublic) { return; } // XXX logged in only? we should al least allow read-only for URL calendars
         var ctx = {
             loggedIn: store.loggedIn && store.proxy.edPublic,
             store: store,
@@ -866,6 +1091,20 @@ define([
             if (err) { return; }
             openChannels(ctx);
         }));
+
+        ctx.store.proxy.on('change', ['hideReminders'], function (o,n,p) {
+            var uid = p[1].split('|')[0];
+            Object.keys(ctx.calendars).some(function (calId) {
+                var c = ctx.calendars[calId];
+                if (!c || !c.proxy || !c.proxy.content) { return; }
+                if (c.proxy.content[uid]) {
+                    setTimeout(function () {
+                        addReminders(ctx, calId, c.proxy.content[uid]);
+                    });
+                    return true;
+                }
+            });
+        });
 
         calendar.closeTeam = function (teamId) {
             Object.keys(ctx.calendars).forEach(function (id) {
@@ -926,7 +1165,7 @@ define([
             }
             if (cmd === 'IMPORT_ICS') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void importICSCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'ADD') {
@@ -946,7 +1185,7 @@ define([
             }
             if (cmd === 'UPDATE') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void updateCalendar(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE') {
@@ -956,17 +1195,17 @@ define([
             }
             if (cmd === 'CREATE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void createEvent(ctx, data, clientId, cb);
             }
             if (cmd === 'UPDATE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void updateEvent(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE_EVENT') {
                 if (ctx.store.offline) { return void cb({error: 'OFFLINE'}); }
-                if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
+                //if (!ctx.loggedIn) { return void cb({error: 'NOT_LOGGED_IN'}); }
                 return void deleteEvent(ctx, data, clientId, cb);
             }
         };

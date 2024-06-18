@@ -1,8 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./browser.less";
 @import (reference) "./colortheme-all.less";
 @import (reference) "./tools.less";
 @import (reference) './icon-colors.less';
 @import (reference) "./avatar.less";
+@import (reference) "./variables.less";
 
 .creation_vars(
     @bg-color: @colortheme_apps[default]
@@ -63,6 +70,7 @@
         width: 700px;
         max-width: 90vw;
         height: 500px;
+        border-radius: @variables_radius_L;
         max-height: ~"calc(100vh - 20px)";
         margin: 0px;
         flex-shrink: 0;
@@ -131,6 +139,7 @@
                 color: @cp_creation-button-fg;
                 margin: 3px 10px;
                 border: none;
+                border-radius: @variables_radius;
                 cursor: pointer;
                 outline: none;
                 text-transform: uppercase;
@@ -256,6 +265,7 @@
                     }
                     select {
                         margin-right: 5px;
+                        border-radius: @variables_radius;
                     }
                 }
                 &.active {
@@ -325,11 +335,12 @@
                 max-height: 159px;
                 align-items: center;
                 .cp-creation-template-element {
-                    box-shadow: 2px 2px 7px @cp_shadow-color;
+                    box-shadow: @cryptpad_ui_shadow;
                     width: 300px;
                     max-width: calc(100% - 10px);
-                    padding: 2px;
+                    padding: 5px;
                     margin: 5px;
+                    border-radius: @variables_radius;
                     display: inline-flex;
 
                     box-sizing: border-box;
@@ -337,7 +348,7 @@
                     text-align: left;
                     line-height: 1em;
                     cursor: pointer;
-
+                    background-color: @cp_creation-template;
                     color: @creation-color;
                     color: var(--creation-color);
                     border: 1px solid transparent;

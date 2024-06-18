@@ -1,6 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./colortheme-all.less";
 @import (reference) "./avatar.less";
 @import (reference) "./tools.less";
+@import (reference) "./variables.less";
 
 .usergrid_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -52,6 +59,7 @@
             justify-content: center;
             align-items: center;
             padding: 5px;
+            border-radius: @variables_radius;
             margin: 3px !important;
             cursor: default;
             transition: order 0.5s, background-color 0.5s;

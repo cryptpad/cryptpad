@@ -1,5 +1,9 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function () {
-var factory = function (Util, Cred, Nacl) {
+var factory = function (Util, Cred, Nacl, Crypto) {
     var Invite = {};
 
     var encode64 = Nacl.util.encodeBase64;
@@ -49,6 +53,24 @@ var factory = function (Util, Cred, Nacl) {
         roster.invite(toInvite, cb);
     };
 
+    // Invite links should only be visible to members or above, so
+    // we store them in the roster encrypted with a string only available
+    // to users with edit rights
+    var decodeUTF8 = Nacl.util.decodeUTF8;
+    Invite.encryptHash = function (data, seedStr) {
+        var array = decodeUTF8(seedStr);
+        var bytes = Nacl.hash(array);
+        var cryptKey = bytes.subarray(0, 32);
+        return Crypto.encrypt(data, cryptKey);
+    };
+    Invite.decryptHash = function (encryptedStr, seedStr) {
+        var array = decodeUTF8(seedStr);
+        var bytes = Nacl.hash(array);
+        var cryptKey = bytes.subarray(0, 32);
+        return Crypto.decrypt(encryptedStr, cryptKey);
+    };
+
+
 /*  INPUTS
 
     * password (for scrypt)
@@ -84,16 +106,17 @@ var factory = function (Util, Cred, Nacl) {
         module.exports = factory(
             require("../common-util"),
             require("../common-credential.js"),
-            require("nthen"),
-            require("tweetnacl/nacl-fast")
+            require("tweetnacl/nacl-fast"),
+            require("chainpad-crypto/crypto")
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-util.js',
             '/common/common-credential.js',
-            '/bower_components/tweetnacl/nacl-fast.min.js',
-        ], function (Util, Cred) {
-            return factory(Util, Cred, window.nacl);
+            '/components/chainpad-crypto/crypto.js',
+            '/components/tweetnacl/nacl-fast.min.js',
+        ], function (Util, Cred, Crypto) {
+            return factory(Util, Cred, window.nacl, Crypto);
         });
     }
 }());

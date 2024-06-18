@@ -1,11 +1,16 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/api/config',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/common-util.js',
-], function (ApiConfig, nThen, Util) {
+    '/common/onlyoffice/current-version.js'
+], function (ApiConfig, nThen, Util, CurrentVersion) {
     var X2T = {};
 
-    var CURRENT_VERSION = X2T.CURRENT_VERSION = 'v5';
+    var CURRENT_VERSION = X2T.CURRENT_VERSION = CurrentVersion.currentVersion;
     var debug = function (str) {
         if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);
@@ -15,7 +20,7 @@ define([
         var x2tReady = Util.mkEvent(true);
         var fetchFonts = function (x2t, obj, cb) {
             if (!obj.fonts) { return void cb(); }
-            var path = ApiConfig.httpSafeOrigin + '/common/onlyoffice/'+CURRENT_VERSION+'/fonts/';
+            var path = ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+CURRENT_VERSION+'/fonts/';
             var ver = '?' + ApiConfig.requireConf.urlArgs;
             var fonts = obj.fonts;
             var files = obj.fonts_files;
@@ -60,9 +65,8 @@ define([
         };
         var getX2T = function (cb) {
             // Perform the x2t conversion
-            require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
+            require(['/common/onlyoffice/dist/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
                 var x2t = window.Module;
-                x2t.run();
                 if (x2tInitialized) {
                     debug("x2t runtime already initialized");
                     return void x2tReady.reg(function () {
@@ -81,6 +85,7 @@ define([
             });
         };
 
+        /*
         var getFormatId = function (ext) {
             // Sheets
             if (ext === 'xlsx') { return 257; }
@@ -111,6 +116,28 @@ define([
             var id = getFormatId(ext);
             if (!id) { return ''; }
             return '<m_nFormatTo>'+id+'</m_nFormatTo>';
+        };
+        var inputFormat = fileName.split('.').pop();
+        */
+
+        // Sanitize file names
+        var illegalRe = /[\/\?<>\\:\*\|"]/g;
+        var controlRe = /[\x00-\x1f\x80-\x9f]/g; // eslint-disable-line no-control-regex
+        var reservedRe = /^\.+$/;
+        var safeRe = /[&'%!"{}[\]]/g;
+        var sanitize = function (input) {
+            if (typeof input !== 'string') { return 'file'; }
+            var s = input.split('.');
+            var ext = s.pop() || 'bin';
+            var name = s.join('');
+            var replacement = '';
+            var sanitized = name
+                .replace(illegalRe, replacement)
+                .replace(controlRe, replacement)
+                .replace(reservedRe, replacement)
+                .replace(safeRe, replacement);
+            sanitized = sanitized || 'file';
+            return sanitized.slice(0, 255) + '.' + ext;
         };
 
         var x2tConvertDataInternal = function(x2t, obj) {
@@ -169,17 +196,14 @@ define([
                 }
             });
 
-
-            var inputFormat = fileName.split('.').pop();
-
             var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                         + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
                         + "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
                         + "<m_sThemeDir>/working/themes</m_sThemeDir>"
                         + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
                         + pdfData
-                        + getFromId(inputFormat)
-                        + getToId(outputFormat)
+                        // + getFromId(inputFormat)
+                        // + getToId(outputFormat)
                         + "<m_bIsNoBase64>false</m_bIsNoBase64>"
                         + "</TaskQueueDataConvert>";
 
@@ -188,7 +212,7 @@ define([
             x2t.FS.writeFile('/working/params.xml', params);
             try {
                 // running conversion
-                x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
+                x2t.ccall("main1", "number", ["string"], ["/working/params.xml"]);
             } catch (e) {
                 console.error(e);
                 return "";
@@ -207,6 +231,7 @@ define([
 
         var convert = function (obj, cb) {
             console.error(obj);
+            obj.fileName = sanitize(obj.fileName);
             getX2T(function (x2t) {
                 // Fonts
                 fetchFonts(x2t, obj, function () {

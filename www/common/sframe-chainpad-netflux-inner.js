@@ -1,31 +1,17 @@
-/*
- * Copyright 2014 XWiki SAS
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// Copyright 2014 XWiki SAS
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad/chainpad.dist.js'
+    '/components/chainpad/chainpad.dist.js'
 ], function (Util, AppConfig, ChainPad) {
     var module = { exports: {} };
 
     var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?
         AppConfig.badStateTimeout : 30000;
-
-    var verbose = function (x) { console.log(x); };
-    verbose = function () {}; // comment out to enable verbose logging
 
     module.exports.start = function (config) {
         var onConnectionChange = config.onConnectionChange || function () { };
@@ -88,7 +74,7 @@ define([
             try {
                 l = chainpad.getLag();
             } catch (e) {
-                throw new Error("ChainPad.getLag() does not exist, please `bower update`");
+                throw new Error("ChainPad.getLag() does not exist, please `npm install && npm run install:components`");
             }
             if (l.lag < badStateTimeout) { return; }
             evInfiniteSpinner.fire();

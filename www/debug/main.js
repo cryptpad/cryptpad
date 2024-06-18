@@ -1,6 +1,10 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/api/config',
     'jquery',
     '/common/requireconfig.js',
@@ -13,6 +17,9 @@ define([
     '/common/common-interface.js',
 ], function (nThen, ApiConfig, $, RequireConfig, SFCommonO,
     Cryptpad, Util, Hash, Realtime, Constants, UI) {
+    if (window.top !== window) {
+        return void window.alert(`If you are seeing this message then somebody might be trying to compromise your CryptPad account. Please contact the CryptPad development team.`);
+    }
 
     window.Cryptpad = {
         Common: Cryptpad,
@@ -29,19 +36,23 @@ define([
     }).nThen(function (waitFor) {
         SFCommonO.initIframe(waitFor);
     }).nThen(function (/*waitFor*/) {
-        var hash = localStorage[Constants.userHashKey] || localStorage[Constants.fileHashKey];
-        var drive = hash && ('#'+hash === window.location.hash);
+        var isDrive = false;
+        var isMyDrive = false;
         if (!window.location.hash) {
-            drive = true;
-            window.location.hash = hash;
+            isDrive = true;
+            isMyDrive = true;
         } else {
             var p = Hash.parsePadUrl('/debug/'+window.location.hash);
             if (p && p.hashData && p.hashData.app === 'drive') {
-                drive = true;
+                isDrive = true;
             }
         }
-        var addData = function (meta) {
-            meta.debugDrive = drive;
+        var addData = function (meta, Cryptpad) {
+            if (isMyDrive) { window.location.hash = Cryptpad.userHash; }
+            window.CryptPad_location.app = "debug";
+            window.CryptPad_location.hash = Cryptpad.userHash;
+            window.CryptPad_location.href = '/debug/#'+Cryptpad.userHash;
+            meta.debugDrive = isDrive;
         };
         SFCommonO.start({
             noDrive: true,

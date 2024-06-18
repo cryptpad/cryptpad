@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     'json.sortify',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
     '/common/sframe-common-codemirror.js',
@@ -14,8 +18,7 @@ define([
     '/common/hyperscript.js',
     '/common/text-cursor.js',
     '/common/diffMarked.js',
-    '/bower_components/chainpad/chainpad.dist.js',
-    '/bower_components/marked/marked.min.js',
+    '/components/chainpad/chainpad.dist.js',
     'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',
@@ -28,9 +31,9 @@ define([
     'cm/addon/search/search',
     'cm/addon/search/match-highlighter',
 
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
+    'css!/components/codemirror/addon/fold/foldgutter.css',
     'less!/kanban/app-kanban.less'
 ], function (
     $,
@@ -49,7 +52,6 @@ define([
     TextCursor,
     DiffMd,
     ChainPad,
-    Marked,
     CodeMirror,
     jKanban,
     Export)
@@ -363,6 +365,18 @@ define([
         var palette = [''];
         for (var i=1; i<=8; i++) { palette.push('color'+i); }
         var selectedColor = '';
+        var resetThemeClass = function () {
+            $colors.find('.cp-kanban-palette').each(function (i, el) {
+                var $c = $(el);
+                $c.removeClass('cp-kanban-palette-card');
+                $c.removeClass('cp-kanban-palette-board');
+                if (isBoard) {
+                    $c.addClass('cp-kanban-palette-board');
+                } else {
+                    $c.addClass('cp-kanban-palette-card');
+                }
+            });
+        };
         palette.forEach(function (color) {
             var $color = $(h('span.cp-kanban-palette.fa'));
             $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
@@ -383,6 +397,7 @@ define([
                 return selectedColor;
             },
             setValue: function (color) {
+                resetThemeClass();
                 $colors.find('.cp-kanban-palette').removeClass('fa-check');
                 var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
                 $col.addClass('fa-check');
@@ -797,10 +812,11 @@ define([
                 var isTop = $el.attr('data-top');
                 var boardId = $el.closest('.kanban-board').attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item new-item'});
+                var $text = $('<div>', {'class': 'kanban-item-text'}).appendTo($item);
                 if (isTop) {
                     $item.addClass('item-top');
                 }
-                var $input = getInput().val(name).appendTo($item);
+                var $input = getInput().val(name).appendTo($text);
                 kanban.addForm(boardId, $item[0], isTop);
                 $input.focus();
                 setTimeout(function () {
@@ -922,6 +938,8 @@ define([
                 //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
+            var toggleTagsButton = h('button.btn.btn-default.kanban-tag-btn-toggle', Messages.kanban_showTags);
+
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
@@ -931,12 +949,14 @@ define([
             ]);
             var hint = h('span.cp-kanban-filterTags-name', Messages.kanban_tags);
             var tags = h('div.cp-kanban-filterTags', [
+
                 h('span.cp-kanban-filterTags-toggle', [
                     hint,
                     reset,
                 ]),
                 list,
             ]);
+
             var $reset = $(reset);
             var $list = $(list);
             var $hint = $(hint);
@@ -949,9 +969,10 @@ define([
 
             var getTags = function () {
                 return $list.find('span.active').map(function () {
-                    return $(this).data('tag');
+                    return String($(this).data('tag'));
                 }).get();
             };
+
             var commitTags = function () {
                 var t = getTags();
                 setTagFilterState(t.length);
@@ -1009,6 +1030,40 @@ define([
                 commitTags();
             });
 
+
+            if ($(window).width() < 500) {
+
+                $(tags).append(toggleTagsButton);
+
+                var hideTags = function () {
+                    for (var tag of list.children) {
+                        if (existing.indexOf(tag.innerHTML) > 10) {
+                            $(tag).hide();                    
+                        }
+                    }
+                };
+                hideTags();
+    
+                var toggleTags = function () {
+                    for (var tag of list.children) {
+                        if (existing.indexOf(tag.innerHTML) > 10 && kanban.options.tags.indexOf(tag.innerHTML) === -1) {
+                            if ($(tag).is(":visible")) { 
+                                $(tag).hide();
+                                $(toggleTagsButton).text(Messages.kanban_showTags);
+                            } else {
+                                $(tag).show();
+                                $(toggleTagsButton).text(Messages.kanban_hideTags);
+                            }
+                        }
+                    }
+                };
+    
+                $(toggleTagsButton).click(function() {
+                    toggleTags();
+                });
+    
+            }
+
             var container = h('div#cp-kanban-controls', [
                 tags,
                 h('div.cp-kanban-changeView', [
@@ -1063,10 +1118,12 @@ define([
         var $toolbarContainer = $('#cp-app-kanban-container');
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['kanban']);
-        $toolbarContainer.prepend(helpMenu.menu);
 
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
+        $toolbarContainer.prepend(helpMenu.menu);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
+
 
     // Start of the main loop
     var andThen2 = function (framework) {
@@ -1082,6 +1139,33 @@ define([
         if (framework.isReadOnly() || framework.isLocked()) {
             $container.addClass('cp-app-readonly');
         }
+
+        var cleanData = function (boards) {
+            if (typeof(boards) !== "object") { return; }
+            var items = boards.items || {};
+            var data = boards.data || {};
+            var list = boards.list || [];
+
+            // Remove duplicate boards
+            list = boards.list = Util.deduplicateString(list);
+
+            Object.keys(data).forEach(function (id) {
+                if (list.indexOf(Number(id)) === -1) {
+                    list.push(Number(id));
+                }
+                // Remove duplicate items
+                var b = data[id];
+                b.item = Util.deduplicateString(b.item || []);
+            });
+            Object.keys(items).forEach(function (eid) {
+                var exists = Object.keys(data).some(function (id) {
+                    return (data[id].item || []).indexOf(Number(eid)) !== -1;
+                });
+                if (!exists) { delete items[eid]; }
+            });
+            framework.localChange();
+        };
+
         framework.setFileImporter({accept: ['.json', 'application/json']}, function (content /*, file */) {
             var parsed;
             try { parsed = JSON.parse(content); }
@@ -1095,6 +1179,8 @@ define([
         });
 
         framework.setFileExporter('.json', function () {
+            var content = kanban.getBoardsJSON();
+            cleanData(content);
             return new Blob([JSON.stringify(kanban.getBoardsJSON(), 0, 2)], {
                 type: 'application/json',
             });
@@ -1235,32 +1321,6 @@ define([
                 content: content
             };
         });
-
-        var cleanData = function (boards) {
-            if (typeof(boards) !== "object") { return; }
-            var items = boards.items || {};
-            var data = boards.data || {};
-            var list = boards.list || [];
-
-            // Remove duplicate boards
-            list = boards.list = Util.deduplicateString(list);
-
-            Object.keys(data).forEach(function (id) {
-                if (list.indexOf(Number(id)) === -1) {
-                    list.push(Number(id));
-                }
-                // Remove duplicate items
-                var b = data[id];
-                b.item = Util.deduplicateString(b.item || []);
-            });
-            Object.keys(items).forEach(function (eid) {
-                var exists = Object.keys(data).some(function (id) {
-                    return (data[id].item || []).indexOf(Number(eid)) !== -1;
-                });
-                if (!exists) { delete items[eid]; }
-            });
-            framework.localChange();
-        };
 
         framework.onReady(function () {
             $("#cp-app-kanban-content").focus();

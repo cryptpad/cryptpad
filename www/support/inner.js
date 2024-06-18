@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
@@ -14,8 +18,8 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/support/app-support.less',
 ], function (
     $,
@@ -48,6 +52,9 @@ define([
             'cp-support-subscribe',
             'cp-support-language',
             'cp-support-form',
+        ],
+        'debugging': [ // Msg.support_cat_debugging
+            'cp-support-debugging-data',
         ],
     };
 
@@ -84,63 +91,97 @@ define([
         return $div;
     };
 
-
-
-    // List existing (open?) tickets
+    var events = {
+        'UPDATE_TICKET': Util.mkEvent()
+    };
     create['list'] = function () {
         var key = 'list';
         var $div = makeBlock(key); // Msg.support_listHint, .support_listTitle
-        $div.addClass('cp-support-container');
-        var hashesById = {};
+        var list = h('div.cp-support-container');
+        var $list = $(list);
 
-        // Register to the "support" mailbox
-        common.mailbox.subscribe(['support'], {
-            onMessage: function (data) {
-                /*
-                    Get ID of the ticket
-                    If we already have a div for this ID
-                        Push the message to the end of the ticket
-                    If it's a new ticket ID
-                        Make a new div for this ID
-                */
-                var msg = data.content.msg;
-                var hash = data.content.hash;
-                var content = msg.content;
-                var id = content.id;
-                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
+        let refresh = function () {
+            const onClose = function (ticket, channel, data) {
+                APP.supportModule.execCommand('CLOSE_TICKET', {
+                    channel: channel,
+                    curvePublic: data.curvePublic, // Support curve public for this ticket
+                    ticket: APP.support.getDebuggingData({ close: true })
+                }, function (obj) {
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    refresh();
+                });
+            };
+            const onReply = function (ticket, channel, data, form) {
+                var formData = APP.support.getFormData(form);
+                APP.supportModule.execCommand('REPLY_TICKET', {
+                    channel: channel,
+                    curvePublic: data.curvePublic, // Support curve public for this ticket
+                    ticket: formData
+                }, function (obj) {
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    $(ticket).find('.cp-support-form-container').remove();
+                    refresh();
+                });
+            };
+            const onDelete = function (ticket, channel) {
+                APP.supportModule.execCommand('DELETE_TICKET', {
+                    channel: channel
+                }, function (obj) {
+                    console.error(obj);
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    refresh();
+                });
+            };
 
-                hashesById[id] = hashesById[id] || [];
-                if (hashesById[id].indexOf(hash) === -1) {
-                    hashesById[id].push(data);
+            APP.supportModule.execCommand('GET_MY_TICKETS', {}, function (obj) {
+                if (obj && obj.error) {
+                    return void UI.warn(Messages.error);
                 }
+                if (!Array.isArray(obj.tickets)) { return void UI.warn(Messages.error); }
 
-                if (msg.type === 'CLOSE') {
-                    // A ticket has been closed by the admins...
-                    if (!$ticket.length) { return; }
-                    $ticket.addClass('cp-support-list-closed');
-                    $ticket.append(APP.support.makeCloseMessage(content, hash));
-                    return;
-                }
-                if (msg.type !== 'TICKET') { return; }
-                $ticket.removeClass('cp-support-list-closed');
+                // Recover forms
+                let activeForms = {};
+                $list.find('.cp-support-form-container').each((i, el) => {
+                    let id = $(el).attr('data-id');
+                    if (!id) { return; }
+                    activeForms[id] = el;
+                });
 
-                if (!$ticket.length) {
-                    $ticket = APP.support.makeTicket($div, content, function () {
-                        var error = false;
-                        hashesById[id].forEach(function (d) {
-                            common.mailbox.dismiss(d, function (err) {
-                                if (err) {
-                                    error = true;
-                                    console.error(err);
-                                }
-                            });
-                        });
-                        if (!error) { $ticket.remove(); }
+                $list.empty();
+                obj.tickets.forEach((data) => {
+                    var messages = data.messages;
+                    var first = messages[0];
+                    first.id = data.id;
+                    var ticket = APP.support.makeTicket({
+                        id: data.id,
+                        content: data,
+                        form: activeForms[data.id],
+                        onClose, onReply, onDelete
                     });
-                }
-                $ticket.append(APP.support.makeMessage(content, hash));
-            }
-        });
+                    $list.append(ticket);
+                    let $ticket = $(ticket);
+                    messages.forEach(msg => {
+                        if (msg.close) {
+                            $ticket.addClass('cp-support-list-closed');
+                            return $ticket.append(APP.support.makeCloseMessage(msg));
+                        }
+                        if (msg.legacy && msg.messages) {
+                            msg.messages.forEach(c => {
+                                $ticket.append(APP.support.makeMessage(c));
+                            });
+                            return;
+                        }
+                        $ticket.append(APP.support.makeMessage(msg));
+                    });
+
+                });
+            });
+
+        };
+        let _refresh = Util.throttle(refresh, 500);
+        events.UPDATE_TICKET.reg(_refresh);
+        refresh();
+        $div.append(list);
         return $div;
     };
 
@@ -169,6 +210,10 @@ define([
 
     create['subscribe'] = function () {
         if (!Pages.areSubscriptionsAllowed()) { return; }
+        try {
+            if (common.getMetadataMgr().getPrivateData().plan) { return; }
+        } catch (err) {}
+
         var url = Pages.accounts.upgradeURL;
         var accountsLink = h('a', {
             href: url,
@@ -191,24 +236,24 @@ define([
     create['form'] = function () {
         var key = 'form';
         var $div = makeBlock(key, true); // Msg.support_formHint, .support_formTitle, .support_formButton
-        Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.fr/en/user_guide/index.html');
+        Pages.documentationLink($div.find('a')[0], 'https://docs.cryptpad.org/en/user_guide/index.html');
 
         var form = APP.support.makeForm();
 
-        var id = Util.uid();
-
         $div.find('button').click(function () {
-            var metadataMgr = common.getMetadataMgr();
-            var privateData = metadataMgr.getPrivateData();
-            var user = metadataMgr.getUserData();
-            var sent = APP.support.sendForm(id, form, {
-                channel: privateData.support,
-                curvePublic: user.curvePublic
-            });
-            id = Util.uid();
-            if (sent) {
+            var data = APP.support.getFormData(form);
+            APP.supportModule.execCommand('MAKE_TICKET', {
+                channel: Hash.createChannelId(),
+                title: data.title,
+                ticket: data
+            }, function (obj) {
+                if (obj && obj.error) {
+                    console.error(obj.error);
+                    return void UI.warn(Messages.error);
+                }
+                events.UPDATE_TICKET.fire();
                 $('.cp-sidebarlayout-category[data-category="tickets"]').click();
-            }
+            });
         });
         $div.find('button').before(form);
         return $div;
@@ -221,6 +266,16 @@ define([
         return $div;
     };
 
+    create['debugging-data'] = function () {
+        var key = 'debugging-data';
+        var $div = makeBlock(key); // Msg.support_debuggingDataTitle.support_debuggingDataHint;
+        var data = APP.support.getDebuggingData().sender;
+
+        var content = h('pre.debug-data', JSON.stringify(data, null, 2));
+        $div.append(content);
+
+        return $div;
+    };
 
     var hideCategories = function () {
         APP.$rightside.find('> div').hide();
@@ -231,6 +286,12 @@ define([
         cat.forEach(function (c) {
             APP.$rightside.find('.'+c).show();
         });
+    };
+
+    var icons = {
+        tickets: 'fa-envelope-o',
+        new: 'fa-life-ring',
+        debugging: 'fa-wrench',
     };
 
     var createLeftside = function () {
@@ -246,8 +307,12 @@ define([
                 'class': 'cp-sidebarlayout-category',
                 'data-category': key
             }).appendTo($categories);
-            if (key === 'tickets') { $category.append($('<span>', {'class': 'fa fa-envelope-o'})); }
-            if (key === 'new') { $category.append($('<span>', {'class': 'fa fa-life-ring'})); }
+            var iconClass = icons[key];
+            if (iconClass) {
+                $category.append(h('span', {
+                    class: 'fa ' + iconClass,
+                }));
+            }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -314,6 +379,14 @@ define([
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
         APP.support = Support.create(common, false, APP.pinUsage, APP.teamsUsage);
+        APP.supportModule = common.makeUniversal('support', {
+            onEvent: (obj) => {
+                let cmd = obj.ev;
+                let data = obj.data;
+                if (!events[cmd]) { return; }
+                events[cmd].fire(data);
+            }
+        });
 
         // Content
         var $rightside = APP.$rightside;

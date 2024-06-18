@@ -1,8 +1,12 @@
+# SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 [Unit]
 Description=CryptPad API server
 
 [Service]
-ExecStart=/home/cryptpad/.nvm/versions/node/v12.14.0/bin/node /home/cryptpad/cryptpad/server.js
+ExecStart=/usr/bin/node /home/cryptpad/cryptpad/server.js
 # modify to match the location of your cryptpad repository
 WorkingDirectory=/home/cryptpad/cryptpad
 
@@ -10,10 +14,10 @@ Restart=always
 # Restart service after 10 seconds if node service crashes
 RestartSec=2
 
-# Output to syslog
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=cryptpad
+# Proper logging to journald
+StandardOutput=journal
+StandardError=journal+console
+
 User=cryptpad
 Group=cryptpad
 # modify to match your working directory
@@ -23,6 +27,43 @@ Environment='PWD="/home/cryptpad/cryptpad"'
 # cryptpad stores its data with the filesystem, so you should increase this to match the value of `ulimit -n`
 # or risk EMFILE errors.
 LimitNOFILE=1000000
+
+# hardening directives as per https://www.freedesktop.org/software/systemd/man/systemd.exec.html
+# check those with systemd-analyze security cryptpad.service for more information
+# Proc filesystem
+ProcSubset=all
+ProtectProc=invisible
+# Capabilities
+CapabilityBoundingSet=
+# Security
+NoNewPrivileges=true
+# Sandboxing
+ProtectSystem=strict
+PrivateTmp=true
+PrivateDevices=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET
+RestrictAddressFamilies=AF_INET6
+RestrictAddressFamilies=AF_NETLINK
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RemoveIPC=true
+PrivateMounts=true
+ProtectClock=true
+# System Call Filtering
+SystemCallArchitectures=native
+SystemCallFilter=~@cpu-emulation @debug @keyring @ipc @mount @obsolete @privileged @setuid
+SystemCallFilter=@chown
+SystemCallFilter=pipe
+SystemCallFilter=pipe2
+ReadWritePaths=/home/cryptpad/cryptpad
 
 [Install]
 WantedBy=multi-user.target

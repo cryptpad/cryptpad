@@ -1,0 +1,96 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+@import (reference) "../../customize/src/less2/include/colortheme-all.less";
+@import (reference) "../../customize/src/less2/include/font.less";
+@import (reference) "../../customize/src/less2/include/alertify.less";
+
+@import (reference) "../../customize/src/less2/include/charts.less";
+
+html, body {
+    .font_main();
+    .alertify_main();
+    .charts_main();
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    background-color: @cp_static-bg !important;
+    color: @cryptpad_text_col;
+    font-family: "IBM Plex Mono";
+    width: 100%;
+
+    .centered {
+        width: 100%;
+        max-width: 50em;
+        margin: auto;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        .centered;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    --height: 0;
+
+    @brand: #0087ff;
+
+    div.container {
+        height: 20em;
+        .centered;
+        //overflow: auto;
+        margin-bottom: 15px;
+        border: 1px solid white;
+    }
+    div.wrapper {
+        max-width: 50em;
+        margin: auto;
+        //margin-top: 5em !important;
+    }
+    p {
+        margin-top: 45px !important;
+    }
+    a, a:visited {
+        color: #ddf;
+    }
+
+    .bordered {
+        border: 1px solid #777;
+        padding: 15px;
+        margin: 15px;
+    }
+
+    #qr-target {
+        display: inline-block;
+        min-height: 256px;
+        min-width: 256px;
+        //height: 350px;
+        //width: 350px;
+        background: white;
+        padding: 5px;
+        margin-top: 15px;
+    }
+    input {
+        box-sizing: border-box;
+    }
+    blockquote {
+        border-left: 3px solid #999;
+        background: #77777777;
+        width: 100%;
+        padding: 15px;
+        box-sizing: border-box;
+        margin-left: 0px;
+
+        white-space: pre-wrap;
+
+    }
+    button {
+        border: 0px;
+        border-radius: 5px;
+        padding: 15px;
+    }
+}
+

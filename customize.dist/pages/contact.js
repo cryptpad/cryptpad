@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/api/config',
     '/common/hyperscript.js',
@@ -7,6 +11,7 @@ define([
 ], function (Config, h, Msg, Pages, LocalStore) {
 
     return function () {
+        document.title = Msg.contact;
         var developerEmail = "contact@cryptpad.fr";
         var adminEmail = Config.adminEmail && [
             'i.did.not.read.my.config@cryptpad.fr',
@@ -22,8 +27,8 @@ define([
                 ]),
                 (adminEmail || adminMailbox) ? h('div.row.cp-iconCont.align-items-center', [
                     h('div.col-12',
-                        Pages.setHTML(h('h2.text-center'), Msg.contact_admin),
-                        h('p', Msg.contact_adminHint)
+                        h('h2.text-center', Msg._getKey('contact_admin', [ Pages.Instance.name ])),
+                        h('p.center', Msg.contact_adminHint)
                     ),
                     adminEmail ? h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "mailto:"+Config.adminEmail},
@@ -57,51 +62,10 @@ define([
                 h('div.row.cp-iconCont.align-items-center', [
                     h('div.col-12',
                         Pages.setHTML(h('h2.text-center'), Msg.contact_dev),
-                        h('p', Msg.contact_devHint)
+                        h('p.center', Msg.contact_devHint)
                     ),
-                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
-                        h('a.card', {href : "https://twitter.com/cryptpad"},
-                            h('div.card-body',
-                                h('p', [
-                                    // this is not a typo. adblock plus blocks images with src *twitter* apparently
-                                    h('img', {
-                                        src: '/customize/images/twiitter.svg',
-                                        alt: '',
-                                        'aria-hidden': 'true'}),
-                                    'Twitter'
-                                ])
-                            )
-                        )
-                    ),
-                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
-                        h('a.card', {href : "https://social.weho.st/@cryptpad"},
-                            h('div.card-body',
-                                h('p', [
-                                    h('img', {
-                                        src: '/customize/images/mastodon.svg',
-                                        alt: '',
-                                        'aria-hidden': 'true'
-                                    }),
-                                    'Mastodon'
-                                ])
-                            )
-                        )
-                    ),
-                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
-                        h('a.card', {href : "https://github.com/xwiki-labs/cryptpad/issues/"},
-                            h('div.card-body',
-                                h('p', [
-                                    h('img', {
-                                        src: '/customize/images/github.svg',
-                                        alt: '',
-                                        'aria-hidden': 'true'}),
-                                    Msg.contact_bug || 'Bug report'
-                                ])
-                            )
-                        )
-                    ),
-                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
-                        h('a.card', {href : "https://app.element.io/#/room/#cryptpad:matrix.xwiki.com"},
+                    h('div',
+                        h('a.card-small', {href : "https://matrix.to/#/#cryptpad:matrix.xwiki.com"},
                             h('div.card-body',
                                 h('p', [
                                     h('img', {
@@ -114,8 +78,49 @@ define([
                             )
                         )
                     ),
-                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
-                        h('a.card', {href : "mailto:" + developerEmail},
+                    h('div',
+                        h('a.card-small', {href : "https://fosstodon.org/@cryptpad"},
+                            h('div.card-body',
+                                h('p', [
+                                    h('img', {
+                                        src: '/customize/images/mastodon.svg',
+                                        alt: '',
+                                        'aria-hidden': 'true'
+                                    }),
+                                    'Mastodon'
+                                ])
+                            )
+                        )
+                    ),
+                    h('div',
+                        h('a.card-small', {href : "https://twitter.com/cryptpad"},
+                            h('div.card-body',
+                                h('p', [
+                                    // this is not a typo. adblock plus blocks images with src *twitter* apparently
+                                    h('img', {
+                                        src: '/customize/images/twiitter.svg',
+                                        alt: '',
+                                        'aria-hidden': 'true'}),
+                                    'Twitter'
+                                ])
+                            )
+                        )
+                    ),
+                    h('div',
+                        h('a.card-small', {href : "https://github.com/cryptpad/cryptpad/issues/"},
+                            h('div.card-body',
+                                h('p', [
+                                    h('img', {
+                                        src: '/customize/images/github.svg',
+                                        alt: '',
+                                        'aria-hidden': 'true'}),
+                                    Msg.contact_bug || 'Bug report'
+                                ])
+                            )
+                        )
+                    ),
+                    h('div',
+                        h('a.card-small', {href : "mailto:" + developerEmail},
                             h('div.card-body',
                                 h('p', [
                                     h('img', {

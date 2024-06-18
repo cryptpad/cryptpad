@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define(['jquery'], function ($) {
     var CKEDITOR = window.CKEDITOR;
 
@@ -14,11 +18,12 @@ define(['jquery'], function ($) {
         CKEDITOR.tools.callFunction(Number(m[1]), e.currentTarget);
         $iframe.scrollTop(s);
     });
-
+    
     // Buttons
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
     $a.each(function (i, el) {
         var $el = $(el);
+        $el.attr('tabindex', '0');
         var $icon = $el.find('span.cke_button_icon');
         if ($icon.length) {
             try {
@@ -30,7 +35,16 @@ define(['jquery'], function ($) {
             } catch (e) { console.error(e); }
         }
         $el.on('keydown blur focus click dragstart', function (e) {
-            e.preventDefault();
+            if (e.key !== 'Tab') { e.preventDefault(); }
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                var focusedButton = document.activeElement;
+        
+                // Simulate a click event on the focused button
+                if (focusedButton) {
+                    focusedButton.click();
+                }
+            }
             var attr = $(el).attr('oon'+e.type);
             if (!attr) { return; }
             if (['blur', 'dragstart'].indexOf(e.type) !== -1) { return false; }
@@ -44,7 +58,7 @@ define(['jquery'], function ($) {
             $iframe.scrollTop(s);
         });
     });
-
+    
 
     // Dropdown menus
 
@@ -107,13 +121,19 @@ define(['jquery'], function ($) {
                         if (e.type === 'dragstart') { return false; }
                         var attr = $(e.currentTarget).attr('oon'+e.type);
                         if (!attr) { return; }
-                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
+                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([^']+)')?\);/;
+                        var reg2 = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'",]+)'?(,'([^']+)')?, this\);/;
                         var match = attr.match(reg);
-                        if (!match) { return; }
+                        var lastArg;
+                        if (!match) {
+                            match = attr.match(reg2);
+                            if (!match) { return; }
+                            lastArg = this;
+                        }
                         var f = match[1];
                         var el = match[2] !== "null" ? match[2] : null;
                         var s = $iframe.scrollTop();
-                        CKEDITOR.tools.callFunction(Number(f), el, match[4]);
+                        CKEDITOR.tools.callFunction(Number(f), el, match[4], lastArg);
                         $iframe.scrollTop(s);
                     });
 
@@ -165,8 +185,8 @@ define(['jquery'], function ($) {
             // for other browers, the 'src' attribute should be left empty to
             // trigger iframe's 'load' event.
             var src =
-                CKEDITOR.env.air ? 'javascript:void(0)' : // jshint ignore:line
-                ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) ? 'javascript:void(function(){' + encodeURIComponent( // jshint ignore:line
+                CKEDITOR.env.air ? 'javascript:void(0)' :
+                ( CKEDITOR.env.ie && !CKEDITOR.env.edge ) ? 'javascript:void(function(){' + encodeURIComponent(
                     'document.open();' +
                     // In IE, the document domain must be set any time we call document.open().
                     '(' + CKEDITOR.tools.fixDomain + ')();' +

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/diffMarked.js',
@@ -12,7 +16,6 @@ define([
     var ifrw;
     var $modal;
     var $content;
-    var placeholder;
     var options;
     var separator = '<hr data-pewpew="pezpez">';
     var separatorReg = /<hr data\-pewpew="pezpez">/g;
@@ -310,7 +313,7 @@ define([
         $modal = Slide.$modal = $m;
         $content = Slide.$content = $c;
         ifrw = Slide.ifrw = window;
-        placeholder = Slide.placeholder = ph;
+        Slide.placeholder = ph;
         options = Slide.options = opt;
         addEvent();
         addSwipeEvents();

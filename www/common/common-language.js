@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/customize/messages.js'
@@ -20,18 +24,17 @@ define([
     };
 
     Msg.initSelector = function ($select, sfcommon) {
-        var selector = $select || $('#cp-language-selector');
+        var $selector = $select || $('#cp-language-selector');
 
-        if (!selector.length) { return; }
+        if (!$selector.length) { return; }
 
         var language = Messages._getLanguage();
 
         // Select the current language in the list
-        selector.setValue(language || 'en');
+        $selector.setValue(language || 'en');
 
         // Listen for language change
-        $(selector).find('a.cp-language-value').on('click', function () {
-            var newLanguage = $(this).attr('data-value');
+        $selector.onChange.reg((prettyName, newLanguage) => {
             Msg.setLanguage(newLanguage, sfcommon && sfcommon.getSframeChannel(), function () {
                 if (newLanguage !== language) {
                     if (sfcommon) {
@@ -42,6 +45,7 @@ define([
                 }
             });
         });
+
     };
 
     Msg.applyTranslation = function () {
@@ -49,11 +53,6 @@ define([
             var $el = $(e);
             var key = $el.data('localization');
             $el.html(Messages[key]);
-        };
-        var translateAppend = function (i, e) {
-            var $el = $(e);
-            var key = $el.data('localization-append');
-            $el.append(Messages[key]);
         };
         var translateTitle = function () {
             var $el = $(this);
@@ -66,11 +65,9 @@ define([
             $el.attr('placeholder', Messages[key]);
         };
         $('[data-localization]').each(translateText);
-        $('[data-localization-append]').each(translateAppend);
         $('[data-localization-title]').each(translateTitle);
         $('[data-localization-placeholder]').each(translatePlaceholder);
         $('#pad-iframe').contents().find('[data-localization]').each(translateText);
-        $('#pad-iframe').contents().find('[data-localization-append]').each(translateAppend);
         $('#pad-iframe').contents().find('[data-localization-title]').each(translateTitle);
         $('#pad-iframe').contents().find('[data-localization-placeholder]').each(translatePlaceholder);
     };

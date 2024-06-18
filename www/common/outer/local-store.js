@@ -1,8 +1,12 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-constants.js',
     '/common/common-hash.js',
     '/common/outer/cache-store.js',
-    '/bower_components/localforage/dist/localforage.min.js',
+    '/components/localforage/dist/localforage.min.js',
     '/customize/application_config.js',
     '/common/common-util.js',
 ], function (Constants, Hash, Cache, localForage, AppConfig, Util) {
@@ -47,7 +51,7 @@ define([
         return hash;
     };
 
-    var getUserHash = LocalStore.getUserHash = function () {
+    LocalStore.getUserHash = function () {
         var hash = localStorage[Constants.userHashKey];
 
         if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
@@ -76,12 +80,27 @@ define([
         safeSet(Constants.blockHashKey, hash);
     };
 
+    LocalStore.getSessionToken = function () {
+        return localStorage[Constants.sessionJWT];
+    };
+
+    LocalStore.setSessionToken = function (token) {
+        safeSet(Constants.sessionJWT, token);
+    };
+
+    LocalStore.getSSOSeed = function () {
+        return localStorage[Constants.ssoSeed];
+    };
+    LocalStore.setSSOSeed = function (seed) {
+        safeSet(Constants.ssoSeed, seed);
+    };
+
     LocalStore.getAccountName = function () {
         return localStorage[Constants.userNameKey];
     };
 
     LocalStore.isLoggedIn = function () {
-        return window.CP_logged_in || typeof getUserHash() === "string";
+        return window.CP_logged_in || typeof LocalStore.getBlockHash() === "string";
     };
 
     LocalStore.getDriveRedirectPreference = function () {
@@ -107,11 +126,11 @@ define([
         safeSet(Constants.isPremiumKey, Boolean(bool));
     };
 
-    LocalStore.login = function (hash, name, cb) {
-        if (!hash) { throw new Error('expected a user hash'); }
+    LocalStore.login = function (userHash, blockHash, name, cb) {
+        if (!userHash && !blockHash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
-        hash = Hash.serializeHash(hash);
-        safeSet(Constants.userHashKey, hash);
+        if (userHash) { LocalStore.setUserHash(userHash); }
+        if (blockHash) { LocalStore.setBlockHash(blockHash); }
         safeSet(Constants.userNameKey, name);
         if (cb) { cb(); }
     };
@@ -121,6 +140,8 @@ define([
             Constants.userNameKey,
             Constants.userHashKey,
             Constants.blockHashKey,
+            Constants.sessionJWT,
+            Constants.ssoSeed,
             'loginToken',
             'plan',
         ].forEach(function (k) {

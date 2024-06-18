@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./colortheme-all.less";
 @import (reference) "./variables.less";
 @import (reference) "./browser.less";
@@ -35,12 +41,51 @@
         }
     }
 
+    .cp-loading-missing-mfa {
+        .cp-settings-qr-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            .cp-settings-qr-code {
+                input {
+                    max-width: 250px;
+                }
+                button {
+                    margin-top: 10px;
+                }
+            }
+        }
+        .cp-settings-qr {
+            img {
+                border: 10px solid white;
+                border-radius: 10px;
+            }
+            margin: 10px 10px 10px 0;
+        }
+        .cp-password-container {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+
+            justify-content: flex-start;
+            input {
+                flex-shrink: 1;
+                max-width: 400px;
+            }
+            label {
+                width: 100%;
+                font-weight: unset;
+                margin-bottom: 5px;
+            }
+        }
+    }
+
     // Properties modal
     .cp-app-prop {
         margin-bottom: 10px;
         .cp-app-prop-size-container {
             height: 20px;
             background-color: @cryptpad_color_brand;
+            border-radius: @variables_radius;
             margin: 10px 0;
             padding: 0;
             div {
@@ -48,6 +93,8 @@
                 margin: 0;
                 padding: 0;
                 background-color: @cryptpad_color_grey_500;
+                border-top-left-radius: @variables_radius;
+                border-bottom-left-radius: @variables_radius;
             }
         }
         .cp-app-prop-size-legend {
@@ -65,6 +112,7 @@
                 height: 20px;
                 width: 20px;
                 margin-right: 10px;
+                border-radius: @variables_radius;
             }
             .cp-app-prop-history-size-color {
                 background-color: @cryptpad_color_grey_500;
@@ -119,12 +167,20 @@
         display: flex;
         align-items: center;
         margin-bottom: 5px;
+        &.cp-teams-invite-role {
+            .cp-radio:not(:first-child) {
+                margin-left: 10px;
+            }
+        }
+        .cp-teams-help {
+            text-decoration: none !important;
+        }
     }
     .cp-teams-invite-message {
         resize: none;
     }
     .cp-teams-invite-alert {
-        margin-top: 10px;
+        margin: 10px 0px 0px 0px !important;
     }
     .cp-teams-invite-spinner {
         font-size: 1.2em;
@@ -159,6 +215,7 @@
             align-items: center;
             padding: 5px 0;
             outline: none;
+            border-radius: @variables_radius;
             & > i {
                 margin-left: @snapshot_spacing;
                 text-align: center;

@@ -1,26 +1,30 @@
-/* jshint ignore:start */
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
-var window = self;
+/* eslint-env worker */
+
+var window = self;  // eslint-disable-line no-unused-vars
 var localStorage = {
     setItem: function (k, v) { localStorage[k] = v; },
     getItem: function (k) { return localStorage[k]; }
 };
 
-importScripts('/bower_components/requirejs/require.js');
+importScripts('/components/requirejs/require.js');
 
 require.config({
         // fix up locations so that relative urls work.
         baseUrl: '/',
         paths: { 
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
-            "jquery": "/bower_components/jquery/dist/jquery.min",
+            "jquery": "/components/jquery/dist/jquery.min",
             // json.sortify same
-            "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
-            cm: '/bower_components/codemirror'
+            "json.sortify": "/components/json.sortify/dist/JSON.sortify",
+            cm: '/components/codemirror'
         },
         map: {
             '*': {
-                'css': '/bower_components/require-css/css.js',
+                'css': '/components/require-css/css.js',
                 'less': '/common/RequireLess.js',
             }
         }

@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
-    '/bower_components/marked/marked.min.js',
+    '/components/marked/marked.min.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/hyperscript.js',
@@ -13,7 +17,7 @@ define([
 
     '/lib/highlight/highlight.pack.js',
     '/lib/diff-dom/diffDOM.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
     'css!/lib/highlight/styles/'+ (window.CryptPad_theme === 'dark' ? 'dark.css' : 'github.css')
 ],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages, Less, Pages) {
     var DiffMd = {};
@@ -31,12 +35,19 @@ define([
         "g.grid g.tick line { opacity: 0.25; }" +
         "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
 
+    var onMermaidRunEvt = Util.mkEvent(true);
+    var onMermaidRun = () => {
+        onMermaidRunEvt.fire();
+        onMermaidRunEvt = Util.mkEvent(true);
+    };
     var Mermaid = {
         __stubbed: true,
-        init: function () {
+        run: function (cb) {
+            onMermaidRunEvt.reg(cb);
             require([
                 'mermaid',
-            ], function (_Mermaid) {
+                '/lib/mermaid/mermaid-zenuml.esm.min.js',
+            ], function (_Mermaid, zenuml) {
                 console.debug("loaded mermaid");
                 if (Mermaid.__stubbed) {
                     Mermaid = _Mermaid;
@@ -46,9 +57,21 @@ define([
                         theme: (window.CryptPad_theme === 'dark') ? 'dark' : 'default',
                         "themeCSS": mermaidThemeCSS,
                     });
+                    onMermaidRun();
+
+                    var run = Mermaid.run;
+                    var to;
+                    Mermaid.run = (cb) => {
+                        clearTimeout(to);
+                        onMermaidRunEvt.reg(cb);
+                        to = setTimeout(() => {
+                            onMermaidRun();
+                            run();
+                        });
+                    };
                 }
 
-                pluginLoaded.fire();
+                Mermaid.registerExternalDiagrams([zenuml]).then(() => pluginLoaded.fire());
             });
         }
     };
@@ -57,7 +80,7 @@ define([
         __stubbed: true,
         tex2svg: function (a, b) {
             require([
-                '/bower_components/MathJax/es5/tex-svg.js',
+                '/components/mathjax/es5/tex-svg.js',
             ], function () {
                 console.debug("Loaded mathjax");
                 if (Mathjax.__stubbed) {
@@ -180,7 +203,7 @@ define([
             renderer: restrictedMd ? restrictedRenderer : renderer,
         });
         noHeadingId = noId;
-        var r = Marked(md, {
+        var r = Marked.parse(md, {
             sanitize: sanitize,
             headerIds: !noId,
             gfm: true,
@@ -201,7 +224,7 @@ define([
 
     renderer.code = function (code, language) {
         if (!code || typeof(code) !== 'string' || !code.trim()) { return defaultCode.apply(renderer, arguments); }
-        if (language === 'mermaid' && code.match(/^(flowchart|graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph|stateDiagram|erDiagram|journey|requirementDiagram)/)) {
+        if (language === 'mermaid' && code.match(/^(flowchart|graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph|stateDiagram|erDiagram|journey|requirementDiagram|GitGraph|mindmap|timeline|zenuml|quadrantChart|C4Context)/)) {
             return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'markmap') {
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
@@ -345,7 +368,7 @@ define([
             ]),
             h('br'),
             h('a.cp-learn-more', {
-                href: Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/security.html#remote-content'),
+                href: Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/security.html#remote-content'),
             }, [
                 Messages.resources_learnWhy
             ]),
@@ -503,12 +526,13 @@ define([
         name: 'mermaid',
         attr: 'mermaid-source',
         render: function ($el) {
-            Mermaid.init(undefined, $el);
-            // clickable elements in mermaid don't work well with our sandboxing setup
-            // the function below strips clickable elements but still leaves behind some artifacts
-            // tippy tooltips might still be useful, so they're not removed. It would be
-            // preferable to just support links, but this covers up a rough edge in the meantime
-            removeMermaidClickables($el);
+            Mermaid.run(() => {
+                // clickable elements in mermaid don't work well with our sandboxing setup
+                // the function below strips clickable elements but still leaves behind some artifacts
+                // tippy tooltips might still be useful, so they're not removed. It would be
+                // preferable to just support links, but this covers up a rough edge in the meantime
+                removeMermaidClickables($el);
+            });
         }
     };
 

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function () {
 var factory = function (Util, Nacl, Scrypt) {
     var Invite = {};
@@ -45,8 +49,8 @@ var factory = function (Util, Nacl, Scrypt) {
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-util.js',
-            '/bower_components/tweetnacl/nacl-fast.min.js',
-            '/bower_components/scrypt-async/scrypt-async.min.js',
+            '/components/tweetnacl/nacl-fast.min.js',
+            '/components/scrypt-async/scrypt-async.min.js',
         ], function (Util) {
             return factory(Util, window.nacl, window.scrypt);
         });

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function () {
 var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback) {
     var Roster = {};
@@ -463,9 +467,21 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         if (typeof(members[curve]) !== 'undefined') { throw new Error("MEMBER_ALREADY_PRESENT"); }
 
         // copy the new profile from the old one
-        members[curve] = Util.clone(members[author]);
-        // and erase the old one
-        delete members[author];
+        var clone = Util.clone(members[author]);
+        delete clone.remaining;
+        delete clone.totalUses;
+        delete clone.inviteChannel;
+        delete clone.previewChannel;
+        members[curve] = clone;
+
+        var remaining = members[author].remaining || 1;
+        if (remaining === -1) { return true; } // Infinite uses, keep the link
+        if (remaining > 1) { // Remove 1 use
+            members[author].remaining = remaining - 1;
+        } else { // Disable link
+            delete members[author];
+        }
+
         return true;
     };
 
@@ -566,7 +582,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             delete ref.internal.checkpointTimeout;
         };
 
-        var webChannel;
         roster.stop = function () {
             if (ref.internal.cpNetflux && typeof(ref.internal.cpNetflux.stop) === "function") {
                 ref.internal.cpNetflux.stop();
@@ -588,9 +603,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             }
             config.onCacheReady(roster);
         };
-        var onReady = function (info) {
+        var onReady = function () {
             //console.log("READY");
-            webChannel = info;
             ready = true;
             cb(void 0, roster);
         };
@@ -907,23 +921,23 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         module.exports = factory(
             require("../common-util"),
             require("../common-hash"),
-            require("../../bower_components/chainpad-netflux/chainpad-netflux.js"),
-            require("../../bower_components/json.sortify"),
+            require("../../components/chainpad-netflux/chainpad-netflux.js"),
+            require("../../components/json.sortify"),
             require("nthen"),
-            require("../../bower_components/chainpad-crypto/crypto"),
+            require("../../components/chainpad-crypto/crypto"),
             null // no feedback here
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        require.config({ paths:  { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
+        require.config({ paths:  { 'json.sortify': '/components/json.sortify/dist/JSON.sortify' } });
         define([
             '/common/common-util.js',
             '/common/common-hash.js',
             'chainpad-netflux',
             'json.sortify',
-            '/bower_components/nthen/index.js',
-            '/bower_components/chainpad-crypto/crypto.js',
+            '/components/nthen/index.js',
+            '/components/chainpad-crypto/crypto.js',
             '/common/common-feedback.js',
-            //'/bower_components/tweetnacl/nacl-fast.min.js',
+            //'/components/tweetnacl/nacl-fast.min.js',
         ], function (Util, Hash, CPNF, Sortify, nThen, Crypto, Feedback) {
             return factory.apply(null, [
                 Util,

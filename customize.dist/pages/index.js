@@ -1,9 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
     '/common/hyperscript.js',
-    '/common/common-feedback.js',
-    '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-constants.js',
     '/common/common-util.js',
@@ -11,14 +13,10 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/common/outer/local-store.js',
-    '/customize/pages.js'
-], function ($, Config, h, Feedback, UI, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages) {
+    '/customize/pages.js',
+    '/common/pad-types.js',
+], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages, PadTypes) {
     var urlArgs = Config.requireConf.urlArgs;
-
-    var isAvailableType = function (x) {
-        if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
-        return AppConfig.availablePadTypes.indexOf(x) !== -1;
-    };
 
     var checkEarlyAccess = function (x) {
         // Check if this is an early access app and if they are allowed.
@@ -37,6 +35,7 @@ define([
     };
 
     return function () {
+        document.title = Msg.homePage;
         var icons = [
                 [ 'sheet', Msg.type.sheet],
                 [ 'doc', Msg.type.doc],
@@ -45,16 +44,16 @@ define([
                 [ 'kanban', Msg.type.kanban],
                 [ 'code', Msg.type.code],
                 [ 'form', Msg.type.form],
-                [ 'whiteboard', Msg.type.whiteboard],
-                [ 'slide', Msg.type.slide],
-                [ 'drive', Msg.type.drive]
+                [ 'diagram', Msg.type.diagram],
+                [ 'slide', Msg.type.slide]
             ].filter(function (x) {
-                return isAvailableType(x[0]);
+                return PadTypes.isAvailable(x[0]);
             })
             .map(function (x) {
                 var s = 'div.bs-callout.cp-callout-' + x[0];
                 var cls = '';
                 var isEnabled = checkRegisteredType(x[0]);
+
                 var isEAEnabled = checkEarlyAccess(x[0]);
                 //if (i > 2) { s += '.cp-more.cp-hidden'; }
                 var icon = AppConfig.applicationsIcon[x[0]];
@@ -62,6 +61,8 @@ define([
                 var href = '/'+ x[0] +'/';
                 var attr = isEnabled ? { href: href } : {
                     onclick: function () {
+                        // if the app is not enabled then we send them to the login page
+                        // which will redirect to the app in question ?
                         var loginURL = Hash.hashToHref('', 'login');
                         var url = Hash.getNewPadURL(loginURL, { href: href });
                         window.location.href = url;
@@ -89,93 +90,122 @@ define([
                 TextFit($(a).find('.pad-button-text')[0], {minFontSize: 13, maxFontSize: 18});
             });
         });
-        UI.addTooltips();
 
-        var subscribeButton;
-        /* Display a subscribe button if they are enabled and the button's translation key exists */
-        if (Config.allowSubscriptions) {
-            subscribeButton = Pages.subscribeButton(function () {
-                Feedback.send('HOME_SUBSCRIBE_CRYPTPAD');
-            });
-        }
+        var isLocalURL = url => {
+            try {
+                return new URL(url, window.location.href).origin === window.location.origin;
+            } catch (err) {
+                console.error(err);
+                return /^\//.test(url);
+            }
+        };
 
-        var supportText = Pages.setHTML(h('span'), Msg.home_support);
-        Pages.documentationLink(supportText.querySelector('a'), "https://docs.cryptpad.fr/en/how_to_contribute.html");
+        var pageLink = function (ref, loc, text) {
+            if (!ref) { return; }
+            var attrs =  {
+                href: ref,
+            };
+            if (!isLocalURL(ref)) {
+                attrs.target = '_blank';
+                attrs.rel = 'noopener noreferrer';
+            }
+            if (loc) {
+                attrs['data-localization'] =  loc;
+                text = Msg[loc];
+            }
+            return h('a', attrs, text);
+        };
 
-        var opensource = Pages.setHTML(h('p'), Msg.home_opensource);
-        Pages.externalLink(opensource.querySelector('a'), "https://github.com/xwiki-labs/cryptpad");
+        var fastLink = k => pageLink(Pages.customURLs[k], k);
 
-        var blocks = [
-            h('div.row.cp-page-section', [
-                h('div.col-sm-6',
-                    h('img.img-fluid.cp-img-invert', {
-                        src:'/customize/images/shredder.png',
-                        alt:'',
-                        'aria-hidden': 'true'
-                    })
-                ),
-                h('div.col-sm-6', [
-                    h('h2', Msg.home_privacy_title),
-                    h('p', Msg.home_privacy_text)
-                ])
-            ]),
-            h('div.row.cp-page-section',
-                h('div.col-sm-12', [
-                    h('h2', Msg.home_host_title),
-                    h('p'), Msg.home_host
-                ])
-            ),
-            h('div.row.cp-page-section', [
-                h('div.col-sm-6', [
-                    h('h2', Msg.home_opensource_title),
-                    opensource,
-                    h('img.small-logo.cp-img-invert', {
-                        src: '/customize/images/logo_AGPLv3.svg',
-                        alt: 'APGL3 License Logo'
-                    })
-                ]),
-                h('div.col-sm-6', [
-                    h('h2', Msg.home_support_title),
-                    supportText,
-                    subscribeButton,
-                    Pages.crowdfundingButton(function () {
-                        Feedback.send('HOME_SUPPORT_CRYPTPAD');
-                    }),
-                ])
-            ])
-        ];
+        var imprintLink = fastLink('imprint');
+        var privacyLink = fastLink('privacy');
+        var termsLink = fastLink('terms');
+        var statusLink = fastLink('status');
 
         var notice;
 /*  Admins can specify a notice to display in application_config.js via the `homeNotice` attribute.
     If the text is the key for the translation system then then the most appropriate translated text
     will be displayed. Otherwise, the direct text will be included as HTML.
 */
-        if (AppConfig.homeNotice) {
-            notice = h('div.alert.alert-info', Pages.setHTML(h('span'), [
-                Msg[AppConfig.homeNotice] || AppConfig.homeNotice
-            ]));
+        if (Pages.Instance.notice) {
+            console.log(Pages.Instance.notice);
+            notice = h('div.alert.alert-info', Pages.setHTML(h('span'), Pages.Instance.notice));
         }
+
+        // instance title
+
+        var instanceTitle = h('h1.cp-instance-title', Pages.Instance.name);
+
+        // instance location
+        var locationBlock;
+        if (Pages.Instance.location) {
+            locationBlock = h('div.cp-instance-location', [
+                h('i.fa.fa-map-pin', {'aria-hidden': 'true'}),
+                Msg._getKey('home_location', [ Pages.Instance.location ]),
+            ]);
+        } else {
+            locationBlock = h('div', h('br'));
+        }
+
+        var subButton = function () {
+            if (Pages.areSubscriptionsAllowed() && !LocalStore.getPremium()) {
+                var sub = h('div.cp-sub-prompt', [
+                    h('span', Msg.home_morestorage),
+                    h('a', {href:"/accounts/"}, h('button', [
+                        h('i.fa.fa-ticket'),
+                        Msg.features_f_subscribe
+                    ]))
+                ]);
+                return sub;
+            } else {
+                return h('div');
+            }
+        };
+
 
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
+                notice,
                 h('div.container.cp-container', [
                     h('div.row.cp-home-hero', [
-                        h('div.cp-title.col-md-7', [
+                        h('div.cp-title.col-lg-6', [
                             h('img', {
-                                src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                                src: '/api/logo?' + urlArgs,
                                 'aria-hidden': 'true',
                                 alt: ''
                             }),
-                            h('h1', 'CryptPad'),
-                            UI.setHTML(h('span.tag-line'), Msg.main_catch_phrase)
+                            instanceTitle,
+                            Pages.setHTML(h('span.tag-line'), Pages.Instance.description),
+                            locationBlock,
+                            h('div.cp-instance-links', [
+                                termsLink,
+                                privacyLink,
+                                imprintLink,
+                                h('a', {href:"/contact.html"}, Msg.contact),
+                                statusLink,
+                            ])
                         ]),
-                        h('div.col-md-5.cp-app-grid', [
-                            icons,
+                        h('div.cp-apps.col-lg-6', [
+                            h('div.cp-app-grid', [
+                                h('span.cp-app-new', [
+                                    h('i.fa.fa-plus'),
+                                    Msg.fm_newFile
+                                ]),
+                                h('div.cp-app-grid-apps', [
+                                    icons,
+                                ])
+                            ]),
+                            h('div.cp-app-drive', [
+                                h('a.cp-drive-btn', {'href': '/drive/'}, [
+                                    h('i.fa.fa-hdd-o', {'aria-hidden': 'true'}),
+                                    Msg.team_cat_drive
+                                ]),
+                                subButton
+                            ])
                         ])
                     ]),
-                    notice,
-                    blocks
                 ]),
                 Pages.infopageFooter(),
             ]),

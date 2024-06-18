@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
-    '/bower_components/localforage/dist/localforage.min.js',
+    '/components/localforage/dist/localforage.min.js',
     '/common/outer/cache-store.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function (localForage, Cache, nThen) {
     nThen(function (w) {
         localStorage.clear();

@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) "../../customize/src/less2/include/limit-bar.less";
 @import (reference) "../../customize/src/less2/include/creation.less";
@@ -25,6 +31,13 @@
 
     .export_main();
 
+    .cp-settings-displayname .fa{
+        margin-left: 0.5rem;
+    }
+    .cp-settings-mediatag-size .fa{
+        margin-left: 0.5rem;
+    }
+
     #cp-sidebarlayout-container {
         #cp-sidebarlayout-rightside {
             input[type="checkbox"] {
@@ -32,6 +45,7 @@
                 margin-right: 5px;
             }
             .cp-settings-cursor-color-picker {
+                border-radius: @variables_radius;
                 display: inline-block;
                 vertical-align: middle;
                 height: 25px;
@@ -45,7 +59,7 @@
                     display: inline;
                 }
                 button.btn {
-                    width: @sidebar_button-width;
+                    width: @sidebar_block-width;
                     max-width: 100%;
                     margin: 0 !important;
                 }
@@ -71,7 +85,7 @@
             }
             .cp-settings-info-block {
                 [type="text"] {
-                    width: @sidebar_button-width;
+                    width: @sidebar_block-width;
                     max-width: 100%;
                 }
             }
@@ -81,17 +95,31 @@
                 align-items: center;
                 flex-wrap: wrap;
                 label {
-                    margin-right: 40px;
+                    padding-right: 1rem;
+                    padding-bottom:0.5rem;
                 }
             }
 
-            .cp-settings-change-password, .cp-settings-own-drive, .cp-settings-delete {
+            .cp-password-container {
+                .cp-password-input{
+                    margin-top:0.5rem;
+                }
                 [type="password"], [type="text"] {
-                    width: @sidebar_button-width;
+                    //width: @sidebar_block-width;
                     flex: unset;
                 }
                 button {
-                    margin-top: 5px;
+                    margin-top:0;
+                    margin-left: 10px;
+                }
+            }
+            @media (max-width: 840px) {
+
+                .cp-password-container {
+                    button {
+                        //margin-top: 10px;
+                        margin-left: 0;
+                    }
                 }
             }
             .cp-settings-drive-backup {
@@ -100,6 +128,81 @@
                         margin-right: 5px;
                     }
                     margin-right: 5px;
+                }
+            }
+            .cp-settings-mfa {
+                .cp-settings-qr {
+                    img {
+                        border: 10px solid white;
+                        border-radius: 10px;
+                    }
+                    margin: 10px 20px 20px 0;
+                }
+                @media(max-width:750px){
+                    .cp-settings-qr {
+                        img {
+                            max-width:80%;
+                        }
+
+                        margin: 0 0 1rem;
+                    }
+                }
+            }
+            .cp-settings-mfa-hint {
+                color: @cp_sidebar-hint;
+            }
+            .cp-settings-mfa-status {
+                & > i {
+                    margin-right: 5px;
+                }
+                margin: 1em 0;
+            }
+            .cp-settings-mfa {
+                .cp-password-container {
+                    flex-wrap: wrap;
+                    gap:0.5rem;
+
+                    justify-content:flex-start;
+                    input {
+                        flex-shrink: 1;
+                        max-width: 400px;
+                    }
+                    label {
+                        width: 100%;
+                        font-weight: unset;
+                        margin-bottom: 5px;
+                    }
+                }
+                .cp-settings-qr-container {
+                    display: flex;
+                    align-items: center;
+                    .cp-settings-qr-code {
+                        input {
+                            max-width: 250px;
+                        }
+                        button {
+                            margin-top: 10px;
+                        }
+                    }
+                    .cp-settings-qr-code,.cp-button-confirm{
+                        display:flex;
+                        flex-direction:column;
+                        button{
+                            margin-top:1.5rem;
+                            margin-bottom:1.5rem;
+                        }
+                    }
+                }
+                @media(max-width:750px){
+                    .cp-settings-qr-container {
+                        margin-top:1rem;
+                    }
+                }
+                .btn-primary .fa.fa-check{
+                    color:white;
+                    width:1rem;
+                    height:1rem;
+                    margin: 0 2px 0 0;
                 }
             }
         }

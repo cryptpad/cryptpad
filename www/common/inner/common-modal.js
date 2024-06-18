@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-util.js',
@@ -5,7 +9,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function ($, Util, Hash, UI, UIElements, Messages, nThen) {
     var Modal = {};
 
@@ -18,6 +22,8 @@ define([
         data.allowed = obj.allowed;
         data.rejected = obj.rejected;
     };
+    // trying to get data from server
+    // should be authoritative, so override whatever you have in memory
     Modal.loadMetadata = function (Env, data, waitFor, redraw) {
         Env.common.getPadMetadata({
             channel: data.channel
@@ -35,21 +41,32 @@ define([
         nThen(function (waitFor) {
             var priv = common.getMetadataMgr().getPrivateData();
             var base = priv.origin;
+            // this fetches attributes from your shared worker's memory
             common.getPadAttribute('', waitFor(function (err, val) {
                 if (err || !val) {
                     if (opts.access) {
                         data.password = priv.password;
-                        // Access modal and the pad is not stored: we're not an owner
-                        // so we don't need the correct href, just the type
-                        var h = Hash.createRandomHash(priv.app, priv.password);
-                        data.fakeHref = true;
-                        data.href = base + priv.pathname + '#' + h;
+                        // Access modal and the pad is not stored: get the hashes from outer
+                        var hashes = priv.hashes || {};
+                        data.href = Hash.hashToHref(hashes.editHash || hashes.fileHash, priv.app);
+                        if (hashes.viewHash) {
+                            data.roHref = Hash.hashToHref(hashes.viewHash, priv.app);
+                        }
+                        data.isNotStored = true;
                     } else {
                         waitFor.abort();
                         return void cb(err || 'EEMPTY');
                     }
                     return;
                 }
+                // we delete owners because this query to the worker
+                // is concurrent with the call to the server.
+                // we shouldn't trust local information about ownership or expiration
+                // over that provided by the server, so we simply ignore the local version.
+                // this could be made more correct at the expense of some latency by not
+                // running the two queries concurrently, but we consider responsiveness
+                // more of a priority I guess. Maybe reconsider that if you find
+                // that this causes any bugs.
                 if (!val.fileType) {
                     delete val.owners;
                     delete val.expire;
@@ -59,11 +76,13 @@ define([
                 if (data.roHref) { data.roHref = base + data.roHref; }
             }), opts.href);
 
+            if (opts.channel) { data.channel = opts.channel; }
             // If this is a file, don't try to look for metadata
             if (opts.channel && opts.channel.length > 32) { return; }
-            if (opts.channel) { data.channel = opts.channel; }
+            // this fetches data from the server
             Modal.loadMetadata(Env, data, waitFor);
         }).nThen(function () {
+            if (opts.channel) { data.channel = opts.channel; }
             cb(void 0, data);
         });
     };

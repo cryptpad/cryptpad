@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function () {
 var factory = function (Util, Rpc) {
     var create = function (network, proxy, _cb, Cache) {
@@ -131,12 +135,15 @@ var factory = function (Util, Rpc) {
                 });
             };
 
-            exp.removeOwnedChannel = function (channel, cb) {
+            exp.removeOwnedChannel = function (channel, cb, reason) {
                 if (typeof(channel) !== 'string' || [32,48].indexOf(channel.length) === -1) {
                     console.error('invalid channel to remove', channel);
                     return void cb('INVALID_ARGUMENTS');
                 }
-                rpc.send('REMOVE_OWNED_CHANNEL', channel, function (e, response) {
+                rpc.send('REMOVE_OWNED_CHANNEL', {
+                    channel: channel,
+                    reason: reason
+                }, function (e, response) {
                     if (e) { return void cb(e); }
                     if (response && response.length && response[0] === "OK") {
                         cb();
@@ -205,41 +212,6 @@ var factory = function (Util, Rpc) {
                 });
             };
 
-            exp.writeLoginBlock = function (data, cb) {
-                if (!data) { return void cb('NO_DATA'); }
-                if (!data.publicKey || !data.signature || !data.ciphertext) {
-                    console.log(data);
-                    return void cb("MISSING_PARAMETERS");
-                }
-                if (['string', 'undefined'].indexOf(typeof(data.registrationProof)) === -1) {
-                    return void cb("INVALID_REGISTRATION_PROOF");
-                }
-
-                rpc.send('WRITE_LOGIN_BLOCK', [
-                    data.publicKey,
-                    data.signature,
-                    data.ciphertext,
-                    data.registrationProof || undefined,
-                ], function (e) {
-                    cb(e);
-                });
-            };
-
-            exp.removeLoginBlock = function (data, cb) {
-                if (!data) { return void cb('NO_DATA'); }
-                if (!data.publicKey || !data.signature) {
-                    console.log(data);
-                    return void cb("MISSING_PARAMETERS");
-                }
-
-                rpc.send('REMOVE_LOGIN_BLOCK', [
-                    data.publicKey, // publicKey
-                    data.signature, // signature
-                ], function (e) {
-                    cb(e);
-                });
-            };
-
             // Get data for the admin panel
             exp.setMetadata = function (obj, cb) {
                 rpc.send('SET_METADATA', {
@@ -248,7 +220,6 @@ var factory = function (Util, Rpc) {
                     value: obj.value
                 }, cb);
             };
-
 
             cb(e, exp);
         });

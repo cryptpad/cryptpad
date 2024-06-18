@@ -1,8 +1,16 @@
+<!--
+SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 <!DOCTYPE html>
 <html class="cp-app-noscroll">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <script async data-bootload="/common/onlyoffice/inner.js" data-main="/common/sframe-boot.js?ver=1.7" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <script src="/customize/pre-loading.js?ver=1.1"></script>
+    <link href="/customize/src/pre-loading.css?ver=1.0" rel="stylesheet" type="text/css">
+    <script async data-bootload="/common/onlyoffice/inner.js" data-main="/common/sframe-boot.js?ver=1.11" src="/components/requirejs/require.js?ver=2.3.5"></script>
     <style>
         .loading-hidden { display: none; }
     </style>
@@ -12,7 +20,6 @@
     <div id="cp-app-oo-container">
         <div id="cp-app-oo-editor">
             <div id="cp-app-oo-placeholder-a"></div>
-            <!--<script type="text/javascript" src="/common/onlyoffice/web-apps/apps/api/documents/api.js"></script>-->
         </div>
     </div>
 </body>

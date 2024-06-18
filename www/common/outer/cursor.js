@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
 ], function (Util, Constants, Messages, AppConfig, Crypto) {
     var Cursor = {};
 

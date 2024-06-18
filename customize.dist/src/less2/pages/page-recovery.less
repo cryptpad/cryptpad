@@ -1,0 +1,124 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+@import (reference) "../include/infopages.less";
+@import (reference) "../include/colortheme-all.less";
+@import (reference) "../include/alertify.less";
+@import (reference) "../include/checkmark.less";
+@import (reference) "../include/forms.less";
+
+&.cp-page-recovery {
+    .infopages_main();
+    .forms_main();
+
+    .alertify_main();
+    .checkmark_main(20px);
+
+    .cp-container {
+        .alert {
+            font-size: @colortheme_app-font-size;
+        }
+        .form-group {
+            .cp-recovery-desc {
+                margin-bottom: 10px;
+            }
+            .cp-recovery-desc, .cp-recovery-step {
+                width: 100%;
+            }
+            #register {
+                &.btn {
+                    padding: .5rem .5rem;
+                }
+                margin-top: 16px;
+                font-size: 1.25em;
+                min-width: 30%;
+            }
+        }
+        padding-bottom: 3em;
+        min-height: 5vh;
+        .cp-hidden {
+            display: none;
+        }
+        .cp-default-label {
+            display: none;
+        }
+    }
+    .alertify {
+        // workaround for alertify making empty p
+        p:empty {
+            display: none;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        @media screen and (max-width: 600px) {
+            nav .btn-danger {
+                line-height: inherit;
+            }
+        }
+
+    }
+
+    .cp-recovery-det {
+        .cp-recover-button {
+            text-align: right;
+        }
+        .cp-recovery-forgot {
+            cursor: pointer;
+            i {
+                margin-right: 5px;
+                width: 10px;
+            }
+        }
+        .cp-recovery-method {
+            padding: 5px;
+            border: 1px solid white;
+            border-radius: 5px;
+            &:not(:last-child) {
+                margin-bottom: 10px;
+            }
+            h3 {
+                margin-top: 0;
+            }
+        }
+        .cp-recover-email {
+            height: 164px;
+            overflow: scroll;
+        }
+        //for chrome,safari
+        .cp-recover-email::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .btn-secondary {
+            margin-top: 1rem;
+        }
+        #userForm {
+            padding: 15px;
+            background-color: @cp_static-card-bg;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 100px;
+            border-radius: @infopages-radius-L;
+            .cp-shadow();
+            .form-control {
+                border-radius: @infopages-radius;
+                color: @cryptpad_text_col;
+                background-color: @cp_forms-bg;
+                margin-bottom: 10px;
+                &:focus {
+                    border-color: @cryptpad_color_brand;
+                }
+                .tools_placeholder-color();
+            }
+        }
+    }
+}
+

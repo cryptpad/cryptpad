@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
 ], function () {
     var OO = {};
@@ -251,8 +255,8 @@ define([
         ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, function (e, response) {
             if (e) { return void cb({error: e}); }
             var isNew;
-            if (response && response.length && typeof(response[0]) === 'boolean') {
-                isNew = response[0];
+            if (response && response.length && typeof(response[0]) === 'object') {
+                isNew = response[0].isNew;
             } else {
                 cb({error: 'INVALID_RESPONSE'});
             }

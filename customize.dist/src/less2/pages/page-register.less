@@ -1,8 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "../include/infopages.less";
 @import (reference) "../include/colortheme-all.less";
 @import (reference) "../include/alertify.less";
 @import (reference) "../include/checkmark.less";
 @import (reference) "../include/forms.less";
+@import (reference) "../include/login.less";
 
 &.cp-page-register {
     .infopages_main();
@@ -11,15 +18,25 @@
     .alertify_main();
     .checkmark_main(20px);
 
+    &:not(.cp-register-closed) {
+        .cp-restricted-registration {
+            display: none;
+        }
+        .cp-closed-filler {
+            display: none;
+        }
+    }
+    &.cp-register-closed {
+        div.cp-register-det {
+            display: none;
+        }
+    }
+
     .cp-container {
         .form-group {
-            .checkbox-container {
-                &:nth-of-type(1) {
-                    margin-top: 2em;
-                }
-                &:last-of-type {
-                    margin-bottom: 1em;
-                }
+            .cp-register-instance {
+                text-align: center;
+                margin-bottom: 10px;
             }
             #register {
                 &.btn {
@@ -30,6 +47,16 @@
                 min-width: 30%;
             }
         }
+        .input-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            input {
+                margin-top: 5px;
+            }
+        }
+        .cp-register-label { display: none; }
         padding-bottom: 3em;
         min-height: 5vh;
     }
@@ -79,29 +106,24 @@
                 z-index: 0;
             }
         }
-        #userForm {
-            padding: 15px;
-            background-color: @cp_static-card-bg;
+        .cp-hidden {
+            display: none !important;
+        }
+        .login_main();
+        #userForm, #ssoForm {
             position: relative;
             z-index: 2;
-            margin-bottom: 100px;
-            .cp-shadow();
-            .form-control {
-                border-radius: 0;
-                color: @cryptpad_text_col;
-                background-color: @cp_forms-bg;
-                margin-top: 5px;
-                &:focus {
-                    border-color: @cryptpad_color_brand;
-                }
-                .tools_placeholder-color();
-            }
+            max-width: 100%;
+            padding: 15px;
             .checkbox-container {
-                color: @cryptpad_text_col;
+                margin-top: 0.5rem;
             }
             button#register {
-                margin: 0px;
+                margin-top: 10px;
             }
+        }
+        #ssoForm {
+            margin-top: 15px;
         }
 
         .cp-register-notes {
@@ -119,7 +141,7 @@
                         content: "\f071";
                     }
                     .red {
-                        color: @cryptpad_color_red;
+                        background-color: @cp_static-danger;
                     }
                 }
             }

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/toolbar.js',
@@ -7,14 +11,14 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-feedback.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
     '/customize/application_config.js',
     '/customize/messages.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/drive/app-drive.less',
 ], function (
     $,
@@ -57,7 +61,7 @@ define([
                         if (!newObj || !Object.keys(newObj).length) {
                             // Empty anon drive: deleted
                             var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
-                            setTimeout(function () { UI.errorLoadingScreen(msg, false, function () {}); });
+                            setTimeout(function () { UI.errorLoadingScreen(msg, false, true); });
                             APP.newSharedFolder = null;
                         }
                     }
@@ -137,7 +141,6 @@ define([
         var common;
         var proxy = {};
         var folders = {};
-        var readOnly;
 
         var startOnline = false;
         var onReco;
@@ -164,7 +167,7 @@ define([
             }
             metadataMgr.onChange(function () {
                 if (typeof(metadataMgr.getPrivateData().readOnly) === 'boolean') {
-                    readOnly = APP.readOnly = metadataMgr.getPrivateData().readOnly;
+                    APP.readOnly = metadataMgr.getPrivateData().readOnly;
                     privReady();
                 }
             });
@@ -196,7 +199,7 @@ define([
 
             APP.disableSF = !privateData.enableSF && AppConfig.disableSharedFolders;
             if (APP.newSharedFolder && !APP.loggedIn) {
-                readOnly = APP.readOnly = true;
+                APP.readOnly = true;
                 var data = folders[APP.newSharedFolder];
                 if (data) {
                     sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', {

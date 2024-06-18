@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "../../customize/src/less2/include/browser.less";
 @import (reference) "../../customize/src/less2/include/framework.less";
 @import (reference) "../../customize/src/less2/include/tools.less";
@@ -22,10 +28,15 @@
     @palette0: @cp_kanban-color0; // Default bg color for header
 
     @kanban-colors: @cp_kanban-colors;
+    @kanban-card-colors: @cp_kanban-card-colors;
 
     .kanban-board-header {
         background-color: @palette0;
-        color: @cp_kanban-fg;
+        color: @cryptpad_color_grey_800;
+        border-radius: @variables_radius @variables_radius 0px 0px;
+        button.kanban-edit-item {
+            color: @cryptpad_color_grey_800;
+        }
     }
     .kanban-board {
         .kanban-board-inner {
@@ -34,10 +45,12 @@
             max-height: 100%;
             display: flex;
             flex-flow: column;
+            border-radius: @variables_radius;
+            box-shadow: @cryptpad_ui_shadow;
         }
         color: @cp_kanban-fg;
         button {
-            color: @cp_kanban-fg;
+            color: @cryptpad_text_col;
         }
     }
 
@@ -52,18 +65,42 @@
         // make a numbered class selector for each color
         .cp-kanban-palette-color@{index}{
             background-color: @color !important;
+            &.cp-kanban-palette-board {
+                background-color: @color !important;
+            }
             &.kanban-board-inner {
                 background-color: fade(@color, 50%) !important;
             }
         }
     }
+    .kanban-card-colors(@kanban-card-colors; @index) when (@index > 0){
+        // loop through the @colors
+        .kanban-card-colors(@kanban-card-colors; (@index - 1));
+        @color: extract(@kanban-card-colors, @index);
+        // make a numbered class selector for each color
+        // .cp-kanban-card-color@{index}{
+        //     background-color: @color !important;
+        // }
+        .cp-kanban-palette-color@{index}{
+            &.cp-kanban-palette-card {
+                background-color: @color !important;
+            }
+            &.kanban-item {
+                background-color: @color !important;
+            }
+        }
+    }
     // call the loop
     .kanban-colors(@kanban-colors; length(@kanban-colors));
+    .kanban-card-colors(@kanban-card-colors; length(@kanban-card-colors));
 
     .cp-kanban-edit-modal {
         display: flex;
         flex-flow: column;
         overflow: hidden;
+        .cp-markdown-toolbar {
+            display: block;
+        }
     }
     #cp-kanban-edit-conflicts {
         padding: 5px;
@@ -81,9 +118,11 @@
     }
     #cp-kanban-edit-body {
         border: 1px solid @cp_forms-border;
+        border-radius: @variables_radius;
         .CodeMirror {
             height: 105px;
             resize: vertical;
+            border-radius: 0px 0px @variables_radius @variables_radius;
         }
         .CodeMirror-scroll {
             box-sizing: content-box;
@@ -91,6 +130,7 @@
         .cp-markdown-toolbar {
             background-color: @cp_kanban-conflict-bg;
             color: @cp_kanban-fg;
+            border-radius: @variables_radius @variables_radius 0px 0px;
             button {
                 &:hover {
                     background-color: @cp_kanban-fg;
@@ -112,6 +152,9 @@
             line-height: 30px;
             color: @cp_kanban-fg;
             border: 1px solid fade(@cp_kanban-fg, 40%);
+            &.fa-check { // tick on selected color
+                color: @cryptpad_text_col;
+            }
         }
     }
     #cp-kanban-edit-tags {
@@ -121,7 +164,10 @@
         }
         margin-bottom: 15px;
     }
-
+    .kanban-tag-btn-toggle {
+        margin-top: 10px;
+        margin-left: 10px
+    }
     #cp-app-kanban-container {
         flex: 1;
         display: flex;
@@ -143,6 +189,10 @@
         align-self: flex-start;
         @media (hover: none) {
             margin-right: 20px;
+        }
+        @media(max-width:500px) or (max-height:700px)
+        {
+            margin-right:0px;
         }
     }
 
@@ -174,14 +224,16 @@
         align-items: center;
         justify-content: space-between;
         padding: 5px;
+        border-radius: @variables_radius;
         flex-wrap: wrap;
         background: @cp_kanban-item-bg;
+        box-shadow: @cryptpad_ui_shadow;
         .tools_unselectable();
         touch-action: none;
         cursor: move;
         cursor: grab;
 
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         &:last-child {
             margin: 0;
         }
@@ -250,19 +302,25 @@
                 padding: 0 5px;
                 margin-right: 5px;
                 margin-top: 5px;
+                border-radius: @variables_radius;
                 background-color: @cp_kanban-tags-bg;
                 display: inline-block;
                 font-size: 12px;
             }
-        }
-        &.new-item {
-            padding: 10px;
         }
         .kanban-item-text {
             .tools_unselectable();
             cursor: text;
             overflow-wrap: anywhere;
             flex: 1;
+            &:empty::before {
+              content: "\200b";
+            }
+            input#kanban-edit {
+                margin: 0;
+                padding: 0;
+                height: auto;
+            }
         }
         &.kanban-item-hidden {
             display: none;
@@ -286,19 +344,22 @@
             opacity: 0.8;
             .kanban-drag {
                 overflow: hidden;
-                padding-right: 50px;
             }
         }
 
         main {
-            padding: 0 10px;
-            margin: 10px 0;
+            padding: 10px 5px;
+            //margin: 10px 0;
             flex: 1;
             overflow-y: auto;
             justify-content: space-around;
             min-height: 38px; // Size of one card
             @media (hover: none) {
                 padding-right: 30px;
+            }
+            @media(max-width:500px) or (max-height:700px)
+            {
+                padding-right:5px;
             }
         }
         header {
@@ -324,11 +385,14 @@
 
             #kanban-edit {
                 font-weight: bold;
+                margin: 0;
+                padding: 0;
+                height: auto;
             }
         }
         footer {
-            margin: 10px;
-            margin-top: 0px;
+            margin: 5px;
+            margin-top: 5px;
             display: flex;
             span {
                 .tools_unselectable();
@@ -336,7 +400,7 @@
                 width: 50%;
                 border: 1px solid fade(@cp_kanban-fg, 70%);
                 color: fade(@cp_kanban-fg, 70%);
-                border-radius: 0px;
+                border-radius: @variables_radius;
                 font-size: 25px;
                 display: inline-flex;
                 justify-content: center;
@@ -371,7 +435,12 @@
         position: relative;
         min-height: 50px;
         .cp-kanban-filterTags {
-            display: inline-flex;
+            @media (min-width: 505px) {
+                display: inline-flex;
+                .kanban-tag-btn-toggle {
+                    margin-right: 10px;
+                }
+            }
             align-items: center;
             flex: 1;
             //max-width: 80%;
@@ -379,6 +448,9 @@
             .cp-kanban-filterTags-toggle {
                 min-width: 100px;
                 display: flex;
+                @media (max-width: 505px) {
+                    margin-left: 10px;
+                }
                 flex-flow: column;
                 flex-shrink: 0;
                 & > * {
@@ -396,6 +468,10 @@
             button.cp-kanban-filterTags-reset {
                 cursor: pointer;
                 white-space: normal !important;
+                @media (max-width: 505px) {
+                    margin-bottom: 10px;
+                    margin-right: 10px;
+                }
                 .tools_unselectable();
                 i {
                     margin-right: 5px;
@@ -420,6 +496,7 @@
                     margin-right: 5px;
                     margin-top: 5px;
                     background-color: @cp_kanban-tags-bg;
+                    border-radius: @variables_radius;
                     display: inline-block;
                     font-size: 14px;
                     cursor: pointer;
@@ -445,6 +522,12 @@
                 &:hover {
                     background-color: darken(@board-bg, 10%);
                 }
+                &:first-child {
+                    border-radius: @variables_radius 0px 0px @variables_radius;
+                }
+                &:last-child {
+                    border-radius: 0px @variables_radius @variables_radius 0px;
+                }
             }
         }
     }
@@ -456,16 +539,16 @@
                         background-color: @cp_kanban-fg !important;
                         color: @cp_app-bg;
                     }
-                    span.cp-kanban-view-small {
-                    }
+                    // span.cp-kanban-view-small {
+                    // }
                 }
             }
         }
         &.cp-kanban-quick {
             #cp-kanban-controls {
                 .cp-kanban-changeView {
-                    span.cp-kanban-view {
-                    }
+                    // span.cp-kanban-view {
+                    // }
                     span.cp-kanban-view-small {
                         background-color: @cp_kanban-fg !important;
                         color: @cp_app-bg;
@@ -492,7 +575,7 @@
             display: flex;
             min-height: 0;
             .kanban-container {
-                padding: 0px 5px;
+                padding: 30px 5px;
                 flex: 1;
                 display: flex;
                 max-height: 100%;
@@ -558,6 +641,7 @@
             width: 50px;
             margin: 10px 5px;
             border: 1px solid @cp_kanban-fg;
+            border-radius: @variables_radius;
             color: @cp_kanban-fg;
             height: 40px;
             display: inline-flex;
@@ -655,6 +739,6 @@
 
     .form-group {
         text-align: right;
-        margin-button: 5px;
+        margin-bottom: 5px;
     }
 }

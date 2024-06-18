@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 require([
     'jquery',
     '/mediatag/media-tag.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js'
+    '/components/tweetnacl/nacl-fast.min.js'
 ], function ($, MediaTag) {
     console.log(MediaTag);
     console.log($('media-tag'));

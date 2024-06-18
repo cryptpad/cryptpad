@@ -1,5 +1,9 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function () {
     var Nacl = window.nacl;
     //var PARANOIA = true;
@@ -38,7 +42,7 @@ define([
         while (l-- > 1) {
         /*  our linter suspects this is unsafe because we lack types
             but as long as this is only used on nonces, it should be safe  */
-            if (N[l] !== 255) { return void N[l]++; } // jshint ignore:line
+            if (N[l] !== 255) { return void N[l]++; }
             if (l === 0) { throw new Error('E_NONCE_TOO_LARGE'); }
             N[l] = 0;
         }
@@ -148,7 +152,7 @@ define([
         // if metadata is too large, drop the thumbnail.
         if (plaintext.length > 65535) {
             var temp = JSON.parse(JSON.stringify(metadata));
-            delete metadata.thumbnail;
+            delete temp.thumbnail;
             plaintext = Nacl.util.decodeUTF8(JSON.stringify(temp));
         }
 

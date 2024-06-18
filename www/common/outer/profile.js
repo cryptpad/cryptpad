@@ -1,11 +1,15 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-constants.js',
     '/common/common-realtime.js',
     'chainpad-listmap',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad-crypto/crypto.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function (Util, Hash, Constants, Realtime, Listmap, Crypto, ChainPad) {
     var Profile = {};
 
@@ -70,8 +74,7 @@ define([
         });
     };
 
-    var setName = function (ctx, value, cb) {
-        cb = cb || function () {};
+    var setName = function (ctx, value) {
         ctx.listmap.proxy.name = value;
         Realtime.whenRealtimeSyncs(ctx.listmap.realtime, function () {
             if (!ctx.listmap) { return; }

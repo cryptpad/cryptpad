@@ -1,31 +1,39 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function () {
 // add your module to this map so it gets used
 var map = {
     'ca': 'Català',
+    'cs': 'Čeština',
     'de': 'Deutsch',
     'el': 'Ελληνικά',
     'es': 'Español',
+    'eu': 'Euskara',
     'fi': 'Suomi',
     'fr': 'Français',
     //'hi': 'हिन्दी',
     'it': 'Italiano',
     'ja': '日本語',
     'nb': 'Norwegian Bokmål',
-    //'pl': 'Polski',
+    //'nl': 'Nederlands'
+    'pl': 'Polski',
     'pt-br': 'Português do Brasil',
+    'pt-pt': 'Português do Portugal',
     'ro': 'Română',
     'ru': 'Русский',
     //'sv': 'Svenska',
     //'te': 'తెలుగు',
-    'zh': '繁體中文',
-    //'nl': 'Nederlands'
+    'uk': 'Українська',
+    'zh': '中文(簡體)',
 };
 
-var messages = {};
+var Messages = {};
 var LS_LANG = "CRYPTPAD_LANG";
 var getStoredLanguage = function () { return localStorage && localStorage.getItem(LS_LANG); };
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
-var getLanguage = messages._getLanguage = function () {
+var getLanguage = Messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
     try {
         if (getStoredLanguage()) { return getStoredLanguage(); }
@@ -95,19 +103,19 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    extend(messages, Default);
+    extend(Messages, Default);
     if (Language && language !== defaultLanguage) {
         // Add the translated keys to the returned object
-        extend(messages, Language);
+        extend(Messages, Language);
     }
 
-    messages._languages = map;
-    messages._languageUsed = language;
+    Messages._languages = map;
+    Messages._languageUsed = language;
 
     // Get keys with parameters
-    messages._getKey = function (key, argArray) {
-        if (!messages[key]) { return '?'; }
-        var text = messages[key];
+    Messages._getKey = function (key, argArray) {
+        if (!Messages[key]) { return '?'; }
+        var text = Messages[key];
         if (typeof(text) === 'string') {
             return text.replace(/\{(\d+)\}/g, function (str, p1) {
                 if (typeof(argArray[p1]) === 'string' || typeof(argArray[p1]) === "number") {
@@ -121,7 +129,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    return messages;
+
+    return Messages;
 
 });
 }());

@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 html, body {
     margin: 0px;
     padding: 0px;
@@ -18,3 +24,4 @@ iframe-placeholder, #sbox-iframe, #sbox-secure-iframe {
     padding:0;
     overflow:hidden;
 }
+

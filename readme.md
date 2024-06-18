@@ -1,28 +1,38 @@
+<!--
+SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 # CryptPad
 
 CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. It is built to enable collaboration, synchronizing changes to documents in real time. Because all data is encrypted, the service and its administrators have no way of seeing the content being edited and stored.
 
-![CryptPad screenshot](screenshot.png "Private real-time collaboration on a Rich Text document.")
+![Drive screenshot](screenshot.png "preview of the CryptDrive")
+
+![Suite screenshots](screenshot-suite.png "all CyptPad applications: Document, Sheet, Presentation, Form, Kanban, Code, Rich Text, Whiteboard")
 
 # Installation
 
 ## For development
 
-Our [developer guide](https://docs.cryptpad.fr/en/dev_guide/setup.html) provides instructions for setting up a local instance without HTTPS or our more advanced security features.
+Our [developer guide](https://docs.cryptpad.org/en/dev_guide/setup.html) provides instructions for setting up a local instance without HTTPS or our more advanced security features.
 
 ## For production
 
-Configuring CryptPad for production requires a little more work, but the process is described in our [admin installation guide](https://docs.cryptpad.fr/en/admin_guide/installation.html). From there you can find more information about customization and maintenance.
+Configuring CryptPad for production requires a little more work, but the process is described in our [admin installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html). From there you can find more information about customization and maintenance.
 
 ## Current version
 
-The most recent version and all past release notes can be found [here](https://github.com/xwiki-labs/cryptpad/releases/).
+The most recent version and all past release notes can be found [here](https://github.com/cryptpad/cryptpad/releases/).
 
 ## Setup using Docker
 
-See [CryptPad-Docker](https://github.com/xwiki-labs/cryptpad-docker) repository for details on how to get up-and-running with CryptPad in Docker. This repository is maintained by the community and not officially supported.
+You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files at the root of this repository. We also publish every release on [Docker Hub](https://hub.docker.com/r/cryptpad/cryptpad) as AMD64 & ARM64 official images. 
 
-# Security
+Previously, Docker images were community maintained, had their own repository and weren't official supported. We changed that with v5.4.0 during July 2023. Thanks to @promasu for all the work on the community images.
+
+# Privacy / Security
 
 CryptPad offers a variety of collaborative tools that encrypt your data in your browser
 before it is sent to the server and your collaborators. In the event that the server is
@@ -54,15 +64,17 @@ meet our strict criteria for safety.
 # Translations
 
 CryptPad can be translated with nothing more than a web browser via our
-[Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/).
+[Weblate instance](https://weblate.cryptpad.org/projects/cryptpad/app/). See the state of the translated languages:
+
+![](https://weblate.cryptpad.org/widgets/cryptpad/-/app/multi-auto.svg)
+
 More information about this can be found in [our translation guide](/customize.dist/translations/README.md).
 
 # Contacting Us
 
-You can reach members of the CryptPad development team on [Twitter](https://twitter.com/cryptpad),
-via our [GitHub issue tracker](https://github.com/xwiki-labs/cryptpad/issues/), on our
-[Matrix channel](https://riot.im/app/#/room/#cryptpad:matrix.org), or by
-[e-mail](mailto:research@xwiki.com).
+The best places to reach the development team and the community are the [CryptPad Forum](https://forum.cryptpad.org) and the [Matrix chat](https://matrix.to/#/#cryptpad:matrix.xwiki.com)
+
+The team is also on the fediverse: [@cryptpad@fosstodon.org](https://fosstodon.org/@cryptpad)
 
 # Team
 
@@ -70,9 +82,11 @@ CryptPad is actively developed by a team at [XWiki SAS](https://www.xwiki.com), 
 
 # Contributing
 
-We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.fr/en/how_to_contribute.html). 
+We love Open Source and we love contribution. Learn more about [contributing](https://docs.cryptpad.org/en/how_to_contribute.html).
 
 If you have any questions or comments, or if you're interested in contributing to CryptPad, come say hi in our [Matrix channel](https://app.element.io/#/room/#cryptpad:matrix.xwiki.com).
+
+This project is tested with [BrowserStack](https://www.browserstack.com/).
 
 # License
 
@@ -81,7 +95,7 @@ If you have any questions or comments, or if you're interested in contributing t
 This software is and will always be available under the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the License, or (at your option)
 any later version. If you wish to use this technology in a proprietary product, please contact
-sales@xwiki.com.
+sales@cryptpad.org
 
 [Tor browser]: https://www.torproject.org/download/
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attack

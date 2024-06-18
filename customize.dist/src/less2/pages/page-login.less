@@ -1,8 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "../include/infopages.less";
 @import (reference) "../include/colortheme-all.less";
 @import (reference) "../include/alertify.less";
 @import (reference) "../include/checkmark.less";
 @import (reference) "../include/forms.less";
+@import (reference) "../include/login.less";
 
 &.cp-page-login {
     .infopages_main();
@@ -19,39 +26,24 @@
         }
     }
     .cp-container {
-        #userForm {
-            .cp-shadow();
-            background-color: @cp_static-card-bg;
-            padding: 10px;
-            .form-control {
-                border-radius: 0;
-                color: @cryptpad_text_col;
-                background-color: @cp_forms-bg;
-                margin-bottom: 5px;
-                &:focus {
-                    border-color: @cryptpad_color_brand;
-                }
-                .tools_placeholder-color();
-            }
-            .checkbox-container {
-                color: @cryptpad_text_col;
-            }
+        .cp-hidden {
+            display: none !important;
         }
+        .login_main();
         .align-items-center {
             box-shadow: 0 5px 15px @cp_shadow-color;
             background: @cryptpad_color_white;
         }
-        .extra {
-            margin-top: 1em;
+    }
 
-            #register {
-                border-color: @cryptpad_color_brand;
-                background: @cryptpad_color_white;
-                color: @cryptpad_color_brand;
-                padding: 10px;
-                border-radius: 0;
-                margin: 0px;
-            }
+    .cp-login-encryption {
+        margin-top: 10px;
+    }
+
+    .cp-password-form {
+        flex-flow: row !important;
+        input:not(:last-child) {
+            margin-right: 10px;
         }
     }
     .cp-container {

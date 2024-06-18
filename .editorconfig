@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Config for our editors.
+# See: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+indent_style = space
+indent_size = 4
+
+# Matches package.json
+[package.json]
+indent_size = 2
+

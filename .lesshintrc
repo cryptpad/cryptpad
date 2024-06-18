@@ -44,7 +44,7 @@
     "emptyRule": { "enabled": true },
     "hexValidation": { "enabled": true }, // disallow actual garbage color hex codes (e.g. #ab)
     "propertyUnits": {
-        "valid": ["rem", "vw", "em", "px"], // These units are allowed for all properties
+        "valid": ["rem", "vw", "em", "px", "ch"], // These units are allowed for all properties
         "invalid": ["pt"],      // The 'pt' unit is not allowed under any circumstances
         "properties": {
             //"line-height": []   // No units are allowed for line-height

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
@@ -11,11 +15,11 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/media-tag.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/file-saver/FileSaver.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, nThen, MT) {
     var Nacl = window.nacl;
     var module = {};
@@ -41,6 +45,21 @@ define([
         });
 
         var teamId = config.teamId;
+
+        var getFormattedUploadLimit = function (cb) {
+            common.getPinUsage(teamId, (err, data) => {
+                // sensible default?
+                if (err || !data) {
+                    return void cb(void 0, ApiConfig.maxUploadSize);
+                }
+
+                var lesser = ApiConfig.maxUploadSize;
+                var greater = ApiConfig.premiumUploadSize || lesser;
+                if (data.plan) { return void cb(void 0, Util.bytesToMegabytes(greater)); }
+
+                cb(void 0, Util.bytesToMegabytes(lesser));
+            });
+        };
 
         var queue = File.queue = {
             queue: [],
@@ -77,6 +96,7 @@ define([
             var data = {};
 
             data.name = file.metadata.name;
+            data.fileType = file.metadata.type;
             data.url = href;
             data.password = file.password;
             if (file.metadata.type.slice(0,6) === 'image/') {
@@ -127,19 +147,19 @@ define([
             var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');
 
-            var privateData = common.getMetadataMgr().getPrivateData();
-            var l = privateData.plan ? ApiConfig.premiumUploadSize : false;
-            l = l || ApiConfig.maxUploadSize || "?";
-            var maxSizeStr = Util.bytesToMegabytes(l);
+            var limit = ApiConfig.premiumUploadSize || ApiConfig.maxUploadSize;
+
             var estimate = FileCrypto.computeEncryptedSize((blob && blob.byteLength) || 0, metadata);
-            if (blob && blob.byteLength && typeof(estimate) === 'number' && typeof(l) === "number" && estimate > l) {
+            if (blob && blob.byteLength && typeof(estimate) === 'number' && typeof(limit) === "number" && estimate > limit) {
                 $pv.text(Messages.error);
                 queue.inProgress = false;
                 queue.next();
                 if (config.onError) { config.onError("TOO_LARGE"); }
-                return void UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
+                // If the file is too large then we need to know what the relevant limit is
+                return void getFormattedUploadLimit((err, maxSizeStr) => {
+                    UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
+                });
             }
-
 
             /**
              * Update progress in the download panel, for uploading a file
@@ -176,8 +196,6 @@ define([
             });
 
             onError = function (e) {
-                // TODO if we included the max upload sizes in /api/config
-                // then we could check if a file is too large without going to the server...
                 queue.inProgress = false;
                 queue.next();
 
@@ -185,7 +203,9 @@ define([
 
                 if (e === 'TOO_LARGE') {
                     $pv.text(Messages.error);
-                    return void UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
+                    return void getFormattedUploadLimit((err, maxSizeStr) => {
+                        UI.alert(Messages._getKey('upload_tooLargeBrief', [maxSizeStr]));
+                    });
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
                     $pv.text(Messages.upload_notEnoughSpaceBrief);
@@ -338,7 +358,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, modalState.owned),
-                    createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
+                    createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                 ]),
                 manualStore
             ]);
@@ -396,7 +416,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-upload-owned', Messages.uploadFolder_modal_owner, modalState.owned),
-                    createHelper(Pages.localizeDocsLink('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
+                    createHelper(Pages.localizeDocsLink('https://docs.cryptpad.org/en/user_guide/share_and_access.html#owners'), Messages.creation_owned1)
                 ]),
                 manualStore
             ]);
@@ -518,7 +538,7 @@ define([
                         thumb = thumb64;
                     }));
                     if (file.type === "application/pdf") { return; }
-                    MT.preview(buffer, {
+                    MT.preview(file, {
                         type: file.type,
                     }, void 0, w(function (err, el) {
                         if (err) { return void console.error(err); }

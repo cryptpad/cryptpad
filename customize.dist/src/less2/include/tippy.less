@@ -1,4 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) './colortheme-all.less';
+@import (reference) './variables.less';
 
 .tippy_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -6,7 +13,7 @@
 & {
     .tippy-tooltip.cryptpad-theme {
         background-color: @cp_tooltip-bg;
-        border-radius: 0px;
+        border-radius: @variables_radius;
         color: @cp_tooltip-fg;
         overflow-wrap: break-word;
         [x-circle] {

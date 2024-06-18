@@ -1,9 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
+    '/api/config',
     '/common/common-messaging.js',
     '/common/common-hash.js',
     '/common/common-util.js',
-    '/bower_components/chainpad-crypto/crypto.js',
-], function (Messaging, Hash, Util, Crypto) {
+    '/components/chainpad-crypto/crypto.js',
+], function (ApiConfig, Messaging, Hash, Util, Crypto) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
     var getRandomTimeout = function (ctx) {
@@ -19,6 +24,10 @@ define([
         var curvePublic = Util.find(data, ['msg', 'author']);
         if (!curvePublic) { return false; }
         return Boolean(muted[curvePublic]);
+    };
+    var isChannelMuted = function (ctx, channel) {
+        var muted = ctx.store.proxy.mutedChannels || [];
+        return muted.includes(channel);
     };
 
     // Store the friend request displayed to avoid duplicates
@@ -339,6 +348,26 @@ define([
         cb(false);
     };
 
+    handlers['ADD_TO_ACCESS_LIST'] = function(ctx, common, data, cb) {
+
+        var msg = data.msg;
+        var content = msg.content;
+        var channel = content.channel;
+
+        ctx.Store.getAllStores().forEach(function (store) {
+            var res = store.manager.findChannel(channel);
+            if (!res.length) { return; }
+            
+            var data = res[0].data;
+            var id = res[0].id;
+            var teamId = store.id;
+            ctx.Store.loadSharedFolder(teamId, id, data, function () {
+
+            }, false);
+        });
+        cb(true);
+    };
+
     // Hide duplicates when receiving an ADD_OWNER notification:
     var addOwners = {};
     handlers['ADD_OWNER'] = function (ctx, box, data, cb) {
@@ -517,12 +546,10 @@ define([
         // Make sure we are a member of this team
         var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']) || {};
         var teamId;
-        var team;
         Object.keys(myTeams).some(function (k) {
             var _team = myTeams[k];
             if (_team.channel === content.teamData.channel) {
                 teamId = k;
-                team = _team;
                 return true;
             }
         });
@@ -575,6 +602,61 @@ define([
         cb();
     };
 
+    // Hide duplicates when receiving a form notification:
+    // Keep only one notification per channel
+    var formNotifs = {};
+    handlers['FORM_RESPONSE'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var hash = data.hash;
+        var content = msg.content;
+
+        var channel = content.channel;
+        if (!channel) { return void cb(true); }
+
+        if (isChannelMuted(ctx, channel)) { return void cb(true); }
+
+        var title, href;
+        ctx.Store.getAllStores().some(function (s) {
+            var res = s.manager.findChannel(channel);
+            // Check if the pad is in our drive
+            return res.some(function (obj) {
+                if (!obj.data) { return; }
+                if (href && !obj.data.href) { return; } // We already have the VIEW url, we need EDIT
+                href = obj.data.href || obj.data.roHref;
+                title = obj.data.filename || obj.data.title;
+                if (obj.data.href) { return true; } // Abort only if we have the EDIT url
+            });
+        });
+
+        // If we don't have the edit url, ignore this notification
+        if (!href) { return void cb(true); }
+
+        // Add the title
+        content.href = href;
+        content.title = title;
+
+        // Remove duplicates
+        var old = formNotifs[channel];
+        var toRemove = old ? old.data : undefined;
+
+        // Update the data
+        formNotifs[channel] = {
+            data: {
+                type: box.type,
+                hash: hash
+            }
+        };
+
+        cb(false, toRemove);
+    };
+    removeHandlers['FORM_RESPONSE'] = function (ctx, box, data, hash) {
+        var content = data.content;
+        var channel = content.channel;
+        var old = formNotifs[channel];
+        if (old && old.data && old.data.hash === hash) {
+            delete formNotifs[channel];
+        }
+    };
     // Hide duplicates when receiving a SHARE_PAD notification:
     // Keep only one notification per channel: the stronger and more recent one
     var comments = {};
@@ -735,6 +817,114 @@ define([
         cb(true);
     };
 
+    var sfDeleted = {};
+    handlers['SF_DELETED'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        var teamId = content.team;
+        var sfId = content.sfId;
+
+        if (sfDeleted[sfId]) { return void cb(true); }
+        sfDeleted[sfId] = 1;
+
+        // If it's a team SF, add the team name here
+
+        if (!teamId) { return void cb(false); }
+
+        var team = ctx.store.proxy.teams[teamId];
+        content.teamName = team.metadata && team.metadata.name;
+        cb(false);
+    };
+    removeHandlers['SF_DELETED'] = function (ctx, box, data) {
+        var id = data.content.sfId;
+        delete sfDeleted[id];
+    };
+
+    // New support
+    handlers['NEW_TICKET'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        if (!content.time) { content.time = data.time; }
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+
+        // Admin to user
+        if (content.isAdmin) {
+            support.addUserTicket(content, cb);
+        }
+
+        // User to admin
+        support.addAdminTicket(content, cb);
+    };
+    var supportNotif, adminSupportNotif;
+    handlers['NOTIF_TICKET'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+        if (!content.time) { content.time = data.time; }
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+
+        // Admin to user
+        if (content.isAdmin) {
+            let exists = Util.find(ctx, ['store', 'proxy', 'support', content.channel]);
+
+            if (!exists) { return void cb(true); } // Deleted ticket
+            // Trigger realtime update of user support
+            support.updateUserTicket(content);
+
+            if (supportNotif) { return void cb(false, supportNotif); }
+            supportNotif = {
+                channel: content.channel,
+                type: box.type,
+                hash: data.hash
+            };
+            return void cb(false);
+        }
+
+        // User to admin
+        support.checkAdminTicket(content, (exists) => {
+            if (!exists) { return void cb(true); }
+            // Update ChainPad doc
+            support.updateAdminTicket(content);
+
+            if (Util.find(ctx.store.proxy, ['settings', 'general', 'disableSupportNotif'])) {
+                return void cb(true);
+            }
+
+            if (adminSupportNotif) { return void cb(false, adminSupportNotif); }
+            adminSupportNotif = {
+                channel: content.channel,
+                type: box.type,
+                hash: data.hash
+            };
+
+            cb(false);
+        });
+
+    };
+    removeHandlers['NOTIF_TICKET'] = function (ctx, box, data) {
+        var id = data.content.channel;
+        if (supportNotif && supportNotif.channel === id) { supportNotif = undefined; }
+        if (adminSupportNotif && adminSupportNotif.channel === id) { adminSupportNotif = undefined; }
+    };
+
+    handlers['ADD_MODERATOR'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+        support.updateAdminKey(content, cb);
+    };
+    handlers['MODERATOR_NEW_KEY'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        var support = Util.find(ctx, ['store', 'modules', 'support']);
+        support.updateAdminKey(content, function () {
+            cb(true); // Always dismiss, this should be invisible
+        });
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**
@@ -747,7 +937,7 @@ define([
                     hash: 'string'
                 }
              */
-            if (!data.msg) { return void cb(true); }
+            if (!data.msg) { return void cb(null, null, true); }
 
             // Check if the request is valid (sent by the correct user)
             var myCurve = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
@@ -757,7 +947,7 @@ define([
             // except if the author is ourselves.
             if (curve && data.msg.author !== curve && data.msg.author !== myCurve) {
                 console.error('blocked');
-                return void cb(true);
+                return void cb(null, null, true);
             }
 
             var type = data.msg.type;

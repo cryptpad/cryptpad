@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-util.js',
@@ -8,10 +12,10 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/bower_components/croppie/croppie.min.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    'css!/bower_components/croppie/croppie.css',
+    '/components/tweetnacl/nacl-fast.min.js',
+    '/components/croppie/croppie.min.js',
+    '/components/file-saver/FileSaver.min.js',
+    'css!/components/croppie/croppie.css',
 ], function ($, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
     var MT = {};
 
@@ -20,8 +24,29 @@ define([
     // Configure MediaTags to use our local viewer
     // This file is loaded by sframe-common so the following config is used in all the inner apps
     if (MediaTag) {
+        // Firefox 121 introduces an issue with ligatures that requires an update to PDFjs
+        // See: https://github.com/cryptpad/cryptpad/issues/1362
+        // Unfortunately this updated PDFjs doesn't work with older browsers
+
+        let isModernFirefox = false;
+        try {
+            const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+            if (isFirefox) {
+                let version = +navigator.userAgent.match(/rv:([0-9.]+)/)[1];
+                isModernFirefox = version >= 100;
+            }
+        } catch (e) {}
+        let isModernChromium = false;
+        try {
+            isModernChromium = navigator.userAgentData.brands.some(data => {
+                return data.brand === 'Chromium' && data.version >= 100;
+            });
+        } catch (e) {}
+
+        let path = 'legacy';
+        if (isModernFirefox || isModernChromium) { path = 'modern'; }
         MediaTag.setDefaultConfig('pdf', {
-            viewer: '/lib/pdfjs/web/viewer.html'
+            viewer: `/lib/pdfjs/${path}/web/viewer.html`
         });
         MediaTag.setDefaultConfig('download', {
             text: Messages.mediatag_saveButton,
@@ -237,6 +262,7 @@ define([
             'image/png',
             'image/jpeg',
             'image/jpg',
+            'image/webp',
             'image/gif',
         ];
         var fmConfig = {
@@ -246,7 +272,7 @@ define([
             onUploaded: cb
         };
         var FM = common.createFileManager(fmConfig);
-        var accepted = ".gif,.jpg,.jpeg,.png";
+        var accepted = ".gif,.jpg,.jpeg,.png,.webp";
         var data = {
             FM: FM,
             filter: function (file) {

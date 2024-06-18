@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/hyperscript.js',
@@ -8,8 +12,8 @@ define([
     '/common/common-constants.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/lib/datepicker/flatpickr.js',
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, Flatpickr) {
+    'tui-date-picker'
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, Pages, DatePicker) {
 
     var handlers = {};
 
@@ -335,6 +339,28 @@ define([
         }
     };
 
+    handlers['FORM_RESPONSE'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var title = Util.fixHTML(msg.content.title || Messages.unknownPad);
+        var href = msg.content.href;
+
+        content.getFormatText = function() {
+            return Messages._getKey('form_responseNotification', [title]);
+        };
+        if (href) {
+            content.handler = function() {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     handlers['COMMENT_REPLY'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
@@ -380,6 +406,25 @@ define([
                 defaultDismiss(common, data)();
             };
         }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['SF_DELETED'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var title = Util.fixHTML(msg.content.title);
+        var teamName = Util.fixHTML(msg.content.teamName);
+
+        content.getFormatText = function() {
+            if (teamName) {
+                return Messages._getKey('dph_sf_destroyed_team', [title, teamName]);
+            }
+            return Messages._getKey('dph_sf_destroyed', [title]);
+        };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
         }
@@ -439,6 +484,39 @@ define([
         }
     };
 
+    handlers['NOTIF_TICKET'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg.content;
+        content.getFormatText = function () {
+            let title = Util.fixHTML(msg.title);
+            let text = msg.isAdmin ? Messages.support_notification :
+                        Messages._getKey('support_userNotification', [title]);
+            return text;
+        };
+        content.handler = function () {
+            let id =  Util.hexToBase64(msg.channel).slice(0,10);
+            let url = msg.isAdmin ? '/support/#tickets' : `/moderation/#open-${id}`;
+            common.openURL(url);
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+    handlers['ADD_MODERATOR'] = function (common, data) {
+        var content = data.content;
+        content.getFormatText = function () {
+            return Messages.support_moderatorNotification;
+        };
+        content.handler = function () {
+            common.openURL('/moderation/');
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     handlers['BROADCAST_CUSTOM'] = function (common, data) {
         var content = data.content;
         var msg = content.msg.content;
@@ -453,6 +531,7 @@ define([
         if (!toShow) { return defaultDismiss(common, data)(); }
 
         var slice = toShow.length > 200;
+        var unsafe = toShow;
         toShow = Util.fixHTML(toShow);
 
         content.getFormatText = function () {
@@ -465,7 +544,7 @@ define([
             content.handler = function () {
                 var content = h('div', [
                     h('h4', Messages.broadcast_newCustom),
-                    h('div.cp-admin-message', toShow)
+                    h('div.cp-admin-message', unsafe) // Use unsafe string, hyperscript is safe
                 ]);
                 UI.alert(content);
             };
@@ -481,6 +560,18 @@ define([
         var missed = content.msg.missed;
         var start = msg.start;
         var title = Util.fixHTML(msg.title);
+        content.handler = function () {
+            var priv = common.getMetadataMgr().getPrivateData();
+            var time = Util.find(data, ['content', 'msg', 'content', 'start']);
+            if (priv.app === "calendar" && window.APP && window.APP.moveToDate) {
+                return void window.APP.moveToDate(time);
+            }
+            var url = Hash.hashToHref('', 'calendar');
+            var optsUrl = Hash.getNewPadURL(url, {
+                time: time
+            });
+            common.openURL(optsUrl);
+        };
         content.getFormatText = function () {
             var now = +new Date();
 
@@ -491,7 +582,7 @@ define([
             var nowDateStr = new Date().toLocaleDateString();
             var startDate = new Date(start);
             if (msg.isAllDay && msg.startDay) {
-                startDate = Flatpickr.parseDate(msg.startDay);
+                startDate = DatePicker.parseDate(msg.startDay);
             }
 
             // Missed events

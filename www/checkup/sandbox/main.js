@@ -1,10 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-util.js',
     '/checkup/checkup-tools.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    '/components/tweetnacl/nacl-fast.min.js',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/checkup/app-checkup.less',
 ], function ($, Util, Tools) {
     var postMessage = function (content) {
@@ -12,12 +16,9 @@ define([
     };
     postMessage({ command: "READY", });
     var getHeaders = function (url, cb) {
-        $.ajax(url + "?test=" + (+new Date()), {
-            dataType: 'text',
-            complete: function (xhr) {
-                var allHeaders = xhr.getAllResponseHeaders();
-                return void cb(void 0, allHeaders, xhr);
-            },
+        Tools.common_xhr(url, function (xhr) {
+            var allHeaders = xhr.getAllResponseHeaders();
+            return void cb(void 0, allHeaders, xhr);
         });
     };
     var COMMANDS = {};
@@ -45,6 +46,12 @@ define([
     COMMANDS.FANCY_API_CHECKS = function (content, cb) {
         cb({
             SharedArrayBufferFallback: Tools.supportsSharedArrayBuffers(),
+        });
+    };
+
+    COMMANDS.CHECK_HTTP_STATUS = function (content, cb) {
+        Tools.common_xhr(content.url, function (xhr) {
+            cb(xhr.status);
         });
     };
 

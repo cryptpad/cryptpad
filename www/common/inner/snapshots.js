@@ -1,10 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-interface.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/nthen/index.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function ($, UI, h, Messages, nThen, ChainPad /* JsonOT */) {
     var Snapshots = {};
 

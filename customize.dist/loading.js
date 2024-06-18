@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // bg #e7e7e7
 // blue #0087FF
 // text #3F4141
@@ -8,9 +12,10 @@ define([
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');
     elem.setAttribute('id', 'cp-loading');
+
     elem.innerHTML = [
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '">',
+            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="' + Messages.label_logo + '">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
@@ -59,7 +64,6 @@ define([
         return bar;
     };
 
-    var hasErrored = false;
     var isOffline = false;
     var updateLoadingProgress = function (data) {
         if (!built || !data) { return; }
@@ -97,7 +101,6 @@ define([
             var el3 = document.querySelector('.cp-loading-progress-container');
             if (el3) { el3.innerHTML = makeBar(data); }
         } catch (e) {
-            //if (!hasErrored) { console.error(e); }
         }
     };
     window.CryptPad_updateLoadingProgress = updateLoadingProgress;
@@ -110,7 +113,6 @@ define([
             return;
         }
 
-        hasErrored = true;
         var err2;
         if (err === 'Script error.') {
             err2 = Messages.error_unhelpfulScriptError;

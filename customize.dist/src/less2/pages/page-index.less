@@ -1,4 +1,11 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "../include/infopages.less";
+@import (reference) "../include/browser.less";
 @import (reference) "../include/colortheme-all.less";
 
 &.cp-page-index {
@@ -10,21 +17,20 @@
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        .container {
-            @media only screen and (max-device-width : 576px) {
-                margin-top: 6em;
-            }
+
+        .alert-info {
+            font-size: 16px;
+            background-color: @cp_alerts-info-bg;
+            color: @cp_alerts-info-text;
         }
+
         & > .cp-container {
             flex: 1;
             display: flex;
             flex-flow: column;
             justify-content: space-around;
             justify-content: space-evenly;
-            .alert-info {
-                font-size: 16px;
-                border-radius: 0px;
-            }
+            max-width: 1000vh;
         }
     }
     body {
@@ -32,35 +38,70 @@
         color: @cryptpad_text_col;
     }
 
+    h1.cp-instance-title {
+        text-align: center;
+        font-family: "IBM Plex Mono";
+        font-weight: 500;
+        color: @cryptpad_color_brand;
+        font-size: 2.8rem; // Not used
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+    @media screen and (max-width: @browser_media-medium-screen) {
+        &.html h1.cp-instance-title {
+            font-size: 2.5em;
+        }
+    }
+
     .cp-home-hero {
         width: 100%;
-        margin-bottom: 50px;
         align-self: center;
         align-items: center;
+        justify-content: flex-end;
+        @media screen and (max-width: 990px) {
+            justify-content: center;
+        }
+        img {
+            max-height: ~"max(40vh, 250px)";
+        }
     }
     .cp-title {
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        color: @cryptpad_color_brand;
-        margin-top: 1.5em;
+        margin: 0 auto;
+        flex-grow: 1;
+        max-width: unset;
         img {
             max-width: 200px;
             margin-bottom: 1.5em;
         }
-        margin-left: 0;
         h1 {
             font-family: "IBM Plex Mono";
             font-weight: 500;
-            //font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", Times, serif;
-            //font-family: "Raleway";
+            color: @cryptpad_color_brand;
             font-size: 3.7rem;
         }
         .tag-line {
             text-align: center;
             font-size: 1.4em;
-            color: @cp_static-link;
+            max-width: 50ch;
+        }
+        .cp-instance-location {
+            margin-top: 20px;
+            i {
+                font-size: 1.2em;
+                margin-right: 5px;
+            }
+        }
+        .cp-instance-links {
+            padding: 1.3rem;
+            a {
+                display: inline-block;
+                margin: 0.5em;
+                white-space: nowrap;
+            }
         }
     }
 
@@ -69,15 +110,36 @@
         text-decoration: none;
     }
 
+    .cp-apps {
+        max-width: 575px;
+        @media screen and (max-width: 990px) {
+            align-self: baseline;
+        }
+    }
+
     .cp-app-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
+        background-color: @cp_alertify-bg;
+        border-radius: @infopages-radius-L;
+        padding: 15px;
+        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
+        .cp-app-new {
+            font-size: 1.4em;
+            line-height: 100%;
+            color: fade(@cryptpad_text_col, 80%);
+            i {
+                margin-right: 5px;
+            }
+        }
+        .cp-app-grid-apps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0 0.8rem;
+        }
         a {
             margin: 10px;
-            text-decoration: none;
         }
-        @media screen and (max-width: 768px) {
+        @media screen and (max-width: 990px) {
             margin-top: 40px;
         }
     }
@@ -153,6 +215,7 @@
 
     each(@colortheme_apps, {
         .cp-callout-@{key} {
+            border-radius: @infopages-radius;
             i { color: @value; }
             &:hover {
                 @desat: desaturate(@value, 15%);
@@ -161,6 +224,55 @@
             }
         }
     });
+    .cp-app-drive {
+        display: flex;
+        flex-direction: row;
+        margin: 20px 0px;
+        // font-size: 1.4rem;
+        a.cp-drive-btn {
+            color: @cryptpad_text_col;
+            font-size: 1.5rem;
+            display: block;
+            height: min-content;
+            flex-shrink: 0;
+            width: fit-content;
+            padding: 10px;
+            border-radius: @infopages-radius-L;
+            margin-right: 25px;
+            &:visited {
+                color: @cryptpad_text_col;
+            }
+            &:hover {
+                background-color: fade(@cryptpad_text_col, 10%);
+            }
+            i {
+                color: @cryptpad_color_brand;
+                margin-right: 10px;
+                font-size: 1.3em;
+            }
+        }
+        .cp-sub-prompt {
+            * {
+                display: block;
+            }
+            button {
+                background-color: @cryptpad_color_link;
+                color: @cryptpad_text_col_inv;
+                font-size: 1.4rem;
+                margin: 10px 0;
+                border-radius: @infopages-radius-L;
+                padding: 0.75rem;
+                i {
+                    display: inline;
+                    margin-right: 10px;
+                }
+                &:hover, &:focus {
+                    background-color: @cp_static-card-bg;
+                    color: @cryptpad_text_col;
+                }
+            }
+        }
+    }
 
     .cp-hidden { display: none !important; }
     .cp-callout-more {

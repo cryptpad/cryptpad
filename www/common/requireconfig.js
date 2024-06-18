@@ -1,29 +1,38 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/api/config'
 ], function (ApiConfig) {
     var out = {
         // fix up locations so that relative urls work.
         baseUrl: window.location.pathname,
-        paths: { 
+        paths: {
             // json plugin
-            text: '/bower_components/requirejs-plugins/lib/text',
-            json: '/bower_components/requirejs-plugins/src/json',
+            text: '/components/requirejs-plugins/lib/text',
+            json: '/components/requirejs-plugins/src/json',
+            optional: '/lib/optional/optional',
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
-            "jquery": "/bower_components/jquery/dist/jquery.min",
+            "jquery": "/components/jquery/dist/jquery.min",
             "mermaid": "/lib/mermaid/mermaid.min",
             // json.sortify same
-            "json.sortify": "/bower_components/json.sortify/dist/JSON.sortify",
-            cm: '/bower_components/codemirror',
+            "json.sortify": "/components/json.sortify/dist/JSON.sortify",
+            cm: '/components/codemirror',
             'tui-code-snippet': '/lib/calendar/tui-code-snippet.min',
             'tui-date-picker': '/lib/calendar/date-picker',
-            'netflux-client': '/bower_components/netflux-websocket/netflux-client',
-            'chainpad-netflux': '/bower_components/chainpad-netflux/chainpad-netflux',
-            'chainpad-listmap': '/bower_components/chainpad-listmap/chainpad-listmap',
+            'netflux-client': '/components/netflux-websocket/netflux-client',
+            'chainpad-netflux': '/components/chainpad-netflux/chainpad-netflux',
+            'chainpad-listmap': '/components/chainpad-listmap/chainpad-listmap',
+            'cm-extra': '/lib/codemirror-extra-modes',
+            // asciidoctor same
+            'asciidoctor': '/lib/asciidoctor/asciidoctor.min'
         },
         map: {
             '*': {
-                'css': '/bower_components/require-css/css.js',
+                'css': '/components/require-css/css.js',
                 'less': '/common/RequireLess.js',
+                '/bower_components/tweetnacl/nacl-fast.min.js': '/components/tweetnacl/nacl-fast.min.js'
             }
         }
     };

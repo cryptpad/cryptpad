@@ -1,13 +1,17 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
-    //'/bower_components/chainpad-json-validator/json-ot.js',
+    '/components/nthen/index.js',
+    //'/components/chainpad-json-validator/json-ot.js',
 
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
 ], function ($, UI, Util, h, Messages, nThen, ChainPad /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};
@@ -80,7 +84,7 @@ define([
             try {
                 var val = JSON.parse(states[idx].getContent().doc);
                 var md = config.extractMetadata(val);
-                var users = Object.keys(md.users).sort();
+                var users = Object.keys(md.users || {}).sort();
                 return users.join();
             } catch (e) {
                 console.error(e);
@@ -647,6 +651,7 @@ define([
                 states = [];
                 onClose();
                 closeUI();
+                UI.clearTooltipsDelay();
             });
             $(restore).click(function () {
                 var restorePrompt = config.drive ? Messages.history_restoreDrivePrompt

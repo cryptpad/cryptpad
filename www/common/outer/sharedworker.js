@@ -1,5 +1,10 @@
-/* jshint ignore:start */
-importScripts('/bower_components/requirejs/require.js');
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+/* global importScripts */
+
+importScripts('/components/requirejs/require.js');
 
 window = self;
 localStorage = {
@@ -53,6 +58,7 @@ var init = function (client, cb) {
                         if (q === 'CONNECT') { return; }
                         if (q === 'JOIN_PAD') { return; }
                         if (q === 'SEND_PAD_MSG') { return; }
+                        if (q === 'STOPWORKER') { return; }
                         chan.on(q, function (data, cb) {
                             try {
                                 Rpc.queries[q](clientId, data, cb);
@@ -70,6 +76,9 @@ var init = function (client, cb) {
                                 }
                             }
                         });
+                    });
+                    chan.on('STOPWORKER', function () {
+                        self.close();
                     });
                     chan.on('CONNECT', function (cfg, cb) {
                         debug('SharedW connecting to store...');
@@ -96,7 +105,7 @@ var init = function (client, cb) {
                             cfg.broadcast = function (excludes, cmd, data, cb) {
                                 cb = cb || function () {};
                                 Object.keys(self.tabs).forEach(function (cId) {
-                                    if (excludes.indexOf(cId) !== -1) { return; }
+                                    if (excludes.indexOf(+cId) !== -1) { return; }
                                     self.tabs[cId].chan.query(cmd, data, function (err, data2) {
                                         if (err) { return void cb({error: err}); }
                                         cb(data2);
@@ -111,7 +120,7 @@ var init = function (client, cb) {
                             if (data && data.state === "ALREADY_INIT") {
                                 debug('Store already exists!');
                                 self.store = data.returned;
-                                return void cb(data.returned);
+                                return void cb(data);
                             }
                             self.store = data;
                             cb(data);
@@ -153,10 +162,10 @@ var init = function (client, cb) {
     });
 };
 
-onconnect = function(e) {
+addEventListener('connect', function(e) {
     debug('New SharedWorker client');
     var port = e.ports[0];
-    var cId = Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
+    var cId = Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
     var client = self.tabs[cId] = {
         id: cId,
         port: port
@@ -178,5 +187,5 @@ onconnect = function(e) {
             client.msgEv.fire(e);
         }
     };
-};
+});
 

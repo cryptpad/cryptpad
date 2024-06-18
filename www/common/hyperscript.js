@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([], function () {
     var Hyperscript;
 
@@ -152,12 +156,11 @@ function isArray (arr) {
 }
 
 },{"browser-split":2,"class-list":3,"html-element":6}],2:[function(require,module,exports){
-/*!
- * Cross-Browser Split 1.1.1
- * Copyright 2007-2012 Steven Levithan <stevenlevithan.com>
- * Available under the MIT License
- * ECMAScript compliant, uniform cross-browser split method
- */
+
+// Copyright 2007-2012 Steven Levithan <stevenlevithan.com>
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
  * Splits a string into an array of strings using a regex or string separator. Matches of the

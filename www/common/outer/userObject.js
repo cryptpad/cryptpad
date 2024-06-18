@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/customize/application_config.js',
     '/common/common-util.js',
@@ -118,13 +122,14 @@ define([
             cb(null, id);
         };
 
-        exp.deprecateSharedFolder = function (id) {
+        exp.deprecateSharedFolder = function (id, reason) {
             if (readOnly) { return; }
             var data = files[SHARED_FOLDERS][id];
             if (!data) { return; }
             var ro = !data.href || exp.cryptor.decrypt(data.href).indexOf('#') === -1;
             if (!ro) {
-                files[SHARED_FOLDERS_TEMP][id] = JSON.parse(JSON.stringify(data));
+                var obj = files[SHARED_FOLDERS_TEMP][id] = JSON.parse(JSON.stringify(data));
+                obj.legacy = reason !== "PASSWORD_CHANGE";
             }
             var paths = exp.findFile(Number(id));
             exp.delete(paths, null, true);
@@ -304,6 +309,10 @@ define([
             var newParent = exp.find(path);
             var tempName = exp.isFile(element) ? Hash.createChannelId() : key;
             var newName = exp.getAvailableName(newParent, tempName);
+            if (Array.isArray(newParent)) {
+                newParent.push(element);
+                return;
+            }
             newParent[newName] = element;
         };
 
@@ -852,7 +861,7 @@ define([
                         }
                     }
                     if (!Hash.isValidChannel(el.channel)) {
-                        // XXX delete channel? replace with parsed.channel?
+                        // FIXME delete channel? replace with parsed.channel?
                         console.error('Remove invalid channel', el.channel, el);
                         // toClean.push(id);
                     }

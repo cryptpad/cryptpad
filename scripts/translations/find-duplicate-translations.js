@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 var Assert = require("assert");
 var Util = require("../../lib/common-util");
 var addIfAbsent = function (A, e) {
@@ -62,6 +66,9 @@ var FULL_LANGUAGES = {
     FR: Util.clone(require("../../www/common/translations/messages.fr.json")),
     DE: Util.clone(require("../../www/common/translations/messages.de.json")),
     JP: Util.clone(require("../../www/common/translations/messages.ja.json")),
+    RU: Util.clone(require("../../www/common/translations/messages.ru.json")),
+    CS: Util.clone(require("../../www/common/translations/messages.cs.json")),
+    PT_BR: Util.clone(require("../../www/common/translations/messages.pt-br.json")),
 };
 
 var DUPLICATES = {};
@@ -78,7 +85,7 @@ var extraneousKeys = 0;
 // such keys should not be simplified/deduplicated
 Object.keys(DUPLICATES.EN).forEach(function (key) {
     var reference = DUPLICATES.EN[key];
-    if (!['FR', 'DE', 'JP'].every(function (code) {
+    if (!['FR', 'DE', 'JP', 'RU', 'CS', 'PT_BR'].every(function (code) {
         try {
             Assert.deepEqual(reference, DUPLICATES[code][key]);
         } catch (err) {

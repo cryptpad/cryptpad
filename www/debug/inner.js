@@ -1,10 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
     'json.sortify',
     '/common/common-util.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
@@ -14,10 +18,11 @@ define([
     '/common/common-realtime.js',
     '/customize/messages.js',
     '/customize/application_config.js',
+    '/common/common-ui-elements.js',
     '/debug/chainpad.dist.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/debug/app-debug.less',
 ], function (
     $,
@@ -35,6 +40,7 @@ define([
     CommonRealtime,
     Messages,
     AppConfig,
+    UIElements,
     ChainWalk)
 {
     var APP = window.APP = {
@@ -697,7 +703,8 @@ define([
             };
             var $hist = common.createButton('history', true, {histConfig: histConfig});
             $hist.addClass('cp-hidden-if-readonly');
-            toolbar.$drawer.append($hist);
+            var $histEntry = UIElements.getEntryFromButton($hist);
+            toolbar.$drawer.append($histEntry);
 
             var $content = common.createButton(null, true, {
                 icon: 'fa-question',
@@ -706,7 +713,9 @@ define([
                 id: 'cp-app-debug-get-content'
             });
             $content.click(getContent);
-            toolbar.$drawer.append($content);
+            var $contentEntry = UIElements.getEntryFromButton($content);
+            console.error($contentEntry);
+            toolbar.$drawer.append($contentEntry);
         };
 
         config.onReady = function (info) {

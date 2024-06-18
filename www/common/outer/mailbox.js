@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/api/config',
     '/api/broadcast',
@@ -8,14 +12,13 @@ define([
     '/common/notify.js',
     '/common/outer/mailbox-handlers.js',
     'chainpad-netflux',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
 ], function (Config, BCast, Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 
     var TYPES = [
         'notifications',
-        'supportadmin',
-        'support',
+        'supportteam',
         'broadcast'
     ];
     var BLOCKING_TYPES = [
@@ -34,15 +37,10 @@ define([
                 if (res.error) { console.error(res); }
             });
         }
-        if (!mailboxes['support'] && ctx.loggedIn) {
-            mailboxes.support = {
-                channel: Hash.createChannelId(),
-                lastKnownHash: '',
-                viewed: []
-            };
-            ctx.pinPads([mailboxes.support.channel], function (res) {
-                if (res.error) { console.error(res); }
-            });
+
+        // no need for the "support" mailbox anymore
+        if (mailboxes.support) {
+            delete mailboxes.support;
         }
 
         if (!mailboxes['broadcast']) {
@@ -164,6 +162,22 @@ proxy.mailboxes = {
             });
         });
     };
+    Mailbox.sendToAnon = function (anonRpc, type, msg, user, cb) {
+        var Nacl = Crypto.Nacl;
+        var curveSeed = Nacl.randomBytes(32);
+        var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
+        var curvePrivate = Nacl.util.encodeBase64(curvePair.secretKey);
+        var curvePublic = Nacl.util.encodeBase64(curvePair.publicKey);
+        sendTo({
+            store: {
+                anon_rpc: anonRpc,
+                proxy: {
+                    curvePrivate: curvePrivate,
+                    curvePublic: curvePublic
+                }
+            }
+        }, type, msg, user, cb);
+    };
 
     // Mark a message as read
     var dismiss = function (ctx, data, cId, cb) {
@@ -177,6 +191,15 @@ proxy.mailboxes = {
             hideMessage(ctx, type, hash, ctx.clients.filter(function (clientId) {
                 return clientId !== cId;
             }));
+
+            var uid = hash.slice(9).split('-')[0];
+            var d = Util.find(ctx, ['store', 'proxy', 'hideReminders', uid]);
+            if (!d) {
+                var h = ctx.store.proxy.hideReminders = ctx.store.proxy.hideReminders || {};
+                d = h[uid] = h[uid] || [];
+            }
+            var delay = hash.split('-')[1];
+            if (delay && !d.includes(delay)) { d.push(Number(delay)); }
             return;
         }
 
@@ -246,6 +269,7 @@ proxy.mailboxes = {
 
 
     var leaveChannel = function (ctx, type, cb) {
+        cb = cb || function () {};
         var box = ctx.boxes[type];
         if (!box) { return void cb(); }
         if (!box.cpNf || typeof(box.cpNf.stop) !== "function") { return void cb('EINVAL'); }
@@ -344,16 +368,17 @@ proxy.mailboxes = {
                 // Message should be displayed
                 var message = {
                     msg: msg,
-                    hash: hash
+                    hash: hash,
+                    time: time
                 };
                 var notify = box.ready;
-                Handlers.add(ctx, box, message, function (dismissed, toDismiss) {
+                Handlers.add(ctx, box, message, function (dismissed, toDismiss, invalid) {
                     if (toDismiss) { // List of other messages to remove
                         dismiss(ctx, toDismiss, '', function () {
                             console.log('Notification handled automatically');
                         });
                     }
-                    if (dismissed) { // This message should be removed
+                    if (invalid || dismissed) { // This message should be removed
                         dismiss(ctx, {
                             type: type,
                             hash: hash
@@ -364,6 +389,7 @@ proxy.mailboxes = {
                     }
                     msg.ctime = time || 0;
                     box.content[hash] = msg;
+                    if (opts.dump) { return; }
                     showMessage(ctx, type, message, null, function (obj) {
                         if (!obj || !obj.msg || !notify) { return; }
                         Notify.system(undefined, obj.msg);
@@ -417,7 +443,7 @@ proxy.mailboxes = {
             });
             box.ready = true;
             // Continue
-            onReady();
+            onReady(box.content);
         };
         box.cpNf = CpNetflux.start(cfg);
     };
@@ -439,7 +465,7 @@ proxy.mailboxes = {
             if (type === 'HISTORY_RANGE') {
                 if (!Array.isArray(_msg)) { return; }
                 var message;
-                if (req.box.type === 'broadcast') {
+                if (req.box.type === 'broadcast') {
                     message = Util.tryParse(_msg[4]);
                 } else {
                     try {
@@ -450,11 +476,12 @@ proxy.mailboxes = {
                         console.log(e);
                     }
                 }
+                var hash = _msg[4].slice(0,64);
                 ctx.emit('HISTORY', {
                     txid: txid,
                     time: _msg[5],
                     message: message,
-                    hash: _msg[4].slice(0,64)
+                    hash: hash
                 }, [req.cId]);
             } else if (type === 'HISTORY_RANGE_END') {
                 ctx.emit('HISTORY', {
@@ -590,6 +617,9 @@ proxy.mailboxes = {
             });
         };
 
+        mailbox.hideMessage = function (type, msg) {
+            hideMessage(ctx, type, msg.hash, ctx.clients);
+        };
         mailbox.showMessage = function (type, msg, cId, cb) {
             if (type === "reminders" && msg) {
                 ctx.boxes.reminders.content[msg.hash] = msg.msg;

@@ -1,16 +1,20 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
     '/common/common-interface.js',
 
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/contacts/app-contacts.less',
 ], function (
     $,
@@ -55,17 +59,8 @@ define([
         APP.toolbar.$rightside.hide();
 
         MessengerUI.create($(appElement), common);
+        common.setTabTitle(Messages.contacts);
 
         UI.removeLoadingScreen();
-
-/*
-        sFrameChan.query('Q_HEY_BUDDY', null, function (err, data) {
-            if (!data) { return; }
-            if (data.error) {
-                UI.warn(data.error);
-            } else {
-                UI.log(data.response);
-            }
-        });*/
     });
 });

@@ -1,10 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-util.js',
     '/common/visible.js',
     '/common/common-hash.js',
     '/common/media-tag.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function ($, Util, Visible, Hash, MediaTag) {
     var Nacl = window.nacl;
     var Thumb = {
@@ -19,6 +23,7 @@ define([
         'image/png',
         'image/jpeg',
         'image/jpg',
+        'image/webp',
         'image/gif',
         'video/',
         'application/pdf'
@@ -145,7 +150,7 @@ define([
         video.src = url;
     };
     Thumb.fromPdfBlob = function (blob, cb) {
-        require.config({paths: {'pdfjs-dist': '/lib/pdfjs'}});
+        require.config({paths: {'pdfjs-dist': '/lib/pdfjs/legacy'}});
         require(['pdfjs-dist/build/pdf'], function (PDFJS) {
             var url = URL.createObjectURL(blob);
             var makeThumb = function (page) {
@@ -225,21 +230,21 @@ define([
     Thumb.fromDOM = function (opts, cb) {
         var element = opts.getContainer();
         if (!element) { return; }
-        var todo = function () {
+        var todo = function (html2canvas) {
+            if (!window.html2canvas) { window.html2canvas = html2canvas; }
             if (opts.filter) { opts.filter(element, true); }
             window.html2canvas(element, {
                 allowTaint: true,
-                onrendered: function (canvas) {
-                    if (opts.filter) { opts.filter(element, false); }
-                    setTimeout(function () {
-                        var D = getResizedDimensions(canvas, 'pad');
-                        Thumb.fromCanvas(canvas, D, cb);
-                    }, 10);
-                }
+            }).then(function (canvas) {
+                if (opts.filter) { opts.filter(element, false); }
+                setTimeout(function () {
+                    var D = getResizedDimensions(canvas, 'pad');
+                    Thumb.fromCanvas(canvas, D, cb);
+                }, 10);
             });
         };
         if (window.html2canvas) { return void todo(); }
-        require(['/bower_components/html2canvas/build/html2canvas.min.js'], todo);
+        require(['/components/html2canvas/dist/html2canvas.min.js'], todo);
     };
 
     Thumb.initPadThumbnails = function (common, opts) {
@@ -316,7 +321,7 @@ define([
             var key = secret.keys && secret.keys.cryptKey;
             MediaTag.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
-                    if (e === 'XHR_ERROR') { return; }
+                    if (/^XHR_ERROR/.test(e)) { return; }
                     return console.error(e);
                 }
                 if (!metadata) { return console.error("NO_METADATA"); }

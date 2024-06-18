@@ -1,0 +1,137 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+@import (reference) '../../customize/src/less2/include/support.less';
+@import (reference) '../../customize/src/less2/include/charts.less';
+&.cp-app-moderation {
+
+    .framework_min_main();
+    .sidebar-layout_main();
+    .support_main();
+    .charts_main();
+
+    .cp-hidden {
+        display: none !important;
+    }
+
+    label{
+        margin-top:0.5rem;
+    }
+
+    display: flex;
+    flex-flow: column;
+
+    background: @cp_sidebar-right-bg;
+    color: @cp_sidebar-right-fg;
+
+    #cp-content-container {
+        overflow: auto;
+    }
+    .cp-support-container {
+        display: flex;
+        flex-wrap: wrap;
+        .cp-support-column {
+            min-width: 700px;
+            flex: 1 0 50%;
+            h1 {
+                display: flex;
+                align-items: center;
+                button {
+                    margin-left: 50px !important;
+                }
+            }
+            .cp-support-count {
+                margin-left: 10px;
+            }
+        }
+
+    }
+
+    .cp-moderation-userdata {
+        display: flex;
+        align-items: center;
+        max-width: 100%;
+        width: 2*@sidebar_block-width;
+        textarea {
+            margin: 0;
+            height: 5rem;
+            min-width: 5rem;
+            flex: 1;
+        }
+        .cp-moderation-userdata-inputs {
+            display: flex;
+            flex-flow: column;
+            margin-right: 1rem;
+            min-width: 10rem;
+            width: 25rem;
+            :first-child {
+                margin-top: 0 !important;
+            }
+        }
+    }
+
+    .cp-moderation-recorded-list {
+        display: flex;
+        flex-flow: column;
+        max-width: @sidebar_block-width;
+        width: @sidebar_block-width;
+        .cp-moderation-recorded {
+            @margin: @sidebar_base-margin;
+            .cp-moderation-recorded-header {
+                display: inline-flex;
+                align-items: center;
+                background-color: @cp_support-bg;
+                padding: 0 @margin;
+                border-radius: @margin @margin 0 0;
+                font-weight: bold;
+            }
+            .cp-moderation-recorded-body {
+                background-color: @cp_support-bg;
+                display: flex;
+                justify-content: space-between;
+                padding: @margin;
+                align-items: center;
+                border-radius: 0 @margin @margin @margin;
+                nav {
+                    margin: 0 !important;
+                }
+                .cp-moderation-recorded-content {
+                    white-space: pre-line;
+                }
+            }
+            &:not(:last-child) {
+                margin-bottom: @margin;
+            }
+        }
+    }
+    [data-item="open-ticket"] {
+        .cp-support-form-container {
+            textarea {
+                width: 2*@sidebar_block-width !important;
+            }
+        }
+    }
+
+    .cp-support-recorded {
+        .cp-dropdown-container > button {
+            margin-left: @sidebar_base-margin !important;
+            margin-right: 0 !important;
+        }
+        .cp-fake-dropdown {
+            margin-left: @sidebar_base-margin !important;
+            margin-right: 0 !important;
+        }
+    }
+
+    .cp-support-search-container {
+        display: flex;
+        flex-flow: column;
+
+    }
+}
+

@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
     '/common/outer/worker-channel.js',
@@ -11,9 +15,11 @@ define([
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-cursor.js',
+    '/common/sframe-common-integration.js',
     '/common/sframe-common-mailbox.js',
     '/common/inner/cache.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/mfa.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -26,7 +32,7 @@ define([
     '/common/common-feedback.js',
     '/common/common-language.js',
     '/common/common-constants.js',
-    '/bower_components/localforage/dist/localforage.min.js',
+    '/components/localforage/dist/localforage.min.js',
     '/common/hyperscript.js',
 ], function (
     $,
@@ -41,9 +47,11 @@ define([
     File,
     CodeMirror,
     Cursor,
+    Integration,
     Mailbox,
     Cache,
     MT,
+    MFA,
     MetadataMgr,
     AppConfig,
     Pages,
@@ -117,6 +125,7 @@ define([
     funcs.importMediaTagMenu = callWithCommon(MT.importMediaTagMenu);
     funcs.getMediaTagPreview = callWithCommon(MT.getMediaTagPreview);
     funcs.getMediaTag = callWithCommon(MT.getMediaTag);
+    funcs.totpSetup = callWithCommon(MFA.totpSetup);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -130,6 +139,9 @@ define([
 
     // Cursor
     funcs.createCursor = callWithCommon(Cursor.create);
+
+    // Integration
+    funcs.createIntegration = callWithCommon(Integration.create);
 
     // Files
     funcs.uploadFile = callWithCommon(File.uploadFile);
@@ -391,6 +403,22 @@ define([
         });
     };
 
+    funcs.openIntegrationChannel = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        var channel = md.integration;
+        if (typeof(channel) !== 'string' || channel.length !== Hash.ephemeralChannelLength) {
+            channel = Hash.createChannelId(true); // true indicates that it's an ephemeral channel
+        }
+        if (md.integration !== channel) {
+            md.integration = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        ctx.sframeChan.query('Q_INTEGRATION_OPENCHANNEL', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
+
     // CodeMirror
     funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);
 
@@ -412,7 +440,11 @@ define([
     };
 
     funcs.setLoginRedirect = function (page) {
-        ctx.sframeChan.query('EV_SET_LOGIN_REDIRECT', page);
+        // We have to logout before redirecting because otherwise Safari might keep
+        // the guest SharedWorker alive
+        funcs.logout(() => {
+            ctx.sframeChan.event('EV_SET_LOGIN_REDIRECT', page);
+        });
     };
 
     funcs.isPresentUrl = function (cb) {
@@ -426,6 +458,9 @@ define([
     funcs.handleNewFile = function (waitFor, config) {
         if (window.__CRYPTPAD_TEST__) { return; }
         var priv = ctx.metadataMgr.getPrivateData();
+        if (priv.isNewFile && priv.initialState) {
+            return void setTimeout(waitFor());
+        }
         if (priv.isNewFile) {
             var c = (priv.settings.general && priv.settings.general.creation) || {};
             // If this is a new file but we have a hash in the URL and pad creation screen is
@@ -662,6 +697,9 @@ define([
         });
     };
 
+    funcs.openDirectly = function () {
+        ctx.sframeChan.event('EV_OPEN_URL_DIRECTLY');
+    };
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
     funcs.getBounceURL = function (url) {
@@ -762,7 +800,7 @@ define([
                 msgEv.fire(msg);
             });
             var postMsg = function (data) {
-                iframe.postMessage(data, '*');
+                iframe.postMessage(data, ApiConfig.httpUnsafeOrigin);
             };
             SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) { ctx.sframeChan = sfc; }));
         }).nThen(function (waitFor) {
@@ -804,7 +842,7 @@ define([
                 if (i) { i.classList = 'fa fa-shhare-alt'; }
                 var a = error.querySelector('a');
                 if (a) {
-                    a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/user_account.html#confidentiality"));
+                    a.setAttribute('href', Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/user_account.html#confidentiality"));
                 }
                 UI.errorLoadingScreen(error);
             });
@@ -815,6 +853,28 @@ define([
 
             ctx.sframeChan.on("EV_RESTRICTED_ERROR", function () {
                 UI.errorLoadingScreen(Messages.restrictedError);
+            });
+
+            ctx.sframeChan.on("EV_DELETED_ERROR", function (reason) {
+                var obj = reason;
+                var viewer;
+                if (typeof(reason) === "object") {
+                    reason = obj.reason;
+                    viewer = obj.viewer;
+                }
+                funcs.onServerError({
+                    type: 'EDELETED',
+                    message: reason,
+                    viewer: viewer
+                });
+            });
+
+            ctx.sframeChan.on("EV_DRIVE_DELETED", function (reason) {
+                funcs.onServerError({
+                    type: 'EDELETED',
+                    drive: true,
+                    message: reason
+                });
             });
 
             ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
@@ -836,6 +896,10 @@ define([
                 UI.updateLoadingProgress(data);
             });
 
+            ctx.sframeChan.on('Q_LOADING_MISSING_AUTH', function (data, cb) {
+                UIElements.onMissingMFA(funcs, data, cb);
+            });
+
             ctx.sframeChan.on('EV_NEW_VERSION', function () {
                 // TODO lock the UI and do the same in non-framework apps
                 var $err = $('<div>').append(Messages.newVersionError);
@@ -852,11 +916,19 @@ define([
 
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 var msg = err;
-                if (err === 'DELETED') {
-                    msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
-                }
-                if (err === "INVALID_HASH") {
+                if (err === 'DELETED' || (err && err.type === 'EDELETED')) {
+                    // You can still use the current version in read-only mode by pressing Esc.
+                    // what if they don't have a keyboard (ie. mobile)
+                    if (err.type && err.message) {
+                        msg = UI.getDestroyedPlaceholderMessage(err.message, false, true);
+                    } else {
+                        msg = Messages.deletedError;
+                    }
+                    msg += '<br>' + Messages.errorRedirectToHome;
+                } else if (err === "INVALID_HASH") {
                     msg = Messages.invalidHashError;
+                } else if (err === 'ACCOUNT') { // block 404 but no placeholder
+                    msg = Messages.login_unhandledError;
                 }
                 UI.errorLoadingScreen(msg, false, function () {
                     funcs.gotoURL('/drive/');
@@ -940,6 +1012,7 @@ define([
             } catch (e) {}
 
             ctx.sframeChan.on('EV_LOGOUT', function () {
+                if (window.CP_ownAccountDeletion) { return; }
                 $(window).on('keyup', function (e) {
                     if (e.keyCode === 27) {
                         UI.removeLoadingScreen();
@@ -964,6 +1037,10 @@ define([
 
             ctx.sframeChan.on('EV_CHROME_68', function () {
                 UI.alert(Messages.chrome68);
+            });
+
+            ctx.sframeChan.on('EV_IFRAME_TITLE', function (title) {
+                document.title = title;
             });
 
             funcs.isPadStored(function (err, val) {

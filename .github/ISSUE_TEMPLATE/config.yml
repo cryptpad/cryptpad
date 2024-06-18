@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+blank_issues_enabled: true
+contact_links:
+  - name: Feature request
+    url: https://forum.cryptpad.org/t/feature-request
+    about: Check if an existing topic doesn't already cover the feature you'd like
+  - name: Generic question
+    url: https://forum.cryptpad.org/t/general
+    about: Feel free to use the forum to ask any question you might have
+  - name: CryptPad.fr flagship instance issue
+    url: https://cryptpad.fr/support/#new
+    about: Issue with an account or document on cryptpad.fr only

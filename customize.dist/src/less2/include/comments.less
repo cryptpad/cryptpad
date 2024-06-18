@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./colortheme-all.less";
 @import (reference) "./variables.less";
 @import (reference) "./avatar.less";
@@ -98,6 +104,8 @@
         background-color: @cp_comments-bg;
         position: relative;
         padding: 5px;
+        border-top-left-radius: @variables_radius;
+        border-top-right-radius: @variables_radius;
         box-sizing: content-box;
         .avatar_main(40px);
         .cp-comment-metadata {
@@ -114,8 +122,8 @@
             cursor: pointer;
             outline: none;
             position: absolute;
-            right: 0;
-            top: 0;
+            right: 5px;
+            top: 5px;
             width: 20px;
             height: 20px;
             text-align: center;
@@ -128,6 +136,8 @@
     .cp-comment-content {
         background-color: @cp_comments-bg;
         padding: 0px 5px 5px 5px;
+        border-bottom-left-radius: @variables_radius;
+        border-bottom-right-radius: @variables_radius;
         white-space: pre-wrap;
         word-break: break-word;
     }
@@ -150,6 +160,7 @@
     }
     .cp-comment-active {
         background-color: rgba(0,0,0,0.2);
+        border-radius: @variables_radius;
         .cp-comment-actions {
             display: block;
         }

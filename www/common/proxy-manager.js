@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/userObject.js',
     '/common/common-util.js',
@@ -5,7 +9,7 @@ define([
     '/common/outer/sharedfolder.js',
     '/customize/messages.js',
     '/common/common-feedback.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function (UserObject, Util, Hash, SF, Messages, Feedback, nThen) {
 
 
@@ -70,8 +74,32 @@ define([
         delete Env.folders[id];
     };
 
+    var sendNotification = (Env, sfId, title) => {
+        var mailbox = Env.store.mailbox;
+        if (!mailbox) { return; }
+        var team = Env.cfg.teamId;
+        var box;
+        if (team) {
+            let teams = Env.store.modules['team'].getTeamsData();
+            box = teams[team];
+        } else {
+            let md = Env.Store.getMetadata(null, null, () => {});
+            box = md.user;
+        }
+        mailbox.sendTo('SF_DELETED', {
+            sfId: sfId,
+            team: team,
+            title: title
+        }, {
+            curvePublic: box.curvePublic,
+            channel: box.notifications
+        }, (err) => {
+                console.error(err);
+        });
+    };
+
     // Password may have changed
-    var deprecateProxy = function (Env, id, channel) {
+    var deprecateProxy = function (Env, id, channel, reason) {
         if (Env.folders[id] && Env.folders[id].deleting) {
             // Folder is being deleted by its owner, don't deprecate it
             return;
@@ -85,11 +113,23 @@ define([
             return void Env.Store.refreshDriveUI();
         }
         if (channel) { Env.unpinPads([channel], function () {}); }
-        Env.user.userObject.deprecateSharedFolder(id);
-        removeProxy(Env, id);
-        if (Env.Store && Env.Store.refreshDriveUI) {
-            Env.Store.refreshDriveUI();
+
+        // If it's explicitely a deletion, no need to deprecate, just delete
+        if (reason && reason !== "PASSWORD_CHANGE") {
+            let temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS]);
+            let title = temp[id] && temp[id].lastTitle;
+            if (title) { sendNotification(Env, id, title); }
+
+            delete temp[id];
+
+            if (Env.Store && Env.Store.refreshDriveUI) { Env.Store.refreshDriveUI(); }
+            return;
         }
+
+        // It's explicitely a password change, better message in drive: provide the "reason" to the UI
+        Env.user.userObject.deprecateSharedFolder(id, reason);
+        removeProxy(Env, id);
+        if (Env.Store && Env.Store.refreshDriveUI) { Env.Store.refreshDriveUI(); }
     };
 
     var restrictedProxy = function (Env, id) {
@@ -236,8 +276,10 @@ define([
     };
 
     var getSharedFolderData = function (Env, id) {
-        if (!Env.folders[id]) { return {}; }
-        var proxy = Env.folders[id].proxy;
+        var inHistory;
+        if (Env.isHistoryMode && !Env.folders[id]) { inHistory = true; }
+        else if (!Env.folders[id]) { return {}; }
+        var proxy = inHistory? {}: Env.folders[id].proxy;
 
         // Clean deprecated values
         if (Object.keys(proxy.metadata || {}).length > 1) {
@@ -247,7 +289,7 @@ define([
         var obj = Util.clone(proxy.metadata || {});
 
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
-            if (typeof(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]) === "undefined") { // XXX "deleted folder" for restricted shared folders when viewer in a team
+            if (typeof(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]) === "undefined") { // TODO "deleted folder" for restricted shared folders when viewer in a team
                 continue;
             }
             var data = Util.clone(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]);
@@ -522,6 +564,7 @@ define([
                 href: '/drive/#' + hashes.editHash,
                 roHref: '/drive/#' + hashes.viewHash,
                 channel: secret.channel,
+                lastTitle: data.name,
                 ctime: +new Date(),
             };
             if (data.password) { folderData.password = data.password; }
@@ -543,11 +586,15 @@ define([
             // 1. add the shared folder to our list of shared folders
             // NOTE: pushSharedFolder will encrypt the href directly in the object if needed
             Env.user.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
-                if (err === "EEXISTS" && folderData.href && folderId) {
+                if (err === "EEXISTS" && folderData.href && folderId) { // Check upgrade
                     var parsed = Hash.parsePadUrl(folderData.href);
                     var secret = Hash.getSecrets('drive', parsed.hash, folderData.password);
                     SF.upgrade(secret.channel, secret);
                     Env.folders[folderId].userObject.setReadOnly(false, secret.keys.secondaryKey);
+                    waitFor.abort();
+                    return void cb(folderId);
+                }
+                if (err === "EEXISTS" && folderId) { // Exists but no upgrade, return folderId
                     waitFor.abort();
                     return void cb(folderId);
                 }
@@ -629,17 +676,19 @@ define([
             if (isNew) {
                 return void cb({ error: 'ENOTFOUND' });
             }
+            var newData = Util.clone(data);
             var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
-            data.password = newPassword;
-            data.channel = secret.channel;
+            newData.password = newPassword;
+            newData.channel = secret.channel;
             if (secret.keys.editKeyStr) {
-                data.href = '/drive/#'+Hash.getEditHashFromKeys(secret);
+                newData.href = '/drive/#'+Hash.getEditHashFromKeys(secret);
             }
-            data.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
+            newData.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
+            delete newData.legacy;
             _addSharedFolder(Env, {
                 path: ['root'],
-                folderData: data,
+                folderData: newData,
             }, function () {
                 delete temp[fId];
                 Env.onSync(cb);
@@ -970,41 +1019,52 @@ define([
                 var owned = Env.user.userObject.ownedInTrash(function (owners) {
                     return _ownedByMe(Env, owners);
                 });
+                var n = nThen;
                 owned.forEach(function (chan) {
-                    Env.removeOwnedChannel(chan, waitFor(function (obj) {
-                        // If the error is that the file is already removed, nothing to
-                        // report, it's a normal behavior (pad expired probably)
-                        if (obj && obj.error && obj.error !== "ENOENT") {
-                            // RPC may not be responding
-                            // Send a report that can be handled manually
-                            console.error(obj.error, chan);
-                            Feedback.send('ERROR_EMPTYTRASH_OWNED=' + chan + '|' + obj.error, true);
-                        }
-                        console.warn('DELETED', chan);
-                    }));
+                    n = n(function (w) {
+                        Env.removeOwnedChannel(chan, w(function (obj) {
+                            setTimeout(w(), 50);
+                            // If the error is that the file is already removed, nothing to
+                            // report, it's a normal behavior (pad expired probably)
+                            if (obj && obj.error && obj.error !== "ENOENT") {
+                                // RPC may not be responding
+                                // Send a report that can be handled manually
+                                console.error(obj.error, chan);
+                                Feedback.send('ERROR_EMPTYTRASH_OWNED=' + chan + '|' + obj.error, true);
+                            }
+                            console.warn('DELETED', chan);
+                        }));
+                    }).nThen;
                 });
+                n(waitFor());
             }
 
             // Empty the trash
             Env.user.userObject.emptyTrash(waitFor(function (err, toClean) {
-                cb();
-
+                var nn = nThen;
                 // Don't block nThen for the lower-priority tasks
-                setTimeout(function () {
+                setTimeout(waitFor(function () {
                     // Unpin deleted pads if needed
                     // Check if we need to restore a full hash (hidden hash deleted from drive)
                     if (!Array.isArray(toClean)) { return; }
+                    var done = waitFor();
                     var toCheck = Util.deduplicateString(toClean);
                     var toUnpin = [];
                     toCheck.forEach(function (channel) {
                         // Check unpin
-                        var data = findChannel(Env, channel, true);
-                        if (!data.length) { toUnpin.push(channel); }
-                        // Check hidden hash
-                        Env.Store.checkDeletedPad(channel);
+                        nn = nn(function (w) {
+                            var data = findChannel(Env, channel, true);
+                            if (!data.length) { toUnpin.push(channel); }
+                            // Check hidden hash, one at a time, asynchronously
+                            Env.Store.checkDeletedPad(channel, w());
+                        }).nThen;
                     });
-                    Env.unpinPads(toUnpin, function () {});
-                });
+                    nn(function () {
+                        Env.unpinPads(toUnpin, function () {
+                            done();
+                        });
+                    });
+                }));
             }));
         }).nThen(cb);
     };
@@ -1209,7 +1269,7 @@ define([
                     var data = userObject.getFileData(fileId);
                     if (!data) { return; }
                     // Don't pin pads owned by someone else
-                    if (_ownedByOther(Env, data.owners)) { return; }
+                    //if (_ownedByOther(Env, data.owners)) { return; }
                     // Pin onlyoffice checkpoints
                     if (data.lastVersion) {
                         var otherChan = Hash.hrefToHexChannelId(data.lastVersion);
@@ -1260,8 +1320,12 @@ define([
         }
         if (type === "pin") {
             var sfChannels = Object.keys(Env.folders).map(function (fId) {
-                return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
-            });
+                try {
+                    return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
+                } catch (err) {
+                    console.error(err);
+                }
+            }).filter(Boolean);
             Array.prototype.push.apply(result, sfChannels);
         }
 
@@ -1300,6 +1364,7 @@ define([
             unpinPads: data.unpin,
             onSync: data.onSync,
             Store: data.Store,
+            store: data.store,
             removeOwnedChannel: data.removeOwnedChannel,
             loadSharedFolder: data.loadSharedFolder,
             cfg: uoConfig,
@@ -1562,6 +1627,10 @@ define([
         return Env.user.userObject.getOwnedPads(Env.edPublic);
     };
 
+    var setHistoryMode = function (Env, flag) {
+        Env.isHistoryMode = Boolean(flag);
+    };
+
     var getFolderData = function (Env, path) {
         var resolved = _resolvePath(Env, path);
         if (!resolved || !resolved.userObject) { return {}; }
@@ -1657,6 +1726,7 @@ define([
             // Manager
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
+            setHistoryMode: callWithEnv(setHistoryMode),
             // Drive RPC commands
             rename: callWithEnv(renameInner),
             move: callWithEnv(moveInner),

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // This is stage 1, it can be changed but you must bump the version of the project.
 // Note: This must only be loaded from inside of a sandbox-iframe.
 define([
@@ -13,6 +17,14 @@ define([
         };
     }
 
+    var ls = {};
+    try { ls = window.localStorage; } catch (e) { console.warn(e); }
+    window.CryptPad_flushCacheInner = function () {
+        Object.keys(ls).forEach(function (k) {
+            if (k.indexOf('CRYPTPAD_CACHE|') !== 0 && k.indexOf('LESS_CACHE') !== 0) { return; }
+            delete ls[k];
+        });
+    };
     var mkFakeStore = function () {
         var fakeStorage = {
             getItem: function (k) { return fakeStorage[k]; },
@@ -34,7 +46,7 @@ define([
     window.onerror = function (e) {
         if (/requirejs\.org/.test(e)) {
             console.log();
-            console.error("Require.js threw a Script Error. This probably means you're missing a dependency for CryptPad.\nIt is recommended that the admin of this server runs `bower install && bower update` to get the latest code, then modify their cache version.\nBest of luck,\nThe CryptPad Developers");
+            console.error("Require.js threw a Script Error. This probably means you're missing a dependency for CryptPad.\nIt is recommended that the admin of this server runs `npm install` to get the latest code, then modify their cache version.\nBest of luck,\nThe CryptPad Developers");
             return void console.log();
         }
         if (window.CryptPad_loadingError) {

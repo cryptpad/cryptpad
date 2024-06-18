@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function (window) {
     var Util = {};
 
     // polyfill for atob in case you're using this from node...
-    window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); }; // jshint ignore:line
-    window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); }; // jshint ignore:line
+    window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); };
+    window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); };
 
     Util.slice = function (A, start, end) {
         return Array.prototype.slice.call(A, start, end);
@@ -36,6 +40,7 @@
     };
 
     Util.clone = function (o) {
+        if (o === undefined || o === null) { return o; }
         return JSON.parse(JSON.stringify(o));
     };
 
@@ -76,7 +81,7 @@
             },
             unreg: function (cb) {
                 if (handlers.indexOf(cb) === -1) {
-                    return void console.error("event handler was already unregistered");
+                    return void console.log("event handler was already unregistered");
                 }
                 handlers.splice(handlers.indexOf(cb), 1);
             },
@@ -99,6 +104,20 @@
 
         return Util.both(f, function () {
             clearTimeout(timeout);
+        });
+    };
+
+    Util.onClickEnter = function ($element, handler, cfg) {
+        $element.on('click keydown', function (e) {
+            var isClick = e.type === 'click';
+            var isEnter = e.type === 'keydown' && e.which === 13;
+            var isSpace = e.type === 'keydown' && e.which === 32 && cfg && cfg.space;
+            if (!isClick && !isEnter && !isSpace) { return; }
+
+            // "enter" on a button triggers a click, disable it
+            if (e.type === 'keydown') { e.preventDefault(); }
+
+            handler(e);
         });
     };
 
@@ -160,6 +179,7 @@
             },
             expect: expect,
             handle: handle,
+            _pending: pending,
         };
     };
 
@@ -185,6 +205,14 @@
     Util.uid = function () {
         return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
             .toString(32).replace(/\./g, '');
+    };
+
+    Util.guid = function (map) {
+        var id = Util.uid();
+        // the guid (globally unique id) is valid if it does already exist in the map
+        if (typeof(map[id]) === 'undefined') { return id; }
+        // otherwise try again
+        return Util.guid(map);
     };
 
     Util.fixHTML = function (str) {
@@ -302,6 +330,44 @@
         if (!/^[a-f0-9]{48}$/.test(cacheKey)) { cacheKey = undefined; }
         return cacheKey;
     };
+
+
+    Util.getBlock = function (src, opt, cb) {
+        var CB = Util.once(Util.mkAsync(cb));
+
+        var headers = {};
+
+        if (typeof(opt.bearer) === 'string' && opt.bearer) {
+            headers.authorization = `Bearer ${opt.bearer}`;
+        }
+
+
+        fetch(src, {
+            method: 'GET',
+            credentials: 'include',
+            headers: headers,
+        }).then(response => {
+            if (response.ok) {
+                // TODO this should probably be returned as an arraybuffer or something rather than a promise
+                // this is resulting in some code duplication
+                return void CB(void 0, response);
+            }
+            if (response.status === 401 || response.status === 404) {
+                response.json().then((data) => {
+                    CB(response.status, data);
+                }).catch(() => {
+                    CB(response.status);
+                });
+
+                return;
+            }
+            CB(response.status, response);
+        }).catch(error => {
+            CB(error);
+        });
+    };
+
+
     Util.fetch = function (src, cb, progress, cache) {
         var CB = Util.once(Util.mkAsync(cb));
 
@@ -680,6 +746,18 @@
     Util.supportsWasm = function () {
         return !(typeof(Atomics) === "undefined" || !supportsSharedArrayBuffers() || typeof(WebAssembly) === 'undefined');
     };
+
+    //Returns an array of integers in range 0 to (length-1)
+    Util.getKeysArray = function (length) {
+        return [...Array(length).keys()];
+    };
+
+    Util.getVersionFromUrlArgs = urlArgs => {
+        let arr = /ver=([0-9.]+)(-[0-9]*)?/.exec(urlArgs);
+        let ver = Array.isArray(arr) && arr[1];
+        return ver || undefined;
+    };
+
 
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;

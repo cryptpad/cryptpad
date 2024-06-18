@@ -1,5 +1,10 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
@@ -9,11 +14,23 @@ define([
     '/common/hyperscript.js',
     '/common/clipboard.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/customize/pages.js',
-], function ($, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
+
+    '/components/file-saver/FileSaver.min.js',
+    '/lib/qrcode.min.js',
+], function ($, ApiConfig, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen, Pages) {
     var Share = {};
+
+    var embeddableApps = [
+        'code',
+        'form',
+        'kanban',
+        'pad',
+        'slide',
+        'whiteboard',
+    ].map(app => `/${app}/`);
 
     var createShareWithFriends = function (config, onShare, linkGetter) {
         var common = config.common;
@@ -291,7 +308,7 @@ define([
             h('a', {href: '#'}, Messages.passwordFaqLink)
         ]);
         $(link).click(function () {
-            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders"));
+            opts.common.openUnsafeURL(Pages.localizeDocsLink("https://docs.cryptpad.org/en/user_guide/security.html#passwords-for-documents-and-folders"));
         });
         return link;
     };
@@ -449,8 +466,9 @@ define([
                     var v = opts.getLinkValue({
                         embed: Util.isChecked($link.find('#cp-share-embed'))
                     });
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess); }
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
                 },
                 keys: [13]
             }, {
@@ -473,6 +491,60 @@ define([
         cb(void 0, {
             content: link,
             buttons: linkButtons
+        });
+    };
+
+    var getQRCode = function (link) {
+        var blocker = h('div#cp-qr-blocker', Messages.share_toggleQR);
+        var $blocker = $(blocker).click(function () {
+            $blocker.toggleClass("hidden");
+        });
+
+        var qrDiv = h('div');
+
+        var container = h('div#cp-qr-container', [
+            blocker,
+            h('div#cp-qr-link-preview', qrDiv),
+        ]);
+
+        new window.QRCode(qrDiv, link);
+        return container;
+    };
+
+    Messages.share_toggleQR = "Click to toggle QR code visibility"; // NEXT
+    var getQRTab = function (Env, data, opts, _cb) {
+        var qr = getQRCode(opts.getLinkValue());
+
+        var link = h('div.cp-share-modal', [
+            h('span#cp-qr-target', qr),
+        ]);
+
+        var buttons = [
+            makeCancelButton(),
+            {
+                className: 'primary cp-bar',
+                name: Messages.share_bar,
+                onClick: function () {
+                    UI.warn("OOPS: NOT IMPLEMENTED"); // NEXT
+                    return true;
+                },
+            },
+            {
+                className: 'primary cp-nobar',
+                name: Messages.download_dl,
+                iconClass: '.fa.fa-download',
+                onClick: function () {
+                    qr.querySelector('canvas').toBlob(blob => {
+                        var name = Util.fixFileName((opts.title || 'document') + '-qr.png');
+                        window.saveAs(blob, name);
+                    });
+                },
+            },
+        ];
+
+        return _cb(void 0, {
+            content: link,
+            buttons: buttons,
         });
     };
 
@@ -502,8 +574,9 @@ define([
                 onClick: function () {
                     Feedback.send('SHARE_EMBED');
                     var v = opts.getEmbedValue();
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess); }
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
                 },
                 keys: [13]
         }];
@@ -548,7 +621,7 @@ define([
                         label: {style: "display: none;"}
                     }) : undefined;
         var rights = h('div.msg.cp-inline-radio-group', [
-            h('label', Messages.share_linkAccess),
+            h('label',{ for: 'cp-share-editable-true' }, Messages.share_linkAccess),
             h('div.radio-group',[
             UI.createRadio('accessRights', 'cp-share-editable-false',
                             labelView, true, { mark: {tabindex:1} }),
@@ -656,12 +729,17 @@ define([
         var getEmbed = function () {
             return $rights.parent().find('#cp-embed-link-preview');
         };
+        var getQR = function () {
+            return $rights.parent().find('#cp-qr-target');
+        };
 
         // update values for link and embed preview when radio btns change
         $rights.find('input[type="radio"]').on('change', function () {
-            getLink().val(opts.getLinkValue({
+            var link = opts.getLinkValue({
                 embed: Util.isChecked($('.alertify').find('#cp-share-embed'))
-            }));
+            });
+
+            getLink().val(link);
             // Hide or show the burn after reading alert
             if (Util.isChecked($rights.find('#cp-share-bar')) && !opts.burnAfterReadingUrl) {
                 $('.cp-alertify-bar-selected').show();
@@ -671,6 +749,10 @@ define([
                 return;
             }
             getEmbed().val(opts.getEmbedValue());
+
+            var qr = getQRCode(opts.getLinkValue());
+            getQR().html('').append(qr);
+
             // Hide burn after reading button
             $('.alertify').find('.cp-nobar').show();
             $('.alertify').find('.cp-bar').hide();
@@ -712,6 +794,8 @@ define([
         return $rights;
     };
 
+    Messages.share_QRCategory = "QR"; // NEXT
+
     // In the share modal, tabs need to share data between themselves.
     // To do so we're using "opts" to store data and functions
     Share.getShareModal = function (common, opts, cb) {
@@ -720,7 +804,7 @@ define([
         opts.access = true; // Allow the use of the modal even if the pad is not stored
 
         var hashes = opts.hashes;
-        if (!hashes || (!hashes.editHash && !hashes.viewHash && !opts.static)) { return; }
+        if (!hashes || (!hashes.editHash && !hashes.viewHash && !opts.static)) { return cb("NO_HASHES"); }
 
         var teams = getEditableTeams(common, opts);
         opts.teams = teams;
@@ -770,8 +854,12 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !contactsActive,
-        }];
-        if (!opts.static) {
+        }, window.CP_DEV_MODE ? { // NEXT enable for all
+            getTab: getQRTab,
+            title: Messages.share_QRCategory,
+            icon: 'fa fa-qrcode',
+        } : undefined].filter(Boolean);
+        if (!opts.static && ApiConfig.enableEmbedding && embeddableApps.includes(pathname)) {
             tabs.push({
                 getTab: getEmbedTab,
                 title: Messages.share_embedCategory,
@@ -876,11 +964,11 @@ define([
                 iconClass: '.fa.fa-link',
                 onClick: function () {
                     var v = opts.getLinkValue();
-                    var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess);
-                }
-              },
-              keys: [13]
+                    Clipboard.copy(v, (err) => {
+                        if (!err) { UI.log(Messages.shareSuccess); }
+                    });
+                },
+                keys: [13]
             }
         ];
 
@@ -922,8 +1010,9 @@ define([
             iconClass: '.fa.fa-link',
             onClick: function () {
                 var v = common.getMediatagFromHref(opts.fileData);
-                var success = Clipboard.copy(v);
-                if (success) { UI.log(Messages.shareSuccess); }
+                Clipboard.copy(v, (err) => {
+                    if (!err) { UI.log(Messages.shareSuccess); }
+                });
             },
             keys: [13]
         }];
@@ -965,11 +1054,17 @@ define([
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
             active: !hasFriends,
-        }, {
-            getTab: getFileEmbedTab,
-            title: Messages.share_embedCategory,
-            icon: "fa fa-code",
         }];
+
+        // NEXT add QR code generation for files
+        if (ApiConfig.enableEmbedding) {
+            tabs.push({
+                getTab: getFileEmbedTab,
+                title: Messages.share_embedCategory,
+                icon: "fa fa-code",
+            });
+        }
+
         Modal.getModal(common, opts, tabs, cb);
     };
 

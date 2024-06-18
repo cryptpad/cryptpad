@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/drive.less';
 @import (reference) '../../customize/src/less2/include/messenger.less';
@@ -6,6 +12,9 @@
 @import (reference) "../../customize/src/less2/include/colortheme-all.less";
 @import (reference) '../../customize/src/less2/include/export.less';
 
+.fa-spinner,.fa-check{
+    margin-left:0.5rem;
+}
 
 &.cp-app-team {
     .framework_min_main(
@@ -88,6 +97,8 @@
         }
         .cp-team-cat-header {
             justify-content: center;
+            background-color: transparent !important;
+            box-shadow: none !important;
             .avatar_main(30px);
             .cp-avatar {
                 justify-content: center;
@@ -101,9 +112,6 @@
             }
             cursor: default !important;
             font-size: 18px;
-            &:hover {
-                background-color: transparent !important;
-            }
             span.cp-sidebarlayout-category-name {
                 padding-left: 5px;
             }
@@ -129,6 +137,7 @@
                 justify-content: space-between;
                 flex-flow: column;
                 width: 300px;
+                border-radius: @variables_radius_L;
                 max-width: 90%;
                 height: 384px;
                 padding: 50px;
@@ -143,14 +152,13 @@
                     .avatar_main(200px);
                 }
                 .cp-team-list-name {
+                    word-wrap: break-word;
                     min-width: 0;
-                    overflow: hidden;
-                    white-space: nowrap;
+                    white-space: pre-wrap;
                     text-overflow: ellipsis;
-                    max-width: 500px;
+                    max-width: 250px;
                     font-size: 25px;
-                    display: inline-flex;
-                    align-items: center;
+                    text-align: center;
                     &.empty {
                         white-space: initial;
                         text-align: center;
@@ -186,7 +194,7 @@
             }
         }
         .cp-team-roster {
-            .avatar_main(50px);
+            .avatar_main(40px);
             .cp-hidden {
                 display: none;
             }
@@ -199,10 +207,11 @@
             .cp-team-roster-member {
                 display: flex;
                 align-items: center;
-                margin: 5px;
-                padding: 2px;
+                margin: 5px 0px;
+                padding: 5px 5px 5px 10px;
                 max-width: 500px;
                 background-color: @roster-bg-color;
+                border-radius: @variables_radius;
                 &:hover {
                     background-color: @roster-bg-color-hover;
                 }
@@ -214,9 +223,10 @@
                     width: 5px;
                     height: 50px;
                     display: inline-block;
-                    background-color: red;
+                    border-radius: @variables_radius;
+                    background-color: @cryptpad_color_red;
                     &.online {
-                        background-color: green;
+                        background-color: @cryptpad_color_green;
                     }
                 }
                 .cp-team-member-name {
@@ -249,7 +259,7 @@
                 .cp-teams-invite-from-author {
                     display: flex;
                     margin-left: 10px;
-                    .cp-teams-invite-from-avatar { 
+                    .cp-teams-invite-from-avatar {
                         .avatar_main(25px);
                         margin: 0px 5px;
                     }
@@ -262,7 +272,8 @@
                 width: 100%;
                 padding: 12px;
                 margin-bottom: 20px;
-                white-space: pre;
+                border-radius: @variables_radius;
+                overflow-wrap: break-word;
             }
             .cp-teams-invite-password {
                 margin-bottom: 20px;
@@ -281,6 +292,22 @@
             margin: 0;
         }
     }
+
+    .cp-teams-invite-uses {
+        input {
+            margin-bottom: 0px !important;
+            margin-right: 10px;
+            width: 75px !important;
+        }
+
+    }
+    .cp-teams-invite-role {
+        margin-bottom: 15px;
+        span:first-child {
+            margin-right: 10px;
+        }
+    }
+
 
     #cp-teams-roster-dialog {
         table {

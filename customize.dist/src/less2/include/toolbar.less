@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./dropdown.less";
 @import (reference) "./colortheme-all.less";
 @import (reference) "./browser.less";
@@ -15,9 +21,8 @@
     @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
-    @desat-color: desaturate(@bg-color, 20%);
-    @toolbar-bg-color-light: contrast(@cp_toolbar-fg, lighten(@bg-color, 30%), darken(@desat-color, 20%));
-    @toolbar-bg-color-active: contrast(@cp_toolbar-fg, lighten(@bg-color, 20%), darken(@desat-color, 10%));
+    @toolbar-bg-color-light: lighten(@bg-color, 30%);
+    @toolbar-bg-color-fade: fade(@toolbar-bg-color-light, 60%);
 };
 
 .toolbar_main (
@@ -27,8 +32,8 @@
     .toolbar_vars(@bg-color);
 
     --toolbar-bg-color: @toolbar-bg-color;
+    --toolbar-bg-color-fade: @toolbar-bg-color-fade;
     --toolbar-bg-color-light: @toolbar-bg-color-light;
-    --toolbar-bg-color-active: @toolbar-bg-color-active;
 
     .help_main();
     .notifications_main();
@@ -72,7 +77,6 @@
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
-            &.cp-markdown-help { float: right; }
         }
     }
 
@@ -108,6 +112,7 @@
     }
 
     .cp-toolbar-chat-drawer {
+        border-radius: @variables_radius;
         background-color: @toolbar-bg-color;
         background-color: var(--toolbar-bg-color);
         font: @colortheme_app-font-size @colortheme_font;
@@ -360,14 +365,14 @@
 
     .cp-toolbar {
         * {
-            outline-width: 0;
-            &:focus {
-                outline-width: 0;
+            outline-style: none;
+            &:focus-visible {
+                outline: @cryptpad_color_brand solid 2px;
             }
         }
 
         box-sizing: border-box;
-        padding: 0px;
+        padding: 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -392,7 +397,6 @@
             //display: inline-block;
             button {
                 height: 100%;
-                border-radius: 0;
                 margin: 0;
                 background: transparent;
             }
@@ -439,13 +443,6 @@
                    screen and (max-height: 500px) {
                 flex-wrap: wrap;
                 height: @toolbar_line-height;
-                .cp-pad-not-pinned {
-                    line-height: 32px;
-                    flex: unset;
-                    padding: 0;
-                    align-self: auto;
-                    margin: 0 5px;
-                }
                 .cp-toolbar-top-filler {
                     height: 32px;
                 }
@@ -503,9 +500,12 @@
                 .cp-toolbar-link {
                     height: @toolbar_line-height;
                     width: @toolbar_line-height;
-                    transform: scale(0.5);
+                    //transform: scale(0.5);
                     .cp-toolbar-link-logo {
                         padding: 5px;
+                        span {
+                            font-size: 24px;
+                        }
                     }
                 }
                 .cp-toolbar-user {
@@ -514,21 +514,21 @@
                         height: @toolbar_line-height;
                         width: @toolbar_line-height;
                         margin-left: 0;
+                        padding: 0px;
                         button {
                             height: @toolbar_line-height;
                             width: @toolbar_line-height;
                             font-size: 15px;
                             margin-top: -1px;
-                            .cp-dropdown-button-title {
-                                transform: scale(0.5);
-                                bottom: -5px;
-                                right: -5px;
+                            &::before {
+                                padding-top: 1px;
                             }
                         }
                     }
                     .cp-toolbar-user-dropdown {
                         height: @toolbar_line-height;
                         width: @toolbar_line-height;
+                        padding: 0;
                         &> button {
                             height: @toolbar_line-height;
                             width: @toolbar_line-height;
@@ -570,41 +570,6 @@
         position: relative;
         width: 100%;
 
-        .cp-pad-not-pinned {
-            order: 4;
-            flex: 1;
-
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-
-            line-height: @toolbar_top-height;
-            padding: 0;
-            margin: 0 5px;
-            font-size: @colortheme_app-font-size;
-            color: @cp_toolbar-warn;
-            .cp-pnp-msg {
-                padding-left: 5px;
-                font-family: @colortheme_font;
-                font-size: @colortheme_app-font-size;
-                a {
-                    font-size: @colortheme_app-font-size;
-                    font-family: @colortheme_font;
-                    font-weight: bold;
-                    color: @cp_toolbar-warn;
-                    &:hover {
-                        text-decoration: underline;
-                    }
-                }
-                @media screen and (max-width: (@browser_media-not-big)) {
-                    display: none;
-                }
-            }
-            @media screen and (max-width: (@browser_media-not-big)) {
-                overflow: visible;
-                max-width: 20px;
-            }
-        }
         .cp-toolbar-top-filler {
             height: @toolbar_top-height;
             display: inline-block;
@@ -638,6 +603,7 @@
                 align-items: center;
                 font-size: 20px;
                 vertical-align: middle;
+                border-radius: 0 @variables_radius @variables_radius 0;
                 .fa {
                     font-size: 20px;
                 }
@@ -677,6 +643,7 @@
                     }
                     .cp-toolbar-title-editable {
                         cursor: text;
+                        border-radius: @variables_radius 0 0 @variables_radius;
                     }
                 }
             }
@@ -723,7 +690,7 @@
             line-height: @toolbar_top-height;
             width: @toolbar_top-height;
             height: @toolbar_top-height;
-            padding: 0;
+            padding: 5px;
             box-sizing: border-box;
             display: inline-block;
         }
@@ -735,9 +702,10 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: @toolbar_top-height;
+                width: @toolbar_top-height - 10px;
                 font-size: 1em;
-                height: @toolbar_top-height;
+                height: @toolbar_top-height - 10px;
+                border-radius: @variables_radius;
                 padding: 0px;
                 margin: 0;
                 &::before {
@@ -780,6 +748,15 @@
                 }
             }
         }
+        .cp-toolbar-notifications {
+            .cp-notifications-container {
+                padding: 0 5px;;
+                li {
+                    margin: 0 -5px;
+                    padding: 0;
+                }
+            }
+        }
         .cp-toolbar-link {
             display: inline-flex;
             align-items: center;
@@ -795,22 +772,42 @@
                 text-decoration: none;
                 height: auto;
                 padding: 10px;
+                color: @toolbar-bg-color;
+                color: var(--toolbar-bg-color);
+                border-radius: 5px;
 
-                svg {
-                    #outline, #squares {
-                        fill: @toolbar-bg-color;
-                        fill: var(--toolbar-bg-color);
+                span {
+                    font-size: 45px;
+                }
+
+                &:hover {
+                    // Icons shown when hovering the toolbar icon (where logo used to be)
+                    .cptools::before {
+                        content: "\e920"; // shows drive icon in document toolbars
                     }
-                    #background {
-                        fill: @cp_toolbar-logo-bg;
+                    .fa::before {
+                        content: "\f0a0"; // shows hdd-o for all FA icons (settings, etc)
+                    }
+                    .fa-hdd-o::before {
+                        content: "\f015"; // shows home for drive
                     }
                 }
 
-                img {
-                    cursor: pointer;
-                    height: 100%;
-                    width: 100%;
-                }
+                // svg {
+                //     #outline, #squares {
+                //         fill: @toolbar-bg-color;
+                //         fill: var(--toolbar-bg-color);
+                //     }
+                //     #background {
+                //         fill: @cp_toolbar-logo-bg;
+                //     }
+                // }
+
+                // img {
+                //     cursor: pointer;
+                //     height: 100%;
+                //     width: 100%;
+                // }
             }
         }
         .cp-toolbar-user {
@@ -828,31 +825,20 @@
             }
             .cp-toolbar-user-dropdown {
                 z-index: 10000; //Z cp-toolbar-user-dropdown
-                //margin-left: 20px;
-                height: @toolbar_top-height;
-                width: @toolbar_top-height;
-                padding: 0px;
+                padding: 5px;
                 box-sizing: border-box;
                 text-align: center;
 
-/*
-                background-color: rgba(0,0,0,0.3);
-                transition: all 0.15s;
-                &:hover {
-                    background-color: rgba(0,0,0,0.4);
-                }
- */
-
                 .cp-dropdown-content {
-                    margin: 0;
                     padding-bottom: 10px;
                 }
                 & > button {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    height: @toolbar_top-height;
-                    width: @toolbar_top-height;
+                    height: @toolbar_top-height - 10px;
+                    width: @toolbar_top-height - 10px;
+                    border-radius: @variables_radius;
                     padding: 0;
                     &:hover {
                         border-color: transparent;
@@ -876,14 +862,35 @@
                     }
                 }
             }
-            p.cp-toolbar-account {
+            .cp-user-menu-logo {
+                text-align: left;
+                font-family: "IBM Plex Mono";
+                color: @cryptpad_color_grey_500;
+                font-size: 1.5em;
+                padding: 5px;
+                img {
+                    width: 25px;
+                }
+                .cp-user-menu-logo-text {
+                    margin-left: 10px;
+                }
+            }
+            div.cp-toolbar-account {
                 &> span {
                     font-weight: bold;
                     span {
                         font-weight: normal;
                     }
                 }
+                min-width: 160px;
+                padding: 5px;
+                margin: 0;
+                white-space: normal;
+                text-align: left;
+                color: @cryptpad_text_col;
+                font-size: 14px;
             }
+
             .cp-toolbar-backup {
                 margin: 0;
                 border-radius: 0;
@@ -896,8 +903,8 @@
     }
 
     .cp-toolbar-history, .cp-toolbar-snapshots {
-        background-color: @toolbar-bg-color-light;
-        background-color: var(--toolbar-bg-color-light);
+        background-color: @cp_toolbar-bg;
+        //background-color: var(--toolbar-bg-color-light);
         color: @toolbar-color;
     }
     .cp-toolbar-snapshots {
@@ -934,25 +941,13 @@
             }
         }
     }
+    .cp-toolbar-dropdown-nowrap {
+        white-space: nowrap;
+    }
     .cp-toolbar-bottom {
-        background-color: @toolbar-bg-color-light;
-        background-color: var(--toolbar-bg-color-light);
         color: @cp_toolbar-bottom-fg;
-        button:hover, button.cp-toolbar-button-active {
-            background-color: @toolbar-bg-color-active;
-            background-color: var(--toolbar-bg-color-active);
-        }
-        button.cp-toolbar-button-active {
-            border-color: @toolbar-bg-color-active;
-            border-color: var(--toolbar-bg-color-active);
-        }
-        button:hover, button:focus {
-            border-color: @toolbar-bg-color-active;
-            border-color: var(--toolbar-bg-color-active);
-            //border-color: @cryptpad_text_col;
-        }
-
         display: inline-flex;
+        margin: 5px 0px;
         align-items: center;
         justify-content: space-between;
         max-width: 100%;
@@ -960,6 +955,11 @@
         &:empty {
             height: 0;
         }
+
+        & > div:empty {
+            display: none;
+        }
+
         .cp-toolbar-users {
             pre {
                 /* needed for ckeditor */
@@ -967,17 +967,60 @@
                 margin: 5px 0px;
             }
         }
+
         button {
-            border: 1px solid transparent;
+            border: 1px solid @cp_toolbar-bottom-bg;
             box-sizing: border-box;
             position: relative;
             margin: 0px;
-            border-radius: 0;
+            border-radius: @variables_radius;
             height: @toolbar_line-height;
             display: inline-flex;
             align-items: center;
             .fa, .cptools {
                 margin-right: 5px;
+            }
+            .cp-dropdown-button-title .cp-icon {
+                margin-left: 5px;
+            }
+            &:hover {
+                background-color: fade(@cp_toolbar-bottom-bg, 70%);
+            }
+        }
+        .cp-toolbar-bottom-left > button,
+        .cp-toolbar-bottom-left > span > button,
+        .cp-toolbar-bottom-mid > button,
+        .cp-toolbar-bottom-right > button,
+        .cp-toolbar-bottom-right > span > button {
+            background-color: @cp_toolbar-bottom-bg;
+            color: @cp_toolbar-bottom-fg;
+            &:hover {
+                background-color: fade(@cryptpad_text_col, 20%);
+                border-color: @cryptpad_text_col;
+                color: @cryptpad_text_col;
+            }
+            &.cp-toolbar-button-active {
+                background-color: @cp_toolbar-bg;
+                border-color: @cp_toolbar-fg;
+                color: @cp_toolbar-fg;
+                &:hover {
+                    background-color: fade(@cryptpad_text_col, 20%);
+                }
+            }
+        }
+
+        button.cp-toolbar-button-primary {
+            background-color: @toolbar-bg-color-light;
+            background-color: var(--toolbar-bg-color-light);
+            border-color: @toolbar-bg-color-light;
+            border-color: var(--toolbar-bg-color-light);
+            color: @cp_toolbar-bottom-fg;
+            &:hover {
+                background-color: @toolbar-bg-color-fade;
+                background-color: var(--toolbar-bg-color-fade);
+                border-color: @toolbar-bg-color-fade;
+                border-color: var(--toolbar-bg-color-fade);
+                color: @cp_toolbar-bottom-fg;
             }
         }
         button.cp-toolbar-collapse {
@@ -988,18 +1031,32 @@
         is very small, which makes it unlikely that you'll see the title unless
         you hover perfectly. The same is true of the drive's grid/list view toggle.
 */
-
+            position: relative;
             .fa {
                 margin-right: 0px;
+            }
+            .cp-collapsed-notif {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                background-color: @cryptpad_color_red;
+                position: absolute;
+                bottom: -3px;
+                right: -3px;
+                border: 2px solid @cp_toolbar-bg;
+                border-radius: 50%;
+            }
+            &:not(.cp-toolbar-button-active) .cp-collapsed-notif {
+                display: none;
             }
         }
 
         &.cp-toolbar-small {
             button {
-                .cp-toolbar-name, .cp-button-name {
+                .cp-toolbar-name, .cp-button-name, .cp-dropdown-button-title {
                     display: none;
                 }
-                i {
+                i, span {
                     margin-right: 0;
                 }
             }
@@ -1013,14 +1070,26 @@
         .cp-toolbar-bottom-left {
             display: flex;
             order: 1;
+            padding-left: 5px;
+            button {
+                margin-right: 5px;
+            }
         }
         .cp-toolbar-bottom-mid {
             display: flex;
             order: 2;
+            margin: auto;
+            button {
+                margin-right: 5px;
+            }
         }
         .cp-toolbar-bottom-right {
             order: 3;
             display: flex;
+            padding-right: 5px;
+            button {
+                margin-left: 5px;
+            }
             #cp-toolbar-chat-drawer-open { order: 0; }
             #cp-toolbar-userlist-drawer-open { order: 1; }
             & > .cp-dropdown-container {
@@ -1059,28 +1128,31 @@
                 order: 8;
             }
             .cp-toolbar-file {
-                button {
-                    &.fa-plus { order: 0; }
-                    &.fa-history { order: 5; }
-                    &.fa-hashtag { order: 10; }
-                    &.fa-bookmark { order: 15; }
-                    &.fa-upload { order: 20; }
-                    &.fa-files-o { order: 25; }
-                    &.fa-download { order: 30; }
-                    &.fa-print { order: 35; }
-                    &.fa-trash { order: 40; }
-                    &.cp-toolbar-icon-pad-settings { order: 75; }
-                    &.fa-info-circle { order: 100; }
+                li, button {
+                    .fa-plus { order: 0; }
+                    .fa-history { order: 5; }
+                    .fa-hashtag { order: 10; }
+                    .fa-bookmark { order: 15; }
+                    .fa-upload { order: 20; }
+                    .fa-files-o { order: 25; }
+                    .fa-download { order: 30; }
+                    .fa-print { order: 35; }
+                    .fa-trash { order: 40; }
+                    .cp-toolbar-icon-pad-settings { order: 75; }
+                    .fa-info-circle { order: 100; }
 
-                    &.cp-toolbar-icon-help { order: 150; }
+                    .fa-question { order: 150; }
+
+                    span { order: 1000; } // text always after icon
                 }
             }
 
-            .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
+            .cp-toolbar-drawer-contentsss:empty ~ .cp-toolbar-drawer-button {
                 display: none;
             }
-            .cp-toolbar-drawer-content {
+            .cp-toolbar-drawer-contentsss {
                 box-shadow: 0px 1px 5px 0px @cp_shadow-color;
+                border-radius: @variables_radius;
                 overflow-y: auto;
                 overflow-x: hidden;
                 &.cp-dropdown-visible {
@@ -1089,7 +1161,8 @@
                 position: absolute;
                 left: 0px;
                 top: @toolbar_line-height;
-                margin: -1px;
+                //margin: -1px;
+                padding: 5px;
                 min-width: 50px;
                 background: @cp_dropdown-bg;
                 display: flex;
@@ -1105,15 +1178,15 @@
                     box-sizing: border-box;
                     min-width: 150px;
                     height: @toolbar_line-height;
-                    border-radius: 0;
+                    border-radius: @variables_radius;
                     border: 0;
                 }
                 button {
                     white-space: nowrap;
-                    padding: 5px 16px;
+                    padding: 5px;
                     text-align: left;
                     margin: 0;
-                    border-radius: 0;
+                    border-radius: @variables_radius;
                     border: 0;
                     width: 100%;
                     line-height: 1em;
@@ -1169,4 +1242,5 @@
         }
     }
 }
+
 

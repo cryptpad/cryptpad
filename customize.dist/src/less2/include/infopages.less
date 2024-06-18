@@ -1,5 +1,14 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./colortheme-all.less";
 @import (reference) "./font.less";
+
+@infopages-radius: 5px;
+@infopages-radius-L: 10px;
 
 .infopages_link () {
     text-decoration: none;
@@ -11,12 +20,17 @@
     }
 }
 .cp-shadow() {
-    box-shadow: 0px 0px 25px 0px @cp_shadow-color;
+    box-shadow: 0px 0px 20px 0px @cp_shadow-color;
 }
 
 .infopages_main () {
     --LessLoader_require: LessLoader_currentFile();
 }
+
+.cp-loading-noscroll {
+    overflow: hidden;
+}
+
 body.html {
     .font_main();
     @infopages_infobar-height: 64px;
@@ -52,7 +66,7 @@ body.html {
         padding-top: @infopages_padding;
         padding-bottom: @infopages_padding;
         min-height: 75vh;
-        max-width: 950px;
+        max-width: 1200px;
         h1 {
             font-size: 3em;
             margin-bottom: 0.5em;
@@ -102,29 +116,24 @@ body.html {
             filter: @cp_static-img-invert-filter;
         }
 
-        button {
+        button:not(.btn) {
             outline: none;
             background-color: @cp_buttons-primary;
             color: @cp_buttons-primary-text;
             border: none;
             padding: 10px 20px;
             margin-right: 10px;
-            border-radius: 0px;
+            border-radius: @infopages-radius;
             cursor: pointer;
             &:hover, &:focus {
                 background-color: contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
             }
         }
-        button.cp-secondary {
-            background-color: @cp_buttons-cancel;
-            color: @cp_buttons-fg;
-            border: 1px solid @cp_buttons-fg;
-        }
 
         .form-group {
-            & > * {
-                margin-top: 0.5em;
-            }
+            // & > * {
+            //     margin-bottom: 0.5em;
+            // }
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -139,59 +148,114 @@ body.html {
                     margin-right: 0.5em;
                 }
             }
+            .big-container {
+                width: 100%;
+            }
+            .input-container {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+            }
         }
     }
     footer {
-
         background-color: @cp_static-footer;
-        padding-top: 20px;
         align-self: normal; // override align-items:center from parent in index.html
-
-        .container {
-            margin-bottom: 20px;
+        box-shadow: inset 0px 7px 15px -7px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+        flex-wrap: wrap;
+        .cp-footer-left, .cp-footer-center, .cp-footer-right {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
             a {
-                color: @cp_static-link;
-                &:visited {
-                    color: @cp_static-link;
-                }
+                margin-right: 10px;
             }
         }
+
         .cp-logo-foot {
             display: flex;
-            flex-flow: column;
-            width: 100%;
+            flex-flow: row;
             align-items: center;
+            padding: 10px;
             img {
-                max-width: 60px;
-                display: block;
+                max-height: 40px;
+                margin-right: 10px;
             }
             .logo-font {
                 display: block;
                 font-family: "IBM Plex Mono";
                 font-size: 1.5rem;
-                color: @cp_static-title;
-                margin-bottom: 10px;
+                color: @cryptpad_text_col;
+                height: 40px;
             }
 
         }
-        .cp-version-footer {
-            background-color: @cp_static-footer;
-            display: flex;
-            flex-flow: column;
-            align-items: center;
-            padding: 0.5em;
-            border-top: 1px solid @cp_static-footer-border;
+
+        .cp-logo-btns {
+            padding: 10px;
+            a {
+                background-color: @cryptpad_color_link;
+                color: @cryptpad_text_col_inv;
+                border-radius: @infopages-radius;
+                padding: 0.5em 0.7em;
+                white-space: nowrap;
+                display: inline-block;
+                i {
+                    margin-right: 5px;
+                }
+                &:hover {
+                    background-color: @cp_static-card-bg;
+                    color: @cryptpad_text_col;
+                    text-decoration: none;
+                }
+            }
+
+        }
+
+        .cp-footer-language {
+            padding: 10px;
+            margin-right: 10px;
+            i {
+                font-size: 1.3em;
+                margin-right: 5px;
+            }
             select {
                 min-width: 0;
-                margin-bottom: 10px;
+                background-color: @cp_static-card-bg;
+                color: @cryptpad_text_col;
+                border: 0px;
+                border-radius: @infopages-radius;
+                padding: 0.5em 0.7em;
             }
         }
+        .cp-footer-version {
+            padding: 10px;
+            font-family: 'IBM Plex Mono';
+        }
+        // .cp-version-footer {
+        //     background-color: @cp_static-footer;
+        //     display: flex;
+        //     flex-flow: column;
+        //     align-items: center;
+        //     padding: 0.5em;
+        //     border-top: 1px solid @cp_static-footer-border;
+        //     select {
+        //         min-width: 0;
+        //         margin-bottom: 10px;
+        //     }
+        // }
     }
 
     // navigation top bar
     .navbar {
         width: 100%;
         color: @cp_static-topbar-fg;
+        justify-content: flex-end;
         .navbar-brand {
             display: block;
             height: 50px;
@@ -208,20 +272,39 @@ body.html {
             margin-right: 0;
         }
         a {
-            border: 2px solid transparent;
+            //border: 2px solid transparent;
             white-space: nowrap;
             color: @cp_static-title;
+            background-color: @cp_static-card-bg;
+            border-radius: @infopages-radius;
         }
         .nav-link {
             padding: 0.5em 0.7em;
+            margin: 5px;
             color: @cp_static-link;
+            display: inline-block;
+            img {
+                max-height: 30px;
+                margin-right: 10px;
+            }
+            &.cp-back-home {
+                margin-right: auto;
+            }
             &:hover {
                 color: @cryptpad_text_col;
             }
+            i {
+                margin-right: 5px;
+            }
         }
         .cp-register-btn {
-            border: 2px solid @cp_static-topbar-fg;
+            background-color: @cp_static-topbar-fg;
+            color: @cp_static-bg;
             display: inline-block;
+            &:hover {
+                background-color: @cp_static-card-bg;
+                color: @cryptpad_text_col;
+            }
         }
         button:focus {
             outline: none;
@@ -229,27 +312,6 @@ body.html {
         .navbar-toggler {
             margin-top: 10px;
             color: @cp_static-topbar-fg;
-        }
-    }
-    @media (max-width: 1000px) {
-        #menuCollapse {
-            text-align: right;
-    /*        @media (min-width: 576px) {
-                top: 100%;
-                background: rgba(255,255,255,0.8);
-                position: absolute;
-                right: 0px;
-                padding: 0 20px;
-                z-index: 1;
-            }
-    */
-        }
-        .navbar-nav a {
-            text-align: right !important;
-        }
-        .cp-register-btn {
-            margin-right: 13px;
-            text-align: center;
         }
     }
 }

@@ -1,4 +1,10 @@
-/* jshint ignore:start */
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+/* eslint-env worker */
+/* global clients */
+
 var id;
 //= Math.floor(Math.random()*100000);
 
@@ -13,17 +19,17 @@ var broadcast = function (data, excludes) {
             if (excludes.indexOf(client.id) === -1) {
                 postMsg(client, data);
             }
-        })
-    })
+        });
+    });
 };
 var sendTo = function (data, clientId){
     clients.matchAll().then(function (clients) {
         clients.some(function (client) {
             if (client.id === clientId) {
-                postMsg(client, data)
+                postMsg(client, data);
             }
-        })
-    })
+        });
+    });
 };
 var getClients = function () {
     clients.matchAll().then(function (clients) {

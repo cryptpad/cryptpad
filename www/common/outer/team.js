@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -15,12 +19,12 @@ define([
     '/common/outer/cache-store.js',
 
     'chainpad-listmap',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-netflux',
-    '/bower_components/chainpad/chainpad.dist.js',
-    '/bower_components/nthen/index.js',
-    '/bower_components/saferphore/index.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/chainpad/chainpad.dist.js',
+    '/components/nthen/index.js',
+    '/components/saferphore/index.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
              ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt, Cache,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
@@ -149,7 +153,7 @@ define([
         var list = store.manager.getChannelsList('pin');
 
         var team = ctx.store.proxy.teams[id];
-        list.push(team.channel);
+        list.push(`${team.channel}#drive`);
         var chatChannel = Util.find(team, ['keys', 'chat', 'channel']);
         var membersChannel = Util.find(team, ['keys', 'roster', 'channel']);
         var mailboxChannel = Util.find(team, ['keys', 'mailbox', 'channel']);
@@ -319,8 +323,10 @@ define([
                 }
                 ctx.Store.removeOwnedChannel('', data, cb);
             },
-            Store: ctx.Store
+            Store: ctx.Store,
+            store: ctx.store
         }, {
+            teamId: team.id,
             outer: true,
             edPublic: keys.drive.edPublic,
             loggedIn: true,
@@ -423,7 +429,7 @@ define([
         };
         if (channel) {
             ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, waitFor(function (e, res) {
-                if (res && res.length && typeof(res[0]) === 'boolean' && res[0]) {
+                if (res && res.length && typeof(res[0]) === 'object' && res[0].isNew) {
                     // Channel is empty: remove this team
                     close();
                 }
@@ -431,7 +437,7 @@ define([
         }
         if (roster) {
             ctx.store.anon_rpc.send("IS_NEW_CHANNEL", roster, waitFor(function (e, res) {
-                if (res && res.length && typeof(res[0]) === 'boolean' && res[0]) {
+                if (res && res.length && typeof(res[0]) === 'object' && res[0].isNew) {
                     // Channel is empty: remove this team
                     close();
                 }
@@ -1038,6 +1044,17 @@ define([
                 });
             }
 
+            // Decrypt hash for invite links
+            Object.keys(members).forEach(function (curve) {
+                var member = members[curve];
+                if (!member.inviteChannel) { return; }
+                if (!member.hash) { return; }
+                if (!teamData.hash) { delete member.hash; return; }
+                try {
+                    member.hash = Invite.decryptHash(member.hash, teamData.hash);
+                } catch (e) { console.error(e); }
+            });
+
             cb(members);
         });
     };
@@ -1580,10 +1597,12 @@ define([
         var message = data.message;
         var name = data.name;
 
-        /*
-        var password = data.password;
+        //var password = data.password;
         var hash = data.hash;
-        */
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        try {
+            var encryptedHash = Invite.encryptHash(hash, teamData.hash);
+        } catch (e) { console.error(e); }
 
         // derive { channel, cryptKey} for the preview content channel
         var previewKeys = Invite.derivePreviewKeys(seeds.preview);
@@ -1594,6 +1613,10 @@ define([
         // randomly generate ephemeral keys for ownership of the above content
         // and a placeholder in the roster
         var ephemeralKeys = Invite.generateKeys();
+
+        // Initial role of the invited users
+        var role = data.role || "VIEWER";
+        var uses = data.uses || 1;
 
         nThen(function (w) {
 
@@ -1652,9 +1675,12 @@ define([
                 };
                 putOpts.metadata.validateKey = sign.validateKey;
 
+
+
+
                 // available only with the link and the content
                 var inviteContent = {
-                    teamData: getInviteData(ctx, teamId, false),
+                    teamData: getInviteData(ctx, teamId, role === "MEMBER"),
                     ephemeral: {
                         edPublic: ephemeralKeys.edPublic,
                         edPrivate: ephemeralKeys.edPrivate,
@@ -1692,6 +1718,10 @@ define([
                     curvePublic: ephemeralKeys.curvePublic,
                     displayName: data.name,
                     pending: true,
+                    remaining: uses,
+                    totalUses: uses,
+                    role: role,
+                    hash: encryptedHash,
                     inviteChannel: inviteKeys.channel,
                     previewChannel: previewKeys.channel,
                 }
@@ -1821,20 +1851,22 @@ define([
             }));
         }).nThen(function () {
             var tempRpc = {};
-            initRpc(ctx, tempRpc, inviteContent.ephemeral, function (err) {
-                if (err) { return; }
-                var rpc = tempRpc.rpc;
-                if (rosterState.inviteChannel) {
-                    rpc.removeOwnedChannel(rosterState.inviteChannel, function (err) {
-                        if (err) { console.error(err); }
-                    });
-                }
-                if (rosterState.previewChannel) {
-                    rpc.removeOwnedChannel(rosterState.previewChannel, function (err) {
-                        if (err) { console.error(err); }
-                    });
-                }
-            });
+            if (!rosterState.remaining || rosterState.remaining === 1) {
+                initRpc(ctx, tempRpc, inviteContent.ephemeral, function (err) {
+                    if (err) { return; }
+                    var rpc = tempRpc.rpc;
+                    if (rosterState.inviteChannel) {
+                        rpc.removeOwnedChannel(rosterState.inviteChannel, function (err) {
+                            if (err) { console.error(err); }
+                        });
+                    }
+                    if (rosterState.previewChannel) {
+                        rpc.removeOwnedChannel(rosterState.previewChannel, function (err) {
+                            if (err) { console.error(err); }
+                        });
+                    }
+                });
+            }
             // Add the team to our list and join...
             joinTeam(ctx, {
                 team: inviteContent.teamData
@@ -1878,7 +1910,9 @@ define([
             progress: 0
         };
 
-        var teams = store.proxy.teams = store.proxy.teams || {};
+        if (!store.proxy.teams) { store.proxy.teams = {}; }
+        var teams = store.proxy.teams;
+
         ctx.numberOfTeams = Object.keys(teams).length;
 
         // Listen for changes in our access rights (if another worker receives edit access)

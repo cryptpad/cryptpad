@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 var Eviction = require("../lib/eviction");
 var nThen = require("nthen");
 var Store = require("../lib/storage/file");
@@ -10,6 +14,10 @@ var Decrees = require("../lib/decrees");
 var config = require("../lib/load-config");
 
 var Env = Environment.create(config);
+
+// Set DRY_RUN to true to run the script without deleting anything. A log file
+// will be created.
+Env.DRY_RUN = false;
 
 var loadPremiumAccounts = function (Env, cb) {
     nThen(function (w) {
@@ -98,7 +106,8 @@ nThen(function (w) {
 
     }));
 }).nThen(function (w) {
-    Eviction.archived(Env, w(function () {
-
+    Eviction.archived(Env, w(function (err, report) {
+        if (!report) { return; }
+        Env.Log.info('EVICT_ARCHIVED_FINAL_REPORT', report);
     }));
 });

@@ -1,10 +1,16 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @font-face {
   font-family: 'cptools';
-  src:  url('fonts/cptools.eot?6tk5ck');
-  src:  url('fonts/cptools.eot?6tk5ck#iefix') format('embedded-opentype'),
-    url('fonts/cptools.ttf?6tk5ck') format('truetype'),
-    url('fonts/cptools.woff?6tk5ck') format('woff'),
-    url('fonts/cptools.svg?6tk5ck#cptools') format('svg');
+  src:  url('fonts/cptools.eot?nobkj');
+  src:  url('fonts/cptools.eot?nobkj#iefix') format('embedded-opentype'),
+    url('fonts/cptools.ttf?nobkj') format('truetype'),
+    url('fonts/cptools.woff?nobkj') format('woff'),
+    url('fonts/cptools.svg?nobkj#cptools') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -26,6 +32,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.cptools-diagram:before {
+  content: "\e921";
+}
+.cptools-drive:before {
+  content: "\e920";
+}
 .cptools-form-conditional:before {
   content: "\e900";
 }

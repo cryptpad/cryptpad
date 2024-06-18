@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 var Messages = require("../../www/common/translations/messages.json");
 var Exec = require("child_process").exec;
 
@@ -13,7 +17,7 @@ var ignoreLines = function (source, pattern) {
 };
 
 var GENERATED_PATTERNS = [
-   /(team|admin|settings|support)_.*(Hint|Title|Button)/,
+   /(team|admin|settings|support)_.*(Hint|Title|Button|Label)/,
    /settings_colortheme/,
    /loading_(state|drive|pad)_/,
    /(admin|notifications|support|team|settings)_cat_/,
@@ -28,12 +32,7 @@ var isPossiblyGenerated = function (key) {
 var grep = function (pattern, cb) {
     var exclude = [
         'www/common/translations/*',
-        'www/common/onlyoffice/v1/*',
-        'www/common/onlyoffice/v2b*',
-        'www/common/onlyoffice/v4*',
-        'www/common/onlyoffice/v5*',
-        'www/common/onlyoffice/x2t/*',
-        //'www/common/onlyoffice/build/*',
+        'www/common/onlyoffice/dist/*',
         'www/lib/*',
         'www/common/pdfjs/*',
         '*.css',
@@ -54,6 +53,7 @@ var grep = function (pattern, cb) {
         '*.svg',
         '*.md',
         './config/*',
+        'www/oldadmin/*', // XXX
     ].map(function (patt) {
         return "':(exclude)" + patt + "'";
     }).join(' ');
@@ -115,10 +115,22 @@ var conditionallyPrintContent = function (output) {
     }
 };
 
+var exceptions = `
+ui_more
+ui_collapse
+ui_expand
+ui_jsRequired
+
+`.split(/\s+/).filter(Boolean);
+
 var next = function () {
     var key = keys[0];
     if (!key) { return; }
     keys.shift();
+
+    if (/^og_/.test(key) || exceptions.includes(key)) {
+        return void next();
+    }
 
     if (!limit) { return void console.log("[DONE]"); }
     limit--;

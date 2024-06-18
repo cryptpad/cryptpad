@@ -1,7 +1,9 @@
 /*
-Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.md or http://ckeditor.com/license
-*/
+ * Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 html {
     scrollbar-color: rgba(0,0,0,0.2) transparent;
@@ -52,6 +54,12 @@ body > .non-realtime:first-child + * {
     margin-top: 0;
 }
 
+@media (max-width: 600px) {
+    body {
+        padding-bottom: 100px;
+    }
+}
+
 .cke_editable
 {
     font-size: 16px;
@@ -96,6 +104,7 @@ ol,ul,dl
     *margin-right: 0px;
     /* preserved spaces for list items with text direction other than the list. (#6249,#8049)*/
     padding: 0 40px;
+    padding-right: 0px;
 }
 
 h1,h2,h3,h4,h5,h6

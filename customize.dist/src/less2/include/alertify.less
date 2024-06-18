@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
 @import (reference) "./colortheme-all.less";
 @import (reference) "./browser.less";
@@ -33,6 +38,7 @@
             font-size: large;
 
             box-shadow: @alertify_box-shadow;
+            border-radius: @variables_radius;
             &, &.default {
                 // FIXME
                 background: @cp_alertify-log-bg;
@@ -122,6 +128,7 @@
         .dialog {
             & > div {
                 background-color: @cp_alertify-bg;
+                border-radius: @variables_radius_L;
                 &.half {
                     width: 50%;
                     max-width: 50%;
@@ -154,6 +161,10 @@
                 }
             }
 
+            .cp-alertify-scrollable {
+                overflow: auto;
+            }
+
             .msg {
                 padding: @alertify_padding-base;
                 margin-bottom: @alertify_padding-base;
@@ -182,6 +193,11 @@
                         }
                     }
                 }
+                .cp-dropdown-content {
+                    a {
+                        text-decoration: none;
+                    }
+                }
             }
             .cp-alertify-type-container {
                 overflow: visible !important;
@@ -205,6 +221,8 @@
                         box-sizing: border-box;
                         padding: 0 15px;
                         cursor: pointer;
+                        border-top-left-radius: @variables_radius;
+                        border-top-right-radius: @variables_radius;
                         &:not(.disabled):hover {
                             background-color: @cp_alertify-hover;
                         }
@@ -477,6 +495,33 @@
         .cp-usergrid-grid {
             max-height: 225px;
             overflow-x: auto;
+        }
+    }
+    // this might not be the best place for this.
+    // I just put it next to other "share" styles
+    // --Aaron
+    #cp-qr-container {
+        position: relative;
+        background-color: white;
+        display: inline-flex;
+        padding: @alertify_padding-base;
+        border-radius: @variables_radius_L;
+        #cp-qr-blocker {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            border-radius: @variables_radius_L;
+
+            margin: -@alertify_padding-base;
+            padding-top: @alertify_padding-base * 2;
+            text-align: center;
+
+            background: @cryptpad_color_brand;
+            color: @cryptpad_text_col;
+            font-weight: bold;
+            &.hidden {
+                opacity: 0;
+            }
         }
     }
 }

@@ -1,8 +1,12 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/userObject.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
 ], function (Util, Hash, UserObject, nThen) {
     var History = {};
     var commands = {};

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/hyperscript.js',
@@ -8,11 +12,13 @@ define([
     '/api/config',
     '/common/common-ui-elements.js',
     '/common/common-constants.js',
-], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants) {
+    '/common/pad-types.js',
+], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes) {
     var accounts = Pages.accounts;
 
     return function () {
-        Msg.features_f_apps_note = AppConfig.availablePadTypes.map(function (app) {
+        document.title = Msg.features;
+        Msg.features_f_apps_note = PadTypes.availableTypes.map(function (app) {
             if (AppConfig.registeredOnlyTypes.indexOf(app) !== -1) { return; }
             if (AppConfig.premiumTypes && AppConfig.premiumTypes.includes(app)) { return; }
             if (Constants.earlyAccessApps && Constants.earlyAccessApps.includes(app) &&

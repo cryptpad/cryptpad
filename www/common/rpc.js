@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 (function () {
 var factory = function (Util, Nacl) {
     // we will send messages with a unique id for each RPC
@@ -408,7 +412,7 @@ var factory = function (Util, Nacl) {
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-util.js',
-            '/bower_components/tweetnacl/nacl-fast.min.js',
+            '/components/tweetnacl/nacl-fast.min.js',
         ], function (Util) {
             return factory(Util, window.nacl);
         });

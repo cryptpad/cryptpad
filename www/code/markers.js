@@ -1,8 +1,12 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/common/common-util.js',
     '/common/sframe-common-codemirror.js',
     '/customize/messages.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/common/inner/common-mediatag.js',
     '/common/common-interface.js',
 ], function (Util, SFCodeMirror, Messages, ChainPad, MT, UI) {
@@ -21,7 +25,7 @@ define([
 
     var debug = function () {};
 
-    var MARK_OPACITY = 0.5;
+    var MARK_OPACITY = 0.2;
     var DEFAULT = {
         authors: {},
         marks: [[-1, 0, 0, Number.MAX_SAFE_INTEGER,  Number.MAX_SAFE_INTEGER]]
@@ -620,11 +624,9 @@ define([
             if (Env.opacity) {
                 Env.opacity = 0;
                 $button.find('.cp-toolbar-drawer-element').text(Messages.cba_show);
-                $button.removeClass("cp-toolbar-button-active");
             } else {
                 Env.opacity = MARK_OPACITY;
                 $button.find('.cp-toolbar-drawer-element').text(Messages.cba_hide);
-                $button.addClass("cp-toolbar-button-active");
             }
         };
         toggle();

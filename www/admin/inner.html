@@ -1,8 +1,16 @@
+<!--
+SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 <!DOCTYPE html>
 <html class="cp-app-noscroll">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <script async data-bootload="/admin/inner.js" data-main="/common/sframe-boot.js?ver=1.7" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <script src="/customize/pre-loading.js?ver=1.1"></script>
+    <link href="/customize/src/pre-loading.css?ver=1.0" rel="stylesheet" type="text/css">
+    <script async data-bootload="/admin/inner.js" data-main="/common/sframe-boot.js?ver=1.11" src="/components/requirejs/require.js?ver=2.3.5"></script>
     <style>
         .loading-hidden { display: none; }
     </style>
@@ -10,9 +18,5 @@
 <body class="cp-app-admin">
     <div id="cp-toolbar" class="cp-toolbar-container"></div>
     <div id="cp-sidebarlayout-container"></div>
-    <noscript>
-        <p><strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.</p>
-        <p><strong>OUPS</strong> Afin de pouvoir réaliser le chiffrement dans votre navigateur, Javascript est <strong>vraiment</strong> nécessaire.</p>
-    </noscript>
 </body>
-
+</html>

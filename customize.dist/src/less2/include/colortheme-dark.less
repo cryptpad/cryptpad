@@ -1,17 +1,31 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @colortheme_font: 'Open Sans', 'Helvetica Neue', sans-serif;
 @colortheme_app-font-size: 16px;
 @colortheme_app-font-size-small: 13px;
 @colortheme_app-font: @colortheme_app-font-size @colortheme_font;
 
+// Colors
+@cryptpad_color_brand: #0087FF;
+@cryptpad_color_brand_300: lighten(@cryptpad_color_brand, 30%);
+@cryptpad_color_brand_fade: fade(@cryptpad_color_brand, 75%);
+@cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
+@cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
+
 @colortheme_apps: {
-    default: #0087FF;
-    drive: #0087FF; // Used as icon color in index.js (index.html)
+    default: @cryptpad_color_brand;
+    drive: @cryptpad_color_brand; // Used as icon color in index.js (index.html)
     pad: #256ad5;
     code: #EAA000;
     slide: #e57614;
     poll: #2c9e98;
     form: #2c9e98;
-    whiteboard: #a72ba7;
+    whiteboard: #8f40f5;
+    diagram: #ce3ad3;
     kanban: #8C4;
     sheet: #40865c;
     doc: #5170B5;
@@ -20,17 +34,10 @@
 }
 
 @colortheme_static_apps: {
-    default: #0087FF;
+    default: @cryptpad_color_brand;
     teams: #4A3BBD;
     contacts: #607B8D;
 }
-
-// Colors
-@cryptpad_color_brand: #0087FF;
-@cryptpad_color_brand_300: lighten(@cryptpad_color_brand, 30%);
-@cryptpad_color_brand_fade: fade(@cryptpad_color_brand, 75%);
-@cryptpad_color_brand_fader: fade(@cryptpad_color_brand, 50%);
-@cryptpad_color_brand_fadest: fade(@cryptpad_color_brand, 25%);
 
 @cryptpad_color_white: #FFF;
 @cryptpad_color_grey_50: #FAFAFA;
@@ -48,6 +55,9 @@
 @cryptpad_color_black: #000;
 
 @cryptpad_text_col: @cryptpad_color_grey_200;
+@cryptpad_text_col_inv: @cryptpad_color_grey_900;
+
+@cryptpad_ui_shadow: 0px 0px 5px 1px #00000030;
 
 @cryptpad_color_blue: #326599; // former logo-1
 @cryptpad_color_light_blue: #00b7d8;
@@ -56,6 +66,7 @@
 @cryptpad_color_red_fader: fade(@cryptpad_color_red, 15%);
 @cryptpad_color_warn_red: @cryptpad_color_red_fade;
 @cryptpad_color_dark_red: #9e0000;
+@cryptpad_color_mid_red: #FF8880;
 @cryptpad_color_light_red: #FFD4D4;
 @cryptpad_color_light_red_fade: fade(@cryptpad_color_light_red, 20%);
 @cryptpad_color_orange: #f49842;
@@ -168,12 +179,18 @@
 @cp_buttons-cancel-border: @cryptpad_color_grey_400;
 
 // Sidebar layout
-@cp_sidebar-left-bg: @cryptpad_color_grey_850;
+@cp_sidebar-left-bg: @cryptpad_color_grey_900;
 @cp_sidebar-left-fg: @cryptpad_text_col;
+@cp_sidebar-left-item-bg: @cryptpad_color_grey_800;
 @cp_sidebar-right-bg: @cryptpad_color_grey_900;
 @cp_sidebar-right-fg: @cryptpad_text_col;
-@cp_sidebar-left-active: @cp_sidebar-right-bg;
+@cp_sidebar-left-active: @cryptpad_color_grey_400;
+@cp_sidebar-left-active-fg: @cryptpad_color_grey_900;
 @cp_sidebar-hint: fade(@cryptpad_text_col, 80%);
+
+// Settings
+@cp_settings_enabled: @cryptpad_color_light_green;
+@cp_settings_disabled: @cryptpad_color_mid_red;
 
 // Drive
 @cp_drive-bg: @cp_sidebar-right-bg;
@@ -190,9 +207,9 @@
 @cp_drive-droppable-bg: @cryptpad_color_grey_700;
 @cp_drive-droppable-fg: @cryptpad_text_col;
 @cp_drive-infobox-bg: @cryptpad_color_brand_fadest;
-@cp_drive-infobox-fg: @cryptpad_text_col;
-@cp_drive-warnbox-bg: @cryptpad_color_warn_red;
-@cp_drive-warnbox-fg: @cryptpad_text_col;
+@cp_drive-infobox-fg: @cryptpad_color_brand_300;
+@cp_drive-warnbox-bg: @cryptpad_color_red_fader;
+@cp_drive-warnbox-fg: @cryptpad_color_light_red;
 @cp_drive-tree-branch: @cryptpad_text_col;
 
 // Contextmenu
@@ -232,6 +249,7 @@
 // Pad Creation Screen
 @cp_creation-bg: @cryptpad_color_grey_800;
 @cp_creation-fg: @cryptpad_text_col;
+@cp_creation-template: @cryptpad_color_grey_700;
 @cp_creation-button-bg: @cryptpad_color_brand;
 @cp_creation-button-fg: @cryptpad_color_white;
 @cp_creation-error-bg: @cryptpad_color_blue;
@@ -259,10 +277,11 @@
 @cp_static-fg: @cryptpad_text_col;
 @cp_static-link: @cryptpad_color_brand_300;
 @cp_static-title: @cryptpad_color_brand;
-@cp_static-footer: @cryptpad_color_grey_950;
+@cp_static-footer: fade(@cryptpad_color_brand, 20%);
 @cp_static-footer-border: @cryptpad_color_grey_600;
 @cp_static-topbar-fg: @cryptpad_color_brand_300;
 @cp_static-card-bg: @cryptpad_color_grey_800;
+@cp_static-danger: @cryptpad_color_red_fade;
 @cp_static-img-invert-filter: hue-rotate(200grad) invert();
 
 // Limit
@@ -293,9 +312,10 @@
 @cp_support-header-bg: @cryptpad_color_grey_700;
 
 // Toolbar
-@cp_toolbar-bg: @cryptpad_color_grey_850;
+@cp_toolbar-bg: @cryptpad_color_grey_900;
 @cp_toolbar-fg: @cryptpad_text_col;
-@cp_toolbar-bottom-fg: @cryptpad_text_col;
+@cp_toolbar-bottom-bg: @cryptpad_text_col;
+@cp_toolbar-bottom-fg: @cryptpad_color_grey_900;
 @cp_toolbar-logo-bg: @cryptpad_color_grey_200;
 
 @cp_toolbar-fade1: fade(@cryptpad_text_col, 10%);
@@ -305,7 +325,7 @@
 @cp_history-line-bg: @cryptpad_color_grey_900;
 @cp_history-bg1: @cryptpad_color_grey_600;
 @cp_history-bg2: @cryptpad_color_grey_800;
-@cp_history-fg: @cp_toolbar-bottom-fg;
+@cp_history-fg: @cp_toolbar-fg;
 
 // Tokenfield
 @cp_token-bg: @cryptpad_color_grey_700;
@@ -371,8 +391,10 @@
 @cp_kanban-tags-bg: @cryptpad_color_grey_700;
 @cp_kanban-add-hover: fade(@cryptpad_color_black, 10%);
 @cp_kanban-trash-bg: @cryptpad_color_warn_red;
-@cp_kanban-color0: @cryptpad_color_grey_600;
-@cp_kanban-colors: @cp_palette-dark;
+@cp_kanban-color0: @cryptpad_color_grey_400;
+@cp_kanban-colors: @cp_palette;
+@cp_kanban-card-colors: @cp_palette-dark;
+
 
 // Notifications
 @cp_notif-hover: fade(@cryptpad_color_black, 10%);
@@ -417,7 +439,7 @@
 
 // Teams
 @cp_teams-card-bg: @cryptpad_color_grey_800;
-@cp_teams-leftside-bg: darken(@cryptpad_color_grey_800, 10%);
+@cp_teams-leftside-bg: @cp_sidebar-left-bg;
 @cp_teams-invite-bg: fade(@cryptpad_color_brand, 50%);
 @cp_teams-invite-fg: @cryptpad_text_col;
 @cp_teams-roster-odd: fade(@cryptpad_text_col, 15%);

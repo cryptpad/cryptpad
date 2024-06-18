@@ -1,8 +1,12 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 /* globals process */
 var Client = require("../../lib/client");
 var Nacl = require("tweetnacl/nacl-fast");
 var nThen = require("nthen");
-var CPNetflux = require("../../www/bower_components/chainpad-netflux/chainpad-netflux");
+var CPNetflux = require("../../www/components/chainpad-netflux/chainpad-netflux");
 var Hash = require("../../www/common/common-hash");
 var Rpc = require("../../www/common/rpc");
 var HK = require("../../lib/hk-util");

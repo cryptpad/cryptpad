@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-util.js',
@@ -13,6 +17,7 @@ define([
     Mailbox.create = function (Common) {
         var mailbox = Common.mailbox;
         var sframeChan = Common.getSframeChannel();
+        var priv = Common.getMetadataMgr().getPrivateData();
 
         var execCommand = function (cmd, data, cb) {
             sframeChan.query('Q_MAILBOX_COMMAND', {
@@ -67,6 +72,14 @@ define([
                 }
             } else if (data.type === 'reminders') {
                 avatar = h('i.fa.fa-calendar.cp-broadcast.preview');
+                if (priv.app !== 'calendar') { avatar.classList.add('cp-reminder'); }
+                $(avatar).click(function (e) {
+                    e.stopPropagation();
+                    if (data.content && data.content.handler) {
+                        return void data.content.handler();
+                    }
+                    Common.openURL(Hash.hashToHref('', 'calendar'));
+                });
             } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar');
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
@@ -74,15 +87,23 @@ define([
                     e.stopPropagation();
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
                 });
+            } else if (userData && userData.supportTeam) {
+                avatar = h('span.cp-avatar-image', h('img', { src:'/customize/CryptPad_logo.svg' }));
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
-            notif = h('div.cp-notification', {
+            const tabIndexValue = undefined;//data.content.isDismissible ? undefined : '0';
+            notif = h('li.cp-notification', {
+                role: 'menuitem',
+                tabindex: '0',
                 style: 'order:'+order+';',
                 'data-hash': data.content.hash
             }, [
                 avatar,
-                h('div.cp-notification-content',
-                    h('p', formatData(data)))
+                h('div.cp-notification-content', {
+                    tabindex: tabIndexValue
+                }, [
+                    h('p', data.content.msg.type + ' - ' +formatData(data))
+                ])
             ]);
 
             if (typeof(data.content.getFormatText) === "function") {
@@ -98,17 +119,30 @@ define([
                 }
             }
 
+            $(notif).mouseenter((e) => {
+                e.stopPropagation();
+                $(notif).focus();
+            });
+
             if (data.content.isClickable) {
-                $(notif).find('.cp-notification-content').addClass("cp-clickable")
-                    .click(data.content.handler);
+                $(notif).find('.cp-notification-content').addClass("cp-clickable").on('click keypress', function (event) {
+                    if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                        data.content.handler();
+                    }
+                });
             }
             if (data.content.isDismissible) {
                 var dismissIcon = h('span.fa.fa-times');
                 var dismiss = h('div.cp-notification-dismiss', {
-                    title: Messages.notifications_dismiss
+                    title: Messages.notifications_dismiss,
                 }, dismissIcon);
                 $(dismiss).addClass("cp-clickable")
-                    .click(data.content.dismissHandler);
+                    .on('click keypress', function (event) {
+                        event.stopPropagation();
+                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
+                            data.content.dismissHandler();
+                        }
+                    });
                 $(notif).append(dismiss);
             }
             return notif;
@@ -120,7 +154,8 @@ define([
 
         onViewedHandlers.push(function (data) {
             var hash = data.hash.replace(/"/g, '\\\"');
-            var $notif = $('.cp-notification[data-hash="'+hash+'"]:not(.cp-app-notification-archived)');
+            if (/^REMINDER\|/.test(hash)) { hash = hash.split('-')[0]; }
+            var $notif = $('.cp-notification[data-hash^="'+hash+'"]:not(.cp-app-notification-archived)');
             if ($notif.length) {
                 $notif.remove();
             }
@@ -128,7 +163,7 @@ define([
 
         // Call the onMessage handlers
         var isNotification = function (type) {
-            return type === "notifications" || /^team-/.test(type) || type === "broadcast" || type === "reminders";
+            return type === "notifications" || /^team-/.test(type) || type === "broadcast" || type === "reminders" || type === "supportteam";
         };
         var pushMessage = function (data, handler) {
             var todo = function (f) {

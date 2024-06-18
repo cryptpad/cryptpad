@@ -1,15 +1,19 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/common-constants.js',
     '/customize/messages.js',
-    '/customize/application_config.js',
+    '/common/pad-types.js',
 
-    '/bower_components/nthen/index.js',
-], function (Crypto, Hash, Util, Realtime, Messaging, Constants, Messages, AppConfig, nThen) {
+    '/components/nthen/index.js',
+], function (Crypto, Hash, Util, Realtime, Messaging, Constants, Messages, PadTypes, nThen) {
     'use strict';
     var Curve = Crypto.Curve;
 
@@ -238,6 +242,8 @@ define([
     var removeFromFriendList = function (ctx, curvePublic, cb) {
         var proxy = ctx.store.proxy;
         var friends = proxy.friends;
+        // FIXME this probably shouldn't happen, but functions that take callbacks
+        // should be guaranteed to call back.
         if (!friends) { return; }
         delete friends[curvePublic];
         Realtime.whenRealtimeSyncs(ctx.store.realtime, function () {
@@ -447,7 +453,12 @@ define([
             var msg = [Types.unfriend, proxy.curvePublic, +new Date()];
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encrypt(msgStr);
-            channel.wc.bcast(cryptMsg).then(function () {}, function (err) {
+            channel.wc.bcast(cryptMsg).then(function () {
+                onFriendRemoved(ctx, curvePublic, data.channel);
+                removeFromFriendList(ctx, curvePublic, function () {
+                    cb();
+                });
+            }, function (err) {
                 if (err) { return void cb({error:err}); }
                 onFriendRemoved(ctx, curvePublic, data.channel);
                 removeFromFriendList(ctx, curvePublic, function () {
@@ -955,7 +966,7 @@ define([
             return store.messenger;
         }
 
-        if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
+        if (!PadTypes.isAvailable('contacts')) { return; }
         var ctx = {
             store: store,
             Store: cfg.Store,

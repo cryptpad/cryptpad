@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./colortheme-all.less";
 @import (reference) "./tools.less";
 @import (reference) "./avatar.less";
@@ -42,24 +48,47 @@
         position: relative;
         display: inline-block;
 
+        // If a menu is displayed "left", pour the submenus on the left too
+        .cp-dropdown-left {
+            .cp-dropdown-submenu {
+                .cp-dropdown-content {
+                    left: unset;
+                    right: 100%;
+                }
+            }
+        }
+
         .fa {
             font-family: FontAwesome;
         }
 
         button {
             .fa-caret-down {
-                margin-right: 1em !important;
+                margin-right: 0.5em !important;
             }
             * {
                 .tools_unselectable();
             }
         }
 
+        .cp-dropdown-left {
+            .cp-dropdown-content {
+                right: 0;
+                margin-right: 5px;
+                &.cp-dropdown-submenu {
+                    left: unset;
+                    right: 250px;
+                }
+            }
+        }
         .cp-dropdown-content {
+            list-style-type: none;
             display: none;
             position: absolute;
             background-color: @cp_dropdown-bg;
             min-width: 250px;
+            padding: 5px;
+            border-radius: @variables_radius;
             box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
             z-index: 1000; //Z dropdown content
             max-height: 300px;
@@ -67,66 +96,75 @@
             font: @dropdown_font;
             line-height: 1em;
 
-            &.cp-dropdown-left {
-                right: 0;
+            &.cp-dropdown-submenu {
+                left: 250px;
             }
 
             &:hover {
                 display: block;
             }
 
-            & > a, & > span {
-                color: @cp_dropdown-fg;
-                padding: 5px 16px;
-                text-decoration: none;
-                display: flex;
-                cursor: pointer;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-                float: none;
-                text-align: left;
-                line-height: 1em;
-                align-items: center;
+            li:not([class]) {
+                padding: 0;
+                & > a, & > span {
+                    color: @cp_dropdown-fg;
+                    border-radius: @variables_radius;
+                    padding: 5px;
+                    text-decoration: none;
+                    display: flex;
+                    cursor: pointer;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    float: none;
+                    text-align: left;
+                    line-height: 1em;
+                    align-items: center;
 
-                &:not(.fa) {
-                    font: @dropdown_font;
-                }
-                &.fa, &.cptools {
-                    font-size: 18px;
-                    &::before {
-                        width: 40px;
-                        margin-left: -10px;
-                        text-align: center;
-                    }
-                    * {
+                    &:not(.fa) {
                         font: @dropdown_font;
                     }
-                }
+                    &.fa, &.cptools {
+                        font-size: 18px;
+                        &::before {
+                            width: 40px;
+                            margin-left: -10px;
+                            text-align: center;
+                        }
+                        * {
+                            font: @dropdown_font;
+                        }
+                    }
 
-                .fa, .cptools {
-                    width: 20px;
-                    text-align: center;
-                    margin-right: 5px !important;
-                }
+                    .fa, .cptools {
+                        width: 20px;
+                        text-align: center;
+                        margin-right: 5px !important;
+                    }
 
+                    &.cp-dropdown-element-active {
+                        background-color: @cp_dropdown-bg-active;
+                        color: @cp_dropdown-fg;
+                    }
+
+                    &.cp-app-hidden {
+                        display: none;
+                    }
+                    &.cp-app-disabled {
+                        cursor: not-allowed !important;
+                        opacity: 0.5;
+                    }
+                }
+            }
+            li[role="menuitem"] {
+                border-radius: @variables_radius;
+                white-space: nowrap;
                 &:hover {
-                    background-color: @cp_dropdown-bg-hover;
-                    color: @cp_dropdown-fg;
+                    background-color: @cp_dropdown-bg-hover !important;
                 }
-
-                &.cp-dropdown-element-active {
-                    background-color: @cp_dropdown-bg-active;
-                    color: @cp_dropdown-fg;
-                }
-
-                &.cp-app-hidden {
-                    display: none;
-                }
-                &.cp-app-disabled {
-                    cursor: not-allowed !important;
-                    opacity: 0.5;
+                &:focus-visible {
+                    outline-color: @cp_dropdown-fg;
                 }
             }
             &> span {
@@ -160,10 +198,12 @@
                 height: 1px;
                 background: @cp_dropdown-bg-active;
                 border: 0 !important;
-                border-top: 1px solid rgba(0,0,0,.1) !important;
                 & + hr {
                     display: none;
                 }
+            }
+            [role="separator"] + [role="separator"] {
+                display: none;
             }
 
             p {

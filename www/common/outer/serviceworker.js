@@ -1,5 +1,10 @@
-/* jshint ignore:start */
-importScripts('/bower_components/requirejs/require.js');
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+/* global importScripts, tabs */
+
+importScripts('/components/requirejs/require.js');
 
 window = self;
 localStorage = {
@@ -164,12 +169,12 @@ self.addEventListener('message', function (e) {
         self.tabs[cId].msgEv.fire(e);
     }
 });
-self.addEventListener('install', function (e) {
+self.addEventListener('install', function () {
     debug('V1 installing…');
     self.skipWaiting();
 });
 
-self.addEventListener('activate', function (e) {
+self.addEventListener('activate', function () {
     debug('V1 now ready to handle fetches!');
 });
 

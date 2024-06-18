@@ -1,10 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/api/config',
     '/common/dom-ready.js',
     '/common/sframe-common-outer.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
 ], function (nThen, ApiConfig, DomReady, SFCommonO) {
     var Nacl = window.nacl;
 
@@ -44,6 +48,7 @@ define([
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_FORM_PIN', function (data) {
                 channels.answersChannel = data.channel;
+                Cryptpad.changeMetadata();
                 Cryptpad.getPadAttribute('answersChannel', function (err, res) {
                     // If already stored, don't pin it again
                     if (res && res === data.channel) { return; }
@@ -122,6 +127,8 @@ define([
                     return false;
                 }
             };
+
+            var deleteLines = false; // "false" to support old forms
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
                 var cb = Utils.Util.once(_cb);
                 var myKeys = {};
@@ -138,12 +145,13 @@ define([
                         CPNetflux = _CPNetflux;
                         Pinpad = _Pinpad;
                     }));
+                    var personalDrive = !Cryptpad.initialTeam || Cryptpad.initialTeam === -1;
                     Cryptpad.getAccessKeys(w(function (_keys) {
                         if (!Array.isArray(_keys)) { return; }
                         accessKeys = _keys;
 
                         _keys.some(function (_k) {
-                            if ((!Cryptpad.initialTeam && !_k.id) || Cryptpad.initialTeam === _k.id) {
+                            if ((personalDrive && !_k.id) || Cryptpad.initialTeam === Number(_k.id)) {
                                 myKeys = _k;
                                 return true;
                             }
@@ -159,6 +167,9 @@ define([
                     }));
                     Cryptpad.makeNetwork(w(function (err, nw) {
                         network = nw;
+                    }));
+                    Cryptpad.getPadMetadata({channel: data.channel}, w(function (md) {
+                        if (md && md.deleteLines) { deleteLines = true; }
                     }));
                 }).nThen(function () {
                     if (!network) { return void cb({error: "E_CONNECT"}); }
@@ -183,6 +194,9 @@ define([
                         validateKey: keys.secondaryValidateKey,
                         owners: [myKeys.edPublic],
                         crypto: crypto,
+                        metadata: {
+                            deleteLines: true
+                        }
                         //Cache: Utils.Cache // TODO enable cache for form responses when the cache stops evicting old answers
                     };
                     var results = {};
@@ -198,7 +212,6 @@ define([
                         nThen(function (waitFor) {
                             accessKeys.forEach(function (obj) {
                                 Pinpad.create(network, obj, waitFor(function (e) {
-                                    console.log('done', obj);
                                     if (e) { console.error(e); }
                                 }));
                             });
@@ -222,14 +235,26 @@ define([
                     config.onMessage = function (msg, peer, vKey, isCp, hash, senderCurve, cfg) {
                         var parsed = Utils.Util.tryParse(msg);
                         if (!parsed) { return; }
+                        var uid = parsed._uid || '000';
+
+                        // If we have a "non-anonymous" answer, it may be the edition of a
+                        // previous anonymous answer. Check if a previous anonymous answer exists
+                        // with the same uid and delete it.
                         if (parsed._proof) {
                             var check = checkAnonProof(parsed._proof, data.channel, curvePrivate);
-                            if (check) {
-                                delete results[parsed._proof.key];
+                            var theirAnonKey = parsed._proof.key;
+                            if (check && results[theirAnonKey] && results[theirAnonKey][uid]) {
+                                delete results[theirAnonKey][uid];
                             }
                         }
-                        if (data.cantEdit && results[senderCurve]) { return; }
-                        results[senderCurve] = {
+
+                        parsed._time = cfg && cfg.time;
+                        if (deleteLines) { parsed._hash = hash; }
+
+                        if (data.cantEdit && results[senderCurve]
+                                          && results[senderCurve][uid]) { return; }
+                        results[senderCurve] = results[senderCurve] || {};
+                        results[senderCurve][uid] = {
                             msg: parsed,
                             hash: hash,
                             time: cfg && cfg.time
@@ -239,7 +264,7 @@ define([
                 });
             });
             sframeChan.on("Q_FETCH_MY_ANSWERS", function (data, cb) {
-                var answer;
+                var answers = [];
                 var myKeys;
                 nThen(function (w) {
                     Cryptpad.getFormKeys(w(function (keys) {
@@ -259,38 +284,68 @@ define([
                             w.abort();
                             return void cb(obj);
                         }
-                        answer = obj;
+                        // Get the latest edit per uid
+                        var temp = {};
+                        obj.forEach(function (ans) {
+                            var uid = ans.uid || '000';
+                            temp[uid] = ans;
+                        });
+                        answers = Object.values(temp);
+                    }));
+                    Cryptpad.getPadMetadata({channel: data.channel}, w(function (md) {
+                        if (md && md.deleteLines) { deleteLines = true; }
                     }));
                 }).nThen(function () {
-                    if (answer.anonymous) {
-                        if (!myKeys.formSeed) { return void cb({ error: "ANONYMOUS_ERROR" }); }
-                        myKeys = getAnonymousKeys(myKeys.formSeed, data.channel);
-                    }
-                    Cryptpad.getHistoryRange({
-                        channel: data.channel,
-                        lastKnownHash: answer.hash,
-                        toHash: answer.hash,
-                    }, function (obj) {
-                        if (obj && obj.error) { return void cb(obj); }
-                        var messages = obj.messages;
-                        if (!messages.length) { return void cb(); }
-                        if (obj.lastKnownHash !== answer.hash) { return void cb(); }
-                        try {
-                            var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
-                                validateKey: data.validateKey,
-                                ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
-                                my_private: Nacl.util.decodeBase64(myKeys.curvePrivate),
-                                their_public: Nacl.util.decodeBase64(data.publicKey)
-                            });
-                            var parsed = JSON.parse(res.content);
-                            parsed._isAnon = answer.anonymous;
-                            parsed._time = messages[0].time;
-                            cb(parsed);
-                        } catch (e) {
-                            cb({error: e});
-                        }
+                    var n = nThen;
+                    var err;
+                    var all = {};
+                    answers.forEach(function (answer) {
+                        n = n(function(waitFor) {
+                            var finalKeys = myKeys;
+                            if (answer.anonymous) {
+                                if (!myKeys.formSeed) {
+                                    err = 'ANONYMOUS_ERROR';
+                                    console.error('ANONYMOUS_ERROR', answer);
+                                    return;
+                                }
+                                finalKeys = getAnonymousKeys(myKeys.formSeed, data.channel);
+                            }
+                            Cryptpad.getHistoryRange({
+                                channel: data.channel,
+                                lastKnownHash: answer.hash,
+                                toHash: answer.hash,
+                            }, waitFor(function (obj) {
+                                if (obj && obj.error) { err = obj.error; return; }
+                                var messages = obj.messages;
+                                if (!messages.length) {
+                                    // TODO delete from drive.forms?
+                                    return;
+                                }
+                                if (obj.lastKnownHash !== answer.hash) { return; }
+                                try {
+                                    var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
+                                        validateKey: data.validateKey,
+                                        ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
+                                        my_private: Nacl.util.decodeBase64(finalKeys.curvePrivate),
+                                        their_public: Nacl.util.decodeBase64(data.publicKey)
+                                    });
+                                    var parsed = JSON.parse(res.content);
+                                    parsed._isAnon = answer.anonymous;
+                                    parsed._time = messages[0].time;
+                                    if (deleteLines) { parsed._hash = answer.hash; }
+                                    var uid = parsed._uid || '000';
+                                    if (all[uid] && !all[uid]._isAnon) { parsed._isAnon = false; }
+                                    all[uid] = parsed;
+                                } catch (e) {
+                                    err = e;
+                                }
+                            }));
+                        }).nThen;
                     });
-
+                    n(function () {
+                        if (err) { return void cb({error: err}); }
+                        cb(all);
+                    });
                 });
 
             });
@@ -304,11 +359,6 @@ define([
                         // We can create a seed in localStorage.
                         if (!keys.formSeed) {
                             // No drive mode
-                            var answered = JSON.parse(localStorage.CP_formAnswered || "[]");
-                            if(answered.indexOf(data.channel) !== -1) {
-                                // Already answered: abort
-                                return void cb({ error: "EANSWERED" });
-                            }
                             keys = { formSeed: noDriveSeed };
                         }
                         myKeys = keys;
@@ -334,6 +384,8 @@ define([
                     }
 
                     var crypto = Utils.Crypto.Mailbox.createEncryptor(myKeys);
+                    var uid = data.results._uid || Utils.Util.uid();
+                    data.results._uid = uid;
                     var text = JSON.stringify(data.results);
                     var ciphertext = crypto.encrypt(text, box.publicKey);
 
@@ -343,14 +395,38 @@ define([
                         ciphertext
                     ], function (err, response) {
                         Cryptpad.storeFormAnswer({
+                            uid: uid,
                             channel: box.channel,
                             hash: hash,
                             curvePrivate: ephemeral_private,
                             anonymous: Boolean(data.anonymous)
+                        }, function () {
+                            var res = data.results;
+                            res._isAnon = data.anonymous;
+                            res._time = +new Date();
+                            if (deleteLines) { res._hash = hash; }
+                            cb({
+                                error: err,
+                                response: response,
+                                results: res
+                            });
                         });
-                        cb({error: err, response: response, hash: hash});
                     });
                 });
+            });
+            sframeChan.on("Q_FORM_DELETE_ALL_ANSWERS", function (data, cb) {
+                if (!data || !data.channel) { return void cb({error: 'EINVAL'}); }
+                Cryptpad.clearOwnedChannel(data, cb);
+            });
+            sframeChan.on("Q_FORM_DELETE_ANSWER", function (data, cb) {
+                if (!deleteLines) {
+                    return void cb({error: 'EFORBIDDEN'});
+                }
+                Cryptpad.deleteFormAnswers(data, cb);
+            });
+            sframeChan.on("Q_FORM_MUTE", function (data, cb) {
+                if (!Utils.secret) { return void cb({error: 'EINVAL'}); }
+                Cryptpad.muteChannel(Utils.secret.channel, data.muted, cb);
             });
         };
         SFCommonO.start({

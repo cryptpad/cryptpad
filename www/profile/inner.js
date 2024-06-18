@@ -1,9 +1,14 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
+    '/api/config',
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     'chainpad-listmap',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -15,19 +20,21 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
-    '/bower_components/marked/marked.min.js',
+    '/components/marked/marked.min.js',
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
 
-    'cm/mode/markdown/markdown',
+    'cm/mode/gfm/gfm',
 
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
+    'css!/components/codemirror/addon/fold/foldgutter.css',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/profile/app-profile.less',
 ], function (
+    ApiConfig,
     $,
     Crypto,
     Listmap,
@@ -88,7 +95,6 @@ define([
     var CREATE_ID = "cp-app-profile-create";
     var HEADER_ID = "cp-app-profile-header";
     var HEADER_RIGHT_ID = "cp-app-profile-rightside";
-    var CREATE_INVITE_BUTTON = 'cp-app-profile-invite-button'; /* jshint ignore: line */
     var VIEW_PROFILE_BUTTON = 'cp-app-profile-viewprofile-button';
 
     var common;
@@ -113,8 +119,9 @@ define([
         }).append(h('i.fa.fa-shhare-alt'))
           .append(h('span', Messages.shareButton))
           .click(function () {
-            var success = Clipboard.copy(url);
-            if (success) { UI.log(Messages.shareSuccess); }
+            Clipboard.copy(url, (err) => {
+                if (!err) { UI.log(Messages.shareSuccess); }
+            });
         }).appendTo($container);
     };
 
@@ -134,6 +141,14 @@ define([
             target: '_blank',
             rel: 'noreferrer noopener'
         }).appendTo($block).hide();
+
+        APP.$link.click(function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            var href = $(this).attr('href').trim();
+            if (!href) { return; }
+            common.openUnsafeURL(href);
+        });
 
         APP.$linkEdit = $();
         if (APP.readOnly) { return; }
@@ -271,7 +286,7 @@ define([
         // Pending friend (we've sent a friend request)
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
-            $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
+            $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
             addCancel();
             return;
         }
@@ -471,7 +486,7 @@ define([
         });
     };
     var refreshDescription = function (data) {
-        var val = Marked(data.description || "");
+        var val = Marked.parse(data.description || "");
         APP.$description.html(val);
         APP.$description.off('click');
         APP.$description.click(function (e) {
@@ -512,9 +527,33 @@ define([
             var metadataMgr = APP.common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
             var url = Hash.getPublicSigningKeyString(privateData.origin, data.name, data.edPublic);
-            var success = Clipboard.copy(url);
-            if (success) { UI.log(Messages.genericCopySuccess); }
+            Clipboard.copy(url, (err) => {
+                if (!err) { UI.log(Messages.genericCopySuccess); }
+            });
         };
+    };
+
+    var addCopyData = function ($container) {
+        if (!APP.isModerator) { return; }
+
+        var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
+        APP.$copyData = $(h('button.btn.btn-secondary', [
+            h('i.fa.fa-clipboard'),
+            h('span', Messages.support_copyUserData)
+        ])).click(function () {
+            if (!APP.getCopyData) { return; }
+            APP.getCopyData();
+        }).appendTo($div).hide();
+    };
+    var setCopyDataButton = function (data) {
+        if (!data.curvePublic) { return; }
+        APP.getCopyData = function () {
+            if (!APP.isModerator) { return void UI.warn(Messages.error); }
+            Clipboard.copy(JSON.stringify(data), (err) => {
+                if (!err) { UI.log(Messages.genericCopySuccess); }
+            });
+        };
+        if (APP.$copyData) { APP.$copyData.show(); }
     };
 
     var createLeftside = function () {
@@ -522,7 +561,7 @@ define([
         var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
         $category.append($('<span>', {'class': 'fa fa-user'}));
         $category.addClass('cp-leftside-active');
-        $category.append(Messages.profileButton);
+        $category.text(Messages.profileButton);
     };
 
     var init = function () {
@@ -538,6 +577,7 @@ define([
             addMuteButton($rightside);
             addDescription(APP.$rightside);
             addPublicKey($rightside);
+            addCopyData($rightside);
             addViewButton($rightside);
             APP.initialized = true;
             createLeftside();
@@ -552,6 +592,7 @@ define([
         refreshFriendRequest(data);
         refreshMute(data);
         setPublicKeyButton(data);
+        setCopyDataButton(data);
     };
 
     var createToolbar = function () {
@@ -599,11 +640,15 @@ define([
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
 
+        let edPublic = privateData.edPublic;
+        APP.isModerator = ApiConfig.moderatorKeys && ApiConfig.moderatorKeys.includes(edPublic);
+
+        common.setTabTitle(Messages.profileButton);
         // If not logged in, you can only view other users's profile
         if (!privateData.readOnly && !common.isLoggedIn()) {
             UI.removeLoadingScreen();
 
-            var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
+            var $p = $('<p>', {id: CREATE_ID}).text(Messages.profile_register);
             var $a = $('<a>', {
                 href: APP.origin + '/register/'
             });

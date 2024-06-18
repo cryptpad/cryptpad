@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/toolbar.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
@@ -11,9 +15,9 @@ define([
     '/common/common-util.js',
     '/common/outer/worker-channel.js',
     '/common/outer/x2t.js',
-    '/bower_components/file-saver/FileSaver.min.js',
-    'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    '/components/file-saver/FileSaver.min.js',
+    'css!/components/bootstrap/dist/css/bootstrap.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/convert/app-convert.less',
 ], function (
     $,
@@ -114,7 +118,7 @@ define([
     var loadOO = function (blob, type, name, cb) {
         var s = h('script', {
             type:'text/javascript',
-            src: '/common/onlyoffice/'+CURRENT_VERSION+'/web-apps/apps/api/documents/api.js'
+            src: '/common/onlyoffice/dist/'+CURRENT_VERSION+'/web-apps/apps/api/documents/api.js'
         });
         var file = getFileType(type);
         APP.$rightside.append(s);
@@ -292,8 +296,9 @@ define([
         },
     };
 
-    Messages.convertPage = "Convert"; // XXX 4.11.0
-    Messages.convert_hint = "Pick the file you want to convert. The list of output format will be visible afterward."; // XXX 4.11.0
+    Messages.convertPage = "Convert"; // TODO: hard-coded text since 4.11.0
+    Messages.convert_hint = "Pick the file you want to convert. The list of output format will be visible afterwards.";
+    Messages.convert_unsupported = "UNSUPPORTED FILE TYPE :(";
 
     var createToolbar = function () {
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle', 'notifications'];
@@ -328,7 +333,6 @@ define([
             type: 'file'
         });
         APP.$rightside.append([hint, picker]);
-        Messages.convert_unsupported = "UNSUPPORTED FILE TYPE :("; // XXX
 
         $(picker).on('change', function () {
             APP.$rightside.find('button, div.notice').remove();

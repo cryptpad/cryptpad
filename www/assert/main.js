@@ -1,6 +1,10 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
-    '/bower_components/hyperjson/hyperjson.js',
+    '/components/hyper-json/hyperjson.js',
     'json.sortify',
     '/drive/tests.js',
     //'/common/test.js',
@@ -16,7 +20,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
+    '/components/tweetnacl/nacl-fast.min.js',
     'less!/customize/src/less2/pages/page-assert.less',
 ], function ($, Hyperjson, Sortify, Drive, /*Test,*/ Hash, Util, Thumb, Wire, Flat, MediaTag, Block, ApiConfig, Assertions, h, Messages) {
     window.Hyperjson = Hyperjson;

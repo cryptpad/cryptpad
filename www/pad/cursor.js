@@ -1,8 +1,12 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
     '/customize/messages.js',
     '/common/inner/common-mediatag.js',
 ], function ($, UIElements, UI, ChainPad, Messages, MT) {

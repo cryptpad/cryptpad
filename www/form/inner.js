@@ -1,12 +1,17 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     'json.sortify',
     '/api/config',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/sframe-app-framework.js',
     '/common/toolbar.js',
     '/form/export.js',
-    '/bower_components/nthen/index.js',
+    '/form/condorcet.js',
+    '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -21,26 +26,29 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/text-cursor.js',
     'cm/lib/codemirror',
-    '/bower_components/chainpad/chainpad.dist.js',
+    '/components/chainpad/chainpad.dist.js',
+    'tui-date-picker',
 
     '/common/inner/share.js',
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
     '/lib/datepicker/flatpickr.js',
-    '/bower_components/sortablejs/Sortable.min.js',
+    '/components/sortablejs/Sortable.min.js',
 
+    'cm/addon/edit/closebrackets',
+    'cm/addon/edit/matchbrackets',
     'cm/addon/display/placeholder',
     'cm/mode/gfm/gfm',
     'css!cm/lib/codemirror.css',
 
-    '/bower_components/file-saver/FileSaver.min.js',
+    '/components/file-saver/FileSaver.min.js',
 
-    'css!/bower_components/codemirror/lib/codemirror.css',
-    'css!/bower_components/codemirror/addon/dialog/dialog.css',
-    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
+    'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/lib/datepicker/flatpickr.min.css',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
 ], function (
     $,
@@ -50,6 +58,7 @@ define([
     Framework,
     Toolbar,
     Exporter,
+    Condorcet,
     nThen,
     SFCommon,
     Util,
@@ -66,11 +75,13 @@ define([
     TextCursor,
     CMeditor,
     ChainPad,
+    DatePicker,
     Share, Access, Properties,
     Flatpickr,
     Sortable
     )
 {
+
     var APP = window.APP = {
         blocks: {}
     };
@@ -91,7 +102,8 @@ define([
     // we'll consider increasing this restriction if people are unhappy with it
     // but as a general rule we expect users will appreciate having simpler questions
     var MAX_OPTIONS = 25;
-    var MAX_ITEMS = 10;
+    var MAX_ITEMS = 25;
+
 
     var getOptionValue = function (obj) {
         if (!Util.isObject(obj)) { return obj; }
@@ -138,7 +150,6 @@ define([
                 evOnSave.fire();
             }, 500));
         }
-
         var type, typeSelect;
         if (opts.type) {
             // Messages.form_text_text.form_text_number.form_text_url.form_text_email
@@ -164,7 +175,6 @@ define([
             };
             typeSelect = UIElements.createDropdown(dropdownConfig);
             typeSelect.setValue(opts.type);
-
             type = h('div.cp-form-edit-type', [
                 h('span', Messages.form_textType),
                 typeSelect[0]
@@ -179,6 +189,7 @@ define([
         var getSaveRes = function () {
             return {
                 maxLength: getLengthVal ? getLengthVal() : undefined,
+                required: opts.required ? true : false,
                 type: typeSelect ? typeSelect.getValue() : undefined
             };
         };
@@ -197,10 +208,19 @@ define([
             saveAndCancel
         ];
     };
+
+    var editDateOptions = function (cb) {
+        var saveAndCancel = saveAndCancelOptions(cb);
+
+        return [
+            saveAndCancel
+        ];
+    };
+
     var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
         var evOnSave = Util.mkEvent();
 
-        var add = h('button.btn.btn-secondary', [
+        var add = h('button.btn', [
             h('i.fa.fa-plus'),
             h('span', Messages.form_add_option)
         ]);
@@ -246,7 +266,7 @@ define([
                     },
                     content: Messages['form_poll_'+t]
                 };
-            });
+            }); 
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
@@ -282,20 +302,15 @@ define([
             if (uid) { $input.data('uid', uid); }
 
             // If the input is a date, initialize flatpickr
-            if (v.type && v.type !== 'text') {
                 if (v.type === 'time') {
                     Flatpickr(input, {
+                        disableMobile: true,
                         enableTime: true,
                         time_24hr: is24h,
                         dateFormat: dateFormat,
                         defaultDate: val ? new Date(val) : undefined
                     });
-                } else if (v.type === 'day') {
-                    /*Flatpickr(input, {
-                        defaultDate: val ? new Date(val) : undefined
-                    });*/
-                }
-            }
+                } 
 
             // if this element was active before the remote change, restore cursor
             var setCursor = function () {
@@ -316,11 +331,15 @@ define([
             }
 
             var del = h('button.btn.btn-danger-outline', h('i.fa.fa-times'));
+            var formHandle;
+            if (v.type !== 'time') {
+                formHandle = h('span.cp-form-handle', [
+                    h('i.fa.fa-ellipsis-v'),
+                    h('i.fa.fa-ellipsis-v'),
+                ]);
+            }
             var el = h('div.cp-form-edit-block-input', [
-                h('span.cp-form-handle', [
-                    h('i.fa.fa-ellipsis-v'),
-                    h('i.fa.fa-ellipsis-v'),
-                ]),
+                formHandle,
                 input,
                 del
             ]);
@@ -346,7 +365,7 @@ define([
             });
 
             if (!v.type || v.type === "text") {
-                $input.keyup(function (e) {
+                $input.keydown(function (e) {
                     try {
                         if (e.which === 13) {
                             var $line = $input.closest('.cp-form-edit-block-input');
@@ -502,20 +521,47 @@ define([
                 setTimeout(evOnSave.fire);
                 if (val !== "text") {
                     $container.find('.cp-form-edit-block-input').remove();
+                    var time, el;
                     if (val === "time") {
-                        var time = new Date();
+                        time = new Date();
                         time.setHours(14);
                         time.setMinutes(0);
                         time.setSeconds(0);
                         time.setMilliseconds(0);
-                        var el = getOption(+time, false, false, Util.uid());
+                        el = getOption(+time, false, false, Util.uid());
                         $add.before(el);
                         $(el).find('input').focus();
                         return;
-                    }
+                    } else if (val === "day") {
+                        time = new Date();
+                        el = getOption(+time, false, false, Util.uid());
+                        $add.before(el);
+                        $(el).find('input').focus();
+
+                        return;
+                    } 
                     $(add).click();
                     return;
-                }
+                } else {
+                    var selectedDates = $(calendarView).find('input')[0]._flatpickr.selectedDates;
+                    if ($container.find('input')[0] && $container.find('input')[0]._flatpickr) {
+                        var dateInput = new Date(+$container.find('input').value);
+                        $container.find('input').value = dateInput.toLocaleDateString();
+                    } else if (selectedDates.length > 0) {
+                        for (var i=0; i < selectedDates.length; i++ ) {
+                            if (!$container.find('input')[i]) {
+                                var element = getOption(selectedDates[i].toLocaleDateString(), true, false, Util.uid());
+                                $add.before(element);
+                                $(element).find('input').focus();
+                            } else {
+                                $container.find('input')[i].value = selectedDates[i].toLocaleDateString();
+                            } 
+                        }
+                    } else if ($container.find('input')[0]) {
+                        $container.find('input')[0].value = '';
+                    }   
+                } 
+
                 $container.find('input').each(function (i, input) {
                     if (input._flatpickr) {
                         input._flatpickr.destroy();
@@ -526,7 +572,8 @@ define([
         }
 
         // "Add option" button handler
-        $add = $(add).click(function () {
+        $add = $(add);
+        Util.onClickEnter($add, function () {
             var txt = v.type ? '' : Messages.form_newOption;
             var el = getOption(txt, true, false, Util.uid());
             $add.before(el);
@@ -595,7 +642,8 @@ define([
             if (v.type === "day") {
                 var dayPickr = $(calendarView).find('input')[0]._flatpickr;
                 values = dayPickr.selectedDates.map(function (date) {
-                    return +date;
+                    return date.toLocaleDateString('EN-CA');
+                    //return +date;
                 });
             } else {
                 $container.find('input').each(function (i, el) {
@@ -646,7 +694,6 @@ define([
             if (typeSelect) {
                 res.type = typeSelect.getValue();
             }
-
             return res;
         };
 
@@ -706,7 +753,7 @@ define([
             }
             var day = _date && allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
-                title: Util.fixHTML(data)
+                title: data,
             }, [
                 opts.type === 'day' ? h('span.cp-form-weekday', day) : undefined,
                 opts.type === 'day' ? h('span.cp-form-weekday-separator', ' - ') : undefined,
@@ -723,7 +770,7 @@ define([
 
         // Add an initial row to "time" values containing the days
         if (opts.type === "time") {
-            var days = [h('div.cp-poll-cell')];
+            var days = [h('div.cp-poll-cell.cp-poll-time-day')];
             var _days = {};
             extractValues(opts.values).forEach(function (d) {
                 var date = new Date(d);
@@ -743,7 +790,14 @@ define([
                     h('span', day)
                 ]));
             });
-            lines.unshift(h('div', days));
+            var w = 200 + 105*(opts.values.length || 1);
+            lines.unshift(h('div.cp-poll-time-day-container', {style: 'width:'+w+'px;'}, days));
+            setTimeout(function () {
+                var w2 = $('div.cp-form-poll-body').width();
+                if (w < w2) { $('div.cp-poll-time-day-container').width(w2); }
+                var cellWidth = $(lines).find('div.cp-poll-cell.cp-form-poll-option').first().width();
+                $('div.cp-poll-cell.cp-poll-time-day').css('flex-basis', cellWidth);
+            });
         }
 
         // Add answers
@@ -774,6 +828,7 @@ define([
                 bodyEls.push(h('div', els));
                 if (resultsPageObj && (APP.isEditor || APP.isAuditor)) {
                     $(nameCell).addClass('cp-clickable').click(function () {
+                        resultsPageObj.answers._parsed = true;
                         APP.renderResults(resultsPageObj.content, resultsPageObj.answers, answerObj.curve);
                     });
                 }
@@ -865,7 +920,7 @@ define([
             if (totalMax.value) {
                 $total.find('[data-id]').removeClass('cp-poll-best');
                 totalMax.data.forEach(function (k) {
-                    $total.find('[data-id="'+k+'"]').addClass('cp-poll-best');
+                    $total.find('[data-id="'+ (k.replace(/"/g, '\\"')) + '"]').addClass('cp-poll-best');
                 });
             }
         };
@@ -956,16 +1011,26 @@ define([
 
     var getBlockAnswers = function (answers, uid, filterCurve) {
         if (!answers) { return; }
-        return Object.keys(answers || {}).map(function (user) {
-            if (filterCurve && user === filterCurve) { return; }
+        return Object.keys(answers || {}).map(function (key) {
+            var user = key.split('|')[0];
+            if (filterCurve && user === filterCurve) {
+                var obj = answers[key];
+                // Only hide the current response (APP.editingUid), not all our responses
+                if (APP.editingUid && Util.find(obj, ['msg', '_uid']) === APP.editingUid) {
+                    return;
+                }
+            }
             try {
                 return {
                     curve: user,
-                    user: answers[user].msg._userdata,
-                    results: answers[user].msg[uid]
+                    user: answers[key].msg._userdata,
+                    results: answers[key].msg[uid],
+                    time: answers[key].time
                 };
             } catch (e) { console.error(e); }
-        }).filter(Boolean);
+        }).filter(Boolean).sort(function (obj1, obj2) {
+            return obj1.time - obj2.time;
+        });
     };
 
     // When there is a change to the form, we need to check if we can still add
@@ -986,6 +1051,12 @@ define([
         });
     });
 
+    var linkClickHandler = function (ev) {
+        ev.preventDefault();
+        var href = ($(this).attr('href') || '').trim();
+        if (!href) { return; }
+        APP.common.openUnsafeURL(href);
+    };
 
     var STATIC_TYPES = {
         md: {
@@ -999,6 +1070,8 @@ define([
                 }, opts.text);
                 var $tag = $(tag);
                 DiffMd.apply(DiffMd.render(opts.text || ''), $tag, APP.common);
+                $tag.find('a').click(linkClickHandler);
+
                 var cursorGetter;
                 return {
                     tag: tag,
@@ -1170,14 +1243,14 @@ define([
                         h('i.fa.fa-plus'),
                         h('span', Messages.form_conditional_addAnd)
                     ]);
-                    var $b = $(btn).click(function () {
-                        getConditions($container, true, rules, undefined, $b);
+                    $(btn).click(function () {
+                        getConditions($container, true, rules, undefined);
                     });
                     $container.append(btn);
-                    return $b;
+                    return;
                 };
                 var values = getConditionsValues();
-                getConditions = function ($container, isNew, rules, condition, $btn) {
+                getConditions = function ($container, isNew, rules, condition) {
                     condition = condition || {};
                     condition.uid = condition.uid || Util.uid();
 
@@ -1199,7 +1272,7 @@ define([
                             if (!Array.isArray(rules)) { // new set of rules (OR)
                                 rules = [condition];
                                 w.push(rules);
-                                $btn = getAddAndButton($container, rules);
+                                getAddAndButton($container, rules);
                             } else {
                                 rules.push(condition);
                             }
@@ -1400,9 +1473,9 @@ define([
                     w.forEach(function (rules) {
                         var rulesC = h('div.cp-form-condition-rule');
                         var $rulesC = $(rulesC);
-                        var $b = getAddAndButton($rulesC, rules);
+                        getAddAndButton($rulesC, rules);
                         rules.forEach(function (obj) {
-                            getConditions($rulesC, false, rules, obj, $b);
+                            getConditions($rulesC, false, rules, obj);
                         });
                         $addC.before($rulesC);
                     });
@@ -1512,11 +1585,11 @@ define([
                                 if (!$v.length) { return; }
                                 var dropV = $v[0] && $v[0].dropdown;
                                 if (!dropV) { return; }
-                                var res, type;
+                                var res;
                                 values.some(function (obj) {
                                     if (String(obj.uid) === String(val)) {
                                         res = obj.values;
-                                        type = obj.type;
+                                        //var type = obj.type;
                                         return true;
                                     }
                                 });
@@ -1584,6 +1657,12 @@ define([
         return rows;
     };
 
+    var getSortedKeys = function (answers) {
+        return Object.keys(answers).sort(function (uid1, uid2) {
+            return (answers[uid1].time || 0) - (answers[uid2].time || 0);
+        });
+    };
+
     var TYPES = APP.TYPES = {
         input: {
             defaultOpts: {
@@ -1594,10 +1673,11 @@ define([
                 // Messages.form_input_ph_email.form_input_ph_url
                 var tag = h('input', {
                     type: opts.type,
+                    step: "any",
                     placeholder: Messages['form_input_ph_'+opts.type] || ''
                 });
                 var $tag = $(tag);
-                $tag.on('change keypress', Util.throttle(function () {
+                $tag.on('change keypress keydown', Util.throttle(function () {
                     evOnChange.fire();
                 }, 500));
                 var cursorGetter;
@@ -1632,7 +1712,7 @@ define([
                     return !answer || !answer.trim();
                 };
 
-                Object.keys(answers).forEach(function (author) {
+                getSortedKeys(answers).forEach(function (author) {
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (isEmpty(answer)) { return empty++; }
@@ -1643,7 +1723,7 @@ define([
 
                 //if (max < 2) { // there are no duplicates, so just return text
                     results.push(getEmpty(empty));
-                    Object.keys(answers).forEach(function (author) {
+                    getSortedKeys(answers).forEach(function (author) {
                         var obj = answers[author];
                         var answer = obj.msg[uid];
                         if (!answer || !answer.trim()) { return empty++; }
@@ -1713,7 +1793,7 @@ define([
             printResults: function (answers, uid) { // results textarea
                 var results = [];
                 var empty = 0;
-                Object.keys(answers).forEach(function (author) { // TODO deduplicate these
+                getSortedKeys(answers).forEach(function (author) { // TODO deduplicate these
                     var obj = answers[author];
                     var answer = obj.msg[uid];
                     if (!answer || !answer.trim()) { return empty++; }
@@ -1845,13 +1925,23 @@ define([
                         return radio;
                     });
                     els.unshift(h('div.cp-form-multiradio-item', item));
+                    els.unshift(h('div.cp-form-multiradio-item', item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
-                var header = extractValues(opts.values).map(function (v) { return h('span', v); });
+                var header = extractValues(opts.values).map(function (v) {
+                    return h('span', {
+                        title: Util.fixHTML(v)
+                    }, v);
+                });
                 header.unshift(h('span'));
+                var elh = h('span');
+                elh.innerHTML = '&nbsp;';
+                header.unshift(elh);
                 lines.unshift(h('div.cp-form-multiradio-header', header));
 
-                var tag = h('div.radio-group.cp-form-type-multiradio', lines);
+                var tag = h('div.cp-form-multiradio-container',
+                            h('div.radio-group.cp-form-type-multiradio', lines)
+                          );
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 var $tag = $(tag);
@@ -1965,6 +2055,79 @@ define([
                 });
             },
             icon: h('i.cptools.cptools-form-grid-radio')
+        },
+        date: {
+            defaultOpts: {
+                type: 'date',
+            },
+            get: function (opts, a, n, evOnChange) {
+                opts = Util.clone(TYPES.date.defaultOpts);
+
+                var tag = h('input');
+
+                var picker = Flatpickr(tag, {
+                    disableMobile: true,
+                    enableTime: true,
+                    time_24hr: is24h,
+                    dateFormat: dateFormat,
+                });
+
+                var $tag = $(tag);
+                $tag.on('change keypress', Util.throttle(function () {
+                    evOnChange.fire();
+                }, 500));
+
+
+                return {
+                    tag: tag,
+                    isEmpty: function () { return !$tag.val().trim(); },
+                    getValue: function () {
+                        var d = DatePicker.parseDate(tag.value);
+                        return +d;
+                    },
+                    setValue: function (val) {
+                        picker.setDate(new Date(val), false);
+                    },
+                    setEditable: function (state) {
+                        if (state) { $tag.removeAttr('disabled'); }
+                        else { $tag.attr('disabled', 'disabled'); }
+                    },
+                    edit: function (cb) {
+
+                        return editDateOptions(cb);
+                    },
+                    reset: function () { $tag.val(''); }
+                };
+            },
+            printResults: function (answers, uid) { // results text
+                var results = [];
+                var empty = 0;
+
+                var isEmpty = function (answer) {
+                    return !answer;
+                };
+
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = obj.msg[uid];
+                    if (isEmpty(answer)) { return empty++; }
+                });
+                results.push(getEmpty(empty));
+
+                Object.keys(answers).forEach(function (author) {
+                    var obj = answers[author];
+                    var answer = Flatpickr.formatDate(new Date(obj.msg[uid]), dateFormat);
+                    if (isEmpty(answer)) { return empty++; }
+                    results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
+                });
+                return h('div.cp-form-results-contained', h('div.cp-charts.cp-text-table', results));
+            },
+            exportCSV: function (answer, form) {
+                if (answer === false) { return [form.q]; }
+                return answer ? [new Date(answer).toISOString()]
+                              : [''];
+            },
+            icon: h('i.cp-calendar-active.fa.fa-calendar')
         },
         checkbox: {
             compatible: ['radio', 'checkbox', 'sort'],
@@ -2107,6 +2270,7 @@ define([
                         return cbox;
                     });
                     els.unshift(h('div.cp-form-multiradio-item', item));
+                    els.unshift(h('div.cp-form-multiradio-item', item));
                     return h('div.radio-group', {'data-uid':name}, els);
                 });
 
@@ -2128,11 +2292,20 @@ define([
                     });
                 });
 
-                var header = extractValues(opts.values).map(function (v) { return h('span', v); });
+                var header = extractValues(opts.values).map(function (v) {
+                    return h('span', {
+                        title: Util.fixHTML(v)
+                    }, v);
+                });
                 header.unshift(h('span'));
+                var elh = h('span');
+                elh.innerHTML = '&nbsp;';
+                header.unshift(elh);
                 lines.unshift(h('div.cp-form-multiradio-header', header));
 
-                var tag = h('div.radio-group.cp-form-type-multiradio', lines);
+                var tag = h('div.cp-form-multiradio-container',
+                            h('div.radio-group.cp-form-type-multiradio', lines)
+                          );
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
                 return {
@@ -2324,6 +2497,12 @@ define([
                         }
                     }
                 });
+                var sortNode = function (order) {
+                    order.forEach(function (uid) {
+                        $tag.append($tag.find('[data-id="'+uid+'"]'));
+                    });
+                };
+
                 return {
                     tag: tag,
                     isEmpty: function () { return !this.getValue(); },
@@ -2338,7 +2517,7 @@ define([
                         var toSort = extractValues(opts.values).map(function (val) {
                             return invMap[val];
                         });
-                        sortable.sort(toSort);
+                        sortNode(toSort);
                         reorder(true);
                     },
                     setEditable: function (state) {
@@ -2355,9 +2534,10 @@ define([
                         var toSort = val.map(function (val) {
                             return invMap[val];
                         });
-                        sortable.sort(toSort);
+                        sortNode(toSort);
                         reorder();
-                    }
+                    },
+
                 };
 
             },
@@ -2379,7 +2559,6 @@ define([
                         Util.inc(count, el, score);
                     });
                 });
-
                 var rendered = renderTally(count, empty, showBars);
                 return h('div.cp-charts.cp-bar-table', rendered);
             },
@@ -2497,10 +2676,7 @@ define([
 
                 // If content is defined, we'll be able to click on a row to display
                 // all the answers of this user
-                var lines = makePollTable(_answers, opts, content && {
-                    content: content,
-                    answers: answers
-                });
+                var lines = makePollTable(_answers, opts, content);
 
                 var total = makePollTotal(_answers, opts);
                 if (total) { lines.push(h('div', total)); }
@@ -2512,9 +2688,11 @@ define([
                 var q = form.q || Messages.form_default;
                 if (answer === false) {
                     var cols = extractValues(opts.values).map(function (key) {
+                        if (opts.type === 'time') {
+                            return q + ' | ' + new Date(+key).toISOString();
+                        }
                         return q + ' | ' + key;
                     });
-                    cols.unshift(q);
                     return cols;
                 }
                 if (!answer || !answer.values) {
@@ -2522,15 +2700,9 @@ define([
                     empty.unshift('');
                     return empty;
                 }
-                var str = '';
-                Object.keys(answer.values).sort().forEach(function (k, i) {
-                    if (i !== 0) { str += ';'; }
-                    str += k.replace(';', '').replace(':', '') + ':' + answer.values[k];
-                });
                 var res = extractValues(opts.values).map(function (key) {
                     return answer.values[key] || '';
                 });
-                res.unshift(str);
                 return res;
             },
             icon: h('i.cptools.cptools-form-poll')
@@ -2565,8 +2737,10 @@ define([
         //var answersByTime = {};
         Object.keys(answers).forEach(function (curve) {
             var obj = answers[curve];
-            var day = getDay(new Date(obj.time));
-            Util.inc(tally, +day);
+            Object.keys(obj).forEach(function (uid) {
+                var day = getDay(new Date(obj[uid].time));
+                Util.inc(tally, +day);
+            });
         });
 
         var times = Object.keys(tally).map(Number).filter(Boolean);
@@ -2602,14 +2776,33 @@ define([
         );
     };
 
+    var parseAnswers = function (answers) {
+        var _answers = {};
+        Object.keys(answers || {}).forEach(function (curve) {
+            var all = answers[curve];
+            Object.keys(all || {}).forEach(function (uid) {
+                _answers[curve + '|' + uid] = all[uid];
+            });
+        });
+        return _answers;
+    };
+
+    var getAnswersLength = function (answers) {
+        return Object.values(answers || {}).reduce(function (size, obj) {
+            return size + Object.keys(obj).length;
+        }, 0);
+    };
+
     var renderResults = APP.renderResults = function (content, answers, showUser) {
         var $container = $('div.cp-form-creator-results').empty().css('display', '');
 
         var framework = APP.framework;
-        var title = framework._.title.title || framework._.title.defaultTitle;
-        $container.append(h('h1.cp-form-view-title', title));
 
-        var answerCount = Object.keys(answers || {}).length;
+        var title = framework._.title.title || framework._.title.defaultTitle;
+        var titleDiv = h('h1.cp-form-view-title', title);
+        $container.append(titleDiv);
+
+        var answerCount = getAnswersLength(answers);
 
         if (!answerCount) {
             $container.append(h('div.alert.alert-info', Messages.form_results_empty));
@@ -2623,23 +2816,45 @@ define([
         $timeline.append(makeTimeline(answers));
         var controls = h('div.cp-form-creator-results-controls');
         var $controls = $(controls).appendTo($container);
-        var exportButton = h('button.btn.btn-primary', [
-            h('i.fa.fa-download'),
-            Messages.form_exportCSV
-        ]);
-        $(exportButton).appendTo($controls);
         var results = h('div.cp-form-creator-results-content');
         var $results = $(results).appendTo($container);
 
-        $(exportButton).click(function () {
-            var csv = Exporter.results(content, answers, TYPES, getFullOrder(content));
-            if (!csv) { return void UI.warn(Messages.error); }
-            var suggestion = APP.framework._.title.suggestTitle('cryptpad-document');
-            var title = Util.fixFileName(suggestion) + '.csv';
-            window.saveAs(new Blob([csv], {
-                type: 'text/csv'
-            }), title);
-        });
+        var options = [{
+            tag: 'a',
+            attributes: {'class': 'cp-form-export-csv fa fa-table'},
+            content: h('span', Messages.form_exportCSV),
+            action: function () {
+                var csv = Exporter.results(content, answers, TYPES, getFullOrder(content));
+                if (!csv) { return void UI.warn(Messages.error); }
+                var suggestion = APP.framework._.title.suggestTitle('cryptpad-document');
+                var title = Util.fixFileName(suggestion) + '.csv';
+                window.saveAs(new Blob([csv], {
+                    type: 'text/csv'
+                }), title);
+            },
+        }, {
+            tag: 'a',
+            attributes: {'class': 'cp-form-export-json cptools cptools-code'},
+            content: h('span', Messages.form_exportJSON),
+            action: function () {
+                var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "json");
+                if (!arr) { return void UI.warn(Messages.error); }
+                window.saveAs(new Blob([arr], {
+                    type: 'application/json'
+                }), title+".json");
+            },
+        }];
+        var dropdownExport = {
+            buttonContent: [
+                h('i.fa.fa-download'),
+                h('span', Messages.exportButton)
+            ],
+            buttonCls: 'btn btn-primary',
+            options: options, // Entries displayed in the menu
+            common: framework._.sfCommon
+        };
+        var $exp = UIElements.createDropdown(dropdownExport);
+        $exp.appendTo($controls);
 
         // Export in "sheet"
         var export2Button = h('button.btn.btn-primary', [
@@ -2648,7 +2863,7 @@ define([
         ]);
         $(export2Button).appendTo($controls);
         $(export2Button).click(function () {
-            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), true);
+            var arr = Exporter.results(content, answers, TYPES, getFullOrder(content), "array");
             if (!arr) { return void UI.warn(Messages.error); }
             var sframeChan = framework._.sfCommon.getSframeChannel();
             var title = framework._.title.title || framework._.title.defaultTitle;
@@ -2658,13 +2873,34 @@ define([
             });
         });
 
+        APP.common.getPadMetadata({channel: content.answers.channel}, function (md) {
+            var owners = md.owners;
+            if (!Array.isArray(owners) || !owners.length) { return; }
+            var owned = APP.common.isOwned(owners);
+            if (!owned) { return; }
+            var button = h('button.btn.btn-danger.cp-form-results-delete', Messages.form_deleteAll);
+            UI.confirmButton(button, {classes:'danger'}, function () {
+                var sframeChan = framework._.sfCommon.getSframeChannel();
+                sframeChan.query('Q_FORM_DELETE_ALL_ANSWERS', {
+                    channel: content.answers.channel,
+                    teamId: typeof(owned) === "number" ? owned : undefined
+                }, function (err, obj) {
+                    if (err || (obj && obj.error)) { return void UI.warn(Messages.error); }
+                    APP.getResults();
+                });
+            });
+            $controls.append(button);
+        });
+
         var summary = true;
         var form = content.form;
 
         var switchMode = h('button.btn.btn-secondary', Messages.form_showIndividual);
         $controls.hide().append(switchMode);
 
+
         var show = function (answers, header) {
+
             var order = getFullOrder(content);
             var elements = order.map(function (uid) {
                 var block = form[uid];
@@ -2673,11 +2909,143 @@ define([
                 if (!model || !model.printResults) { return; }
 
                 // Only use content if we're not viewing individual answers
-                var print = model.printResults(answers, uid, form, !header && content);
+                var _answers = parseAnswers(answers);
+                var print = model.printResults(_answers, uid, form, !header && {
+                    content: content,
+                    answers: answers
+                });
+
+
+                var showCondorcetWinner = function(answers, opts, condorcetMethod, uid) {
+
+                    var _answers = parseAnswers(answers);
+
+                    var optionArray = [];
+                    opts.values.forEach(function (option) {
+                        optionArray.push(option.v);
+                    });
+
+                    var listOfLists = [];
+                    Object.keys(_answers).forEach(function(a) {
+                        if (_answers[a].msg[uid]) {
+                            listOfLists.push(_answers[a].msg[uid]);
+                        }
+                    });
+                    try {
+                        if (listOfLists.length) {
+                            return Condorcet.showCondorcetWinner(condorcetMethod, optionArray, listOfLists);
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        return [];
+                    }
+                };
+
+                var condorcetWinnerDiv = h('div.cp-form-block-content');
+                var condorcetMethod = 'schulze';
+                try {
+                if (type === "sort" && summary) {
+                    var calculateCondorcet = function() {
+                        var condorcetResults = h('span');
+                        var c = showCondorcetWinner(answers, block.opts, condorcetMethod, uid);
+                        if (!c) { return; }
+                        var condorcetWinner = c[0];
+                        var rankedResults = c[1];
+                        if (!condorcetWinner || !condorcetResults) { return; }
+                        if (condorcetWinner.length > 1) {
+                            condorcetResults.append(h('span', condorcetWinner.join(', ')));
+                        } else if (condorcetWinner.length === 1 ) {
+                            condorcetResults.append(h('span', condorcetWinner));
+                        } else {
+                            condorcetResults.append(h('span', Messages.form_noCondorcetWinner));
+                        }
+                        var detailedResults = rankedResults.reverse().map(function(result) {
+                            if (result.length > 1) {
+                                return result[1].join(', ') + ' : ' + result[0];
+                            } else {
+                                return result[1] + ' : ' + result[0];
+                            }
+                        });
+                        return [condorcetResults, detailedResults];
+                    };
+
+                    var dropdownOpts = [{
+                        key: 'schulze',
+                        str: Messages.form_condorcetSchulze
+                    }, {
+                        key: 'ranked',
+                        str: Messages.form_condorcetRanked
+                    }];
+
+                    var options = dropdownOpts.map(function (t) {
+                        return {
+                            tag: 'a',
+                            attributes: {
+                                'class': 'cp-form-type-value',
+                                'data-value': t.key,
+                                'href': '#',
+                            },
+                            content: t.str
+                        };
+                    });
+                    var dropdownConfig = {
+                        text: '', // Button initial text
+                        options: options,
+                        isSelect: true,
+                        caretDown: true,
+                        buttonCls: 'btn btn-secondary'
+                    };
+                    var typeSelect = UIElements.createDropdown(dropdownConfig);
+                    typeSelect.setValue(condorcetMethod);
+                    var evOnChange = Util.mkEvent();
+                    typeSelect.onChange.reg(evOnChange.fire);
+
+                    var method = h('div.cp-dropdown-container', typeSelect[0]);
+
+                    condorcetWinnerDiv = h('div.cp-form-edit-type');
+                    var detailsContainer, condorcetWinner;
+
+                    var condorcetResult = calculateCondorcet();
+                    if (condorcetResult) {
+                        condorcetWinner = h('span#cp-condorcet-winner', condorcetResult[0]);
+                        detailsContainer = h('details#cp-condorcet-details', [
+                            h('summary', Messages.form_showDetails),
+                            Messages.form_condorcetExtendedDisplay,
+                            h('div', condorcetResult[1].join(', '))
+                        ]);
+                    }
+
+                    evOnChange.reg(function () {
+                        $('#cp-condorcet-winner').empty();
+                        $('#cp-condorcet-details').empty();
+                        condorcetMethod = typeSelect.getValue();
+                        var condorcetResult = calculateCondorcet();
+                        if (!condorcetResult || !condorcetResult[0] || !condorcetResult[1]) {
+                            return;
+                        }
+                        $('#cp-condorcet-winner').replaceWith(h('span#cp-condorcet-winner', condorcetResult[0]));
+                        $('#cp-condorcet-details').replaceWith(h('details#cp-condorcet-details', [
+                            h('summary', Messages.form_showDetails),
+                            Messages.form_condorcetExtendedDisplay,
+                            h('div', condorcetResult[1].join(', '))
+                        ]));
+                    });
+
+                    condorcetWinnerDiv.append(h('div.cp-form-result-details', [
+                        h('span', Messages.form_showCondorcetMethod),
+                        method,
+                        h('span', Messages.form_showCondorcetWinner, condorcetWinner),
+                        detailsContainer
+                    ]));
+
+                }
+                } catch (err) {
+                    console.error(err);
+                }
+
 
                 var q = h('div.cp-form-block-question', block.q || Messages.form_default);
-
-//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section
+//Messages.form_type_checkbox.form_type_input.form_type_md.form_type_multicheck.form_type_multiradio.form_type_poll.form_type_radio.form_type_sort.form_type_textarea.form_type_section.form_type_date
                 return h('div.cp-form-block', [
                     h('div.cp-form-block-type', [
                         TYPES[type].icon.cloneNode(),
@@ -2685,12 +3053,14 @@ define([
                     ]),
                     q,
                     h('div.cp-form-block-content', print),
+                    condorcetWinnerDiv,
                 ]);
             });
             $results.empty().append(elements);
             if (header) { $results.prepend(header); }
         };
         show(answers);
+
 
         if (APP.isEditor || APP.isAuditor) { $controls.show(); }
 
@@ -2718,8 +3088,21 @@ define([
                 return '#';
             };
 
-            var els = Object.keys(answers).map(function (curve) {
-                var obj = answers[curve];
+            var els = [];
+
+            // Get all responses
+            var allUnsorted = {};
+            Object.keys(answers).forEach(function (curve) {
+                var userAnswers = answers[curve];
+                Object.keys(userAnswers).forEach(function (uid) {
+                    allUnsorted[curve + '|' + uid] = userAnswers[uid];
+                });
+            });
+            // Sort them by date and print
+            getSortedKeys(allUnsorted).forEach(function (curveUid) {
+                var obj = allUnsorted[curveUid];
+                var uid = curveUid.split('|')[1];
+                var curve = curveUid.split('|')[0];
                 var answer = obj.msg;
                 var date = new Date(obj.time).toLocaleString();
                 var text, warning, badge;
@@ -2751,7 +3134,8 @@ define([
                 var div = h('div.cp-form-individual', [span, viewButton, warning, badge]);
                 $(viewButton).click(function () {
                     var res = {};
-                    res[curve] = obj;
+                    res[curve] = {};
+                    res[curve][uid] = obj;
                     var back = h('button.btn.btn-secondary.small', Messages.form_backButton);
                     $(back).click(function () {
                         summary = true;
@@ -2773,7 +3157,7 @@ define([
                         $(viewButton).click();
                     });
                 }
-                return div;
+                els.push(div);
             });
             $results.append(els);
         });
@@ -2782,21 +3166,23 @@ define([
         }
     };
 
-    var getAnswersLength = function (answers) {
-        return Object.keys(answers || {}).filter(function (key) {
-            return key && key.slice(0,1) !== "_";
-        }).length;
-    };
     var addResultsButton = function (framework, content, answers) {
+        var sframeChan = framework._.sfCommon.getSframeChannel();
         var $container = $('.cp-forms-results-participant');
         var l = getAnswersLength(answers);
         var $res = $(h('button.btn.btn-default.cp-toolbar-form-button', [
             h('i.fa.fa-bar-chart'),
             h('span.cp-button-name', Messages._getKey('form_results', [l])),
         ]));
+        var it = setInterval(function () {
+            sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
+                var answers = obj && obj.results;
+                var l = getAnswersLength(answers);
+                $res.find('span.cp-button-name').text(Messages._getKey('form_results', [l]));
+            });
+        }, 30000);
         $res.click(function () {
             $res.attr('disabled', 'disabled');
-            var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query("Q_FORM_FETCH_ANSWERS", content.answers, function (err, obj) {
                 var answers = obj && obj.results;
                 if (answers) { APP.answers = answers; }
@@ -2804,6 +3190,7 @@ define([
                 $('body').addClass('cp-app-form-results');
                 renderResults(content, answers);
                 $res.remove();
+                clearInterval(it);
                 var $editor = $(h('button.btn.btn-default', [
                     h('i.fa.fa-pencil'),
                     h('span.cp-button-name', Messages.form_editor)
@@ -2838,10 +3225,12 @@ define([
         return footer;
     };
 
+    var updateForm;
     var showAnsweredPage = function (framework, content, answers) {
         var $formContainer = $('div.cp-form-creator-content').hide();
         var $resContainer = $('div.cp-form-creator-results').hide();
         var $container = $('div.cp-form-creator-answered').empty().css('display', '');
+        APP.inAnsweredPage = true;
 
         if (APP.answeredInForm) {
             $container.hide();
@@ -2850,29 +3239,6 @@ define([
             $container.hide();
             $resContainer.css('display', '');
         }
-
-        var viewOnly = content.answers.cantEdit || APP.isClosed;
-        var action = h(viewOnly ? 'button.btn.btn-secondary' : 'button.btn.btn-primary', [
-            viewOnly ? h('i.fa.fa-bar-chart') : h('i.fa.fa-pencil'),
-            h('span', viewOnly ? Messages.form_viewAnswer : Messages.form_editAnswer)
-        ]);
-
-        $(action).click(function () {
-            $formContainer.css('display', '');
-            $container.hide();
-            APP.answeredInForm = true;
-            if (viewOnly) {
-                $formContainer.find('.cp-form-send-container .cp-open').hide();
-                if (Array.isArray(APP.formBlocks)) {
-                    APP.formBlocks.forEach(function (b) {
-                        if (!b.setEditable) { return; }
-                        b.setEditable(false);
-                    });
-                }
-            }
-        });
-
-        if (answers._time) { APP.lastAnswerTime = answers._time; }
 
         // If responses are public, show button to view them
         var responses;
@@ -2894,9 +3260,27 @@ define([
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
                     $('body').addClass('cp-app-form-results');
+                    APP.inAnsweredPage = false;
                     renderResults(content, answers);
                     $container.hide();
                 });
+            });
+        }
+
+        var newAnswer;
+        if (content.answers.multiple) {
+            newAnswer = h('button.btn.btn-primary', [
+                h('i.fa.fa-plus'),
+                h('span', Messages.form_answer_new)
+            ]);
+            $(newAnswer).click(function () {
+                $formContainer.css('display', '');
+                $container.hide();
+                delete APP.editingUid;
+                delete APP.hasAnswered;
+                APP.answeredInForm = true;
+                APP.inAnsweredPage = false;
+                updateForm(framework, content, false);
             });
         }
 
@@ -2904,20 +3288,91 @@ define([
         if (content.answers.msg) {
             var $desc = $(description);
             DiffMd.apply(DiffMd.render(content.answers.msg), $desc, APP.common);
+            $desc.find('a').click(linkClickHandler);
         }
 
-        var actions = h('div.cp-form-submit-actions', [
-            action,
-            responses || undefined
-        ]);
+        var entries = [];
+        var sorted = Object.keys(answers).sort(function (uid1, uid2) {
+            return answers[uid1]._time - answers[uid2]._time;
+        });
+        sorted.forEach(function (uid) {
+            var answer = answers[uid];
+            
+            var viewOnly = content.answers.cantEdit || APP.isClosed;
+
+            var action = h(viewOnly ? 'button.btn.btn-secondary' : 'button.btn.btn-primary', [
+                viewOnly ? h('i.fa.fa-bar-chart') : h('i.fa.fa-pencil'),
+                h('span', viewOnly ? Messages.form_viewAnswer : Messages.form_editAnswer)
+            ]);
+
+            $(action).click(function () {
+                $formContainer.css('display', '');
+                $container.hide();
+                APP.answeredInForm = true;
+                APP.editingUid = uid;
+                APP.editingTime = answer._time;
+                APP.inAnsweredPage = false;
+                updateForm(framework, content, false, answer);
+                if (viewOnly) {
+                    $formContainer.find('.cp-form-send-container .cp-open').hide();
+                    if (Array.isArray(APP.formBlocks)) {
+                        APP.formBlocks.forEach(function (b) {
+                            if (!b.setEditable) { return; }
+                            b.setEditable(false);
+                        });
+                    }
+                }
+            });
+
+            var date = new Date(answer._time).toLocaleString();
+
+            var del;
+            var canDelete = !viewOnly && content.answers.version >= 2;
+            if (answer._hash && canDelete) {
+                del = h('button.btn.btn-danger', [
+                    h('i.fa.fa-trash-o'),
+                    h('span', Messages.kanban_delete)
+                ]);
+                $(del).click(function () {
+                    var sframeChan = framework._.sfCommon.getSframeChannel();
+                    sframeChan.query("Q_FORM_DELETE_ANSWER", {
+                        channel: content.answers.channel,
+                        uid: uid
+                    }, function (err, obj) {
+                        if (obj && obj.error) {
+                            console.error(obj.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        framework._.sfCommon.gotoURL();
+                    });
+                });
+            }
+
+            var name = (answer._isAnon || !answer._userdata || !answer._userdata.name) ?
+                            Messages.anonymous : Util.fixHTML(answer._userdata.name);
+            entries.push(h('div.cp-form-submit-actions', [
+                h('span.cp-form-submit-time', date),
+                h('span.cp-form-submit-time', '-'),
+                h('span.cp-form-submit-time', name),
+                h('span.cp-form-submit-action', action),
+                h('span.cp-form-submit-del', del),
+            ]));
+        });
+
+        var table = h('div.cp-form-submit-table', entries);
+
 
         var title = framework._.title.title || framework._.title.defaultTitle;
+
         $container.append(h('div.cp-form-submit-success', [
             h('h3.cp-form-view-title', title),
-            h('div.alert.alert-info', Messages._getKey('form_alreadyAnswered', [
-                    new Date(APP.lastAnswerTime).toLocaleString()])),
             description,
-            actions
+            h('div', Messages.form_alreadyAnsweredMult),
+            table,
+            h('div.cp-form-submit-success-actions', [
+                newAnswer,
+                responses || undefined
+            ])
         ]));
         $container.append(getLogo());
     };
@@ -3055,7 +3510,8 @@ define([
                 $(anonOffContent).append(h('span.cp-form-anon-answer-input', [
                     Messages.form_answerAs,
                     h('input', {
-                        value: user.name || '',
+                        value: (typeof(APP.cantAnon) === "string" && APP.cantAnon)
+                                || user.name || '',
                         placeholder: Messages.form_anonName
                     })
                 ]));
@@ -3064,10 +3520,14 @@ define([
                 $anonName.on('click input', function () {
                     if (!Util.isChecked($off)) { $off.prop('checked', true); }
                 });
-            } else if (APP.cantAnon) {
+            }
+            if (APP.cantAnon) {
                 // You've already answered with your credentials
                 $(anonRadioOn).find('input').attr('disabled', 'disabled');
                 $(anonRadioOff).find('input[type="radio"]').prop('checked', true);
+            } else if (APP.editingUid) {
+                // We're edting and we can answer anonymously: our previous answer is anonymous
+                $(anonRadioOn).find('input[type="radio"]').prop('checked', true);
             }
             if (!$anonName) {
                 $(anonOffContent).append(h('div.cp-form-anon-answer-input', [
@@ -3096,13 +3556,10 @@ define([
                 h('span.cp-form-anon-answer-registered', user.name || Messages.anonymous)
             ]));
         }
-        if (APP.hasAnswered && content.answers.cantEdit || APP.isClosed) {
-            $radio.hide();
-        }
 
         var send = h('button.cp-open.btn.btn-primary', APP.hasAnswered ? Messages.form_update : Messages.form_submit);
         var reset = h('button.cp-open.cp-reset-button.btn.btn-danger-alt', Messages.form_reset);
-        $(reset).click(function () {
+        var $reset = $(reset).click(function () {
             if (!Array.isArray(APP.formBlocks)) { return; }
             APP.formBlocks.forEach(function (data) {
                 if (typeof(data.reset) === "function") { data.reset(); }
@@ -3115,9 +3572,10 @@ define([
                 return UI.warn(Messages.error);
             }
 
-            $send.attr('disabled', 'disabled');
             var results = getFormResults();
             if (!results) { return; }
+
+            $send.attr('disabled', 'disabled');
 
             var wantName = Util.isChecked($(anonRadioOff).find('input[type="radio"]'));
 
@@ -3134,6 +3592,8 @@ define([
                 };
             }
 
+            var uid = APP.editingUid;
+            if (uid) { results._uid = uid; }
             var sframeChan = framework._.sfCommon.getSframeChannel();
             sframeChan.query('Q_FORM_SUBMIT', {
                 mailbox: content.answers,
@@ -3149,6 +3609,8 @@ define([
                     console.error(err || data.error);
                     return void UI.warn(Messages.error);
                 }
+                delete APP.editingUid;
+                delete APP.editingTime;
                 if (results._userdata && loggedIn) {
                     $(anonRadioOn).find('input').attr('disabled', 'disabled');
                     $(anonRadioOff).find('input[type="radio"]').prop('checked', true);
@@ -3159,14 +3621,28 @@ define([
 
                 $send.removeAttr('disabled');
                 $send.text(Messages.form_update);
-                APP.hasAnswered = true;
                 APP.answeredInForm = false;
-                showAnsweredPage(framework, content, { '_time': +new Date() });
-                if (content.answers.cantEdit) {
-                    $(radioContainer).hide();
-                }
+
+                APP.getMyAnswers();
+
+                // TODO show the author that they can "mute" the pad
+                var priv = metadataMgr.getPrivateData();
+                sframeChan.query('Q_CONTACT_OWNER', {
+                    send: true,
+                    anon: true,
+                    query: "FORM_RESPONSE",
+                    msgData: { channel: priv.channel }
+                }, function (err, obj) {
+                    if (err || !obj || !obj.state) { return console.error('ENOTIFY'); }
+                });
             });
         });
+
+        if (APP.hasAnswered && content.answers.cantEdit || APP.isClosed) {
+            $radio.hide();
+            $send.hide();
+            $reset.hide();
+        }
 
         if (APP.isClosed) {
             send = undefined;
@@ -3194,7 +3670,7 @@ define([
                     e.preventDefault();
                     if (!$el.is(':visible')) {
                         var pages = $el.closest('.cp-form-page').index();
-                        if (APP.refreshPage) { APP.refreshPage(pages + 1); }
+                        if (APP.refreshPage) { APP.refreshPage(pages, 'required'); }
                     }
                     $el[0].scrollIntoView();
                 });
@@ -3231,7 +3707,6 @@ define([
                     if (!data.isEmpty) { return; }
                     if (!block) { return; }
                     if (!block.opts || !block.opts.required) { return; }
-
                     // Don't require questions that are in a hidden section
                     var section = getSectionFromQ(content, uid);
                     if (section.uid) {
@@ -3277,7 +3752,7 @@ define([
             reset, send
         ]);
     };
-    var updateForm = function (framework, content, editable, answers, temp) {
+    updateForm = function (framework, content, editable, answers, temp) {
         var $container = $('div.cp-form-creator-content');
         if (!$container.length) { return; } // Not ready
 
@@ -3295,7 +3770,7 @@ define([
         });
         $body.addClass('cp-form-palette-'+color);
 
-        $container.attr('class', 'cp-form-creator-content');
+        $container.attr('class', 'cp-form-creator-content'+(APP.isEditor? ' cp-form-iseditor': ''));
 
         if (APP.isClosed && content.answers.privateKey && !APP.isEditor && !APP.hasAnswered) {
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -3312,6 +3787,7 @@ define([
         var evOnChange = Util.mkEvent();
         if (!APP.isEditor) {
             var _answers = Util.clone(answers || {});
+            delete _answers._hash;
             delete _answers._proof;
             delete _answers._userdata;
             evOnChange.reg(function (noBeforeUnload, isSave) {
@@ -3337,6 +3813,8 @@ define([
             if (!APP.isEditor) { return; }
             var full = !uid;
             var addControl = function (type) {
+                if (type === "section" && inSection) { return; }
+
                 var btn = h('button.btn.btn-secondary', {
                     title: full ? '' : Messages['form_type_'+type],
                     'data-type': type
@@ -3370,7 +3848,7 @@ define([
                     if (!model) { return; }
                     content.form[_uid] = {
                         //q: Messages.form_default,
-                        opts: Util.clone(model.defaultOpts),
+                        opts: model.defaultOpts ? Util.clone(model.defaultOpts) : undefined,
                         type: type,
                     };
                     if (full || inSection) {
@@ -3420,7 +3898,7 @@ define([
         var updateAddInline = APP.updateAddInline = function () {
             $container.find('.cp-form-creator-add-inline').remove();
             // Add before existing question
-            $container.find('.cp-form-block').each(function (i, el) {
+            $container.find('.cp-form-block:not(.nodrag)').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
                 $el.before(getFormCreator(uid));
@@ -3452,7 +3930,8 @@ define([
                 var user = metadataMgr.getUserData();
                 // If we are a participant, our results shouldn't be in the table but in the
                 // editable part: remove them from _answers
-                _answers = getBlockAnswers(APP.answers, uid, !editable && user.curvePublic);
+                var _ans = parseAnswers(APP.answers);
+                _answers = getBlockAnswers(_ans, uid, !editable && user.curvePublic);
                 name = user.name;
             }
 
@@ -3462,6 +3941,7 @@ define([
                 uid: uid,
                 tmp: temp && temp[uid]
             });
+
             if (!data) { return; }
             data.uid = uid;
             if (answers && answers[uid] && data.setValue) { data.setValue(answers[uid]); }
@@ -3530,6 +4010,7 @@ define([
             if (APP.isEditor && type === "section") {
                 data.editing = true;
             }
+
 
             var changeType;
             if (editable) {
@@ -3605,10 +4086,10 @@ define([
 
                 editButtons = h('div.cp-form-edit-buttons-container', [ fakeEdit, del ]);
 
-                    changeType = h('div.cp-form-block-type', [
-                        model.icon.cloneNode(),
-                        h('span', Messages['form_type_'+type])
-                    ]);
+                changeType = h('div.cp-form-block-type', [
+                    model.icon.cloneNode(),
+                    h('span', Messages['form_type_'+type])
+                ]);
 
                 // Values
                 if (data.edit) {
@@ -3616,20 +4097,70 @@ define([
                         h('i.fa.fa-pencil'),
                         h('span', Messages.form_editBlock)
                     ]);
-                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, del ]);
+                    var copy = h('button.btn.btn-default.cp-form-copy-button', [
+                        h('i.fa.fa-copy'),
+                        h('span', Messages.duplicate)
+                    ]);
+                    $(copy).click(function() {
+                        if (!APP.isEditor) { return; }
+                        var arr = content.order;
+                        var idx = content.order.indexOf(uid);
+                        var _uid;
+                        var obj = getSectionFromQ(content, uid);
+                        arr = obj.arr;
+                        idx = obj.idx;
+                        _uid = Util.uid();
+
+                        var opts = Util.clone(content.form[uid].opts);
+                        if (type === 'multiradio' || type === 'multicheck') {
+                            var itemKeys = Util.getKeysArray(content.form[uid].opts.items.length);
+                            var valueKeys = Util.getKeysArray(content.form[uid].opts.values.length);
+                            opts.items = itemKeys.map(function (i) {
+                                    return {
+                                        uid: Util.uid(),
+                                        v: content.form[uid].opts.items[i].v
+                                    };
+                            });
+                            opts.values = valueKeys.map(function (i) {
+                                    return {
+                                        uid: Util.uid(),
+                                        v: content.form[uid].opts.values[i].v
+                                    };
+                            });
+                        }
+                        
+                        content.form[_uid] = {
+                            q: content.form[uid].q,
+                            opts: opts,
+                            type: type,
+                        };
+
+                        arr.splice(idx, 0, _uid);
+                        framework.localChange();
+                        updateForm(framework, content, true);
+                    });
+
+                    var copydelContainer = h('div', [copy, del]);
+                    editButtons = h('div.cp-form-edit-buttons-container', [ edit, copydelContainer]);
                     editContainer = h('div');
+                    if (type === 'poll' && block.opts.values.length === 0) {
+                        $(editButtons).addClass('cp-empty-poll-edit-buttons');
+                    }
                     var onSave = function (newOpts, close) {
                         if (close) { // Cancel edit
                             data.editing = false;
                             $(editContainer).empty();
                             var $oldTag = $(data.tag);
                             $(edit).show();
+                            $(copy).show();
                             $(previewDiv).show();
                             $(requiredDiv).hide();
 
                             $(editButtons).find('.cp-form-preview-button').remove();
 
-                            _answers = getBlockAnswers(APP.answers, uid);
+                            var _ans = parseAnswers(APP.answers);
+                            _answers = getBlockAnswers(_ans, uid);
+
                             data = model.get(block.opts, _answers, null, evOnChange);
                             if (!data) { data = {}; }
                             $oldTag.before(data.tag).remove();
@@ -3652,6 +4183,7 @@ define([
                         $(editContainer).find('.cp-form-preview-button').prependTo(editButtons);
 
                         $(edit).hide();
+                        $(copy).hide();
                     };
                     $(edit).click(function () {
                         onEdit();
@@ -3748,6 +4280,8 @@ define([
         var _content = elements;
         if (!editable) {
             _content = [];
+            var pgcontent = [];
+            var pg = [];
             var div = h('div.cp-form-page');
             var pages = 1;
             var wasPage = false;
@@ -3757,36 +4291,103 @@ define([
                     if (i === (elements.length - 1)) { return; } // Can't end with a page break
                     if (wasPage) { return; } // Prevent double page break
                     _content.push(div);
+                    pgcontent.push(pg);
                     pages++;
                     div = h('div.cp-form-page');
+                    pg = [];
                     wasPage = true;
                     return;
                 }
+                if (form[obj.uid] && form[obj.uid].type === 'section') {
+                    return;
+                }
+                pg.push(obj);
                 wasPage = false;
                 $(div).append(obj);
             });
             _content.push(div);
-
+            pgcontent.push(pg);
             if (pages > 1) {
+                var checkEmptyPages = function() {
+                    getSections(content).forEach(function (uid) {
+                        var block = content.form[uid];
+                        var condition = Boolean(checkCondition(block));
+                        block.opts.questions.forEach(function(uid){
+                            form[uid].visible = condition;
+                        });
+                    });
+
+                    
+                    var shownContent = [];
+                    var shownPages = [];
+                    pgcontent.forEach(function(page) {
+                        var visible = page.some(function(q) {
+                            return form[$(q).attr('data-id')] && form[$(q).attr('data-id')].visible !== false;
+                        });
+                        page.empty = !visible;
+                        if (visible) {
+                            shownContent.push(page);
+                            shownPages.push(_content[pgcontent.indexOf(page)]);
+                        }
+                    });
+                    return [shownContent, shownPages];
+                };
+
                 var pageContainer = h('div.cp-form-page-container');
+                
                 var $page = $(pageContainer);
                 _content.push(pageContainer);
-                var refreshPage = APP.refreshPage = function (current) {
+                var refreshPage = APP.refreshPage = function (current, direction) {
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
-                    if (current > pages) { current = pages; }
+
+                    var checkPages = checkEmptyPages();
+                    var shownContent = checkPages[0];
+                    var shownPages = checkPages[1];
+                    var shownLength = shownContent.length;
+
+                    if (pgcontent[(current - 1)] && pgcontent[current-1].empty) {
+                        if (direction === 'next') {
+                            current++;
+                            while (pgcontent[current-1].empty) {
+                                current++;
+                            }
+                        } else if (direction === 'prev') {
+                            current--;
+                            while (pgcontent[current-1].empty) {
+                                current--;
+                            }
+                        } else if (direction === 'required') {
+                            current = shownContent.indexOf(_content[current]);
+                        }
+                    }
+
+                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
+                    evOnChange.reg(function(){
+                        var checkPages = checkEmptyPages();
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
+                        var shownLength = shownContent.length;
+                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
+                    });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
                     ]);
-                    var state = h('span', Messages._getKey('form_page', [current, pages]));
                     var right = h('button.btn.btn-secondary.cp-next', [
                         h('i.fa.fa-arrow-right'),
                     ]);
-                    if (current === pages) { $(right).css('visibility', 'hidden'); }
+
+                    if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
-                    $(left).click(function () { refreshPage(current - 1); });
-                    $(right).click(function () { refreshPage(current + 1); });
+
+                    $(left).click(function () {
+                        refreshPage(current - 1, 'prev');
+                    });
+                    $(right).click(function () {
+                        refreshPage(current + 1, 'next');
+                    });
                     $page.append([left, state, right]);
+
                     $container.find('.cp-form-page').hide();
                     $($container.find('.cp-form-page').get(current-1)).show();
                     if (current !== pages) {
@@ -3799,7 +4400,42 @@ define([
             }
         }
 
+        if (APP.responseDiv) { $(APP.responseDiv).detach(); }
         $container.empty().append(_content);
+
+        if (editable) {
+            var responseMsg = h('div.cp-form-response-msg-container');
+            var $responseMsg = $(responseMsg).appendTo($container);
+            var refreshResponse = function () {
+                var text = Messages.form_addMsg;
+                var btn = h('button.btn.btn-secondary.cp-form-response-button', text);
+                $(btn).click(function () {
+                    if (!APP.responseDiv) { APP.getResponseMsgEditor(true); }
+                    $responseMsg.append(APP.responseDiv);
+                    $(btn).hide();
+                }).hide();
+                $responseMsg.append(btn);
+
+                if (content.answers.msg || APP.responseDiv) {
+                    if (!APP.responseDiv) { APP.getResponseMsgEditor(); }
+                    $responseMsg.append(APP.responseDiv);
+
+                    if (!temp || !temp.response || !temp.response.cursor) { return; }
+                    var editor = APP.responseEditor;
+                    var c = temp.response.cursor;
+                    var from = c.from;
+                    var to = c.to;
+                    editor.setSelection(from, to);
+                    editor.refresh();
+                    editor.save();
+                    editor.focus();
+                    return;
+                }
+                $(btn).show();
+            };
+            refreshResponse();
+        }
+
 
         getSections(content).forEach(function (uid) {
             var block = content.form[uid];
@@ -3866,7 +4502,14 @@ define([
 
         if (editable) {
             if (APP.mainSortable) { APP.mainSortable.destroy(); }
+            var grabHandle;
+            if (window.matchMedia("(pointer: coarse)").matches) {
+                grabHandle = '.cp-form-block-drag-handle';
+            } else {
+                grabHandle = null;
+            }
             APP.mainSortable = Sortable.create($container[0], {
+                handle: grabHandle,
                 group: 'nested',
                 direction: "vertical",
                 filter: "input, button, .CodeMirror, .cp-form-type-sort, .cp-form-block-type.editable",
@@ -3905,26 +4548,31 @@ define([
         });
 
         // If the form is already submitted, show an info message
-        if (APP.hasAnswered) {
-            showAnsweredPage(framework, content, answers);
+        var lastTime = (answers && answers._time) || APP.editingTime;
+        if (APP.hasAnswered && lastTime) {
             $container.prepend(h('div.alert.alert-info',
                 Messages._getKey('form_alreadyAnswered', [
-                    new Date(answers._time || APP.lastAnswerTime).toLocaleString()])));
+                    new Date(lastTime).toLocaleString()])));
         }
 
-        if (APP.isClosed) {
+        if (APP.isClosed || (APP.hasAnswered && content.answers.cantEdit)) {
             APP.formBlocks.forEach(function (b) {
                 if (!b.setEditable) { return; }
                 b.setEditable(false);
             });
         }
 
+        var loggedIn = framework._.sfCommon.isLoggedIn();
+
         // In view mode, add "Submit" and "reset" buttons
+        APP.cantAnon = Object.keys(answers || {}).length && !answers._isAnon;
+        if (!loggedIn && answers && answers._userdata && answers._userdata.name) {
+            APP.cantAnon = answers._userdata.name;
+        }
         $container.append(makeFormControls(framework, content, evOnChange));
 
         // In view mode, tell the user if answers are forced to be anonymous or authenticated
         var infoTxt;
-        var loggedIn = framework._.sfCommon.isLoggedIn();
         if (content.answers.makeAnonymous) {
             infoTxt = Messages.form_anonAnswer;
         } else if (!content.answers.anonymous && loggedIn && !content.answers.cantEdit) {
@@ -3961,6 +4609,15 @@ define([
                 temp[data.uid] = cursor;
             }
         });
+        if (APP.responseEditor && APP.responseEditor.hasFocus()) {
+            var editor = APP.responseEditor;
+            temp.response = {
+                cursor: {
+                    from: editor.getCursor('from'),
+                    to: editor.getCursor('to'),
+                }
+            };
+        }
         return temp;
     };
 
@@ -3979,11 +4636,18 @@ define([
         APP.isEditor = Boolean(priv.form_public);
         var $body = $('body');
 
+        if (priv.devMode) {
+            MAX_OPTIONS = 10000;
+            MAX_ITEMS = 10000;
+        }
+
+
         var $toolbarContainer = $('#cp-toolbar');
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
         $toolbarContainer.after(helpMenu.menu);
-        framework._.toolbar.$drawer.append(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
         if (!APP.isEditor && !priv.form_auditorKey) {
             $(helpMenu.menu).hide();
         }
@@ -4013,6 +4677,20 @@ define([
             $('.cp-toolbar-icon-snapshots').hide();
         }
 
+        var initializeAnswers = function() {
+            // Initialize the answers properties if they do not exist yet
+            if (!APP.isEditor) { return; }
+            var priv = metadataMgr.getPrivateData();
+            if (content.answers && content.answers.channel && content.answers.publicKey === priv.form_public && content.answers.validateKey) { return; }
+            // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
+            content.answers = content.answers || {};
+            content.answers.channel = Hash.createChannelId();
+            content.answers.publicKey = priv.form_public;
+            content.answers.validateKey = priv.form_answerValidateKey;
+            content.answers.version = 2;
+            framework.localChange();
+        };
+
         var makeFormSettings = function () {
             var previewBtn = h('button.btn.btn-primary', [
                 h('i.fa.fa-eye'),
@@ -4035,6 +4713,7 @@ define([
 
             // Private / public status
             var resultsType = h('div.cp-form-results-type-container');
+            var resultsStr = h('div');
             var $results = $(resultsType);
             var refreshPublic = function () {
                 $results.empty();
@@ -4043,6 +4722,7 @@ define([
                 if (content.answers.privateKey) { makePublicDiv = undefined; }
                 var publicText = content.answers.privateKey ? Messages.form_isPublic : Messages.form_isPrivate;
                 $results.append(h('span.cp-form-results-type', publicText));
+                $(resultsStr).text(publicText);
                 $results.append(makePublicDiv);
                 var $makePublic = $(makePublic).click(function () {
                     UI.confirm(Messages.form_makePublicWarning, function (yes) {
@@ -4060,92 +4740,25 @@ define([
             };
             refreshPublic();
 
-            var responseMsg = h('div.cp-form-response-msg-container');
-            var $responseMsg = $(responseMsg);
-            var refreshResponse = function () {
-                $responseMsg.empty();
-                var text = content.answers.msg ? Messages.form_updateMsg : Messages.form_addMsg;
-                var btn = h('button.btn.btn-secondary', text);
-                $(btn).click(function () {
-                    var editor;
-                    if (!APP.responseModal) {
-                        var t = h('textarea');
-                        var p = h('p', Messages.form_responseMsg);
-                        var div = h('div', [
-                            p,
-                            h('div.cp-form-response-modal', t),
-                        ]);
-                        var cm = window.my_cm = SFCodeMirror.create("gfm", CMeditor, t);
-                        editor = APP.responseEditor = cm.editor;
-                        var markdownTb = APP.common.createMarkdownToolbar(editor, {
-                            embed: function (mt) {
-                                editor.focus();
-                                editor.replaceSelection($(mt)[0].outerHTML);
-                            }
-                        });
-                        $(markdownTb.toolbar).insertAfter($(p));
-                        $(markdownTb.toolbar).show();
-
-                        cm.configureTheme(APP.common, function () {});
-                        editor.setOption('lineNumbers', true);
-                        editor.setOption('lineWrapping', true);
-                        editor.setOption('styleActiveLine', true);
-                        editor.setOption('readOnly', false);
-                        setTimeout(function () {
-                            editor.setValue(content.answers.msg || '');
-                            editor.refresh();
-                            editor.save();
-                            editor.focus();
-                        });
-
-                        var buttons = [{
-                            className: 'cancel',
-                            name: Messages.cancel,
-                            onClick: function () {},
-                            keys: [27]
-                        },
-                        {
-                            className: 'primary',
-                            name: Messages.settings_save,
-                            onClick: function () {
-                                var v = editor.getValue();
-                                content.answers.msg = v.slice(0, 2000); // XXX 4.11.0 max length?
-                                framework.localChange();
-                                framework._.cpNfInner.chainpad.onSettle(function () {
-                                    UI.log(Messages.saved);
-                                    refreshResponse();
-                                });
-                            },
-                            //keys: []
-                        }];
-                        APP.responseModal = UI.dialog.customModal(div, { buttons: buttons });
-                    } else {
-                        editor = APP.responseEditor;
-                        setTimeout(function () {
-                            editor.setValue(content.answers.msg || '');
-                            editor.refresh();
-                            editor.save();
-                            editor.focus();
-                        });
-                    }
-                    UI.openCustomModal(APP.responseModal);
-                });
-                $responseMsg.append(btn);
-            };
-            refreshResponse();
 
             // Make answers anonymous
             var anonContainer = h('div.cp-form-anon-container');
+            var anonStr = h('div');
             var $anon = $(anonContainer);
+            var $anonStr = $(anonStr);
             var refreshAnon = function () {
                 $anon.empty();
                 var anonymous = content.answers.makeAnonymous;
+                if (anonymous) { $anonStr.text(Messages.form_anonymized); }
+                else { $anonStr.text(''); }
                 var cbox = UI.createCheckbox('cp-form-make-anon',
                            Messages.form_makeAnon, anonymous, {});
                 var radioContainer = h('div.cp-form-anon-radio', [cbox]);
                 var $r = $(radioContainer).find('input').on('change', function() {
                     var val = Util.isChecked($r);
                     content.answers.makeAnonymous = val;
+                    if (val) { $anonStr.text(Messages.form_anonymized); }
+                    else { $anonStr.text(''); }
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
@@ -4155,11 +4768,58 @@ define([
             };
             refreshAnon();
 
+
+            // Mute form responses
+            var notifContainer = h('div.cp-form-anon-container');
+            var notifStr = h('div');
+            var $notif = $(notifContainer);
+            var $notifStr = $(notifStr);
+            var refreshNotif = APP.refreshNotif = function () {
+                $notif.empty();
+                if (typeof(APP.isOwned) === "undefined") { return; }
+                if (!APP.common.isLoggedIn()) { return; }
+                if (APP.isOwned !== true) { return; }
+                var metadataMgr = APP.common.getMetadataMgr();
+                var priv = metadataMgr.getPrivateData();
+                var isMuted = priv.isChannelMuted;
+                var cbox = UI.createCheckbox('cp-form-muted',
+                           Messages.form_allowNotifications, !isMuted, {});
+
+                if (!isMuted) { $notifStr.text(Messages.form_allowNotifications); }
+                else { $notifStr.text(''); }
+                var radioContainer = h('div.cp-form-mute-radio', [cbox]);
+                var $r = $(radioContainer).find('input').on('change', function() {
+                    var val = Util.isChecked($r);
+                    sframeChan.query('Q_FORM_MUTE', {
+                        muted: !val
+                    }, function (err, res) {
+                        err = err || (res && res.error);
+                        if (err) { return void UI.warn(Messages.error); }
+                        UI.log(Messages.saved);
+                        if (val) { $notifStr.text(Messages.form_allowNotifications); }
+                        else { $notifStr.text(''); }
+                    });
+                });
+                $anon.append(h('div.cp-form-actions', radioContainer));
+            };
+            refreshNotif();
+
             // Allow guest(anonymous) answers
             var privacyContainer = h('div.cp-form-privacy-container');
+            var privacyStr = h('div');
             var $privacy = $(privacyContainer);
+            var $privacyStr = $(privacyStr);
             var refreshPrivacy = function () {
                 $privacy.empty();
+
+                var updateStr = function (val) {
+                    $privacyStr.empty().append([
+                        h('span.cp-form-setting-title', Messages.form_anonymous),
+                        h('br'),
+                        h('span', Messages['form_anonymous_'+ (val ? 'on' : 'off')])
+                    ]);
+                };
+
                 var anonymous = content.answers.anonymous;
                 var radioOn = UI.createRadio('cp-form-privacy', 'cp-form-privacy-on',
                         Messages.form_anonymous_on, Boolean(anonymous), {
@@ -4170,6 +4830,7 @@ define([
                             input: { value: 0 },
                         });
                 var radioContainer = h('div.cp-form-privacy-radio', [radioOn, radioOff]);
+                updateStr(anonymous);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
                     var val = $('input:radio[name="cp-form-privacy"]:checked').val();
                     val = Number(val) || 0;
@@ -4177,45 +4838,100 @@ define([
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
+                        updateStr(val);
                     });
                 });
-                $privacy.append(h('div.cp-form-status', Messages.form_anonymous));
+                $privacy.append(h('div.cp-form-status.cp-form-setting-title', Messages.form_anonymous));
                 $privacy.append(h('div.cp-form-actions', radioContainer));
             };
             refreshPrivacy();
 
             // Allow responses edition
             var editableContainer = h('div.cp-form-editable-container');
+            var editableStr = h('div');
             var $editable = $(editableContainer);
+            var $editableStr = $(editableStr);
             var refreshEditable = function () {
                 $editable.empty();
+
+                var canDelete = content.answers.version >= 2;
+
+                var updateStr = function (edit, mult) {
+                    var key = '';
+                    if (!edit && !mult) { key = 'editable_off'; }
+                    if (edit && !mult) { key = 'editable_on_del'; }
+                    if (!edit && mult) { key = 'multiple'; }
+                    if (edit && mult) { key = 'multiple_edit'; }
+                    $editableStr.empty().append([
+                        h('span.cp-form-setting-title', Messages.form_editable_str),
+                        h('br'),
+                        h('span', Messages['form_'+key])
+                    ]);
+                };
+
                 var editable = !content.answers.cantEdit;
+                var mult = !!content.answers.multiple;
                 var radioOn = UI.createRadio('cp-form-editable', 'cp-form-editable-on',
-                        Messages.form_anonymous_on, Boolean(editable), {
-                            input: { value: 1 },
-                        });
-                var radioOff = UI.createRadio('cp-form-editable', 'cp-form-editable-off',
-                        Messages.form_anonymous_off, !editable, {
+                        Messages.form_editable_off, !editable && !mult, {
                             input: { value: 0 },
                         });
-                var radioContainer = h('div.cp-form-editable-radio', [radioOn, radioOff]);
+                var editableOnStr = canDelete ? Messages.form_editable_on_del
+                                              : Messages.form_editable_on;
+                var radioOff = UI.createRadio('cp-form-editable', 'cp-form-editable-off',
+                        editableOnStr, editable && !mult, {
+                            input: { value: 1 },
+                        });
+
+                var radioMult = UI.createRadio('cp-form-editable', 'cp-form-editable-mult',
+                        Messages.form_multiple, mult && !editable, {
+                            input: { value: 2 },
+                        });
+                var radioMultEdit = UI.createRadio('cp-form-editable', 'cp-form-editable-multedit',
+                        Messages.form_multiple_edit, mult && editable, {
+                            input: { value: 3 },
+                        });
+                var radioContainer = h('div.cp-form-editable-radio', [radioOn, radioOff, radioMult, radioMultEdit]);
+                updateStr(editable, mult);
                 $(radioContainer).find('input[type="radio"]').on('change', function() {
                     var val = $('input:radio[name="cp-form-editable"]:checked').val();
                     val = Number(val) || 0;
-                    content.answers.cantEdit = !val;
+
+                    content.answers.cantEdit = val === 0 || val === 2;
+                    content.answers.multiple = val === 2 || val === 3;
+                    if (canDelete) {
+                        APP.common.getPadMetadata({channel: content.answers.channel}, function (md) {
+                            var owners = md.owners;
+                            if (!Array.isArray(owners) || !owners.length) { return; }
+                            var owned = APP.common.isOwned(owners);
+                            if (!owned) { return; }
+                            sframeChan.query('Q_SET_PAD_METADATA', {
+                                channel: content.answers.channel,
+                                command: 'ALLOW_LINE_DELETION',
+                                value: [val === 1 || val === 3],
+                                teamId: owned !== true && Number(owned)
+                            }, function (err, res) {
+                                err = err || (res && res.error);
+                                if (err) { console.error(err); }
+                            });
+                        });
+                    }
                     framework.localChange();
                     framework._.cpNfInner.chainpad.onSettle(function () {
                         UI.log(Messages.saved);
+                        updateStr(!content.answers.cantEdit, content.answers.multiple);
                     });
                 });
-                $editable.append(h('div.cp-form-status', Messages.form_editable));
+                $editable.append(h('div.cp-form-status.cp-form-setting-title', Messages.form_editable_str));
                 $editable.append(h('div.cp-form-actions', radioContainer));
             };
             refreshEditable();
 
             // End date / Closed state
             var endDateContainer = h('div.cp-form-status-container');
+            var endDateStr = h('div');
             var $endDate = $(endDateContainer);
+            var $endDateStr = $(endDateStr);
+        
             var refreshEndDate = function () {
                 $endDate.empty();
 
@@ -4232,6 +4948,8 @@ define([
                     buttonTxt = Messages.form_removeEnd;
                 }
 
+                $endDateStr.text(text);
+
                 var button = h('button.btn.btn-secondary', buttonTxt);
 
                 var $button = $(button).click(function () {
@@ -4246,6 +4964,7 @@ define([
                     // Otherwise add it
                     var datePicker = h('input');
                     var picker = Flatpickr(datePicker, {
+                        disableMobile: true,
                         enableTime: true,
                         time_24hr: is24h,
                         dateFormat: dateFormat,
@@ -4256,7 +4975,7 @@ define([
                         if (datePicker.value === '') {
                             return void refreshEndDate();
                         }
-                        var d = picker.parseDate(datePicker.value);
+                        var d = DatePicker.parseDate(datePicker.value);
                         content.answers.endDate = +d;
                         framework.localChange();
                         framework._.cpNfInner.chainpad.onSettle(function () {
@@ -4268,7 +4987,6 @@ define([
                         refreshEndDate();
                     });
                     var confirmContent = h('div', [
-                        h('div', Messages.form_setEnd),
                         h('div.cp-form-input-block', [datePicker, save, cancel]),
                     ]);
                     $button.after(confirmContent);
@@ -4329,22 +5047,56 @@ define([
             };
             refreshColorTheme();
 
+            evOnChange.reg(initializeAnswers);
             evOnChange.reg(refreshPublic);
             evOnChange.reg(refreshPrivacy);
             evOnChange.reg(refreshAnon);
+            evOnChange.reg(refreshNotif);
             evOnChange.reg(refreshEditable);
             evOnChange.reg(refreshEndDate);
             evOnChange.reg(refreshColorTheme);
-            //evOnChange.reg(refreshResponse);
+
+
+            var modal = UI.createModal({
+                id: 'cp-form-settings',
+                $body: $('body')
+            });
+            var $modal = modal.$modal;
+            $modal.find('.cp-modal').append([
+                h('h2', [
+                    h('i.fa.fa-wrench'),
+                    h('span', Messages.form_settingsButton)
+                ]),
+                endDateContainer,
+                anonContainer,
+                notifContainer,
+                resultsType,
+                privacyContainer,
+                editableContainer,
+            ]);
+            var modalBtn = h('button.btn.btn-secondary', [
+                h('i.fa.fa-wrench'),
+                h('span', Messages.form_settingsButton)
+            ]);
+            $(modalBtn).click(function () {
+                setTimeout(function () {
+                    modal.show();
+                });
+            });
+
+            var previewSettings = h('div.cp-form-settings-preview', [
+                modalBtn,
+                endDateStr,
+                anonStr,
+                notifStr,
+                resultsStr,
+                privacyStr,
+                editableStr
+            ]);
 
             return [
                 preview,
-                endDateContainer,
-                anonContainer,
-                privacyContainer,
-                editableContainer,
-                resultsType,
-                responseMsg,
+                previewSettings,
                 colorTheme
             ];
         };
@@ -4460,7 +5212,7 @@ define([
                 fillerContainer = h('div.cp-form-filler-container');
             }
 
-            var contentContainer = h('div.cp-form-creator-content');
+            var contentContainer = h('div.cp-form-creator-content' + (APP.isEditor ? '.cp-form-iseditor' : ''));
             var resultsContainer = h('div.cp-form-creator-results');
             var answeredContainer = h('div.cp-form-creator-answered', {
                 style: 'display: none;'
@@ -4533,6 +5285,23 @@ define([
 
         framework.onReady(function (isNew) {
             var priv = metadataMgr.getPrivateData();
+            if (APP.isEditor) {
+                framework.feedback('FORM_EDITOR');
+            } else if (!APP.isEditor && priv.form_auditorKey) {
+                framework.feedback('FORM_AUDITOR');
+            } else {
+                framework.feedback('FORM_PARTICIPANT');
+            }
+
+            APP.common.getPadMetadata({channel: priv.channel}, function (md) {
+                var owners = md.owners;
+                if (!Array.isArray(owners) || !owners.length) {
+                    APP.isOwned = false;
+                } else {
+                    APP.isOwned = APP.common.isOwned(owners);
+                }
+                if (APP.refreshNotif) { APP.refreshNotif(); }
+            });
 
             if (APP.isEditor) {
                 if (!content.form) {
@@ -4546,14 +5315,7 @@ define([
                     content.order = ["1", "2"];
                     framework.localChange();
                 }
-                if (!content.answers || !content.answers.channel || !content.answers.publicKey || !content.answers.validateKey) {
-                    // Don't override other settings (anonymous, makeAnonymous, etc.) from templates
-                    content.answers = content.answers || {};
-                    content.answers.channel = Hash.createChannelId();
-                    content.answers.publicKey = priv.form_public;
-                    content.answers.validateKey = priv.form_answerValidateKey;
-                    framework.localChange();
-                }
+                initializeAnswers();
                 checkIntegrity();
             }
             if (isNew && content.answers && typeof(content.answers.anonymous) === "undefined") {
@@ -4569,7 +5331,7 @@ define([
                 return void UI.errorLoadingScreen(Messages.form_invalid);
             }
 
-            var getResults = function (key) {
+            var getResults = APP.getResults = function (key) {
                 sframeChan.query("Q_FORM_FETCH_ANSWERS", {
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,
@@ -4579,7 +5341,7 @@ define([
                 }, function (err, obj) {
                     var answers = obj && obj.results;
                     if (answers) { APP.answers = answers; }
-                    $body.addClass('cp-app-form-results');
+                    if (key) { $body.addClass('cp-app-form-results'); }
                     renderResults(content, answers);
                 });
             };
@@ -4612,77 +5374,225 @@ define([
                 showAnonBlockedAlert();
             }
 
+            var getMyAnswers = APP.getMyAnswers = function () {
+                sframeChan.query("Q_FETCH_MY_ANSWERS", {
+                    channel: content.answers.channel,
+                    validateKey: content.answers.validateKey,
+                    publicKey: content.answers.publicKey
+                }, function (err, obj) {
+                    if (obj && obj.error) {
+                        if (obj.error === "EANSWERED") {
+                            // No drive mode already answered: can't answer again
+                            if (content.answers.privateKey) {
+                                return void getResults(content.answers.privateKey);
+                            }
+                            // Here, we know results are private so we can use an error screen
+                            return void UI.errorLoadingScreen(Messages.form_answered);
+                        }
+                        UI.warn(Messages.form_cantFindAnswers);
+                    }
+                    checkIntegrity(false);
+                    var answers;
+                    if (obj && !obj.error && Object.keys(obj).length) {
+                        answers = obj;
+                        APP.hasAnswered = answers;
+                        // If we have a non-anon answer, we can't answer anonymously later
+                        showAnsweredPage(framework, content, APP.hasAnswered);
+                        return;
+                    }
+                    updateForm(framework, content, false, answers);
+                });
+            };
+
             // If the results are public and there is at least one doodle, fetch the results now
             if (content.answers.privateKey && Object.keys(content.form).some(function (uid) {
                     return content.form[uid].type === "poll";
                 })) {
-                sframeChan.query("Q_FORM_FETCH_ANSWERS", {
-                    channel: content.answers.channel,
-                    validateKey: content.answers.validateKey,
-                    publicKey: content.answers.publicKey,
-                    privateKey: content.answers.privateKey,
-                    cantEdit: content.answers.cantEdit
-                }, function (err, obj) {
-                    var answers = obj && obj.results;
-                    if (answers) { APP.answers = answers; }
+                getMyAnswers = APP.getMyAnswers = function () {
+                    sframeChan.query("Q_FORM_FETCH_ANSWERS", {
+                        channel: content.answers.channel,
+                        validateKey: content.answers.validateKey,
+                        publicKey: content.answers.publicKey,
+                        privateKey: content.answers.privateKey,
+                        cantEdit: content.answers.cantEdit
+                    }, function (err, obj) {
+                        var answers = obj && obj.results;
+                        if (answers) { APP.answers = answers; }
 
-                    if (obj && obj.noDriveAnswered) {
-                        // No drive mode already answered: can't answer again
+                        if (obj && obj.noDriveAnswered) {
+                            // No drive mode already answered: can't answer again
+                            if (answers) {
+                                $body.addClass('cp-app-form-results');
+                                renderResults(content, answers);
+                            } else {
+                                return void UI.errorLoadingScreen(Messages.form_answered);
+                            }
+                            return;
+                        }
+                        checkIntegrity(false);
+                        var myAnswers = {};
+                        var curve1 = user.curvePublic;
+                        var curve2 = obj && obj.myKey; // Anonymous answer key
                         if (answers) {
-                            $body.addClass('cp-app-form-results');
-                            renderResults(content, answers);
-                        } else {
-                            return void UI.errorLoadingScreen(Messages.form_answered);
+                            var myAnonAnswersObj = answers[curve2];
+                            if (Object.keys(myAnonAnswersObj || {}).length) {
+                                Object.keys(myAnonAnswersObj).forEach(function (uid) {
+                                    myAnswers[uid] = myAnonAnswersObj[uid].msg;
+                                    myAnswers[uid]._isAnon = true;
+                                });
+                            }
+                            var myAnswersObj = answers[curve1];
+                            if (Object.keys(myAnswersObj || {}).length) {
+                                Object.keys(myAnswersObj).forEach(function (uid) {
+                                    myAnswers[uid] = myAnswersObj[uid].msg;
+                                    myAnswers[uid]._isAnon = false;
+                                });
+                            }
+                            APP.hasAnswered = Object.keys(myAnswers).length ? myAnswers : undefined;
+                            if (APP.hasAnswered) {
+                                return void showAnsweredPage(framework, content, APP.hasAnswered);
+                            }
                         }
-                        return;
-                    }
-                    checkIntegrity(false);
-                    var myAnswers;
-                    var curve1 = user.curvePublic;
-                    var curve2 = obj && obj.myKey; // Anonymous answer key
-                    if (answers) {
-                        var myAnswersObj = answers[curve1] || answers[curve2] || undefined;
-                        if (myAnswersObj) {
-                            APP.hasAnswered = true;
-                            myAnswers = myAnswersObj.msg;
-                            myAnswers._time = myAnswersObj.time;
-                        }
-                    }
-                    // If we have a non-anon answer, we can't answer anonymously later
-                    if (answers[curve1]) { APP.cantAnon = true; }
 
-                    updateForm(framework, content, false, myAnswers);
-                });
-                return;
+                        updateForm(framework, content, false, myAnswers);
+                    });
+                };
             }
 
-            sframeChan.query("Q_FETCH_MY_ANSWERS", {
-                channel: content.answers.channel,
-                validateKey: content.answers.validateKey,
-                publicKey: content.answers.publicKey
-            }, function (err, obj) {
-                if (obj && obj.error) {
-                    if (obj.error === "EANSWERED") {
-                        // No drive mode already answered: can't answer again
-                        if (content.answers.privateKey) {
-                            return void getResults(content.answers.privateKey);
-                        }
-                        // Here, we know results are private so we can use an error screen
-                        return void UI.errorLoadingScreen(Messages.form_answered);
-                    }
-                    UI.warn(Messages.form_cantFindAnswers);
+            getMyAnswers();
+
+        });
+
+        APP.getResponseMsgEditor = function (focus) {
+            var t = h('textarea');
+            var p = h('p.cp-form-response-msg-hint', Messages.form_responseMsg);
+
+            var preview = h('button.btn.btn-default.cp-form-preview-button',[
+                h('i.fa.fa-eye'),
+                h('span', Messages.form_preview_button)
+            ]);
+            var edit = h('button.btn.btn-default.cp-form-edit-button', [
+                h('i.fa.fa-pencil'),
+                h('span', Messages.form_editBlock)
+            ]);
+            var del = h('button.btn.btn-danger-alt', [
+                h('i.fa.fa-trash-o'),
+                h('span', Messages.form_delete)
+            ]);
+            var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
+
+            var editDiv, previewDiv;
+            var div = h('div.cp-form-block.editable.nodrag', [
+                h('div.cp-form-block-content', [
+                    p,
+                    editDiv = h('div.cp-form-response-modal', t),
+                    previewDiv = h('div.cp-form-response-preview#cp-response-preview'),
+                    editButtons
+                ]),
+            ]);
+            var cm = APP.responseCM = SFCodeMirror.create("gfm", CMeditor, t);
+            var editor = APP.responseEditor = cm.editor;
+
+            var markdownTb = APP.common.createMarkdownToolbar(editor, {
+                embed: function (mt) {
+                    editor.focus();
+                    editor.replaceSelection($(mt)[0].outerHTML);
                 }
-                var answers;
-                if (obj && !obj.error) {
-                    answers = obj;
-                    APP.hasAnswered = true;
-                    // If we have a non-anon answer, we can't answer anonymously later
-                    if (!obj._isAnon) { APP.cantAnon = true; }
-                }
-                checkIntegrity(false);
-                updateForm(framework, content, false, answers);
+            });
+            var $tb = $(markdownTb.toolbar).insertAfter($(p));
+
+            var $edit = $(editDiv);
+            var $preview = $(previewDiv);
+            var $p = $(preview);
+            var $e = $(edit);
+            var previewState = true;
+
+            var updatePreview = function () {
+                if (!previewState) { return; }
+                DiffMd.apply(DiffMd.render(content.answers.msg), $preview, APP.common);
+                $preview.find('a').click(linkClickHandler);
+            };
+
+            $e.click(function () {
+                previewState = false;
+                $p.show();
+                $e.hide();
+                $edit.show();
+                $preview.hide();
+                editor.refresh();
+                $tb.show();
+            });
+            APP.$e = $e;
+            APP.$p = $p;
+            $p.click(function () {
+                previewState = true;
+                updatePreview();
+
+                $e.show();
+                $p.hide();
+                $edit.hide();
+                $preview.show();
+                $tb.hide();
+            });
+            if (focus) { $e.click(); }
+            else { $p.click(); }
+
+
+            $(del).click(function () {
+                content.answers.msg = '';
+                editor.setValue('');
+                framework.localChange();
+                $(APP.responseDiv).detach();
+                $('.cp-form-response-button').show();
             });
 
+            cm.configureTheme(APP.common, function () {});
+            editor.setOption('lineNumbers', true);
+            editor.setOption('lineWrapping', true);
+            editor.setOption('styleActiveLine', true);
+            editor.setOption('readOnly', false);
+            setTimeout(function () {
+                editor.setValue(content.answers.msg || '');
+                editor.refresh();
+                editor.save();
+                if (!focus) { return; }
+                editor.focus();
+            });
+            APP.responseDiv = div;
+
+            editor.on('change', function () {
+                content.answers.msg = editor.getValue();
+                framework.localChange();
+            });
+            evOnChange.reg(function () {
+                if (!APP.responseCM) { return; }
+                APP.responseCM.contentUpdate({content: content.answers.msg});
+                framework.localChange();
+                updatePreview();
+            });
+        };
+
+        // Disable flatpickr click propagation
+        var MutationObserver = window.MutationObserver;
+        var onFlatPickr = function (el) {
+            $(el).on('mousedown mouseup click', function (e) {
+                e.stopPropagation();
+            });
+        };
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                var node;
+                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                    node = mutation.addedNodes[i];
+                    if (node.classList && node.classList.contains('flatpickr-calendar')) {
+                        onFlatPickr(node);
+                    }
+                }
+            });
+        });
+        observer.observe($('body')[0], {
+            childList: true,
+            subtree: false
         });
 
         // Only redraw once every 500ms on remote change.
@@ -4691,8 +5601,13 @@ define([
         // repeatedly, we'll only "redraw" once with the latest content.
         var _redraw = Util.notAgainForAnother(function (framework, content) {
             var answers, temp;
-            if (!APP.isEditor) { answers = getFormResults(); }
-            else { temp = getTempFields(); }
+            if (!APP.isEditor) {
+                answers = getFormResults(true);
+                if (answers) { answers._isAnon = !APP.cantAnon; }
+            } else { temp = getTempFields(); }
+            if (APP.inAnsweredPage) {
+                return void APP.getMyAnswers();
+            }
             updateForm(framework, content, APP.isEditor, answers, temp);
         }, 500);
         var redrawTo;

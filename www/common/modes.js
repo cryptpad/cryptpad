@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     '/code/orgmode.js'
 ], function () {
@@ -7,11 +11,12 @@ define([
     var list = Modes.list = [
         "APL apl .apl",
         "ASCII-Armor asciiarmor .asc",
+        "AsciiDoc asciidoc .adoc",
         "ASN.1 asn.1 .asn1",
         "Asterisk asterisk",
         "Brainfuck brainfuck .b",
         "C text/x-csrc .c",
-        "C text/x-c++src .cpp",
+        "C++ text/x-c++src .cpp",
         "C-like clike .c",
         "Clojure clojure .clj",
         "CMake cmake _", /* no extension */
@@ -49,7 +54,6 @@ define([
         "HTML htmlmixed .html",
         "HTTP http _", /* no extension */
         "IDL idl .idl",
-        "JADE jade .jade",
         "Java text/x-java .java",
         "JavaScript javascript .js",
         "Jinja2 jinja2 .j2",

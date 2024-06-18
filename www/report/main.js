@@ -1,9 +1,13 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/api/config',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js',
+    '/components/nthen/index.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/cryptget.js',
@@ -11,13 +15,13 @@ define([
     '/common/outer/cache-store.js',
     '/common/common-interface.js',
     'chainpad-netflux',
-    '/bower_components/chainpad-crypto/crypto.js',
+    '/components/chainpad-crypto/crypto.js',
     '/common/userObject.js',
     '/common/clipboard.js',
 
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    '/components/tweetnacl/nacl-fast.min.js',
+    'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/pages/page-report.less',
 ], function ($, ApiConfig, h, Messages,
             nThen, Hash, Util, Crypt, Cryptpad, Cache, UI, CPNetflux,
@@ -48,11 +52,10 @@ define([
     };
 
     var copyToClipboard = function () {
-        if (Clipboard.copy.multiline(getReportContent())) {
+        Clipboard.copy(getReportContent(), (err) => {
+            if (err) { return UI.warn(Messages.error); }
             UI.log(Messages.genericCopySuccess);
-        } else {
-            UI.warn(Messages.error);
-        }
+        });
     };
 
     var checkCache = function (chan, cb) {

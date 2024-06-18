@@ -1,8 +1,0 @@
-[ignore]
-.*/bower_components/.*
-.*/node_modules/lesshint/*
-[include]
-
-[libs]
-
-[options]

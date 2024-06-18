@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./tools.less";
 
 .markdown_main() {
@@ -15,7 +21,14 @@
             margin-bottom: 10px !important;
         }
     }
-    // todo ul, ol
+
+    // fix silly spacing around sublists in "loose lists"
+    :is(ul, ol) li > p {
+        & + :is(ul, ol) {
+            margin-bottom: 1rem;
+        }
+    }
+
     // TOC
     div.cp-md-toc {
         background: @cp_markdown-bg;
@@ -117,6 +130,11 @@
                 }
             }
             text {
+                &.taskText {
+                    &[class*="doneText"], &[class*="activeText"] {
+                        fill: #444 !important; // TODO PR to mermaid or find a suitable variable
+                    }
+                }
                 &.titleText {
                     fill: @cp_markdown-block-fg;
                 }

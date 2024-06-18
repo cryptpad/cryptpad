@@ -1,6 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
 @import (reference) "./browser.less";
 @import (reference) './colortheme-all.less';
 @import (reference) './modal.less';
+@import (reference) './variables.less';
 
 .fileupload_main () {
     --LessLoader_require: LessLoader_currentFile();
@@ -12,16 +19,17 @@
         .modal_base();
         position: absolute;
         right: 10vw;
-        bottom: 10vh;
+        bottom: 100px;
+        border-radius: @variables_radius;
         box-sizing: border-box;
         z-index: 100001; //Z file upload table container: just above the file picker
         display: none;
         color: @cp_upload-fg;
         max-height: 180px;
         overflow-y: auto;
-
+        overflow-x: hidden;
         @media screen and (max-width: @browser_media-medium-screen) {
-            left: 5vw; right: 5vw; bottom: 5vw;
+            left: 1vw; right: 1vw; bottom: 1vw;
         }
 
         .cp-fileupload-header {
@@ -46,16 +54,17 @@
         #cp-fileupload-table {
             width: 100%;
             @upload_pad_h: 0.25em;
-            @upload_pad_v: 0.5em;
+            @upload_pad_v: 0.25em;
 
             td {
                 padding: @upload_pad_h @upload_pad_v;
+                white-space: nowrap;
             }
             .cp-fileupload-table-link {
                 display: flex;
                 align-items: center;
                 white-space: nowrap;
-                max-width: 30vw;
+                max-width: 40vw;
                 margin: 0px @upload_pad_v;
                 .fa {
                     margin-top: 4px;
@@ -64,6 +73,12 @@
                 .cp-fileupload-table-name {
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    min-width: 35vw;
+
+                @media screen and (max-width: 600px) {
+                    min-width: 40vw;
+                }
+
                 }
                 &[href]:hover {
                     text-decoration: none;
@@ -73,11 +88,11 @@
                 }
             }
             .cp-fileupload-table-progress {
-                min-width: 12em;
-                max-width: 16em;
                 position: relative;
                 text-align: center;
                 box-sizing: border-box;
+                min-width: 20vw;
+
             }
             .cp-fileupload-table-progress-container {
                 position: relative;
@@ -86,8 +101,10 @@
                 position: absolute;
                 width: 0px;
                 height: 100%;
+                padding: 2px;
                 background-color: @cp_upload-progress;
                 z-index: -1; //Z file upload progress container
+                border-radius: @variables_radius;
             }
             .cp-fileupload-table-cancel {
                 text-align: center;

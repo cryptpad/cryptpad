@@ -1,10 +1,62 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Stage 0, this gets cached which means we can't change it. boot2-sframe.js is changable.
 // Note that this file is meant to be executed only inside of a sandbox iframe.
 //
 // IF YOU EDIT THIS FILE, bump the version (replace 1.3 in the following command with the next version.)
 // grep -nr '/common/sframe-boot.js?ver=' | sed 's/:.*$//' | grep -v 'sframe-boot.js' | while read x; do \
 //    sed -i -e 's@/common/sframe-boot.js?ver=[^"]*@/common/sframe-boot.js?ver=1.3@' $x; done
-;(function () {
+(function () {
+
+var _alert = function (cb) {
+    return void require([
+        '/common/requireconfig.js',
+    ], function (RequireConfig) {
+        require.config(RequireConfig());
+        require([
+            '/common/common-interface.js',
+            '/common/hyperscript.js',
+            '/customize/messages.js',
+
+            'less!/customize/src/less2/include/alertify.less',
+
+            //'less!/customize/src/less2/pages/page-boot.less',
+        ], cb);
+    });
+};
+
+if (window === window.top) {
+    return void _alert(function (UI, h) {
+        var s = `sframe-boot.js must only be loaded in a nested context`;
+        UI.alert(h('p', s));
+    });
+}
+if (typeof(Promise) !== 'function') {
+    return void _alert(function (UI, h) {
+        var s = "Internet Explorer is not supported anymore, including by Microsoft.\n\nMost of CryptPad's collaborative functionality requires a modern browser to work.\n\nWe recommend Mozilla Firefox.";
+        UI.alert(h('p', {
+            style: 'white-space: break-spaces;',
+        }, s));
+    });
+}
+
+var caughtEval;
+console.log("Testing if CSP correctly blocks an 'eval' call");
+try {
+    eval('true');
+} catch (err) { caughtEval = true; }
+
+if (!/^\/(sheet|doc|presentation|unsafeiframe)/.test(window.location.pathname) && !caughtEval) {
+    console.error('eval panic location:', window.location.pathname, caughtEval);
+    return void _alert(function (UI, h, Msg) {
+        UI.alert(h('p', {
+            style: 'white-space: break-spaces',
+        }, Msg.error_evalPermitted));
+    });
+}
+
 var afterLoaded = function (req) {
     req.cfg = req.cfg || {};
     if (req.pfx) {
