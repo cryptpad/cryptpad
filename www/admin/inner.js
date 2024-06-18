@@ -48,7 +48,7 @@ define([
 ) {
 
     //XXX 
-    Messages.admin_appSelection = 'App configuration saved'
+    Messages.admin_appSelection = 'App configuration'
     Messages.admin_appsTitle = "Choose your applications"
     Messages.admin_appsHint = "Choose which apps are available to users on your instance."
     Messages.admin_cat_apps = "Apps"
@@ -79,7 +79,6 @@ define([
                 content: [
                     'logo',
                     'color',
-                    'colorpalette'
                 ]
             },
             'broadcast' : { // Msg.admin_cat_broadcast
@@ -1008,31 +1007,31 @@ define([
                 colors = h('div#cp-kanban-edit-colors'),
             ]);
 
-            // var $colors = $(colors);
-            // var palette = [''];
-            // for (var i=1; i<=8; i++) { palette.push('color'+i); }
-            // var selectedColor = '';
-            // palette.forEach(function (color) {
-            //     var $color = $(h('div.cp-kanban-palette.cp-kanban-palette-card.fa'), );
-            //     $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
-            //     $color.click(function () {
-            //         if (color === selectedColor) { return; }
-            //         selectedColor = $color.css('background-color');
-            //         $colors.find('.cp-kanban-palette').removeClass('fa-check');
-            //         var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-            //         $col.addClass('fa-check');
-            //         sframeCommand('CHANGE_COLOR', {selectedColor}, (err, response) => {
-            //         if (err) {
-            //             UI.warn(Messages.error);
-            //             console.error(err, response);
-            //             // done(false);
-            //             return;
-            //         }
-            //         done(true);
-            //         UI.log(Messages.saved);
-            //     });
-            //     }).appendTo($colors);
-            // });
+            var $colors = $(colors);
+            var palette = [''];
+            for (var i=1; i<=8; i++) { palette.push('color'+i); }
+            var selectedColor = '';
+            palette.forEach(function (color) {
+                var $color = $(h('div.cp-kanban-palette.cp-kanban-palette-card.fa'), );
+                $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
+                $color.click(function () {
+                    if (color === selectedColor) { return; }
+                    selectedColor = $color.css('background-color');
+                    $colors.find('.cp-kanban-palette').removeClass('fa-check');
+                    var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
+                    $col.addClass('fa-check');
+                    sframeCommand('CHANGE_COLOR', {selectedColor}, (err, response) => {
+                    if (err) {
+                        UI.warn(Messages.error);
+                        console.error(err, response);
+                        // done(false);
+                        return;
+                    }
+                    done(true);
+                    UI.log(Messages.saved);
+                });
+                }).appendTo($colors);
+            });
         
             let form = blocks.form([
                 labelCurrent,
@@ -1041,45 +1040,6 @@ define([
 
             cb([form, labelPreview, content]);
         });
-
-        // sidebar.addItem('colorpalette', cb => {
-        //     var colors;
-        //     var content = h('div.cp-onboardscreen-colorpick', [
-        //         h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
-        //         colors = h('div#cp-kanban-edit-colors'),
-        //     ]);
-
-        //     var $colors = $(colors);
-        //     var palette = [''];
-        //     for (var i=1; i<=8; i++) { palette.push('color'+i); }
-        //     var selectedColor = '';
-        //     palette.forEach(function (color) {
-        //         var $color = $(h('div.cp-kanban-palette.cp-kanban-palette-card.fa'), );
-        //         $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
-        //         $color.click(function () {
-        //             if (color === selectedColor) { return; }
-        //             selectedColor = $color.css('background-color');
-        //             $colors.find('.cp-kanban-palette').removeClass('fa-check');
-        //             var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-        //             $col.addClass('fa-check');
-        //             sendAdminRpc('CHANGE_COLOR', {selectedColor}, function (e, response) {
-        //                 if (e || response.error) {
-        //                     UI.warn(Messages.error);
-        //                     console.error(e, response);
-        //                     // done(false);
-        //                     return;
-        //                 }
-        //                 // flushCache();
-        //                 // done(true);
-        //                 // redraw();
-        //                 // spinner.done();
-        //                 UI.log(Messages.saved);
-        //             });
-        //         }).appendTo($colors);
-        //     });
-        
-        //     cb([content]);
-        // });
 
         // Msg.admin_registrationHint, .admin_registrationTitle
         // Msg.admin_registrationSsoTitle

@@ -21,17 +21,16 @@ define([
 ) {
 
     //XXX
-    Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance';
-    Messages.admin_onboardingNameHint = 'Please choose a title and description';
-    Messages.admin_onboardingAppsTitle = "Choose your applications";
-    Messages.admin_onboardingAppsHint = "Choose which apps are available to users on your instance";
-    Messages.admin_onboardingRegistrationTitle = "Options";
-    Messages.admin_onboardingRegistrationHint = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id tristique justo";
-    Messages.admin_onboardingRegistration = "Visitors to the instance are not able to create accounts. Invitations can be created by administrators";
-    Messages.admin_onboardingMFA = "All accounts on the instance have to use 2-factor authentication";
+    Messages.install_onboardingNameTitle = 'Welcome to your CryptPad instance';
+    Messages.install_onboardingNameHint = 'Please choose a title and description';
+    Messages.install_onboardingAppsTitle = "Choose your applications";
+    Messages.install_onboardingAppsHint = "Choose which apps are available to users on your instance";
+    Messages.install_onboardingRegistrationTitle = "Options";
+    Messages.install_onboardingRegistrationHint = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id tristique justo";
+    Messages.install_onboardingRegistration = "Visitors to the instance are not able to create accounts. Invitations can be created by administrators";
+    Messages.install_onboardingMfa = "All accounts on the instance have to use 2-factor authentication";
 
     var OnboardScreen = {};
-    // const blocks = Sidebar.blocks('install');
 
     var displayForm = function(sendAdminDecree, page) {
 
@@ -145,9 +144,9 @@ define([
                 $remove.attr('disabled', 'disabled');
                 sendAdminRpc('REMOVE_LOGO', {}, function (e, response) {
                     $remove.removeAttr('disabled');
-                    if (err) {
+                    if (e) {
                         UI.warn(Messages.error);
-                        console.error(err, response);
+                        console.error(e, response);
                         spinner.hide();
                         return;
                     }
@@ -204,32 +203,32 @@ define([
 
         var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
 
-            // sendAdminDecree('SET_INSTANCE_NAME', [$(titleInput).val().trim()], function (e, response) {
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         $input.val('');
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     // flushCache();
-            //     done(true);
-            //     UI.log(Messages.saved);
+            sendAdminDecree('SET_INSTANCE_NAME', [$(titleInput).val().trim()], function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    done(false);
+                    return;
+                }
+                // flushCache();
+                done(true);
+                UI.log(Messages.saved);
 
-            // })
-            // sendAdminDecree('SET_INSTANCE_DESCRIPTION', [$(desc).val().trim()], function (e, response) {
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         $input.val('');
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     // flushCache();
-            //     done(true);
-            //     UI.log(Messages.saved);
+            })
+            sendAdminDecree('SET_INSTANCE_DESCRIPTION', [$(desc).val().trim()], function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    done(false);
+                    return;
+                }
+                // flushCache();
+                done(true);
+                UI.log(Messages.saved);
 
-            // })
+            })
 
             displayForm(sendAdminDecree, 0);
         });
@@ -240,7 +239,7 @@ define([
         var colorInput =  h('div.cp-onboardscreen-color', colorBlock());
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingNameTitle), h('br'), h('span', Messages.admin_onboardingNameHint)));
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.install_onboardingNameTitle), h('br'), h('span', Messages.install_onboardingNameHint)));
         var nav = blocks.nav([button]);
                 
         $(button).addClass('cp-onboardscreen-save');
@@ -291,19 +290,19 @@ define([
         }); 
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            // sendAdminDecree('DISABLE_APPS', availableApps, function (e, response) {
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         $input.val('');
-            //         console.error(e, response);
-            //         done(false);
-            //         return;
-            //     }
-            //     // flushCache();
-            //     done(true);
-            //     UI.log(Messages.saved);
+            sendAdminDecree('DISABLE_APPS', availableApps, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    $input.val('');
+                    console.error(e, response);
+                    done(false);
+                    return;
+                }
+                // flushCache();
+                done(true);
+                UI.log(Messages.saved);
 
-            // })
+            })
             
             UI.log(Messages.saved);
             displayForm(sendAdminDecree, 1)
@@ -314,7 +313,7 @@ define([
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingAppsTitle), h('br'), h('span', Messages.admin_onboardingAppsHint)))
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.install_onboardingAppsTitle), h('br'), h('span', Messages.install_onboardingAppsHint)))
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
         var nav = blocks.nav([prev, save])
@@ -329,7 +328,7 @@ define([
         return form;
     }    
 
-    OnboardScreen.mfaRegistrationScreen = function(sendAdminDecree) {
+    OnboardScreen.mfaRegistrationScreen = function(sendAdminDecree, app) {
         const blocks = Sidebar.blocks('install');
 
         var restrict = blocks.activeCheckbox({
@@ -337,20 +336,21 @@ define([
             getState: function () {
                 return false;
             },
+            label: 'registration',
             query: function (val, setState) {
-                // sendAdminDecree('RESTRICT_REGISTRATION', [val], function (e, response) {
-                //     if (e || response.error) {
-                //         UI.warn(Messages.error);
-                //         $input.val('');
-                //         console.error(e, response);
-                //         done(false);
-                //         return;
-                //     }
-                //     // flushCache();
-                //     // done(true);
-                //     UI.log(Messages.saved);
+                sendAdminDecree('RESTRICT_REGISTRATION', [val], function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        done(false);
+                        return;
+                    }
+                    // flushCache();
+                    // done(true);
+                    UI.log(Messages.saved);
 
-                // });
+                });
             },
         });
 
@@ -359,31 +359,31 @@ define([
             getState: function () {
                 return false;
             },
+            label: 'forcemfa',
             query: function (val, setState) {
-                // sendAdminDecree('ENFORCE_MFA', [val], function (e, response) {
-                //     if (e || response.error) {
-                //         UI.warn(Messages.error);
-                //         $input.val('');
-                //         console.error(e, response);
-                //         done(false);
-                //         return;
-                //     }
-                //     // flushCache();
-                //     done(true);
-                //     UI.log(Messages.saved);
+                sendAdminDecree('ENFORCE_MFA', [val], function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        $input.val('');
+                        console.error(e, response);
+                        done(false);
+                        return;
+                    }
+                    // flushCache();
+                    // done(true);
+                    UI.log(Messages.saved);
 
-                // })
+                })
             },
         });
 
         const grid = blocks.block([], 'cp-admin-customize-options-grid');
         const options = [restrict, forceMFA];
 
-        options.forEach(option => { 
-            console.log('opt', option, option.toString())
-            let optionBlock = h('div.cp-optionblock.inactive-app', { id: `${option.toString()}-block`}, "option");
-            $(grid).append(optionBlock);
-        }); 
+        let mfaOption = h('div.cp-appblock.inactive-app', forceMFA, h('br'), Messages.install_onboardingMfa);
+        $(grid).append(mfaOption);
+        let registrationOption = h('div.cp-appblock.inactive-app', restrict, h('br'), Messages.install_onboardingRegistration);
+        $(grid).append(registrationOption);
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function () {
             document.location.href = '/drive/';
@@ -395,7 +395,7 @@ define([
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.admin_onboardingRegistrationTitle), h('br'), h('span', Messages.admin_onboardingRegistrationHint)));
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.install_onboardingRegistrationTitle), h('br'), h('span', Messages.install_onboardingRegistrationHint)));
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
         var nav = blocks.nav([prev, save])
