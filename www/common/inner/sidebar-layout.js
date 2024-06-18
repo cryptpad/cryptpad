@@ -218,7 +218,6 @@ define([
             return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
         };
         blocks.activeCheckbox = (data) => {
-            console.log('APP', app)
             const state = data.getState();
             const key = data.key;
             const safeKey = keyToCamlCase(key);
@@ -290,7 +289,6 @@ define([
         sidebar.addCheckboxItem = (data) => {
             const key = data.key;
             let blocks = Sidebar.blocks(app)
-            console.log('blocks', blocks, typeof blocks)
             let box = blocks.activeCheckbox(data);
             sidebar.addItem(key, function (cb) {
                 cb(box);
