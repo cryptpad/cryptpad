@@ -46,7 +46,7 @@
 
         h1.cp-onboardscreen-title {
             font-family: "IBM Plex Mono";
-            color: @cryptpad_color_brand;
+            color: @cryptpad_color_link;
             font-size: 1.5rem;
             font-weight: 500;
         }
@@ -63,6 +63,16 @@
     }
     .cp-onboardscreen-logo {
         width: 130px;
+        .cp-sidebar-form {
+            background-color: @cp_forms-bg;
+            border-radius: @variables_radius;
+            padding: 0.5rem;
+            .cp-admin-customize-logo {
+                img {
+                    max-width: 100%;
+                }
+            }
+        }
     }
     .cp-instance-text-form {
         width: 100%;
