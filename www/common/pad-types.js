@@ -12,12 +12,22 @@ define([
         OOCurrentVersion.currentVersion,
     );
 
-    let availableTypes = AppConfig.availablePadTypes.filter(
-        (t) => ooEnabled || !OO_APPS.includes(t),
+    let availablePadTypes = AppConfig.availablePadTypes.filter(
+        (t) => ooEnabled || !OO_APPS.includes(t) 
     );
+
+    let availableTypes;
+    if (ApiConfig.appsToDisable) {
+        availableTypes = availablePadTypes.filter(value => !ApiConfig.appsToDisable.includes(value))
+    } else {
+        availableTypes = availablePadTypes
+    }
+    
+    var appsToSelect = availablePadTypes.filter(value => !['drive', 'teams', 'file', 'contacts', 'convert'].includes(value))
 
     return {
         availableTypes,
+        appsToSelect,
 
         isAvailable: function (type) {
             return availableTypes.includes(type);

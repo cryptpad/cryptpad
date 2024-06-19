@@ -6,6 +6,8 @@ define([
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-ui-elements.js',
+    '/common/pad-types.js',
+    '/api/instance',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -17,18 +19,21 @@ define([
     h,
     UI,
     Util,
-    UIElements
+    UIElements,
+    PadTypes
 ) {
 
     //XXX
-    Messages.install_onboardingNameTitle = 'Welcome to your CryptPad instance';
-    Messages.install_onboardingNameHint = 'Please choose a title and description';
-    Messages.install_onboardingAppsTitle = "Choose your applications";
-    Messages.install_onboardingAppsHint = "Choose which apps are available to users on your instance";
-    Messages.install_onboardingRegistrationTitle = "Options";
-    Messages.install_onboardingRegistrationHint = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id tristique justo";
-    Messages.install_onboardingRegistration = "Visitors to the instance are not able to create accounts. Invitations can be created by administrators";
-    Messages.install_onboardingMfa = "All accounts on the instance have to use 2-factor authentication";
+    Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance';
+    Messages.admin_onboardingNameHint = 'Please choose a title and description';
+    Messages.admin_onboardingAppsTitle = "Choose your applications";
+    Messages.admin_onboardingAppsHint = "Choose which apps to disable on your instance";
+    Messages.admin_onboardingRegistrationTitle = "Options";
+    Messages.admin_onboardingRegistrationHint = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id tristique justo";
+    Messages.admin_onboardingRegistration = "Visitors to the instance are not able to create accounts. Invitations can be created by administrators";
+    Messages.admin_onboardingMfa = "All accounts on the instance have to use 2-factor authentication";
+    Messages.admin_onboardingNamePlaceholder = 'Instance title'
+    Messages.admin_onboardingDescPlaceholder = 'Placeholder description text'
 
     var OnboardScreen = {};
 
@@ -52,21 +57,33 @@ define([
     
     };
 
+    var flushCache = () => {
+            console.log('flushcashe')
+            // sendAdminDecree('FLUSH_CACHE', function (e, response) {
+            //     if (e || response.error) {
+            //         UI.warn(Messages.error);
+            //         console.error(e, response);
+            //         return;
+            //     }
+
+            // })
+        };
+
     OnboardScreen.titleConfig = function (sendAdminDecree, sendAdminRpc) {
 
-        const blocks = Sidebar.blocks('install');
+        const blocks = Sidebar.blocks('admin');
 
         var titleDescBlock = function() {
 
             var input = blocks.input({
                 type: 'text',
                 value:  '',
-                placeholder: 'Instance title',
+                placeholder: Messages.admin_onboardingNamePlaceholder,
                 'aria-labelledby': 'cp-admin-name'
             });
 
             var desc =  blocks.textarea({
-                placeholder: 'Placeholder description text',
+                placeholder: Messages.admin_onboardingDescPlaceholder,
                 value:  '',
                 'aria-labelledby': 'cp-admin-description'
             });
@@ -123,11 +140,9 @@ define([
                             UI.warn(Messages.error);
                             $(inputLogo).val('');
                             console.error(e, response);
-                            // done(false);
                             return;
                         }
-                        // flushCache();
-                        // done(true);
+                        flushCache();
                         redraw();
                         spinner.done();
                         UI.log(Messages.saved);
@@ -192,12 +207,11 @@ define([
             sendAdminDecree('SET_INSTANCE_NAME', [$(titleInput).val().trim()], function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
-                    $input.val('');
                     console.error(e, response);
                     done(false);
                     return;
                 }
-                // flushCache();
+                flushCache();
                 done(true);
                 UI.log(Messages.saved);
 
@@ -205,12 +219,11 @@ define([
             sendAdminDecree('SET_INSTANCE_DESCRIPTION', [$(desc).val().trim()], function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
-                    $input.val('');
                     console.error(e, response);
                     done(false);
                     return;
                 }
-                // flushCache();
+                flushCache();
                 done(true);
                 UI.log(Messages.saved);
 
@@ -254,41 +267,40 @@ define([
 
     OnboardScreen.appConfig = function (sendAdminDecree) {
 
-        const blocks = Sidebar.blocks('install');
+        const blocks = Sidebar.blocks('admin');
         const grid = blocks.block([], 'cp-admin-customize-apps-grid');
-        const allApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
-        const availableApps = [];
+        const allApps = PadTypes.appsToSelect;
+        const appsToDisable = [];
             
         function select(app, appBlock) {
-            if (availableApps.indexOf(app) === -1) {
-                availableApps.push(app);
+            if (appsToDisable.indexOf(app) === -1) {
+                appsToDisable.push(app);
                 var checkMark = h('div.cp-onboardscreen-checkmark');
                 $(checkMark).addClass('fa-check');
                 appBlock.append(checkMark);
-                $(`#${app}-block`).addClass('active-app') 
+                $(`#${app}-block`).addClass('cp-active-app') 
             } else {
-                availableApps.splice(availableApps.indexOf(app), 1);
-                $(`#${app}-block`).addClass('inactive-app') 
+                appsToDisable.splice(appsToDisable.indexOf(app), 1);
+                $(`#${app}-block`).addClass('cp-inactive-app') 
                 appBlock.find('.cp-onboardscreen-checkmark').remove();
             } 
         }
 
         allApps.forEach(app => { 
-            let appBlock = h('div.cp-appblock.inactive-app', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1))
+            let appBlock = h('div.cp-appblock.cp-inactive-app', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1))
             $(grid).append(appBlock);
             $(appBlock).on('click', () => select(app, $(appBlock)));
         }); 
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            sendAdminDecree('DISABLE_APPS', availableApps, function (e, response) {
+            sendAdminDecree('DISABLE_APPS', appsToDisable, function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
-                    $input.val('');
                     console.error(e, response);
                     done(false);
                     return;
                 }
-                // flushCache();
+                flushCache();
                 done(true);
                 UI.log(Messages.saved);
 
@@ -319,7 +331,7 @@ define([
     }    
 
     OnboardScreen.mfaRegistrationScreen = function(sendAdminDecree, app) {
-        const blocks = Sidebar.blocks('install');
+        const blocks = Sidebar.blocks('admin');
 
         var restrict = blocks.activeCheckbox({
             key: 'registration',
@@ -331,13 +343,11 @@ define([
                 sendAdminDecree('RESTRICT_REGISTRATION', [val], function (e, response) {
                     if (e || response.error) {
                         UI.warn(Messages.error);
-                        $input.val('');
                         console.error(e, response);
                         done(false);
                         return;
                     }
-                    // flushCache();
-                    // done(true);
+                    flushCache();
                     UI.log(Messages.saved);
 
                 });
@@ -354,13 +364,11 @@ define([
                 sendAdminDecree('ENFORCE_MFA', [val], function (e, response) {
                     if (e || response.error) {
                         UI.warn(Messages.error);
-                        $input.val('');
                         console.error(e, response);
                         done(false);
                         return;
                     }
-                    // flushCache();
-                    // done(true);
+                    flushCache();
                     UI.log(Messages.saved);
 
                 })
@@ -370,9 +378,9 @@ define([
         const grid = blocks.block([], 'cp-admin-customize-options-grid');
         const options = [restrict, forceMFA];
 
-        let mfaOption = h('div.cp-appblock.inactive-app', forceMFA, h('br'), Messages.install_onboardingMfa);
+        let mfaOption = h('div.cp-appblock.cp-inactive-app', forceMFA, h('br'), Messages.admin_onboardingMfa);
         $(grid).append(mfaOption);
-        let registrationOption = h('div.cp-appblock.inactive-app', restrict, h('br'), Messages.install_onboardingRegistration);
+        let registrationOption = h('div.cp-appblock.cp-inactive-app', restrict, h('br'), Messages.admin_onboardingRegistration);
         $(grid).append(registrationOption);
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function () {

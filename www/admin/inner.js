@@ -5,6 +5,7 @@
 define([
     'jquery',
     '/common/toolbar.js',
+    '/common/pad-types.js',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
@@ -17,11 +18,11 @@ define([
     '/common/hyperscript.js',
     '/common/clipboard.js',
     'json.sortify',
-    '/customize/application_config.js',
     '/api/config',
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/common/hyperscript.js',
+    
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -29,6 +30,7 @@ define([
 ], function(
     $,
     Toolbar,
+    PadTypes,
     nThen,
     SFCommon,
     UI,
@@ -39,18 +41,18 @@ define([
     Messages,
     Keys,
     h,
+    
     Clipboard,
     Sortify,
-    AppConfig,
     ApiConfig,
     Instance,
-    Flatpickr
+    Flatpickr, 
 ) {
 
     //XXX 
     Messages.admin_appSelection = 'App configuration'
     Messages.admin_appsTitle = "Choose your applications"
-    Messages.admin_appsHint = "Choose which apps are available to users on your instance."
+    Messages.admin_appsHint = "Choose which apps to disable on your instance."
     Messages.admin_cat_apps = "Apps"
 
     var APP = window.APP = {};
@@ -636,39 +638,44 @@ define([
 
         sidebar.addItem('apps', function (cb) {
             const grid = blocks.block([], 'cp-admin-customize-apps-grid');
-            const allApps = ['pad', 'code', 'kanban', 'slide', 'sheet', 'form', 'whiteboard', 'diagram'];
-			const availableApps = [];
+            const allApps = PadTypes.appsToSelect;
+			const appsToDisable = ApiConfig.appsToDisable || [];
             
-        function select(app, appBlock) {
-            if (availableApps.indexOf(app) === -1) {
-                availableApps.push(app);
-                var checkMark = h('div.cp-onboardscreen-checkmark');
-                $(checkMark).addClass('fa-check');
-                appBlock.append(checkMark);
-                $(`#${app}-block`).addClass('active-app')
-                $(`#${app}-block`).removeClass('inactive-app')
-            } else {
-                availableApps.splice(availableApps.indexOf(app), 1);
-                $(`#${app}-block`).addClass('inactive-app') 
-                $(`#${app}-block`).removeClass('active-app')
-                appBlock.find('.cp-onboardscreen-checkmark').remove();
-            } 
-        }
+            function select(app, appBlock) {
+                if (appsToDisable.indexOf(app) === -1) {
+                    appsToDisable.push(app);
+                    var checkMark = h('div.cp-onboardscreen-checkmark');
+                    $(checkMark).addClass('fa.fa-check');
+                    appBlock.append(checkMark);
+                    $(`#${app}-block`).addClass('cp-active-app')
+                    $(`#${app}-block`).removeClass('cp-inactive-app')
+                } else {
+                    appsToDisable.splice(appsToDisable.indexOf(app), 1);
+                    $(`#${app}-block`).addClass('cp-inactive-app') 
+                    $(`#${app}-block`).removeClass('cp-active-app')
+                    appBlock.find('.cp-onboardscreen-checkmark').remove();
+                } 
+            }
 
-        allApps.forEach(app => { 
-            let appBlock = h('div.cp-appblock.inactive-app', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1))
-            $(grid).append(appBlock);
-            $(appBlock).on('click', () => select(app, $(appBlock)));
-        }); 
+            allApps.forEach(app => { 
+                
+                let appBlock = h('div.cp-appblock', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1))
+                if (appsToDisable.indexOf(app) === -1) {
+                    $(appBlock).addClass('cp-inactive-app')
+                } else {
+                    $(appBlock).addClass('cp-active-app')
+                }
+                $(grid).append(appBlock);
+                $(appBlock).on('click', () => select(app, $(appBlock)));
+            }); 
 
             var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
-                    data: ['DISABLE_APPS', availableApps]
+                    data: ['DISABLE_APPS', appsToDisable]
                 }, function (e, response) {
                     if (e || response.error) {
                         UI.warn(Messages.error);
-                        $input.val('');
                         console.error(e, response);
                         done(false);
                         return;
