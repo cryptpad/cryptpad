@@ -10,17 +10,13 @@
    but you should not change it directly (/common/application_config_internal.js)
 */
 
-define([
-  '/common/application_config_internal.js',
-  '/api/config'
-  ], function (AppConfig, ApiConfig ) {
+define(['/common/application_config_internal.js'], function (AppConfig) {
 
     // Example: If you want to remove the survey link in the menu:
     // AppConfig.surveyURL = "";
 
     // To inform users of the support ticket panel which languages your admins speak:
     //AppConfig.supportLanguages = [ 'en', 'fr' ];
-    AppConfig.availablePadTypes = ['drive', 'teams', 'file', 'contacts', 'convert'].concat(ApiConfig.availableApps);
     
     return AppConfig;
 });

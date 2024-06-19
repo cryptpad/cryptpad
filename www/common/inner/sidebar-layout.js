@@ -22,6 +22,9 @@ define([
     h
 ) {
     const Sidebar = {};
+    const keyToCamlCase = (key) => {
+        return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+    };
 
     Sidebar.blocks = function (app) {
 
@@ -214,9 +217,7 @@ define([
             return button;
         };
 
-        const keyToCamlCase = (key) => {
-            return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-        };
+
         blocks.activeCheckbox = (data) => {
             const state = data.getState();
             const key = data.key;
@@ -244,9 +245,6 @@ define([
     
     }
 
-    // let blocks = Sidebar.blocks(app) = {};
-
-
     Sidebar.create = function (common, app, $container) {
         const $leftside = $(h('div#cp-sidebarlayout-leftside')).appendTo($container);
         const $rightside = $(h('div#cp-sidebarlayout-rightside')).appendTo($container);
@@ -258,9 +256,6 @@ define([
         sidebar.blocks = Sidebar.blocks(app)
 
         sidebar.addItem = (key, get, options) => {
-            const keyToCamlCase = (key) => {
-                return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-            };
             const safeKey = keyToCamlCase(key);
             get((content) => {
                 if (content === false) { return; }
@@ -288,7 +283,7 @@ define([
 
         sidebar.addCheckboxItem = (data) => {
             const key = data.key;
-            let blocks = Sidebar.blocks(app)
+            let blocks = sidebar.blocks
             let box = blocks.activeCheckbox(data);
             sidebar.addItem(key, function (cb) {
                 cb(box);
