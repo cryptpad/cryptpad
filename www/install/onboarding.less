@@ -28,7 +28,7 @@
     background-color: @cp_loading-progress-bg;
     border-radius: @variables_radius_L;
     box-shadow: 0px 0px 10px 0px @cp_shadow-color;
-    padding: 80px 110px 20px 110px;
+    padding: 30px 110px 20px 110px;
 }
 
 // .cp-onboardscreen-form {
@@ -39,9 +39,10 @@
 
 .cp-onboardscreen-screentitle {
     text-align: center;
+    font-size: 1rem;
     .cp-onboardscreen-maintitle {
         float:center;
-        padding:10px; 
+        padding:10px;
 
         h1.cp-onboardscreen-title {
             font-family: "IBM Plex Mono";
@@ -52,6 +53,41 @@
     }
 }
 
+.cp-instance-form {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    input, textarea {
+        border: 0px transparent !important;
+    }
+    .cp-onboardscreen-logo {
+        width: 130px;
+    }
+    .cp-instance-text-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        .cp-onboardscreen-name {
+            input {
+                font-family: "IBM Plex Mono";
+                font-size: 1.2em;
+            }
+        }
+        .cp-onboardscreen-colorpick {
+            div.cp-palette-container {
+                display: flex;
+                justify-content: flex-start;
+                .cp-palette-color {
+                    margin-right: 1rem;
+                }
+            }
+        }
+    }
+}
+
+
 nav.cp-onboardscreen-nav {
     width: 100%;
     display: flex;
@@ -60,42 +96,26 @@ nav.cp-onboardscreen-nav {
 }
 
 
-.cp-onboardscreen-name {
-    width:70%; 
-    float:right; 
-    padding:10px
-}
+// .cp-onboardscreen-name {
+//     width:70%; 
+//     float:right; 
+//     padding:10px
+// }
 
-.cp-onboardscreen-desc {
-    width:67% !important;
-    float:right !important;
-    padding:20px !important;
-    margin-right:10px !important;
-}
+// .cp-onboardscreen-desc {
+//     width:67% !important;
+//     float:right !important;
+//     padding:20px !important;
+//     margin-right:10px !important;
+// }
 
-.cp-onboardscreen-logo {
-    width:20%; 
-    height:30%;
-    float:left;
-    margin-left:10px;
-}
+// .cp-onboardscreen-logo {
+//     width:20%; 
+//     height:30%;
+//     float:left;
+//     margin-left:10px;
+// }
 
-.cp-kanban-palette {
-    display: inline-block;
-    border-radius: 50%;
-    height: 30px !important;
-    width: 30px !important;
-    text-align: center;
-    line-height: 30px;
-    background-color: green !important;
-    border: 1px solid fade(green, 40%);
-    margin-right: 1%;
-    /* color: @cp_kanban-fg;
-    
-    &.fa-check { // tick on selected color
-        color: @cryptpad_text_col;
-    } */
-}
 
 .cp_palette(@cp_palette; @index) when (@index > 0){
         // loop through the @colors
@@ -112,7 +132,7 @@ nav.cp-onboardscreen-nav {
             }
         }
     }
- 
+
 // .kanban-colors(@kanban-colors; @index) when (@index > 0){
 //         // loop through the @colors
 //         .kanban-colors(@kanban-colors; (@index - 1));
@@ -129,9 +149,9 @@ nav.cp-onboardscreen-nav {
 //         }
 //     }
 
-.cp-onboardscreen-colorpick {
-    padding-left:50%
-}
+// .cp-onboardscreen-colorpick {
+//     padding-left:50%
+// }
 
 // .cp-onboardscreen-color {
 //     width:200%;
@@ -140,10 +160,10 @@ nav.cp-onboardscreen-nav {
 //     margin-bottom: -10%;
 // }
 
-.cp-onboardscreen-checkmark {
-    text-align:right !important;
-    color: white !important;
-}
+// .cp-onboardscreen-checkmark {
+//     text-align:right !important;
+//     color: white !important;
+// }
 
 // .cp-onboardscreen-nav {
 //     padding-left:90%;
@@ -154,11 +174,11 @@ nav.cp-onboardscreen-nav {
 //     display:float;
 // }
 
-.cp-onboardscreen-prev {
-    margin-left: 20px;
-    left: 0;
-    position: absolute;
-}
+// .cp-onboardscreen-prev {
+//     margin-left: 20px;
+//     left: 0;
+//     position: absolute;
+// }
 
 // .cp-onboardscreen-save {
 //     right: 0;
@@ -166,47 +186,47 @@ nav.cp-onboardscreen-nav {
 //     margin-right: 40px
 // }
 
-.cp-admin-customize-apps-grid {
-    padding: 10px;
-    margin-left: 10px;
-    width: 105%;
-}
+// .cp-admin-customize-apps-grid {
+//     padding: 10px;
+//     margin-left: 10px;
+//     width: 105%;
+// }
 
-.cp-appblock {
-    width:30%;
-    float:left !important;
-    display:block !important;
-    margin: 2px !important;
-    background-color: #212121!important;
-    border-color:white;
-    height: 60px !important;
-    padding: 10px;
-}
+// .cp-appblock {
+//     width:30%;
+//     float:left !important;
+//     display:block !important;
+//     margin: 2px !important;
+//     background-color: #212121!important;
+//     border-color:white;
+//     height: 60px !important;
+//     padding: 10px;
+// }
 
-.active-app {
-    background-color: #212121!important;
-    max-width:30%;
-}
+// .active-app {
+//     background-color: #212121!important;
+//     max-width:30%;
+// }
 
-.cp-admin-customize-options-grid {
-    height:40%;
-    float:center;
-    margin-left: 20px;
-    width: 105%;
-    margin-bottom: -180px;
+// .cp-admin-customize-options-grid {
+//     height:40%;
+//     float:center;
+//     margin-left: 20px;
+//     width: 105%;
+//     margin-bottom: -180px;
 
-}
+// }
 
-.cp-optionblock {
-    width:40%;
-    float:left !important;
-    display:block !important;
-    margin: 2px !important;
-    background-color: #212121!important;
-    border-color:white;
-    height: 60% !important;
-    padding: 10px;
+// .cp-optionblock {
+//     width:40%;
+//     float:left !important;
+//     display:block !important;
+//     margin: 2px !important;
+//     background-color: #212121!important;
+//     border-color:white;
+//     height: 60% !important;
+//     padding: 10px;
 
 
-}
+// }
 

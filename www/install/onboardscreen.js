@@ -157,13 +157,13 @@ define([
             });
 
             return formLogo;
-        
         };
 
         var colorBlock = function () {
 
             let selectorColor = '';
-            var colors = UIElements.makePalette(8, (color, $color) => {
+            // XXX Number of accent color presets
+            var colors = UIElements.makePalette(5, (color, $color) => {
                 let rgb = $color.css('background-color');
                 let hex = Util.rgbToHex(rgb);
                 selectorColor = hex;
@@ -233,13 +233,17 @@ define([
         $(nav).addClass('cp-onboardscreen-nav')
         $(nav).addClass('cp-onboardscreen-title-nav')
 
- 
-        var form = blocks.form([
-            screenTitle, 
-            titleInput, 
+        var textForm= h('div.cp-instance-text-form',[
+            titleInput,
             desc,
-            logoInput, 
             colorInput,
+        ]);
+
+        var instanceForm = h('div.cp-instance-form', [logoInput, textForm]);
+
+        var form = blocks.form([
+            screenTitle,
+            instanceForm
         ], nav);
 
         $(form).addClass('cp-onboardscreen-form');

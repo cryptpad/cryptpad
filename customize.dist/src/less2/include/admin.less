@@ -11,8 +11,12 @@
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
+    // XXX Instance accent color presets
+    @palette-colors:
+        @cryptpad_color_brand,
+        #ffee00,
+        #FF0073;
 
-    @palette-colors: @cp_kanban-colors;
     div.cp-palette-container {
 
         .cp-palette-nocolor {
@@ -30,7 +34,6 @@
             }
         }
         .instance-colors(@palette-colors; length(@palette-colors));
-
     }
 
 }
