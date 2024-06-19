@@ -1,0 +1,36 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+@import (reference) "./colortheme-all.less";
+@import (reference) "./forms.less";
+
+.admin_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+
+    @palette-colors: @cp_kanban-colors;
+    div.cp-palette-container {
+
+        .cp-palette-nocolor {
+            display: none;
+        }
+        .instance-colors(@palette-colors; @index) when (@index > 0){
+            // loop through the @colors
+            .instance-colors(@palette-colors; (@index - 1));
+
+            @color: extract(@palette-colors, @index);
+            // make a numbered class selector for each color
+            .cp-palette-color@{index}{
+                background-color: @color !important;
+                color: contrast(@color, @cryptpad_color_grey_800, @cryptpad_color_grey_200) !important;
+            }
+        }
+        .instance-colors(@palette-colors; length(@palette-colors));
+
+    }
+
+}
