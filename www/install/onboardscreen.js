@@ -168,7 +168,7 @@ define([
                 let hex = Util.rgbToHex(rgb);
                 selectorColor = hex;
                 // XXX Save only at the end
-                sendAdminRpc('CHANGE_COLOR', {selectedColor}, function (e, response) {
+                sendAdminRpc('CHANGE_COLOR', {color:selectedColor}, function (e, response) {
                     if (e || response.error) {
                         UI.warn(Messages.error);
                         console.error(e, response);
