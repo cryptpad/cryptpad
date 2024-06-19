@@ -5,9 +5,8 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/common/common-util.js',
-    '/api/instance',
+    '/common/common-ui-elements.js',
 
-    '/common/hyperscript.js',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
 
@@ -18,6 +17,7 @@ define([
     h,
     UI,
     Util,
+    UIElements
 ) {
 
     //XXX
@@ -162,47 +162,33 @@ define([
 
         var colorBlock = function () {
 
-            var colors;
+            let selectorColor = '';
+            var colors = UIElements.makePalette(8, (color, $color) => {
+                let rgb = $color.css('background-color');
+                let hex = Util.rgbToHex(rgb);
+                selectorColor = hex;
+                // XXX Save only at the end
+                sendAdminRpc('CHANGE_COLOR', {selectedColor}, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return;
+                    }
+                    UI.log(Messages.saved);
+                });
+            });
+            var $colors = $(colors).attr('id', 'cp-install-color');
             var content = h('div.cp-onboardscreen-colorpick', [
-                h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
-                colors = h('div#cp-kanban-edit-colors'),
+                h('label', {for:'cp-install-color'}, Messages.kanban_color),
+                colors
             ]);
 
-            var $colors = $(colors);
-            var palette = [''];
-            for (var i=1; i<=8; i++) { palette.push('color'+i); }
-            var selectedColor = '';
-            palette.forEach(function (color) {
-                var $color = $(h('div.cp-kanban-palette.cp-kanban-palette-card.fa'), );
-                $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
-                $color.click(function () {
-                    if (color === selectedColor) { return; }
-                    selectedColor = $color.css('background-color');
-                    $colors.find('.cp-kanban-palette').removeClass('fa-check');
-                    var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-                    $col.addClass('fa-check');
-                    sendAdminRpc('CHANGE_COLOR', {selectedColor}, function (e, response) {
-                        if (e || response.error) {
-                            UI.warn(Messages.error);
-                            console.error(e, response);
-                            // done(false);
-                            return;
-                        }
-                        // flushCache();
-                        // done(true);
-                        // redraw();
-                        // spinner.done();
-                        UI.log(Messages.saved);
-                    });
-                }).appendTo($colors);
-            });
-        
             return content;
-        
         };
 
         var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
 
+            // XXX Save only at the end
             sendAdminDecree('SET_INSTANCE_NAME', [$(titleInput).val().trim()], function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);

@@ -4285,5 +4285,42 @@ define([
         return UI.errorLoadingScreen(msg, false, false);
     };
 
+    UIElements.makePalette = (maxColors, onSelect) => {
+        let palette = [''];
+        for (var i=1; i<=maxColors; i++) { palette.push('color'+i); }
+
+        let offline = false;
+        let selectedColor = '';
+        let container = h('div.cp-palette-container');
+        let $container = $(container);
+
+        palette.forEach(function (color) {
+            var $color = $(h('span.cp-palette-color.fa'));
+            $color.addClass('cp-palette-'+(color || 'nocolor'));
+            $color.click(function () {
+                if (offline) { return; }
+                if (color === selectedColor) { return; }
+                selectedColor = color;
+                $container.find('.cp-palette-color').removeClass('fa-check');
+                $color.addClass('fa-check');
+                onSelect(color, $color);
+            }).appendTo($container);
+        });
+
+        container.disable = state => {
+            offline = !!state;
+        };
+        container.getValue = () => {
+            return selectedColor;
+        };
+        container.setValue = color => {
+            $container.find('.cp-palette-color').removeClass('fa-check');
+            let $color = $container.find('.cp-palette-'+(color || 'nocolor'));
+            $color.addClass('fa-check');
+            selectedColor = color;
+        };
+        return container;
+    };
+
     return UIElements;
 });

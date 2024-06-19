@@ -3,6 +3,14 @@
 @import (reference) "../../customize/src/less2/include/tools.less";
 @import (reference) "../../customize/src/less2/include/markdown.less";
 @import (reference) "../../customize/src/less2/include/avatar.less";
+@import (reference) '../../customize/src/less2/include/admin.less';
+
+&.cp-page-install {
+    .admin_main();
+    div.cp-palette-container {
+        max-width: 400px;
+    }
+}
 
 @cp_palette:
     #FFD4D4,

@@ -971,7 +971,7 @@ define([
                 setColor(color, done);
             });
 
-            let $input = $(input).on('change', () => {
+            let onColorPicked = () => {
                 require(['/lib/less.min.js'], (Less) => {
                     let color = $input.val();
                     let lColor = Less.color(color.slice(1));
@@ -991,7 +991,8 @@ define([
                     $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
                     $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
                 });
-            });
+            };
+            let $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
 
             UI.confirmButton($remove, {
                 classes: 'btn-danger',
@@ -1001,44 +1002,22 @@ define([
                 setColor('', () => {});
             });
 
-            var colors;
-            var content = h('div.cp-onboardscreen-colorpick', [
-                h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
-                colors = h('div#cp-kanban-edit-colors'),
-            ]);
-
-            var $colors = $(colors);
-            var palette = [''];
-            for (var i=1; i<=8; i++) { palette.push('color'+i); }
-            var selectedColor = '';
-            palette.forEach(function (color) {
-                var $color = $(h('div.cp-kanban-palette.cp-kanban-palette-card.fa'), );
-                $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
-                $color.click(function () {
-                    if (color === selectedColor) { return; }
-                    selectedColor = $color.css('background-color');
-                    $colors.find('.cp-kanban-palette').removeClass('fa-check');
-                    var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-                    $col.addClass('fa-check');
-                    sframeCommand('CHANGE_COLOR', {selectedColor}, (err, response) => {
-                    if (err) {
-                        UI.warn(Messages.error);
-                        console.error(err, response);
-                        // done(false);
-                        return;
-                    }
-                    done(true);
-                    UI.log(Messages.saved);
-                });
-                }).appendTo($colors);
+            var colors = UIElements.makePalette(8, (color, $color) => {
+                // onselect
+                let rgb = $color.css('background-color');
+                let hex = Util.rgbToHex(rgb);
+                $input.val(hex);
+                onColorPicked();
             });
-        
+            var $colors = $(colors);
+
+            $(label).append(colors);
             let form = blocks.form([
                 labelCurrent,
-                label
+                label,
             ], blocks.nav([btn, remove, btn.spinner]));
 
-            cb([form, labelPreview, content]);
+            cb([form, labelPreview]);
         });
 
         // Msg.admin_registrationHint, .admin_registrationTitle

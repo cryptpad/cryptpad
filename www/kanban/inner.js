@@ -185,6 +185,11 @@ define([
             update();
         };
 
+        var colors = UIElements.makePalette(8, color => {
+            dataObject.color = color;
+            commit();
+        });
+
         var conflicts, conflictContainer, titleInput, tagsDiv, colors, text;
         var content = h('div', [
             conflictContainer = h('div#cp-kanban-edit-conflicts', [
@@ -200,7 +205,7 @@ define([
             h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
             tagsDiv = h('div#cp-kanban-edit-tags'),
             h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
-            colors = h('div#cp-kanban-edit-colors'),
+            colors,
         ]);
         var $tags = $(tagsDiv);
 
@@ -362,11 +367,9 @@ define([
 
         // Colors
         var $colors = $(colors);
-        var palette = [''];
-        for (var i=1; i<=8; i++) { palette.push('color'+i); }
         var selectedColor = '';
         var resetThemeClass = function () {
-            $colors.find('.cp-kanban-palette').each(function (i, el) {
+            $colors.find('.cp-palette-color').each(function (i, el) {
                 var $c = $(el);
                 $c.removeClass('cp-kanban-palette-card');
                 $c.removeClass('cp-kanban-palette-board');
@@ -377,31 +380,13 @@ define([
                 }
             });
         };
-        palette.forEach(function (color) {
-            var $color = $(h('span.cp-kanban-palette.fa'));
-            $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
-            $color.click(function () {
-                if (offline) { return; }
-                if (color === selectedColor) { return; }
-                selectedColor = color;
-                $colors.find('.cp-kanban-palette').removeClass('fa-check');
-                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-                $col.addClass('fa-check');
-
-                dataObject.color = color;
-                commit();
-            }).appendTo($colors);
-        });
         var color = {
             getValue: function () {
-                return selectedColor;
+                return colors.getValue();
             },
             setValue: function (color) {
                 resetThemeClass();
-                $colors.find('.cp-kanban-palette').removeClass('fa-check');
-                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-                $col.addClass('fa-check');
-                selectedColor = color;
+                colors.setValue(color);
             }
         };
 
@@ -453,6 +438,7 @@ define([
 
             $modal.find('nav button.danger').prop('disabled', unlocked ? '' : 'disabled');
             offline = !unlocked;
+            palette.disable(offline);
         });
 
 
