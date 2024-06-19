@@ -46,7 +46,6 @@
     "mathjax": "3.0.5",
     "netflux-websocket": "^1.0.0",
     "notp": "^2.0.3",
-    "npm": "^10.8.1",
     "nthen": "0.1.8",
     "open-sans-fontface": "^1.4.0",
     "openid-client": "^5.4.2",
@@ -64,7 +63,7 @@
     "thirty-two": "^1.0.2",
     "tweetnacl": "~0.12.2",
     "ulimit": "0.0.2",
-    "ws": "^5.2.4",
+    "ws": "^8.17.1",
     "x2js": "^3.4.4"
   },
   "devDependencies": {
