@@ -12,36 +12,45 @@
     #AFFDC2,
     #C9FFFE,
     #C8D6FF,
-    #E4CAFF;  
-    
+    #E4CAFF;
+
 .configscreen {
-    width: 70%; 
-    height: 75%; 
-    background-color: #424242 !important;
+    //width: 70%;
+    //height: 75%;
+    background-color: @cp_loading-progress-bg;
+    border-radius: @variables_radius_L;
+    box-shadow: 0px 0px 10px 0px @cp_shadow-color;
+    padding: 80px 110px 20px 110px;
 }
 
-.cp-onboardscreen-form {
-    padding:10px;   
-    position:relative;
-    height: 90%;
-}
-
-.cp-onboardscreen-maintitle {
-    float:center;
-    padding:10px;  
-}
+// .cp-onboardscreen-form {
+//     // padding:10px;
+//     // position:relative;
+//     // height: 90%;
+// }
 
 .cp-onboardscreen-screentitle {
-    margin:auto;
-    padding:10px;
-    text-align:center;
-    float:center;
+    text-align: center;
+    .cp-onboardscreen-maintitle {
+        float:center;
+        padding:10px; 
+
+        h1.cp-onboardscreen-title {
+            font-family: "IBM Plex Mono";
+            color: @cryptpad_color_brand;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+    }
 }
 
-.cp-onboardscreen-title {
-    font-family: "IBM Plex Mono";
-    font-weight: 500;
+nav.cp-onboardscreen-nav {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
 }
+
 
 .cp-onboardscreen-name {
     width:70%; 
@@ -116,26 +125,26 @@
     padding-left:50%
 }
 
-.cp-onboardscreen-color {
-    width:200%;
-    height:20%;
-    margin-left: -65%;
-    margin-bottom: -10%;
-}
+// .cp-onboardscreen-color {
+//     width:200%;
+//     height:20%;
+//     margin-left: -65%;
+//     margin-bottom: -10%;
+// }
 
 .cp-onboardscreen-checkmark {
     text-align:right !important;
     color: white !important;
 }
 
-.cp-onboardscreen-nav {
-    padding-left:90%;
-    margin-right: -2px !important;
-    margin-top: 300px;
-    position:absolute;
-    width:100%;
-    display:float;
-}
+// .cp-onboardscreen-nav {
+//     padding-left:90%;
+//     margin-right: -2px !important;
+//     margin-top: 300px;
+//     position:absolute;
+//     width:100%;
+//     display:float;
+// }
 
 .cp-onboardscreen-prev {
     margin-left: 20px;
@@ -143,11 +152,11 @@
     position: absolute;
 }
 
-.cp-onboardscreen-save {
-    right: 0;
-    position: absolute;
-    margin-right: 40px
-}
+// .cp-onboardscreen-save {
+//     right: 0;
+//     position: absolute;
+//     margin-right: 40px
+// }
 
 .cp-admin-customize-apps-grid {
     padding: 10px;

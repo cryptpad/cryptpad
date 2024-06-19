@@ -239,9 +239,9 @@ define([
         var colorInput =  h('div.cp-onboardscreen-color', colorBlock());
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.install_onboardingNameTitle), h('br'), h('span', Messages.install_onboardingNameHint)));
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.install_onboardingNameTitle), h('span', Messages.install_onboardingNameHint)));
         var nav = blocks.nav([button]);
-                
+
         $(button).addClass('cp-onboardscreen-save');
         $(button).addClass('cp-onboardscreen-title-save');
         $(nav).addClass('cp-onboardscreen-nav')
@@ -313,7 +313,7 @@ define([
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.install_onboardingAppsTitle), h('br'), h('span', Messages.install_onboardingAppsHint)))
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.install_onboardingAppsTitle), h('span', Messages.install_onboardingAppsHint)))
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
         var nav = blocks.nav([prev, save])
@@ -395,7 +395,7 @@ define([
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('span.cp-onboardscreen-title', Messages.install_onboardingRegistrationTitle), h('br'), h('span', Messages.install_onboardingRegistrationHint)));
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.install_onboardingRegistrationTitle), h('span', Messages.install_onboardingRegistrationHint)));
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
         var nav = blocks.nav([prev, save])
