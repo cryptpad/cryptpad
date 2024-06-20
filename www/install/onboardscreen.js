@@ -8,7 +8,6 @@ define([
     '/common/common-util.js',
     '/common/common-ui-elements.js',
     '/common/pad-types.js',
-    '/api/instance',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -217,22 +216,17 @@ define([
 
     };
 
-    const appConfig = function (Env) {
-        const { sendAdminDecree, sendAdminRpc } = Env;
-
+    const createAppsGrid = appsToDisable => {
         const grid = blocks.block([], 'cp-admin-customize-apps-grid');
         const $grid = $(grid);
         const allApps = PadTypes.appsToSelect;
-        const appsToDisable = selections.appsToDisable;
 
         let select = function (app, $app) {
             if (appsToDisable.indexOf(app) === -1) {
-                console.error('SET ACTIVE', app);
                 appsToDisable.push(app);
                 $app.toggleClass('cp-inactive-app', true);
                 $app.toggleClass('cp-active-app', false);
             } else {
-                console.error('SET INACTIVE', app);
                 appsToDisable.splice(appsToDisable.indexOf(app), 1);
                 $app.toggleClass('cp-inactive-app', false);
                 $app.toggleClass('cp-active-app', true);
@@ -256,8 +250,17 @@ define([
             $app.on('click', () => select(app, $app));
         });
 
+        return grid;
+    };
+
+    const appConfig = function (Env) {
+        const { sendAdminDecree, sendAdminRpc } = Env;
+
+        const appsToDisable = selections.appsToDisable;
+        const grid = createAppsGrid(appsToDisable);
+
+
         var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            UI.log(Messages.saved);
             gotoPage(Env, 2);
         });
 
@@ -430,7 +433,7 @@ define([
     window.CP_onboarding_test = () => {
         create(() => {}, () => {});
     };
-    return { create };
+    return { create, createAppsGrid };
 
 });
 

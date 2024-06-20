@@ -21,8 +21,8 @@ define([
     '/api/config',
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
-    '/common/hyperscript.js',
-    
+    '/install/onboardscreen.js',
+
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -41,12 +41,12 @@ define([
     Messages,
     Keys,
     h,
-    
     Clipboard,
     Sortify,
     ApiConfig,
     Instance,
-    Flatpickr, 
+    Flatpickr,
+    Onboarding,
 ) {
 
     //XXX 
@@ -637,40 +637,8 @@ define([
         });
 
         sidebar.addItem('apps', function (cb) {
-            const grid = blocks.block([], 'cp-admin-customize-apps-grid');
-            const $grid = $(grid);
-            const allApps = PadTypes.appsToSelect;
             const appsToDisable = ApiConfig.appsToDisable || [];
-
-            let select = function (app, $app) {
-                if (appsToDisable.indexOf(app) === -1) {
-                    appsToDisable.push(app);
-                    $app.toggleClass('cp-inactive-app', true);
-                    $app.toggleClass('cp-active-app', false);
-                } else {
-                    appsToDisable.splice(appsToDisable.indexOf(app), 1);
-                    $app.toggleClass('cp-inactive-app', false);
-                    $app.toggleClass('cp-active-app', true);
-                }
-            };
-
-            allApps.forEach(app => {
-                let name = Messages.type[app] || app;
-                let icon = UI.getNewIcon(app);
-                let appBlock = h('div.cp-appblock', [
-                    icon,
-                    h('span', name),
-                    h('i.fa.fa-check.cp-on-enabled')
-                ]);
-                let $app = $(appBlock).appendTo($grid);
-                if (appsToDisable.includes(app)) {
-                    $app.addClass('cp-inactive-app');
-                } else {
-                    $app.addClass('cp-active-app');
-                }
-                $app.on('click', () => select(app, $app));
-            });
-
+            const grid = Onboarding.createAppsGrid(appsToDisable);
 
             var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -688,13 +656,13 @@ define([
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
                 });
             });
-            
+
             let form = blocks.form([
-                grid 
+                grid
             ], blocks.nav([save]));
 
             cb(form);
-        }); 
+        });
 
 
         sidebar.addItem('instance-info-notice', function(cb){
