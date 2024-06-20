@@ -12,16 +12,6 @@
     }
 }
 
-@cp_palette:
-    #FFD4D4,
-    #FFDECA,
-    #FFE69C,
-    #DBFFB7,
-    #AFFDC2,
-    #C9FFFE,
-    #C8D6FF,
-    #E4CAFF;
-
 .configscreen {
     //width: 70%;
     //height: 75%;
@@ -127,22 +117,6 @@ nav.cp-onboardscreen-nav {
 // }
 
 
-.cp_palette(@cp_palette; @index) when (@index > 0){
-        // loop through the @colors
-        .cp_palette(@cp_palette; (@index - 1));
-        @color: extract(@cp_palette, @index);
-        // make a numbered class selector for each color
-        .cp-kanban-palette-color@{index}{
-            background-color: @color !important;
-            &.cp-kanban-palette-board {
-                background-color: @color !important;
-            }
-            &.kanban-board-inner {
-                background-color: fade(@color, 50%) !important;
-            }
-        }
-    }
-
 // .kanban-colors(@kanban-colors; @index) when (@index > 0){
 //         // loop through the @colors
 //         .kanban-colors(@kanban-colors; (@index - 1));
@@ -213,10 +187,10 @@ nav.cp-onboardscreen-nav {
 //     padding: 10px;
 // }
 
-.cp-active-app {
-    background-color: #212121!important;
-    max-width:30%;
-}
+// .cp-active-app {
+//     background-color: #212121!important;
+//     max-width:30%;
+// }
 
 // .cp-admin-customize-options-grid {
 //     height:40%;
