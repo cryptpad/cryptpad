@@ -226,10 +226,6 @@ define([
                 appsToDisable.push(app);
                 $app.toggleClass('cp-inactive-app', true);
                 $app.toggleClass('cp-active-app', false);
-                var checkMark = h('i.cp-onboardscreen-checkmark.fa');
-                $(checkMark).addClass('fa-check');
-                appBlock.append(checkMark);
-                $(`#${app}-block`).addClass('cp-active-app');
             } else {
                 appsToDisable.splice(appsToDisable.indexOf(app), 1);
                 $app.toggleClass('cp-inactive-app', false);
