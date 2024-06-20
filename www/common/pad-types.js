@@ -18,12 +18,12 @@ define([
 
     let availableTypes;
     if (ApiConfig.appsToDisable) {
-        availableTypes = availablePadTypes.filter(value => !ApiConfig.appsToDisable.includes(value))
+        availableTypes = availablePadTypes.filter(value => !ApiConfig.appsToDisable.includes(value));
     } else {
-        availableTypes = availablePadTypes
+        availableTypes = availablePadTypes;
     }
     
-    var appsToSelect = availablePadTypes.filter(value => !['drive', 'teams', 'file', 'contacts', 'convert'].includes(value))
+    var appsToSelect = availablePadTypes.filter(value => !['drive', 'teams', 'file', 'contacts', 'convert'].includes(value));
 
     return {
         availableTypes,

@@ -50,10 +50,10 @@ define([
 ) {
 
     //XXX 
-    Messages.admin_appSelection = 'App configuration'
-    Messages.admin_appsTitle = "Choose your applications"
-    Messages.admin_appsHint = "Choose which apps to disable on your instance."
-    Messages.admin_cat_apps = "Apps"
+    Messages.admin_appSelection = 'App configuration';
+    Messages.admin_appsTitle = "Choose your applications";
+    Messages.admin_appsHint = "Choose which apps to disable on your instance.";
+    Messages.admin_cat_apps = "Apps";
 
     var APP = window.APP = {};
 
@@ -647,23 +647,23 @@ define([
                     var checkMark = h('div.cp-onboardscreen-checkmark');
                     $(checkMark).addClass('fa.fa-check');
                     appBlock.append(checkMark);
-                    $(`#${app}-block`).addClass('cp-active-app')
-                    $(`#${app}-block`).removeClass('cp-inactive-app')
+                    $(`#${app}-block`).addClass('cp-active-app');
+                    $(`#${app}-block`).removeClass('cp-inactive-app');
                 } else {
                     appsToDisable.splice(appsToDisable.indexOf(app), 1);
-                    $(`#${app}-block`).addClass('cp-inactive-app') 
-                    $(`#${app}-block`).removeClass('cp-active-app')
+                    $(`#${app}-block`).addClass('cp-inactive-app'); 
+                    $(`#${app}-block`).removeClass('cp-active-app');
                     appBlock.find('.cp-onboardscreen-checkmark').remove();
                 } 
             }
 
             allApps.forEach(app => { 
                 
-                let appBlock = h('div.cp-appblock', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1))
+                let appBlock = h('div.cp-appblock', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1));
                 if (appsToDisable.indexOf(app) === -1) {
-                    $(appBlock).addClass('cp-inactive-app')
+                    $(appBlock).addClass('cp-inactive-app');
                 } else {
-                    $(appBlock).addClass('cp-active-app')
+                    $(appBlock).addClass('cp-active-app');
                 }
                 $(grid).append(appBlock);
                 $(appBlock).on('click', () => select(app, $(appBlock)));

@@ -28,7 +28,7 @@ define([
 
     Sidebar.blocks = function (app) {
 
-        let blocks = {}
+        let blocks = {};
 
         blocks.labelledInput = (label, input, inputBlock) => {
             let uid = Util.uid();
@@ -241,9 +241,9 @@ define([
             return box;
         };
 
-        return blocks
+        return blocks;
     
-    }
+    };
 
     Sidebar.create = function (common, app, $container) {
         const $leftside = $(h('div#cp-sidebarlayout-leftside')).appendTo($container);
@@ -253,7 +253,7 @@ define([
             $rightside
         };
         const items = {};
-        sidebar.blocks = Sidebar.blocks(app)
+        sidebar.blocks = Sidebar.blocks(app);
 
         sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);
@@ -283,7 +283,7 @@ define([
 
         sidebar.addCheckboxItem = (data) => {
             const key = data.key;
-            let blocks = sidebar.blocks
+            let blocks = sidebar.blocks;
             let box = blocks.activeCheckbox(data);
             sidebar.addItem(key, function (cb) {
                 cb(box);

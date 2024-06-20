@@ -148,15 +148,15 @@ define([
 
                 let sendAdminDecree = function (command, data, callback) {
                     var params = ['ADMIN_DECREE', [command, data]];  
-                    rpc.send('ADMIN', params, callback)
+                    rpc.send('ADMIN', params, callback);
                 };
 
                 let sendAdminRpc = function (command, data, callback) {
                     var params = [command, data];  
-                    rpc.send('ADMIN', params, callback)
+                    rpc.send('ADMIN', params, callback);
                 };
 
-                showTitleScreen(sendAdminDecree, sendAdminRpc)
+                showTitleScreen(sendAdminDecree, sendAdminRpc);
               
             });
   
