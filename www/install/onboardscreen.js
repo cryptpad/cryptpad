@@ -378,8 +378,8 @@ define([
 
             flushCache();
 
-            // document.location.href = '/drive/';
-            // return;
+            document.location.href = '/drive/';
+            return;
         });
 
         var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
