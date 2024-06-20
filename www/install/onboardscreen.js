@@ -2,6 +2,7 @@ define([
     'jquery',
     '/common/inner/sidebar-layout.js',
     '/customize/messages.js',
+    '/customize/application_config.js',
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/common/common-util.js',
@@ -16,6 +17,7 @@ define([
     $,
     Sidebar,
     Messages,
+    AppConfig,
     h,
     UI,
     Util,
@@ -24,6 +26,7 @@ define([
 ) {
 
     //XXX
+    Messages.onboarding_upload = "Select logo";
     Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance';
     Messages.admin_onboardingNameHint = 'Please choose a title and description';
     Messages.admin_onboardingAppsTitle = "Choose your applications";
@@ -45,6 +48,7 @@ define([
         let frame = h('div.cp-onboarding-box', nextPageForm);
         Env.overlay.empty().append(frame);
     };
+    const blocks = Sidebar.blocks('admin');
 
     //TODO: fix EXPECTED_FUNCTION error
     var flushCache = () => {
@@ -59,36 +63,33 @@ define([
             // })
     };
 
-    var selections = {title: '', description: '', logoURL: '', color: '', appsToDisable: [], mfa: false, closeRegistration: false};
+    var selections = {
+        title: '',
+        description: '',
+        logoURL: '',
+        color: '',
+        appsToDisable: [],
+        mfa: false,
+        closeRegistration: false
+    };
 
     const titleConfig = function (Env) {
         const { sendAdminDecree, sendAdminRpc } = Env;
 
-        const blocks = Sidebar.blocks('admin');
+        let titleInput = blocks.input({
+            type: 'text',
+            value:  selections.title,
+            placeholder: Messages.admin_onboardingNamePlaceholder,
+            'aria-labelledby': 'cp-admin-name'
+        });
+        let description = blocks.textarea({
+            placeholder: Messages.admin_onboardingDescPlaceholder,
+            'aria-labelledby': 'cp-admin-description'
+        }, selections.description);
+        $(description).addClass('cp-onboardscreen-desc');
 
-        var titleDescBlock = function() {
-
-            var input = blocks.input({
-                type: 'text',
-                value:  '',
-                placeholder: selections.title || Messages.admin_onboardingNamePlaceholder,
-                'aria-labelledby': 'cp-admin-name'
-            });
-
-            var desc =  blocks.textarea({
-                placeholder: selections.description || Messages.admin_onboardingDescPlaceholder,
-                value:  '',
-                'aria-labelledby': 'cp-admin-description'
-            });
-
-            $(desc).addClass('cp-onboardscreen-desc');
-
-            return [input, desc];
-        };
-
-        let dataURL = '';
-        var logoBlock = function() {
-
+        let dataURL = selections.logoURL;
+        var getLogoBlock = function() {
             let inputLogo = blocks.input({
                 type: 'file',
                 accept: 'image/*',
@@ -96,65 +97,73 @@ define([
             });
 
             var currentContainer = blocks.block([], 'cp-admin-customize-logo');
-            let redraw = () => {
-                var current = h('img', {src: '/api/logo?'+(+new Date())});
-                $(currentContainer).empty().append(current);
-            };
-            redraw();
 
-            var upload = blocks.button('primary', '', Messages.admin_logoButton);
-            var remove = blocks.button('danger', '', Messages.admin_logoRemoveButton);
+            var upload = blocks.button('secondary', '', Messages.onboarding_upload);
 
-            let spinnerBlock = blocks.inline();
-            let spinner = UI.makeSpinner($(spinnerBlock));
             let formLogo = blocks.form([
                 currentContainer,
-                blocks.block(inputLogo),
-                blocks.nav([upload, remove, spinnerBlock])
+                blocks.block(inputLogo, 'cp-onboarding-logo-input'),
+                blocks.nav([upload])
             ]);
 
             let $button = $(upload);
-            let $remove = $(remove);
 
-            //TODO: update preview
-            Util.onClickEnter($button, function () {
+            let state = false;
+            let redraw = () => {
+                var current = h('img', {src: dataURL || '/api/logo?'+(+new Date())});
+                $(currentContainer).empty().append(current);
+                $button.removeAttr('disabled');
+                state = !!dataURL;
+                if (dataURL) {
+                    $button.text(Messages.admin_logoRemoveButton);
+                    $button.removeClass('btn-secondary').addClass('btn-danger-alt');
+                } else {
+                    $button.text(Messages.onboarding_upload);
+                    $button.removeClass('btn-danger-alt').addClass('btn-secondary');
+                }
+            };
+            redraw();
+
+            let $input = $(inputLogo);
+            $input.on('change', function () {
                 let files = inputLogo.files;
                 if (files.length !== 1) {
                     UI.warn(Messages.error);
                     return;
                 }
-                spinner.spin();
-                $button.attr('disabled', 'disabled');
                 let reader = new FileReader();
                 reader.onloadend = function () {
                     dataURL = this.result;
+                    redraw(dataURL);
                 };
                 reader.readAsDataURL(files[0]);
             });
-            UI.confirmButton($remove, {
-                classes: 'btn-danger',
-                multiple: true
-            }, function () {
-                spinner.spin();
-                $remove.attr('disabled', 'disabled');
-                selections.logoURL = '';
+            Util.onClickEnter($button, function () {
+                $button.attr('disabled', 'disabled');
+                if (!state) {
+                    return void $input.click();
+                }
+                dataURL = '';
+                redraw();
             });
 
             return formLogo;
         };
 
-        var colorBlock = function () {
+        var getColorBlock = function () {
 
-            let selectorColor = '';
             // XXX Number of accent color presets
             var colors = UIElements.makePalette(5, (color, $color) => {
                 let rgb = $color.css('background-color');
                 let hex = Util.rgbToHex(rgb);
-                selectorColor = hex;
                 if (hex) {
                     selections.color = hex;
+                    selections.colorId = color;
                 }
             });
+            if (selections.colorId) {
+                colors.setValue(selections.colorId);
+            }
             var $colors = $(colors).attr('id', 'cp-install-color');
             var content = h('div.cp-onboardscreen-colorpick', [
                 h('label', {for:'cp-install-color'}, Messages.kanban_color),
@@ -165,12 +174,8 @@ define([
         };
 
         var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            if ($($(titleInput).children()[0]).val() !== '') {
-                selections.title = $($(titleInput).children()[0]).val();
-            }
-            if ($($(desc).children()[0]).val() !== '') {
-                selections.description = $($(desc).children()[0]).val();
-            }
+            selections.title = $(titleInput).val() || '';
+            selections.description = $(description).val() || '';
             if (dataURL) {
                 selections.logoURL = dataURL;
             }
@@ -178,25 +183,28 @@ define([
             gotoPage(Env, 1);
         });
 
-        var titleInput = h('div.cp-onboardscreen-name', titleDescBlock()[0]);
-        var logoInput = h('div.cp-onboardscreen-logo', logoBlock());
-        var desc = h('div', titleDescBlock()[1]);
-        var colorInput =  h('div.cp-onboardscreen-color', colorBlock());
+        var titleBlock = h('div.cp-onboardscreen-name', titleInput);
+        var descriptionBlock = h('div', description);
+        var logoBlock = h('div.cp-onboardscreen-logo', getLogoBlock());
+        var colorBlock =  h('div.cp-onboardscreen-color', getColorBlock());
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingNameTitle), h('span', Messages.admin_onboardingNameHint)));
-        var nav = blocks.nav([button]);
+        $(screenTitle).append(('div.cp-onboardscreen-maintitle', [
+            h('h1.cp-onboardscreen-title', Messages.admin_onboardingNameTitle),
+            h('span', Messages.admin_onboardingNameHint)
+        ]));
+        var nav = blocks.nav([h('span'), button]);
 
         $(button).addClass('cp-onboardscreen-save');
         $(nav).addClass('cp-onboardscreen-nav');
 
-        var textForm= h('div.cp-instance-text-form',[
-            titleInput,
-            desc,
-            colorInput,
+        var textForm = h('div.cp-instance-text-form', [
+            titleBlock,
+            descriptionBlock,
+            colorBlock,
         ]);
 
-        var instanceForm = h('div.cp-instance-form', [logoInput, textForm]);
+        var instanceForm = h('div.cp-instance-form', [logoBlock, textForm]);
 
         var form = blocks.form([
             screenTitle,
@@ -212,33 +220,45 @@ define([
     const appConfig = function (Env) {
         const { sendAdminDecree, sendAdminRpc } = Env;
 
-        const blocks = Sidebar.blocks('admin');
         const grid = blocks.block([], 'cp-admin-customize-apps-grid');
+        const $grid = $(grid);
         const allApps = PadTypes.appsToSelect;
-        const appsToDisable = [];
+        const appsToDisable = selections.appsToDisable;
 
-        function select(app, appBlock) {
+        let apps = {};
+
+        let select = function (app, $app) {
             if (appsToDisable.indexOf(app) === -1) {
+                console.error('SET ACTIVE', app);
                 appsToDisable.push(app);
-                var checkMark = h('div.cp-onboardscreen-checkmark');
-                $(checkMark).addClass('fa-check');
-                appBlock.append(checkMark);
-                $(`#${app}-block`).addClass('cp-active-app');
+                $app.toggleClass('cp-inactive-app', true);
+                $app.toggleClass('cp-active-app', false);
             } else {
+                console.error('SET INACTIVE', app);
                 appsToDisable.splice(appsToDisable.indexOf(app), 1);
-                $(`#${app}-block`).addClass('cp-inactive-app');
-                appBlock.find('.cp-onboardscreen-checkmark').remove();
+                $app.toggleClass('cp-inactive-app', false);
+                $app.toggleClass('cp-active-app', true);
             }
         }
 
         allApps.forEach(app => {
-            let appBlock = h('div.cp-appblock.cp-inactive-app', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1));
-            $(grid).append(appBlock);
-            $(appBlock).on('click', () => select(app, $(appBlock)));
+            let name = Messages.type[app] || app;
+            let icon = UI.getNewIcon(app);
+            let appBlock = apps[app] = h('div.cp-appblock', [
+                icon,
+                h('span', name),
+                h('i.fa.fa-check.cp-on-enabled')
+            ]);
+            let $app = $(appBlock).appendTo($grid);
+            if (appsToDisable.includes(app)) {
+                $app.addClass('cp-inactive-app');
+            } else {
+                $app.addClass('cp-active-app');
+            }
+            $app.on('click', () => select(app, $app));
         });
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            selections.appsToDisable = appsToDisable;
             UI.log(Messages.saved);
             gotoPage(Env, 2);
         });
@@ -265,8 +285,6 @@ define([
 
     const mfaRegistrationScreen = function (Env) {
         const { sendAdminDecree, sendAdminRpc } = Env;
-
-        const blocks = Sidebar.blocks('admin');
 
         var restrict = blocks.activeCheckbox({
             key: 'registration',

@@ -4,6 +4,7 @@
 @import (reference) "../../customize/src/less2/include/markdown.less";
 @import (reference) "../../customize/src/less2/include/avatar.less";
 @import (reference) '../../customize/src/less2/include/admin.less';
+@import (reference) '../../customize/src/less2/include/icon-colors.less';
 
 &.cp-page-install {
     .admin_main();
@@ -28,6 +29,21 @@
             border-radius: @variables_radius_L;
             box-shadow: 0px 0px 10px 0px @cp_shadow-color;
             padding: 30px 110px 20px 110px;
+        }
+        .cp-onboarding-logo-input {
+            display: none;
+        }
+        .cp-onboardscreen-logo {
+            min-width: 200px;
+            max-width: 200px;
+            nav {
+                display: flex;
+                margin-top: 0.5rem;
+                justify-content: center;
+            }
+        }
+        .cp-appblock {
+            .iconColors_main();
         }
     }
 }
@@ -73,7 +89,6 @@
         border: 0px transparent !important;
     }
     .cp-onboardscreen-logo {
-        width: 130px;
         .cp-sidebar-form {
             background-color: @cp_forms-bg;
             border-radius: @variables_radius;
@@ -224,9 +239,17 @@ nav.cp-onboardscreen-nav {
 //     padding: 10px;
 // }
 
+.cp-inactive-app {
+    .cp-on-enabled {
+        visibility: hidden;
+    }
+}
 .cp-active-app {
     background-color: #212121!important;
     max-width:30%;
+    .cp-on-enabled {
+        visibility: visible;
+    }
 }
 
 // .cp-admin-customize-options-grid {
