@@ -8,6 +8,7 @@ define([
     '/common/common-util.js',
     '/common/common-ui-elements.js',
     '/common/pad-types.js',
+    '/components/nthen/index.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -21,10 +22,12 @@ define([
     UI,
     Util,
     UIElements,
-    PadTypes
+    PadTypes,
+    nThen
 ) {
 
     //XXX
+    Messages.onboarding_save_error = "Some options could not be saved properly. Please visit the administration panel to check the values.";
     Messages.onboarding_upload = "Select logo";
     Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance';
     Messages.admin_onboardingNameHint = 'Please choose a title and description';
@@ -49,17 +52,14 @@ define([
     };
     const blocks = Sidebar.blocks('admin');
 
-    //TODO: fix EXPECTED_FUNCTION error
-    var flushCache = () => {
-            console.log('flushcashe');
-            // sendAdminDecree('FLUSH_CACHE', function (e, response) {
-            //     if (e || response.error) {
-            //         UI.warn(Messages.error);
-            //         console.error(e, response);
-            //         return;
-            //     }
-
-            // })
+    var flushCache = (Env, cb) => {
+        const { sendAdminRpc } = Env;
+        sendAdminRpc('FLUSH_CACHE', {}, function (e, response) {
+            if (e || response.error) {
+                console.error(e || response.error);
+            }
+            cb();
+        });
     };
 
     var selections = {
@@ -72,9 +72,93 @@ define([
         closeRegistration: false
     };
 
-    const titleConfig = function (Env) {
+    const saveAndRedirect = (Env) => {
         const { sendAdminDecree, sendAdminRpc } = Env;
 
+        let hasError = false;
+        let error = () => {
+            hasError = true;
+        };
+        nThen(waitFor => {
+            var name = selections.title;
+            if (!name) { return; }
+            sendAdminDecree('SET_INSTANCE_NAME', [name], waitFor((e, response) => {
+                if (e || response.error) {
+                    console.error(e || response.error);
+                    return void error();
+                }
+            }));
+        }).nThen(waitFor => {
+            var description = selections.description;
+            if (!description) { return; }
+            sendAdminDecree('SET_INSTANCE_DESCRIPTION', [
+                description
+            ], waitFor((e, response) => {
+                if (e || response.error) {
+                    console.error(e || response.error);
+                    return void error();
+                }
+
+            }));
+        }).nThen(waitFor => {
+            var dataURL = selections.logoURL;
+            if (!dataURL) { return; }
+            sendAdminRpc('UPLOAD_LOGO', {dataURL}, waitFor(function (e, response) {
+                if (e || response.error) {
+                    console.error(e || response.error);
+                    return void error();
+                }
+            }));
+        }).nThen(waitFor => {
+            var color = selections.color;
+            if (!color) { return; }
+            sendAdminRpc('CHANGE_COLOR', {color}, waitFor(function (e, response) {
+                if (e || response.error) {
+                    console.error(e || response.error);
+                    return void error();
+                }
+            }));
+        }).nThen(waitFor => {
+            var apps = selections.appsToDisable;
+            if (!apps.length) { return; }
+            sendAdminDecree('DISABLE_APPS', apps, waitFor(function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return;
+                }
+            }));
+        }).nThen(waitFor => {
+            if (!selections.mfa) { return; }
+            sendAdminDecree('ENFORCE_MFA', [selections.mfa], waitFor((e, response) => {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return;
+                }
+            }));
+        }).nThen(waitFor => {
+            if (!selections.closeRegistration) { return; }
+            sendAdminDecree('RESTRICT_REGISTRATION', [
+                selections.closeRegistration
+            ], waitFor(function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    return;
+                }
+            }));
+        }).nThen(() => {
+            flushCache(Env, function () {
+                if (hasError) {
+                    UI.alert(Messages.onboarding_save_error, function () {
+                        document.location.href = '/drive/';
+                    })
+                    return;
+                }
+                document.location.href = '/drive/';
+            });
+        });
+    };
+
+    const titleConfig = function (Env) {
         let titleInput = blocks.input({
             type: 'text',
             value:  selections.title,
@@ -156,7 +240,7 @@ define([
                 let rgb = $color.css('background-color');
                 let hex = Util.rgbToHex(rgb);
                 if (hex) {
-                    selections.color = hex;
+                    selections.color = color ? hex : '';
                     selections.colorId = color;
                 }
             });
@@ -254,8 +338,6 @@ define([
     };
 
     const appConfig = function (Env) {
-        const { sendAdminDecree, sendAdminRpc } = Env;
-
         const appsToDisable = selections.appsToDisable;
         const grid = createAppsGrid(appsToDisable);
 
@@ -285,8 +367,6 @@ define([
     };
 
     const mfaRegistrationScreen = function (Env) {
-        const { sendAdminDecree, sendAdminRpc } = Env;
-
         var restrict = blocks.activeCheckbox({
             key: 'registration',
             getState: function () {
@@ -329,79 +409,7 @@ define([
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function () {
 
-            var name = selections.title;
-            sendAdminDecree('SET_INSTANCE_NAME', [name], function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    return;
-                }
-                UI.log(Messages.saved);
-
-            });
-
-            var description = selections.title;
-            sendAdminDecree('SET_INSTANCE_DESCRIPTION', [description], function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    return;
-                }
-                UI.log(Messages.saved);
-
-            });
-
-            var logoURL = selections.logoURL;
-            sendAdminRpc('UPLOAD_LOGO', {logoURL}, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    return;
-                }
-            });
-
-            var color = selections.color;
-            sendAdminRpc('CHANGE_COLOR', {color}, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    return;
-                }
-            });
-
-            var apps = selections.appsToDisable;
-            sendAdminDecree('DISABLE_APPS', apps, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    return;
-                }
-            });
-
-            sendAdminDecree('ENFORCE_MFA', [selections.mfa], function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    return;
-                }
-                UI.log(Messages.saved);
-
-            });
-
-            sendAdminDecree('RESTRICT_REGISTRATION', [selections.closeRegistration], function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    return;
-                }
-                UI.log(Messages.saved);
-
-            });
-
-            flushCache();
-
-            document.location.href = '/drive/';
-            return;
+            saveAndRedirect(Env);
         });
 
         var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
@@ -440,8 +448,63 @@ define([
         $('body').append(Env.overlay);
     };
 
+    // XXX test functions to remove
     window.CP_onboarding_test = () => {
         create(() => {}, () => {});
+    };
+    window.CP_onboarding_test_full = () => {
+        require([
+            '/common/cryptpad-common.js',
+            '/common/outer/local-store.js',
+            '/common/outer/login-block.js',
+            '/common/rpc.js',
+            '/common/common-constants.js',
+            '/common/cryptget.js',
+        ], function (CryptPad, LocalStore, Block, Rpc, Constants, CryptGet) {
+            var blockHash = LocalStore.getBlockHash();
+            if (!blockHash) { return void console.error('NOT LOGGED IN'); }
+            var parsed = Block.parseBlockHash(blockHash);
+            var sessionToken = LocalStore.getSessionToken() || undefined;
+            let userHash;
+            nThen(w => {
+                // Get user keys
+                Util.getBlock(parsed.href, {
+                    bearer: sessionToken
+                }, w((err, response) => {
+                    if (err) {
+                        w.abort();
+                        return void console.error('Please login in and try again');
+                    }
+                    response.arrayBuffer().then(w(arraybuffer => {
+                        arraybuffer = new Uint8Array(arraybuffer);
+                        var block_info = Block.decrypt(arraybuffer, parsed.keys);
+                        userHash = block_info[Constants.userHashKey];
+                    }));
+                }));
+            }).nThen(() => {
+                // Make RPC
+                if (!userHash) { return void console.error('AUTH FAILED'); }
+                CryptPad.makeNetwork((err, network) => {
+                    if (err) { return void console.error(err); }
+                    CryptGet.get(userHash, (err, val) => {
+                        let p = Util.tryParse(val);
+                        Rpc.create(network, p.edPrivate, p.edPublic, function (e, rpc) {
+                            let sendAdminDecree = function (command, data, callback) {
+                                var params = ['ADMIN_DECREE', [command, data]];
+                                rpc.send('ADMIN', params, callback);
+                            };
+
+                            let sendAdminRpc = function (command, data, callback) {
+                                var params = [command, data];
+                                rpc.send('ADMIN', params, callback);
+                            };
+
+                            create(sendAdminDecree, sendAdminRpc);
+                        });
+                    }, {network: network});
+                });
+            });
+        });
     };
     return { create, createAppsGrid };
 

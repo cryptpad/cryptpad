@@ -26,7 +26,7 @@ define([
     var Messages = Cryptpad.Messages;
     $(function () {
 
-        if (LocalStore.isLoggedIn()) {
+        if (LocalStore.isLoggedIn() && !localStorage.CP_dev) {
             // already logged in, redirect to drive
             document.location.href = '/drive/';
             return;
