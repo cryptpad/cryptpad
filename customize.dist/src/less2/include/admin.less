@@ -37,8 +37,24 @@
         .instance-colors(@palette-colors; length(@palette-colors));
     }
 
-    div.cp-admin-customize-apps-grid {
+    .cp-admin-customize-apps-grid, .cp-admin-customize-options-grid {
+        display: grid;
+        gap: 0.25rem;
         .cp-appblock {
+
+        }
+    }
+
+    .cp-admin-customize-apps-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        .cp-appblock {
+            background-color: fade(@cryptpad_text_col, 10%);
+            padding: 0.3rem;
+            border-radius: @variables_radius;
+            font-size: 1.2em;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
             .iconColors_main();
         }
         .cp-inactive-app {
@@ -51,6 +67,11 @@
                 visibility: visible;
             }
         }
-
     }
+
+    .cp-admin-customize-options-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
 }
