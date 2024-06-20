@@ -37,11 +37,11 @@ define([
 
     var OnboardScreen = {};
 
-    var displayForm = function(sendAdminDecree, page) {
+    var displayForm = function(sendAdminDecree, sendAdminRpc, page) {
 
         var pages = [OnboardScreen.appConfig, OnboardScreen.mfaRegistrationScreen, OnboardScreen.titleConfig];
         var nextPageFunction = pages[page];
-        var nextPageForm = nextPageFunction(sendAdminDecree);
+        var nextPageForm = nextPageFunction(sendAdminDecree, sendAdminRpc);
         var elem = document.createElement('div');
         elem.setAttribute('id', 'cp-loading');
         let frame = h('div.configscreen', nextPageForm);
@@ -57,6 +57,7 @@ define([
     
     };
 
+    //TODO: fix EXPECTED_FUNCTION error
     var flushCache = () => {
             console.log('flushcashe')
             // sendAdminDecree('FLUSH_CACHE', function (e, response) {
@@ -67,7 +68,9 @@ define([
             //     }
 
             // })
-        };
+    };
+
+    var selections = {title: '', description: '', logoURL: '', color: '', appsToDisable: [], mfa: false, closeRegistration: false}
 
     OnboardScreen.titleConfig = function (sendAdminDecree, sendAdminRpc) {
 
@@ -78,12 +81,12 @@ define([
             var input = blocks.input({
                 type: 'text',
                 value:  '',
-                placeholder: Messages.admin_onboardingNamePlaceholder,
+                placeholder: selections.title || Messages.admin_onboardingNamePlaceholder,
                 'aria-labelledby': 'cp-admin-name'
             });
 
             var desc =  blocks.textarea({
-                placeholder: Messages.admin_onboardingDescPlaceholder,
+                placeholder: selections.description || Messages.admin_onboardingDescPlaceholder,
                 value:  '',
                 'aria-labelledby': 'cp-admin-description'
             });
@@ -93,6 +96,7 @@ define([
             return [input, desc];
         };
 
+        let dataURL = ''
         var logoBlock = function() {
 
             let inputLogo = blocks.input({
@@ -122,6 +126,7 @@ define([
             let $button = $(upload);
             let $remove = $(remove);
 
+            //TODO: update preview
             Util.onClickEnter($button, function () {
                 let files = inputLogo.files;
                 if (files.length !== 1) {
@@ -132,21 +137,7 @@ define([
                 $button.attr('disabled', 'disabled');
                 let reader = new FileReader();
                 reader.onloadend = function () {
-                    let dataURL = this.result;
-                    sendAdminRpc('UPLOAD_LOGO', {dataURL}, function (e, response) {
-                        $button.removeAttr('disabled');
-                        if (e || response.error) {
-                            UI.warn(Messages.error);
-                            $(inputLogo).val('');
-                            console.error(e, response);
-                            return;
-                        }
-                        flushCache();
-                        redraw();
-                        spinner.done();
-                        UI.log(Messages.saved);
-                    });
-
+                    dataURL = this.result;
                 };
                 reader.readAsDataURL(files[0]);
             });
@@ -156,18 +147,7 @@ define([
             }, function () {
                 spinner.spin();
                 $remove.attr('disabled', 'disabled');
-                sendAdminRpc('REMOVE_LOGO', {}, function (e, response) {
-                    $remove.removeAttr('disabled');
-                    if (e) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                        spinner.hide();
-                        return;
-                    }
-                    redraw();
-                    spinner.done();
-                    UI.log(Messages.saved);
-                });
+                selections.logoURL = ''
             });
 
             return formLogo;
@@ -181,15 +161,9 @@ define([
                 let rgb = $color.css('background-color');
                 let hex = Util.rgbToHex(rgb);
                 selectorColor = hex;
-                // XXX Save only at the end
-                sendAdminRpc('CHANGE_COLOR', {color:selectedColor}, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                        return;
-                    }
-                    UI.log(Messages.saved);
-                });
+                if (hex) {
+                    selections.color = hex
+                }
             });
             var $colors = $(colors).attr('id', 'cp-install-color');
             var content = h('div.cp-onboardscreen-colorpick', [
@@ -201,34 +175,17 @@ define([
         };
 
         var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+            if ($($(titleInput).children()[0]).val() !== '') {
+                selections.title = $($(titleInput).children()[0]).val()
+            }
+            if ($($(desc).children()[0]).val() !== '') {
+                selections.description = $($(desc).children()[0]).val()
+            } 
+            if (dataURL) {
+                selections.logoURL = dataURL
+            } 
 
-            // XXX Save only at the end
-            sendAdminDecree('SET_INSTANCE_NAME', [$(titleInput).val().trim()], function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    done(false);
-                    return;
-                }
-                flushCache();
-                done(true);
-                UI.log(Messages.saved);
-
-            })
-            sendAdminDecree('SET_INSTANCE_DESCRIPTION', [$(desc).val().trim()], function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    done(false);
-                    return;
-                }
-                flushCache();
-                done(true);
-                UI.log(Messages.saved);
-
-            })
-
-            displayForm(sendAdminDecree, 0);
+            displayForm(sendAdminDecree, sendAdminRpc, 0);
         });
 
         var titleInput = h('div.cp-onboardscreen-name', titleDescBlock()[0]);
@@ -241,9 +198,7 @@ define([
         var nav = blocks.nav([button]);
 
         $(button).addClass('cp-onboardscreen-save');
-        $(button).addClass('cp-onboardscreen-title-save');
         $(nav).addClass('cp-onboardscreen-nav')
-        $(nav).addClass('cp-onboardscreen-title-nav')
 
         var textForm= h('div.cp-instance-text-form',[
             titleInput,
@@ -264,7 +219,7 @@ define([
 
     };
 
-    OnboardScreen.appConfig = function (sendAdminDecree) {
+    OnboardScreen.appConfig = function (sendAdminDecree, sendAdminRpc) {
 
         const blocks = Sidebar.blocks('admin');
         const grid = blocks.block([], 'cp-admin-customize-apps-grid');
@@ -292,25 +247,13 @@ define([
         }); 
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            sendAdminDecree('DISABLE_APPS', appsToDisable, function (e, response) {
-                if (e || response.error) {
-                    UI.warn(Messages.error);
-                    console.error(e, response);
-                    done(false);
-                    return;
-                }
-                flushCache();
-                done(true);
-                UI.log(Messages.saved);
-
-            })
-            
+            selections.appsToDisable = appsToDisable
             UI.log(Messages.saved);
-            displayForm(sendAdminDecree, 1)
+            displayForm(sendAdminDecree, sendAdminRpc, 1)
         });
 
         var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
-            displayForm(sendAdminDecree, 2);
+            displayForm(sendAdminDecree, sendAdminRpc, 2);
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
@@ -329,7 +272,7 @@ define([
         return form;
     }    
 
-    OnboardScreen.mfaRegistrationScreen = function(sendAdminDecree, app) {
+    OnboardScreen.mfaRegistrationScreen = function(sendAdminDecree, sendAdminRpc) {
         const blocks = Sidebar.blocks('admin');
 
         var restrict = blocks.activeCheckbox({
@@ -338,18 +281,8 @@ define([
                 return false;
             },
             label: 'registration',
-            query: function (val, setState) {
-                sendAdminDecree('RESTRICT_REGISTRATION', [val], function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                        done(false);
-                        return;
-                    }
-                    flushCache();
-                    UI.log(Messages.saved);
-
-                });
+            query: function (val) {
+                selections.closeRegistration = val
             },
         });
 
@@ -359,18 +292,8 @@ define([
                 return false;
             },
             label: 'forcemfa',
-            query: function (val, setState) {
-                sendAdminDecree('ENFORCE_MFA', [val], function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                        done(false);
-                        return;
-                    }
-                    flushCache();
-                    UI.log(Messages.saved);
-
-                })
+            query: function (val) {
+                selections.mfa = val
             },
         });
 
@@ -383,12 +306,84 @@ define([
         $(grid).append(registrationOption);
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function () {
-            document.location.href = '/drive/';
-            return;
+
+            var name = selections.title
+            sendAdminDecree('SET_INSTANCE_NAME', [name], function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
+                UI.log(Messages.saved);
+
+            })
+
+            var description = selections.title
+            sendAdminDecree('SET_INSTANCE_DESCRIPTION', [description], function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
+                UI.log(Messages.saved);
+
+            })
+            
+            var logoURL = selections.logoURL
+            sendAdminRpc('UPLOAD_LOGO', {logoURL}, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
+            });
+
+            var color = selections.color
+            sendAdminRpc('CHANGE_COLOR', {color}, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
+            });
+
+            var apps = selections.appsToDisable
+            sendAdminDecree('DISABLE_APPS', apps, function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
+            })
+
+            sendAdminDecree('ENFORCE_MFA', [selections.mfa], function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
+                UI.log(Messages.saved);
+
+            })
+
+            sendAdminDecree('RESTRICT_REGISTRATION', [selections.closeRegistration], function (e, response) {
+                if (e || response.error) {
+                    UI.warn(Messages.error);
+                    console.error(e, response);
+                    return;
+                }
+                UI.log(Messages.saved);
+
+            });
+
+            flushCache();
+
+            // document.location.href = '/drive/';
+            // return;
         });
 
-        var prev = blocks.activeButton('primary', '', Messages.settings_prev, function () {
-            displayForm(sendAdminDecree, 0);
+        var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
+            displayForm(sendAdminDecree, sendAdminRpc, 0);
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
