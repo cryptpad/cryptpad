@@ -290,32 +290,42 @@ define([
         var restrict = blocks.activeCheckbox({
             key: 'registration',
             getState: function () {
-                return false;
+                return selections.closeRegistration;
             },
             label: 'registration',
-            query: function (val) {
+            query: function (val, setState) {
                 selections.closeRegistration = val;
+                setState(val)
             },
         });
 
         var forceMFA = blocks.activeCheckbox({
             key: 'forcemfa',
             getState: function () {
-                return false;
+                return selections.mfa;
             },
             label: 'forcemfa',
-            query: function (val) {
+            query: function (val, setState) {
                 selections.mfa = val;
+                setState(val)
             },
         });
 
-        const grid = blocks.block([], 'cp-admin-customize-options-grid');
-        const options = [restrict, forceMFA];
 
-        let mfaOption = h('div.cp-appblock.cp-inactive-app', forceMFA, h('br'), Messages.admin_onboardingMfa);
-        $(grid).append(mfaOption);
-        let registrationOption = h('div.cp-appblock.cp-inactive-app', restrict, h('br'), Messages.admin_onboardingRegistration);
-        $(grid).append(registrationOption);
+        let mfaOption = h('div', [
+            forceMFA,
+            h('br'),
+            h('span', Messages.admin_onboardingMfa)
+        ]);
+        let registrationOption = h('div', [
+            restrict,
+            h('br'),
+            h('span', Messages.admin_onboardingRegistration)
+        ]);
+        const grid = blocks.block([
+            mfaOption,
+            registrationOption
+        ], 'cp-admin-customize-options-grid');
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function () {
 
