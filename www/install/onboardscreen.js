@@ -220,7 +220,7 @@ define([
         function select(app, appBlock) {
             if (appsToDisable.indexOf(app) === -1) {
                 appsToDisable.push(app);
-                var checkMark = h('div.cp-onboardscreen-checkmark');
+                var checkMark = h('i.cp-onboardscreen-checkmark.fa');
                 $(checkMark).addClass('fa-check');
                 appBlock.append(checkMark);
                 $(`#${app}-block`).addClass('cp-active-app');
