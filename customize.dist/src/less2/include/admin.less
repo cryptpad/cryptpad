@@ -6,6 +6,7 @@
 
 @import (reference) "./colortheme-all.less";
 @import (reference) "./forms.less";
+@import (reference) './icon-colors.less';
 
 .admin_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -54,6 +55,17 @@
             display: flex;
             flex-direction: row;
             align-items: center;
+            .iconColors_main();
+        }
+        .cp-inactive-app {
+            .cp-on-enabled {
+                visibility: hidden;
+            }
+        }
+        .cp-active-app {
+            .cp-on-enabled {
+                visibility: visible;
+            }
         }
     }
 
