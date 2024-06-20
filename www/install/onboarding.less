@@ -10,6 +10,26 @@
     div.cp-palette-container {
         max-width: 400px;
     }
+    #cp-onboarding {
+        position: fixed;
+        z-index: 1000;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        background-color: @cp_loading-bg;
+        color: @cp_loading-fg;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        align-items: center;
+        .cp-onboarding-box {
+            background-color: @cp_loading-progress-bg;
+            border-radius: @variables_radius_L;
+            box-shadow: 0px 0px 10px 0px @cp_shadow-color;
+            padding: 30px 110px 20px 110px;
+        }
+    }
 }
 
 @cp_palette:
@@ -21,15 +41,6 @@
     #C9FFFE,
     #C8D6FF,
     #E4CAFF;
-
-.configscreen {
-    //width: 70%;
-    //height: 75%;
-    background-color: @cp_loading-progress-bg;
-    border-radius: @variables_radius_L;
-    box-shadow: 0px 0px 10px 0px @cp_shadow-color;
-    padding: 30px 110px 20px 110px;
-}
 
 // .cp-onboardscreen-form {
 //     // padding:10px;
