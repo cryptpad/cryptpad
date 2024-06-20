@@ -225,8 +225,6 @@ define([
         const allApps = PadTypes.appsToSelect;
         const appsToDisable = selections.appsToDisable;
 
-        let apps = {};
-
         let select = function (app, $app) {
             if (appsToDisable.indexOf(app) === -1) {
                 console.error('SET ACTIVE', app);
@@ -239,12 +237,12 @@ define([
                 $app.toggleClass('cp-inactive-app', false);
                 $app.toggleClass('cp-active-app', true);
             }
-        }
+        };
 
         allApps.forEach(app => {
             let name = Messages.type[app] || app;
             let icon = UI.getNewIcon(app);
-            let appBlock = apps[app] = h('div.cp-appblock', [
+            let appBlock = h('div.cp-appblock', [
                 icon,
                 h('span', name),
                 h('i.fa.fa-check.cp-on-enabled')

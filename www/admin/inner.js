@@ -638,36 +638,39 @@ define([
 
         sidebar.addItem('apps', function (cb) {
             const grid = blocks.block([], 'cp-admin-customize-apps-grid');
+            const $grid = $(grid);
             const allApps = PadTypes.appsToSelect;
-			const appsToDisable = ApiConfig.appsToDisable || [];
-            
-            function select(app, appBlock) {
+            const appsToDisable = ApiConfig.appsToDisable || [];
+
+            let select = function (app, $app) {
                 if (appsToDisable.indexOf(app) === -1) {
                     appsToDisable.push(app);
-                    var checkMark = h('div.cp-onboardscreen-checkmark');
-                    $(checkMark).addClass('fa.fa-check');
-                    appBlock.append(checkMark);
-                    $(`#${app}-block`).addClass('cp-active-app');
-                    $(`#${app}-block`).removeClass('cp-inactive-app');
+                    $app.toggleClass('cp-inactive-app', true);
+                    $app.toggleClass('cp-active-app', false);
                 } else {
                     appsToDisable.splice(appsToDisable.indexOf(app), 1);
-                    $(`#${app}-block`).addClass('cp-inactive-app'); 
-                    $(`#${app}-block`).removeClass('cp-active-app');
-                    appBlock.find('.cp-onboardscreen-checkmark').remove();
-                } 
-            }
-
-            allApps.forEach(app => { 
-                
-                let appBlock = h('div.cp-appblock', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1));
-                if (appsToDisable.indexOf(app) === -1) {
-                    $(appBlock).addClass('cp-inactive-app');
-                } else {
-                    $(appBlock).addClass('cp-active-app');
+                    $app.toggleClass('cp-inactive-app', false);
+                    $app.toggleClass('cp-active-app', true);
                 }
-                $(grid).append(appBlock);
-                $(appBlock).on('click', () => select(app, $(appBlock)));
-            }); 
+            };
+
+            allApps.forEach(app => {
+                let name = Messages.type[app] || app;
+                let icon = UI.getNewIcon(app);
+                let appBlock = h('div.cp-appblock', [
+                    icon,
+                    h('span', name),
+                    h('i.fa.fa-check.cp-on-enabled')
+                ]);
+                let $app = $(appBlock).appendTo($grid);
+                if (appsToDisable.includes(app)) {
+                    $app.addClass('cp-inactive-app');
+                } else {
+                    $app.addClass('cp-active-app');
+                }
+                $app.on('click', () => select(app, $app));
+            });
+
 
             var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
                 sFrameChan.query('Q_ADMIN_RPC', {
