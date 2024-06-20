@@ -32,34 +32,23 @@ define([
     Messages.admin_onboardingRegistrationHint = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id tristique justo";
     Messages.admin_onboardingRegistration = "Visitors to the instance are not able to create accounts. Invitations can be created by administrators";
     Messages.admin_onboardingMfa = "All accounts on the instance have to use 2-factor authentication";
-    Messages.admin_onboardingNamePlaceholder = 'Instance title'
-    Messages.admin_onboardingDescPlaceholder = 'Placeholder description text'
+    Messages.admin_onboardingNamePlaceholder = 'Instance title';
+    Messages.admin_onboardingDescPlaceholder = 'Placeholder description text';
 
-    var OnboardScreen = {};
+    let pages = [];
+    const gotoPage = function (Env, page) {
+        if (typeof(page) !== "number" || !page) { page = 0; }
+        if (page > (pages.length - 1)) { page = pages.length - 1; }
 
-    var displayForm = function(sendAdminDecree, sendAdminRpc, page) {
-
-        var pages = [OnboardScreen.appConfig, OnboardScreen.mfaRegistrationScreen, OnboardScreen.titleConfig];
         var nextPageFunction = pages[page];
-        var nextPageForm = nextPageFunction(sendAdminDecree, sendAdminRpc);
-        var elem = document.createElement('div');
-        elem.setAttribute('id', 'cp-loading');
-        let frame = h('div.configscreen', nextPageForm);
-        elem.append(frame);
-        var intr;
-        var append = function () {
-            if (!document.body) { return; }
-            clearInterval(intr);
-            document.body.appendChild(elem);
-        };
-        intr = setInterval(append, 100);
-        append();
-    
+        var nextPageForm = nextPageFunction(Env);
+        let frame = h('div.cp-onboarding-box', nextPageForm);
+        Env.overlay.empty().append(frame);
     };
 
     //TODO: fix EXPECTED_FUNCTION error
     var flushCache = () => {
-            console.log('flushcashe')
+            console.log('flushcashe');
             // sendAdminDecree('FLUSH_CACHE', function (e, response) {
             //     if (e || response.error) {
             //         UI.warn(Messages.error);
@@ -70,9 +59,10 @@ define([
             // })
     };
 
-    var selections = {title: '', description: '', logoURL: '', color: '', appsToDisable: [], mfa: false, closeRegistration: false}
+    var selections = {title: '', description: '', logoURL: '', color: '', appsToDisable: [], mfa: false, closeRegistration: false};
 
-    OnboardScreen.titleConfig = function (sendAdminDecree, sendAdminRpc) {
+    const titleConfig = function (Env) {
+        const { sendAdminDecree, sendAdminRpc } = Env;
 
         const blocks = Sidebar.blocks('admin');
 
@@ -96,7 +86,7 @@ define([
             return [input, desc];
         };
 
-        let dataURL = ''
+        let dataURL = '';
         var logoBlock = function() {
 
             let inputLogo = blocks.input({
@@ -147,7 +137,7 @@ define([
             }, function () {
                 spinner.spin();
                 $remove.attr('disabled', 'disabled');
-                selections.logoURL = ''
+                selections.logoURL = '';
             });
 
             return formLogo;
@@ -162,7 +152,7 @@ define([
                 let hex = Util.rgbToHex(rgb);
                 selectorColor = hex;
                 if (hex) {
-                    selections.color = hex
+                    selections.color = hex;
                 }
             });
             var $colors = $(colors).attr('id', 'cp-install-color');
@@ -176,16 +166,16 @@ define([
 
         var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
             if ($($(titleInput).children()[0]).val() !== '') {
-                selections.title = $($(titleInput).children()[0]).val()
+                selections.title = $($(titleInput).children()[0]).val();
             }
             if ($($(desc).children()[0]).val() !== '') {
-                selections.description = $($(desc).children()[0]).val()
-            } 
+                selections.description = $($(desc).children()[0]).val();
+            }
             if (dataURL) {
-                selections.logoURL = dataURL
-            } 
+                selections.logoURL = dataURL;
+            }
 
-            displayForm(sendAdminDecree, sendAdminRpc, 0);
+            gotoPage(Env, 1);
         });
 
         var titleInput = h('div.cp-onboardscreen-name', titleDescBlock()[0]);
@@ -198,7 +188,7 @@ define([
         var nav = blocks.nav([button]);
 
         $(button).addClass('cp-onboardscreen-save');
-        $(nav).addClass('cp-onboardscreen-nav')
+        $(nav).addClass('cp-onboardscreen-nav');
 
         var textForm= h('div.cp-instance-text-form',[
             titleInput,
@@ -219,60 +209,63 @@ define([
 
     };
 
-    OnboardScreen.appConfig = function (sendAdminDecree, sendAdminRpc) {
+    const appConfig = function (Env) {
+        const { sendAdminDecree, sendAdminRpc } = Env;
 
         const blocks = Sidebar.blocks('admin');
         const grid = blocks.block([], 'cp-admin-customize-apps-grid');
         const allApps = PadTypes.appsToSelect;
         const appsToDisable = [];
-            
+
         function select(app, appBlock) {
             if (appsToDisable.indexOf(app) === -1) {
                 appsToDisable.push(app);
                 var checkMark = h('div.cp-onboardscreen-checkmark');
                 $(checkMark).addClass('fa-check');
                 appBlock.append(checkMark);
-                $(`#${app}-block`).addClass('cp-active-app') 
+                $(`#${app}-block`).addClass('cp-active-app');
             } else {
                 appsToDisable.splice(appsToDisable.indexOf(app), 1);
-                $(`#${app}-block`).addClass('cp-inactive-app') 
+                $(`#${app}-block`).addClass('cp-inactive-app');
                 appBlock.find('.cp-onboardscreen-checkmark').remove();
-            } 
+            }
         }
 
-        allApps.forEach(app => { 
-            let appBlock = h('div.cp-appblock.cp-inactive-app', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1))
+        allApps.forEach(app => {
+            let appBlock = h('div.cp-appblock.cp-inactive-app', {id: `${app.toString()}-block`}, app.charAt(0).toUpperCase() + app.slice(1));
             $(grid).append(appBlock);
             $(appBlock).on('click', () => select(app, $(appBlock)));
-        }); 
+        });
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
-            selections.appsToDisable = appsToDisable
+            selections.appsToDisable = appsToDisable;
             UI.log(Messages.saved);
-            displayForm(sendAdminDecree, sendAdminRpc, 1)
+            gotoPage(Env, 2);
         });
 
         var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
-            displayForm(sendAdminDecree, sendAdminRpc, 2);
+            gotoPage(Env, 0);
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingAppsTitle), h('span', Messages.admin_onboardingAppsHint)))
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingAppsTitle), h('span', Messages.admin_onboardingAppsHint)));
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
-        var nav = blocks.nav([prev, save])
+        var nav = blocks.nav([prev, save]);
         $(nav).addClass('cp-onboardscreen-nav');
         let form = blocks.form([
             screenTitle,
-            grid 
+            grid
         ], nav);
 
         $(form).addClass('cp-onboardscreen-form');
-        
-        return form;
-    }    
 
-    OnboardScreen.mfaRegistrationScreen = function(sendAdminDecree, sendAdminRpc) {
+        return form;
+    };
+
+    const mfaRegistrationScreen = function (Env) {
+        const { sendAdminDecree, sendAdminRpc } = Env;
+
         const blocks = Sidebar.blocks('admin');
 
         var restrict = blocks.activeCheckbox({
@@ -282,7 +275,7 @@ define([
             },
             label: 'registration',
             query: function (val) {
-                selections.closeRegistration = val
+                selections.closeRegistration = val;
             },
         });
 
@@ -293,7 +286,7 @@ define([
             },
             label: 'forcemfa',
             query: function (val) {
-                selections.mfa = val
+                selections.mfa = val;
             },
         });
 
@@ -307,7 +300,7 @@ define([
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function () {
 
-            var name = selections.title
+            var name = selections.title;
             sendAdminDecree('SET_INSTANCE_NAME', [name], function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
@@ -316,9 +309,9 @@ define([
                 }
                 UI.log(Messages.saved);
 
-            })
+            });
 
-            var description = selections.title
+            var description = selections.title;
             sendAdminDecree('SET_INSTANCE_DESCRIPTION', [description], function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
@@ -327,9 +320,9 @@ define([
                 }
                 UI.log(Messages.saved);
 
-            })
-            
-            var logoURL = selections.logoURL
+            });
+
+            var logoURL = selections.logoURL;
             sendAdminRpc('UPLOAD_LOGO', {logoURL}, function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
@@ -338,7 +331,7 @@ define([
                 }
             });
 
-            var color = selections.color
+            var color = selections.color;
             sendAdminRpc('CHANGE_COLOR', {color}, function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
@@ -347,14 +340,14 @@ define([
                 }
             });
 
-            var apps = selections.appsToDisable
+            var apps = selections.appsToDisable;
             sendAdminDecree('DISABLE_APPS', apps, function (e, response) {
                 if (e || response.error) {
                     UI.warn(Messages.error);
                     console.error(e, response);
                     return;
                 }
-            })
+            });
 
             sendAdminDecree('ENFORCE_MFA', [selections.mfa], function (e, response) {
                 if (e || response.error) {
@@ -364,7 +357,7 @@ define([
                 }
                 UI.log(Messages.saved);
 
-            })
+            });
 
             sendAdminDecree('RESTRICT_REGISTRATION', [selections.closeRegistration], function (e, response) {
                 if (e || response.error) {
@@ -383,14 +376,14 @@ define([
         });
 
         var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
-            displayForm(sendAdminDecree, sendAdminRpc, 0);
+            gotoPage(Env, 1);
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
         $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingRegistrationTitle), h('span', Messages.admin_onboardingRegistrationHint)));
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
-        var nav = blocks.nav([prev, save])
+        var nav = blocks.nav([prev, save]);
         $(nav).addClass('cp-onboardscreen-nav');
 
         var form = blocks.form([
@@ -401,10 +394,27 @@ define([
         $(form).addClass('cp-onboardscreen-form');
 
         return form;
-    
     };
 
-    return OnboardScreen;
+    pages = [
+        titleConfig,
+        appConfig,
+        mfaRegistrationScreen
+    ];
+    const create = (sendAdminDecree, sendAdminRpc) => {
+        let Env = {
+            sendAdminDecree,
+            sendAdminRpc
+        };
+        Env.overlay = $(h('div#cp-onboarding'));
+        gotoPage(Env, 0);
+        $('body').append(Env.overlay);
+    };
+
+    window.CP_onboarding_test = () => {
+        create(() => {}, () => {});
+    };
+    return { create };
 
 });
 

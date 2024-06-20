@@ -60,29 +60,10 @@ define([
         }
 
         var showTitleScreen = function (sendAdminDecree, sendAdminRpc) {
-
-            var titleScreen = OnboardScreen.titleConfig;
-            var form = titleScreen(sendAdminDecree, sendAdminRpc);
-
-            var elem = document.createElement('div');
-            elem.setAttribute('id', 'cp-loading');
-            let frame = h('div.configscreen', form);
-            elem.append(frame);
-            var intr;
-            var append = function () {
-                if (!document.body) { return; }
-                clearInterval(intr);
-                document.body.appendChild(elem);
-            };
-            intr = setInterval(append, 100);
-            append();
-
+            OnboardScreen.create(sendAdminDecree, sendAdminRpc);
         };
 
         var registerClick = function () {
-
-            // showTitleScreen()
-
             var uname = $uname.val().trim();
             // trim whitespace surrounding the username since it is otherwise included in key derivation
             // most people won't realize that its presence is significant
@@ -147,19 +128,17 @@ define([
                 }
 
                 let sendAdminDecree = function (command, data, callback) {
-                    var params = ['ADMIN_DECREE', [command, data]];  
-                    rpc.send('ADMIN', params, callback)
+                    var params = ['ADMIN_DECREE', [command, data]];
+                    rpc.send('ADMIN', params, callback);
                 };
 
                 let sendAdminRpc = function (command, data, callback) {
-                    var params = [command, data];  
-                    rpc.send('ADMIN', params, callback)
+                    var params = [command, data];
+                    rpc.send('ADMIN', params, callback);
                 };
 
-                showTitleScreen(sendAdminDecree, sendAdminRpc)
-              
+                showTitleScreen(sendAdminDecree, sendAdminRpc);
             });
-  
     };
 
             setTimeout(function () {
