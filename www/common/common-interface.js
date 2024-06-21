@@ -925,7 +925,8 @@ define([
             title: text,
             href: href,
             target: "_blank",
-            'data-tippy-placement': "right"
+            'data-tippy-placement': "right",
+            'aria-label': Messages.help_genericMore //TBC XXX
         });
         return q;
     };
@@ -1205,14 +1206,14 @@ define([
         if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
 
         // Mark properties
-        var markOpts = { tabindex: 0 };
+        var markOpts = { tabindex: 0, role: 'checkbox', 'aria-checked': checked, 'aria-labelledby': inputOpts.id + '-label' };
         $.extend(markOpts, opts.mark || {});
 
         var input = h('input', inputOpts);
         var $input = $(input);
         var mark = h('span.cp-checkmark-mark', markOpts);
         var $mark = $(mark);
-        var label = h('span.cp-checkmark-label', labelTxt);
+        var label = h('span.cp-checkmark-label', {id: inputOpts.id + '-label'}, labelTxt);
 
         $mark.keydown(function (e) {
             if ($input.is(':disabled')) { return; }
@@ -1228,8 +1229,10 @@ define([
             if (!opts.labelAlt) { return; }
             if ($input.is(':checked') !== checked) {
                 $(label).text(opts.labelAlt);
+                $mark.attr('aria-checked', 'true');
             } else {
                 $(label).text(labelTxt);
+                $mark.attr('aria-checked', 'false');
             }
         });
 

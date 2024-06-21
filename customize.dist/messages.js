@@ -88,6 +88,9 @@ define(req, function(AppConfig, Default, Language) {
         });
     }
 
+    let html = typeof(document) !== "undefined" && document.documentElement;
+    if (html) { html.setAttribute('lang', language); }
+
     var extend = function (a, b) {
         for (var k in b) {
             if (Array.isArray(b[k])) {

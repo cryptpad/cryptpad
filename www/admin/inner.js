@@ -790,7 +790,7 @@ define([
 
             var currentContainer = blocks.block([], 'cp-admin-customize-logo');
             let redraw = () => {
-                var current = h('img', {src: '/api/logo?'+(+new Date())});
+                var current = h('img', {src: '/api/logo?'+(+new Date()),alt:'Custom logo'}); // XXX
                 $(currentContainer).empty().append(current);
             };
             redraw();
