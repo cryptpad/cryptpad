@@ -380,6 +380,13 @@ define([
         palette.forEach(function (color) {
             var $color = $(h('button.cp-kanban-palette.fa'));
             $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
+            $color.keydown(function (e) {
+                if (e.which === 13) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $color.click();
+                }
+            });
             $color.click(function () {
                 if (offline) { return; }
                 if (color === selectedColor) { return; }
