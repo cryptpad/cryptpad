@@ -3014,6 +3014,8 @@ define([
                 // Make sure we have a valid user object before emitting cacheready
                 if (rt.proxy && !rt.proxy.drive) { return; }
 
+                returned.edPublic = rt.proxy.edPublic;
+
                 onCacheReady(clientId, function () {
                     if (typeof(cb) === "function") { cb(returned); }
                     onCacheReadyEvt.fire();
@@ -3047,6 +3049,8 @@ define([
                     drive[Constants.oldStorageKey] = [];
                 }
                 */
+
+                returned.edPublic = rt.proxy.edPublic;
                 // Drive already exist: return the existing drive, don't load data from legacy store
                 if (store.manager) {
                     // If a cache is loading, make sure it is complete before calling onReady
@@ -3156,6 +3160,7 @@ define([
                 loadUniversal(Cursor, 'cursor', function () {});
                 loadUniversal(Integration, 'integration', function () {});
                 loadUniversal(Messenger, 'messenger', function () {});
+                loadOnlyOffice();
                 store.messenger = store.modules['messenger'];
 
                 // And now we're ready

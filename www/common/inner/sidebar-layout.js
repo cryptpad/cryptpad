@@ -262,9 +262,9 @@ define([
                 options = options || {};
                 const title = options.noTitle ? undefined : h('label.cp-item-label', {
                     id: `cp-${app}-${key}`
-                }, Messages[`${app}_${safeKey}Title`] || key);
+                }, options.title || Messages[`${app}_${safeKey}Title`] || key);
                 const hint = options.noHint ? undefined : h('span.cp-sidebarlayout-description',
-                    Messages[`${app}_${safeKey}Hint`] || 'Coming soon...');
+                    options.hint || Messages[`${app}_${safeKey}Hint`] || 'Coming soon...');
                 if (hint && options.htmlHint) {
                     hint.innerHTML = Messages[`${app}_${safeKey}Hint`];
                 }
@@ -279,6 +279,10 @@ define([
                 items[key] = div;
                 $rightside.append(div);
             });
+        };
+
+        sidebar.hasItem = key => {
+            return !key || !!items[key];
         };
 
         sidebar.addCheckboxItem = (data) => {
@@ -335,7 +339,7 @@ define([
                     'data-category': key
                 }, [
                     icon,
-                    Messages[`${app}_cat_${key}`] || key,
+                    category.name || Messages[`${app}_cat_${key}`] || key,
                 ]);
                 var $item = $(item).appendTo(container);
                 Util.onClickEnter($item, function () {

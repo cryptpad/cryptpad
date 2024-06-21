@@ -169,7 +169,23 @@ define([
             }
         };
 
-        const blocks = Sidebar.blocks('admin');
+        const blocks = sidebar.blocks;
+
+        // EXTENSION_POINT:ADMIN_CATEGORY
+        common.getExtensions('ADMIN_CATEGORY').forEach(ext => {
+            if (!ext || !ext.id || !ext.name || !ext.content) {
+                return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
+            }
+            if (categories[ext.id]) {
+                return console.error('Extension point ID already used', ext);
+            }
+            console.error(ext);
+            categories[ext.id] = {
+                icon: ext.icon,
+                name: ext.name,
+                content: ext.content
+            };
+        });
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -3883,6 +3899,32 @@ define([
 
             cb(opts);
         });
+
+        // EXTENSION_POINT:ADMIN_ITEM
+        let utils = {
+            h, Util, Hash
+        };
+        common.getExtensions('ADMIN_ITEM').forEach(ext => {
+            if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
+                return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
+            }
+            if (sidebar.hasItem(ext.id)) {
+                return console.error('Extension point ID already used', ext);
+            }
+
+            sidebar.addItem(ext.id, cb => {
+                ext.getContent(common, blocks, utils, content => {
+                    cb(content);
+                });
+            }, {
+                noTitle: !ext.title,
+                noHint: !ext.description,
+                title: ext.title,
+                hint: ext.description
+            });
+        });
+
+
 
         sidebar.makeLeftside(categories);
     };

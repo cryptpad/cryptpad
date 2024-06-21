@@ -12,7 +12,7 @@ define([
 
     var CURRENT_VERSION = X2T.CURRENT_VERSION = CurrentVersion.currentVersion;
     var debug = function (str) {
-        if (localStorage.CryptPad_dev !== "1") { return; }
+        //if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);
     };
 

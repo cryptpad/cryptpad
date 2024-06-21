@@ -9,8 +9,6 @@ define([
 
     module.create = function (
         Common,
-        onLocal,
-        chainpad,
         saveHandler,
         unsavedChangesHandler) {
 
