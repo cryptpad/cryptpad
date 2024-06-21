@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* globals process */
 var Client = require("../../lib/client");
 var Nacl = require("tweetnacl/nacl-fast");
 var nThen = require("nthen");
