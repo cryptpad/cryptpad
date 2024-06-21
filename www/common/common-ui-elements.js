@@ -4294,8 +4294,10 @@ define([
         let container = h('div.cp-palette-container');
         let $container = $(container);
 
-        palette.forEach(function (color) {
-            var $color = $(h('span.cp-palette-color.fa'));
+        var all = [];
+        palette.forEach(function (color, i) {
+            var $color = $(h('button.cp-palette-color.fa'));
+            all.push($color);
             $color.addClass('cp-palette-'+(color || 'nocolor'));
             $color.click(function () {
                 if (offline) { return; }
@@ -4305,6 +4307,32 @@ define([
                 $color.addClass('fa-check');
                 onSelect(color, $color);
             }).appendTo($container);
+            $color.keydown(e => {
+                if (e.which === 37) {
+                    e.preventDefault();
+                    if (i === 0) {
+                        all[all.length - 1].focus();
+                    } else {
+                        all[i - 1].focus();
+                    }
+                }
+                if (e.which === 39) {
+                    e.preventDefault();
+                    if (i === (all.length - 1)) {
+                        all[0].focus();
+                    } else {
+                        all[i + 1].focus();
+                    }
+                }
+                if (e.which === 9) {
+                    if (e.shiftKey) {
+                        all[0].focus();
+                        return;
+                    }
+                    all[all.length - 1].focus();
+                }
+
+            });
         });
 
         container.disable = state => {
