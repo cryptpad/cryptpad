@@ -40,5 +40,4 @@ nThen(function (w) {
     console.log(token);
     var url = config.httpUnsafeOrigin + '/install/';
     console.log(`Please visit ${url} to create your first admin user`);
-
 });
