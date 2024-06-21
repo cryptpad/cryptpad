@@ -31,12 +31,10 @@ define([
     Messages.onboarding_upload = "Select logo";
     Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance';
     Messages.admin_onboardingNameHint = 'Please choose a title and description';
-    Messages.admin_onboardingAppsTitle = "Choose your applications";
-    Messages.admin_onboardingAppsHint = "Choose which apps to disable on your instance";
-    Messages.admin_onboardingRegistrationTitle = "Options";
-    Messages.admin_onboardingRegistrationHint = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In id tristique justo";
-    Messages.admin_onboardingRegistration = "Visitors to the instance are not able to create accounts. Invitations can be created by administrators";
-    Messages.admin_onboardingMfa = "All accounts on the instance have to use 2-factor authentication";
+    Messages.admin_appsTitle = "Instance applications";
+    Messages.admin_appsHint = "Choose which apps to enable on your instance";
+    Messages.admin_onboardingOptionsTitle = "Instance options";
+    Messages.admin_onboardingOptionsHint = "Please select the apropriate option for your instance. These settings can be changed later in the admin panel.";
     Messages.admin_onboardingNamePlaceholder = 'Instance title';
     Messages.admin_onboardingDescPlaceholder = 'Placeholder description text';
 
@@ -256,7 +254,7 @@ define([
             return content;
         };
 
-        var button = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+        var button = blocks.activeButton('primary', '', Messages.continue, function (done) {
             selections.title = $(titleInput).val() || '';
             selections.description = $(description).val() || '';
             if (dataURL) {
@@ -344,16 +342,16 @@ define([
         const grid = createAppsGrid(appsToDisable);
 
 
-        var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+        var save = blocks.activeButton('primary', '', Messages.continue, function (done) {
             gotoPage(Env, 2);
         });
 
-        var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
+        var prev = blocks.activeButton('secondary', '', Messages.form_backButton, function () {
             gotoPage(Env, 0);
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingAppsTitle), h('span', Messages.admin_onboardingAppsHint)));
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_appsTitle), h('span', Messages.admin_appsHint)));
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
         var nav = blocks.nav([prev, save]);
@@ -396,13 +394,11 @@ define([
 
         let mfaOption = h('div.cp-optionblock', [
             forceMFA,
-            h('br'),
-            h('span', Messages.admin_onboardingMfa)
+            h('span.cp-option-hint', Messages.admin_forcemfaHint)
         ]);
-        let registrationOption = h('div', [
+        let registrationOption = h('div.cp-optionblock', [
             restrict,
-            h('br'),
-            h('span', Messages.admin_onboardingRegistration)
+            h('span.cp-option-hint', Messages.admin_registrationHint)
         ]);
         const grid = blocks.block([
             mfaOption,
@@ -414,12 +410,12 @@ define([
             saveAndRedirect(Env);
         });
 
-        var prev = blocks.activeButton('primary', '', Messages.form_backButton, function () {
+        var prev = blocks.activeButton('secondary', '', Messages.form_backButton, function () {
             gotoPage(Env, 1);
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingRegistrationTitle), h('span', Messages.admin_onboardingRegistrationHint)));
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingOptionsTitle), h('span', Messages.admin_onboardingOptionsHint)));
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
         var nav = blocks.nav([prev, save]);
