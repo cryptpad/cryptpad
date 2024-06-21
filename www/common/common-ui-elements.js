@@ -173,8 +173,12 @@ define([
             var removeBtn, el;
             if (config.remove) {
                 removeBtn = h('span.fa.fa-times');
-                $(removeBtn).click(function () {
-                    config.remove(el);
+                $(removeBtn).attr('tabindex', '0');
+                $(removeBtn).on('click keydown', function(event) {
+                    if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
+                        event.preventDefault();
+                        config.remove(el);
+                    }
                 });
             }
 
@@ -184,6 +188,7 @@ define([
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
+                'tabindex': '0',
                 style: 'order:'+i+';'
             },[
                 avatar,
@@ -230,6 +235,13 @@ define([
                     $(this).removeClass('cp-selected').attr('style', order);
                 }
                 onSelect();
+            });
+            $div.on('keydown', '.cp-usergrid-user', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).trigger('click');
+                }
             });
         }
 

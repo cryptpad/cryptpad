@@ -240,11 +240,15 @@ define([
             if (!(tab.content || tab.disabled) || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title.toLowerCase(), 'aria-hidden':"true"}, tab.title));
+            $(title).attr('tabindex', '0');
             if (tab.icon) {
                 var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
                 $(title).prepend(' ').prepend(icon);
             }
-            $(title).click(function () {
+
+            Util.onClickEnter($(title), function (event) {
+                event.preventDefault();
+                event.stopPropagation();
                 if (tab.disabled) { return; }
                 var old = tabs[active];
                 if (old.onHide) { old.onHide(); }
@@ -330,7 +334,6 @@ define([
                 if (isEdit) { $button.find('span').text(Messages.tag_edit); }
                 else { $button.find('span').text(Messages.add); }
                 $container.append($form);
-                $input.focus();
                 isEdit = false;
                 called = false;
             });
@@ -486,7 +489,7 @@ define([
         var navs = [];
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
-            var button = h('button', { tabindex: '1', 'class': b.className || '' }, [
+            var button = h('button', { 'class': b.className || '' }, [
                 b.iconClass ? h('i' + b.iconClass) : undefined,
                 b.name
             ]);
@@ -509,7 +512,8 @@ define([
                     divClasses: 'left'
                 }, todo);
             } else {
-                $(button).click(function () {
+                Util.onClickEnter($(button), function (e) {
+                    e.stopPropagation();
                     todo();
                 });
             }
@@ -548,6 +552,34 @@ define([
         if (opt.forefront) { $(frame).addClass('forefront'); }
         return frame;
     };
+
+    let addTabListener = frame => {
+        // find focusable elements
+        let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible');
+        // intialize with focus on first element
+        modalElements[0].focus();
+
+        $(frame).on('keydown', function (e) {
+            modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible'); // for modals with dynamic content
+
+            if (e.which === 9) { // Tab
+                if (e.shiftKey) {
+                    // On the first element, shift+tab goes to last
+                    if (document.activeElement === modalElements[0]) {
+                        e.preventDefault();
+                        modalElements[modalElements.length - 1].focus();
+                    }
+                } else {
+                    // On the last element, tab goes to first
+                    if (document.activeElement === modalElements[modalElements.length - 1]) {
+                        e.preventDefault();
+                        modalElements[0].focus();
+                    }
+                }
+            }
+        });
+
+    };
     UI.openCustomModal = function (content, opt) {
         var frame = dialog.frame([
             content
@@ -564,6 +596,9 @@ define([
         setTimeout(function () {
             Notifier.notify();
         });
+
+        addTabListener(frame);
+
         return frame;
     };
 
@@ -742,13 +777,28 @@ define([
         var $ok = $(ok).click(function (ev) { close(true, ev); });
         var $cancel = $(cancel).click(function (ev) { close(false, ev); });
 
+        document.body.appendChild(frame);
+
+        addTabListener(frame);
+
+        frame.addEventListener('keydown', function(e) {
+            if (e.keyCode === 13) {
+                if (document.activeElement === $ok[0]) {
+                    $ok.click();
+                } else if (document.activeElement === $cancel[0]) {
+                    $cancel.click();
+                }
+            } else if (e.keyCode === 27) {
+                $cancel.click();
+            }
+        });
+
         listener = listenForKeys(function () {
             $ok.click();
         }, function () {
             $cancel.click();
         }, frame);
 
-        document.body.appendChild(frame);
         setTimeout(function () {
             Notifier.notify();
             $(frame).find('.ok').focus();
@@ -815,14 +865,18 @@ define([
         };
 
         var newCls2 = config.new ? 'new' : '';
-        $(originalBtn).addClass('cp-button-confirm-placeholder').addClass(newCls2).click(function (e) {
-            e.stopPropagation();
-            // If we have a validation function, continue only if it's true
-            if (config.validate && !config.validate()) { return; }
-            i = 1;
-            to = setTimeout(todo, INTERVAL);
-            $(originalBtn).hide().after(content);
+        $(originalBtn).addClass('cp-button-confirm-placeholder').addClass(newCls2).on('click keydown', function (e) {
+            if (e.type === 'click' || (e.type === 'keydown' && e.key === 'Enter')) {
+                e.stopPropagation();
+                // If we have a validation function, continue only if it's true
+                if (config.validate && !config.validate()) { return; }
+                i = 1;
+                to = setTimeout(todo, INTERVAL);
+                $(originalBtn).hide().after(content);
+                $(button).focus();
+            }
         });
+
 
         return {
             reset: function () {
@@ -1217,7 +1271,7 @@ define([
 
         $mark.keydown(function (e) {
             if ($input.is(':disabled')) { return; }
-            if (e.which === 32) {
+            if (e.which === 32 || e.which === 13){
                 e.stopPropagation();
                 e.preventDefault();
                 $input.prop('checked', !$input.is(':checked'));
@@ -1270,7 +1324,7 @@ define([
 
         $(mark).keydown(function (e) {
             if ($input.is(':disabled')) { return; }
-            if (e.which === 32) {
+            if (e.which === 13 || e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
                 if ($input.is(':checked')) { return; }
