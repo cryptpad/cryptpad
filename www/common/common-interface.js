@@ -513,6 +513,13 @@ define([
                     divClasses: 'left'
                 }, todo);
             } else {
+                $(button).keydown(function (e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        todo();
+                    }
+                });
                 $(button).click(function () {
                     todo();
                 });
