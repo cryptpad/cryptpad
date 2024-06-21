@@ -552,6 +552,34 @@ define([
         if (opt.forefront) { $(frame).addClass('forefront'); }
         return frame;
     };
+
+    let addTabListener = frame => {
+        // find focusable elements
+        let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible');
+        // intialize with focus on first element
+        modalElements[0].focus();
+
+        $(frame).on('keydown', function (e) {
+            modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible'); // for modals with dynamic content
+
+            if (e.which === 9) { // Tab
+                if (e.shiftKey) {
+                    // On the first element, shift+tab goes to last
+                    if (document.activeElement === modalElements[0]) {
+                        e.preventDefault();
+                        modalElements[modalElements.length - 1].focus();
+                    }
+                } else {
+                    // On the last element, tab goes to first
+                    if (document.activeElement === modalElements[modalElements.length - 1]) {
+                        e.preventDefault();
+                        modalElements[0].focus();
+                    }
+                }
+            }
+        });
+
+    };
     UI.openCustomModal = function (content, opt) {
         var frame = dialog.frame([
             content
@@ -569,73 +597,8 @@ define([
             Notifier.notify();
         });
 
-        let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible');
-        modalElements[0].focus();
+        addTabListener(frame);
 
-        let insideColorButtons = false;
-        $(frame).on('keydown', function(e) {
-            const colors = $('#cp-kanban-edit-colors button:visible');
-            const currentActiveElement = document.activeElement;
-            const currentActiveIndex = colors.index(currentActiveElement);
-            modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible'); // for modals with dynamic content
-
-            if (currentActiveIndex !== -1) {
-                insideColorButtons = true;
-
-                if (e.which === 37) {
-                    e.preventDefault();
-                    if (currentActiveIndex > 0) {
-                        colors.eq(currentActiveIndex - 1).focus();
-                    } else {
-                        colors.last().focus();
-                    }
-                }
-
-                else if (e.which === 39) {
-                    e.preventDefault();
-                    if (currentActiveIndex < colors.length - 1) {
-                        colors.eq(currentActiveIndex + 1).focus();
-                    } else {
-                        colors.first().focus();
-                    }
-                }
-
-                else if (e.shiftKey && e.which === 9) {
-                    e.preventDefault();
-                    $(frame).find('input:visible, .btn-primary:visible').last().focus();
-                    insideColorButtons = false;
-                }
-
-                else if (e.which === 9) {
-                    e.preventDefault();
-                    $(frame).find('.cp-button-confirm-placeholder:visible').first().focus();
-                    insideColorButtons = false;
-                }
-            }
-            else{
-                if (e.which === 9 && !insideColorButtons) {
-                    e.preventDefault();
-                    const firstElement = modalElements.first()[0];
-                    const lastElement = modalElements.last()[0];
-
-                    if (e.shiftKey) {
-                        if (currentActiveElement === firstElement) {
-                            lastElement.focus();
-                        } else {
-                            const currentIndex = modalElements.index(currentActiveElement);
-                            modalElements.get(currentIndex - 1).focus();
-                        }
-                    } else {
-                        if (currentActiveElement === lastElement) {
-                            firstElement.focus();
-                        } else {
-                            const currentIndex = modalElements.index(currentActiveElement);
-                            modalElements.get(currentIndex + 1).focus();
-                        }
-                    }
-                }
-            }
-        });
         return frame;
     };
 
@@ -816,34 +779,19 @@ define([
 
         document.body.appendChild(frame);
 
-        var modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible');
-        if (modalElements.length > 0) {
-            modalElements[0].focus();
-            frame.addEventListener('keydown', function(e) {
-                if (e.keyCode === 9) {
-                    if (e.shiftKey) {
-                        if (document.activeElement === modalElements[0]) {
-                            e.preventDefault();
-                            modalElements[modalElements.length - 1].focus();
-                        }
-                    } else {
-                        if (document.activeElement === modalElements[modalElements.length - 1]) {
-                            e.preventDefault();
-                            modalElements[0].focus();
-                        }
-                    }
-                }
-                else if (e.keyCode === 13) {
-                    if (document.activeElement === $ok[0]) {
-                        $ok.click();
-                    } else if (document.activeElement === $cancel[0]) {
-                        $cancel.click();
-                    }
-                } else if (e.keyCode === 27) {
+        addTabListener(frame);
+
+        frame.addEventListener('keydown', function(e) {
+            if (e.keyCode === 13) {
+                if (document.activeElement === $ok[0]) {
+                    $ok.click();
+                } else if (document.activeElement === $cancel[0]) {
                     $cancel.click();
                 }
-            });
-        }
+            } else if (e.keyCode === 27) {
+                $cancel.click();
+            }
+        });
 
         listener = listenForKeys(function () {
             $ok.click();
