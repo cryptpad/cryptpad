@@ -129,6 +129,14 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+Messages.install_token = "Install token";
+Messages.install_header = "Installation"; // XXX
+Messages.install_instance = "Set up your new CryptPad instance"; // XXX
+Messages.install_launch = "Launch";
+Messages.install_notes = `<ul class="cp-notes-list">
+<li>This page will help you create your first administrator account and set up your instance.</li>
+<li>Your password is the secret key that encrypts all of your documents. <span class="red">If you lose it there is no way we can recover your data.</span></li>
+<li>If you are using a shared computer, <span class="red">remember to log out</span> when you are done. Only closing the browser window leaves your account exposed. </li></ul>`;
 
     return Messages;
 

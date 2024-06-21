@@ -18,8 +18,6 @@ define([
             return;
         }
 
-Msg.install_token = "Install token";
-
         document.title = Msg.install_header;
 
         var frame = function (content) {
@@ -27,8 +25,7 @@ Msg.install_token = "Install token";
                 h('div#cp-main', [
                     //Pages.infopageTopbar(),
                     h('div.container.cp-container', [
-                        //h('div.row.cp-page-title', h('h1', Msg.install_header)),
-                        h('div.row.cp-page-title', h('h1', Msg.register_header)),
+                        h('div.row.cp-page-title', h('h1', Msg.install_header)),
                     ].concat(content)),
                     Pages.infopageFooter(),
                 ]),
@@ -39,17 +36,12 @@ Msg.install_token = "Install token";
             h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
                     h('h2', Msg.register_notes_title),
-                    //Pages.setHTML(h('div.cp-register-notes'), Msg.install_notes)
-                    Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
+                    Pages.setHTML(h('div.cp-register-notes'), Msg.install_notes)
                 ]),
                 h('div.cp-reg-form.col-md-6', [
                     h('div#userForm.form-group.hidden', [
                         h('div.cp-register-instance', [
-                            Msg._getKey('register_instance', [ Pages.Instance.name ]),
-                            /*h('br'),
-                            h('a', {
-                                href: '/features.html'
-                            }, Msg.register_whyRegister)*/
+                            Msg.install_instance,
                         ]),
                         h('input.form-control#installtoken', {
                             type: 'text',
@@ -75,7 +67,7 @@ Msg.install_token = "Install token";
                         /*h('div.checkbox-container', [
                             UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                         ]),*/
-                        h('button#register', Msg.login_register)
+                        h('button#register', Msg.install_launch)
                     ])
                 ]),
             ])
