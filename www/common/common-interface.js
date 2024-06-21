@@ -1119,6 +1119,21 @@ define([
         }
     };
 
+    UI.getNewIcon = function (type) {
+        var icon = h('i.fa.fa-file-text-o');
+
+        if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
+            var icon = AppConfig.applicationsIcon[type];
+            var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
+            if (type === 'fileupload') { type = 'file'; }
+            if (type === 'folderupload') { type = 'file'; }
+            if (type === 'link') { type = 'drive'; }
+            var appClass = ' cp-icon cp-icon-color-'+type;
+            icon = h('i', {'class': font + ' ' + icon + appClass});
+        }
+
+        return icon;
+    };
     var $defaultIcon = $('<span>', {"class": "fa fa-file-text-o"});
     UI.getIcon = function (type) {
         var $icon = $defaultIcon.clone();

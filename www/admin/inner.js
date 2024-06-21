@@ -5,6 +5,7 @@
 define([
     'jquery',
     '/common/toolbar.js',
+    '/common/pad-types.js',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
@@ -17,11 +18,11 @@ define([
     '/common/hyperscript.js',
     '/common/clipboard.js',
     'json.sortify',
-    '/customize/application_config.js',
     '/api/config',
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
-    '/common/hyperscript.js',
+    '/install/onboardscreen.js',
+
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -29,6 +30,7 @@ define([
 ], function(
     $,
     Toolbar,
+    PadTypes,
     nThen,
     SFCommon,
     UI,
@@ -41,11 +43,12 @@ define([
     h,
     Clipboard,
     Sortify,
-    AppConfig,
     ApiConfig,
     Instance,
-    Flatpickr
+    Flatpickr,
+    Onboarding,
 ) {
+
     var APP = window.APP = {};
 
     var Nacl = window.nacl;
@@ -88,6 +91,12 @@ define([
                 content: [
                     'enableembeds',
                     'forcemfa',
+                ]
+            },
+            'apps': { // Msg.admin_cat_apps
+                icon: 'fa  fa-wrench',
+                content: [
+                    'apps',
                 ]
             },
             'users' : { // Msg.admin_cat_users
@@ -160,7 +169,7 @@ define([
             }
         };
 
-        const blocks = sidebar.blocks;
+        const blocks = Sidebar.blocks('admin');
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -190,6 +199,7 @@ define([
 
         // Msg.admin_flushCacheHint, .admin_flushCacheTitle, .admin_flushCacheButton
         sidebar.addItem('flush-cache', function (cb) {
+            const blocks = Sidebar.blocks('admin');
             var button = blocks.activeButton('primary', '',
                     Messages.admin_flushCacheButton, done => {
                 flushCache(function (e, data) {
@@ -609,7 +619,6 @@ define([
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_emailTitle]));
                 });
             });
-
             var nav = blocks.nav([button]);
 
             var form = blocks.form([
@@ -620,6 +629,35 @@ define([
 
             cb(form);
         });
+
+        sidebar.addItem('apps', function (cb) {
+            const appsToDisable = ApiConfig.appsToDisable || [];
+            const grid = Onboarding.createAppsGrid(appsToDisable);
+
+            var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['DISABLE_APPS', appsToDisable]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        done(false);
+                        return;
+                    }
+                    flushCache();
+                    done(true);
+                    UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
+                });
+            });
+
+            let form = blocks.form([
+                grid
+            ], blocks.nav([save]));
+
+            cb(form);
+        });
+
 
         sidebar.addItem('instance-info-notice', function(cb){
             var key = 'instance-info-notice';
@@ -905,7 +943,7 @@ define([
                 setColor(color, done);
             });
 
-            let $input = $(input).on('change', () => {
+            let onColorPicked = () => {
                 require(['/lib/less.min.js'], (Less) => {
                     let color = $input.val();
                     let lColor = Less.color(color.slice(1));
@@ -925,7 +963,8 @@ define([
                     $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
                     $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
                 });
-            });
+            };
+            let $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
 
             UI.confirmButton($remove, {
                 classes: 'btn-danger',
@@ -935,9 +974,19 @@ define([
                 setColor('', () => {});
             });
 
+            var colors = UIElements.makePalette(8, (color, $color) => {
+                // onselect
+                let rgb = $color.css('background-color');
+                let hex = Util.rgbToHex(rgb);
+                $input.val(hex);
+                onColorPicked();
+            });
+            var $colors = $(colors);
+
+            $(label).append(colors);
             let form = blocks.form([
                 labelCurrent,
-                label
+                label,
             ], blocks.nav([btn, remove, btn.spinner]));
 
             cb([form, labelPreview]);
