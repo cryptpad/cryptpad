@@ -420,6 +420,9 @@
                 .fa {
                     margin-right: 5px;
                 }
+                &:focus{
+                    outline: @cryptpad_color_brand solid 2px;
+                }
             }
         }
     }
@@ -654,6 +657,9 @@
             .tools_unselectable();
             &:hover {
                 background-color: @cp_kanban-add-hover;
+            }
+            &:focus {
+                outline: @cryptpad_color_brand solid 2px;
             }
         }
 

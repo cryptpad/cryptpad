@@ -899,8 +899,9 @@ define([
         if (migrated) { framework.localChange(); }
 
         var addBoardDefault = document.getElementById('kanban-addboard');
+        let $addBoard = $(addBoardDefault).attr('tabindex', 0);
         $(addBoardDefault).attr('title', Messages.kanban_addBoard);
-        addBoardDefault.addEventListener('click', function () {
+        Util.onClickEnter($addBoard, function () {
             if (framework.isReadOnly() || framework.isLocked()) { return; }
             /*var counter = 1;
 
