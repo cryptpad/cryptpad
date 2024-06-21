@@ -176,6 +176,7 @@ define([
                 $(removeBtn).attr('tabindex', '0');
                 $(removeBtn).on('click keydown', function(event) {
                     if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
+                        event.preventDefault();
                         config.remove(el);
                     }
                 });

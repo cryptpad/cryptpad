@@ -814,13 +814,43 @@ define([
         var $ok = $(ok).click(function (ev) { close(true, ev); });
         var $cancel = $(cancel).click(function (ev) { close(false, ev); });
 
+        document.body.appendChild(frame);
+
+        var modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible');
+        if (modalElements.length > 0) {
+            modalElements[0].focus();
+            frame.addEventListener('keydown', function(e) {
+                if (e.keyCode === 9) {
+                    if (e.shiftKey) {
+                        if (document.activeElement === modalElements[0]) {
+                            e.preventDefault();
+                            modalElements[modalElements.length - 1].focus();
+                        }
+                    } else {
+                        if (document.activeElement === modalElements[modalElements.length - 1]) {
+                            e.preventDefault();
+                            modalElements[0].focus();
+                        }
+                    }
+                }
+                else if (e.keyCode === 13) {
+                    if (document.activeElement === $ok[0]) {
+                        $ok.click();
+                    } else if (document.activeElement === $cancel[0]) {
+                        $cancel.click();
+                    }
+                } else if (e.keyCode === 27) {
+                    $cancel.click();
+                }
+            });
+        }
+
         listener = listenForKeys(function () {
             $ok.click();
         }, function () {
             $cancel.click();
         }, frame);
 
-        document.body.appendChild(frame);
         setTimeout(function () {
             Notifier.notify();
             $(frame).find('.ok').focus();
