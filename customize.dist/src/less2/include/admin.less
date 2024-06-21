@@ -80,6 +80,18 @@
 
     .cp-admin-customize-options-grid {
         grid-template-columns: 1fr 1fr;
+        .cp-optionblock {
+            padding: 0.5rem;
+            border-radius: @variables_radius;
+            background-color: fade(@cryptpad_text_col, 10%);
+            align-self: start;
+            .cp-checkmark-label {
+                font-weight: bold;
+            }
+            .cp-option-hint {
+                margin-left: 30px;
+                display: inline-block;
+            }
+        }
     }
-
 }
