@@ -615,7 +615,6 @@ define([
             else{
                 if (e.which === 9 && !insideColorButtons) {
                     e.preventDefault();
-                    console.log(modalElements);
                     const firstElement = modalElements.first()[0];
                     const lastElement = modalElements.last()[0];
 
