@@ -245,22 +245,21 @@ define([
                 var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
                 $(title).prepend(' ').prepend(icon);
             }
-            $(title).on('click keydown', function (event) {
-                if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    if (tab.disabled) { return; }
-                    var old = tabs[active];
-                    if (old.onHide) { old.onHide(); }
-                    titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
-                    contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
-                    if (tab.onShow) {
-                        tab.onShow();
-                    }
-                    $(title).addClass('alertify-tabs-active');
-                    $(content).addClass('alertify-tabs-content-active');
-                    active = i;
+
+            Util.onClickEnter($(title), function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if (tab.disabled) { return; }
+                var old = tabs[active];
+                if (old.onHide) { old.onHide(); }
+                titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
+                contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
+                if (tab.onShow) {
+                    tab.onShow();
                 }
+                $(title).addClass('alertify-tabs-active');
+                $(content).addClass('alertify-tabs-content-active');
+                active = i;
             });
             titles.push(title);
             contents.push(content);
@@ -513,14 +512,8 @@ define([
                     divClasses: 'left'
                 }, todo);
             } else {
-                $(button).keydown(function (e) {
-                    if (e.which === 13) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        todo();
-                    }
-                });
-                $(button).click(function () {
+                Util.onClickEnter($(button), function (e) {
+                    e.stopPropagation();
                     todo();
                 });
             }
