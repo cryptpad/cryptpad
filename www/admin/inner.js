@@ -94,7 +94,7 @@ define([
                 ]
             },
             'apps': { // Msg.admin_cat_apps
-                icon: 'fa fa-cog',
+                icon: 'fa  fa-wrench',
                 content: [
                     'apps',
                 ]
