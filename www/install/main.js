@@ -145,6 +145,7 @@ define([
                                 edPublic: proxy.edPublic
                             }, function (e) {
                                 if (e) { UI.alert(Messages.error); return console.error(e); }
+                                localStorage.CP_admin = "1";
                                 window.location.href = '/drive/';
                             });
                         });

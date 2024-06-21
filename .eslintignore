@@ -15,7 +15,7 @@ www/accounts
 www/worker
 www/todo
 
-lib/plugins/
+#lib/plugins/
 
 www/common/hyperscript.js
 

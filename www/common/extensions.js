@@ -15,7 +15,14 @@ define([
         let defaultLang = current[1];
         let lang = current[2];
         if (!Object.keys(lang).length && Object.keys(defaultLang).length) {
+            // If our language doesn't exists, use default
             lang = defaultLang;
+        } else if (Object.keys(defaultLang).length) {
+            // Otherwise fill our language with missing keys
+            Object.keys(defaultLang).forEach(key => {
+                if (typeof(lang[key]) !== "undefined") { return; }
+                lang[key] = defaultLang[key];
+            });
         }
 
         lang._getKey = function (key, argArray) {

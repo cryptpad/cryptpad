@@ -168,6 +168,7 @@ define([
         let popup = h('div.cp-extensions-popups');
         let utils = { h, Util, Hash };
         Extensions.getExtensions('HOMEPAGE_POPUP').forEach(ext => {
+            if (typeof(ext.check) === "function" && !ext.check()) { return; }
             ext.getContent(utils, content => {
                 $(popup).append(h('div.cp-extensions-popup', content));
             });
