@@ -49,12 +49,6 @@ define([
     Onboarding,
 ) {
 
-    //XXX 
-    Messages.admin_appSelection = 'App configuration';
-    Messages.admin_appsTitle = "Choose your applications";
-    Messages.admin_appsHint = "Choose which apps to disable on your instance.";
-    Messages.admin_cat_apps = "Apps";
-
     var APP = window.APP = {};
 
     var Nacl = window.nacl;
@@ -100,7 +94,7 @@ define([
                 ]
             },
             'apps': { // Msg.admin_cat_apps
-                icon: 'fa fa-cog',
+                icon: 'fa  fa-wrench',
                 content: [
                     'apps',
                 ]

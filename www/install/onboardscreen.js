@@ -26,18 +26,6 @@ define([
     nThen
 ) {
 
-    //XXX
-    Messages.onboarding_save_error = "Some options could not be saved properly. Please visit the administration panel to check the values.";
-    Messages.onboarding_upload = "Select logo";
-    Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance';
-    Messages.admin_onboardingNameHint = 'Please choose a title and description';
-    Messages.admin_appsTitle = "Instance applications";
-    Messages.admin_appsHint = "Choose which apps to enable on your instance";
-    Messages.admin_onboardingOptionsTitle = "Instance options";
-    Messages.admin_onboardingOptionsHint = "Please select the apropriate option for your instance. These settings can be changed later in the admin panel.";
-    Messages.admin_onboardingNamePlaceholder = 'Instance title';
-    Messages.admin_onboardingDescPlaceholder = 'Placeholder description text';
-
     let pages = [];
     const gotoPage = function (Env, page) {
         if (typeof(page) !== "number" || !page) { page = 0; }
