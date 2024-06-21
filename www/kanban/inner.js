@@ -899,9 +899,9 @@ define([
         if (migrated) { framework.localChange(); }
 
         var addBoardDefault = document.getElementById('kanban-addboard');
-        $(addBoardDefault).attr('tabindex', 0);
+        let $addBoard = $(addBoardDefault).attr('tabindex', 0);
         $(addBoardDefault).attr('title', Messages.kanban_addBoard);
-        addBoardDefault.addEventListener('click', function () {
+        Util.onClickEnter($addBoard, function () {
             if (framework.isReadOnly() || framework.isLocked()) { return; }
             /*var counter = 1;
 
@@ -920,11 +920,6 @@ define([
                 "item": []
             });
             kanban.onChange();
-        });
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                addBoardDefault.click();
-            }
         });
 
         var $container = $('#cp-app-kanban-content');
