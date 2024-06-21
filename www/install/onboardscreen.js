@@ -236,9 +236,11 @@ define([
         allApps.forEach(app => {
             let name = Messages.type[app] || app;
             let icon = UI.getNewIcon(app);
-            let appBlock = h('div.cp-appblock', [
+            let appBlock = h('div.cp-appblock',
+                {tabindex:0, role:"button"},
+            [
                 icon,
-                h('span', name),
+                h('span.cp-app-name', name),
                 h('i.fa.fa-check.cp-on-enabled')
             ]);
             let $app = $(appBlock).appendTo($grid);
@@ -312,7 +314,7 @@ define([
         });
 
 
-        let mfaOption = h('div', [
+        let mfaOption = h('div.cp-optionblock', [
             forceMFA,
             h('br'),
             h('span', Messages.admin_onboardingMfa)

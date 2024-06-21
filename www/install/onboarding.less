@@ -42,19 +42,6 @@
                 justify-content: center;
             }
         }
-        .cp-appblock {
-            .iconColors_main();
-        }
-        .cp-inactive-app {
-            .cp-on-enabled {
-                visibility: hidden;
-            }
-        }
-        .cp-active-app {
-            .cp-on-enabled {
-                visibility: visible;
-            }
-        }
     }
 }
 
@@ -76,21 +63,16 @@
 .cp-onboardscreen-screentitle {
     text-align: center;
     font-size: 1rem;
-    .cp-onboardscreen-maintitle {
-        float:center;
-        padding:10px;
-
-        h1.cp-onboardscreen-title {
-            font-family: "IBM Plex Mono";
-            color: @cryptpad_color_link;
-            font-size: 1.5rem;
-            font-weight: 500;
-        }
+    margin-bottom: 1rem;
+    h1.cp-onboardscreen-title {
+        font-family: "IBM Plex Mono";
+        color: @cryptpad_color_link;
+        font-size: 1.5rem;
+        font-weight: 500;
     }
 }
 
 .cp-instance-form {
-    margin-top: 1rem;
     display: flex;
     flex-direction: row;
     gap: 2rem;
@@ -138,6 +120,7 @@ nav.cp-onboardscreen-nav {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
+    margin-top: 1rem;
 }
 
 
