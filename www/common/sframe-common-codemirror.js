@@ -176,6 +176,10 @@ define([
                         else { editor.execCommand("insertTab"); }
                     }
                 },
+                //remove focus from editor
+                "Esc": function () {
+                    editor.display.input.blur();
+                },
                 "Shift-Tab": function () {
                     editor.execCommand("indentLess");
                 },

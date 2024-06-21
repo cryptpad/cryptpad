@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* globals Buffer */
 var Https = require('https');
 var Config = require("../lib/load-config");
 var Package = require("../package.json");

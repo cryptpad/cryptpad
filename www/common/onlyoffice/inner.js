@@ -1597,13 +1597,15 @@ define([
 
         var x2tConvertData = function (data, fileName, format, cb) {
             var sframeChan = common.getSframeChannel();
-            var e = getEditor();
-            var fonts = e && e.FontLoader.fontInfos;
-            var files = e && e.FontLoader.fontFiles.map(function (f) {
+            var editor = getEditor();
+            var fonts = editor && editor.FontLoader.fontInfos;
+            var files = editor && editor.FontLoader.fontFiles.map(function (f) {
                 return { 'Id': f.Id, };
             });
             var type = common.getMetadataMgr().getPrivateData().ooType;
-            var images = (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {};
+            const images = editor
+                ? structuredClone(window.frames[0].AscCommon.g_oDocumentUrls.getUrls())
+                : {};
 
             // Fix race condition which could drop images sometimes
             // ==> make sure each image has a 'media/image_name.ext' entry as well
@@ -1614,7 +1616,7 @@ define([
             });
 
             // Add theme images
-            var theme = e && window.frames[0].AscCommon.g_image_loader.map_image_index;
+            var theme = editor && window.frames[0].AscCommon.g_image_loader.map_image_index;
             if (theme) {
                 Object.keys(theme).forEach(function (url) {
                     if (!/^(\/|blob:|data:)/.test(url)) {
@@ -1628,7 +1630,7 @@ define([
                 type: type,
                 fileName: fileName,
                 outputFormat: format,
-                images: (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
+                images: (editor && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
                 fonts: fonts,
                 fonts_files: files,
                 mediasSources: getMediasSources(),
@@ -2056,6 +2058,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 if (blobUrl) {
                     delete downloadImages[name];
                     debug("CryptPad Image already loaded " + blobUrl);
+
+                    // Fix: https://github.com/cryptpad/cryptpad/issues/1500
+                    // Maybe OO was reloaded, but the CryptPad cache is still intact?
+                    // -> Add the image to OnlyOffice again.
+                    const documentUrls = window.frames[0].AscCommon.g_oDocumentUrls;
+                    if (!(data.name in documentUrls.getUrls())) {
+                        documentUrls.addImageUrl(data.name, blobUrl);
+                    }
+
                     return void callback(blobUrl);
                 }
 
