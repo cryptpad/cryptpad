@@ -63,7 +63,7 @@
     "thirty-two": "^1.0.2",
     "tweetnacl": "~0.12.2",
     "ulimit": "0.0.2",
-    "ws": "^3.3.1",
+    "ws": "^8.17.1",
     "x2js": "^3.4.4"
   },
   "devDependencies": {
@@ -73,10 +73,9 @@
     "stylelint-config-standard-less": "^3.0.1"
   },
   "overrides": {
-    "glob-parent": "5.1.2",
-    "set-value": "4.0.1",
     "minimist": "~1.2.3",
     "minimatch": "~3.1.2",
+    "ws": "^8.17.1",
     "jquery": "3.6.0"
   },
   "scripts": {
