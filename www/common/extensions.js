@@ -2,6 +2,13 @@ define([
     'optional!/extensions.js'
 ], (Extensions) => {
     const ext = {};
+
+    ext.getExtensions = id => {
+        let e = ext[id];
+        if (!Array.isArray(e)) { e = []; }
+        return e;
+    };
+
     if (!Array.isArray(Extensions) || !Extensions.length) { return ext; }
 
     let all = Extensions.slice();
@@ -47,12 +54,6 @@ define([
             Array.prototype.push.apply(ext[key], currentExt[key]); // concat in place
         });
     }
-
-    ext.getExtensions = id => {
-        let e = ext[id];
-        if (!Array.isArray(e)) { e = []; }
-        return e;
-    };
 
     return ext;
 });
