@@ -1068,7 +1068,7 @@ define([
         var icon = h('i.fa.fa-file-text-o');
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
-            var icon = AppConfig.applicationsIcon[type];
+            icon = AppConfig.applicationsIcon[type];
             var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
             if (type === 'fileupload') { type = 'file'; }
             if (type === 'folderupload') { type = 'file'; }
