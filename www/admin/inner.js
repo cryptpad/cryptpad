@@ -215,7 +215,6 @@ define([
 
         // Msg.admin_flushCacheHint, .admin_flushCacheTitle, .admin_flushCacheButton
         sidebar.addItem('flush-cache', function (cb) {
-            const blocks = Sidebar.blocks('admin');
             var button = blocks.activeButton('primary', '',
                     Messages.admin_flushCacheButton, done => {
                 flushCache(function (e, data) {
@@ -997,7 +996,6 @@ define([
                 $input.val(hex);
                 onColorPicked();
             });
-            var $colors = $(colors);
 
             $(label).append(colors);
             let form = blocks.form([
@@ -3289,10 +3287,6 @@ define([
                 $active.empty();
                 if (Broadcast && Broadcast.surveyURL) {
                     var a = blocks.link(Messages.admin_surveyActive, Broadcast.surveyURL);
-                    $(a).click(function (e) {
-                        e.preventDefault();
-                        common.openUnsafeURL(Broadcast.surveyURL);
-                    });
                     $active.append([a, removeButton]);
                 }
             });
