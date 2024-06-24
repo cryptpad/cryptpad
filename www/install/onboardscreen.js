@@ -221,8 +221,8 @@ define([
 
         var getColorBlock = function () {
 
-            // XXX Number of accent color presets
-            var colors = UIElements.makePalette(5, (color, $color) => {
+            // Number of accent color presets
+            var colors = UIElements.makePalette(4, (color, $color) => {
                 let rgb = $color.css('background-color');
                 let hex = Util.rgbToHex(rgb);
                 if (hex) {

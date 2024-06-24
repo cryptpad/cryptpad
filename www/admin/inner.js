@@ -974,7 +974,7 @@ define([
                 setColor('', () => {});
             });
 
-            var colors = UIElements.makePalette(8, (color, $color) => {
+            var colors = UIElements.makePalette(4, (color, $color) => {
                 // onselect
                 let rgb = $color.css('background-color');
                 let hex = Util.rgbToHex(rgb);
