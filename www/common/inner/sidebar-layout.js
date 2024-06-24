@@ -4,6 +4,7 @@
 
 define([
     'jquery',
+    '/api/config',
     '/components/nthen/index.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
@@ -13,6 +14,7 @@ define([
     '/common/hyperscript.js',
 ], function(
     $,
+    ApiConfig,
     nThen,
     UI,
     UIElements,
@@ -26,9 +28,21 @@ define([
         return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
     };
 
-    Sidebar.blocks = function (app) {
+    Sidebar.blocks = function (app, common) {
 
         let blocks = {};
+
+        // sframe-common shim
+        if (!common) {
+            common = {
+                openURL: url => {
+                    window.open(url);
+                },
+                openUnsafeURL: url => {
+                    window.open(ApiConfig.httpSafeOrigin + '/bounce/#' + encodeURIComponent(url));
+                }
+            };
+        }
 
         blocks.labelledInput = (label, input, inputBlock) => {
             let uid = Util.uid();
@@ -242,7 +256,6 @@ define([
         };
 
         return blocks;
-    
     };
 
     Sidebar.create = function (common, app, $container) {
@@ -253,7 +266,7 @@ define([
             $rightside
         };
         const items = {};
-        sidebar.blocks = Sidebar.blocks(app);
+        sidebar.blocks = Sidebar.blocks(app, common);
 
         sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);

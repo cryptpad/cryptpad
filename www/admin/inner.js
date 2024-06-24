@@ -169,7 +169,7 @@ define([
             }
         };
 
-        const blocks = Sidebar.blocks('admin');
+        const blocks = sidebar.blocks;
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -199,7 +199,6 @@ define([
 
         // Msg.admin_flushCacheHint, .admin_flushCacheTitle, .admin_flushCacheButton
         sidebar.addItem('flush-cache', function (cb) {
-            const blocks = Sidebar.blocks('admin');
             var button = blocks.activeButton('primary', '',
                     Messages.admin_flushCacheButton, done => {
                 flushCache(function (e, data) {
@@ -3272,10 +3271,6 @@ define([
                 $active.empty();
                 if (Broadcast && Broadcast.surveyURL) {
                     var a = blocks.link(Messages.admin_surveyActive, Broadcast.surveyURL);
-                    $(a).click(function (e) {
-                        e.preventDefault();
-                        common.openUnsafeURL(Broadcast.surveyURL);
-                    });
                     $active.append([a, removeButton]);
                 }
             });
