@@ -69,7 +69,8 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-plugin-compat": "^4.2.0",
-    "lesshint": "6.3.7"
+    "stylelint": "^16.6.1",
+    "stylelint-config-standard-less": "^3.0.1"
   },
   "overrides": {
     "glob-parent": "5.1.2",
@@ -86,9 +87,9 @@
     "offline": "FRESH=1 OFFLINE=1 node server.js",
     "offlinedev": "DEV=1 OFFLINE=1 node server.js",
     "package": "PACKAGE=1 node server.js",
-    "lint": "eslint . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+    "lint": "eslint . && stylelint \"./customize.dist/src/less2/**/*.less\"",
     "lint:js": "eslint .",
-    "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+    "lint:less": "stylelint \"./customize.dist/src/less2/**/*.less\"",
     "lint:translations": "node ./scripts/translations/lint-translations.js",
     "unused-translations": "node ./scripts/translations/unused-translations.js",
     "test": "node scripts/TestSelenium.js",
@@ -98,5 +99,7 @@
     "clear": "node scripts/clear.js",
     "installtoken": "node scripts/install.js"
   },
-  "browserslist": ["> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"]
+  "browserslist": [
+    "> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"
+  ]
 }
