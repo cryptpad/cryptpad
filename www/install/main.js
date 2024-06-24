@@ -121,25 +121,26 @@ define([
             }
 
             let startOnboarding = function (network, proxy) {
-             Rpc.create(network, proxy.edPrivate, proxy.edPublic, function (e, rpc) {
-                if (e) {
-                  // TODO: handle error
-                  return;
-                }
+                Rpc.create(network, proxy.edPrivate, proxy.edPublic, function (e, rpc) {
+                    if (e) {
+                        // TODO: handle error
+                        return;
+                    }
 
-                let sendAdminDecree = function (command, data, callback) {
-                    var params = ['ADMIN_DECREE', [command, data]];
-                    rpc.send('ADMIN', params, callback);
-                };
+                    let sendAdminDecree = function (command, data, callback) {
+                        var params = ['ADMIN_DECREE', [command, data]];
+                        rpc.send('ADMIN', params, callback);
+                    };
 
-                let sendAdminRpc = function (command, data, callback) {
-                    var params = [command, data];
-                    rpc.send('ADMIN', params, callback);
-                };
+                    let sendAdminRpc = function (command, data, callback) {
+                        var params = [command, data];
+                        rpc.send('ADMIN', params, callback);
+                    };
 
-                showTitleScreen(sendAdminDecree, sendAdminRpc);
-            });
-    };
+                    showTitleScreen(sendAdminDecree, sendAdminRpc);
+                    UI.removeLoadingScreen();
+                });
+            };
 
             setTimeout(function () {
                 var span = h('span', [
