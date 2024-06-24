@@ -2710,9 +2710,11 @@ define([
             var onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'REGISTERED_USERS',
-                }, function (e, data) {
+                }, function (e, arr) {
                     pre.innerText = '';
-                    pre.append(String(data));
+                    let data = arr[0];
+                    pre.append(String(data.blocks));
+                    pre.append(' (old value including teams: ' + String(data.users) + ')'); // XXX
                 });
             };
             onRefresh();

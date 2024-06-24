@@ -60,7 +60,7 @@ ENTRYPOINT ["/bin/bash", "/cryptpad/docker-entrypoint.sh"]
 HEALTHCHECK --interval=1m CMD curl -f http://localhost:3000/ || exit 1
 
 # Ports
-EXPOSE 3000 3001 3003
+EXPOSE 3000 3003
 
 # Run cryptpad on startup
 CMD ["npm", "start"]

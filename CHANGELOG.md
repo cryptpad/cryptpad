@@ -4,6 +4,48 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 2024.3.1
+
+## Goals
+This minor release introduces a workaround to recover corrupted OnlyOffice documents alongside other fixes, with some improvements.
+
+## Fixes
+- Workarounds for missing OnlyOffice methods: [#1492](https://github.com/cryptpad/cryptpad/pull/1492)
+- Fix HTTP server issue with NodeJs >= v20.13.0: [4483b84](https://github.com/cryptpad/cryptpad/commit/4483b848ff2ba23176cb05dacf073f3e0581ba7b)
+- Fix merge issues with `package.json`: [7f45d59](https://github.com/cryptpad/cryptpad/commit/7f45d598cbf230002863bbd84004c38252b97031)
+- Fix Docker ports: [#1485](https://github.com/cryptpad/cryptpad/pull/1485)
+- Change _inactive_ to _archived_ in `config.example.js` file: [#1474](https://github.com/cryptpad/cryptpad/pull/1474)
+
+## Improvements
+- New translations from our Weblate contributors: [#1491](https://github.com/cryptpad/cryptpad/pull/1491)
+  - Polish
+  - French
+  - Bulgarian
+  - Hungarian
+  - Basque
+- Optimize default Nginx example config: [#1486](https://github.com/cryptpad/cryptpad/pull/1486)
+- Add `.mjs` support in HTTPd example config: [#1471](https://github.com/cryptpad/cryptpad/pull/1471)
+
+## Upgrade notes
+If you are upgrading from a version older than `2024.3.0` please read the upgrade notes of all versions between yours and `2024.3.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.3.1
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
 # 2024.3.0
 
 ## Goals

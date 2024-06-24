@@ -879,7 +879,7 @@
     "team_inviteButton": "Invita membri",
     "owner_request": "{0} propone tu sia proprietario/a di <b>{1}</b>",
     "team_cat_general": "Informazioni",
-    "properties_passwordWarning": "La password è stata modificata con successo ma non è stato possibile aggiornare il tuo CryptDrive con i nuovi dati. Potrebbe essere necessario rimuovere la vecchia versione del documento manualmente. Premi OK per ricaricare e aggiornare i tuoi diritti d'accesso.",
+    "properties_passwordWarning": "La password è stata modificata con successo ma non è stato possibile aggiornare il tuo CryptDrive con i nuovi dati. Potrebbe essere necessario rimuovere la vecchia versione del documento manualmente.<br>Premi OK per ricaricare e aggiornare i tuoi diritti d'accesso.",
     "share_embedCategory": "Incorpora",
     "chrome68": "Sembra tu stia usando il browser Chrome o Chromium versione 68. Questa versione contiene un errore che fa sì che la pagina diventi completamente bianca dopo alcuni secondi o che la pagina non risponda ai clic. Per risolvere il problema puoi passare ad un'altra scheda e poi tornare a questa, oppure puoi provare a scorrere la pagina. Questo problema sarà risolto nella prossima versione del tuo browser.",
     "crowdfunding_popup_text": "<h3>Abbiamo bisogno del tuo aiuto!</h3>Per garantire lo sviluppo attivo di CryptPad, valuta di sostenere il progetto tramite la nostra pagina Open Collective, dove potrai vedere il nostro <b>Cronoprogramma</b> e gli <b>obiettivi di finanziamento</b>.",
