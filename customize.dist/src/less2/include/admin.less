@@ -24,13 +24,13 @@
         .cp-palette-nocolor {
             display: none;
         }
-        .instance-colors(@palette-colors; @index) when (@index > 0){
+        .instance-colors(@palette-colors; @index) when (@index > 0) {
             // loop through the @colors
             .instance-colors(@palette-colors; (@index - 1));
 
             @color: extract(@palette-colors, @index);
             // make a numbered class selector for each color
-            .cp-palette-color@{index}{
+            .cp-palette-color@{index} {
                 background-color: @color !important;
                 color: contrast(@color, @cryptpad_color_grey_800, @cryptpad_color_grey_200) !important;
             }
