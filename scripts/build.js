@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* globals process */
-
 var Fs = require("fs");
 var Fse = require("fs-extra");
 var Path = require("path");

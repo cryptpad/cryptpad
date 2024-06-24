@@ -2,9 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/*
-    globals process
-*/
 var Express = require('express');
 var Http = require('http');
 var Fs = require('fs');

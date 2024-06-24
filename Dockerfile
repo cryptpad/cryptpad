@@ -22,14 +22,15 @@ RUN npm install --production \
 # Create actual CryptPad image
 FROM node:lts-slim
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y git rdfind && rm -rf /var/lib/apt/lists/*
 
 # Create user and group for CryptPad so it does not run as root
 RUN groupadd cryptpad -g 4001
 RUN useradd cryptpad -u 4001 -g 4001 -d /cryptpad
 
-# Install wget for healthcheck
-RUN apt-get update && apt-get install --no-install-recommends -y wget && \
+# Install curl for healthcheck
+# Install git, rdfind and unzip for install-onlyoffice.sh
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    curl ca-certificates git rdfind unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -56,7 +57,7 @@ VOLUME /cryptpad/datastore
 ENTRYPOINT ["/bin/bash", "/cryptpad/docker-entrypoint.sh"]
 
 # Healthcheck
-HEALTHCHECK --interval=1m CMD wget --no-verbose --tries=1 http://localhost:3000/ -q -O /dev/null || exit 1
+HEALTHCHECK --interval=1m CMD curl -f http://localhost:3000/ || exit 1
 
 # Ports
 EXPOSE 3000 3001 3003
