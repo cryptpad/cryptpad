@@ -23,7 +23,6 @@ define([
     '/common/onlyoffice/oodoc_base.js',
     '/common/onlyoffice/ooslide_base.js',
 
-    '/components/onlyoffice-editor/dist/bundle.js',
     '/common/onlyoffice/current-version.js',
     '/components/file-saver/FileSaver.min.js',
 
@@ -50,7 +49,6 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    OOEditor,
     OOCurrentVersion)
 {
     var saveAs = window.saveAs;
@@ -2105,14 +2103,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }, void 0, common.getCache());
             };
 
+            APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
 
-            APP.docEditor.init(APP.ooconfig).then(() => {
-                ooLoaded = true;
-                if (content.version < 7) {
-                    APP.docEditor.installLegacyChannel();
-                }
-                APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
-            });
+            ooLoaded = true;
+            // TODO movie this back to CryptPad
+            // if (content.version < 7) {
+            //     APP.docEditor.installLegacyChannel();
+            // }
+            APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
         };
 
         APP.printPdf = function (obj, cb) {
@@ -3032,7 +3030,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 checkCheckpoint();
             }
 
-            APP.docEditor = new OOEditor.OnlyOfficeEditor("cp-app-oo-placeholder-a", '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js');
+            var s = h('script', {
+                type:'text/javascript',
+                src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
+            });
+            $('#cp-app-oo-editor').append(s);
 
             if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
                 sframeChan.event('EV_BURN_PAD', content.channel);

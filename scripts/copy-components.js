@@ -46,8 +46,7 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "netflux-websocket",
     "drawio",
     "pako",
-    "x2js",
-    "onlyoffice-editor"
+    "x2js"
 ].forEach(l => {
     const source = Path.join("node_modules", l);
     const destination = Path.join(componentsPath, l);
