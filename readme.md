@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # CryptPad
 
-CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. It is built to enable collaboration, synchronizing changes to documents in real time. Because all data is encrypted, the service and its administrators have no way of seeing the content being edited and stored.
+CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. It is built to enable collaboration, synchronizing changes to documents in real time. Because all data are encrypted, in the eventuality of a breach, attackers have no way of seeing the stored content. Moreover, if the administators don’t alter the code, they and the service also cannot infer any piece of information about the users' content.
 
 ![Drive screenshot](screenshot.png "preview of the CryptDrive")
 
@@ -24,7 +24,7 @@ Configuring CryptPad for production requires a little more work, but the process
 
 ## Current version
 
-The most recent version and all past release notes can be found [here](https://github.com/cryptpad/cryptpad/releases/).
+The most recent version and all past release notes can be found on the [releases page on GitHub](https://github.com/cryptpad/cryptpad/releases/).
 
 ## Setup using Docker
 
@@ -36,7 +36,7 @@ Previously, Docker images were community maintained, had their own repository an
 
 CryptPad offers a variety of collaborative tools that encrypt your data in your browser
 before it is sent to the server and your collaborators. In the event that the server is
-compromized the database holds encrypted data that is not of much value to attackers.
+compromized, the database holds encrypted data that is not of much value to attackers.
 
 The code which performs the encryption is still loaded from the host server like any
 other web page, so you still need to trust the administrator to keep their server secure
@@ -44,22 +44,28 @@ and to send you the right code. An expert can download code from the server and 
 that it isn't doing anything malicious like leaking your encryption keys, which is why
 this is considered an [active attack].
 
-The platform is designed to minimize what data is exposed to its operators. User registration
-and account access is based on a cryptographic key that is derived from your username
-and password so the server never needs to see either and you don't need to worry about
-whether they are being stored securely. It is impossible to verify whether a server's
-operators are logging your IP or other activity, so if you consider this information
-sensitive it is safest to assume it is being recorded and access your preferred instance
-via [Tor browser].
+The platform is designed to minimize what data is exposed to its operators. User
+registration and account access are based on cryptographic keys that are derived from your
+username and password. Hence, the server never needs to see either, and you don't need to
+worry about whether they are being stored securely. It is impossible to verify whether a
+server's operators are logging your IP or other activity, so if you consider this
+information sensitive it is safest to assume it is being recorded and access your
+preferred instance via [Tor browser].
 
 A correctly configured instance has safeguards to prevent collaborators from doing some
 nasty things like injecting scripts into collaborative documents or uploads. The project
 is actively maintained and bugs that our safeguards don't catch tend to get fixed quickly.
 For this reason it is best to only use instances that are running the most recent version,
-which is currently on a three-week release cycle. It is difficult for a non-expert to
+which is currently on a three-month release cycle. It is difficult for a non-expert to
 determine whether an instance is otherwise configured correctly, so we are actively
-working on allowing administrators to opt in to a public directory of servers that
+working on allowing administrators to opt in to a [public directory of
+servers](https://cryptpad.org/instances/) that
 meet our strict criteria for safety.
+
+For end users, a [guide](https://blog.cryptpad.org/2024/03/14/Most-Secure-CryptPad-Usage/)
+is provided in our blog to help understanding the security of CryptPad. This blog post
+also explains and show the best practices when using CryptPad and clarify what end-to-end
+encryption entails and not.
 
 # Translations
 
