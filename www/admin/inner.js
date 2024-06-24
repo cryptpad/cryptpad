@@ -981,7 +981,6 @@ define([
                 $input.val(hex);
                 onColorPicked();
             });
-            var $colors = $(colors);
 
             $(label).append(colors);
             let form = blocks.form([

@@ -136,7 +136,7 @@ define([
                 if (hasError) {
                     UI.alert(Messages.onboarding_save_error, function () {
                         document.location.href = '/drive/';
-                    })
+                    });
                     return;
                 }
                 document.location.href = '/drive/';
@@ -233,7 +233,6 @@ define([
             if (selections.colorId) {
                 colors.setValue(selections.colorId);
             }
-            var $colors = $(colors).attr('id', 'cp-install-color');
             var content = h('div.cp-onboardscreen-colorpick', [
                 h('label', {for:'cp-install-color'}, Messages.kanban_color),
                 colors
@@ -242,7 +241,7 @@ define([
             return content;
         };
 
-        var button = blocks.activeButton('primary', '', Messages.continue, function (done) {
+        var button = blocks.activeButton('primary', '', Messages.continue, function () {
             selections.title = $(titleInput).val() || '';
             selections.description = $(description).val() || '';
             if (dataURL) {
@@ -330,7 +329,7 @@ define([
         const grid = createAppsGrid(appsToDisable);
 
 
-        var save = blocks.activeButton('primary', '', Messages.continue, function (done) {
+        var save = blocks.activeButton('primary', '', Messages.continue, function () {
             gotoPage(Env, 2);
         });
 
@@ -363,7 +362,7 @@ define([
             label: 'registration',
             query: function (val, setState) {
                 selections.closeRegistration = val;
-                setState(val)
+                setState(val);
             },
         });
 
@@ -375,7 +374,7 @@ define([
             label: 'forcemfa',
             query: function (val, setState) {
                 selections.mfa = val;
-                setState(val)
+                setState(val);
             },
         });
 
@@ -394,7 +393,6 @@ define([
         ], 'cp-admin-customize-options-grid');
 
         var save = blocks.activeButton('primary', '', Messages.settings_save, function () {
-
             saveAndRedirect(Env);
         });
 

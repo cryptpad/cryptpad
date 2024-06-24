@@ -367,7 +367,6 @@ define([
 
         // Colors
         var $colors = $(colors);
-        var selectedColor = '';
         var resetThemeClass = function () {
             $colors.find('.cp-palette-color').each(function (i, el) {
                 var $c = $(el);
@@ -438,7 +437,7 @@ define([
 
             $modal.find('nav button.danger').prop('disabled', unlocked ? '' : 'disabled');
             offline = !unlocked;
-            palette.disable(offline);
+            colors.disable(offline);
         });
 
 
