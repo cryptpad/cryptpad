@@ -178,8 +178,7 @@ define([
                 },
                 //remove focus from editor
                 "Esc": function () {
-                    document.activeElement.blur();
-                    document.querySelector('.cp-toolbar-link-logo').focus();
+                    editor.display.input.blur();
                 },
                 "Shift-Tab": function () {
                     editor.execCommand("indentLess");

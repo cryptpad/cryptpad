@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* globals module */
-
 /*  DISCLAIMER:
 
     There are two recommended methods of running a CryptPad instance:
@@ -89,12 +87,10 @@ module.exports = {
  */
     //httpPort: 3000,
 
-/*  httpSafePort allows you to specify an alternative port from which
- *  the node process should serve sandboxed assets. The default value is
- *  that of your httpPort + 1. You probably don't need to change this as
- *  it's only meant to be used in development environements and shouldn't
- *  be setup on production ones where traffic needs to be directed to the
- *  main httpPort.
+/*  httpSafePort purpose is to emulate another origin for the sandbox when
+ *  you don't have two domains at hand (i.e. when httpSafeOrigin not defined).
+ *  It is meant to be used only in case where you are working on a local 
+ *  development instance. The default value is your httpPort + 1.
  *
  */
     //httpSafePort: 3001,
