@@ -251,16 +251,22 @@
                 cryptpadURL = getInstanceURL();
             }
 
+            config.events = config.events || {};
+
             // OnlyOffice shim
             let url = config.document.url;
             if (/^http:\/\/localhost\/cache\/files\//.test(url)) {
                 url = url.replace(/(http:\/\/localhost\/cache\/files\/)/, getInstanceURL() + 'ooapi/');
             }
             config.document.url = url;
-            if (config.documentType === "spreadsheet") {
+            if (config.documentType === "spreadsheet" || config.documentType === "cell") {
                 config.documentType = "sheet";
             }
-            if (config.documentType === "text") {
+
+            if (config.documentType === "slide") {
+                config.documentType = "presentation";
+            }
+            if (config.documentType === "word" || config.documentType === "text") {
                 config.documentType = "doc";
             }
 
@@ -311,8 +317,8 @@
                     iframe.setAttribute('name', 'frameEditor');
                     iframe.setAttribute('align', 'top');
                     iframe.setAttribute("src", url);
-                    iframe.setAttribute("width", config.width);
-                    iframe.setAttribute("height", config.height);
+                    iframe.setAttribute("width", config.width || '100%');
+                    iframe.setAttribute("height", config.height || '100%');
                     if (config.editorConfig) { // OnlyOffice
                         container.replaceWith(iframe);
                         container = iframe;
