@@ -190,7 +190,7 @@ define([
             commit();
         });
 
-        var conflicts, conflictContainer, titleInput, tagsDiv, colors, text;
+        var conflicts, conflictContainer, titleInput, tagsDiv, text;
         var content = h('div', [
             conflictContainer = h('div#cp-kanban-edit-conflicts', [
                 h('div', Messages.kanban_conflicts),
