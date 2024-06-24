@@ -133,6 +133,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+// XXX
 Messages.install_token = "Install token";
 Messages.install_header = "Installation";
 Messages.install_instance = "Create the first admin account, then proceed to customize this instance";
