@@ -133,30 +133,6 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-// XXX
-Messages.install_token = "Install token";
-Messages.install_header = "Installation";
-Messages.install_instance = "Create the first admin account, then proceed to customize this instance";
-Messages.install_launch = "Instance setup";
-Messages.install_notes = `<ul class="cp-notes-list">
-<li>Create your first administrator account on this page. Administrators manage instance settings including storage quotas, and have access to moderation tools.</li>
-<li>Your password is the secret key that encrypts all of your documents and administrator privileges on this instance. <span class="red">If you lose it there is no way we can recover your data.</span></li>
-<li>If you are using a shared computer, <span class="red">remember to log out</span> when you are done. Only closing the browser window leaves your account exposed. </li></ul>`;
-
-Messages.admin_appSelection = 'App configuration';
-Messages.admin_appsTitle = "Instance applications";
-Messages.admin_appsHint = "Choose which apps to enable on this instance.";
-Messages.admin_cat_apps = "Applications";
-
-Messages.onboarding_save_error = "Some options could not be saved properly. Please visit the administration panel to check the values.";
-Messages.onboarding_upload = "Select logo";
-Messages.admin_onboardingNameTitle = 'Welcome to your CryptPad instance';
-Messages.admin_onboardingNameHint = 'Please choose a title, description, accent color and logo (all are optional)';
-Messages.admin_onboardingOptionsTitle = "Instance options";
-Messages.admin_onboardingOptionsHint = "Please select the apropriate option for your instance. These settings can be changed later in the admin panel.";
-Messages.admin_onboardingNamePlaceholder = 'Instance title';
-Messages.admin_onboardingDescPlaceholder = 'Instance description text';
-
     return Messages;
 
 });
