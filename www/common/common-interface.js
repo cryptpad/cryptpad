@@ -555,12 +555,12 @@ define([
 
     let addTabListener = frame => {
         // find focusable elements
-        let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible');
+        let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
         // intialize with focus on first element
         modalElements[0].focus();
 
         $(frame).on('keydown', function (e) {
-            modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible'); // for modals with dynamic content
+            modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)'); // for modals with dynamic content
 
             if (e.which === 9) { // Tab
                 if (e.shiftKey) {
@@ -931,12 +931,14 @@ define([
         opts = opts || {};
         var attributes = merge({
             type: 'password',
-            tabindex: '1',
+            tabindex: '0',
             autocomplete: 'one-time-code', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
-        var eye = h('span.fa.fa-eye.cp-password-reveal');
+        var eye = h('span.fa.fa-eye.cp-password-reveal', {
+            tabindex: 0
+        });
 
         var $eye = $(eye);
         var $input = $(input);
@@ -953,7 +955,8 @@ define([
                 $input.focus();
             });
         } else {
-            $eye.click(function () {
+            Util.onClickEnter($eye, function (e) {
+                e.stopPropagation();
                 if ($eye.hasClass('fa-eye')) {
                     $input.prop('type', 'text');
                     $input.focus();
