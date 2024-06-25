@@ -1,6 +1,6 @@
 {
   "name": "cryptpad",
-  "description": "realtime collaborative visual editor with zero knowledge server",
+  "description": "a collaborative office suite that is end-to-end encrypted and open-source",
   "version": "2024.6.0",
   "license": "AGPL-3.0+",
   "repository": {
