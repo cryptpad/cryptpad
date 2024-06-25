@@ -304,14 +304,17 @@ define([
         var $root = $t.parent();
 
         var $input = $root.find('.token-input');
+        $input.attr('tabindex', 0);
+
         var $button = $(h('button.btn.btn-primary', [
             h('i.fa.fa-plus'),
             h('span', Messages.tag_add)
         ]));
 
 
-        $button.click(function () {
+        Util.onClickEnter($button, function (e) {
             $t.tokenfield('createToken', $input.val());
+            e.stopPropagation();
         });
 
         var $container = $(h('span.cp-tokenfield-container'));
@@ -329,6 +332,15 @@ define([
                 if (!$tokens.length) {
                     $container.prepend(h('span.tokenfield-empty', Messages.kanban_noTags));
                 }
+                $tokens.find('.close').attr('tabindex', 0).on('keydown', e => {
+                    e.stopPropagation();
+                });
+                $tokens.find('.token-label').attr('tabindex', 0).on('keydown', function (e) {
+                    if (e.which === 13 || e.which === 32) {
+                        $(this).dblclick();
+                    }
+                    e.stopPropagation();
+                });
                 $form.append($input);
                 $form.append($button);
                 if (isEdit) { $button.find('span').text(Messages.tag_edit); }
@@ -340,15 +352,27 @@ define([
         };
         resetUI();
 
+        const focusInput = () => {
+            let active = document.activeElement;
+            if ($.contains($container[0], active)) {
+                setTimeout(() => {
+                    $input.focus();
+                });
+            }
+        };
+
         $t.on('tokenfield:removedtoken', function () {
             resetUI();
+            focusInput();
         });
         $t.on('tokenfield:editedtoken', function () {
             resetUI();
+            focusInput();
         });
         $t.on('tokenfield:createdtoken', function () {
             $input.val('');
             resetUI();
+            focusInput();
         });
         $t.on('tokenfield:edittoken', function () {
             isEdit = true;
