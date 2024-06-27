@@ -1779,6 +1779,6 @@
     "admin_onboardingOptionsTitle": "Einstellungen der Instanz",
     "admin_onboardingNamePlaceholder": "Name der Instanz",
     "admin_onboardingDescPlaceholder": "Beschreibungstext für die Instanz",
-    "admin_onboardingOptionsHint": "Bitte wähle die geeignete Option für deine Instanz. Diese Einstellungen können später im Administrationsbereich geändert werden.",
+    "admin_onboardingOptionsHint": "Bitte wähle die geeignete Option für deine Instanz.<br>Diese Einstellungen können später im Administrationsbereich geändert werden.",
     "admin_onboardingNameHint": "Bitte wähle einen Namen, eine Beschreibung, eine Akzentfarbe und ein Logo (alle Angaben sind optional)"
 }
