@@ -1778,7 +1778,7 @@
     "admin_onboardingNameTitle": "Welcome to your CryptPad instance",
     "admin_onboardingNameHint": "Please choose a title, description, accent color and logo (all are optional)",
     "admin_onboardingOptionsTitle": "Instance options",
-    "admin_onboardingOptionsHint": "Please select the apropriate option for your instance.</br>These settings can be changed later in the admin panel.",
+    "admin_onboardingOptionsHint": "Please select the appropriate option for your instance.<br>These settings can be changed later in the admin panel.",
     "admin_onboardingNamePlaceholder": "Instance title",
     "admin_onboardingDescPlaceholder": "Instance description text"
 }
