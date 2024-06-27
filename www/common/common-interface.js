@@ -580,6 +580,12 @@ define([
     let addTabListener = frame => {
         // find focusable elements
         let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
+
+        if (modalElements.length === 0) {
+            // there are no focusable elements -> nothing to do for us here
+            return;
+        }
+
         // intialize with focus on first element
         modalElements[0].focus();
 

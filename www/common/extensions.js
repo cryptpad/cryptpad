@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'optional!/extensions.js'
 ], (Extensions) => {
