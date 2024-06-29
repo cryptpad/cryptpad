@@ -117,6 +117,8 @@ ensure_oo_is_downloaded () {
 		echo "Downloading OnlyOffice..."
 		git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
 	fi
+  git config --global --add safe.directory /cryptpad/onlyoffice-conf/onlyoffice-builds.git
+
 }
 
 install_version () {
