@@ -240,11 +240,15 @@ define([
             if (!(tab.content || tab.disabled) || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title.toLowerCase(), 'aria-hidden':"true"}, tab.title));
+            $(title).attr('tabindex', '0');
             if (tab.icon) {
                 var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
                 $(title).prepend(' ').prepend(icon);
             }
-            $(title).click(function () {
+
+            Util.onClickEnter($(title), function (event) {
+                event.preventDefault();
+                event.stopPropagation();
                 if (tab.disabled) { return; }
                 var old = tabs[active];
                 if (old.onHide) { old.onHide(); }
@@ -300,14 +304,17 @@ define([
         var $root = $t.parent();
 
         var $input = $root.find('.token-input');
+        $input.attr('tabindex', 0);
+
         var $button = $(h('button.btn.btn-primary', [
             h('i.fa.fa-plus'),
             h('span', Messages.tag_add)
         ]));
 
 
-        $button.click(function () {
+        Util.onClickEnter($button, function (e) {
             $t.tokenfield('createToken', $input.val());
+            e.stopPropagation();
         });
 
         var $container = $(h('span.cp-tokenfield-container'));
@@ -325,27 +332,47 @@ define([
                 if (!$tokens.length) {
                     $container.prepend(h('span.tokenfield-empty', Messages.kanban_noTags));
                 }
+                $tokens.find('.close').attr('tabindex', 0).on('keydown', e => {
+                    e.stopPropagation();
+                });
+                $tokens.find('.token-label').attr('tabindex', 0).on('keydown', function (e) {
+                    if (e.which === 13 || e.which === 32) {
+                        $(this).dblclick();
+                    }
+                    e.stopPropagation();
+                });
                 $form.append($input);
                 $form.append($button);
                 if (isEdit) { $button.find('span').text(Messages.tag_edit); }
                 else { $button.find('span').text(Messages.add); }
                 $container.append($form);
-                $input.focus();
                 isEdit = false;
                 called = false;
             });
         };
         resetUI();
 
+        const focusInput = () => {
+            let active = document.activeElement;
+            if ($.contains($container[0], active)) {
+                setTimeout(() => {
+                    $input.focus();
+                });
+            }
+        };
+
         $t.on('tokenfield:removedtoken', function () {
             resetUI();
+            focusInput();
         });
         $t.on('tokenfield:editedtoken', function () {
             resetUI();
+            focusInput();
         });
         $t.on('tokenfield:createdtoken', function () {
             $input.val('');
             resetUI();
+            focusInput();
         });
         $t.on('tokenfield:edittoken', function () {
             isEdit = true;
@@ -486,7 +513,7 @@ define([
         var navs = [];
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
-            var button = h('button', { tabindex: '1', 'class': b.className || '' }, [
+            var button = h('button', { 'class': b.className || '' }, [
                 b.iconClass ? h('i' + b.iconClass) : undefined,
                 b.name
             ]);
@@ -509,7 +536,8 @@ define([
                     divClasses: 'left'
                 }, todo);
             } else {
-                $(button).click(function () {
+                Util.onClickEnter($(button), function (e) {
+                    e.stopPropagation();
                     todo();
                 });
             }
@@ -548,6 +576,34 @@ define([
         if (opt.forefront) { $(frame).addClass('forefront'); }
         return frame;
     };
+
+    let addTabListener = frame => {
+        // find focusable elements
+        let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
+        // intialize with focus on first element
+        modalElements[0].focus();
+
+        $(frame).on('keydown', function (e) {
+            modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)'); // for modals with dynamic content
+
+            if (e.which === 9) { // Tab
+                if (e.shiftKey) {
+                    // On the first element, shift+tab goes to last
+                    if (document.activeElement === modalElements[0]) {
+                        e.preventDefault();
+                        modalElements[modalElements.length - 1].focus();
+                    }
+                } else {
+                    // On the last element, tab goes to first
+                    if (document.activeElement === modalElements[modalElements.length - 1]) {
+                        e.preventDefault();
+                        modalElements[0].focus();
+                    }
+                }
+            }
+        });
+
+    };
     UI.openCustomModal = function (content, opt) {
         var frame = dialog.frame([
             content
@@ -564,6 +620,9 @@ define([
         setTimeout(function () {
             Notifier.notify();
         });
+
+        addTabListener(frame);
+
         return frame;
     };
 
@@ -742,13 +801,28 @@ define([
         var $ok = $(ok).click(function (ev) { close(true, ev); });
         var $cancel = $(cancel).click(function (ev) { close(false, ev); });
 
+        document.body.appendChild(frame);
+
+        addTabListener(frame);
+
+        frame.addEventListener('keydown', function(e) {
+            if (e.keyCode === 13) {
+                if (document.activeElement === $ok[0]) {
+                    $ok.click();
+                } else if (document.activeElement === $cancel[0]) {
+                    $cancel.click();
+                }
+            } else if (e.keyCode === 27) {
+                $cancel.click();
+            }
+        });
+
         listener = listenForKeys(function () {
             $ok.click();
         }, function () {
             $cancel.click();
         }, frame);
 
-        document.body.appendChild(frame);
         setTimeout(function () {
             Notifier.notify();
             $(frame).find('.ok').focus();
@@ -815,14 +889,18 @@ define([
         };
 
         var newCls2 = config.new ? 'new' : '';
-        $(originalBtn).addClass('cp-button-confirm-placeholder').addClass(newCls2).click(function (e) {
-            e.stopPropagation();
-            // If we have a validation function, continue only if it's true
-            if (config.validate && !config.validate()) { return; }
-            i = 1;
-            to = setTimeout(todo, INTERVAL);
-            $(originalBtn).hide().after(content);
+        $(originalBtn).addClass('cp-button-confirm-placeholder').addClass(newCls2).on('click keydown', function (e) {
+            if (e.type === 'click' || (e.type === 'keydown' && e.key === 'Enter')) {
+                e.stopPropagation();
+                // If we have a validation function, continue only if it's true
+                if (config.validate && !config.validate()) { return; }
+                i = 1;
+                to = setTimeout(todo, INTERVAL);
+                $(originalBtn).hide().after(content);
+                $(button).focus();
+            }
         });
+
 
         return {
             reset: function () {
@@ -877,12 +955,14 @@ define([
         opts = opts || {};
         var attributes = merge({
             type: 'password',
-            tabindex: '1',
+            tabindex: '0',
             autocomplete: 'one-time-code', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
-        var eye = h('span.fa.fa-eye.cp-password-reveal');
+        var eye = h('span.fa.fa-eye.cp-password-reveal', {
+            tabindex: 0
+        });
 
         var $eye = $(eye);
         var $input = $(input);
@@ -899,7 +979,8 @@ define([
                 $input.focus();
             });
         } else {
-            $eye.click(function () {
+            Util.onClickEnter($eye, function (e) {
+                e.stopPropagation();
                 if ($eye.hasClass('fa-eye')) {
                     $input.prop('type', 'text');
                     $input.focus();
@@ -925,7 +1006,8 @@ define([
             title: text,
             href: href,
             target: "_blank",
-            'data-tippy-placement': "right"
+            'data-tippy-placement': "right",
+            'aria-label': Messages.help_genericMore //TBC XXX
         });
         return q;
     };
@@ -1064,6 +1146,21 @@ define([
         }
     };
 
+    UI.getNewIcon = function (type) {
+        var icon = h('i.fa.fa-file-text-o');
+
+        if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
+            icon = AppConfig.applicationsIcon[type];
+            var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
+            if (type === 'fileupload') { type = 'file'; }
+            if (type === 'folderupload') { type = 'file'; }
+            if (type === 'link') { type = 'drive'; }
+            var appClass = ' cp-icon cp-icon-color-'+type;
+            icon = h('i', {'class': font + ' ' + icon + appClass});
+        }
+
+        return icon;
+    };
     var $defaultIcon = $('<span>', {"class": "fa fa-file-text-o"});
     UI.getIcon = function (type) {
         var $icon = $defaultIcon.clone();
@@ -1205,18 +1302,18 @@ define([
         if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
 
         // Mark properties
-        var markOpts = { tabindex: 0 };
+        var markOpts = { tabindex: 0, role: 'checkbox', 'aria-checked': checked, 'aria-labelledby': inputOpts.id + '-label' };
         $.extend(markOpts, opts.mark || {});
 
         var input = h('input', inputOpts);
         var $input = $(input);
         var mark = h('span.cp-checkmark-mark', markOpts);
         var $mark = $(mark);
-        var label = h('span.cp-checkmark-label', labelTxt);
+        var label = h('span.cp-checkmark-label', {id: inputOpts.id + '-label'}, labelTxt);
 
         $mark.keydown(function (e) {
             if ($input.is(':disabled')) { return; }
-            if (e.which === 32) {
+            if (e.which === 32 || e.which === 13){
                 e.stopPropagation();
                 e.preventDefault();
                 $input.prop('checked', !$input.is(':checked'));
@@ -1228,8 +1325,10 @@ define([
             if (!opts.labelAlt) { return; }
             if ($input.is(':checked') !== checked) {
                 $(label).text(opts.labelAlt);
+                $mark.attr('aria-checked', 'true');
             } else {
                 $(label).text(labelTxt);
+                $mark.attr('aria-checked', 'false');
             }
         });
 
@@ -1267,7 +1366,7 @@ define([
 
         $(mark).keydown(function (e) {
             if ($input.is(':disabled')) { return; }
-            if (e.which === 32) {
+            if (e.which === 13 || e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
                 if ($input.is(':checked')) { return; }

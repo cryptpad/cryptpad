@@ -2822,6 +2822,15 @@ define([
                             initFeedback(data.feedback);
                         }
 
+                        if (data.edPublic) {
+                            if (Array.isArray(Config.adminKeys) &&
+                                    Config.adminKeys.includes(data.edPublic)) {
+                                // Doesn't provides extra-rights but may show
+                                // additional warnings in the UI
+                                localStorage.CP_admin = "1";
+                            }
+                        }
+
                         if (data.loggedIn) {
                             window.CP_logged_in = true;
                         }

@@ -297,6 +297,29 @@
         }
     }
 
+    .cp-extensions-popups {
+        width: 100%;
+        .cp-extensions-popup {
+            background-color: @cp_alertify-bg;
+            border-radius: @infopages-radius-L;
+            padding: 10px;
+            box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
+            width: 400px;
+            max-width: 100%;
+            color: @cryptpad_text_col;
+            margin-left: 40px;
+        }
+
+    }
+    @media (max-width: 700px) {
+        .cp-extensions-popups {
+            max-width: 90%;
+            .cp-extensions-popup {
+                margin-left: 0;
+            }
+        }
+    }
+
     @media (min-width: 576px) and (max-width: 767px) {
         .container {
             padding-left: 0;

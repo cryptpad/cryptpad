@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
-  "description": "realtime collaborative visual editor with zero knowledge server",
-  "version": "2024.3.0",
+  "description": "a collaborative office suite that is end-to-end encrypted and open-source",
+  "version": "2024.6.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -20,8 +20,8 @@
     "bootstrap-tokenfield": "^0.12.0",
     "chainpad": "^5.2.6",
     "chainpad-crypto": "^0.2.5",
-    "chainpad-listmap": "^1.0.0",
-    "chainpad-netflux": "^1.0.0",
+    "chainpad-listmap": "^1.1.0",
+    "chainpad-netflux": "^1.2.0",
     "chainpad-server": "^5.2.0",
     "ckeditor": "npm:ckeditor4@~4.22.1",
     "codemirror": "^5.19.0",
@@ -44,7 +44,7 @@
     "localforage": "^1.5.2",
     "marked": "^4.3.0",
     "mathjax": "3.0.5",
-    "netflux-websocket": "^1.0.0",
+    "netflux-websocket": "^1.2.0",
     "notp": "^2.0.3",
     "nthen": "0.1.8",
     "open-sans-fontface": "^1.4.0",
@@ -63,19 +63,19 @@
     "thirty-two": "^1.0.2",
     "tweetnacl": "~0.12.2",
     "ulimit": "0.0.2",
-    "ws": "^3.3.1",
+    "ws": "^8.17.1",
     "x2js": "^3.4.4"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-plugin-compat": "^4.2.0",
-    "lesshint": "6.3.7"
+    "stylelint": "^16.6.1",
+    "stylelint-config-standard-less": "^3.0.1"
   },
   "overrides": {
-    "glob-parent": "5.1.2",
-    "set-value": "4.0.1",
     "minimist": "~1.2.3",
     "minimatch": "~3.1.2",
+    "ws": "^8.17.1",
     "jquery": "3.6.0"
   },
   "scripts": {
@@ -86,9 +86,9 @@
     "offline": "FRESH=1 OFFLINE=1 node server.js",
     "offlinedev": "DEV=1 OFFLINE=1 node server.js",
     "package": "PACKAGE=1 node server.js",
-    "lint": "eslint . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+    "lint": "eslint . && stylelint \"./customize.dist/src/less2/**/*.less\"",
     "lint:js": "eslint .",
-    "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+    "lint:less": "stylelint \"./customize.dist/src/less2/**/*.less\"",
     "lint:translations": "node ./scripts/translations/lint-translations.js",
     "unused-translations": "node ./scripts/translations/unused-translations.js",
     "test": "node scripts/TestSelenium.js",

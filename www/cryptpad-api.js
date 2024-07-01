@@ -14,6 +14,13 @@
         var getTxid = function () {
             return Math.random().toString(16).replace('0.', '');
         };
+        var getInstanceURL = () => {
+            var scripts = document.getElementsByTagName('script');
+            for (var i = scripts.length - 1; i >= 0; i--) {
+                var match = scripts[i].src.match(/(.*)web-apps\/apps\/api\/documents\/api.js/i);
+                if (match) { return match[1]; }
+            }
+        };
 
         var makeChan = function (iframe, iOrigin) {
             var handlers = {};
@@ -75,6 +82,7 @@
 
         var makeIframe = function () {}; // placeholder
 
+        let onDocumentReady = [];
         var start = function (config, chan) {
             return new Promise(function (resolve, reject) {
             setTimeout(function () {
@@ -83,7 +91,8 @@
 
                 var getBlob = function (cb) {
                     var xhr = new XMLHttpRequest();
-                    xhr.open('GET', config.document.url, true);
+                    let url = config.document.url;
+                    xhr.open('GET', url, true);
                     xhr.responseType = 'blob';
                     xhr.onload = function () {
                         if (this.status === 200) {
@@ -131,9 +140,18 @@
 
                 var getSession = function (cb) {
                     chan.send('GET_SESSION', {
-                        key: key
+                        key: key,
+                        keepOld: !config.events.onNewKey
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
+
+                        // OnlyOffice
+                        if (!config.events.onNewKey) {
+                            key = obj.key;
+                            console.error(key, obj);
+                            return void cb();
+                        }
+
                         if (obj.key !== key) {
                             // The outside app may reject our new key if the "old" one is deprecated.
                             // This will happen if multiple users try to update the key at the same
@@ -153,21 +171,52 @@
                 };
                 getSession(onKeyValidated);
 
+                chan.on('DOCUMENT_READY', function () {
+                    if (config.events.onAppReady) {
+                        config.events.onAppReady();
+                    }
+                    if (config.events.onReady) {
+                        config.events.onReady();
+                    }
+                    if (config.events.onDocumentReady) {
+                        config.events.onDocumentReady();
+                    }
+                    onDocumentReady.forEach(f => {
+                        try { f(); } catch (e) { console.error(e); }
+                    });
+                });
+
+                chan.on('ON_DOWNLOADAS', blob => {
+                    let url = URL.createObjectURL(blob);
+                    config.events.onDownloadAs({
+                        data: {
+                            fileType: config.document && config.document.fileType,
+                            url
+                        }
+                    });
+                });
+
                 chan.on('SAVE', function (data, cb) {
                     blob = data;
                     config.events.onSave(data, cb);
                 });
                 chan.on('RELOAD', function () {
                     config.document.blob = blob;
-                    document.getElementById('cryptpad-editor').remove();
+                    if (!config.editorConfig) { // Not OnlyOffice shim
+                        document.getElementById('cryptpad-editor').remove();
+                    }
                     makeIframe(config);
                 });
                 chan.on('HAS_UNSAVED_CHANGES', function(unsavedChanges, cb) {
-                    config.events.onHasUnsavedChanges(unsavedChanges);
+                    if (config.events.onHasUnsavedChanges) {
+                        config.events.onHasUnsavedChanges(unsavedChanges);
+                    }
                     cb();
                 });
                 chan.on('ON_INSERT_IMAGE', function(data, cb) {
-                    config.events.onInsertImage(data, cb);
+                    if (config.events.onIntertImage) {
+                        config.events.onInsertImage(data, cb);
+                    } else { cb(); }
                 });
 
             });
@@ -192,7 +241,28 @@
          * @return {promise}
          */
         var init = function (cryptpadURL, containerId, config) {
-            return new Promise(function (resolve, reject) {
+            // OnlyOffice shim: don't provide a URL
+            if (!config && typeof(containerId) === "object") {
+                config = containerId;
+                containerId = cryptpadURL;
+                cryptpadURL = getInstanceURL();
+            }
+
+            // OnlyOffice shim
+            let url = config.document.url;
+            if (/^http:\/\/localhost\/cache\/files\//.test(url)) {
+                url = url.replace(/(http:\/\/localhost\/cache\/files\/)/, getInstanceURL() + 'ooapi/');
+            }
+            config.document.url = url;
+            if (config.documentType === "spreadsheet") {
+                config.documentType = "sheet";
+            }
+            if (config.documentType === "text") {
+                config.documentType = "doc";
+            }
+
+            let chan;
+            let ret = new Promise(function (resolve, reject) {
             setTimeout(function () {
 
                 if (!cryptpadURL || typeof(cryptpadURL) !== "string") {
@@ -209,8 +279,8 @@
 
                 if (!config) { return reject('Missing args: no data provided'); }
                 if(['document.url', 'document.fileType', 'documentType',
-                    'events.onSave', 'events.onHasUnsavedChanges',
-                    'events.onNewKey', 'events.onInsertImage'].some(function (k) {
+                    /*'events.onSave', 'events.onHasUnsavedChanges',
+                    'events.onNewKey', 'events.onInsertImage'*/].some(function (k) {
                     var s = k.split('.');
                     var c = config;
                     return s.some(function (key) {
@@ -235,14 +305,23 @@
                 makeIframe = function (config) {
                     var iframe = document.createElement('iframe');
                     iframe.setAttribute('id', 'cryptpad-editor');
+                    iframe.setAttribute('name', 'frameEditor');
+                    iframe.setAttribute('align', 'top');
                     iframe.setAttribute("src", url);
-                    container.appendChild(iframe);
+                    iframe.setAttribute("width", config.width);
+                    iframe.setAttribute("height", config.height);
+                    if (config.editorConfig) { // OnlyOffice
+                        container.replaceWith(iframe);
+                        container = iframe;
+                    } else {
+                        container.appendChild(iframe);
+                    }
 
                     var onMsg = function (msg) {
                         var data = typeof(msg.data) === "string" ? JSON.parse(msg.data) : msg.data;
                         if (!data || data.q !== 'INTEGRATION_READY') { return; }
                         window.removeEventListener('message', onMsg);
-                        var chan = makeChan(iframe, parsed.origin);
+                        chan = makeChan(iframe, parsed.origin);
                         start(config, chan).then(resolve).catch(reject);
                     };
                     window.addEventListener('message', onMsg);
@@ -250,8 +329,24 @@
                 makeIframe(config);
             });
             });
+
+            ret.downloadAs = (arg) => {
+                if (!chan) {
+                    return void onDocumentReady.push(() => {
+                        ret.downloadAs(arg);
+                    });
+                }
+
+                chan.send('DOWNLOAD_AS', arg);
+            };
+
+            return ret;
         };
 
+        init.version = () => { return '7.3.0'; };
+        init.DocEditor = init; // OnlyOffice shim
+
+        window.DocsAPI = init;
         return init;
     };
 

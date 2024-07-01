@@ -68,13 +68,6 @@ nThen(function (w) {
         Env.Log.info("WEBSERVER_LISTENING", {
             origin: url,
         });
-
-        if (!Env.admins.length) {
-            Env.Log.info('NO_ADMIN_CONFIGURED', {
-                message: `Your instance is not correctly configured for production usage. Review its checkup page for more information.`,
-                details: new URL('/checkup/', Env.httpUnsafeOrigin).href,
-            });
-        }
     } catch (err) {
         Env.Log.error("INVALID_ORIGIN", {
             httpUnsafeOrigin: Env.httpUnsafeOrigin,

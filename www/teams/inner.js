@@ -1049,6 +1049,7 @@ define([
             var $pubLabel = $('<span>', {'class': 'cp-default-label'})
                 .text(Messages.settings_publicSigningKey);
             $key.append($pubLabel).append(UI.dialog.selectable(userHref));
+            $key.find('input').attr('aria-label', Messages.settings_publicSigningKey);
         }
         var content = [container];
         cb(content);
