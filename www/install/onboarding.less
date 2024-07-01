@@ -1,0 +1,119 @@
+@import (reference) "../../customize/src/less2/include/browser.less";
+@import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/tools.less";
+@import (reference) "../../customize/src/less2/include/markdown.less";
+@import (reference) "../../customize/src/less2/include/avatar.less";
+@import (reference) '../../customize/src/less2/include/admin.less';
+@import (reference) '../../customize/src/less2/include/icon-colors.less';
+
+&.cp-page-install {
+    .admin_main();
+    div.cp-palette-container {
+        max-width: 400px;
+    }
+    #cp-onboarding {
+        position: fixed;
+        z-index: 1000;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        background-color: @cp_loading-bg;
+        color: @cp_loading-fg;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        align-items: center;
+        .cp-onboarding-box {
+            width: 850px;
+            background-color: @cp_loading-progress-bg;
+            border-radius: @variables_radius_L;
+            box-shadow: 0px 0px 10px 0px @cp_shadow-color;
+            padding: 30px 110px 20px 110px;
+        }
+        .cp-onboarding-logo-input {
+            display: none;
+        }
+        .cp-onboardscreen-logo {
+            min-width: 200px;
+            max-width: 200px;
+            nav {
+                display: flex;
+                margin-top: 0.5rem;
+                justify-content: center;
+            }
+        }
+    }
+}
+
+.configscreen {
+    //width: 70%;
+    //height: 75%;
+    background-color: @cp_loading-progress-bg;
+    border-radius: @variables_radius_L;
+    box-shadow: 0px 0px 10px 0px @cp_shadow-color;
+    padding: 30px 110px 20px 110px;
+}
+
+.cp-onboardscreen-screentitle {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    h1.cp-onboardscreen-title {
+        font-family: "IBM Plex Mono";
+        color: @cryptpad_color_link;
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+}
+
+.cp-instance-form {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    input, textarea {
+        border: 0px transparent !important;
+    }
+    .cp-onboardscreen-logo {
+        .cp-sidebar-form {
+            background-color: @cp_forms-bg;
+            border-radius: @variables_radius;
+            padding: 0.5rem;
+            .cp-admin-customize-logo {
+                img {
+                    max-width: 100%;
+                }
+            }
+        }
+    }
+    .cp-instance-text-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        .cp-onboardscreen-name {
+            input {
+                font-family: "IBM Plex Mono";
+                font-size: 1.2em;
+            }
+        }
+        .cp-onboardscreen-colorpick {
+            div.cp-palette-container {
+                display: flex;
+                justify-content: flex-start;
+                .cp-palette-color {
+                    margin-right: 1rem;
+                }
+            }
+        }
+    }
+}
+
+
+nav.cp-onboardscreen-nav {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 1rem;
+}

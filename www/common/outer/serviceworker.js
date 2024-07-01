@@ -6,8 +6,8 @@
 
 importScripts('/components/requirejs/require.js');
 
-window = self;
-localStorage = {
+window = self;  // eslint-disable-line no-global-assign
+localStorage = {  // eslint-disable-line no-global-assign
     setItem: function (k, v) { localStorage[k] = v; },
     getItem: function (k) { return localStorage[k]; }
 };

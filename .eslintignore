@@ -7,6 +7,7 @@ www/components/
 www/bower_components/
 www/common/onlyoffice/dist
 www/common/onlyoffice/x2t
+onlyoffice-dist/
 
 www/scratch
 www/accounts
@@ -14,6 +15,8 @@ www/lib
 www/accounts
 www/worker
 www/todo
+
+#lib/plugins/
 
 www/common/hyperscript.js
 

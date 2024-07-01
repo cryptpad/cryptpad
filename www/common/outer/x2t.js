@@ -12,7 +12,7 @@ define([
 
     var CURRENT_VERSION = X2T.CURRENT_VERSION = CurrentVersion.currentVersion;
     var debug = function (str) {
-        if (localStorage.CryptPad_dev !== "1") { return; }
+        //if (localStorage.CryptPad_dev !== "1") { return; }
         console.debug(str);
     };
 
@@ -65,7 +65,7 @@ define([
         };
         var getX2T = function (cb) {
             // Perform the x2t conversion
-            require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
+            require(['/common/onlyoffice/dist/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
                 var x2t = window.Module;
                 if (x2tInitialized) {
                     debug("x2t runtime already initialized");

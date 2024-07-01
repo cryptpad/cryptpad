@@ -80,6 +80,10 @@
                 text-overflow: ellipsis;
                 padding-left: 4px;
                 vertical-align: middle;
+                outline: none;
+                &:focus {
+                    outline: @cryptpad_color_brand solid 2px;
+                }
             }
             .close {
                 opacity: 1;

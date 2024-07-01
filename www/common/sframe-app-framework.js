@@ -648,8 +648,8 @@ define([
                     const integrationHasUnsavedChanges = function(unsavedChanges, cb) {
                         integrationChannel.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
                     };
-                    var inte = common.createIntegration(onLocal, cpNfInner.chainpad,
-                                                        integrationSave, integrationHasUnsavedChanges);
+                    var inte = common.createIntegration(integrationSave,
+                                            integrationHasUnsavedChanges);
                     if (inte) {
                         integration = true;
                         evIntegrationSave.reg(function () {

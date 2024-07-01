@@ -16,13 +16,16 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
     '/common/rpc.js',
+    'onboardscreen.js',
 
+    'less!/install/onboarding.less',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc) {
+], function ($, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback, LocalStore, h, Pages, Rpc, OnboardScreen) {
     if (window.top !== window) { return; }
     var Messages = Cryptpad.Messages;
     $(function () {
-        if (LocalStore.isLoggedIn()) {
+
+        if (LocalStore.isLoggedIn() && !localStorage.CP_dev) {
             // already logged in, redirect to drive
             document.location.href = '/drive/';
             return;
@@ -55,10 +58,14 @@ define([
             }
         }
 
+        var showTitleScreen = function (sendAdminDecree, sendAdminRpc) {
+            OnboardScreen.create(sendAdminDecree, sendAdminRpc);
+        };
+
         var registerClick = function () {
             var uname = $uname.val().trim();
-    // trim whitespace surrounding the username since it is otherwise included in key derivation
-    // most people won't realize that its presence is significant
+            // trim whitespace surrounding the username since it is otherwise included in key derivation
+            // most people won't realize that its presence is significant
             $uname.val(uname);
 
             var passwd = $passwd.val();
@@ -112,6 +119,28 @@ define([
                 return void UI.alert(Messages.register_mustAcceptTerms);
             }
 
+            let startOnboarding = function (network, proxy) {
+                Rpc.create(network, proxy.edPrivate, proxy.edPublic, function (e, rpc) {
+                    if (e) {
+                        // TODO: handle error
+                        return;
+                    }
+
+                    let sendAdminDecree = function (command, data, callback) {
+                        var params = ['ADMIN_DECREE', [command, data]];
+                        rpc.send('ADMIN', params, callback);
+                    };
+
+                    let sendAdminRpc = function (command, data, callback) {
+                        var params = [command, data];
+                        rpc.send('ADMIN', params, callback);
+                    };
+
+                    showTitleScreen(sendAdminDecree, sendAdminRpc);
+                    UI.removeLoadingScreen();
+                });
+            };
+
             setTimeout(function () {
                 var span = h('span', [
                     h('h2', [
@@ -145,7 +174,8 @@ define([
                                 edPublic: proxy.edPublic
                             }, function (e) {
                                 if (e) { UI.alert(Messages.error); return console.error(e); }
-                                window.location.href = '/drive/';
+                                localStorage.CP_admin = "1";
+                                startOnboarding(data.network, proxy);
                             });
                         });
 

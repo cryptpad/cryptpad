@@ -4,6 +4,7 @@
 
 define([
     'jquery',
+    '/api/config',
     '/components/nthen/index.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
@@ -13,6 +14,7 @@ define([
     '/common/hyperscript.js',
 ], function(
     $,
+    ApiConfig,
     nThen,
     UI,
     UIElements,
@@ -22,17 +24,26 @@ define([
     h
 ) {
     const Sidebar = {};
+    const keyToCamlCase = (key) => {
+        return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+    };
 
-    Sidebar.create = function (common, app, $container) {
-        const $leftside = $(h('div#cp-sidebarlayout-leftside')).appendTo($container);
-        const $rightside = $(h('div#cp-sidebarlayout-rightside')).appendTo($container);
-        const sidebar = {
-            $leftside,
-            $rightside
-        };
-        const items = {};
+    Sidebar.blocks = function (app, common) {
 
-        let blocks = sidebar.blocks = {};
+        let blocks = {};
+
+        // sframe-common shim
+        if (!common) {
+            common = {
+                openURL: url => {
+                    window.open(url);
+                },
+                openUnsafeURL: url => {
+                    window.open(ApiConfig.httpSafeOrigin + '/bounce/#' + encodeURIComponent(url));
+                }
+            };
+        }
+
         blocks.labelledInput = (label, input, inputBlock) => {
             let uid = Util.uid();
             let id = `cp-${app}-item-${uid}`;
@@ -109,7 +120,7 @@ define([
                 element
         ]);
         };
-        blocks.pre = (value) => {
+       blocks.pre = (value) => {
             return h('pre', value);
         };
 
@@ -220,9 +231,7 @@ define([
             return button;
         };
 
-        const keyToCamlCase = (key) => {
-            return key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
-        };
+
         blocks.activeCheckbox = (data) => {
             const state = data.getState();
             const key = data.key;
@@ -246,6 +255,19 @@ define([
             return box;
         };
 
+        return blocks;
+    };
+
+    Sidebar.create = function (common, app, $container) {
+        const $leftside = $(h('div#cp-sidebarlayout-leftside')).appendTo($container);
+        const $rightside = $(h('div#cp-sidebarlayout-rightside')).appendTo($container);
+        const sidebar = {
+            $leftside,
+            $rightside
+        };
+        const items = {};
+        sidebar.blocks = Sidebar.blocks(app, common);
+
         sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);
             get((content) => {
@@ -253,9 +275,9 @@ define([
                 options = options || {};
                 const title = options.noTitle ? undefined : h('label.cp-item-label', {
                     id: `cp-${app}-${key}`
-                }, Messages[`${app}_${safeKey}Title`] || key);
+                }, options.title || Messages[`${app}_${safeKey}Title`] || key);
                 const hint = options.noHint ? undefined : h('span.cp-sidebarlayout-description',
-                    Messages[`${app}_${safeKey}Hint`] || 'Coming soon...');
+                    options.hint || Messages[`${app}_${safeKey}Hint`] || 'Coming soon...');
                 if (hint && options.htmlHint) {
                     hint.innerHTML = Messages[`${app}_${safeKey}Hint`];
                 }
@@ -272,8 +294,13 @@ define([
             });
         };
 
+        sidebar.hasItem = key => {
+            return !key || !!items[key];
+        };
+
         sidebar.addCheckboxItem = (data) => {
             const key = data.key;
+            let blocks = sidebar.blocks;
             let box = blocks.activeCheckbox(data);
             sidebar.addItem(key, function (cb) {
                 cb(box);
@@ -325,7 +352,7 @@ define([
                     'data-category': key
                 }, [
                     icon,
-                    Messages[`${app}_cat_${key}`] || key,
+                    category.name || Messages[`${app}_cat_${key}`] || key,
                 ]);
                 var $item = $(item).appendTo(container);
                 Util.onClickEnter($item, function () {
