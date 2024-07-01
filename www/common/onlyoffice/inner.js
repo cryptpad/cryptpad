@@ -101,9 +101,11 @@ define([
         var myOOId;
         var sessionId = Hash.createChannelId();
         var cpNfInner;
+        let integrationChannel;
 
         var evOnPatch = Util.mkEvent();
         var evOnSync = Util.mkEvent();
+        const evIntegrationSave = Util.mkEvent();
 
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
@@ -307,7 +309,10 @@ define([
                         isCp: cp
                     }
                 }, function (err, h) {
-                    if (!err) { evOnSync.fire(); }
+                    if (!err) {
+                        evOnSync.fire();
+                        evIntegrationSave.fire();
+                    }
                     cb(err, h);
                 });
             },
@@ -1403,6 +1408,9 @@ define([
 
             debug(obj, 'toOO');
             APP.docEditor.sendMessageToOO(obj);
+            if (obj && obj.type === "saveChanges") {
+                evIntegrationSave.fire();
+            }
         };
 
         const fromOOHandler = function (obj) {
@@ -3123,6 +3131,73 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     setEditable(!readOnly);
                     UI.removeLoadingScreen();
                 };
+
+                let convertImportBlob = (blob, title) => {
+                    new Response(blob).arrayBuffer().then(function (buffer) {
+                        var u8Xlsx = new Uint8Array(buffer);
+                        x2tImportData(u8Xlsx, title, 'bin', function (bin) {
+                            if (!bin) {
+                                return void UI.errorLoadingScreen(Messages.error);
+                            }
+                            var blob = new Blob([bin], {type: 'text/plain'});
+                            var file = getFileType();
+                            resetData(blob, file);
+                            //saveToServer(blob, title);
+                            Title.updateTitle(title);
+                            UI.removeLoadingScreen();
+                        });
+                    });
+                };
+
+                if (privateData.integration) {
+                    let cfg = privateData.integrationConfig || {};
+                    common.openIntegrationChannel(APP.onLocal);
+                    integrationChannel = common.getSframeChannel();
+                    var integrationSave = function (cb) {
+                        var ext = cfg.fileType;
+
+                        var upload = Util.once(function (_blob) {
+                            integrationChannel.query('Q_INTEGRATION_SAVE', {
+                                blob: _blob
+                            }, cb, {
+                                raw: true
+                            });
+                        });
+
+                        var data = getContent();
+                        x2tConvertData(data, "document.bin", ext, function (xlsData) {
+                            UI.removeModals();
+                            if (xlsData) {
+                                var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                                upload(blob);
+                                return;
+                            }
+                            UI.warn(Messages.error);
+                        });
+                    };
+                    const integrationHasUnsavedChanges = function(unsavedChanges, cb) {
+                        integrationChannel.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
+                    };
+                    var inte = common.createIntegration(integrationSave,
+                                                integrationHasUnsavedChanges);
+                    if (inte) {
+                        evIntegrationSave.reg(function () {
+                            inte.changed();
+                        });
+                    }
+                    integrationChannel.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
+                        integrationSave(function (obj) {
+                            if (obj && obj.error) { console.error(obj.error); }
+                            cb();
+                        });
+                    });
+                    if (privateData.initialState) {
+                        var blob = privateData.initialState;
+                        let title = `document.${cfg.fileType}`;
+                        console.error(blob, title);
+                        return convertImportBlob(blob, title);
+                    }
+                }
 
                 if (privateData.isNewFile && privateData.fromFileData) {
                     try {
