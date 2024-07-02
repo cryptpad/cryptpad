@@ -15,7 +15,6 @@
     cursor: pointer;
     height: @variables_bar-height;
     border-radius: @variables_radius;
-    background-color: @cp_sidebar-left-item-bg;
     .fa, .cptools {
         display: inline-flex;
         justify-content: center;
@@ -26,7 +25,7 @@
         background: @cryptpad_text_col_inv;
     }
     &.cp-leftside-active {
-        background: @cp_sidebar-left-active;
-        color: @cp_sidebar-left-active-fg;
+        border-right: 4px solid @cryptpad_color_brand;
+        color: @cryptpad_color_brand;
     }
 }
