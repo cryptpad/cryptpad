@@ -14,7 +14,7 @@ var map = {
     'fi': 'Suomi',
     'fr': 'Français',
     //'hi': 'हिन्दी',
-    'id': 'Bahasa Indonesia'
+    'id': 'Bahasa Indonesia',
     'it': 'Italiano',
     'ja': '日本語',
     'nb': 'Norwegian Bokmål',
