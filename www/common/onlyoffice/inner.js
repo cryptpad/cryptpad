@@ -107,9 +107,11 @@ define([
         var myOOId;
         var sessionId = Hash.createChannelId();
         var cpNfInner;
+        let integrationChannel;
 
         var evOnPatch = Util.mkEvent();
         var evOnSync = Util.mkEvent();
+        var evIntegrationSave = Util.mkEvent();
 
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
@@ -179,15 +181,11 @@ define([
             });
         };
 
-        var getUserIndex = function () {
-            var i = 1;
-            var ids = content.ids || {};
-            Object.keys(ids).forEach(function (k) {
-                if (ids[k] && ids[k].index && ids[k].index >= i) {
-                    i = ids[k].index + 1;
-                }
-            });
-            return i;
+        const getNewUserIndex = function () {
+            const ids = content.ids || {};
+            const indexes = Object.values(ids).map((user) => user.index);
+            const maxIndex = Math.max(...indexes);
+            return maxIndex === -Infinity ? 1 : maxIndex+1;
         };
 
         var setMyId = function () {
@@ -198,7 +196,7 @@ define([
                 myOOId = Util.createRandomInteger();
                 // f: function used in .some(f) but defined outside of the while
                 var f = function (id) {
-                    return ids[id] === myOOId;
+                    return ids[id].ooid === myOOId;
                 };
                 while (Object.keys(ids).some(f)) {
                     myOOId = Util.createRandomInteger();
@@ -207,7 +205,7 @@ define([
             var myId = getId();
             ids[myId] = {
                 ooid: myOOId,
-                index: getUserIndex(),
+                index: getNewUserIndex(),
                 netflux: metadataMgr.getNetfluxId()
             };
             oldIds = JSON.parse(JSON.stringify(ids));
@@ -317,7 +315,10 @@ define([
                         isCp: cp
                     }
                 }, function (err, h) {
-                    if (!err) { evOnSync.fire(); }
+                    if (!err) {
+                        evOnSync.fire();
+                        evIntegrationSave.fire();
+                    }
                     cb(err, h);
                 });
             },
@@ -912,6 +913,15 @@ define([
             });
         };
 
+        const findUserByOOId = function(ooId) {
+            return Object.values(content.ids)
+                  .find((user) => user.ooid === ooId);
+        };
+
+        const getMyOOIndex = function() {
+            return findUserByOOId(myOOId).index;
+        };
+
         var getParticipants = function () {
             var users = metadataMgr.getMetadata().users;
             var i = 1;
@@ -943,19 +953,19 @@ define([
                 isCloseCoAuthoring:false,
                 view: false
             });
-            i++;
-            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + i; }
+            const myOOIndex = getMyOOIndex();
+            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + myOOIndex; }
             p.push({
-                id: myUniqueOOId,
+                id: String(myOOId),
                 idOriginal: String(myOOId),
                 username: metadataMgr.getUserData().name || Messages.anonymous,
-                indexUser: i,
+                indexUser: myOOIndex,
                 connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
                 isCloseCoAuthoring:false,
                 view: false
             });
             return {
-                index: i,
+                index: myOOIndex,
                 list: p.filter(Boolean)
             };
         };
@@ -1418,6 +1428,9 @@ define([
 
                     debug(obj, 'toOO');
                     chan.event('CMD', obj);
+                    if (obj && obj.type === "saveChanges") {
+                        evIntegrationSave.fire();
+                    }
                 };
 
                 chan.on('CMD', function (obj) {
@@ -1592,13 +1605,15 @@ define([
 
         var x2tConvertData = function (data, fileName, format, cb) {
             var sframeChan = common.getSframeChannel();
-            var e = getEditor();
-            var fonts = e && e.FontLoader.fontInfos;
-            var files = e && e.FontLoader.fontFiles.map(function (f) {
+            var editor = getEditor();
+            var fonts = editor && editor.FontLoader.fontInfos;
+            var files = editor && editor.FontLoader.fontFiles.map(function (f) {
                 return { 'Id': f.Id, };
             });
             var type = common.getMetadataMgr().getPrivateData().ooType;
-            var images = (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {};
+            const images = editor
+                ? structuredClone(window.frames[0].AscCommon.g_oDocumentUrls.getUrls())
+                : {};
 
             // Fix race condition which could drop images sometimes
             // ==> make sure each image has a 'media/image_name.ext' entry as well
@@ -1609,7 +1624,7 @@ define([
             });
 
             // Add theme images
-            var theme = e && window.frames[0].AscCommon.g_image_loader.map_image_index;
+            var theme = editor && window.frames[0].AscCommon.g_image_loader.map_image_index;
             if (theme) {
                 Object.keys(theme).forEach(function (url) {
                     if (!/^(\/|blob:|data:)/.test(url)) {
@@ -1623,7 +1638,7 @@ define([
                 type: type,
                 fileName: fileName,
                 outputFormat: format,
-                images: (e && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
+                images: (editor && window.frames[0].AscCommon.g_oDocumentUrls.urls) || {},
                 fonts: fonts,
                 fonts_files: files,
                 mediasSources: getMediasSources(),
@@ -1836,6 +1851,11 @@ define([
                                     d.UpdateSelection();
                                 }
                                 delete APP.oldCursor;
+                            }
+                            if (integrationChannel) {
+                                APP.onDocumentUnlock = () => {
+                                    integrationChannel.event('EV_INTEGRATION_READY');
+                                };
                             }
                         }
                         delete APP.startNew;
@@ -2051,6 +2071,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 if (blobUrl) {
                     delete downloadImages[name];
                     debug("CryptPad Image already loaded " + blobUrl);
+
+                    // Fix: https://github.com/cryptpad/cryptpad/issues/1500
+                    // Maybe OO was reloaded, but the CryptPad cache is still intact?
+                    // -> Add the image to OnlyOffice again.
+                    const documentUrls = window.frames[0].AscCommon.g_oDocumentUrls;
+                    if (!(data.name in documentUrls.getUrls())) {
+                        documentUrls.addImageUrl(data.name, blobUrl);
+                    }
+
                     return void callback(blobUrl);
                 }
 
@@ -2564,6 +2593,22 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             });
         };
 
+        sframeChan.on('EV_INTEGRATION_DOWNLOADAS', function (format) {
+            console.error('DOWNLOAD AS RECEIVED');
+            var data = getContent();
+            x2tConvertData(data, "document.bin", format, function (xlsData) {
+                UI.removeModals();
+                if (xlsData) {
+                    var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                    if (integrationChannel) {
+                        integrationChannel.event('EV_INTEGRATION_ON_DOWNLOADAS',
+                                                blob, { raw: true });
+                    }
+                    return;
+                }
+                UI.warn(Messages.error);
+            });
+        });
         sframeChan.on('EV_OOIFRAME_REFRESH', function (data) {
             // We want to get the "bin" content of a sheet from its json in order to download
             // something useful from a non-onlyoffice app (download from drive or settings).
@@ -2668,7 +2713,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 };
                 var onCheckpoint = function (cp) {
                     // We want to load a checkpoint:
-                    console.log('XXX onCheckpoint', JSON.stringify(cp));
                     loadCp(cp);
                 };
                 var setHistoryMode = function (bool) {
@@ -3116,6 +3160,73 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     setEditable(!readOnly);
                     UI.removeLoadingScreen();
                 };
+
+                let convertImportBlob = (blob, title) => {
+                    new Response(blob).arrayBuffer().then(function (buffer) {
+                        var u8Xlsx = new Uint8Array(buffer);
+                        x2tImportData(u8Xlsx, title, 'bin', function (bin) {
+                            if (!bin) {
+                                return void UI.errorLoadingScreen(Messages.error);
+                            }
+                            var blob = new Blob([bin], {type: 'text/plain'});
+                            var file = getFileType();
+                            resetData(blob, file);
+                            //saveToServer(blob, title);
+                            Title.updateTitle(title);
+                            UI.removeLoadingScreen();
+                        });
+                    });
+                };
+
+                if (privateData.integration) {
+                    let cfg = privateData.integrationConfig || {};
+                    common.openIntegrationChannel(APP.onLocal);
+                    integrationChannel = common.getSframeChannel();
+                    var integrationSave = function (cb) {
+                        var ext = cfg.fileType;
+
+                        var upload = Util.once(function (_blob) {
+                            integrationChannel.query('Q_INTEGRATION_SAVE', {
+                                blob: _blob
+                            }, cb, {
+                                raw: true
+                            });
+                        });
+
+                        var data = getContent();
+                        x2tConvertData(data, "document.bin", ext, function (xlsData) {
+                            UI.removeModals();
+                            if (xlsData) {
+                                var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                                upload(blob);
+                                return;
+                            }
+                            UI.warn(Messages.error);
+                        });
+                    };
+                    const integrationHasUnsavedChanges = function(unsavedChanges, cb) {
+                        integrationChannel.query('Q_INTEGRATION_HAS_UNSAVED_CHANGES', unsavedChanges, cb);
+                    };
+                    var inte = common.createIntegration(integrationSave,
+                                                integrationHasUnsavedChanges);
+                    if (inte) {
+                        evIntegrationSave.reg(function () {
+                            inte.changed();
+                        });
+                    }
+                    integrationChannel.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
+                        integrationSave(function (obj) {
+                            if (obj && obj.error) { console.error(obj.error); }
+                            cb();
+                        });
+                    });
+                    if (privateData.initialState) {
+                        var blob = privateData.initialState;
+                        let title = `document.${cfg.fileType}`;
+                        console.error(blob, title);
+                        return convertImportBlob(blob, title);
+                    }
+                }
 
                 if (privateData.isNewFile && privateData.fromFileData) {
                     try {

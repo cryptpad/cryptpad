@@ -385,13 +385,13 @@ define([
             h('label', Messages.sharedFolders_share),
             h('br'),
         ] : [
-            UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
+            UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:0} }),
         ];
 
         if (opts.static) { linkContent = []; }
 
         linkContent.push(h('div.cp-spacer'));
-        linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 1, rows:3}));
+        linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 0, rows:3}));
 
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
@@ -553,7 +553,7 @@ define([
 
         var embedContent = [
             h('p', Messages.viewEmbedTag),
-            UI.dialog.selectableArea(opts.getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 1, rows: 3})
+            UI.dialog.selectableArea(opts.getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 0, rows: 3})
         ];
 
         // Show alert if the pad is password protected
@@ -611,24 +611,24 @@ define([
             labelEdit = Messages.share_formEdit;
             labelView = Messages.share_formView;
             auditor = UI.createRadio('accessRights', 'cp-share-form', Messages.share_formAuditor, false, {
-                mark: {tabindex:1},
+                mark: {tabindex:0},
             });
         }
 
         var burnAfterReading = (hashes.viewHash && canBAR) ?
                     UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading, false, {
-                        mark: {tabindex:1},
+                        mark: {tabindex:0},
                         label: {style: "display: none;"}
                     }) : undefined;
         var rights = h('div.msg.cp-inline-radio-group', [
             h('label',{ for: 'cp-share-editable-true' }, Messages.share_linkAccess),
             h('div.radio-group',[
             UI.createRadio('accessRights', 'cp-share-editable-false',
-                            labelView, true, { mark: {tabindex:1} }),
+                            labelView, true, { mark: {tabindex:0} }),
             canPresent ? UI.createRadio('accessRights', 'cp-share-present',
                             Messages.share_linkPresent, false, { mark: {tabindex:1} }) : undefined,
             UI.createRadio('accessRights', 'cp-share-editable-true',
-                            labelEdit, false, { mark: {tabindex:1} }),
+                            labelEdit, false, { mark: {tabindex:0} }),
             auditor]),
             burnAfterReading,
         ]);
@@ -921,7 +921,7 @@ define([
         var cb = Util.once(Util.mkAsync(_cb));
         var linkContent = [
             UI.dialog.selectableArea(opts.getLinkValue(), {
-                id: 'cp-share-link-preview', tabindex: 1, rows:2
+                id: 'cp-share-link-preview', tabindex: 0, rows:2
             })
         ];
 

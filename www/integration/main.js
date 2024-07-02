@@ -96,6 +96,13 @@ define([
             http.send();
         };
         chan.on('GET_SESSION', function (data, cb) {
+            if (data.keepOld) {
+                var key = data.key + "000000000000000000000000000000000";
+                console.warn('KEY', key);
+                return void cb({
+                    key: `/2/integration/edit/${key.slice(0,24)}/`
+                });
+            }
             var getHash = function () {
                 //isNew = true;
                 return Hash.createRandomHash('integration');
@@ -126,6 +133,24 @@ define([
         var onInsertImage = function (data, cb) {
             chan.send('ON_INSERT_IMAGE', data, cb);
         };
+        var onReady = function () {
+            chan.send('DOCUMENT_READY', {});
+        };
+
+        let downloadAs;
+        chan.on('DOWNLOAD_AS', function (format) {
+            if (typeof(downloadAs) !== "function") {
+                console.error('UNSUPPORTED COMMAND', 'downloadAs');
+                return;
+            }
+            downloadAs(format);
+        });
+        let setDownloadAs = f => {
+            downloadAs = f;
+        };
+        let onDownloadAs = function (blob) { // DownloadAs callback
+            chan.send('ON_DOWNLOADAS', blob);
+        };
 
         chan.on('START', function (data) {
             console.warn('INNER START', data);
@@ -141,13 +166,20 @@ define([
                     autosave: data.autosave
                 },
                 utils: {
+                    onReady: onReady,
+                    onDownloadAs,
+                    setDownloadAs,
                     save: save,
                     reload: reload,
                     onHasUnsavedChanges: onHasUnsavedChanges,
                     onInsertImage: onInsertImage
                 }
             };
-            require(['/common/sframe-app-outer.js'], function () {
+            let path = "/common/sframe-app-outer.js";
+            if (['sheet', 'doc', 'presentation'].includes(data.application)) {
+                path = '/common/onlyoffice/main.js';
+            }
+            require([path], function () {
                 console.warn('SAO REQUIRED');
                 delete window.CP_integration_outer;
             });

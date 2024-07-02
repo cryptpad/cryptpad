@@ -1,0 +1,98 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+@import (reference) "./colortheme-all.less";
+@import (reference) "./forms.less";
+@import (reference) './icon-colors.less';
+
+.admin_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    // Instance accent color presets
+    @palette-colors:
+        #0087FF,
+        #de0064,
+        #8c52bc,
+        #3d7672;
+
+    div.cp-palette-container {
+
+        .cp-palette-nocolor {
+            display: none;
+        }
+        .instance-colors(@palette-colors; @index) when (@index > 0) {
+            // loop through the @colors
+            .instance-colors(@palette-colors; (@index - 1));
+
+            @color: extract(@palette-colors, @index);
+            // make a numbered class selector for each color
+            .cp-palette-color@{index} {
+                background-color: @color !important;
+                color: contrast(@color, @cryptpad_color_grey_800, @cryptpad_color_grey_200) !important;
+            }
+        }
+        .instance-colors(@palette-colors; length(@palette-colors));
+    }
+
+    .cp-admin-customize-apps-grid, .cp-admin-customize-options-grid {
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    .cp-admin-customize-apps-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        .cp-appblock {
+            padding: 0.5rem;
+            border-radius: @variables_radius;
+            font-size: 1.2em;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.75rem;
+            .iconColors_main();
+            &:hover {
+                cursor: pointer;
+            }
+            i.cp-icon {
+                font-size: 2.8rem;
+            }
+            .cp-app-name {
+                flex-grow: 1;
+            }
+        }
+        .cp-inactive-app {
+            background-color: transparent;
+            opacity: 0.75;
+            .cp-on-enabled {
+                visibility: hidden;
+            }
+        }
+        .cp-active-app {
+            background-color: fade(@cryptpad_text_col, 10%);
+            .cp-on-enabled {
+                visibility: visible;
+            }
+        }
+    }
+
+    .cp-admin-customize-options-grid {
+        grid-template-columns: 1fr 1fr;
+        .cp-optionblock {
+            padding: 0.5rem;
+            border-radius: @variables_radius;
+            background-color: fade(@cryptpad_text_col, 10%);
+            align-self: start;
+            .cp-checkmark-label {
+                font-weight: bold;
+            }
+            .cp-option-hint {
+                margin-left: 30px;
+                display: inline-block;
+            }
+        }
+    }
+}

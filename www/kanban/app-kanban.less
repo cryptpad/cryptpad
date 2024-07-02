@@ -63,11 +63,13 @@
         .kanban-colors(@kanban-colors; (@index - 1));
         @color: extract(@kanban-colors, @index);
         // make a numbered class selector for each color
-        .cp-kanban-palette-color@{index}{
-            background-color: @color !important;
+        .cp-palette-color@{index}{
             &.cp-kanban-palette-board {
                 background-color: @color !important;
             }
+        }
+        .cp-kanban-palette-color@{index}{
+            background-color: @color !important;
             &.kanban-board-inner {
                 background-color: fade(@color, 50%) !important;
             }
@@ -81,10 +83,12 @@
         // .cp-kanban-card-color@{index}{
         //     background-color: @color !important;
         // }
-        .cp-kanban-palette-color@{index}{
+        .cp-palette-color@{index}{
             &.cp-kanban-palette-card {
                 background-color: @color !important;
             }
+        }
+        .cp-kanban-palette-color@{index}{
             &.kanban-item {
                 background-color: @color !important;
             }
@@ -140,23 +144,7 @@
         }
         margin-bottom: 15px;
     }
-    #cp-kanban-edit-colors {
-        display: flex;
-        justify-content: space-between;
-        .cp-kanban-palette {
-            display: inline-block;
-            border-radius: 50%;
-            height: 30px;
-            width: 30px;
-            text-align: center;
-            line-height: 30px;
-            color: @cp_kanban-fg;
-            border: 1px solid fade(@cp_kanban-fg, 40%);
-            &.fa-check { // tick on selected color
-                color: @cryptpad_text_col;
-            }
-        }
-    }
+
     #cp-kanban-edit-tags {
         .tokenfield {
             margin: 0;
@@ -187,6 +175,11 @@
         border: 0;
         background: transparent;
         align-self: flex-start;
+        outline-style: none;
+        border-radius: @variables_radius;
+        &:focus {
+            outline: @cryptpad_color_brand solid 2px;
+        }
         @media (hover: none) {
             margin-right: 20px;
         }
@@ -419,6 +412,9 @@
                 }
                 .fa {
                     margin-right: 5px;
+                }
+                &:focus{
+                    outline: @cryptpad_color_brand solid 2px;
                 }
             }
         }
@@ -654,6 +650,9 @@
             .tools_unselectable();
             &:hover {
                 background-color: @cp_kanban-add-hover;
+            }
+            &:focus {
+                outline: @cryptpad_color_brand solid 2px;
             }
         }
 

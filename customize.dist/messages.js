@@ -14,6 +14,7 @@ var map = {
     'fi': 'Suomi',
     'fr': 'Français',
     //'hi': 'हिन्दी',
+    'id': 'Bahasa Indonesia',
     'it': 'Italiano',
     'ja': '日本語',
     'nb': 'Norwegian Bokmål',
@@ -45,6 +46,7 @@ var getLanguage = Messages._getLanguage = function () {
                 (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
 };
 var language = getLanguage();
+window.cryptpadLanguage = language;
 
 // Translations files were migrated from requirejs modules to json.
 // To avoid asking every administrator to update their customized translation files,
@@ -88,6 +90,9 @@ define(req, function(AppConfig, Default, Language) {
         });
     }
 
+    let html = typeof(document) !== "undefined" && document.documentElement;
+    if (html) { html.setAttribute('lang', language); }
+
     var extend = function (a, b) {
         for (var k in b) {
             if (Array.isArray(b[k])) {
@@ -128,7 +133,6 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
-
 
     return Messages;
 

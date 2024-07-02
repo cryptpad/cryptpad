@@ -119,10 +119,34 @@
         }
     }
 
+    // The following palette container is just for the UI components
+    // The specific colors you want to show have to be defined in your app
+    // using the classes .cp-palette-nocolor .cp-palette-color1 .cp-palette-color2 etc.
+    div.cp-palette-container {
+        display: flex;
+        justify-content: space-between;
+        .cp-palette-color {
+            display: inline-block;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            text-align: center;
+            line-height: 30px;
+            color: @cp_kanban-fg;
+            border: 1px solid fade(@cp_kanban-fg, 40%);
+            &.fa-check { // tick on selected color
+                color: @cryptpad_text_col;
+            }
+            outline: none;
+            &:focus {
+                outline: @cryptpad_color_brand solid 2px;
+            }
+        }
+    }
+
     button.btn {
         background-color: @cp_buttons-cancel;
         box-sizing: border-box;
-        outline: 0;
         align-items: center;
         padding: 0 6px;
         line-height: 36px;
@@ -232,11 +256,9 @@
         }
 
 
-
+        outline: none;
         &:focus {
-            //border: 1px dotted @alertify-base;
-            box-shadow: 0px 0px 5px @cp_buttons-primary !important;
-            outline: none;
+            outline: @cryptpad_color_brand solid 2px;
         }
         &::-moz-focus-inner {
             border: 0;

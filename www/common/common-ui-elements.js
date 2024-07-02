@@ -173,8 +173,12 @@ define([
             var removeBtn, el;
             if (config.remove) {
                 removeBtn = h('span.fa.fa-times');
-                $(removeBtn).click(function () {
-                    config.remove(el);
+                $(removeBtn).attr('tabindex', '0');
+                $(removeBtn).on('click keydown', function(event) {
+                    if (event.type === 'click' || (event.type === 'keydown' && event.key === 'Enter')) {
+                        event.preventDefault();
+                        config.remove(el);
+                    }
                 });
             }
 
@@ -184,6 +188,7 @@ define([
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
+                'tabindex': config.noSelect ? '-1' : '0',
                 style: 'order:'+i+';'
             },[
                 avatar,
@@ -230,6 +235,13 @@ define([
                     $(this).removeClass('cp-selected').attr('style', order);
                 }
                 onSelect();
+            });
+            $div.on('keydown', '.cp-usergrid-user', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).trigger('click');
+                }
             });
         }
 
@@ -2645,7 +2657,7 @@ define([
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
 
         var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs });
-        var fill1 = h('div.cp-creation-fill.cp-creation-logo', logo);
+        var fill1 = h('div.cp-creation-fill.cp-creation-logo',{ role: 'presentation' }, logo);
         var fill2 = h('div.cp-creation-fill');
         var $creation = $('<div>', { id: 'cp-creation', tabindex:1 });
         $creationContainer.append([fill1, $creation, fill2]);
@@ -4283,6 +4295,77 @@ define([
             cb({state: true});
         });
         return UI.errorLoadingScreen(msg, false, false);
+    };
+
+    UIElements.makePalette = (maxColors, onSelect) => {
+        let palette = [''];
+        for (var i=1; i<=maxColors; i++) { palette.push('color'+i); }
+
+        let offline = false;
+        let selectedColor = '';
+        let container = h('div.cp-palette-container');
+        let $container = $(container);
+
+        var all = [];
+        palette.forEach(function (color, i) {
+            var $color = $(h('button.cp-palette-color.fa'));
+            all.push($color);
+            $color.addClass('cp-palette-'+(color || 'nocolor'));
+            $color.keydown(function (e) {
+                if (e.which === 13) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $color.click();
+                }
+            });
+            $color.click(function () {
+                if (offline) { return; }
+                if (color === selectedColor) { return; }
+                selectedColor = color;
+                $container.find('.cp-palette-color').removeClass('fa-check');
+                $color.addClass('fa-check');
+                onSelect(color, $color);
+            }).appendTo($container);
+            $color.keydown(e => {
+                if (e.which === 37) {
+                    e.preventDefault();
+                    if (i === 0) {
+                        all[all.length - 1].focus();
+                    } else {
+                        all[i - 1].focus();
+                    }
+                }
+                if (e.which === 39) {
+                    e.preventDefault();
+                    if (i === (all.length - 1)) {
+                        all[0].focus();
+                    } else {
+                        all[i + 1].focus();
+                    }
+                }
+                if (e.which === 9) {
+                    if (e.shiftKey) {
+                        all[0].focus();
+                        return;
+                    }
+                    all[all.length - 1].focus();
+                }
+            });
+        });
+
+        container.disable = state => {
+            offline = !!state;
+        };
+        container.getValue = () => {
+            return selectedColor;
+        };
+        container.setValue = color => {
+            $container.find('.cp-palette-color').removeClass('fa-check');
+            let $color = $container.find('.cp-palette-'+(color || 'nocolor'));
+            $color.addClass('fa-check');
+            selectedColor = color;
+        };
+        return container;
     };
 
     return UIElements;

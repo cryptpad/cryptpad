@@ -1,0 +1,1 @@
+../../../../cryptpad-api.js

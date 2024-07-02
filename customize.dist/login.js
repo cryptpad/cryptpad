@@ -22,11 +22,13 @@ define([
     '/common/outer/login-block.js',
     '/common/common-hash.js',
     '/common/outer/http-command.js',
+    '/api/config',
 
     '/components/tweetnacl/nacl-fast.min.js',
     '/components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Login, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, h, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
+            Feedback, h, LocalStore, Messages, nThen, Block, Hash, ServerCommand,
+            ApiConfig) {
     var Exports = {
         Cred: Cred,
         Block: Block,
@@ -216,6 +218,11 @@ define([
                         proxy.curvePublic  = result.curvePublic;
                         proxy.edPrivate    = result.edPrivate;
                         proxy.edPublic     = result.edPublic;
+                    }
+
+                    if (ApiConfig && Array.isArray(ApiConfig.adminKeys) &&
+                        ApiConfig.adminKeys.includes(proxy.edPublic)) {
+                        localStorage.CP_admin = "1";
                     }
 
                     setTimeout(function () {
