@@ -1779,6 +1779,6 @@
     "admin_onboardingOptionsTitle": "Opsi server",
     "admin_onboardingNamePlaceholder": "Judul server",
     "admin_onboardingDescPlaceholder": "Teks deskripsi server",
-    "admin_onboardingOptionsHint": "Silakan pilih opsi sesuai untuk server Anda.<br/>Pengaturan ini dapat diubah lagi dalam panel admin.",
+    "admin_onboardingOptionsHint": "Silakan pilih opsi sesuai untuk server Anda.<br>Pengaturan ini dapat diubah lagi dalam panel admin.",
     "install_notes": "<ul class=\"cp-notes-list\"><li>Buat akun administrator Anda yang pertama di laman ini. Administrator mengelola pengaturan server termasuk kuota penyimpanan dan memiliki akses ke peralatan moderasi.</li><li>Kata sandi Anda adalah kunci rahasia yang mengenkripsi semua dokumen dan hak administrator Anda di server ini.<span class=\"red\">Jika Anda kehilangan kata sandi tersebut, kami tidak dapat memulihkan data Anda.</span></li><li>Jika Anda menggunakan komputer terbagi, <span class=\"red\">jangan lupa untuk keluar dari akun</span> setelah Anda selesai. Hanya menutup jendela peramban membuat akun Anda rentan.</li></ul>"
 }
