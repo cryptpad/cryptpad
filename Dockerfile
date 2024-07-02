@@ -22,7 +22,6 @@ RUN npm install --production \
 # Create actual CryptPad image
 FROM node:lts-slim
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt install -y git rdfind && rm -rf /var/lib/apt/lists/*
 
 # Create user and group for CryptPad so it does not run as root
 RUN groupadd cryptpad -g 4001
