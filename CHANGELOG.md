@@ -6,8 +6,61 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # 2024.6.0
 
+## Goals
+
+This release introduces a new onboarding flow to guide administrators through the setup of an instance. After creating the first admin account, 3 screens guide them through the customization of the instance title, logo, accent color, available applications, and security features. We also include a new language, some fixes on accessibility, deployment, OnlyOffice and more.
+
+## Features
+
+- Onboarding screens & app configuration [#1513](https://github.com/cryptpad/cryptpad/pull/1513)
+- Bahasa Indonesia is a new available language [fe78b6a](https://github.com/cryptpad/cryptpad/commit/fe78b6ab1dc76ce9eb8d5361c309db8e92117fa8)
+  - Thanks to our [Weblate](https://weblate.cryptpad.org) contributors who made that happen! 
+
+## Improvements
+
+- Improve plugins API [#1511](https://github.com/cryptpad/cryptpad/pull/1511)
+
+## Fixes
+
+- Accessibility
+  - Kanban accessibility fixes [#1488](https://github.com/cryptpad/cryptpad/pull/1488)
+  - Fix modal focus [#1483](https://github.com/cryptpad/cryptpad/pull/1483)
+  - Fix locked focus on text editors [#1473](https://github.com/cryptpad/cryptpad/pull/1473)
+  - Frames must have accessible names [#1123](https://github.com/cryptpad/cryptpad/issues/1123)
+  - Focus trapped on notifications menu [#1430](https://github.com/cryptpad/cryptpad/issues/1430)
+  - Add page language [#1125](https://github.com/cryptpad/cryptpad/issues/1125)
+  - Can not open folder via "▼" -> "Open".  [#1089](https://github.com/cryptpad/cryptpad/issues/1089)
+  - Images must have alternate text [#1449](https://github.com/cryptpad/cryptpad/issues/1449)
+- OnlyOffice
+  - Remove x2t from the CryptPad repo [#1454](https://github.com/cryptpad/cryptpad/issues/1454)
+  - Other OnlyOffice users are shown as "Guest" [#1446](https://github.com/cryptpad/cryptpad/issues/1446)
+  - Document PDF exports are empty when remote embedding is disabled  [#1472](https://github.com/cryptpad/cryptpad/issues/1472)
+  - Automatic upgrade of an OnlyOffice document fails sometimes [#1534](https://github.com/cryptpad/cryptpad/issues/1534)
+  - Import/Export is broken [#1532](https://github.com/cryptpad/cryptpad/issues/1532)
+  - Print is broken [#1533](https://github.com/cryptpad/cryptpad/issues/1533)
+- Deployment / Hosting
+  - Upgrade CryptPad version in docker-compose.yml [#1529](https://github.com/cryptpad/cryptpad/pull/1529)
+  - Optimize HTTPd example config [#1498](https://github.com/cryptpad/cryptpad/pull/1498)
+  - Tidy up HTTPd config [#1527](https://github.com/cryptpad/cryptpad/pull/1527)
+  - Clarify sandbox `httpSafePort` use in `config.example.js` [#1518](https://github.com/cryptpad/cryptpad/pull/1518)
+  - Switch to new `http2` Nginx option [#1516](https://github.com/cryptpad/cryptpad/pull/1516)
+  - Server fixes and aggregated stats [#1509](https://github.com/cryptpad/cryptpad/pull/1509)
+  - Create the block folder at boot [#911](https://github.com/cryptpad/cryptpad/pull/911)
+  - Remove obsolete `version` from `docker-compose.yml` [2e716eb](https://github.com/cryptpad/cryptpad/commit/2e716eb4e39fb835f95a1fa1a340e01142d11b1c) 
+- Other
+  - Unsharp the corners when hovering the dismiss button on notification drop-down menu [#1466](https://github.com/cryptpad/cryptpad/pull/1466)
+  - Fix contextual menu `Open` on anonymous drive [#1464](https://github.com/cryptpad/cryptpad/pull/1464)
+  - Tighten eslint rules [#1456](https://github.com/cryptpad/cryptpad/pull/1456)
+  - Remove mediatag subfolder [#844](https://github.com/cryptpad/cryptpad/pull/844)
+
+## Dependencies
+
+- Upgrade CryptPad version in `package.json`, update description as well [#1530](https://github.com/cryptpad/cryptpad/pull/1530)
+- Remove deprecated and unmaintained `lesshint` library and use `stylelint` and its `stylelint-less` plugin instead
+
 ## Upgrade notes
-If you are upgrading from a version older than `2024.3.1` please read the upgrade notes of all versions between yours and `2024.6.0` to avoid configuration issues.
+
+If you are upgrading from a version older than `2024.3.1` please read the upgrade notes of all versions between yours and `2024.3.1` to avoid configuration issues.
 
 To upgrade:
 

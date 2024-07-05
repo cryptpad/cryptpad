@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 define([
     'jquery',
     '/common/inner/sidebar-layout.js',
@@ -401,7 +405,7 @@ define([
         });
 
         var screenTitle = h('div.cp-onboardscreen-screentitle');
-        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingOptionsTitle), h('span', Messages.admin_onboardingOptionsHint)));
+        $(screenTitle).append(h('div.cp-onboardscreen-maintitle', h('h1.cp-onboardscreen-title', Messages.admin_onboardingOptionsTitle), UI.setHTML(h('span'), Messages.admin_onboardingOptionsHint)));
         $(save).addClass('cp-onboardscreen-save');
         $(prev).addClass('cp-onboardscreen-prev');
         var nav = blocks.nav([prev, save]);
