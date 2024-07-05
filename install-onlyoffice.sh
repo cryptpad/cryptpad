@@ -28,6 +28,7 @@ main() {
     set_prop oldest_needed_version v1
 
     mkdir -p "$OO_DIR"
+    install_version v1 4f370beb
     install_version v2b d9da72fd
     install_version v4 6ebc6938
     install_version v5 88a356f0
