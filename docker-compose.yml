@@ -12,6 +12,8 @@ services:
       - CPAD_MAIN_DOMAIN=https://your-main-domain.com
       - CPAD_SANDBOX_DOMAIN=https://your-sandbox-domain.com
       - CPAD_CONF=/cryptpad/config/config.js
+      # Add SSO plugin from git's "main" branch, but can be a commit hash or a tag
+      #- CPAD_PLUGIN_SSO=https://github.com/cryptpad/sso.git|main
 
       # Read and accept the license before uncommenting the following line:
       # https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE.txt
@@ -23,6 +25,8 @@ services:
       - ./customize:/cryptpad/customize
       - ./data/data:/cryptpad/data
       - ./data/files:/cryptpad/datastore
+      # Useful if you want to store plugins and avoid downloading them all the time
+      #- ./data/plugins:/cryptpad/lib/plugins
       - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
       - ./onlyoffice-conf:/cryptpad/onlyoffice-conf
 
