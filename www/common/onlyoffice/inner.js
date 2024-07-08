@@ -1478,6 +1478,10 @@ define([
                             send({ type: "message" });
                             break;
                         case "saveChanges":
+                            if (readOnly) {
+                                return;
+                            }
+
                             // If we have unsaved data before reloading for a checkpoint...
                             if (APP.onStrictSaveChanges) {
                                 delete APP.unsavedLocks;
