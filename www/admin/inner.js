@@ -578,21 +578,75 @@ define([
                 return APP.instanceStatus.enforceMFA;
             },
             query: function (val, setState) {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'ADMIN_DECREE',
-                    data: ['ENFORCE_MFA', [val]]
-                }, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
+                var isChecked = APP.instanceStatus.enforceMFA;
+                var confirmationContent = isChecked
+                    ? 'Are you sure you want to disable enforced MFA? This action would lessen the security of your account.'
+                    : 'Are you sure you want to enforce MFA? This action would require to set up an authenticator app.';
+
+                    function showConfirmationModal(callback) {
+                        var modal = UI.dialog.customModal(confirmationContent, {
+                            buttons: [{
+                                className: 'cancel',
+                                name: Messages.cancel,
+                                onClick: function () {
+                                    if (!isChecked) {
+                                        sFrameChan.query('Q_ADMIN_RPC', {
+                                            cmd: 'ADMIN_DECREE',
+                                            data: ['ENFORCE_MFA', [false]]
+                                        }, function (e, response) {
+                                            if (e || response.error) {
+                                                UI.warn(Messages.error);
+                                                console.error(e, response);
+                                            } else {
+                                                APP.updateStatus(function () {
+                                                    setState(false);
+                                                    flushCache();
+                                                });
+                                            }
+                                        });
+                                    }
+                                    //check the checkbox again
+                                    else {
+                                        APP.updateStatus(function () {
+                                            setState(APP.instanceStatus.enforceMFA);
+                                            flushCache();
+                                        });
+                                    }
+                                },
+                                keys: [27] // Esc key to close modal
+                            }, {
+                                className: 'primary',
+                                name: Messages.settings_save,
+                                onClick: function () {
+                                    sFrameChan.query('Q_ADMIN_RPC', {
+                                        cmd: 'ADMIN_DECREE',
+                                        data: ['ENFORCE_MFA', [val]]
+                                    }, function (e, response) {
+                                        if (e || response.error) {
+                                            UI.warn(Messages.error);
+                                            console.error(e, response);
+                                        } else {
+                                            APP.updateStatus(function () {
+                                                setState(APP.instanceStatus.enforceMFA);
+                                                flushCache();
+                                            });
+                                        }
+                                    });
+                                },
+                                keys: [13] // Enter key to confirm
+                            }]
+                        });
+                        var $modal = $(modal);
+                        UI.openCustomModal(modal);
+                        $modal.closest('.alertify').on('mousedown', function (e) {
+                            e.stopPropagation();
+                        });
                     }
-                    APP.updateStatus(function () {
-                        setState(APP.instanceStatus.enforceMFA);
-                        flushCache();
-                    });
-                });
-            },
+ 
+                showConfirmationModal();
+            }
         });
+
 
 
         var getInstanceString = function (attr) {
