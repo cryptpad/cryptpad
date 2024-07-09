@@ -194,6 +194,28 @@
                                 background-color: @cp_sidebar-left-item-bg;
                             }
                         }
+
+                    }
+                    .cp-sidebar-table#performance-profiling-table {
+                        @media (max-width: 900px) {
+                            width: 100%;
+
+                            tr {
+                                display: flex;
+                                flex-wrap: wrap;
+                                align-items: center;
+                            }
+
+                            th, td {
+                                border: none;
+                                flex: 1 1 auto;
+                                width: 5rem;
+                                margin-right: 0;
+                                font-size: 13px;
+                                word-wrap: break-word;
+                                white-space: normal;
+                            }
+                        }
                     }
                     .cp-sidebar-input-block {
                         display: inline-flex;

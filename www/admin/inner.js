@@ -3596,6 +3596,8 @@ define([
 
             var table = blocks.table(header, []);
 
+            table.id = 'performance-profiling-table';
+
             const onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_WORKER_PROFILES',
