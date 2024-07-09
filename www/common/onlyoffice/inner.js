@@ -1062,9 +1062,7 @@ define([
             }
         };
 
-        var handleAuth = function (obj, send) {
-            //setEditable(false);
-
+        const onAuth = function () {
             var changes = [];
             if (content.version > 2) {
                 ooChannel.queue.forEach(function (data) {
@@ -1078,52 +1076,12 @@ define([
             } else {
                 setEditable(false, true);
             }
-            send({
-                type: "authChanges",
-                changes: changes
-            });
 
-            // Answer to the auth command
-            var p = getParticipants();
-            send({
-                type: "auth",
-                result: 1,
-                sessionId: sessionId,
-                participants: p.list,
-                locks: [],
-                changes: [],
-                changesIndex: 0,
-                indexUser: p.index,
-                buildVersion: "5.2.6",
-                buildNumber: 2,
-                licenseType: 3,
-                //"g_cAscSpellCheckUrl": "/spellchecker",
-                //"settings":{"spellcheckerUrl":"/spellchecker","reconnection":{"attempts":50,"delay":2000}}
-            });
-            // Open the document
-            send({
-                type: "documentOpen",
-                data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
-            });
-
-            /*
-            // TODO: make sure we don't have new popups that can break our integration
-            var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === "childList") {
-                        for (var i = 0; i < mutation.addedNodes.length; i++) {
-                            if (mutation.addedNodes[i].classList.contains('asc-window') &&
-                                mutation.addedNodes[i].classList.contains('alert')) {
-                                $(mutation.addedNodes[i]).find('button').not('.custom').click();
-                            }
-                        }
-                    }
-                });
-            });
-            observer.observe(window.frames[0].document.body, {
-                childList: true,
-            });
-            */
+            // TODO is this needed? when?
+            // send({
+            //     type: "authChanges",
+            //     changes: changes
+            // });
         };
 
         var handleLock = function (obj, send) {
@@ -1406,7 +1364,7 @@ define([
                 return;
             }
 
-            debug(obj, 'toOO');
+            debug(obj, 'toOOClient');
             APP.docEditor.sendMessageToOO(obj);
             if (obj && obj.type === "saveChanges") {
                 evIntegrationSave.fire();
@@ -1414,10 +1372,10 @@ define([
         };
 
         const fromOOHandler = function (obj) {
-            debug(obj, 'fromOO');
+            debug(obj, 'fromOOClient');
             switch (obj.type) {
                 case "auth":
-                    handleAuth(obj, send);
+                    // Handled by onlyoffice-editor now
                     break;
                 case "isSaveLock":
                     // TODO ping the server to check if we're online first?
@@ -2119,11 +2077,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
 
             ooLoaded = true;
-            // TODO movie this back to CryptPad
+            // TODO move this back to CryptPad
             // if (content.version < 7) {
             //     APP.docEditor.installLegacyChannel();
             // }
-            APP.docEditor.setOnMessageFromOOHandler(fromOOHandler);
+            APP.docEditor.connectMockServer({
+                onMessage: fromOOHandler,
+                getParticipants: getParticipants,
+                onAuth: onAuth
+            });
         };
 
         APP.printPdf = function (obj, cb) {
