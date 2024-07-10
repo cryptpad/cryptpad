@@ -1062,8 +1062,8 @@ define([
             }
         };
 
-        const onAuth = function () {
-            var changes = [];
+        const getInitialChanges = function() {
+            const changes = [];
             if (content.version > 2) {
                 ooChannel.queue.forEach(function (data) {
                     Array.prototype.push.apply(changes, data.msg.changes);
@@ -1073,15 +1073,14 @@ define([
                 ooChannel.cpIndex += ooChannel.queue.length;
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
-            } else {
+            }
+            return changes;
+        };
+
+        const onAuth = function () {
+            if (content.version <= 2) {
                 setEditable(false, true);
             }
-
-            // TODO is this needed? when?
-            // send({
-            //     type: "authChanges",
-            //     changes: changes
-            // });
         };
 
         var handleLock = function (obj, send) {
@@ -1949,7 +1948,7 @@ define([
                     APP.onLocal();
 
                     APP.realtime.onSettle(function () {
-                        APP.getImageURL(name, function(url) {
+                        getImageURL(name).then(function(url) {
                             debug("CRYPTPAD success add " + name);
                             common.setPadAttribute('atime', +new Date(), null, data.href);
                             APP.AddImageSuccessCallback({
@@ -1984,94 +1983,96 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             };
 
             APP.loadingImage = 0;
-            APP.getImageURL = function(name, callback) {
-                if (name && /^data:image/.test(name)) {
-                    return void callback('');
-                }
-
-                var mediasSources = getMediasSources();
-                var data = mediasSources[name];
-                downloadImages[name] = Util.mkEvent(true);
-
-                if (typeof data === 'undefined') {
-                    if (/^http/.test(name) && /slide\/themes\/theme/.test(name)) {
-                        Util.fetch(name, function (err, u8) {
-                            if (err) { return; }
-                            mediasData[name] = {
-                                blobUrl: name,
-                                content: u8,
-                                name: name
-                            };
-                            var b = new Blob([u8], {type: "image/jpeg"});
-                            var blobUrl = URL.createObjectURL(b);
-                            return void callback(blobUrl);
-                        });
-                        return;
-                    }
-                    debug("CryptPad - could not find matching media for " + name);
-                    return void callback("");
-                }
-
-                var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].blobUrl;
-                if (blobUrl) {
-                    delete downloadImages[name];
-                    debug("CryptPad Image already loaded " + blobUrl);
-
-                    // Fix: https://github.com/cryptpad/cryptpad/issues/1500
-                    // Maybe OO was reloaded, but the CryptPad cache is still intact?
-                    // -> Add the image to OnlyOffice again.
-                    const documentUrls = window.frames[0].AscCommon.g_oDocumentUrls;
-                    if (!(data.name in documentUrls.getUrls())) {
-                        documentUrls.addImageUrl(data.name, blobUrl);
+            const getImageURL = function(name) {
+                return new Promise((resolve) => {
+                    if (name && /^data:image/.test(name)) {
+                        return void resolve('');
                     }
 
-                    return void callback(blobUrl);
-                }
+                    var mediasSources = getMediasSources();
+                    var data = mediasSources[name];
+                    downloadImages[name] = Util.mkEvent(true);
 
-                APP.loadingImage++;
-                Util.fetch(data.src, function (err, u8) {
-                    if (err) {
-                        APP.loadingImage--;
-                        console.error(err);
-                        return void callback("");
-                    }
-                    try {
-                        debug("Decrypt with key " + data.key);
-                        FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
-                            APP.loadingImage--;
-                            if (err || !res.content) {
-                                debug("Decrypting failed");
-                                return void callback("");
-                            }
-
-                            try {
-                                var blobUrl = URL.createObjectURL(res.content);
-                                // store media blobUrl and content for cache and export
-                                var mediaData = {
-                                    blobUrl : blobUrl,
-                                    content : "",
+                    if (typeof data === 'undefined') {
+                        if (/^http/.test(name) && /slide\/themes\/theme/.test(name)) {
+                            Util.fetch(name, function (err, u8) {
+                                if (err) { return; }
+                                mediasData[name] = {
+                                    blobUrl: name,
+                                    content: u8,
                                     name: name
                                 };
-                                mediasData[data.src] = mediaData;
-                                var reader = new FileReader();
-                                reader.onloadend = function () {
-                                    debug("MediaData set");
-                                    mediaData.content = reader.result;
-                                    downloadImages[name].fire();
-                                };
-                                reader.readAsArrayBuffer(res.content);
-                                debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
-                                window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
-                                callback(blobUrl);
-                            } catch (e) {}
-                        });
-                    } catch (e) {
-                        APP.loadingImage--;
-                        debug("Exception decrypting image " + data.name);
-                        console.error(e);
-                        callback("");
+                                var b = new Blob([u8], {type: "image/jpeg"});
+                                var blobUrl = URL.createObjectURL(b);
+                                return void resolve(blobUrl);
+                            });
+                            return;
+                        }
+                        debug("CryptPad - could not find matching media for " + name);
+                        return void resolve("");
                     }
-                }, void 0, common.getCache());
+
+                    var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].blobUrl;
+                    if (blobUrl) {
+                        delete downloadImages[name];
+                        debug("CryptPad Image already loaded " + blobUrl);
+
+                        // Fix: https://github.com/cryptpad/cryptpad/issues/1500
+                        // Maybe OO was reloaded, but the CryptPad cache is still intact?
+                        // -> Add the image to OnlyOffice again.
+                        const documentUrls = window.frames[0].AscCommon.g_oDocumentUrls;
+                        if (!(data.name in documentUrls.getUrls())) {
+                            documentUrls.addImageUrl(data.name, blobUrl);
+                        }
+
+                        return void resolve(blobUrl);
+                    }
+
+                    APP.loadingImage++;
+                    Util.fetch(data.src, function (err, u8) {
+                        if (err) {
+                            APP.loadingImage--;
+                            console.error(err);
+                            return void resolve("");
+                        }
+                        try {
+                            debug("Decrypt with key " + data.key);
+                            FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                                APP.loadingImage--;
+                                if (err || !res.content) {
+                                    debug("Decrypting failed");
+                                    return void resolve("");
+                                }
+
+                                try {
+                                    var blobUrl = URL.createObjectURL(res.content);
+                                    // store media blobUrl and content for cache and export
+                                    var mediaData = {
+                                        blobUrl : blobUrl,
+                                        content : "",
+                                        name: name
+                                    };
+                                    mediasData[data.src] = mediaData;
+                                    var reader = new FileReader();
+                                    reader.onloadend = function () {
+                                        debug("MediaData set");
+                                        mediaData.content = reader.result;
+                                        downloadImages[name].fire();
+                                    };
+                                    reader.readAsArrayBuffer(res.content);
+                                    debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
+                                    window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
+                                    resolve(blobUrl);
+                                } catch (e) {}
+                            });
+                        } catch (e) {
+                            APP.loadingImage--;
+                            debug("Exception decrypting image " + data.name);
+                            console.error(e);
+                            resolve("");
+                        }
+                    }, void 0, common.getCache());
+                });
             };
 
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
@@ -2084,7 +2085,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             APP.docEditor.connectMockServer({
                 onMessage: fromOOHandler,
                 getParticipants: getParticipants,
-                onAuth: onAuth
+                onAuth: onAuth,
+                getImageURL: getImageURL,
+                getInitialChanges: getInitialChanges,
             });
         };
 
