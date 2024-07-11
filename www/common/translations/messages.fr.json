@@ -1249,7 +1249,7 @@
     "form_makePublic": "Publier les réponses",
     "form_invalidQuestion": "Questions {0}",
     "form_invalidWarning": "Certaines réponses contiennent des erreurs :",
-    "form_input_ph_url": "https://example.net/exemple",
+    "form_input_ph_url": "https://example.net",
     "form_input_ph_email": "courriel_exemple@example.net",
     "form_notAnswered": "<b>{0}</b> réponses vides",
     "form_answerWarning": "Identité non confirmée",
