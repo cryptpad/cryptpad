@@ -3615,7 +3615,7 @@ define([
 
                     // Add the pad to your drive
                     // This command will also add your mailbox to the metadata log
-                    // The callback is called when the pad is stored, independantly of the metadata command
+                    // The callback is called when the pad is stored, independently of the metadata command
                     if (data.calendar) {
                         var calendarModule = common.makeUniversal('calendar');
                         var calendarData = data.calendar;
