@@ -719,6 +719,7 @@ define([
             Notifier.notify();
         });
 
+        addTabListener(frame);
         return {
             element: frame,
             delete: close
