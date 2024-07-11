@@ -1083,7 +1083,7 @@ define([
                         Cryptpad.addSharedFolder(null, secret, cb);
                     } else {
                         var _data = {
-                            password: data.password,
+                            password: data.pw || data.password,
                             href: data.href,
                             channel: data.channel,
                             title: data.title,

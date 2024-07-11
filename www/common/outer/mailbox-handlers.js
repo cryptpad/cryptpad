@@ -384,6 +384,7 @@ define([
         var channel = content.channel || content.teamChannel;
 
         if (content.password) {
+            content.pw = content.password;
             var key = ctx.store.driveSecret.keys.cryptKey;
             content.password = Crypto.encrypt(content.password, key);
         }
