@@ -30,6 +30,11 @@
     .cp-unselectable {
         .tools_unselectable();
     }
+    .btn-primary{
+        &:focus {
+            outline: @cryptpad_color_brand solid 2px;
+        }
+    }
 
     /* local mixins */
     @drive_icon-margin: 10px;
@@ -348,6 +353,9 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                     }
+                    &:focus {
+                        outline: @cryptpad_color_brand solid 2px;
+                    }
                 }
             }
         }
@@ -373,6 +381,9 @@
                     padding-left: 20px;
                     .leftside-menu-category_main();
                     margin: 0;
+                    &:focus {
+                        outline: @cryptpad_color_brand solid 2px;
+                    }
                 }
             }
         }
@@ -398,6 +409,9 @@
             &:before {
                 position: relative;
                 top: -1px;
+            }
+            &:focus {
+                outline: @cryptpad_color_brand solid 2px;
             }
         }
         .cp-app-drive-tree-docs {
