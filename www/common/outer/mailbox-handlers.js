@@ -8,7 +8,8 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/components/chainpad-crypto/crypto.js',
-], function (ApiConfig, Messaging, Hash, Util, Crypto) {
+    '/common/outer/login-block.js',
+    ], function (ApiConfig, Messaging, Hash, Util, Crypto, Block) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
     var getRandomTimeout = function (ctx) {
@@ -265,7 +266,9 @@ define([
         }
 
         if (content.password) {
-            var key = ctx.store.driveSecret.keys.cryptKey;
+            var uHash = ctx.store.data.blockHash;
+            var uSecret = Block.parseBlockHash(uHash);
+            var key = uSecret.keys.symmetric;
             content.password = Crypto.encrypt(content.password, key);
         }
 

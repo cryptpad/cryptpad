@@ -129,6 +129,7 @@ define([
             var obj = {
                 p: msg.content.isTemplate ? ['template'] : undefined,
                 t: teamNotification || undefined,
+                f: 1,
                 pw: msg.content.password || ''
             };
             common.openURL(Hash.getNewPadURL(msg.content.href, obj));
