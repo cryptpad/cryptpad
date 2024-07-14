@@ -35,6 +35,7 @@ This release introduces a new onboarding flow to guide administrators through th
   - Remove x2t from the CryptPad repo [#1454](https://github.com/cryptpad/cryptpad/issues/1454)
   - Other OnlyOffice users are shown as "Guest" [#1446](https://github.com/cryptpad/cryptpad/issues/1446)
   - Document PDF exports are empty when remote embedding is disabled  [#1472](https://github.com/cryptpad/cryptpad/issues/1472)
+  - Sometimes images of a presentation are not exported to PDF [#1500](https://github.com/cryptpad/cryptpad/issues/1500)
   - Automatic upgrade of an OnlyOffice document fails sometimes [#1534](https://github.com/cryptpad/cryptpad/issues/1534)
   - Import/Export is broken [#1532](https://github.com/cryptpad/cryptpad/issues/1532)
   - Print is broken [#1533](https://github.com/cryptpad/cryptpad/issues/1533)
