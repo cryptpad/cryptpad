@@ -5,13 +5,44 @@
 ---
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:latest"
+    # Pick either image or build, but not both
+    #image: cryptpad/cryptpad:version-2024.9.0
+    build: .
     hostname: cryptpad
 
     environment:
-      - CPAD_MAIN_DOMAIN=https://your-main-domain.com
-      - CPAD_SANDBOX_DOMAIN=https://your-sandbox-domain.com
-      - CPAD_CONF=/cryptpad/config/config.js
+      - CPAD_HTTP_UNSAFE_ORIGIN=http://localhost:3000
+      - CPAD_HTTP_SAFE_ORIGIN=http://localhost:3000
+      - CPAD_HTTP_ADDRESS=0.0.0.0
+      - CPAD_HTTP_PORT=3000
+      - CPAD_HTTP_SAFE_PORT=3001
+      - CPAD_WEBSOCKET_PORT=3003
+      - CPAD_MAX_WORKERS=-1
+      - CPAD_OTP_SESSION_EXPIRATION=168
+      - CPAD_ENFORCE_MFA=false
+      - CPAD_LOG_IP=false
+      - CPAD_ADMIN_KEYS=[]
+      - CPAD_INACTIVE_TIME=90
+      - CPAD_ARCHIVE_RETENTION_TIME=15
+      - CPAD_ACCOUNT_RETENTION_TIME=-1
+      - CPAD_DISABLE_INTEGRATED_EVICTION=false
+      - CPAD_MAX_UPLOAD_SIZE=20971520
+      - CPAD_PREMIUM_UPLOAD_SIZE=20971520
+      - CPAD_FILE_PATH=/cryptpad/persistent/datastore/
+      - CPAD_ARCHIVE_PATH=/cryptpad/persistent/data/archive
+      - CPAD_PIN_PATH=/cryptpad/persistent/data/pins
+      - CPAD_TASK_PATH=/cryptpad/persistent/data/tasks
+      - CPAD_BLOCK_PATH=/cryptpad/persistent/block
+      - CPAD_BLOB_PATH=/cryptpad/persistent/blob
+      - CPAD_BLOB_STAGING_PATH=/cryptpad/persistent/data/blobstage
+      - CPAD_DECREE_PATH=/cryptpad/persistent/data/decrees
+      - CPAD_LOG_PATH=/cryptpad/persistent/data/logs
+      - CPAD_LOG_TO_STDOUT=true
+      - CPAD_LOG_LEVEL=info
+      - CPAD_LOG_FEEDBACK=false
+      - CPAD_VERBOSE=false
+      - CPAD_INSTALL_METHOD=docker
+
       # Add SSO plugin from git's "main" branch, but can be a commit hash or a tag
       #- CPAD_PLUGIN_SSO=https://github.com/cryptpad/sso.git|main
 
@@ -20,11 +51,8 @@ services:
       # - CPAD_INSTALL_ONLYOFFICE=yes
 
     volumes:
-      - ./data/blob:/cryptpad/blob
-      - ./data/block:/cryptpad/block
       - ./customize:/cryptpad/customize
-      - ./data/data:/cryptpad/data
-      - ./data/files:/cryptpad/datastore
+      - cryptpad_data:/cryptpad/persistent
       # Useful if you want to store plugins and avoid downloading them all the time
       #- ./data/plugins:/cryptpad/lib/plugins
       - ./onlyoffice-dist:/cryptpad/www/common/onlyoffice/dist
@@ -38,3 +66,5 @@ services:
       nofile:
         soft: 1000000
         hard: 1000000
+volumes:
+  cryptpad_data:

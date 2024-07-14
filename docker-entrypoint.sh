@@ -14,19 +14,90 @@ set -e
 CPAD_HOME="/cryptpad"
 PLUGIN_COMMIT_SEPARATOR='|'
 
-if [ ! -f "$CPAD_CONF" ]; then
-    echo -e "\n\
+if [ -z "$CPAD_CONF" ]; then
+    CRYPTPAD_CONFIG="$CPAD_HOME/config/config.js"
+    export CRYPTPAD_CONFIG
+    cp "$CPAD_HOME/config/config.docker.js" "$CRYPTPAD_CONFIG"
+
+    # Use env variable or default if absent
+    : ${CPAD_HTTP_UNSAFE_ORIGIN:="http://localhost:3000"}
+    : ${CPAD_HTTP_SAFE_ORIGIN:="$CPAD_HTTP_UNSAFE_ORIGIN"}
+    : ${CPAD_HTTP_ADDRESS:="0.0.0.0"}
+    : ${CPAD_HTTP_PORT:=3000}
+    : ${CPAD_HTTP_SAFE_PORT:=$(( $CPAD_HTTP_PORT + 1 ))}
+    : ${CPAD_WEBSOCKET_PORT:=3003}
+    : ${CPAD_MAX_WORKERS:=-1}
+    : ${CPAD_OTP_SESSION_EXPIRATION:=$(( 7 * 24))}
+    : ${CPAD_ENFORCE_MFA:=false}
+    : ${CPAD_LOG_IP:=false}
+    : ${CPAD_ADMIN_KEYS:="[]"}
+    : ${CPAD_INACTIVE_TIME:=90}
+    : ${CPAD_ARCHIVE_RETENTION_TIME:=15}
+    : ${CPAD_ACCOUNT_RETENTION_TIME:=-1}
+    : ${CPAD_DISABLE_INTEGRATED_EVICTION:=false}
+    : ${CPAD_MAX_UPLOAD_SIZE:=$(( 20 * 1024 * 1024 ))}
+    : ${CPAD_PREMIUM_UPLOAD_SIZE:=$CPAD_MAX_UPLOAD_SIZE}
+    : ${CPAD_FILE_PATH:="$CPAD_HOME/persistent/datastore/"}
+    : ${CPAD_ARCHIVE_PATH:="$CPAD_HOME/persistent/data/archive"}
+    : ${CPAD_PIN_PATH:="$CPAD_HOME/persistent/data/pins"}
+    : ${CPAD_TASK_PATH:="$CPAD_HOME/persistent/data/tasks"}
+    : ${CPAD_BLOCK_PATH:="$CPAD_HOME/persistent/block"}
+    : ${CPAD_BLOB_PATH:="$CPAD_HOME/persistent/blob"}
+    : ${CPAD_BLOB_STAGING_PATH:="$CPAD_HOME/persistent/data/blobstage"}
+    : ${CPAD_DECREE_PATH:="$CPAD_HOME/persistent/data/decrees"}
+    : ${CPAD_LOG_PATH:="$CPAD_HOME/persistent/data/logs"}
+    : ${CPAD_LOG_TO_STDOUT:=true}
+    : ${CPAD_LOG_LEVEL:="info"}
+    : ${CPAD_LOG_FEEDBACK:=false}
+    : ${CPAD_VERBOSE:=false}
+    : ${CPAD_INSTALL_METHOD:="docker"}
+
+    set -x
+    # Change configuration file
+    sed -i -E "
+        s@(httpUnsafeOrigin:) .*,@\1 '${CPAD_HTTP_UNSAFE_ORIGIN}',@
+        s@(httpSafeOrigin:) .*,@\1 '${CPAD_HTTP_SAFE_ORIGIN}',@
+        s@(httpAddress:) .*,@\1 '${CPAD_HTTP_ADDRESS}',@
+        s@(httpPort:) .*,@\1 ${CPAD_HTTP_PORT},@
+        s@(httpSafePort:) .*,@\1 ${CPAD_HTTP_SAFE_PORT},@
+        s@(websocketPort:) .*,@\1 ${CPAD_WEBSOCKET_PORT},@
+        s@(maxWorkers:) .*,@\1 ${CPAD_MAX_WORKERS},@
+        s@(otpSessionExpiration:) .*,@\1 ${CPAD_OTP_SESSION_EXPIRATION},@
+        s@(enforceMFA:) .*,@\1 ${CPAD_ENFORCE_MFA},@
+        s@(logIP:) .*,@\1 ${CPAD_LOG_IP},@
+        s@(adminKeys:) .*,@\1 ${CPAD_ADMIN_KEYS},@
+        s@(inactiveTime:) .*,@\1 ${CPAD_INACTIVE_TIME},@
+        s@(archiveRetentionTime:) .*,@\1 ${CPAD_ARCHIVE_RETENTION_TIME},@
+        s@(accountRetentionTime:) .*,@\1 ${CPAD_ACCOUNT_RETENTION_TIME},@
+        s@(disableIntegratedEviction:) .*,@\1 ${CPAD_DISABLE_INTEGRATED_EVICTION},@
+        s@(maxUploadSize:) .*,@\1 ${CPAD_MAX_UPLOAD_SIZE},@
+        s@(premiumUploadSize:) .*,@\1 ${CPAD_PREMIUM_UPLOAD_SIZE},@
+        s@(filePath:) .*,@\1 '${CPAD_FILE_PATH}',@
+        s@(archivePath:) .*,@\1 '${CPAD_ARCHIVE_PATH}',@
+        s@(pinPath:) .*,@\1 '${CPAD_PIN_PATH}',@
+        s@(taskPath:) .*,@\1 '${CPAD_TASK_PATH}',@
+        s@(blockPath:) .*,@\1 '${CPAD_BLOCK_PATH}',@
+        s@(blobPath:) .*,@\1 '${CPAD_BLOB_PATH}',@
+        s@(blobStagingPath:) .*,@\1 '${CPAD_BLOB_STAGING_PATH}',@
+        s@(decreePath:) .*,@\1 '${CPAD_DECREE_PATH}',@
+        s@(logPath:) .*,@\1 '${CPAD_LOG_PATH}',@
+        s@(logToStdout:) .*,@\1 ${CPAD_LOG_TO_STDOUT},@
+        s@(logLevel:) .*,@\1 '${CPAD_LOG_LEVEL}',@
+        s@(logFeedback:) .*,@\1 ${CPAD_LOG_FEEDBACK},@
+        s@(verbose:) .*,@\1 ${CPAD_VERBOSE},@
+        s@(installMethod:) .*,@\1 '${CPAD_INSTALL_METHOD}',@" \
+        "$CRYPTPAD_CONFIG"
+else
+    >&2 echo -e "\n\
          #################################################################### \n\
-         Warning: No config file provided for cryptpad \n\
-         We will create a basic one for now but you should rerun this service \n\
-         by providing a file with your settings \n\
-         eg: docker run -v /path/to/config.js:/cryptpad/config/config.js \n\
+         Warning: You provided a config file path for cryptpad. \n\
+         Support for the config file in docker is deprecated and might be
+         deleted in a future release. You are encouraged to pass environment
+         variables to the container for cryptpad's configuration.\n\
+         All environment variables can be found in the github page:\n\
+         https://github.com/cryptpad/cryptpad/blob/main/DOCKER.md\n
+         This warning is triggered by the presence of the variable CPAD_CONF.
          #################################################################### \n"
-
-    cp "$CPAD_HOME"/config/config.example.js "$CPAD_CONF"
-
-    sed -i  -e "s@\(httpUnsafeOrigin:\).*[^,]@\1 '$CPAD_MAIN_DOMAIN'@" \
-        -e "s@\(^ *\).*\(httpSafeOrigin:\).*[^,]@\1\2 '$CPAD_SANDBOX_DOMAIN'@" "$CPAD_CONF"
 fi
 
 # Find all environment variable names starting with "CPAD_PLUGIN_"
