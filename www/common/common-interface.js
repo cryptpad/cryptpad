@@ -164,12 +164,12 @@ define([
 
     dialog.okButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.btn.ok.primary';
-        return h(sel, { tabindex: '2', }, content || Messages.okButton);
+        return h(sel, content || Messages.okButton);
     };
 
     dialog.cancelButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.' + classString:'button.btn.cancel';
-        return h(sel, { tabindex: '1'}, content || Messages.cancelButton);
+        return h(sel, content || Messages.cancelButton);
     };
 
     dialog.message = function (text) {
@@ -771,7 +771,7 @@ define([
 
         document.body.appendChild(frame);
         setTimeout(function () {
-            $(input).select().focus();
+            addTabListener(frame);
             Notifier.notify();
         });
     };
