@@ -28,6 +28,18 @@
             max-height: 250px;
         }
     }
+    #cp-sidebarlayout-container #cp-sidebarlayout-rightside .cp-sidebarlayout-element[data-item] .cp-sidebar-table#performance-profiling-table {
+        @media (max-width: @browser_media-not-small) {
+            width: 100%;
+            tr {
+                width: 100%;
+            }
+            th, td {
+                margin-right: 0;
+                min-width: 1rem;
+            }
+        }
+    }
     .cp-admin-color-current {
         width: 20px;
         height: 20px;
