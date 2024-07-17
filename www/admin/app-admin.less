@@ -29,6 +29,15 @@
         }
     }
     #cp-sidebarlayout-container #cp-sidebarlayout-rightside .cp-sidebarlayout-element[data-item] .cp-sidebar-table#performance-profiling-table {
+        tr {
+            display: flex;
+        }
+        th, td {
+            flex: 1;
+            word-wrap: break-word;
+            white-space: normal;
+            min-width: 13rem;
+        }
         @media (max-width: @browser_media-not-small) {
             width: 100%;
             tr {
