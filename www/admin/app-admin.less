@@ -28,11 +28,9 @@
             max-height: 250px;
         }
     }
-    #cp-sidebarlayout-container #cp-sidebarlayout-rightside .cp-sidebarlayout-element[data-item] .cp-sidebar-table#performance-profiling-table {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: column;
+    #cp-sidebarlayout-container #cp-sidebarlayout-rightside .cp-sidebarlayout-element[data-item] div {
         overflow-x: auto;
+    .cp-sidebar-table#performance-profiling-table {
         tr {
             display: flex;
         }
@@ -41,6 +39,7 @@
             word-wrap: break-word;
             white-space: normal;
             min-width: 13rem;
+            margin-right: 0px;
         }
         @media (max-width: @browser_media-not-small) {
             width: 100%;
@@ -53,6 +52,7 @@
             }
         }
     }
+}
     .cp-admin-color-current {
         width: 20px;
         height: 20px;

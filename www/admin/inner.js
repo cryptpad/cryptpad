@@ -3598,6 +3598,10 @@ define([
 
             table.id = 'performance-profiling-table';
 
+            var div = document.createElement('div');
+            div.id = 'performance-table-container';
+            div.appendChild(table);
+
             const onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'GET_WORKER_PROFILES',
@@ -3629,7 +3633,7 @@ define([
             onRefresh();
             onRefreshPerformance.reg(onRefresh);
 
-            cb(table);
+            cb(div);
         });
 
 
