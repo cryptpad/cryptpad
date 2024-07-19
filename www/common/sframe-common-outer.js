@@ -1359,7 +1359,7 @@ define([
                                 var viewH = Utils.Hash.getViewHashFromKeys(_secret);
                                 var href = Utils.Hash.hashToHref(editH, parsed.type);
                                 var roHref = Utils.Hash.hashToHref(viewH, parsed.type);
-                                Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('password', pw, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('channel', chan, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());
