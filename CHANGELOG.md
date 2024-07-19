@@ -14,7 +14,7 @@ This release introduces a new onboarding flow to guide administrators through th
 
 - Onboarding screens & app configuration [#1513](https://github.com/cryptpad/cryptpad/pull/1513)
 - Bahasa Indonesia is a new available language [fe78b6a](https://github.com/cryptpad/cryptpad/commit/fe78b6ab1dc76ce9eb8d5361c309db8e92117fa8)
-  - Thanks to our [Weblate](https://weblate.cryptpad.org) contributors who made that happen! 
+  - Thanks to our [Weblate](https://weblate.cryptpad.org) contributors who made that happen!
 
 ## Improvements
 
@@ -35,6 +35,7 @@ This release introduces a new onboarding flow to guide administrators through th
   - Remove x2t from the CryptPad repo [#1454](https://github.com/cryptpad/cryptpad/issues/1454)
   - Other OnlyOffice users are shown as "Guest" [#1446](https://github.com/cryptpad/cryptpad/issues/1446)
   - Document PDF exports are empty when remote embedding is disabled  [#1472](https://github.com/cryptpad/cryptpad/issues/1472)
+  - Sometimes images of a presentation are not exported to PDF [#1500](https://github.com/cryptpad/cryptpad/issues/1500)
   - Automatic upgrade of an OnlyOffice document fails sometimes [#1534](https://github.com/cryptpad/cryptpad/issues/1534)
   - Import/Export is broken [#1532](https://github.com/cryptpad/cryptpad/issues/1532)
   - Print is broken [#1533](https://github.com/cryptpad/cryptpad/issues/1533)
@@ -46,7 +47,7 @@ This release introduces a new onboarding flow to guide administrators through th
   - Switch to new `http2` Nginx option [#1516](https://github.com/cryptpad/cryptpad/pull/1516)
   - Server fixes and aggregated stats [#1509](https://github.com/cryptpad/cryptpad/pull/1509)
   - Create the block folder at boot [#911](https://github.com/cryptpad/cryptpad/pull/911)
-  - Remove obsolete `version` from `docker-compose.yml` [2e716eb](https://github.com/cryptpad/cryptpad/commit/2e716eb4e39fb835f95a1fa1a340e01142d11b1c) 
+  - Remove obsolete `version` from `docker-compose.yml` [2e716eb](https://github.com/cryptpad/cryptpad/commit/2e716eb4e39fb835f95a1fa1a340e01142d11b1c)
 - Other
   - Unsharp the corners when hovering the dismiss button on notification drop-down menu [#1466](https://github.com/cryptpad/cryptpad/pull/1466)
   - Fix contextual menu `Open` on anonymous drive [#1464](https://github.com/cryptpad/cryptpad/pull/1464)
