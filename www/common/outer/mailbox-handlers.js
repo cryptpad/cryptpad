@@ -387,8 +387,10 @@ define([
         var channel = content.channel || content.teamChannel;
 
         if (content.password) {
+            var uHash = ctx.store.data.blockHash;
+            var uSecret = Block.parseBlockHash(uHash);
+            var key = uSecret.keys.symmetric;
             content.pw = content.password;
-            var key = ctx.store.driveSecret.keys.cryptKey;
             content.password = Crypto.encrypt(content.password, key);
         }
 

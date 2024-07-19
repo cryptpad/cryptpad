@@ -3559,7 +3559,7 @@ define([
         $(link).click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var obj = { pw: msg.content.password || '' };
+            var obj = { pw: msg.content.password || '', f: 1 };
             common.openURL(Hash.getNewPadURL(msg.content.href, obj));
         });
 
