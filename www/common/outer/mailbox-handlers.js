@@ -266,9 +266,9 @@ define([
         }
 
         if (content.password) {
-            var uHash = ctx.store.data.blockHash;
-            var uSecret = Block.parseBlockHash(uHash);
-            var key = uSecret.keys.symmetric;
+            let uHash = ctx.store.data.blockHash;
+            let uSecret = Block.parseBlockHash(uHash);
+            let key = uSecret.keys.symmetric;
             content.password = Crypto.encrypt(content.password, key);
         }
 
@@ -387,9 +387,9 @@ define([
         var channel = content.channel || content.teamChannel;
 
         if (content.password) {
-            var uHash = ctx.store.data.blockHash;
-            var uSecret = Block.parseBlockHash(uHash);
-            var key = uSecret.keys.symmetric;
+            let uHash = ctx.store.data.blockHash;
+            let uSecret = Block.parseBlockHash(uHash);
+            let key = uSecret.keys.symmetric;
             content.pw = content.password;
             content.password = Crypto.encrypt(content.password, key);
         }
