@@ -2147,6 +2147,13 @@ APP.recurrenceRule = {
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
+            $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
+            $el.find('.cp-calendar-close').attr('tabindex',-1);
+            $el.find('.tui-full-calendar-section-allday').keydown(function (e) {
+                if (e.which === 13) {
+                    $(this).click();
+                }
+            });
 
             var $container = $el.closest('.tui-full-calendar-floating-layer');
             $container.addClass('cp-calendar-popup-flex');
