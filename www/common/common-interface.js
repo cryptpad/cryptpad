@@ -577,7 +577,7 @@ define([
         return frame;
     };
 
-    let addTabListener = frame => {
+    let addTabListener = UI.addTabListener = frame => {
         // find focusable elements
         let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
 
