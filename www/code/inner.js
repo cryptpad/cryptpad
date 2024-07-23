@@ -106,7 +106,7 @@ define([
         framework._.toolbar.$theme.append($showAuthorColors);
         markers.setButton($showAuthorColors);
     };
-    var mkPrintButton = function (framework, $content) {
+    var mkPrintButton = function (framework, $content, $print) {
         var $printButton = framework._.sfCommon.createButton('print', true);
         $printButton.click(function () {
             $print.html($content.html());
@@ -115,8 +115,8 @@ define([
             framework.feedback('PRINT_CODE');
             UI.clearTooltipsDelay();
         });
-        var $print = UIElements.getEntryFromButton($printButton);
-        framework._.toolbar.$drawer.append($print);
+        var $dropdownEntry = UIElements.getEntryFromButton($printButton);
+        framework._.toolbar.$drawer.append($dropdownEntry);
     };
     var mkMarkdownTb = function (editor, framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
