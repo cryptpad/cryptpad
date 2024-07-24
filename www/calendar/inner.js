@@ -2252,6 +2252,7 @@ APP.recurrenceRule = {
             var data = ev.schedule || {};
             var id = data.id;
 
+            UI.addTabListener(el);
             if (!id) { return; }
             if (id.indexOf('|') === -1) { return; } // Original event ID doesn't contain |
 
