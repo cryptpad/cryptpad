@@ -5,11 +5,13 @@
 (function () {
 // add your module to this map so it gets used
 var map = {
+    'ar': 'اَلْعَرَبِيَّةُ',
     'ca': 'Català',
     'cs': 'Čeština',
     'de': 'Deutsch',
-    'el': 'Ελληνικά',
+    //'el': 'Ελληνικά',
     'es': 'Español',
+    'es_CU': 'Español cubano',
     'eu': 'Euskara',
     'fi': 'Suomi',
     'fr': 'Français',
@@ -22,9 +24,9 @@ var map = {
     'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'pt-pt': 'Português do Portugal',
-    'ro': 'Română',
+    //'ro': 'Română',
     'ru': 'Русский',
-    //'sv': 'Svenska',
+    'sv': 'Svenska',
     //'te': 'తెలుగు',
     'uk': 'Українська',
     'zh': '中文(簡體)',
