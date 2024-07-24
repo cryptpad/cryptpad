@@ -2285,7 +2285,6 @@ APP.recurrenceRule = {
                     $b.closest('.tui-full-calendar-floating-layer').hide();
                 });
             });
-            UI.addTabListener(el);
         };
         var onPopupRemoved = function () {
             var start, end;
