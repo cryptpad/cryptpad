@@ -38,6 +38,22 @@
         margin-left: 0.5rem;
     }
 
+    .alertify {
+        nav {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            @media screen and (max-width: @browser_media-medium-screen) {
+                .btn-danger {
+                    line-height: inherit;
+                    overflow-wrap: break-word;
+                    white-space: normal;
+                    width: 100%;
+                }
+            }
+        }
+    }
+
     #cp-sidebarlayout-container {
         #cp-sidebarlayout-rightside {
             input[type="checkbox"] {
@@ -112,6 +128,11 @@
                     margin-top:0;
                     margin-left: 10px;
                 }
+            }
+            nav {
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
             }
             @media (max-width: 840px) {
 

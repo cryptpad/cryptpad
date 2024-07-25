@@ -327,8 +327,6 @@
             nav {
                 padding: @alertify_padding-base;
                 text-align: right;
-                display: flex;
-                align-items: center;
                 button, div.cp-button-confirm {
                     margin: 0px !important;
                     &:not(:first-child):not(.left) {
@@ -340,17 +338,6 @@
                 }
                 div.cp-button-confirm {
                     vertical-align: middle;
-                }
-                .btn.btn-danger {
-                    overflow-wrap: break-word;
-                    white-space: normal;
-                }
-                @media screen and (max-width: @browser_media-medium-screen){
-                    justify-content: flex-end;
-                    .btn.btn-danger {
-                        width: 100%;
-                        line-height: inherit;
-                    }
                 }
             }
         }
