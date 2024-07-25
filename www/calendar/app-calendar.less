@@ -157,6 +157,11 @@
             border-radius: @variables_radius_L;
         }
         .tui-full-calendar-popup-container {
+            .tui-full-calendar-section-allday{
+                &:focus {
+                    outline: @cryptpad_color_brand solid 2px;
+                }
+            }
             min-width: 100%;
             background: @cp_flatpickr-bg;
             color: @cryptpad_text_col;
@@ -208,6 +213,9 @@
                     text-overflow: ellipsis;
                     font: @colortheme_app-font;
                     padding: 0 10px;
+                    &:focus{
+                        outline: @cryptpad_color_brand solid 2px;
+                    }
                 }
                 input { flex: 1; }
             }
@@ -402,6 +410,11 @@
                     align-items: center;
                     & > input {
                         height: 40px;
+                    }
+                    .tui-full-calendar-content{
+                        &:focus{
+                            outline: @cryptpad_color_brand solid 2px;
+                        }
                     }
                 }
                 // margin-bottom: 20px;
