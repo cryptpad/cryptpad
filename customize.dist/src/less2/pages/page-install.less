@@ -45,11 +45,14 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-        }
 
-        @media screen and (max-width: 600px) {
-            nav .btn-danger {
-                line-height: inherit;
+            @media screen and (max-width: @browser_media-medium-screen) {
+               .btn-confirm {
+                    line-height: inherit;
+                    overflow-wrap: break-word;
+                    white-space: normal;
+                    width: 100%;
+                }
             }
         }
 

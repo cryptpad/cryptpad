@@ -812,7 +812,7 @@ define([
                     done: function($dialog) {
                         $dialog.find('> div').addClass('half');
                     },
-                });
+                }, false, 'btn-confirm');
         };
 
         $(form).find('button').click(function() {
@@ -866,7 +866,7 @@ define([
                     if (err || obj.error) { return UI.alert(Messages.settings_changePasswordError); }
                     spinner.done();
                 });
-            });
+            }, null, null, 'cp-button-confirm');
         };
 
         $form.find('button').click(function() {

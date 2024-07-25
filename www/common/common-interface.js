@@ -775,10 +775,10 @@ define([
         });
     };
 
-    UI.confirm = function (msg, cb, opt, force) {
+    UI.confirm = function (msg, cb, opt, force, className) {
         cb = cb || function () {};
         opt = opt || {};
-
+        console.log('Parameters:', { msg, cb, opt, force, className });
         var message;
         if (typeof(msg) === 'string') {
             if (!force) { msg = Util.fixHTML(msg); }
@@ -790,6 +790,10 @@ define([
 
         var ok = dialog.okButton(opt.ok, opt.okClass);
         var cancel = dialog.cancelButton(opt.cancel, opt.cancelClass);
+
+        if (className) {
+            ok.classList.add(className);
+        }
 
         var frame = dialog.frame([
             message,
