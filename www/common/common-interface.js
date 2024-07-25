@@ -670,6 +670,7 @@ define([
             $modal: $blockContainer,
             show: function () {
                 $blockContainer.css('display', 'flex');
+                addTabListener($blockContainer);
             },
             hide: hide
         };
