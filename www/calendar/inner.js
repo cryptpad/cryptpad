@@ -2063,6 +2063,15 @@ APP.recurrenceRule = {
         editor.setOption('readOnly', false);
         editor.setOption('autoRefresh', true);
         editor.setOption('gutters', []);
+        editor.on('keydown', function (editor, e) {
+            if (e.which === 27) {
+                let $next = $(e.target).closest('.tui-full-calendar-popup-section').next();
+                if ($next.length) {
+                    $next.find('#tui-full-calendar-schedule-start-date').focus();
+                }
+                e.stopPropagation();
+            }
+        });
         cm.configureTheme(common, function () {});
         editor.setValue(oldEventBody);
 
