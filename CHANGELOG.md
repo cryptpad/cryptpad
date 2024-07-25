@@ -4,6 +4,51 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 2024.6.1
+
+## Goals
+
+This is a bugfix release to address issues that were reported by Cryptpad.fr users. We took the opportunity to update the translations with some new languages contributed by the community.
+
+## Improvements
+
+- Translations update from CryptPad Translations [#1575](https://github.com/cryptpad/cryptpad/pull/1575)
+  - Added: Español cubano, اَلْعَرَبِيَّةُ Arabic, Svenska
+  - Removed some languages without enough coverage
+    - Greek (16%)
+    - Romanian (36%)
+
+## Fixes
+- Calendar events sometimes don’t appear when created [#1551](https://github.com/cryptpad/cryptpad/issues/1551) fixed by [072dba2](https://github.com/cryptpad/cryptpad/commit/072dba254e3c2be32cd6b261d84510909deb713f)
+- Revert the new method of counting registered users in the admin panel [4544be6](https://github.com/cryptpad/cryptpad/commit/4544be6b4d9fa7291b19cb366f7dd492dfe07340)
+- Fix broken OnlyOffice Document [#1572](https://github.com/cryptpad/cryptpad/issues/1572)
+- Fix printing in Code documents [#1557](https://github.com/cryptpad/cryptpad/pull/1557) [#1478](https://github.com/cryptpad/cryptpad/pull/1478) 
+- Fix OnlyOffice undefined functions [#1550](https://github.com/cryptpad/cryptpad/pull/1550)
+- Fix keyboard operation of confirm modals [#1576](https://github.com/cryptpad/cryptpad/issues/1576)
+  - Pressing Enter on the "Cancel" button triggered the "OK" button instead
+
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2024.6.0` please read the upgrade notes of all versions between yours and `2024.6.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.6.1
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
 # 2024.6.0
 
 ## Goals
