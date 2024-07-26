@@ -1,0 +1,6 @@
+{"owners":["TestOwner"],"validateKey":"TestKey","channel":"0","created":1721035117462}
+["RESTRICT_ACCESS",[true],1721035145090]
+["ADD_ALLOWED",["NewAllowedKeyNewAllowedKeyNewAllowedKeyNewAl"],1721035148115]
+["ADD_PENDING_OWNERS",["PendingOwner"],1721035151295]
+["RESTRICT_ACCESS",[false],1721035155836]
+["RESTRICT_ACCESS",[true],1721035156728]
