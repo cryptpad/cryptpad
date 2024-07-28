@@ -720,9 +720,7 @@ define([
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = $('<button>', {
-                    'class': 'cptools cptools-new-template cp-toolbar-icon-template',
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.saveTemplateButton));
+                button = createIconButton('cptools cptools-new-template cp-toolbar-icon-template', '', '', Messages.saveTemplateButton);
                 if (data.rt || data.callback) {
                     button
                     .click(function () {
