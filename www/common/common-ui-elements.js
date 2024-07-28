@@ -623,13 +623,19 @@ define([
         var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         data = data || {};
         if (!callback && data.callback) { callback = data.callback; }
+
+        function createIconButton(iconClasses, buttonClasses, title, text, ariaLabel) {
+            return $('<button>', {
+                'class': buttonClasses,
+                'title': title,
+                'aria-label': ariaLabel
+            }).append($('<i>', {'class': iconClasses}))
+              .append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(text));
+        }
+
         switch (type) {
             case 'export':
-                button = $('<button>', {
-                    'class': 'fa fa-download cp-toolbar-icon-export',
-                    title: Messages.exportButtonTitle,
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.exportButton));
-
+                button = createIconButton('fa fa-download cp-toolbar-icon-export', '', Messages.exportButtonTitle, Messages.exportButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(UI.clearTooltipsDelay);
@@ -638,34 +644,28 @@ define([
                 }
                 break;
             case 'import':
-                button = $('<button>', {
-                    'class': 'fa fa-upload cp-toolbar-icon-import',
-                    title: Messages.importButtonTitle,
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
-                    var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
-                        accept: data ? data.accept : undefined,
-                        binary: data ? data.binary : undefined
-                    });
+                button = createIconButton('fa fa-upload cp-toolbar-icon-import', '', Messages.importButtonTitle, Messages.importButton);
+                var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
+                    accept: data ? data.accept : undefined,
+                    binary: data ? data.binary : undefined
+                });
 
-                    var handler = data.first? function () {
-                        data.first(function () {
-                            importer(); // Make sure we don't pass arguments to importer
-                        });
-                    }: importer; //importContent;
-
-                    button
-                    .click(common.prepareFeedback(type))
-                    .click(function () {
-                        handler();
-                        UI.clearTooltipsDelay();
+                var handler = data.first? function () {
+                    data.first(function () {
+                        importer(); // Make sure we don't pass arguments to importer
                     });
+                }: importer; //importContent;
+
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    handler();
+                    UI.clearTooltipsDelay();
+                });
                 //}
                 break;
             case 'upload':
-                button = $('<button>', {
-                    'class': 'btn btn-primary new',
-                    title: Messages.uploadButtonTitle,
-                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
+                button = createIconButton('fa fa-upload', 'btn btn-primary new', Messages.uploadButtonTitle, Messages.uploadButton);
                 if (!data.FM) { return; }
                 var $input = $('<input>', {
                     'type': 'file',
@@ -697,9 +697,7 @@ define([
                 });
                 break;
             case 'copy':
-                button = $('<button>', {
-                    'class': 'fa fa-files-o cp-toolbar-icon-import',
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.makeACopy));
+                button = createIconButton('fa fa-files-o cp-toolbar-icon-import', '', '', Messages.makeACopy);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -710,9 +708,7 @@ define([
             case 'importtemplate':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = $('<button>', {
-                    'class': 'fa fa-upload cp-toolbar-icon-import',
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.template_import));
+                button = createIconButton('fa fa-upload cp-toolbar-icon-import', '', '', Messages.template_import);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -774,9 +770,7 @@ define([
                 }
                 break;
             case 'forget':
-                button = $('<button>', {
-                    'class': "fa fa-trash cp-toolbar-icon-forget"
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_delete));
+                button = createIconButton('fa fa-trash cp-toolbar-icon-forget', '', '', Messages.fc_delete);
                 callback = typeof callback === "function" ? callback : function () {};
                 button
                 .click(common.prepareFeedback(type))
@@ -837,25 +831,16 @@ define([
                 ])).click(common.prepareFeedback(type));
                 break;
             case 'print':
-                button = $('<button>', {
-                    title: Messages.printButtonTitle2,
-                    'class': "fa fa-print cp-toolbar-icon-print",
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
+                button = createIconButton('fa fa-print cp-toolbar-icon-print', '', Messages.printButtonTitle2, Messages.printText);
                 break;
             case 'history':
                 if (!AppConfig.enableHistory) {
                     button = $('<span>');
                     break;
                 }
-                button = $('<button>', {
-                    title: Messages.historyButton,
-                    'aria-label': Messages.historyButton,
-                    'class': "fa fa-history cp-toolbar-icon-history",
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
+                button = createIconButton('fa fa-history', '', Messages.historyButton, Messages.historyText, Messages.historyButton);
                 if (data.histConfig) {
-                    button
-                        .click(common.prepareFeedback(type))
-                        .on('click', function () {
+                    button.click(common.prepareFeedback(type)).on('click', function () {
                         common.getHistory(data.histConfig);
                         UI.clearTooltipsDelay();
                     });
@@ -879,9 +864,10 @@ define([
                 if (callback) { button.click(callback); }
                 break;
             case 'storeindrive':
-                button = $(h('button.cp-toolbar-storeindrive.fa.fa-hdd-o', {
+                button = $(h('button.cp-toolbar-storeindrive', {
                     style: 'display:none;'
                 }, [
+                    h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
                     $(button).hide();
@@ -902,10 +888,7 @@ define([
                 });
                 break;
             case 'hashtag':
-                button = $('<button>', {
-                    'class': 'fa fa-hashtag cp-toolbar-icon-hashtag',
-                    title: Messages.tags_title,
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_hashtag));
+                button = createIconButton('fa fa-hashtag cp-toolbar-icon-hashtag', '', Messages.tags_title, Messages.fc_hashtag);
                 button.click(common.prepareFeedback(type))
                 .click(function () {
                     common.isPadStored(function (err, data) {
@@ -950,11 +933,8 @@ define([
                 //updateIcon(data.element.is(':visible'));
                 break;
             case 'properties':
-                button = $('<button>', {
-                    'class': 'fa fa-info-circle cp-toolbar-icon-properties',
-                    title: Messages.propertiesButtonTitle,
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                .text(Messages.propertiesButton))
+                button = createIconButton('fa fa-info-circle cp-toolbar-icon-properties', '',Messages.propertiesButtonTitle, Messages.propertiesButton);
+                button
                 .click(common.prepareFeedback(type))
                 .click(function () {
                     var isTop;
@@ -970,11 +950,8 @@ define([
                 });
                 break;
             case 'save': // OnlyOffice save
-                button = $('<button>', {
-                    'class': 'fa fa-save',
-                    title: Messages.settings_save,
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                .text(Messages.settings_save))
+                button = createIconButton('fa fa-save', '', Messages.settings_save, Messages.settings_save);
+                button
                 .click(function() {
                     common.prepareFeedback(type);
                     UI.clearTooltipsDelay();
@@ -982,10 +959,7 @@ define([
                 if (callback) { button.click(callback); }
                 break;
             case 'newpad':
-                button = $('<button>', {
-                    title: Messages.newButtonTitle,
-                    'class': 'fa fa-plus cp-toolbar-icon-newpad',
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.newButton));
+                button = createIconButton('fa fa-plus cp-toolbar-icon-newpad', '', Messages.newButtonTitle, Messages.newButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -994,10 +968,7 @@ define([
                 });
                 break;
             case 'snapshots':
-                button = $('<button>', {
-                    title: Messages.snapshots_button,
-                    'class': 'fa fa-camera cp-toolbar-icon-snapshots',
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.snapshots_button));
+                button = createIconButton('fa fa-camera cp-toolbar-icon-snapshots', '',Messages.snapshots_button,Messages.snapshots_button);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
