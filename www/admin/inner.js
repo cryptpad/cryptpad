@@ -578,21 +578,36 @@ define([
                 return APP.instanceStatus.enforceMFA;
             },
             query: function (val, setState) {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'ADMIN_DECREE',
-                    data: ['ENFORCE_MFA', [val]]
-                }, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                    }
-                    APP.updateStatus(function () {
-                        setState(APP.instanceStatus.enforceMFA);
-                        flushCache();
+                var isChecked = APP.instanceStatus.enforceMFA;
+                function showConfirmation(isChecked, setState) {
+                    const confirmationContent = isChecked ? Messages.admin_mfa_confirm_disable : Messages.admin_mfa_confirm_enable;
+                    UI.confirm(confirmationContent, function (confirmed) {
+                        if (!confirmed) {
+                            // User canceled their changes, restore the checkbox value
+                            setState(isChecked);
+                            return;
+                        }
+                        // User confirmed their changes, call the command and update the state
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADMIN_DECREE',
+                            data: ['ENFORCE_MFA', [val]]
+                        }, function (e, response) {
+                            if (e || response.error) {
+                                UI.warn(Messages.error);
+                                console.error(e, response);
+                            } else {
+                                APP.updateStatus(function () {
+                                    setState(APP.instanceStatus.enforceMFA);
+                                    flushCache();
+                                });
+                            }
+                        });
                     });
-                });
-            },
+                }
+                showConfirmation(isChecked, setState);
+            }
         });
+
 
 
         var getInstanceString = function (attr) {

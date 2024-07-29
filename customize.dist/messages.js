@@ -135,7 +135,8 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
-
+    Messages.admin_mfa_confirm_enable = "Are you sure you want to enable Multi-Factor Authentication?"; // XXX
+    Messages.admin_mfa_confirm_disable = "Are you sure you want to disable Multi-Factor Authentication?"; // XXX
     return Messages;
 
 });
