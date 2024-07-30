@@ -624,7 +624,7 @@ define([
         data = data || {};
         if (!callback && data.callback) { callback = data.callback; }
 
-        function createIconButton(iconClasses, buttonClasses, title, text, ariaLabel) {
+        function createMenuItemButton(iconClasses, buttonClasses, title, text, ariaLabel) {
             return $('<button>', {
                 'class': buttonClasses,
                 'title': title,
@@ -635,7 +635,7 @@ define([
 
         switch (type) {
             case 'export':
-                button = createIconButton('fa fa-download cp-toolbar-icon-export', '', Messages.exportButtonTitle, Messages.exportButton);
+                button = createMenuItemButton('fa fa-download', 'cp-toolbar-icon-export', Messages.exportButtonTitle, Messages.exportButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(UI.clearTooltipsDelay);
@@ -644,7 +644,7 @@ define([
                 }
                 break;
             case 'import':
-                button = createIconButton('fa fa-upload cp-toolbar-icon-import', '', Messages.importButtonTitle, Messages.importButton);
+                button = createMenuItemButton('fa fa-upload', ' cp-toolbar-icon-import', Messages.importButtonTitle, Messages.importButton);
                 var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                     accept: data ? data.accept : undefined,
                     binary: data ? data.binary : undefined
@@ -665,7 +665,7 @@ define([
                 //}
                 break;
             case 'upload':
-                button = createIconButton('fa fa-upload', 'btn btn-primary new', Messages.uploadButtonTitle, Messages.uploadButton);
+                button = createMenuItemButton('fa fa-upload', 'btn btn-primary new', Messages.uploadButtonTitle, Messages.uploadButton);
                 if (!data.FM) { return; }
                 var $input = $('<input>', {
                     'type': 'file',
@@ -697,7 +697,7 @@ define([
                 });
                 break;
             case 'copy':
-                button = createIconButton('fa fa-files-o cp-toolbar-icon-import', '', '', Messages.makeACopy);
+                button = createMenuItemButton('fa fa-files-o', 'cp-toolbar-icon-import', '', Messages.makeACopy);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -708,7 +708,7 @@ define([
             case 'importtemplate':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = createIconButton('fa fa-upload cp-toolbar-icon-import', '', '', Messages.template_import);
+                button = createMenuItemButton('fa fa-upload', 'cp-toolbar-icon-import', '', Messages.template_import);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -720,7 +720,7 @@ define([
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
-                button = createIconButton('cptools cptools-new-template cp-toolbar-icon-template', '', '', Messages.saveTemplateButton);
+                button = createMenuItemButton('cptools cptools-new-template', 'cp-toolbar-icon-template', '', Messages.saveTemplateButton);
                 if (data.rt || data.callback) {
                     button
                     .click(function () {
@@ -768,7 +768,7 @@ define([
                 }
                 break;
             case 'forget':
-                button = createIconButton('fa fa-trash cp-toolbar-icon-forget', '', '', Messages.fc_delete);
+                button = createMenuItemButton('fa fa-trash', 'cp-toolbar-icon-forget', '', Messages.fc_delete);
                 callback = typeof callback === "function" ? callback : function () {};
                 button
                 .click(common.prepareFeedback(type))
@@ -829,14 +829,14 @@ define([
                 ])).click(common.prepareFeedback(type));
                 break;
             case 'print':
-                button = createIconButton('fa fa-print cp-toolbar-icon-print', '', Messages.printButtonTitle2, Messages.printText);
+                button = createMenuItemButton('fa fa-print', 'cp-toolbar-icon-print', Messages.printButtonTitle2, Messages.printText);
                 break;
             case 'history':
                 if (!AppConfig.enableHistory) {
                     button = $('<span>');
                     break;
                 }
-                button = createIconButton('fa fa-history', '', Messages.historyButton, Messages.historyText, Messages.historyButton);
+                button = createMenuItemButton('fa fa-history', '', Messages.historyButton, Messages.historyText, Messages.historyButton);
                 if (data.histConfig) {
                     button.click(common.prepareFeedback(type)).on('click', function () {
                         common.getHistory(data.histConfig);
@@ -886,7 +886,7 @@ define([
                 });
                 break;
             case 'hashtag':
-                button = createIconButton('fa fa-hashtag cp-toolbar-icon-hashtag', '', Messages.tags_title, Messages.fc_hashtag);
+                button = createMenuItemButton('fa fa-hashtag', 'cp-toolbar-icon-hashtag', Messages.tags_title, Messages.fc_hashtag);
                 button.click(common.prepareFeedback(type))
                 .click(function () {
                     common.isPadStored(function (err, data) {
@@ -931,7 +931,7 @@ define([
                 //updateIcon(data.element.is(':visible'));
                 break;
             case 'properties':
-                button = createIconButton('fa fa-info-circle cp-toolbar-icon-properties', '',Messages.propertiesButtonTitle, Messages.propertiesButton);
+                button = createMenuItemButton('fa fa-info-circle', 'cp-toolbar-icon-properties', Messages.propertiesButtonTitle, Messages.propertiesButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -948,7 +948,7 @@ define([
                 });
                 break;
             case 'save': // OnlyOffice save
-                button = createIconButton('fa fa-save', '', Messages.settings_save, Messages.settings_save);
+                button = createMenuItemButton('fa fa-save', '', Messages.settings_save, Messages.settings_save);
                 button
                 .click(function() {
                     common.prepareFeedback(type);
@@ -957,7 +957,7 @@ define([
                 if (callback) { button.click(callback); }
                 break;
             case 'newpad':
-                button = createIconButton('fa fa-plus cp-toolbar-icon-newpad', '', Messages.newButtonTitle, Messages.newButton);
+                button = createMenuItemButton('fa fa-plus', 'cp-toolbar-icon-newpad', Messages.newButtonTitle, Messages.newButton);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
@@ -966,7 +966,7 @@ define([
                 });
                 break;
             case 'snapshots':
-                button = createIconButton('fa fa-camera cp-toolbar-icon-snapshots', '',Messages.snapshots_button,Messages.snapshots_button);
+                button = createMenuItemButton('fa fa-camera', 'cp-toolbar-icon-snapshots', Messages.snapshots_button,Messages.snapshots_button);
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
