@@ -2722,8 +2722,7 @@ define([
                 }, function (e, arr) {
                     pre.innerText = '';
                     let data = arr[0];
-                    pre.append(String(data.blocks));
-                    pre.append(' (old value including teams: ' + String(data.users) + ')'); // XXX
+                    pre.append(String(data.users));
                 });
             };
             onRefresh();
