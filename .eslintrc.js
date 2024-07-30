@@ -35,7 +35,7 @@ module.exports = {
             4
         ],
         'linebreak-style': [
-            'off',  // git handles linebreak conversion for us
+            'error',  // git handles linebreak conversion for us
             'unix'
         ],
         'quotes': [
