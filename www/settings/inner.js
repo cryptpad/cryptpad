@@ -866,7 +866,7 @@ define([
                     if (err || obj.error) { return UI.alert(Messages.settings_changePasswordError); }
                     spinner.done();
                 });
-            }, null, null, 'cp-button-confirm');
+            }, null, null, 'btn-confirm');
         };
 
         $form.find('button').click(function() {
