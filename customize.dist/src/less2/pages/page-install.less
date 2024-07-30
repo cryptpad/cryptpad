@@ -43,10 +43,13 @@
 
         nav {
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: flex-end;
 
             @media screen and (max-width: @browser_media-medium-screen) {
+                nav.btn-danger {
+                    line-height: inherit;
+                }
                .btn-confirm {
                     line-height: inherit;
                     overflow-wrap: break-word;

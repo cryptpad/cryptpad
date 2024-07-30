@@ -778,7 +778,6 @@ define([
     UI.confirm = function (msg, cb, opt, force, className) {
         cb = cb || function () {};
         opt = opt || {};
-        console.log('Parameters:', { msg, cb, opt, force, className });
         var message;
         if (typeof(msg) === 'string') {
             if (!force) { msg = Util.fixHTML(msg); }
