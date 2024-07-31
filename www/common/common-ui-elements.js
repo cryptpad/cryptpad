@@ -1249,6 +1249,7 @@ define([
             kanban: 'kanban',
             form: 'form',
             whiteboard: 'whiteboard',
+            diagram: 'diagram',
         };
 
         var href = "https://docs.cryptpad.org/en/user_guide/applications.html";
