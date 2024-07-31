@@ -644,7 +644,7 @@ define([
                 }
                 break;
             case 'import':
-                button = createMenuItemButton('fa fa-upload', ' cp-toolbar-icon-import', Messages.importButtonTitle, Messages.importButton);
+                button = createMenuItemButton('fa fa-upload', 'cp-toolbar-icon-import', Messages.importButtonTitle, Messages.importButton);
                 var importer = importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
                     accept: data ? data.accept : undefined,
                     binary: data ? data.binary : undefined
@@ -836,7 +836,7 @@ define([
                     button = $('<span>');
                     break;
                 }
-                button = createMenuItemButton('fa fa-history', '', Messages.historyButton, Messages.historyText, Messages.historyButton);
+                button = createMenuItemButton('fa fa-history', 'cp-toolbar-icon-history', Messages.historyButton, Messages.historyText, Messages.historyButton);
                 if (data.histConfig) {
                     button.click(common.prepareFeedback(type)).on('click', function () {
                         common.getHistory(data.histConfig);
