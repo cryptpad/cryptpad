@@ -8,3 +8,8 @@
     margin: 3cm;
     size: A4 portrait;
 }
+@media print {
+    body {
+        background: white !important;
+    }
+}
