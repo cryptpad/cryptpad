@@ -4,6 +4,7 @@
 
 // This is the initialization loading the CryptPad libraries
 define([
+    'jquery',
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
     '/components/pako/dist/pako.min.js',
@@ -14,6 +15,7 @@ define([
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
 ], function (
+    $,
     Framework,
     Messages,
     pako,
