@@ -4,20 +4,24 @@
 
 // This is the initialization loading the CryptPad libraries
 define([
+    'jquery',
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
     '/components/pako/dist/pako.min.js',
     '/components/x2js/x2js.js',
     '/diagram/util.js',
+    '/common/common-ui-elements.js',
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
 ], function (
+    $,
     Framework,
     Messages,
     pako,
     X2JS,
-    DiagramUtil
+    DiagramUtil,
+    UIElements
 ) {
     const Nacl = window.nacl;
     const APP = window.APP = {};
@@ -61,6 +65,15 @@ define([
         return JSON.stringify(o1) === JSON.stringify(o2);
     };
 
+    var mkHelpMenu = function (framework) {
+        var $codeMirrorContainer = $('#cp-app-diagram-container');
+        var helpMenu = framework._.sfCommon.createHelpMenu(['diagram']);
+        $codeMirrorContainer.prepend(helpMenu.menu);
+
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
+    };
+
     // This is the main initialization loop
     var onFrameworkReady = function (framework) {
         var EMPTY_DRAWIO = "<mxfile type=\"embed\"><diagram id=\"bWoO5ACGZIaXrIiKNTKd\" name=\"Page-1\"><mxGraphModel dx=\"1259\" dy=\"718\" grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"827\" pageHeight=\"1169\" math=\"0\" shadow=\"0\"><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/></root></mxGraphModel></diagram></mxfile>";
@@ -68,6 +81,11 @@ define([
         var x2js = new X2JS();
         var lastContent = x2js.xml2js(EMPTY_DRAWIO);
         var drawIoInitalized = false;
+
+        var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
         var postMessageToDrawio = function(msg) {
             if (!drawIoInitalized) {
