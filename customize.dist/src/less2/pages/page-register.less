@@ -68,17 +68,16 @@
 
         nav {
             display: flex;
-            align-items: flex-end;
             justify-content: flex-end;
-
-            @media screen and (max-width: @browser_media-medium-screen) {
-                nav.btn-danger {
-                    line-height: inherit;
-                }
-               .btn-confirm {
-                    line-height: inherit;
+            align-items: flex-end;
+            .btn-confirm {
+                white-space: normal;
+            }
+            @media screen and (max-width: @browser_media-not-big),
+                screen and (max-height: @browser_media-not-big) and (max-width: 1120px){
+                .btn-confirm {
+                    line-height: normal;
                     overflow-wrap: break-word;
-                    white-space: normal;
                     width: 100%;
                 }
             }
