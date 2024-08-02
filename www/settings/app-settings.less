@@ -38,6 +38,25 @@
         margin-left: 0.5rem;
     }
 
+    .alertify {
+        nav {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            .btn-confirm {
+                white-space: normal;
+            }
+            @media screen and (max-width: @browser_media-not-big),
+                screen and (max-height: @browser_media-not-big) and (max-width: 1120px){
+                .btn-confirm {
+                    line-height: normal;
+                    overflow-wrap: break-word;
+                    width: 100%;
+                }
+            }
+        }
+    }
+
     #cp-sidebarlayout-container {
         #cp-sidebarlayout-rightside {
             input[type="checkbox"] {
@@ -112,6 +131,11 @@
                     margin-top:0;
                     margin-left: 10px;
                 }
+            }
+            nav {
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
             }
             @media (max-width: 840px) {
 
