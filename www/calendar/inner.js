@@ -818,7 +818,17 @@ define([
             });
         }
         if (APP.$calendars) { APP.$calendars.append(calendar); }
-        return calendar;
+        return $calendar;  // return jQuery element
+    };
+
+    var appendCalendarEntries = function (teamId, filter) {
+        var calendars = filter(teamId);
+        var $entriesContainer = $('<div class="cp-calendar-entries"></div>');
+        calendars.forEach(function (id) {
+            var calendarEntry = makeCalendarEntry(id, teamId);
+            $entriesContainer.append(calendarEntry);
+        });
+        return $entriesContainer;
     };
     var makeLeftside = function (calendar, $container) {
         // Show calendars
@@ -847,10 +857,10 @@ define([
             };
             var tempCalendars = filter(0);
             if (tempCalendars.length && tempCalendars[0] === APP.currentCalendar) {
-                APP.$calendars.append(h('div.cp-calendar-team', [
+                var $tempCalendarTeam = $(h('div.cp-calendar-team', [
                     h('span', Messages.calendar_tempCalendar)
-                ]));
-                makeCalendarEntry(tempCalendars[0], 0);
+                ])).appendTo(APP.$calendars);
+                var $tempCalendarEntries = appendCalendarEntries(0, filter).appendTo(APP.$calendars);
                 var importTemp = h('button', [
                     h('i.fa.fa-calendar-plus-o'),
                     h('span', Messages.calendar_import_temp),
@@ -868,7 +878,13 @@ define([
                     });
                 });
                 if (APP.loggedIn) {
-                    APP.$calendars.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
+                    $tempCalendarEntries.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
+                }
+                //on small screens toggle in and out
+                if (window.innerWidth <= 600) {
+                    $tempCalendarTeam.click(function () {
+                        $tempCalendarEntries.toggleClass('visible');
+                    });
                 }
                 return;
             }
@@ -878,16 +894,18 @@ define([
                 var avatar = h('span.cp-avatar');
                 var uid = user.uid;
                 var name = user.name || Messages.anonymous;
-                common.displayAvatar($(avatar), user.avatar, name, function(){}, uid);
-                APP.$calendars.append(h('div.cp-calendar-team', [
+                common.displayAvatar($(avatar), user.avatar, name, function () { }, uid);
+                var $myCalendarTeam = $(h('div.cp-calendar-team', [
                     avatar,
-                    h('span.cp-name', {title: name}, name)
-                ]));
+                    h('span.cp-name', { title: name }, name)
+                ])).appendTo(APP.$calendars);
+                var $myCalendarEntries = appendCalendarEntries(1, filter).appendTo(APP.$calendars);
+                if (window.innerWidth <= 600) {
+                    $myCalendarTeam.click(function () {
+                        $myCalendarEntries.toggleClass('visible');
+                    });
+                }
             }
-            myCalendars.forEach(function (id) {
-                makeCalendarEntry(id, 1);
-            });
-
             // Add new button
             var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
             var newButton = h('button', [
@@ -905,13 +923,16 @@ define([
                 var team = privateData.teams[teamId];
                 var avatar = h('span.cp-avatar');
                 common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
-                APP.$calendars.append(h('div.cp-calendar-team', [
+                var $teamCalendarTeam = $(h('div.cp-calendar-team', [
                     avatar,
                     h('span.cp-name', {title: team.name}, team.name)
-                ]));
-                calendars.forEach(function (id) {
-                    makeCalendarEntry(id, teamId);
-                });
+                ])).appendTo(APP.$calendars);
+                var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
+                if (window.innerWidth <= 600) {
+                    $teamCalendarTeam.click(function () {
+                        $teamCalendarEntries.toggleClass('visible');
+                    });
+                }
             });
         });
         onCalendarsUpdate.fire();
