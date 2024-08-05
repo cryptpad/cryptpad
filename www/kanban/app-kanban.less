@@ -178,7 +178,7 @@
         outline-style: none;
         border-radius: @variables_radius;
         &:focus {
-            outline: @cryptpad_color_brand solid 2px;
+            outline: @variables_focus_style;
         }
         @media (hover: none) {
             margin-right: 20px;
@@ -414,7 +414,7 @@
                     margin-right: 5px;
                 }
                 &:focus{
-                    outline: @cryptpad_color_brand solid 2px;
+                    outline: @variables_focus_style;
                 }
             }
         }
@@ -652,7 +652,7 @@
                 background-color: @cp_kanban-add-hover;
             }
             &:focus {
-                outline: @cryptpad_color_brand solid 2px;
+                outline: @variables_focus_style;
             }
         }
 
