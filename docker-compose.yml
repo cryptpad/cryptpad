@@ -5,7 +5,7 @@
 ---
 services:
   cryptpad:
-    image: "cryptpad/cryptpad:version-2024.6.0"
+    image: "cryptpad/cryptpad:version-2024.6.1"
     hostname: cryptpad
 
     environment:
