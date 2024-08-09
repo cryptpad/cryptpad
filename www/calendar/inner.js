@@ -880,12 +880,6 @@ define([
                 if (APP.loggedIn) {
                     $tempCalendarEntries.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
                 }
-                //on small screens toggle in and out
-                if (window.innerWidth <= 600) {
-                    $tempCalendarTeam.click(function () {
-                        $tempCalendarEntries.toggleClass('visible');
-                    });
-                }
                 return;
             }
             var myCalendars = filter(1);
@@ -895,19 +889,60 @@ define([
                 var uid = user.uid;
                 var name = user.name || Messages.anonymous;
                 common.displayAvatar($(avatar), user.avatar, name, function () { }, uid);
-                var $myCalendarTeam = $(h('div.cp-calendar-team', [
+                APP.$calendars.append(h('div.cp-calendar-team', [
                     avatar,
-                    h('span.cp-name', { title: name }, name)
-                ])).appendTo(APP.$calendars);
-                var $myCalendarEntries = appendCalendarEntries(1, filter).appendTo(APP.$calendars);
+                    h('span.cp-name', {title: name}, name)
+                ]));
                 if (window.innerWidth <= 600) {
-                    $myCalendarTeam.click(function () {
+                    var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
+                    var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
+                        h('i.fa.fa-eye'),
+                        h('span', 'Show calendars'),
+                        h('span')
+                    ]);
+                    var $myCalendarEntries = appendCalendarEntries(1, filter).appendTo(APP.$calendars);
+                    $(showCalendarsBtn).click(function (e) {
+                        e.preventDefault();
                         $myCalendarEntries.toggleClass('visible');
+                    }).appendTo($showCalendarsContainer);
+                } else {
+                    myCalendars.forEach(function (id) {
+                        makeCalendarEntry(id, 1);
                     });
                 }
             }
+            Object.keys(privateData.teams).sort().forEach(function (teamId) {
+                var calendars = filter(teamId);
+                if (!calendars.length) { return; }
+                var team = privateData.teams[teamId];
+                var avatar = h('span.cp-avatar');
+                common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
+                APP.$calendars.append(h('div.cp-calendar-team', [
+                    avatar,
+                    h('span.cp-name', {title: team.name}, team.name)
+                ]));
+                if (window.innerWidth <= 600) {
+                    // Add show calendars button for each team
+                    var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
+                    var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
+                        h('i.fa.fa-eye'),
+                        h('span', 'Show calendars'),
+                        h('span')
+                    ]);
+                    var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
+                    $(showCalendarsBtn).click(function (e) {
+                        e.preventDefault();
+                        $teamCalendarEntries.toggleClass('visible');
+                    }).appendTo($showCalendarsContainer);
+                } else {
+                    calendars.forEach(function (id) {
+                        makeCalendarEntry(id, 1);
+                    });
+                }
+
+            });
             // Add new button
-            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+            var $newContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
             var newButton = h('button', [
                 h('i.fa.fa-calendar-plus-o'),
                 h('span', Messages.calendar_new),
@@ -916,27 +951,9 @@ define([
             $(newButton).click(function () {
                 editCalendar();
             }).appendTo($newContainer);
-
-            Object.keys(privateData.teams).sort().forEach(function (teamId) {
-                var calendars = filter(teamId);
-                if (!calendars.length) { return; }
-                var team = privateData.teams[teamId];
-                var avatar = h('span.cp-avatar');
-                common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
-                var $teamCalendarTeam = $(h('div.cp-calendar-team', [
-                    avatar,
-                    h('span.cp-name', {title: team.name}, team.name)
-                ])).appendTo(APP.$calendars);
-                var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
-                if (window.innerWidth <= 600) {
-                    $teamCalendarTeam.click(function () {
-                        $teamCalendarEntries.toggleClass('visible');
-                    });
-                }
-            });
         });
-        onCalendarsUpdate.fire();
 
+        onCalendarsUpdate.fire();
     };
 
     var _updateRecurring = function () {
@@ -1296,7 +1313,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             store.put('calendarView', mode, function () {});
         });
         APP.toolbar.$bottomR.append($block);
-
         // New event button
         var newEventBtn = h('button.cp-calendar-newevent', [
             h('i.fa.fa-plus'),
@@ -1306,7 +1322,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             e.preventDefault();
             cal.openCreationPopup({isAllDay:false});
         }).appendTo(APP.toolbar.$bottomL);
-
         // Change page
         var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft});
         var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight});
