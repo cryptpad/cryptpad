@@ -1763,5 +1763,22 @@
     "admin_supportOpen": "Ireki laguntza tresnak",
     "support_copyUserData": "Kopiatu erabiltzailearen datuak",
     "support_userNotification": "Laguntza-txartel edo erantzun berria: {0}",
-    "admin_supportTeamHint": "Gehitu eta kendu jendea instantziako laguntza-taldetik"
+    "admin_supportTeamHint": "Gehitu eta kendu jendea instantziako laguntza-taldetik",
+    "install_token": "Instalazioaren tokena",
+    "install_header": "Instalazioa",
+    "admin_appSelection": "Aplikazioaren konfigurazioa",
+    "install_instance": "Sortu lehen administratzailearen kontua, eta jarraitu instantzia hau pertsonalizatzen",
+    "install_launch": "Instantziaren konfigurazioa",
+    "install_notes": "<ul class=\"cp-notes-list\"><li>Sortu zure lehen administratzaile kontua orrialde honetan. Administratzaileek instantzia-ezarpenak kudeatzen dituzte biltegiratze-kuotak barne, eta moderazio-tresnetarako sarbidea dute.</li><li>Zure pasahitza instantzia honetako dokumentu eta administratzaile-pribilegio guztiak enkriptatzen dituen gako sekretua da. <span class=\"red\">Galtzen baduzu, ezin dugu zure datuak berreskuratu.</span></li><li>Partekatutako ordenagailu bat erabiltzen ari bazara, <span class=\"red\">gogoratu amaitutakoan saioa ixtea</span>. Nabigatzailearen leihoa ixteak bakarrik utziko du zure kontua agerian. </li></ul>",
+    "admin_appsTitle": "Instantziaren aplikazioak",
+    "admin_appsHint": "Aukeratu zein aplikazio aktibatu instantzia honetan.",
+    "admin_cat_apps": "Aplikazioak",
+    "onboarding_upload": "Hautatu logoa",
+    "onboarding_save_error": "Aukera batzuk ezin izan dira behar bezala gorde. Mesedez, bisitatu administrazio panelera balioak egiaztatzeko.",
+    "admin_onboardingNameHint": "Mesedez, aukeratu izenburua, deskribapena, nabarmentzeko kolorea eta logotipoa (guztiak aukerakoak dira)",
+    "admin_onboardingNameTitle": "Ongi etorri zure CryptPad instantziara",
+    "admin_onboardingOptionsTitle": "Instantziaren aukerak",
+    "admin_onboardingNamePlaceholder": "Instantziaren izenburua",
+    "admin_onboardingDescPlaceholder": "Instantziaren deskribapen testua",
+    "admin_onboardingOptionsHint": "Mesedez, hautatu aukera egokia zure instantziarako.<br>Ezarpen hauek geroago alda daitezke administrazio panelean."
 }
