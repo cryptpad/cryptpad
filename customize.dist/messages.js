@@ -135,7 +135,7 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
-
+    Messages.calendar_show = 'Show calendars'; // XXX
     return Messages;
 
 });

@@ -818,7 +818,17 @@ define([
             });
         }
         if (APP.$calendars) { APP.$calendars.append(calendar); }
-        return calendar;
+        return $calendar;  // return jQuery element
+    };
+
+    var appendCalendarEntries = function (teamId, filter) {
+        var calendars = filter(teamId);
+        var $entriesContainer = $('<div class="cp-calendar-entries"></div>');
+        calendars.forEach(function (id) {
+            var calendarEntry = makeCalendarEntry(id, teamId);
+            $entriesContainer.append(calendarEntry);
+        });
+        return $entriesContainer;
     };
     var makeLeftside = function (calendar, $container) {
         // Show calendars
@@ -847,10 +857,10 @@ define([
             };
             var tempCalendars = filter(0);
             if (tempCalendars.length && tempCalendars[0] === APP.currentCalendar) {
-                APP.$calendars.append(h('div.cp-calendar-team', [
+                var $tempCalendarTeam = $(h('div.cp-calendar-team', [
                     h('span', Messages.calendar_tempCalendar)
-                ]));
-                makeCalendarEntry(tempCalendars[0], 0);
+                ])).appendTo(APP.$calendars);
+                var $tempCalendarEntries = appendCalendarEntries(0, filter).appendTo(APP.$calendars);
                 var importTemp = h('button', [
                     h('i.fa.fa-calendar-plus-o'),
                     h('span', Messages.calendar_import_temp),
@@ -868,7 +878,7 @@ define([
                     });
                 });
                 if (APP.loggedIn) {
-                    APP.$calendars.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
+                    $tempCalendarEntries.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
                 }
                 return;
             }
@@ -878,27 +888,29 @@ define([
                 var avatar = h('span.cp-avatar');
                 var uid = user.uid;
                 var name = user.name || Messages.anonymous;
-                common.displayAvatar($(avatar), user.avatar, name, function(){}, uid);
+                common.displayAvatar($(avatar), user.avatar, name, function () { }, uid);
                 APP.$calendars.append(h('div.cp-calendar-team', [
                     avatar,
                     h('span.cp-name', {title: name}, name)
                 ]));
+                if (window.innerWidth <= 600) {
+                    var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
+                    var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
+                        h('i.fa.fa-eye'),
+                        h('span', Messages.calendar_show),
+                        h('span')
+                    ]);
+                    var $myCalendarEntries = appendCalendarEntries(1, filter).appendTo(APP.$calendars);
+                    $(showCalendarsBtn).click(function (e) {
+                        e.preventDefault();
+                        $myCalendarEntries.toggleClass('visible');
+                    }).appendTo($showCalendarsContainer);
+                } else {
+                    myCalendars.forEach(function (id) {
+                        makeCalendarEntry(id, 1);
+                    });
+                }
             }
-            myCalendars.forEach(function (id) {
-                makeCalendarEntry(id, 1);
-            });
-
-            // Add new button
-            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
-            var newButton = h('button', [
-                h('i.fa.fa-calendar-plus-o'),
-                h('span', Messages.calendar_new),
-                h('span')
-            ]);
-            $(newButton).click(function () {
-                editCalendar();
-            }).appendTo($newContainer);
-
             Object.keys(privateData.teams).sort().forEach(function (teamId) {
                 var calendars = filter(teamId);
                 if (!calendars.length) { return; }
@@ -909,13 +921,39 @@ define([
                     avatar,
                     h('span.cp-name', {title: team.name}, team.name)
                 ]));
-                calendars.forEach(function (id) {
-                    makeCalendarEntry(id, teamId);
-                });
-            });
-        });
-        onCalendarsUpdate.fire();
+                if (window.innerWidth <= 600) {
+                    // Add show calendars button for each team
+                    var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
+                    var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
+                        h('i.fa.fa-eye'),
+                        h('span', Messages.calendar_show),
+                        h('span')
+                    ]);
+                    var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
+                    $(showCalendarsBtn).click(function (e) {
+                        e.preventDefault();
+                        $teamCalendarEntries.toggleClass('visible');
+                    }).appendTo($showCalendarsContainer);
+                } else {
+                    calendars.forEach(function (id) {
+                        makeCalendarEntry(id, 1);
+                    });
+                }
 
+            });
+            // Add new button
+            var $newContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
+            var newButton = h('button', [
+                h('i.fa.fa-calendar-plus-o'),
+                h('span', Messages.calendar_new),
+                h('span')
+            ]);
+            $(newButton).click(function () {
+                editCalendar();
+            }).appendTo($newContainer);
+        });
+
+        onCalendarsUpdate.fire();
     };
 
     var _updateRecurring = function () {
@@ -1275,7 +1313,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             store.put('calendarView', mode, function () {});
         });
         APP.toolbar.$bottomR.append($block);
-
         // New event button
         var newEventBtn = h('button.cp-calendar-newevent', [
             h('i.fa.fa-plus'),
@@ -1285,7 +1322,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             e.preventDefault();
             cal.openCreationPopup({isAllDay:false});
         }).appendTo(APP.toolbar.$bottomL);
-
         // Change page
         var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft});
         var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight});
