@@ -897,7 +897,7 @@ define([
                     var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
                     var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
                         h('i.fa.fa-eye'),
-                        h('span', 'Show calendars'),
+                        h('span', Messages.calendar_show),
                         h('span')
                     ]);
                     var $myCalendarEntries = appendCalendarEntries(1, filter).appendTo(APP.$calendars);
@@ -926,7 +926,7 @@ define([
                     var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
                     var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
                         h('i.fa.fa-eye'),
-                        h('span', 'Show calendars'),
+                        h('span', Messages.calendar_show),
                         h('span')
                     ]);
                     var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
