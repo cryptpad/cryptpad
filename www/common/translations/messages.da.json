@@ -1,1 +1,25 @@
-{}
+{
+    "type": {
+        "slide": "Markdown slides",
+        "media": "Media",
+        "pad": "Rich tekst",
+        "poll": "Afstemning",
+        "file": "Fil",
+        "todo": "Todo",
+        "contacts": "Kontakter",
+        "code": "Kode",
+        "drive": "CryptDrive",
+        "form": "Form",
+        "teams": "Hold",
+        "doc": "Dokument",
+        "presentation": "Præsentation",
+        "diagram": "Diagram",
+        "kanban": "Kanban",
+        "sheet": "Ark",
+        "whiteboard": "Whiteboard"
+    },
+    "typeError": "Dette dokument er ikke kompatibelt med det valgte program",
+    "main_title": "CryptPad: Zero Knowledge, Collaborative Real Time Editing",
+    "common_connectionLost": "<b>Serverforbindelse afbrudt</b><br>Du er nu i skrivebeskyttet tilstand, indtil forbindelsen er tilbage.",
+    "onLogout": "Du er logget ud, {0}klik her{1} for at logge ind<br>eller tryk på Esc for at få adgang til dit dokument i skrivebeskyttet tilstand."
+}
