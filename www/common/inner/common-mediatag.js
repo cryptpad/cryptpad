@@ -128,13 +128,14 @@ define([
     var getPrettyInitials = MT.getPrettyInitials = function (name) {
         const match = name.match(emojiRegex);
         //if the emoji is the first character, it will become the avatar
-        if (match && name.indexOf(match) === 0) {
+        if (match && name.startsWith(match[0])) {
             return match[0];
         }
         else {
             name = name.replace(emojiRegex, '');
+            name = name.trim();
         }
-        var parts = name.trim().split(/\s+/);
+        var parts = name.split(/\s+/);
         var text;
         if (parts.length > 1) {
             text = parts.slice(0, 2).map(Util.getFirstCharacter).join('');
