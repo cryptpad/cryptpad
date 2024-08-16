@@ -124,8 +124,17 @@ define([
         return ANIMALS[seed % ANIMALS.length] || '';
     };
 
+    const emojiRegex = /\p{Extended_Pictographic}/gu; // 'g' flag for global match
     var getPrettyInitials = MT.getPrettyInitials = function (name) {
-        var parts = name.split(/\s+/);
+        const match = name.match(emojiRegex);
+        //if the emoji is the first character, it will become the avatar
+        if (match && name.indexOf(match) === 0) {
+            return match[0];
+        }
+        else {
+            name = name.replace(emojiRegex, '');
+        }
+        var parts = name.trim().split(/\s+/);
         var text;
         if (parts.length > 1) {
             text = parts.slice(0, 2).map(Util.getFirstCharacter).join('');
