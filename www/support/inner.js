@@ -58,7 +58,7 @@ define([
         ],
     };
 
-    var supportKey = ApiConfig.supportMailbox;
+    var supportKey = ApiConfig.supportMailboxKey;
     var supportChannel = Hash.getChannelIdFromKey(supportKey);
     if (!supportKey || !supportChannel) {
         categories = {
