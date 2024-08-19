@@ -31,7 +31,7 @@
         .tools_unselectable();
     }
     .btn-primary{
-        &:focus {
+        &:focus-visible {
             outline: @variables_focus_style;
         }
     }
@@ -352,7 +352,7 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                     }
-                    &:focus {
+                    &:focus-visible {
                         outline: @variables_focus_style;
                     }
                 }
@@ -380,7 +380,7 @@
                     padding-left: 20px;
                     .leftside-menu-category_main();
                     margin: 0;
-                    &:focus {
+                    &:focus-visible {
                         outline: @variables_focus_style;
                     }
                 }
@@ -409,7 +409,7 @@
                 position: relative;
                 top: -1px;
             }
-            &:focus {
+            &:focus-visible {
                 outline: @variables_focus_style;
                 border-radius: @variables_radius_S;
             }

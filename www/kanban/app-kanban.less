@@ -177,7 +177,7 @@
         align-self: flex-start;
         outline-style: none;
         border-radius: @variables_radius;
-        &:focus {
+        &:focus-visible {
             outline: @variables_focus_style;
         }
         @media (hover: none) {
@@ -413,7 +413,7 @@
                 .fa {
                     margin-right: 5px;
                 }
-                &:focus{
+                &:focus-visible {
                     outline: @variables_focus_style;
                 }
             }
@@ -651,7 +651,7 @@
             &:hover {
                 background-color: @cp_kanban-add-hover;
             }
-            &:focus {
+            &:focus-visible {
                 outline: @variables_focus_style;
             }
         }

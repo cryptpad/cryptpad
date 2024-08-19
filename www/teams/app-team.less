@@ -64,7 +64,7 @@
         }
         #cp-sidebarlayout-rightside{
             input, button, textarea {
-                &:focus{
+                &:focus-visible {
                     outline: @variables_focus_style;
                 }
             }
@@ -154,7 +154,7 @@
                 height: 384px;
                 padding: 50px;
                 margin: 5px;
-                &:focus{
+                &:focus-visible {
                     outline: @variables_focus_style;
                 }
                 &.create, &:not(.empty) {
