@@ -676,6 +676,10 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 border-collapse: collapse;
+                &:focus {
+                    margin: 2px;
+                    border-radius: @variables_radius;
+                }
             }
             input {
                 color: @cryptpad_text_col;
