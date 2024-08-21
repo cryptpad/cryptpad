@@ -10,7 +10,7 @@ var localStorage = {
     getItem: function (k) { return localStorage[k]; }
 };
 
-importScripts('/components/requirejs/require.js');
+importScripts('/components/requirejs/require.js?ver=2.3.7');
 
 require.config({
         // fix up locations so that relative urls work.
