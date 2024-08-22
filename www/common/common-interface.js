@@ -814,19 +814,11 @@ define([
 
         addTabListener(frame);
 
-        frame.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13) {
-                if (document.activeElement === $ok[0]) {
-                    $ok.click();
-                } else if (document.activeElement === $cancel[0]) {
-                    $cancel.click();
-                }
-            } else if (e.keyCode === 27) {
-                $cancel.click();
-            }
-        });
-
         listener = listenForKeys(function () {
+            // Only trigger OK if cancel is not focused
+            if (document.activeElement === $cancel[0]) {
+                return void $cancel.click();
+            }
             $ok.click();
         }, function () {
             $cancel.click();
