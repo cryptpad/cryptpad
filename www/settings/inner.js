@@ -807,12 +807,12 @@ define([
                 }, {
                     ok: Messages.register_writtenPassword,
                     cancel: Messages.register_cancel,
-                    okClass: 'btn.btn-danger',
+                    okClass: 'btn.btn-danger.btn-confirm',
                     reverseOrder: true,
                     done: function($dialog) {
                         $dialog.find('> div').addClass('half');
                     },
-                }, false, 'btn-confirm');
+                });
         };
 
         $(form).find('button').click(function() {
@@ -866,7 +866,7 @@ define([
                     if (err || obj.error) { return UI.alert(Messages.settings_changePasswordError); }
                     spinner.done();
                 });
-            }, null, null, 'btn-confirm');
+            });
         };
 
         $form.find('button').click(function() {

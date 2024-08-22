@@ -775,7 +775,7 @@ define([
         });
     };
 
-    UI.confirm = function (msg, cb, opt, force, className) {
+    UI.confirm = function (msg, cb, opt, force) {
         cb = cb || function () {};
         opt = opt || {};
         var message;
@@ -789,10 +789,6 @@ define([
 
         var ok = dialog.okButton(opt.ok, opt.okClass);
         var cancel = dialog.cancelButton(opt.cancel, opt.cancelClass);
-
-        if (className) {
-            ok.classList.add(className);
-        }
 
         var frame = dialog.frame([
             message,

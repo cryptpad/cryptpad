@@ -180,7 +180,7 @@ define([
                 done: function ($dialog) {
                     $dialog.find('> div').addClass('half');
                 },
-            }, false, 'btn-confirm');
+            });
             }, 150);
         };
 
