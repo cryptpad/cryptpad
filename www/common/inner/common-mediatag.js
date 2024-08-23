@@ -124,15 +124,25 @@ define([
         return ANIMALS[seed % ANIMALS.length] || '';
     };
 
-    const emojiRegex = /\p{Extended_Pictographic}/gu; // 'g' flag for global match
+    const emojiWithZWJRegex = /(?:\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji_Modifier}|\p{Emoji_Component})(?:\u200D(?:\p{Emoji_Presentation}|\p{Emoji_Modifier_Base}|\p{Emoji_Modifier}|\p{Emoji_Component}))*\p{Emoji_Presentation}?|\p{Emoji_Presentation}/gu;
+    const ZWJ = '\u200D';
     var getPrettyInitials = MT.getPrettyInitials = function (name) {
-        const match = name.match(emojiRegex);
-        //if the emoji is the first character, it will become the avatar
-        if (match && name.startsWith(match[0])) {
-            return match[0];
+        let matches = name.match(emojiWithZWJRegex);
+        console.log(matches)
+        if (matches) {
+            // Check if any of the matched sequences include ZWJ
+            let zwjInMatches = matches.some(match => match.includes(ZWJ));
+            console.log(zwjInMatches)
+            if (zwjInMatches) {
+                // Combine the matched emojis using ZWJ
+                return matches.join(ZWJ);
+            }
+            else if(name.startsWith(matches[0])) {
+                return matches[0];
+            }
         }
         else {
-            name = name.replace(emojiRegex, '');
+            name = name.replace(emojiWithZWJRegex, '');
             name = name.trim();
         }
         var parts = name.split(/\s+/);
