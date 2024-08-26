@@ -15,12 +15,19 @@
         padding: 20px;
     }
     .cp-features-register-button {
+        text-decoration: none;
+        text-align: center;
+        background-color: @cp_buttons-primary;
+        color: @cryptpad_text_col;
         font-size: 20px;
-        color: @cryptpad_color_white;
-        background: @cryptpad_color_brand;
-        border-radius: 0;
-        &:hover {
-            cursor: pointer;
+        margin: 10px 0;
+        border-radius: @infopages-radius;
+        padding: 10px 20px;
+        &:hover, &:focus {
+            background-color:  contrast(@cp_buttons-primary-text, darken(@cp_buttons-primary, 10%), lighten(@cp_buttons-primary, 10%));
+        }
+        &:visited {
+            color: @cryptpad_text_col;
         }
     }
     .cp-features-web {
