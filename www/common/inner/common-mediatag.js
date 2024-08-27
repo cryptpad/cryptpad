@@ -132,6 +132,7 @@ define([
         }
         else {
             name = name.replace(emojiWithZWJRegex, '');
+            name = name.replace(/[\uFE0F\u200D\u2060]/g, '');
             name = name.trim();
         }
         var parts = name.split(/\s+/);
