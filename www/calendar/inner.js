@@ -897,13 +897,18 @@ define([
                     var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
                     var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
                         h('i.fa.fa-eye'),
-                        h('span', Messages.calendar_show),
+                        h('span', Messages.calendar_show),  // Initial text: "Show Calendars"
                         h('span')
                     ]);
                     var $myCalendarEntries = appendCalendarEntries(1, filter).appendTo(APP.$calendars);
                     $(showCalendarsBtn).click(function (e) {
                         e.preventDefault();
-                        $myCalendarEntries.toggleClass('visible');
+                        $myCalendarEntries.toggle();
+                        if ($myCalendarEntries.is(':visible')) {
+                            $(this).find('span').first().text(Messages.calendar_hide);
+                        } else {
+                            $(this).find('span').first().text(Messages.calendar_show);
+                        }
                     }).appendTo($showCalendarsContainer);
                 } else {
                     myCalendars.forEach(function (id) {
@@ -932,7 +937,12 @@ define([
                     var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
                     $(showCalendarsBtn).click(function (e) {
                         e.preventDefault();
-                        $teamCalendarEntries.toggleClass('visible');
+                        $teamCalendarEntries.toggle();
+                        if ($teamCalendarEntries.is(':visible')) {
+                            $(this).find('span').first().text(Messages.calendar_hide);
+                        } else {
+                            $(this).find('span').first().text(Messages.calendar_show);
+                        }
                     }).appendTo($showCalendarsContainer);
                 } else {
                     calendars.forEach(function (id) {

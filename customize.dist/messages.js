@@ -136,6 +136,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
     Messages.calendar_show = 'Show calendars'; // XXX
+    Messages.calendar_hide = 'Hide calendars'; // XXX
     return Messages;
 
 });
