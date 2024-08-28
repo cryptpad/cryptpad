@@ -8,7 +8,8 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/components/chainpad-crypto/crypto.js',
-], function (ApiConfig, Messaging, Hash, Util, Crypto) {
+    '/common/outer/login-block.js',
+    ], function (ApiConfig, Messaging, Hash, Util, Crypto, Block) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
     var getRandomTimeout = function (ctx) {
@@ -237,6 +238,14 @@ define([
         cb(true);
     };
 
+    // Encrypt the password under the right key before sending it via URL hash
+    var encryptPassword = function(ctx, password) {
+        let uHash = ctx.store.data.blockHash;
+        let uSecret = Block.parseBlockHash(uHash);
+        let key = uSecret.keys.symmetric;
+        return Crypto.encrypt(password, key);
+    };
+
     // Hide duplicates when receiving a SHARE_PAD notification:
     // Keep only one notification per channel: the stronger and more recent one
     var channels = {};
@@ -265,8 +274,7 @@ define([
         }
 
         if (content.password) {
-            var key = ctx.store.driveSecret.keys.cryptKey;
-            content.password = Crypto.encrypt(content.password, key);
+            content.password = encryptPassword(ctx, content.password);
         }
 
         // Update the data
@@ -384,8 +392,8 @@ define([
         var channel = content.channel || content.teamChannel;
 
         if (content.password) {
-            var key = ctx.store.driveSecret.keys.cryptKey;
-            content.password = Crypto.encrypt(content.password, key);
+            content.pw = content.password;
+            content.password = encryptPassword(ctx, content.password);
         }
 
         if (addOwners[channel]) { return void cb(true); }
