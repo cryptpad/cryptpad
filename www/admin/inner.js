@@ -1116,6 +1116,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
@@ -1216,7 +1219,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         var getBlockId = (val) => {
@@ -1428,6 +1431,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
 
@@ -1596,7 +1602,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         // Msg.admin_defaultlimitHint, .admin_defaultlimitTitle
@@ -1756,6 +1762,9 @@ define([
                 Messages.admin_note
             ];
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
             let $table = $(table).hide();
 
             APP.refreshLimits = function () {
@@ -1813,7 +1822,7 @@ define([
                 });
             };
             APP.refreshLimits();
-            cb(table);
+            cb(div);
         });
 
         // Msg.admin_accountMetadataHint.admin_accountMetadataTitle
@@ -3609,6 +3618,9 @@ define([
             ];
 
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             const onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3641,7 +3653,7 @@ define([
             onRefresh();
             onRefreshPerformance.reg(onRefresh);
 
-            cb(table);
+            cb(div);
         });
 
 
