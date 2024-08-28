@@ -694,7 +694,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             // but since multiple users who can and should might be online at once
             // and since they'll all trigger this process at the same time...
             // we want to stagger attempts at random intervals
-            setTimeout(function () {
+            ref.internal.checkpointTimeout = setTimeout(function () {
                 ref.internal.pendingCheckpointId = roster.checkpoint(function (err) {
                     if (err) { console.error(err); }
                 });
