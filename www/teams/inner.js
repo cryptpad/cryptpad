@@ -516,7 +516,7 @@ define([
                     created++;
                 }
                 if (team.empty) {
-                    var createTeamDiv = h('div.cp-team-list-team.empty'+createCls,{
+                    var createTeamDiv = h('li.cp-team-list-team.empty'+createCls,{
                         tabindex: '0'
                     }, [
                         h('span.cp-team-list-name.empty', Messages.team_listSlot),
@@ -533,7 +533,7 @@ define([
                     return;
                 }
                 var avatar = h('span.cp-avatar');
-                var teamDiv = h('div.cp-team-list-team',{
+                var teamDiv = h('li.cp-team-list-team',{
                         tabindex: '0'
                     }, [
                     h('span.cp-team-list-avatar', avatar),
@@ -553,7 +553,7 @@ define([
                     }
                 });
             });
-            content.push(h('div.cp-team-list-container', list));
+            content.push(h('ul.cp-team-list-container', list));
             cb(content);
         });
         return content;

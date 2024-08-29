@@ -953,6 +953,9 @@
             li, li .fa, li .cptools {
                 cursor: pointer;
                 border-radius: @variables_radius;
+                &:focus {
+                    outline: @cryptpad_color_brand solid 2px;
+                }
             }
             &> p {
                 display: flex;
