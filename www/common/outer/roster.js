@@ -730,7 +730,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             //console.log("Sending with id [%s]", id, msg);
             //console.log();
 
-            response.expect(id, cb, TIMEOUT_INTERVAL);
+            response.expect(id, function (err, state) {
+                if (err) { return void cb(err); }
+                cb(void 0, state, id);
+            }, TIMEOUT_INTERVAL);
             anon_rpc.send('WRITE_PRIVATE_MESSAGE', [
                 channel,
                 ciphertext
