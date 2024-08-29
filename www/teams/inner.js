@@ -191,6 +191,7 @@ define([
             'cp-team-avatar',
             'cp-team-export',
             'cp-team-delete',
+            'cp-team-history',
         ],
     };
 
@@ -398,6 +399,43 @@ define([
         ]);
     });
 
+
+    let AUTOTRIM_LIMIT = 102400; // 100kB history before auto trim
+    var trimHistory = function(common) {
+        var size;
+        var channels = [];
+        nThen(function(waitFor) {
+            APP.history.execCommand('GET_HISTORY_SIZE', {
+                team: APP.team,
+                channels: []
+            }, waitFor(function(obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    console.error(obj.error);
+                    return;
+                }
+                channels = obj.channels;
+                size = Number(obj.size);
+            }));
+        }).nThen(function() {
+            if (!size || size < AUTOTRIM_LIMIT) {
+                // Nothing to delete
+                return;
+            }
+            var div = h('div.cp-team-trim', [
+                h('span.fa.fa-spin.fa-spinner'),
+                h('span', Messages.team_autoTrim)
+            ]);
+            let modal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+            console.log('Trimming team history', APP.team, size);
+            APP.history.execCommand('TRIM_HISTORY', {
+                channels: channels
+            }, function(obj) {
+                if (obj && obj.error) { console.error(obj.error); }
+                UI.removeModals();
+            });
+        });
+    };
     var openTeam = function (common, id, team) {
         var sframeChan = common.getSframeChannel();
         APP.module.execCommand('SUBSCRIBE', id, function () {
@@ -422,6 +460,7 @@ define([
                 APP.team = id;
                 APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
                 buildUI(common, true, team.owner);
+                if (team.owner) { trimHistory(common); }
             });
         });
     };
@@ -1556,6 +1595,7 @@ define([
                 }
             };
 
+            APP.history = common.makeUniversal('history');
             APP.module = common.makeUniversal('team', {
                 onEvent: onEvent
             });

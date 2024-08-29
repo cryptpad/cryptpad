@@ -136,6 +136,9 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+
+    Messages.team_autoTrim = "Removing unused history... Please wait."; // XXX
+
     return Messages;
 
 });
