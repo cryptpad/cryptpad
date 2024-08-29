@@ -2108,6 +2108,15 @@ APP.recurrenceRule = {
         editor.setOption('readOnly', false);
         editor.setOption('autoRefresh', true);
         editor.setOption('gutters', []);
+        editor.on('keydown', function (editor, e) {
+            if (e.which === 27) {
+                let $next = $(e.target).closest('.tui-full-calendar-popup-section').next();
+                if ($next.length) {
+                    $next.find('#tui-full-calendar-schedule-start-date').focus();
+                }
+                e.stopPropagation();
+            }
+        });
         cm.configureTheme(common, function () {});
         editor.setValue(oldEventBody);
 
@@ -2192,6 +2201,13 @@ APP.recurrenceRule = {
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
+            $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
+            $el.find('.cp-calendar-close').attr('tabindex',-1);
+            $el.find('.tui-full-calendar-section-allday').keydown(function (e) {
+                if (e.which === 13) {
+                    $(this).click();
+                }
+            });
 
             var $container = $el.closest('.tui-full-calendar-floating-layer');
             $container.addClass('cp-calendar-popup-flex');
@@ -2254,6 +2270,7 @@ APP.recurrenceRule = {
                     setFormat(allDay);
                 });
             });
+            UI.addTabListener(el);
         };
         var onCalendarEditPopup = function (el) {
             var $el = $(el);
@@ -2289,6 +2306,7 @@ APP.recurrenceRule = {
             var data = ev.schedule || {};
             var id = data.id;
 
+            UI.addTabListener(el);
             if (!id) { return; }
             if (id.indexOf('|') === -1) { return; } // Original event ID doesn't contain |
 

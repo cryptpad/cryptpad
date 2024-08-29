@@ -111,7 +111,7 @@ define([
 
     var removeClient = function (ctx, cId) {
         var idx = ctx.clients.indexOf(cId);
-        ctx.clients.splice(idx, 1);
+        if (idx !== -1) { ctx.clients.splice(idx, 1); }
     };
 
     Profile.init = function (cfg, waitFor, emit) {
