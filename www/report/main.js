@@ -209,10 +209,10 @@ define([
         var n = nThen;
         Object.keys(proxy.teams || {}).forEach(function (id) {
             // If we're in "repair" mode, only load the affected team
-            if (!report && Number(fixRoster) !== Number(id)) { return; }
+            var obj = proxy.teams[id];
+            if (!report && fixRoster !== obj.channel) { return; }
             n = n(function (w) {
                 var next = w();
-                var obj = proxy.teams[id];
                 var team;
                 addReport('Load team. ID: ' + id + '. Channel ID: '+ obj.channel);
                 addReport('Roster channel: ' + obj.keys.roster.channel);
