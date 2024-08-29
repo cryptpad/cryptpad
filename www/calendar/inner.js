@@ -834,15 +834,17 @@ define([
         // Show calendars
         var calendars = h('div.cp-calendar-list');
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
-        onCalendarsUpdate.reg(function () {
+        var isMobileView = window.innerWidth <= 600;
+
+        function updateCalendarsView() {
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
             var filter = function (teamId) {
                 var LOOKUP = {};
                 return Object.keys(APP.calendars || {}).filter(function (id) {
                     var cal = APP.calendars[id] || {};
-                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
-                    return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
+                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
+                    return teams.indexOf(typeof (teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
                 }).map(function (k) {
                     // nearly constant-time pre-sort
                     var cal = APP.calendars[k] || {};
@@ -855,6 +857,7 @@ define([
                     return t1 > t2 ? 1 : (t1 === t2 ? 0 : -1);
                 });
             };
+
             var tempCalendars = filter(0);
             if (tempCalendars.length && tempCalendars[0] === APP.currentCalendar) {
                 var $tempCalendarTeam = $(h('div.cp-calendar-team', [
@@ -882,6 +885,7 @@ define([
                 }
                 return;
             }
+
             var myCalendars = filter(1);
             if (myCalendars.length) {
                 var user = metadataMgr.getUserData();
@@ -891,32 +895,29 @@ define([
                 common.displayAvatar($(avatar), user.avatar, name, function () { }, uid);
                 APP.$calendars.append(h('div.cp-calendar-team', [
                     avatar,
-                    h('span.cp-name', {title: name}, name)
+                    h('span.cp-name', { title: name }, name)
                 ]));
-                if (window.innerWidth <= 600) {
-                    var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
-                    var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
-                        h('i.fa.fa-eye'),
-                        h('span', Messages.calendar_show),  // Initial text: "Show Calendars"
-                        h('span')
-                    ]);
-                    var $myCalendarEntries = appendCalendarEntries(1, filter).appendTo(APP.$calendars);
-                    $(showCalendarsBtn).click(function (e) {
-                        e.preventDefault();
-                        $myCalendarEntries.toggle();
-                        if ($myCalendarEntries.is(':visible')) {
-                            $(this).find('span').first().text(Messages.calendar_hide);
-                        } else {
-                            $(this).find('span').first().text(Messages.calendar_show);
-                        }
-                    }).appendTo($showCalendarsContainer);
+                if (isMobileView) {
+                    createShowCalendarsButton(1, filter, $calendars);
                 } else {
                     myCalendars.forEach(function (id) {
                         makeCalendarEntry(id, 1);
                     });
                 }
             }
-            Object.keys(privateData.teams).sort().forEach(function (teamId) {
+
+             // Add new button
+             var $newContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
+             var newButton = h('button', [
+                 h('i.fa.fa-calendar-plus-o'),
+                 h('span', Messages.calendar_new),
+                 h('span')
+             ]);
+             $(newButton).click(function () {
+                 editCalendar();
+             }).appendTo($newContainer);
+
+             Object.keys(privateData.teams).sort().forEach(function (teamId) {
                 var calendars = filter(teamId);
                 if (!calendars.length) { return; }
                 var team = privateData.teams[teamId];
@@ -924,48 +925,46 @@ define([
                 common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
                 APP.$calendars.append(h('div.cp-calendar-team', [
                     avatar,
-                    h('span.cp-name', {title: team.name}, team.name)
+                    h('span.cp-name', { title: team.name }, team.name)
                 ]));
-                if (window.innerWidth <= 600) {
-                    // Add show calendars button for each team
-                    var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
-                    var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
-                        h('i.fa.fa-eye'),
-                        h('span', Messages.calendar_show),
-                        h('span')
-                    ]);
-                    var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
-                    $(showCalendarsBtn).click(function (e) {
-                        e.preventDefault();
-                        $teamCalendarEntries.toggle();
-                        if ($teamCalendarEntries.is(':visible')) {
-                            $(this).find('span').first().text(Messages.calendar_hide);
-                        } else {
-                            $(this).find('span').first().text(Messages.calendar_show);
-                        }
-                    }).appendTo($showCalendarsContainer);
+                if (isMobileView) {
+                    createShowCalendarsButton(teamId, filter, $calendars);
                 } else {
                     calendars.forEach(function (id) {
                         makeCalendarEntry(id, 1);
                     });
                 }
-
             });
-            // Add new button
-            var $newContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
-            var newButton = h('button', [
-                h('i.fa.fa-calendar-plus-o'),
-                h('span', Messages.calendar_new),
+        }
+        function createShowCalendarsButton(teamId, filter, $parentContainer) {
+            var $showCalendarsContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($parentContainer);
+            var showCalendarsBtn = h('button.cp-calendar-showcalendars', [
+                h('i.fa.fa-eye'),
+                h('span', Messages.calendar_show),
                 h('span')
             ]);
-            $(newButton).click(function () {
-                editCalendar();
-            }).appendTo($newContainer);
-        });
-
+            var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
+            $(showCalendarsBtn).click(function (e) {
+                e.preventDefault();
+                $teamCalendarEntries.toggle();
+                if ($teamCalendarEntries.is(':visible')) {
+                    $(this).find('span').first().text(Messages.calendar_hide);
+                } else {
+                    $(this).find('span').first().text(Messages.calendar_show);
+                }
+            }).appendTo($showCalendarsContainer);
+        }
+        function onResize() {
+            var newIsMobileView = window.innerWidth <= 600;
+            if (newIsMobileView !== isMobileView) {
+                isMobileView = newIsMobileView;
+                updateCalendarsView();
+            }
+        }
+        $(window).resize(onResize);
+        onCalendarsUpdate.reg(updateCalendarsView);
         onCalendarsUpdate.fire();
     };
-
     var _updateRecurring = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
