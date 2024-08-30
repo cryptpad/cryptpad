@@ -10,6 +10,7 @@ define([
     '/components/nthen/index.js',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/common/common-constants.js',
     '/common/cryptget.js',
     '/common/cryptpad-common.js',
     '/common/outer/cache-store.js',
@@ -18,17 +19,18 @@ define([
     '/components/chainpad-crypto/crypto.js',
     '/common/userObject.js',
     '/common/clipboard.js',
+    '/common/outer/login-block.js',
 
 
     '/components/tweetnacl/nacl-fast.min.js',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/pages/page-report.less',
 ], function ($, ApiConfig, h, Messages,
-            nThen, Hash, Util, Crypt, Cryptpad, Cache, UI, CPNetflux,
-            Crypto, UserObject, Clipboard) {
+            nThen, Hash, Util, Constants, Crypt, Cryptpad, Cache, UI, CPNetflux,
+            Crypto, UserObject, Clipboard, Block) {
     var $report = $('#cp-report');
-    var hash = localStorage.User_hash;
-    if (!hash) {
+    var blockHash = localStorage.Block_hash;
+    if (!blockHash) {
         return void UI.alert(Messages.mustLogin, function () {
             var href = Hash.hashToHref('', 'login');
             var url = Hash.getNewPadURL(href, {
@@ -81,7 +83,36 @@ define([
 
     var network;
     var proxy;
+    var hash;
+
     nThen(function (waitFor) {
+        // If this instance is configured to enforce MFA for all registered users,
+        // request the login block with no credential to check if it is protected.
+        let done = waitFor();
+        var parsed = Block.parseBlockHash(blockHash);
+        Util.getBlock(parsed.href, { }, waitFor((err, response) => {
+            if (err) {
+                waitFor.abort();
+                return void UI.alert('Invalid user');
+            }
+            response.arrayBuffer().then(arraybuffer => {
+                arraybuffer = new Uint8Array(arraybuffer);
+                // use the results to load your user hash and
+                // put your userhash into localStorage
+                try {
+                    var block_info = Block.decrypt(arraybuffer, parsed.keys);
+                    if (!block_info) { return console.error("Failed to decrypt !"); }
+                    hash = block_info[Constants.userHashKey];
+                    if (!hash) {
+                        return void console.error("failed to decrypt or decode block content");
+                    }
+                } catch (e) {
+                    return void console.error("failed to decrypt or decode block content");
+                }
+                done();
+            });
+        }));
+    }).nThen(function (waitFor) {
         Cryptpad.makeNetwork(waitFor(function (err, _network) {
             if (err) {
                 console.error(err);

@@ -574,7 +574,7 @@ define([
     });
 
     assert(function (cb, msg) {
-        var support = ApiConfig.supportMailbox;
+        var support = ApiConfig.supportMailboxKey;
         setWarningClass(msg);
         msg.appendChild(h('span', [
             "This instance's encrypted support ticket functionality has not been enabled. This can make it difficult for its users to safely report issues that concern sensitive information. ",

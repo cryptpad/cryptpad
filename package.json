@@ -53,7 +53,7 @@
     "prompt-confirm": "^2.0.4",
     "pull-stream": "^3.6.1",
     "require-css": "0.1.10",
-    "requirejs": "2.3.5",
+    "requirejs": "2.3.7",
     "requirejs-plugins": "^1.0.2",
     "saferphore": "0.0.1",
     "scrypt-async": "1.2.0",

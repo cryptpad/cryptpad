@@ -4,7 +4,7 @@
 
 /* global importScripts, tabs */
 
-importScripts('/components/requirejs/require.js');
+importScripts('/components/requirejs/require.js?ver=2.3.7');
 
 window = self;  // eslint-disable-line no-global-assign
 localStorage = {  // eslint-disable-line no-global-assign
