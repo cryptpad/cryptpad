@@ -836,6 +836,10 @@ define([
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
         var isMobileView = window.innerWidth <= 600;
 
+        var state = {
+            teamVisibility: {}
+        };
+
         function updateCalendarsView() {
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
@@ -885,7 +889,6 @@ define([
                 }
                 return;
             }
-
             var myCalendars = filter(1);
             if (myCalendars.length) {
                 var user = metadataMgr.getUserData();
@@ -905,19 +908,17 @@ define([
                     });
                 }
             }
-
-             // Add new button
-             var $newContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
-             var newButton = h('button', [
-                 h('i.fa.fa-calendar-plus-o'),
-                 h('span', Messages.calendar_new),
-                 h('span')
-             ]);
-             $(newButton).click(function () {
-                 editCalendar();
-             }).appendTo($newContainer);
-
-             Object.keys(privateData.teams).sort().forEach(function (teamId) {
+            // Add new button
+            var $newContainer = $('<div class="cp-calendar-entry cp-ghost"></div>').appendTo($calendars);
+            var newButton = h('button', [
+                h('i.fa.fa-calendar-plus-o'),
+                h('span', Messages.calendar_new),
+                h('span')
+            ]);
+            $(newButton).click(function () {
+                editCalendar();
+            }).appendTo($newContainer);
+            Object.keys(privateData.teams).sort().forEach(function (teamId) {
                 var calendars = filter(teamId);
                 if (!calendars.length) { return; }
                 var team = privateData.teams[teamId];
@@ -944,27 +945,39 @@ define([
                 h('span')
             ]);
             var $teamCalendarEntries = appendCalendarEntries(teamId, filter).appendTo(APP.$calendars);
+            if (state.teamVisibility[teamId]) {
+                $teamCalendarEntries.show();
+                $(showCalendarsBtn).find('span').first().text(Messages.calendar_hide);
+            } else {
+                $teamCalendarEntries.hide();
+            }
+
             $(showCalendarsBtn).click(function (e) {
                 e.preventDefault();
                 $teamCalendarEntries.toggle();
                 if ($teamCalendarEntries.is(':visible')) {
                     $(this).find('span').first().text(Messages.calendar_hide);
+                    state.teamVisibility[teamId] = true;  // Save visibility state
                 } else {
                     $(this).find('span').first().text(Messages.calendar_show);
+                    state.teamVisibility[teamId] = false;  // Save visibility state
                 }
             }).appendTo($showCalendarsContainer);
         }
-        function onResize() {
+
+        $(window).resize(function () {
             var newIsMobileView = window.innerWidth <= 600;
             if (newIsMobileView !== isMobileView) {
                 isMobileView = newIsMobileView;
                 updateCalendarsView();
             }
-        }
-        $(window).resize(onResize);
+        });
+
         onCalendarsUpdate.reg(updateCalendarsView);
+
         onCalendarsUpdate.fire();
     };
+
     var _updateRecurring = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
