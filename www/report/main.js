@@ -263,7 +263,7 @@ define([
                                     console.error(arguments);
                                     if (err) { addReport('Trim roster error', err); }
                                 }));
-                            }))
+                            }));
                         }));
                     }).nThen(next);
                     return;

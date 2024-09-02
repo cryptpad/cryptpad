@@ -401,7 +401,7 @@ define([
 
 
     let AUTOTRIM_LIMIT = 102400; // 100kB history before auto trim
-    var trimHistory = function(common) {
+    var trimHistory = function () {
         var size;
         var channels = [];
         nThen(function(waitFor) {
@@ -426,7 +426,7 @@ define([
                 h('span.fa.fa-spin.fa-spinner'),
                 h('span', Messages.team_autoTrim)
             ]);
-            let modal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+            UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
             console.log('Trimming team history', APP.team, size);
             APP.history.execCommand('TRIM_HISTORY', {
                 channels: channels
