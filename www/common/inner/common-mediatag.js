@@ -123,8 +123,8 @@ define([
         if (!seed) { return; }
         return ANIMALS[seed % ANIMALS.length] || '';
     };
-    //this regex identifies both discord and unicode emojis (with optional skin tone modifiers) and some zwj composite emojis
-    const emojiWithZWJRegex = /<a?:.+?:\d{18}>|(?:\p{Extended_Pictographic}\p{Emoji_Modifier}?)(?:\u200D(?:\p{Extended_Pictographic}\p{Emoji_Modifier}?))*/gu;
+    //this regex identifies both discord and unicode emojis (with optional skin tone modifiers) and complex zwj emoji sequences
+    const emojiWithZWJRegex = /(?:\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?(?:\u200D\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?)*|\p{Extended_Pictographic})/gu;
     var getPrettyInitials = MT.getPrettyInitials = function (name) {
         let matches = name.match(emojiWithZWJRegex);
         if (matches && name.startsWith(matches[0])) {
