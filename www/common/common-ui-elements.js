@@ -816,14 +816,20 @@ define([
                 });
                 break;
             case 'present':
-                button = makeButton('fa fa-play-circle', 'cp-toolbar-name', '', Messages.share_linkPresent);
-                 //title: Messages.presentButtonTitle, // TODO display if the label text is collapsed
-                button.click(common.prepareFeedback(type));
+                button = $(h('button', {
+                    //title: Messages.presentButtonTitle, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-play-circle'),
+                    h('span.cp-toolbar-name', Messages.share_linkPresent)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'preview':
-                button = makeButton('fa fa-eye', 'cp-toolbar-name', '', Messages.toolbar_preview);
-                //title: Messages.previewButtonTitle, // TODO display if the label text is collapsed
-                button.click(common.prepareFeedback(type));
+                button = $(h('button', {
+                    //title: Messages.previewButtonTitle, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-eye'),
+                    h('span.cp-toolbar-name', Messages.toolbar_preview)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'print':
                 button = makeButton('fa fa-print', 'cp-toolbar-icon-print', Messages.printButtonTitle2, Messages.printText);
@@ -842,9 +848,12 @@ define([
                 }
                 break;
             case 'mediatag':
-                button = makeButton('fa fa-picture-o', 'cp-toolbar-mediatag','', Messages.toolbar_insert);
-                //title: Messages.filePickerButton, // TODO display if the label text is collapsed
-                button.click(common.prepareFeedback(type));
+                button = $(h('button.cp-toolbar-mediatag', {
+                    //title: Messages.filePickerButton, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-picture-o'),
+                    h('span.cp-toolbar-name', Messages.toolbar_insert)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'savetodrive':
                 button = $(h('button.cp-toolbar-savetodrive', {
@@ -893,13 +902,12 @@ define([
                 });
                 break;
             case 'toggle':
-                button = makeButton(
-                    'fa ' + (data.icon || 'fa-wrench'),  // iconClasses
-                    'cp-toolbar-tools',                   // buttonClasses
-                    //data.title || '',                    // TODO display if the label text is collapsed
-                    data.text || Messages.toolbar_tools  // text
-                );
-                button.click(common.prepareFeedback(type));
+                button = $(h('button.cp-toolbar-tools', {
+                    //title: data.title || '', // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.' + (data.icon || 'fa-wrench')),
+                    h('span.cp-toolbar-name', data.text || Messages.toolbar_tools)
+                ])).click(common.prepareFeedback(type));
                 /*
                 window.setTimeout(function () {
                     button.attr('title', data.title);
