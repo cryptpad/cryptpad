@@ -128,7 +128,6 @@ define([
     var getPrettyInitials = MT.getPrettyInitials = function (name) {
         let matches = name.match(emojiWithZWJRegex);
         if (matches && name.startsWith(matches[0])) {
-            console.log(matches)
             return matches[0];
         }
         else {
