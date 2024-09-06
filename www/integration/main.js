@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/api/config',
     '/common/sframe-common-outer.js',
     '/common/common-hash.js',
-], function (SCO, Hash) {
+], function (Config, SCO, Hash) {
 
     var getTxid = function () {
         return Math.random().toString(16).replace('0.', '');
@@ -152,36 +153,73 @@ define([
             chan.send('ON_DOWNLOADAS', blob);
         };
 
-        chan.on('START', function (data) {
+
+        let getInstanceURL = function () {
+            return Config.httpUnsafeOrigin;
+        };
+        let getBlobServer = function (documentURL, cb) {
+            let xhr = new XMLHttpRequest();
+            let data = encodeURIComponent(documentURL);
+            let url = getInstanceURL() + '/ooapidl?url=' + data;
+            console.log(url);
+            xhr.open('GET', url, true);
+            xhr.responseType = 'blob';
+            //xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    var blob = this.response;
+                    // myBlob is now the blob that the object URL pointed to.
+                    cb(null, blob);
+                } else {
+                    cb(this.status);
+                }
+            };
+            xhr.onerror = function (e) {
+                cb(e.message);
+            };
+            xhr.send();
+        };
+        chan.on('START', function (data, cb) {
             console.warn('INNER START', data);
             var href = Hash.hashToHref(data.key, data.application);
             console.error(Hash.hrefToHexChannelId(href));
-            window.CP_integration_outer = {
-                pathname: `/${data.application}/`,
-                hash: data.key,
-                href: href,
-                initialState: data.document,
-                config: {
-                    fileType: data.ext,
-                    autosave: data.autosave
-                },
-                utils: {
-                    onReady: onReady,
-                    onDownloadAs,
-                    setDownloadAs,
-                    save: save,
-                    reload: reload,
-                    onHasUnsavedChanges: onHasUnsavedChanges,
-                    onInsertImage: onInsertImage
+            let startApp = function (blob) {
+                window.CP_integration_outer = {
+                    pathname: `/${data.application}/`,
+                    hash: data.key,
+                    href: href,
+                    initialState: blob,
+                    config: {
+                        fileType: data.ext,
+                        autosave: data.autosave
+                    },
+                    utils: {
+                        onReady: onReady,
+                        onDownloadAs,
+                        setDownloadAs,
+                        save: save,
+                        reload: reload,
+                        onHasUnsavedChanges: onHasUnsavedChanges,
+                        onInsertImage: onInsertImage
+                    }
+                };
+                let path = "/common/sframe-app-outer.js";
+                if (['sheet', 'doc', 'presentation'].includes(data.application)) {
+                    path = '/common/onlyoffice/main.js';
                 }
+                require([path], function () {
+                    console.warn('SAO REQUIRED');
+                    delete window.CP_integration_outer;
+                    cb();
+                });
             };
-            let path = "/common/sframe-app-outer.js";
-            if (['sheet', 'doc', 'presentation'].includes(data.application)) {
-                path = '/common/onlyoffice/main.js';
-            }
-            require([path], function () {
-                console.warn('SAO REQUIRED');
-                delete window.CP_integration_outer;
+
+            if (data.document) { return void startApp(data.document); }
+            getBlobServer(data.url, (err, blob) => {
+                if (err) {
+                    return void cb({error: err});
+                }
+                startApp(blob);
             });
         });
 

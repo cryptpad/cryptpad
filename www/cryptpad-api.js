@@ -18,7 +18,9 @@
             var scripts = document.getElementsByTagName('script');
             for (var i = scripts.length - 1; i >= 0; i--) {
                 var match = scripts[i].src.match(/(.*)web-apps\/apps\/api\/documents\/api.js/i);
+                var match2 = scripts[i].src.match(/(.*)\/cryptpad-api.js/i);
                 if (match) { return match[1]; }
+                else if (match2) { return match2[1]; }
             }
         };
 
@@ -114,6 +116,7 @@
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
+                        url: config.document.url,
                         document: blob,
                         ext: config.document.fileType,
                         autosave: config.autosave || 10
@@ -130,6 +133,9 @@
                         blob = config.document.blob;
                         return start();
                     }
+                    return start();
+                    // XXX use server only when not zero knowledge? i.e. no save handler?
+                    // XXX or when error with client?
                     getBlob(function (err, _blob) {
                         if (err) { reject(err); return console.error(err); }
                         _blob.name = `document.${config.document.fileType}`;
