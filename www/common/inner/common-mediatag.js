@@ -134,7 +134,7 @@ define([
         else {
             //this is for removing all trailing white characters and unnecessary/redundant emojis
             name = name.replace(emojiWithZWJRegex, '');
-            name = name.replace(/[\uFE0F\u200D\u2060]/g, '');
+            name = name.replace(/\uFE0F/g, '').replace(/\u200D/g, '').replace(/\u2060/g, '');
             name = name.trim();
         }
         var parts = name.split(/\s+/);
