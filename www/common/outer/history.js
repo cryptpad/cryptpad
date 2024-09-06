@@ -62,6 +62,19 @@ define([
         return channels;
     };
 
+    let getTeamChannels = function (ctx, teamId) {
+        let team = Util.find(ctx.store, ['proxy', 'teams', teamId]);
+        if (!team) { return []; }
+
+        let channels = [team.channel];
+        let roster = team.keys.roster;
+        channels.push({
+            channel: roster.channel,
+            lastKnownHash: roster.lastKnownHash
+        });
+        return channels;
+    };
+
     var getEdPublic = function (ctx, teamId) {
         if (!teamId) { return Util.find(ctx.store, ['proxy', 'edPublic']); }
 
@@ -155,6 +168,8 @@ define([
         // If account trim history, get the correct channels here
         if (data.account) {
             channels = getAccountChannels(ctx);
+        } else if (data.team) {
+            channels = getTeamChannels(ctx, data.team);
         }
 
         var size = 0;

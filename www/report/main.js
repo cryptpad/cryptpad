@@ -20,6 +20,9 @@ define([
     '/common/userObject.js',
     '/common/clipboard.js',
     '/common/outer/login-block.js',
+    '/common/outer/roster.js',
+    '/common/rpc.js',
+    '/common/pinpad.js',
 
 
     '/components/tweetnacl/nacl-fast.min.js',
@@ -27,7 +30,7 @@ define([
     'less!/customize/src/less2/pages/page-report.less',
 ], function ($, ApiConfig, h, Messages,
             nThen, Hash, Util, Constants, Crypt, Cryptpad, Cache, UI, CPNetflux,
-            Crypto, UserObject, Clipboard, Block) {
+            Crypto, UserObject, Clipboard, Block, Roster, Rpc, Pinpad) {
     var $report = $('#cp-report');
     var blockHash = localStorage.Block_hash;
     if (!blockHash) {
@@ -40,6 +43,21 @@ define([
             window.location.href = url;
         });
     }
+
+    let report = true;
+    let fixRoster = false;
+
+    let urlHash = window.location.hash.slice(1);
+    if (urlHash) {
+        let s = urlHash.split('=');
+        let key = s[0];
+        let value = s[1];
+        if (key === "roster") {
+            report = false;
+            fixRoster = value; // teamid
+        }
+    }
+
 
     var addReport = function (str) {
         $report.append(h('div', str));
@@ -153,6 +171,8 @@ define([
         addReport('Teams: ' + Object.keys(proxy.teams || {}).join(', '));
         addReport('-------------------');
 
+        if (!report) { return; }
+
         var n = nThen;
         Object.keys(drive.sharedFolders || {}).forEach(function (id) {
             n = n(function (w) {
@@ -188,15 +208,66 @@ define([
         addReport('===================');
         var n = nThen;
         Object.keys(proxy.teams || {}).forEach(function (id) {
+            // If we're in "repair" mode, only load the affected team
+            var obj = proxy.teams[id];
+            if (!report && fixRoster !== obj.channel) { return; }
             n = n(function (w) {
                 var next = w();
-                var obj = proxy.teams[id];
                 var team;
                 addReport('Load team. ID: ' + id + '. Channel ID: '+ obj.channel);
+                addReport('Roster channel: ' + obj.keys.roster.channel);
+                addReport('Roster lkh: ' + obj.keys.roster.lastKnownHash);
                 if (!obj.hash) { addReport("View only"); }
 
                 var teamSecret = Hash.getSecrets('team', obj.hash || obj.roHash, obj.password);
                 var cryptor = UserObject.createCryptor(teamSecret.keys.secondaryKey);
+
+
+                // Repair roster mode
+                if (!report) {
+                    let roster = obj.keys.roster;
+                    let rpc, anon_rpc;
+                    if (!obj.owner || !roster.edit) {
+                        return void addReport('Roster error: only owners can repair');
+                    }
+                    n(w => {
+                        Rpc.createAnonymous(network, w(function (e, call) {
+                            anon_rpc = call;
+                        }));
+                        Pinpad.create(network, proxy, w(function (e, call) {
+                            rpc = call;
+                        }));
+                    }).nThen(w => {
+                        if (!anon_rpc || !rpc) {
+                            return void addReport('RPC error');
+                        }
+                        var rosterKeys = Crypto.Team.deriveMemberKeys(roster.edit, {
+                            curvePublic: proxy.curvePublic,
+                            curvePrivate: proxy.curvePrivate
+                        });
+                        let store = { anon_rpc };
+                        Roster.create({
+                            network: network,
+                            channel: roster.channel,
+                            keys: rosterKeys,
+                            store: store,
+                            lastKnownHash: roster.lastKnownHash
+                        }, w(function (err, _roster) {
+                            if (err) { return void addReport('Fix roster error', err); }
+                            _roster.checkpoint(w((err, state, hash) => {
+                                if (err) { addReport('Fix roster error', err); }
+                                rpc.trimHistory({
+                                    channel: roster.channel,
+                                    hash
+                                }, w(function (err) {
+                                    console.error(arguments);
+                                    if (err) { addReport('Trim roster error', err); }
+                                }));
+                            }));
+                        }));
+                    }).nThen(next);
+                    return;
+                }
 
                 // Check team drive
                 nThen(function (ww) {
