@@ -2513,7 +2513,10 @@ define([
         var next = function () {
             selected = ++selected % types.length;
             $container.find('.cp-icons-element-selected').removeClass('cp-icons-element-selected');
-            $container.find('#cp-newpad-icons-'+selected).addClass('cp-icons-element-selected');
+            let element = $container.find('#cp-newpad-icons-'+selected).addClass('cp-icons-element-selected');
+            if (element.hasClass('cp-app-disabled')) {
+                next();
+            }
         };
 
         $modal.off('keydown');
