@@ -187,7 +187,7 @@
         "pad": "Text",
         "code": "Cod",
         "poll": "Sondaj",
-        "slide": "Prezentare",
+        "slide": "Prezentare Markdown",
         "drive": "CryptDrive",
         "whiteboard": "Tabla alba",
         "file": "Fisier",
@@ -1780,5 +1780,8 @@
     "support_userNotification": "Tichete noi de suport sau răspunsuri: {0}",
     "admin_forcemfaHint": "Tuturor utilizatorii acestei instanțe li se va cere să își configureze autentificarea în doi pași pentru a se conecta la contul lor. Rețineți că utilizatorii existenți nu își vor mai putea utiliza conturile fără să își configureze o aplicație TOTP.",
     "install_token": "Token de instalare",
-    "install_header": "Instalare"
+    "install_header": "Instalare",
+    "team_autoTrim": "Scurtăm istoricul drive-ului de echipa... Vă rugăm să așteptați.",
+    "admin_mfa_confirm_enable": "Sunteți sigur că doriți să activați Autentificarea În Mai Mulți Pași?",
+    "admin_mfa_confirm_disable": "Sunteți sigur că doriți să dezactivați Autentificarea În Mai Mulți Pași?"
 }
