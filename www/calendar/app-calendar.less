@@ -133,6 +133,13 @@
                     width: 540px;
                     max-width: 100%;
                     max-height: 100%;
+                    border-radius: @variables_radius_L;
+                    @media screen and (max-width : @browser_media-medium-screen){
+                        position: fixed;
+                        top: 5.5rem;
+                        overflow-y: auto;
+                        max-height: calc(100% - 6rem);
+                    }
                 }
             }
             #tui-full-calendar-popup-arrow {
@@ -152,9 +159,6 @@
         .tui-full-calendar-splitter, .tui-full-calendar-left, .tui-full-calendar-dayname-container, .tui-full-calendar-weekday-grid-line {
             border-color: @cp_calendar-border !important;
 
-        }
-        .tui-full-calendar-popup {
-            border-radius: @variables_radius_L;
         }
         .tui-full-calendar-popup-container {
             .tui-full-calendar-section-allday{
