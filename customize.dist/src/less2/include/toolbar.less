@@ -987,11 +987,8 @@
             height: @toolbar_line-height;
             display: inline-flex;
             align-items: center;
-            .fa, .cptools {
-                margin-right: 5px;
-            }
-            .cp-dropdown-button-title .cp-icon {
-                margin-left: 5px;
+            i ~ span {
+                margin-left: 0.5rem;
             }
             &:hover {
                 background-color: fade(@cp_toolbar-bottom-bg, 70%);
@@ -1113,15 +1110,6 @@
             }
         }
         .cp-toolbar-bottom-left {
-            .cp-toolbar-appmenu, .cp-toolbar-file {
-                button {
-                    &::before, .fa {
-                        min-width: 20px;
-                        text-align: center;
-                        margin-right: 0;
-                    }
-                }
-            }
             .cp-toolbar-file {
                 order: 1;
             }
