@@ -2510,6 +2510,14 @@ define([
         });
 
         var selected = -1;
+        var previous = function () {
+            selected = (selected === 0 ? types.length : selected) - 1;
+            $container.find('.cp-icons-element-selected').removeClass('cp-icons-element-selected');
+            let element = $container.find('#cp-newpad-icons-'+selected).addClass('cp-icons-element-selected');
+            if (element.hasClass('cp-app-disabled')) {
+                previous();
+            }
+        };
         var next = function () {
             selected = ++selected % types.length;
             $container.find('.cp-icons-element-selected').removeClass('cp-icons-element-selected');
@@ -2524,7 +2532,11 @@ define([
             if (e.which === 9) {
                 e.preventDefault();
                 e.stopPropagation();
-                next();
+                if (e.shiftKey) {
+                    previous();
+                } else {
+                    next();
+                }
                 return;
             }
             if (e.which === 13) {
