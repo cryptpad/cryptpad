@@ -28,8 +28,9 @@ define([
         var premiumButton = h('a', {
             href: accounts.upgradeURL,
             target: '_blank',
-            rel: 'noopener noreferrer'
-        }, h('button.cp-features-register-button', Msg.features_f_subscribe));
+            rel: 'noopener noreferrer',
+            class: 'cp-features-register-button',
+        }, Msg.features_f_subscribe);
 
         var groupItemTemplate = function (title, content) {
             return h('li.list-group-item', [
@@ -119,8 +120,9 @@ define([
                     h('div.card-body',[
                         h('div.cp-features-register#cp-features-register', [
                             h('a', {
-                                href: '/register/'
-                            }, h('button.cp-features-register-button', Msg.features_f_register))
+                                href: '/register/',
+                                class: 'cp-features-register-button',
+                            }, Msg.features_f_register)
                         ]),
                     ]),
                 ]),

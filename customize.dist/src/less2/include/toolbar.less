@@ -77,8 +77,8 @@
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
-            &:focus {
-                outline: @cryptpad_color_brand solid 2px;
+            &:focus-visible {
+                outline: @variables_focus_style;
             }
         }
         button:nth-of-type(1) {
@@ -373,7 +373,7 @@
         * {
             outline-style: none;
             &:focus-visible {
-                outline: @cryptpad_color_brand solid 2px;
+                outline: @variables_focus_style;
             }
         }
 
@@ -676,6 +676,10 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 border-collapse: collapse;
+                &:focus {
+                    margin: 2px;
+                    border-radius: @variables_radius;
+                }
             }
             input {
                 color: @cryptpad_text_col;

@@ -62,6 +62,14 @@
         div#cp-sidebarlayout-leftside {
             background-color: @cp_teams-leftside-bg;
         }
+        #cp-sidebarlayout-rightside{
+            input, button, textarea {
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
+            }
+
+        }
         div#cp-sidebarlayout-rightside.cp-rightside-drive {
             padding: 0;
             & > .cp-team-chat {
@@ -73,7 +81,11 @@
                 }
                 .cp-app-contacts-input {
                     textarea {
-                        border: 0px;
+                        border: 0;
+                        margin-right: 2px;
+                    }
+                    .fa-paper-plane{
+                        border-radius: @variables_radius;
                     }
                 }
             }
@@ -142,6 +154,9 @@
                 height: 384px;
                 padding: 50px;
                 margin: 5px;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
                 &.create, &:not(.empty) {
                     cursor: pointer;
                     &:hover {
