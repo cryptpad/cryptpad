@@ -108,7 +108,7 @@
             }
         }
         .cp-team-cat-header {
-            justify-content: center;
+            justify-content: left;
             background-color: transparent !important;
             box-shadow: none !important;
             .avatar_main(30px);
@@ -118,6 +118,7 @@
             }
             media-tag, .cp-avatar-default {
                 margin-right: 3px;
+                flex-shrink: 0;
             }
             media-tag {
                 order: -1;
@@ -125,7 +126,12 @@
             cursor: default !important;
             font-size: 18px;
             span.cp-sidebarlayout-category-name {
+                max-width: 12rem;
                 padding-left: 5px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                min-width: 0;
             }
         }
         .cp-team-cat-chat {

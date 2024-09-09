@@ -123,8 +123,19 @@ define([
         if (!seed) { return; }
         return ANIMALS[seed % ANIMALS.length] || '';
     };
-
+    //this regex identifies both discord and unicode emojis (with optional skin tone modifiers) and complex zwj emoji sequences
+    const emojiWithZWJRegex = /(?:\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?(?:\u200D\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?)*|\p{Extended_Pictographic})/gu;
     var getPrettyInitials = MT.getPrettyInitials = function (name) {
+        let matches = name.match(emojiWithZWJRegex);
+        if (matches && name.startsWith(matches[0])) {
+            return matches[0];
+        }
+        else {
+            //this is for removing all trailing white characters and unnecessary/redundant emojis
+            name = name.replace(emojiWithZWJRegex, '');
+            name = name.replace(/\uFE0F/g, '').replace(/\u200D/g, '').replace(/\u2060/g, '');
+            name = name.trim();
+        }
         var parts = name.split(/\s+/);
         var text;
         if (parts.length > 1) {
