@@ -126,7 +126,7 @@ define([
                 ]),
             ]);
         var premiumFeatures =
-            h('div.col-12.col-sm-4.cp-anon-user',[
+            h('div.col-12.col-sm-4.cp-premium-user',[
                 h('div.card',[
                     h('div.title-card',[
                         h('h3.text-center',Msg.features_premium)
