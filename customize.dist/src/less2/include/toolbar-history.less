@@ -29,35 +29,6 @@
             font: @colortheme_app-font;
         }
 
-
-        @media screen and (max-width: 870px) {
-            flex-flow: column;
-            .cp-toolbar-history-actions {
-                width: 100%;
-                .cp-history-actions-first {
-                    margin-right: 0 !important;
-                }
-            }
-            .cp-toolbar-history-timeline {
-                width: ~"calc(100% - 20px)";
-                margin-right: 10px !important;
-            }
-        }
-
-        @media screen and (max-height: 500px) {
-            padding-top: 0px;
-            .cp-history-timeline-line {
-                display: none !important;
-            }
-            .cp-toolbar-history-timeline {
-                width: 100% !important;
-                margin: 0 !important;
-            }
-            .cp-history-timeline-actions {
-                margin-left: 0 !important;
-            }
-        }
-
         &.cp-history-init {
             padding: 0;
             height: 32px;
@@ -293,6 +264,39 @@
                 left: ~"calc(50% - 6px)";
             }
         }
+        @media screen and (max-width: 870px) {
+            flex-flow: column;
+            .cp-toolbar-history-actions {
+                width: 100%;
+                margin: 0.6rem 0;
+                height: auto;
+                .cp-history-actions-first {
+                    margin-right: 0 !important;
+                }
+                button {
+                    margin: 0.1rem;
+                }
+            }
+            .cp-toolbar-history-timeline {
+                width: ~"calc(100% - 20px)";
+                margin-right: 10px !important;
+            }
+        }
+
+        @media screen and (max-height: 500px) {
+            padding-top: 0px;
+            .cp-history-timeline-line {
+                display: none !important;
+            }
+            .cp-toolbar-history-timeline {
+                width: 100% !important;
+                margin: 0 !important;
+            }
+            .cp-history-timeline-actions {
+                margin-left: 0 !important;
+            }
+        }
+
     }
 }
 
