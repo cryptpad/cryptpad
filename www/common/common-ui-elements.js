@@ -1607,10 +1607,10 @@ define([
         ]));
 
         if (config.caretDown) {
-            $button.append(h('i.fa.fa-caret-down'));
+            $button.prepend(h('i.fa.fa-caret-down'));
         }
         if (config.angleDown) {
-            $button.append(h('i.fa.fa-angle-down'));
+            $button.prepend(h('i.fa.fa-angle-down'));
         }
 
         // Menu
