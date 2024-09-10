@@ -11,8 +11,8 @@ services:
     hostname: cryptpad
 
     environment:
-      - CPAD_HTTP_UNSAFE_ORIGIN=http://localhost:3000
-      - CPAD_HTTP_SAFE_ORIGIN=http://localhost:3000
+      - CPAD_HTTP_UNSAFE_ORIGIN=http://sandbox.example.com
+      - CPAD_HTTP_SAFE_ORIGIN=http://main.example.com
       - CPAD_HTTP_ADDRESS=0.0.0.0
       - CPAD_HTTP_PORT=3000
       - CPAD_HTTP_SAFE_PORT=3001
@@ -66,5 +66,6 @@ services:
       nofile:
         soft: 1000000
         hard: 1000000
+
 volumes:
   cryptpad_data:
