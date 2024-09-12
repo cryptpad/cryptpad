@@ -136,6 +136,9 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // XXX
+    Messages.type.game = "Game";
+
     return Messages;
 
 });
