@@ -807,7 +807,7 @@ define([
                 }, {
                     ok: Messages.register_writtenPassword,
                     cancel: Messages.register_cancel,
-                    okClass: 'btn.btn-danger',
+                    okClass: 'btn.btn-danger.btn-confirm',
                     reverseOrder: true,
                     done: function($dialog) {
                         $dialog.find('> div').addClass('half');

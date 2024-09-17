@@ -28,7 +28,7 @@ The most recent version and all past release notes can be found on the [releases
 
 ## Setup using Docker
 
-You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files at the root of this repository. We also publish every release on [Docker Hub](https://hub.docker.com/r/cryptpad/cryptpad) as AMD64 & ARM64 official images. 
+You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files at the root of this repository. We also publish every release on [Docker Hub](https://hub.docker.com/r/cryptpad/cryptpad) as AMD64 & ARM64 official images.
 
 Previously, Docker images were community maintained, had their own repository and weren't official supported. We changed that with v5.4.0 during July 2023. Thanks to @promasu for all the work on the community images.
 

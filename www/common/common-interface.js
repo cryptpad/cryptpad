@@ -780,7 +780,6 @@ define([
     UI.confirm = function (msg, cb, opt, force) {
         cb = cb || function () {};
         opt = opt || {};
-
         var message;
         if (typeof(msg) === 'string') {
             if (!force) { msg = Util.fixHTML(msg); }

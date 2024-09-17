@@ -1780,5 +1780,8 @@
     "admin_onboardingOptionsTitle": "Instance options",
     "admin_onboardingOptionsHint": "Please select the appropriate option for your instance.<br>These settings can be changed later in the admin panel.",
     "admin_onboardingNamePlaceholder": "Instance title",
-    "admin_onboardingDescPlaceholder": "Instance description text"
+    "admin_onboardingDescPlaceholder": "Instance description text",
+    "team_autoTrim": "Trimming team drive history... Please wait.",
+    "admin_mfa_confirm_enable": "Are you sure you want to enable Multi-Factor Authentication?",
+    "admin_mfa_confirm_disable": "Are you sure you want to disable Multi-Factor Authentication?"
 }
