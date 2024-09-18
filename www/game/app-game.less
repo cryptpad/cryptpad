@@ -88,11 +88,13 @@
                     left: 500px;
                     top: 300px;
                     transition: left 100ms linear, top 100ms linear;
-                    &.cp-me {
-                        border-color: @cp-game-me-color;
-                    }
+                    border-radius:20px;
                     &.cp-selected {
                         border-color: @cp-game-selected-color;
+                    }
+                    &.cp-me {
+                        outline-style: solid;
+                        outline-color: #88888888;
                     }
                 }
             }

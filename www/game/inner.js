@@ -51,8 +51,7 @@ define([
         y: 600,
         range: 50,
         hp: 10,
-        cd: 10,
-        moveRate: 10
+        cd: 5
     };
 
     // This is the main initialization loop
@@ -151,8 +150,10 @@ define([
             let x2 = myTarget.x;
             let y1 = me.y;
             let y2 = myTarget.y;
-            return Math.abs(x2-x1) < config.range &&
-                    Math.abs(y2-y1) < config.range;
+            let x = Math.abs(x2-x1);
+            let y = Math.abs(y2-y1);
+            let r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+            return r < (config.range + 20); // 20 ==> size of character
         };
         let initHud = () => {
             let config = getConfig();
@@ -189,12 +190,8 @@ define([
                 clearInterval(cdTo);
                 let myTarget = others[selected];
                 if (!myTarget) { return; }
-                let x1 = me.x;
-                let x2 = myTarget.x;
-                let y1 = me.y;
-                let y2 = myTarget.y;
 
-                if (Math.abs(x2-x1) > config.range || Math.abs(y2-y1) > config.range) {
+                if (!checkRange()) {
                     $skills.append(h('p', 'Too far from target'));
                     return;
                 }
@@ -264,6 +261,7 @@ define([
             });
         };
         let redrawAll = (onlyMe) => {
+            let config = getConfig();
             if (onlyMe && me.el) {
                 let $el = $(me.el);
                 $el.css('left', `${me.x}px`);
@@ -295,8 +293,10 @@ define([
                 if (!data.el) {
                     let isMe = data.id === me.id ? '.cp-me' : '';
                     let isSel = data.id === selected ? '.cp-selected' : '';
+                    let outline = `outline-width:${config.range}px;`;
                     data.el = h('div.cp-avatar.cp-character'+isMe+isSel, {
-                        style: `border-bottom-color:${user.color};`
+                        style: isMe ? `border-color:${user.color};${outline}`
+                           : `border-bottom-color:${user.color};`
                     });
                     let $el = $(data.el);
                     framework._.sfCommon.displayAvatar($el, user.avatar, user.name, function () {}, user.uid);
@@ -332,11 +332,12 @@ define([
             let config = getConfig();
             $(window).off('keydown', APP.onKeyDown);
             $(window).off('keyup', APP.onKeyUp);
-            $(window).off('keypress', APP.onKeyPress);
             let keys = {};
             let last = 0;
             APP.onKeyDown = ev => {
                 if (![37,38,39,40].includes(ev.which)) { return; }
+                ev.preventDefault();
+                ev.stopPropagation();
                 keys[ev.which] = true;
                 let step = 5;
                 let now = +new Date();
@@ -388,12 +389,16 @@ define([
                         // Skill is ready
                         sharedContent.players = sharedContent.players || {};
                         let targetData = sharedContent.players[selected];
+                        if (!targetData || !targetData.hp) { return void redrawAll(); }
                         targetData.hp = targetData.hp - 1;
                         lastHit = +new Date();
                         framework.localChange();
+                        if (!targetData.hp) {
+                            lastHit = 0;
+                            redrawAll();
+                        }
                         onPosUpdate.fire();
                         redrawList();
-                        if (!targetData.hp) { redrawAll(); }
                     }
                     ev.preventDefault();
                     ev.stopPropagation();
@@ -402,16 +407,13 @@ define([
 
                 // Arrow keys ==> handle multiple keys
                 if (![37,38,39,40].includes(ev.which)) { return; }
+                ev.preventDefault();
+                ev.stopPropagation();
                 delete keys[ev.which];
                 if (!Object.keys(keys).length) { last = 0; }
             };
-            APP.onKeyPress = ev => {
-                if (![9,32].includes(ev.which)) { return; }
-            };
             $(window).on('keydown', APP.onKeyDown);
             $(window).on('keyup', APP.onKeyUp);
-            $(window).on('keypress', APP.onKeyPress);
-
         };
         let initCharacter = () => {
             if (me.id) { return; } // already init
@@ -419,7 +421,6 @@ define([
             me.x = Math.floor(config.x/2);
             me.y = Math.floor(config.y/2);
             me.id = framework._.cpNfInner.metadataMgr.getNetfluxId();
-            redrawAll(true);
             // Add my data
             if (sharedContent.players && sharedContent.players[me.id]) {
                 return UI.errorLoadingScreen("ALREADY JOINED");
@@ -429,10 +430,13 @@ define([
                 hp: config.hp
             };
             framework.localChange();
-            redrawList();
             // Send cursor
-            framework.updateCursor();
-            addKeyboard();
+            framework._.cpNfInner.chainpad.onSettle(function () {
+                redrawList();
+                redrawAll(true);
+                setTimeout(framework.updateCursor);
+                addKeyboard();
+            });
         };
 
         framework.setCursorGetter(() => {
@@ -441,6 +445,13 @@ define([
             return data;
         });
         framework.onCursorUpdate(data => {
+            if (data.leave) {
+                let other = others[data.id];
+                if (other && other.el) { other.el.remove(); }
+                delete others[data.id];
+                redrawList();
+                return;
+            }
             updateOther(data);
         });
 
