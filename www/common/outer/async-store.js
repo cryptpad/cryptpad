@@ -252,7 +252,7 @@ define([
             list.push(userChannel);
 
             if (store.data && store.data.blockId) {
-                //list.push(`${store.data.blockId}#block`); // NEXT 5.7.0?
+                list.push(`${store.data.blockId}#block`);
             }
 
             list.sort();
