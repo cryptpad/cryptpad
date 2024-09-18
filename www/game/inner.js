@@ -100,8 +100,12 @@ define([
             */
         };
 
+        let getConfig = () => {
+            return Util.find(sharedContent, ['config','values']) || DEFAULT;
+        };
+
         let initMap = () => {
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             $map.css('width', `${config.x+24}px`); // 24 ==> padding + border
             $map.css('height', `${config.y+24}px`);
         };
@@ -178,7 +182,7 @@ define([
         };
 
         let addKeyboard = () => {
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             $(window).off('keydown', APP.onKeyDown);
             $(window).off('keyup', APP.onKeyUp);
             let keys = {};
@@ -223,7 +227,7 @@ define([
         };
         let initCharacter = () => {
             if (me.id) { return; }
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             me.x = Math.floor(config.x/2);
             me.y = Math.floor(config.y/2);
             me.id = framework._.cpNfInner.metadataMgr.getNetfluxId();
