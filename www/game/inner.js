@@ -117,8 +117,12 @@ define([
             */
         };
 
+        let getConfig = () => {
+            return Util.find(sharedContent, ['config','values']) || DEFAULT;
+        };
+
         let initMap = () => {
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             $map.css('width', `${config.x+24}px`); // 24 ==> padding + border
             $map.css('height', `${config.y+24}px`);
         };
@@ -129,7 +133,7 @@ define([
         let lastHit = 0;
         let cdTo;
         let checkCd = () => {
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             let cd = +new Date() - lastHit;
             return cd > (config.cd * 1000);
         };
@@ -140,7 +144,7 @@ define([
             return myTarget && targetData && targetData.hp > 0;
         };
         let checkRange = () => {
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             let myTarget = others[selected];
             if (!myTarget) { return; }
             let x1 = me.x;
@@ -151,7 +155,7 @@ define([
                     Math.abs(y2-y1) < config.range;
         };
         let initHud = () => {
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             let target = h('div.cp-app-game-target');
             let $target = $(target).appendTo($hud);
             let skills = h('div.cp-app-game-skills');
@@ -231,7 +235,7 @@ define([
 
         let redrawList = () => {
             $players.empty();
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             let all = sharedContent.players || {};
             let metadataMgr = framework._.cpNfInner.metadataMgr;
             let users = metadataMgr.getMetadata().users || {};
@@ -325,7 +329,7 @@ define([
         };
 
         let addKeyboard = () => {
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             $(window).off('keydown', APP.onKeyDown);
             $(window).off('keyup', APP.onKeyUp);
             $(window).off('keypress', APP.onKeyPress);
@@ -411,7 +415,7 @@ define([
         };
         let initCharacter = () => {
             if (me.id) { return; } // already init
-            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let config = getConfig();
             me.x = Math.floor(config.x/2);
             me.y = Math.floor(config.y/2);
             me.id = framework._.cpNfInner.metadataMgr.getNetfluxId();
