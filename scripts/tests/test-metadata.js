@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 const Store = require("../../lib/storage/file");
 const Meta = require("../../lib/metadata");
 const nThen = require('nthen');
