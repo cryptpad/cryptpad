@@ -222,6 +222,7 @@ define([
             $(window).on('keyup', APP.onKeyUp);
         };
         let initCharacter = () => {
+            if (me.id) { return; }
             let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
             me.x = Math.floor(config.x/2);
             me.y = Math.floor(config.y/2);
