@@ -23,31 +23,48 @@ define([
     ) {
 
 
+    let onTargetUpdate = Util.mkEvent();
+    let onPosUpdate = Util.mkEvent();
+
     let createPageStructure = () => {
         let $editor = $('#cp-app-game-editor');
         let $container = $(h('div#cp-app-game-container')).appendTo($editor);
 
+        let help = h('div#cp-app-game-help');
         let map = h('div#cp-app-game-map');
+        let players = h('div#cp-app-game-players');
+        let level = h('div#cp-app-game-level', [map, players]);
         let config = h('div#cp-app-game-config');
-        $container.append([map, config]);
+        let hud = h('div#cp-app-game-hud');
+        $container.append([help, level, hud, config]);
         return {
             $map: $(map),
-            $config: $(config)
+            $players: $(players),
+            $config: $(config),
+            $hud: $(hud),
+            $help: $(help)
         };
     };
 
     let DEFAULT = {
         x: 1000,
         y: 600,
+        range: 50,
         hp: 10,
+        cd: 10,
         moveRate: 10
     };
 
     // This is the main initialization loop
     var onFrameworkReady = function (framework) {
-        let {$map, $config} = createPageStructure();
+        let {$map, $players, $hud, $help, $config} = createPageStructure();
         let APP = {};
         let sharedContent = {};
+
+        let me = {};
+        let others = {};
+        let selected;
+
 
         let initConfig = () => {
             $config.empty();
@@ -106,6 +123,94 @@ define([
             $map.css('height', `${config.y+24}px`);
         };
 
+        let initHelp = () => {
+            $help.append(h('pre.alert.alert-info', 'N: next target\nSpace: Attack'));
+        };
+        let lastHit = 0;
+        let cdTo;
+        let checkCd = () => {
+            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let cd = +new Date() - lastHit;
+            return cd > (config.cd * 1000);
+        };
+        let checkHp = () => {
+            sharedContent.players = sharedContent.players || {};
+            let myTarget = others[selected];
+            let targetData = sharedContent.players[selected];
+            return myTarget && targetData && targetData.hp > 0;
+        };
+        let checkRange = () => {
+            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let myTarget = others[selected];
+            if (!myTarget) { return; }
+            let x1 = me.x;
+            let x2 = myTarget.x;
+            let y1 = me.y;
+            let y2 = myTarget.y;
+            return Math.abs(x2-x1) < config.range &&
+                    Math.abs(y2-y1) < config.range;
+        };
+        let initHud = () => {
+            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let target = h('div.cp-app-game-target');
+            let $target = $(target).appendTo($hud);
+            let skills = h('div.cp-app-game-skills');
+            let $skills = $(skills).appendTo($hud);
+            onTargetUpdate.reg(function () {
+                $target.empty();
+                let metadataMgr = framework._.cpNfInner.metadataMgr;
+                let users = metadataMgr.getMetadata().users || {};
+                let user = users[selected];
+                if (!user) {
+                    $target.append([
+                        h('p', 'Current target'),
+                    ]);
+                    return;
+                }
+
+                let el = h('div.cp-avatar');
+                let $el = $(el);
+                framework._.sfCommon.displayAvatar($el, user.avatar, user.name, function () {}, user.uid);
+                $target.append([
+                    h('p', 'Current target'),
+                    h('div.cp-game-target-container', [
+                        el,
+                        h('span', user.name || Messages.anonymous)
+                    ])
+                ]);
+                onPosUpdate.fire();
+            });
+            onPosUpdate.reg(function () {
+                $skills.empty();
+                clearInterval(cdTo);
+                let myTarget = others[selected];
+                if (!myTarget) { return; }
+                let x1 = me.x;
+                let x2 = myTarget.x;
+                let y1 = me.y;
+                let y2 = myTarget.y;
+
+                if (Math.abs(x2-x1) > config.range || Math.abs(y2-y1) > config.range) {
+                    $skills.append(h('p', 'Too far from target'));
+                    return;
+                }
+
+                let cdTxt = h('div');
+                let $cdTxt = $(cdTxt).appendTo($skills);
+                let updateCd = function () {
+                    let cd = +new Date() - lastHit;
+                    if (cd > config.cd * 1000) { // More than 10s since last hit? ready
+                        $cdTxt.empty().text('Attack is ready!');
+                        return;
+                    }
+                    cd = Math.floor((config.cd*10) - (cd / 100)) / 10; // 0.x s
+                    $cdTxt.empty().text(`Attack ready in ${cd}s`);
+                };
+                cdTo = setInterval(updateCd, 50);
+                updateCd();
+            });
+        };
+
         // Clean offline characters
         let cleanCharacters = () => {
             let metadataMgr = framework._.cpNfInner.metadataMgr;
@@ -123,34 +228,75 @@ define([
             clean();
         };
 
-        let me = {};
-        let others = {};
 
+        let redrawList = () => {
+            $players.empty();
+            let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
+            let all = sharedContent.players || {};
+            let metadataMgr = framework._.cpNfInner.metadataMgr;
+            let users = metadataMgr.getMetadata().users || {};
+            Object.keys(all).forEach(key => {
+                let data = all[key];
+                let user = users[key];
+                if (!user) { return; }
+                if (key !== me.id && !others[key]) { return; }
+                let el = h('div.cp-avatar');
+                let $el = $(el);
+                framework._.sfCommon.displayAvatar($el, user.avatar, user.name, function () {}, user.uid);
+                let hp = data.hp;
+                let p = Math.round(100*data.hp / config.hp);
+                let text = `${hp} / ${config.hp}`;
+                $players.append([
+                    h('div.cp-game-player-health-container', [
+                        h('div.cp-game-player-container', [
+                            el,
+                            h('span', user.name || Messages.anonymous)
+                        ]),
+                        h('div.cp-game-player-hp', {
+                            style: `background: linear-gradient(to right, red, red ${p}%, white ${p}%, white);`
+                        }, text)
+                    ])
+                ]);
+            });
+        };
         let redrawAll = (onlyMe) => {
             if (onlyMe && me.el) {
-                console.error(onlyMe, me.el);
                 let $el = $(me.el);
                 $el.css('left', `${me.x}px`);
                 $el.css('top', `${me.y}px`);
+                onPosUpdate.fire();
                 return;
             }
             let metadataMgr = framework._.cpNfInner.metadataMgr;
             let users = metadataMgr.getMetadata().users || {};
+            let players = sharedContent.players || {};
             $map.empty();
             let redrawOne = (data) => {
                 let user = users[data.id];
-                if (!user) {
+                let player = players[data.id];
+                if (!user || !player) {
+                    delete others[data.id];
+                    if (data.el) { data.el.remove(); }
+                    return;
+                }
+                if (!player.hp) {
+                    if (selected === data.id) {
+                        selected = undefined;
+                        onTargetUpdate.fire();
+                    }
                     delete others[data.id];
                     if (data.el) { data.el.remove(); }
                     return;
                 }
                 if (!data.el) {
                     let isMe = data.id === me.id ? '.cp-me' : '';
-                    data.el = h('div.cp-avatar.cp-character'+isMe, {
-                        style: `border-color:${user.color};`
+                    let isSel = data.id === selected ? '.cp-selected' : '';
+                    data.el = h('div.cp-avatar.cp-character'+isMe+isSel, {
+                        style: `border-bottom-color:${user.color};`
                     });
                     let $el = $(data.el);
                     framework._.sfCommon.displayAvatar($el, user.avatar, user.name, function () {}, user.uid);
+                    redrawList();
                 }
                 let $el = $(data.el);
                 $el.css('left', `${data.x}px`);
@@ -161,10 +307,11 @@ define([
             Object.keys(others).forEach(key => {
                 redrawOne(others[key]);
             });
+            onPosUpdate.fire();
         };
 
         let updateOther = (obj) => {
-            if (!obj.cursor) { return console.error('WTF'); }
+            if (!obj.cursor) { return; }
             let data = obj.cursor;
             let other = others[data.id];
             if (!other) {
@@ -181,6 +328,7 @@ define([
             let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
             $(window).off('keydown', APP.onKeyDown);
             $(window).off('keyup', APP.onKeyUp);
+            $(window).off('keypress', APP.onKeyPress);
             let keys = {};
             let last = 0;
             APP.onKeyDown = ev => {
@@ -214,21 +362,62 @@ define([
                 redrawAll(true);
             };
             APP.onKeyUp = ev => {
+                // 78: N ==> Next target
+                if (ev.which == 78) {
+                    let all = Object.keys(others);
+                    let idx = all.indexOf(selected);
+                    let newIdx = (idx+1) % all.length;
+                    selected = all[newIdx];
+                    let el = others[selected] && others[selected].el;
+                    if (el) {
+                        $map.find('.cp-selected').removeClass('cp-selected', true);
+                        $(el).toggleClass('cp-selected', true);
+                    }
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    onTargetUpdate.fire();
+                    return;
+                }
+                // 32: Space ==> Attack
+                if (ev.which == 32) {
+                    if (checkCd() && checkRange() && checkHp()) {
+                        // Skill is ready
+                        sharedContent.players = sharedContent.players || {};
+                        let targetData = sharedContent.players[selected];
+                        targetData.hp = targetData.hp - 1;
+                        lastHit = +new Date();
+                        framework.localChange();
+                        onPosUpdate.fire();
+                        redrawList();
+                        if (!targetData.hp) { redrawAll(); }
+                    }
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    return;
+                }
+
+                // Arrow keys ==> handle multiple keys
                 if (![37,38,39,40].includes(ev.which)) { return; }
                 delete keys[ev.which];
                 if (!Object.keys(keys).length) { last = 0; }
             };
+            APP.onKeyPress = ev => {
+                if (![9,32].includes(ev.which)) { return; }
+            };
             $(window).on('keydown', APP.onKeyDown);
             $(window).on('keyup', APP.onKeyUp);
+            $(window).on('keypress', APP.onKeyPress);
+
         };
         let initCharacter = () => {
+            if (me.id) { return; } // already init
             let config = Util.find(sharedContent, ['config','values']) || DEFAULT;
             me.x = Math.floor(config.x/2);
             me.y = Math.floor(config.y/2);
             me.id = framework._.cpNfInner.metadataMgr.getNetfluxId();
             redrawAll(true);
             // Add my data
-            if (sharedContent[me.id]) {
+            if (sharedContent.players && sharedContent.players[me.id]) {
                 return UI.errorLoadingScreen("ALREADY JOINED");
             }
             sharedContent.players = sharedContent.players || {};
@@ -236,6 +425,7 @@ define([
                 hp: config.hp
             };
             framework.localChange();
+            redrawList();
             // Send cursor
             framework.updateCursor();
             addKeyboard();
@@ -255,6 +445,10 @@ define([
         };
         framework.onContentUpdate(function (newContent) {
             sharedContent = newContent.content;
+            redrawList();
+            if (APP.ready) {
+                redrawAll();
+            }
         });
 
         framework.setContentGetter(function () {
@@ -265,8 +459,11 @@ define([
         });
 
         framework.onReady(function () {
+            APP.ready = true;
             initConfig();
             initMap();
+            initHelp();
+            initHud();
             cleanCharacters();
             let metadataMgr = framework._.cpNfInner.metadataMgr;
             let myId = metadataMgr.getNetfluxId();

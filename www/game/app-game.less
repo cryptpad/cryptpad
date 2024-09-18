@@ -14,6 +14,10 @@
         @bg-color: @colortheme_apps[game],
     );
 
+    @cp-game-me-color: #32ff00;
+    @cp-game-other-color: #6a0e03;
+    @cp-game-selected-color: #ff0000;
+
     display: flex;
     flex-flow: column;
     max-height: 100%;
@@ -23,11 +27,51 @@
 
     #cp-app-game-editor {
         display: flex;
+        overflow: auto;
+
+
         #cp-app-game-container {
+            span.cp-avatar-default {
+                background: white;
+                color: black;
+            }
+
             flex: 1;
             #cp-app-game-config {
                 padding: 1em;
                 max-width: 600px;
+            }
+            #cp-app-game-level {
+                display: flex;
+            }
+            #cp-app-game-players {
+                border: 2px solid @cryptpad_color_brand;
+                width: 200px;
+                .cp-avatar {
+                    .avatar_main(40px);
+                    margin-right: 0.5rem;
+                }
+                div.cp-game-player-health-container {
+                    padding: 0.5rem;
+                    &:not(:first-child) {
+                        margin-top: 0.5rem;
+                    }
+                    div.cp-game-player-container {
+                        display: flex;
+                        align-items: center;
+                        .cp-avatar {
+                            margin-right: 0.5rem;
+                        }
+                    }
+                }
+                div.cp-game-player-hp {
+                    height: 20px;
+                    font-weight: bold;
+                    color: black;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
             }
             #cp-app-game-map {
                 border: 2px solid @cryptpad_color_brand;
@@ -39,11 +83,36 @@
                     width: 20px;
                     height: 20px;
                     box-sizing: border-box;
-                    border: 2px solid black;
-                    .avatar_vars(20px);
+                    border: 2px solid @cp-game-other-color;
+                    .avatar_main(20px);
                     left: 500px;
                     top: 300px;
                     transition: left 100ms linear, top 100ms linear;
+                    &.cp-me {
+                        border-color: @cp-game-me-color;
+                    }
+                    &.cp-selected {
+                        border-color: @cp-game-selected-color;
+                    }
+                }
+            }
+            #cp-app-game-hud {
+                .cp-app-game-target {
+                    display: inline-flex;
+                    align-items: center;
+                    p {
+                        margin-bottom: 0;
+                        font-weight: bold;
+                    }
+                    div.cp-game-target-container {
+                        margin-left: 1em;
+                        .cp-avatar {
+                            .avatar_main(40px);
+                            margin-right: 0.5rem;
+                        }
+                        display: inline-flex;
+                        align-items: center;
+                    }
                 }
             }
         }
