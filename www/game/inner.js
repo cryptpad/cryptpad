@@ -23,6 +23,8 @@ define([
     ) {
 
 
+    const CHAR_SIZE = 40;
+
     let onTargetUpdate = Util.mkEvent();
     let onPosUpdate = Util.mkEvent();
 
@@ -49,7 +51,7 @@ define([
     let DEFAULT = {
         x: 1000,
         y: 600,
-        range: 50,
+        range: 60,
         hp: 10,
         cd: 5
     };
@@ -122,8 +124,8 @@ define([
 
         let initMap = () => {
             let config = getConfig();
-            $map.css('width', `${config.x+24}px`); // 24 ==> padding + border
-            $map.css('height', `${config.y+24}px`);
+            $map.css('width', `${config.x+4+CHAR_SIZE}px`);
+            $map.css('height', `${config.y+4+CHAR_SIZE}px`);
         };
 
         let initHelp = () => {
@@ -153,7 +155,7 @@ define([
             let x = Math.abs(x2-x1);
             let y = Math.abs(y2-y1);
             let r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-            return r < (config.range + 20); // 20 ==> size of character
+            return r < (config.range + CHAR_SIZE);
         };
         let initHud = () => {
             let config = getConfig();

@@ -14,7 +14,7 @@
         @bg-color: @colortheme_apps[game],
     );
 
-    @cp-game-me-color: #32ff00;
+    @cp_char-size: 40px;
     @cp-game-other-color: #6a0e03;
     @cp-game-selected-color: #ff0000;
 
@@ -80,15 +80,15 @@
 
                 .cp-character {
                     position: absolute;
-                    width: 20px;
-                    height: 20px;
+                    width: @cp_char-size;
+                    height: @cp_char-size;
                     box-sizing: border-box;
                     border: 2px solid @cp-game-other-color;
-                    .avatar_main(20px);
+                    .avatar_main(@cp_char-size);
                     left: 500px;
                     top: 300px;
                     transition: left 100ms linear, top 100ms linear;
-                    border-radius:20px;
+                    border-radius:@cp_char-size;
                     &.cp-selected {
                         border-color: @cp-game-selected-color;
                     }
