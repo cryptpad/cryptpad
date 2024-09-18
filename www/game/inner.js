@@ -274,7 +274,7 @@ define([
             let metadataMgr = framework._.cpNfInner.metadataMgr;
             let users = metadataMgr.getMetadata().users || {};
             let players = sharedContent.players || {};
-            $map.empty();
+            //$map.empty();
             let redrawOne = (data) => {
                 let user = users[data.id];
                 let player = players[data.id];
@@ -303,11 +303,11 @@ define([
                     let $el = $(data.el);
                     framework._.sfCommon.displayAvatar($el, user.avatar, user.name, function () {}, user.uid);
                     redrawList();
+                    $el.appendTo($map);
                 }
                 let $el = $(data.el);
                 $el.css('left', `${data.x}px`);
                 $el.css('top', `${data.y}px`);
-                $el.appendTo($map);
             };
             redrawOne(me);
             Object.keys(others).forEach(key => {
@@ -345,8 +345,8 @@ define([
                 let now = +new Date();
                 if (last !== 0) {
                     let diff = now - last;
-                    step = Math.max(1, Math.floor(diff/5)); // Max 1 step per 5ms
-                    if (step > 20) { step = 20; }
+                    step = Math.max(1, Math.floor(2*diff/5)); // Max 40 steps per 100ms
+                    if (step > 40) { step = 40; }
                 }
                 last = now;
 
