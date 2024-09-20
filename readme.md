@@ -32,6 +32,14 @@ You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files
 
 Previously, Docker images were community maintained, had their own repository and weren't official supported. We changed that with v5.4.0 during July 2023. Thanks to @promasu for all the work on the community images.
 
+## Self-Hosting Cryptpad
+
+### Elestio
+
+You can deploy Cryptpad on Elestio using one-click deployment. Elestio supports Cryptpad by providing revenue share so go ahead and click below to deploy and use Cryptpad.
+
+[![Deploy on Elestio](https://elest.io/images/logos/deploy-to-elestio-btn.png)](https://elest.io/open-source/cryptpad)
+
 # Privacy / Security
 
 CryptPad offers a variety of collaborative tools that encrypt your data in your browser
