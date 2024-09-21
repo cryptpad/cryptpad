@@ -1216,6 +1216,8 @@ define([
                 var json = kanban.getBoardJSON(id) || kanban.getItemJSON(id);
                 var oldVal = json && json.title;
 
+                if (id === "new") { $el.remove(); }
+
                 return {
                     id: id,
                     newBoard: newBoard,
