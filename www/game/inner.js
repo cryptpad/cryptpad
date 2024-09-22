@@ -341,33 +341,41 @@ define([
                 ev.preventDefault();
                 ev.stopPropagation();
                 keys[ev.which] = true;
-                let step = 5;
-                let now = +new Date();
-                if (last !== 0) {
-                    let diff = now - last;
-                    step = Math.max(1, Math.floor(2*diff/5)); // Max 40 steps per 100ms
-                    if (step > 40) { step = 40; }
-                }
-                last = now;
-
-                let oldY = me.y;
-                let oldX = me.x;
-                if (keys[38]) { // Up
-                    me.y = Math.max(0, me.y-step);
-                }
-                if (keys[40]) { // Down
-                    me.y = Math.min(config.y, me.y+step);
-                }
-                if (keys[37]) { // Left
-                    me.x = Math.max(0, me.x-step);
-                }
-                if (keys[39]) { // Right
-                    me.x = Math.min(config.x, me.x+step);
-                }
-                if (oldX === me.x && oldY === me.y) { return; }
-                framework.updateCursor();
-                redrawAll(true);
+                   start();
             };
+               let it;
+               let start = function () {
+                       clearInterval(it);
+                           it = setInterval(function () {
+                               if (!Object.keys(keys).length) { clearInterval(it); }
+                               let step = 5;
+                               let now = +new Date();
+                               if (last !== 0) {
+                                   let diff = now - last;
+                                   step = Math.max(1, Math.floor(2*diff/5)); // Max 40 steps per 100ms
+                                   if (step > 40) { step = 40; }
+                               }
+                               last = now;
+
+                               let oldY = me.y;
+                               let oldX = me.x;
+                               if (keys[38]) { // Up
+                                   me.y = Math.max(0, me.y-step);
+                               }
+                               if (keys[40]) { // Down
+                                   me.y = Math.min(config.y, me.y+step);
+                               }
+                               if (keys[37]) { // Left
+                                   me.x = Math.max(0, me.x-step);
+                               }
+                               if (keys[39]) { // Right
+                                   me.x = Math.min(config.x, me.x+step);
+                               }
+                               if (oldX === me.x && oldY === me.y) { return; }
+                               framework.updateCursor();
+                               redrawAll(true);
+                           }, 10);
+               };
             APP.onKeyUp = ev => {
                 // 78: N ==> Next target
                 if (ev.which == 78) {
