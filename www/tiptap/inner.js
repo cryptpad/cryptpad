@@ -114,8 +114,7 @@ define([
             const element = document.querySelector('.cp-tiptap-element');
             const editor = Tiptap.start(element);
 
-            createToolbar($('#cp-tiptap-toolbar'));
-            console.error(editor);
+            createToolbar($('#cp-tiptap-toolbar'), editoR);
         });
 
         // Start the framework
