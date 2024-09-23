@@ -11,6 +11,7 @@ define([
     '/common/common-util.js',
     '/tiptap/tiptap.bundle.js',
     '/common/cursor.js',
+    '/common/TypingTests.js',
     'less!/tiptap/app-tiptap.less'
     /* Here you can add your own javascript or css to load */
 ], function (
@@ -20,7 +21,8 @@ define([
     h,
     Util,
     TiptapUnused,
-    Cursor
+    Cursor,
+    TypingTest
     ) {
     const Tiptap = window.Tiptap;
     const onSelectionChange = Util.mkEvent();
@@ -303,6 +305,14 @@ define([
 
             createToolbar($('#cp-tiptap-toolbar'), editor);
         });
+
+        window.easyTest = () => {
+            cursor.update();
+            let start = cursor.Range.start;
+            let test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
+            framework.localChange();
+            return test;
+        }
 
         // Start the framework
         framework.start();
