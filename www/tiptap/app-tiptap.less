@@ -23,13 +23,19 @@
 
     #cp-app-tiptap-editor {
         display: flex;
+        flex: 1;
 
         #cp-tiptap-content {
             flex: 1;
-            textarea {
-                height: 300px;
-                width: 800px;
+            border: 1px solid @cp_sidebar-left-item-bg;
+            .cp-tiptap-element {
+                height: 100%;
+                .ProseMirror {
+                    padding: 8px 10px;
+                    height: 100%;
+                }
             }
         }
+
     }
 }

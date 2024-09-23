@@ -9,6 +9,7 @@ define([
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
     '/tiptap/tiptap.bundle.js',
+    '/common/cursor.js',
     'less!/tiptap/app-tiptap.less'
     /* Here you can add your own javascript or css to load */
 ], function (
@@ -17,6 +18,7 @@ define([
     Messages,
     h,
     TiptapUnused,
+    Cursor
     ) {
     const Tiptap = window.Tiptap;
 
@@ -26,21 +28,29 @@ define([
         let $container = $('#cp-app-tiptap-editor');
 
         let $content = $(h('div#cp-tiptap-content')).appendTo($container);
-        let $tiptapElement = $(h('div.cp-tiptap-element'));
-        $content.append($tiptapElement);
-        let oldVal = '';
-        $tiptapElement.on('change keyup paste', function () {
-            var currentVal = $tiptapElement.val();
-            if (currentVal === oldVal) { return; } // Nothing to do
-            oldVal = currentVal;
-            framework.localChange();
-        });
+        let $tiptapElement = $(h('div.cp-tiptap-element')).appendTo($content);
+        let element = document.querySelector('.cp-tiptap-element');
+        let editor = Tiptap.start(element);
+        let inner = document.querySelector('.ProseMirror');
+        let cursor = Cursor(inner);
+        // let oldVal = '';
+        // $tiptapElement.on('change keyup paste', function () {
+        //     var currentVal = $tiptapElement.val();
+        //     if (currentVal === oldVal) { return; } // Nothing to do
+        //     oldVal = currentVal;
+        //     framework.localChange();
+        // });
+
         let getContent = () => {
-            return $tiptapElement.val();
+            return editor.getJSON();
         };
         let setContent = (value) => {
-            return $tiptapElement.val(value);
+            return editor.commands.setContent(value);
         };
+
+        editor.on('update', () => {
+            framework.localChange();
+        });
 
         let content = {};
 
@@ -57,7 +67,18 @@ define([
         framework.onContentUpdate(function (newContent) {
             console.log('New content received from others', newContent.content);
             content = newContent.content;
+
+            // Get cursor position
+            cursor.offsetUpdate();
+            var oldText = inner.outerHTML;
+
+            // Apply the changes
             setContent(content);
+
+            // Restore cursor position
+            var newText = inner.outerHTML;
+            var ops = ChainPad.Diff.diff(oldText, newText);
+            cursor.restoreOffset(ops);
         });
 
         framework.setContentGetter(function () {
@@ -71,8 +92,6 @@ define([
         framework.onReady(function () {
             // Document is ready, you can initialize your app
             console.log('Document is ready:', content);
-            let element = document.querySelector('.cp-tiptap-element');
-            let editor = Tiptap.start(element);
             console.error(editor);
         });
 
