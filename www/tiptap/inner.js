@@ -8,6 +8,7 @@ define([
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
+    '/tiptap/tiptap.bundle.js',
     'less!/tiptap/app-tiptap.less'
     /* Here you can add your own javascript or css to load */
 ], function (
@@ -15,7 +16,9 @@ define([
     Framework,
     Messages,
     h,
+    TiptapUnused,
     ) {
+    const Tiptap = window.Tiptap;
 
 
     // This is the main initialization loop
@@ -68,6 +71,11 @@ define([
         framework.onReady(function () {
             // Document is ready, you can initialize your app
             console.log('Document is ready:', content);
+            const editor = new Tiptap.Editor({
+              element: document.querySelector('.cp-tiptap-element'),
+              extensions: [Tiptap.StarterKit],
+              content: '<p>Hello World!</p>',
+            })
         });
 
         // Start the framework
