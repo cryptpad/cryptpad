@@ -136,6 +136,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.type.tiptap = "Tiptap";
+
     return Messages;
 
 });

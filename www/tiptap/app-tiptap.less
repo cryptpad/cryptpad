@@ -1,0 +1,35 @@
+/*
+ * SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+@import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/tools.less";
+@import (reference) "../../customize/src/less2/include/avatar.less";
+
+// body
+&.cp-app-tiptap {
+    .framework_main(
+        @bg-color: @colortheme_apps[tiptap],
+    );
+
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    min-height: auto;
+    color: @cp_app-fg;
+    background-color: @cp_app-bg;
+
+    #cp-app-tiptap-editor {
+        display: flex;
+
+        #cp-tiptap-content {
+            flex: 1;
+            textarea {
+                height: 300px;
+                width: 800px;
+            }
+        }
+    }
+}
