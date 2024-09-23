@@ -82,6 +82,7 @@
     "install:components": "node scripts/copy-components.js",
     "start": "node server.js",
     "dev": "DEV=1 node server.js",
+    "windev": "set DEV=1& node server.js",
     "fresh": "FRESH=1 node server.js",
     "offline": "FRESH=1 OFFLINE=1 node server.js",
     "offlinedev": "DEV=1 OFFLINE=1 node server.js",
