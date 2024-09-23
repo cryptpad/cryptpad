@@ -201,9 +201,10 @@ define([
         }
 
         for (var action of actions) {
-            let $b = $('<button>', {
-                'class': 'pure-button fa ' + action.icon,
-            }).click(createOnClick(action));
+            let $b = $(h('button.pure-button', [
+                h('i.fa.' + action.icon)
+            ])).click(createOnClick(action));
+
             $toolbar.append($b);
         }
 

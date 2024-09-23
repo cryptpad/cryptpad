@@ -21,15 +21,32 @@
     color: @cp_app-fg;
     background-color: @cp_app-bg;
 
+    #cp-tiptap-toolbar {
+        button {
+            background: transparent;
+            border: none;
+            padding: 4px 6px;
+            height: 2rem;
+            i {
+                cursor: inherit;
+                background-repeat: no-repeat;
+                margin-top: 1px;
+                width: 16px;
+                height: 16px;
+                display: inline-block;
+            }
+        }
+    }
+
     #cp-app-tiptap-editor {
         display: flex;
-
         #cp-tiptap-content {
             flex: 1;
-            textarea {
-                height: 300px;
-                width: 800px;
-            }
+            font-size: 16px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            margin: 0;
+            padding: 20px;
         }
     }
 }
