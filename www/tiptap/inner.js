@@ -46,6 +46,30 @@ define([
                 icon: 'fa-code',
                 run: () => editor.chain().focus().toggleCode().run(),
             },
+            {
+                icon: 'fa-underline',
+                run: () => editor.chain().focus().toggleCode().run(),
+            },
+            {
+                icon: 'fa-code',
+                run: () => editor.chain().focus().toggleCode().run(),
+            },
+            {
+                icon: 'fa-table',
+                run: () => editor.chain().focus().toggleCode().run(),
+            },
+            {
+                icon: 'fa-list',
+                run: () => editor.chain().focus().toggleCode().run(),
+            },
+            {
+                icon: 'fa-list-ol',
+                run: () => editor.chain().focus().toggleCode().run(),
+            },
+            {
+                icon: 'fa-image',
+                run: () => editor.chain().focus().toggleCode().run(),
+            },
             //         <button
             //           onClick={() => editor.chain().focus().toggleCode().run()}
             //           disabled={
