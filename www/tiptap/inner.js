@@ -281,10 +281,6 @@ define([
         framework.onReady(function () {
             // Document is ready, you can initialize your app
             console.log('Document is ready:', content);
-            console.error(editor);
-            let element = document.querySelector('.cp-tiptap-element');
-            let editor = Tiptap.start(element);
-            console.error(editor);
 
             createToolbar($('#cp-tiptap-toolbar'), editor);
         });
