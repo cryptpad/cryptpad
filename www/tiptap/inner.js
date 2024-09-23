@@ -8,6 +8,7 @@ define([
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
+    '/common/common-util.js',
     '/tiptap/tiptap.bundle.js',
     '/common/cursor.js',
     'less!/tiptap/app-tiptap.less'
@@ -17,15 +18,18 @@ define([
     Framework,
     Messages,
     h,
+    Util,
     TiptapUnused,
     Cursor
     ) {
     const Tiptap = window.Tiptap;
+    const onSelectionChange = Util.mkEvent();
 
     const createToolbar = function ($toolbar, editor) {
         const actions = [
             {
                 icon: 'fa-bold',
+                check: () => editor.isActive('bold'),
                 run: () => editor.chain().focus().toggleBold().run(),
             },
             {
@@ -206,8 +210,20 @@ define([
             let $b = $('<button>', {
                 'class': 'pure-button fa ' + action.icon,
             }).click(createOnClick(action));
+            action.$el = $b;
             $toolbar.append($b);
         }
+
+        const setActive = ($button, state) => {
+            $button.toggleClass('cp-active', state);
+        };
+
+        onSelectionChange.reg(function () {
+            actions.forEach(action => {
+                if (typeof (action.check) !== "function") { return; }
+                setActive(action.$el, action.check());
+            });
+        });
 
         return $toolbar;
     };
@@ -221,6 +237,9 @@ define([
         let element = document.querySelector('.cp-tiptap-element');
         let editor = Tiptap.start(element);
         let inner = document.querySelector('.ProseMirror');
+        document.addEventListener('selectionchange', function () {
+            setTimeout(onSelectionChange.fire);
+        });
         let cursor = Cursor(inner);
         // let oldVal = '';
         // $tiptapElement.on('change keyup paste', function () {
