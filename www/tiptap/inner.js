@@ -51,10 +51,6 @@ define([
                 run: () => editor.chain().focus().toggleCode().run(),
             },
             {
-                icon: 'fa-code',
-                run: () => editor.chain().focus().toggleCode().run(),
-            },
-            {
                 icon: 'fa-table',
                 run: () => editor.chain().focus().toggleCode().run(),
             },
