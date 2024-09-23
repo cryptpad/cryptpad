@@ -9907,7 +9907,7 @@
       return runHandlerOnContext(view, "handleDoubleClickOn", pos, inside, event) ||
           view.someProp("handleDoubleClick", f => f(view, pos, event));
   }
-  function handleTripleClick(view, pos, inside, event) {
+  function handleTripleClick$1(view, pos, inside, event) {
       return runHandlerOnContext(view, "handleTripleClickOn", pos, inside, event) ||
           view.someProp("handleTripleClick", f => f(view, pos, event)) ||
           defaultTripleClick(view, inside, event);
@@ -9960,7 +9960,7 @@
               view.input.mouseDown.done();
           view.input.mouseDown = new MouseDown(view, pos, event, !!flushed);
       }
-      else if ((type == "doubleClick" ? handleDoubleClick : handleTripleClick)(view, pos.pos, pos.inside, event)) {
+      else if ((type == "doubleClick" ? handleDoubleClick : handleTripleClick$1)(view, pos.pos, pos.inside, event)) {
           event.preventDefault();
       }
       else {
@@ -13726,7 +13726,7 @@
           .reduce((attributes, attribute) => mergeAttributes(attributes, attribute), {});
   }
 
-  function isFunction(value) {
+  function isFunction$1(value) {
       return typeof value === 'function';
   }
 
@@ -13738,7 +13738,7 @@
    * @param props Optional props to pass to function.
    */
   function callOrReturn(value, context = undefined, ...props) {
-      if (isFunction(value)) {
+      if (isFunction$1(value)) {
           if (context) {
               return value.bind(context)(...props);
           }
@@ -13995,7 +13995,7 @@
       }
       return result;
   };
-  function run$1(config) {
+  function run$1$1(config) {
       var _a;
       const { editor, from, to, text, rules, plugin, } = config;
       const { view } = editor;
@@ -14082,7 +14082,7 @@
                       setTimeout(() => {
                           const { from, text } = simulatedInputMeta;
                           const to = from + text.length;
-                          run$1({
+                          run$1$1({
                               editor,
                               from,
                               to,
@@ -14097,7 +14097,7 @@
           },
           props: {
               handleTextInput(view, from, to, text) {
-                  return run$1({
+                  return run$1$1({
                       editor,
                       from,
                       to,
@@ -14111,7 +14111,7 @@
                       setTimeout(() => {
                           const { $cursor } = view.state.selection;
                           if ($cursor) {
-                              run$1({
+                              run$1$1({
                                   editor,
                                   from: $cursor.pos,
                                   to: $cursor.pos,
@@ -14132,7 +14132,7 @@
                   }
                   const { $cursor } = view.state.selection;
                   if ($cursor) {
-                      return run$1({
+                      return run$1$1({
                           editor,
                           from: $cursor.pos,
                           to: $cursor.pos,
@@ -14186,7 +14186,7 @@
           return result;
       });
   };
-  function run(config) {
+  function run$2(config) {
       const { editor, state, from, to, rule, pasteEvent, dropEvent, } = config;
       const { commands, chain, can } = new CommandManager({
           editor,
@@ -14253,7 +14253,7 @@
               state,
               transaction: tr,
           });
-          const handler = run({
+          const handler = run$2({
               editor,
               state: chainableState,
               from: Math.max(from - 1, 0),
@@ -15684,6 +15684,22 @@
   }
 
   /**
+   * Returns a new `Transform` based on all steps of the passed transactions.
+   * @param oldDoc The Prosemirror node to start from
+   * @param transactions The transactions to combine
+   * @returns A new `Transform` with all steps of the passed transactions
+   */
+  function combineTransactionSteps(oldDoc, transactions) {
+      const transform = new Transform(oldDoc);
+      transactions.forEach(transaction => {
+          transaction.steps.forEach(step => {
+              transform.step(step);
+          });
+      });
+      return transform;
+  }
+
+  /**
    * Gets the default block type at a given match
    * @param match The content match to get the default block type from
    * @returns The default block type or null
@@ -15696,6 +15712,54 @@
           }
       }
       return null;
+  }
+
+  /**
+   * Find children inside a Prosemirror node that match a predicate.
+   * @param node The Prosemirror node to search in
+   * @param predicate The predicate to match
+   * @returns An array of nodes with their positions
+   */
+  function findChildren(node, predicate) {
+      const nodesWithPos = [];
+      node.descendants((child, pos) => {
+          if (predicate(child)) {
+              nodesWithPos.push({
+                  node: child,
+                  pos,
+              });
+          }
+      });
+      return nodesWithPos;
+  }
+
+  /**
+   * Same as `findChildren` but searches only within a `range`.
+   * @param node The Prosemirror node to search in
+   * @param range The range to search in
+   * @param predicate The predicate to match
+   * @returns An array of nodes with their positions
+   */
+  function findChildrenInRange(node, range, predicate) {
+      const nodesWithPos = [];
+      // if (range.from === range.to) {
+      //   const nodeAt = node.nodeAt(range.from)
+      //   if (nodeAt) {
+      //     nodesWithPos.push({
+      //       node: nodeAt,
+      //       pos: range.from,
+      //     })
+      //   }
+      // }
+      node.nodesBetween(range.from, range.to, (child, pos) => {
+          if (predicate(child)) {
+              nodesWithPos.push({
+                  node: child,
+                  pos,
+              });
+          }
+      });
+      return nodesWithPos;
   }
 
   /**
@@ -15787,6 +15851,82 @@
           return getMarkAttributes(state, typeOrName);
       }
       return {};
+  }
+
+  /**
+   * Removes duplicated values within an array.
+   * Supports numbers, strings and objects.
+   */
+  function removeDuplicates(array, by = JSON.stringify) {
+      const seen = {};
+      return array.filter(item => {
+          const key = by(item);
+          return Object.prototype.hasOwnProperty.call(seen, key)
+              ? false
+              : (seen[key] = true);
+      });
+  }
+
+  /**
+   * Removes duplicated ranges and ranges that are
+   * fully captured by other ranges.
+   */
+  function simplifyChangedRanges(changes) {
+      const uniqueChanges = removeDuplicates(changes);
+      return uniqueChanges.length === 1
+          ? uniqueChanges
+          : uniqueChanges.filter((change, index) => {
+              const rest = uniqueChanges.filter((_, i) => i !== index);
+              return !rest.some(otherChange => {
+                  return change.oldRange.from >= otherChange.oldRange.from
+                      && change.oldRange.to <= otherChange.oldRange.to
+                      && change.newRange.from >= otherChange.newRange.from
+                      && change.newRange.to <= otherChange.newRange.to;
+              });
+          });
+  }
+  /**
+   * Returns a list of changed ranges
+   * based on the first and last state of all steps.
+   */
+  function getChangedRanges(transform) {
+      const { mapping, steps } = transform;
+      const changes = [];
+      mapping.maps.forEach((stepMap, index) => {
+          const ranges = [];
+          // This accounts for step changes where no range was actually altered
+          // e.g. when setting a mark, node attribute, etc.
+          // @ts-ignore
+          if (!stepMap.ranges.length) {
+              const { from, to } = steps[index];
+              if (from === undefined || to === undefined) {
+                  return;
+              }
+              ranges.push({ from, to });
+          }
+          else {
+              stepMap.forEach((from, to) => {
+                  ranges.push({ from, to });
+              });
+          }
+          ranges.forEach(({ from, to }) => {
+              const newStart = mapping.slice(index).map(from, -1);
+              const newEnd = mapping.slice(index).map(to);
+              const oldStart = mapping.invert().map(newStart, -1);
+              const oldEnd = mapping.invert().map(newEnd);
+              changes.push({
+                  oldRange: {
+                      from: oldStart,
+                      to: oldEnd,
+                  },
+                  newRange: {
+                      from: newStart,
+                      to: newEnd,
+                  },
+              });
+          });
+      });
+      return simplifyChangedRanges(changes);
   }
 
   function getMarksBetween(from, to, doc) {
@@ -17226,7 +17366,7 @@ img.ProseMirror-separator {
        * @returns The new editor state
        */
       registerPlugin(plugin, handlePlugins) {
-          const plugins = isFunction(handlePlugins)
+          const plugins = isFunction$1(handlePlugins)
               ? handlePlugins(plugin, [...this.state.plugins])
               : [...this.state.plugins, plugin];
           const state = this.state.reconfigure({ plugins });
@@ -17877,10 +18017,40 @@ img.ProseMirror-separator {
       });
   }
 
+  // source: https://stackoverflow.com/a/6969486
+  function escapeForRegEx(string) {
+      return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  }
+
+  /**
+   * Build an paste rule that adds a node when the
+   * matched text is pasted into it.
+   * @see https://tiptap.dev/guide/custom-extensions/#paste-rules
+   */
+  function nodePasteRule(config) {
+      return new PasteRule({
+          find: config.find,
+          handler({ match, chain, range, pasteEvent, }) {
+              const attributes = callOrReturn(config.getAttributes, undefined, match, pasteEvent);
+              const content = callOrReturn(config.getContent, undefined, attributes);
+              if (attributes === false || attributes === null) {
+                  return null;
+              }
+              const node = { type: config.type.name, attrs: attributes };
+              if (content) {
+                  node.content = content;
+              }
+              if (match.input) {
+                  chain().deleteRange(range).insertContentAt(range.from, node);
+              }
+          },
+      });
+  }
+
   /**
    * Matches a blockquote to a `>` as input.
    */
-  const inputRegex$4 = /^\s*>\s$/;
+  const inputRegex$7 = /^\s*>\s$/;
   /**
    * This extension allows you to create blockquotes.
    * @see https://tiptap.dev/api/nodes/blockquote
@@ -17924,7 +18094,7 @@ img.ProseMirror-separator {
       addInputRules() {
           return [
               wrappingInputRule({
-                  find: inputRegex$4,
+                  find: inputRegex$7,
                   type: this.type,
               }),
           ];
@@ -18060,7 +18230,7 @@ img.ProseMirror-separator {
    * for the `textColor` and `backgroundColor` extensions.
    * @see https://www.tiptap.dev/api/marks/text-style
    */
-  const TextStyle$1 = Mark.create({
+  const TextStyle$2 = Mark.create({
       name: 'textStyle',
       priority: 101,
       addOptions() {
@@ -18102,7 +18272,7 @@ img.ProseMirror-separator {
   /**
    * Matches a bullet list to a dash or asterisk.
    */
-  const inputRegex$3 = /^\s*([-+*])\s$/;
+  const inputRegex$6 = /^\s*([-+*])\s$/;
   /**
    * This extension allows you to create bullet lists.
    * This requires the ListItem extension
@@ -18135,7 +18305,7 @@ img.ProseMirror-separator {
           return {
               toggleBulletList: () => ({ commands, chain }) => {
                   if (this.options.keepAttributes) {
-                      return chain().toggleList(this.name, this.options.itemTypeName, this.options.keepMarks).updateAttributes(ListItem$2.name, this.editor.getAttributes(TextStyle$1.name)).run();
+                      return chain().toggleList(this.name, this.options.itemTypeName, this.options.keepMarks).updateAttributes(ListItem$2.name, this.editor.getAttributes(TextStyle$2.name)).run();
                   }
                   return commands.toggleList(this.name, this.options.itemTypeName, this.options.keepMarks);
               },
@@ -18148,16 +18318,16 @@ img.ProseMirror-separator {
       },
       addInputRules() {
           let inputRule = wrappingInputRule({
-              find: inputRegex$3,
+              find: inputRegex$6,
               type: this.type,
           });
           if (this.options.keepMarks || this.options.keepAttributes) {
               inputRule = wrappingInputRule({
-                  find: inputRegex$3,
+                  find: inputRegex$6,
                   type: this.type,
                   keepMarks: this.options.keepMarks,
                   keepAttributes: this.options.keepAttributes,
-                  getAttributes: () => { return this.editor.getAttributes(TextStyle$1.name); },
+                  getAttributes: () => { return this.editor.getAttributes(TextStyle$2.name); },
                   editor: this.editor,
               });
           }
@@ -18170,11 +18340,11 @@ img.ProseMirror-separator {
   /**
    * Matches inline code.
    */
-  const inputRegex$2 = /(?:^|\s)(`(?!\s+`)((?:[^`]+))`(?!\s+`))$/;
+  const inputRegex$5 = /(?:^|\s)(`(?!\s+`)((?:[^`]+))`(?!\s+`))$/;
   /**
    * Matches inline code while pasting.
    */
-  const pasteRegex$1 = /(?:^|\s)(`(?!\s+`)((?:[^`]+))`(?!\s+`))/g;
+  const pasteRegex$2 = /(?:^|\s)(`(?!\s+`)((?:[^`]+))`(?!\s+`))/g;
   /**
    * This extension allows you to mark text as inline code.
    * @see https://tiptap.dev/api/marks/code
@@ -18218,7 +18388,7 @@ img.ProseMirror-separator {
       addInputRules() {
           return [
               markInputRule({
-                  find: inputRegex$2,
+                  find: inputRegex$5,
                   type: this.type,
               }),
           ];
@@ -18226,7 +18396,7 @@ img.ProseMirror-separator {
       addPasteRules() {
           return [
               markPasteRule({
-                  find: pasteRegex$1,
+                  find: pasteRegex$2,
                   type: this.type,
               }),
           ];
@@ -18778,18 +18948,18 @@ img.ProseMirror-separator {
                   return $anchor.pos == $head.pos && GapCursor.valid($head) ? new GapCursor($head) : null;
               },
               handleClick,
-              handleKeyDown,
+              handleKeyDown: handleKeyDown$1,
               handleDOMEvents: { beforeinput: beforeinput }
           }
       });
   }
-  const handleKeyDown = keydownHandler({
-      "ArrowLeft": arrow("horiz", -1),
-      "ArrowRight": arrow("horiz", 1),
-      "ArrowUp": arrow("vert", -1),
-      "ArrowDown": arrow("vert", 1)
+  const handleKeyDown$1 = keydownHandler({
+      "ArrowLeft": arrow$1("horiz", -1),
+      "ArrowRight": arrow$1("horiz", 1),
+      "ArrowUp": arrow$1("vert", -1),
+      "ArrowDown": arrow$1("vert", 1)
   });
-  function arrow(axis, dir) {
+  function arrow$1(axis, dir) {
       const dirStr = axis == "vert" ? (dir > 0 ? "down" : "up") : (dir > 0 ? "right" : "left");
       return function (state, dispatch, view) {
           let sel = state.selection;
@@ -19916,7 +20086,7 @@ img.ProseMirror-separator {
    * for the `textColor` and `backgroundColor` extensions.
    * @see https://www.tiptap.dev/api/marks/text-style
    */
-  const TextStyle = Mark.create({
+  const TextStyle$1 = Mark.create({
       name: 'textStyle',
       priority: 101,
       addOptions() {
@@ -19958,7 +20128,7 @@ img.ProseMirror-separator {
   /**
    * Matches an ordered list to a 1. on input (or any number followed by a dot).
    */
-  const inputRegex$1 = /^(\d+)\.\s$/;
+  const inputRegex$4 = /^(\d+)\.\s$/;
   /**
    * This extension allows you to create ordered lists.
    * This requires the ListItem extension
@@ -20012,7 +20182,7 @@ img.ProseMirror-separator {
           return {
               toggleOrderedList: () => ({ commands, chain }) => {
                   if (this.options.keepAttributes) {
-                      return chain().toggleList(this.name, this.options.itemTypeName, this.options.keepMarks).updateAttributes(ListItem.name, this.editor.getAttributes(TextStyle.name)).run();
+                      return chain().toggleList(this.name, this.options.itemTypeName, this.options.keepMarks).updateAttributes(ListItem.name, this.editor.getAttributes(TextStyle$1.name)).run();
                   }
                   return commands.toggleList(this.name, this.options.itemTypeName, this.options.keepMarks);
               },
@@ -20025,18 +20195,18 @@ img.ProseMirror-separator {
       },
       addInputRules() {
           let inputRule = wrappingInputRule({
-              find: inputRegex$1,
+              find: inputRegex$4,
               type: this.type,
               getAttributes: match => ({ start: +match[1] }),
               joinPredicate: (match, node) => node.childCount + node.attrs.start === +match[1],
           });
           if (this.options.keepMarks || this.options.keepAttributes) {
               inputRule = wrappingInputRule({
-                  find: inputRegex$1,
+                  find: inputRegex$4,
                   type: this.type,
                   keepMarks: this.options.keepMarks,
                   keepAttributes: this.options.keepAttributes,
-                  getAttributes: match => ({ start: +match[1], ...this.editor.getAttributes(TextStyle.name) }),
+                  getAttributes: match => ({ start: +match[1], ...this.editor.getAttributes(TextStyle$1.name) }),
                   joinPredicate: (match, node) => node.childCount + node.attrs.start === +match[1],
                   editor: this.editor,
               });
@@ -20086,11 +20256,11 @@ img.ProseMirror-separator {
   /**
    * Matches a strike to a ~~strike~~ on input.
    */
-  const inputRegex = /(?:^|\s)(~~(?!\s+~~)((?:[^~]+))~~(?!\s+~~))$/;
+  const inputRegex$3 = /(?:^|\s)(~~(?!\s+~~)((?:[^~]+))~~(?!\s+~~))$/;
   /**
    * Matches a strike to a ~~strike~~ on paste.
    */
-  const pasteRegex = /(?:^|\s)(~~(?!\s+~~)((?:[^~]+))~~(?!\s+~~))/g;
+  const pasteRegex$1 = /(?:^|\s)(~~(?!\s+~~)((?:[^~]+))~~(?!\s+~~))/g;
   /**
    * This extension allows you to create strike text.
    * @see https://www.tiptap.dev/api/marks/strike
@@ -20144,7 +20314,7 @@ img.ProseMirror-separator {
       addInputRules() {
           return [
               markInputRule({
-                  find: inputRegex,
+                  find: inputRegex$3,
                   type: this.type,
               }),
           ];
@@ -20152,7 +20322,7 @@ img.ProseMirror-separator {
       addPasteRules() {
           return [
               markPasteRule({
-                  find: pasteRegex,
+                  find: pasteRegex$1,
                   type: this.type,
               }),
           ];
@@ -20163,7 +20333,7 @@ img.ProseMirror-separator {
    * This extension allows you to create text nodes.
    * @see https://www.tiptap.dev/api/nodes/text
    */
-  const Text = Node.create({
+  const Text$1 = Node.create({
       name: 'text',
       group: 'inline',
   });
@@ -20230,16 +20400,8823 @@ img.ProseMirror-separator {
               extensions.push(Strike.configure((_s = this.options) === null || _s === void 0 ? void 0 : _s.strike));
           }
           if (this.options.text !== false) {
-              extensions.push(Text.configure((_t = this.options) === null || _t === void 0 ? void 0 : _t.text));
+              extensions.push(Text$1.configure((_t = this.options) === null || _t === void 0 ? void 0 : _t.text));
           }
           return extensions;
+      },
+  });
+
+  function getDefaultExportFromCjs (x) {
+  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+  }
+
+  /* eslint-disable no-multi-assign */
+
+  function deepFreeze(obj) {
+    if (obj instanceof Map) {
+      obj.clear =
+        obj.delete =
+        obj.set =
+          function () {
+            throw new Error('map is read-only');
+          };
+    } else if (obj instanceof Set) {
+      obj.add =
+        obj.clear =
+        obj.delete =
+          function () {
+            throw new Error('set is read-only');
+          };
+    }
+
+    // Freeze self
+    Object.freeze(obj);
+
+    Object.getOwnPropertyNames(obj).forEach((name) => {
+      const prop = obj[name];
+      const type = typeof prop;
+
+      // Freeze prop if it is an object or function and also not already frozen
+      if ((type === 'object' || type === 'function') && !Object.isFrozen(prop)) {
+        deepFreeze(prop);
+      }
+    });
+
+    return obj;
+  }
+
+  /** @typedef {import('highlight.js').CallbackResponse} CallbackResponse */
+  /** @typedef {import('highlight.js').CompiledMode} CompiledMode */
+  /** @implements CallbackResponse */
+
+  class Response {
+    /**
+     * @param {CompiledMode} mode
+     */
+    constructor(mode) {
+      // eslint-disable-next-line no-undefined
+      if (mode.data === undefined) mode.data = {};
+
+      this.data = mode.data;
+      this.isMatchIgnored = false;
+    }
+
+    ignoreMatch() {
+      this.isMatchIgnored = true;
+    }
+  }
+
+  /**
+   * @param {string} value
+   * @returns {string}
+   */
+  function escapeHTML(value) {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;');
+  }
+
+  /**
+   * performs a shallow merge of multiple objects into one
+   *
+   * @template T
+   * @param {T} original
+   * @param {Record<string,any>[]} objects
+   * @returns {T} a single new object
+   */
+  function inherit$1(original, ...objects) {
+    /** @type Record<string,any> */
+    const result = Object.create(null);
+
+    for (const key in original) {
+      result[key] = original[key];
+    }
+    objects.forEach(function(obj) {
+      for (const key in obj) {
+        result[key] = obj[key];
+      }
+    });
+    return /** @type {T} */ (result);
+  }
+
+  /**
+   * @typedef {object} Renderer
+   * @property {(text: string) => void} addText
+   * @property {(node: Node) => void} openNode
+   * @property {(node: Node) => void} closeNode
+   * @property {() => string} value
+   */
+
+  /** @typedef {{scope?: string, language?: string, sublanguage?: boolean}} Node */
+  /** @typedef {{walk: (r: Renderer) => void}} Tree */
+  /** */
+
+  const SPAN_CLOSE = '</span>';
+
+  /**
+   * Determines if a node needs to be wrapped in <span>
+   *
+   * @param {Node} node */
+  const emitsWrappingTags = (node) => {
+    // rarely we can have a sublanguage where language is undefined
+    // TODO: track down why
+    return !!node.scope;
+  };
+
+  /**
+   *
+   * @param {string} name
+   * @param {{prefix:string}} options
+   */
+  const scopeToCSSClass = (name, { prefix }) => {
+    // sub-language
+    if (name.startsWith("language:")) {
+      return name.replace("language:", "language-");
+    }
+    // tiered scope: comment.line
+    if (name.includes(".")) {
+      const pieces = name.split(".");
+      return [
+        `${prefix}${pieces.shift()}`,
+        ...(pieces.map((x, i) => `${x}${"_".repeat(i + 1)}`))
+      ].join(" ");
+    }
+    // simple scope
+    return `${prefix}${name}`;
+  };
+
+  /** @type {Renderer} */
+  class HTMLRenderer {
+    /**
+     * Creates a new HTMLRenderer
+     *
+     * @param {Tree} parseTree - the parse tree (must support `walk` API)
+     * @param {{classPrefix: string}} options
+     */
+    constructor(parseTree, options) {
+      this.buffer = "";
+      this.classPrefix = options.classPrefix;
+      parseTree.walk(this);
+    }
+
+    /**
+     * Adds texts to the output stream
+     *
+     * @param {string} text */
+    addText(text) {
+      this.buffer += escapeHTML(text);
+    }
+
+    /**
+     * Adds a node open to the output stream (if needed)
+     *
+     * @param {Node} node */
+    openNode(node) {
+      if (!emitsWrappingTags(node)) return;
+
+      const className = scopeToCSSClass(node.scope,
+        { prefix: this.classPrefix });
+      this.span(className);
+    }
+
+    /**
+     * Adds a node close to the output stream (if needed)
+     *
+     * @param {Node} node */
+    closeNode(node) {
+      if (!emitsWrappingTags(node)) return;
+
+      this.buffer += SPAN_CLOSE;
+    }
+
+    /**
+     * returns the accumulated buffer
+    */
+    value() {
+      return this.buffer;
+    }
+
+    // helpers
+
+    /**
+     * Builds a span element
+     *
+     * @param {string} className */
+    span(className) {
+      this.buffer += `<span class="${className}">`;
+    }
+  }
+
+  /** @typedef {{scope?: string, language?: string, children: Node[]} | string} Node */
+  /** @typedef {{scope?: string, language?: string, children: Node[]} } DataNode */
+  /** @typedef {import('highlight.js').Emitter} Emitter */
+  /**  */
+
+  /** @returns {DataNode} */
+  const newNode = (opts = {}) => {
+    /** @type DataNode */
+    const result = { children: [] };
+    Object.assign(result, opts);
+    return result;
+  };
+
+  class TokenTree {
+    constructor() {
+      /** @type DataNode */
+      this.rootNode = newNode();
+      this.stack = [this.rootNode];
+    }
+
+    get top() {
+      return this.stack[this.stack.length - 1];
+    }
+
+    get root() { return this.rootNode; }
+
+    /** @param {Node} node */
+    add(node) {
+      this.top.children.push(node);
+    }
+
+    /** @param {string} scope */
+    openNode(scope) {
+      /** @type Node */
+      const node = newNode({ scope });
+      this.add(node);
+      this.stack.push(node);
+    }
+
+    closeNode() {
+      if (this.stack.length > 1) {
+        return this.stack.pop();
+      }
+      // eslint-disable-next-line no-undefined
+      return undefined;
+    }
+
+    closeAllNodes() {
+      while (this.closeNode());
+    }
+
+    toJSON() {
+      return JSON.stringify(this.rootNode, null, 4);
+    }
+
+    /**
+     * @typedef { import("./html_renderer").Renderer } Renderer
+     * @param {Renderer} builder
+     */
+    walk(builder) {
+      // this does not
+      return this.constructor._walk(builder, this.rootNode);
+      // this works
+      // return TokenTree._walk(builder, this.rootNode);
+    }
+
+    /**
+     * @param {Renderer} builder
+     * @param {Node} node
+     */
+    static _walk(builder, node) {
+      if (typeof node === "string") {
+        builder.addText(node);
+      } else if (node.children) {
+        builder.openNode(node);
+        node.children.forEach((child) => this._walk(builder, child));
+        builder.closeNode(node);
+      }
+      return builder;
+    }
+
+    /**
+     * @param {Node} node
+     */
+    static _collapse(node) {
+      if (typeof node === "string") return;
+      if (!node.children) return;
+
+      if (node.children.every(el => typeof el === "string")) {
+        // node.text = node.children.join("");
+        // delete node.children;
+        node.children = [node.children.join("")];
+      } else {
+        node.children.forEach((child) => {
+          TokenTree._collapse(child);
+        });
+      }
+    }
+  }
+
+  /**
+    Currently this is all private API, but this is the minimal API necessary
+    that an Emitter must implement to fully support the parser.
+
+    Minimal interface:
+
+    - addText(text)
+    - __addSublanguage(emitter, subLanguageName)
+    - startScope(scope)
+    - endScope()
+    - finalize()
+    - toHTML()
+
+  */
+
+  /**
+   * @implements {Emitter}
+   */
+  class TokenTreeEmitter extends TokenTree {
+    /**
+     * @param {*} options
+     */
+    constructor(options) {
+      super();
+      this.options = options;
+    }
+
+    /**
+     * @param {string} text
+     */
+    addText(text) {
+      if (text === "") { return; }
+
+      this.add(text);
+    }
+
+    /** @param {string} scope */
+    startScope(scope) {
+      this.openNode(scope);
+    }
+
+    endScope() {
+      this.closeNode();
+    }
+
+    /**
+     * @param {Emitter & {root: DataNode}} emitter
+     * @param {string} name
+     */
+    __addSublanguage(emitter, name) {
+      /** @type DataNode */
+      const node = emitter.root;
+      if (name) node.scope = `language:${name}`;
+
+      this.add(node);
+    }
+
+    toHTML() {
+      const renderer = new HTMLRenderer(this, this.options);
+      return renderer.value();
+    }
+
+    finalize() {
+      this.closeAllNodes();
+      return true;
+    }
+  }
+
+  /**
+   * @param {string} value
+   * @returns {RegExp}
+   * */
+
+  /**
+   * @param {RegExp | string } re
+   * @returns {string}
+   */
+  function source(re) {
+    if (!re) return null;
+    if (typeof re === "string") return re;
+
+    return re.source;
+  }
+
+  /**
+   * @param {RegExp | string } re
+   * @returns {string}
+   */
+  function lookahead(re) {
+    return concat('(?=', re, ')');
+  }
+
+  /**
+   * @param {RegExp | string } re
+   * @returns {string}
+   */
+  function anyNumberOfTimes(re) {
+    return concat('(?:', re, ')*');
+  }
+
+  /**
+   * @param {RegExp | string } re
+   * @returns {string}
+   */
+  function optional(re) {
+    return concat('(?:', re, ')?');
+  }
+
+  /**
+   * @param {...(RegExp | string) } args
+   * @returns {string}
+   */
+  function concat(...args) {
+    const joined = args.map((x) => source(x)).join("");
+    return joined;
+  }
+
+  /**
+   * @param { Array<string | RegExp | Object> } args
+   * @returns {object}
+   */
+  function stripOptionsFromArgs(args) {
+    const opts = args[args.length - 1];
+
+    if (typeof opts === 'object' && opts.constructor === Object) {
+      args.splice(args.length - 1, 1);
+      return opts;
+    } else {
+      return {};
+    }
+  }
+
+  /** @typedef { {capture?: boolean} } RegexEitherOptions */
+
+  /**
+   * Any of the passed expresssions may match
+   *
+   * Creates a huge this | this | that | that match
+   * @param {(RegExp | string)[] | [...(RegExp | string)[], RegexEitherOptions]} args
+   * @returns {string}
+   */
+  function either(...args) {
+    /** @type { object & {capture?: boolean} }  */
+    const opts = stripOptionsFromArgs(args);
+    const joined = '('
+      + (opts.capture ? "" : "?:")
+      + args.map((x) => source(x)).join("|") + ")";
+    return joined;
+  }
+
+  /**
+   * @param {RegExp | string} re
+   * @returns {number}
+   */
+  function countMatchGroups(re) {
+    return (new RegExp(re.toString() + '|')).exec('').length - 1;
+  }
+
+  /**
+   * Does lexeme start with a regular expression match at the beginning
+   * @param {RegExp} re
+   * @param {string} lexeme
+   */
+  function startsWith(re, lexeme) {
+    const match = re && re.exec(lexeme);
+    return match && match.index === 0;
+  }
+
+  // BACKREF_RE matches an open parenthesis or backreference. To avoid
+  // an incorrect parse, it additionally matches the following:
+  // - [...] elements, where the meaning of parentheses and escapes change
+  // - other escape sequences, so we do not misparse escape sequences as
+  //   interesting elements
+  // - non-matching or lookahead parentheses, which do not capture. These
+  //   follow the '(' with a '?'.
+  const BACKREF_RE = /\[(?:[^\\\]]|\\.)*\]|\(\??|\\([1-9][0-9]*)|\\./;
+
+  // **INTERNAL** Not intended for outside usage
+  // join logically computes regexps.join(separator), but fixes the
+  // backreferences so they continue to match.
+  // it also places each individual regular expression into it's own
+  // match group, keeping track of the sequencing of those match groups
+  // is currently an exercise for the caller. :-)
+  /**
+   * @param {(string | RegExp)[]} regexps
+   * @param {{joinWith: string}} opts
+   * @returns {string}
+   */
+  function _rewriteBackreferences(regexps, { joinWith }) {
+    let numCaptures = 0;
+
+    return regexps.map((regex) => {
+      numCaptures += 1;
+      const offset = numCaptures;
+      let re = source(regex);
+      let out = '';
+
+      while (re.length > 0) {
+        const match = BACKREF_RE.exec(re);
+        if (!match) {
+          out += re;
+          break;
+        }
+        out += re.substring(0, match.index);
+        re = re.substring(match.index + match[0].length);
+        if (match[0][0] === '\\' && match[1]) {
+          // Adjust the backreference.
+          out += '\\' + String(Number(match[1]) + offset);
+        } else {
+          out += match[0];
+          if (match[0] === '(') {
+            numCaptures++;
+          }
+        }
+      }
+      return out;
+    }).map(re => `(${re})`).join(joinWith);
+  }
+
+  /** @typedef {import('highlight.js').Mode} Mode */
+  /** @typedef {import('highlight.js').ModeCallback} ModeCallback */
+
+  // Common regexps
+  const MATCH_NOTHING_RE = /\b\B/;
+  const IDENT_RE = '[a-zA-Z]\\w*';
+  const UNDERSCORE_IDENT_RE = '[a-zA-Z_]\\w*';
+  const NUMBER_RE = '\\b\\d+(\\.\\d+)?';
+  const C_NUMBER_RE = '(-?)(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)'; // 0x..., 0..., decimal, float
+  const BINARY_NUMBER_RE = '\\b(0b[01]+)'; // 0b...
+  const RE_STARTERS_RE = '!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|-|-=|/=|/|:|;|<<|<<=|<=|<|===|==|=|>>>=|>>=|>=|>>>|>>|>|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~';
+
+  /**
+  * @param { Partial<Mode> & {binary?: string | RegExp} } opts
+  */
+  const SHEBANG = (opts = {}) => {
+    const beginShebang = /^#![ ]*\//;
+    if (opts.binary) {
+      opts.begin = concat(
+        beginShebang,
+        /.*\b/,
+        opts.binary,
+        /\b.*/);
+    }
+    return inherit$1({
+      scope: 'meta',
+      begin: beginShebang,
+      end: /$/,
+      relevance: 0,
+      /** @type {ModeCallback} */
+      "on:begin": (m, resp) => {
+        if (m.index !== 0) resp.ignoreMatch();
+      }
+    }, opts);
+  };
+
+  // Common modes
+  const BACKSLASH_ESCAPE = {
+    begin: '\\\\[\\s\\S]', relevance: 0
+  };
+  const APOS_STRING_MODE = {
+    scope: 'string',
+    begin: '\'',
+    end: '\'',
+    illegal: '\\n',
+    contains: [BACKSLASH_ESCAPE]
+  };
+  const QUOTE_STRING_MODE = {
+    scope: 'string',
+    begin: '"',
+    end: '"',
+    illegal: '\\n',
+    contains: [BACKSLASH_ESCAPE]
+  };
+  const PHRASAL_WORDS_MODE = {
+    begin: /\b(a|an|the|are|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such|will|you|your|they|like|more)\b/
+  };
+  /**
+   * Creates a comment mode
+   *
+   * @param {string | RegExp} begin
+   * @param {string | RegExp} end
+   * @param {Mode | {}} [modeOptions]
+   * @returns {Partial<Mode>}
+   */
+  const COMMENT = function(begin, end, modeOptions = {}) {
+    const mode = inherit$1(
+      {
+        scope: 'comment',
+        begin,
+        end,
+        contains: []
+      },
+      modeOptions
+    );
+    mode.contains.push({
+      scope: 'doctag',
+      // hack to avoid the space from being included. the space is necessary to
+      // match here to prevent the plain text rule below from gobbling up doctags
+      begin: '[ ]*(?=(TODO|FIXME|NOTE|BUG|OPTIMIZE|HACK|XXX):)',
+      end: /(TODO|FIXME|NOTE|BUG|OPTIMIZE|HACK|XXX):/,
+      excludeBegin: true,
+      relevance: 0
+    });
+    const ENGLISH_WORD = either(
+      // list of common 1 and 2 letter words in English
+      "I",
+      "a",
+      "is",
+      "so",
+      "us",
+      "to",
+      "at",
+      "if",
+      "in",
+      "it",
+      "on",
+      // note: this is not an exhaustive list of contractions, just popular ones
+      /[A-Za-z]+['](d|ve|re|ll|t|s|n)/, // contractions - can't we'd they're let's, etc
+      /[A-Za-z]+[-][a-z]+/, // `no-way`, etc.
+      /[A-Za-z][a-z]{2,}/ // allow capitalized words at beginning of sentences
+    );
+    // looking like plain text, more likely to be a comment
+    mode.contains.push(
+      {
+        // TODO: how to include ", (, ) without breaking grammars that use these for
+        // comment delimiters?
+        // begin: /[ ]+([()"]?([A-Za-z'-]{3,}|is|a|I|so|us|[tT][oO]|at|if|in|it|on)[.]?[()":]?([.][ ]|[ ]|\))){3}/
+        // ---
+
+        // this tries to find sequences of 3 english words in a row (without any
+        // "programming" type syntax) this gives us a strong signal that we've
+        // TRULY found a comment - vs perhaps scanning with the wrong language.
+        // It's possible to find something that LOOKS like the start of the
+        // comment - but then if there is no readable text - good chance it is a
+        // false match and not a comment.
+        //
+        // for a visual example please see:
+        // https://github.com/highlightjs/highlight.js/issues/2827
+
+        begin: concat(
+          /[ ]+/, // necessary to prevent us gobbling up doctags like /* @author Bob Mcgill */
+          '(',
+          ENGLISH_WORD,
+          /[.]?[:]?([.][ ]|[ ])/,
+          '){3}') // look for 3 words in a row
+      }
+    );
+    return mode;
+  };
+  const C_LINE_COMMENT_MODE = COMMENT('//', '$');
+  const C_BLOCK_COMMENT_MODE = COMMENT('/\\*', '\\*/');
+  const HASH_COMMENT_MODE = COMMENT('#', '$');
+  const NUMBER_MODE = {
+    scope: 'number',
+    begin: NUMBER_RE,
+    relevance: 0
+  };
+  const C_NUMBER_MODE = {
+    scope: 'number',
+    begin: C_NUMBER_RE,
+    relevance: 0
+  };
+  const BINARY_NUMBER_MODE = {
+    scope: 'number',
+    begin: BINARY_NUMBER_RE,
+    relevance: 0
+  };
+  const REGEXP_MODE = {
+    scope: "regexp",
+    begin: /\/(?=[^/\n]*\/)/,
+    end: /\/[gimuy]*/,
+    contains: [
+      BACKSLASH_ESCAPE,
+      {
+        begin: /\[/,
+        end: /\]/,
+        relevance: 0,
+        contains: [BACKSLASH_ESCAPE]
+      }
+    ]
+  };
+  const TITLE_MODE = {
+    scope: 'title',
+    begin: IDENT_RE,
+    relevance: 0
+  };
+  const UNDERSCORE_TITLE_MODE = {
+    scope: 'title',
+    begin: UNDERSCORE_IDENT_RE,
+    relevance: 0
+  };
+  const METHOD_GUARD = {
+    // excludes method names from keyword processing
+    begin: '\\.\\s*' + UNDERSCORE_IDENT_RE,
+    relevance: 0
+  };
+
+  /**
+   * Adds end same as begin mechanics to a mode
+   *
+   * Your mode must include at least a single () match group as that first match
+   * group is what is used for comparison
+   * @param {Partial<Mode>} mode
+   */
+  const END_SAME_AS_BEGIN = function(mode) {
+    return Object.assign(mode,
+      {
+        /** @type {ModeCallback} */
+        'on:begin': (m, resp) => { resp.data._beginMatch = m[1]; },
+        /** @type {ModeCallback} */
+        'on:end': (m, resp) => { if (resp.data._beginMatch !== m[1]) resp.ignoreMatch(); }
+      });
+  };
+
+  var MODES = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    APOS_STRING_MODE: APOS_STRING_MODE,
+    BACKSLASH_ESCAPE: BACKSLASH_ESCAPE,
+    BINARY_NUMBER_MODE: BINARY_NUMBER_MODE,
+    BINARY_NUMBER_RE: BINARY_NUMBER_RE,
+    COMMENT: COMMENT,
+    C_BLOCK_COMMENT_MODE: C_BLOCK_COMMENT_MODE,
+    C_LINE_COMMENT_MODE: C_LINE_COMMENT_MODE,
+    C_NUMBER_MODE: C_NUMBER_MODE,
+    C_NUMBER_RE: C_NUMBER_RE,
+    END_SAME_AS_BEGIN: END_SAME_AS_BEGIN,
+    HASH_COMMENT_MODE: HASH_COMMENT_MODE,
+    IDENT_RE: IDENT_RE,
+    MATCH_NOTHING_RE: MATCH_NOTHING_RE,
+    METHOD_GUARD: METHOD_GUARD,
+    NUMBER_MODE: NUMBER_MODE,
+    NUMBER_RE: NUMBER_RE,
+    PHRASAL_WORDS_MODE: PHRASAL_WORDS_MODE,
+    QUOTE_STRING_MODE: QUOTE_STRING_MODE,
+    REGEXP_MODE: REGEXP_MODE,
+    RE_STARTERS_RE: RE_STARTERS_RE,
+    SHEBANG: SHEBANG,
+    TITLE_MODE: TITLE_MODE,
+    UNDERSCORE_IDENT_RE: UNDERSCORE_IDENT_RE,
+    UNDERSCORE_TITLE_MODE: UNDERSCORE_TITLE_MODE
+  });
+
+  /**
+  @typedef {import('highlight.js').CallbackResponse} CallbackResponse
+  @typedef {import('highlight.js').CompilerExt} CompilerExt
+  */
+
+  // Grammar extensions / plugins
+  // See: https://github.com/highlightjs/highlight.js/issues/2833
+
+  // Grammar extensions allow "syntactic sugar" to be added to the grammar modes
+  // without requiring any underlying changes to the compiler internals.
+
+  // `compileMatch` being the perfect small example of now allowing a grammar
+  // author to write `match` when they desire to match a single expression rather
+  // than being forced to use `begin`.  The extension then just moves `match` into
+  // `begin` when it runs.  Ie, no features have been added, but we've just made
+  // the experience of writing (and reading grammars) a little bit nicer.
+
+  // ------
+
+  // TODO: We need negative look-behind support to do this properly
+  /**
+   * Skip a match if it has a preceding dot
+   *
+   * This is used for `beginKeywords` to prevent matching expressions such as
+   * `bob.keyword.do()`. The mode compiler automatically wires this up as a
+   * special _internal_ 'on:begin' callback for modes with `beginKeywords`
+   * @param {RegExpMatchArray} match
+   * @param {CallbackResponse} response
+   */
+  function skipIfHasPrecedingDot(match, response) {
+    const before = match.input[match.index - 1];
+    if (before === ".") {
+      response.ignoreMatch();
+    }
+  }
+
+  /**
+   *
+   * @type {CompilerExt}
+   */
+  function scopeClassName(mode, _parent) {
+    // eslint-disable-next-line no-undefined
+    if (mode.className !== undefined) {
+      mode.scope = mode.className;
+      delete mode.className;
+    }
+  }
+
+  /**
+   * `beginKeywords` syntactic sugar
+   * @type {CompilerExt}
+   */
+  function beginKeywords(mode, parent) {
+    if (!parent) return;
+    if (!mode.beginKeywords) return;
+
+    // for languages with keywords that include non-word characters checking for
+    // a word boundary is not sufficient, so instead we check for a word boundary
+    // or whitespace - this does no harm in any case since our keyword engine
+    // doesn't allow spaces in keywords anyways and we still check for the boundary
+    // first
+    mode.begin = '\\b(' + mode.beginKeywords.split(' ').join('|') + ')(?!\\.)(?=\\b|\\s)';
+    mode.__beforeBegin = skipIfHasPrecedingDot;
+    mode.keywords = mode.keywords || mode.beginKeywords;
+    delete mode.beginKeywords;
+
+    // prevents double relevance, the keywords themselves provide
+    // relevance, the mode doesn't need to double it
+    // eslint-disable-next-line no-undefined
+    if (mode.relevance === undefined) mode.relevance = 0;
+  }
+
+  /**
+   * Allow `illegal` to contain an array of illegal values
+   * @type {CompilerExt}
+   */
+  function compileIllegal(mode, _parent) {
+    if (!Array.isArray(mode.illegal)) return;
+
+    mode.illegal = either(...mode.illegal);
+  }
+
+  /**
+   * `match` to match a single expression for readability
+   * @type {CompilerExt}
+   */
+  function compileMatch(mode, _parent) {
+    if (!mode.match) return;
+    if (mode.begin || mode.end) throw new Error("begin & end are not supported with match");
+
+    mode.begin = mode.match;
+    delete mode.match;
+  }
+
+  /**
+   * provides the default 1 relevance to all modes
+   * @type {CompilerExt}
+   */
+  function compileRelevance(mode, _parent) {
+    // eslint-disable-next-line no-undefined
+    if (mode.relevance === undefined) mode.relevance = 1;
+  }
+
+  // allow beforeMatch to act as a "qualifier" for the match
+  // the full match begin must be [beforeMatch][begin]
+  const beforeMatchExt = (mode, parent) => {
+    if (!mode.beforeMatch) return;
+    // starts conflicts with endsParent which we need to make sure the child
+    // rule is not matched multiple times
+    if (mode.starts) throw new Error("beforeMatch cannot be used with starts");
+
+    const originalMode = Object.assign({}, mode);
+    Object.keys(mode).forEach((key) => { delete mode[key]; });
+
+    mode.keywords = originalMode.keywords;
+    mode.begin = concat(originalMode.beforeMatch, lookahead(originalMode.begin));
+    mode.starts = {
+      relevance: 0,
+      contains: [
+        Object.assign(originalMode, { endsParent: true })
+      ]
+    };
+    mode.relevance = 0;
+
+    delete originalMode.beforeMatch;
+  };
+
+  // keywords that should have no default relevance value
+  const COMMON_KEYWORDS = [
+    'of',
+    'and',
+    'for',
+    'in',
+    'not',
+    'or',
+    'if',
+    'then',
+    'parent', // common variable name
+    'list', // common variable name
+    'value' // common variable name
+  ];
+
+  const DEFAULT_KEYWORD_SCOPE = "keyword";
+
+  /**
+   * Given raw keywords from a language definition, compile them.
+   *
+   * @param {string | Record<string,string|string[]> | Array<string>} rawKeywords
+   * @param {boolean} caseInsensitive
+   */
+  function compileKeywords(rawKeywords, caseInsensitive, scopeName = DEFAULT_KEYWORD_SCOPE) {
+    /** @type {import("highlight.js/private").KeywordDict} */
+    const compiledKeywords = Object.create(null);
+
+    // input can be a string of keywords, an array of keywords, or a object with
+    // named keys representing scopeName (which can then point to a string or array)
+    if (typeof rawKeywords === 'string') {
+      compileList(scopeName, rawKeywords.split(" "));
+    } else if (Array.isArray(rawKeywords)) {
+      compileList(scopeName, rawKeywords);
+    } else {
+      Object.keys(rawKeywords).forEach(function(scopeName) {
+        // collapse all our objects back into the parent object
+        Object.assign(
+          compiledKeywords,
+          compileKeywords(rawKeywords[scopeName], caseInsensitive, scopeName)
+        );
+      });
+    }
+    return compiledKeywords;
+
+    // ---
+
+    /**
+     * Compiles an individual list of keywords
+     *
+     * Ex: "for if when while|5"
+     *
+     * @param {string} scopeName
+     * @param {Array<string>} keywordList
+     */
+    function compileList(scopeName, keywordList) {
+      if (caseInsensitive) {
+        keywordList = keywordList.map(x => x.toLowerCase());
+      }
+      keywordList.forEach(function(keyword) {
+        const pair = keyword.split('|');
+        compiledKeywords[pair[0]] = [scopeName, scoreForKeyword(pair[0], pair[1])];
+      });
+    }
+  }
+
+  /**
+   * Returns the proper score for a given keyword
+   *
+   * Also takes into account comment keywords, which will be scored 0 UNLESS
+   * another score has been manually assigned.
+   * @param {string} keyword
+   * @param {string} [providedScore]
+   */
+  function scoreForKeyword(keyword, providedScore) {
+    // manual scores always win over common keywords
+    // so you can force a score of 1 if you really insist
+    if (providedScore) {
+      return Number(providedScore);
+    }
+
+    return commonKeyword(keyword) ? 0 : 1;
+  }
+
+  /**
+   * Determines if a given keyword is common or not
+   *
+   * @param {string} keyword */
+  function commonKeyword(keyword) {
+    return COMMON_KEYWORDS.includes(keyword.toLowerCase());
+  }
+
+  /*
+
+  For the reasoning behind this please see:
+  https://github.com/highlightjs/highlight.js/issues/2880#issuecomment-747275419
+
+  */
+
+  /**
+   * @type {Record<string, boolean>}
+   */
+  const seenDeprecations = {};
+
+  /**
+   * @param {string} message
+   */
+  const error = (message) => {
+    console.error(message);
+  };
+
+  /**
+   * @param {string} message
+   * @param {any} args
+   */
+  const warn$1 = (message, ...args) => {
+    console.log(`WARN: ${message}`, ...args);
+  };
+
+  /**
+   * @param {string} version
+   * @param {string} message
+   */
+  const deprecated = (version, message) => {
+    if (seenDeprecations[`${version}/${message}`]) return;
+
+    console.log(`Deprecated as of ${version}. ${message}`);
+    seenDeprecations[`${version}/${message}`] = true;
+  };
+
+  /* eslint-disable no-throw-literal */
+
+  /**
+  @typedef {import('highlight.js').CompiledMode} CompiledMode
+  */
+
+  const MultiClassError = new Error();
+
+  /**
+   * Renumbers labeled scope names to account for additional inner match
+   * groups that otherwise would break everything.
+   *
+   * Lets say we 3 match scopes:
+   *
+   *   { 1 => ..., 2 => ..., 3 => ... }
+   *
+   * So what we need is a clean match like this:
+   *
+   *   (a)(b)(c) => [ "a", "b", "c" ]
+   *
+   * But this falls apart with inner match groups:
+   *
+   * (a)(((b)))(c) => ["a", "b", "b", "b", "c" ]
+   *
+   * Our scopes are now "out of alignment" and we're repeating `b` 3 times.
+   * What needs to happen is the numbers are remapped:
+   *
+   *   { 1 => ..., 2 => ..., 5 => ... }
+   *
+   * We also need to know that the ONLY groups that should be output
+   * are 1, 2, and 5.  This function handles this behavior.
+   *
+   * @param {CompiledMode} mode
+   * @param {Array<RegExp | string>} regexes
+   * @param {{key: "beginScope"|"endScope"}} opts
+   */
+  function remapScopeNames(mode, regexes, { key }) {
+    let offset = 0;
+    const scopeNames = mode[key];
+    /** @type Record<number,boolean> */
+    const emit = {};
+    /** @type Record<number,string> */
+    const positions = {};
+
+    for (let i = 1; i <= regexes.length; i++) {
+      positions[i + offset] = scopeNames[i];
+      emit[i + offset] = true;
+      offset += countMatchGroups(regexes[i - 1]);
+    }
+    // we use _emit to keep track of which match groups are "top-level" to avoid double
+    // output from inside match groups
+    mode[key] = positions;
+    mode[key]._emit = emit;
+    mode[key]._multi = true;
+  }
+
+  /**
+   * @param {CompiledMode} mode
+   */
+  function beginMultiClass(mode) {
+    if (!Array.isArray(mode.begin)) return;
+
+    if (mode.skip || mode.excludeBegin || mode.returnBegin) {
+      error("skip, excludeBegin, returnBegin not compatible with beginScope: {}");
+      throw MultiClassError;
+    }
+
+    if (typeof mode.beginScope !== "object" || mode.beginScope === null) {
+      error("beginScope must be object");
+      throw MultiClassError;
+    }
+
+    remapScopeNames(mode, mode.begin, { key: "beginScope" });
+    mode.begin = _rewriteBackreferences(mode.begin, { joinWith: "" });
+  }
+
+  /**
+   * @param {CompiledMode} mode
+   */
+  function endMultiClass(mode) {
+    if (!Array.isArray(mode.end)) return;
+
+    if (mode.skip || mode.excludeEnd || mode.returnEnd) {
+      error("skip, excludeEnd, returnEnd not compatible with endScope: {}");
+      throw MultiClassError;
+    }
+
+    if (typeof mode.endScope !== "object" || mode.endScope === null) {
+      error("endScope must be object");
+      throw MultiClassError;
+    }
+
+    remapScopeNames(mode, mode.end, { key: "endScope" });
+    mode.end = _rewriteBackreferences(mode.end, { joinWith: "" });
+  }
+
+  /**
+   * this exists only to allow `scope: {}` to be used beside `match:`
+   * Otherwise `beginScope` would necessary and that would look weird
+
+    {
+      match: [ /def/, /\w+/ ]
+      scope: { 1: "keyword" , 2: "title" }
+    }
+
+   * @param {CompiledMode} mode
+   */
+  function scopeSugar(mode) {
+    if (mode.scope && typeof mode.scope === "object" && mode.scope !== null) {
+      mode.beginScope = mode.scope;
+      delete mode.scope;
+    }
+  }
+
+  /**
+   * @param {CompiledMode} mode
+   */
+  function MultiClass(mode) {
+    scopeSugar(mode);
+
+    if (typeof mode.beginScope === "string") {
+      mode.beginScope = { _wrap: mode.beginScope };
+    }
+    if (typeof mode.endScope === "string") {
+      mode.endScope = { _wrap: mode.endScope };
+    }
+
+    beginMultiClass(mode);
+    endMultiClass(mode);
+  }
+
+  /**
+  @typedef {import('highlight.js').Mode} Mode
+  @typedef {import('highlight.js').CompiledMode} CompiledMode
+  @typedef {import('highlight.js').Language} Language
+  @typedef {import('highlight.js').HLJSPlugin} HLJSPlugin
+  @typedef {import('highlight.js').CompiledLanguage} CompiledLanguage
+  */
+
+  // compilation
+
+  /**
+   * Compiles a language definition result
+   *
+   * Given the raw result of a language definition (Language), compiles this so
+   * that it is ready for highlighting code.
+   * @param {Language} language
+   * @returns {CompiledLanguage}
+   */
+  function compileLanguage(language) {
+    /**
+     * Builds a regex with the case sensitivity of the current language
+     *
+     * @param {RegExp | string} value
+     * @param {boolean} [global]
+     */
+    function langRe(value, global) {
+      return new RegExp(
+        source(value),
+        'm'
+        + (language.case_insensitive ? 'i' : '')
+        + (language.unicodeRegex ? 'u' : '')
+        + (global ? 'g' : '')
+      );
+    }
+
+    /**
+      Stores multiple regular expressions and allows you to quickly search for
+      them all in a string simultaneously - returning the first match.  It does
+      this by creating a huge (a|b|c) regex - each individual item wrapped with ()
+      and joined by `|` - using match groups to track position.  When a match is
+      found checking which position in the array has content allows us to figure
+      out which of the original regexes / match groups triggered the match.
+
+      The match object itself (the result of `Regex.exec`) is returned but also
+      enhanced by merging in any meta-data that was registered with the regex.
+      This is how we keep track of which mode matched, and what type of rule
+      (`illegal`, `begin`, end, etc).
+    */
+    class MultiRegex {
+      constructor() {
+        this.matchIndexes = {};
+        // @ts-ignore
+        this.regexes = [];
+        this.matchAt = 1;
+        this.position = 0;
+      }
+
+      // @ts-ignore
+      addRule(re, opts) {
+        opts.position = this.position++;
+        // @ts-ignore
+        this.matchIndexes[this.matchAt] = opts;
+        this.regexes.push([opts, re]);
+        this.matchAt += countMatchGroups(re) + 1;
+      }
+
+      compile() {
+        if (this.regexes.length === 0) {
+          // avoids the need to check length every time exec is called
+          // @ts-ignore
+          this.exec = () => null;
+        }
+        const terminators = this.regexes.map(el => el[1]);
+        this.matcherRe = langRe(_rewriteBackreferences(terminators, { joinWith: '|' }), true);
+        this.lastIndex = 0;
+      }
+
+      /** @param {string} s */
+      exec(s) {
+        this.matcherRe.lastIndex = this.lastIndex;
+        const match = this.matcherRe.exec(s);
+        if (!match) { return null; }
+
+        // eslint-disable-next-line no-undefined
+        const i = match.findIndex((el, i) => i > 0 && el !== undefined);
+        // @ts-ignore
+        const matchData = this.matchIndexes[i];
+        // trim off any earlier non-relevant match groups (ie, the other regex
+        // match groups that make up the multi-matcher)
+        match.splice(0, i);
+
+        return Object.assign(match, matchData);
+      }
+    }
+
+    /*
+      Created to solve the key deficiently with MultiRegex - there is no way to
+      test for multiple matches at a single location.  Why would we need to do
+      that?  In the future a more dynamic engine will allow certain matches to be
+      ignored.  An example: if we matched say the 3rd regex in a large group but
+      decided to ignore it - we'd need to started testing again at the 4th
+      regex... but MultiRegex itself gives us no real way to do that.
+
+      So what this class creates MultiRegexs on the fly for whatever search
+      position they are needed.
+
+      NOTE: These additional MultiRegex objects are created dynamically.  For most
+      grammars most of the time we will never actually need anything more than the
+      first MultiRegex - so this shouldn't have too much overhead.
+
+      Say this is our search group, and we match regex3, but wish to ignore it.
+
+        regex1 | regex2 | regex3 | regex4 | regex5    ' ie, startAt = 0
+
+      What we need is a new MultiRegex that only includes the remaining
+      possibilities:
+
+        regex4 | regex5                               ' ie, startAt = 3
+
+      This class wraps all that complexity up in a simple API... `startAt` decides
+      where in the array of expressions to start doing the matching. It
+      auto-increments, so if a match is found at position 2, then startAt will be
+      set to 3.  If the end is reached startAt will return to 0.
+
+      MOST of the time the parser will be setting startAt manually to 0.
+    */
+    class ResumableMultiRegex {
+      constructor() {
+        // @ts-ignore
+        this.rules = [];
+        // @ts-ignore
+        this.multiRegexes = [];
+        this.count = 0;
+
+        this.lastIndex = 0;
+        this.regexIndex = 0;
+      }
+
+      // @ts-ignore
+      getMatcher(index) {
+        if (this.multiRegexes[index]) return this.multiRegexes[index];
+
+        const matcher = new MultiRegex();
+        this.rules.slice(index).forEach(([re, opts]) => matcher.addRule(re, opts));
+        matcher.compile();
+        this.multiRegexes[index] = matcher;
+        return matcher;
+      }
+
+      resumingScanAtSamePosition() {
+        return this.regexIndex !== 0;
+      }
+
+      considerAll() {
+        this.regexIndex = 0;
+      }
+
+      // @ts-ignore
+      addRule(re, opts) {
+        this.rules.push([re, opts]);
+        if (opts.type === "begin") this.count++;
+      }
+
+      /** @param {string} s */
+      exec(s) {
+        const m = this.getMatcher(this.regexIndex);
+        m.lastIndex = this.lastIndex;
+        let result = m.exec(s);
+
+        // The following is because we have no easy way to say "resume scanning at the
+        // existing position but also skip the current rule ONLY". What happens is
+        // all prior rules are also skipped which can result in matching the wrong
+        // thing. Example of matching "booger":
+
+        // our matcher is [string, "booger", number]
+        //
+        // ....booger....
+
+        // if "booger" is ignored then we'd really need a regex to scan from the
+        // SAME position for only: [string, number] but ignoring "booger" (if it
+        // was the first match), a simple resume would scan ahead who knows how
+        // far looking only for "number", ignoring potential string matches (or
+        // future "booger" matches that might be valid.)
+
+        // So what we do: We execute two matchers, one resuming at the same
+        // position, but the second full matcher starting at the position after:
+
+        //     /--- resume first regex match here (for [number])
+        //     |/---- full match here for [string, "booger", number]
+        //     vv
+        // ....booger....
+
+        // Which ever results in a match first is then used. So this 3-4 step
+        // process essentially allows us to say "match at this position, excluding
+        // a prior rule that was ignored".
+        //
+        // 1. Match "booger" first, ignore. Also proves that [string] does non match.
+        // 2. Resume matching for [number]
+        // 3. Match at index + 1 for [string, "booger", number]
+        // 4. If #2 and #3 result in matches, which came first?
+        if (this.resumingScanAtSamePosition()) {
+          if (result && result.index === this.lastIndex) ; else { // use the second matcher result
+            const m2 = this.getMatcher(0);
+            m2.lastIndex = this.lastIndex + 1;
+            result = m2.exec(s);
+          }
+        }
+
+        if (result) {
+          this.regexIndex += result.position + 1;
+          if (this.regexIndex === this.count) {
+            // wrap-around to considering all matches again
+            this.considerAll();
+          }
+        }
+
+        return result;
+      }
+    }
+
+    /**
+     * Given a mode, builds a huge ResumableMultiRegex that can be used to walk
+     * the content and find matches.
+     *
+     * @param {CompiledMode} mode
+     * @returns {ResumableMultiRegex}
+     */
+    function buildModeRegex(mode) {
+      const mm = new ResumableMultiRegex();
+
+      mode.contains.forEach(term => mm.addRule(term.begin, { rule: term, type: "begin" }));
+
+      if (mode.terminatorEnd) {
+        mm.addRule(mode.terminatorEnd, { type: "end" });
+      }
+      if (mode.illegal) {
+        mm.addRule(mode.illegal, { type: "illegal" });
+      }
+
+      return mm;
+    }
+
+    /** skip vs abort vs ignore
+     *
+     * @skip   - The mode is still entered and exited normally (and contains rules apply),
+     *           but all content is held and added to the parent buffer rather than being
+     *           output when the mode ends.  Mostly used with `sublanguage` to build up
+     *           a single large buffer than can be parsed by sublanguage.
+     *
+     *             - The mode begin ands ends normally.
+     *             - Content matched is added to the parent mode buffer.
+     *             - The parser cursor is moved forward normally.
+     *
+     * @abort  - A hack placeholder until we have ignore.  Aborts the mode (as if it
+     *           never matched) but DOES NOT continue to match subsequent `contains`
+     *           modes.  Abort is bad/suboptimal because it can result in modes
+     *           farther down not getting applied because an earlier rule eats the
+     *           content but then aborts.
+     *
+     *             - The mode does not begin.
+     *             - Content matched by `begin` is added to the mode buffer.
+     *             - The parser cursor is moved forward accordingly.
+     *
+     * @ignore - Ignores the mode (as if it never matched) and continues to match any
+     *           subsequent `contains` modes.  Ignore isn't technically possible with
+     *           the current parser implementation.
+     *
+     *             - The mode does not begin.
+     *             - Content matched by `begin` is ignored.
+     *             - The parser cursor is not moved forward.
+     */
+
+    /**
+     * Compiles an individual mode
+     *
+     * This can raise an error if the mode contains certain detectable known logic
+     * issues.
+     * @param {Mode} mode
+     * @param {CompiledMode | null} [parent]
+     * @returns {CompiledMode | never}
+     */
+    function compileMode(mode, parent) {
+      const cmode = /** @type CompiledMode */ (mode);
+      if (mode.isCompiled) return cmode;
+
+      [
+        scopeClassName,
+        // do this early so compiler extensions generally don't have to worry about
+        // the distinction between match/begin
+        compileMatch,
+        MultiClass,
+        beforeMatchExt
+      ].forEach(ext => ext(mode, parent));
+
+      language.compilerExtensions.forEach(ext => ext(mode, parent));
+
+      // __beforeBegin is considered private API, internal use only
+      mode.__beforeBegin = null;
+
+      [
+        beginKeywords,
+        // do this later so compiler extensions that come earlier have access to the
+        // raw array if they wanted to perhaps manipulate it, etc.
+        compileIllegal,
+        // default to 1 relevance if not specified
+        compileRelevance
+      ].forEach(ext => ext(mode, parent));
+
+      mode.isCompiled = true;
+
+      let keywordPattern = null;
+      if (typeof mode.keywords === "object" && mode.keywords.$pattern) {
+        // we need a copy because keywords might be compiled multiple times
+        // so we can't go deleting $pattern from the original on the first
+        // pass
+        mode.keywords = Object.assign({}, mode.keywords);
+        keywordPattern = mode.keywords.$pattern;
+        delete mode.keywords.$pattern;
+      }
+      keywordPattern = keywordPattern || /\w+/;
+
+      if (mode.keywords) {
+        mode.keywords = compileKeywords(mode.keywords, language.case_insensitive);
+      }
+
+      cmode.keywordPatternRe = langRe(keywordPattern, true);
+
+      if (parent) {
+        if (!mode.begin) mode.begin = /\B|\b/;
+        cmode.beginRe = langRe(cmode.begin);
+        if (!mode.end && !mode.endsWithParent) mode.end = /\B|\b/;
+        if (mode.end) cmode.endRe = langRe(cmode.end);
+        cmode.terminatorEnd = source(cmode.end) || '';
+        if (mode.endsWithParent && parent.terminatorEnd) {
+          cmode.terminatorEnd += (mode.end ? '|' : '') + parent.terminatorEnd;
+        }
+      }
+      if (mode.illegal) cmode.illegalRe = langRe(/** @type {RegExp | string} */ (mode.illegal));
+      if (!mode.contains) mode.contains = [];
+
+      mode.contains = [].concat(...mode.contains.map(function(c) {
+        return expandOrCloneMode(c === 'self' ? mode : c);
+      }));
+      mode.contains.forEach(function(c) { compileMode(/** @type Mode */ (c), cmode); });
+
+      if (mode.starts) {
+        compileMode(mode.starts, parent);
+      }
+
+      cmode.matcher = buildModeRegex(cmode);
+      return cmode;
+    }
+
+    if (!language.compilerExtensions) language.compilerExtensions = [];
+
+    // self is not valid at the top-level
+    if (language.contains && language.contains.includes('self')) {
+      throw new Error("ERR: contains `self` is not supported at the top-level of a language.  See documentation.");
+    }
+
+    // we need a null object, which inherit will guarantee
+    language.classNameAliases = inherit$1(language.classNameAliases || {});
+
+    return compileMode(/** @type Mode */ (language));
+  }
+
+  /**
+   * Determines if a mode has a dependency on it's parent or not
+   *
+   * If a mode does have a parent dependency then often we need to clone it if
+   * it's used in multiple places so that each copy points to the correct parent,
+   * where-as modes without a parent can often safely be re-used at the bottom of
+   * a mode chain.
+   *
+   * @param {Mode | null} mode
+   * @returns {boolean} - is there a dependency on the parent?
+   * */
+  function dependencyOnParent(mode) {
+    if (!mode) return false;
+
+    return mode.endsWithParent || dependencyOnParent(mode.starts);
+  }
+
+  /**
+   * Expands a mode or clones it if necessary
+   *
+   * This is necessary for modes with parental dependenceis (see notes on
+   * `dependencyOnParent`) and for nodes that have `variants` - which must then be
+   * exploded into their own individual modes at compile time.
+   *
+   * @param {Mode} mode
+   * @returns {Mode | Mode[]}
+   * */
+  function expandOrCloneMode(mode) {
+    if (mode.variants && !mode.cachedVariants) {
+      mode.cachedVariants = mode.variants.map(function(variant) {
+        return inherit$1(mode, { variants: null }, variant);
+      });
+    }
+
+    // EXPAND
+    // if we have variants then essentially "replace" the mode with the variants
+    // this happens in compileMode, where this function is called from
+    if (mode.cachedVariants) {
+      return mode.cachedVariants;
+    }
+
+    // CLONE
+    // if we have dependencies on parents then we need a unique
+    // instance of ourselves, so we can be reused with many
+    // different parents without issue
+    if (dependencyOnParent(mode)) {
+      return inherit$1(mode, { starts: mode.starts ? inherit$1(mode.starts) : null });
+    }
+
+    if (Object.isFrozen(mode)) {
+      return inherit$1(mode);
+    }
+
+    // no special dependency issues, just return ourselves
+    return mode;
+  }
+
+  var version = "11.10.0";
+
+  class HTMLInjectionError extends Error {
+    constructor(reason, html) {
+      super(reason);
+      this.name = "HTMLInjectionError";
+      this.html = html;
+    }
+  }
+
+  /*
+  Syntax highlighting with language autodetection.
+  https://highlightjs.org/
+  */
+
+
+
+  /**
+  @typedef {import('highlight.js').Mode} Mode
+  @typedef {import('highlight.js').CompiledMode} CompiledMode
+  @typedef {import('highlight.js').CompiledScope} CompiledScope
+  @typedef {import('highlight.js').Language} Language
+  @typedef {import('highlight.js').HLJSApi} HLJSApi
+  @typedef {import('highlight.js').HLJSPlugin} HLJSPlugin
+  @typedef {import('highlight.js').PluginEvent} PluginEvent
+  @typedef {import('highlight.js').HLJSOptions} HLJSOptions
+  @typedef {import('highlight.js').LanguageFn} LanguageFn
+  @typedef {import('highlight.js').HighlightedHTMLElement} HighlightedHTMLElement
+  @typedef {import('highlight.js').BeforeHighlightContext} BeforeHighlightContext
+  @typedef {import('highlight.js/private').MatchType} MatchType
+  @typedef {import('highlight.js/private').KeywordData} KeywordData
+  @typedef {import('highlight.js/private').EnhancedMatch} EnhancedMatch
+  @typedef {import('highlight.js/private').AnnotatedError} AnnotatedError
+  @typedef {import('highlight.js').AutoHighlightResult} AutoHighlightResult
+  @typedef {import('highlight.js').HighlightOptions} HighlightOptions
+  @typedef {import('highlight.js').HighlightResult} HighlightResult
+  */
+
+
+  const escape = escapeHTML;
+  const inherit = inherit$1;
+  const NO_MATCH = Symbol("nomatch");
+  const MAX_KEYWORD_HITS = 7;
+
+  /**
+   * @param {any} hljs - object that is extended (legacy)
+   * @returns {HLJSApi}
+   */
+  const HLJS = function(hljs) {
+    // Global internal variables used within the highlight.js library.
+    /** @type {Record<string, Language>} */
+    const languages = Object.create(null);
+    /** @type {Record<string, string>} */
+    const aliases = Object.create(null);
+    /** @type {HLJSPlugin[]} */
+    const plugins = [];
+
+    // safe/production mode - swallows more errors, tries to keep running
+    // even if a single syntax or parse hits a fatal error
+    let SAFE_MODE = true;
+    const LANGUAGE_NOT_FOUND = "Could not find the language '{}', did you forget to load/include a language module?";
+    /** @type {Language} */
+    const PLAINTEXT_LANGUAGE = { disableAutodetect: true, name: 'Plain text', contains: [] };
+
+    // Global options used when within external APIs. This is modified when
+    // calling the `hljs.configure` function.
+    /** @type HLJSOptions */
+    let options = {
+      ignoreUnescapedHTML: false,
+      throwUnescapedHTML: false,
+      noHighlightRe: /^(no-?highlight)$/i,
+      languageDetectRe: /\blang(?:uage)?-([\w-]+)\b/i,
+      classPrefix: 'hljs-',
+      cssSelector: 'pre code',
+      languages: null,
+      // beta configuration options, subject to change, welcome to discuss
+      // https://github.com/highlightjs/highlight.js/issues/1086
+      __emitter: TokenTreeEmitter
+    };
+
+    /* Utility functions */
+
+    /**
+     * Tests a language name to see if highlighting should be skipped
+     * @param {string} languageName
+     */
+    function shouldNotHighlight(languageName) {
+      return options.noHighlightRe.test(languageName);
+    }
+
+    /**
+     * @param {HighlightedHTMLElement} block - the HTML element to determine language for
+     */
+    function blockLanguage(block) {
+      let classes = block.className + ' ';
+
+      classes += block.parentNode ? block.parentNode.className : '';
+
+      // language-* takes precedence over non-prefixed class names.
+      const match = options.languageDetectRe.exec(classes);
+      if (match) {
+        const language = getLanguage(match[1]);
+        if (!language) {
+          warn$1(LANGUAGE_NOT_FOUND.replace("{}", match[1]));
+          warn$1("Falling back to no-highlight mode for this block.", block);
+        }
+        return language ? match[1] : 'no-highlight';
+      }
+
+      return classes
+        .split(/\s+/)
+        .find((_class) => shouldNotHighlight(_class) || getLanguage(_class));
+    }
+
+    /**
+     * Core highlighting function.
+     *
+     * OLD API
+     * highlight(lang, code, ignoreIllegals, continuation)
+     *
+     * NEW API
+     * highlight(code, {lang, ignoreIllegals})
+     *
+     * @param {string} codeOrLanguageName - the language to use for highlighting
+     * @param {string | HighlightOptions} optionsOrCode - the code to highlight
+     * @param {boolean} [ignoreIllegals] - whether to ignore illegal matches, default is to bail
+     *
+     * @returns {HighlightResult} Result - an object that represents the result
+     * @property {string} language - the language name
+     * @property {number} relevance - the relevance score
+     * @property {string} value - the highlighted HTML code
+     * @property {string} code - the original raw code
+     * @property {CompiledMode} top - top of the current mode stack
+     * @property {boolean} illegal - indicates whether any illegal matches were found
+    */
+    function highlight(codeOrLanguageName, optionsOrCode, ignoreIllegals) {
+      let code = "";
+      let languageName = "";
+      if (typeof optionsOrCode === "object") {
+        code = codeOrLanguageName;
+        ignoreIllegals = optionsOrCode.ignoreIllegals;
+        languageName = optionsOrCode.language;
+      } else {
+        // old API
+        deprecated("10.7.0", "highlight(lang, code, ...args) has been deprecated.");
+        deprecated("10.7.0", "Please use highlight(code, options) instead.\nhttps://github.com/highlightjs/highlight.js/issues/2277");
+        languageName = codeOrLanguageName;
+        code = optionsOrCode;
+      }
+
+      // https://github.com/highlightjs/highlight.js/issues/3149
+      // eslint-disable-next-line no-undefined
+      if (ignoreIllegals === undefined) { ignoreIllegals = true; }
+
+      /** @type {BeforeHighlightContext} */
+      const context = {
+        code,
+        language: languageName
+      };
+      // the plugin can change the desired language or the code to be highlighted
+      // just be changing the object it was passed
+      fire("before:highlight", context);
+
+      // a before plugin can usurp the result completely by providing it's own
+      // in which case we don't even need to call highlight
+      const result = context.result
+        ? context.result
+        : _highlight(context.language, context.code, ignoreIllegals);
+
+      result.code = context.code;
+      // the plugin can change anything in result to suite it
+      fire("after:highlight", result);
+
+      return result;
+    }
+
+    /**
+     * private highlight that's used internally and does not fire callbacks
+     *
+     * @param {string} languageName - the language to use for highlighting
+     * @param {string} codeToHighlight - the code to highlight
+     * @param {boolean?} [ignoreIllegals] - whether to ignore illegal matches, default is to bail
+     * @param {CompiledMode?} [continuation] - current continuation mode, if any
+     * @returns {HighlightResult} - result of the highlight operation
+    */
+    function _highlight(languageName, codeToHighlight, ignoreIllegals, continuation) {
+      const keywordHits = Object.create(null);
+
+      /**
+       * Return keyword data if a match is a keyword
+       * @param {CompiledMode} mode - current mode
+       * @param {string} matchText - the textual match
+       * @returns {KeywordData | false}
+       */
+      function keywordData(mode, matchText) {
+        return mode.keywords[matchText];
+      }
+
+      function processKeywords() {
+        if (!top.keywords) {
+          emitter.addText(modeBuffer);
+          return;
+        }
+
+        let lastIndex = 0;
+        top.keywordPatternRe.lastIndex = 0;
+        let match = top.keywordPatternRe.exec(modeBuffer);
+        let buf = "";
+
+        while (match) {
+          buf += modeBuffer.substring(lastIndex, match.index);
+          const word = language.case_insensitive ? match[0].toLowerCase() : match[0];
+          const data = keywordData(top, word);
+          if (data) {
+            const [kind, keywordRelevance] = data;
+            emitter.addText(buf);
+            buf = "";
+
+            keywordHits[word] = (keywordHits[word] || 0) + 1;
+            if (keywordHits[word] <= MAX_KEYWORD_HITS) relevance += keywordRelevance;
+            if (kind.startsWith("_")) {
+              // _ implied for relevance only, do not highlight
+              // by applying a class name
+              buf += match[0];
+            } else {
+              const cssClass = language.classNameAliases[kind] || kind;
+              emitKeyword(match[0], cssClass);
+            }
+          } else {
+            buf += match[0];
+          }
+          lastIndex = top.keywordPatternRe.lastIndex;
+          match = top.keywordPatternRe.exec(modeBuffer);
+        }
+        buf += modeBuffer.substring(lastIndex);
+        emitter.addText(buf);
+      }
+
+      function processSubLanguage() {
+        if (modeBuffer === "") return;
+        /** @type HighlightResult */
+        let result = null;
+
+        if (typeof top.subLanguage === 'string') {
+          if (!languages[top.subLanguage]) {
+            emitter.addText(modeBuffer);
+            return;
+          }
+          result = _highlight(top.subLanguage, modeBuffer, true, continuations[top.subLanguage]);
+          continuations[top.subLanguage] = /** @type {CompiledMode} */ (result._top);
+        } else {
+          result = highlightAuto(modeBuffer, top.subLanguage.length ? top.subLanguage : null);
+        }
+
+        // Counting embedded language score towards the host language may be disabled
+        // with zeroing the containing mode relevance. Use case in point is Markdown that
+        // allows XML everywhere and makes every XML snippet to have a much larger Markdown
+        // score.
+        if (top.relevance > 0) {
+          relevance += result.relevance;
+        }
+        emitter.__addSublanguage(result._emitter, result.language);
+      }
+
+      function processBuffer() {
+        if (top.subLanguage != null) {
+          processSubLanguage();
+        } else {
+          processKeywords();
+        }
+        modeBuffer = '';
+      }
+
+      /**
+       * @param {string} text
+       * @param {string} scope
+       */
+      function emitKeyword(keyword, scope) {
+        if (keyword === "") return;
+
+        emitter.startScope(scope);
+        emitter.addText(keyword);
+        emitter.endScope();
+      }
+
+      /**
+       * @param {CompiledScope} scope
+       * @param {RegExpMatchArray} match
+       */
+      function emitMultiClass(scope, match) {
+        let i = 1;
+        const max = match.length - 1;
+        while (i <= max) {
+          if (!scope._emit[i]) { i++; continue; }
+          const klass = language.classNameAliases[scope[i]] || scope[i];
+          const text = match[i];
+          if (klass) {
+            emitKeyword(text, klass);
+          } else {
+            modeBuffer = text;
+            processKeywords();
+            modeBuffer = "";
+          }
+          i++;
+        }
+      }
+
+      /**
+       * @param {CompiledMode} mode - new mode to start
+       * @param {RegExpMatchArray} match
+       */
+      function startNewMode(mode, match) {
+        if (mode.scope && typeof mode.scope === "string") {
+          emitter.openNode(language.classNameAliases[mode.scope] || mode.scope);
+        }
+        if (mode.beginScope) {
+          // beginScope just wraps the begin match itself in a scope
+          if (mode.beginScope._wrap) {
+            emitKeyword(modeBuffer, language.classNameAliases[mode.beginScope._wrap] || mode.beginScope._wrap);
+            modeBuffer = "";
+          } else if (mode.beginScope._multi) {
+            // at this point modeBuffer should just be the match
+            emitMultiClass(mode.beginScope, match);
+            modeBuffer = "";
+          }
+        }
+
+        top = Object.create(mode, { parent: { value: top } });
+        return top;
+      }
+
+      /**
+       * @param {CompiledMode } mode - the mode to potentially end
+       * @param {RegExpMatchArray} match - the latest match
+       * @param {string} matchPlusRemainder - match plus remainder of content
+       * @returns {CompiledMode | void} - the next mode, or if void continue on in current mode
+       */
+      function endOfMode(mode, match, matchPlusRemainder) {
+        let matched = startsWith(mode.endRe, matchPlusRemainder);
+
+        if (matched) {
+          if (mode["on:end"]) {
+            const resp = new Response(mode);
+            mode["on:end"](match, resp);
+            if (resp.isMatchIgnored) matched = false;
+          }
+
+          if (matched) {
+            while (mode.endsParent && mode.parent) {
+              mode = mode.parent;
+            }
+            return mode;
+          }
+        }
+        // even if on:end fires an `ignore` it's still possible
+        // that we might trigger the end node because of a parent mode
+        if (mode.endsWithParent) {
+          return endOfMode(mode.parent, match, matchPlusRemainder);
+        }
+      }
+
+      /**
+       * Handle matching but then ignoring a sequence of text
+       *
+       * @param {string} lexeme - string containing full match text
+       */
+      function doIgnore(lexeme) {
+        if (top.matcher.regexIndex === 0) {
+          // no more regexes to potentially match here, so we move the cursor forward one
+          // space
+          modeBuffer += lexeme[0];
+          return 1;
+        } else {
+          // no need to move the cursor, we still have additional regexes to try and
+          // match at this very spot
+          resumeScanAtSamePosition = true;
+          return 0;
+        }
+      }
+
+      /**
+       * Handle the start of a new potential mode match
+       *
+       * @param {EnhancedMatch} match - the current match
+       * @returns {number} how far to advance the parse cursor
+       */
+      function doBeginMatch(match) {
+        const lexeme = match[0];
+        const newMode = match.rule;
+
+        const resp = new Response(newMode);
+        // first internal before callbacks, then the public ones
+        const beforeCallbacks = [newMode.__beforeBegin, newMode["on:begin"]];
+        for (const cb of beforeCallbacks) {
+          if (!cb) continue;
+          cb(match, resp);
+          if (resp.isMatchIgnored) return doIgnore(lexeme);
+        }
+
+        if (newMode.skip) {
+          modeBuffer += lexeme;
+        } else {
+          if (newMode.excludeBegin) {
+            modeBuffer += lexeme;
+          }
+          processBuffer();
+          if (!newMode.returnBegin && !newMode.excludeBegin) {
+            modeBuffer = lexeme;
+          }
+        }
+        startNewMode(newMode, match);
+        return newMode.returnBegin ? 0 : lexeme.length;
+      }
+
+      /**
+       * Handle the potential end of mode
+       *
+       * @param {RegExpMatchArray} match - the current match
+       */
+      function doEndMatch(match) {
+        const lexeme = match[0];
+        const matchPlusRemainder = codeToHighlight.substring(match.index);
+
+        const endMode = endOfMode(top, match, matchPlusRemainder);
+        if (!endMode) { return NO_MATCH; }
+
+        const origin = top;
+        if (top.endScope && top.endScope._wrap) {
+          processBuffer();
+          emitKeyword(lexeme, top.endScope._wrap);
+        } else if (top.endScope && top.endScope._multi) {
+          processBuffer();
+          emitMultiClass(top.endScope, match);
+        } else if (origin.skip) {
+          modeBuffer += lexeme;
+        } else {
+          if (!(origin.returnEnd || origin.excludeEnd)) {
+            modeBuffer += lexeme;
+          }
+          processBuffer();
+          if (origin.excludeEnd) {
+            modeBuffer = lexeme;
+          }
+        }
+        do {
+          if (top.scope) {
+            emitter.closeNode();
+          }
+          if (!top.skip && !top.subLanguage) {
+            relevance += top.relevance;
+          }
+          top = top.parent;
+        } while (top !== endMode.parent);
+        if (endMode.starts) {
+          startNewMode(endMode.starts, match);
+        }
+        return origin.returnEnd ? 0 : lexeme.length;
+      }
+
+      function processContinuations() {
+        const list = [];
+        for (let current = top; current !== language; current = current.parent) {
+          if (current.scope) {
+            list.unshift(current.scope);
+          }
+        }
+        list.forEach(item => emitter.openNode(item));
+      }
+
+      /** @type {{type?: MatchType, index?: number, rule?: Mode}}} */
+      let lastMatch = {};
+
+      /**
+       *  Process an individual match
+       *
+       * @param {string} textBeforeMatch - text preceding the match (since the last match)
+       * @param {EnhancedMatch} [match] - the match itself
+       */
+      function processLexeme(textBeforeMatch, match) {
+        const lexeme = match && match[0];
+
+        // add non-matched text to the current mode buffer
+        modeBuffer += textBeforeMatch;
+
+        if (lexeme == null) {
+          processBuffer();
+          return 0;
+        }
+
+        // we've found a 0 width match and we're stuck, so we need to advance
+        // this happens when we have badly behaved rules that have optional matchers to the degree that
+        // sometimes they can end up matching nothing at all
+        // Ref: https://github.com/highlightjs/highlight.js/issues/2140
+        if (lastMatch.type === "begin" && match.type === "end" && lastMatch.index === match.index && lexeme === "") {
+          // spit the "skipped" character that our regex choked on back into the output sequence
+          modeBuffer += codeToHighlight.slice(match.index, match.index + 1);
+          if (!SAFE_MODE) {
+            /** @type {AnnotatedError} */
+            const err = new Error(`0 width match regex (${languageName})`);
+            err.languageName = languageName;
+            err.badRule = lastMatch.rule;
+            throw err;
+          }
+          return 1;
+        }
+        lastMatch = match;
+
+        if (match.type === "begin") {
+          return doBeginMatch(match);
+        } else if (match.type === "illegal" && !ignoreIllegals) {
+          // illegal match, we do not continue processing
+          /** @type {AnnotatedError} */
+          const err = new Error('Illegal lexeme "' + lexeme + '" for mode "' + (top.scope || '<unnamed>') + '"');
+          err.mode = top;
+          throw err;
+        } else if (match.type === "end") {
+          const processed = doEndMatch(match);
+          if (processed !== NO_MATCH) {
+            return processed;
+          }
+        }
+
+        // edge case for when illegal matches $ (end of line) which is technically
+        // a 0 width match but not a begin/end match so it's not caught by the
+        // first handler (when ignoreIllegals is true)
+        if (match.type === "illegal" && lexeme === "") {
+          // advance so we aren't stuck in an infinite loop
+          return 1;
+        }
+
+        // infinite loops are BAD, this is a last ditch catch all. if we have a
+        // decent number of iterations yet our index (cursor position in our
+        // parsing) still 3x behind our index then something is very wrong
+        // so we bail
+        if (iterations > 100000 && iterations > match.index * 3) {
+          const err = new Error('potential infinite loop, way more iterations than matches');
+          throw err;
+        }
+
+        /*
+        Why might be find ourselves here?  An potential end match that was
+        triggered but could not be completed.  IE, `doEndMatch` returned NO_MATCH.
+        (this could be because a callback requests the match be ignored, etc)
+
+        This causes no real harm other than stopping a few times too many.
+        */
+
+        modeBuffer += lexeme;
+        return lexeme.length;
+      }
+
+      const language = getLanguage(languageName);
+      if (!language) {
+        error(LANGUAGE_NOT_FOUND.replace("{}", languageName));
+        throw new Error('Unknown language: "' + languageName + '"');
+      }
+
+      const md = compileLanguage(language);
+      let result = '';
+      /** @type {CompiledMode} */
+      let top = continuation || md;
+      /** @type Record<string,CompiledMode> */
+      const continuations = {}; // keep continuations for sub-languages
+      const emitter = new options.__emitter(options);
+      processContinuations();
+      let modeBuffer = '';
+      let relevance = 0;
+      let index = 0;
+      let iterations = 0;
+      let resumeScanAtSamePosition = false;
+
+      try {
+        if (!language.__emitTokens) {
+          top.matcher.considerAll();
+
+          for (;;) {
+            iterations++;
+            if (resumeScanAtSamePosition) {
+              // only regexes not matched previously will now be
+              // considered for a potential match
+              resumeScanAtSamePosition = false;
+            } else {
+              top.matcher.considerAll();
+            }
+            top.matcher.lastIndex = index;
+
+            const match = top.matcher.exec(codeToHighlight);
+            // console.log("match", match[0], match.rule && match.rule.begin)
+
+            if (!match) break;
+
+            const beforeMatch = codeToHighlight.substring(index, match.index);
+            const processedCount = processLexeme(beforeMatch, match);
+            index = match.index + processedCount;
+          }
+          processLexeme(codeToHighlight.substring(index));
+        } else {
+          language.__emitTokens(codeToHighlight, emitter);
+        }
+
+        emitter.finalize();
+        result = emitter.toHTML();
+
+        return {
+          language: languageName,
+          value: result,
+          relevance,
+          illegal: false,
+          _emitter: emitter,
+          _top: top
+        };
+      } catch (err) {
+        if (err.message && err.message.includes('Illegal')) {
+          return {
+            language: languageName,
+            value: escape(codeToHighlight),
+            illegal: true,
+            relevance: 0,
+            _illegalBy: {
+              message: err.message,
+              index,
+              context: codeToHighlight.slice(index - 100, index + 100),
+              mode: err.mode,
+              resultSoFar: result
+            },
+            _emitter: emitter
+          };
+        } else if (SAFE_MODE) {
+          return {
+            language: languageName,
+            value: escape(codeToHighlight),
+            illegal: false,
+            relevance: 0,
+            errorRaised: err,
+            _emitter: emitter,
+            _top: top
+          };
+        } else {
+          throw err;
+        }
+      }
+    }
+
+    /**
+     * returns a valid highlight result, without actually doing any actual work,
+     * auto highlight starts with this and it's possible for small snippets that
+     * auto-detection may not find a better match
+     * @param {string} code
+     * @returns {HighlightResult}
+     */
+    function justTextHighlightResult(code) {
+      const result = {
+        value: escape(code),
+        illegal: false,
+        relevance: 0,
+        _top: PLAINTEXT_LANGUAGE,
+        _emitter: new options.__emitter(options)
+      };
+      result._emitter.addText(code);
+      return result;
+    }
+
+    /**
+    Highlighting with language detection. Accepts a string with the code to
+    highlight. Returns an object with the following properties:
+
+    - language (detected language)
+    - relevance (int)
+    - value (an HTML string with highlighting markup)
+    - secondBest (object with the same structure for second-best heuristically
+      detected language, may be absent)
+
+      @param {string} code
+      @param {Array<string>} [languageSubset]
+      @returns {AutoHighlightResult}
+    */
+    function highlightAuto(code, languageSubset) {
+      languageSubset = languageSubset || options.languages || Object.keys(languages);
+      const plaintext = justTextHighlightResult(code);
+
+      const results = languageSubset.filter(getLanguage).filter(autoDetection).map(name =>
+        _highlight(name, code, false)
+      );
+      results.unshift(plaintext); // plaintext is always an option
+
+      const sorted = results.sort((a, b) => {
+        // sort base on relevance
+        if (a.relevance !== b.relevance) return b.relevance - a.relevance;
+
+        // always award the tie to the base language
+        // ie if C++ and Arduino are tied, it's more likely to be C++
+        if (a.language && b.language) {
+          if (getLanguage(a.language).supersetOf === b.language) {
+            return 1;
+          } else if (getLanguage(b.language).supersetOf === a.language) {
+            return -1;
+          }
+        }
+
+        // otherwise say they are equal, which has the effect of sorting on
+        // relevance while preserving the original ordering - which is how ties
+        // have historically been settled, ie the language that comes first always
+        // wins in the case of a tie
+        return 0;
+      });
+
+      const [best, secondBest] = sorted;
+
+      /** @type {AutoHighlightResult} */
+      const result = best;
+      result.secondBest = secondBest;
+
+      return result;
+    }
+
+    /**
+     * Builds new class name for block given the language name
+     *
+     * @param {HTMLElement} element
+     * @param {string} [currentLang]
+     * @param {string} [resultLang]
+     */
+    function updateClassName(element, currentLang, resultLang) {
+      const language = (currentLang && aliases[currentLang]) || resultLang;
+
+      element.classList.add("hljs");
+      element.classList.add(`language-${language}`);
+    }
+
+    /**
+     * Applies highlighting to a DOM node containing code.
+     *
+     * @param {HighlightedHTMLElement} element - the HTML element to highlight
+    */
+    function highlightElement(element) {
+      /** @type HTMLElement */
+      let node = null;
+      const language = blockLanguage(element);
+
+      if (shouldNotHighlight(language)) return;
+
+      fire("before:highlightElement",
+        { el: element, language });
+
+      if (element.dataset.highlighted) {
+        console.log("Element previously highlighted. To highlight again, first unset `dataset.highlighted`.", element);
+        return;
+      }
+
+      // we should be all text, no child nodes (unescaped HTML) - this is possibly
+      // an HTML injection attack - it's likely too late if this is already in
+      // production (the code has likely already done its damage by the time
+      // we're seeing it)... but we yell loudly about this so that hopefully it's
+      // more likely to be caught in development before making it to production
+      if (element.children.length > 0) {
+        if (!options.ignoreUnescapedHTML) {
+          console.warn("One of your code blocks includes unescaped HTML. This is a potentially serious security risk.");
+          console.warn("https://github.com/highlightjs/highlight.js/wiki/security");
+          console.warn("The element with unescaped HTML:");
+          console.warn(element);
+        }
+        if (options.throwUnescapedHTML) {
+          const err = new HTMLInjectionError(
+            "One of your code blocks includes unescaped HTML.",
+            element.innerHTML
+          );
+          throw err;
+        }
+      }
+
+      node = element;
+      const text = node.textContent;
+      const result = language ? highlight(text, { language, ignoreIllegals: true }) : highlightAuto(text);
+
+      element.innerHTML = result.value;
+      element.dataset.highlighted = "yes";
+      updateClassName(element, language, result.language);
+      element.result = {
+        language: result.language,
+        // TODO: remove with version 11.0
+        re: result.relevance,
+        relevance: result.relevance
+      };
+      if (result.secondBest) {
+        element.secondBest = {
+          language: result.secondBest.language,
+          relevance: result.secondBest.relevance
+        };
+      }
+
+      fire("after:highlightElement", { el: element, result, text });
+    }
+
+    /**
+     * Updates highlight.js global options with the passed options
+     *
+     * @param {Partial<HLJSOptions>} userOptions
+     */
+    function configure(userOptions) {
+      options = inherit(options, userOptions);
+    }
+
+    // TODO: remove v12, deprecated
+    const initHighlighting = () => {
+      highlightAll();
+      deprecated("10.6.0", "initHighlighting() deprecated.  Use highlightAll() now.");
+    };
+
+    // TODO: remove v12, deprecated
+    function initHighlightingOnLoad() {
+      highlightAll();
+      deprecated("10.6.0", "initHighlightingOnLoad() deprecated.  Use highlightAll() now.");
+    }
+
+    let wantsHighlight = false;
+
+    /**
+     * auto-highlights all pre>code elements on the page
+     */
+    function highlightAll() {
+      // if we are called too early in the loading process
+      if (document.readyState === "loading") {
+        wantsHighlight = true;
+        return;
+      }
+
+      const blocks = document.querySelectorAll(options.cssSelector);
+      blocks.forEach(highlightElement);
+    }
+
+    function boot() {
+      // if a highlight was requested before DOM was loaded, do now
+      if (wantsHighlight) highlightAll();
+    }
+
+    // make sure we are in the browser environment
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('DOMContentLoaded', boot, false);
+    }
+
+    /**
+     * Register a language grammar module
+     *
+     * @param {string} languageName
+     * @param {LanguageFn} languageDefinition
+     */
+    function registerLanguage(languageName, languageDefinition) {
+      let lang = null;
+      try {
+        lang = languageDefinition(hljs);
+      } catch (error$1) {
+        error("Language definition for '{}' could not be registered.".replace("{}", languageName));
+        // hard or soft error
+        if (!SAFE_MODE) { throw error$1; } else { error(error$1); }
+        // languages that have serious errors are replaced with essentially a
+        // "plaintext" stand-in so that the code blocks will still get normal
+        // css classes applied to them - and one bad language won't break the
+        // entire highlighter
+        lang = PLAINTEXT_LANGUAGE;
+      }
+      // give it a temporary name if it doesn't have one in the meta-data
+      if (!lang.name) lang.name = languageName;
+      languages[languageName] = lang;
+      lang.rawDefinition = languageDefinition.bind(null, hljs);
+
+      if (lang.aliases) {
+        registerAliases(lang.aliases, { languageName });
+      }
+    }
+
+    /**
+     * Remove a language grammar module
+     *
+     * @param {string} languageName
+     */
+    function unregisterLanguage(languageName) {
+      delete languages[languageName];
+      for (const alias of Object.keys(aliases)) {
+        if (aliases[alias] === languageName) {
+          delete aliases[alias];
+        }
+      }
+    }
+
+    /**
+     * @returns {string[]} List of language internal names
+     */
+    function listLanguages() {
+      return Object.keys(languages);
+    }
+
+    /**
+     * @param {string} name - name of the language to retrieve
+     * @returns {Language | undefined}
+     */
+    function getLanguage(name) {
+      name = (name || '').toLowerCase();
+      return languages[name] || languages[aliases[name]];
+    }
+
+    /**
+     *
+     * @param {string|string[]} aliasList - single alias or list of aliases
+     * @param {{languageName: string}} opts
+     */
+    function registerAliases(aliasList, { languageName }) {
+      if (typeof aliasList === 'string') {
+        aliasList = [aliasList];
+      }
+      aliasList.forEach(alias => { aliases[alias.toLowerCase()] = languageName; });
+    }
+
+    /**
+     * Determines if a given language has auto-detection enabled
+     * @param {string} name - name of the language
+     */
+    function autoDetection(name) {
+      const lang = getLanguage(name);
+      return lang && !lang.disableAutodetect;
+    }
+
+    /**
+     * Upgrades the old highlightBlock plugins to the new
+     * highlightElement API
+     * @param {HLJSPlugin} plugin
+     */
+    function upgradePluginAPI(plugin) {
+      // TODO: remove with v12
+      if (plugin["before:highlightBlock"] && !plugin["before:highlightElement"]) {
+        plugin["before:highlightElement"] = (data) => {
+          plugin["before:highlightBlock"](
+            Object.assign({ block: data.el }, data)
+          );
+        };
+      }
+      if (plugin["after:highlightBlock"] && !plugin["after:highlightElement"]) {
+        plugin["after:highlightElement"] = (data) => {
+          plugin["after:highlightBlock"](
+            Object.assign({ block: data.el }, data)
+          );
+        };
+      }
+    }
+
+    /**
+     * @param {HLJSPlugin} plugin
+     */
+    function addPlugin(plugin) {
+      upgradePluginAPI(plugin);
+      plugins.push(plugin);
+    }
+
+    /**
+     * @param {HLJSPlugin} plugin
+     */
+    function removePlugin(plugin) {
+      const index = plugins.indexOf(plugin);
+      if (index !== -1) {
+        plugins.splice(index, 1);
+      }
+    }
+
+    /**
+     *
+     * @param {PluginEvent} event
+     * @param {any} args
+     */
+    function fire(event, args) {
+      const cb = event;
+      plugins.forEach(function(plugin) {
+        if (plugin[cb]) {
+          plugin[cb](args);
+        }
+      });
+    }
+
+    /**
+     * DEPRECATED
+     * @param {HighlightedHTMLElement} el
+     */
+    function deprecateHighlightBlock(el) {
+      deprecated("10.7.0", "highlightBlock will be removed entirely in v12.0");
+      deprecated("10.7.0", "Please use highlightElement now.");
+
+      return highlightElement(el);
+    }
+
+    /* Interface definition */
+    Object.assign(hljs, {
+      highlight,
+      highlightAuto,
+      highlightAll,
+      highlightElement,
+      // TODO: Remove with v12 API
+      highlightBlock: deprecateHighlightBlock,
+      configure,
+      initHighlighting,
+      initHighlightingOnLoad,
+      registerLanguage,
+      unregisterLanguage,
+      listLanguages,
+      getLanguage,
+      registerAliases,
+      autoDetection,
+      inherit,
+      addPlugin,
+      removePlugin
+    });
+
+    hljs.debugMode = function() { SAFE_MODE = false; };
+    hljs.safeMode = function() { SAFE_MODE = true; };
+    hljs.versionString = version;
+
+    hljs.regex = {
+      concat: concat,
+      lookahead: lookahead,
+      either: either,
+      optional: optional,
+      anyNumberOfTimes: anyNumberOfTimes
+    };
+
+    for (const key in MODES) {
+      // @ts-ignore
+      if (typeof MODES[key] === "object") {
+        // @ts-ignore
+        deepFreeze(MODES[key]);
+      }
+    }
+
+    // merge all the modes/regexes into our main object
+    Object.assign(hljs, MODES);
+
+    return hljs;
+  };
+
+  // Other names for the variable may break build script
+  const highlight = HLJS({});
+
+  // returns a new instance of the highlighter to be used for extensions
+  // check https://github.com/wooorm/lowlight/issues/47
+  highlight.newInstance = () => HLJS({});
+
+  var core = highlight;
+  highlight.HighlightJS = highlight;
+  highlight.default = highlight;
+
+  var HighlightJS = /*@__PURE__*/getDefaultExportFromCjs(core);
+
+  function parseNodes(nodes, className = []) {
+      return nodes
+          .map(node => {
+          const classes = [...className, ...(node.properties ? node.properties.className : [])];
+          if (node.children) {
+              return parseNodes(node.children, classes);
+          }
+          return {
+              text: node.value,
+              classes,
+          };
+      })
+          .flat();
+  }
+  function getHighlightNodes(result) {
+      // `.value` for lowlight v1, `.children` for lowlight v2
+      return result.value || result.children || [];
+  }
+  function registered(aliasOrLanguage) {
+      return Boolean(HighlightJS.getLanguage(aliasOrLanguage));
+  }
+  function getDecorations({ doc, name, lowlight, defaultLanguage, }) {
+      const decorations = [];
+      findChildren(doc, node => node.type.name === name).forEach(block => {
+          var _a;
+          let from = block.pos + 1;
+          const language = block.node.attrs.language || defaultLanguage;
+          const languages = lowlight.listLanguages();
+          const nodes = language && (languages.includes(language) || registered(language) || ((_a = lowlight.registered) === null || _a === void 0 ? void 0 : _a.call(lowlight, language)))
+              ? getHighlightNodes(lowlight.highlight(language, block.node.textContent))
+              : getHighlightNodes(lowlight.highlightAuto(block.node.textContent));
+          parseNodes(nodes).forEach(node => {
+              const to = from + node.text.length;
+              if (node.classes.length) {
+                  const decoration = Decoration.inline(from, to, {
+                      class: node.classes.join(' '),
+                  });
+                  decorations.push(decoration);
+              }
+              from = to;
+          });
+      });
+      return DecorationSet.create(doc, decorations);
+  }
+  function isFunction(param) {
+      return typeof param === 'function';
+  }
+  function LowlightPlugin({ name, lowlight, defaultLanguage, }) {
+      if (!['highlight', 'highlightAuto', 'listLanguages'].every(api => isFunction(lowlight[api]))) {
+          throw Error('You should provide an instance of lowlight to use the code-block-lowlight extension');
+      }
+      const lowlightPlugin = new Plugin({
+          key: new PluginKey('lowlight'),
+          state: {
+              init: (_, { doc }) => getDecorations({
+                  doc,
+                  name,
+                  lowlight,
+                  defaultLanguage,
+              }),
+              apply: (transaction, decorationSet, oldState, newState) => {
+                  const oldNodeName = oldState.selection.$head.parent.type.name;
+                  const newNodeName = newState.selection.$head.parent.type.name;
+                  const oldNodes = findChildren(oldState.doc, node => node.type.name === name);
+                  const newNodes = findChildren(newState.doc, node => node.type.name === name);
+                  if (transaction.docChanged
+                      // Apply decorations if:
+                      // selection includes named node,
+                      && ([oldNodeName, newNodeName].includes(name)
+                          // OR transaction adds/removes named node,
+                          || newNodes.length !== oldNodes.length
+                          // OR transaction has changes that completely encapsulte a node
+                          // (for example, a transaction that affects the entire document).
+                          // Such transactions can happen during collab syncing via y-prosemirror, for example.
+                          || transaction.steps.some(step => {
+                              // @ts-ignore
+                              return (
+                              // @ts-ignore
+                              step.from !== undefined
+                                  // @ts-ignore
+                                  && step.to !== undefined
+                                  && oldNodes.some(node => {
+                                      // @ts-ignore
+                                      return (
+                                      // @ts-ignore
+                                      node.pos >= step.from
+                                          // @ts-ignore
+                                          && node.pos + node.node.nodeSize <= step.to);
+                                  }));
+                          }))) {
+                      return getDecorations({
+                          doc: transaction.doc,
+                          name,
+                          lowlight,
+                          defaultLanguage,
+                      });
+                  }
+                  return decorationSet.map(transaction.mapping, transaction.doc);
+              },
+          },
+          props: {
+              decorations(state) {
+                  return lowlightPlugin.getState(state);
+              },
+          },
+      });
+      return lowlightPlugin;
+  }
+
+  /**
+   * This extension allows you to highlight code blocks with lowlight.
+   * @see https://tiptap.dev/api/nodes/code-block-lowlight
+   */
+  const CodeBlockLowlight = CodeBlock.extend({
+      addOptions() {
+          var _a;
+          return {
+              ...(_a = this.parent) === null || _a === void 0 ? void 0 : _a.call(this),
+              lowlight: {},
+          };
+      },
+      addProseMirrorPlugins() {
+          var _a;
+          return [
+              ...((_a = this.parent) === null || _a === void 0 ? void 0 : _a.call(this)) || [],
+              LowlightPlugin({
+                  name: this.name,
+                  lowlight: this.options.lowlight,
+                  defaultLanguage: this.options.defaultLanguage,
+              }),
+          ];
+      },
+  });
+
+  /**
+   * Matches an image to a ![image](src "title") on input.
+   */
+  const inputRegex$2 = /(?:^|\s)(!\[(.+|:?)]\((\S+)(?:(?:\s+)["'](\S+)["'])?\))$/;
+  /**
+   * This extension allows you to insert images.
+   * @see https://www.tiptap.dev/api/nodes/image
+   */
+  const Image = Node.create({
+      name: 'image',
+      addOptions() {
+          return {
+              inline: false,
+              allowBase64: false,
+              HTMLAttributes: {},
+          };
+      },
+      inline() {
+          return this.options.inline;
+      },
+      group() {
+          return this.options.inline ? 'inline' : 'block';
+      },
+      draggable: true,
+      addAttributes() {
+          return {
+              src: {
+                  default: null,
+              },
+              alt: {
+                  default: null,
+              },
+              title: {
+                  default: null,
+              },
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: this.options.allowBase64
+                      ? 'img[src]'
+                      : 'img[src]:not([src^="data:"])',
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['img', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)];
+      },
+      addCommands() {
+          return {
+              setImage: options => ({ commands }) => {
+                  return commands.insertContent({
+                      type: this.name,
+                      attrs: options,
+                  });
+              },
+          };
+      },
+      addInputRules() {
+          return [
+              nodeInputRule({
+                  find: inputRegex$2,
+                  type: this.type,
+                  getAttributes: match => {
+                      const [, , alt, src, title] = match;
+                      return { src, alt, title };
+                  },
+              }),
+          ];
+      },
+  });
+
+  // src/index.ts
+
+  // src/tablemap.ts
+  var readFromCache;
+  var addToCache;
+  if (typeof WeakMap != "undefined") {
+    let cache = /* @__PURE__ */ new WeakMap();
+    readFromCache = (key) => cache.get(key);
+    addToCache = (key, value) => {
+      cache.set(key, value);
+      return value;
+    };
+  } else {
+    const cache = [];
+    const cacheSize = 10;
+    let cachePos = 0;
+    readFromCache = (key) => {
+      for (let i = 0; i < cache.length; i += 2)
+        if (cache[i] == key)
+          return cache[i + 1];
+    };
+    addToCache = (key, value) => {
+      if (cachePos == cacheSize)
+        cachePos = 0;
+      cache[cachePos++] = key;
+      return cache[cachePos++] = value;
+    };
+  }
+  var TableMap = class {
+    constructor(width, height, map, problems) {
+      this.width = width;
+      this.height = height;
+      this.map = map;
+      this.problems = problems;
+    }
+    // Find the dimensions of the cell at the given position.
+    findCell(pos) {
+      for (let i = 0; i < this.map.length; i++) {
+        const curPos = this.map[i];
+        if (curPos != pos)
+          continue;
+        const left = i % this.width;
+        const top = i / this.width | 0;
+        let right = left + 1;
+        let bottom = top + 1;
+        for (let j = 1; right < this.width && this.map[i + j] == curPos; j++) {
+          right++;
+        }
+        for (let j = 1; bottom < this.height && this.map[i + this.width * j] == curPos; j++) {
+          bottom++;
+        }
+        return { left, top, right, bottom };
+      }
+      throw new RangeError(`No cell with offset ${pos} found`);
+    }
+    // Find the left side of the cell at the given position.
+    colCount(pos) {
+      for (let i = 0; i < this.map.length; i++) {
+        if (this.map[i] == pos) {
+          return i % this.width;
+        }
+      }
+      throw new RangeError(`No cell with offset ${pos} found`);
+    }
+    // Find the next cell in the given direction, starting from the cell
+    // at `pos`, if any.
+    nextCell(pos, axis, dir) {
+      const { left, right, top, bottom } = this.findCell(pos);
+      if (axis == "horiz") {
+        if (dir < 0 ? left == 0 : right == this.width)
+          return null;
+        return this.map[top * this.width + (dir < 0 ? left - 1 : right)];
+      } else {
+        if (dir < 0 ? top == 0 : bottom == this.height)
+          return null;
+        return this.map[left + this.width * (dir < 0 ? top - 1 : bottom)];
+      }
+    }
+    // Get the rectangle spanning the two given cells.
+    rectBetween(a, b) {
+      const {
+        left: leftA,
+        right: rightA,
+        top: topA,
+        bottom: bottomA
+      } = this.findCell(a);
+      const {
+        left: leftB,
+        right: rightB,
+        top: topB,
+        bottom: bottomB
+      } = this.findCell(b);
+      return {
+        left: Math.min(leftA, leftB),
+        top: Math.min(topA, topB),
+        right: Math.max(rightA, rightB),
+        bottom: Math.max(bottomA, bottomB)
+      };
+    }
+    // Return the position of all cells that have the top left corner in
+    // the given rectangle.
+    cellsInRect(rect) {
+      const result = [];
+      const seen = {};
+      for (let row = rect.top; row < rect.bottom; row++) {
+        for (let col = rect.left; col < rect.right; col++) {
+          const index = row * this.width + col;
+          const pos = this.map[index];
+          if (seen[pos])
+            continue;
+          seen[pos] = true;
+          if (col == rect.left && col && this.map[index - 1] == pos || row == rect.top && row && this.map[index - this.width] == pos) {
+            continue;
+          }
+          result.push(pos);
+        }
+      }
+      return result;
+    }
+    // Return the position at which the cell at the given row and column
+    // starts, or would start, if a cell started there.
+    positionAt(row, col, table) {
+      for (let i = 0, rowStart = 0; ; i++) {
+        const rowEnd = rowStart + table.child(i).nodeSize;
+        if (i == row) {
+          let index = col + row * this.width;
+          const rowEndIndex = (row + 1) * this.width;
+          while (index < rowEndIndex && this.map[index] < rowStart)
+            index++;
+          return index == rowEndIndex ? rowEnd - 1 : this.map[index];
+        }
+        rowStart = rowEnd;
+      }
+    }
+    // Find the table map for the given table node.
+    static get(table) {
+      return readFromCache(table) || addToCache(table, computeMap(table));
+    }
+  };
+  function computeMap(table) {
+    if (table.type.spec.tableRole != "table")
+      throw new RangeError("Not a table node: " + table.type.name);
+    const width = findWidth(table), height = table.childCount;
+    const map = [];
+    let mapPos = 0;
+    let problems = null;
+    const colWidths = [];
+    for (let i = 0, e = width * height; i < e; i++)
+      map[i] = 0;
+    for (let row = 0, pos = 0; row < height; row++) {
+      const rowNode = table.child(row);
+      pos++;
+      for (let i = 0; ; i++) {
+        while (mapPos < map.length && map[mapPos] != 0)
+          mapPos++;
+        if (i == rowNode.childCount)
+          break;
+        const cellNode = rowNode.child(i);
+        const { colspan, rowspan, colwidth } = cellNode.attrs;
+        for (let h = 0; h < rowspan; h++) {
+          if (h + row >= height) {
+            (problems || (problems = [])).push({
+              type: "overlong_rowspan",
+              pos,
+              n: rowspan - h
+            });
+            break;
+          }
+          const start = mapPos + h * width;
+          for (let w = 0; w < colspan; w++) {
+            if (map[start + w] == 0)
+              map[start + w] = pos;
+            else
+              (problems || (problems = [])).push({
+                type: "collision",
+                row,
+                pos,
+                n: colspan - w
+              });
+            const colW = colwidth && colwidth[w];
+            if (colW) {
+              const widthIndex = (start + w) % width * 2, prev = colWidths[widthIndex];
+              if (prev == null || prev != colW && colWidths[widthIndex + 1] == 1) {
+                colWidths[widthIndex] = colW;
+                colWidths[widthIndex + 1] = 1;
+              } else if (prev == colW) {
+                colWidths[widthIndex + 1]++;
+              }
+            }
+          }
+        }
+        mapPos += colspan;
+        pos += cellNode.nodeSize;
+      }
+      const expectedPos = (row + 1) * width;
+      let missing = 0;
+      while (mapPos < expectedPos)
+        if (map[mapPos++] == 0)
+          missing++;
+      if (missing)
+        (problems || (problems = [])).push({ type: "missing", row, n: missing });
+      pos++;
+    }
+    const tableMap = new TableMap(width, height, map, problems);
+    let badWidths = false;
+    for (let i = 0; !badWidths && i < colWidths.length; i += 2)
+      if (colWidths[i] != null && colWidths[i + 1] < height)
+        badWidths = true;
+    if (badWidths)
+      findBadColWidths(tableMap, colWidths, table);
+    return tableMap;
+  }
+  function findWidth(table) {
+    let width = -1;
+    let hasRowSpan = false;
+    for (let row = 0; row < table.childCount; row++) {
+      const rowNode = table.child(row);
+      let rowWidth = 0;
+      if (hasRowSpan)
+        for (let j = 0; j < row; j++) {
+          const prevRow = table.child(j);
+          for (let i = 0; i < prevRow.childCount; i++) {
+            const cell = prevRow.child(i);
+            if (j + cell.attrs.rowspan > row)
+              rowWidth += cell.attrs.colspan;
+          }
+        }
+      for (let i = 0; i < rowNode.childCount; i++) {
+        const cell = rowNode.child(i);
+        rowWidth += cell.attrs.colspan;
+        if (cell.attrs.rowspan > 1)
+          hasRowSpan = true;
+      }
+      if (width == -1)
+        width = rowWidth;
+      else if (width != rowWidth)
+        width = Math.max(width, rowWidth);
+    }
+    return width;
+  }
+  function findBadColWidths(map, colWidths, table) {
+    if (!map.problems)
+      map.problems = [];
+    const seen = {};
+    for (let i = 0; i < map.map.length; i++) {
+      const pos = map.map[i];
+      if (seen[pos])
+        continue;
+      seen[pos] = true;
+      const node = table.nodeAt(pos);
+      if (!node) {
+        throw new RangeError(`No cell with offset ${pos} found`);
+      }
+      let updated = null;
+      const attrs = node.attrs;
+      for (let j = 0; j < attrs.colspan; j++) {
+        const col = (i + j) % map.width;
+        const colWidth = colWidths[col * 2];
+        if (colWidth != null && (!attrs.colwidth || attrs.colwidth[j] != colWidth))
+          (updated || (updated = freshColWidth(attrs)))[j] = colWidth;
+      }
+      if (updated)
+        map.problems.unshift({
+          type: "colwidth mismatch",
+          pos,
+          colwidth: updated
+        });
+    }
+  }
+  function freshColWidth(attrs) {
+    if (attrs.colwidth)
+      return attrs.colwidth.slice();
+    const result = [];
+    for (let i = 0; i < attrs.colspan; i++)
+      result.push(0);
+    return result;
+  }
+  function tableNodeTypes(schema) {
+    let result = schema.cached.tableNodeTypes;
+    if (!result) {
+      result = schema.cached.tableNodeTypes = {};
+      for (const name in schema.nodes) {
+        const type = schema.nodes[name], role = type.spec.tableRole;
+        if (role)
+          result[role] = type;
+      }
+    }
+    return result;
+  }
+
+  // src/util.ts
+  var tableEditingKey = new PluginKey("selectingCells");
+  function cellAround($pos) {
+    for (let d = $pos.depth - 1; d > 0; d--)
+      if ($pos.node(d).type.spec.tableRole == "row")
+        return $pos.node(0).resolve($pos.before(d + 1));
+    return null;
+  }
+  function cellWrapping($pos) {
+    for (let d = $pos.depth; d > 0; d--) {
+      const role = $pos.node(d).type.spec.tableRole;
+      if (role === "cell" || role === "header_cell")
+        return $pos.node(d);
+    }
+    return null;
+  }
+  function isInTable(state) {
+    const $head = state.selection.$head;
+    for (let d = $head.depth; d > 0; d--)
+      if ($head.node(d).type.spec.tableRole == "row")
+        return true;
+    return false;
+  }
+  function selectionCell(state) {
+    const sel = state.selection;
+    if ("$anchorCell" in sel && sel.$anchorCell) {
+      return sel.$anchorCell.pos > sel.$headCell.pos ? sel.$anchorCell : sel.$headCell;
+    } else if ("node" in sel && sel.node && sel.node.type.spec.tableRole == "cell") {
+      return sel.$anchor;
+    }
+    const $cell = cellAround(sel.$head) || cellNear(sel.$head);
+    if ($cell) {
+      return $cell;
+    }
+    throw new RangeError(`No cell found around position ${sel.head}`);
+  }
+  function cellNear($pos) {
+    for (let after = $pos.nodeAfter, pos = $pos.pos; after; after = after.firstChild, pos++) {
+      const role = after.type.spec.tableRole;
+      if (role == "cell" || role == "header_cell")
+        return $pos.doc.resolve(pos);
+    }
+    for (let before = $pos.nodeBefore, pos = $pos.pos; before; before = before.lastChild, pos--) {
+      const role = before.type.spec.tableRole;
+      if (role == "cell" || role == "header_cell")
+        return $pos.doc.resolve(pos - before.nodeSize);
+    }
+  }
+  function pointsAtCell($pos) {
+    return $pos.parent.type.spec.tableRole == "row" && !!$pos.nodeAfter;
+  }
+  function moveCellForward($pos) {
+    return $pos.node(0).resolve($pos.pos + $pos.nodeAfter.nodeSize);
+  }
+  function inSameTable($cellA, $cellB) {
+    return $cellA.depth == $cellB.depth && $cellA.pos >= $cellB.start(-1) && $cellA.pos <= $cellB.end(-1);
+  }
+  function nextCell($pos, axis, dir) {
+    const table = $pos.node(-1);
+    const map = TableMap.get(table);
+    const tableStart = $pos.start(-1);
+    const moved = map.nextCell($pos.pos - tableStart, axis, dir);
+    return moved == null ? null : $pos.node(0).resolve(tableStart + moved);
+  }
+  function removeColSpan(attrs, pos, n = 1) {
+    const result = { ...attrs, colspan: attrs.colspan - n };
+    if (result.colwidth) {
+      result.colwidth = result.colwidth.slice();
+      result.colwidth.splice(pos, n);
+      if (!result.colwidth.some((w) => w > 0))
+        result.colwidth = null;
+    }
+    return result;
+  }
+  function addColSpan(attrs, pos, n = 1) {
+    const result = { ...attrs, colspan: attrs.colspan + n };
+    if (result.colwidth) {
+      result.colwidth = result.colwidth.slice();
+      for (let i = 0; i < n; i++)
+        result.colwidth.splice(pos, 0, 0);
+    }
+    return result;
+  }
+  function columnIsHeader(map, table, col) {
+    const headerCell = tableNodeTypes(table.type.schema).header_cell;
+    for (let row = 0; row < map.height; row++)
+      if (table.nodeAt(map.map[col + row * map.width]).type != headerCell)
+        return false;
+    return true;
+  }
+
+  // src/cellselection.ts
+  var CellSelection = class _CellSelection extends Selection {
+    // A table selection is identified by its anchor and head cells. The
+    // positions given to this constructor should point _before_ two
+    // cells in the same table. They may be the same, to select a single
+    // cell.
+    constructor($anchorCell, $headCell = $anchorCell) {
+      const table = $anchorCell.node(-1);
+      const map = TableMap.get(table);
+      const tableStart = $anchorCell.start(-1);
+      const rect = map.rectBetween(
+        $anchorCell.pos - tableStart,
+        $headCell.pos - tableStart
+      );
+      const doc = $anchorCell.node(0);
+      const cells = map.cellsInRect(rect).filter((p) => p != $headCell.pos - tableStart);
+      cells.unshift($headCell.pos - tableStart);
+      const ranges = cells.map((pos) => {
+        const cell = table.nodeAt(pos);
+        if (!cell) {
+          throw RangeError(`No cell with offset ${pos} found`);
+        }
+        const from = tableStart + pos + 1;
+        return new SelectionRange(
+          doc.resolve(from),
+          doc.resolve(from + cell.content.size)
+        );
+      });
+      super(ranges[0].$from, ranges[0].$to, ranges);
+      this.$anchorCell = $anchorCell;
+      this.$headCell = $headCell;
+    }
+    map(doc, mapping) {
+      const $anchorCell = doc.resolve(mapping.map(this.$anchorCell.pos));
+      const $headCell = doc.resolve(mapping.map(this.$headCell.pos));
+      if (pointsAtCell($anchorCell) && pointsAtCell($headCell) && inSameTable($anchorCell, $headCell)) {
+        const tableChanged = this.$anchorCell.node(-1) != $anchorCell.node(-1);
+        if (tableChanged && this.isRowSelection())
+          return _CellSelection.rowSelection($anchorCell, $headCell);
+        else if (tableChanged && this.isColSelection())
+          return _CellSelection.colSelection($anchorCell, $headCell);
+        else
+          return new _CellSelection($anchorCell, $headCell);
+      }
+      return TextSelection.between($anchorCell, $headCell);
+    }
+    // Returns a rectangular slice of table rows containing the selected
+    // cells.
+    content() {
+      const table = this.$anchorCell.node(-1);
+      const map = TableMap.get(table);
+      const tableStart = this.$anchorCell.start(-1);
+      const rect = map.rectBetween(
+        this.$anchorCell.pos - tableStart,
+        this.$headCell.pos - tableStart
+      );
+      const seen = {};
+      const rows = [];
+      for (let row = rect.top; row < rect.bottom; row++) {
+        const rowContent = [];
+        for (let index = row * map.width + rect.left, col = rect.left; col < rect.right; col++, index++) {
+          const pos = map.map[index];
+          if (seen[pos])
+            continue;
+          seen[pos] = true;
+          const cellRect = map.findCell(pos);
+          let cell = table.nodeAt(pos);
+          if (!cell) {
+            throw RangeError(`No cell with offset ${pos} found`);
+          }
+          const extraLeft = rect.left - cellRect.left;
+          const extraRight = cellRect.right - rect.right;
+          if (extraLeft > 0 || extraRight > 0) {
+            let attrs = cell.attrs;
+            if (extraLeft > 0) {
+              attrs = removeColSpan(attrs, 0, extraLeft);
+            }
+            if (extraRight > 0) {
+              attrs = removeColSpan(
+                attrs,
+                attrs.colspan - extraRight,
+                extraRight
+              );
+            }
+            if (cellRect.left < rect.left) {
+              cell = cell.type.createAndFill(attrs);
+              if (!cell) {
+                throw RangeError(
+                  `Could not create cell with attrs ${JSON.stringify(attrs)}`
+                );
+              }
+            } else {
+              cell = cell.type.create(attrs, cell.content);
+            }
+          }
+          if (cellRect.top < rect.top || cellRect.bottom > rect.bottom) {
+            const attrs = {
+              ...cell.attrs,
+              rowspan: Math.min(cellRect.bottom, rect.bottom) - Math.max(cellRect.top, rect.top)
+            };
+            if (cellRect.top < rect.top) {
+              cell = cell.type.createAndFill(attrs);
+            } else {
+              cell = cell.type.create(attrs, cell.content);
+            }
+          }
+          rowContent.push(cell);
+        }
+        rows.push(table.child(row).copy(Fragment.from(rowContent)));
+      }
+      const fragment = this.isColSelection() && this.isRowSelection() ? table : rows;
+      return new Slice(Fragment.from(fragment), 1, 1);
+    }
+    replace(tr, content = Slice.empty) {
+      const mapFrom = tr.steps.length, ranges = this.ranges;
+      for (let i = 0; i < ranges.length; i++) {
+        const { $from, $to } = ranges[i], mapping = tr.mapping.slice(mapFrom);
+        tr.replace(
+          mapping.map($from.pos),
+          mapping.map($to.pos),
+          i ? Slice.empty : content
+        );
+      }
+      const sel = Selection.findFrom(
+        tr.doc.resolve(tr.mapping.slice(mapFrom).map(this.to)),
+        -1
+      );
+      if (sel)
+        tr.setSelection(sel);
+    }
+    replaceWith(tr, node) {
+      this.replace(tr, new Slice(Fragment.from(node), 0, 0));
+    }
+    forEachCell(f) {
+      const table = this.$anchorCell.node(-1);
+      const map = TableMap.get(table);
+      const tableStart = this.$anchorCell.start(-1);
+      const cells = map.cellsInRect(
+        map.rectBetween(
+          this.$anchorCell.pos - tableStart,
+          this.$headCell.pos - tableStart
+        )
+      );
+      for (let i = 0; i < cells.length; i++) {
+        f(table.nodeAt(cells[i]), tableStart + cells[i]);
+      }
+    }
+    // True if this selection goes all the way from the top to the
+    // bottom of the table.
+    isColSelection() {
+      const anchorTop = this.$anchorCell.index(-1);
+      const headTop = this.$headCell.index(-1);
+      if (Math.min(anchorTop, headTop) > 0)
+        return false;
+      const anchorBottom = anchorTop + this.$anchorCell.nodeAfter.attrs.rowspan;
+      const headBottom = headTop + this.$headCell.nodeAfter.attrs.rowspan;
+      return Math.max(anchorBottom, headBottom) == this.$headCell.node(-1).childCount;
+    }
+    // Returns the smallest column selection that covers the given anchor
+    // and head cell.
+    static colSelection($anchorCell, $headCell = $anchorCell) {
+      const table = $anchorCell.node(-1);
+      const map = TableMap.get(table);
+      const tableStart = $anchorCell.start(-1);
+      const anchorRect = map.findCell($anchorCell.pos - tableStart);
+      const headRect = map.findCell($headCell.pos - tableStart);
+      const doc = $anchorCell.node(0);
+      if (anchorRect.top <= headRect.top) {
+        if (anchorRect.top > 0)
+          $anchorCell = doc.resolve(tableStart + map.map[anchorRect.left]);
+        if (headRect.bottom < map.height)
+          $headCell = doc.resolve(
+            tableStart + map.map[map.width * (map.height - 1) + headRect.right - 1]
+          );
+      } else {
+        if (headRect.top > 0)
+          $headCell = doc.resolve(tableStart + map.map[headRect.left]);
+        if (anchorRect.bottom < map.height)
+          $anchorCell = doc.resolve(
+            tableStart + map.map[map.width * (map.height - 1) + anchorRect.right - 1]
+          );
+      }
+      return new _CellSelection($anchorCell, $headCell);
+    }
+    // True if this selection goes all the way from the left to the
+    // right of the table.
+    isRowSelection() {
+      const table = this.$anchorCell.node(-1);
+      const map = TableMap.get(table);
+      const tableStart = this.$anchorCell.start(-1);
+      const anchorLeft = map.colCount(this.$anchorCell.pos - tableStart);
+      const headLeft = map.colCount(this.$headCell.pos - tableStart);
+      if (Math.min(anchorLeft, headLeft) > 0)
+        return false;
+      const anchorRight = anchorLeft + this.$anchorCell.nodeAfter.attrs.colspan;
+      const headRight = headLeft + this.$headCell.nodeAfter.attrs.colspan;
+      return Math.max(anchorRight, headRight) == map.width;
+    }
+    eq(other) {
+      return other instanceof _CellSelection && other.$anchorCell.pos == this.$anchorCell.pos && other.$headCell.pos == this.$headCell.pos;
+    }
+    // Returns the smallest row selection that covers the given anchor
+    // and head cell.
+    static rowSelection($anchorCell, $headCell = $anchorCell) {
+      const table = $anchorCell.node(-1);
+      const map = TableMap.get(table);
+      const tableStart = $anchorCell.start(-1);
+      const anchorRect = map.findCell($anchorCell.pos - tableStart);
+      const headRect = map.findCell($headCell.pos - tableStart);
+      const doc = $anchorCell.node(0);
+      if (anchorRect.left <= headRect.left) {
+        if (anchorRect.left > 0)
+          $anchorCell = doc.resolve(
+            tableStart + map.map[anchorRect.top * map.width]
+          );
+        if (headRect.right < map.width)
+          $headCell = doc.resolve(
+            tableStart + map.map[map.width * (headRect.top + 1) - 1]
+          );
+      } else {
+        if (headRect.left > 0)
+          $headCell = doc.resolve(tableStart + map.map[headRect.top * map.width]);
+        if (anchorRect.right < map.width)
+          $anchorCell = doc.resolve(
+            tableStart + map.map[map.width * (anchorRect.top + 1) - 1]
+          );
+      }
+      return new _CellSelection($anchorCell, $headCell);
+    }
+    toJSON() {
+      return {
+        type: "cell",
+        anchor: this.$anchorCell.pos,
+        head: this.$headCell.pos
+      };
+    }
+    static fromJSON(doc, json) {
+      return new _CellSelection(doc.resolve(json.anchor), doc.resolve(json.head));
+    }
+    static create(doc, anchorCell, headCell = anchorCell) {
+      return new _CellSelection(doc.resolve(anchorCell), doc.resolve(headCell));
+    }
+    getBookmark() {
+      return new CellBookmark(this.$anchorCell.pos, this.$headCell.pos);
+    }
+  };
+  CellSelection.prototype.visible = false;
+  Selection.jsonID("cell", CellSelection);
+  var CellBookmark = class _CellBookmark {
+    constructor(anchor, head) {
+      this.anchor = anchor;
+      this.head = head;
+    }
+    map(mapping) {
+      return new _CellBookmark(mapping.map(this.anchor), mapping.map(this.head));
+    }
+    resolve(doc) {
+      const $anchorCell = doc.resolve(this.anchor), $headCell = doc.resolve(this.head);
+      if ($anchorCell.parent.type.spec.tableRole == "row" && $headCell.parent.type.spec.tableRole == "row" && $anchorCell.index() < $anchorCell.parent.childCount && $headCell.index() < $headCell.parent.childCount && inSameTable($anchorCell, $headCell))
+        return new CellSelection($anchorCell, $headCell);
+      else
+        return Selection.near($headCell, 1);
+    }
+  };
+  function drawCellSelection(state) {
+    if (!(state.selection instanceof CellSelection))
+      return null;
+    const cells = [];
+    state.selection.forEachCell((node, pos) => {
+      cells.push(
+        Decoration.node(pos, pos + node.nodeSize, { class: "selectedCell" })
+      );
+    });
+    return DecorationSet.create(state.doc, cells);
+  }
+  function isCellBoundarySelection({ $from, $to }) {
+    if ($from.pos == $to.pos || $from.pos < $from.pos - 6)
+      return false;
+    let afterFrom = $from.pos;
+    let beforeTo = $to.pos;
+    let depth = $from.depth;
+    for (; depth >= 0; depth--, afterFrom++)
+      if ($from.after(depth + 1) < $from.end(depth))
+        break;
+    for (let d = $to.depth; d >= 0; d--, beforeTo--)
+      if ($to.before(d + 1) > $to.start(d))
+        break;
+    return afterFrom == beforeTo && /row|table/.test($from.node(depth).type.spec.tableRole);
+  }
+  function isTextSelectionAcrossCells({ $from, $to }) {
+    let fromCellBoundaryNode;
+    let toCellBoundaryNode;
+    for (let i = $from.depth; i > 0; i--) {
+      const node = $from.node(i);
+      if (node.type.spec.tableRole === "cell" || node.type.spec.tableRole === "header_cell") {
+        fromCellBoundaryNode = node;
+        break;
+      }
+    }
+    for (let i = $to.depth; i > 0; i--) {
+      const node = $to.node(i);
+      if (node.type.spec.tableRole === "cell" || node.type.spec.tableRole === "header_cell") {
+        toCellBoundaryNode = node;
+        break;
+      }
+    }
+    return fromCellBoundaryNode !== toCellBoundaryNode && $to.parentOffset === 0;
+  }
+  function normalizeSelection(state, tr, allowTableNodeSelection) {
+    const sel = (tr || state).selection;
+    const doc = (tr || state).doc;
+    let normalize;
+    let role;
+    if (sel instanceof NodeSelection && (role = sel.node.type.spec.tableRole)) {
+      if (role == "cell" || role == "header_cell") {
+        normalize = CellSelection.create(doc, sel.from);
+      } else if (role == "row") {
+        const $cell = doc.resolve(sel.from + 1);
+        normalize = CellSelection.rowSelection($cell, $cell);
+      } else if (!allowTableNodeSelection) {
+        const map = TableMap.get(sel.node);
+        const start = sel.from + 1;
+        const lastCell = start + map.map[map.width * map.height - 1];
+        normalize = CellSelection.create(doc, start + 1, lastCell);
+      }
+    } else if (sel instanceof TextSelection && isCellBoundarySelection(sel)) {
+      normalize = TextSelection.create(doc, sel.from);
+    } else if (sel instanceof TextSelection && isTextSelectionAcrossCells(sel)) {
+      normalize = TextSelection.create(doc, sel.$from.start(), sel.$from.end());
+    }
+    if (normalize)
+      (tr || (tr = state.tr)).setSelection(normalize);
+    return tr;
+  }
+  var fixTablesKey = new PluginKey("fix-tables");
+  function changedDescendants(old, cur, offset, f) {
+    const oldSize = old.childCount, curSize = cur.childCount;
+    outer:
+      for (let i = 0, j = 0; i < curSize; i++) {
+        const child = cur.child(i);
+        for (let scan = j, e = Math.min(oldSize, i + 3); scan < e; scan++) {
+          if (old.child(scan) == child) {
+            j = scan + 1;
+            offset += child.nodeSize;
+            continue outer;
+          }
+        }
+        f(child, offset);
+        if (j < oldSize && old.child(j).sameMarkup(child))
+          changedDescendants(old.child(j), child, offset + 1, f);
+        else
+          child.nodesBetween(0, child.content.size, f, offset + 1);
+        offset += child.nodeSize;
+      }
+  }
+  function fixTables(state, oldState) {
+    let tr;
+    const check = (node, pos) => {
+      if (node.type.spec.tableRole == "table")
+        tr = fixTable(state, node, pos, tr);
+    };
+    if (!oldState)
+      state.doc.descendants(check);
+    else if (oldState.doc != state.doc)
+      changedDescendants(oldState.doc, state.doc, 0, check);
+    return tr;
+  }
+  function fixTable(state, table, tablePos, tr) {
+    const map = TableMap.get(table);
+    if (!map.problems)
+      return tr;
+    if (!tr)
+      tr = state.tr;
+    const mustAdd = [];
+    for (let i = 0; i < map.height; i++)
+      mustAdd.push(0);
+    for (let i = 0; i < map.problems.length; i++) {
+      const prob = map.problems[i];
+      if (prob.type == "collision") {
+        const cell = table.nodeAt(prob.pos);
+        if (!cell)
+          continue;
+        const attrs = cell.attrs;
+        for (let j = 0; j < attrs.rowspan; j++)
+          mustAdd[prob.row + j] += prob.n;
+        tr.setNodeMarkup(
+          tr.mapping.map(tablePos + 1 + prob.pos),
+          null,
+          removeColSpan(attrs, attrs.colspan - prob.n, prob.n)
+        );
+      } else if (prob.type == "missing") {
+        mustAdd[prob.row] += prob.n;
+      } else if (prob.type == "overlong_rowspan") {
+        const cell = table.nodeAt(prob.pos);
+        if (!cell)
+          continue;
+        tr.setNodeMarkup(tr.mapping.map(tablePos + 1 + prob.pos), null, {
+          ...cell.attrs,
+          rowspan: cell.attrs.rowspan - prob.n
+        });
+      } else if (prob.type == "colwidth mismatch") {
+        const cell = table.nodeAt(prob.pos);
+        if (!cell)
+          continue;
+        tr.setNodeMarkup(tr.mapping.map(tablePos + 1 + prob.pos), null, {
+          ...cell.attrs,
+          colwidth: prob.colwidth
+        });
+      }
+    }
+    let first, last;
+    for (let i = 0; i < mustAdd.length; i++)
+      if (mustAdd[i]) {
+        if (first == null)
+          first = i;
+        last = i;
+      }
+    for (let i = 0, pos = tablePos + 1; i < map.height; i++) {
+      const row = table.child(i);
+      const end = pos + row.nodeSize;
+      const add = mustAdd[i];
+      if (add > 0) {
+        let role = "cell";
+        if (row.firstChild) {
+          role = row.firstChild.type.spec.tableRole;
+        }
+        const nodes = [];
+        for (let j = 0; j < add; j++) {
+          const node = tableNodeTypes(state.schema)[role].createAndFill();
+          if (node)
+            nodes.push(node);
+        }
+        const side = (i == 0 || first == i - 1) && last == i ? pos + 1 : end - 1;
+        tr.insert(tr.mapping.map(side), nodes);
+      }
+      pos = end;
+    }
+    return tr.setMeta(fixTablesKey, { fixTables: true });
+  }
+  function selectedRect(state) {
+    const sel = state.selection;
+    const $pos = selectionCell(state);
+    const table = $pos.node(-1);
+    const tableStart = $pos.start(-1);
+    const map = TableMap.get(table);
+    const rect = sel instanceof CellSelection ? map.rectBetween(
+      sel.$anchorCell.pos - tableStart,
+      sel.$headCell.pos - tableStart
+    ) : map.findCell($pos.pos - tableStart);
+    return { ...rect, tableStart, map, table };
+  }
+  function addColumn(tr, { map, tableStart, table }, col) {
+    let refColumn = col > 0 ? -1 : 0;
+    if (columnIsHeader(map, table, col + refColumn)) {
+      refColumn = col == 0 || col == map.width ? null : 0;
+    }
+    for (let row = 0; row < map.height; row++) {
+      const index = row * map.width + col;
+      if (col > 0 && col < map.width && map.map[index - 1] == map.map[index]) {
+        const pos = map.map[index];
+        const cell = table.nodeAt(pos);
+        tr.setNodeMarkup(
+          tr.mapping.map(tableStart + pos),
+          null,
+          addColSpan(cell.attrs, col - map.colCount(pos))
+        );
+        row += cell.attrs.rowspan - 1;
+      } else {
+        const type = refColumn == null ? tableNodeTypes(table.type.schema).cell : table.nodeAt(map.map[index + refColumn]).type;
+        const pos = map.positionAt(row, col, table);
+        tr.insert(tr.mapping.map(tableStart + pos), type.createAndFill());
+      }
+    }
+    return tr;
+  }
+  function addColumnBefore(state, dispatch) {
+    if (!isInTable(state))
+      return false;
+    if (dispatch) {
+      const rect = selectedRect(state);
+      dispatch(addColumn(state.tr, rect, rect.left));
+    }
+    return true;
+  }
+  function addColumnAfter(state, dispatch) {
+    if (!isInTable(state))
+      return false;
+    if (dispatch) {
+      const rect = selectedRect(state);
+      dispatch(addColumn(state.tr, rect, rect.right));
+    }
+    return true;
+  }
+  function removeColumn(tr, { map, table, tableStart }, col) {
+    const mapStart = tr.mapping.maps.length;
+    for (let row = 0; row < map.height; ) {
+      const index = row * map.width + col;
+      const pos = map.map[index];
+      const cell = table.nodeAt(pos);
+      const attrs = cell.attrs;
+      if (col > 0 && map.map[index - 1] == pos || col < map.width - 1 && map.map[index + 1] == pos) {
+        tr.setNodeMarkup(
+          tr.mapping.slice(mapStart).map(tableStart + pos),
+          null,
+          removeColSpan(attrs, col - map.colCount(pos))
+        );
+      } else {
+        const start = tr.mapping.slice(mapStart).map(tableStart + pos);
+        tr.delete(start, start + cell.nodeSize);
+      }
+      row += attrs.rowspan;
+    }
+  }
+  function deleteColumn(state, dispatch) {
+    if (!isInTable(state))
+      return false;
+    if (dispatch) {
+      const rect = selectedRect(state);
+      const tr = state.tr;
+      if (rect.left == 0 && rect.right == rect.map.width)
+        return false;
+      for (let i = rect.right - 1; ; i--) {
+        removeColumn(tr, rect, i);
+        if (i == rect.left)
+          break;
+        const table = rect.tableStart ? tr.doc.nodeAt(rect.tableStart - 1) : tr.doc;
+        if (!table) {
+          throw RangeError("No table found");
+        }
+        rect.table = table;
+        rect.map = TableMap.get(table);
+      }
+      dispatch(tr);
+    }
+    return true;
+  }
+  function rowIsHeader(map, table, row) {
+    var _a;
+    const headerCell = tableNodeTypes(table.type.schema).header_cell;
+    for (let col = 0; col < map.width; col++)
+      if (((_a = table.nodeAt(map.map[col + row * map.width])) == null ? void 0 : _a.type) != headerCell)
+        return false;
+    return true;
+  }
+  function addRow(tr, { map, tableStart, table }, row) {
+    var _a;
+    let rowPos = tableStart;
+    for (let i = 0; i < row; i++)
+      rowPos += table.child(i).nodeSize;
+    const cells = [];
+    let refRow = row > 0 ? -1 : 0;
+    if (rowIsHeader(map, table, row + refRow))
+      refRow = row == 0 || row == map.height ? null : 0;
+    for (let col = 0, index = map.width * row; col < map.width; col++, index++) {
+      if (row > 0 && row < map.height && map.map[index] == map.map[index - map.width]) {
+        const pos = map.map[index];
+        const attrs = table.nodeAt(pos).attrs;
+        tr.setNodeMarkup(tableStart + pos, null, {
+          ...attrs,
+          rowspan: attrs.rowspan + 1
+        });
+        col += attrs.colspan - 1;
+      } else {
+        const type = refRow == null ? tableNodeTypes(table.type.schema).cell : (_a = table.nodeAt(map.map[index + refRow * map.width])) == null ? void 0 : _a.type;
+        const node = type == null ? void 0 : type.createAndFill();
+        if (node)
+          cells.push(node);
+      }
+    }
+    tr.insert(rowPos, tableNodeTypes(table.type.schema).row.create(null, cells));
+    return tr;
+  }
+  function addRowBefore(state, dispatch) {
+    if (!isInTable(state))
+      return false;
+    if (dispatch) {
+      const rect = selectedRect(state);
+      dispatch(addRow(state.tr, rect, rect.top));
+    }
+    return true;
+  }
+  function addRowAfter(state, dispatch) {
+    if (!isInTable(state))
+      return false;
+    if (dispatch) {
+      const rect = selectedRect(state);
+      dispatch(addRow(state.tr, rect, rect.bottom));
+    }
+    return true;
+  }
+  function removeRow(tr, { map, table, tableStart }, row) {
+    let rowPos = 0;
+    for (let i = 0; i < row; i++)
+      rowPos += table.child(i).nodeSize;
+    const nextRow = rowPos + table.child(row).nodeSize;
+    const mapFrom = tr.mapping.maps.length;
+    tr.delete(rowPos + tableStart, nextRow + tableStart);
+    const seen = /* @__PURE__ */ new Set();
+    for (let col = 0, index = row * map.width; col < map.width; col++, index++) {
+      const pos = map.map[index];
+      if (seen.has(pos))
+        continue;
+      seen.add(pos);
+      if (row > 0 && pos == map.map[index - map.width]) {
+        const attrs = table.nodeAt(pos).attrs;
+        tr.setNodeMarkup(tr.mapping.slice(mapFrom).map(pos + tableStart), null, {
+          ...attrs,
+          rowspan: attrs.rowspan - 1
+        });
+        col += attrs.colspan - 1;
+      } else if (row < map.height && pos == map.map[index + map.width]) {
+        const cell = table.nodeAt(pos);
+        const attrs = cell.attrs;
+        const copy = cell.type.create(
+          { ...attrs, rowspan: cell.attrs.rowspan - 1 },
+          cell.content
+        );
+        const newPos = map.positionAt(row + 1, col, table);
+        tr.insert(tr.mapping.slice(mapFrom).map(tableStart + newPos), copy);
+        col += attrs.colspan - 1;
+      }
+    }
+  }
+  function deleteRow(state, dispatch) {
+    if (!isInTable(state))
+      return false;
+    if (dispatch) {
+      const rect = selectedRect(state), tr = state.tr;
+      if (rect.top == 0 && rect.bottom == rect.map.height)
+        return false;
+      for (let i = rect.bottom - 1; ; i--) {
+        removeRow(tr, rect, i);
+        if (i == rect.top)
+          break;
+        const table = rect.tableStart ? tr.doc.nodeAt(rect.tableStart - 1) : tr.doc;
+        if (!table) {
+          throw RangeError("No table found");
+        }
+        rect.table = table;
+        rect.map = TableMap.get(rect.table);
+      }
+      dispatch(tr);
+    }
+    return true;
+  }
+  function isEmpty(cell) {
+    const c = cell.content;
+    return c.childCount == 1 && c.child(0).isTextblock && c.child(0).childCount == 0;
+  }
+  function cellsOverlapRectangle({ width, height, map }, rect) {
+    let indexTop = rect.top * width + rect.left, indexLeft = indexTop;
+    let indexBottom = (rect.bottom - 1) * width + rect.left, indexRight = indexTop + (rect.right - rect.left - 1);
+    for (let i = rect.top; i < rect.bottom; i++) {
+      if (rect.left > 0 && map[indexLeft] == map[indexLeft - 1] || rect.right < width && map[indexRight] == map[indexRight + 1])
+        return true;
+      indexLeft += width;
+      indexRight += width;
+    }
+    for (let i = rect.left; i < rect.right; i++) {
+      if (rect.top > 0 && map[indexTop] == map[indexTop - width] || rect.bottom < height && map[indexBottom] == map[indexBottom + width])
+        return true;
+      indexTop++;
+      indexBottom++;
+    }
+    return false;
+  }
+  function mergeCells(state, dispatch) {
+    const sel = state.selection;
+    if (!(sel instanceof CellSelection) || sel.$anchorCell.pos == sel.$headCell.pos)
+      return false;
+    const rect = selectedRect(state), { map } = rect;
+    if (cellsOverlapRectangle(map, rect))
+      return false;
+    if (dispatch) {
+      const tr = state.tr;
+      const seen = {};
+      let content = Fragment.empty;
+      let mergedPos;
+      let mergedCell;
+      for (let row = rect.top; row < rect.bottom; row++) {
+        for (let col = rect.left; col < rect.right; col++) {
+          const cellPos = map.map[row * map.width + col];
+          const cell = rect.table.nodeAt(cellPos);
+          if (seen[cellPos] || !cell)
+            continue;
+          seen[cellPos] = true;
+          if (mergedPos == null) {
+            mergedPos = cellPos;
+            mergedCell = cell;
+          } else {
+            if (!isEmpty(cell))
+              content = content.append(cell.content);
+            const mapped = tr.mapping.map(cellPos + rect.tableStart);
+            tr.delete(mapped, mapped + cell.nodeSize);
+          }
+        }
+      }
+      if (mergedPos == null || mergedCell == null) {
+        return true;
+      }
+      tr.setNodeMarkup(mergedPos + rect.tableStart, null, {
+        ...addColSpan(
+          mergedCell.attrs,
+          mergedCell.attrs.colspan,
+          rect.right - rect.left - mergedCell.attrs.colspan
+        ),
+        rowspan: rect.bottom - rect.top
+      });
+      if (content.size) {
+        const end = mergedPos + 1 + mergedCell.content.size;
+        const start = isEmpty(mergedCell) ? mergedPos + 1 : end;
+        tr.replaceWith(start + rect.tableStart, end + rect.tableStart, content);
+      }
+      tr.setSelection(
+        new CellSelection(tr.doc.resolve(mergedPos + rect.tableStart))
+      );
+      dispatch(tr);
+    }
+    return true;
+  }
+  function splitCell(state, dispatch) {
+    const nodeTypes = tableNodeTypes(state.schema);
+    return splitCellWithType(({ node }) => {
+      return nodeTypes[node.type.spec.tableRole];
+    })(state, dispatch);
+  }
+  function splitCellWithType(getCellType) {
+    return (state, dispatch) => {
+      var _a;
+      const sel = state.selection;
+      let cellNode;
+      let cellPos;
+      if (!(sel instanceof CellSelection)) {
+        cellNode = cellWrapping(sel.$from);
+        if (!cellNode)
+          return false;
+        cellPos = (_a = cellAround(sel.$from)) == null ? void 0 : _a.pos;
+      } else {
+        if (sel.$anchorCell.pos != sel.$headCell.pos)
+          return false;
+        cellNode = sel.$anchorCell.nodeAfter;
+        cellPos = sel.$anchorCell.pos;
+      }
+      if (cellNode == null || cellPos == null) {
+        return false;
+      }
+      if (cellNode.attrs.colspan == 1 && cellNode.attrs.rowspan == 1) {
+        return false;
+      }
+      if (dispatch) {
+        let baseAttrs = cellNode.attrs;
+        const attrs = [];
+        const colwidth = baseAttrs.colwidth;
+        if (baseAttrs.rowspan > 1)
+          baseAttrs = { ...baseAttrs, rowspan: 1 };
+        if (baseAttrs.colspan > 1)
+          baseAttrs = { ...baseAttrs, colspan: 1 };
+        const rect = selectedRect(state), tr = state.tr;
+        for (let i = 0; i < rect.right - rect.left; i++)
+          attrs.push(
+            colwidth ? {
+              ...baseAttrs,
+              colwidth: colwidth && colwidth[i] ? [colwidth[i]] : null
+            } : baseAttrs
+          );
+        let lastCell;
+        for (let row = rect.top; row < rect.bottom; row++) {
+          let pos = rect.map.positionAt(row, rect.left, rect.table);
+          if (row == rect.top)
+            pos += cellNode.nodeSize;
+          for (let col = rect.left, i = 0; col < rect.right; col++, i++) {
+            if (col == rect.left && row == rect.top)
+              continue;
+            tr.insert(
+              lastCell = tr.mapping.map(pos + rect.tableStart, 1),
+              getCellType({ node: cellNode, row, col }).createAndFill(attrs[i])
+            );
+          }
+        }
+        tr.setNodeMarkup(
+          cellPos,
+          getCellType({ node: cellNode, row: rect.top, col: rect.left }),
+          attrs[0]
+        );
+        if (sel instanceof CellSelection)
+          tr.setSelection(
+            new CellSelection(
+              tr.doc.resolve(sel.$anchorCell.pos),
+              lastCell ? tr.doc.resolve(lastCell) : void 0
+            )
+          );
+        dispatch(tr);
+      }
+      return true;
+    };
+  }
+  function setCellAttr(name, value) {
+    return function(state, dispatch) {
+      if (!isInTable(state))
+        return false;
+      const $cell = selectionCell(state);
+      if ($cell.nodeAfter.attrs[name] === value)
+        return false;
+      if (dispatch) {
+        const tr = state.tr;
+        if (state.selection instanceof CellSelection)
+          state.selection.forEachCell((node, pos) => {
+            if (node.attrs[name] !== value)
+              tr.setNodeMarkup(pos, null, {
+                ...node.attrs,
+                [name]: value
+              });
+          });
+        else
+          tr.setNodeMarkup($cell.pos, null, {
+            ...$cell.nodeAfter.attrs,
+            [name]: value
+          });
+        dispatch(tr);
+      }
+      return true;
+    };
+  }
+  function deprecated_toggleHeader(type) {
+    return function(state, dispatch) {
+      if (!isInTable(state))
+        return false;
+      if (dispatch) {
+        const types = tableNodeTypes(state.schema);
+        const rect = selectedRect(state), tr = state.tr;
+        const cells = rect.map.cellsInRect(
+          type == "column" ? {
+            left: rect.left,
+            top: 0,
+            right: rect.right,
+            bottom: rect.map.height
+          } : type == "row" ? {
+            left: 0,
+            top: rect.top,
+            right: rect.map.width,
+            bottom: rect.bottom
+          } : rect
+        );
+        const nodes = cells.map((pos) => rect.table.nodeAt(pos));
+        for (let i = 0; i < cells.length; i++)
+          if (nodes[i].type == types.header_cell)
+            tr.setNodeMarkup(
+              rect.tableStart + cells[i],
+              types.cell,
+              nodes[i].attrs
+            );
+        if (tr.steps.length == 0)
+          for (let i = 0; i < cells.length; i++)
+            tr.setNodeMarkup(
+              rect.tableStart + cells[i],
+              types.header_cell,
+              nodes[i].attrs
+            );
+        dispatch(tr);
+      }
+      return true;
+    };
+  }
+  function isHeaderEnabledByType(type, rect, types) {
+    const cellPositions = rect.map.cellsInRect({
+      left: 0,
+      top: 0,
+      right: type == "row" ? rect.map.width : 1,
+      bottom: type == "column" ? rect.map.height : 1
+    });
+    for (let i = 0; i < cellPositions.length; i++) {
+      const cell = rect.table.nodeAt(cellPositions[i]);
+      if (cell && cell.type !== types.header_cell) {
+        return false;
+      }
+    }
+    return true;
+  }
+  function toggleHeader(type, options) {
+    options = options || { useDeprecatedLogic: false };
+    if (options.useDeprecatedLogic)
+      return deprecated_toggleHeader(type);
+    return function(state, dispatch) {
+      if (!isInTable(state))
+        return false;
+      if (dispatch) {
+        const types = tableNodeTypes(state.schema);
+        const rect = selectedRect(state), tr = state.tr;
+        const isHeaderRowEnabled = isHeaderEnabledByType("row", rect, types);
+        const isHeaderColumnEnabled = isHeaderEnabledByType(
+          "column",
+          rect,
+          types
+        );
+        const isHeaderEnabled = type === "column" ? isHeaderRowEnabled : type === "row" ? isHeaderColumnEnabled : false;
+        const selectionStartsAt = isHeaderEnabled ? 1 : 0;
+        const cellsRect = type == "column" ? {
+          left: 0,
+          top: selectionStartsAt,
+          right: 1,
+          bottom: rect.map.height
+        } : type == "row" ? {
+          left: selectionStartsAt,
+          top: 0,
+          right: rect.map.width,
+          bottom: 1
+        } : rect;
+        const newType = type == "column" ? isHeaderColumnEnabled ? types.cell : types.header_cell : type == "row" ? isHeaderRowEnabled ? types.cell : types.header_cell : types.cell;
+        rect.map.cellsInRect(cellsRect).forEach((relativeCellPos) => {
+          const cellPos = relativeCellPos + rect.tableStart;
+          const cell = tr.doc.nodeAt(cellPos);
+          if (cell) {
+            tr.setNodeMarkup(cellPos, newType, cell.attrs);
+          }
+        });
+        dispatch(tr);
+      }
+      return true;
+    };
+  }
+  toggleHeader("row", {
+    useDeprecatedLogic: true
+  });
+  toggleHeader("column", {
+    useDeprecatedLogic: true
+  });
+  var toggleHeaderCell = toggleHeader("cell", {
+    useDeprecatedLogic: true
+  });
+  function findNextCell($cell, dir) {
+    if (dir < 0) {
+      const before = $cell.nodeBefore;
+      if (before)
+        return $cell.pos - before.nodeSize;
+      for (let row = $cell.index(-1) - 1, rowEnd = $cell.before(); row >= 0; row--) {
+        const rowNode = $cell.node(-1).child(row);
+        const lastChild = rowNode.lastChild;
+        if (lastChild) {
+          return rowEnd - 1 - lastChild.nodeSize;
+        }
+        rowEnd -= rowNode.nodeSize;
+      }
+    } else {
+      if ($cell.index() < $cell.parent.childCount - 1) {
+        return $cell.pos + $cell.nodeAfter.nodeSize;
+      }
+      const table = $cell.node(-1);
+      for (let row = $cell.indexAfter(-1), rowStart = $cell.after(); row < table.childCount; row++) {
+        const rowNode = table.child(row);
+        if (rowNode.childCount)
+          return rowStart + 1;
+        rowStart += rowNode.nodeSize;
+      }
+    }
+    return null;
+  }
+  function goToNextCell(direction) {
+    return function(state, dispatch) {
+      if (!isInTable(state))
+        return false;
+      const cell = findNextCell(selectionCell(state), direction);
+      if (cell == null)
+        return false;
+      if (dispatch) {
+        const $cell = state.doc.resolve(cell);
+        dispatch(
+          state.tr.setSelection(TextSelection.between($cell, moveCellForward($cell))).scrollIntoView()
+        );
+      }
+      return true;
+    };
+  }
+  function deleteTable(state, dispatch) {
+    const $pos = state.selection.$anchor;
+    for (let d = $pos.depth; d > 0; d--) {
+      const node = $pos.node(d);
+      if (node.type.spec.tableRole == "table") {
+        if (dispatch)
+          dispatch(
+            state.tr.delete($pos.before(d), $pos.after(d)).scrollIntoView()
+          );
+        return true;
+      }
+    }
+    return false;
+  }
+  function deleteCellSelection(state, dispatch) {
+    const sel = state.selection;
+    if (!(sel instanceof CellSelection))
+      return false;
+    if (dispatch) {
+      const tr = state.tr;
+      const baseContent = tableNodeTypes(state.schema).cell.createAndFill().content;
+      sel.forEachCell((cell, pos) => {
+        if (!cell.content.eq(baseContent))
+          tr.replace(
+            tr.mapping.map(pos + 1),
+            tr.mapping.map(pos + cell.nodeSize - 1),
+            new Slice(baseContent, 0, 0)
+          );
+      });
+      if (tr.docChanged)
+        dispatch(tr);
+    }
+    return true;
+  }
+  function pastedCells(slice) {
+    if (!slice.size)
+      return null;
+    let { content, openStart, openEnd } = slice;
+    while (content.childCount == 1 && (openStart > 0 && openEnd > 0 || content.child(0).type.spec.tableRole == "table")) {
+      openStart--;
+      openEnd--;
+      content = content.child(0).content;
+    }
+    const first = content.child(0);
+    const role = first.type.spec.tableRole;
+    const schema = first.type.schema, rows = [];
+    if (role == "row") {
+      for (let i = 0; i < content.childCount; i++) {
+        let cells = content.child(i).content;
+        const left = i ? 0 : Math.max(0, openStart - 1);
+        const right = i < content.childCount - 1 ? 0 : Math.max(0, openEnd - 1);
+        if (left || right)
+          cells = fitSlice(
+            tableNodeTypes(schema).row,
+            new Slice(cells, left, right)
+          ).content;
+        rows.push(cells);
+      }
+    } else if (role == "cell" || role == "header_cell") {
+      rows.push(
+        openStart || openEnd ? fitSlice(
+          tableNodeTypes(schema).row,
+          new Slice(content, openStart, openEnd)
+        ).content : content
+      );
+    } else {
+      return null;
+    }
+    return ensureRectangular(schema, rows);
+  }
+  function ensureRectangular(schema, rows) {
+    const widths = [];
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      for (let j = row.childCount - 1; j >= 0; j--) {
+        const { rowspan, colspan } = row.child(j).attrs;
+        for (let r = i; r < i + rowspan; r++)
+          widths[r] = (widths[r] || 0) + colspan;
+      }
+    }
+    let width = 0;
+    for (let r = 0; r < widths.length; r++)
+      width = Math.max(width, widths[r]);
+    for (let r = 0; r < widths.length; r++) {
+      if (r >= rows.length)
+        rows.push(Fragment.empty);
+      if (widths[r] < width) {
+        const empty = tableNodeTypes(schema).cell.createAndFill();
+        const cells = [];
+        for (let i = widths[r]; i < width; i++) {
+          cells.push(empty);
+        }
+        rows[r] = rows[r].append(Fragment.from(cells));
+      }
+    }
+    return { height: rows.length, width, rows };
+  }
+  function fitSlice(nodeType, slice) {
+    const node = nodeType.createAndFill();
+    const tr = new Transform(node).replace(0, node.content.size, slice);
+    return tr.doc;
+  }
+  function clipCells({ width, height, rows }, newWidth, newHeight) {
+    if (width != newWidth) {
+      const added = [];
+      const newRows = [];
+      for (let row = 0; row < rows.length; row++) {
+        const frag = rows[row], cells = [];
+        for (let col = added[row] || 0, i = 0; col < newWidth; i++) {
+          let cell = frag.child(i % frag.childCount);
+          if (col + cell.attrs.colspan > newWidth)
+            cell = cell.type.createChecked(
+              removeColSpan(
+                cell.attrs,
+                cell.attrs.colspan,
+                col + cell.attrs.colspan - newWidth
+              ),
+              cell.content
+            );
+          cells.push(cell);
+          col += cell.attrs.colspan;
+          for (let j = 1; j < cell.attrs.rowspan; j++)
+            added[row + j] = (added[row + j] || 0) + cell.attrs.colspan;
+        }
+        newRows.push(Fragment.from(cells));
+      }
+      rows = newRows;
+      width = newWidth;
+    }
+    if (height != newHeight) {
+      const newRows = [];
+      for (let row = 0, i = 0; row < newHeight; row++, i++) {
+        const cells = [], source = rows[i % height];
+        for (let j = 0; j < source.childCount; j++) {
+          let cell = source.child(j);
+          if (row + cell.attrs.rowspan > newHeight)
+            cell = cell.type.create(
+              {
+                ...cell.attrs,
+                rowspan: Math.max(1, newHeight - cell.attrs.rowspan)
+              },
+              cell.content
+            );
+          cells.push(cell);
+        }
+        newRows.push(Fragment.from(cells));
+      }
+      rows = newRows;
+      height = newHeight;
+    }
+    return { width, height, rows };
+  }
+  function growTable(tr, map, table, start, width, height, mapFrom) {
+    const schema = tr.doc.type.schema;
+    const types = tableNodeTypes(schema);
+    let empty;
+    let emptyHead;
+    if (width > map.width) {
+      for (let row = 0, rowEnd = 0; row < map.height; row++) {
+        const rowNode = table.child(row);
+        rowEnd += rowNode.nodeSize;
+        const cells = [];
+        let add;
+        if (rowNode.lastChild == null || rowNode.lastChild.type == types.cell)
+          add = empty || (empty = types.cell.createAndFill());
+        else
+          add = emptyHead || (emptyHead = types.header_cell.createAndFill());
+        for (let i = map.width; i < width; i++)
+          cells.push(add);
+        tr.insert(tr.mapping.slice(mapFrom).map(rowEnd - 1 + start), cells);
+      }
+    }
+    if (height > map.height) {
+      const cells = [];
+      for (let i = 0, start2 = (map.height - 1) * map.width; i < Math.max(map.width, width); i++) {
+        const header = i >= map.width ? false : table.nodeAt(map.map[start2 + i]).type == types.header_cell;
+        cells.push(
+          header ? emptyHead || (emptyHead = types.header_cell.createAndFill()) : empty || (empty = types.cell.createAndFill())
+        );
+      }
+      const emptyRow = types.row.create(null, Fragment.from(cells)), rows = [];
+      for (let i = map.height; i < height; i++)
+        rows.push(emptyRow);
+      tr.insert(tr.mapping.slice(mapFrom).map(start + table.nodeSize - 2), rows);
+    }
+    return !!(empty || emptyHead);
+  }
+  function isolateHorizontal(tr, map, table, start, left, right, top, mapFrom) {
+    if (top == 0 || top == map.height)
+      return false;
+    let found = false;
+    for (let col = left; col < right; col++) {
+      const index = top * map.width + col, pos = map.map[index];
+      if (map.map[index - map.width] == pos) {
+        found = true;
+        const cell = table.nodeAt(pos);
+        const { top: cellTop, left: cellLeft } = map.findCell(pos);
+        tr.setNodeMarkup(tr.mapping.slice(mapFrom).map(pos + start), null, {
+          ...cell.attrs,
+          rowspan: top - cellTop
+        });
+        tr.insert(
+          tr.mapping.slice(mapFrom).map(map.positionAt(top, cellLeft, table)),
+          cell.type.createAndFill({
+            ...cell.attrs,
+            rowspan: cellTop + cell.attrs.rowspan - top
+          })
+        );
+        col += cell.attrs.colspan - 1;
+      }
+    }
+    return found;
+  }
+  function isolateVertical(tr, map, table, start, top, bottom, left, mapFrom) {
+    if (left == 0 || left == map.width)
+      return false;
+    let found = false;
+    for (let row = top; row < bottom; row++) {
+      const index = row * map.width + left, pos = map.map[index];
+      if (map.map[index - 1] == pos) {
+        found = true;
+        const cell = table.nodeAt(pos);
+        const cellLeft = map.colCount(pos);
+        const updatePos = tr.mapping.slice(mapFrom).map(pos + start);
+        tr.setNodeMarkup(
+          updatePos,
+          null,
+          removeColSpan(
+            cell.attrs,
+            left - cellLeft,
+            cell.attrs.colspan - (left - cellLeft)
+          )
+        );
+        tr.insert(
+          updatePos + cell.nodeSize,
+          cell.type.createAndFill(
+            removeColSpan(cell.attrs, 0, left - cellLeft)
+          )
+        );
+        row += cell.attrs.rowspan - 1;
+      }
+    }
+    return found;
+  }
+  function insertCells(state, dispatch, tableStart, rect, cells) {
+    let table = tableStart ? state.doc.nodeAt(tableStart - 1) : state.doc;
+    if (!table) {
+      throw new Error("No table found");
+    }
+    let map = TableMap.get(table);
+    const { top, left } = rect;
+    const right = left + cells.width, bottom = top + cells.height;
+    const tr = state.tr;
+    let mapFrom = 0;
+    function recomp() {
+      table = tableStart ? tr.doc.nodeAt(tableStart - 1) : tr.doc;
+      if (!table) {
+        throw new Error("No table found");
+      }
+      map = TableMap.get(table);
+      mapFrom = tr.mapping.maps.length;
+    }
+    if (growTable(tr, map, table, tableStart, right, bottom, mapFrom))
+      recomp();
+    if (isolateHorizontal(tr, map, table, tableStart, left, right, top, mapFrom))
+      recomp();
+    if (isolateHorizontal(tr, map, table, tableStart, left, right, bottom, mapFrom))
+      recomp();
+    if (isolateVertical(tr, map, table, tableStart, top, bottom, left, mapFrom))
+      recomp();
+    if (isolateVertical(tr, map, table, tableStart, top, bottom, right, mapFrom))
+      recomp();
+    for (let row = top; row < bottom; row++) {
+      const from = map.positionAt(row, left, table), to = map.positionAt(row, right, table);
+      tr.replace(
+        tr.mapping.slice(mapFrom).map(from + tableStart),
+        tr.mapping.slice(mapFrom).map(to + tableStart),
+        new Slice(cells.rows[row - top], 0, 0)
+      );
+    }
+    recomp();
+    tr.setSelection(
+      new CellSelection(
+        tr.doc.resolve(tableStart + map.positionAt(top, left, table)),
+        tr.doc.resolve(tableStart + map.positionAt(bottom - 1, right - 1, table))
+      )
+    );
+    dispatch(tr);
+  }
+
+  // src/input.ts
+  var handleKeyDown = keydownHandler({
+    ArrowLeft: arrow("horiz", -1),
+    ArrowRight: arrow("horiz", 1),
+    ArrowUp: arrow("vert", -1),
+    ArrowDown: arrow("vert", 1),
+    "Shift-ArrowLeft": shiftArrow("horiz", -1),
+    "Shift-ArrowRight": shiftArrow("horiz", 1),
+    "Shift-ArrowUp": shiftArrow("vert", -1),
+    "Shift-ArrowDown": shiftArrow("vert", 1),
+    Backspace: deleteCellSelection,
+    "Mod-Backspace": deleteCellSelection,
+    Delete: deleteCellSelection,
+    "Mod-Delete": deleteCellSelection
+  });
+  function maybeSetSelection(state, dispatch, selection) {
+    if (selection.eq(state.selection))
+      return false;
+    if (dispatch)
+      dispatch(state.tr.setSelection(selection).scrollIntoView());
+    return true;
+  }
+  function arrow(axis, dir) {
+    return (state, dispatch, view) => {
+      if (!view)
+        return false;
+      const sel = state.selection;
+      if (sel instanceof CellSelection) {
+        return maybeSetSelection(
+          state,
+          dispatch,
+          Selection.near(sel.$headCell, dir)
+        );
+      }
+      if (axis != "horiz" && !sel.empty)
+        return false;
+      const end = atEndOfCell(view, axis, dir);
+      if (end == null)
+        return false;
+      if (axis == "horiz") {
+        return maybeSetSelection(
+          state,
+          dispatch,
+          Selection.near(state.doc.resolve(sel.head + dir), dir)
+        );
+      } else {
+        const $cell = state.doc.resolve(end);
+        const $next = nextCell($cell, axis, dir);
+        let newSel;
+        if ($next)
+          newSel = Selection.near($next, 1);
+        else if (dir < 0)
+          newSel = Selection.near(state.doc.resolve($cell.before(-1)), -1);
+        else
+          newSel = Selection.near(state.doc.resolve($cell.after(-1)), 1);
+        return maybeSetSelection(state, dispatch, newSel);
+      }
+    };
+  }
+  function shiftArrow(axis, dir) {
+    return (state, dispatch, view) => {
+      if (!view)
+        return false;
+      const sel = state.selection;
+      let cellSel;
+      if (sel instanceof CellSelection) {
+        cellSel = sel;
+      } else {
+        const end = atEndOfCell(view, axis, dir);
+        if (end == null)
+          return false;
+        cellSel = new CellSelection(state.doc.resolve(end));
+      }
+      const $head = nextCell(cellSel.$headCell, axis, dir);
+      if (!$head)
+        return false;
+      return maybeSetSelection(
+        state,
+        dispatch,
+        new CellSelection(cellSel.$anchorCell, $head)
+      );
+    };
+  }
+  function handleTripleClick(view, pos) {
+    const doc = view.state.doc, $cell = cellAround(doc.resolve(pos));
+    if (!$cell)
+      return false;
+    view.dispatch(view.state.tr.setSelection(new CellSelection($cell)));
+    return true;
+  }
+  function handlePaste(view, _, slice) {
+    if (!isInTable(view.state))
+      return false;
+    let cells = pastedCells(slice);
+    const sel = view.state.selection;
+    if (sel instanceof CellSelection) {
+      if (!cells)
+        cells = {
+          width: 1,
+          height: 1,
+          rows: [
+            Fragment.from(
+              fitSlice(tableNodeTypes(view.state.schema).cell, slice)
+            )
+          ]
+        };
+      const table = sel.$anchorCell.node(-1);
+      const start = sel.$anchorCell.start(-1);
+      const rect = TableMap.get(table).rectBetween(
+        sel.$anchorCell.pos - start,
+        sel.$headCell.pos - start
+      );
+      cells = clipCells(cells, rect.right - rect.left, rect.bottom - rect.top);
+      insertCells(view.state, view.dispatch, start, rect, cells);
+      return true;
+    } else if (cells) {
+      const $cell = selectionCell(view.state);
+      const start = $cell.start(-1);
+      insertCells(
+        view.state,
+        view.dispatch,
+        start,
+        TableMap.get($cell.node(-1)).findCell($cell.pos - start),
+        cells
+      );
+      return true;
+    } else {
+      return false;
+    }
+  }
+  function handleMouseDown(view, startEvent) {
+    var _a;
+    if (startEvent.ctrlKey || startEvent.metaKey)
+      return;
+    const startDOMCell = domInCell(view, startEvent.target);
+    let $anchor;
+    if (startEvent.shiftKey && view.state.selection instanceof CellSelection) {
+      setCellSelection(view.state.selection.$anchorCell, startEvent);
+      startEvent.preventDefault();
+    } else if (startEvent.shiftKey && startDOMCell && ($anchor = cellAround(view.state.selection.$anchor)) != null && ((_a = cellUnderMouse(view, startEvent)) == null ? void 0 : _a.pos) != $anchor.pos) {
+      setCellSelection($anchor, startEvent);
+      startEvent.preventDefault();
+    } else if (!startDOMCell) {
+      return;
+    }
+    function setCellSelection($anchor2, event) {
+      let $head = cellUnderMouse(view, event);
+      const starting = tableEditingKey.getState(view.state) == null;
+      if (!$head || !inSameTable($anchor2, $head)) {
+        if (starting)
+          $head = $anchor2;
+        else
+          return;
+      }
+      const selection = new CellSelection($anchor2, $head);
+      if (starting || !view.state.selection.eq(selection)) {
+        const tr = view.state.tr.setSelection(selection);
+        if (starting)
+          tr.setMeta(tableEditingKey, $anchor2.pos);
+        view.dispatch(tr);
+      }
+    }
+    function stop() {
+      view.root.removeEventListener("mouseup", stop);
+      view.root.removeEventListener("dragstart", stop);
+      view.root.removeEventListener("mousemove", move);
+      if (tableEditingKey.getState(view.state) != null)
+        view.dispatch(view.state.tr.setMeta(tableEditingKey, -1));
+    }
+    function move(_event) {
+      const event = _event;
+      const anchor = tableEditingKey.getState(view.state);
+      let $anchor2;
+      if (anchor != null) {
+        $anchor2 = view.state.doc.resolve(anchor);
+      } else if (domInCell(view, event.target) != startDOMCell) {
+        $anchor2 = cellUnderMouse(view, startEvent);
+        if (!$anchor2)
+          return stop();
+      }
+      if ($anchor2)
+        setCellSelection($anchor2, event);
+    }
+    view.root.addEventListener("mouseup", stop);
+    view.root.addEventListener("dragstart", stop);
+    view.root.addEventListener("mousemove", move);
+  }
+  function atEndOfCell(view, axis, dir) {
+    if (!(view.state.selection instanceof TextSelection))
+      return null;
+    const { $head } = view.state.selection;
+    for (let d = $head.depth - 1; d >= 0; d--) {
+      const parent = $head.node(d), index = dir < 0 ? $head.index(d) : $head.indexAfter(d);
+      if (index != (dir < 0 ? 0 : parent.childCount))
+        return null;
+      if (parent.type.spec.tableRole == "cell" || parent.type.spec.tableRole == "header_cell") {
+        const cellPos = $head.before(d);
+        const dirStr = axis == "vert" ? dir > 0 ? "down" : "up" : dir > 0 ? "right" : "left";
+        return view.endOfTextblock(dirStr) ? cellPos : null;
+      }
+    }
+    return null;
+  }
+  function domInCell(view, dom) {
+    for (; dom && dom != view.dom; dom = dom.parentNode) {
+      if (dom.nodeName == "TD" || dom.nodeName == "TH") {
+        return dom;
+      }
+    }
+    return null;
+  }
+  function cellUnderMouse(view, event) {
+    const mousePos = view.posAtCoords({
+      left: event.clientX,
+      top: event.clientY
+    });
+    if (!mousePos)
+      return null;
+    return mousePos ? cellAround(view.state.doc.resolve(mousePos.pos)) : null;
+  }
+
+  // src/tableview.ts
+  var TableView$1 = class TableView {
+    constructor(node, cellMinWidth) {
+      this.node = node;
+      this.cellMinWidth = cellMinWidth;
+      this.dom = document.createElement("div");
+      this.dom.className = "tableWrapper";
+      this.table = this.dom.appendChild(document.createElement("table"));
+      this.colgroup = this.table.appendChild(document.createElement("colgroup"));
+      updateColumnsOnResize(node, this.colgroup, this.table, cellMinWidth);
+      this.contentDOM = this.table.appendChild(document.createElement("tbody"));
+    }
+    update(node) {
+      if (node.type != this.node.type)
+        return false;
+      this.node = node;
+      updateColumnsOnResize(node, this.colgroup, this.table, this.cellMinWidth);
+      return true;
+    }
+    ignoreMutation(record) {
+      return record.type == "attributes" && (record.target == this.table || this.colgroup.contains(record.target));
+    }
+  };
+  function updateColumnsOnResize(node, colgroup, table, cellMinWidth, overrideCol, overrideValue) {
+    var _a;
+    let totalWidth = 0;
+    let fixedWidth = true;
+    let nextDOM = colgroup.firstChild;
+    const row = node.firstChild;
+    if (!row)
+      return;
+    for (let i = 0, col = 0; i < row.childCount; i++) {
+      const { colspan, colwidth } = row.child(i).attrs;
+      for (let j = 0; j < colspan; j++, col++) {
+        const hasWidth = overrideCol == col ? overrideValue : colwidth && colwidth[j];
+        const cssWidth = hasWidth ? hasWidth + "px" : "";
+        totalWidth += hasWidth || cellMinWidth;
+        if (!hasWidth)
+          fixedWidth = false;
+        if (!nextDOM) {
+          colgroup.appendChild(document.createElement("col")).style.width = cssWidth;
+        } else {
+          if (nextDOM.style.width != cssWidth)
+            nextDOM.style.width = cssWidth;
+          nextDOM = nextDOM.nextSibling;
+        }
+      }
+    }
+    while (nextDOM) {
+      const after = nextDOM.nextSibling;
+      (_a = nextDOM.parentNode) == null ? void 0 : _a.removeChild(nextDOM);
+      nextDOM = after;
+    }
+    if (fixedWidth) {
+      table.style.width = totalWidth + "px";
+      table.style.minWidth = "";
+    } else {
+      table.style.width = "";
+      table.style.minWidth = totalWidth + "px";
+    }
+  }
+
+  // src/columnresizing.ts
+  var columnResizingPluginKey = new PluginKey(
+    "tableColumnResizing"
+  );
+  function columnResizing({
+    handleWidth = 5,
+    cellMinWidth = 25,
+    View = TableView$1,
+    lastColumnResizable = true
+  } = {}) {
+    const plugin = new Plugin({
+      key: columnResizingPluginKey,
+      state: {
+        init(_, state) {
+          var _a, _b;
+          const nodeViews = (_b = (_a = plugin.spec) == null ? void 0 : _a.props) == null ? void 0 : _b.nodeViews;
+          const tableName = tableNodeTypes(state.schema).table.name;
+          if (View && nodeViews) {
+            nodeViews[tableName] = (node, view) => {
+              return new View(node, cellMinWidth, view);
+            };
+          }
+          return new ResizeState(-1, false);
+        },
+        apply(tr, prev) {
+          return prev.apply(tr);
+        }
+      },
+      props: {
+        attributes: (state) => {
+          const pluginState = columnResizingPluginKey.getState(state);
+          return pluginState && pluginState.activeHandle > -1 ? { class: "resize-cursor" } : {};
+        },
+        handleDOMEvents: {
+          mousemove: (view, event) => {
+            handleMouseMove(
+              view,
+              event,
+              handleWidth,
+              cellMinWidth,
+              lastColumnResizable
+            );
+          },
+          mouseleave: (view) => {
+            handleMouseLeave(view);
+          },
+          mousedown: (view, event) => {
+            handleMouseDown2(view, event, cellMinWidth);
+          }
+        },
+        decorations: (state) => {
+          const pluginState = columnResizingPluginKey.getState(state);
+          if (pluginState && pluginState.activeHandle > -1) {
+            return handleDecorations(state, pluginState.activeHandle);
+          }
+        },
+        nodeViews: {}
+      }
+    });
+    return plugin;
+  }
+  var ResizeState = class _ResizeState {
+    constructor(activeHandle, dragging) {
+      this.activeHandle = activeHandle;
+      this.dragging = dragging;
+    }
+    apply(tr) {
+      const state = this;
+      const action = tr.getMeta(columnResizingPluginKey);
+      if (action && action.setHandle != null)
+        return new _ResizeState(action.setHandle, false);
+      if (action && action.setDragging !== void 0)
+        return new _ResizeState(state.activeHandle, action.setDragging);
+      if (state.activeHandle > -1 && tr.docChanged) {
+        let handle = tr.mapping.map(state.activeHandle, -1);
+        if (!pointsAtCell(tr.doc.resolve(handle))) {
+          handle = -1;
+        }
+        return new _ResizeState(handle, state.dragging);
+      }
+      return state;
+    }
+  };
+  function handleMouseMove(view, event, handleWidth, cellMinWidth, lastColumnResizable) {
+    const pluginState = columnResizingPluginKey.getState(view.state);
+    if (!pluginState)
+      return;
+    if (!pluginState.dragging) {
+      const target = domCellAround(event.target);
+      let cell = -1;
+      if (target) {
+        const { left, right } = target.getBoundingClientRect();
+        if (event.clientX - left <= handleWidth)
+          cell = edgeCell(view, event, "left", handleWidth);
+        else if (right - event.clientX <= handleWidth)
+          cell = edgeCell(view, event, "right", handleWidth);
+      }
+      if (cell != pluginState.activeHandle) {
+        if (!lastColumnResizable && cell !== -1) {
+          const $cell = view.state.doc.resolve(cell);
+          const table = $cell.node(-1);
+          const map = TableMap.get(table);
+          const tableStart = $cell.start(-1);
+          const col = map.colCount($cell.pos - tableStart) + $cell.nodeAfter.attrs.colspan - 1;
+          if (col == map.width - 1) {
+            return;
+          }
+        }
+        updateHandle(view, cell);
+      }
+    }
+  }
+  function handleMouseLeave(view) {
+    const pluginState = columnResizingPluginKey.getState(view.state);
+    if (pluginState && pluginState.activeHandle > -1 && !pluginState.dragging)
+      updateHandle(view, -1);
+  }
+  function handleMouseDown2(view, event, cellMinWidth) {
+    var _a;
+    const win = (_a = view.dom.ownerDocument.defaultView) != null ? _a : window;
+    const pluginState = columnResizingPluginKey.getState(view.state);
+    if (!pluginState || pluginState.activeHandle == -1 || pluginState.dragging)
+      return false;
+    const cell = view.state.doc.nodeAt(pluginState.activeHandle);
+    const width = currentColWidth(view, pluginState.activeHandle, cell.attrs);
+    view.dispatch(
+      view.state.tr.setMeta(columnResizingPluginKey, {
+        setDragging: { startX: event.clientX, startWidth: width }
+      })
+    );
+    function finish(event2) {
+      win.removeEventListener("mouseup", finish);
+      win.removeEventListener("mousemove", move);
+      const pluginState2 = columnResizingPluginKey.getState(view.state);
+      if (pluginState2 == null ? void 0 : pluginState2.dragging) {
+        updateColumnWidth(
+          view,
+          pluginState2.activeHandle,
+          draggedWidth(pluginState2.dragging, event2, cellMinWidth)
+        );
+        view.dispatch(
+          view.state.tr.setMeta(columnResizingPluginKey, { setDragging: null })
+        );
+      }
+    }
+    function move(event2) {
+      if (!event2.which)
+        return finish(event2);
+      const pluginState2 = columnResizingPluginKey.getState(view.state);
+      if (!pluginState2)
+        return;
+      if (pluginState2.dragging) {
+        const dragged = draggedWidth(pluginState2.dragging, event2, cellMinWidth);
+        displayColumnWidth(view, pluginState2.activeHandle, dragged, cellMinWidth);
+      }
+    }
+    win.addEventListener("mouseup", finish);
+    win.addEventListener("mousemove", move);
+    event.preventDefault();
+    return true;
+  }
+  function currentColWidth(view, cellPos, { colspan, colwidth }) {
+    const width = colwidth && colwidth[colwidth.length - 1];
+    if (width)
+      return width;
+    const dom = view.domAtPos(cellPos);
+    const node = dom.node.childNodes[dom.offset];
+    let domWidth = node.offsetWidth, parts = colspan;
+    if (colwidth) {
+      for (let i = 0; i < colspan; i++)
+        if (colwidth[i]) {
+          domWidth -= colwidth[i];
+          parts--;
+        }
+    }
+    return domWidth / parts;
+  }
+  function domCellAround(target) {
+    while (target && target.nodeName != "TD" && target.nodeName != "TH")
+      target = target.classList && target.classList.contains("ProseMirror") ? null : target.parentNode;
+    return target;
+  }
+  function edgeCell(view, event, side, handleWidth) {
+    const offset = side == "right" ? -handleWidth : handleWidth;
+    const found = view.posAtCoords({
+      left: event.clientX + offset,
+      top: event.clientY
+    });
+    if (!found)
+      return -1;
+    const { pos } = found;
+    const $cell = cellAround(view.state.doc.resolve(pos));
+    if (!$cell)
+      return -1;
+    if (side == "right")
+      return $cell.pos;
+    const map = TableMap.get($cell.node(-1)), start = $cell.start(-1);
+    const index = map.map.indexOf($cell.pos - start);
+    return index % map.width == 0 ? -1 : start + map.map[index - 1];
+  }
+  function draggedWidth(dragging, event, cellMinWidth) {
+    const offset = event.clientX - dragging.startX;
+    return Math.max(cellMinWidth, dragging.startWidth + offset);
+  }
+  function updateHandle(view, value) {
+    view.dispatch(
+      view.state.tr.setMeta(columnResizingPluginKey, { setHandle: value })
+    );
+  }
+  function updateColumnWidth(view, cell, width) {
+    const $cell = view.state.doc.resolve(cell);
+    const table = $cell.node(-1), map = TableMap.get(table), start = $cell.start(-1);
+    const col = map.colCount($cell.pos - start) + $cell.nodeAfter.attrs.colspan - 1;
+    const tr = view.state.tr;
+    for (let row = 0; row < map.height; row++) {
+      const mapIndex = row * map.width + col;
+      if (row && map.map[mapIndex] == map.map[mapIndex - map.width])
+        continue;
+      const pos = map.map[mapIndex];
+      const attrs = table.nodeAt(pos).attrs;
+      const index = attrs.colspan == 1 ? 0 : col - map.colCount(pos);
+      if (attrs.colwidth && attrs.colwidth[index] == width)
+        continue;
+      const colwidth = attrs.colwidth ? attrs.colwidth.slice() : zeroes(attrs.colspan);
+      colwidth[index] = width;
+      tr.setNodeMarkup(start + pos, null, { ...attrs, colwidth });
+    }
+    if (tr.docChanged)
+      view.dispatch(tr);
+  }
+  function displayColumnWidth(view, cell, width, cellMinWidth) {
+    const $cell = view.state.doc.resolve(cell);
+    const table = $cell.node(-1), start = $cell.start(-1);
+    const col = TableMap.get(table).colCount($cell.pos - start) + $cell.nodeAfter.attrs.colspan - 1;
+    let dom = view.domAtPos($cell.start(-1)).node;
+    while (dom && dom.nodeName != "TABLE") {
+      dom = dom.parentNode;
+    }
+    if (!dom)
+      return;
+    updateColumnsOnResize(
+      table,
+      dom.firstChild,
+      dom,
+      cellMinWidth,
+      col,
+      width
+    );
+  }
+  function zeroes(n) {
+    return Array(n).fill(0);
+  }
+  function handleDecorations(state, cell) {
+    const decorations = [];
+    const $cell = state.doc.resolve(cell);
+    const table = $cell.node(-1);
+    if (!table) {
+      return DecorationSet.empty;
+    }
+    const map = TableMap.get(table);
+    const start = $cell.start(-1);
+    const col = map.colCount($cell.pos - start) + $cell.nodeAfter.attrs.colspan - 1;
+    for (let row = 0; row < map.height; row++) {
+      const index = col + row * map.width;
+      if ((col == map.width - 1 || map.map[index] != map.map[index + 1]) && (row == 0 || map.map[index] != map.map[index - map.width])) {
+        const cellPos = map.map[index];
+        const pos = start + cellPos + table.nodeAt(cellPos).nodeSize - 1;
+        const dom = document.createElement("div");
+        dom.className = "column-resize-handle";
+        decorations.push(Decoration.widget(pos, dom));
+      }
+    }
+    return DecorationSet.create(state.doc, decorations);
+  }
+
+  // src/index.ts
+  function tableEditing({
+    allowTableNodeSelection = false
+  } = {}) {
+    return new Plugin({
+      key: tableEditingKey,
+      // This piece of state is used to remember when a mouse-drag
+      // cell-selection is happening, so that it can continue even as
+      // transactions (which might move its anchor cell) come in.
+      state: {
+        init() {
+          return null;
+        },
+        apply(tr, cur) {
+          const set = tr.getMeta(tableEditingKey);
+          if (set != null)
+            return set == -1 ? null : set;
+          if (cur == null || !tr.docChanged)
+            return cur;
+          const { deleted, pos } = tr.mapping.mapResult(cur);
+          return deleted ? null : pos;
+        }
+      },
+      props: {
+        decorations: drawCellSelection,
+        handleDOMEvents: {
+          mousedown: handleMouseDown
+        },
+        createSelectionBetween(view) {
+          return tableEditingKey.getState(view.state) != null ? view.state.selection : null;
+        },
+        handleTripleClick,
+        handleKeyDown,
+        handlePaste
+      },
+      appendTransaction(_, oldState, state) {
+        return normalizeSelection(
+          state,
+          fixTables(state, oldState),
+          allowTableNodeSelection
+        );
+      }
+    });
+  }
+
+  function updateColumns(node, colgroup, table, cellMinWidth, overrideCol, overrideValue) {
+      let totalWidth = 0;
+      let fixedWidth = true;
+      let nextDOM = colgroup.firstChild;
+      const row = node.firstChild;
+      for (let i = 0, col = 0; i < row.childCount; i += 1) {
+          const { colspan, colwidth } = row.child(i).attrs;
+          for (let j = 0; j < colspan; j += 1, col += 1) {
+              const hasWidth = overrideCol === col ? overrideValue : colwidth && colwidth[j];
+              const cssWidth = hasWidth ? `${hasWidth}px` : '';
+              totalWidth += hasWidth || cellMinWidth;
+              if (!hasWidth) {
+                  fixedWidth = false;
+              }
+              if (!nextDOM) {
+                  colgroup.appendChild(document.createElement('col')).style.width = cssWidth;
+              }
+              else {
+                  if (nextDOM.style.width !== cssWidth) {
+                      nextDOM.style.width = cssWidth;
+                  }
+                  nextDOM = nextDOM.nextSibling;
+              }
+          }
+      }
+      while (nextDOM) {
+          const after = nextDOM.nextSibling;
+          nextDOM.parentNode.removeChild(nextDOM);
+          nextDOM = after;
+      }
+      if (fixedWidth) {
+          table.style.width = `${totalWidth}px`;
+          table.style.minWidth = '';
+      }
+      else {
+          table.style.width = '';
+          table.style.minWidth = `${totalWidth}px`;
+      }
+  }
+  class TableView {
+      constructor(node, cellMinWidth) {
+          this.node = node;
+          this.cellMinWidth = cellMinWidth;
+          this.dom = document.createElement('div');
+          this.dom.className = 'tableWrapper';
+          this.table = this.dom.appendChild(document.createElement('table'));
+          this.colgroup = this.table.appendChild(document.createElement('colgroup'));
+          updateColumns(node, this.colgroup, this.table, cellMinWidth);
+          this.contentDOM = this.table.appendChild(document.createElement('tbody'));
+      }
+      update(node) {
+          if (node.type !== this.node.type) {
+              return false;
+          }
+          this.node = node;
+          updateColumns(node, this.colgroup, this.table, this.cellMinWidth);
+          return true;
+      }
+      ignoreMutation(mutation) {
+          return (mutation.type === 'attributes'
+              && (mutation.target === this.table || this.colgroup.contains(mutation.target)));
+      }
+  }
+
+  /**
+   * Creates a colgroup element for a table node in ProseMirror.
+   *
+   * @param node - The ProseMirror node representing the table.
+   * @param cellMinWidth - The minimum width of a cell in the table.
+   * @param overrideCol - (Optional) The index of the column to override the width of.
+   * @param overrideValue - (Optional) The width value to use for the overridden column.
+   * @returns An object containing the colgroup element, the total width of the table, and the minimum width of the table.
+   */
+  function createColGroup(node, cellMinWidth, overrideCol, overrideValue) {
+      let totalWidth = 0;
+      let fixedWidth = true;
+      const cols = [];
+      const row = node.firstChild;
+      if (!row) {
+          return {};
+      }
+      for (let i = 0, col = 0; i < row.childCount; i += 1) {
+          const { colspan, colwidth } = row.child(i).attrs;
+          for (let j = 0; j < colspan; j += 1, col += 1) {
+              const hasWidth = overrideCol === col ? overrideValue : colwidth && colwidth[j];
+              const cssWidth = hasWidth ? `${hasWidth}px` : '';
+              totalWidth += hasWidth || cellMinWidth;
+              if (!hasWidth) {
+                  fixedWidth = false;
+              }
+              cols.push(['col', cssWidth ? { style: `width: ${cssWidth}` } : {}]);
+          }
+      }
+      const tableWidth = fixedWidth ? `${totalWidth}px` : '';
+      const tableMinWidth = fixedWidth ? '' : `${totalWidth}px`;
+      const colgroup = ['colgroup', {}, ...cols];
+      return { colgroup, tableWidth, tableMinWidth };
+  }
+
+  function createCell(cellType, cellContent) {
+      if (cellContent) {
+          return cellType.createChecked(null, cellContent);
+      }
+      return cellType.createAndFill();
+  }
+
+  function getTableNodeTypes(schema) {
+      if (schema.cached.tableNodeTypes) {
+          return schema.cached.tableNodeTypes;
+      }
+      const roles = {};
+      Object.keys(schema.nodes).forEach(type => {
+          const nodeType = schema.nodes[type];
+          if (nodeType.spec.tableRole) {
+              roles[nodeType.spec.tableRole] = nodeType;
+          }
+      });
+      schema.cached.tableNodeTypes = roles;
+      return roles;
+  }
+
+  function createTable(schema, rowsCount, colsCount, withHeaderRow, cellContent) {
+      const types = getTableNodeTypes(schema);
+      const headerCells = [];
+      const cells = [];
+      for (let index = 0; index < colsCount; index += 1) {
+          const cell = createCell(types.cell, cellContent);
+          if (cell) {
+              cells.push(cell);
+          }
+          if (withHeaderRow) {
+              const headerCell = createCell(types.header_cell, cellContent);
+              if (headerCell) {
+                  headerCells.push(headerCell);
+              }
+          }
+      }
+      const rows = [];
+      for (let index = 0; index < rowsCount; index += 1) {
+          rows.push(types.row.createChecked(null, withHeaderRow && index === 0 ? headerCells : cells));
+      }
+      return types.table.createChecked(null, rows);
+  }
+
+  function isCellSelection(value) {
+      return value instanceof CellSelection;
+  }
+
+  const deleteTableWhenAllCellsSelected = ({ editor }) => {
+      const { selection } = editor.state;
+      if (!isCellSelection(selection)) {
+          return false;
+      }
+      let cellCount = 0;
+      const table = findParentNodeClosestToPos(selection.ranges[0].$from, node => {
+          return node.type.name === 'table';
+      });
+      table === null || table === void 0 ? void 0 : table.node.descendants(node => {
+          if (node.type.name === 'table') {
+              return false;
+          }
+          if (['tableCell', 'tableHeader'].includes(node.type.name)) {
+              cellCount += 1;
+          }
+      });
+      const allCellsSelected = cellCount === selection.ranges.length;
+      if (!allCellsSelected) {
+          return false;
+      }
+      editor.commands.deleteTable();
+      return true;
+  };
+
+  /**
+   * This extension allows you to create tables.
+   * @see https://www.tiptap.dev/api/nodes/table
+   */
+  const Table = Node.create({
+      name: 'table',
+      // @ts-ignore
+      addOptions() {
+          return {
+              HTMLAttributes: {},
+              resizable: false,
+              handleWidth: 5,
+              cellMinWidth: 25,
+              // TODO: fix
+              View: TableView,
+              lastColumnResizable: true,
+              allowTableNodeSelection: false,
+          };
+      },
+      content: 'tableRow+',
+      tableRole: 'table',
+      isolating: true,
+      group: 'block',
+      parseHTML() {
+          return [{ tag: 'table' }];
+      },
+      renderHTML({ node, HTMLAttributes }) {
+          const { colgroup, tableWidth, tableMinWidth } = createColGroup(node, this.options.cellMinWidth);
+          const table = [
+              'table',
+              mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+                  style: tableWidth
+                      ? `width: ${tableWidth}`
+                      : `min-width: ${tableMinWidth}`,
+              }),
+              colgroup,
+              ['tbody', 0],
+          ];
+          return table;
+      },
+      addCommands() {
+          return {
+              insertTable: ({ rows = 3, cols = 3, withHeaderRow = true } = {}) => ({ tr, dispatch, editor }) => {
+                  const node = createTable(editor.schema, rows, cols, withHeaderRow);
+                  if (dispatch) {
+                      const offset = tr.selection.from + 1;
+                      tr.replaceSelectionWith(node)
+                          .scrollIntoView()
+                          .setSelection(TextSelection.near(tr.doc.resolve(offset)));
+                  }
+                  return true;
+              },
+              addColumnBefore: () => ({ state, dispatch }) => {
+                  return addColumnBefore(state, dispatch);
+              },
+              addColumnAfter: () => ({ state, dispatch }) => {
+                  return addColumnAfter(state, dispatch);
+              },
+              deleteColumn: () => ({ state, dispatch }) => {
+                  return deleteColumn(state, dispatch);
+              },
+              addRowBefore: () => ({ state, dispatch }) => {
+                  return addRowBefore(state, dispatch);
+              },
+              addRowAfter: () => ({ state, dispatch }) => {
+                  return addRowAfter(state, dispatch);
+              },
+              deleteRow: () => ({ state, dispatch }) => {
+                  return deleteRow(state, dispatch);
+              },
+              deleteTable: () => ({ state, dispatch }) => {
+                  return deleteTable(state, dispatch);
+              },
+              mergeCells: () => ({ state, dispatch }) => {
+                  return mergeCells(state, dispatch);
+              },
+              splitCell: () => ({ state, dispatch }) => {
+                  return splitCell(state, dispatch);
+              },
+              toggleHeaderColumn: () => ({ state, dispatch }) => {
+                  return toggleHeader('column')(state, dispatch);
+              },
+              toggleHeaderRow: () => ({ state, dispatch }) => {
+                  return toggleHeader('row')(state, dispatch);
+              },
+              toggleHeaderCell: () => ({ state, dispatch }) => {
+                  return toggleHeaderCell(state, dispatch);
+              },
+              mergeOrSplit: () => ({ state, dispatch }) => {
+                  if (mergeCells(state, dispatch)) {
+                      return true;
+                  }
+                  return splitCell(state, dispatch);
+              },
+              setCellAttribute: (name, value) => ({ state, dispatch }) => {
+                  return setCellAttr(name, value)(state, dispatch);
+              },
+              goToNextCell: () => ({ state, dispatch }) => {
+                  return goToNextCell(1)(state, dispatch);
+              },
+              goToPreviousCell: () => ({ state, dispatch }) => {
+                  return goToNextCell(-1)(state, dispatch);
+              },
+              fixTables: () => ({ state, dispatch }) => {
+                  if (dispatch) {
+                      fixTables(state);
+                  }
+                  return true;
+              },
+              setCellSelection: position => ({ tr, dispatch }) => {
+                  if (dispatch) {
+                      const selection = CellSelection.create(tr.doc, position.anchorCell, position.headCell);
+                      // @ts-ignore
+                      tr.setSelection(selection);
+                  }
+                  return true;
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              Tab: () => {
+                  if (this.editor.commands.goToNextCell()) {
+                      return true;
+                  }
+                  if (!this.editor.can().addRowAfter()) {
+                      return false;
+                  }
+                  return this.editor.chain().addRowAfter().goToNextCell().run();
+              },
+              'Shift-Tab': () => this.editor.commands.goToPreviousCell(),
+              Backspace: deleteTableWhenAllCellsSelected,
+              'Mod-Backspace': deleteTableWhenAllCellsSelected,
+              Delete: deleteTableWhenAllCellsSelected,
+              'Mod-Delete': deleteTableWhenAllCellsSelected,
+          };
+      },
+      addProseMirrorPlugins() {
+          const isResizable = this.options.resizable && this.editor.isEditable;
+          return [
+              ...(isResizable
+                  ? [
+                      columnResizing({
+                          handleWidth: this.options.handleWidth,
+                          cellMinWidth: this.options.cellMinWidth,
+                          View: this.options.View,
+                          lastColumnResizable: this.options.lastColumnResizable,
+                      }),
+                  ]
+                  : []),
+              tableEditing({
+                  allowTableNodeSelection: this.options.allowTableNodeSelection,
+              }),
+          ];
+      },
+      extendNodeSchema(extension) {
+          const context = {
+              name: extension.name,
+              options: extension.options,
+              storage: extension.storage,
+          };
+          return {
+              tableRole: callOrReturn(getExtensionField(extension, 'tableRole', context)),
+          };
+      },
+  });
+
+  /**
+   * This extension allows you to create table cells.
+   * @see https://www.tiptap.dev/api/nodes/table-cell
+   */
+  const TableCell = Node.create({
+      name: 'tableCell',
+      addOptions() {
+          return {
+              HTMLAttributes: {},
+          };
+      },
+      content: 'block+',
+      addAttributes() {
+          return {
+              colspan: {
+                  default: 1,
+              },
+              rowspan: {
+                  default: 1,
+              },
+              colwidth: {
+                  default: null,
+                  parseHTML: element => {
+                      const colwidth = element.getAttribute('colwidth');
+                      const value = colwidth
+                          ? [parseInt(colwidth, 10)]
+                          : null;
+                      return value;
+                  },
+              },
+          };
+      },
+      tableRole: 'cell',
+      isolating: true,
+      parseHTML() {
+          return [
+              { tag: 'td' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['td', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+  });
+
+  /**
+   * This extension allows you to create table headers.
+   * @see https://www.tiptap.dev/api/nodes/table-header
+   */
+  const TableHeader = Node.create({
+      name: 'tableHeader',
+      addOptions() {
+          return {
+              HTMLAttributes: {},
+          };
+      },
+      content: 'block+',
+      addAttributes() {
+          return {
+              colspan: {
+                  default: 1,
+              },
+              rowspan: {
+                  default: 1,
+              },
+              colwidth: {
+                  default: null,
+                  parseHTML: element => {
+                      const colwidth = element.getAttribute('colwidth');
+                      const value = colwidth
+                          ? [parseInt(colwidth, 10)]
+                          : null;
+                      return value;
+                  },
+              },
+          };
+      },
+      tableRole: 'header_cell',
+      isolating: true,
+      parseHTML() {
+          return [
+              { tag: 'th' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['th', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+  });
+
+  /**
+   * This extension allows you to create table rows.
+   * @see https://www.tiptap.dev/api/nodes/table-row
+   */
+  const TableRow = Node.create({
+      name: 'tableRow',
+      addOptions() {
+          return {
+              HTMLAttributes: {},
+          };
+      },
+      content: '(tableCell | tableHeader)*',
+      tableRole: 'row',
+      parseHTML() {
+          return [
+              { tag: 'tr' },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['tr', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+  });
+
+  /**
+   * Matches a task item to a - [ ] on input.
+   */
+  const inputRegex$1 = /^\s*(\[([( |x])?\])\s$/;
+  /**
+   * This extension allows you to create task items.
+   * @see https://www.tiptap.dev/api/nodes/task-item
+   */
+  const TaskItem = Node.create({
+      name: 'taskItem',
+      addOptions() {
+          return {
+              nested: false,
+              HTMLAttributes: {},
+              taskListTypeName: 'taskList',
+          };
+      },
+      content() {
+          return this.options.nested ? 'paragraph block*' : 'paragraph+';
+      },
+      defining: true,
+      addAttributes() {
+          return {
+              checked: {
+                  default: false,
+                  keepOnSplit: false,
+                  parseHTML: element => {
+                      const dataChecked = element.getAttribute('data-checked');
+                      return dataChecked === '' || dataChecked === 'true';
+                  },
+                  renderHTML: attributes => ({
+                      'data-checked': attributes.checked,
+                  }),
+              },
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: `li[data-type="${this.name}"]`,
+                  priority: 51,
+              },
+          ];
+      },
+      renderHTML({ node, HTMLAttributes }) {
+          return [
+              'li',
+              mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+                  'data-type': this.name,
+              }),
+              [
+                  'label',
+                  [
+                      'input',
+                      {
+                          type: 'checkbox',
+                          checked: node.attrs.checked ? 'checked' : null,
+                      },
+                  ],
+                  ['span'],
+              ],
+              ['div', 0],
+          ];
+      },
+      addKeyboardShortcuts() {
+          const shortcuts = {
+              Enter: () => this.editor.commands.splitListItem(this.name),
+              'Shift-Tab': () => this.editor.commands.liftListItem(this.name),
+          };
+          if (!this.options.nested) {
+              return shortcuts;
+          }
+          return {
+              ...shortcuts,
+              Tab: () => this.editor.commands.sinkListItem(this.name),
+          };
+      },
+      addNodeView() {
+          return ({ node, HTMLAttributes, getPos, editor, }) => {
+              const listItem = document.createElement('li');
+              const checkboxWrapper = document.createElement('label');
+              const checkboxStyler = document.createElement('span');
+              const checkbox = document.createElement('input');
+              const content = document.createElement('div');
+              checkboxWrapper.contentEditable = 'false';
+              checkbox.type = 'checkbox';
+              checkbox.addEventListener('mousedown', event => event.preventDefault());
+              checkbox.addEventListener('change', event => {
+                  // if the editor isn’t editable and we don't have a handler for
+                  // readonly checks we have to undo the latest change
+                  if (!editor.isEditable && !this.options.onReadOnlyChecked) {
+                      checkbox.checked = !checkbox.checked;
+                      return;
+                  }
+                  const { checked } = event.target;
+                  if (editor.isEditable && typeof getPos === 'function') {
+                      editor
+                          .chain()
+                          .focus(undefined, { scrollIntoView: false })
+                          .command(({ tr }) => {
+                          const position = getPos();
+                          if (typeof position !== 'number') {
+                              return false;
+                          }
+                          const currentNode = tr.doc.nodeAt(position);
+                          tr.setNodeMarkup(position, undefined, {
+                              ...currentNode === null || currentNode === void 0 ? void 0 : currentNode.attrs,
+                              checked,
+                          });
+                          return true;
+                      })
+                          .run();
+                  }
+                  if (!editor.isEditable && this.options.onReadOnlyChecked) {
+                      // Reset state if onReadOnlyChecked returns false
+                      if (!this.options.onReadOnlyChecked(node, checked)) {
+                          checkbox.checked = !checkbox.checked;
+                      }
+                  }
+              });
+              Object.entries(this.options.HTMLAttributes).forEach(([key, value]) => {
+                  listItem.setAttribute(key, value);
+              });
+              listItem.dataset.checked = node.attrs.checked;
+              if (node.attrs.checked) {
+                  checkbox.setAttribute('checked', 'checked');
+              }
+              checkboxWrapper.append(checkbox, checkboxStyler);
+              listItem.append(checkboxWrapper, content);
+              Object.entries(HTMLAttributes).forEach(([key, value]) => {
+                  listItem.setAttribute(key, value);
+              });
+              return {
+                  dom: listItem,
+                  contentDOM: content,
+                  update: updatedNode => {
+                      if (updatedNode.type !== this.type) {
+                          return false;
+                      }
+                      listItem.dataset.checked = updatedNode.attrs.checked;
+                      if (updatedNode.attrs.checked) {
+                          checkbox.setAttribute('checked', 'checked');
+                      }
+                      else {
+                          checkbox.removeAttribute('checked');
+                      }
+                      return true;
+                  },
+              };
+          };
+      },
+      addInputRules() {
+          return [
+              wrappingInputRule({
+                  find: inputRegex$1,
+                  type: this.type,
+                  getAttributes: match => ({
+                      checked: match[match.length - 1] === 'x',
+                  }),
+              }),
+          ];
+      },
+  });
+
+  /**
+   * This extension allows you to create task lists.
+   * @see https://www.tiptap.dev/api/nodes/task-list
+   */
+  const TaskList = Node.create({
+      name: 'taskList',
+      addOptions() {
+          return {
+              itemTypeName: 'taskItem',
+              HTMLAttributes: {},
+          };
+      },
+      group: 'block list',
+      content() {
+          return `${this.options.itemTypeName}+`;
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: `ul[data-type="${this.name}"]`,
+                  priority: 51,
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['ul', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { 'data-type': this.name }), 0];
+      },
+      addCommands() {
+          return {
+              toggleTaskList: () => ({ commands }) => {
+                  return commands.toggleList(this.name, this.options.itemTypeName);
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Shift-9': () => this.editor.commands.toggleTaskList(),
+          };
+      },
+  });
+
+  function findSuggestionMatch(config) {
+      var _a;
+      const { char, allowSpaces, allowedPrefixes, startOfLine, $position, } = config;
+      const escapedChar = escapeForRegEx(char);
+      const suffix = new RegExp(`\\s${escapedChar}$`);
+      const prefix = startOfLine ? '^' : '';
+      const regexp = allowSpaces
+          ? new RegExp(`${prefix}${escapedChar}.*?(?=\\s${escapedChar}|$)`, 'gm')
+          : new RegExp(`${prefix}(?:^)?${escapedChar}[^\\s${escapedChar}]*`, 'gm');
+      const text = ((_a = $position.nodeBefore) === null || _a === void 0 ? void 0 : _a.isText) && $position.nodeBefore.text;
+      if (!text) {
+          return null;
+      }
+      const textFrom = $position.pos - text.length;
+      const match = Array.from(text.matchAll(regexp)).pop();
+      if (!match || match.input === undefined || match.index === undefined) {
+          return null;
+      }
+      // JavaScript doesn't have lookbehinds. This hacks a check that first character
+      // is a space or the start of the line
+      const matchPrefix = match.input.slice(Math.max(0, match.index - 1), match.index);
+      const matchPrefixIsAllowed = new RegExp(`^[${allowedPrefixes === null || allowedPrefixes === void 0 ? void 0 : allowedPrefixes.join('')}\0]?$`).test(matchPrefix);
+      if (allowedPrefixes !== null && !matchPrefixIsAllowed) {
+          return null;
+      }
+      // The absolute position of the match in the document
+      const from = textFrom + match.index;
+      let to = from + match[0].length;
+      // Edge case handling; if spaces are allowed and we're directly in between
+      // two triggers
+      if (allowSpaces && suffix.test(text.slice(to - 1, to + 1))) {
+          match[0] += ' ';
+          to += 1;
+      }
+      // If the $position is located within the matched substring, return that range
+      if (from < $position.pos && to >= $position.pos) {
+          return {
+              range: {
+                  from,
+                  to,
+              },
+              query: match[0].slice(char.length),
+              text: match[0],
+          };
+      }
+      return null;
+  }
+
+  const SuggestionPluginKey = new PluginKey('suggestion');
+  /**
+   * This utility allows you to create suggestions.
+   * @see https://tiptap.dev/api/utilities/suggestion
+   */
+  function Suggestion({ pluginKey = SuggestionPluginKey, editor, char = '@', allowSpaces = false, allowedPrefixes = [' '], startOfLine = false, decorationTag = 'span', decorationClass = 'suggestion', command = () => null, items = () => [], render = () => ({}), allow = () => true, findSuggestionMatch: findSuggestionMatch$1 = findSuggestionMatch, }) {
+      let props;
+      const renderer = render === null || render === void 0 ? void 0 : render();
+      const plugin = new Plugin({
+          key: pluginKey,
+          view() {
+              return {
+                  update: async (view, prevState) => {
+                      var _a, _b, _c, _d, _e, _f, _g;
+                      const prev = (_a = this.key) === null || _a === void 0 ? void 0 : _a.getState(prevState);
+                      const next = (_b = this.key) === null || _b === void 0 ? void 0 : _b.getState(view.state);
+                      // See how the state changed
+                      const moved = prev.active && next.active && prev.range.from !== next.range.from;
+                      const started = !prev.active && next.active;
+                      const stopped = prev.active && !next.active;
+                      const changed = !started && !stopped && prev.query !== next.query;
+                      const handleStart = started || (moved && changed);
+                      const handleChange = changed || moved;
+                      const handleExit = stopped || (moved && changed);
+                      // Cancel when suggestion isn't active
+                      if (!handleStart && !handleChange && !handleExit) {
+                          return;
+                      }
+                      const state = handleExit && !handleStart ? prev : next;
+                      const decorationNode = view.dom.querySelector(`[data-decoration-id="${state.decorationId}"]`);
+                      props = {
+                          editor,
+                          range: state.range,
+                          query: state.query,
+                          text: state.text,
+                          items: [],
+                          command: commandProps => {
+                              return command({
+                                  editor,
+                                  range: state.range,
+                                  props: commandProps,
+                              });
+                          },
+                          decorationNode,
+                          // virtual node for popper.js or tippy.js
+                          // this can be used for building popups without a DOM node
+                          clientRect: decorationNode
+                              ? () => {
+                                  var _a;
+                                  // because of `items` can be asynchrounous we’ll search for the current decoration node
+                                  const { decorationId } = (_a = this.key) === null || _a === void 0 ? void 0 : _a.getState(editor.state); // eslint-disable-line
+                                  const currentDecorationNode = view.dom.querySelector(`[data-decoration-id="${decorationId}"]`);
+                                  return (currentDecorationNode === null || currentDecorationNode === void 0 ? void 0 : currentDecorationNode.getBoundingClientRect()) || null;
+                              }
+                              : null,
+                      };
+                      if (handleStart) {
+                          (_c = renderer === null || renderer === void 0 ? void 0 : renderer.onBeforeStart) === null || _c === void 0 ? void 0 : _c.call(renderer, props);
+                      }
+                      if (handleChange) {
+                          (_d = renderer === null || renderer === void 0 ? void 0 : renderer.onBeforeUpdate) === null || _d === void 0 ? void 0 : _d.call(renderer, props);
+                      }
+                      if (handleChange || handleStart) {
+                          props.items = await items({
+                              editor,
+                              query: state.query,
+                          });
+                      }
+                      if (handleExit) {
+                          (_e = renderer === null || renderer === void 0 ? void 0 : renderer.onExit) === null || _e === void 0 ? void 0 : _e.call(renderer, props);
+                      }
+                      if (handleChange) {
+                          (_f = renderer === null || renderer === void 0 ? void 0 : renderer.onUpdate) === null || _f === void 0 ? void 0 : _f.call(renderer, props);
+                      }
+                      if (handleStart) {
+                          (_g = renderer === null || renderer === void 0 ? void 0 : renderer.onStart) === null || _g === void 0 ? void 0 : _g.call(renderer, props);
+                      }
+                  },
+                  destroy: () => {
+                      var _a;
+                      if (!props) {
+                          return;
+                      }
+                      (_a = renderer === null || renderer === void 0 ? void 0 : renderer.onExit) === null || _a === void 0 ? void 0 : _a.call(renderer, props);
+                  },
+              };
+          },
+          state: {
+              // Initialize the plugin's internal state.
+              init() {
+                  const state = {
+                      active: false,
+                      range: {
+                          from: 0,
+                          to: 0,
+                      },
+                      query: null,
+                      text: null,
+                      composing: false,
+                  };
+                  return state;
+              },
+              // Apply changes to the plugin state from a view transaction.
+              apply(transaction, prev, _oldState, state) {
+                  const { isEditable } = editor;
+                  const { composing } = editor.view;
+                  const { selection } = transaction;
+                  const { empty, from } = selection;
+                  const next = { ...prev };
+                  next.composing = composing;
+                  // We can only be suggesting if the view is editable, and:
+                  //   * there is no selection, or
+                  //   * a composition is active (see: https://github.com/ueberdosis/tiptap/issues/1449)
+                  if (isEditable && (empty || editor.view.composing)) {
+                      // Reset active state if we just left the previous suggestion range
+                      if ((from < prev.range.from || from > prev.range.to) && !composing && !prev.composing) {
+                          next.active = false;
+                      }
+                      // Try to match against where our cursor currently is
+                      const match = findSuggestionMatch$1({
+                          char,
+                          allowSpaces,
+                          allowedPrefixes,
+                          startOfLine,
+                          $position: selection.$from,
+                      });
+                      const decorationId = `id_${Math.floor(Math.random() * 0xffffffff)}`;
+                      // If we found a match, update the current state to show it
+                      if (match && allow({
+                          editor, state, range: match.range, isActive: prev.active,
+                      })) {
+                          next.active = true;
+                          next.decorationId = prev.decorationId ? prev.decorationId : decorationId;
+                          next.range = match.range;
+                          next.query = match.query;
+                          next.text = match.text;
+                      }
+                      else {
+                          next.active = false;
+                      }
+                  }
+                  else {
+                      next.active = false;
+                  }
+                  // Make sure to empty the range if suggestion is inactive
+                  if (!next.active) {
+                      next.decorationId = null;
+                      next.range = { from: 0, to: 0 };
+                      next.query = null;
+                      next.text = null;
+                  }
+                  return next;
+              },
+          },
+          props: {
+              // Call the keydown hook if suggestion is active.
+              handleKeyDown(view, event) {
+                  var _a;
+                  const { active, range } = plugin.getState(view.state);
+                  if (!active) {
+                      return false;
+                  }
+                  return ((_a = renderer === null || renderer === void 0 ? void 0 : renderer.onKeyDown) === null || _a === void 0 ? void 0 : _a.call(renderer, { view, event, range })) || false;
+              },
+              // Setup decorator on the currently active suggestion.
+              decorations(state) {
+                  const { active, range, decorationId } = plugin.getState(state);
+                  if (!active) {
+                      return null;
+                  }
+                  return DecorationSet.create(state.doc, [
+                      Decoration.inline(range.from, range.to, {
+                          nodeName: decorationTag,
+                          class: decorationClass,
+                          'data-decoration-id': decorationId,
+                      }),
+                  ]);
+              },
+          },
+      });
+      return plugin;
+  }
+
+  /**
+   * The plugin key for the mention plugin.
+   * @default 'mention'
+   */
+  const MentionPluginKey = new PluginKey('mention');
+  /**
+   * This extension allows you to insert mentions into the editor.
+   * @see https://www.tiptap.dev/api/extensions/mention
+   */
+  const Mention = Node.create({
+      name: 'mention',
+      addOptions() {
+          return {
+              HTMLAttributes: {},
+              renderText({ options, node }) {
+                  var _a;
+                  return `${options.suggestion.char}${(_a = node.attrs.label) !== null && _a !== void 0 ? _a : node.attrs.id}`;
+              },
+              deleteTriggerWithBackspace: false,
+              renderHTML({ options, node }) {
+                  var _a;
+                  return [
+                      'span',
+                      mergeAttributes(this.HTMLAttributes, options.HTMLAttributes),
+                      `${options.suggestion.char}${(_a = node.attrs.label) !== null && _a !== void 0 ? _a : node.attrs.id}`,
+                  ];
+              },
+              suggestion: {
+                  char: '@',
+                  pluginKey: MentionPluginKey,
+                  command: ({ editor, range, props }) => {
+                      var _a, _b, _c;
+                      // increase range.to by one when the next node is of type "text"
+                      // and starts with a space character
+                      const nodeAfter = editor.view.state.selection.$to.nodeAfter;
+                      const overrideSpace = (_a = nodeAfter === null || nodeAfter === void 0 ? void 0 : nodeAfter.text) === null || _a === void 0 ? void 0 : _a.startsWith(' ');
+                      if (overrideSpace) {
+                          range.to += 1;
+                      }
+                      editor
+                          .chain()
+                          .focus()
+                          .insertContentAt(range, [
+                          {
+                              type: this.name,
+                              attrs: props,
+                          },
+                          {
+                              type: 'text',
+                              text: ' ',
+                          },
+                      ])
+                          .run();
+                      // get reference to `window` object from editor element, to support cross-frame JS usage
+                      (_c = (_b = editor.view.dom.ownerDocument.defaultView) === null || _b === void 0 ? void 0 : _b.getSelection()) === null || _c === void 0 ? void 0 : _c.collapseToEnd();
+                  },
+                  allow: ({ state, range }) => {
+                      const $from = state.doc.resolve(range.from);
+                      const type = state.schema.nodes[this.name];
+                      const allow = !!$from.parent.type.contentMatch.matchType(type);
+                      return allow;
+                  },
+              },
+          };
+      },
+      group: 'inline',
+      inline: true,
+      selectable: false,
+      atom: true,
+      addAttributes() {
+          return {
+              id: {
+                  default: null,
+                  parseHTML: element => element.getAttribute('data-id'),
+                  renderHTML: attributes => {
+                      if (!attributes.id) {
+                          return {};
+                      }
+                      return {
+                          'data-id': attributes.id,
+                      };
+                  },
+              },
+              label: {
+                  default: null,
+                  parseHTML: element => element.getAttribute('data-label'),
+                  renderHTML: attributes => {
+                      if (!attributes.label) {
+                          return {};
+                      }
+                      return {
+                          'data-label': attributes.label,
+                      };
+                  },
+              },
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: `span[data-type="${this.name}"]`,
+              },
+          ];
+      },
+      renderHTML({ node, HTMLAttributes }) {
+          if (this.options.renderLabel !== undefined) {
+              console.warn('renderLabel is deprecated use renderText and renderHTML instead');
+              return [
+                  'span',
+                  mergeAttributes({ 'data-type': this.name }, this.options.HTMLAttributes, HTMLAttributes),
+                  this.options.renderLabel({
+                      options: this.options,
+                      node,
+                  }),
+              ];
+          }
+          const mergedOptions = { ...this.options };
+          mergedOptions.HTMLAttributes = mergeAttributes({ 'data-type': this.name }, this.options.HTMLAttributes, HTMLAttributes);
+          const html = this.options.renderHTML({
+              options: mergedOptions,
+              node,
+          });
+          if (typeof html === 'string') {
+              return [
+                  'span',
+                  mergeAttributes({ 'data-type': this.name }, this.options.HTMLAttributes, HTMLAttributes),
+                  html,
+              ];
+          }
+          return html;
+      },
+      renderText({ node }) {
+          if (this.options.renderLabel !== undefined) {
+              console.warn('renderLabel is deprecated use renderText and renderHTML instead');
+              return this.options.renderLabel({
+                  options: this.options,
+                  node,
+              });
+          }
+          return this.options.renderText({
+              options: this.options,
+              node,
+          });
+      },
+      addKeyboardShortcuts() {
+          return {
+              Backspace: () => this.editor.commands.command(({ tr, state }) => {
+                  let isMention = false;
+                  const { selection } = state;
+                  const { empty, anchor } = selection;
+                  if (!empty) {
+                      return false;
+                  }
+                  state.doc.nodesBetween(anchor - 1, anchor, (node, pos) => {
+                      if (node.type.name === this.name) {
+                          isMention = true;
+                          tr.insertText(this.options.deleteTriggerWithBackspace ? '' : this.options.suggestion.char || '', pos, pos + node.nodeSize);
+                          return false;
+                      }
+                  });
+                  return isMention;
+              }),
+          };
+      },
+      addProseMirrorPlugins() {
+          return [
+              Suggestion({
+                  editor: this.editor,
+                  ...this.options.suggestion,
+              }),
+          ];
+      },
+  });
+
+  const YOUTUBE_REGEX = /^(https?:\/\/)?(www\.|music\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/(?!channel\/)(?!@)(.+)?$/;
+  const YOUTUBE_REGEX_GLOBAL = /^(https?:\/\/)?(www\.|music\.)?(youtube\.com|youtu\.be)\/(?!channel\/)(?!@)(.+)?$/g;
+  const isValidYoutubeUrl = (url) => {
+      return url.match(YOUTUBE_REGEX);
+  };
+  const getYoutubeEmbedUrl = (nocookie) => {
+      return nocookie ? 'https://www.youtube-nocookie.com/embed/' : 'https://www.youtube.com/embed/';
+  };
+  const getEmbedUrlFromYoutubeUrl = (options) => {
+      const { url, allowFullscreen, autoplay, ccLanguage, ccLoadPolicy, controls, disableKBcontrols, enableIFrameApi, endTime, interfaceLanguage, ivLoadPolicy, loop, modestBranding, nocookie, origin, playlist, progressBarColor, startAt, } = options;
+      if (!isValidYoutubeUrl(url)) {
+          return null;
+      }
+      // if is already an embed url, return it
+      if (url.includes('/embed/')) {
+          return url;
+      }
+      // if is a youtu.be url, get the id after the /
+      if (url.includes('youtu.be')) {
+          const id = url.split('/').pop();
+          if (!id) {
+              return null;
+          }
+          return `${getYoutubeEmbedUrl(nocookie)}${id}`;
+      }
+      const videoIdRegex = /(?:v=|shorts\/)([-\w]+)/gm;
+      const matches = videoIdRegex.exec(url);
+      if (!matches || !matches[1]) {
+          return null;
+      }
+      let outputUrl = `${getYoutubeEmbedUrl(nocookie)}${matches[1]}`;
+      const params = [];
+      if (allowFullscreen === false) {
+          params.push('fs=0');
+      }
+      if (autoplay) {
+          params.push('autoplay=1');
+      }
+      if (ccLanguage) {
+          params.push(`cc_lang_pref=${ccLanguage}`);
+      }
+      if (ccLoadPolicy) {
+          params.push('cc_load_policy=1');
+      }
+      if (!controls) {
+          params.push('controls=0');
+      }
+      if (disableKBcontrols) {
+          params.push('disablekb=1');
+      }
+      if (enableIFrameApi) {
+          params.push('enablejsapi=1');
+      }
+      if (endTime) {
+          params.push(`end=${endTime}`);
+      }
+      if (interfaceLanguage) {
+          params.push(`hl=${interfaceLanguage}`);
+      }
+      if (ivLoadPolicy) {
+          params.push(`iv_load_policy=${ivLoadPolicy}`);
+      }
+      if (loop) {
+          params.push('loop=1');
+      }
+      if (modestBranding) {
+          params.push('modestbranding=1');
+      }
+      if (origin) {
+          params.push(`origin=${origin}`);
+      }
+      if (playlist) {
+          params.push(`playlist=${playlist}`);
+      }
+      if (startAt) {
+          params.push(`start=${startAt}`);
+      }
+      if (progressBarColor) {
+          params.push(`color=${progressBarColor}`);
+      }
+      if (params.length) {
+          outputUrl += `?${params.join('&')}`;
+      }
+      return outputUrl;
+  };
+
+  /**
+   * This extension adds support for youtube videos.
+   * @see https://www.tiptap.dev/api/nodes/youtube
+   */
+  const Youtube = Node.create({
+      name: 'youtube',
+      addOptions() {
+          return {
+              addPasteHandler: true,
+              allowFullscreen: true,
+              autoplay: false,
+              ccLanguage: undefined,
+              ccLoadPolicy: undefined,
+              controls: true,
+              disableKBcontrols: false,
+              enableIFrameApi: false,
+              endTime: 0,
+              height: 480,
+              interfaceLanguage: undefined,
+              ivLoadPolicy: 0,
+              loop: false,
+              modestBranding: false,
+              HTMLAttributes: {},
+              inline: false,
+              nocookie: false,
+              origin: '',
+              playlist: '',
+              progressBarColor: undefined,
+              width: 640,
+          };
+      },
+      inline() {
+          return this.options.inline;
+      },
+      group() {
+          return this.options.inline ? 'inline' : 'block';
+      },
+      draggable: true,
+      addAttributes() {
+          return {
+              src: {
+                  default: null,
+              },
+              start: {
+                  default: 0,
+              },
+              width: {
+                  default: this.options.width,
+              },
+              height: {
+                  default: this.options.height,
+              },
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 'div[data-youtube-video] iframe',
+              },
+          ];
+      },
+      addCommands() {
+          return {
+              setYoutubeVideo: (options) => ({ commands }) => {
+                  if (!isValidYoutubeUrl(options.src)) {
+                      return false;
+                  }
+                  return commands.insertContent({
+                      type: this.name,
+                      attrs: options,
+                  });
+              },
+          };
+      },
+      addPasteRules() {
+          if (!this.options.addPasteHandler) {
+              return [];
+          }
+          return [
+              nodePasteRule({
+                  find: YOUTUBE_REGEX_GLOBAL,
+                  type: this.type,
+                  getAttributes: match => {
+                      return { src: match.input };
+                  },
+              }),
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          const embedUrl = getEmbedUrlFromYoutubeUrl({
+              url: HTMLAttributes.src,
+              allowFullscreen: this.options.allowFullscreen,
+              autoplay: this.options.autoplay,
+              ccLanguage: this.options.ccLanguage,
+              ccLoadPolicy: this.options.ccLoadPolicy,
+              controls: this.options.controls,
+              disableKBcontrols: this.options.disableKBcontrols,
+              enableIFrameApi: this.options.enableIFrameApi,
+              endTime: this.options.endTime,
+              interfaceLanguage: this.options.interfaceLanguage,
+              ivLoadPolicy: this.options.ivLoadPolicy,
+              loop: this.options.loop,
+              modestBranding: this.options.modestBranding,
+              nocookie: this.options.nocookie,
+              origin: this.options.origin,
+              playlist: this.options.playlist,
+              progressBarColor: this.options.progressBarColor,
+              startAt: HTMLAttributes.start || 0,
+          });
+          HTMLAttributes.src = embedUrl;
+          return [
+              'div',
+              { 'data-youtube-video': '' },
+              [
+                  'iframe',
+                  mergeAttributes(this.options.HTMLAttributes, {
+                      width: this.options.width,
+                      height: this.options.height,
+                      allowfullscreen: this.options.allowFullscreen,
+                      autoplay: this.options.autoplay,
+                      ccLanguage: this.options.ccLanguage,
+                      ccLoadPolicy: this.options.ccLoadPolicy,
+                      disableKBcontrols: this.options.disableKBcontrols,
+                      enableIFrameApi: this.options.enableIFrameApi,
+                      endTime: this.options.endTime,
+                      interfaceLanguage: this.options.interfaceLanguage,
+                      ivLoadPolicy: this.options.ivLoadPolicy,
+                      loop: this.options.loop,
+                      modestBranding: this.options.modestBranding,
+                      origin: this.options.origin,
+                      playlist: this.options.playlist,
+                      progressBarColor: this.options.progressBarColor,
+                  }, HTMLAttributes),
+              ],
+          ];
+      },
+  });
+
+  /**
+   * Matches a highlight to a ==highlight== on input.
+   */
+  const inputRegex = /(?:^|\s)(==(?!\s+==)((?:[^=]+))==(?!\s+==))$/;
+  /**
+   * Matches a highlight to a ==highlight== on paste.
+   */
+  const pasteRegex = /(?:^|\s)(==(?!\s+==)((?:[^=]+))==(?!\s+==))/g;
+  /**
+   * This extension allows you to highlight text.
+   * @see https://www.tiptap.dev/api/marks/highlight
+   */
+  const Highlight = Mark.create({
+      name: 'highlight',
+      addOptions() {
+          return {
+              multicolor: false,
+              HTMLAttributes: {},
+          };
+      },
+      addAttributes() {
+          if (!this.options.multicolor) {
+              return {};
+          }
+          return {
+              color: {
+                  default: null,
+                  parseHTML: element => element.getAttribute('data-color') || element.style.backgroundColor,
+                  renderHTML: attributes => {
+                      if (!attributes.color) {
+                          return {};
+                      }
+                      return {
+                          'data-color': attributes.color,
+                          style: `background-color: ${attributes.color}; color: inherit`,
+                      };
+                  },
+              },
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 'mark',
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['mark', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setHighlight: attributes => ({ commands }) => {
+                  return commands.setMark(this.name, attributes);
+              },
+              toggleHighlight: attributes => ({ commands }) => {
+                  return commands.toggleMark(this.name, attributes);
+              },
+              unsetHighlight: () => ({ commands }) => {
+                  return commands.unsetMark(this.name);
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Shift-h': () => this.editor.commands.toggleHighlight(),
+          };
+      },
+      addInputRules() {
+          return [
+              markInputRule({
+                  find: inputRegex,
+                  type: this.type,
+              }),
+          ];
+      },
+      addPasteRules() {
+          return [
+              markPasteRule({
+                  find: pasteRegex,
+                  type: this.type,
+              }),
+          ];
+      },
+  });
+
+  // THIS FILE IS AUTOMATICALLY GENERATED DO NOT EDIT DIRECTLY
+  // See update-tlds.js for encoding/decoding format
+  // https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+  const encodedTlds = 'aaa1rp3bb0ott3vie4c1le2ogado5udhabi7c0ademy5centure6ountant0s9o1tor4d0s1ult4e0g1ro2tna4f0l1rica5g0akhan5ency5i0g1rbus3force5tel5kdn3l0ibaba4pay4lfinanz6state5y2sace3tom5m0azon4ericanexpress7family11x2fam3ica3sterdam8nalytics7droid5quan4z2o0l2partments8p0le4q0uarelle8r0ab1mco4chi3my2pa2t0e3s0da2ia2sociates9t0hleta5torney7u0ction5di0ble3o3spost5thor3o0s4vianca6w0s2x0a2z0ure5ba0by2idu3namex3narepublic11d1k2r0celona5laycard4s5efoot5gains6seball5ketball8uhaus5yern5b0c1t1va3cg1n2d1e0ats2uty4er2ntley5rlin4st0buy5t2f1g1h0arti5i0ble3d1ke2ng0o3o1z2j1lack0friday9ockbuster8g1omberg7ue3m0s1w2n0pparibas9o0ats3ehringer8fa2m1nd2o0k0ing5sch2tik2on4t1utique6x2r0adesco6idgestone9oadway5ker3ther5ussels7s1t1uild0ers6siness6y1zz3v1w1y1z0h3ca0b1fe2l0l1vinklein9m0era3p2non3petown5ital0one8r0avan4ds2e0er0s4s2sa1e1h1ino4t0ering5holic7ba1n1re3c1d1enter4o1rn3f0a1d2g1h0anel2nel4rity4se2t2eap3intai5ristmas6ome4urch5i0priani6rcle4sco3tadel4i0c2y3k1l0aims4eaning6ick2nic1que6othing5ud3ub0med6m1n1o0ach3des3ffee4llege4ogne5m0cast4mbank4unity6pany2re3uter5sec4ndos3struction8ulting7tact3ractors9oking4l1p2rsica5untry4pon0s4rses6pa2r0edit0card4union9icket5own3s1uise0s6u0isinella9v1w1x1y0mru3ou3z2dabur3d1nce3ta1e1ing3sun4y2clk3ds2e0al0er2s3gree4livery5l1oitte5ta3mocrat6ntal2ist5si0gn4v2hl2iamonds6et2gital5rect0ory7scount3ver5h2y2j1k1m1np2o0cs1tor4g1mains5t1wnload7rive4tv2ubai3nlop4pont4rban5vag2r2z2earth3t2c0o2deka3u0cation8e1g1mail3erck5nergy4gineer0ing9terprises10pson4quipment8r0icsson6ni3s0q1tate5t1u0rovision8s2vents5xchange6pert3osed4ress5traspace10fage2il1rwinds6th3mily4n0s2rm0ers5shion4t3edex3edback6rrari3ero6i0delity5o2lm2nal1nce1ial7re0stone6mdale6sh0ing5t0ness6j1k1lickr3ghts4r2orist4wers5y2m1o0o0d1tball6rd1ex2sale4um3undation8x2r0ee1senius7l1ogans4ntier7tr2ujitsu5n0d2rniture7tbol5yi3ga0l0lery3o1up4me0s3p1rden4y2b0iz3d0n2e0a1nt0ing5orge5f1g0ee3h1i0ft0s3ves2ing5l0ass3e1obal2o4m0ail3bh2o1x2n1odaddy5ld0point6f2o0dyear5g0le4p1t1v2p1q1r0ainger5phics5tis4een3ipe3ocery4up4s1t1u0ardian6cci3ge2ide2tars5ru3w1y2hair2mburg5ngout5us3bo2dfc0bank7ealth0care8lp1sinki6re1mes5iphop4samitsu7tachi5v2k0t2m1n1ockey4ldings5iday5medepot5goods5s0ense7nda3rse3spital5t0ing5t0els3mail5use3w2r1sbc3t1u0ghes5yatt3undai7ibm2cbc2e1u2d1e0ee3fm2kano4l1m0amat4db2mo0bilien9n0c1dustries8finiti5o2g1k1stitute6urance4e4t0ernational10uit4vestments10o1piranga7q1r0ish4s0maili5t0anbul7t0au2v3jaguar4va3cb2e0ep2tzt3welry6io2ll2m0p2nj2o0bs1urg4t1y2p0morgan6rs3uegos4niper7kaufen5ddi3e0rryhotels6logistics9properties14fh2g1h1i0a1ds2m1ndle4tchen5wi3m1n1oeln3matsu5sher5p0mg2n2r0d1ed3uokgroup8w1y0oto4z2la0caixa5mborghini8er3ncaster6d0rover6xess5salle5t0ino3robe5w0yer5b1c1ds2ease3clerc5frak4gal2o2xus4gbt3i0dl2fe0insurance9style7ghting6ke2lly3mited4o2ncoln4k2psy3ve1ing5k1lc1p2oan0s3cker3us3l1ndon4tte1o3ve3pl0financial11r1s1t0d0a3u0ndbeck6xe1ury5v1y2ma0drid4if1son4keup4n0agement7go3p1rket0ing3s4riott5shalls7ttel5ba2c0kinsey7d1e0d0ia3et2lbourne7me1orial6n0u2rckmsd7g1h1iami3crosoft7l1ni1t2t0subishi9k1l0b1s2m0a2n1o0bi0le4da2e1i1m1nash3ey2ster5rmon3tgage6scow4to0rcycles9v0ie4p1q1r1s0d2t0n1r2u0seum3ic4v1w1x1y1z2na0b1goya4me2tura4vy3ba2c1e0c1t0bank4flix4work5ustar5w0s2xt0direct7us4f0l2g0o2hk2i0co2ke1on3nja3ssan1y5l1o0kia3rton4w0ruz3tv4p1r0a1w2tt2u1yc2z2obi1server7ffice5kinawa6layan0group9dnavy5lo3m0ega4ne1g1l0ine5oo2pen3racle3nge4g0anic5igins6saka4tsuka4t2vh3pa0ge2nasonic7ris2s1tners4s1y3y2ccw3e0t2f0izer5g1h0armacy6d1ilips5one2to0graphy6s4ysio5ics1tet2ures6d1n0g1k2oneer5zza4k1l0ace2y0station9umbing5s3m1n0c2ohl2ker3litie5rn2st3r0america6xi3ess3ime3o0d0uctions8f1gressive8mo2perties3y5tection8u0dential9s1t1ub2w0c2y2qa1pon3uebec3st5racing4dio4e0ad1lestate6tor2y4cipes5d0stone5umbrella9hab3ise0n3t2liance6n0t0als5pair3ort3ublican8st0aurant8view0s5xroth6ich0ardli6oh3l1o1p2o0cks3deo3gers4om3s0vp3u0gby3hr2n2w0e2yukyu6sa0arland6fe0ty4kura4le1on3msclub4ung5ndvik0coromant12ofi4p1rl2s1ve2xo3b0i1s2c0a1b1haeffler7midt4olarships8ol3ule3warz5ience5ot3d1e0arch3t2cure1ity6ek2lect4ner3rvices6ven3w1x0y3fr2g1h0angrila6rp2w2ell3ia1ksha5oes2p0ping5uji3w3i0lk2na1gles5te3j1k0i0n2y0pe4l0ing4m0art3ile4n0cf3o0ccer3ial4ftbank4ware6hu2lar2utions7ng1y2y2pa0ce3ort2t3r0l2s1t0ada2ples4r1tebank4farm7c0group6ockholm6rage3e3ream4udio2y3yle4u0cks3pplies3y2ort5rf1gery5zuki5v1watch4iss4x1y0dney4stems6z2tab1ipei4lk2obao4rget4tamotors6r2too4x0i3c0i2d0k2eam2ch0nology8l1masek5nnis4va3f1g1h0d1eater2re6iaa2ckets5enda4ps2res2ol4j0maxx4x2k0maxx5l1m0all4n1o0day3kyo3ols3p1ray3shiba5tal3urs3wn2yota3s3r0ade1ing4ining5vel0ers0insurance16ust3v2t1ube2i1nes3shu4v0s2w1z2ua1bank3s2g1k1nicom3versity8o2ol2ps2s1y1z2va0cations7na1guard7c1e0gas3ntures6risign5mögensberater2ung14sicherung10t2g1i0ajes4deo3g1king4llas4n1p1rgin4sa1ion4va1o3laanderen9n1odka3lvo3te1ing3o2yage5u2wales2mart4ter4ng0gou5tch0es6eather0channel12bcam3er2site5d0ding5ibo2r3f1hoswho6ien2ki2lliamhill9n0dows4e1ners6me2olterskluwer11odside6rk0s2ld3w2s1tc1f3xbox3erox4finity6ihuan4n2xx2yz3yachts4hoo3maxun5ndex5e1odobashi7ga2kohama6u0tube6t1un3za0ppos4ra3ero3ip2m1one3uerich6w2';
+  // Internationalized domain names containing non-ASCII
+  const encodedUtlds = 'ελ1υ2бг1ел3дети4ею2католик6ом3мкд2он1сква6онлайн5рг3рус2ф2сайт3рб3укр3қаз3հայ3ישראל5קום3ابوظبي5رامكو5لاردن4بحرين5جزائر5سعودية6عليان5مغرب5مارات5یران5بارت2زار4يتك3ھارت5تونس4سودان3رية5شبكة4عراق2ب2مان4فلسطين6قطر3كاثوليك6وم3مصر2ليسيا5وريتانيا7قع4همراه5پاکستان7ڀارت4कॉम3नेट3भारत0म्3ोत5संगठन5বাংলা5ভারত2ৰত4ਭਾਰਤ4ભારત4ଭାରତ4இந்தியா6லங்கை6சிங்கப்பூர்11భారత్5ಭಾರತ4ഭാരതം5ලංකා4คอม3ไทย3ລາວ3გე2みんな3アマゾン4クラウド4グーグル4コム2ストア3セール3ファッション6ポイント4世界2中信1国1國1文网3亚马逊3企业2佛山2信息2健康2八卦2公司1益2台湾1灣2商城1店1标2嘉里0大酒店5在线2大拿2天主教3娱乐2家電2广东2微博2慈善2我爱你3手机2招聘2政务1府2新加坡2闻2时尚2書籍2机构2淡马锡3游戏2澳門2点看2移动2组织机构4网址1店1站1络2联通2谷歌2购物2通販2集团2電訊盈科4飞利浦3食品2餐厅2香格里拉3港2닷넷1컴2삼성2한국2';
+
+  /**
+   * @template A
+   * @template B
+   * @param {A} target
+   * @param {B} properties
+   * @return {A & B}
+   */
+  const assign = (target, properties) => {
+    for (const key in properties) {
+      target[key] = properties[key];
+    }
+    return target;
+  };
+
+  /**
+   * Finite State Machine generation utilities
+   */
+
+  /**
+   * @template T
+   * @typedef {{ [group: string]: T[] }} Collections
+   */
+
+  /**
+   * @typedef {{ [group: string]: true }} Flags
+   */
+
+  // Keys in scanner Collections instances
+  const numeric = 'numeric';
+  const ascii = 'ascii';
+  const alpha = 'alpha';
+  const asciinumeric = 'asciinumeric';
+  const alphanumeric = 'alphanumeric';
+  const domain = 'domain';
+  const emoji = 'emoji';
+  const scheme = 'scheme';
+  const slashscheme = 'slashscheme';
+  const whitespace = 'whitespace';
+
+  /**
+   * @template T
+   * @param {string} name
+   * @param {Collections<T>} groups to register in
+   * @returns {T[]} Current list of tokens in the given collection
+   */
+  function registerGroup(name, groups) {
+    if (!(name in groups)) {
+      groups[name] = [];
+    }
+    return groups[name];
+  }
+
+  /**
+   * @template T
+   * @param {T} t token to add
+   * @param {Collections<T>} groups
+   * @param {Flags} flags
+   */
+  function addToGroups(t, flags, groups) {
+    if (flags[numeric]) {
+      flags[asciinumeric] = true;
+      flags[alphanumeric] = true;
+    }
+    if (flags[ascii]) {
+      flags[asciinumeric] = true;
+      flags[alpha] = true;
+    }
+    if (flags[asciinumeric]) {
+      flags[alphanumeric] = true;
+    }
+    if (flags[alpha]) {
+      flags[alphanumeric] = true;
+    }
+    if (flags[alphanumeric]) {
+      flags[domain] = true;
+    }
+    if (flags[emoji]) {
+      flags[domain] = true;
+    }
+    for (const k in flags) {
+      const group = registerGroup(k, groups);
+      if (group.indexOf(t) < 0) {
+        group.push(t);
+      }
+    }
+  }
+
+  /**
+   * @template T
+   * @param {T} t token to check
+   * @param {Collections<T>} groups
+   * @returns {Flags} group flags that contain this token
+   */
+  function flagsForToken(t, groups) {
+    const result = {};
+    for (const c in groups) {
+      if (groups[c].indexOf(t) >= 0) {
+        result[c] = true;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * @template T
+   * @typedef {null | T } Transition
+   */
+
+  /**
+   * Define a basic state machine state. j is the list of character transitions,
+   * jr is the list of regex-match transitions, jd is the default state to
+   * transition to t is the accepting token type, if any. If this is the terminal
+   * state, then it does not emit a token.
+   *
+   * The template type T represents the type of the token this state accepts. This
+   * should be a string (such as of the token exports in `text.js`) or a
+   * MultiToken subclass (from `multi.js`)
+   *
+   * @template T
+   * @param {T} [token] Token that this state emits
+   */
+  function State(token) {
+    if (token === void 0) {
+      token = null;
+    }
+    // this.n = null; // DEBUG: State name
+    /** @type {{ [input: string]: State<T> }} j */
+    this.j = {}; // IMPLEMENTATION 1
+    // this.j = []; // IMPLEMENTATION 2
+    /** @type {[RegExp, State<T>][]} jr */
+    this.jr = [];
+    /** @type {?State<T>} jd */
+    this.jd = null;
+    /** @type {?T} t */
+    this.t = token;
+  }
+
+  /**
+   * Scanner token groups
+   * @type Collections<string>
+   */
+  State.groups = {};
+  State.prototype = {
+    accepts() {
+      return !!this.t;
+    },
+    /**
+     * Follow an existing transition from the given input to the next state.
+     * Does not mutate.
+     * @param {string} input character or token type to transition on
+     * @returns {?State<T>} the next state, if any
+     */
+    go(input) {
+      const state = this;
+      const nextState = state.j[input];
+      if (nextState) {
+        return nextState;
+      }
+      for (let i = 0; i < state.jr.length; i++) {
+        const regex = state.jr[i][0];
+        const nextState = state.jr[i][1]; // note: might be empty to prevent default jump
+        if (nextState && regex.test(input)) {
+          return nextState;
+        }
+      }
+      // Nowhere left to jump! Return default, if any
+      return state.jd;
+    },
+    /**
+     * Whether the state has a transition for the given input. Set the second
+     * argument to true to only look for an exact match (and not a default or
+     * regular-expression-based transition)
+     * @param {string} input
+     * @param {boolean} exactOnly
+     */
+    has(input, exactOnly) {
+      if (exactOnly === void 0) {
+        exactOnly = false;
+      }
+      return exactOnly ? input in this.j : !!this.go(input);
+    },
+    /**
+     * Short for "transition all"; create a transition from the array of items
+     * in the given list to the same final resulting state.
+     * @param {string | string[]} inputs Group of inputs to transition on
+     * @param {Transition<T> | State<T>} [next] Transition options
+     * @param {Flags} [flags] Collections flags to add token to
+     * @param {Collections<T>} [groups] Master list of token groups
+     */
+    ta(inputs, next, flags, groups) {
+      for (let i = 0; i < inputs.length; i++) {
+        this.tt(inputs[i], next, flags, groups);
+      }
+    },
+    /**
+     * Short for "take regexp transition"; defines a transition for this state
+     * when it encounters a token which matches the given regular expression
+     * @param {RegExp} regexp Regular expression transition (populate first)
+     * @param {T | State<T>} [next] Transition options
+     * @param {Flags} [flags] Collections flags to add token to
+     * @param {Collections<T>} [groups] Master list of token groups
+     * @returns {State<T>} taken after the given input
+     */
+    tr(regexp, next, flags, groups) {
+      groups = groups || State.groups;
+      let nextState;
+      if (next && next.j) {
+        nextState = next;
+      } else {
+        // Token with maybe token groups
+        nextState = new State(next);
+        if (flags && groups) {
+          addToGroups(next, flags, groups);
+        }
+      }
+      this.jr.push([regexp, nextState]);
+      return nextState;
+    },
+    /**
+     * Short for "take transitions", will take as many sequential transitions as
+     * the length of the given input and returns the
+     * resulting final state.
+     * @param {string | string[]} input
+     * @param {T | State<T>} [next] Transition options
+     * @param {Flags} [flags] Collections flags to add token to
+     * @param {Collections<T>} [groups] Master list of token groups
+     * @returns {State<T>} taken after the given input
+     */
+    ts(input, next, flags, groups) {
+      let state = this;
+      const len = input.length;
+      if (!len) {
+        return state;
+      }
+      for (let i = 0; i < len - 1; i++) {
+        state = state.tt(input[i]);
+      }
+      return state.tt(input[len - 1], next, flags, groups);
+    },
+    /**
+     * Short for "take transition", this is a method for building/working with
+     * state machines.
+     *
+     * If a state already exists for the given input, returns it.
+     *
+     * If a token is specified, that state will emit that token when reached by
+     * the linkify engine.
+     *
+     * If no state exists, it will be initialized with some default transitions
+     * that resemble existing default transitions.
+     *
+     * If a state is given for the second argument, that state will be
+     * transitioned to on the given input regardless of what that input
+     * previously did.
+     *
+     * Specify a token group flags to define groups that this token belongs to.
+     * The token will be added to corresponding entires in the given groups
+     * object.
+     *
+     * @param {string} input character, token type to transition on
+     * @param {T | State<T>} [next] Transition options
+     * @param {Flags} [flags] Collections flags to add token to
+     * @param {Collections<T>} [groups] Master list of groups
+     * @returns {State<T>} taken after the given input
+     */
+    tt(input, next, flags, groups) {
+      groups = groups || State.groups;
+      const state = this;
+
+      // Check if existing state given, just a basic transition
+      if (next && next.j) {
+        state.j[input] = next;
+        return next;
+      }
+      const t = next;
+
+      // Take the transition with the usual default mechanisms and use that as
+      // a template for creating the next state
+      let nextState,
+        templateState = state.go(input);
+      if (templateState) {
+        nextState = new State();
+        assign(nextState.j, templateState.j);
+        nextState.jr.push.apply(nextState.jr, templateState.jr);
+        nextState.jd = templateState.jd;
+        nextState.t = templateState.t;
+      } else {
+        nextState = new State();
+      }
+      if (t) {
+        // Ensure newly token is in the same groups as the old token
+        if (groups) {
+          if (nextState.t && typeof nextState.t === 'string') {
+            const allFlags = assign(flagsForToken(nextState.t, groups), flags);
+            addToGroups(t, allFlags, groups);
+          } else if (flags) {
+            addToGroups(t, flags, groups);
+          }
+        }
+        nextState.t = t; // overwrite anything that was previously there
+      }
+
+      state.j[input] = nextState;
+      return nextState;
+    }
+  };
+
+  // Helper functions to improve minification (not exported outside linkifyjs module)
+
+  /**
+   * @template T
+   * @param {State<T>} state
+   * @param {string | string[]} input
+   * @param {Flags} [flags]
+   * @param {Collections<T>} [groups]
+   */
+  const ta = (state, input, next, flags, groups) => state.ta(input, next, flags, groups);
+
+  /**
+   * @template T
+   * @param {State<T>} state
+   * @param {RegExp} regexp
+   * @param {T | State<T>} [next]
+   * @param {Flags} [flags]
+   * @param {Collections<T>} [groups]
+   */
+  const tr = (state, regexp, next, flags, groups) => state.tr(regexp, next, flags, groups);
+
+  /**
+   * @template T
+   * @param {State<T>} state
+   * @param {string | string[]} input
+   * @param {T | State<T>} [next]
+   * @param {Flags} [flags]
+   * @param {Collections<T>} [groups]
+   */
+  const ts = (state, input, next, flags, groups) => state.ts(input, next, flags, groups);
+
+  /**
+   * @template T
+   * @param {State<T>} state
+   * @param {string} input
+   * @param {T | State<T>} [next]
+   * @param {Collections<T>} [groups]
+   * @param {Flags} [flags]
+   */
+  const tt = (state, input, next, flags, groups) => state.tt(input, next, flags, groups);
+
+  /******************************************************************************
+  Text Tokens
+  Identifiers for token outputs from the regexp scanner
+  ******************************************************************************/
+
+  // A valid web domain token
+  const WORD = 'WORD'; // only contains a-z
+  const UWORD = 'UWORD'; // contains letters other than a-z, used for IDN
+
+  // Special case of word
+  const LOCALHOST = 'LOCALHOST';
+
+  // Valid top-level domain, special case of WORD (see tlds.js)
+  const TLD = 'TLD';
+
+  // Valid IDN TLD, special case of UWORD (see tlds.js)
+  const UTLD = 'UTLD';
+
+  // The scheme portion of a web URI protocol. Supported types include: `mailto`,
+  // `file`, and user-defined custom protocols. Limited to schemes that contain
+  // only letters
+  const SCHEME = 'SCHEME';
+
+  // Similar to SCHEME, except makes distinction for schemes that must always be
+  // followed by `://`, not just `:`. Supported types include `http`, `https`,
+  // `ftp`, `ftps`
+  const SLASH_SCHEME = 'SLASH_SCHEME';
+
+  // Any sequence of digits 0-9
+  const NUM = 'NUM';
+
+  // Any number of consecutive whitespace characters that are not newline
+  const WS = 'WS';
+
+  // New line (unix style)
+  const NL$1 = 'NL'; // \n
+
+  // Opening/closing bracket classes
+  // TODO: Rename OPEN -> LEFT and CLOSE -> RIGHT in v5 to fit with Unicode names
+  // Also rename angle brackes to LESSTHAN and GREATER THAN
+  const OPENBRACE = 'OPENBRACE'; // {
+  const CLOSEBRACE = 'CLOSEBRACE'; // }
+  const OPENBRACKET = 'OPENBRACKET'; // [
+  const CLOSEBRACKET = 'CLOSEBRACKET'; // ]
+  const OPENPAREN = 'OPENPAREN'; // (
+  const CLOSEPAREN = 'CLOSEPAREN'; // )
+  const OPENANGLEBRACKET = 'OPENANGLEBRACKET'; // <
+  const CLOSEANGLEBRACKET = 'CLOSEANGLEBRACKET'; // >
+  const FULLWIDTHLEFTPAREN = 'FULLWIDTHLEFTPAREN'; // （
+  const FULLWIDTHRIGHTPAREN = 'FULLWIDTHRIGHTPAREN'; // ）
+  const LEFTCORNERBRACKET = 'LEFTCORNERBRACKET'; // 「
+  const RIGHTCORNERBRACKET = 'RIGHTCORNERBRACKET'; // 」
+  const LEFTWHITECORNERBRACKET = 'LEFTWHITECORNERBRACKET'; // 『
+  const RIGHTWHITECORNERBRACKET = 'RIGHTWHITECORNERBRACKET'; // 』
+  const FULLWIDTHLESSTHAN = 'FULLWIDTHLESSTHAN'; // ＜
+  const FULLWIDTHGREATERTHAN = 'FULLWIDTHGREATERTHAN'; // ＞
+
+  // Various symbols
+  const AMPERSAND = 'AMPERSAND'; // &
+  const APOSTROPHE = 'APOSTROPHE'; // '
+  const ASTERISK = 'ASTERISK'; // *
+  const AT = 'AT'; // @
+  const BACKSLASH = 'BACKSLASH'; // \
+  const BACKTICK = 'BACKTICK'; // `
+  const CARET = 'CARET'; // ^
+  const COLON = 'COLON'; // :
+  const COMMA = 'COMMA'; // ,
+  const DOLLAR = 'DOLLAR'; // $
+  const DOT = 'DOT'; // .
+  const EQUALS = 'EQUALS'; // =
+  const EXCLAMATION = 'EXCLAMATION'; // !
+  const HYPHEN = 'HYPHEN'; // -
+  const PERCENT = 'PERCENT'; // %
+  const PIPE = 'PIPE'; // |
+  const PLUS = 'PLUS'; // +
+  const POUND = 'POUND'; // #
+  const QUERY = 'QUERY'; // ?
+  const QUOTE = 'QUOTE'; // "
+
+  const SEMI = 'SEMI'; // ;
+  const SLASH = 'SLASH'; // /
+  const TILDE = 'TILDE'; // ~
+  const UNDERSCORE = 'UNDERSCORE'; // _
+
+  // Emoji symbol
+  const EMOJI$1 = 'EMOJI';
+
+  // Default token - anything that is not one of the above
+  const SYM = 'SYM';
+
+  var tk = /*#__PURE__*/Object.freeze({
+  	__proto__: null,
+  	WORD: WORD,
+  	UWORD: UWORD,
+  	LOCALHOST: LOCALHOST,
+  	TLD: TLD,
+  	UTLD: UTLD,
+  	SCHEME: SCHEME,
+  	SLASH_SCHEME: SLASH_SCHEME,
+  	NUM: NUM,
+  	WS: WS,
+  	NL: NL$1,
+  	OPENBRACE: OPENBRACE,
+  	CLOSEBRACE: CLOSEBRACE,
+  	OPENBRACKET: OPENBRACKET,
+  	CLOSEBRACKET: CLOSEBRACKET,
+  	OPENPAREN: OPENPAREN,
+  	CLOSEPAREN: CLOSEPAREN,
+  	OPENANGLEBRACKET: OPENANGLEBRACKET,
+  	CLOSEANGLEBRACKET: CLOSEANGLEBRACKET,
+  	FULLWIDTHLEFTPAREN: FULLWIDTHLEFTPAREN,
+  	FULLWIDTHRIGHTPAREN: FULLWIDTHRIGHTPAREN,
+  	LEFTCORNERBRACKET: LEFTCORNERBRACKET,
+  	RIGHTCORNERBRACKET: RIGHTCORNERBRACKET,
+  	LEFTWHITECORNERBRACKET: LEFTWHITECORNERBRACKET,
+  	RIGHTWHITECORNERBRACKET: RIGHTWHITECORNERBRACKET,
+  	FULLWIDTHLESSTHAN: FULLWIDTHLESSTHAN,
+  	FULLWIDTHGREATERTHAN: FULLWIDTHGREATERTHAN,
+  	AMPERSAND: AMPERSAND,
+  	APOSTROPHE: APOSTROPHE,
+  	ASTERISK: ASTERISK,
+  	AT: AT,
+  	BACKSLASH: BACKSLASH,
+  	BACKTICK: BACKTICK,
+  	CARET: CARET,
+  	COLON: COLON,
+  	COMMA: COMMA,
+  	DOLLAR: DOLLAR,
+  	DOT: DOT,
+  	EQUALS: EQUALS,
+  	EXCLAMATION: EXCLAMATION,
+  	HYPHEN: HYPHEN,
+  	PERCENT: PERCENT,
+  	PIPE: PIPE,
+  	PLUS: PLUS,
+  	POUND: POUND,
+  	QUERY: QUERY,
+  	QUOTE: QUOTE,
+  	SEMI: SEMI,
+  	SLASH: SLASH,
+  	TILDE: TILDE,
+  	UNDERSCORE: UNDERSCORE,
+  	EMOJI: EMOJI$1,
+  	SYM: SYM
+  });
+
+  // Note that these two Unicode ones expand into a really big one with Babel
+  const ASCII_LETTER = /[a-z]/;
+  const LETTER = /\p{L}/u; // Any Unicode character with letter data type
+  const EMOJI = /\p{Emoji}/u; // Any Unicode emoji character
+  const DIGIT = /\d/;
+  const SPACE = /\s/;
+
+  /**
+  	The scanner provides an interface that takes a string of text as input, and
+  	outputs an array of tokens instances that can be used for easy URL parsing.
+  */
+  const NL = '\n'; // New line character
+  const EMOJI_VARIATION = '\ufe0f'; // Variation selector, follows heart and others
+  const EMOJI_JOINER = '\u200d'; // zero-width joiner
+
+  let tlds = null,
+    utlds = null; // don't change so only have to be computed once
+
+  /**
+   * Scanner output token:
+   * - `t` is the token name (e.g., 'NUM', 'EMOJI', 'TLD')
+   * - `v` is the value of the token (e.g., '123', '❤️', 'com')
+   * - `s` is the start index of the token in the original string
+   * - `e` is the end index of the token in the original string
+   * @typedef {{t: string, v: string, s: number, e: number}} Token
+   */
+
+  /**
+   * @template T
+   * @typedef {{ [collection: string]: T[] }} Collections
+   */
+
+  /**
+   * Initialize the scanner character-based state machine for the given start
+   * state
+   * @param {[string, boolean][]} customSchemes List of custom schemes, where each
+   * item is a length-2 tuple with the first element set to the string scheme, and
+   * the second element set to `true` if the `://` after the scheme is optional
+   */
+  function init$2(customSchemes) {
+    if (customSchemes === void 0) {
+      customSchemes = [];
+    }
+    // Frequently used states (name argument removed during minification)
+    /** @type Collections<string> */
+    const groups = {}; // of tokens
+    State.groups = groups;
+    /** @type State<string> */
+    const Start = new State();
+    if (tlds == null) {
+      tlds = decodeTlds(encodedTlds);
+    }
+    if (utlds == null) {
+      utlds = decodeTlds(encodedUtlds);
+    }
+
+    // States for special URL symbols that accept immediately after start
+    tt(Start, "'", APOSTROPHE);
+    tt(Start, '{', OPENBRACE);
+    tt(Start, '}', CLOSEBRACE);
+    tt(Start, '[', OPENBRACKET);
+    tt(Start, ']', CLOSEBRACKET);
+    tt(Start, '(', OPENPAREN);
+    tt(Start, ')', CLOSEPAREN);
+    tt(Start, '<', OPENANGLEBRACKET);
+    tt(Start, '>', CLOSEANGLEBRACKET);
+    tt(Start, '（', FULLWIDTHLEFTPAREN);
+    tt(Start, '）', FULLWIDTHRIGHTPAREN);
+    tt(Start, '「', LEFTCORNERBRACKET);
+    tt(Start, '」', RIGHTCORNERBRACKET);
+    tt(Start, '『', LEFTWHITECORNERBRACKET);
+    tt(Start, '』', RIGHTWHITECORNERBRACKET);
+    tt(Start, '＜', FULLWIDTHLESSTHAN);
+    tt(Start, '＞', FULLWIDTHGREATERTHAN);
+    tt(Start, '&', AMPERSAND);
+    tt(Start, '*', ASTERISK);
+    tt(Start, '@', AT);
+    tt(Start, '`', BACKTICK);
+    tt(Start, '^', CARET);
+    tt(Start, ':', COLON);
+    tt(Start, ',', COMMA);
+    tt(Start, '$', DOLLAR);
+    tt(Start, '.', DOT);
+    tt(Start, '=', EQUALS);
+    tt(Start, '!', EXCLAMATION);
+    tt(Start, '-', HYPHEN);
+    tt(Start, '%', PERCENT);
+    tt(Start, '|', PIPE);
+    tt(Start, '+', PLUS);
+    tt(Start, '#', POUND);
+    tt(Start, '?', QUERY);
+    tt(Start, '"', QUOTE);
+    tt(Start, '/', SLASH);
+    tt(Start, ';', SEMI);
+    tt(Start, '~', TILDE);
+    tt(Start, '_', UNDERSCORE);
+    tt(Start, '\\', BACKSLASH);
+    const Num = tr(Start, DIGIT, NUM, {
+      [numeric]: true
+    });
+    tr(Num, DIGIT, Num);
+
+    // State which emits a word token
+    const Word = tr(Start, ASCII_LETTER, WORD, {
+      [ascii]: true
+    });
+    tr(Word, ASCII_LETTER, Word);
+
+    // Same as previous, but specific to non-fsm.ascii alphabet words
+    const UWord = tr(Start, LETTER, UWORD, {
+      [alpha]: true
+    });
+    tr(UWord, ASCII_LETTER); // Non-accepting
+    tr(UWord, LETTER, UWord);
+
+    // Whitespace jumps
+    // Tokens of only non-newline whitespace are arbitrarily long
+    // If any whitespace except newline, more whitespace!
+    const Ws = tr(Start, SPACE, WS, {
+      [whitespace]: true
+    });
+    tt(Start, NL, NL$1, {
+      [whitespace]: true
+    });
+    tt(Ws, NL); // non-accepting state to avoid mixing whitespaces
+    tr(Ws, SPACE, Ws);
+
+    // Emoji tokens. They are not grouped by the scanner except in cases where a
+    // zero-width joiner is present
+    const Emoji = tr(Start, EMOJI, EMOJI$1, {
+      [emoji]: true
+    });
+    tr(Emoji, EMOJI, Emoji);
+    tt(Emoji, EMOJI_VARIATION, Emoji);
+    // tt(Start, EMOJI_VARIATION, Emoji); // This one is sketchy
+
+    const EmojiJoiner = tt(Emoji, EMOJI_JOINER);
+    tr(EmojiJoiner, EMOJI, Emoji);
+    // tt(EmojiJoiner, EMOJI_VARIATION, Emoji); // also sketchy
+
+    // Generates states for top-level domains
+    // Note that this is most accurate when tlds are in alphabetical order
+    const wordjr = [[ASCII_LETTER, Word]];
+    const uwordjr = [[ASCII_LETTER, null], [LETTER, UWord]];
+    for (let i = 0; i < tlds.length; i++) {
+      fastts(Start, tlds[i], TLD, WORD, wordjr);
+    }
+    for (let i = 0; i < utlds.length; i++) {
+      fastts(Start, utlds[i], UTLD, UWORD, uwordjr);
+    }
+    addToGroups(TLD, {
+      tld: true,
+      ascii: true
+    }, groups);
+    addToGroups(UTLD, {
+      utld: true,
+      alpha: true
+    }, groups);
+
+    // Collect the states generated by different protocols. NOTE: If any new TLDs
+    // get added that are also protocols, set the token to be the same as the
+    // protocol to ensure parsing works as expected.
+    fastts(Start, 'file', SCHEME, WORD, wordjr);
+    fastts(Start, 'mailto', SCHEME, WORD, wordjr);
+    fastts(Start, 'http', SLASH_SCHEME, WORD, wordjr);
+    fastts(Start, 'https', SLASH_SCHEME, WORD, wordjr);
+    fastts(Start, 'ftp', SLASH_SCHEME, WORD, wordjr);
+    fastts(Start, 'ftps', SLASH_SCHEME, WORD, wordjr);
+    addToGroups(SCHEME, {
+      scheme: true,
+      ascii: true
+    }, groups);
+    addToGroups(SLASH_SCHEME, {
+      slashscheme: true,
+      ascii: true
+    }, groups);
+
+    // Register custom schemes. Assumes each scheme is asciinumeric with hyphens
+    customSchemes = customSchemes.sort((a, b) => a[0] > b[0] ? 1 : -1);
+    for (let i = 0; i < customSchemes.length; i++) {
+      const sch = customSchemes[i][0];
+      const optionalSlashSlash = customSchemes[i][1];
+      const flags = optionalSlashSlash ? {
+        [scheme]: true
+      } : {
+        [slashscheme]: true
+      };
+      if (sch.indexOf('-') >= 0) {
+        flags[domain] = true;
+      } else if (!ASCII_LETTER.test(sch)) {
+        flags[numeric] = true; // numbers only
+      } else if (DIGIT.test(sch)) {
+        flags[asciinumeric] = true;
+      } else {
+        flags[ascii] = true;
+      }
+      ts(Start, sch, sch, flags);
+    }
+
+    // Localhost token
+    ts(Start, 'localhost', LOCALHOST, {
+      ascii: true
+    });
+
+    // Set default transition for start state (some symbol)
+    Start.jd = new State(SYM);
+    return {
+      start: Start,
+      tokens: assign({
+        groups
+      }, tk)
+    };
+  }
+
+  /**
+  	Given a string, returns an array of TOKEN instances representing the
+  	composition of that string.
+
+  	@method run
+  	@param {State<string>} start scanner starting state
+  	@param {string} str input string to scan
+  	@return {Token[]} list of tokens, each with a type and value
+  */
+  function run$1(start, str) {
+    // State machine is not case sensitive, so input is tokenized in lowercased
+    // form (still returns regular case). Uses selective `toLowerCase` because
+    // lowercasing the entire string causes the length and character position to
+    // vary in some non-English strings with V8-based runtimes.
+    const iterable = stringToArray(str.replace(/[A-Z]/g, c => c.toLowerCase()));
+    const charCount = iterable.length; // <= len if there are emojis, etc
+    const tokens = []; // return value
+
+    // cursor through the string itself, accounting for characters that have
+    // width with length 2 such as emojis
+    let cursor = 0;
+
+    // Cursor through the array-representation of the string
+    let charCursor = 0;
+
+    // Tokenize the string
+    while (charCursor < charCount) {
+      let state = start;
+      let nextState = null;
+      let tokenLength = 0;
+      let latestAccepting = null;
+      let sinceAccepts = -1;
+      let charsSinceAccepts = -1;
+      while (charCursor < charCount && (nextState = state.go(iterable[charCursor]))) {
+        state = nextState;
+
+        // Keep track of the latest accepting state
+        if (state.accepts()) {
+          sinceAccepts = 0;
+          charsSinceAccepts = 0;
+          latestAccepting = state;
+        } else if (sinceAccepts >= 0) {
+          sinceAccepts += iterable[charCursor].length;
+          charsSinceAccepts++;
+        }
+        tokenLength += iterable[charCursor].length;
+        cursor += iterable[charCursor].length;
+        charCursor++;
+      }
+
+      // Roll back to the latest accepting state
+      cursor -= sinceAccepts;
+      charCursor -= charsSinceAccepts;
+      tokenLength -= sinceAccepts;
+
+      // No more jumps, just make a new token from the last accepting one
+      tokens.push({
+        t: latestAccepting.t,
+        // token type/name
+        v: str.slice(cursor - tokenLength, cursor),
+        // string value
+        s: cursor - tokenLength,
+        // start index
+        e: cursor // end index (excluding)
+      });
+    }
+
+    return tokens;
+  }
+
+  /**
+   * Convert a String to an Array of characters, taking into account that some
+   * characters like emojis take up two string indexes.
+   *
+   * Adapted from core-js (MIT license)
+   * https://github.com/zloirock/core-js/blob/2d69cf5f99ab3ea3463c395df81e5a15b68f49d9/packages/core-js/internals/string-multibyte.js
+   *
+   * @function stringToArray
+   * @param {string} str
+   * @returns {string[]}
+   */
+  function stringToArray(str) {
+    const result = [];
+    const len = str.length;
+    let index = 0;
+    while (index < len) {
+      let first = str.charCodeAt(index);
+      let second;
+      let char = first < 0xd800 || first > 0xdbff || index + 1 === len || (second = str.charCodeAt(index + 1)) < 0xdc00 || second > 0xdfff ? str[index] // single character
+      : str.slice(index, index + 2); // two-index characters
+      result.push(char);
+      index += char.length;
+    }
+    return result;
+  }
+
+  /**
+   * Fast version of ts function for when transition defaults are well known
+   * @param {State<string>} state
+   * @param {string} input
+   * @param {string} t
+   * @param {string} defaultt
+   * @param {[RegExp, State<string>][]} jr
+   * @returns {State<string>}
+   */
+  function fastts(state, input, t, defaultt, jr) {
+    let next;
+    const len = input.length;
+    for (let i = 0; i < len - 1; i++) {
+      const char = input[i];
+      if (state.j[char]) {
+        next = state.j[char];
+      } else {
+        next = new State(defaultt);
+        next.jr = jr.slice();
+        state.j[char] = next;
+      }
+      state = next;
+    }
+    next = new State(t);
+    next.jr = jr.slice();
+    state.j[input[len - 1]] = next;
+    return next;
+  }
+
+  /**
+   * Converts a string of Top-Level Domain names encoded in update-tlds.js back
+   * into a list of strings.
+   * @param {str} encoded encoded TLDs string
+   * @returns {str[]} original TLDs list
+   */
+  function decodeTlds(encoded) {
+    const words = [];
+    const stack = [];
+    let i = 0;
+    let digits = '0123456789';
+    while (i < encoded.length) {
+      let popDigitCount = 0;
+      while (digits.indexOf(encoded[i + popDigitCount]) >= 0) {
+        popDigitCount++; // encountered some digits, have to pop to go one level up trie
+      }
+
+      if (popDigitCount > 0) {
+        words.push(stack.join('')); // whatever preceded the pop digits must be a word
+        for (let popCount = parseInt(encoded.substring(i, i + popDigitCount), 10); popCount > 0; popCount--) {
+          stack.pop();
+        }
+        i += popDigitCount;
+      } else {
+        stack.push(encoded[i]); // drop down a level into the trie
+        i++;
+      }
+    }
+    return words;
+  }
+
+  /**
+   * An object where each key is a valid DOM Event Name such as `click` or `focus`
+   * and each value is an event handler function.
+   *
+   * https://developer.mozilla.org/en-US/docs/Web/API/Element#events
+   * @typedef {?{ [event: string]: Function }} EventListeners
+   */
+
+  /**
+   * All formatted properties required to render a link, including `tagName`,
+   * `attributes`, `content` and `eventListeners`.
+   * @typedef {{ tagName: any, attributes: {[attr: string]: any}, content: string,
+   * eventListeners: EventListeners }} IntermediateRepresentation
+   */
+
+  /**
+   * Specify either an object described by the template type `O` or a function.
+   *
+   * The function takes a string value (usually the link's href attribute), the
+   * link type (`'url'`, `'hashtag`', etc.) and an internal token representation
+   * of the link. It should return an object of the template type `O`
+   * @template O
+   * @typedef {O | ((value: string, type: string, token: MultiToken) => O)} OptObj
+   */
+
+  /**
+   * Specify either a function described by template type `F` or an object.
+   *
+   * Each key in the object should be a link type (`'url'`, `'hashtag`', etc.). Each
+   * value should be a function with template type `F` that is called when the
+   * corresponding link type is encountered.
+   * @template F
+   * @typedef {F | { [type: string]: F}} OptFn
+   */
+
+  /**
+   * Specify either a value with template type `V`, a function that returns `V` or
+   * an object where each value resolves to `V`.
+   *
+   * The function takes a string value (usually the link's href attribute), the
+   * link type (`'url'`, `'hashtag`', etc.) and an internal token representation
+   * of the link. It should return an object of the template type `V`
+   *
+   * For the object, each key should be a link type (`'url'`, `'hashtag`', etc.).
+   * Each value should either have type `V` or a function that returns V. This
+   * function similarly takes a string value and a token.
+   *
+   * Example valid types for `Opt<string>`:
+   *
+   * ```js
+   * 'hello'
+   * (value, type, token) => 'world'
+   * { url: 'hello', email: (value, token) => 'world'}
+   * ```
+   * @template V
+   * @typedef {V | ((value: string, type: string, token: MultiToken) => V) | { [type: string]: V | ((value: string, token: MultiToken) => V) }} Opt
+   */
+
+  /**
+   * See available options: https://linkify.js.org/docs/options.html
+   * @typedef {{
+   * 	defaultProtocol?: string,
+   *  events?: OptObj<EventListeners>,
+   * 	format?: Opt<string>,
+   * 	formatHref?: Opt<string>,
+   * 	nl2br?: boolean,
+   * 	tagName?: Opt<any>,
+   * 	target?: Opt<string>,
+   * 	rel?: Opt<string>,
+   * 	validate?: Opt<boolean>,
+   * 	truncate?: Opt<number>,
+   * 	className?: Opt<string>,
+   * 	attributes?: OptObj<({ [attr: string]: any })>,
+   *  ignoreTags?: string[],
+   * 	render?: OptFn<((ir: IntermediateRepresentation) => any)>
+   * }} Opts
+   */
+
+  /**
+   * @type Required<Opts>
+   */
+  const defaults = {
+    defaultProtocol: 'http',
+    events: null,
+    format: noop,
+    formatHref: noop,
+    nl2br: false,
+    tagName: 'a',
+    target: null,
+    rel: null,
+    validate: true,
+    truncate: Infinity,
+    className: null,
+    attributes: null,
+    ignoreTags: [],
+    render: null
+  };
+
+  /**
+   * Utility class for linkify interfaces to apply specified
+   * {@link Opts formatting and rendering options}.
+   *
+   * @param {Opts | Options} [opts] Option value overrides.
+   * @param {(ir: IntermediateRepresentation) => any} [defaultRender] (For
+   *   internal use) default render function that determines how to generate an
+   *   HTML element based on a link token's derived tagName, attributes and HTML.
+   *   Similar to render option
+   */
+  function Options(opts, defaultRender) {
+    if (defaultRender === void 0) {
+      defaultRender = null;
+    }
+    let o = assign({}, defaults);
+    if (opts) {
+      o = assign(o, opts instanceof Options ? opts.o : opts);
+    }
+
+    // Ensure all ignored tags are uppercase
+    const ignoredTags = o.ignoreTags;
+    const uppercaseIgnoredTags = [];
+    for (let i = 0; i < ignoredTags.length; i++) {
+      uppercaseIgnoredTags.push(ignoredTags[i].toUpperCase());
+    }
+    /** @protected */
+    this.o = o;
+    if (defaultRender) {
+      this.defaultRender = defaultRender;
+    }
+    this.ignoreTags = uppercaseIgnoredTags;
+  }
+  Options.prototype = {
+    o: defaults,
+    /**
+     * @type string[]
+     */
+    ignoreTags: [],
+    /**
+     * @param {IntermediateRepresentation} ir
+     * @returns {any}
+     */
+    defaultRender(ir) {
+      return ir;
+    },
+    /**
+     * Returns true or false based on whether a token should be displayed as a
+     * link based on the user options.
+     * @param {MultiToken} token
+     * @returns {boolean}
+     */
+    check(token) {
+      return this.get('validate', token.toString(), token);
+    },
+    // Private methods
+
+    /**
+     * Resolve an option's value based on the value of the option and the given
+     * params. If operator and token are specified and the target option is
+     * callable, automatically calls the function with the given argument.
+     * @template {keyof Opts} K
+     * @param {K} key Name of option to use
+     * @param {string} [operator] will be passed to the target option if it's a
+     * function. If not specified, RAW function value gets returned
+     * @param {MultiToken} [token] The token from linkify.tokenize
+     * @returns {Opts[K] | any}
+     */
+    get(key, operator, token) {
+      const isCallable = operator != null;
+      let option = this.o[key];
+      if (!option) {
+        return option;
+      }
+      if (typeof option === 'object') {
+        option = token.t in option ? option[token.t] : defaults[key];
+        if (typeof option === 'function' && isCallable) {
+          option = option(operator, token);
+        }
+      } else if (typeof option === 'function' && isCallable) {
+        option = option(operator, token.t, token);
+      }
+      return option;
+    },
+    /**
+     * @template {keyof Opts} L
+     * @param {L} key Name of options object to use
+     * @param {string} [operator]
+     * @param {MultiToken} [token]
+     * @returns {Opts[L] | any}
+     */
+    getObj(key, operator, token) {
+      let obj = this.o[key];
+      if (typeof obj === 'function' && operator != null) {
+        obj = obj(operator, token.t, token);
+      }
+      return obj;
+    },
+    /**
+     * Convert the given token to a rendered element that may be added to the
+     * calling-interface's DOM
+     * @param {MultiToken} token Token to render to an HTML element
+     * @returns {any} Render result; e.g., HTML string, DOM element, React
+     *   Component, etc.
+     */
+    render(token) {
+      const ir = token.render(this); // intermediate representation
+      const renderFn = this.get('render', null, token) || this.defaultRender;
+      return renderFn(ir, token.t, token);
+    }
+  };
+  function noop(val) {
+    return val;
+  }
+
+  /******************************************************************************
+  	Multi-Tokens
+  	Tokens composed of arrays of TextTokens
+  ******************************************************************************/
+
+  /**
+   * @param {string} value
+   * @param {Token[]} tokens
+   */
+  function MultiToken(value, tokens) {
+    this.t = 'token';
+    this.v = value;
+    this.tk = tokens;
+  }
+
+  /**
+   * Abstract class used for manufacturing tokens of text tokens. That is rather
+   * than the value for a token being a small string of text, it's value an array
+   * of text tokens.
+   *
+   * Used for grouping together URLs, emails, hashtags, and other potential
+   * creations.
+   * @class MultiToken
+   * @property {string} t
+   * @property {string} v
+   * @property {Token[]} tk
+   * @abstract
+   */
+  MultiToken.prototype = {
+    isLink: false,
+    /**
+     * Return the string this token represents.
+     * @return {string}
+     */
+    toString() {
+      return this.v;
+    },
+    /**
+     * What should the value for this token be in the `href` HTML attribute?
+     * Returns the `.toString` value by default.
+     * @param {string} [scheme]
+     * @return {string}
+    */
+    toHref(scheme) {
+      return this.toString();
+    },
+    /**
+     * @param {Options} options Formatting options
+     * @returns {string}
+     */
+    toFormattedString(options) {
+      const val = this.toString();
+      const truncate = options.get('truncate', val, this);
+      const formatted = options.get('format', val, this);
+      return truncate && formatted.length > truncate ? formatted.substring(0, truncate) + '…' : formatted;
+    },
+    /**
+     *
+     * @param {Options} options
+     * @returns {string}
+     */
+    toFormattedHref(options) {
+      return options.get('formatHref', this.toHref(options.get('defaultProtocol')), this);
+    },
+    /**
+     * The start index of this token in the original input string
+     * @returns {number}
+     */
+    startIndex() {
+      return this.tk[0].s;
+    },
+    /**
+     * The end index of this token in the original input string (up to this
+     * index but not including it)
+     * @returns {number}
+     */
+    endIndex() {
+      return this.tk[this.tk.length - 1].e;
+    },
+    /**
+    	Returns an object  of relevant values for this token, which includes keys
+    	* type - Kind of token ('url', 'email', etc.)
+    	* value - Original text
+    	* href - The value that should be added to the anchor tag's href
+    		attribute
+    		@method toObject
+    	@param {string} [protocol] `'http'` by default
+    */
+    toObject(protocol) {
+      if (protocol === void 0) {
+        protocol = defaults.defaultProtocol;
+      }
+      return {
+        type: this.t,
+        value: this.toString(),
+        isLink: this.isLink,
+        href: this.toHref(protocol),
+        start: this.startIndex(),
+        end: this.endIndex()
+      };
+    },
+    /**
+     *
+     * @param {Options} options Formatting option
+     */
+    toFormattedObject(options) {
+      return {
+        type: this.t,
+        value: this.toFormattedString(options),
+        isLink: this.isLink,
+        href: this.toFormattedHref(options),
+        start: this.startIndex(),
+        end: this.endIndex()
+      };
+    },
+    /**
+     * Whether this token should be rendered as a link according to the given options
+     * @param {Options} options
+     * @returns {boolean}
+     */
+    validate(options) {
+      return options.get('validate', this.toString(), this);
+    },
+    /**
+     * Return an object that represents how this link should be rendered.
+     * @param {Options} options Formattinng options
+     */
+    render(options) {
+      const token = this;
+      const href = this.toHref(options.get('defaultProtocol'));
+      const formattedHref = options.get('formatHref', href, this);
+      const tagName = options.get('tagName', href, token);
+      const content = this.toFormattedString(options);
+      const attributes = {};
+      const className = options.get('className', href, token);
+      const target = options.get('target', href, token);
+      const rel = options.get('rel', href, token);
+      const attrs = options.getObj('attributes', href, token);
+      const eventListeners = options.getObj('events', href, token);
+      attributes.href = formattedHref;
+      if (className) {
+        attributes.class = className;
+      }
+      if (target) {
+        attributes.target = target;
+      }
+      if (rel) {
+        attributes.rel = rel;
+      }
+      if (attrs) {
+        assign(attributes, attrs);
+      }
+      return {
+        tagName,
+        attributes,
+        content,
+        eventListeners
+      };
+    }
+  };
+
+  /**
+   * Create a new token that can be emitted by the parser state machine
+   * @param {string} type readable type of the token
+   * @param {object} props properties to assign or override, including isLink = true or false
+   * @returns {new (value: string, tokens: Token[]) => MultiToken} new token class
+   */
+  function createTokenClass(type, props) {
+    class Token extends MultiToken {
+      constructor(value, tokens) {
+        super(value, tokens);
+        this.t = type;
+      }
+    }
+    for (const p in props) {
+      Token.prototype[p] = props[p];
+    }
+    Token.t = type;
+    return Token;
+  }
+
+  /**
+  	Represents a list of tokens making up a valid email address
+  */
+  const Email = createTokenClass('email', {
+    isLink: true,
+    toHref() {
+      return 'mailto:' + this.toString();
+    }
+  });
+
+  /**
+  	Represents some plain text
+  */
+  const Text = createTokenClass('text');
+
+  /**
+  	Multi-linebreak token - represents a line break
+  	@class Nl
+  */
+  const Nl = createTokenClass('nl');
+
+  /**
+  	Represents a list of text tokens making up a valid URL
+  	@class Url
+  */
+  const Url = createTokenClass('url', {
+    isLink: true,
+    /**
+    	Lowercases relevant parts of the domain and adds the protocol if
+    	required. Note that this will not escape unsafe HTML characters in the
+    	URL.
+    		@param {string} [scheme] default scheme (e.g., 'https')
+    	@return {string} the full href
+    */
+    toHref(scheme) {
+      if (scheme === void 0) {
+        scheme = defaults.defaultProtocol;
+      }
+      // Check if already has a prefix scheme
+      return this.hasProtocol() ? this.v : `${scheme}://${this.v}`;
+    },
+    /**
+     * Check whether this URL token has a protocol
+     * @return {boolean}
+     */
+    hasProtocol() {
+      const tokens = this.tk;
+      return tokens.length >= 2 && tokens[0].t !== LOCALHOST && tokens[1].t === COLON;
+    }
+  });
+
+  /**
+  	Not exactly parser, more like the second-stage scanner (although we can
+  	theoretically hotswap the code here with a real parser in the future... but
+  	for a little URL-finding utility abstract syntax trees may be a little
+  	overkill).
+
+  	URL format: http://en.wikipedia.org/wiki/URI_scheme
+  	Email format: http://en.wikipedia.org/wiki/EmailAddress (links to RFC in
+  	reference)
+
+  	@module linkify
+  	@submodule parser
+  	@main run
+  */
+  const makeState = arg => new State(arg);
+
+  /**
+   * Generate the parser multi token-based state machine
+   * @param {{ groups: Collections<string> }} tokens
+   */
+  function init$1(_ref) {
+    let {
+      groups
+    } = _ref;
+    // Types of characters the URL can definitely end in
+    const qsAccepting = groups.domain.concat([AMPERSAND, ASTERISK, AT, BACKSLASH, BACKTICK, CARET, DOLLAR, EQUALS, HYPHEN, NUM, PERCENT, PIPE, PLUS, POUND, SLASH, SYM, TILDE, UNDERSCORE]);
+
+    // Types of tokens that can follow a URL and be part of the query string
+    // but cannot be the very last characters
+    // Characters that cannot appear in the URL at all should be excluded
+    const qsNonAccepting = [APOSTROPHE, COLON, COMMA, DOT, EXCLAMATION, QUERY, QUOTE, SEMI, OPENANGLEBRACKET, CLOSEANGLEBRACKET, OPENBRACE, CLOSEBRACE, CLOSEBRACKET, OPENBRACKET, OPENPAREN, CLOSEPAREN, FULLWIDTHLEFTPAREN, FULLWIDTHRIGHTPAREN, LEFTCORNERBRACKET, RIGHTCORNERBRACKET, LEFTWHITECORNERBRACKET, RIGHTWHITECORNERBRACKET, FULLWIDTHLESSTHAN, FULLWIDTHGREATERTHAN];
+
+    // For addresses without the mailto prefix
+    // Tokens allowed in the localpart of the email
+    const localpartAccepting = [AMPERSAND, APOSTROPHE, ASTERISK, BACKSLASH, BACKTICK, CARET, DOLLAR, EQUALS, HYPHEN, OPENBRACE, CLOSEBRACE, PERCENT, PIPE, PLUS, POUND, QUERY, SLASH, SYM, TILDE, UNDERSCORE];
+
+    // The universal starting state.
+    /**
+     * @type State<Token>
+     */
+    const Start = makeState();
+    const Localpart = tt(Start, TILDE); // Local part of the email address
+    ta(Localpart, localpartAccepting, Localpart);
+    ta(Localpart, groups.domain, Localpart);
+    const Domain = makeState(),
+      Scheme = makeState(),
+      SlashScheme = makeState();
+    ta(Start, groups.domain, Domain); // parsed string ends with a potential domain name (A)
+    ta(Start, groups.scheme, Scheme); // e.g., 'mailto'
+    ta(Start, groups.slashscheme, SlashScheme); // e.g., 'http'
+
+    ta(Domain, localpartAccepting, Localpart);
+    ta(Domain, groups.domain, Domain);
+    const LocalpartAt = tt(Domain, AT); // Local part of the email address plus @
+
+    tt(Localpart, AT, LocalpartAt); // close to an email address now
+
+    // Local part of an email address can be e.g. 'http' or 'mailto'
+    tt(Scheme, AT, LocalpartAt);
+    tt(SlashScheme, AT, LocalpartAt);
+    const LocalpartDot = tt(Localpart, DOT); // Local part of the email address plus '.' (localpart cannot end in .)
+    ta(LocalpartDot, localpartAccepting, Localpart);
+    ta(LocalpartDot, groups.domain, Localpart);
+    const EmailDomain = makeState();
+    ta(LocalpartAt, groups.domain, EmailDomain); // parsed string starts with local email info + @ with a potential domain name
+    ta(EmailDomain, groups.domain, EmailDomain);
+    const EmailDomainDot = tt(EmailDomain, DOT); // domain followed by DOT
+    ta(EmailDomainDot, groups.domain, EmailDomain);
+    const Email$1 = makeState(Email); // Possible email address (could have more tlds)
+    ta(EmailDomainDot, groups.tld, Email$1);
+    ta(EmailDomainDot, groups.utld, Email$1);
+    tt(LocalpartAt, LOCALHOST, Email$1);
+
+    // Hyphen can jump back to a domain name
+    const EmailDomainHyphen = tt(EmailDomain, HYPHEN); // parsed string starts with local email info + @ with a potential domain name
+    ta(EmailDomainHyphen, groups.domain, EmailDomain);
+    ta(Email$1, groups.domain, EmailDomain);
+    tt(Email$1, DOT, EmailDomainDot);
+    tt(Email$1, HYPHEN, EmailDomainHyphen);
+
+    // Final possible email states
+    const EmailColon = tt(Email$1, COLON); // URL followed by colon (potential port number here)
+    /*const EmailColonPort = */
+    ta(EmailColon, groups.numeric, Email); // URL followed by colon and port number
+
+    // Account for dots and hyphens. Hyphens are usually parts of domain names
+    // (but not TLDs)
+    const DomainHyphen = tt(Domain, HYPHEN); // domain followed by hyphen
+    const DomainDot = tt(Domain, DOT); // domain followed by DOT
+    ta(DomainHyphen, groups.domain, Domain);
+    ta(DomainDot, localpartAccepting, Localpart);
+    ta(DomainDot, groups.domain, Domain);
+    const DomainDotTld = makeState(Url); // Simplest possible URL with no query string
+    ta(DomainDot, groups.tld, DomainDotTld);
+    ta(DomainDot, groups.utld, DomainDotTld);
+    ta(DomainDotTld, groups.domain, Domain);
+    ta(DomainDotTld, localpartAccepting, Localpart);
+    tt(DomainDotTld, DOT, DomainDot);
+    tt(DomainDotTld, HYPHEN, DomainHyphen);
+    tt(DomainDotTld, AT, LocalpartAt);
+    const DomainDotTldColon = tt(DomainDotTld, COLON); // URL followed by colon (potential port number here)
+    const DomainDotTldColonPort = makeState(Url); // TLD followed by a port number
+    ta(DomainDotTldColon, groups.numeric, DomainDotTldColonPort);
+
+    // Long URL with optional port and maybe query string
+    const Url$1 = makeState(Url);
+
+    // URL with extra symbols at the end, followed by an opening bracket
+    const UrlNonaccept = makeState(); // URL followed by some symbols (will not be part of the final URL)
+
+    // Query strings
+    ta(Url$1, qsAccepting, Url$1);
+    ta(Url$1, qsNonAccepting, UrlNonaccept);
+    ta(UrlNonaccept, qsAccepting, Url$1);
+    ta(UrlNonaccept, qsNonAccepting, UrlNonaccept);
+
+    // Become real URLs after `SLASH` or `COLON NUM SLASH`
+    // Here works with or without scheme:// prefix
+    tt(DomainDotTld, SLASH, Url$1);
+    tt(DomainDotTldColonPort, SLASH, Url$1);
+
+    // Note that domains that begin with schemes are treated slighly differently
+    const SchemeColon = tt(Scheme, COLON); // e.g., 'mailto:'
+    const SlashSchemeColon = tt(SlashScheme, COLON); // e.g., 'http:'
+    const SlashSchemeColonSlash = tt(SlashSchemeColon, SLASH); // e.g., 'http:/'
+
+    const UriPrefix = tt(SlashSchemeColonSlash, SLASH); // e.g., 'http://'
+
+    // Scheme states can transition to domain states
+    ta(Scheme, groups.domain, Domain);
+    tt(Scheme, DOT, DomainDot);
+    tt(Scheme, HYPHEN, DomainHyphen);
+    ta(SlashScheme, groups.domain, Domain);
+    tt(SlashScheme, DOT, DomainDot);
+    tt(SlashScheme, HYPHEN, DomainHyphen);
+
+    // Force URL with scheme prefix followed by anything sane
+    ta(SchemeColon, groups.domain, Url$1);
+    tt(SchemeColon, SLASH, Url$1);
+    ta(UriPrefix, groups.domain, Url$1);
+    ta(UriPrefix, qsAccepting, Url$1);
+    tt(UriPrefix, SLASH, Url$1);
+    const bracketPairs = [[OPENBRACE, CLOSEBRACE],
+    // {}
+    [OPENBRACKET, CLOSEBRACKET],
+    // []
+    [OPENPAREN, CLOSEPAREN],
+    // ()
+    [OPENANGLEBRACKET, CLOSEANGLEBRACKET],
+    // <>
+    [FULLWIDTHLEFTPAREN, FULLWIDTHRIGHTPAREN],
+    // （）
+    [LEFTCORNERBRACKET, RIGHTCORNERBRACKET],
+    // 「」
+    [LEFTWHITECORNERBRACKET, RIGHTWHITECORNERBRACKET],
+    // 『』
+    [FULLWIDTHLESSTHAN, FULLWIDTHGREATERTHAN] // ＜＞
+    ];
+
+    for (let i = 0; i < bracketPairs.length; i++) {
+      const [OPEN, CLOSE] = bracketPairs[i];
+      const UrlOpen = tt(Url$1, OPEN); // URL followed by open bracket
+
+      // Continue not accepting for open brackets
+      tt(UrlNonaccept, OPEN, UrlOpen);
+
+      // Closing bracket component. This character WILL be included in the URL
+      tt(UrlOpen, CLOSE, Url$1);
+
+      // URL that beings with an opening bracket, followed by a symbols.
+      // Note that the final state can still be `UrlOpen` (if the URL has a
+      // single opening bracket for some reason).
+      const UrlOpenQ = makeState(Url);
+      ta(UrlOpen, qsAccepting, UrlOpenQ);
+      const UrlOpenSyms = makeState(); // UrlOpen followed by some symbols it cannot end it
+      ta(UrlOpen, qsNonAccepting);
+
+      // URL that begins with an opening bracket, followed by some symbols
+      ta(UrlOpenQ, qsAccepting, UrlOpenQ);
+      ta(UrlOpenQ, qsNonAccepting, UrlOpenSyms);
+      ta(UrlOpenSyms, qsAccepting, UrlOpenQ);
+      ta(UrlOpenSyms, qsNonAccepting, UrlOpenSyms);
+
+      // Close brace/bracket to become regular URL
+      tt(UrlOpenQ, CLOSE, Url$1);
+      tt(UrlOpenSyms, CLOSE, Url$1);
+    }
+    tt(Start, LOCALHOST, DomainDotTld); // localhost is a valid URL state
+    tt(Start, NL$1, Nl); // single new line
+
+    return {
+      start: Start,
+      tokens: tk
+    };
+  }
+
+  /**
+   * Run the parser state machine on a list of scanned string-based tokens to
+   * create a list of multi tokens, each of which represents a URL, email address,
+   * plain text, etc.
+   *
+   * @param {State<MultiToken>} start parser start state
+   * @param {string} input the original input used to generate the given tokens
+   * @param {Token[]} tokens list of scanned tokens
+   * @returns {MultiToken[]}
+   */
+  function run(start, input, tokens) {
+    let len = tokens.length;
+    let cursor = 0;
+    let multis = [];
+    let textTokens = [];
+    while (cursor < len) {
+      let state = start;
+      let secondState = null;
+      let nextState = null;
+      let multiLength = 0;
+      let latestAccepting = null;
+      let sinceAccepts = -1;
+      while (cursor < len && !(secondState = state.go(tokens[cursor].t))) {
+        // Starting tokens with nowhere to jump to.
+        // Consider these to be just plain text
+        textTokens.push(tokens[cursor++]);
+      }
+      while (cursor < len && (nextState = secondState || state.go(tokens[cursor].t))) {
+        // Get the next state
+        secondState = null;
+        state = nextState;
+
+        // Keep track of the latest accepting state
+        if (state.accepts()) {
+          sinceAccepts = 0;
+          latestAccepting = state;
+        } else if (sinceAccepts >= 0) {
+          sinceAccepts++;
+        }
+        cursor++;
+        multiLength++;
+      }
+      if (sinceAccepts < 0) {
+        // No accepting state was found, part of a regular text token add
+        // the first text token to the text tokens array and try again from
+        // the next
+        cursor -= multiLength;
+        if (cursor < len) {
+          textTokens.push(tokens[cursor]);
+          cursor++;
+        }
+      } else {
+        // Accepting state!
+        // First close off the textTokens (if available)
+        if (textTokens.length > 0) {
+          multis.push(initMultiToken(Text, input, textTokens));
+          textTokens = [];
+        }
+
+        // Roll back to the latest accepting state
+        cursor -= sinceAccepts;
+        multiLength -= sinceAccepts;
+
+        // Create a new multitoken
+        const Multi = latestAccepting.t;
+        const subtokens = tokens.slice(cursor - multiLength, cursor);
+        multis.push(initMultiToken(Multi, input, subtokens));
+      }
+    }
+
+    // Finally close off the textTokens (if available)
+    if (textTokens.length > 0) {
+      multis.push(initMultiToken(Text, input, textTokens));
+    }
+    return multis;
+  }
+
+  /**
+   * Utility function for instantiating a new multitoken with all the relevant
+   * fields during parsing.
+   * @param {new (value: string, tokens: Token[]) => MultiToken} Multi class to instantiate
+   * @param {string} input original input string
+   * @param {Token[]} tokens consecutive tokens scanned from input string
+   * @returns {MultiToken}
+   */
+  function initMultiToken(Multi, input, tokens) {
+    const startIdx = tokens[0].s;
+    const endIdx = tokens[tokens.length - 1].e;
+    const value = input.slice(startIdx, endIdx);
+    return new Multi(value, tokens);
+  }
+
+  const warn = typeof console !== 'undefined' && console && console.warn || (() => {});
+  const warnAdvice = 'until manual call of linkify.init(). Register all schemes and plugins before invoking linkify the first time.';
+
+  // Side-effect initialization state
+  const INIT = {
+    scanner: null,
+    parser: null,
+    tokenQueue: [],
+    pluginQueue: [],
+    customSchemes: [],
+    initialized: false
+  };
+
+  /**
+   * @typedef {{
+   * 	start: State<string>,
+   * 	tokens: { groups: Collections<string> } & typeof tk
+   * }} ScannerInit
+   */
+
+  /**
+   * @typedef {{
+   * 	start: State<MultiToken>,
+   * 	tokens: typeof multi
+   * }} ParserInit
+   */
+
+  /**
+   * @typedef {(arg: { scanner: ScannerInit }) => void} TokenPlugin
+   */
+
+  /**
+   * @typedef {(arg: { scanner: ScannerInit, parser: ParserInit }) => void} Plugin
+   */
+
+  /**
+   * De-register all plugins and reset the internal state-machine. Used for
+   * testing; not required in practice.
+   * @private
+   */
+  function reset() {
+    State.groups = {};
+    INIT.scanner = null;
+    INIT.parser = null;
+    INIT.tokenQueue = [];
+    INIT.pluginQueue = [];
+    INIT.customSchemes = [];
+    INIT.initialized = false;
+  }
+
+  /**
+   * Detect URLs with the following additional protocol. Anything with format
+   * "protocol://..." will be considered a link. If `optionalSlashSlash` is set to
+   * `true`, anything with format "protocol:..." will be considered a link.
+   * @param {string} protocol
+   * @param {boolean} [optionalSlashSlash]
+   */
+  function registerCustomProtocol(scheme, optionalSlashSlash) {
+    if (optionalSlashSlash === void 0) {
+      optionalSlashSlash = false;
+    }
+    if (INIT.initialized) {
+      warn(`linkifyjs: already initialized - will not register custom scheme "${scheme}" ${warnAdvice}`);
+    }
+    if (!/^[0-9a-z]+(-[0-9a-z]+)*$/.test(scheme)) {
+      throw new Error(`linkifyjs: incorrect scheme format.
+1. Must only contain digits, lowercase ASCII letters or "-"
+2. Cannot start or end with "-"
+3. "-" cannot repeat`);
+    }
+    INIT.customSchemes.push([scheme, optionalSlashSlash]);
+  }
+
+  /**
+   * Initialize the linkify state machine. Called automatically the first time
+   * linkify is called on a string, but may be called manually as well.
+   */
+  function init() {
+    // Initialize scanner state machine and plugins
+    INIT.scanner = init$2(INIT.customSchemes);
+    for (let i = 0; i < INIT.tokenQueue.length; i++) {
+      INIT.tokenQueue[i][1]({
+        scanner: INIT.scanner
+      });
+    }
+
+    // Initialize parser state machine and plugins
+    INIT.parser = init$1(INIT.scanner.tokens);
+    for (let i = 0; i < INIT.pluginQueue.length; i++) {
+      INIT.pluginQueue[i][1]({
+        scanner: INIT.scanner,
+        parser: INIT.parser
+      });
+    }
+    INIT.initialized = true;
+  }
+
+  /**
+   * Parse a string into tokens that represent linkable and non-linkable sub-components
+   * @param {string} str
+   * @return {MultiToken[]} tokens
+   */
+  function tokenize(str) {
+    if (!INIT.initialized) {
+      init();
+    }
+    return run(INIT.parser.start, str, run$1(INIT.scanner.start, str));
+  }
+
+  /**
+   * Find a list of linkable items in the given string.
+   * @param {string} str string to find links in
+   * @param {string | Opts} [type] either formatting options or specific type of
+   * links to find, e.g., 'url' or 'email'
+   * @param {Opts} [opts] formatting options for final output. Cannot be specified
+   * if opts already provided in `type` argument
+   */
+  function find(str, type, opts) {
+    if (type === void 0) {
+      type = null;
+    }
+    if (opts === void 0) {
+      opts = null;
+    }
+    if (type && typeof type === 'object') {
+      if (opts) {
+        throw Error(`linkifyjs: Invalid link type ${type}; must be a string`);
+      }
+      opts = type;
+      type = null;
+    }
+    const options = new Options(opts);
+    const tokens = tokenize(str);
+    const filtered = [];
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      if (token.isLink && (!type || token.t === type) && options.check(token)) {
+        filtered.push(token.toFormattedObject(options));
+      }
+    }
+    return filtered;
+  }
+
+  /**
+   * Check if the provided tokens form a valid link structure, which can either be a single link token
+   * or a link token surrounded by parentheses or square brackets.
+   *
+   * This ensures that only complete and valid text is hyperlinked, preventing cases where a valid
+   * top-level domain (TLD) is immediately followed by an invalid character, like a number. For
+   * example, with the `find` method from Linkify, entering `example.com1` would result in
+   * `example.com` being linked and the trailing `1` left as plain text. By using the `tokenize`
+   * method, we can perform more comprehensive validation on the input text.
+   */
+  function isValidLinkStructure(tokens) {
+      if (tokens.length === 1) {
+          return tokens[0].isLink;
+      }
+      if (tokens.length === 3 && tokens[1].isLink) {
+          return ['()', '[]'].includes(tokens[0].value + tokens[2].value);
+      }
+      return false;
+  }
+  /**
+   * This plugin allows you to automatically add links to your editor.
+   * @param options The plugin options
+   * @returns The plugin instance
+   */
+  function autolink(options) {
+      return new Plugin({
+          key: new PluginKey('autolink'),
+          appendTransaction: (transactions, oldState, newState) => {
+              /**
+               * Does the transaction change the document?
+               */
+              const docChanges = transactions.some(transaction => transaction.docChanged) && !oldState.doc.eq(newState.doc);
+              /**
+               * Prevent autolink if the transaction is not a document change or if the transaction has the meta `preventAutolink`.
+               */
+              const preventAutolink = transactions.some(transaction => transaction.getMeta('preventAutolink'));
+              /**
+               * Prevent autolink if the transaction is not a document change
+               * or if the transaction has the meta `preventAutolink`.
+               */
+              if (!docChanges || preventAutolink) {
+                  return;
+              }
+              const { tr } = newState;
+              const transform = combineTransactionSteps(oldState.doc, [...transactions]);
+              const changes = getChangedRanges(transform);
+              changes.forEach(({ newRange }) => {
+                  // Now let’s see if we can add new links.
+                  const nodesInChangedRanges = findChildrenInRange(newState.doc, newRange, node => node.isTextblock);
+                  let textBlock;
+                  let textBeforeWhitespace;
+                  if (nodesInChangedRanges.length > 1) {
+                      // Grab the first node within the changed ranges (ex. the first of two paragraphs when hitting enter).
+                      textBlock = nodesInChangedRanges[0];
+                      textBeforeWhitespace = newState.doc.textBetween(textBlock.pos, textBlock.pos + textBlock.node.nodeSize, undefined, ' ');
+                  }
+                  else if (nodesInChangedRanges.length
+                      // We want to make sure to include the block seperator argument to treat hard breaks like spaces.
+                      && newState.doc.textBetween(newRange.from, newRange.to, ' ', ' ').endsWith(' ')) {
+                      textBlock = nodesInChangedRanges[0];
+                      textBeforeWhitespace = newState.doc.textBetween(textBlock.pos, newRange.to, undefined, ' ');
+                  }
+                  if (textBlock && textBeforeWhitespace) {
+                      const wordsBeforeWhitespace = textBeforeWhitespace.split(' ').filter(s => s !== '');
+                      if (wordsBeforeWhitespace.length <= 0) {
+                          return false;
+                      }
+                      const lastWordBeforeSpace = wordsBeforeWhitespace[wordsBeforeWhitespace.length - 1];
+                      const lastWordAndBlockOffset = textBlock.pos + textBeforeWhitespace.lastIndexOf(lastWordBeforeSpace);
+                      if (!lastWordBeforeSpace) {
+                          return false;
+                      }
+                      const linksBeforeSpace = tokenize(lastWordBeforeSpace).map(t => t.toObject(options.defaultProtocol));
+                      if (!isValidLinkStructure(linksBeforeSpace)) {
+                          return false;
+                      }
+                      linksBeforeSpace
+                          .filter(link => link.isLink)
+                          // Calculate link position.
+                          .map(link => ({
+                          ...link,
+                          from: lastWordAndBlockOffset + link.start + 1,
+                          to: lastWordAndBlockOffset + link.end + 1,
+                      }))
+                          // ignore link inside code mark
+                          .filter(link => {
+                          if (!newState.schema.marks.code) {
+                              return true;
+                          }
+                          return !newState.doc.rangeHasMark(link.from, link.to, newState.schema.marks.code);
+                      })
+                          // validate link
+                          .filter(link => options.validate(link.value))
+                          // Add link mark.
+                          .forEach(link => {
+                          if (getMarksBetween(link.from, link.to, newState.doc).some(item => item.mark.type === options.type)) {
+                              return;
+                          }
+                          tr.addMark(link.from, link.to, options.type.create({
+                              href: link.href,
+                          }));
+                      });
+                  }
+              });
+              if (!tr.steps.length) {
+                  return;
+              }
+              return tr;
+          },
+      });
+  }
+
+  function clickHandler(options) {
+      return new Plugin({
+          key: new PluginKey('handleClickLink'),
+          props: {
+              handleClick: (view, pos, event) => {
+                  var _a, _b;
+                  if (event.button !== 0) {
+                      return false;
+                  }
+                  if (!view.editable) {
+                      return false;
+                  }
+                  let a = event.target;
+                  const els = [];
+                  while (a.nodeName !== 'DIV') {
+                      els.push(a);
+                      a = a.parentNode;
+                  }
+                  if (!els.find(value => value.nodeName === 'A')) {
+                      return false;
+                  }
+                  const attrs = getAttributes(view.state, options.type.name);
+                  const link = event.target;
+                  const href = (_a = link === null || link === void 0 ? void 0 : link.href) !== null && _a !== void 0 ? _a : attrs.href;
+                  const target = (_b = link === null || link === void 0 ? void 0 : link.target) !== null && _b !== void 0 ? _b : attrs.target;
+                  if (link && href) {
+                      window.open(href, target);
+                      return true;
+                  }
+                  return false;
+              },
+          },
+      });
+  }
+
+  function pasteHandler(options) {
+      return new Plugin({
+          key: new PluginKey('handlePasteLink'),
+          props: {
+              handlePaste: (view, event, slice) => {
+                  const { state } = view;
+                  const { selection } = state;
+                  const { empty } = selection;
+                  if (empty) {
+                      return false;
+                  }
+                  let textContent = '';
+                  slice.content.forEach(node => {
+                      textContent += node.textContent;
+                  });
+                  const link = find(textContent, { defaultProtocol: options.defaultProtocol }).find(item => item.isLink && item.value === textContent);
+                  if (!textContent || !link) {
+                      return false;
+                  }
+                  options.editor.commands.setMark(options.type, {
+                      href: link.href,
+                  });
+                  return true;
+              },
+          },
+      });
+  }
+  // From DOMPurify
+  // https://github.com/cure53/DOMPurify/blob/main/src/regexp.js
+  // eslint-disable-next-line no-control-regex
+  const ATTR_WHITESPACE = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g;
+  function isAllowedUri(uri, protocols) {
+      const allowedProtocols = ['http', 'https', 'ftp', 'ftps', 'mailto', 'tel', 'callto', 'sms', 'cid', 'xmpp'];
+      if (protocols) {
+          protocols.forEach(protocol => {
+              const nextProtocol = (typeof protocol === 'string' ? protocol : protocol.scheme);
+              if (nextProtocol) {
+                  allowedProtocols.push(nextProtocol);
+              }
+          });
+      }
+      // eslint-disable-next-line no-useless-escape
+      return !uri || uri.replace(ATTR_WHITESPACE, '').match(new RegExp(`^(?:(?:${allowedProtocols.join('|')}):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))`, 'i'));
+  }
+  /**
+   * This extension allows you to create links.
+   * @see https://www.tiptap.dev/api/marks/link
+   */
+  const Link = Mark.create({
+      name: 'link',
+      priority: 1000,
+      keepOnSplit: false,
+      exitable: true,
+      onCreate() {
+          this.options.protocols.forEach(protocol => {
+              if (typeof protocol === 'string') {
+                  registerCustomProtocol(protocol);
+                  return;
+              }
+              registerCustomProtocol(protocol.scheme, protocol.optionalSlashes);
+          });
+      },
+      onDestroy() {
+          reset();
+      },
+      inclusive() {
+          return this.options.autolink;
+      },
+      addOptions() {
+          return {
+              openOnClick: true,
+              linkOnPaste: true,
+              autolink: true,
+              protocols: [],
+              defaultProtocol: 'http',
+              HTMLAttributes: {
+                  target: '_blank',
+                  rel: 'noopener noreferrer nofollow',
+                  class: null,
+              },
+              validate: url => !!url,
+          };
+      },
+      addAttributes() {
+          return {
+              href: {
+                  default: null,
+                  parseHTML(element) {
+                      return element.getAttribute('href');
+                  },
+              },
+              target: {
+                  default: this.options.HTMLAttributes.target,
+              },
+              rel: {
+                  default: this.options.HTMLAttributes.rel,
+              },
+              class: {
+                  default: this.options.HTMLAttributes.class,
+              },
+          };
+      },
+      parseHTML() {
+          return [{
+                  tag: 'a[href]',
+                  getAttrs: dom => {
+                      const href = dom.getAttribute('href');
+                      // prevent XSS attacks
+                      if (!href || !isAllowedUri(href, this.options.protocols)) {
+                          return false;
+                      }
+                      return null;
+                  },
+              }];
+      },
+      renderHTML({ HTMLAttributes }) {
+          // prevent XSS attacks
+          if (!isAllowedUri(HTMLAttributes.href, this.options.protocols)) {
+              // strip out the href
+              return ['a', mergeAttributes(this.options.HTMLAttributes, { ...HTMLAttributes, href: '' }), 0];
+          }
+          return ['a', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setLink: attributes => ({ chain }) => {
+                  return chain().setMark(this.name, attributes).setMeta('preventAutolink', true).run();
+              },
+              toggleLink: attributes => ({ chain }) => {
+                  return chain()
+                      .toggleMark(this.name, attributes, { extendEmptyMarkRange: true })
+                      .setMeta('preventAutolink', true)
+                      .run();
+              },
+              unsetLink: () => ({ chain }) => {
+                  return chain()
+                      .unsetMark(this.name, { extendEmptyMarkRange: true })
+                      .setMeta('preventAutolink', true)
+                      .run();
+              },
+          };
+      },
+      addPasteRules() {
+          return [
+              markPasteRule({
+                  find: text => {
+                      const foundLinks = [];
+                      if (text) {
+                          const { validate } = this.options;
+                          const links = find(text).filter(item => item.isLink && validate(item.value));
+                          if (links.length) {
+                              links.forEach(link => (foundLinks.push({
+                                  text: link.value,
+                                  data: {
+                                      href: link.href,
+                                  },
+                                  index: link.start,
+                              })));
+                          }
+                      }
+                      return foundLinks;
+                  },
+                  type: this.type,
+                  getAttributes: match => {
+                      var _a;
+                      return {
+                          href: (_a = match.data) === null || _a === void 0 ? void 0 : _a.href,
+                      };
+                  },
+              }),
+          ];
+      },
+      addProseMirrorPlugins() {
+          const plugins = [];
+          if (this.options.autolink) {
+              plugins.push(autolink({
+                  type: this.type,
+                  defaultProtocol: this.options.defaultProtocol,
+                  validate: this.options.validate,
+              }));
+          }
+          if (this.options.openOnClick === true) {
+              plugins.push(clickHandler({
+                  type: this.type,
+              }));
+          }
+          if (this.options.linkOnPaste) {
+              plugins.push(pasteHandler({
+                  editor: this.editor,
+                  defaultProtocol: this.options.defaultProtocol,
+                  type: this.type,
+              }));
+          }
+          return plugins;
+      },
+  });
+
+  /**
+   * This extension allows you to create underline text.
+   * @see https://www.tiptap.dev/api/marks/underline
+   */
+  const Underline = Mark.create({
+      name: 'underline',
+      addOptions() {
+          return {
+              HTMLAttributes: {},
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 'u',
+              },
+              {
+                  style: 'text-decoration',
+                  consuming: false,
+                  getAttrs: style => (style.includes('underline') ? {} : false),
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['u', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              setUnderline: () => ({ commands }) => {
+                  return commands.setMark(this.name);
+              },
+              toggleUnderline: () => ({ commands }) => {
+                  return commands.toggleMark(this.name);
+              },
+              unsetUnderline: () => ({ commands }) => {
+                  return commands.unsetMark(this.name);
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-u': () => this.editor.commands.toggleUnderline(),
+              'Mod-U': () => this.editor.commands.toggleUnderline(),
+          };
+      },
+  });
+
+  /**
+   * This extension allows you to create text styles. It is required by default
+   * for the `textColor` and `backgroundColor` extensions.
+   * @see https://www.tiptap.dev/api/marks/text-style
+   */
+  const TextStyle = Mark.create({
+      name: 'textStyle',
+      priority: 101,
+      addOptions() {
+          return {
+              HTMLAttributes: {},
+          };
+      },
+      parseHTML() {
+          return [
+              {
+                  tag: 'span',
+                  getAttrs: element => {
+                      const hasStyles = element.hasAttribute('style');
+                      if (!hasStyles) {
+                          return false;
+                      }
+                      return {};
+                  },
+              },
+          ];
+      },
+      renderHTML({ HTMLAttributes }) {
+          return ['span', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+      },
+      addCommands() {
+          return {
+              removeEmptyTextStyle: () => ({ state, commands }) => {
+                  const attributes = getMarkAttributes(state, this.type);
+                  const hasStyles = Object.entries(attributes).some(([, value]) => !!value);
+                  if (hasStyles) {
+                      return true;
+                  }
+                  return commands.unsetMark(this.name);
+              },
+          };
+      },
+  });
+
+  /**
+   * This extension allows you to count the characters and words of your document.
+   * @see https://tiptap.dev/api/extensions/character-count
+   */
+  const CharacterCount = Extension.create({
+      name: 'characterCount',
+      addOptions() {
+          return {
+              limit: null,
+              mode: 'textSize',
+          };
+      },
+      addStorage() {
+          return {
+              characters: () => 0,
+              words: () => 0,
+          };
+      },
+      onBeforeCreate() {
+          this.storage.characters = options => {
+              const node = (options === null || options === void 0 ? void 0 : options.node) || this.editor.state.doc;
+              const mode = (options === null || options === void 0 ? void 0 : options.mode) || this.options.mode;
+              if (mode === 'textSize') {
+                  const text = node.textBetween(0, node.content.size, undefined, ' ');
+                  return text.length;
+              }
+              return node.nodeSize;
+          };
+          this.storage.words = options => {
+              const node = (options === null || options === void 0 ? void 0 : options.node) || this.editor.state.doc;
+              const text = node.textBetween(0, node.content.size, ' ', ' ');
+              const words = text.split(' ').filter(word => word !== '');
+              return words.length;
+          };
+      },
+      addProseMirrorPlugins() {
+          return [
+              new Plugin({
+                  key: new PluginKey('characterCount'),
+                  filterTransaction: (transaction, state) => {
+                      const limit = this.options.limit;
+                      // Nothing has changed or no limit is defined. Ignore it.
+                      if (!transaction.docChanged || limit === 0 || limit === null || limit === undefined) {
+                          return true;
+                      }
+                      const oldSize = this.storage.characters({ node: state.doc });
+                      const newSize = this.storage.characters({ node: transaction.doc });
+                      // Everything is in the limit. Good.
+                      if (newSize <= limit) {
+                          return true;
+                      }
+                      // The limit has already been exceeded but will be reduced.
+                      if (oldSize > limit && newSize > limit && newSize <= oldSize) {
+                          return true;
+                      }
+                      // The limit has already been exceeded and will be increased further.
+                      if (oldSize > limit && newSize > limit && newSize > oldSize) {
+                          return false;
+                      }
+                      const isPaste = transaction.getMeta('paste');
+                      // Block all exceeding transactions that were not pasted.
+                      if (!isPaste) {
+                          return false;
+                      }
+                      // For pasted content, we try to remove the exceeding content.
+                      const pos = transaction.selection.$head.pos;
+                      const over = newSize - limit;
+                      const from = pos - over;
+                      const to = pos;
+                      // It’s probably a bad idea to mutate transactions within `filterTransaction`
+                      // but for now this is working fine.
+                      transaction.deleteRange(from, to);
+                      // In some situations, the limit will continue to be exceeded after trimming.
+                      // This happens e.g. when truncating within a complex node (e.g. table)
+                      // and ProseMirror has to close this node again.
+                      // If this is the case, we prevent the transaction completely.
+                      const updatedSize = this.storage.characters({ node: transaction.doc });
+                      if (updatedSize > limit) {
+                          return false;
+                      }
+                      return true;
+                  },
+              }),
+          ];
+      },
+  });
+
+  /**
+   * This extension allows you to color your text.
+   * @see https://tiptap.dev/api/extensions/color
+   */
+  const Color = Extension.create({
+      name: 'color',
+      addOptions() {
+          return {
+              types: ['textStyle'],
+          };
+      },
+      addGlobalAttributes() {
+          return [
+              {
+                  types: this.options.types,
+                  attributes: {
+                      color: {
+                          default: null,
+                          parseHTML: element => { var _a; return (_a = element.style.color) === null || _a === void 0 ? void 0 : _a.replace(/['"]+/g, ''); },
+                          renderHTML: attributes => {
+                              if (!attributes.color) {
+                                  return {};
+                              }
+                              return {
+                                  style: `color: ${attributes.color}`,
+                              };
+                          },
+                      },
+                  },
+              },
+          ];
+      },
+      addCommands() {
+          return {
+              setColor: color => ({ chain }) => {
+                  return chain()
+                      .setMark('textStyle', { color })
+                      .run();
+              },
+              unsetColor: () => ({ chain }) => {
+                  return chain()
+                      .setMark('textStyle', { color: null })
+                      .removeEmptyTextStyle()
+                      .run();
+              },
+          };
+      },
+  });
+
+  /**
+   * This extension allows you to align text.
+   * @see https://www.tiptap.dev/api/extensions/text-align
+   */
+  const TextAlign = Extension.create({
+      name: 'textAlign',
+      addOptions() {
+          return {
+              types: [],
+              alignments: ['left', 'center', 'right', 'justify'],
+              defaultAlignment: 'left',
+          };
+      },
+      addGlobalAttributes() {
+          return [
+              {
+                  types: this.options.types,
+                  attributes: {
+                      textAlign: {
+                          default: this.options.defaultAlignment,
+                          parseHTML: element => {
+                              const alignment = element.style.textAlign || this.options.defaultAlignment;
+                              return this.options.alignments.includes(alignment) ? alignment : this.options.defaultAlignment;
+                          },
+                          renderHTML: attributes => {
+                              if (attributes.textAlign === this.options.defaultAlignment) {
+                                  return {};
+                              }
+                              return { style: `text-align: ${attributes.textAlign}` };
+                          },
+                      },
+                  },
+              },
+          ];
+      },
+      addCommands() {
+          return {
+              setTextAlign: (alignment) => ({ commands }) => {
+                  if (!this.options.alignments.includes(alignment)) {
+                      return false;
+                  }
+                  return this.options.types
+                      .map(type => commands.updateAttributes(type, { textAlign: alignment }))
+                      .every(response => response);
+              },
+              unsetTextAlign: () => ({ commands }) => {
+                  return this.options.types
+                      .map(type => commands.resetAttributes(type, 'textAlign'))
+                      .every(response => response);
+              },
+          };
+      },
+      addKeyboardShortcuts() {
+          return {
+              'Mod-Shift-l': () => this.editor.commands.setTextAlign('left'),
+              'Mod-Shift-e': () => this.editor.commands.setTextAlign('center'),
+              'Mod-Shift-r': () => this.editor.commands.setTextAlign('right'),
+              'Mod-Shift-j': () => this.editor.commands.setTextAlign('justify'),
+          };
       },
   });
 
   const start = element => {
       return new Editor({
         element: element,
-        extensions: [StarterKit],
+        extensions: [StarterKit, CodeBlockLowlight, Heading, Image, Table, TableCell, TableHeader, TableRow, TaskItem, TaskList, Mention, Youtube, Highlight, Link, Underline, TextStyle, CharacterCount, Color, TextAlign, History],
         content: '<p>Hello World!</p>',
       })
   };
