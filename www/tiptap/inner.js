@@ -20,6 +20,46 @@ define([
     ) {
     const Tiptap = window.Tiptap;
 
+    const createToolbar = function ($toolbar, editor) {
+        const actions = [
+            {
+                icon: 'fa-bold',
+                run: () => editor.chain().focus().toggleBold().run(),
+            },
+        ];
+
+        // var onClick = function () {
+        //     var type = $(this).attr('data-type');
+        //     var texts = editor.getSelections();
+        //     if (actions[type].action) {
+        //         return actions[type].action();
+        //     }
+        //     var newTexts = texts.map(function (str) {
+        //         str = str || Messages.mdToolbar_defaultText;
+        //         if (actions[type].apply) {
+        //             return actions[type].apply(str);
+        //         }
+        //         return actions[type].expr.replace('{0}', str);
+        //     });
+        //     editor.replaceSelections(newTexts, 'around');
+        //     editor.focus();
+        // };
+
+        const createOnClick = (action) => {
+            return () => {
+                action.run();
+            };
+        }
+
+        for (var action of actions) {
+            let $b = $('<button>', {
+                'class': 'pure-button fa ' + action.icon,
+            }).click(createOnClick(action));
+            $toolbar.append($b);
+        }
+
+        return $toolbar;
+    };
 
     // This is the main initialization loop
     let onFrameworkReady = function (framework) {
@@ -71,8 +111,10 @@ define([
         framework.onReady(function () {
             // Document is ready, you can initialize your app
             console.log('Document is ready:', content);
-            let element = document.querySelector('.cp-tiptap-element');
-            let editor = Tiptap.start(element);
+            const element = document.querySelector('.cp-tiptap-element');
+            const editor = Tiptap.start(element);
+
+            createToolbar($('#cp-tiptap-toolbar'));
             console.error(editor);
         });
 
