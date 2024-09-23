@@ -20236,8 +20236,16 @@ img.ProseMirror-separator {
       },
   });
 
-  window.Tiptap = window.Tiptap | {};
-  window.Tiptap.Editor = Editor;
-  window.Tiptap.StarterKit = StarterKit;
+  const start = element => {
+      return new Editor({
+        element: element,
+        extensions: [StarterKit],
+        content: '<p>Hello World!</p>',
+      })
+  };
+
+  window.Tiptap = {
+      start
+  };
 
 })();

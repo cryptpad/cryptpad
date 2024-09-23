@@ -71,11 +71,9 @@ define([
         framework.onReady(function () {
             // Document is ready, you can initialize your app
             console.log('Document is ready:', content);
-            const editor = new Tiptap.Editor({
-              element: document.querySelector('.cp-tiptap-element'),
-              extensions: [Tiptap.StarterKit],
-              content: '<p>Hello World!</p>',
-            })
+            let element = document.querySelector('.cp-tiptap-element');
+            let editor = Tiptap.start(element);
+            console.error(editor);
         });
 
         // Start the framework
