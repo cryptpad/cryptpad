@@ -8,7 +8,10 @@ define([
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
     '/common/hyperscript.js',
+    '/common/common-util.js',
     '/tiptap/tiptap.bundle.js',
+    '/common/cursor.js',
+    '/common/TypingTests.js',
     'less!/tiptap/app-tiptap.less'
     /* Here you can add your own javascript or css to load */
 ], function (
@@ -16,14 +19,19 @@ define([
     Framework,
     Messages,
     h,
+    Util,
     TiptapUnused,
+    Cursor,
+    TypingTest
     ) {
     const Tiptap = window.Tiptap;
+    const onSelectionChange = Util.mkEvent();
 
     const createToolbar = function ($toolbar, editor) {
         const actions = [
             {
                 icon: 'fa-bold',
+                check: () => editor.isActive('bold'),
                 run: () => editor.chain().focus().toggleBold().run(),
             },
             {
@@ -205,7 +213,7 @@ define([
                 h('i.fa.' + action.icon)
             ])).click(createOnClick(action));
 
-            $toolbar.append($b);
+            action.$el = $b;
         }
 
         return $toolbar;
@@ -216,21 +224,32 @@ define([
         let $container = $('#cp-app-tiptap-editor');
 
         let $content = $(h('div#cp-tiptap-content')).appendTo($container);
-        let $tiptapElement = $(h('div.cp-tiptap-element'));
-        $content.append($tiptapElement);
-        let oldVal = '';
-        $tiptapElement.on('change keyup paste', function () {
-            var currentVal = $tiptapElement.val();
-            if (currentVal === oldVal) { return; } // Nothing to do
-            oldVal = currentVal;
-            framework.localChange();
+        let $tiptapElement = $(h('div.cp-tiptap-element')).appendTo($content);
+        let element = document.querySelector('.cp-tiptap-element');
+        let editor = Tiptap.start(element);
+        let inner = document.querySelector('.ProseMirror');
+        document.addEventListener('selectionchange', function () {
+            setTimeout(onSelectionChange.fire);
         });
+        let cursor = Cursor(inner);
+        // let oldVal = '';
+        // $tiptapElement.on('change keyup paste', function () {
+        //     var currentVal = $tiptapElement.val();
+        //     if (currentVal === oldVal) { return; } // Nothing to do
+        //     oldVal = currentVal;
+        //     framework.localChange();
+        // });
+
         let getContent = () => {
-            return $tiptapElement.val();
+            return editor.getJSON();
         };
         let setContent = (value) => {
-            return $tiptapElement.val(value);
+            return editor.commands.setContent(value);
         };
+
+        editor.on('update', () => {
+            framework.localChange();
+        });
 
         let content = {};
 
@@ -247,7 +266,18 @@ define([
         framework.onContentUpdate(function (newContent) {
             console.log('New content received from others', newContent.content);
             content = newContent.content;
+
+            // Get cursor position
+            cursor.offsetUpdate();
+            var oldText = inner.outerHTML;
+
+            // Apply the changes
             setContent(content);
+
+            // Restore cursor position
+            var newText = inner.outerHTML;
+            var ops = ChainPad.Diff.diff(oldText, newText);
+            cursor.restoreOffset(ops);
         });
 
         framework.setContentGetter(function () {
@@ -261,11 +291,17 @@ define([
         framework.onReady(function () {
             // Document is ready, you can initialize your app
             console.log('Document is ready:', content);
-            const element = document.querySelector('.cp-tiptap-element');
-            const editor = Tiptap.start(element);
 
             createToolbar($('#cp-tiptap-toolbar'), editor);
         });
+
+        window.easyTest = () => {
+            cursor.update();
+            let start = cursor.Range.start;
+            let test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
+            framework.localChange();
+            return test;
+        }
 
         // Start the framework
         framework.start();
