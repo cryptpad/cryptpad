@@ -23,20 +23,20 @@ define([
         let $container = $('#cp-app-tiptap-editor');
 
         let $content = $(h('div#cp-tiptap-content')).appendTo($container);
-        let $textarea = $(h('textarea'));
-        $content.append($textarea);
+        let $tiptapElement = $(h('div.cp-tiptap-element'));
+        $content.append($tiptapElement);
         let oldVal = '';
-        $textarea.on('change keyup paste', function () {
-            var currentVal = $textarea.val();
+        $tiptapElement.on('change keyup paste', function () {
+            var currentVal = $tiptapElement.val();
             if (currentVal === oldVal) { return; } // Nothing to do
             oldVal = currentVal;
             framework.localChange();
         });
         let getContent = () => {
-            return $textarea.val();
+            return $tiptapElement.val();
         };
         let setContent = (value) => {
-            return $textarea.val(value);
+            return $tiptapElement.val(value);
         };
 
         let content = {};
