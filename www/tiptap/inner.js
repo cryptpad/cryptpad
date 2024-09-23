@@ -214,6 +214,7 @@ define([
             ])).click(createOnClick(action));
 
             action.$el = $b;
+            $toolbar.append($b);
         }
 
         return $toolbar;
