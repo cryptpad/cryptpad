@@ -46,30 +46,28 @@
 
     #cp-app-tiptap-editor {
         display: flex;
+        height: 100%;
         flex: 1;
+        overflow: hidden;
 
         #cp-tiptap-content {
             flex: 1;
             border: 1px solid @cp_sidebar-left-item-bg;
-            .cp-tiptap-element {
-                height: 100%;
-                .ProseMirror {
-                    padding: 8px 10px;
-                    height: 100%;
-                }
-            }
-        }
-    }
-
-    #cp-app-tiptap-editor {
-        display: flex;
-        #cp-tiptap-content {
-            flex: 1;
             font-size: 16px;
             line-height: 1.6;
             word-wrap: break-word;
             margin: 0;
             padding: 20px;
+            .cp-tiptap-element {
+                height: 100%;
+                display: flex;
+                .ProseMirror {
+                    padding: 8px 10px;
+                    height: 100%;
+                    overflow: auto;
+                    flex: 1;
+                }
+            }
         }
     }
 }
