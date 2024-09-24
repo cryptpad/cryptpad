@@ -17,12 +17,11 @@ customize
 messages.log
 www/scratch
 data
-pins/
-blob/
-block/
-blobstage/
-block/
-logs/
+pins
+blob
+block
+blobstage
+logs
 privileged.conf
 config/config.js
 config/sso.js
