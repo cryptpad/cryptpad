@@ -26460,7 +26460,7 @@ img.ProseMirror-separator {
       return new Editor({
         element: element,
         extensions: [StarterKit, Image, Table, TableCell, TableHeader, TableRow, TaskItem, TaskList, Mention, Youtube, Highlight, Link, Underline, TextStyle, CharacterCount, Color, TextAlign],
-        content: '<p>Hello World!</p>',
+        content: '',
       })
   };
 
