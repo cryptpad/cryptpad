@@ -49,28 +49,33 @@ define([
                 check: () => editor.isActive('code'),
                 run: () => editor.chain().focus().toggleCode().run(),
             },
-            /*
             {
                 icon: 'fa-underline',
                 check: () => editor.isActive('underline'),
-                run: () => editor.chain().focus().toggleCode().run(),
+                run: () => editor.chain().focus().toggleUnderline().run(),
             },
             {
-                icon: 'fa-table',
-                run: () => editor.chain().focus().toggleCode().run(),
+                icon: 'fa-header',
+                check: () => editor.isActive('heading'),
+                run: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
             },
             {
                 icon: 'fa-list',
-                run: () => editor.chain().focus().toggleCode().run(),
+                check: () => editor.isActive('bulletList'),
+                run: () => editor.chain().focus().toggleBulletList().run(),
             },
             {
                 icon: 'fa-list-ol',
-                run: () => editor.chain().focus().toggleCode().run(),
+                check: () => editor.isActive('orderedList'),
+                run: () => editor.chain().focus().toggleOrderedList().run(),
             },
+            /*
             {
                 icon: 'fa-image',
-                run: () => editor.chain().focus().toggleCode().run(),
-            },*/
+                check: () => editor.isActive('image'),
+                run: () => editor.chain().focus().setImage().run(),
+            },
+            */
             //         <button
             //           onClick={() => editor.chain().focus().toggleCode().run()}
             //           disabled={
