@@ -41,7 +41,7 @@ define([
             },
             {
                 icon: 'fa-strikethrough',
-                check: () => editor.isActive('strikethrough'),
+                check: () => editor.isActive('strike'),
                 run: () => editor.chain().focus().toggleStrike().run(),
             },
             {
@@ -49,6 +49,7 @@ define([
                 check: () => editor.isActive('code'),
                 run: () => editor.chain().focus().toggleCode().run(),
             },
+            /*
             {
                 icon: 'fa-underline',
                 check: () => editor.isActive('underline'),
@@ -69,7 +70,7 @@ define([
             {
                 icon: 'fa-image',
                 run: () => editor.chain().focus().toggleCode().run(),
-            },
+            },*/
             //         <button
             //           onClick={() => editor.chain().focus().toggleCode().run()}
             //           disabled={
