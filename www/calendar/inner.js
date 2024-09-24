@@ -852,7 +852,7 @@ define([
             var totalCalendars = myCalendars.length + Object.keys(privateData.teams).reduce((sum, teamId) => {
                 return sum + filter(teamId).length;
             }, 0);
-            var $contentContainer = h('div.cp-calendar-content').appendTo($calendars);
+            var $contentContainer = $(h('div.cp-calendar-content')).appendTo($calendars);
             if (myCalendars.length) {
                 var user = metadataMgr.getUserData();
                 var avatar = h('span.cp-avatar');
@@ -870,10 +870,11 @@ define([
             }
 
             // Add the new calendar button
-            var $newContainer = h('div.cp-calendar-entry.cp-ghost').appendTo($contentContainer);
+            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($contentContainer);
             var newButton = h('button', [
                 h('i.fa.fa-calendar-plus-o'),
-                h('span', Messages.calendar_new)
+                h('span', Messages.calendar_new),
+                h('span')
             ]);
             $(newButton).click(() => {
                 editCalendar();
@@ -901,7 +902,8 @@ define([
                 var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
                 var showCalendarsBtn = h('button', [
                     h('i.fa.fa-eye'),
-                    h('span', Messages.calendar_show)
+                    h('span.cp-calendar-title', Messages.calendar_show),
+                    h('span')
                 ]);
                 var visible = false;  // Initially hidden
                 $(showCalendarsBtn).click(() => {
