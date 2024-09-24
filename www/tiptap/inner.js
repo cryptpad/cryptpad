@@ -36,18 +36,22 @@ define([
             },
             {
                 icon: 'fa-italic',
+                check: () => editor.isActive('italic'),
                 run: () => editor.chain().focus().toggleItalic().run(),
             },
             {
                 icon: 'fa-strikethrough',
+                check: () => editor.isActive('strikethrough'),
                 run: () => editor.chain().focus().toggleStrike().run(),
             },
             {
                 icon: 'fa-code',
+                check: () => editor.isActive('code'),
                 run: () => editor.chain().focus().toggleCode().run(),
             },
             {
                 icon: 'fa-underline',
+                check: () => editor.isActive('underline'),
                 run: () => editor.chain().focus().toggleCode().run(),
             },
             {
@@ -237,6 +241,15 @@ define([
             $toolbar.append($b);
         }
 
+        const setActive = ($button, state) => {
+            $button.toggleClass('cp-active', state);
+        };
+        onSelectionChange.reg(function () {
+            actions.forEach(action => {
+                if (typeof (action.check) !== "function") { return; }
+                setActive(action.$el, action.check());
+            });
+        });
         return $toolbar;
     };
 
