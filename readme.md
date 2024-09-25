@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # CryptPad
 
-CryptPad is a collaboration suite that is end-to-end-encrypted and open-source. It is built to enable collaboration, synchronizing changes to documents in real time. Because all data are encrypted, in the eventuality of a breach, attackers have no way of seeing the stored content. Moreover, if the administrators don’t alter the code, they and the service also cannot infer any piece of information about the users' content.
+CryptPad is a collaboration suite that is end-to-end encrypted and open-source. It is designed to facilitate collaboration by synchronizing changes to documents in real time. Since all the user data is encrypted, in the event of a breach, attackers have no way of accessing the stored content. Furthermore, if the administrators do not modify the code, they and the service also cannot access any information about the users' content.
 
 ![Drive screenshot](screenshot.png "preview of the CryptDrive")
 
@@ -20,15 +20,16 @@ Our [developer guide](https://docs.cryptpad.org/en/dev_guide/setup.html) provide
 
 ## For production
 
-Configuring CryptPad for production requires a little more work, but the process is described in our [admin installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html). From there you can find more information about customization and maintenance.
+Configuring CryptPad for production requires additional steps. Refer to our [admin installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html) for production-related instructions, customization, and maintenance details.
 
 ## Current version
 
-The most recent version and all past release notes can be found on the [releases page on GitHub](https://github.com/cryptpad/cryptpad/releases/).
+The most recent version and all past release notes can be found on [releases page on GitHub](https://github.com/cryptpad/cryptpad/releases/).
 
 ## Setup using Docker
 
-You can find `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files at the root of this repository. We also publish every release on [Docker Hub](https://hub.docker.com/r/cryptpad/cryptpad) as AMD64 & ARM64 official images. 
+You can find the `Dockerfile`, `docker-compose.yml` and `docker-entrypoint.sh` files at the root of this repository. We also publish every release on [Docker Hub](https://hub.docker.com/r/cryptpad/cryptpad) as AMD64 & ARM64 official images. 
+
 
 Previously, Docker images were community maintained, had their own repository and weren't official supported. We changed that with v5.4.0 during July 2023. Thanks to @promasu for all the work on the community images.
 
