@@ -4,13 +4,175 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 2024.6.1
+
+## Goals
+
+This is a bugfix release to address issues that were reported by Cryptpad.fr users. We took the opportunity to update the translations with some new languages contributed by the community.
+
+## Improvements
+
+- Translations update from CryptPad Translations [#1575](https://github.com/cryptpad/cryptpad/pull/1575)
+  - Added: Español cubano, اَلْعَرَبِيَّةُ Arabic, Svenska
+  - Removed some languages without enough coverage
+    - Greek (16%)
+    - Romanian (36%)
+
+## Fixes
+- Calendar events sometimes don’t appear when created [#1551](https://github.com/cryptpad/cryptpad/issues/1551) fixed by [072dba2](https://github.com/cryptpad/cryptpad/commit/072dba254e3c2be32cd6b261d84510909deb713f)
+- Revert the new method of counting registered users in the admin panel [4544be6](https://github.com/cryptpad/cryptpad/commit/4544be6b4d9fa7291b19cb366f7dd492dfe07340)
+- Fix broken OnlyOffice Document [#1572](https://github.com/cryptpad/cryptpad/issues/1572)
+- Fix printing in Code documents [#1557](https://github.com/cryptpad/cryptpad/pull/1557) [#1478](https://github.com/cryptpad/cryptpad/pull/1478) 
+- Fix OnlyOffice undefined functions [#1550](https://github.com/cryptpad/cryptpad/pull/1550)
+- Fix keyboard operation of confirm modals [#1576](https://github.com/cryptpad/cryptpad/issues/1576)
+  - Pressing Enter on the "Cancel" button triggered the "OK" button instead
+
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2024.6.0` please read the upgrade notes of all versions between yours and `2024.6.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.6.1
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
+# 2024.6.0
+
+## Goals
+
+This release introduces a new onboarding flow to guide administrators through the setup of an instance. After creating the first admin account, 3 screens guide them through the customization of the instance title, logo, accent color, available applications, and security features. We also include a new language, some fixes on accessibility, deployment, OnlyOffice and more.
+
+## Features
+
+- Onboarding screens & app configuration [#1513](https://github.com/cryptpad/cryptpad/pull/1513)
+- Bahasa Indonesia is a new available language [fe78b6a](https://github.com/cryptpad/cryptpad/commit/fe78b6ab1dc76ce9eb8d5361c309db8e92117fa8)
+  - Thanks to our [Weblate](https://weblate.cryptpad.org) contributors who made that happen!
+
+## Improvements
+
+- Improve plugins API [#1511](https://github.com/cryptpad/cryptpad/pull/1511)
+
+## Fixes
+
+- Accessibility
+  - Kanban accessibility fixes [#1488](https://github.com/cryptpad/cryptpad/pull/1488)
+  - Fix modal focus [#1483](https://github.com/cryptpad/cryptpad/pull/1483)
+  - Fix locked focus on text editors [#1473](https://github.com/cryptpad/cryptpad/pull/1473)
+  - Frames must have accessible names [#1123](https://github.com/cryptpad/cryptpad/issues/1123)
+  - Focus trapped on notifications menu [#1430](https://github.com/cryptpad/cryptpad/issues/1430)
+  - Add page language [#1125](https://github.com/cryptpad/cryptpad/issues/1125)
+  - Can not open folder via "▼" -> "Open".  [#1089](https://github.com/cryptpad/cryptpad/issues/1089)
+  - Images must have alternate text [#1449](https://github.com/cryptpad/cryptpad/issues/1449)
+- OnlyOffice
+  - Remove x2t from the CryptPad repo [#1454](https://github.com/cryptpad/cryptpad/issues/1454)
+  - Other OnlyOffice users are shown as "Guest" [#1446](https://github.com/cryptpad/cryptpad/issues/1446)
+  - Document PDF exports are empty when remote embedding is disabled  [#1472](https://github.com/cryptpad/cryptpad/issues/1472)
+  - Sometimes images of a presentation are not exported to PDF [#1500](https://github.com/cryptpad/cryptpad/issues/1500)
+  - Automatic upgrade of an OnlyOffice document fails sometimes [#1534](https://github.com/cryptpad/cryptpad/issues/1534)
+  - Import/Export is broken [#1532](https://github.com/cryptpad/cryptpad/issues/1532)
+  - Print is broken [#1533](https://github.com/cryptpad/cryptpad/issues/1533)
+- Deployment / Hosting
+  - Upgrade CryptPad version in docker-compose.yml [#1529](https://github.com/cryptpad/cryptpad/pull/1529)
+  - Optimize HTTPd example config [#1498](https://github.com/cryptpad/cryptpad/pull/1498)
+  - Tidy up HTTPd config [#1527](https://github.com/cryptpad/cryptpad/pull/1527)
+  - Clarify sandbox `httpSafePort` use in `config.example.js` [#1518](https://github.com/cryptpad/cryptpad/pull/1518)
+  - Switch to new `http2` Nginx option [#1516](https://github.com/cryptpad/cryptpad/pull/1516)
+  - Server fixes and aggregated stats [#1509](https://github.com/cryptpad/cryptpad/pull/1509)
+  - Create the block folder at boot [#911](https://github.com/cryptpad/cryptpad/pull/911)
+  - Remove obsolete `version` from `docker-compose.yml` [2e716eb](https://github.com/cryptpad/cryptpad/commit/2e716eb4e39fb835f95a1fa1a340e01142d11b1c)
+- Other
+  - Unsharp the corners when hovering the dismiss button on notification drop-down menu [#1466](https://github.com/cryptpad/cryptpad/pull/1466)
+  - Fix contextual menu `Open` on anonymous drive [#1464](https://github.com/cryptpad/cryptpad/pull/1464)
+  - Tighten eslint rules [#1456](https://github.com/cryptpad/cryptpad/pull/1456)
+  - Remove mediatag subfolder [#844](https://github.com/cryptpad/cryptpad/pull/844)
+
+## Dependencies
+
+- Upgrade CryptPad version in `package.json`, update description as well [#1530](https://github.com/cryptpad/cryptpad/pull/1530)
+- Remove deprecated and unmaintained `lesshint` library and use `stylelint` and its `stylelint-less` plugin instead
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2024.3.1` please read the upgrade notes of all versions between yours and `2024.3.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.6.0
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+# 2024.3.1
+
+## Goals
+This minor release introduces a workaround to recover corrupted OnlyOffice documents alongside other fixes, with some improvements.
+
+## Fixes
+- Workarounds for missing OnlyOffice methods: [#1492](https://github.com/cryptpad/cryptpad/pull/1492)
+- Fix HTTP server issue with NodeJs >= v20.13.0: [4483b84](https://github.com/cryptpad/cryptpad/commit/4483b848ff2ba23176cb05dacf073f3e0581ba7b)
+- Fix merge issues with `package.json`: [7f45d59](https://github.com/cryptpad/cryptpad/commit/7f45d598cbf230002863bbd84004c38252b97031)
+- Fix Docker ports: [#1485](https://github.com/cryptpad/cryptpad/pull/1485)
+- Change _inactive_ to _archived_ in `config.example.js` file: [#1474](https://github.com/cryptpad/cryptpad/pull/1474)
+
+## Improvements
+- New translations from our Weblate contributors: [#1491](https://github.com/cryptpad/cryptpad/pull/1491)
+  - Polish
+  - French
+  - Bulgarian
+  - Hungarian
+  - Basque
+- Optimize default Nginx example config: [#1486](https://github.com/cryptpad/cryptpad/pull/1486)
+- Add `.mjs` support in HTTPd example config: [#1471](https://github.com/cryptpad/cryptpad/pull/1471)
+
+## Upgrade notes
+If you are upgrading from a version older than `2024.3.0` please read the upgrade notes of all versions between yours and `2024.3.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.3.1
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
 # 2024.3.0
 
 ## Goals
 
-This release is aimed at instance administrators with new features and changes in the way CryptPad is installed. This marks a major release and we are also taking the opportunity to change the way we number CryptPad versions, moving to a date-based format (from semver to [calver](https://calver.org/)). For full details on the reasons behind this change please read [our March 2024 status blog post](https://blog.cryptpad.org/2024/03/29/status-2024-03/). The short version is that this is our Spring 2024 release with number `2024.3.0` and that we are aiming for the following schedule going forward, sticking to the `YYYY.MM.micro` format: 
+This release is aimed at instance administrators with new features and changes in the way CryptPad is installed. This marks a major release and we are also taking the opportunity to change the way we number CryptPad versions, moving to a date-based format (from semver to [calver](https://calver.org/)). For full details on the reasons behind this change please read [our March 2024 status blog post](https://blog.cryptpad.org/2024/03/29/status-2024-03/). The short version is that this is our Spring 2024 release with number `2024.3.0` and that we are aiming for the following schedule going forward, sticking to the `YYYY.MM.micro` format:
 
-- 💐 Spring `2024.3.0`  
+- 💐 Spring `2024.3.0`
 - 🌻 Summer `2024.6.0` end June 2024
 - 🍁 Autumn `2024.9.0` end September 2024
 - ❄️ Winter `2024.12.0` end December 2024
@@ -60,7 +222,7 @@ Starting with this version, OnlyOffice applications (Sheets, Document, Presentat
 ```
 
 For Docker users that want to use OnlyOffice, please read our updated [Docker installation guide](https://docs.cryptpad.org/en/admin_guide/installation.html#admin-docker-install).
- 
+
 
 ### Others
 
@@ -125,7 +287,7 @@ This release includes some features that could not be included into 5.6.0, namel
   - Kanban item export [#1360](https://github.com/cryptpad/cryptpad/pull/1360)
 - Calendar
   - Calendar datepicker on mobile now easily toggled  [#1368](https://github.com/cryptpad/cryptpad/pull/1368)
-  - Behaviour change: keep the offset between start and end date constant when updating the start date (otherwise it was possible to create events that end before even starting that thus don’t appear in the calendar) 
+  - Behaviour change: keep the offset between start and end date constant when updating the start date (otherwise it was possible to create events that end before even starting that thus don’t appear in the calendar)
   - Calendar yearly recurring event - wrong month name [#1398](https://github.com/cryptpad/cryptpad/issues/1398)
 - Admin
   - Encoding issues in broadcast messages [#1379](https://github.com/cryptpad/cryptpad/issues/1379)
@@ -171,18 +333,18 @@ index cb827b4b0..f2b32e959 100644
 --- a/docs/example-advanced.nginx.conf
 +++ b/docs/example-advanced.nginx.conf
 @@ -14,6 +14,8 @@ server {
- 
+
      # Let's Encrypt webroot
      include letsencrypt-webroot;
 +    # Include mime.types to be able to support .mjs files (see "types" below)
 +    include mime.types;
- 
+
      # CryptPad serves static assets over these two domains.
      # `main_domain` is what users will enter in their address bar.
 @@ -166,11 +168,6 @@ server {
      # We've applied other sandboxing techniques to mitigate the risk of running WebAssembly in this privileged scope
      if ($uri ~ ^\/unsafeiframe\/inner\.html.*$) { set $unsafe 1; }
- 
+
 -    # draw.io uses inline script tags in it's index.html. The hashes are added here.
 -    if ($uri ~ ^\/components\/drawio\/src\/main\/webapp\/index.html.*$) {
 -        set $scriptSrc "'self' 'sha256-dLMFD7ijAw6AVaqecS7kbPcFFzkxQ+yeZSsKpOdLxps=' 'sha256-6g514VrT/cZFZltSaKxIVNFF46+MFaTSDTPB8WfYK+c=' resource: https://${main_domain}";
@@ -194,7 +356,7 @@ index cb827b4b0..f2b32e959 100644
 @@ -179,6 +176,11 @@ server {
      # Finally, set all the rules you composed above.
      add_header Content-Security-Policy "default-src 'none'; child-src $childSrc; worker-src $workerSrc; media-src $mediaSrc; style-src $styleSrc; script-src $scriptSrc; connect-src $connectSrc; font-src $fontSrc; img-src $imgSrc; frame-src $frameSrc; frame-ancestors $frameAncestors";
- 
+
 +    # Add support for .mjs files used by pdfjs
 +    types {
 +        application/javascript mjs;
@@ -225,15 +387,15 @@ This release introduces support for integrating CryptPad instances with Single-S
 ## Improvements
 
 - Accessibility of toolbars and some drop-down menus [#1290](https://github.com/cryptpad/cryptpad/pull/1290)
-  -  "+ New" drop-down menu in Drive and Team Drive #1191 
-  -  New `Ctrl + e` modal #1192 
-  -  Code contact request notifications as headings #1197 
-  -  DOM order of toolbar #1198 
-  -  Notifications menu not accessible via Keyboard #1201 
-  -  Sidebar "tabs" not accessible via keyboard #1203 
-  -  Implement keyboard navigation of toolbar menus #1209 
-  -  CryptDrive page needs a logical tab order #1151 
-  -  Elements not accessible using the keyboard #1162 
+  -  "+ New" drop-down menu in Drive and Team Drive #1191
+  -  New `Ctrl + e` modal #1192
+  -  Code contact request notifications as headings #1197
+  -  DOM order of toolbar #1198
+  -  Notifications menu not accessible via Keyboard #1201
+  -  Sidebar "tabs" not accessible via keyboard #1203
+  -  Implement keyboard navigation of toolbar menus #1209
+  -  CryptDrive page needs a logical tab order #1151
+  -  Elements not accessible using the keyboard #1162
   -  Calendar event modal date-picker is cut-off at some screen resolutions #1280
   -  Visible focus #1206
 - Rich Text
@@ -495,7 +657,7 @@ git checkout 5.4.1
 This release introduces two major new features:
 - New Diagram application
 - 2 factor authentication using time-based one-time passwords (TOTP)
-  
+
 Also included are some improvements, dependency updates, and bug fixes
 
 ## Features
@@ -564,7 +726,7 @@ To upgrade:
 
 ## Goals
 
-This release updates OnlyOffice applications to version 7.1 It improves the Form application and other areas of CryptPad with minor features and bug fixes. 
+This release updates OnlyOffice applications to version 7.1 It improves the Form application and other areas of CryptPad with minor features and bug fixes.
 
 ## Features
 
@@ -607,10 +769,10 @@ This release updates OnlyOffice applications to version 7.1 It improves the Form
   - Send response notifications to all owners
 
 - Rich Text
-  - Fix scroll issues when clicking on the table of contents 
+  - Fix scroll issues when clicking on the table of contents
   - Fix double notification for mention + reply in a comment
 
-- Fix issues with deprecated cache 
+- Fix issues with deprecated cache
 
 - Fix bug that kept certain documents from being "pinned" to the drive. This could lead them to be deleted for inactivity even though they were stored in the drive. Note that storage quotas may increase as a result
 
@@ -630,7 +792,7 @@ git checkout 5.3.0
 
 1. Restart your server
 2. Review your instance's checkup page to ensure that you are passing all tests
-   
+
 # 5.2.1
 
 ## Goals
@@ -680,14 +842,14 @@ This release is focused on addressing long-standing user feedback with new featu
   - New option for form authors/auditors to export responses as JSON (in addition to existing CSV and CryptPad Sheet)
   - Settings have been refactored in a modal with a summary in the main editor view
   - Display fixes for long questions/options in some question types
-  
+
 - Calendar
   - New event settings to repeat periodically
     - quick default patterns (e.g. weekly on Mondays, yearly on December 14th, etc), and custom intervals
     - modify one, future, or all events
     - easily stop repetition from event preview
 
-- Drive 
+- Drive
   - New button to filter the drive view by document type
 
 - Teams
@@ -707,7 +869,7 @@ This release is focused on addressing long-standing user feedback with new featu
 
 To update from `5.1.0` to `5.2.0`:
 
-1. Read the **Nginx** section below to ensure you are using the right version and update your reverse proxy configuration to match the settings in our current `./docs/example.nginx.conf` 
+1. Read the **Nginx** section below to ensure you are using the right version and update your reverse proxy configuration to match the settings in our current `./docs/example.nginx.conf`
 2. Reload nginx
 3. Stop your API server
 4. Fetch the latest code with git
@@ -928,7 +1090,7 @@ The reasons for blocking embedding will be described in the _Features_ section b
 
 We're also recommending a few more updates, but we don't expect that these will stop the service from loading:
 
-* NodeJS `v12.14.0` (which we have recommended for some time) will be considered _End-Of-Life_ as of April 30th. 
+* NodeJS `v12.14.0` (which we have recommended for some time) will be considered _End-Of-Life_ as of April 30th.
   * We recommend updating to [NodeJS v16.14.2](https://nodejs.org/en/download/) via [NVM](https://github.com/nvm-sh/nvm).
   * The API server will check the version of its runtime when it launches. It will print a warning to your server logs and set a public flag in `/api/config` indicating that it should be updated. There is a corresponding test on the checkup page which checks for the presence of this flag for admins that aren't in the habit of reviewing their logs.
 * The recommended NGINX config file also includes some minor changes. You can compare the current version (in `cryptpad/docs/example.nginx.conf`) against your live config with a diff tool. There are also new tests on the checkup page which will identify whether the newly changed headers have been correctly applied.
@@ -1094,25 +1256,25 @@ index 14a3d4fc2..ea21e3ba7 100644
 --- a/docs/example.nginx.conf
 +++ b/docs/example.nginx.conf
 @@ -65,5 +65,5 @@ server {
- 
+
      set $coop '';
 -    if ($uri ~ ^\/(sheet|presentation|doc|convert)\/.*$) { set $coop 'same-origin'; }
 +    #if ($uri ~ ^\/(sheet|presentation|doc|convert)\/.*$) { set $coop 'same-origin'; }
- 
+
      # Enable SharedArrayBuffer in Firefox (for .xlsx export)
 @@ -91,5 +91,5 @@ server {
- 
+
      # connect-src restricts URLs which can be loaded using script interfaces
 -    set $connectSrc "'self' https://${main_domain} ${main_domain} https://${api_domain} blob: wss://${api_domain} ${api_domain} ${files_domain}";
 +    set $connectSrc "'self' https://${main_domain} ${main_domain} https://${api_domain} blob: wss://${api_domain} ${api_domain} ${files_domain} https://${sandbox_domain}";
- 
+
      # fonts can be loaded from data-URLs or the main domain
 @@ -121,8 +121,13 @@ server {
      # they unfortunately still require exceptions to the sandboxing to work correctly.
      if ($uri ~ ^\/(sheet|doc|presentation)\/inner.html.*$) { set $unsafe 1; }
 -    if ($uri ~ ^\/common\/onlyoffice\/.*\/index\.html.*$) { set $unsafe 1; }
 +    if ($uri ~ ^\/common\/onlyoffice\/.*\/.*\.html.*$) { set $unsafe 1; }
- 
+
      # everything except the sandbox domain is a privileged scope, as they might be used to handle keys
      if ($host != $sandbox_domain) { set $unsafe 0; }
 +    # this iframe is an exception. Office file formats are converted outside of the sandboxed scope
@@ -1120,7 +1282,7 @@ index 14a3d4fc2..ea21e3ba7 100644
 +    # the use of some modern APIs that we require when javascript is run in a cross-origin context.
 +    # We've applied other sandboxing techniques to mitigate the risk of running WebAssembly in this privileged scope
 +    if ($uri ~ ^\/unsafeiframe\/inner\.html.*$) { set $unsafe 1; }
- 
+
      # privileged contexts allow a few more rights than unprivileged contexts, though limits are still applied
 ```
 
@@ -1394,15 +1556,15 @@ To update from 4.7.0 to 4.8.0:
 
 ## Goals
 
-Our main goal for this release was to prepare a BETA version of our new forms app, however, it also includes a number of nice bug fixes and minor features.  
+Our main goal for this release was to prepare a BETA version of our new forms app, however, it also includes a number of nice bug fixes and minor features.
 
 ## Update notes
 
-As this release includes a new app you'll want to compare your current NGINX config against our example (`cryptpad/docs/example.nginx.conf`) and update yours to match the updated sections which rewrites URLs to include trailing slashes. We've also introduced a number of new variables to our color scheme which might conflict with customizations you've made to your stylesheets. As always, it's recommended that you test your customizations on a updated non-production instance before deploying.  
+As this release includes a new app you'll want to compare your current NGINX config against our example (`cryptpad/docs/example.nginx.conf`) and update yours to match the updated sections which rewrites URLs to include trailing slashes. We've also introduced a number of new variables to our color scheme which might conflict with customizations you've made to your stylesheets. As always, it's recommended that you test your customizations on a updated non-production instance before deploying.
 
-We've been steadily adding new tests to our recently developed checkup page each time we observe particular types of instance misconfigurations in the wild. Unfortunately, it seems the admins that have the most trouble with instance configuration are those that haven't read the numerous mentions of this page throughout the last few release notes. For that reason we've made it so the server prints a link to this page at launch time if it detects that some important value is left unconfigured.  
+We've been steadily adding new tests to our recently developed checkup page each time we observe particular types of instance misconfigurations in the wild. Unfortunately, it seems the admins that have the most trouble with instance configuration are those that haven't read the numerous mentions of this page throughout the last few release notes. For that reason we've made it so the server prints a link to this page at launch time if it detects that some important value is left unconfigured.
 
-On the topic of instance configuration, admins that have enabled their instance's admin panel may notice that it contains a new "Network" tab. On this pane you may find a button that links to the instance's checkup page to make it even easier to identify configuration problems. You should also notice options for configuring a number of values, some of which could previously only be set by modifying the server's configuration file and restarting.  
+On the topic of instance configuration, admins that have enabled their instance's admin panel may notice that it contains a new "Network" tab. On this pane you may find a button that links to the instance's checkup page to make it even easier to identify configuration problems. You should also notice options for configuring a number of values, some of which could previously only be set by modifying the server's configuration file and restarting.
 
 * One checkbox allows you to opt out of the server telemetry which tells our server that your server exists. This is mostly so that we have a rough idea of how many admins are running CryptPad and what version they have installed. It was clearly documented in the config file, but now it's even easier to opt out if you don't want us to know you exist. In the interest of transparency, everything that is sent to our server as a part of this telemetry is also printed to your application server's logs, so you always check what information has been shared.
 * Another setting opts in to listing your server in public directories. At present there is no public directory of CryptPad instances that are suitable for public use, but we plan to launch one in the coming months. For now this checkbox will serve to inform us how many instance admins are interested in offering their server to the public. This setting will have no effect if you've disabled telemetry as that is how your server informs ours of your preferences. We reserve the right to exclude instances from our listing for _any reason_.
@@ -1410,7 +1572,7 @@ On the topic of instance configuration, admins that have enabled their instance'
 * The option to disable crowdfunding notices in the UI can be disabled via a simple checkbox.
 * Starting with our next release (4.8.0) anyone running 4.7.0 should also notice that a button appears on this pane informing them that an update is available. We regularly fix security flaws and improve general safeguards against them, so if you aren't up to date you might be putting your users' data at risk.
 
-To update from 4.6.0 to 4.7.0:  
+To update from 4.6.0 to 4.7.0:
 
 1. Apply the documented NGINX configuration
 2. Stop your server
@@ -1418,7 +1580,7 @@ To update from 4.6.0 to 4.7.0:
 4. Install the latest dependencies with `bower update` and `npm i`
 5. Restart your server
 
-Please note that the new _Forms_ app depends on an update to our cryptography library. If you omit `bower update` from the upgrade sequence above, the app will not work.  
+Please note that the new _Forms_ app depends on an update to our cryptography library. If you omit `bower update` from the upgrade sequence above, the app will not work.
 
 ## Features
 
@@ -1428,7 +1590,7 @@ Please note that the new _Forms_ app depends on an update to our cryptography li
   * Participants can respond to forms and view responses if these are made public (this can be set by authors).
   * Auditors can view responses, but cannot necessarily add their own answers unless they have the correct participant key.
 
-  This new app addresses many of the shortcomings of our current _Polls_ and vastly expands the feature set. Polls are effectively one of the many question types now available in _Forms_. For this reason we are deprecating the _Polls_ app. It will remain available to view and respond to existing polls, but we discourage the creation of new polls and all future improvements will be focused on _Forms_.  
+  This new app addresses many of the shortcomings of our current _Polls_ and vastly expands the feature set. Polls are effectively one of the many question types now available in _Forms_. For this reason we are deprecating the _Polls_ app. It will remain available to view and respond to existing polls, but we discourage the creation of new polls and all future improvements will be focused on _Forms_.
 
 * In response to a GitHub issue we've added an option to the toolbar's _File_ menu to add the current pad to your drive regardless of whether it is already stored in one of your teams' drives.
 * Likewise, we received some reports that some users found it frustrating that the home page automatically redirected them to their drive when they were logged in. We've disabled this behaviour by default but added an option in the settings page through which you may re-enable the old behaviour. This can be found at the top of the "CryptDrive" pane.
@@ -1450,27 +1612,27 @@ Please note that the new _Forms_ app depends on an update to our cryptography li
 
 ## Goals
 
-Our main goal for this release cycle was to get a strong start on our upcoming _Forms_ app. This is a big job which we didn't expect to finish in the course of a few weeks, so in the meantime we've taken the opportunity to address many minor issues, stabilize the codebase, and implement a number of new tests.  
+Our main goal for this release cycle was to get a strong start on our upcoming _Forms_ app. This is a big job which we didn't expect to finish in the course of a few weeks, so in the meantime we've taken the opportunity to address many minor issues, stabilize the codebase, and implement a number of new tests.
 
 ## Update notes
 
-Over the years the example configuration file has grown to include a large number of parameters. We've seen that this can make it hard to pick out which configuration parameters are important for a newly installed or migrated instance. We're trying to address this by moving more configuration options to the admin panel.  
+Over the years the example configuration file has grown to include a large number of parameters. We've seen that this can make it hard to pick out which configuration parameters are important for a newly installed or migrated instance. We're trying to address this by moving more configuration options to the admin panel.
 
-4.6.0 introduces the ability to generate credentials for your instance's support ticket mailbox and publish the corresponding public key with the push of a button. Previously it was necessary to run a script, copy its value, update the config file, restart the server, and enter the private component of the keypair into an input on the admin panel. The relevant button can be found in the admin panel's _Support_ tab.  
+4.6.0 introduces the ability to generate credentials for your instance's support ticket mailbox and publish the corresponding public key with the push of a button. Previously it was necessary to run a script, copy its value, update the config file, restart the server, and enter the private component of the keypair into an input on the admin panel. The relevant button can be found in the admin panel's _Support_ tab.
 
-We've also introduced the ability to update your _adminEmail_ settings via a field on the _General_ tab of the admin panel. This value is used by the contact page so that your users can contact you (instead of us) in case they encounter any problems when using your instance. Both the `supportMailbox` and `adminEmail` values are distributed by the `/api/config` endpoint which is typically cached by clients. You probably need to use the _Flush cache_ button to ensure that everyone loads the latest value. This button can also found on the _General_ tab.  
+We've also introduced the ability to update your _adminEmail_ settings via a field on the _General_ tab of the admin panel. This value is used by the contact page so that your users can contact you (instead of us) in case they encounter any problems when using your instance. Both the `supportMailbox` and `adminEmail` values are distributed by the `/api/config` endpoint which is typically cached by clients. You probably need to use the _Flush cache_ button to ensure that everyone loads the latest value. This button can also found on the _General_ tab.
 
-One admin reported difficulty customizing their instance because they copy-pasted code from `cryptpad/www/common/application_config_internal.js` directly into `cryptpad/customize/application_config.js`. Unfortunately the internal variable name for the configuration object in the former did not match the value in the latter, so this led to a reference error. We've updated the variable name in the internal configuration file which provides the default options to match the customizable one, making it easier to copy-paste code examples without understanding what it's really doing.  
+One admin reported difficulty customizing their instance because they copy-pasted code from `cryptpad/www/common/application_config_internal.js` directly into `cryptpad/customize/application_config.js`. Unfortunately the internal variable name for the configuration object in the former did not match the value in the latter, so this led to a reference error. We've updated the variable name in the internal configuration file which provides the default options to match the customizable one, making it easier to copy-paste code examples without understanding what it's really doing.
 
-We also introduced a new configuration option in `application_config_internal.js` which prevents unregistered users from creating new pads. Add `AppConfig.disableAnonymousPadCreation = true;` to your `customize/application_config.js` to disable anonymous pad creation. If you read the adjacent comment above the default example you'll see that this barrier is only enforced on the client, so it will keep out honest users but won't stop malicious ones from messaging the server directly.  
+We also introduced a new configuration option in `application_config_internal.js` which prevents unregistered users from creating new pads. Add `AppConfig.disableAnonymousPadCreation = true;` to your `customize/application_config.js` to disable anonymous pad creation. If you read the adjacent comment above the default example you'll see that this barrier is only enforced on the client, so it will keep out honest users but won't stop malicious ones from messaging the server directly.
 
-This release also includes a number of new tests on the `/checkup/` page. Most notably it now checks for headers on certain assets which can only be checked from within the sandboxed iframe. These new tests automate the manual checks we were performing when admins reported that everything was working except for sheets, and go a little bit further to report which particular headers are incorrect. We also fixed some bugs that were checking headers on resources which could be cached, added a test for the recently added anti-FLoC header, fixed the styles on the page to respond to both light and dark mode, and made sure that websocket connections that were opened by tests were closed when they finished.  
+This release also includes a number of new tests on the `/checkup/` page. Most notably it now checks for headers on certain assets which can only be checked from within the sandboxed iframe. These new tests automate the manual checks we were performing when admins reported that everything was working except for sheets, and go a little bit further to report which particular headers are incorrect. We also fixed some bugs that were checking headers on resources which could be cached, added a test for the recently added anti-FLoC header, fixed the styles on the page to respond to both light and dark mode, and made sure that websocket connections that were opened by tests were closed when they finished.
 
-Some of the tests we implemented checked the headers on resources that were particularly prone to misconfiguration because its headers were set by both NGINX and the NodeJS application server (see [#694](https://github.com/cryptpad/cryptpad/issues/694)). We tested in a variety of configurations and ultimately decided that the most resilient solution was to give up on using heuristics in the application server and just update the example NGINX config to use a patch proposed by another admin which fully overrides the settings of the application server. You can find this patch in the `/api/(config|broadcast)` section of the example config.  
+Some of the tests we implemented checked the headers on resources that were particularly prone to misconfiguration because its headers were set by both NGINX and the NodeJS application server (see [#694](https://github.com/cryptpad/cryptpad/issues/694)). We tested in a variety of configurations and ultimately decided that the most resilient solution was to give up on using heuristics in the application server and just update the example NGINX config to use a patch proposed by another admin which fully overrides the settings of the application server. You can find this patch in the `/api/(config|broadcast)` section of the example config.
 
-Finally, we've made some minor changes to the provided `package-lock.json` file because `npm` reported some "Regular Expression Denial of Service" vulnerabilities. One of these was easy to fix, but another two were reported shortly thereafter. These "vulnerabilities" only affect some developer dependencies and will have no effect on regular usage of our software. The "risk" is essentially that malicious modifications to our source code can be tailored to make our style linting software run particularly slowly. This can only be triggered by integrating such malicious changes into your local repository and running `npm run lint:less`, so maybe don't do that.  
+Finally, we've made some minor changes to the provided `package-lock.json` file because `npm` reported some "Regular Expression Denial of Service" vulnerabilities. One of these was easy to fix, but another two were reported shortly thereafter. These "vulnerabilities" only affect some developer dependencies and will have no effect on regular usage of our software. The "risk" is essentially that malicious modifications to our source code can be tailored to make our style linting software run particularly slowly. This can only be triggered by integrating such malicious changes into your local repository and running `npm run lint:less`, so maybe don't do that.
 
-To update from 4.5.0 to 4.6.0:  
+To update from 4.5.0 to 4.6.0:
 
 1. Apply the documented NGINX configuration
 2. Stop your server
@@ -1480,7 +1642,7 @@ To update from 4.5.0 to 4.6.0:
 
 ## Features
 
-This release includes very few new features aside from those already mentioned in the _Update notes_ section. One very minor improvement is that formatted code blocks in the code editor's markdown preview use the full width of their parent container instead of being indented.  
+This release includes very few new features aside from those already mentioned in the _Update notes_ section. One very minor improvement is that formatted code blocks in the code editor's markdown preview use the full width of their parent container instead of being indented.
 
 ## Bug fixes
 
@@ -1496,21 +1658,21 @@ This release includes very few new features aside from those already mentioned i
 
 ## Goals
 
-This release cycle we aimed to complete three major milestones: the official release of our calendar app, the ability for admins to close registration on their instance, and the deployment of the admin section of our [official documentation](https://docs.cryptpad.org/en/admin_guide/index.html). We spent the remainder of our time addressing a growing backlog of issues on GitHub by fixing a number of weird bugs.  
+This release cycle we aimed to complete three major milestones: the official release of our calendar app, the ability for admins to close registration on their instance, and the deployment of the admin section of our [official documentation](https://docs.cryptpad.org/en/admin_guide/index.html). We spent the remainder of our time addressing a growing backlog of issues on GitHub by fixing a number of weird bugs.
 
 ## Update notes
 
-This release includes a new GitHub issue template (`cryptpad/.github/ISSUE_TEMPLATE/initial-instance-configuration.md`). The intent of this file is to make it clear that _Bug Reports_ are for intended for bugs in the software itself, not for soliciting help in configuring your personal server. Such issues take away time that we'd rather spend improving the platform for everybody's benefit, rather than for single administrators.  
+This release includes a new GitHub issue template (`cryptpad/.github/ISSUE_TEMPLATE/initial-instance-configuration.md`). The intent of this file is to make it clear that _Bug Reports_ are for intended for bugs in the software itself, not for soliciting help in configuring your personal server. Such issues take away time that we'd rather spend improving the platform for everybody's benefit, rather than for single administrators.
 
-Sometimes difficulty configuring an instance does stem from an actual bug, however, most of the time these issues relate to the use of an unsupported configuration or failure to correctly follow installation instructions. The issue template includes some basic debugging steps which should identify the vast majority of problems. Beyond its primary goal of narrowing the scope of our issue tracker, we hope it will also be useful as an offline reference for administrators attempting to debug their instance.  
+Sometimes difficulty configuring an instance does stem from an actual bug, however, most of the time these issues relate to the use of an unsupported configuration or failure to correctly follow installation instructions. The issue template includes some basic debugging steps which should identify the vast majority of problems. Beyond its primary goal of narrowing the scope of our issue tracker, we hope it will also be useful as an offline reference for administrators attempting to debug their instance.
 
-This template references the /checkup/ page that we've been steadily improving over the last few releases. It now includes even more tests to diagnose instance configuration problems, each with their own messages that provide some fairly detailed hints about what is wrong when an error is detected. This release introduces a number of tests that print _warnings_ that won't break an instance but might detract from users' experience. We recommend checking this page on your instance with each release as we will continue to improve it on an regular basis, and it might detect some errors of which you were unaware.  
+This template references the /checkup/ page that we've been steadily improving over the last few releases. It now includes even more tests to diagnose instance configuration problems, each with their own messages that provide some fairly detailed hints about what is wrong when an error is detected. This release introduces a number of tests that print _warnings_ that won't break an instance but might detract from users' experience. We recommend checking this page on your instance with each release as we will continue to improve it on an regular basis, and it might detect some errors of which you were unaware.
 
-Otherwise, this release includes some changes to the provided example NGINX config file. It now includes a header designed to disable clients' participation in Google's [FLoC network](https://www.eff.org/deeplinks/2021/03/googles-floc-terrible-idea), as well as some basic rules related to the addition of our calendar app and OnlyOffice's two remaining editors (which are still not officially supported despite their inclusion here).  
+Otherwise, this release includes some changes to the provided example NGINX config file. It now includes a header designed to disable clients' participation in Google's [FLoC network](https://www.eff.org/deeplinks/2021/03/googles-floc-terrible-idea), as well as some basic rules related to the addition of our calendar app and OnlyOffice's two remaining editors (which are still not officially supported despite their inclusion here).
 
-Lastly, any instance administrators that have had to customize their instance in order to disable registration can instead rely on a built-in feature that is available on the main page of the admin panel. Checking the "Close registration" checkbox will cause the application server to reject the creation of new "login blocks" (which store users' encrypted account credentials) while permitting existing users to change their passwords. Clients will be informed that registration is closed via the `/api/config` endpoint, causing the registration page to display a notice instead of the usual form. You may need to use the `FLUSH CACHE` button which can found on the same page of the admin panel in order to force clients to load the updated server config.  
+Lastly, any instance administrators that have had to customize their instance in order to disable registration can instead rely on a built-in feature that is available on the main page of the admin panel. Checking the "Close registration" checkbox will cause the application server to reject the creation of new "login blocks" (which store users' encrypted account credentials) while permitting existing users to change their passwords. Clients will be informed that registration is closed via the `/api/config` endpoint, causing the registration page to display a notice instead of the usual form. You may need to use the `FLUSH CACHE` button which can found on the same page of the admin panel in order to force clients to load the updated server config.
 
-To update from 4.4.0 to 4.5.0:  
+To update from 4.4.0 to 4.5.0:
 
 1. Apply the documented NGINX configuration
 2. Stop your server
@@ -1542,21 +1704,21 @@ To update from 4.4.0 to 4.5.0:
 
 ## Goals
 
-Our main goal for this release was to complete the first steps of our ["Dialogue" project](https://nlnet.nl/project/CryptPadForms/), which will introduce surveys into CryptPad. We've also put considerable effort towards addressing some configuration issues, correcting some inconsistently translated UI, and writing some new documentation.  
+Our main goal for this release was to complete the first steps of our ["Dialogue" project](https://nlnet.nl/project/CryptPadForms/), which will introduce surveys into CryptPad. We've also put considerable effort towards addressing some configuration issues, correcting some inconsistently translated UI, and writing some new documentation.
 
 ## Update notes
 
-This release removes the default privacy policy that has been included in CryptPad up until now. It included some assertions that were true of our own instance (CryptPad.fr) which we couldn't guarantee on third-party instances. We've updated our custom configuration to link to a privacy policy that was written in a rich text pad. You can do the same on your instance by editing `cryptpad/customize/application_config.js` to include the absolute URL of your instance, like so: `AppConfig.privacy = "https://cryptpad.your.website/privacy.html";`.  
+This release removes the default privacy policy that has been included in CryptPad up until now. It included some assertions that were true of our own instance (CryptPad.fr) which we couldn't guarantee on third-party instances. We've updated our custom configuration to link to a privacy policy that was written in a rich text pad. You can do the same on your instance by editing `cryptpad/customize/application_config.js` to include the absolute URL of your instance, like so: `AppConfig.privacy = "https://cryptpad.your.website/privacy.html";`.
 
-We've clarified a point about telemetry in the notes of our 4.3.1 release. The text suggested that users on your instance would send telemetry to OUR webserver. It has been clarified to reflect that telemetry from your users is only ever sent to your instance.  
+We've clarified a point about telemetry in the notes of our 4.3.1 release. The text suggested that users on your instance would send telemetry to OUR webserver. It has been clarified to reflect that telemetry from your users is only ever sent to your instance.
 
-We've spent some time working on improving our (officially) unreleased integrations of OnlyOffice's presentation and document editors. We've advised against enabling these editors on your instance. This release includes changes that may not be fully backwards compatible. If your users rely on either editor we advise that you not update until they have had an opportunity to back up their documents. We still aren't officially supporting either editor and we may make further breaking changes in the future. Consider this a warning and not an advertizement of their readiness!  
+We've spent some time working on improving our (officially) unreleased integrations of OnlyOffice's presentation and document editors. We've advised against enabling these editors on your instance. This release includes changes that may not be fully backwards compatible. If your users rely on either editor we advise that you not update until they have had an opportunity to back up their documents. We still aren't officially supporting either editor and we may make further breaking changes in the future. Consider this a warning and not an advertizement of their readiness!
 
-This release also includes changes to the recommended NGINX configuration. Compare your instance's config against `cryptpad/docs/example.nginx.conf` and apply all the new changes before updating. In particular, you'll want to pay attention to the configuration for a newly exposed server API (`/api/broadcast`). This should work much the same as `/api/config`, so if you're using a non-standard configuration that uses more than one server you may want to proxy it in a similar fashion.  
+This release also includes changes to the recommended NGINX configuration. Compare your instance's config against `cryptpad/docs/example.nginx.conf` and apply all the new changes before updating. In particular, you'll want to pay attention to the configuration for a newly exposed server API (`/api/broadcast`). This should work much the same as `/api/config`, so if you're using a non-standard configuration that uses more than one server you may want to proxy it in a similar fashion.
 
-Lastly, we've made some big improvements to the `/checkup/` page which performs some basic tests to confirm that your instance is configured correctly. It now provides some much more detailed descriptions of what might be wrong and how you can start debugging any issues that were identified. If you experience any problems after updating please review this page to assess your instance for any known issues before asking for help.  
+Lastly, we've made some big improvements to the `/checkup/` page which performs some basic tests to confirm that your instance is configured correctly. It now provides some much more detailed descriptions of what might be wrong and how you can start debugging any issues that were identified. If you experience any problems after updating please review this page to assess your instance for any known issues before asking for help.
 
-To update from 4.3.1 to 4.4.0:  
+To update from 4.3.1 to 4.4.0:
 
 1. Apply the documented NGINX configuration
 2. Stop your server
@@ -1564,7 +1726,7 @@ To update from 4.3.1 to 4.4.0:
 4. Install the latest dependencies with `bower update` and `npm i`
 5. Restart your server
 
-This release requires updates to both clientside and serverside dependencies. **You will experience problems if you skip any of the above steps.**  
+This release requires updates to both clientside and serverside dependencies. **You will experience problems if you skip any of the above steps.**
 
 ## Features
 
@@ -1596,7 +1758,7 @@ This release requires updates to both clientside and serverside dependencies. **
 
 # 4.3.1
 
-This minor release addresses some bugs discovered after deploying and tagging 4.3.0  
+This minor release addresses some bugs discovered after deploying and tagging 4.3.0
 
 * We found that some browser extensions interfered with checks to determine whether a registered user was correctly logged in, which resulted in some disabled functionality. If you are running extensions that actively delete the tokens that keep you logged your session should now stay alive until you close all its active tabs, after which you will have to log back in.
 * Our 4.2.0 update introduced a new internal format for spreadsheets which broke support for spreadsheet templates using the older format. This release implements a compatibility layer.
@@ -1610,13 +1772,13 @@ This minor release addresses some bugs discovered after deploying and tagging 4.
 
 ## Goals
 
-This release is a continuation of our recent efforts to stabilize the platform, fixing small bugs and inconsistencies that we missed when developing larger features. In the meantime we've received reports of the platform performing poorly under various unusual circumstances, so we've developed some targeted fixes to both improve user experience and decrease the load on our server.  
+This release is a continuation of our recent efforts to stabilize the platform, fixing small bugs and inconsistencies that we missed when developing larger features. In the meantime we've received reports of the platform performing poorly under various unusual circumstances, so we've developed some targeted fixes to both improve user experience and decrease the load on our server.
 
 ## Update notes
 
-This release should be fairly simple for admins.  
+This release should be fairly simple for admins.
 
-To update from 4.2.1 to 4.3.0:  
+To update from 4.2.1 to 4.3.0:
 
 1. Stop your server
 2. Get the latest code with git
@@ -1650,7 +1812,7 @@ To update from 4.2.1 to 4.3.0:
 
 # 4.2.1
 
-This minor release addresses a few bugs discovered after deploying 4.2.0:  
+This minor release addresses a few bugs discovered after deploying 4.2.0:
 
 * The 4.2.0 release included major improvements to the sheet application. This introduced breaking changes to the "lock" system in the application. Existing spreadsheets (before 4.2.0) that were closed by a user without "unlocking" all cells first became impossible to open after the 4.2.0 changes. This has been fixed.
 * Team owners can now properly upload a team avatar.
@@ -1664,21 +1826,21 @@ This minor release addresses a few bugs discovered after deploying 4.2.0:
 
 ## Goals
 
-We've made a lot of big changes to the platform lately. This release has largely been an attempt to stabilize the codebase by fixing bugs and merging features that we hadn't had a chance to test until now, all while updating our documentation and removing unused or outdated code.  
+We've made a lot of big changes to the platform lately. This release has largely been an attempt to stabilize the codebase by fixing bugs and merging features that we hadn't had a chance to test until now, all while updating our documentation and removing unused or outdated code.
 
 ## Update notes
 
-This release includes an update to the sheet editor which is not backwards-compatible. Clients running the new version will not be able to correctly communicate with clients running older versions. Clients will automatically detect that a new version is available upon reconnecting to the server after a restart, so as long as you follow the steps recommended below this should be fine.  
+This release includes an update to the sheet editor which is not backwards-compatible. Clients running the new version will not be able to correctly communicate with clients running older versions. Clients will automatically detect that a new version is available upon reconnecting to the server after a restart, so as long as you follow the steps recommended below this should be fine.
 
-We've also updated a server-side dependency that is not backwards-compatible. Failure to update both the platform and its dependencies together will result in errors.  
+We've also updated a server-side dependency that is not backwards-compatible. Failure to update both the platform and its dependencies together will result in errors.
 
-The `scripts` directory now includes a script to identify unused translations. We used this to reduce the size of our localization files (`cryptpad/www/common/translations/*.json`). We reviewed the changes carefully and did our best to test, but it's always possible that a string was erroneously removed. If you notice any bugs in the UI where text seems to be missing, please let us (the developers) know via a GitHub issue.  
+The `scripts` directory now includes a script to identify unused translations. We used this to reduce the size of our localization files (`cryptpad/www/common/translations/*.json`). We reviewed the changes carefully and did our best to test, but it's always possible that a string was erroneously removed. If you notice any bugs in the UI where text seems to be missing, please let us (the developers) know via a GitHub issue.
 
-CryptPad.fr now stores more than a terabyte of data, making it quite intensive to run the scripts to remove inactive files from the disk. To help alleviate this strain we've moved the code responsible for deleting files that have been archived for longer than the configured retention period into its own script (`./scripts/evict-archived.js`). For the moment this script is not integrated into the server and will not automatically run in the background as the main eviction script does. It's recommended that you run it manually if you find you are low on disk space.  
+CryptPad.fr now stores more than a terabyte of data, making it quite intensive to run the scripts to remove inactive files from the disk. To help alleviate this strain we've moved the code responsible for deleting files that have been archived for longer than the configured retention period into its own script (`./scripts/evict-archived.js`). For the moment this script is not integrated into the server and will not automatically run in the background as the main eviction script does. It's recommended that you run it manually if you find you are low on disk space.
 
-Since early in the pandemic we've been serving a custom home page on CryptPad.fr to inform users that we've increased the amount of storage provided for free. This was originally intended as a temporary measure, but since almost a year has passed we figured it was about time we integrate this custom code into the platform itself. Admins can now add a custom note to the home page, using customized HTML in `customize/application_config.js`. To do this, define an `AppConfig.homeNotice` attribute like so: `AppConfig.homeNotice = "<b>pewpew</b>";`.  
+Since early in the pandemic we've been serving a custom home page on CryptPad.fr to inform users that we've increased the amount of storage provided for free. This was originally intended as a temporary measure, but since almost a year has passed we figured it was about time we integrate this custom code into the platform itself. Admins can now add a custom note to the home page, using customized HTML in `customize/application_config.js`. To do this, define an `AppConfig.homeNotice` attribute like so: `AppConfig.homeNotice = "<b>pewpew</b>";`.
 
-To update from 4.1.0 to 4.2.0:  
+To update from 4.1.0 to 4.2.0:
 
 1. Stop your server
 2. Get the latest code from the 4.2.0 tag (`git fetch origin && git checkout 4.2.0`, or just `git pull origin main`)
@@ -1733,13 +1895,13 @@ To update from 4.1.0 to 4.2.0:
 
 ## Goals
 
-Our recent 4.0.0 release introduced major changes to CryptPad's style-sheets which likely caused some difficulty for admins who'd made extensive changes to their instance's appearance. We figure it's best to make more changes now instead of making small breaking changes more frequently, so we decided now is a good time to refactor a lot of our styles to implement an often-requested dark mode in CryptPad.  
+Our recent 4.0.0 release introduced major changes to CryptPad's style-sheets which likely caused some difficulty for admins who'd made extensive changes to their instance's appearance. We figure it's best to make more changes now instead of making small breaking changes more frequently, so we decided now is a good time to refactor a lot of our styles to implement an often-requested dark mode in CryptPad.
 
 ## Update notes
 
-As noted above, this release introduces some major changes to CryptPad styles. If you have customized the look of your instance we recommend testing this new version locally before deploying it to your server to ensure that there are no critical conflicts.  
+As noted above, this release introduces some major changes to CryptPad styles. If you have customized the look of your instance we recommend testing this new version locally before deploying it to your server to ensure that there are no critical conflicts.
 
-Otherwise, to update from 4.0.0 to 4.1.0:  
+Otherwise, to update from 4.0.0 to 4.1.0:
 
 1. Stop your server
 2. Get the latest code from the 4.1.0 tag (`git fetch origin && git checkout 4.1.0`, or just `git pull origin main`)
@@ -1776,25 +1938,25 @@ Otherwise, to update from 4.0.0 to 4.1.0:
 
 # 4.0.0 (A)
 
-We're very happy to introduce CryptPad v4.0!  
+We're very happy to introduce CryptPad v4.0!
 
-This release is the culmination of a great deal of work over the last year, in which we searched for the right metaphors and imagery to clearly represent what CryptPad is all about. We've reworked our logo, color theme, text on our static pages, and the icons throughout the platform to convey the calm and safety we want our users to feel.  
+This release is the culmination of a great deal of work over the last year, in which we searched for the right metaphors and imagery to clearly represent what CryptPad is all about. We've reworked our logo, color theme, text on our static pages, and the icons throughout the platform to convey the calm and safety we want our users to feel.
 
-Our release schedule typically follows an alphabetical naming scheme, ranging from A for the first (or zero-th) release of the cycle to Z for the last, with a thematic name for each letter. In the rush of preparing translations and double-checking all of our changes we never found time to settle on a theme for this release, but we do find there's some value in maintaining the otherwise arbitrary rhythm we've followed all this time. The progression through the alphabet gives a sense of pace to what can otherwise seem like a endless stream of problems that need solving, and the end of the alphabet prompts us to build towards major milestones like this one.  
+Our release schedule typically follows an alphabetical naming scheme, ranging from A for the first (or zero-th) release of the cycle to Z for the last, with a thematic name for each letter. In the rush of preparing translations and double-checking all of our changes we never found time to settle on a theme for this release, but we do find there's some value in maintaining the otherwise arbitrary rhythm we've followed all this time. The progression through the alphabet gives a sense of pace to what can otherwise seem like a endless stream of problems that need solving, and the end of the alphabet prompts us to build towards major milestones like this one.
 
-With that in mind, you can expect 25 more major releases in this cycle before version 5.0, roughly every three weeks or so depending on circumstances.  
+With that in mind, you can expect 25 more major releases in this cycle before version 5.0, roughly every three weeks or so depending on circumstances.
 
 ## Goals
 
-The main intent of this release was to deploy our `rebrand` branch which had been in development for some time. Along the way we also made notable improvements to the sheet editor which will be mentioned below.  
+The main intent of this release was to deploy our `rebrand` branch which had been in development for some time. Along the way we also made notable improvements to the sheet editor which will be mentioned below.
 
 ## Update notes
 
-In the process of redesigning the platform we started using some new features of the LESS CSS pre-processor language that were not supported by the version of lesshint that we were using to scan for errors. We've updated that dev dependency to a newer version (4.5.0 => 6.3.7) which introduced a rather large number of minor dependencies. These are only used during development, not by the server itself, so this is unlikely to have any impact on the software itself.  
+In the process of redesigning the platform we started using some new features of the LESS CSS pre-processor language that were not supported by the version of lesshint that we were using to scan for errors. We've updated that dev dependency to a newer version (4.5.0 => 6.3.7) which introduced a rather large number of minor dependencies. These are only used during development, not by the server itself, so this is unlikely to have any impact on the software itself.
 
-Otherwise, this release includes lots of changes to the platform's style sheets and static pages. If you've applied heavy customizations to your instance you might notice errors due to incompatibilities with your local changes. We recommend that you test your customizations against the latest release locally before updating a public instance to avoid service outages.  
+Otherwise, this release includes lots of changes to the platform's style sheets and static pages. If you've applied heavy customizations to your instance you might notice errors due to incompatibilities with your local changes. We recommend that you test your customizations against the latest release locally before updating a public instance to avoid service outages.
 
-To update from 3.25.1 to 4.0.0:  
+To update from 3.25.1 to 4.0.0:
 
 1. Stop your server
 2. Get the latest code from the 4.0.0 tag
@@ -1807,7 +1969,7 @@ To update from 3.25.1 to 4.0.0:
 * We found that certain issues reported via the built-in support ticket system were not easy to debug without knowing the id of the user's drive. Support tickets now include a `driveChannel` attribute to simplify this process.
 * We've added a variety of settings for the control of how your browser uses a local database to speed up loading times and display cached versions of documents even when disconnected from our server. These are available in the "confidentiality" section of the settings page (https://cryptpad.fr/settings/#security).
 
-Finally, the "rebrand" part of this release:  
+Finally, the "rebrand" part of this release:
 
 * Our home page features our new logo, a cleaner layout, new text (notably dropping the use of "zero-knowledge" from our explanation), new app icons, softer colors, neater fonts, and a custom illustration of a document shredder that hints at how CryptPad works.
 * We no longer include a FAQ page with each instance, and instead link to relevant parts of our dedicated documentation platform (https://docs.cryptpad.org) from any place that previously referenced the FAQ. This will make it easier for translators to focus on text for the platform's interface if they wish. An updated Frequently Asked Questions will be added to the documentation in the near future.
@@ -1825,9 +1987,9 @@ Finally, the "rebrand" part of this release:
 
 # ZyzomysPedunculatus' revenge (3.25.1)
 
-This minor release is primarily intended to fix some minor issues that were introduced or detected following our 3.25.0 release, but it also includes some major improvements that we want to test and stabilize before our upcoming 4.0.0 release.  
+This minor release is primarily intended to fix some minor issues that were introduced or detected following our 3.25.0 release, but it also includes some major improvements that we want to test and stabilize before our upcoming 4.0.0 release.
 
-Features  
+Features
 
 * Our recent introduction of a clientside cache for document content now allows us to load and display a readable copy of a document before the most recent history has been fully loaded from the server. You might notice that your drive and some document typees are now displayed in a "DISCONNECTED" of "OFFLINE" state until they gets the latest history. For now this just means the loading screen is removed soon so you can start reading, but it's also an essential improvement that will become even more useful when we introduce the use of service-workers for offline usage.
 * We've added an `offline` mode to the server so that anyone developing features in CryptPad can test its offline and caching features by disabling the websocket components of the server. Use `npm run offline` to launch in this mode.
@@ -1836,7 +1998,7 @@ Features
 * Errors that occur when loading teams now trigger some basic telemetry to the server to indicate the error code. This should help us determine the origin of some annoying teams issues that several users have reported.
 * Users of the rich text editor should now find that their scroll position is maintained when they are at the bottom of the document and a remote users adds more text.
 
-Bug fixes  
+Bug fixes
 
 * Shortly after deploying 3.25.0 we identified several cases in which its cache invalidation logic was not correctly detecting corrupted cache entries. This caused some documents to fail to load. We quickly disabled most caching until we got the chance to review. Since then, we've tested it much more thoroughly under situations which made it more likely to become corrupt. Our new cache invalidation logic seems to catch all the known cases, so we're re-enabling the use of the cache for encrypted files and most of our supported document types.
 * We found that a race condition in the logout process prevented the document cache from being cleared correctly. We now wait until the asynchronous cache eviction process completes before redirecting users to the login page.
@@ -1848,7 +2010,7 @@ Bug fixes
 * The recent replacement of a link to our faq with a link to our documentation platform violated some security headers and prevented the link from loading. We've fixed the inline link with some code to open this link in a compatible way.
 * Finally, we found a bug that caused custom colors in the slide app to revert to the default settings on page reloads. Custom slide colors should now be preserved.
 
-To update from 3.25.0 to 3.25.1:  
+To update from 3.25.0 to 3.25.1:
 
 1. Stop your server
 2. Get the latest code with `git checkout 3.25.1`
@@ -1859,17 +2021,17 @@ To update from 3.25.0 to 3.25.1:
 
 ## Goals
 
-This is the last major release of our 3.0.0 release cycle. We wanted to mark the occasion with some big improvements to keep everyone happy in case we need to take some more time to prepare our upcoming 4.0.0 release.  
+This is the last major release of our 3.0.0 release cycle. We wanted to mark the occasion with some big improvements to keep everyone happy in case we need to take some more time to prepare our upcoming 4.0.0 release.
 
 ## Update notes
 
-This update introduces some major database optimizations that should decrease both CPU and disk usage over time as users request resources and prime an on-disk cache for the next time.  
+This update introduces some major database optimizations that should decrease both CPU and disk usage over time as users request resources and prime an on-disk cache for the next time.
 
-We've also introduce the ability to archive illegal or otherwise objectionable material from the admin panel assuming you possess the ability to load the content in question. It's also possible to restore archived content via an adjacent form field on the admin panel as long as it has not been permanently deleted. Due to a quirk in how ownership of uploaded files works, restored files will not retain their "owners" property. We hope to fix this in a future release.  
+We've also introduce the ability to archive illegal or otherwise objectionable material from the admin panel assuming you possess the ability to load the content in question. It's also possible to restore archived content via an adjacent form field on the admin panel as long as it has not been permanently deleted. Due to a quirk in how ownership of uploaded files works, restored files will not retain their "owners" property. We hope to fix this in a future release.
 
-We've also made some minor changes to the example NGINX config file provided in `cryptpad/docs/example.nginx.confg`, specifically in [this commit](https://github.com/cryptpad/cryptpad/commit/2647acbb78643e651b71d2d4f74c2f66e264a258). CryptPad will probably work if you don't apply these changes to your nginx conf, but some functional improvements depend on the exposed headers.  
+We've also made some minor changes to the example NGINX config file provided in `cryptpad/docs/example.nginx.confg`, specifically in [this commit](https://github.com/cryptpad/cryptpad/commit/2647acbb78643e651b71d2d4f74c2f66e264a258). CryptPad will probably work if you don't apply these changes to your nginx conf, but some functional improvements depend on the exposed headers.
 
-To upgrade from 3.24.0 to 3.25.0:  
+To upgrade from 3.24.0 to 3.25.0:
 
 1. Update your NGINX config as mentioned above.
 2. Stop your nodejs server.
@@ -1915,13 +2077,13 @@ To upgrade from 3.24.0 to 3.25.0:
 
 ## Goals
 
-We are once again working to develop some significant new features. This release is fairly small but includes some significant changes to detect and handle a variety of errors.  
+We are once again working to develop some significant new features. This release is fairly small but includes some significant changes to detect and handle a variety of errors.
 
 ## Update notes
 
-This release includes some minor corrections the recommended NGINX configuration supplied in `cryptpad/docs/example.nginx.conf`.  
+This release includes some minor corrections the recommended NGINX configuration supplied in `cryptpad/docs/example.nginx.conf`.
 
-To update from 3.23.2 to 3.24.0:  
+To update from 3.23.2 to 3.24.0:
 
 1. Update your NGINX config to replicate the most recent changes and reload NGINX to apply them.
 2. Stop the nodejs server.
@@ -1950,13 +2112,13 @@ To update from 3.23.2 to 3.24.0:
 
 # XerusDaamsi reloaded (3.23.2)
 
-A number of instance administrators reported issues following our 3.23.1 release. We suspect the issues were caused by applying the recommended update steps out of order which would result in the incorrect HTTP header values getting cached for the most recent version of a file. Since the most recently updated headers modified some security settings, this caused a catastrophic error on clients receiving the incorrect headers which caused them to fail to load under certain circumstances.  
+A number of instance administrators reported issues following our 3.23.1 release. We suspect the issues were caused by applying the recommended update steps out of order which would result in the incorrect HTTP header values getting cached for the most recent version of a file. Since the most recently updated headers modified some security settings, this caused a catastrophic error on clients receiving the incorrect headers which caused them to fail to load under certain circumstances.
 
-Regardless of the reasons behind this, we want CryptPad to be resilient against misconfiguration. This minor release includes a number of measures to override the unruly caching mechanisms employed internally by two of our most stubborn dependencies (CKEditor and OnlyOffice). Deploying 3.23.2 should force these editors to load the most recent versions of these dependencies according to the same policies as the rest of CryptPad and instruct clients to ignore any incorrect server responses they might have cached over the last few updates.  
+Regardless of the reasons behind this, we want CryptPad to be resilient against misconfiguration. This minor release includes a number of measures to override the unruly caching mechanisms employed internally by two of our most stubborn dependencies (CKEditor and OnlyOffice). Deploying 3.23.2 should force these editors to load the most recent versions of these dependencies according to the same policies as the rest of CryptPad and instruct clients to ignore any incorrect server responses they might have cached over the last few updates.
 
-This release also includes a number of bug fixes which had been tested in the meantime.  
+This release also includes a number of bug fixes which had been tested in the meantime.
 
-Other bug fixes  
+Other bug fixes
 
 * We removed a hardcoded translation pertaining to the recently introduced "snapshot" functionality.
 * Inspection of our server logs revealed a number of rare race conditions and type errors that have since been addressed. These included:
@@ -1967,11 +2129,11 @@ Other bug fixes
   * it was possible to click the buttons on the "team invitation response dialog" multiple times before the first action completed. In some cases this could result in attempting to join a single team multiple times.
   * it was also possible to activate trigger several actions that would modify your access rights for a team when the team had not fully synchronized with the server. Some of the time this was recoverable, but it could occasionally result in your team membership getting stuck in a bad state.
 
-We've implemented some measures to correct any team data that might have become corrupted due to the issues described above. Access rights from duplicated teams should be merged back into one set of cryptographic keys wherever possible. In cases where this isn't possible your role in the team will be automatically downgraded to the rank conferred by the keys you still have. For instance, somebody listed as an administrator who only has the keys required to view the team will downgrade themself to be a viewer. Subsequent promotions back to your previous team role should restore your possession of the required keys.  
+We've implemented some measures to correct any team data that might have become corrupted due to the issues described above. Access rights from duplicated teams should be merged back into one set of cryptographic keys wherever possible. In cases where this isn't possible your role in the team will be automatically downgraded to the rank conferred by the keys you still have. For instance, somebody listed as an administrator who only has the keys required to view the team will downgrade themself to be a viewer. Subsequent promotions back to your previous team role should restore your possession of the required keys.
 
-To update to 3.23.2 from 3.23.0 or 3.23.1:  
+To update to 3.23.2 from 3.23.0 or 3.23.1:
 
-Perform the same upgrade steps listed for 3.23.0 including the most recent configuration changes listed in `cryptpad/docs/example.nginx.conf...  
+Perform the same upgrade steps listed for 3.23.0 including the most recent configuration changes listed in `cryptpad/docs/example.nginx.conf...
 
 1. Modify your server's NGINX config file (but don't apply its changes until step 6)
 2. Stop CryptPad's nodejs server
@@ -1983,9 +2145,9 @@ Perform the same upgrade steps listed for 3.23.0 including the most recent confi
 
 # XerusDaamsi's revenge (3.23.1)
 
-We discovered a number of minor bugs after deploying 3.23.0. This minor release addresses them.  
+We discovered a number of minor bugs after deploying 3.23.0. This minor release addresses them.
 
-Features  
+Features
 
 * On instances with a lot of data (like our own) the background process responsible for evicting inactive data could time out. We've increased its permitted duration to a sufficient timeframe.
   * This process also aggregates some statistics about your database while it runs. Upon its completion a report is now stored in memory until it is overwritten by the next eviction process. This report will most likely be displayed on the admin panel in a future release.
@@ -1995,14 +2157,14 @@ Features
   * When creating a shared folder we now indicate that the password field will be used to add a layer of protection to the folder.
   * The "destroy" button on the access modal now indicates that it will completely destroy the file or folder in question, rather than its access list or other parameters.
 
-Bug fixes  
+Bug fixes
 
 * We received a number of support tickets related to users being unable to open rich text pads and sheets. We determined the issue to have been caused by our deployment of new HTTP headers to enable XLSX export on Firefox. These headers conflicted with the those on some cached files. The issue seemed to affect users randomly and did not occur when we tested the new features. We deployed some one-time cache-busting code to force clients to load the latest versions of these files (and their headers).
 * We addressed a regression introduced in 3.23.0 which incorrectly disabled the support ticket panels for users and admins.
 * We also fixed some layout issues on the admin panel's new _User storage_ pane.
 * Finally, we added a few guards against type errors in the drive which were most commonly triggered when viewing ranges of your drive's history which contained shared folders that had since been deleted.
 
-To update from 3.23.0 to 3.23.1:  
+To update from 3.23.0 to 3.23.1:
 
 0. Read the 3.23.0 release notes carefully and apply all configuration changes if you haven't already done so.
 1. Stop your server
@@ -2014,23 +2176,23 @@ To update from 3.23.0 to 3.23.1:
 
 ## Goals
 
-We plan to produce an updated installation guide for CryptPad instance administrators to coincide with the release of our 4.0.0 release. As we get closer to the end of the alphabet we're working to simplify the process of configuring instances. This release features several new admin panel features intended to supersede the usage of the server configuration file and provide the ability to modify instance settings at runtime.  
+We plan to produce an updated installation guide for CryptPad instance administrators to coincide with the release of our 4.0.0 release. As we get closer to the end of the alphabet we're working to simplify the process of configuring instances. This release features several new admin panel features intended to supersede the usage of the server configuration file and provide the ability to modify instance settings at runtime.
 
-We also spent some time finalizing some major improvements to the history mode which is available in most of our document editors. More on that in the _Features_ section.  
+We also spent some time finalizing some major improvements to the history mode which is available in most of our document editors. More on that in the _Features_ section.
 
 ## Update notes
 
-This release introduces some behaviour which may require manual configuration on the part of the administrator. Read the following sections carefully or proceed at your own risk!  
+This release introduces some behaviour which may require manual configuration on the part of the administrator. Read the following sections carefully or proceed at your own risk!
 
 ### Automatic database maintenance
 
-When a user employs the _destroy_ functionality to make a pad unavailable it isn't typically deleted. Instead it is made unavailable by moving it into the server's archive directory. Archived files are intended to be removed after another configurable amount of time (`archiveRetentionTime` in your config file). The deletion of old files from your archive is handled by `evict-inactive.js`, which can be found in `cryptpad/scripts/`. Up until now this script needed to be run manually (typically as a cron job) with `node ./scripts/evict-inactive.js`. Since this isn't widely known we decided to integrate it directly into the server by automatically running the script once per day.  
+When a user employs the _destroy_ functionality to make a pad unavailable it isn't typically deleted. Instead it is made unavailable by moving it into the server's archive directory. Archived files are intended to be removed after another configurable amount of time (`archiveRetentionTime` in your config file). The deletion of old files from your archive is handled by `evict-inactive.js`, which can be found in `cryptpad/scripts/`. Up until now this script needed to be run manually (typically as a cron job) with `node ./scripts/evict-inactive.js`. Since this isn't widely known we decided to integrate it directly into the server by automatically running the script once per day.
 
-The same _eviction_ process is also responsible for scanning your server's database for inactive documents (defined as those which haven't been accessed in a number of days specified in your config under `inactiveTime`). Such inactive documents are archived unless they have been stored within a registered users drive. Starting with this release we have added the ability to specify the number of days before an account will be considered inactive (`accountRetentionTime`). This will take into account whether they added any new documents to their drive, or whether any of the existing documents were accessed or modified by other users.  
+The same _eviction_ process is also responsible for scanning your server's database for inactive documents (defined as those which haven't been accessed in a number of days specified in your config under `inactiveTime`). Such inactive documents are archived unless they have been stored within a registered users drive. Starting with this release we have added the ability to specify the number of days before an account will be considered inactive (`accountRetentionTime`). This will take into account whether they added any new documents to their drive, or whether any of the existing documents were accessed or modified by other users.
 
-If you prefer to run the eviction script manually you can disable its integration into the server by adding `disableIntegratedEviction: true` to your config file. An example is given in `cryptpad/config/config.example.js`. If you want this process to run manually you may set the same value to `false`, or comment it out if you prefer. Likewise, if you prefer to never remove accounts and their data due to account inactivity, you may also comment it out.  
+If you prefer to run the eviction script manually you can disable its integration into the server by adding `disableIntegratedEviction: true` to your config file. An example is given in `cryptpad/config/config.example.js`. If you want this process to run manually you may set the same value to `false`, or comment it out if you prefer. Likewise, if you prefer to never remove accounts and their data due to account inactivity, you may also comment it out.
 
-If you haven't been manually running the eviction scripts we recommend that you carefully review all of the values mentioned above to ensure that you will not be surprised by the sudden and unintended removal of any data. As a reminder, they are:  
+If you haven't been manually running the eviction scripts we recommend that you carefully review all of the values mentioned above to ensure that you will not be surprised by the sudden and unintended removal of any data. As a reminder, they are:
 
 * `inactiveTime` (number of days before a file is considered inactive)
 * `archiveRetentionTime` (number of days that an archived file will be retained before it is permanently deleted)
@@ -2039,19 +2201,19 @@ If you haven't been manually running the eviction scripts we recommend that you 
 
 ### NGINX Configuration update
 
-After some testing on our part we've included an update to the example NGINX config file available in `cryptpad/docs/example.nginx.conf` which will enable a relatively new browser API which is required for XLSX export from our sheet editor. The relevant lines can be found beneath the comment `# Enable SharedArrayBuffer in Firefox (for .xlsx export)`.  
+After some testing on our part we've included an update to the example NGINX config file available in `cryptpad/docs/example.nginx.conf` which will enable a relatively new browser API which is required for XLSX export from our sheet editor. The relevant lines can be found beneath the comment `# Enable SharedArrayBuffer in Firefox (for .xlsx export)`.
 
 ### Quota management
 
-Up until now the configuration file found in `cryptpad/config/config.js` has been the primary means of configuring a CryptPad instance. Unfortunately, as the server's behaviour becomes increasingly complex due to interest in a broad variety of use-cases this config file tends to grow. The kinds of questions that administrators ask via email, GitHub issues, and via our Matrix channel often suggest that admins haven't read through the comments in these files. Additionally, changes to the server's configuration can only be applied by restarting the server, which is increasingly disruptive as the service becomes more popular. To address these issues we've decided to start improving the instance admin panel such that it becomes the predominant means of modifying common server behaviours.  
+Up until now the configuration file found in `cryptpad/config/config.js` has been the primary means of configuring a CryptPad instance. Unfortunately, as the server's behaviour becomes increasingly complex due to interest in a broad variety of use-cases this config file tends to grow. The kinds of questions that administrators ask via email, GitHub issues, and via our Matrix channel often suggest that admins haven't read through the comments in these files. Additionally, changes to the server's configuration can only be applied by restarting the server, which is increasingly disruptive as the service becomes more popular. To address these issues we've decided to start improving the instance admin panel such that it becomes the predominant means of modifying common server behaviours.
 
-We've started by making it possible to update storage settings from the _User storage_ section of the admin panel. Administrators can now update the default storage limit for users registered on the instance from the default quota of 50MB. It's also possible to allocate storage limits to particular users on the basis of their _Public Signing Key_, which can be found at the top of the _Accounts_ section on the settings page.  
+We've started by making it possible to update storage settings from the _User storage_ section of the admin panel. Administrators can now update the default storage limit for users registered on the instance from the default quota of 50MB. It's also possible to allocate storage limits to particular users on the basis of their _Public Signing Key_, which can be found at the top of the _Accounts_ section on the settings page.
 
-Storage limits configured in this way will supercede those set via the server's config file, such that any modifications to a quota already set in the file will be ignored once you have modified or removed that user's quota via the admin panel. Admins are also able to view the parameters of all existing custom quotas loaded from either source.  
+Storage limits configured in this way will supercede those set via the server's config file, such that any modifications to a quota already set in the file will be ignored once you have modified or removed that user's quota via the admin panel. Admins are also able to view the parameters of all existing custom quotas loaded from either source.
 
 ### How to update
 
-Once you've reviewed these settings and you're ready to update from 3.22.0 to 3.23.0:  
+Once you've reviewed these settings and you're ready to update from 3.22.0 to 3.23.0:
 
 1. Modify your server's NGINX config file to include the new headers enabling XLSX export
 2. Stop CryptPad's nodejs server
@@ -2082,11 +2244,11 @@ Once you've reviewed these settings and you're ready to update from 3.22.0 to 3.
 
 ## Goals
 
-We've been working on some long-term projects that we hope to deliver over the course of the next few releases. In the meantime, this release includes a number of minor improvements.  
+We've been working on some long-term projects that we hope to deliver over the course of the next few releases. In the meantime, this release includes a number of minor improvements.
 
 ## Update notes
 
-To upgrade from 3.21.0 to 3.22.0:  
+To upgrade from 3.21.0 to 3.22.0:
 
 1. Stop your server
 2. Get the latest platform code with git
@@ -2110,15 +2272,15 @@ To upgrade from 3.21.0 to 3.22.0:
 
 ## Goals
 
-This release was developed over a longer period than usual due to holidays, our yearly company seminar, and generally working on some important software-adjacent projects. As such, we opted not to aim for any major features and instead introduce some minor improvements and address some users' complaints.  
+This release was developed over a longer period than usual due to holidays, our yearly company seminar, and generally working on some important software-adjacent projects. As such, we opted not to aim for any major features and instead introduce some minor improvements and address some users' complaints.
 
 ## Update notes
 
-We've had a few disgruntled administrators contact us about our apparent _failure to provide a docker image_ or to otherwise support their preferred configuration. With that in mind, this is a periodic reminder that CryptPad is provided to the public under the terms of the AGPL (found within this repository in the [LICENSE file](./LICENSE)) which implies on our part no warranty, liability, or responsibility to configure your server for you. We do our best to provide the necessary information to correctly launch your own instance of the software given our limited budget, however, all such files are provided **AS IS** and are only intended to function under the narrow circumstances of usage which we recommend within the comments of the provided example configuration files.  
+We've had a few disgruntled administrators contact us about our apparent _failure to provide a docker image_ or to otherwise support their preferred configuration. With that in mind, this is a periodic reminder that CryptPad is provided to the public under the terms of the AGPL (found within this repository in the [LICENSE file](./LICENSE)) which implies on our part no warranty, liability, or responsibility to configure your server for you. We do our best to provide the necessary information to correctly launch your own instance of the software given our limited budget, however, all such files are provided **AS IS** and are only intended to function under the narrow circumstances of usage which we recommend within the comments of the provided example configuration files.
 
-With that said, the vast majority of our community acts kindly and courteously towards us and each other. We really do appreciate it, and we'll continue to help you to the best of our ability. With that in mind, we're happy to announce that we've written and deployed a first version of our user guide, available at https://docs.cryptpad.org. The work that went into this was funded by NLnet foundation as an NGI Zero PET (Privacy-Enhancing Technology) grant. We are currently working on two more guides intended for developers and administrators, and will deploy them to the same domain as they are completed. In the meantime we have begun to update our README, GitHub wiki, and other resources to reflect the current recommended practices and remove references to unsupported configurations.  
+With that said, the vast majority of our community acts kindly and courteously towards us and each other. We really do appreciate it, and we'll continue to help you to the best of our ability. With that in mind, we're happy to announce that we've written and deployed a first version of our user guide, available at https://docs.cryptpad.org. The work that went into this was funded by NLnet foundation as an NGI Zero PET (Privacy-Enhancing Technology) grant. We are currently working on two more guides intended for developers and administrators, and will deploy them to the same domain as they are completed. In the meantime we have begun to update our README, GitHub wiki, and other resources to reflect the current recommended practices and remove references to unsupported configurations.
 
-If you're only reading this for instructions on how to update your instance from 3.20.1 to 3.21.0:  
+If you're only reading this for instructions on how to update your instance from 3.20.1 to 3.21.0:
 
 1. Stop your server
 2. Get the latest platform code with git
@@ -2144,10 +2306,10 @@ If you're only reading this for instructions on how to update your instance from
 
 # UplandMoa's revenge (3.20.1)
 
-Once again we've decided to follow up our last major release with a minor "revenge" release that we wanted to make available as soon as possible.  
-We expect to deploy and release version 3.21.0 on Tuesday, July 28th, 2020.  
+Once again we've decided to follow up our last major release with a minor "revenge" release that we wanted to make available as soon as possible.
+We expect to deploy and release version 3.21.0 on Tuesday, July 28th, 2020.
 
-Features  
+Features
 
 * The _markmap_ rendering mode which was recently added to markdown preview pane implements some click event handlers which overlap with our existing handlers which open the embedded mindmap in our full screen "lightbox". You can now use _ctrl-click_ to trigger its built-in events (collapsing subtrees of the mindmap) without opening the lightbox.
 * We've made a few improvement to user and team drives:
@@ -2157,7 +2319,7 @@ Features
 * Our rich text, code, slide, and poll apps now intercept pasted images and prompt the user to upload them, matching the existing experience of dragging an image into the same editable area.
 * We've received new contributions to our Romanian translation via [our weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/).
 
-Bug fixes  
+Bug fixes
 
 * We identified some race conditions in our spreadsheet app that were responsible for some corrupted data during the period leading up to our 3.20.0 release, however, we wanted to take a little more time to test before releasing the fixes. As of this release we're moving to a third version of our internal data format. This requires a client-side migration for each older sheet which will be performed by the first registered user to open a sheet in edit mode, after which a page reload will be required. Unregistered users with edit rights will only be able to view older sheets until they have been migrated by a registered user.
 * We now guard against empty _mathjax_ and _markmap_ code blocks in their respective markdown preview rendering extensions, as we discovered that empty inputs resulted in the display of "undefined" in the rendered element.
@@ -2167,7 +2329,7 @@ Bug fixes
 * We've updated to a new version of `lodash` as a dependency of the linters that we use to validate our code. Unless you were actively using those linters while developing CryptPad this should have no effect for you.
 * Finally, when users open a link to a "self-destructing pad" we now check to make sure that the deletion key they possess has not been revoked before displaying a warning indicating that the pad in question will be deleted once they open it.
 
-To update from 3.20.0 to 3.20.1:  
+To update from 3.20.0 to 3.20.1:
 
 1. Stop your server
 2. Get the latest code with `git checkout 3.20.1`
@@ -2178,15 +2340,15 @@ To update from 3.20.0 to 3.20.1:
 
 ## Goals
 
-We've held off on deploying any major features while we work towards deploying some documentation we've been busy organizing. This release features a wide range of minor features intended to address a number of github issues and frequent causes of support tickets.  
+We've held off on deploying any major features while we work towards deploying some documentation we've been busy organizing. This release features a wide range of minor features intended to address a number of github issues and frequent causes of support tickets.
 
 ## Update notes
 
-This release features a modification to the recommended Content Security Policy headers as demonstrated in `./cryptpad/docs/example.nginx.conf`. CryptPad will work without making this change, however, we highly recommend updating your instance's nginx.conf as it will mitigate a variety of potential security vulnerabilities.  
+This release features a modification to the recommended Content Security Policy headers as demonstrated in `./cryptpad/docs/example.nginx.conf`. CryptPad will work without making this change, however, we highly recommend updating your instance's nginx.conf as it will mitigate a variety of potential security vulnerabilities.
 
-Otherwise, we've introduced a new client-side dependency (_Mathjax_) and changed some server-side code that will require a server restart.  
+Otherwise, we've introduced a new client-side dependency (_Mathjax_) and changed some server-side code that will require a server restart.
 
-To update from 3.19.1 to 3.20.0:  
+To update from 3.19.1 to 3.20.0:
 
 1. Apply the recommended changes to  your `nginx.conf`
 2. Stop your server
@@ -2235,9 +2397,9 @@ To update from 3.19.1 to 3.20.0:
 
 # Thylacine's revenge (3.19.1)
 
-Our upcoming 3.20.0 release is planned for July 7th, 2020, but we are once again releasing a minor version featuring some nice bug fixes and usability improvements which are ready to be deployed now. In case you missed [our announcement](https://social.weho.st/@cryptpad/104360490068671089) we are phasing out our usage of the `master` and basing our releases on the `main` branch. For best results we recommend explicitly checking out code by its tag.  
+Our upcoming 3.20.0 release is planned for July 7th, 2020, but we are once again releasing a minor version featuring some nice bug fixes and usability improvements which are ready to be deployed now. In case you missed [our announcement](https://social.weho.st/@cryptpad/104360490068671089) we are phasing out our usage of the `master` and basing our releases on the `main` branch. For best results we recommend explicitly checking out code by its tag.
 
-New features:  
+New features:
 
 * We've spent a little time making support tickets a little bit easier for both users and admins.
   * Users can now label their tickets with a set of predefined categories, making it easier for admins to sort through related reports.
@@ -2245,7 +2407,7 @@ New features:
 * Teams now take advantage of the same "mailbox" functionality that powers user accounts' notification center. Team members with the "viewer" role can now use this feature to share documents with their team using the "share menu" as they already can with other users. Anyone with the ability to add a document to the team's drive will then be able to receive the notification and add the document to the team's drive for them. Going forward we'll use this functionality to implement more behaviour to make teams function more like shared user accounts.
 * The "pad creation screen" which is displayed to registered users when they first create a pad will no longer remember the settings used when they last created a pad. While this behaviour was intended to streamline the process of creating documents, in practice it led to some user's documents getting deleted because they didn't realize they were set to automatically expire. If you prefer not to use the defaults (owned, non-expiring) then you'll have to click a few more times to create a document, but we think that's a worthwhile tradeoff to avoid data loss.
 
-Bug fixes:  
+Bug fixes:
 
 * Hitting _ctrl-A_ in the drive used to select lots of the page's elements which had no business being selected. Now it will select the contents of the directory currently being displayed.
 * Due to some complications in OnlyOffice (which we use for spreadsheets) remote updates made to a sheet were not displayed for users who had opened the document in "view mode". We still don't have the means to apply these remote changes in real-time, but we now prompt users to click a button to refresh the editor (not the full page) to display the latest document state.
@@ -2254,25 +2416,25 @@ Bug fixes:
 * We noticed that the zip file constructed in the browser when you downloaded a subtree of a shared folder in your drive contained the correct directory structure but did not contain the files that were supposed to be there. This has been fixed.
 * Finally, we've tweaked our styles to use more specific CSS selectors to prevent a variety of styles from being accidentally applied to the wrong elements. This should make the platform a little easier to maintain and help us improve the visual consistency of a variety of elements on different pages.
 
-To update from 3.19.0 to 3.19.1:  
+To update from 3.19.0 to 3.19.1:
 
 1. Stop your server
 2. Get the latest code with `git checkout 3.19.1`
 3. Restart your server
 
-If you're updating from anything other than 3.19.0 you may need other clientside dependencies (available with `bower update` and `npm i`).  
+If you're updating from anything other than 3.19.0 you may need other clientside dependencies (available with `bower update` and `npm i`).
 
 # Thylacine release (3.19.0)
 
 ## Goals
 
-The intent of this release was to catch up on our backlog of bug fixes and minor usability improvements.  
+The intent of this release was to catch up on our backlog of bug fixes and minor usability improvements.
 
 ## Update notes
 
-This release features an update to our clientside dependencies.  
+This release features an update to our clientside dependencies.
 
-To update to 3.19.0 from 3.18.1:  
+To update to 3.19.0 from 3.18.1:
 
 1. Stop your server
 2. Get the latest code with git
@@ -2317,17 +2479,17 @@ To update to 3.19.0 from 3.18.1:
 
 # Smilodon's revenge (3.18.1)
 
-Our next major release (3.19.0) is still a few weeks away.  
-In the meantime we've been working on some minor improvements and bug fixes that we wanted to ship as soon as possible.  
+Our next major release (3.19.0) is still a few weeks away.
+In the meantime we've been working on some minor improvements and bug fixes that we wanted to ship as soon as possible.
 
-New features:  
+New features:
 
 * Rich text pads can now be exported to .doc format. A few features don't translate well to the exported format (some fonts, embedded videos and pdfs), but for the most part your documents should work
 * Items in the "Recent pads" section of your drive can now be dragged to other folders via the filesystem tree UI
 * The user admin menu (found in the top-right corner) now includes an option to display the current version of the CryptPad instance you're using. We plan to add some more information here in the near future.
 * The kanban app now offers better support for editing markdown within cards with autocompleted parentheses. We've also added support for embedded media, allowing users to drag images and other content into the card content editor.
 
-Bug fixes:  
+Bug fixes:
 
 * Account deletion via the settings page works once again
 * Some small layout and usability issues in the drive have been addressed
@@ -2339,7 +2501,7 @@ Bug fixes:
 * We've updated the parameters of the XLSX import/export functionality to prevent an "out of memory" error that primarily affected large spreadsheets. It should now allocate more memory instead of failing silently.
 * Finally, members of a team can now directly share or transfer ownership of a document owned by their team to their own account without having to go through the additional steps of offering it to themself and accepting the offer.
 
-Updating from 3.18.0 to 3.18.1 is pretty standard:  
+Updating from 3.18.0 to 3.18.1 is pretty standard:
 
 1. Stop your server
 2. Get the latest code with git
@@ -2349,17 +2511,17 @@ Updating from 3.18.0 to 3.18.1 is pretty standard:
 
 ## Goals
 
-This is a big one! A lot of people are going to love it and a few are probably going to hate it.  
+This is a big one! A lot of people are going to love it and a few are probably going to hate it.
 
-This release introduces some major changes to our apps' appearances with the intent of making it easier to use, easier for us to support, and easier to maintain.  
+This release introduces some major changes to our apps' appearances with the intent of making it easier to use, easier for us to support, and easier to maintain.
 
 ## Update notes
 
-If you're using a mostly standard CryptPad installation this should be a rather easy update.  
+If you're using a mostly standard CryptPad installation this should be a rather easy update.
 
-If you've customized your styles, particularly for the purpose of overriding the default colors, you may encounter some problems. **We recommend that you test this version in a staging environment** before deploying to ensure that it is compatible with your modifications.  
+If you've customized your styles, particularly for the purpose of overriding the default colors, you may encounter some problems. **We recommend that you test this version in a staging environment** before deploying to ensure that it is compatible with your modifications.
 
-Otherwise, update to 3.18.0 from 3.17.0 in the following manner:  
+Otherwise, update to 3.18.0 from 3.17.0 in the following manner:
 
 1. stop your server
 2. fetch the latest code with git
@@ -2386,13 +2548,13 @@ Otherwise, update to 3.18.0 from 3.17.0 in the following manner:
 
 # RedGazelle's revenge release (3.17.1)
 
-In recent months a growing amount of our time has been going towards answering support tickets, emails, and GitHub issues. This has made it a little more difficult to also maintain a bi-weekly release schedule, since there's some overhead involved in deploying our latest code and producing release notes.  
+In recent months a growing amount of our time has been going towards answering support tickets, emails, and GitHub issues. This has made it a little more difficult to also maintain a bi-weekly release schedule, since there's some overhead involved in deploying our latest code and producing release notes.
 
-To ease our workload, we've decided to switch to producing a full release every three weeks, with an optional patch release at some point in the middle. Patch releases may fix major issues that can't wait three weeks or may simply consist of a few minor fixes that are trivial to deploy.  
+To ease our workload, we've decided to switch to producing a full release every three weeks, with an optional patch release at some point in the middle. Patch releases may fix major issues that can't wait three weeks or may simply consist of a few minor fixes that are trivial to deploy.
 
-This release fixes a few spreadsheet issues and introduces a more responsive layout for user drives in list mode.  
+This release fixes a few spreadsheet issues and introduces a more responsive layout for user drives in list mode.
 
-Updating to 3.17.1 from 3.17.0 is pretty standard:  
+Updating to 3.17.1 from 3.17.0 is pretty standard:
 
 1. Stop your server
 2. Get the latest code with git
@@ -2402,25 +2564,25 @@ Updating to 3.17.1 from 3.17.0 is pretty standard:
 
 ## Goals
 
-Our goal for this release was to introduce a first version of comments and mentions in our rich text editor as a part of a second R&D project funded by [NLnet](https://nlnet.nl/). We also received the results of an "accessibility audit" that was conducted as a part of our first NLnet PET project and so we've begun to integrate the auditor's feedback into the platform.  
+Our goal for this release was to introduce a first version of comments and mentions in our rich text editor as a part of a second R&D project funded by [NLnet](https://nlnet.nl/). We also received the results of an "accessibility audit" that was conducted as a part of our first NLnet PET project and so we've begun to integrate the auditor's feedback into the platform.
 
-Otherwise we've continued with our major goal of continuing to support a growing number of users on our instance via server improvements (without introducing any regressions).  
+Otherwise we've continued with our major goal of continuing to support a growing number of users on our instance via server improvements (without introducing any regressions).
 
 ## Update notes
 
-The most drastic change in this release is that we've removed all docker-related files from the platform's repository. These files were all added via community contributions. Having them in the main repo gave the impression that we support installation via docker (which we do not).  
+The most drastic change in this release is that we've removed all docker-related files from the platform's repository. These files were all added via community contributions. Having them in the main repo gave the impression that we support installation via docker (which we do not).
 
-Docker-related files can now be found in the community-support [cryptpad-docker](https://github.com/cryptpad/cryptpad-docker/) repository.  
-If you have an existing instance that you've installed using docker and you'd like to update, you may review the [migration guide](https://github.com/cryptpad/cryptpad-docker/blob/master/MIGRATION.md). If you encounter any problems in the process we advise that you create an issue in the repository's issue-tracker.  
+Docker-related files can now be found in the community-support [cryptpad-docker](https://github.com/cryptpad/cryptpad-docker/) repository.
+If you have an existing instance that you've installed using docker and you'd like to update, you may review the [migration guide](https://github.com/cryptpad/cryptpad-docker/blob/master/MIGRATION.md). If you encounter any problems in the process we advise that you create an issue in the repository's issue-tracker.
 
-Once again, this repository is **community-maintained**. If you are using this repository then _you are a part of the community_! Bug reports are useful, but fixes are even better!  
+Once again, this repository is **community-maintained**. If you are using this repository then _you are a part of the community_! Bug reports are useful, but fixes are even better!
 
-Otherwise, this is a fairly standard release. We've updated two of our client-side dependencies:  
+Otherwise, this is a fairly standard release. We've updated two of our client-side dependencies:
 
 1. ChainPad features a memory management optimization which is particularly relevant to editing very large documents or loading a drive with a large number of files. In one test we were able to reduce memory consumption in Chrome from 1.7GB to 20MB.
 2. CKEditor (the third-party library we use for our rich-text editor) has been updated so that we could make use of some more recent APIs for the _comments_ feature.
 
-To update from **3.16.0** to **3.17.0**:  
+To update from **3.16.0** to **3.17.0**:
 
 1. Stop your server
 2. Fetch the latest source with git
@@ -2450,15 +2612,15 @@ To update from **3.16.0** to **3.17.0**:
 
 ## Goals
 
-We've continued to keep a close eye on server performance since our last release while making minimal changes. Our goal for this release has been to improve server scalability further while also addressing user needs with updates to our client code.  
+We've continued to keep a close eye on server performance since our last release while making minimal changes. Our goal for this release has been to improve server scalability further while also addressing user needs with updates to our client code.
 
-We were pleasantly surprised to receive a pull request implementing a basic version of [author colors](https://github.com/cryptpad/cryptpad/issues/41) in our code editor. Since it was nearly ready to go we set some time aside to polish it up a little bit to include it in this release.  
+We were pleasantly surprised to receive a pull request implementing a basic version of [author colors](https://github.com/cryptpad/cryptpad/issues/41) in our code editor. Since it was nearly ready to go we set some time aside to polish it up a little bit to include it in this release.
 
 ## Update notes
 
-We've updated the example nginx config in order to include an `Access-Control-Allow-Origin` header that was not included. We've also added a new configuration point in response to [this issue](https://github.com/cryptpad/cryptpad/issues/529) about the server's child processes using too many threads. Administrators may not set a maximum number of child processes via `config.js` using `maxWorkers: <number of child processes>`. We recommend using one less than the number of available cores, though one worker should be sufficient as long as your server is not under heavy load.  
+We've updated the example nginx config in order to include an `Access-Control-Allow-Origin` header that was not included. We've also added a new configuration point in response to [this issue](https://github.com/cryptpad/cryptpad/issues/529) about the server's child processes using too many threads. Administrators may not set a maximum number of child processes via `config.js` using `maxWorkers: <number of child processes>`. We recommend using one less than the number of available cores, though one worker should be sufficient as long as your server is not under heavy load.
 
-As usual, updating from the previous release can be accomplished by:  
+As usual, updating from the previous release can be accomplished by:
 
 1. stopping your server
 2. pulling the latest code with git
@@ -2491,13 +2653,13 @@ As usual, updating from the previous release can be accomplished by:
 
 ## Goals
 
-Our plan for this release was to allow our server's code to stabilize after a prologued period of major changes. The massive surge of new users on cryptpad.fr forced us to change our plans and focus instead on increasing performance and scalability of our serverside code and its supporting infrastructure. Most of this release's changes have been thoroughly tested as they've been deployed to our instance on an ongoing basis, however, we're still looking forward to stabilizing as planned.  
+Our plan for this release was to allow our server's code to stabilize after a prologued period of major changes. The massive surge of new users on cryptpad.fr forced us to change our plans and focus instead on increasing performance and scalability of our serverside code and its supporting infrastructure. Most of this release's changes have been thoroughly tested as they've been deployed to our instance on an ongoing basis, however, we're still looking forward to stabilizing as planned.
 
-We also ended up making significant improvements to our clientside code, since the increased load on the server seemed to exacerbate a few race conditions which occurred less frequently under the previous circumstances.  
+We also ended up making significant improvements to our clientside code, since the increased load on the server seemed to exacerbate a few race conditions which occurred less frequently under the previous circumstances.
 
 ## Update notes
 
-Updating from version 3.14.0 should follow the usual process:  
+Updating from version 3.14.0 should follow the usual process:
 
 1. stop your server
 2. fetch the latest code with git
@@ -2505,7 +2667,7 @@ Updating from version 3.14.0 should follow the usual process:
 4. install serverside dependencies with `npm i`
 5. start your server
 
-You may notice that the server now launches a number of child processes named `crypto-worker.js` and `db-worker.js`. These worker processes make use of however many cores your server has available to perform more CPU-intensive tasks in parallel.  
+You may notice that the server now launches a number of child processes named `crypto-worker.js` and `db-worker.js`. These worker processes make use of however many cores your server has available to perform more CPU-intensive tasks in parallel.
 
 ## Features
 
@@ -2521,7 +2683,7 @@ You may notice that the server now launches a number of child processes named `c
 
 ## Bug fixes
 
-This release contains fixes for a lot of bugs. We'll provide a brief overview, but in the interest of putting more time towards development I'll just put my strong recommendation that you update.  
+This release contains fixes for a lot of bugs. We'll provide a brief overview, but in the interest of putting more time towards development I'll just put my strong recommendation that you update.
 
 * The server process didn't always close file descriptors that it opened, resulting in an EMFILE error when the system ran out of available file descriptors. Now it closes them.
 * The server also kept an unbounded amount of data in an in-memory cache under certain circumstances. Now it doesn't.
@@ -2538,15 +2700,15 @@ This release contains fixes for a lot of bugs. We'll provide a brief overview, b
 
 ## Goals
 
-We planned a one-week release cycle in order to finish up some major features that were already in development during our last release.  
+We planned a one-week release cycle in order to finish up some major features that were already in development during our last release.
 
-In the meantime, the reaction to the COVID-19 pandemic has resulted in a greatly increased load on our servers, so we've begun to focus on improving stability to ensure that we are able to keep up with demand.  
+In the meantime, the reaction to the COVID-19 pandemic has resulted in a greatly increased load on our servers, so we've begun to focus on improving stability to ensure that we are able to keep up with demand.
 
 ## Update notes
 
-We had some trouble during the week of March 9th, 2020, as the CryptPad.fr server started throwing EMFILE errors. This means that it was trying to open new files (for reading or writing) but there were too many files open already. We've added some new code to help debug the issue, but there is not yet a fix in place. The maximum number of open files on our host OS had been increased by several orders of magnitude (several years ago) but we're now aware that the systemd service file that launches the API server does not respect this global limit. As such, we've updated the example service file to indicate how you can update this limit yourself. For an example of how to update this limit at the OS level, see this page: https://docs.oracle.com/cd/E19623-01/820-6168/file-descriptor-requirements.html  
+We had some trouble during the week of March 9th, 2020, as the CryptPad.fr server started throwing EMFILE errors. This means that it was trying to open new files (for reading or writing) but there were too many files open already. We've added some new code to help debug the issue, but there is not yet a fix in place. The maximum number of open files on our host OS had been increased by several orders of magnitude (several years ago) but we're now aware that the systemd service file that launches the API server does not respect this global limit. As such, we've updated the example service file to indicate how you can update this limit yourself. For an example of how to update this limit at the OS level, see this page: https://docs.oracle.com/cd/E19623-01/820-6168/file-descriptor-requirements.html
 
-Otherwise, updating from 3.13.0 to 3.14.0 is as usual:  
+Otherwise, updating from 3.13.0 to 3.14.0 is as usual:
 
 1. stop your server
 2. fetch the latest source
@@ -2556,7 +2718,7 @@ Otherwise, updating from 3.13.0 to 3.14.0 is as usual:
 
 ## Features
 
-We're very happy to announce a major update to our kanban application! We've made a lot of changes, but the most notables ones are:  
+We're very happy to announce a major update to our kanban application! We've made a lot of changes, but the most notables ones are:
 
 * the ability to add markdown content to your cards and edit it collaboratively in real-time
 * tags on cards and the ability to filter cards by tags at the top of the application
@@ -2566,7 +2728,7 @@ We're very happy to announce a major update to our kanban application! We've mad
 * a smaller palette of pre-chosen colors for cards and boards instead of a color-picker, to make it easier to choose matching colors for tasks
 * the ability to drag cards and boards to the trash instead of having to click a small X and confirm their deletion
 
-We've also improved message throughput for our server by splitting cryptographic signature validation into separate processes. On a quad core server this means you should be able to handle (roughly) four times the messages.  
+We've also improved message throughput for our server by splitting cryptographic signature validation into separate processes. On a quad core server this means you should be able to handle (roughly) four times the messages.
 
 ## Bug fixes
 
@@ -2585,39 +2747,39 @@ We've also improved message throughput for our server by splitting cryptographic
 
 ## Goals
 
-This release cycle we prioritized the completion of "access lists", a major feature that we're excited to introduce.  
+This release cycle we prioritized the completion of "access lists", a major feature that we're excited to introduce.
 
 ## Update notes
 
-Nearly every week (sometimes more than once) we end up taking time away from development to help administrators to configure their CryptPad instances. We're happy to see more instances popping up, but ideally we'd like to spend more of our time working on new features. With this in mind we devoted some time to simplify instance configuration and to clarify some points where people commonly have difficulty.  
+Nearly every week (sometimes more than once) we end up taking time away from development to help administrators to configure their CryptPad instances. We're happy to see more instances popping up, but ideally we'd like to spend more of our time working on new features. With this in mind we devoted some time to simplify instance configuration and to clarify some points where people commonly have difficulty.
 
-If you review `cryptpad/config.example.js` you'll notice it is significantly smaller than it was last release.  
-Old configuration files should be backwards compatible (if you copied `config.example.js` to `config.js` in order to customize it).  
-The example has been reorganized so that the most important parts (which people seemed to miss most of the time) are at the top.  
-Most of the fields which were defined within the config file now have defaults defined within the server itself.  
-If you supply these values they will override the default, but for the most part they can be removed.  
+If you review `cryptpad/config.example.js` you'll notice it is significantly smaller than it was last release.
+Old configuration files should be backwards compatible (if you copied `config.example.js` to `config.js` in order to customize it).
+The example has been reorganized so that the most important parts (which people seemed to miss most of the time) are at the top.
+Most of the fields which were defined within the config file now have defaults defined within the server itself.
+If you supply these values they will override the default, but for the most part they can be removed.
 
-We advise that you read the comments at the top of the example, in particular the points related to `httpUnsafeOrigin` and `httpSafeOrigin` which are used to protect users' cryptographic keys in the event of a cross-site scripting (XSS) vulnerability.  
-If these values are not correctly set then your users will not benefit from all the security measures we've spent lots of time implemented.  
+We advise that you read the comments at the top of the example, in particular the points related to `httpUnsafeOrigin` and `httpSafeOrigin` which are used to protect users' cryptographic keys in the event of a cross-site scripting (XSS) vulnerability.
+If these values are not correctly set then your users will not benefit from all the security measures we've spent lots of time implemented.
 
-A lot of the fields that were present as modifiable defaults have been removed or commented out in the example config.  
-If you supply them then they will override the default behaviour, however, you probably won't need to and doing so might break important functionality.  
-Content-Security Policy (CSP) definitions should be safe to remove, as should `httpAddress`, `httpPort`, and `httpSafePort` (unless you need to run the nodejs API server on an address other than `localhost` or port 3000.  
+A lot of the fields that were present as modifiable defaults have been removed or commented out in the example config.
+If you supply them then they will override the default behaviour, however, you probably won't need to and doing so might break important functionality.
+Content-Security Policy (CSP) definitions should be safe to remove, as should `httpAddress`, `httpPort`, and `httpSafePort` (unless you need to run the nodejs API server on an address other than `localhost` or port 3000.
 
-Up until now it's been possible for administrators to allow users to pay for accounts (on their server) via https://accounts.cryptpad.fr.  
-Our intent was to securely handle payment and then split the proceeds between ourselves and the instance's administrator.  
-In practice this just created extra work for us because we ended up having to contact admins, all of whom have opted to treat the subscription as a donation to support development.  
-As such we have disabled the ability of users to pay for premium subscriptions (on https://accounts.cryptpad.fr) for any instance other than our own.  
+Up until now it's been possible for administrators to allow users to pay for accounts (on their server) via https://accounts.cryptpad.fr.
+Our intent was to securely handle payment and then split the proceeds between ourselves and the instance's administrator.
+In practice this just created extra work for us because we ended up having to contact admins, all of whom have opted to treat the subscription as a donation to support development.
+As such we have disabled the ability of users to pay for premium subscriptions (on https://accounts.cryptpad.fr) for any instance other than our own.
 
-Servers with premium subscriptions enabled were configured to check whether anyone had subscribed to a premium account by querying our accounts server on a daily basis.  
-We've left this daily check in place despite premium subscriptions being disabled because it informs us how many third-party instances exist and what versions they are running.  
-We don't sell or share this information with anyone, but it is useful to us because it informs us what older data structures we have to continue to support.  
-For instance, we retain code for migrating documents to newer data formats as long as we know that there are still instances that have not run those migrations.  
-We also cite the number of third-party instances when applying for grants as an indicator of the value of funding our project.  
-In any case, you can disable this daily check-in by setting `blockDailyCheck` to `true` in `config/config.js`.  
+Servers with premium subscriptions enabled were configured to check whether anyone had subscribed to a premium account by querying our accounts server on a daily basis.
+We've left this daily check in place despite premium subscriptions being disabled because it informs us how many third-party instances exist and what versions they are running.
+We don't sell or share this information with anyone, but it is useful to us because it informs us what older data structures we have to continue to support.
+For instance, we retain code for migrating documents to newer data formats as long as we know that there are still instances that have not run those migrations.
+We also cite the number of third-party instances when applying for grants as an indicator of the value of funding our project.
+In any case, you can disable this daily check-in by setting `blockDailyCheck` to `true` in `config/config.js`.
 
-Finally, we've implemented the ability to set a higher limit on the maximum size of uploaded files for premium users (paying users on CryptPad.fr and users with entries in `customLimits` on other instances).  
-Set this limit as a number (of bytes) with `premiumUploadSize` in your config file.  
+Finally, we've implemented the ability to set a higher limit on the maximum size of uploaded files for premium users (paying users on CryptPad.fr and users with entries in `customLimits` on other instances).
+Set this limit as a number (of bytes) with `premiumUploadSize` in your config file.
 
 ## Features
 
@@ -2639,21 +2801,21 @@ Set this limit as a number (of bytes) with `premiumUploadSize` in your config fi
 
 ## Goals
 
-As of our last release our 'history trim' functionality was almost ready to go. We took this release period to do some extensive testing and to prepare the 'allow list' functionality which will be included in our next release.  
+As of our last release our 'history trim' functionality was almost ready to go. We took this release period to do some extensive testing and to prepare the 'allow list' functionality which will be included in our next release.
 
-In the meantime, we also aimed to improve performance, add a few small but nice features, and fix a number of bugs.  
+In the meantime, we also aimed to improve performance, add a few small but nice features, and fix a number of bugs.
 
 ## Update notes
 
-This release includes updates to:  
+This release includes updates to:
 
 1. the server and its dependencies
 2. the example nginx configuration which we recommend for production installations
 3. the client code and its dependencies
 
-Our ability to debug CryptPad's usage of shared workers (on the client) has been complicated by the fact that Firefox's shared worker debugging panel was not working for our instance. We finally traced the problem back to a Content-Security Policy setting in our configuration file. The issue can be addressed by adding a `resource:` entry in the `connect-src` header. We've updated the example nginx config to reflect this. You can deploy this version of CryptPad without this modification, but without it our ability to debug and fix issues related to shared worker will be extremely limited.  
+Our ability to debug CryptPad's usage of shared workers (on the client) has been complicated by the fact that Firefox's shared worker debugging panel was not working for our instance. We finally traced the problem back to a Content-Security Policy setting in our configuration file. The issue can be addressed by adding a `resource:` entry in the `connect-src` header. We've updated the example nginx config to reflect this. You can deploy this version of CryptPad without this modification, but without it our ability to debug and fix issues related to shared worker will be extremely limited.
 
-Otherwise, updating from CryptPad v3.11.0 is pretty much the same as normal:  
+Otherwise, updating from CryptPad v3.11.0 is pretty much the same as normal:
 
 1. stop your server
 2. pull the latest code via git
@@ -2695,21 +2857,21 @@ Otherwise, updating from CryptPad v3.11.0 is pretty much the same as normal:
 
 ## Goals
 
-For this release we aimed to phase in two major features that we've been anticipating for a while: "history trim" and "safe links".  
+For this release we aimed to phase in two major features that we've been anticipating for a while: "history trim" and "safe links".
 
-History trim will allow users to remove the old versions of their documents which continue to count against their storage quotas. It will be formally introduced in our next release, even though its server-side components are all ready. We had to reorganize and modify a lot of our server code, so we wanted to wait and make sure there were no regressions in our existing functionality before moving ahead.  
+History trim will allow users to remove the old versions of their documents which continue to count against their storage quotas. It will be formally introduced in our next release, even though its server-side components are all ready. We had to reorganize and modify a lot of our server code, so we wanted to wait and make sure there were no regressions in our existing functionality before moving ahead.
 
-We're introducing the concept of "safe links" in CryptPad. Users can continue to share links to documents which include the cryptographic secrets necessary to read or edit them, but whenever possible we will replace those secrets with a document id. This will make it less likely for encryption keys to be exposed to third parties through invasive browser extensions or passive behaviour like history synchronization across devices.  
+We're introducing the concept of "safe links" in CryptPad. Users can continue to share links to documents which include the cryptographic secrets necessary to read or edit them, but whenever possible we will replace those secrets with a document id. This will make it less likely for encryption keys to be exposed to third parties through invasive browser extensions or passive behaviour like history synchronization across devices.
 
 ## Update notes
 
-This release features a few changes to the server:  
+This release features a few changes to the server:
 
 1. The "legal notice" feature which we included in the previous release turned out to be incorrect. We've since fixed it. We document this functionality [here](https://github.com/cryptpad/cryptpad/blob/e8b905282a2cde826ad9100dcad6b59a50c70e8b/www/common/application_config_internal.js#L35-L41), but you'll need to implement the recommended changes in `cryptpad/customize/application_config.js` for best effect.
 2. We've dropped server-side support for the `retainData` attribute in `cryptpad/config/config.js`. Previously you could configure CryptPad to delete unpinned, inactive data immediately or to move it into an archive for a configurable retention period. We've removed the option to delete data outright, since it introduces additional complexity in the server which we don't regularly test. We also figure that administrators will appreciate this default in the event of a bug which incorrectly flags data as inactive.
 3. We've fixed an incorrect line in [the example nginx configuration file](https://github.com/cryptpad/cryptpad/commit/1be01c07eee3431218d0b40a58164f60fec6df31). If you're using nginx as a reverse proxy for your CryptPad instance you should correct this line. It is used to set Content-Security Policy headers for the sandboxed-iframe which provides an additional layer of security for users in the event of a cross-site-scripting (XSS) vulnerability within CryptPad. If you find that your instance stops working after applying this change it is likely that you have not correctly configured your instance to use a secondary domain for its sandbox. See [this section of `cryptpad/config/config.example.js`](https://github.com/cryptpad/cryptpad/blob/c388641479128303363d8a4247f64230c08a7264/config/config.example.js#L94-L96) for more information.
 
-Otherwise, deploying the new code should be fairly simple:  
+Otherwise, deploying the new code should be fairly simple:
 
 1. stop your server
 2. fetch the latest code from the git repository
@@ -2741,19 +2903,19 @@ Otherwise, deploying the new code should be fairly simple:
 
 ## Goals
 
-For this release we aimed to finish the last major feature of our CryptPad Teams project as well as some long-awaited features that we've planned to demo at FOSDEM 2020.  
+For this release we aimed to finish the last major feature of our CryptPad Teams project as well as some long-awaited features that we've planned to demo at FOSDEM 2020.
 
 ## Update notes
 
-The CryptPad repository's _docs_ directory now includes a _systemd service file_ which you can use to ensure that CryptPad stays up and running. We're working on some step-by-step documentation to describe how to make use of it, but for now you can probably find some instructions by searching the web.  
+The CryptPad repository's _docs_ directory now includes a _systemd service file_ which you can use to ensure that CryptPad stays up and running. We're working on some step-by-step documentation to describe how to make use of it, but for now you can probably find some instructions by searching the web.
 
-We've also updated the provided example.nginx.conf to include a minor but important change to the CSP settings for our OnlyOffice spreadsheet integration.  
+We've also updated the provided example.nginx.conf to include a minor but important change to the CSP settings for our OnlyOffice spreadsheet integration.
 
-Up until now we have not been deleting unowned encrypted files from our server. As of this release `cryptpad/scripts/evict-inactive.js` includes logic to identify inactive, unpinned files. Identified files are first moved to your instance's _archive_ directory for a configurable period, after which they are deleted. This script is not run automatically, so if you haven't configured a cron job to run periodically then inactive files will not be removed. We recommend running the script once per day at a time when you expect your server to be relatively idle, since it consumes a non-negligible amount of server resources.  
+Up until now we have not been deleting unowned encrypted files from our server. As of this release `cryptpad/scripts/evict-inactive.js` includes logic to identify inactive, unpinned files. Identified files are first moved to your instance's _archive_ directory for a configurable period, after which they are deleted. This script is not run automatically, so if you haven't configured a cron job to run periodically then inactive files will not be removed. We recommend running the script once per day at a time when you expect your server to be relatively idle, since it consumes a non-negligible amount of server resources.
 
-Finally, in case you live in a political jurisdiction that requires web site administrators to display their legal information, we've made it easier to add a link to a custom page. See `cryptpad/www/common/application_config_internal.js` for details, particularly the comments above `config.imprint`.  
+Finally, in case you live in a political jurisdiction that requires web site administrators to display their legal information, we've made it easier to add a link to a custom page. See `cryptpad/www/common/application_config_internal.js` for details, particularly the comments above `config.imprint`.
 
-To update from v3.9.0:  
+To update from v3.9.0:
 
 1. update the CSP settings in your reverse proxy's configuration file to match those in nginx.example.conf
 
@@ -2798,17 +2960,17 @@ To update from v3.9.0:
 
 ## Goals
 
-Over time we've added many small configuration values to CryptPad's `config/config.js`.  
-As the number of possible variations grew it became increasingly difficult to test the platform and to provide clear documentation.  
-Ultimately this has made the platform more difficult to understand and consequently to host.  
+Over time we've added many small configuration values to CryptPad's `config/config.js`.
+As the number of possible variations grew it became increasingly difficult to test the platform and to provide clear documentation.
+Ultimately this has made the platform more difficult to understand and consequently to host.
 
-This release features relatively few bug fixes or features.  
-Instead, we took the calm period of the northern winter holidays to simplify the process of running a server and to begin working on some comprehensive documentation.  
+This release features relatively few bug fixes or features.
+Instead, we took the calm period of the northern winter holidays to simplify the process of running a server and to begin working on some comprehensive documentation.
 
 ## Update notes
 
-We have chosen to drop support for a number of parameters which we believe are not widely used.  
-Read the following list carefully before updating, as you could be relying on behaviour which no longer exists.  
+We have chosen to drop support for a number of parameters which we believe are not widely used.
+Read the following list carefully before updating, as you could be relying on behaviour which no longer exists.
 
 * Due to reasons of security and performance we have long advised that administrators make their instance available only over HTTPS provided by a reverse proxy such as nginx instead of loading TLS certificates via the node process itself. We have removed the option of serving HTTPS traffic directly from node by removing all support for HTTPS in this process.
 * Over the years many administrators have had to migrate their instance from one machine to another and have had difficulty identifying which directories were responsible for storing user data. We are beginning to migrate all user-generated data from the repository's root into the `data` directory as a new default, allowing for admins to migrate content by copying this single directory.
@@ -2837,7 +2999,7 @@ Read the following list carefully before updating, as you could be relying on be
   * if your instance is configured in the default manner you shouldn't actually need this value, as it will default to using `/cryptpad_websocket`.
   * if you have configured your instance to serve all static assets over one domain and to host your API server on another, set `externalWebsocketURL` to `wss://your-domain.tld/cryptpad_websocket` or whatever URL will be correctly forwarded to your API server.
 
-Once you have reviewed your configuration files and ensured that they are correct, update to 3.9.0 with the following steps:  
+Once you have reviewed your configuration files and ensured that they are correct, update to 3.9.0 with the following steps:
 
 1. take your server down
 2. get the latest code with `git pull origin master`
@@ -2859,26 +3021,26 @@ Once you have reviewed your configuration files and ensured that they are correc
 
 # IsolobodonPortoricensis release (3.8.0)
 
-We had some trouble finding an extinct animal whose name started with "I", and we had to resort to using a scientific name.  
-Despite this long name, this was a very short release cycle.  
-It's the last release of 2019, so we hope you like it!  
+We had some trouble finding an extinct animal whose name started with "I", and we had to resort to using a scientific name.
+Despite this long name, this was a very short release cycle.
+It's the last release of 2019, so we hope you like it!
 
 ## Goals
 
-During this release cycle we prioritized the mitigation of some social abuse vectors and the ability to invite users to a team via a link.  
-We have more improvements planned for both features, but we wanted to release what we had before the end of the year as our team is taking a little time off to recharge for 2020.  
+During this release cycle we prioritized the mitigation of some social abuse vectors and the ability to invite users to a team via a link.
+We have more improvements planned for both features, but we wanted to release what we had before the end of the year as our team is taking a little time off to recharge for 2020.
 
 ## Update notes
 
-This is a small and simple release. We made a very minor improvement to the server which will require a restart, but everything will still work if you choose not to.  
+This is a small and simple release. We made a very minor improvement to the server which will require a restart, but everything will still work if you choose not to.
 
-Update from 3.7.0 to 3.8.0 with the following procedure:  
+Update from 3.7.0 to 3.8.0 with the following procedure:
 
 1. Take your server down
 2. Get the latest code with `git pull origin master`
 3. Bring your server back up
 
-Or if you've set up your admin interface:  
+Or if you've set up your admin interface:
 
 1. Pull the latest code
 2. Click the admin panel's "Flush cache" button
@@ -2908,22 +3070,22 @@ Or if you've set up your admin interface:
 
 ## Goals
 
-As we are getting closer to the end of our CryptPad Teams project we planned to spend this release addressing some of the difficulties that users have reported regarding the usage of our newer social features.  
+As we are getting closer to the end of our CryptPad Teams project we planned to spend this release addressing some of the difficulties that users have reported regarding the usage of our newer social features.
 
 ## Update notes
 
-This release includes an upgrade to a newer version of JQuery which mitigates a minor vulnerability which could have contributed to the presence of an XSS attack. We weren't using the affected methods in the library, but there's no harm in updating as it will protect against the vulnerability affecting user data in the future.  
+This release includes an upgrade to a newer version of JQuery which mitigates a minor vulnerability which could have contributed to the presence of an XSS attack. We weren't using the affected methods in the library, but there's no harm in updating as it will protect against the vulnerability affecting user data in the future.
 
-We've also made some non-critical fixes to the server code, so you'll need to restart after pulling the latest code to take advantage of these improvements.  
+We've also made some non-critical fixes to the server code, so you'll need to restart after pulling the latest code to take advantage of these improvements.
 
-Update to 3.7.0 from 3.6.0 using the normal update procedure:  
+Update to 3.7.0 from 3.6.0 using the normal update procedure:
 
 1. stop your server
 2. pull the latest code via git
 3. run `bower update`
 4. restart your server
 
-If you're using an up-to-date version of NPM you should find that running `npm update` prints a notice that one of the packages you've installed is seeking funding. Entering `npm fund` will print information about our OpenCollective funding campaign. If you're running a slightly older version of NPM and you wish to support CryptPad's development you can do so by visiting https://opencollective.com/cryptpad .  
+If you're using an up-to-date version of NPM you should find that running `npm update` prints a notice that one of the packages you've installed is seeking funding. Entering `npm fund` will print information about our OpenCollective funding campaign. If you're running a slightly older version of NPM and you wish to support CryptPad's development you can do so by visiting https://opencollective.com/cryptpad .
 
 ## Features
 
@@ -2955,11 +3117,11 @@ If you're using an up-to-date version of NPM you should find that running `npm u
 
 ## Goals
 
-We're following up our last few releases of major core developments with an effort to improve reliability in some unstable areas and make some superficial tweaks to improve usability of some critical interfaces.  
+We're following up our last few releases of major core developments with an effort to improve reliability in some unstable areas and make some superficial tweaks to improve usability of some critical interfaces.
 
 ## Update notes
 
-Update to 3.6.0 from 3.5.0 using the normal update procedure:  
+Update to 3.6.0 from 3.5.0 using the normal update procedure:
 
 1. stop your server
 2. pull the latest code via git
@@ -2991,13 +3153,13 @@ Update to 3.6.0 from 3.5.0 using the normal update procedure:
 
 ## Goals
 
-This release features work that we've been planning for a long time centered around sharing collections of documents in a more granular way.  
+This release features work that we've been planning for a long time centered around sharing collections of documents in a more granular way.
 
-This is our first release since David Benqué joined our team, so in addition to these team-centric updates we also worked on integrating some UI/UX improvements.  
+This is our first release since David Benqué joined our team, so in addition to these team-centric updates we also worked on integrating some UI/UX improvements.
 
 ## Update notes
 
-Updating to 3.5.0 from 3.4.0 is simple.  
+Updating to 3.5.0 from 3.4.0 is simple.
 
 1. stop your server
 2. pull the latest code via git
@@ -3030,11 +3192,11 @@ Updating to 3.5.0 from 3.4.0 is simple.
 
 ## Goals
 
-This is a small release, focused on bug fixes and UI improvements, while we're finalizing bigger team-centric features planned for the next release.  
+This is a small release, focused on bug fixes and UI improvements, while we're finalizing bigger team-centric features planned for the next release.
 
 ## Update notes
 
-This is a pretty basic release:  
+This is a pretty basic release:
 
 1. stop your server
 2. pull the latest source code
@@ -3064,11 +3226,11 @@ This is a pretty basic release:
 
 ## Goals
 
-We've continued to prioritize the development of team-centric features in CryptPad. This release was focused on stabilizing the code for Teams and making them available to the users.  
+We've continued to prioritize the development of team-centric features in CryptPad. This release was focused on stabilizing the code for Teams and making them available to the users.
 
 ## Update notes
 
-This is a pretty basic release:  
+This is a pretty basic release:
 
 1. stop your server
 2. pull the latest source code
@@ -3076,7 +3238,7 @@ This is a pretty basic release:
 4. install the latest clientside dependencies with `bower update`
 5. restart your server
 
-Note: we've updated our Nginx configuration to fix any missing trailing slash in the URL for the newest applications: https://github.com/cryptpad/cryptpad/commit/d4e5b98c140c28417e008379ec7af7cdc235792b  
+Note: we've updated our Nginx configuration to fix any missing trailing slash in the URL for the newest applications: https://github.com/cryptpad/cryptpad/commit/d4e5b98c140c28417e008379ec7af7cdc235792b
 
 ## Features
 
@@ -3109,13 +3271,13 @@ Note: we've updated our Nginx configuration to fix any missing trailing slash in
 
 ## Goals
 
-We've continued to prioritize the development of team-centric features in CryptPad. This release implements most of the core functionality for fully-functional teams as a core part of CryptPad, though they're not quite ready for use just yet.  
+We've continued to prioritize the development of team-centric features in CryptPad. This release implements most of the core functionality for fully-functional teams as a core part of CryptPad, though they're not quite ready for use just yet.
 
-Beyond teams we did a little work to standardize some serverside APIs related to storage.  
+Beyond teams we did a little work to standardize some serverside APIs related to storage.
 
 ## Update notes
 
-This is a pretty basic release:  
+This is a pretty basic release:
 
 1. stop your server
 2. pull the latest source code
@@ -3147,7 +3309,7 @@ This is a pretty basic release:
 
 ## Goals
 
-For CryptPad 3.1.0 we prioritized our work on team-centric features. In particular we wanted to finish some improvements to make our notifications system more private and start making use of our prior work on editable pad metadata.  
+For CryptPad 3.1.0 we prioritized our work on team-centric features. In particular we wanted to finish some improvements to make our notifications system more private and start making use of our prior work on editable pad metadata.
 
 ## Update notes
 
@@ -3172,9 +3334,9 @@ For CryptPad 3.1.0 we prioritized our work on team-centric features. In particul
     * checking disk usage (global and for particular users)
     * loading a user's pin log
 
-Baiji depends on updates to clientside and serverside dependencies.  
+Baiji depends on updates to clientside and serverside dependencies.
 
-To update:  
+To update:
 
 1. Take down your server
 2. Pull the latest code
@@ -3216,18 +3378,18 @@ To update:
 
 # Aurochs release (v3.0.0)
 
-The move to 3.0 is mostly because we ran out of letters in the alphabet for our 2.0 release cycle.  
-Releases in this cycle will be named according to a theme of "extinct animals", a list which is unfortunately getting longer all the time.  
+The move to 3.0 is mostly because we ran out of letters in the alphabet for our 2.0 release cycle.
+Releases in this cycle will be named according to a theme of "extinct animals", a list which is unfortunately getting longer all the time.
 
 ## Goals
 
-In this release, we took more time than usual to make some big changes to the way the platform works, taking great care to maintain or improve stability.  
+In this release, we took more time than usual to make some big changes to the way the platform works, taking great care to maintain or improve stability.
 
-Up until now it has been necessary to create documents with the whatever settings they might require in the future, after which point it was not possible to change them. This release introduces the ability of the server to store and read amendments to document metadata. This will soon allow users of owned documents to delegate that ownership to their friends, add or modify expiration times, and make other modifications that will greatly improve their control over their data.  
+Up until now it has been necessary to create documents with the whatever settings they might require in the future, after which point it was not possible to change them. This release introduces the ability of the server to store and read amendments to document metadata. This will soon allow users of owned documents to delegate that ownership to their friends, add or modify expiration times, and make other modifications that will greatly improve their control over their data.
 
 ## Update notes
 
-During this development period we performed an extensive audit of our existing features and discovered a few potential security issues which we've addressed. We plan to announce the details of these flaws once administrators have had sufficient time to update their instances. If you are running a CryptPad instance, we advise you to update to 3.0.0 at your earliest opportunity.  
+During this development period we performed an extensive audit of our existing features and discovered a few potential security issues which we've addressed. We plan to announce the details of these flaws once administrators have had sufficient time to update their instances. If you are running a CryptPad instance, we advise you to update to 3.0.0 at your earliest opportunity.
 
 * It was brought to our attention that while expired pads were not being served beyond their expiration time, they were not being removed as intended. The cause was due to our failure to document a configuration point (`enableTaskScheduling`) that was added to make expiration optional in the example configuration file. We've removed this configuration point so that tasks like expiration will always be scheduled. Expiration of tasks was already integrated into the main server process, but we have added a new configuration point to the server in case any administrators would like to run the expiration tasks in a dedicated process for performance reasons. To disable the integration, change `disableIntegratedTasks` from `false` to `true` in the server configuration file.
 * This release depends on updates to three clientside libraries (`netflux-websocket@0.1.20`, `chainpad-netflux@0.9.0`, and `chainpad-listmap@0.7.0`). These changes are **not compatible with older versions of the server**. To update:
@@ -3311,11 +3473,11 @@ During this development period we performed an extensive audit of our existing f
 
 ## Goals
 
-This release coincided with XWiki's yearly seminar, so our regular schedule was interrupted a bit. We spent the time we had working towards implementing components of "editable metadata", which will allow pad owners to add new owners or transfer ownership to friends, among other things.  
+This release coincided with XWiki's yearly seminar, so our regular schedule was interrupted a bit. We spent the time we had working towards implementing components of "editable metadata", which will allow pad owners to add new owners or transfer ownership to friends, among other things.
 
-Otherwise we wanted to deploy a built-in support system to improve our ability to debug issues as well as to make it easier for users to report problems. Along the way we did our best to improve usability and fix small annoying bugs.  
+Otherwise we wanted to deploy a built-in support system to improve our ability to debug issues as well as to make it easier for users to report problems. Along the way we did our best to improve usability and fix small annoying bugs.
 
-As this is the last release in our 2.0 cycle, we're going to take some extra time to prepare some big features for our 3.0.0 release, which we expect to deploy on August 20th, 2019.  
+As this is the last release in our 2.0 cycle, we're going to take some extra time to prepare some big features for our 3.0.0 release, which we expect to deploy on August 20th, 2019.
 
 ## Update notes
 
@@ -3347,9 +3509,9 @@ As this is the last release in our 2.0 cycle, we're going to take some extra tim
 
 ## Goals
 
-We've recently had an intern join our team, so this release and those until the end of summer are likely to feature a lot of small usability fixes.  
-Otherwise, we've continued to develop team-centric features, particularly the way that registered users share pads with friends.  
-Finally, we prioritized the ability to archive files for a period instead of deleting them, which we've been planning for a while.  
+We've recently had an intern join our team, so this release and those until the end of summer are likely to feature a lot of small usability fixes.
+Otherwise, we've continued to develop team-centric features, particularly the way that registered users share pads with friends.
+Finally, we prioritized the ability to archive files for a period instead of deleting them, which we've been planning for a while.
 
 ## Update notes
 
@@ -3423,9 +3585,9 @@ Finally, we prioritized the ability to archive files for a period instead of del
 
 ## Goals
 
-For this release we wanted to focus on releasing a small set of features built on top of some foundations established in our last release. Since we were able to complete this feature set in less than a week, we decided to bundle them together so users could take benefit from them sooner.  
+For this release we wanted to focus on releasing a small set of features built on top of some foundations established in our last release. Since we were able to complete this feature set in less than a week, we decided to bundle them together so users could take benefit from them sooner.
 
-This work is being funded by the grant we received from NLnet foundation as a part of their PET (Privacy Enhancing Technology) fund. You can read all about this grant on our latest blog post (https://blog.cryptpad.fr/2019/05/27/Our-future-is-collaborative/).  
+This work is being funded by the grant we received from NLnet foundation as a part of their PET (Privacy Enhancing Technology) fund. You can read all about this grant on our latest blog post (https://blog.cryptpad.fr/2019/05/27/Our-future-is-collaborative/).
 
 ## Update notes
 
@@ -3447,7 +3609,7 @@ This work is being funded by the grant we received from NLnet foundation as a pa
 
 ## Goals
 
-This release coincided with a little time off for the team, so we planned to include only a few things. We recognized that the "Recent pads" view in the CryptDrive was not very useful for us because it did not include documents stored in _Shared folders_, so we decided to fix that. Otherwise, we're beginning a new project which we'll announce soon, so we've started working on some of its basic features.  
+This release coincided with a little time off for the team, so we planned to include only a few things. We recognized that the "Recent pads" view in the CryptDrive was not very useful for us because it did not include documents stored in _Shared folders_, so we decided to fix that. Otherwise, we're beginning a new project which we'll announce soon, so we've started working on some of its basic features.
 
 ## Update notes
 
@@ -3470,7 +3632,7 @@ This release coincided with a little time off for the team, so we planned to inc
 
 ## Goals
 
-For this release cycle we decided to fix some deep bugs and reduce the likelihood of regressions. This included not just errors in the code, but issues that were likely to arise from incorrect configuration. There's still some work to do, but the process of setting up a CryptPad server should be slightly easier now.  
+For this release cycle we decided to fix some deep bugs and reduce the likelihood of regressions. This included not just errors in the code, but issues that were likely to arise from incorrect configuration. There's still some work to do, but the process of setting up a CryptPad server should be slightly easier now.
 
 ## Update notes
 
@@ -3515,11 +3677,11 @@ For this release cycle we decided to fix some deep bugs and reduce the likelihoo
 
 ## Goals
 
-After all the features we've added over time, the root of the CryptPad repository had gotten to be something of a mess. We decided to spend a lot of this release period cleaning things up. We also prioritized some other features which make it easier to manage a CryptPad instance.  
+After all the features we've added over time, the root of the CryptPad repository had gotten to be something of a mess. We decided to spend a lot of this release period cleaning things up. We also prioritized some other features which make it easier to manage a CryptPad instance.
 
 ## Update notes
 
-This release makes a number of serverside changes. Read the following notes carefully before updating from an earlier version of CryptPad!  
+This release makes a number of serverside changes. Read the following notes carefully before updating from an earlier version of CryptPad!
 
 * We realized that docker images persisted `config.js` by copying it into the `customize` volume. Since customize is exposed by the webserver, this meant that potentially private information in the configuration file would be accessible over the web. We've moved `config.js` to a `cryptpad/config/`, along with `config.example.js` and modified the docker setup so that nothing in this folder will be exposed to the web.
   * Consequently, you'll need to move your own `config.js` to the new location in order for your server to read it when you restart.
@@ -3560,8 +3722,8 @@ This release makes a number of serverside changes. Read the following notes care
 
 ## Goals
 
-As we're very busy wrapping up the project which has funded CryptPad's development so far, this release is very small.  
-We've requested assistance improving the state of our translations, and received some very helpful contributions.  
+As we're very busy wrapping up the project which has funded CryptPad's development so far, this release is very small.
+We've requested assistance improving the state of our translations, and received some very helpful contributions.
 
 ## Update notes
 
@@ -3585,8 +3747,8 @@ We've requested assistance improving the state of our translations, and received
 
 ## Goals
 
-This release was developed during a busy period, so it contains fewer features than normal.  
-In particular we aimed to improve some aspects of our infrastructure, including finishing our deployment of _weblate_ for translations.  
+This release was developed during a busy period, so it contains fewer features than normal.
+In particular we aimed to improve some aspects of our infrastructure, including finishing our deployment of _weblate_ for translations.
 
 ## Features
 
@@ -3607,7 +3769,7 @@ In particular we aimed to improve some aspects of our infrastructure, including 
 
 ## Goals
 
-For this release we planned to resolve issues discovered in our beta release of encrypted spreadsheets, work towards providing an easier experience for contributors who wish to translate CryptPad, and resolve some minor usability issues that had been bothering us.  
+For this release we planned to resolve issues discovered in our beta release of encrypted spreadsheets, work towards providing an easier experience for contributors who wish to translate CryptPad, and resolve some minor usability issues that had been bothering us.
 
 ## Update notes
 
@@ -3638,12 +3800,12 @@ For this release we planned to resolve issues discovered in our beta release of 
 
 ## Goals
 
-We set aside an additional week for this release in order to deploy _encrypted spreadsheets_, which we've been working toward for a long time.  
-This feature combines our usual focus on privacy with OnlyOffice's spreadsheet editor.  
+We set aside an additional week for this release in order to deploy _encrypted spreadsheets_, which we've been working toward for a long time.
+This feature combines our usual focus on privacy with OnlyOffice's spreadsheet editor.
 
-At least for this first release we're still considering this functionality to be **highly experimental**.  
-We've done our best to make this new application fun and easy to use, however, it will still require a lot of work before it supports all the features that you can expect from our other editors.  
-We welcome you to try it out and report any difficulties you encounter, though you may want to wait before you start using it for all your financial documents.  
+At least for this first release we're still considering this functionality to be **highly experimental**.
+We've done our best to make this new application fun and easy to use, however, it will still require a lot of work before it supports all the features that you can expect from our other editors.
+We welcome you to try it out and report any difficulties you encounter, though you may want to wait before you start using it for all your financial documents.
 
 ## Update notes
 
@@ -3668,12 +3830,12 @@ We welcome you to try it out and report any difficulties you encounter, though y
 
 ## Goals
 
-For this release we planned to improve upon last release's introduction of the display of other users' cursors in our code and slide editors by adding the same functionality to our rich text editor.  
+For this release we planned to improve upon last release's introduction of the display of other users' cursors in our code and slide editors by adding the same functionality to our rich text editor.
 
-Beyond just producing software, the CryptPad team has also begun to produce peer-reviewed papers.  
-We have previously published [Private Document Editing with Some Trust](https://dl.acm.org/citation.cfm?doid=3209280.3209535) as a part of the 2018 proceedings of the ACM Symposium on Document Engineering.  
-We have recently been accepted for publication as a part of [HCI-CPT](http://2019.hci.international/hci-cpt): the first international conference on HCI (Human Computer Interaction) for cybersecurity, privacy and trust.  
-In preparation for this publication we've begun to collect additional usage data in order to inform the wider community of our findings regarding usability of cryptography-based collaboration systems.  
+Beyond just producing software, the CryptPad team has also begun to produce peer-reviewed papers.
+We have previously published [Private Document Editing with Some Trust](https://dl.acm.org/citation.cfm?doid=3209280.3209535) as a part of the 2018 proceedings of the ACM Symposium on Document Engineering.
+We have recently been accepted for publication as a part of [HCI-CPT](http://2019.hci.international/hci-cpt): the first international conference on HCI (Human Computer Interaction) for cybersecurity, privacy and trust.
+In preparation for this publication we've begun to collect additional usage data in order to inform the wider community of our findings regarding usability of cryptography-based collaboration systems.
 
 ## Update notes
 
@@ -3712,7 +3874,7 @@ In preparation for this publication we've begun to collect additional usage data
 
 ## Goals
 
-For this release we chose to focus on our in-pad chat functionality and the ability to show your cursor's position to other users in the same pad.  
+For this release we chose to focus on our in-pad chat functionality and the ability to show your cursor's position to other users in the same pad.
 
 ## Update notes
 
@@ -3739,8 +3901,8 @@ For this release we chose to focus on our in-pad chat functionality and the abil
 
 ## Goals
 
-This release features long-awaited improvements to our Rich Text Pad.  
-This work was done over a short period, and we're releasing it now so that users can take advantage of the improvements as soon as possible.  
+This release features long-awaited improvements to our Rich Text Pad.
+This work was done over a short period, and we're releasing it now so that users can take advantage of the improvements as soon as possible.
 
 ## Update notes
 
@@ -3764,7 +3926,7 @@ This work was done over a short period, and we're releasing it now so that users
 
 ## Goals
 
-For this release we aimed to address usability concerns in our Rich Text Pad, since it's our most widely used application. During this time we also received an unexpected security disclusure which we treated as being top priority.  
+For this release we aimed to address usability concerns in our Rich Text Pad, since it's our most widely used application. During this time we also received an unexpected security disclusure which we treated as being top priority.
 
 ## Update notes
 
@@ -3789,7 +3951,7 @@ For this release we aimed to address usability concerns in our Rich Text Pad, si
 
 ## Goals
 
-This release continued the work on better customization features for community instances. We also worked on usability improvements and UI issues.  
+This release continued the work on better customization features for community instances. We also worked on usability improvements and UI issues.
 
 ## Update notes
 
@@ -3819,7 +3981,7 @@ This release continued the work on better customization features for community i
 
 ## Goals
 
-This release continued to improve our _shared folder_ functionality, addressed user concerns about data portability, and implemented various features for customization for different CryptPad instances.  
+This release continued to improve our _shared folder_ functionality, addressed user concerns about data portability, and implemented various features for customization for different CryptPad instances.
 
 ## Update notes
 
@@ -3830,15 +3992,15 @@ This release continued to improve our _shared folder_ functionality, addressed u
 * Administrators can now do more to customize their CryptPad server, most notably via the ability to override specific translations. For example, the home page now features a short message which, by default, says that the server is a community-hosted instance of the CryptPad open-source project. On CryptPad.fr, we have replaced this text to talk about our organization. You can do the same by modifying files in `cryptpad/customize/translations/`, like so:
 
 ```
-define(['/common/translations/messages.js'], function (Messages) {  
-    // Replace the existing keys in your copied file here:  
-    Messages.home_host = "CryptPad.fr is the official instance of the open-source CryptPad project. It is administered by XWiki SAS, the employee-owned French company which created and maintains the product.";  
+define(['/common/translations/messages.js'], function (Messages) {
+    // Replace the existing keys in your copied file here:
+    Messages.home_host = "CryptPad.fr is the official instance of the open-source CryptPad project. It is administered by XWiki SAS, the employee-owned French company which created and maintains the product.";
 
-    return Messages;  
-});  
+    return Messages;
+});
 ```
 
-Simply change the text assigned to `home_host` with a blurb about your own organization. We'll update the wiki soon with more info about customization.  
+Simply change the text assigned to `home_host` with a blurb about your own organization. We'll update the wiki soon with more info about customization.
 
 ### Features
 
@@ -3866,11 +4028,11 @@ Simply change the text assigned to `home_host` with a blurb about your own organ
 
 ## Goals
 
-Since last release introduced several big features, this release was allocated towards usability improvements largely related to those new features.  
+Since last release introduced several big features, this release was allocated towards usability improvements largely related to those new features.
 
 ## Update notes
 
-This is a simple release. Just deploy the latest source.  
+This is a simple release. Just deploy the latest source.
 
 ### Features
 
@@ -3887,8 +4049,8 @@ This is a simple release. Just deploy the latest source.
 
 ## Goals
 
-We've been making use of some hidden features for a while, to make sure that they were safe to deploy.  
-This release, we worked on making _contextual chat_ and _shared folders_ available to everyone.  
+We've been making use of some hidden features for a while, to make sure that they were safe to deploy.
+This release, we worked on making _contextual chat_ and _shared folders_ available to everyone.
 
 ## Update notes
 
@@ -3914,12 +4076,12 @@ This release, we worked on making _contextual chat_ and _shared folders_ availab
 
 ## Goals
 
-This release overlapped with the publication and presentation of a paper written about CryptPad's architecture.  
-As such, we didn't plan for any very ambitious new features, and instead focused on bug fixes and some new workflows.  
+This release overlapped with the publication and presentation of a paper written about CryptPad's architecture.
+As such, we didn't plan for any very ambitious new features, and instead focused on bug fixes and some new workflows.
 
 ## Update notes
 
-This is a fairly simple release. Just download the latest commits and update your cache-busting string.  
+This is a fairly simple release. Just download the latest commits and update your cache-busting string.
 
 ### Features
 
@@ -3938,19 +4100,19 @@ This is a fairly simple release. Just download the latest commits and update you
 
 ## Goals
 
-For this release we focused on deploying two very large changes in CryptPad.  
-For one, we'd worked on a large refactoring of the system we use to compile CSS from LESS, so as to make it more efficient.  
-Secondly, we reworked the architecture we use for implementing the CryptDrive functionality, so as to integrate support for shared folders.  
+For this release we focused on deploying two very large changes in CryptPad.
+For one, we'd worked on a large refactoring of the system we use to compile CSS from LESS, so as to make it more efficient.
+Secondly, we reworked the architecture we use for implementing the CryptDrive functionality, so as to integrate support for shared folders.
 
 ## Update notes
 
-To test the _shared folders_ functionality, users can run the following command in their browser console:  
+To test the _shared folders_ functionality, users can run the following command in their browser console:
 
-`localStorage.CryptPad_SF = "1";`  
+`localStorage.CryptPad_SF = "1";`
 
-Alternatively, if the instance administrator would like to enable shared folders for all users, they can do so via their `/customize/application_config.js` file, by adding the following line:  
+Alternatively, if the instance administrator would like to enable shared folders for all users, they can do so via their `/customize/application_config.js` file, by adding the following line:
 
-`config.disableSharedFolders = true;`  
+`config.disableSharedFolders = true;`
 
 ### Features
 
@@ -3969,10 +4131,10 @@ Alternatively, if the instance administrator would like to enable shared folders
 
 ## Goals
 
-This release took longer than usual - three weeks instead of two - due to our plans involving a complete redesign of how login and registration function.  
-Any time we rework a critical system within CryptPad we're very cautious about deploying it, however, this update should bring considerable value for users.  
-From now on, users will be able to change their passwords without losing access to their old data, however, this is very different from _password recovery_.  
-While we will still be unable to help you if you have forgotten your password, this update will address our inability up until this point to change your password in the event that it has been compromised in some way.  
+This release took longer than usual - three weeks instead of two - due to our plans involving a complete redesign of how login and registration function.
+Any time we rework a critical system within CryptPad we're very cautious about deploying it, however, this update should bring considerable value for users.
+From now on, users will be able to change their passwords without losing access to their old data, however, this is very different from _password recovery_.
+While we will still be unable to help you if you have forgotten your password, this update will address our inability up until this point to change your password in the event that it has been compromised in some way.
 
 ## Update notes
 
@@ -4000,7 +4162,7 @@ While we will still be unable to help you if you have forgotten your password, t
 
 ## Goals
 
-For version 2.4.0 we chose to use our time to address difficulties that some users had, and to release some features which have been in development for some time. With the recent release of the _password-protected-pads_ feature, some users desired to be able to change the passwords that they'd already set, or to add a password to a pad retroactively. Other users wanted to recover information that had accidentally been deleted from their pads, but found that the history feature was difficult to use on networks with poor connectivity. Others still found that loading pads in general was too slow.  
+For version 2.4.0 we chose to use our time to address difficulties that some users had, and to release some features which have been in development for some time. With the recent release of the _password-protected-pads_ feature, some users desired to be able to change the passwords that they'd already set, or to add a password to a pad retroactively. Other users wanted to recover information that had accidentally been deleted from their pads, but found that the history feature was difficult to use on networks with poor connectivity. Others still found that loading pads in general was too slow.
 
 ## Update notes
 
@@ -4042,7 +4204,7 @@ For version 2.4.0 we chose to use our time to address difficulties that some use
 
 ## Goals
 
-For this release we wanted to deploy some new features related to our encrypted file functionality.  
+For this release we wanted to deploy some new features related to our encrypted file functionality.
 
 ## Update notes
 
@@ -4070,7 +4232,7 @@ For this release we wanted to deploy some new features related to our encrypted 
 
 ## Goals
 
-For this release we wanted to continue our efforts towards improving CryptPad usability. We've also added a new Kanban application which was in its final stage for quite some time.  
+For this release we wanted to continue our efforts towards improving CryptPad usability. We've also added a new Kanban application which was in its final stage for quite some time.
 
 ## What's new
 
@@ -4097,14 +4259,14 @@ For this release we wanted to continue our efforts towards improving CryptPad us
 
 ## Goals
 
-This is a small release due to a surplus of holidays in France during the Month of May.  
-We'd been planning to implement _Password-protected Pads_ for a long time, but we had not found a good opportunity to do so within our roadmap.  
-After a generous donation from one of our users who considered this a critical feature, we were able to dedicate some resources towards delivering it to all of our users.  
+This is a small release due to a surplus of holidays in France during the Month of May.
+We'd been planning to implement _Password-protected Pads_ for a long time, but we had not found a good opportunity to do so within our roadmap.
+After a generous donation from one of our users who considered this a critical feature, we were able to dedicate some resources towards delivering it to all of our users.
 
 ## Update notes
 
-This release depends on new APIs in our `chainpad-crypto` module. Additionally, we have fixed a critical bug in `chainpad-listmap`.  
-Admins will need to update their clientside dependencies with `bower update` when deploying.  
+This release depends on new APIs in our `chainpad-crypto` module. Additionally, we have fixed a critical bug in `chainpad-listmap`.
+Admins will need to update their clientside dependencies with `bower update` when deploying.
 
 ## What's new
 
@@ -4130,19 +4292,19 @@ Admins will need to update their clientside dependencies with `bower update` whe
 
 # Alpaca release (v2.0.0)
 
-This is the first release of our 2.0 cycle.  
+This is the first release of our 2.0 cycle.
 
-After careful consideration we've decided to name each release in this cycle after a cute animal, iterating through the letters of the Latin alphabet from A to Z.  
+After careful consideration we've decided to name each release in this cycle after a cute animal, iterating through the letters of the Latin alphabet from A to Z.
 
 ## Goals
 
-We wanted to update CryptPad's appearance once more, adopting the colors from our logo throughout more of its interface.  
+We wanted to update CryptPad's appearance once more, adopting the colors from our logo throughout more of its interface.
 
 ## Update notes
 
-This release coincides with the introduction of new APIs in ChainPad, so we recommend that adminstrators update their clientside dependencies by running `bower update`.  
+This release coincides with the introduction of new APIs in ChainPad, so we recommend that adminstrators update their clientside dependencies by running `bower update`.
 
-As recent updates have updated serverside dependencies, we also recommend that you run `npm update` and _restart your server_.  
+As recent updates have updated serverside dependencies, we also recommend that you run `npm update` and _restart your server_.
 
 ## What's new
 
@@ -4181,47 +4343,47 @@ As recent updates have updated serverside dependencies, we also recommend that y
 
 ## Goals
 
-For this release we wanted to direct our effort towards improving user experience issues surrounding user accounts.  
+For this release we wanted to direct our effort towards improving user experience issues surrounding user accounts.
 
 ## Update notes
 
-This release features breaking changes to some clientside dependencies. Administrators must make sure to deploy the  
-latest server with npm update before updating your clientside dependencies with bower update.  
+This release features breaking changes to some clientside dependencies. Administrators must make sure to deploy the
+latest server with npm update before updating your clientside dependencies with bower update.
 
 ## What's new
 
 * newly registered users are now able to delete their accounts automatically, along with any personal
-  information which had been created:  
+  information which had been created:
   * ToDo list data is automatically deleted, along with user profiles
   * all of a user's owned pads are also removed immediately in their account deletion process
 * users who predate account deletion will not benefit from automatic account deletion, since the server
-  does not have sufficient knowledge to guarantee that the information they could request to have deleted is strictly  
-  their own. For this reason, we've started working on scripts for validating user requests, so as to enable manual  
-  deletion by the server administrator.  
+  does not have sufficient knowledge to guarantee that the information they could request to have deleted is strictly
+  their own. For this reason, we've started working on scripts for validating user requests, so as to enable manual
+  deletion by the server administrator.
   * the script can be found in cryptpad/check-account-deletion.js, and it will be a part of an ongoing
-    effort to improve administrator tooling for situations like this  
+    effort to improve administrator tooling for situations like this
 * users who have not logged in, but wish to use their drive now see a ghost icon which they can use to create pads.
-  We hope this makes it easier to get started as a new user.  
+  We hope this makes it easier to get started as a new user.
 * REGistered users who have saved templates in their drives can now use those templates at any time, rather than only
-  using them to create new pads  
+  using them to create new pads
 * we've updated our file encryption code such that it does not interfere with other scripts which may be running at
-  the same time (synchronous blocking, for those who are interested)  
+  the same time (synchronous blocking, for those who are interested)
 * we now validate message signatures clientside, except when they are coming from the history keeper because clients
-  trust that the server has already validated those signatures  
+  trust that the server has already validated those signatures
 
 ## Bug fixes
 
 * we've removed some dependencies from our home page that were introduced when we updated to use bootstrap4
 * we now import fontawesome as css, and not less, which saves processing time and saves room in our localStorage cache
 * templates which do not have a 'type' attribute set are migrated such that the pads which are created with their
-  content are valid  
+  content are valid
 * thumbnail creation for pads is now disabled by default, due to poor performance
   * users can enable thumbnail creation in their settings page
 * we've fixed a significant bug in how our server handles checkpoints (special patches in history which contain the
-  entire pads content)  
+  entire pads content)
   * it was possible for two users to independently create checkpoints in close proximity while the document was in a
-    forked state. New users joining while the session was in this state would get stuck on one side of the fork,  
-    and could lose data if the users on the opposing fork overrode their changes  
+    forked state. New users joining while the session was in this state would get stuck on one side of the fork,
+    and could lose data if the users on the opposing fork overrode their changes
 * we've updated our tests, which have been failing for some time because their success conditions were no longer valid
 * while trying to register a previously registered user, users could cancel the prompt to login as that user.
-  If they did so, the registration form remained locked. This has been fixed.  
+  If they did so, the registration form remained locked. This has been fixed.

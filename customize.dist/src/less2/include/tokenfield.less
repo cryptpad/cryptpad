@@ -80,6 +80,10 @@
                 text-overflow: ellipsis;
                 padding-left: 4px;
                 vertical-align: middle;
+                outline: none;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
             }
             .close {
                 opacity: 1;

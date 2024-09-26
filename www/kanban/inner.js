@@ -22,6 +22,7 @@ define([
     'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',
+    '/common/TypingTests.js',
 
     'cm/mode/gfm/gfm',
     'cm/addon/edit/closebrackets',
@@ -54,7 +55,8 @@ define([
     ChainPad,
     CodeMirror,
     jKanban,
-    Export)
+    Export,
+    TypingTest)
 {
 
     var verbose = function (x) { console.log(x); };
@@ -185,7 +187,12 @@ define([
             update();
         };
 
-        var conflicts, conflictContainer, titleInput, tagsDiv, colors, text;
+        var colors = UIElements.makePalette(8, color => {
+            dataObject.color = color;
+            commit();
+        });
+
+        var conflicts, conflictContainer, titleInput, tagsDiv, text;
         var content = h('div', [
             conflictContainer = h('div#cp-kanban-edit-conflicts', [
                 h('div', Messages.kanban_conflicts),
@@ -200,7 +207,7 @@ define([
             h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
             tagsDiv = h('div#cp-kanban-edit-tags'),
             h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
-            colors = h('div#cp-kanban-edit-colors'),
+            colors,
         ]);
         var $tags = $(tagsDiv);
 
@@ -246,6 +253,10 @@ define([
         // Body
         var cm = SFCodeMirror.create("gfm", CodeMirror, text);
         var editor = cm.editor;
+        window.easyTest = function () {
+            var test = TypingTest.testCode(editor);
+            return test;
+        };
         editor.setOption('gutters', []);
         editor.setOption('lineNumbers', false);
         editor.setOption('readOnly', false);
@@ -362,11 +373,8 @@ define([
 
         // Colors
         var $colors = $(colors);
-        var palette = [''];
-        for (var i=1; i<=8; i++) { palette.push('color'+i); }
-        var selectedColor = '';
         var resetThemeClass = function () {
-            $colors.find('.cp-kanban-palette').each(function (i, el) {
+            $colors.find('.cp-palette-color').each(function (i, el) {
                 var $c = $(el);
                 $c.removeClass('cp-kanban-palette-card');
                 $c.removeClass('cp-kanban-palette-board');
@@ -377,31 +385,13 @@ define([
                 }
             });
         };
-        palette.forEach(function (color) {
-            var $color = $(h('span.cp-kanban-palette.fa'));
-            $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
-            $color.click(function () {
-                if (offline) { return; }
-                if (color === selectedColor) { return; }
-                selectedColor = color;
-                $colors.find('.cp-kanban-palette').removeClass('fa-check');
-                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-                $col.addClass('fa-check');
-
-                dataObject.color = color;
-                commit();
-            }).appendTo($colors);
-        });
         var color = {
             getValue: function () {
-                return selectedColor;
+                return colors.getValue();
             },
             setValue: function (color) {
                 resetThemeClass();
-                $colors.find('.cp-kanban-palette').removeClass('fa-check');
-                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
-                $col.addClass('fa-check');
-                selectedColor = color;
+                colors.setValue(color);
             }
         };
 
@@ -453,6 +443,7 @@ define([
 
             $modal.find('nav button.danger').prop('disabled', unlocked ? '' : 'disabled');
             offline = !unlocked;
+            colors.disable(offline);
         });
 
 
@@ -899,8 +890,9 @@ define([
         if (migrated) { framework.localChange(); }
 
         var addBoardDefault = document.getElementById('kanban-addboard');
+        let $addBoard = $(addBoardDefault).attr('tabindex', 0);
         $(addBoardDefault).attr('title', Messages.kanban_addBoard);
-        addBoardDefault.addEventListener('click', function () {
+        Util.onClickEnter($addBoard, function () {
             if (framework.isReadOnly() || framework.isLocked()) { return; }
             /*var counter = 1;
 
@@ -1223,6 +1215,8 @@ define([
 
                 var json = kanban.getBoardJSON(id) || kanban.getItemJSON(id);
                 var oldVal = json && json.title;
+
+                if (id === "new") { $el.remove(); }
 
                 return {
                     id: id,

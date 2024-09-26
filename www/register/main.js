@@ -175,7 +175,7 @@ define([
     anywhere else then we can deprecate them and make this a
     custom modal in common-interface (or here).  */
                 cancelClass: 'btn.btn-cancel.btn-register',
-                okClass: 'btn.btn-danger.btn-register',
+                okClass: 'btn.btn-danger.btn-register.btn-confirm',
                 reverseOrder: true,
                 done: function ($dialog) {
                     $dialog.find('> div').addClass('half');

@@ -367,6 +367,13 @@ define([
                 UI.log(Messages.saved);
             });
         });
+        $(addBtn).on('keydown', function () {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                event.stopPropagation();
+                $(addBtn).click();
+            }
+        });
 
         var called = false;
         redrawAll = function (reload) {
@@ -459,6 +466,9 @@ define([
 
         var setLock = function (locked) {
             $(link).find('.cp-overlay').toggle(locked);
+            $(link).find('.cp-usergrid-user').attr('tabindex', locked ? -1 : 0);
+            $(link).find('.cp-usergrid-filter input').prop('disabled', locked);
+            $(link).find('.cp-access-add').prop('disabled', locked);
         };
 
         // Remove owner column
@@ -713,6 +723,13 @@ define([
             }).nThen(function () {
                 UI.log(Messages.saved);
             });
+        });
+        $(addBtn).on('keydown', function () {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                event.stopPropagation();
+                $(addBtn).click();
+            }
         });
 
         var called = false;
@@ -1024,6 +1041,13 @@ define([
                             });
                         });
                     });
+                });
+                $(passwordOk).on('keydown', function (e) {
+                    if (e.keyCode === 13) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $(passwordOk).click();
+                    }
                 });
                 $d.append(changePass);
             }

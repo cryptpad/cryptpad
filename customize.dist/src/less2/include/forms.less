@@ -28,6 +28,9 @@
         }
         &.tui-full-calendar-content {
             font-size: @colortheme_app-font-size;
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
         }
         &[readonly] {
             //margin-top:1rem;
@@ -119,13 +122,37 @@
         }
     }
 
+    // The following palette container is just for the UI components
+    // The specific colors you want to show have to be defined in your app
+    // using the classes .cp-palette-nocolor .cp-palette-color1 .cp-palette-color2 etc.
+    div.cp-palette-container {
+        display: flex;
+        justify-content: space-between;
+        .cp-palette-color {
+            display: inline-block;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            text-align: center;
+            line-height: 30px;
+            color: @cp_kanban-fg;
+            border: 1px solid fade(@cp_kanban-fg, 40%);
+            &.fa-check { // tick on selected color
+                color: @cryptpad_text_col;
+            }
+            outline: none;
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
+        }
+    }
+
     button.btn {
         background-color: @cp_buttons-cancel;
         box-sizing: border-box;
-        outline: 0;
         align-items: center;
-        padding: 0 6px;
-        line-height: 36px;
+        line-height: 20px;
+        padding: 8px 6px;
         white-space: nowrap;
         text-align: center;
         text-transform: uppercase;
@@ -232,11 +259,9 @@
         }
 
 
-
-        &:focus {
-            //border: 1px dotted @alertify-base;
-            box-shadow: 0px 0px 5px @cp_buttons-primary !important;
-            outline: none;
+        outline: none;
+        &:focus-visible {
+            outline: @variables_focus_style;
         }
         &::-moz-focus-inner {
             border: 0;

@@ -128,9 +128,9 @@
                 position: absolute;
                 box-sizing: border-box;
             }
-            &:focus {
-                box-shadow: 0px 0px 5px @cp_checkmark-back1;
-                outline: none;
+            outline: none;
+            &:focus-visible {
+                outline: @variables_focus_style;
             }
         }
 
@@ -216,9 +216,9 @@
                 height: @checkmark-dim1;
                 height: var(--checkmark-dim1);
             }
-            &:focus {
-                box-shadow: 0px 0px 5px @cp_checkmark-back1;
-                outline: none;
+            outline: none;
+            &:focus-visible {
+                outline: @variables_focus_style;
             }
         }
 

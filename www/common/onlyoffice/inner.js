@@ -923,7 +923,10 @@ define([
         };
 
         const getMyOOIndex = function() {
-            return findUserByOOId(myOOId).index;
+            const user = findUserByOOId(myOOId);
+            return user
+                ? user.index
+                : content.ids.length; // Assign an unused id to read-only users
         };
 
         var getParticipants = function () {
@@ -1482,6 +1485,10 @@ define([
                             send({ type: "message" });
                             break;
                         case "saveChanges":
+                            if (readOnly) {
+                                return;
+                            }
+
                             // If we have unsaved data before reloading for a checkpoint...
                             if (APP.onStrictSaveChanges) {
                                 delete APP.unsavedLocks;

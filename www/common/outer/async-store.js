@@ -252,7 +252,7 @@ define([
             list.push(userChannel);
 
             if (store.data && store.data.blockId) {
-                //list.push(`${store.data.blockId}#block`); // NEXT 5.7.0?
+                list.push(`${store.data.blockId}#block`);
             }
 
             list.sort();
@@ -3027,6 +3027,8 @@ define([
                 // Make sure we have a valid user object before emitting cacheready
                 if (rt.proxy && !rt.proxy.drive) { return; }
 
+                returned.edPublic = rt.proxy.edPublic;
+
                 onCacheReady(clientId, function () {
                     if (typeof(cb) === "function") { cb(returned); }
                     onCacheReadyEvt.fire();
@@ -3060,6 +3062,8 @@ define([
                     drive[Constants.oldStorageKey] = [];
                 }
                 */
+
+                returned.edPublic = rt.proxy.edPublic;
                 // Drive already exist: return the existing drive, don't load data from legacy store
                 if (store.manager) {
                     // If a cache is loading, make sure it is complete before calling onReady

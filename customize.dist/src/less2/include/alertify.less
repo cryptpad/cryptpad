@@ -198,6 +198,12 @@
                         text-decoration: none;
                     }
                 }
+                .cp-usergrid-user, textarea, a, .fa-times {
+                    outline: none;
+                    &:focus-visible {
+                        outline: @variables_focus_style;
+                    }
+                }
             }
             .cp-alertify-type-container {
                 overflow: visible !important;
@@ -237,6 +243,10 @@
                                 }
                             }
                         }
+                        outline: none;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                        }
                     }
                     span.alertify-tabs-active {
                         background-color: @cp_alertify-fg !important;
@@ -263,6 +273,10 @@
 
             input {
                 .tools_placeholder-color();
+                outline: none;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
             }
 
             span.cp-password-container {

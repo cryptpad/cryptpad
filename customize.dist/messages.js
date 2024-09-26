@@ -5,15 +5,18 @@
 (function () {
 // add your module to this map so it gets used
 var map = {
+    'ar': 'اَلْعَرَبِيَّةُ',
     'ca': 'Català',
     'cs': 'Čeština',
     'de': 'Deutsch',
-    'el': 'Ελληνικά',
+    //'el': 'Ελληνικά',
     'es': 'Español',
+    'es_CU': 'Español cubano',
     'eu': 'Euskara',
     'fi': 'Suomi',
     'fr': 'Français',
     //'hi': 'हिन्दी',
+    'id': 'Bahasa Indonesia',
     'it': 'Italiano',
     'ja': '日本語',
     'nb': 'Norwegian Bokmål',
@@ -21,9 +24,9 @@ var map = {
     'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'pt-pt': 'Português do Portugal',
-    'ro': 'Română',
+    //'ro': 'Română',
     'ru': 'Русский',
-    //'sv': 'Svenska',
+    'sv': 'Svenska',
     //'te': 'తెలుగు',
     'uk': 'Українська',
     'zh': '中文(簡體)',
@@ -44,6 +47,7 @@ var getLanguage = Messages._getLanguage = function () {
                 (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
 };
 var language = getLanguage();
+window.cryptpadLanguage = language;
 
 // Translations files were migrated from requirejs modules to json.
 // To avoid asking every administrator to update their customized translation files,
@@ -87,6 +91,9 @@ define(req, function(AppConfig, Default, Language) {
         });
     }
 
+    let html = typeof(document) !== "undefined" && document.documentElement;
+    if (html) { html.setAttribute('lang', language); }
+
     var extend = function (a, b) {
         for (var k in b) {
             if (Array.isArray(b[k])) {
@@ -127,7 +134,6 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
-
 
     return Messages;
 

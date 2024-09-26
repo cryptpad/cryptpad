@@ -25,8 +25,12 @@ Files: .jshintrc
 Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
 License: AGPL-3.0-or-later
 
-Files: .lesshintrc
+Files: .stylelintrc.js
 Copyright: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+License: AGPL-3.0-or-later
+
+Files: scripts/tests/test-data/*
+Copyright: 2024 XWiki CryptPad Team <contact@cryptpad.org> and contributors
 License: AGPL-3.0-or-later
 
 ## Dependencies

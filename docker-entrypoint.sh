@@ -22,16 +22,16 @@ if [ ! -f "$CPAD_CONF" ]; then
          eg: docker run -v /path/to/config.js:/cryptpad/config/config.js \n\
          #################################################################### \n"
 
-	cp "$CPAD_HOME"/config/config.example.js "$CPAD_CONF"
+    cp "$CPAD_HOME"/config/config.example.js "$CPAD_CONF"
 
-	sed -i  -e "s@\(httpUnsafeOrigin:\).*[^,]@\1 '$CPAD_MAIN_DOMAIN'@" \
+    sed -i  -e "s@\(httpUnsafeOrigin:\).*[^,]@\1 '$CPAD_MAIN_DOMAIN'@" \
         -e "s@\(^ *\).*\(httpSafeOrigin:\).*[^,]@\1\2 '$CPAD_SANDBOX_DOMAIN'@" "$CPAD_CONF"
 fi
 
 cd $CPAD_HOME
 
 if [ "$CPAD_INSTALL_ONLYOFFICE" == "yes" ]; then
-	./install-onlyoffice.sh --accept-license
+	./install-onlyoffice.sh --accept-license --trust-repository
 fi
 
 npm run build

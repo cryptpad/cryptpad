@@ -112,6 +112,9 @@ define([
             var boardContainer = document.createElement('div');
             boardContainer.classList.add('kanban-container');
             boardContainerOuter.appendChild(boardContainer);
+            self.container = boardContainer;
+            //add boards
+            self.addBoards();
             var addBoard = document.createElement('div');
             addBoard.id = 'kanban-addboard';
             addBoard.innerHTML = '<i class="fa fa-plus"></i>';
@@ -126,9 +129,6 @@ define([
             trash.appendChild(trashBg);
             self.boardContainer.push(trash);
 
-            self.container = boardContainer;
-            //add boards
-            self.addBoards();
             //appends to container
             self.element.appendChild(boardContainerOuter);
             self.element.appendChild(trash);
@@ -717,12 +717,14 @@ define([
             //add button
             var addTopBoardItem = document.createElement('span');
             addTopBoardItem.classList.add('kanban-title-button');
+            $(addTopBoardItem).attr('tabindex', '0');
             addTopBoardItem.setAttribute('data-top', "1");
             addTopBoardItem.innerHTML = '<i class="cptools cptools-add-top">';
             footerBoard.appendChild(addTopBoardItem);
             __onAddItemClickHandler(addTopBoardItem);
             var addBoardItem = document.createElement('span');
             addBoardItem.classList.add('kanban-title-button');
+            $(addBoardItem).attr('tabindex', '0');
             addBoardItem.innerHTML = '<i class="cptools cptools-add-bottom">';
             footerBoard.appendChild(addBoardItem);
             __onAddItemClickHandler(addBoardItem);

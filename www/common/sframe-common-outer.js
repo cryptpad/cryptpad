@@ -78,6 +78,7 @@ define([
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
         $i.attr('allowfullscreen', 'true');
         $i.attr('allow', 'clipboard-write');
+        $i.attr('title', 'iframe');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -1082,7 +1083,7 @@ define([
                         Cryptpad.addSharedFolder(null, secret, cb);
                     } else {
                         var _data = {
-                            password: data.password,
+                            password: data.pw || data.password,
                             href: data.href,
                             channel: data.channel,
                             title: data.title,
@@ -1358,7 +1359,7 @@ define([
                                 var viewH = Utils.Hash.getViewHashFromKeys(_secret);
                                 var href = Utils.Hash.hashToHref(editH, parsed.type);
                                 var roHref = Utils.Hash.hashToHref(viewH, parsed.type);
-                                Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('password', pw, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('channel', chan, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());

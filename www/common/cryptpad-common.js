@@ -2619,7 +2619,8 @@ define([
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
                 lastVisit: Number(localStorage.lastVisit) || undefined,
-                blockId: blockId
+                blockId: blockId,
+                blockHash: blockHash
             };
             common.userHash = userHash || LocalStore.getUserHash();
 
@@ -2820,6 +2821,15 @@ define([
                         if (data.state === 'ALREADY_INIT') {
                             data = data.returned;
                             initFeedback(data.feedback);
+                        }
+
+                        if (data.edPublic) {
+                            if (Array.isArray(Config.adminKeys) &&
+                                    Config.adminKeys.includes(data.edPublic)) {
+                                // Doesn't provides extra-rights but may show
+                                // additional warnings in the UI
+                                localStorage.CP_admin = "1";
+                            }
                         }
 
                         if (data.loggedIn) {

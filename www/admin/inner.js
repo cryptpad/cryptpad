@@ -5,6 +5,7 @@
 define([
     'jquery',
     '/common/toolbar.js',
+    '/common/pad-types.js',
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
@@ -17,11 +18,11 @@ define([
     '/common/hyperscript.js',
     '/common/clipboard.js',
     'json.sortify',
-    '/customize/application_config.js',
     '/api/config',
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
-    '/common/hyperscript.js',
+    '/install/onboardscreen.js',
+
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -29,6 +30,7 @@ define([
 ], function(
     $,
     Toolbar,
+    PadTypes,
     nThen,
     SFCommon,
     UI,
@@ -41,11 +43,12 @@ define([
     h,
     Clipboard,
     Sortify,
-    AppConfig,
     ApiConfig,
     Instance,
-    Flatpickr
+    Flatpickr,
+    Onboarding,
 ) {
+
     var APP = window.APP = {};
 
     var Nacl = window.nacl;
@@ -88,6 +91,12 @@ define([
                 content: [
                     'enableembeds',
                     'forcemfa',
+                ]
+            },
+            'apps': { // Msg.admin_cat_apps
+                icon: 'fa  fa-wrench',
+                content: [
+                    'apps',
                 ]
             },
             'users' : { // Msg.admin_cat_users
@@ -161,6 +170,22 @@ define([
         };
 
         const blocks = sidebar.blocks;
+
+        // EXTENSION_POINT:ADMIN_CATEGORY
+        common.getExtensions('ADMIN_CATEGORY').forEach(ext => {
+            if (!ext || !ext.id || !ext.name || !ext.content) {
+                return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
+            }
+            if (categories[ext.id]) {
+                return console.error('Extension point ID already used', ext);
+            }
+            console.error(ext);
+            categories[ext.id] = {
+                icon: ext.icon,
+                name: ext.name,
+                content: ext.content
+            };
+        });
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -553,21 +578,36 @@ define([
                 return APP.instanceStatus.enforceMFA;
             },
             query: function (val, setState) {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'ADMIN_DECREE',
-                    data: ['ENFORCE_MFA', [val]]
-                }, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                    }
-                    APP.updateStatus(function () {
-                        setState(APP.instanceStatus.enforceMFA);
-                        flushCache();
+                var isChecked = APP.instanceStatus.enforceMFA;
+                function showConfirmation(isChecked, setState) {
+                    const confirmationContent = isChecked ? Messages.admin_mfa_confirm_disable : Messages.admin_mfa_confirm_enable;
+                    UI.confirm(confirmationContent, function (confirmed) {
+                        if (!confirmed) {
+                            // User canceled their changes, restore the checkbox value
+                            setState(isChecked);
+                            return;
+                        }
+                        // User confirmed their changes, call the command and update the state
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADMIN_DECREE',
+                            data: ['ENFORCE_MFA', [val]]
+                        }, function (e, response) {
+                            if (e || response.error) {
+                                UI.warn(Messages.error);
+                                console.error(e, response);
+                            } else {
+                                APP.updateStatus(function () {
+                                    setState(APP.instanceStatus.enforceMFA);
+                                    flushCache();
+                                });
+                            }
+                        });
                     });
-                });
-            },
+                }
+                showConfirmation(isChecked, setState);
+            }
         });
+
 
 
         var getInstanceString = function (attr) {
@@ -609,7 +649,6 @@ define([
                     UI.log(Messages._getKey('ui_saved', [Messages.admin_emailTitle]));
                 });
             });
-
             var nav = blocks.nav([button]);
 
             var form = blocks.form([
@@ -620,6 +659,35 @@ define([
 
             cb(form);
         });
+
+        sidebar.addItem('apps', function (cb) {
+            const appsToDisable = ApiConfig.appsToDisable || [];
+            const grid = Onboarding.createAppsGrid(appsToDisable);
+
+            var save = blocks.activeButton('primary', '', Messages.settings_save, function (done) {
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['DISABLE_APPS', appsToDisable]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        done(false);
+                        return;
+                    }
+                    flushCache();
+                    done(true);
+                    UI.log(Messages._getKey('ui_saved', [Messages.admin_appSelection]));
+                });
+            });
+
+            let form = blocks.form([
+                grid
+            ], blocks.nav([save]));
+
+            cb(form);
+        });
+
 
         sidebar.addItem('instance-info-notice', function(cb){
             var key = 'instance-info-notice';
@@ -790,7 +858,7 @@ define([
 
             var currentContainer = blocks.block([], 'cp-admin-customize-logo');
             let redraw = () => {
-                var current = h('img', {src: '/api/logo?'+(+new Date())});
+                var current = h('img', {src: '/api/logo?'+(+new Date()),alt:'Custom logo'}); // XXX
                 $(currentContainer).empty().append(current);
             };
             redraw();
@@ -905,7 +973,7 @@ define([
                 setColor(color, done);
             });
 
-            let $input = $(input).on('change', () => {
+            let onColorPicked = () => {
                 require(['/lib/less.min.js'], (Less) => {
                     let color = $input.val();
                     let lColor = Less.color(color.slice(1));
@@ -925,7 +993,8 @@ define([
                     $preview.find('.cp-admin-color-preview-dark a').attr('style', `color: ${lightColor} !important`);
                     $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
                 });
-            });
+            };
+            let $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
 
             UI.confirmButton($remove, {
                 classes: 'btn-danger',
@@ -935,9 +1004,18 @@ define([
                 setColor('', () => {});
             });
 
+            var colors = UIElements.makePalette(4, (color, $color) => {
+                // onselect
+                let rgb = $color.css('background-color');
+                let hex = Util.rgbToHex(rgb);
+                $input.val(hex);
+                onColorPicked();
+            });
+
+            $(label).append(colors);
             let form = blocks.form([
                 labelCurrent,
-                label
+                label,
             ], blocks.nav([btn, remove, btn.spinner]));
 
             cb([form, labelPreview]);
@@ -1038,6 +1116,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
@@ -1138,7 +1219,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         var getBlockId = (val) => {
@@ -1350,6 +1431,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
 
@@ -1518,7 +1602,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         // Msg.admin_defaultlimitHint, .admin_defaultlimitTitle
@@ -1678,6 +1762,9 @@ define([
                 Messages.admin_note
             ];
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
             let $table = $(table).hide();
 
             APP.refreshLimits = function () {
@@ -1735,7 +1822,7 @@ define([
                 });
             };
             APP.refreshLimits();
-            cb(table);
+            cb(div);
         });
 
         // Msg.admin_accountMetadataHint.admin_accountMetadataTitle
@@ -2647,9 +2734,10 @@ define([
             var onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'REGISTERED_USERS',
-                }, function (e, data) {
+                }, function (e, arr) {
                     pre.innerText = '';
-                    pre.append(String(data));
+                    let data = arr[0];
+                    pre.append(String(data.users));
                 });
             };
             onRefresh();
@@ -3224,10 +3312,6 @@ define([
                 $active.empty();
                 if (Broadcast && Broadcast.surveyURL) {
                     var a = blocks.link(Messages.admin_surveyActive, Broadcast.surveyURL);
-                    $(a).click(function (e) {
-                        e.preventDefault();
-                        common.openUnsafeURL(Broadcast.surveyURL);
-                    });
                     $active.append([a, removeButton]);
                 }
             });
@@ -3534,6 +3618,9 @@ define([
             ];
 
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             const onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3566,7 +3653,7 @@ define([
             onRefresh();
             onRefreshPerformance.reg(onRefresh);
 
-            cb(table);
+            cb(div);
         });
 
 
@@ -3834,6 +3921,32 @@ define([
 
             cb(opts);
         });
+
+        // EXTENSION_POINT:ADMIN_ITEM
+        let utils = {
+            h, Util, Hash
+        };
+        common.getExtensions('ADMIN_ITEM').forEach(ext => {
+            if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
+                return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
+            }
+            if (sidebar.hasItem(ext.id)) {
+                return console.error('Extension point ID already used', ext);
+            }
+
+            sidebar.addItem(ext.id, cb => {
+                ext.getContent(common, blocks, utils, content => {
+                    cb(content);
+                });
+            }, {
+                noTitle: !ext.title,
+                noHint: !ext.description,
+                title: ext.title,
+                hint: ext.description
+            });
+        });
+
+
 
         sidebar.makeLeftside(categories);
     };

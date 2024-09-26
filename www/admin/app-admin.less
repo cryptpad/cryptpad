@@ -9,29 +9,77 @@
 @import (reference) "../../customize/src/less2/include/creation.less";
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/export.less';
+@import (reference) '../../customize/src/less2/include/admin.less';
 
 &.cp-app-admin {
     .framework_min_main();
     .sidebar-layout_main();
     .limit-bar_main();
     .creation_main();
+    .admin_main();
 
     display: flex;
     flex-flow: column;
     font: @colortheme_app-font;
 
+    input, textarea, .cp-appblock {
+        &:focus-visible {
+            outline: @variables_focus_style;
+        }
+    }
     .cp-admin-customize-logo {
         padding: 1em;
         img {
             max-height: 250px;
         }
     }
+    #cp-sidebarlayout-container {
+        #cp-sidebarlayout-rightside {
+            .cp-sidebarlayout-element[data-item] {
+                div#cp-admin-table-container {
+                    overflow-x: auto;
+                    .cp-sidebar-table#cp-admin-table {
+                        tr {
+                            display: flex;
+                        }
+                        th, td {
+                            flex: 1;
+                            word-wrap: break-word;
+                            white-space: normal;
+                            min-width: 13rem;
+                            margin-right: 0px;
+                        }
+                        @media (max-width: @browser_media-not-small) {
+                            width: 100%;
+                            tr {
+                                width: 100%;
+                            }
+                            th, td {
+                                margin-right: 0;
+                                min-width: 7rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+}
     .cp-admin-color-current {
         width: 20px;
         height: 20px;
         border-radius: 5px;
         background-color: @cryptpad_color_brand;
     }
+    input.cp-admin-color-picker {
+        vertical-align: middle;
+    }
+    .cp-palette-container {
+        display: inline-flex;
+        width: ~"calc(100% - 5rem)";
+        padding-left: 0.5rem;
+        vertical-align: middle;
+    }
+
     .cp-admin-color-preview {
         & > div {
             margin-top: @sidebar_base-margin;

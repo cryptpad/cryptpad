@@ -15,7 +15,8 @@ define([
     '/common/outer/local-store.js',
     '/customize/pages.js',
     '/common/pad-types.js',
-], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages, PadTypes) {
+    '/common/extensions.js'
+], function ($, Config, h, Hash, Constants, Util, TextFit, Msg, AppConfig, LocalStore, Pages, PadTypes, Extensions) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var checkEarlyAccess = function (x) {
@@ -152,10 +153,10 @@ define([
             if (Pages.areSubscriptionsAllowed() && !LocalStore.getPremium()) {
                 var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
-                    h('a', {href:"/accounts/"}, h('button', [
+                    h('a', {href:"/accounts/", class:'subscribe-btn'},  [
                         h('i.fa.fa-ticket'),
                         Msg.features_f_subscribe
-                    ]))
+                    ])
                 ]);
                 return sub;
             } else {
@@ -164,9 +165,19 @@ define([
         };
 
 
+        let popup = h('div.cp-extensions-popups');
+        let utils = { h, Util, Hash };
+        Extensions.getExtensions('HOMEPAGE_POPUP').forEach(ext => {
+            if (typeof(ext.check) === "function" && !ext.check()) { return; }
+            ext.getContent(utils, content => {
+                $(popup).append(h('div.cp-extensions-popup', content));
+            });
+        });
+
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
+                popup,
                 notice,
                 h('div.container.cp-container', [
                     h('div.row.cp-home-hero', [

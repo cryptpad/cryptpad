@@ -2247,6 +2247,7 @@ define([
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
+                $(img).attr("role", "presentation");
                 addTitleIcon(element, $name);
             } else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
@@ -3567,7 +3568,8 @@ define([
             if (APP.$content.data('readOnlyFolder') || !APP.editable) { return; }
             var isInRoot = currentPath[0] === ROOT;
             var $element = $('<li>', {
-                'class': 'cp-app-drive-element-row cp-app-drive-new-ghost'
+                'class': 'cp-app-drive-element-row cp-app-drive-new-ghost',
+                'tabindex': 0
             }).prepend($addIcon.clone()).appendTo($list);
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
                 .text(Messages.fm_newButton));
@@ -3585,6 +3587,12 @@ define([
                 $modal.find('.cp-modal').append($content);
                 window.setTimeout(function () { modal.show(); });
                 addNewPadHandlers($modal, isInRoot);
+            });
+            $element.keydown(function(){
+                if (event.which === 13) {
+                    event.stopPropagation();
+                    $element.click();
+                }
             });
         };
 
