@@ -38,11 +38,10 @@ var getStoredLanguage = function () { return localStorage && localStorage.getIte
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
 var getLanguage = Messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
-    try {
-        if (getStoredLanguage()) { return getStoredLanguage(); }
-    } catch (e) { console.log(e); }
     var l = getBrowserLanguage();
-    // Edge returns 'fr-FR' --> transform it to 'fr' and check again
+    try {
+        l = getStoredLanguage() || getBrowserLanguage();
+    } catch (e) { console.log(e); }
     return map[l] ? l :
             (map[l.split('-')[0]] ? l.split('-')[0] :
                 (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
@@ -135,8 +134,7 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
-    Messages.admin_mfa_confirm_enable = "Are you sure you want to enable Multi-Factor Authentication?"; // XXX
-    Messages.admin_mfa_confirm_disable = "Are you sure you want to disable Multi-Factor Authentication?"; // XXX
+
     return Messages;
 
 });

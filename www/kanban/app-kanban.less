@@ -177,8 +177,8 @@
         align-self: flex-start;
         outline-style: none;
         border-radius: @variables_radius;
-        &:focus {
-            outline: @cryptpad_color_brand solid 2px;
+        &:focus-visible {
+            outline: @variables_focus_style;
         }
         @media (hover: none) {
             margin-right: 20px;
@@ -413,8 +413,8 @@
                 .fa {
                     margin-right: 5px;
                 }
-                &:focus{
-                    outline: @cryptpad_color_brand solid 2px;
+                &:focus-visible {
+                    outline: @variables_focus_style;
                 }
             }
         }
@@ -651,8 +651,8 @@
             &:hover {
                 background-color: @cp_kanban-add-hover;
             }
-            &:focus {
-                outline: @cryptpad_color_brand solid 2px;
+            &:focus-visible {
+                outline: @variables_focus_style;
             }
         }
 

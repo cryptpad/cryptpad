@@ -22,6 +22,11 @@
     flex-flow: column;
     font: @colortheme_app-font;
 
+    input, textarea, .cp-appblock {
+        &:focus-visible {
+            outline: @variables_focus_style;
+        }
+    }
     .cp-admin-customize-logo {
         padding: 1em;
         img {

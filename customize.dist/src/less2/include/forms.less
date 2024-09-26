@@ -28,6 +28,9 @@
         }
         &.tui-full-calendar-content {
             font-size: @colortheme_app-font-size;
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
         }
         &[readonly] {
             //margin-top:1rem;
@@ -138,8 +141,8 @@
                 color: @cryptpad_text_col;
             }
             outline: none;
-            &:focus {
-                outline: @cryptpad_color_brand solid 2px;
+            &:focus-visible {
+                outline: @variables_focus_style;
             }
         }
     }
@@ -148,8 +151,8 @@
         background-color: @cp_buttons-cancel;
         box-sizing: border-box;
         align-items: center;
-        padding: 0 6px;
-        line-height: 36px;
+        line-height: 20px;
+        padding: 8px 6px;
         white-space: nowrap;
         text-align: center;
         text-transform: uppercase;
@@ -257,8 +260,8 @@
 
 
         outline: none;
-        &:focus {
-            outline: @cryptpad_color_brand solid 2px;
+        &:focus-visible {
+            outline: @variables_focus_style;
         }
         &::-moz-focus-inner {
             border: 0;

@@ -59,7 +59,7 @@ This release introduces a new onboarding flow to guide administrators through th
 
 - Onboarding screens & app configuration [#1513](https://github.com/cryptpad/cryptpad/pull/1513)
 - Bahasa Indonesia is a new available language [fe78b6a](https://github.com/cryptpad/cryptpad/commit/fe78b6ab1dc76ce9eb8d5361c309db8e92117fa8)
-  - Thanks to our [Weblate](https://weblate.cryptpad.org) contributors who made that happen! 
+  - Thanks to our [Weblate](https://weblate.cryptpad.org) contributors who made that happen!
 
 ## Improvements
 
@@ -92,7 +92,7 @@ This release introduces a new onboarding flow to guide administrators through th
   - Switch to new `http2` Nginx option [#1516](https://github.com/cryptpad/cryptpad/pull/1516)
   - Server fixes and aggregated stats [#1509](https://github.com/cryptpad/cryptpad/pull/1509)
   - Create the block folder at boot [#911](https://github.com/cryptpad/cryptpad/pull/911)
-  - Remove obsolete `version` from `docker-compose.yml` [2e716eb](https://github.com/cryptpad/cryptpad/commit/2e716eb4e39fb835f95a1fa1a340e01142d11b1c) 
+  - Remove obsolete `version` from `docker-compose.yml` [2e716eb](https://github.com/cryptpad/cryptpad/commit/2e716eb4e39fb835f95a1fa1a340e01142d11b1c)
 - Other
   - Unsharp the corners when hovering the dismiss button on notification drop-down menu [#1466](https://github.com/cryptpad/cryptpad/pull/1466)
   - Fix contextual menu `Open` on anonymous drive [#1464](https://github.com/cryptpad/cryptpad/pull/1464)

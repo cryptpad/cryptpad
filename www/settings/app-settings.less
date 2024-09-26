@@ -38,8 +38,24 @@
         margin-left: 0.5rem;
     }
 
+    .alertify {
+        nav {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            .btn-confirm {
+                white-space: normal;
+            }
+        }
+    }
+
     #cp-sidebarlayout-container {
         #cp-sidebarlayout-rightside {
+            input, button, span[tabindex="0"] {
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
+            }
             input[type="checkbox"] {
                 vertical-align: middle;
                 margin-right: 5px;
@@ -112,6 +128,14 @@
                     margin-top:0;
                     margin-left: 10px;
                 }
+                .cp-password-reveal {
+                    border-radius:@variables_radius;
+                }
+            }
+            nav {
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
             }
             @media (max-width: 840px) {
 

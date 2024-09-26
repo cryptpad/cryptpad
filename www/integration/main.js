@@ -182,6 +182,11 @@ define([
         chan.on('START', function (data, cb) {
             console.warn('INNER START', data);
             var href = Hash.hashToHref(data.key, data.application);
+            if (data.editorConfig.lang) {
+                var LS_LANG = "CRYPTPAD_LANG";
+                localStorage.setItem(LS_LANG, data.editorConfig.lang);
+            }
+
             console.error(Hash.hrefToHexChannelId(href));
             let startApp = function (blob) {
                 window.CP_integration_outer = {
@@ -191,7 +196,8 @@ define([
                     initialState: blob,
                     config: {
                         fileType: data.ext,
-                        autosave: data.autosave
+                        autosave: data.autosave,
+                        user: data.editorConfig.user
                     },
                     utils: {
                         onReady: onReady,
