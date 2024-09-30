@@ -6,12 +6,15 @@ define([
     '/common/common-util.js',
     '/file/file-crypto.js',
     '/common/outer/cache-store.js',
+    '/components/x2js/x2js.js',
 ], function (
     Util,
     FileCrypto,
-    Cache
+    Cache,
+    X2JS,
 ) {
     const Nacl = window.nacl;
+    const x2js = new X2JS();
 
     const parseCryptPadUrl = function(href) {
         const url = new URL(href);
@@ -38,9 +41,18 @@ define([
         return fixedBlob;
     };
 
+    const jsonContentAsXML = (content) => {
+
+        // Sometimes `content` has additional fiels, that break the XML output. Only grab mxfile here.
+        const cleaned = { mxfile: content.mxfile };
+
+        return x2js.js2xml(cleaned);
+    };
+
     return {
         parseCryptPadUrl,
         getCryptPadUrl,
+        jsonContentAsXML,
 
         loadImage: function(href) {
             return new Promise((resolve, reject) => {
