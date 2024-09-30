@@ -95,11 +95,9 @@ define([
             drawioFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
         };
 
-        const jsonContentAsXML = (content) => x2js.js2xml(content);
-
         var onDrawioInit = function() {
             drawIoInitalized = true;
-            var xmlStr = jsonContentAsXML(lastContent);
+            var xmlStr = DiagramUtil.jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'load',
                 xml: xmlStr,
@@ -165,7 +163,7 @@ define([
         // This is the function from which you will receive updates from CryptPad
         framework.onContentUpdate(function (newContent) {
             lastContent = newContent;
-            var xmlStr = jsonContentAsXML(lastContent);
+            var xmlStr = DiagramUtil.jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'merge',
                 xml: xmlStr,
