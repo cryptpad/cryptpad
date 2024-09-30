@@ -826,8 +826,9 @@ define([
         var calendars = h('div.cp-calendar-list');
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
         var isMobileView = window.innerWidth <= 600;
+        var visible = false;  // Initialize global 'visible' state for calendars
 
-        function updateCalendarsView() {
+        onCalendarsUpdate.reg(function () {
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
             var filter = (teamId) => {
@@ -868,7 +869,6 @@ define([
                     $contentContainer.append(calendarEntry);
                 });
             }
-
             // Add the new calendar button
             var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($contentContainer);
             var newButton = h('button', [
@@ -877,6 +877,7 @@ define([
                 h('span')
             ]);
             $(newButton).click(() => {
+                visible = $contentContainer.is(':visible');
                 editCalendar();
             }).appendTo($newContainer);
 
@@ -897,6 +898,7 @@ define([
                     $contentContainer.append(calendarEntry);
                 });
             });
+
             if (totalCalendars > 2 && isMobileView) {
                 $contentContainer.hide();
                 var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
@@ -905,25 +907,23 @@ define([
                     h('span.cp-calendar-title', Messages.calendar_show),
                     h('span')
                 ]);
-                var visible = false;  // Initially hidden
+
                 $(showCalendarsBtn).click(() => {
                     visible = !visible;
-                    $contentContainer.toggle(visible);  // Toggle visibility of entire content (personal and team calendars)
+                    $contentContainer.toggle(visible);
                     $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
                 }).appendTo($showContainer);
             }
-        }
+            $contentContainer.toggle(visible);
 
-        $(window).resize(function () {
-            var newIsMobileView = window.innerWidth <= 600;
-            if (newIsMobileView !== isMobileView) {
-                isMobileView = newIsMobileView;
-                updateCalendarsView();
-            }
+            $(window).resize(function () {
+                var newIsMobileView = window.innerWidth <= 600;
+                if (newIsMobileView !== isMobileView) {
+                    isMobileView = newIsMobileView;
+                    onCalendarsUpdate.fire();
+                }
+            });
         });
-
-        onCalendarsUpdate.reg(updateCalendarsView);
-
         onCalendarsUpdate.fire();
     };
 
