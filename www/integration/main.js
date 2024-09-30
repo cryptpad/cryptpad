@@ -6,8 +6,10 @@ define([
     '/api/config',
     '/common/sframe-common-outer.js',
     '/common/common-hash.js',
+    '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, SCO, Hash) {
 
+    let Nacl = window.nacl;
     var getTxid = function () {
         return Math.random().toString(16).replace('0.', '');
     };
@@ -96,9 +98,17 @@ define([
             };
             http.send();
         };
+        let sanitizeKey = key => {
+            try {
+                Nacl.util.decodeBase64(key);
+                return key;
+            } catch (e) {
+                return Nacl.util.encodeBase64(Nacl.util.decodeUTF8(key));
+            }
+        };
         chan.on('GET_SESSION', function (data, cb) {
-            if (data.keepOld) {
-                var key = data.key + "000000000000000000000000000000000";
+            if (data.keepOld) { // they provide their own key, we must turn it into a hash
+                var key = sanitizeKey(data.key) + "000000000000000000000000000000000";
                 console.warn('KEY', key);
                 return void cb({
                     key: `/2/integration/edit/${key.slice(0,24)}/`
@@ -181,6 +191,7 @@ define([
         };
         chan.on('START', function (data, cb) {
             console.warn('INNER START', data);
+            // data.key is a hash
             var href = Hash.hashToHref(data.key, data.application);
             if (data.editorConfig.lang) {
                 var LS_LANG = "CRYPTPAD_LANG";
