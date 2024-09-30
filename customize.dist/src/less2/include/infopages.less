@@ -6,6 +6,7 @@
 
 @import (reference) "./colortheme-all.less";
 @import (reference) "./font.less";
+@import (reference) "./variables.less";
 
 @infopages-radius: 5px;
 @infopages-radius-L: 10px;
@@ -45,6 +46,10 @@ body.html {
     }
     a:hover {
         opacity: 1;
+    }
+    a:focus-visible {
+        outline: @variables_focus_style;
+        border-radius: @variables_radius;
     }
     border: 0;
     padding: 0;
@@ -231,6 +236,9 @@ body.html {
                 border: 0px;
                 border-radius: @infopages-radius;
                 padding: 0.5em 0.7em;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
             }
         }
         .cp-footer-version {
@@ -292,6 +300,9 @@ body.html {
             }
             &:hover {
                 color: @cryptpad_text_col;
+            }
+            &:focus-visible {
+                outline: @variables_focus_style;
             }
             i {
                 margin-right: 5px;

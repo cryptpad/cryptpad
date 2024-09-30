@@ -33,7 +33,7 @@ main() {
     install_version v4 6ebc6938
     install_version v5 88a356f0
     install_version v6 abd8a309
-    install_version v7 ba82142f
+    install_version v7 e1267803
     install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1
 
     rm -rf "$BUILDS_DIR"
@@ -67,6 +67,10 @@ parse_arguments() {
             ;;
         -a | --accept-license)
             ACCEPT_LICENSE="1"
+            shift
+            ;;
+        -t | --trust-repository)
+            TRUST_REPOSITORY="1"
             shift
             ;;
         *)
@@ -110,17 +114,26 @@ OPTIONS:
             Accept the license of OnlyOffice and do not ask when running this
             script. Read and accept this before using this option:
             https://github.com/ONLYOFFICE/web-apps/blob/master/LICENSE.txt
+
+    -t, --trust-repository
+            Automatically configure the cloned onlyoffice-builds repository
+            as a safe.directory.
+            https://git-scm.com/docs/git-config/#Documentation/git-config.txt-safedirectory
+
 EOF
     exit 1
 }
 
 ensure_oo_is_downloaded() {
-    ensure_command_available git
+  ensure_command_available git
 
-    if ! [ -d "$BUILDS_DIR" ]; then
-        echo "Downloading OnlyOffice..."
-        git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
-    fi
+	if ! [ -d "$BUILDS_DIR" ]; then
+		echo "Downloading OnlyOffice..."
+		git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
+	fi
+  if [ ${TRUST_REPOSITORY+x} ] || [ "${PROPS[trust_repository]:-no}" == yes ]; then
+    git config --global --add safe.directory /cryptpad/onlyoffice-conf/onlyoffice-builds.git
+  fi
 }
 
 install_version() {

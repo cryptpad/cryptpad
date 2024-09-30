@@ -578,21 +578,36 @@ define([
                 return APP.instanceStatus.enforceMFA;
             },
             query: function (val, setState) {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'ADMIN_DECREE',
-                    data: ['ENFORCE_MFA', [val]]
-                }, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                    }
-                    APP.updateStatus(function () {
-                        setState(APP.instanceStatus.enforceMFA);
-                        flushCache();
+                var isChecked = APP.instanceStatus.enforceMFA;
+                function showConfirmation(isChecked, setState) {
+                    const confirmationContent = isChecked ? Messages.admin_mfa_confirm_disable : Messages.admin_mfa_confirm_enable;
+                    UI.confirm(confirmationContent, function (confirmed) {
+                        if (!confirmed) {
+                            // User canceled their changes, restore the checkbox value
+                            setState(isChecked);
+                            return;
+                        }
+                        // User confirmed their changes, call the command and update the state
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADMIN_DECREE',
+                            data: ['ENFORCE_MFA', [val]]
+                        }, function (e, response) {
+                            if (e || response.error) {
+                                UI.warn(Messages.error);
+                                console.error(e, response);
+                            } else {
+                                APP.updateStatus(function () {
+                                    setState(APP.instanceStatus.enforceMFA);
+                                    flushCache();
+                                });
+                            }
+                        });
                     });
-                });
-            },
+                }
+                showConfirmation(isChecked, setState);
+            }
         });
+
 
 
         var getInstanceString = function (attr) {
@@ -1101,6 +1116,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
@@ -1201,7 +1219,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         var getBlockId = (val) => {
@@ -1413,6 +1431,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
 
@@ -1581,7 +1602,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         // Msg.admin_defaultlimitHint, .admin_defaultlimitTitle
@@ -1741,6 +1762,9 @@ define([
                 Messages.admin_note
             ];
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
             let $table = $(table).hide();
 
             APP.refreshLimits = function () {
@@ -1798,7 +1822,7 @@ define([
                 });
             };
             APP.refreshLimits();
-            cb(table);
+            cb(div);
         });
 
         // Msg.admin_accountMetadataHint.admin_accountMetadataTitle
@@ -2713,8 +2737,7 @@ define([
                 }, function (e, arr) {
                     pre.innerText = '';
                     let data = arr[0];
-                    pre.append(String(data.blocks));
-                    pre.append(' (old value including teams: ' + String(data.users) + ')'); // XXX
+                    pre.append(String(data.users));
                 });
             };
             onRefresh();
@@ -3595,6 +3618,9 @@ define([
             ];
 
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             const onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3627,7 +3653,7 @@ define([
             onRefresh();
             onRefreshPerformance.reg(onRefresh);
 
-            cb(table);
+            cb(div);
         });
 
 

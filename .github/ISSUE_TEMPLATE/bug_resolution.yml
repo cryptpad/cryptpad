@@ -89,6 +89,8 @@ body:
       label: Version
       description: What version of CryptPad are you running?
       options:
+        - 2024.6.1
+        - 2024.6.0
         - 2024.3.1
         - 2024.3.0
         - 5.7.0
@@ -101,8 +103,6 @@ body:
         - 5.2.0
         - 5.1.0
         - 5.0.0
-        - 4.14.1
-        - 4.14.0
         - Other
     validations:
       required: true

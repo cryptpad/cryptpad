@@ -609,8 +609,8 @@
     "admin_activeSessionsHint": "Nombre de connexions websocket actives (et adresses IP uniques connectées)",
     "admin_activePadsTitle": "Documents actifs",
     "admin_activePadsHint": "Nombre de documents uniques actuellement ouverts (lus ou modifiés)",
-    "admin_registeredTitle": "Utilisateur·ices enregistré·es",
-    "admin_registeredHint": "Nombre d'utilisateur·ices enregistré·es sur votre instance",
+    "admin_registeredTitle": "Drives utilisateur·ices et équipes",
+    "admin_registeredHint": "Nombre de drives actifs sur votre instance",
     "admin_updateLimitTitle": "Mettre à jour les quotas",
     "admin_updateLimitHint": "Forcer la mise à jour des limites de stockage des utilisateur·ices peut être effectué à tout moment, mais cela n'est utile que lorsqu'une erreur survient",
     "admin_updateLimitButton": "Mettre à jour les quotas",
@@ -1249,7 +1249,7 @@
     "form_makePublic": "Publier les réponses",
     "form_invalidQuestion": "Questions {0}",
     "form_invalidWarning": "Certaines réponses contiennent des erreurs :",
-    "form_input_ph_url": "https://example.net/exemple",
+    "form_input_ph_url": "https://example.net",
     "form_input_ph_email": "courriel_exemple@example.net",
     "form_notAnswered": "<b>{0}</b> réponses vides",
     "form_answerWarning": "Identité non confirmée",
@@ -1778,7 +1778,10 @@
     "admin_onboardingNameTitle": "Bienvenu sur votre instance CryptPad",
     "admin_onboardingOptionsTitle": "Réglages de l'instance",
     "admin_onboardingNamePlaceholder": "Nom de l'instance",
-    "admin_onboardingOptionsHint": "Veuillez sélectionner les options appropriées pour votre instance.</br>Ces paramètres peuvent être changés plus tard depuis l'espace d'administration.",
+    "admin_onboardingOptionsHint": "Veuillez sélectionner les options appropriées pour votre instance.<br>Ces paramètres peuvent être changés plus tard depuis l'espace d'administration.",
     "admin_onboardingDescPlaceholder": "Texte de description de l'instance",
-    "install_notes": "<ul class=\"cp-notes-list\"><li>Créez votre premier compte administrateur·ice sur cette page. Les administrateur·ices peuvent paramétrer l'instance, ceci incluant les quotas de stockage, et ont accès aux outils de modération.</li><li>Votre mot de passe est la clé secrète qui chiffre l'ensemble de vos documents et vos privilèges d'administration sur l'instance. <span class=\"red\">Si vous le perdez il n'est pas possible de récupérer vos données.</span></li><li>Si vous utilisez un ordinateur partagé, <span class=\"red\">n'oubliez pas de vous déconnecter</span> quand vous aurez terminé. Simplement fermer la fenêtre du navigateur web laisse votre compte exposé à des risques de sécurité. </li></ul>"
+    "install_notes": "<ul class=\"cp-notes-list\"><li>Créez votre premier compte administrateur·ice sur cette page. Les administrateur·ices peuvent paramétrer l'instance, ceci incluant les quotas de stockage, et ont accès aux outils de modération.</li><li>Votre mot de passe est la clé secrète qui chiffre l'ensemble de vos documents et vos privilèges d'administration sur l'instance. <span class=\"red\">Si vous le perdez il n'est pas possible de récupérer vos données.</span></li><li>Si vous utilisez un ordinateur partagé, <span class=\"red\">n'oubliez pas de vous déconnecter</span> quand vous aurez terminé. Simplement fermer la fenêtre du navigateur web laisse votre compte exposé à des risques de sécurité. </li></ul>",
+    "team_autoTrim": "Suppression de l'historique du drive d'équipe... Veuillez patienter.",
+    "admin_mfa_confirm_disable": "Êtes-vous sûr de vouloir désactiver l'authentification multi-facteur ?",
+    "admin_mfa_confirm_enable": "Êtes-vous sûr de vouloir activer l'authentification multi-facteur ?"
 }

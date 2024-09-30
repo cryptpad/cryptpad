@@ -270,8 +270,17 @@ define([
 
         sidebar.addItem = (key, get, options) => {
             const safeKey = keyToCamlCase(key);
+            const div = h(`div.cp-sidebarlayout-element`, {
+                'data-item': key,
+                style: 'display:none;'
+            });
+            items[key] = div;
+            $rightside.append(div);
             get((content) => {
-                if (content === false) { return; }
+                if (content === false) {
+                    delete items[key];
+                    return void $(div).remove();
+                }
                 options = options || {};
                 const title = options.noTitle ? undefined : h('label.cp-item-label', {
                     id: `cp-${app}-${key}`
@@ -281,16 +290,7 @@ define([
                 if (hint && options.htmlHint) {
                     hint.innerHTML = Messages[`${app}_${safeKey}Hint`];
                 }
-                const div = h(`div.cp-sidebarlayout-element`, {
-                    'data-item': key,
-                    style: 'display:none;'
-                }, [
-                    title,
-                    hint,
-                    content
-                ]);
-                items[key] = div;
-                $rightside.append(div);
+                $(div).append(title).append(hint).append(content);
             });
         };
 

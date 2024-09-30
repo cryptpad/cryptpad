@@ -164,12 +164,12 @@ define([
 
     dialog.okButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.btn.ok.primary';
-        return h(sel, { tabindex: '2', }, content || Messages.okButton);
+        return h(sel, content || Messages.okButton);
     };
 
     dialog.cancelButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.' + classString:'button.btn.cancel';
-        return h(sel, { tabindex: '1'}, content || Messages.cancelButton);
+        return h(sel, content || Messages.cancelButton);
     };
 
     dialog.message = function (text) {
@@ -577,7 +577,7 @@ define([
         return frame;
     };
 
-    let addTabListener = frame => {
+    let addTabListener = UI.addTabListener = frame => {
         // find focusable elements
         let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
 
@@ -670,6 +670,7 @@ define([
             $modal: $blockContainer,
             show: function () {
                 $blockContainer.css('display', 'flex');
+                addTabListener($blockContainer);
             },
             hide: hide
         };
@@ -719,6 +720,7 @@ define([
             Notifier.notify();
         });
 
+        addTabListener(frame);
         return {
             element: frame,
             delete: close
@@ -770,7 +772,7 @@ define([
 
         document.body.appendChild(frame);
         setTimeout(function () {
-            $(input).select().focus();
+            addTabListener(frame);
             Notifier.notify();
         });
     };
@@ -778,7 +780,6 @@ define([
     UI.confirm = function (msg, cb, opt, force) {
         cb = cb || function () {};
         opt = opt || {};
-
         var message;
         if (typeof(msg) === 'string') {
             if (!force) { msg = Util.fixHTML(msg); }
@@ -811,19 +812,11 @@ define([
 
         addTabListener(frame);
 
-        frame.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13) {
-                if (document.activeElement === $ok[0]) {
-                    $ok.click();
-                } else if (document.activeElement === $cancel[0]) {
-                    $cancel.click();
-                }
-            } else if (e.keyCode === 27) {
-                $cancel.click();
-            }
-        });
-
         listener = listenForKeys(function () {
+            // Only trigger OK if cancel is not focused
+            if (document.activeElement === $cancel[0]) {
+                return void $cancel.click();
+            }
             $ok.click();
         }, function () {
             $cancel.click();

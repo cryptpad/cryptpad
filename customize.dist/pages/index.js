@@ -153,10 +153,10 @@ define([
             if (Pages.areSubscriptionsAllowed() && !LocalStore.getPremium()) {
                 var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
-                    h('a', {href:"/accounts/"}, h('button', [
+                    h('a', {href:"/accounts/", class:'subscribe-btn'},  [
                         h('i.fa.fa-ticket'),
                         Msg.features_f_subscribe
-                    ]))
+                    ])
                 ]);
                 return sub;
             } else {

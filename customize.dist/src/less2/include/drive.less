@@ -30,6 +30,11 @@
     .cp-unselectable {
         .tools_unselectable();
     }
+    .btn-primary{
+        &:focus-visible {
+            outline: @variables_focus_style;
+        }
+    }
 
     /* local mixins */
     @drive_icon-margin: 10px;
@@ -329,11 +334,10 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     .leftside-menu-category_main();
-                    margin: 0;
                     display: flex;
                     align-items: center;
                     cursor: pointer;
-                    margin-left: -5px;
+                    margin: 0 0 2px -5px;
                     padding-left: 5px;
                     .fa, .cptools {
                         display: inline-block;
@@ -347,6 +351,9 @@
                         min-width: 0;
                         overflow: hidden;
                         text-overflow: ellipsis;
+                    }
+                    &:focus-visible {
+                        outline: @variables_focus_style;
                     }
                 }
             }
@@ -373,6 +380,9 @@
                     padding-left: 20px;
                     .leftside-menu-category_main();
                     margin: 0;
+                    &:focus-visible {
+                        outline: @variables_focus_style;
+                    }
                 }
             }
         }
@@ -398,6 +408,10 @@
             &:before {
                 position: relative;
                 top: -1px;
+            }
+            &:focus-visible {
+                outline: @variables_focus_style;
+                border-radius: @variables_radius_S;
             }
         }
         .cp-app-drive-tree-docs {
@@ -953,6 +967,9 @@
             li, li .fa, li .cptools {
                 cursor: pointer;
                 border-radius: @variables_radius;
+                &:focus {
+                    outline: @cryptpad_color_brand solid 2px;
+                }
             }
             &> p {
                 display: flex;
