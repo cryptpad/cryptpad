@@ -7,11 +7,13 @@ define([
     '/file/file-crypto.js',
     '/common/outer/cache-store.js',
     '/components/x2js/x2js.js',
+    '/components/pako/dist/pako.min.js',
 ], function (
     Util,
     FileCrypto,
     Cache,
     X2JS,
+    pako,
 ) {
     const Nacl = window.nacl;
     const x2js = new X2JS();
@@ -49,10 +51,78 @@ define([
         return x2js.js2xml(cleaned);
     };
 
+    const parseXML = (xmlStr) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xmlStr, "application/xml");
+        const errorNode = doc.querySelector("parsererror");
+        if (errorNode) {
+            throw Error("error while parsing " + errorNode);
+        }
+        return doc;
+    };
+
+    const numbersToNumbers = function(o) {
+        const type = typeof o;
+
+        if (type === "object") {
+            for (const key in o) {
+                o[key] = numbersToNumbers(o[key]);
+            }
+            return o;
+        } else if (type === 'string' && o.match(/^[+-]?(0|(([1-9]\d*)(\.\d+)?))$/)) {
+            return parseFloat(o, 10);
+        } else {
+            return o;
+        }
+    };
+
+    const xmlAsJsonContent = (xml) => {
+        var decompressedXml = decompressDrawioXml(xml);
+        return numbersToNumbers(x2js.xml2js(decompressedXml));
+    };
+
+    // As described here: https://drawio-app.com/extracting-the-xml-from-mxfiles/
+    const decompressDrawioXml = function(xmlDocStr) {
+        var TEXT_NODE = 3;
+
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(xmlDocStr, "application/xml");
+
+        var errorNode = doc.querySelector("parsererror");
+        if (errorNode) {
+            console.error("error while parsing", errorNode);
+            return xmlDocStr;
+        }
+
+        doc.firstChild.removeAttribute('modified');
+        doc.firstChild.removeAttribute('agent');
+        doc.firstChild.removeAttribute('etag');
+
+        var diagrams = doc.querySelectorAll('diagram');
+
+        diagrams.forEach(function(diagram) {
+            if (diagram.childNodes.length === 1 && diagram.firstChild && diagram.firstChild.nodeType === TEXT_NODE)  {
+                const innerText = diagram.firstChild.nodeValue;
+                const bin = Nacl.util.decodeBase64(innerText);
+                const xmlUrlStr = pako.inflateRaw(bin, {to: 'string'});
+                const xmlStr = decodeURIComponent(xmlUrlStr);
+                const diagramDoc = parser.parseFromString(xmlStr, "application/xml");
+                diagram.replaceChild(diagramDoc.firstChild, diagram.firstChild);
+            }
+        });
+
+
+        var result = new XMLSerializer().serializeToString(doc);
+        return result;
+    };
+
     return {
         parseCryptPadUrl,
         getCryptPadUrl,
         jsonContentAsXML,
+        parseXML,
+        xmlAsJsonContent,
+        decompressDrawioXml,
 
         loadImage: function(href) {
             return new Promise((resolve, reject) => {

@@ -44,7 +44,7 @@ define([
     };
 
     const loadCryptPadImages = (doc) => {
-        return Array.from(doc .querySelectorAll('mxCell'))
+        return Array.from(doc.querySelectorAll('mxCell'))
             .map((element) => [element, parseDrawioStyle(element.getAttribute('style'))])
             .filter(([, style]) => style && style.image && style.image.startsWith('cryptpad://'))
             .map(([element, style]) => {
@@ -56,16 +56,6 @@ define([
             });
     };
 
-    const parseXML = (xmlStr) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(xmlStr, "application/xml");
-        const errorNode = doc.querySelector("parsererror");
-        if (errorNode) {
-            throw Error("error while parsing " + errorNode);
-        }
-        return doc;
-    };
-
     return {
         main: function(userDoc, cb) {
             delete userDoc.metadata;
@@ -74,7 +64,7 @@ define([
 
             let doc;
             try {
-                doc = parseXML(xml);
+                doc = DiagramUtil.parseXML(xml);
             } catch(e) {
                 console.error(e);
                 return;
