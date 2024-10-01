@@ -179,9 +179,10 @@ define([
 
         framework.setFileImporter(
             {accept: ['.drawio',  'application/x-drawio']},
-            (content) => {
-                return xmlAsJsonContent(content);
-            }
+            (content, file, cb) => {
+                cb(xmlAsJsonContent(content));
+            },
+            true
         );
 
         framework.setFileExporter(
