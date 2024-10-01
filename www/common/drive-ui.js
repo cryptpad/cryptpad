@@ -1045,7 +1045,9 @@ define([
             // If the arrow keys aren't caught by another listener before, it means we can
             // use them to select content in the drive. If that's the case, we'll also
             // focus the drive container to avoid conflicts with other focused elements
-            $content.focus();
+            if (!$('.cp-modal').is(':visible')) {
+                $content.focus();
+            }
 
             var click = function (el) {
                 if (!el) { return; }
