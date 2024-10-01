@@ -7,20 +7,6 @@ define([
 ], function (
     DiagramUtil
 ) {
-    const parseDrawioStyle = (styleAttrValue) => {
-        if (!styleAttrValue) {
-            return;
-        }
-
-        const result = {};
-        for (const part of styleAttrValue.split(';')) {
-            const s = part.split(/=(.*)/);
-            result[s[0]] = s[1];
-        }
-
-        return result;
-    };
-
     const stringifyDrawioStyle = (styleAttrValue) => {
         const parts = [];
         for (const [key, value] of Object.entries(styleAttrValue)) {
@@ -45,8 +31,8 @@ define([
 
     const loadCryptPadImages = (doc) => {
         return Array.from(doc.querySelectorAll('mxCell'))
-            .map((element) => [element, parseDrawioStyle(element.getAttribute('style'))])
-            .filter(([, style]) => style && style.image && style.image.startsWith('cryptpad://'))
+            .map((element) => [element, DiagramUtil.parseDrawioStyle(element.getAttribute('style'))])
+            .filter(([, style]) => style.image && style.image.startsWith('cryptpad://'))
             .map(([element, style]) => {
                 return loadImage(style.image)
                     .then((dataUrl) => {

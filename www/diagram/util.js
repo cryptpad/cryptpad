@@ -116,6 +116,20 @@ define([
         return result;
     };
 
+    const parseDrawioStyle = (styleAttrValue) => {
+        if (!styleAttrValue) {
+            return {};
+        }
+
+        const result = {};
+        for (const part of styleAttrValue.split(';')) {
+            const s = part.split(/=(.*)/);
+            result[s[0]] = s[1];
+        }
+
+        return result;
+    };
+
     return {
         parseCryptPadUrl,
         getCryptPadUrl,
@@ -123,6 +137,7 @@ define([
         parseXML,
         xmlAsJsonContent,
         decompressDrawioXml,
+        parseDrawioStyle,
 
         loadImage: function(href) {
             return new Promise((resolve, reject) => {
