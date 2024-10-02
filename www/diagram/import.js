@@ -10,6 +10,35 @@ define([
     $,
     DiagramUtil
 ) {
+    const Nacl = window.nacl;
+
+    const splitAt = function(str, char) {
+        const pos = str.indexOf(char);
+        if (pos <= 0) {
+            return [str, ''];
+        }
+        return [str.substring(0, pos), str.substring(pos + 1)];
+    }
+
+    const parseDataUrl = function (url) {
+        const [prefix, data] = splitAt(url, ',');
+        const [, metadata] = splitAt(prefix, ':');
+        const [mimeType, ] = splitAt(metadata, ';');
+
+        const u8 = Nacl.util.decodeBase64(data);
+        return new Blob([u8], { type: mimeType });
+    };
+
+    const uploadFile = async (fileManager, blob) => {
+        return new Promise((resolve) => {
+            fileManager.handleFile(blob, {
+                callback: (data) => {
+                    console.log('XXX data', data);
+                    resolve();
+                }
+            });
+        });
+    };
 
     const saveImagesToCryptPad = async (fileManager, doc) => {
         const images = Array.from(doc.querySelectorAll('mxCell'))
@@ -19,12 +48,10 @@ define([
             }))
             .filter(({ style }) => style.image && style.image.startsWith('data:'))
 
-        console.log('XXX', images);
-
         for(const image of images) {
-            const blob = await (await fetch(image.style.image)).blob();
+            const blob = parseDataUrl(image.style.image);
 
-            fileManager.handleFile(blob);
+            await uploadFile(fileManager, blob);
         }
     };
 
@@ -44,7 +71,7 @@ define([
             onUploaded: function (ev, data) {
                 console.log('XXX onUploaded', { ev, data });
                 if (!ev.callback) { return; }
-                ev.callback();
+                ev.callback(data);
             }
         };
         const fileManager = common.createFileManager(fmConfigImages);
