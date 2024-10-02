@@ -1780,5 +1780,8 @@
     "admin_onboardingOptionsTitle": "Instantziaren aukerak",
     "admin_onboardingNamePlaceholder": "Instantziaren izenburua",
     "admin_onboardingDescPlaceholder": "Instantziaren deskribapen testua",
-    "admin_onboardingOptionsHint": "Mesedez, hautatu aukera egokia zure instantziarako.<br>Ezarpen hauek geroago alda daitezke administrazio panelean."
+    "admin_onboardingOptionsHint": "Mesedez, hautatu aukera egokia zure instantziarako.<br>Ezarpen hauek geroago alda daitezke administrazio panelean.",
+    "admin_mfa_confirm_disable": "Ziur faktore anitzeko autentifikazioa desgaitu nahi duzula?",
+    "admin_mfa_confirm_enable": "Ziur faktore anitzeko autentifikazioa gaitu nahi duzula?",
+    "team_autoTrim": "Taldeko diskoen historia mozten... Itxaron mesedez."
 }
