@@ -124,7 +124,7 @@ define([
             {accept: ['.drawio',  'application/x-drawio']},
             (content, file, cb) => {
                 require(['/diagram/import.js'], (importer) => {
-                    importer.importDiagram(content, file).then(cb);
+                    importer.importDiagram(framework._.sfCommon, content, file).then(cb);
                 });
             },
             true
