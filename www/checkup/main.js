@@ -574,15 +574,27 @@ define([
     });
 
     assert(function (cb, msg) {
+        var oldSupport = ApiConfig.supportMailbox;
         var support = ApiConfig.supportMailboxKey;
-        setWarningClass(msg);
         msg.appendChild(h('span', [
             "This instance's encrypted support ticket functionality has not been enabled. This can make it difficult for its users to safely report issues that concern sensitive information. ",
             "This can be configured via the admin panel's ",
             code('Support'),
             " tab.",
         ]));
-        cb(support && typeof(support) === 'string' && support.length === 44);
+        let testKey = key => key && typeof(key) === 'string' && key.length === 44;
+        let hadSupport = testKey(oldSupport);
+        let hasSupport = testKey(support);
+
+        // New support is enabled: OK
+        if (hasSupport) { return void cb(true); }
+        // Old support was enabled but not new: FAIL
+        if (hadSupport) { return void cb(false); }
+
+        // Old and new disabled, show warning but don't fail
+        setWarningClass(msg);
+
+        cb(true, true);
     });
 
     assert(function (cb, msg) {
@@ -1668,7 +1680,7 @@ define([
             console.error(err);
         }
 
-        return h(`div.error.cp-test-status.${obj.type}`, [
+        return h(`div.cp-test-status.${obj.type}`, [
             h('h5', obj.message),
             h('div.table-container',
                 h('table', [
@@ -1734,7 +1746,6 @@ define([
                 obj.type = 'warning';
             } else if (isInfo(obj.message)) {
                 obj.type = 'info';
-                state.passed++;
             } else {
                 obj.type = 'error';
             }
@@ -1745,16 +1756,8 @@ define([
 
         Messages.assert_numberOfTestsPassed = "{0} / {1} tests passed.";
 
-        var statusClass;
-        if (categories.error !== 0) {
-            statusClass = 'failure';
-        } else if (categories.warning !== 0) {
-            statusClass = 'failure';
-        } else if (categories.info !== 0) {
-            statusClass = 'neutral';
-        } else {
-            statusClass = 'success';
-        }
+        let statusClass = state.passed === state.total ? 'success'
+                                                       : 'failure';
 
         var failedDetails = "Details found below";
         var successDetails = "This checkup only tests the most common configuration issues. You may still experience errors or incorrect behaviour.";

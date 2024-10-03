@@ -37,10 +37,15 @@ define([], function () {
                 }, 25000);
 
                 try {
-                    test(function (result) {
+                    test(function (result, forceMessage) {
                         if (result === true) {
                             passed++;
-                            cb();
+                            if (forceMessage) { console.error(msg.innerText, result); }
+                            cb(forceMessage ? {
+                                test: i,
+                                message: msg,
+                                output: result,
+                            } : undefined);
                         } else {
                             cb({
                                 test: i,
