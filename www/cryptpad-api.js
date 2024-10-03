@@ -88,6 +88,7 @@
         var start = function (config, chan) {
             return new Promise(function (resolve, reject) {
             setTimeout(function () {
+                var docID = config.document.key;
                 var key = config.document.key;
                 var blob;
 
@@ -116,10 +117,12 @@
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
+                        name: config.document.title,
                         url: config.document.url,
+                        documentKey: docID,
                         document: blob,
                         ext: config.document.fileType,
-                        autosave: config.autosave || 10,
+                        autosave: config.events.onSave && (config.autosave || 10),
                         editorConfig: config.editorConfig || {}
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
@@ -134,9 +137,11 @@
                         blob = config.document.blob;
                         return start();
                     }
-                    return start();
                     // XXX use server only when not zero knowledge? i.e. no save handler?
                     // XXX or when error with client?
+                    if (!config.events.onSave) {
+                        return start();
+                    }
                     getBlob(function (err, _blob) {
                         if (err) { reject(err); return console.error(err); }
                         _blob.name = `document.${config.document.fileType}`;

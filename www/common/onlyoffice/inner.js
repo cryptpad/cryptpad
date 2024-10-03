@@ -3230,11 +3230,23 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         });
                     }
                     integrationChannel.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
+                        if (!cfg.autosave) { return; }
                         integrationSave(function (obj) {
                             if (obj && obj.error) { console.error(obj.error); }
                             cb();
                         });
                     });
+
+                    if (!cfg.autosave) {
+                        let $save = common.createButton('save', true, {}, function () {
+                            $save.attr('disabled', 'disabled');
+                            integrationSave(err => {
+                                $save.removeAttr('disabled');
+                            });
+                        });
+                        $('body').prepend($save);
+                    }
+
                     if (privateData.initialState && (!content || !content.hashes || !Object.keys(content.hashes).length)) {
                         var blob = privateData.initialState;
                         let title = `document.${cfg.fileType}`;

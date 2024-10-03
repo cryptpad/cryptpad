@@ -129,12 +129,6 @@ define([
             });
         });
 
-        var save = function (obj, cb) {
-            chan.send('SAVE', obj.blob, function (err) {
-                if (err) { return cb({error: err}); }
-                cb();
-            });
-        };
         var reload = function (data) {
             chan.send('RELOAD', data);
         };
@@ -171,7 +165,6 @@ define([
             let xhr = new XMLHttpRequest();
             let data = encodeURIComponent(documentURL);
             let url = getInstanceURL() + '/ooapidl?url=' + data;
-            console.log(url);
             xhr.open('GET', url, true);
             xhr.responseType = 'blob';
             //xhr.setRequestHeader('Content-Type', 'application/json');
@@ -189,6 +182,30 @@ define([
             };
             xhr.send();
         };
+        let saveBlobServer = function (cfg, blob, cb) {
+            let {callbackUrl, name, key} = cfg;
+            let xhr = new XMLHttpRequest();
+            name = encodeURIComponent(name);
+            callbackUrl = encodeURIComponent(callbackUrl);
+            key = encodeURIComponent(key);
+            let query = `name=${name}&cb=${callbackUrl}&key=${key}`
+            let url = getInstanceURL() + `/oosave?${query}`;
+            xhr.open('POST', url, true);
+            xhr.responseType = 'blob';
+            //xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function () {
+                console.error(this.status);
+                if (this.status === 200) {
+                    cb();
+                } else {
+                    cb(this.status);
+                }
+            };
+            xhr.onerror = function (e) {
+                cb(e.message);
+            };
+            xhr.send(blob);
+        };
         chan.on('START', function (data, cb) {
             console.warn('INNER START', data);
             // data.key is a hash
@@ -198,6 +215,23 @@ define([
                 localStorage.setItem(LS_LANG, data.editorConfig.lang);
             }
 
+            let fileName = data.name || `document.${data.ext}`;
+            var save = function (obj, cb) {
+                let cbUrl = data.editorConfig.callbackUrl;
+                if (!data.autosave && cbUrl) {
+                    saveBlobServer({
+                        callbackUrl: cbUrl,
+                        name: fileName,
+                        key: data.documentKey
+                    }, obj.blob, cb);
+                    return;
+                }
+                chan.send('SAVE', obj.blob, function (err) {
+                    if (err) { return cb({error: err}); }
+                    cb();
+                });
+            };
+
             console.error(Hash.hrefToHexChannelId(href));
             let startApp = function (blob) {
                 window.CP_integration_outer = {
@@ -206,6 +240,7 @@ define([
                     href: href,
                     initialState: blob,
                     config: {
+                        fileName: data.name,
                         fileType: data.ext,
                         autosave: data.autosave,
                         user: data.editorConfig.user
