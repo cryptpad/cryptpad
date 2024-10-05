@@ -39,7 +39,7 @@
 
         .tui-full-calendar-confirm {
             span, i {
-                padding: 0.5rem;
+                padding: 0 0.5rem;
             }
             span {
                 padding-left: 0;
@@ -133,6 +133,13 @@
                     width: 540px;
                     max-width: 100%;
                     max-height: 100%;
+                    border-radius: @variables_radius_L;
+                    @media screen and (max-width : @browser_media-medium-screen){
+                        position: fixed;
+                        top: 5.5rem;
+                        overflow-y: auto;
+                        max-height: calc(100% - 6rem);
+                    }
                 }
             }
             #tui-full-calendar-popup-arrow {
@@ -153,10 +160,12 @@
             border-color: @cp_calendar-border !important;
 
         }
-        .tui-full-calendar-popup {
-            border-radius: @variables_radius_L;
-        }
         .tui-full-calendar-popup-container {
+            .tui-full-calendar-section-allday{
+                &:focus {
+                    outline: @cryptpad_color_brand solid 2px;
+                }
+            }
             min-width: 100%;
             background: @cp_flatpickr-bg;
             color: @cryptpad_text_col;
@@ -208,6 +217,9 @@
                     text-overflow: ellipsis;
                     font: @colortheme_app-font;
                     padding: 0 10px;
+                    &:focus{
+                        outline: @cryptpad_color_brand solid 2px;
+                    }
                 }
                 input { flex: 1; }
             }
@@ -403,14 +415,16 @@
                     & > input {
                         height: 40px;
                     }
+                    .tui-full-calendar-content{
+                        &:focus{
+                            outline: @cryptpad_color_brand solid 2px;
+                        }
+                    }
                 }
                 // margin-bottom: 20px;
                 input {
                     width: 80px;
-                    margin-right: 0.3rem;
-                }
-                .fa-plus{
-                    margin-left:0.3rem;
+                    margin-right: 0.5rem;
                 }
             }
         }
@@ -632,6 +646,9 @@
                             background-color: @cp_sidebar-left-active;
                             color: @cp_sidebar-left-active-fg;
                             border: 0px;
+                        }
+                        &:focus-visible {
+                            outline: @variables_focus_style;
                         }
                         i {
                             margin-left: 5px;

@@ -19,6 +19,7 @@ module.exports = {
     "declaration-block-no-shorthand-property-overrides": null,
 
     "comment-whitespace-inside": null,
+    "no-invalid-double-slash-comments": null,
 
     "property-no-vendor-prefix": null,
     "selector-no-vendor-prefix": null,

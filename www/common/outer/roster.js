@@ -694,7 +694,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             // but since multiple users who can and should might be online at once
             // and since they'll all trigger this process at the same time...
             // we want to stagger attempts at random intervals
-            setTimeout(function () {
+            ref.internal.checkpointTimeout = setTimeout(function () {
                 ref.internal.pendingCheckpointId = roster.checkpoint(function (err) {
                     if (err) { console.error(err); }
                 });
@@ -730,7 +730,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
             //console.log("Sending with id [%s]", id, msg);
             //console.log();
 
-            response.expect(id, cb, TIMEOUT_INTERVAL);
+            response.expect(id, function (err, state) {
+                if (err) { return void cb(err); }
+                cb(void 0, state, id);
+            }, TIMEOUT_INTERVAL);
             anon_rpc.send('WRITE_PRIVATE_MESSAGE', [
                 channel,
                 ciphertext

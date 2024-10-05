@@ -2619,7 +2619,8 @@ define([
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
                 lastVisit: Number(localStorage.lastVisit) || undefined,
-                blockId: blockId
+                blockId: blockId,
+                blockHash: blockHash
             };
             common.userHash = userHash || LocalStore.getUserHash();
 

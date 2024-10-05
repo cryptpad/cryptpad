@@ -252,7 +252,7 @@ define([
             list.push(userChannel);
 
             if (store.data && store.data.blockId) {
-                //list.push(`${store.data.blockId}#block`); // NEXT 5.7.0?
+                list.push(`${store.data.blockId}#block`);
             }
 
             list.sort();
@@ -2671,6 +2671,7 @@ define([
         };
 */
         var loadOnlyOffice = function () {
+            if (store.onlyoffice) { return; }
             store.onlyoffice = OnlyOffice.init(store, function (ev, data, clients) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'OO_EVENT', {
