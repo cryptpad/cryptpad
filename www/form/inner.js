@@ -4928,7 +4928,7 @@ define([
 
             // End date / Closed state
             var endDateContainer = h('div.cp-form-status-container');
-            var endDateStr = h('div');
+            var endDateStr = h('div.cp-form-status');
             var $endDate = $(endDateContainer);
             var $endDateStr = $(endDateStr);
         
