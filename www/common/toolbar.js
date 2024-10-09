@@ -1198,7 +1198,13 @@ MessengerUI, Messages, Pages, PadTypes) {
                         $('body').find('.cp-dropdown-content li').first().focus();
                         return $(el).find('.cp-notification-dismiss').click();
                     }
-                    $(el).find('.cp-notification-content').click();
+                    if($(el).find('.cp-avatar')){
+                        $(el).find('.cp-avatar').click();
+                    }
+                    else{
+                        $(el).find('.cp-notification-content').click();
+                    }
+
                 });
                 refresh();
             },

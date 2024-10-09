@@ -157,16 +157,28 @@
                     }
                 }
             }
+
             li[role="menuitem"] {
                 border-radius: @variables_radius;
                 white-space: nowrap;
-                &:hover {
-                    background-color: @cp_dropdown-bg-hover !important;
-                }
                 &:focus-visible {
                     outline-color: @cp_dropdown-fg;
                 }
+                .cp-avatar:hover {
+                    background-color: @cp_dropdown-bg-hover !important;
+                }
+                .cp-notification-content:hover {
+                    border-radius: @variables_radius;
+                    background-color: @cp_dropdown-bg-hover !important;
+                }
             }
+
+            li[role="menuitem"]:not(:has(.cp-avatar)) {
+                &:hover {
+                    background-color: @cp_dropdown-bg-hover !important;
+                }
+            }
+
             &> span {
                 box-sizing: border-box;
                 height: 26px;
