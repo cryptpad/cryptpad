@@ -2420,9 +2420,7 @@ define([
                 draggable: true
             }));
             $element.data('path', newPath);
-            if (isElementSelected($element)) {
-                selectElement($element);
-            }
+
             $element.prepend($icon).dblclick(function () {
                 if (restricted) {
                     UI.warn(Messages.fm_restricted);
