@@ -2510,13 +2510,11 @@ define([
                 } else {
                     next();
                 }
-                return;
-            }
-            if (e.which === 13) {
+              }
+            else if (e.which === 13) {
                 if ($container.find('.cp-icons-element-selected').length === 1) {
                     $container.find('.cp-icons-element-selected').click();
                 }
-                return;
             }
         });
 
@@ -2525,6 +2523,7 @@ define([
         window.setTimeout(function () {
             modal.show();
             $modal.focus();
+            next();
         });
     };
 
