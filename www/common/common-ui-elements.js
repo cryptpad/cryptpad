@@ -2770,7 +2770,8 @@ define([
         ]);
 
         // Password
-        var password = h('div.cp-creation-password', [
+        var text =  h('div.cp-creation-password-warning', 'Note that for Forms, you can only set the password during creation. This password cannot be changed later.');
+        var password = h('div.cp-creation-password',  [text, 
             UI.createCheckbox('cp-creation-password', Messages.properties_addPassword, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
                 UI.passwordInput({id: 'cp-creation-password-val'})

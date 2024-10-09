@@ -165,6 +165,7 @@
                 //margin: 10px 0;
                 min-height: 28px;
                 line-height: 28px;
+                flex-flow: column;
                 label {
                     flex: 1;
                     // Force wrap when the other element in the line is 100% (IE bug):
@@ -177,6 +178,10 @@
                         padding: 0 10px;
                     }
                 }
+            }
+
+            .cp-creation-password-warning {
+                background-color:@creation-bg-color-light;
             }
             .cp-creation-help, .cp-creation-warning {
                 font-size: 16px;
