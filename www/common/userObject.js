@@ -2,16 +2,16 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/customize/application_config.js',
-    '/common/common-util.js',
-    '/common/common-hash.js',
-    '/common/common-constants.js',
-    '/common/outer/userObject.js',
-    '/customize/messages.js',
-    '/components/chainpad-crypto/crypto.js',
-], function (AppConfig, Util, Hash, Constants, OuterFO, Messages, Crypto) {
+(() => {
+const factory = (AppConfig = {}, Util, Hash,
+                Constants, UOSetter, Crypto, Messages = {}) => {
     var module = {};
+
+    module.setCustomize = (data) => {
+        Messages = data.Messages;
+        AppConfig = data.AppConfig;
+        UOSetter.setCustomize(data);
+    };
 
     var ROOT = module.ROOT = "root";
     var UNSORTED = module.UNSORTED = "unsorted";
@@ -163,7 +163,7 @@ define([
         var logError = config.logError || logging;
         var debug = exp.debug = config.debug || logging;
 
-        exp.fixFiles = function () {}; // Overriden by OuterFO
+        exp.fixFiles = function () {}; // Overriden by UOSetter
 
         var error = exp.error = function() {
             if (sframeChan) {
@@ -180,7 +180,7 @@ define([
 
         if (config.outer) {
             // Extend "exp" with methods used only outside of the iframe (requires access to store)
-            OuterFO.init(config, exp, files);
+            UOSetter.init(config, exp, files);
         }
 
 
@@ -967,4 +967,30 @@ define([
         return exp;
     };
     return module;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        undefined,
+        require('./common-util'),
+        require('./common-hash'),
+        require('./common-constants'),
+        require('./userObjectSetter'),
+        require('chainpad-crypto'),
+        undefined
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/customize/application_config.js',
+        '/common/common-util.js',
+        '/common/common-hash.js',
+        '/common/common-constants.js',
+        '/common/userObjectSetter.js',
+        '/components/chainpad-crypto/crypto.js',
+        '/customize/messages.js',
+    ], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

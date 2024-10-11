@@ -2,14 +2,16 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/customize/application_config.js',
-    '/common/common-util.js',
-    '/common/common-hash.js',
-    '/common/common-realtime.js',
-    '/customize/messages.js'
-], function (AppConfig, Util, Hash, Realtime, Messages) {
+(() => {
+const factory = (AppConfig = {}, Util, Hash,
+                Realtime, Messages = {}) => {
     var module = {};
+
+    module.setCustomize = (data) => {
+        Messages = data.Messages;
+        AppConfig = data.AppConfig;
+        UOSetter.setCustomize(data);
+    };
 
     var clone = function (o) {
         try { return JSON.parse(JSON.stringify(o)); }
@@ -22,6 +24,7 @@ define([
 
         var readOnly = config.readOnly;
 
+        var Messages = config.Messages || {};
         var ROOT = exp.ROOT;
         var FILES_DATA = exp.FILES_DATA;
         var STATIC_DATA = exp.STATIC_DATA;
@@ -978,4 +981,26 @@ define([
     };
 
     return module;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        undefined,
+        require('./common-util'),
+        require('./common-hash'),
+        require('./common-realtime'),
+        undefined
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/customize/application_config.js',
+        '/common/common-util.js',
+        '/common/common-hash.js',
+        '/common/common-realtime.js',
+        '/customize/messages.js',
+    ], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

@@ -2,16 +2,14 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/common/userObject.js',
-    '/common/common-util.js',
-    '/common/common-hash.js',
-    '/common/outer/sharedfolder.js',
-    '/customize/messages.js',
-    '/common/common-feedback.js',
-    '/components/nthen/index.js',
-], function (UserObject, Util, Hash, SF, Messages, Feedback, nThen) {
+(() => {
+const factory = (UserObject, Util, Hash,
+                SF, Messages = {}, Feedback, nThen) => {
 
+    let setCustomize = data => {
+        Messages = data.Messages;
+        UO.setCustomize(data);
+    };
 
     var getConfig = function (Env) {
         var cfg = {};
@@ -1375,6 +1373,7 @@ define([
             },
             folders: {}
         };
+
         uoConfig.removeProxy = function (id) {
             removeProxy(Env, id);
         };
@@ -1780,7 +1779,35 @@ define([
     };
 
     return {
+        setCustomize,
         create: create,
         createInner: createInner
     };
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    // We don't need Messages in worker or node
+    module.exports = factory(
+        require('./userObject'),
+        require('./common-util'),
+        require('./common-hash'),
+        require('../worker/modules/sharedfolder'),
+        undefined,
+        require('./common-feedback'),
+        require('nthen')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/common/userObject.js',
+        '/common/common-util.js',
+        '/common/common-hash.js',
+        '/common/outer/sharedfolder.js',
+        '/customize/messages.js',
+        '/common/common-feedback.js',
+        '/components/nthen/index.js',
+    ], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

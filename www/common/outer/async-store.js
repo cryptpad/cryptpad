@@ -3,33 +3,33 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
-    '/api/config',
+    '/api/config', // From outside
     'json.sortify',
-    '/common/userObject.js',
-    '/common/proxy-manager.js',
-    '/common/migrate-user-object.js',
-    '/common/common-hash.js',
-    '/common/common-util.js',
-    '/common/common-constants.js',
-    '/common/common-feedback.js',
-    '/common/common-realtime.js',
-    '/common/common-messaging.js',
-    '/common/pinpad.js',
-    '/common/outer/cache-store.js',
-    '/common/outer/sharedfolder.js',
+    '/common/userObject.js', // OK
+    '/common/proxy-manager.js', // OK
+    '/common/migrate-user-object.js', // OK
+    '/common/common-hash.js', // OK
+    '/common/common-util.js', // OK
+    '/common/common-constants.js', // OK
+    '/common/common-feedback.js', // OK
+    '/common/common-realtime.js', // OK
+    '/common/common-messaging.js', // OK
+    '/common/pinpad.js', // OK
+    '/common/outer/cache-store.js', // OK
+    '/common/outer/sharedfolder.js', // OK
     '/common/outer/cursor.js',
     '/common/outer/support.js',
     '/common/outer/integration.js',
     '/common/outer/onlyoffice.js',
-    '/common/outer/mailbox.js',
+    '/common/outer/mailbox.js', // OK
     '/common/outer/profile.js',
     '/common/outer/team.js',
     '/common/outer/messenger.js',
     '/common/outer/history.js',
     '/common/outer/calendar.js',
-    '/common/outer/login-block.js',
-    '/common/outer/network-config.js',
-    '/customize/application_config.js',
+    '/common/outer/login-block.js', // OK
+    '/common/outer/network-config.js', // OK
+    '/customize/application_config.js', // OK
 
     '/components/chainpad-crypto/crypto.js',
     '/components/chainpad/chainpad.dist.js',
@@ -131,7 +131,7 @@ define([
                 obj[key] = data.value;
             }
             if (!data.teamId) {
-            broadcast([clientId], "UPDATE_METADATA");
+                broadcast([clientId], "UPDATE_METADATA");
                 if (Array.isArray(path) && path[0] === 'profile' && store.messenger) {
                     Messaging.updateMyData(store);
                 }
@@ -2945,6 +2945,7 @@ define([
 
         var connect = function (clientId, data, cb) {
             var hash = data.userHash || data.anonHash || Hash.createRandomHash('drive');
+
             if (!hash) {
                 return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }

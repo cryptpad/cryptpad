@@ -18,12 +18,15 @@ define([
     '/common/outer/login-block.js',
     '/common/common-credential.js',
     '/customize/login.js',
+    '/common/worker.bundle.js',
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, AppConfig, Nthen) {
+            Cred, Login, Worker, AppConfig, Nthen) {
+
+console.error(Worker);
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -2620,7 +2623,9 @@ define([
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
                 lastVisit: Number(localStorage.lastVisit) || undefined,
                 blockId: blockId,
-                blockHash: blockHash
+                blockHash: blockHash,
+                Messages,
+                AppConfig
             };
             common.userHash = userHash || LocalStore.getUserHash();
 
