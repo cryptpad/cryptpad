@@ -2671,6 +2671,7 @@ define([
         };
 */
         var loadOnlyOffice = function () {
+            if (store.onlyoffice) { return; }
             store.onlyoffice = OnlyOffice.init(store, function (ev, data, clients) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'OO_EVENT', {
