@@ -826,11 +826,12 @@ define([
         var calendars = h('div.cp-calendar-list');
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
         var isMobileView = window.innerWidth <= 600;
-        var visible = false;  // Initialize global 'visible' state for calendars
+        var visible = !isMobileView;  // Initialize 'visible' state: true for large screens, false for mobile
 
         onCalendarsUpdate.reg(function () {
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
+
             var filter = (teamId) => {
                 var LOOKUP = {};
                 return Object.keys(APP.calendars || {}).filter((id) => {
@@ -853,7 +854,9 @@ define([
             var totalCalendars = myCalendars.length + Object.keys(privateData.teams).reduce((sum, teamId) => {
                 return sum + filter(teamId).length;
             }, 0);
+
             var $contentContainer = $(h('div.cp-calendar-content')).appendTo($calendars);
+
             if (myCalendars.length) {
                 var user = metadataMgr.getUserData();
                 var avatar = h('span.cp-avatar');
@@ -877,7 +880,6 @@ define([
                 h('span')
             ]);
             $(newButton).click(() => {
-                visible = $contentContainer.is(':visible');
                 editCalendar();
             }).appendTo($newContainer);
 
@@ -898,9 +900,7 @@ define([
                     $contentContainer.append(calendarEntry);
                 });
             });
-
             if (totalCalendars > 2 && isMobileView) {
-                $contentContainer.hide();
                 var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
                 var showCalendarsBtn = h('button', [
                     h('i.fa.fa-eye'),
@@ -914,19 +914,26 @@ define([
                     $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
                 }).appendTo($showContainer);
             }
-            $contentContainer.toggle(visible);
 
+            $contentContainer.toggle(visible);
             $(window).resize(function () {
                 var newIsMobileView = window.innerWidth <= 600;
+                if (!newIsMobileView) {
+                    visible = true;
+                    $contentContainer.show();
+                }
                 if (newIsMobileView !== isMobileView) {
                     isMobileView = newIsMobileView;
+                    if (isMobileView) {
+                        visible = false;
+                        $contentContainer.hide();
+                    }
                     onCalendarsUpdate.fire();
                 }
             });
         });
         onCalendarsUpdate.fire();
     };
-
     var _updateRecurring = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
