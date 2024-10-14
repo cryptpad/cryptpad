@@ -17,16 +17,16 @@ define([
     '/common/pinpad.js', // OK
     '/common/outer/cache-store.js', // OK
     '/common/outer/sharedfolder.js', // OK
-    '/common/outer/cursor.js',
-    '/common/outer/support.js',
-    '/common/outer/integration.js',
-    '/common/outer/onlyoffice.js',
+    '/common/outer/cursor.js', // OK
+    '/common/outer/support.js', // OK
+    '/common/outer/integration.js', // OK
+    '/common/outer/onlyoffice.js', // OK
     '/common/outer/mailbox.js', // OK
-    '/common/outer/profile.js',
-    '/common/outer/team.js',
-    '/common/outer/messenger.js',
-    '/common/outer/history.js',
-    '/common/outer/calendar.js',
+    '/common/outer/profile.js', // OK
+    '/common/outer/team.js', // OK
+    '/common/outer/messenger.js', // OK
+    '/common/outer/history.js', // OK
+    '/common/outer/calendar.js', // OK
     '/common/outer/login-block.js', // OK
     '/common/outer/network-config.js', // OK
     '/customize/application_config.js', // OK

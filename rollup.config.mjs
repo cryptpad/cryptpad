@@ -9,7 +9,7 @@ import json from '@rollup/plugin-json';
 
 export default {
     //input: "./_src/worker/index.ts",
-    input: "./_src/worker/store.ts",
+    input: "./src/worker/store.ts",
     output: {
         name: 'cryptpad-worker',
         file: "./_build/worker.bundle.js",

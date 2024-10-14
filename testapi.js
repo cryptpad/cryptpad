@@ -1,4 +1,4 @@
-const Messages = require('./_src/messages');
+const Messages = require('./src/messages');
 const AppConfig = require('./customize/application_config');
 const App = require('./_build/worker.bundle');
 const Http = require('node:http');

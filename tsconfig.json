@@ -6,6 +6,6 @@
         "moduleResolution": "node",
         "outDir": "./_build"
     },
-    "include": ["_src/**/*"]
+    "include": ["src/**/*"]
 }
 
