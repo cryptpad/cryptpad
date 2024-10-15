@@ -22,7 +22,7 @@ export default {
         nodeResolve({
         }),
         commonjs({
-            ignore:['crypto'] // required by tweetnacl for node
+            ignore:['crypto', 'node:http', 'node:https'] // required by tweetnacl for node
         }),
         terser({
             format: {

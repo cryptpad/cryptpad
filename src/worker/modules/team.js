@@ -6,7 +6,7 @@
 const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 UserObject, SF, Roster, Messaging, Feedback,
                 Invite, Crypt, Cache, Listmap, Crypto,
-                CpNetflux, ChainPad, nThen, Saferphore, Nacl) => {
+                CpNetflux, ChainPad, nThen, Nacl) => {
     var Team = {};
 
     Nacl = Nacl || (typeof(window) !== "undefined" && window.nacl);
@@ -852,7 +852,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             // If yes, then remove yourself as an owner
             // If no, delete the pad
             var ownedPads = team.manager.getChannelsList('owned');
-            var sem = Saferphore.create(10);
+            var sem = Util.Saferphore.create(10);
             ownedPads.forEach(function (c) {
                 var w = waitFor();
                 sem.take(function (give) {
@@ -2246,7 +2246,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('chainpad-netflux'),
         require('chainpad'),
         require('nthen'),
-        require('saferphore'),
         require('tweetnacl/nacl-fast'),
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
@@ -2271,7 +2270,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
         'chainpad-netflux',
         '/components/chainpad/chainpad.dist.js',
         '/components/nthen/index.js',
-        '/components/saferphore/index.js',
         '/components/tweetnacl/nacl-fast.min.js',
     ], factory);
 } else {

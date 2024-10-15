@@ -26,7 +26,9 @@ define([
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             Cred, Login, Worker, AppConfig, Nthen) {
 
-console.error(Worker);
+    Worker.start({
+        AppConfig, ApiConfig:Config, Messages, Broadcast: {}
+    })
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata

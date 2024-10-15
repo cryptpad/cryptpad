@@ -368,6 +368,43 @@
     };
 
 
+    Util.fetchApi = function (origin, type, cb) {
+        const url = new URL(origin);
+        url.pathname = `api/${type}`;
+        if (typeof(window) !== "undefined" && window.crypto) {
+            // Browser
+            console.error("TEST2");
+            fetch(url.href).then(res => {
+                if (!res.ok) {
+                    throw new Error(`Fetch error: ${res.status}`);
+                }
+                return res.text();
+            }).then(body => {
+                cb(JSON.parse(body.slice(27,-5)));
+            }).catch(err => {
+                console.error(err.message);
+                cb({});
+            });
+        } else if (typeof(require) !== "undefined") {
+            // NodeJS
+            const H = url.protocol === 'http:' ?
+                        require('node:http') : require('node:https');
+            console.error(url.href);
+            H.get(url.href, res => {
+                let body = '';
+                res.on('data', data => { body += data; });
+                res.on('end', () => {
+                    try {
+                        cb(JSON.parse(body.slice(27,-5)));
+                    } catch (e) {
+                        console.error(e);
+                        cb({});
+                    }
+                });
+            });
+        }
+    };
+
     Util.fetch = function (src, cb, progress, cache) {
         var CB = Util.once(Util.mkAsync(cb));
 
@@ -761,6 +798,42 @@
         return ver || undefined;
     };
 
+    /** Saferphore copied from the npm package:
+      * https://www.npmjs.com/package/saferphore (MIT license)
+      * because the umd definition doesn't work with rollup build
+      */
+    Util.saferphore = resourceCount => {
+        var queue = [];
+        var check;
+        var mkRa = function () {
+            var outerCalled = 0;
+            return function (func) {
+                if (outerCalled++) { throw new Error("returnAfter() called multiple times"); }
+                var called = 0;
+                return function () {
+                    if (called++) {
+                        throw new Error("returnAfter wrapped callback called multiple times");
+                    }
+                    if (func) { func.apply(null, arguments); }
+                    resourceCount++;
+                    check();
+                };
+            };
+        };
+        check = function () {
+            if (resourceCount < 0) { throw new Error("(resourceCount < 0) should never happen"); }
+            if (resourceCount === 0 || queue.length === 0) { return; }
+            resourceCount--;
+            queue.shift()(mkRa());
+        };
+        return {
+            take: function (func) {
+                queue.push(func);
+                check();
+            }
+        };
+    };
+    /* End of code copied from saferphore */
 
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;

@@ -62,6 +62,7 @@ let start = (cfg: StoreConfig):void => {
     });
 
     const AppConfig = cfg.AppConfig;
+    const ApiConfig = cfg.ApiConfig;
 
     let test = TestModule.init({
         emit: () => {}
@@ -85,6 +86,7 @@ let start = (cfg: StoreConfig):void => {
     console.error(Mailbox.init, Cursor.init, Support.init, Integration.init);
     console.error(Profile.init, OnlyOffice.init, Team.init, Messenger.init);
     console.error(History.init, Calendar.init);
+    Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', console.error);
 };
 
 export {

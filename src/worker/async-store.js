@@ -15,6 +15,8 @@ define([
     '/common/common-realtime.js', // OK
     '/common/common-messaging.js', // OK
     '/common/pinpad.js', // OK
+    '/common/rpc.js', // OK
+    '/common/merge-drive.js', // OK
     '/common/outer/cache-store.js', // OK
     '/common/outer/sharedfolder.js', // OK
     '/common/outer/cursor.js', // OK
@@ -39,7 +41,7 @@ define([
     '/components/nthen/index.js',
     '/components/saferphore/index.js',
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad, Cache,
+             Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
              SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, Block, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
@@ -563,14 +565,10 @@ define([
 
         var initAnonRpc = function (clientId, data, cb) {
             if (store.anon_rpc) { return void cb(); }
-            require([
-                '/common/rpc.js',
-            ], function (Rpc) {
-                Rpc.createAnonymous(store.network, function (e, call) {
-                    if (e) { return void cb({error: e}); }
-                    store.anon_rpc = call;
-                    cb();
-                });
+            Rpc.createAnonymous(store.network, function (e, call) {
+                if (e) { return void cb({error: e}); }
+                store.anon_rpc = call;
+                cb();
             });
         };
 
@@ -942,10 +940,8 @@ define([
          *   - anonHash
          */
         Store.migrateAnonDrive = function (clientId, data, cb) {
-            require(['/common/merge-drive.js'], function (Merge) {
-                var hash = data.anonHash;
-                Merge.anonDriveIntoUser(store, hash, cb);
-            });
+            var hash = data.anonHash;
+            Merge.anonDriveIntoUser(store, hash, cb);
         };
 
         // Set the display name (username) in the proxy
