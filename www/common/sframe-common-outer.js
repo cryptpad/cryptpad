@@ -1322,6 +1322,9 @@ define([
                         toHash: data.toHash,
                         lastKnownHash: data.lastKnownHash
                     }, function (data) {
+                        if (data && data.error) {
+                            return void cb(data);
+                        }
                         cb({
                             isFull: data.isFull,
                             messages: data.messages.map(function (obj) {
