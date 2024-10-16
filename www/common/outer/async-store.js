@@ -3165,7 +3165,19 @@ define([
                 store.messenger = store.modules['messenger'];
 
                 // And now we're ready
-                initAnonRpc(null, null, function () {
+                console.log('XXX onNoDrive');
+                nThen(function (waitFor) {
+                    if (!store.rpc) {
+                        let keyPair = nacl.sign.keyPair()
+                        store.proxy = store.proxy || {};
+                        store.proxy.edPublic = nacl.util.encodeBase64(keyPair.publicKey);
+                        store.proxy.edPrivate = nacl.util.encodeBase64(keyPair.secretKey);
+                        initRpc(null, null, waitFor());
+                    }
+                    if (!store.anon_rpc) {
+                        initAnonRpc(null, null, waitFor());
+                    }
+                }).nThen(function () {
                     cb({});
                 });
             };
