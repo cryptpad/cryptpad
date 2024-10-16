@@ -663,5 +663,9 @@
     "admin_broadcastTitle": "Broadcast bericht",
     "pad_settings_hide": "Verbergen",
     "importError": "Importeren mislukt (verkeerd formaat)",
-    "terms": "Servicevoorwaarden"
+    "terms": "Servicevoorwaarden",
+    "creation_404": "Dit document bestaat niet meer. Gebruik het volgende formulier om een nieuw document te maken.",
+    "feedback_about": "Als je dit leest was je waarschijnlijk nieuwsgierig waarom CryptPad om webpagina's vraagt wanneer je bepaalde acties uitvoert.",
+    "features_f_social_note": "Voeg contacten toe voor veilige samenwerking, creëer een profiel, fijnmazige toegangscontroles",
+    "feedback_optout": "Als u zich wilt afmelden, ga dan naar <a>uw gebruikersinstellingenpagina</a>, waar u een selectievakje vindt om gebruikersfeedback in of uit te schakelen."
 }
