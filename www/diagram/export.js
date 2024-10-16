@@ -7,14 +7,6 @@ define([
 ], function (
     DiagramUtil
 ) {
-    const stringifyDrawioStyle = (styleAttrValue) => {
-        const parts = [];
-        for (const [key, value] of Object.entries(styleAttrValue)) {
-            parts.push(`${key}=${value}`);
-        }
-        return parts.join(';');
-    };
-
     const blobToImage = (blob) => {
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -37,7 +29,7 @@ define([
                 return loadImage(style.image)
                     .then((dataUrl) => {
                         style.image = dataUrl.replace(';base64', '');  // ';' breaks draw.ios style format
-                        element.setAttribute('style', stringifyDrawioStyle(style));
+                        element.setAttribute('style', DiagramUtil.stringifyDrawioStyle(style));
                     });
             });
     };

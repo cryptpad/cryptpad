@@ -6,9 +6,13 @@
 define([
     'jquery',
     '/diagram/util.js',
+    '/common/common-hash.js',
+    '/api/config',
 ], function (
     $,
-    DiagramUtil
+    DiagramUtil,
+    Hash,
+    ApiConfig,
 ) {
     const Nacl = window.nacl;
 
@@ -29,12 +33,24 @@ define([
         return new Blob([u8], { type: mimeType });
     };
 
+    const getCryptPadUrlForUploadData = (data) => {
+        const [, urlHash] = splitAt(data.url, '#');
+        const secret = Hash.getSecrets('file', urlHash);
+
+        const fileHost = ApiConfig.fileHost || window.location.origin;
+        const hexFileName = secret.channel;
+        const src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+        const key = secret.keys && secret.keys.cryptKey;
+        const cryptKey = Nacl.util.encodeBase64(key);
+        return DiagramUtil.getCryptPadUrl(src, cryptKey, data.fileType);
+    };
+
     const uploadFile = async (fileManager, blob) => {
         return new Promise((resolve) => {
             fileManager.handleFile(blob, {
                 callback: (data) => {
-                    console.log('XXX data', data);
-                    resolve();
+                    const cryptPadUrl = getCryptPadUrlForUploadData(data);
+                    resolve(cryptPadUrl);
                 }
             });
         });
@@ -51,7 +67,9 @@ define([
         for(const image of images) {
             const blob = parseDataUrl(image.style.image);
 
-            await uploadFile(fileManager, blob);
+            const cryptPadUrl = await uploadFile(fileManager, blob);
+            image.style.image = cryptPadUrl;
+            image.element.setAttribute('style', DiagramUtil.stringifyDrawioStyle(image.style));
         }
     };
 
