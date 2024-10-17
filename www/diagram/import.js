@@ -64,6 +64,9 @@ define([
             }))
             .filter(({ style }) => style.image && style.image.startsWith('data:'))
 
+        console.log('XXX saveImagesToCryptPad 1');
+        await window.CryptPad_AsyncStore.onRpcReadyEvt.promise;
+        console.log('XXX saveImagesToCryptPad 2');
         for(const image of images) {
             const blob = parseDataUrl(image.style.image);
 
@@ -74,6 +77,7 @@ define([
     };
 
     const importDiagram = async (common, content, file) => {
+        console.log('XXX importDiagram 1');
         let doc;
         try {
             doc = DiagramUtil.parseXML(content);

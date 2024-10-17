@@ -3165,9 +3165,16 @@ define([
                 store.messenger = store.modules['messenger'];
 
                 // And now we're ready
-                initAnonRpc(null, null, function () {
-                    cb({});
-                });
+                nThen(function (waitFor) {
+                if (!store.rpc) {
+                  initRpc(null, null, waitFor());
+                }
+                if (!store.anon_rpc) {
+                  initAnonRpc(null, null, waitFor());
+                }
+              }).nThen(function () {
+                cb({});
+              });
             };
 
             // We need an anonymous RPC to be able to check if the pad exists and to get
