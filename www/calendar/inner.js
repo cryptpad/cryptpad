@@ -905,7 +905,7 @@ define([
                 var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
                 var showCalendarsBtn = h('button', [
                     h('i.fa.fa-eye'),
-                    h('span.cp-calendar-title', Messages.calendar_show),
+                    h('span.cp-calendar-title', visible ? Messages.calendar_hide : Messages.calendar_show),
                     h('span')
                 ]);
 
