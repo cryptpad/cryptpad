@@ -214,7 +214,8 @@
                     cb();
                 });
                 chan.on('ON_INSERT_IMAGE', function(data, cb) {
-                    if (config.events.onIntertImage) {
+                    console.log('XXX ON_INSERT_IMAGE', { config, data, cb });
+                    if (config.events.onInsertImage) {
                         config.events.onInsertImage(data, cb);
                     } else { cb(); }
                 });
@@ -362,5 +363,3 @@
         window.CryptPadAPI = factory();
     }
 }());
-
-

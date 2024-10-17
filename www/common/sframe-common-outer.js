@@ -2094,6 +2094,7 @@ define([
                 });
                 sframeChan.on('Q_INTEGRATION_ON_INSERT_IMAGE', function (data, cb) {
                     if (cfg.integrationUtils && cfg.integrationUtils.onInsertImage) {
+                        console.log('XXX Q_INTEGRATION_ON_INSERT_IMAGE', {cfg, data, cb});
                         cfg.integrationUtils.onInsertImage(data, cb);
                     }
                 });
@@ -2445,4 +2446,3 @@ define([
 
     return common;
 });
-

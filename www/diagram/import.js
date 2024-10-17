@@ -6,13 +6,9 @@
 define([
     'jquery',
     '/diagram/util.js',
-    '/common/common-hash.js',
-    '/api/config',
 ], function (
     $,
     DiagramUtil,
-    Hash,
-    ApiConfig,
 ) {
     const Nacl = window.nacl;
 
@@ -33,29 +29,6 @@ define([
         return new Blob([u8], { type: mimeType });
     };
 
-    const getCryptPadUrlForUploadData = (data) => {
-        const [, urlHash] = splitAt(data.url, '#');
-        const secret = Hash.getSecrets('file', urlHash);
-
-        const fileHost = ApiConfig.fileHost || window.location.origin;
-        const hexFileName = secret.channel;
-        const src = fileHost + Hash.getBlobPathFromHex(hexFileName);
-        const key = secret.keys && secret.keys.cryptKey;
-        const cryptKey = Nacl.util.encodeBase64(key);
-        return DiagramUtil.getCryptPadUrl(src, cryptKey, data.fileType);
-    };
-
-    const uploadFile = async (fileManager, blob) => {
-        return new Promise((resolve) => {
-            fileManager.handleFile(blob, {
-                callback: (data) => {
-                    const cryptPadUrl = getCryptPadUrlForUploadData(data);
-                    resolve(cryptPadUrl);
-                }
-            });
-        });
-    };
-
     const saveImagesToCryptPad = async (fileManager, doc) => {
         const images = Array.from(doc.querySelectorAll('mxCell'))
             .map((element) => ({
@@ -70,13 +43,13 @@ define([
         for(const image of images) {
             const blob = parseDataUrl(image.style.image);
 
-            const cryptPadUrl = await uploadFile(fileManager, blob);
+            const cryptPadUrl = await DiagramUtil.uploadFile(fileManager, blob);
             image.style.image = cryptPadUrl;
             image.element.setAttribute('style', DiagramUtil.stringifyDrawioStyle(image.style));
         }
     };
 
-    const importDiagram = async (common, content, file) => {
+    const importDiagram = async (common, content) => {
         console.log('XXX importDiagram 1');
         let doc;
         try {
@@ -86,17 +59,7 @@ define([
             return;
         }
 
-        var fmConfigImages = {
-            noHandlers: true,
-            noStore: true,
-            body: $('body'),
-            onUploaded: function (ev, data) {
-                console.log('XXX onUploaded', { ev, data });
-                if (!ev.callback) { return; }
-                ev.callback(data);
-            }
-        };
-        const fileManager = common.createFileManager(fmConfigImages);
+        const fileManager = DiagramUtil.createSimpleFileManager(common);
 
         await saveImagesToCryptPad(fileManager, doc);
         return DiagramUtil.xmlAsJsonContent(new XMLSerializer().serializeToString(doc));

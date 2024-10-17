@@ -93,7 +93,10 @@ define([
             return new Promise((resolve) => {
                 framework.insertImage({}, (imageData) => {
                     if (imageData.blob) {
-                        resolve(imageData.blob);
+                        const fileManager = DiagramUtil.createSimpleFileManager(framework._.sfCommon);
+                        DiagramUtil.uploadFile(fileManager, imageData.blob)
+                            .then(url => resolve(url))
+                            .catch(e => console.error(e));
                     } else if (imageData.url) {
                         resolve(imageData.url);
                     } else {
