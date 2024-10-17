@@ -1000,7 +1000,12 @@ define([
         Store.getPadAttribute = function (clientId, data, cb) {
             var res = {};
             nThen(function (waitFor) {
+                console.log('XXX getAllStores', getAllStores());
                 getAllStores().forEach(function (s) {
+                    if (!s.manager) {
+                        waitFor()();
+                        return;
+                    }
                     s.manager.getPadAttribute(data, waitFor(function (err, val) {
                         if (err) { return; }
                         if (!val || typeof(val) !== "object") { return void console.error("Not an object!"); }
@@ -1011,6 +1016,7 @@ define([
                     }));
                 });
             }).nThen(function () {
+                console.log('XXX getPadAttribute cb()');
                 cb(res.value);
             });
         };
