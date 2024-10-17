@@ -900,7 +900,8 @@ define([
                     $contentContainer.append(calendarEntry);
                 });
             });
-            if (totalCalendars > 2 && isMobileView) {
+            if(isMobileView) {
+            if (totalCalendars > 2) {
                 var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
                 var showCalendarsBtn = h('button', [
                     h('i.fa.fa-eye'),
@@ -914,6 +915,8 @@ define([
                     $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
                 }).appendTo($showContainer);
             }
+            else {visible = true;}
+        }
 
             $contentContainer.toggle(visible);
             $(window).resize(function () {
