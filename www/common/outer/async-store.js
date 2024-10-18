@@ -468,12 +468,15 @@ define([
         };
 
         var initRpc = function (clientId, data, cb) {
-            if (!store.loggedIn) { return cb(); }
+            if (!store.loggedIn && !(data && data.keys)) { return cb(); }
             if (store.rpc) { return void cb(account); }
-            Pinpad.create(store.network, store.proxy, function (e, call) {
+            Pinpad.create(store.network, data && data.keys || store.proxy, function (e, call) {
                 if (e) { return void cb({error: e}); }
 
                 store.rpc = call;
+
+                if (data && data.keys) { return void cb(); }
+
                 store.onRpcReadyEvt.fire();
 
                 Store.getPinLimit(null, null, function (obj) {
@@ -1002,10 +1005,6 @@ define([
             nThen(function (waitFor) {
                 console.log('XXX getAllStores', getAllStores());
                 getAllStores().forEach(function (s) {
-                    if (!s.manager) {
-                        waitFor()();
-                        return;
-                    }
                     s.manager.getPadAttribute(data, waitFor(function (err, val) {
                         if (err) { return; }
                         if (!val || typeof(val) !== "object") { return void console.error("Not an object!"); }
@@ -3175,10 +3174,10 @@ define([
                 nThen(function (waitFor) {
                     if (!store.rpc) {
                         let keyPair = nacl.sign.keyPair()
-                        store.proxy = store.proxy || {};
-                        store.proxy.edPublic = nacl.util.encodeBase64(keyPair.publicKey);
-                        store.proxy.edPrivate = nacl.util.encodeBase64(keyPair.secretKey);
-                        initRpc(null, null, waitFor());
+                        const data = { keys: {} };
+                        data.keys.edPublic = nacl.util.encodeBase64(keyPair.publicKey);
+                        data.keys.edPrivate = nacl.util.encodeBase64(keyPair.secretKey);
+                        initRpc(null, data, waitFor());
                     }
                     if (!store.anon_rpc) {
                         initAnonRpc(null, null, waitFor());

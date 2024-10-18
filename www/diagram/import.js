@@ -37,7 +37,7 @@ define([
         const [, urlHash] = splitAt(data.url, '#');
         const secret = Hash.getSecrets('file', urlHash);
 
-        const fileHost = ApiConfig.fileHost || window.location.origin;
+        const fileHost = ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin || window.location.origin;
         const hexFileName = secret.channel;
         const src = fileHost + Hash.getBlobPathFromHex(hexFileName);
         const key = secret.keys && secret.keys.cryptKey;
