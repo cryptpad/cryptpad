@@ -8,12 +8,18 @@ define([
     '/common/outer/cache-store.js',
     '/components/x2js/x2js.js',
     '/components/pako/dist/pako.min.js',
+    '/common/common-hash.js',
+    '/api/config',
+    'jquery',
 ], function (
     Util,
     FileCrypto,
     Cache,
     X2JS,
     pako,
+    Hash,
+    ApiConfig,
+    $,
 ) {
     const Nacl = window.nacl;
     const x2js = new X2JS();
@@ -138,6 +144,42 @@ define([
         return parts.join(';');
     };
 
+    const getCryptPadUrlForUploadData = (data) => {
+        const [, urlHash] = data.url.split('#')[1];
+        const secret = Hash.getSecrets('file', urlHash);
+
+        const fileHost = ApiConfig.fileHost || window.location.origin;
+        const hexFileName = secret.channel;
+        const src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+        const key = secret.keys && secret.keys.cryptKey;
+        const cryptKey = Nacl.util.encodeBase64(key);
+        return getCryptPadUrl(src, cryptKey, data.fileType);
+    };
+
+    const uploadFile = async (fileManager, blob) => {
+        return new Promise((resolve) => {
+            fileManager.handleFile(blob, {
+                callback: (data) => {
+                    const cryptPadUrl = getCryptPadUrlForUploadData(data);
+                    resolve(cryptPadUrl);
+                }
+            });
+        });
+    };
+
+    const createSimpleFileManager = (common) => {
+        const fmConfigImages = {
+            noHandlers: true,
+            noStore: true,
+            body: $('body'),
+            onUploaded: function (ev, data) {
+                if (!ev.callback) { return; }
+                ev.callback(data);
+            }
+        };
+        return common.createFileManager(fmConfigImages);
+    };
+
     return {
         parseCryptPadUrl,
         getCryptPadUrl,
@@ -147,6 +189,8 @@ define([
         decompressDrawioXml,
         parseDrawioStyle,
         stringifyDrawioStyle,
+        uploadFile,
+        createSimpleFileManager,
 
         loadImage: function(href) {
             return new Promise((resolve, reject) => {

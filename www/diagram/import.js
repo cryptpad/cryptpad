@@ -4,25 +4,19 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
-    'jquery',
     '/diagram/util.js',
-    '/common/common-hash.js',
-    '/api/config',
 ], function (
-    $,
     DiagramUtil,
-    Hash,
-    ApiConfig,
 ) {
     const Nacl = window.nacl;
 
-    const splitAt = function(str, char) {
+    const splitAt = function (str, char) {
         const pos = str.indexOf(char);
         if (pos <= 0) {
             return [str, ''];
         }
         return [str.substring(0, pos), str.substring(pos + 1)];
-    }
+    };
 
     const parseDataUrl = function (url) {
         const [prefix, data] = splitAt(url, ',');
@@ -33,47 +27,25 @@ define([
         return new Blob([u8], { type: mimeType });
     };
 
-    const getCryptPadUrlForUploadData = (data) => {
-        const [, urlHash] = splitAt(data.url, '#');
-        const secret = Hash.getSecrets('file', urlHash);
-
-        const fileHost = ApiConfig.fileHost || ApiConfig.httpUnsafeOrigin || window.location.origin;
-        const hexFileName = secret.channel;
-        const src = fileHost + Hash.getBlobPathFromHex(hexFileName);
-        const key = secret.keys && secret.keys.cryptKey;
-        const cryptKey = Nacl.util.encodeBase64(key);
-        return DiagramUtil.getCryptPadUrl(src, cryptKey, data.fileType);
-    };
-
-    const uploadFile = async (fileManager, blob) => {
-        return new Promise((resolve) => {
-            fileManager.handleFile(blob, {
-                callback: (data) => {
-                    const cryptPadUrl = getCryptPadUrlForUploadData(data);
-                    resolve(cryptPadUrl);
-                }
-            });
-        });
-    };
-
     const saveImagesToCryptPad = async (fileManager, doc) => {
         const images = Array.from(doc.querySelectorAll('mxCell'))
             .map((element) => ({
                 element,
                 style: DiagramUtil.parseDrawioStyle(element.getAttribute('style')),
             }))
-            .filter(({ style }) => style.image && style.image.startsWith('data:'))
+            .filter(({ style }) => style.image && style.image.startsWith('data:'));
 
+        await window.CryptPad_AsyncStore.onRpcReadyEvt.promise;
         for(const image of images) {
             const blob = parseDataUrl(image.style.image);
 
-            const cryptPadUrl = await uploadFile(fileManager, blob);
+            const cryptPadUrl = await DiagramUtil.uploadFile(fileManager, blob);
             image.style.image = cryptPadUrl;
             image.element.setAttribute('style', DiagramUtil.stringifyDrawioStyle(image.style));
         }
     };
 
-    const importDiagram = async (common, content, file) => {
+    const importDiagram = async (common, content) => {
         let doc;
         try {
             doc = DiagramUtil.parseXML(content);
@@ -82,17 +54,7 @@ define([
             return;
         }
 
-        var fmConfigImages = {
-            noHandlers: true,
-            noStore: true,
-            body: $('body'),
-            onUploaded: function (ev, data) {
-                console.log('XXX onUploaded', { ev, data });
-                if (!ev.callback) { return; }
-                ev.callback(data);
-            }
-        };
-        const fileManager = common.createFileManager(fmConfigImages);
+        const fileManager = DiagramUtil.createSimpleFileManager(common);
 
         await saveImagesToCryptPad(fileManager, doc);
         return DiagramUtil.xmlAsJsonContent(new XMLSerializer().serializeToString(doc));

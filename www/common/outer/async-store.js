@@ -43,6 +43,7 @@ define([
              SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, Block, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
+    const Nacl = window.nacl;
 
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
@@ -1003,7 +1004,6 @@ define([
         Store.getPadAttribute = function (clientId, data, cb) {
             var res = {};
             nThen(function (waitFor) {
-                console.log('XXX getAllStores', getAllStores());
                 getAllStores().forEach(function (s) {
                     s.manager.getPadAttribute(data, waitFor(function (err, val) {
                         if (err) { return; }
@@ -1015,7 +1015,6 @@ define([
                     }));
                 });
             }).nThen(function () {
-                console.log('XXX getPadAttribute cb()');
                 cb(res.value);
             });
         };
@@ -3170,13 +3169,12 @@ define([
                 store.messenger = store.modules['messenger'];
 
                 // And now we're ready
-                console.log('XXX onNoDrive');
                 nThen(function (waitFor) {
                     if (!store.rpc) {
-                        let keyPair = nacl.sign.keyPair()
+                        let keyPair = Nacl.sign.keyPair();
                         const data = { keys: {} };
-                        data.keys.edPublic = nacl.util.encodeBase64(keyPair.publicKey);
-                        data.keys.edPrivate = nacl.util.encodeBase64(keyPair.secretKey);
+                        data.keys.edPublic = Nacl.util.encodeBase64(keyPair.publicKey);
+                        data.keys.edPrivate = Nacl.util.encodeBase64(keyPair.secretKey);
                         initRpc(null, data, waitFor());
                     }
                     if (!store.anon_rpc) {
@@ -3185,6 +3183,17 @@ define([
                 }).nThen(function () {
                     cb({});
                 });
+
+                nThen(function (waitFor) {
+                if (!store.rpc) {
+                  initRpc(null, null, waitFor());
+                }
+                if (!store.anon_rpc) {
+                  initAnonRpc(null, null, waitFor());
+                }
+              }).nThen(function () {
+                cb({});
+              });
             };
 
             // We need an anonymous RPC to be able to check if the pad exists and to get
