@@ -853,7 +853,6 @@ define([
 
     // STORAGE - TEMPLATES
     common.listTemplates = function (type, cb) {
-        console.trace('XXX listTemplates');
         postMessage("GET_TEMPLATES", null, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             if (!Array.isArray(obj)) { return void cb ('NOT_AN_ARRAY'); }

@@ -35,7 +35,6 @@ define([
             }))
             .filter(({ style }) => style.image && style.image.startsWith('data:'));
 
-        await window.CryptPad_AsyncStore.onRpcReadyEvt.promise;
         for(const image of images) {
             const blob = parseDataUrl(image.style.image);
 

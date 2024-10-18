@@ -145,7 +145,7 @@ define([
     };
 
     const getCryptPadUrlForUploadData = (data) => {
-        const [, urlHash] = data.url.split('#')[1];
+        const urlHash = data.url.split('#')[1];
         const secret = Hash.getSecrets('file', urlHash);
 
         const fileHost = ApiConfig.fileHost || window.location.origin;
@@ -171,7 +171,6 @@ define([
         const fmConfigImages = {
             noHandlers: true,
             noStore: true,
-            body: $('body'),
             onUploaded: function (ev, data) {
                 if (!ev.callback) { return; }
                 ev.callback(data);
