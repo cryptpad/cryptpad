@@ -316,7 +316,14 @@ define([
     APP.selectedFiles = [];
 
     var isElementSelected = function ($element) {
-        var elementId = $element.data("path").slice(-1)[0];
+        var isTrashed = $element.data("path")[0] === 'trash'
+        let elementId;
+        if (isTrashed) {
+            elementId = $element.data("path")[1];
+        } else {
+            elementId = $element.data("path").slice(-1);
+        }
+        console.log('ELEMENT', elementId)
         return APP.selectedFiles.indexOf(elementId) !== -1;
     };
     var selectElement = function ($element) {
@@ -2420,6 +2427,11 @@ define([
                 draggable: true
             }));
             $element.data('path', newPath);
+            if (newPath[0] !== 'trash') {
+                if (isElementSelected($element)) {
+                    selectElement($element);                
+                }
+            }
 
             $element.prepend($icon).dblclick(function () {
                 if (restricted) {
