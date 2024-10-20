@@ -24,6 +24,7 @@ define([
             });
             sframeChan.on('Q_SETTINGS_DRIVE_GET', function (d, cb) {
                 Cryptpad.getUserObject(null, function (obj) {
+                    console.log('OBJ', obj)
                     if (obj.error) { return void cb(obj); }
                     if (d === "full") {
                         // We want shared folders too

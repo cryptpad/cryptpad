@@ -1198,6 +1198,9 @@ define([
                 var ui = Backup.createExportUI(privateData.origin);
 
                 var bu = Backup.create(data, common.getPad, privateData.fileHost, function(blob, errors) {
+                    console.log('blob', blob)
+                    console.log('data', data)
+                    console.log('filename', filename)
                     saveAs(blob, filename);
                     sframeChan.event('EV_CRYPTGET_DISCONNECT');
                     ui.complete(function() {

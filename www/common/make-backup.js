@@ -57,6 +57,7 @@ define([
 
 
     var _downloadFile = function (ctx, fData, cb, updateProgress) {
+        console.log('fDATA', fData)
         var cancelled = false;
         var href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
         var parsed = Hash.parsePadUrl(href);
@@ -163,6 +164,7 @@ define([
     // Add a file to the zip. We have to cryptget&transform it if it's a pad
     // or fetch&decrypt it if it's a file.
     var addFile = function (ctx, zip, fData, existingNames) {
+        console.log('fData', fData)
         if (!fData.href && !fData.roHref) {
             return void ctx.errors.push({
                 error: 'EINVAL',
@@ -172,7 +174,11 @@ define([
 
         var href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
         var parsed = Hash.parsePadUrl(href);
+        console.log('PARSED', parsed)
+        if (parsed.hashData) {
         if (['pad', 'file'].indexOf(parsed.hashData.type) === -1) { return; }
+        }
+        
 
         // waitFor is used to make sure all the pads and files are process before downloading the zip.
         var w = ctx.waitFor();
@@ -255,6 +261,7 @@ define([
                 var todoFile = function () {
                     var it;
                     var dl = _downloadFile(ctx, fData, function (err, res) {
+                        console.log('fData!!!', fData)
                         if (it) { clearInterval(it); }
                         if (err) { return void error(err); }
                         var opts = {
@@ -276,9 +283,12 @@ define([
                         }
                     }, 50);
                 };
-                if (parsed.hashData.type === 'file') {
+                if (parsed.hashData) {
+                    if (parsed.hashData.type === 'file') {
                     return void todoFile();
                 }
+                }
+
                 todoPad();
             });
         });
@@ -290,7 +300,10 @@ define([
         if (typeof (root) !== "object") { return; }
         var existingNames = [];
         Object.keys(root).forEach(function (k) {
+            console.log('ROOT', root)
             var el = root[k];
+            console.log("EL", el)
+            console.log('fd', fd)
             if (typeof el === "object" && el.metadata !== true) { // if folder
                 var fName = getUnique(sanitize(k), '', existingNames);
                 existingNames.push(fName.toLowerCase());
@@ -304,6 +317,7 @@ define([
             }
             var fData = fd[el];
             if (fData) {
+                console.log('ADDED')
                 addFile(ctx, zip, fData, existingNames);
                 return;
             }
@@ -314,6 +328,8 @@ define([
     var create = function (data, getPad, fileHost, cb, progress, cache, sframeChan) {
         if (!data || !data.uo || !data.uo.drive) { return void cb('EEMPTY'); }
         var sem = Saferphore.create(5);
+        console.log("HELLLO", data)
+
         var ctx = {
             fileHost: fileHost,
             get: getPad,
@@ -329,7 +345,18 @@ define([
             cache: cache,
             sframeChan: sframeChan
         };
+                var links = ctx.data.static
+        console.log('CTX', links)
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
+        
+        console.log('ctx', ctx)
+        console.log('filesdata', filesData)
+        Object.keys(links).forEach(function(key) {
+            filesData[key] = links[key]
+        })
+        console.log(filesData)
+        console.log('DATA1', data.sharedFolderId)
+        console.log('DATA2', ctx.sf[data.sharedFolderId])
         progress('reading', -1); // Msg.settings_export_reading
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
