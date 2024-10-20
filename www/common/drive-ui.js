@@ -321,7 +321,7 @@ define([
         if (isTrashed) {
             elementId = $element.data("path")[1];
         } else {
-            elementId = $element.data("path").slice(-1);
+            elementId = $element.data("path").slice(-1)[0];
         }
         console.log('ELEMENT', elementId)
         return APP.selectedFiles.indexOf(elementId) !== -1;
