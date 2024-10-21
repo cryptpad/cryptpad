@@ -2,50 +2,18 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/api/config', // From outside
-    'json.sortify',
-    '/common/userObject.js', // OK
-    '/common/proxy-manager.js', // OK
-    '/common/migrate-user-object.js', // OK
-    '/common/common-hash.js', // OK
-    '/common/common-util.js', // OK
-    '/common/common-constants.js', // OK
-    '/common/common-feedback.js', // OK
-    '/common/common-realtime.js', // OK
-    '/common/common-messaging.js', // OK
-    '/common/pinpad.js', // OK
-    '/common/rpc.js', // OK
-    '/common/merge-drive.js', // OK
-    '/common/outer/cache-store.js', // OK
-    '/common/outer/sharedfolder.js', // OK
-    '/common/outer/cursor.js', // OK
-    '/common/outer/support.js', // OK
-    '/common/outer/integration.js', // OK
-    '/common/outer/onlyoffice.js', // OK
-    '/common/outer/mailbox.js', // OK
-    '/common/outer/profile.js', // OK
-    '/common/outer/team.js', // OK
-    '/common/outer/messenger.js', // OK
-    '/common/outer/history.js', // OK
-    '/common/outer/calendar.js', // OK
-    '/common/outer/login-block.js', // OK
-    '/common/outer/network-config.js', // OK
-    '/customize/application_config.js', // OK
+(() => {
+const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
+                Migrate, Hash, Util, Constants, Feedback,
+                Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
+                SF, Cursor, Support, Integration, OnlyOffice,
+                Mailbox, Profile, Team, Messenger, History,
+                Calendar, Block, NetConfig, AppConfig = {},
+                Crypto, ChainPad, CpNetflux, Listmap,
+                Netflux, nThen) => {
 
-    '/components/chainpad-crypto/crypto.js',
-    '/components/chainpad/chainpad.dist.js',
-    'chainpad-netflux',
-    'chainpad-listmap',
-    'netflux-client',
-    '/components/nthen/index.js',
-    '/components/saferphore/index.js',
-], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
-             SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
-             Calendar, Block, NetConfig, AppConfig,
-             Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
-
+    const window = globalThis;
+    const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
 
@@ -3308,4 +3276,88 @@ define([
     return {
         create: create
     };
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    // Code from customize can't be laoded directly in the build
+    module.exports = factory(
+        undefined,
+        require('json.sortify'),
+        require('../common/user-object'),
+        require('../common/proxy-manager'),
+        require('./components/migrate-user-object'),
+        require('../common/common-hash'),
+        require('../common/common-util'),
+        require('../common/common-constants'),
+        require('../common/common-feedback'),
+        require('../common/common-realtime'),
+        require('../common/common-messaging'),
+        require('../common/pinpad'),
+        require('../common/rpc'),
+        require('./components/merge-drive'),
+        require('../common/cache-store'),
+        require('./components/sharedfolder'),
+        require('./modules/cursor'),
+        require('./modules/support'),
+        require('./modules/integration'),
+        require('./modules/onlyoffice'),
+        require('./modules/mailbox'),
+        require('./modules/profile'),
+        require('./modules/team'),
+        require('./modules/messenger'),
+        require('./modules/history'),
+        require('./modules/calendar'),
+        require('../common/login-block'),
+        require('../common/network-config'),
+        undefined,
+        require('chainpad-crypto'),
+        require('chainpad'),
+        require('chainpad-netflux'),
+        require('chainpad-listmap'),
+        require('netflux-websocket'),
+        require('nthen')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/api/config', // From outside
+        'json.sortify',
+        '/common/userObject.js', // OK
+        '/common/proxy-manager.js', // OK
+        '/common/migrate-user-object.js', // OK
+        '/common/common-hash.js', // OK
+        '/common/common-util.js', // OK
+        '/common/common-constants.js', // OK
+        '/common/common-feedback.js', // OK
+        '/common/common-realtime.js', // OK
+        '/common/common-messaging.js', // OK
+        '/common/pinpad.js', // OK
+        '/common/rpc.js', // OK
+        '/common/merge-drive.js', // OK
+        '/common/outer/cache-store.js', // OK
+        '/common/outer/sharedfolder.js', // OK
+        '/common/outer/cursor.js', // OK
+        '/common/outer/support.js', // OK
+        '/common/outer/integration.js', // OK
+        '/common/outer/onlyoffice.js', // OK
+        '/common/outer/mailbox.js', // OK
+        '/common/outer/profile.js', // OK
+        '/common/outer/team.js', // OK
+        '/common/outer/messenger.js', // OK
+        '/common/outer/history.js', // OK
+        '/common/outer/calendar.js', // OK
+        '/common/outer/login-block.js', // OK
+        '/common/outer/network-config.js', // OK
+        '/customize/application_config.js', // OK
+
+        '/components/chainpad-crypto/crypto.js',
+        '/components/chainpad/chainpad.dist.js',
+        'chainpad-netflux',
+        'chainpad-listmap',
+        'netflux-client',
+        '/components/nthen/index.js',
+    ], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

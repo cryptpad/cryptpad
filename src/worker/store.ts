@@ -16,6 +16,7 @@ import * as PadTypes from '../common/pad-types.js';
 import * as NetworkConfig from '../common/network-config.js';
 import * as LoginBlock from '../common/login-block.js';
 import * as Migrate from './components/migrate-user-object.js';
+import * as Store from './async-store.js';
 
 
 // Modules
@@ -86,8 +87,11 @@ let start = (cfg: StoreConfig):void => {
     console.error(Mailbox.init, Cursor.init, Support.init, Integration.init);
     console.error(Profile.init, OnlyOffice.init, Team.init, Messenger.init);
     console.error(History.init, Calendar.init);
-    Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', true, console.error);
-    Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', false, console.error);
+    //Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', true, console.error);
+    //Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', false, console.error);
+    console.error(Store);
+    let StoreObj = Store.create();
+    console.error(StoreObj);
 };
 
 export {
