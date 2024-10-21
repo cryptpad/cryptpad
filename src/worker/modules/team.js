@@ -5,7 +5,7 @@
 (() => {
 const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 UserObject, SF, Roster, Messaging, Feedback,
-                Invite, Crypt, Cache, Listmap, Crypto,
+                Invite, Crypt, Cache, Pinpad, Listmap, Crypto,
                 CpNetflux, ChainPad, nThen, Nacl) => {
     var Team = {};
 
@@ -174,14 +174,12 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
     var initRpc = function (ctx, team, data, cb) {
         if (team.rpc) { return void cb(); }
         if (!data.edPrivate || !data.edPublic) { return void cb('EFORBIDDEN'); }
-        require(['/common/pinpad.js'], function (Pinpad) {
-            Pinpad.create(ctx.store.network, data, function (e, call) {
+        Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
                 if (team && team.onRpcReadyEvt) { team.onRpcReadyEvt.fire(); }
                 cb();
             }, Cache);
-        });
     };
 
     var onCacheReady = function (ctx, id, lm, roster, keys, cId, _cb) {
@@ -2240,6 +2238,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../components/invitation'),
         require('../../common/cryptget'),
         require('../../common/cache-store'),
+        require('../../common/pinpad'),
 
         require('chainpad-listmap'),
         require('chainpad-crypto'),
@@ -2264,6 +2263,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/common/outer/invitation.js',
         '/common/cryptget.js',
         '/common/outer/cache-store.js',
+        '/common/pinpad.js',
 
         'chainpad-listmap',
         '/components/chainpad-crypto/crypto.js',

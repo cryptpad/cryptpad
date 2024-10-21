@@ -368,12 +368,12 @@
     };
 
 
-    Util.fetchApi = function (origin, type, cb) {
+    Util.fetchApi = function (origin, type, ignoreCache, cb) {
         const url = new URL(origin);
         url.pathname = `api/${type}`;
+        let href = url.href + (ignoreCache ? '?'+(+new Date()) : '');
         if (typeof(window) !== "undefined" && window.crypto) {
             // Browser
-            console.error("TEST2");
             fetch(url.href).then(res => {
                 if (!res.ok) {
                     throw new Error(`Fetch error: ${res.status}`);
@@ -389,7 +389,6 @@
             // NodeJS
             const H = url.protocol === 'http:' ?
                         require('node:http') : require('node:https');
-            console.error(url.href);
             H.get(url.href, res => {
                 let body = '';
                 res.on('data', data => { body += data; });

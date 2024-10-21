@@ -86,7 +86,8 @@ let start = (cfg: StoreConfig):void => {
     console.error(Mailbox.init, Cursor.init, Support.init, Integration.init);
     console.error(Profile.init, OnlyOffice.init, Team.init, Messenger.init);
     console.error(History.init, Calendar.init);
-    Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', console.error);
+    Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', true, console.error);
+    Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', false, console.error);
 };
 
 export {

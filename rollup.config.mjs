@@ -15,6 +15,7 @@ export default {
         file: "./_build/worker.bundle.js",
         format: "umd"
     },
+    preserveSymlinks: true,
     plugins: [
         json(),
         typescript(),

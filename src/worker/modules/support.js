@@ -26,7 +26,8 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
     var getKeys = function (ctx, isAdmin, data, _cb) {
         var cb = Util.mkAsync(_cb);
         if (isAdmin && !ctx.adminRdyEvt) { return void cb('EFORBIDDEN'); }
-        require(['/api/config?' + (+new Date())], function (NewConfig) {
+        let origin = ApiConfig.httpUnsafeOrigin;
+        Util.fetchApi(origin, 'config', true, (NewConfig) => {
             ctx.moderatorKeys = NewConfig.moderatorKeys; // Update moderator keys
             ctx.adminKeys = NewConfig.adminKeys; // Update moderator keys
 
