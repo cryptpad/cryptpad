@@ -26,8 +26,6 @@ define([
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
              Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes) {
 
-    Messages.form_passwordWarning = 'For Forms, you can only set the password during creation. It cannot be changed later.' //XX
-
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -2775,7 +2773,7 @@ define([
         // Password
         let text;
         if (type === 'form') {
-            text =  h('div.cp-creation-password-warning.alert.alert-warning.dismissable', h('span.cp-inline-alert-text', Messages.form_passwordWarning));
+            text =  h('div.cp-creation-password-warning.alert.alert-info.dismissable', h('span.cp-inline-alert-text', Messages.form_passwordWarning));
         }
         var password = h('div.cp-creation-password',  [ 
             UI.createCheckbox('cp-creation-password', Messages.properties_addPassword, false),
