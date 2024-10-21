@@ -136,6 +136,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.form_passwordWarning = 'Please note that a Form password can only be set now at creation time and cannot be changed later.' // XXX
+
     return Messages;
 
 });
