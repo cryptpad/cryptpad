@@ -5200,12 +5200,12 @@ define([
                 if (restoreNumber === 0) { return; }
                 if (restoreNumber === 1) { // single file restoration
                     let [restorePath, restoreName] = getRestoreProperties(paths[0].path);
-                    UI.confirm(Messages._getKey("fm_restoreDialog", [restoreName]), function(res) {
+                    UI.confirm(Messages._getKey("fm_restoreDialog", [restoreName]), res =>  {
                         if (!res) { return; }
                         manager.restore(restorePath, refresh);
                     });
                 } else { // multiple files restoration
-                    UI.confirm(Messages._getKey("fm_restoreMultipleDialog", [restoreNumber]), function(res) {
+                    UI.confirm(Messages._getKey("fm_restoreMultipleDialog", [restoreNumber]), res => {
                         if (!res) { return; }
                         paths.forEach(path => {
                             if (!path) { // We met an error
