@@ -775,7 +775,7 @@ define([
         var data = APP.calendars[id];
         var edit;
         if (data.loading) {
-            edit = h('i.fa.fa-spinner.fa-spin');
+            edit = h('i.fa.fa-spinner.fa-spin', {'aria-hidden': 'true'});
         } else {
             edit = makeEditDropdown(id, teamId);
         }
@@ -796,8 +796,8 @@ define([
                 h('i.cp-calendar-inactive.fa.fa-calendar-o')
             ]),
             h('span.cp-calendar-title', md.title),
-            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted}) :
-                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined),
+            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted}, {'aria-hidden': 'true'}) :
+                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined, {'aria-hidden': 'true'}),
             edit
         ]);
         var $calendar = $(calendar).click(function () {
@@ -875,7 +875,7 @@ define([
             // Add the new calendar button
             var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($contentContainer);
             var newButton = h('button', [
-                h('i.fa.fa-calendar-plus-o'),
+                h('i.fa.fa-calendar-plus-o', {'aria-hidden': 'true'}),
                 h('span', Messages.calendar_new),
                 h('span')
             ]);
@@ -903,15 +903,20 @@ define([
             if(isMobileView) {
             if (totalCalendars > 2) {
                 var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+                var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
                 var showCalendarsBtn = h('button', [
-                    h('i.fa.fa-eye'),
-                    h('span.cp-calendar-title', visible ? Messages.calendar_hide : Messages.calendar_show),
+                    h('i.fa.' + iconClass, {'aria-hidden': 'true'}),
+                    h('span.cp-calendar-title', buttonText),
                     h('span')
                 ]);
 
                 $(showCalendarsBtn).click(() => {
                     visible = !visible;
                     $contentContainer.toggle(visible);
+                    iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                    buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
+                    $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass);
                     $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
                 }).appendTo($showContainer);
             }
@@ -1296,7 +1301,7 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
         APP.toolbar.$bottomR.append($block);
         // New event button
         var newEventBtn = h('button.cp-calendar-newevent', [
-            h('i.fa.fa-plus'),
+            h('i.fa.fa-plus', {'aria-hidden': 'true'}),
             h('span', Messages.calendar_newEvent)
         ]);
         $(newEventBtn).click(function (e) {
@@ -2169,7 +2174,7 @@ APP.recurrenceRule = {
         // Customize creation/update popup
         var onCalendarPopup = function (el) {
             var $el = $(el);
-            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o'));
+            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o', {'aria-hidden': 'true'}));
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
@@ -2251,7 +2256,7 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
 
             var delButton = h('button.btn.btn-danger', [
-                h('i.fa.fa-trash'),
+                h('i.fa.fa-trash', {'aria-hidden': 'true'}),
                 h('span', Messages.kanban_delete)
             ]);
             var $del = $el.find('.tui-full-calendar-popup-delete').hide();
@@ -2284,7 +2289,7 @@ APP.recurrenceRule = {
 
             // This is a recurring event, add button to stop recurrence now
             var $b = $(h('button.btn.btn-default', [
-                h('i.fa.fa-times'),
+                h('i.fa.fa-times', {'aria-hidden': 'true'}),
                 h('span', Messages.calendar_rec_stop)
             ])).insertBefore($section);
             UI.confirmButton($b[0], { classes: 'btn-default' }, function () {
