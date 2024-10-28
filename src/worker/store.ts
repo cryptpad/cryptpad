@@ -1,6 +1,10 @@
 import nacl from 'tweetnacl/nacl-fast';
 import { Module } from './types';
 import { TestModule, TestModuleObject } from './modules/test';
+
+// Manage all imports in order to provide them ApiConfig, AppConfig, etc.
+
+// Common
 import * as Util from '../common/common-util.js';
 import * as Hash from '../common/common-hash.js';
 import * as Feedback from '../common/common-feedback.js';
@@ -15,21 +19,25 @@ import * as Pinpad from '../common/pinpad.js';
 import * as PadTypes from '../common/pad-types.js';
 import * as NetworkConfig from '../common/network-config.js';
 import * as LoginBlock from '../common/login-block.js';
-import * as Migrate from './components/migrate-user-object.js';
-import * as Store from './async-store.js';
 
+// Core
+import * as Store from './async-store.js';
+import * as StoreRpc from './core/store-rpc.js';
+import * as Interface from './core/interface.js';
+import * as SWConnector from './core/sw-connector.js';
+
+// Components
+import * as Migrate from './components/migrate-user-object.js';
 
 // Modules
 import * as Mailbox from './modules/mailbox.js';
 import * as Cursor from './modules/cursor.js';
 import * as Support from './modules/support.js';
 import * as Integration from './modules/integration.js';
-
 import * as OnlyOffice from './modules/onlyoffice.js';
 import * as Profile from './modules/profile.js';
 import * as Team from './modules/team.js';
 import * as Messenger from './modules/messenger.js';
-
 import * as History from './modules/history.js';
 import * as Calendar from './modules/calendar.js';
 
@@ -43,6 +51,7 @@ interface StoreConfig {
 
 let start = (cfg: StoreConfig):void => {
 
+    // Provide custom data to the modules
     [
         Feedback,
         UO,
@@ -55,13 +64,15 @@ let start = (cfg: StoreConfig):void => {
         Credential,
         Cursor,
         Support,
-        Calendar
+        Calendar,
+        Store
     ].forEach(dep => {
         if (typeof(dep.setCustomize) === "function") {
             dep.setCustomize(cfg);
         }
     });
 
+    /*
     const AppConfig = cfg.AppConfig;
     const ApiConfig = cfg.ApiConfig;
 
@@ -92,7 +103,22 @@ let start = (cfg: StoreConfig):void => {
     console.error(Store);
     let StoreObj = Store.create();
     console.error(StoreObj);
+    */
 };
+
+let inWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
+let inSharedWorker = typeof SharedWorkerGlobalScope !== 'undefined' && self instanceof SharedWorkerGlobalScope;
+if (inSharedWorker) {
+    console.error('SHAREDWORKER');
+    SWConnector();
+} else if (inWorker) {
+    console.error("WEBWORKER");
+} else if (typeof module !== 'undefined' && typeof module.exports) {
+    console.error('NODEJS');
+} else {
+    console.error('BROWSER');
+}
+
 
 export {
     start

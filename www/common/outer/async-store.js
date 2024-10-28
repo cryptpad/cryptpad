@@ -30,6 +30,8 @@ define([
     '/common/outer/login-block.js', // OK
     '/common/outer/network-config.js', // OK
     '/customize/application_config.js', // OK
+    '/common/worker.bundle.js?pezpze',
+    '/customize/messages.js',
 
     '/components/chainpad-crypto/crypto.js',
     '/components/chainpad/chainpad.dist.js',
@@ -41,9 +43,12 @@ define([
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
-             Calendar, Block, NetConfig, AppConfig,
+             Calendar, Block, NetConfig, AppConfig, Build, Messages,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
+    /*Build.start({
+        AppConfig, ApiConfig, Messages, Broadcast: {}
+    })*/
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
 

@@ -17,6 +17,11 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
 
+    const setCustomize = data => {
+        ApiConfig = data.ApiConfig;
+        AppConfig = data.AppConfig;
+    };
+
     // Number of days before deleting the cache for a channel or blob
     var CACHE_MAX_AGE = 90; // DAYS
 
@@ -37,18 +42,25 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
         }
     };
 
-    var create = function () {
+    var create = function (config) {
         var Store = window.Cryptpad_Store = {};
-        var postMessage = function () {};
-        var broadcast = function () {};
-        var sendDriveEvent = function () {};
-        var registerProxyEvents = function () {};
+        let postMessage = config.query || function () {};
+        let broadcast = config.broadcast || function () {};
 
         var store = window.CryptPad_AsyncStore = {
             modules: {}
         };
 
         Store.onReadyEvt = onReadyEvt;
+
+        // Drive clients
+        var driveEventClients = [];
+        var sendDriveEvent = function (q, data, sender) {
+            driveEventClients.forEach(function (cId) {
+                if (cId === sender) { return; }
+                postMessage(cId, q, data);
+            });
+        };
 
         var getStore = function (teamId) {
             if (!teamId) { return store; }
@@ -2339,6 +2351,78 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             }]));
         };
 
+        // Special events
+        var registerProxyEvents = function (proxy, fId) {
+            if (!proxy) { return; }
+            if (proxy.deprecated || proxy.restricted) { return; }
+            if (!fId) {
+                // Listen for shared folder password change
+                proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
+                    if (p.length > 3 && p[3] === 'password') {
+                        var id = p[2];
+                        var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
+                        var href = store.manager.user.userObject.getHref ?
+                                store.manager.user.userObject.getHref(data) : data.href;
+                        var parsed = Hash.parsePadUrl(href);
+                        var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
+                        SF.updatePassword(Store, {
+                            oldChannel: secret.channel,
+                            password: n,
+                            href: href
+                        }, store.network, function () {
+                            console.log('Shared folder password changed');
+                        });
+                        return false;
+                    }
+                });
+            }
+            proxy.on('change', [], function (o, n, p) {
+                if (fId) {
+                    // Pin the new pads
+                    if (p[0] === UserObject.FILES_DATA && typeof(n) === "object" && n.channel && !n.owners) {
+                        var toPin = [n.channel];
+                        // Also pin the onlyoffice channels if they exist
+                        if (n.rtChannel) { toPin.push(n.rtChannel); }
+                        if (n.lastVersion) { toPin.push(n.lastVersion); }
+                        Store.pinPads(null, toPin, function (obj) { console.error(obj); });
+                    }
+                    // Unpin the deleted pads (deleted <=> changed to undefined)
+                    if (p[0] === UserObject.FILES_DATA && typeof(o) === "object" && o.channel && !n) {
+                        var toUnpin = [o.channel];
+                        var c = store.manager.findChannel(o.channel);
+                        var exists = c.some(function (data) {
+                            return data.fId !== fId;
+                        });
+                        if (!exists) { // Unpin
+                            // Also unpin the onlyoffice channels if they exist
+                            if (o.rtChannel) { toUnpin.push(o.rtChannel); }
+                            if (o.lastVersion) { toUnpin.push(o.lastVersion); }
+                            Store.unpinPads(null, toUnpin, function (obj) { console.error(obj); });
+                        }
+                    }
+                }
+                if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
+                    (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
+                    setTimeout(function () {
+                        Store.checkDeletedPad(o && o.channel);
+                    });
+                }
+                sendDriveEvent('DRIVE_CHANGE', {
+                    id: fId,
+                    old: o,
+                    new: n,
+                    path: p
+                });
+            });
+            proxy.on('remove', [], function (o, p) {
+                sendDriveEvent('DRIVE_REMOVE', {
+                    id: fId,
+                    old: o,
+                    path: p
+                });
+            });
+        };
+
         // SHARED FOLDERS
         var addSharedFolderHandler = function () {
             store.sharedFolders = {};
@@ -2421,8 +2505,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             s.manager.command(cmdData, cb2);
         };
 
-        // Clients management
-        var driveEventClients = [];
 
         // Check if this is a channel that we shouldn't leave when closing the debug app
         var alwaysOnline = function (chanId) {
@@ -2512,98 +2594,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             });
         };
 
-        // Special events
 
-        sendDriveEvent = function (q, data, sender) {
-            driveEventClients.forEach(function (cId) {
-                if (cId === sender) { return; }
-                postMessage(cId, q, data);
-            });
-        };
-        registerProxyEvents = function (proxy, fId) {
-            if (!proxy) { return; }
-            if (proxy.deprecated || proxy.restricted) { return; }
-            if (!fId) {
-                // Listen for shared folder password change
-                proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
-                    if (p.length > 3 && p[3] === 'password') {
-                        var id = p[2];
-                        var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
-                        var href = store.manager.user.userObject.getHref ?
-                                store.manager.user.userObject.getHref(data) : data.href;
-                        var parsed = Hash.parsePadUrl(href);
-                        var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
-                        SF.updatePassword(Store, {
-                            oldChannel: secret.channel,
-                            password: n,
-                            href: href
-                        }, store.network, function () {
-                            console.log('Shared folder password changed');
-                        });
-                        return false;
-                    }
-                });
-            }
-            proxy.on('change', [], function (o, n, p) {
-                if (fId) {
-                    // Pin the new pads
-                    if (p[0] === UserObject.FILES_DATA && typeof(n) === "object" && n.channel && !n.owners) {
-                        var toPin = [n.channel];
-                        // Also pin the onlyoffice channels if they exist
-                        if (n.rtChannel) { toPin.push(n.rtChannel); }
-                        if (n.lastVersion) { toPin.push(n.lastVersion); }
-                        Store.pinPads(null, toPin, function (obj) { console.error(obj); });
-                    }
-                    // Unpin the deleted pads (deleted <=> changed to undefined)
-                    if (p[0] === UserObject.FILES_DATA && typeof(o) === "object" && o.channel && !n) {
-                        var toUnpin = [o.channel];
-                        var c = store.manager.findChannel(o.channel);
-                        var exists = c.some(function (data) {
-                            return data.fId !== fId;
-                        });
-                        if (!exists) { // Unpin
-                            // Also unpin the onlyoffice channels if they exist
-                            if (o.rtChannel) { toUnpin.push(o.rtChannel); }
-                            if (o.lastVersion) { toUnpin.push(o.lastVersion); }
-                            Store.unpinPads(null, toUnpin, function (obj) { console.error(obj); });
-                        }
-                    }
-                }
-                if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
-                    (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
-                    setTimeout(function () {
-                        Store.checkDeletedPad(o && o.channel);
-                    });
-                }
-                sendDriveEvent('DRIVE_CHANGE', {
-                    id: fId,
-                    old: o,
-                    new: n,
-                    path: p
-                });
-            });
-            proxy.on('remove', [], function (o, p) {
-                sendDriveEvent('DRIVE_REMOVE', {
-                    id: fId,
-                    old: o,
-                    path: p
-                });
-            });
-        };
-
-        Store._subscribeToDrive = function (clientId) {
-            if (driveEventClients.indexOf(clientId) === -1) {
-                driveEventClients.push(clientId);
-            }
-            if (!store.driveEvents) {
-                store.driveEvents = true;
-                registerProxyEvents(store.proxy);
-                Object.keys(store.manager.folders).forEach(function (fId) {
-                    var proxy = store.manager.folders[fId].proxy;
-                    registerProxyEvents(proxy, fId);
-                });
-            }
-        };
 
 
 /*
@@ -3158,9 +3149,25 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             andThen();
         };
 
+        let subscribeToDrive = function (clientId) {
+            if (driveEventClients.indexOf(clientId) === -1) {
+                driveEventClients.push(clientId);
+            }
+            if (!store.driveEvents) {
+                store.driveEvents = true;
+                registerProxyEvents(store.proxy);
+                Object.keys(store.manager.folders).forEach(function (fId) {
+                    var proxy = store.manager.folders[fId].proxy;
+                    registerProxyEvents(proxy, fId);
+                });
+            }
+        };
 
         Store.init = function (clientId, data, _callback) {
-            var callback = Util.once(_callback);
+            var callback = Util.once(function (obj) {
+                subscribeToDrive(clientId);
+                _callback(obj);
+            });
 
             // If this is not the first tab and we're offline, callback only if the app
             // supports offline mode
@@ -3193,26 +3200,17 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 Cache.disable();
             }
 
-            if (data.query && data.broadcast) {
-                postMessage = function (clientId, cmd, d, cb) {
-                    data.query(clientId, cmd, d, cb);
-                };
-                broadcast = function (excludes, cmd, d, cb) {
-                    data.broadcast(excludes, cmd, d, cb);
-                };
-            }
-
             // First tab, no user hash, no anon hash and this app doesn't need a drive
             // ==> don't create a drive
             // Or "neverDrive" (integration into another platform?)
             // ==> don't create a drive
-            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
+            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // if we can't properly initialize the noDrive mode, use normal mode
                         if (obj.error === 'GET_HK') {
                             data.noDrive = false;
-                            Store.init(clientId, data, _callback);
+                            Store.init(clientId, data, callback);
                             Feedback.send("NO_DRIVE_ERROR", true);
                             return;
                         }
@@ -3274,6 +3272,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
     };
 
     return {
+        setCustomize,
         create: create
     };
 };

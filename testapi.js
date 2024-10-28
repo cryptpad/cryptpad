@@ -25,8 +25,8 @@ let getApi = (file, cb) => {
 
 getApi('config', ApiConfig => {
     getApi('broadcast', Broadcast => {
-        App.start({
+        /*App.start({
             ApiConfig, Broadcast, AppConfig, Messages
-        });
+        });*/
     });
 });
