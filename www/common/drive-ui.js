@@ -5207,14 +5207,16 @@ define([
                 } else { // multiple files restoration
                     UI.confirm(Messages._getKey("fm_restoreMultipleDialog", [restoreNumber]), res => {
                         if (!res) { return; }
-                        paths.forEach(path => {
-                            if (!path) { // We met an error
-                                console.error("Error while restoring files: no path");
-                                return;
-                            }
-                            let restorePath = getRestoreProperties(path.path)[0];
-                            manager.restore(restorePath, refresh);
-                        });
+                        nThen(waitFor => {
+                            paths.forEach(path => {
+                                if (!path) { // We met an error
+                                    console.error("Error while restoring files: no path");
+                                    return;
+                                }
+                                let restorePath = getRestoreProperties(path.path)[0];
+                                setTimeout(manager.restore(restorePath, waitFor()), 10);
+                            });
+                        }).nThen(refresh);
                     });
                 }
             }
