@@ -18,7 +18,9 @@
             var scripts = document.getElementsByTagName('script');
             for (var i = scripts.length - 1; i >= 0; i--) {
                 var match = scripts[i].src.match(/(.*)web-apps\/apps\/api\/documents\/api.js/i);
+                var match2 = scripts[i].src.match(/(.*)\/cryptpad-api.js/i);
                 if (match) { return match[1]; }
+                else if (match2) { return match2[1]; }
             }
         };
 
@@ -86,6 +88,7 @@
         var start = function (config, chan) {
             return new Promise(function (resolve, reject) {
             setTimeout(function () {
+                var docID = config.document.key;
                 var key = config.document.key;
                 var blob;
 
@@ -114,9 +117,13 @@
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
+                        name: config.document.title,
+                        url: config.document.url,
+                        documentKey: docID,
                         document: blob,
                         ext: config.document.fileType,
-                        autosave: config.autosave || 10
+                        autosave: config.events.onSave && (config.autosave || 10),
+                        editorConfig: config.editorConfig || {}
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         resolve({});
@@ -128,6 +135,11 @@
                 var onKeyValidated = function () {
                     if (config.document.blob) { // This is a reload
                         blob = config.document.blob;
+                        return start();
+                    }
+                    // XXX use server only when not zero knowledge? i.e. no save handler?
+                    // XXX or when error with client?
+                    if (!config.events.onSave) {
                         return start();
                     }
                     getBlob(function (err, _blob) {
@@ -191,6 +203,7 @@
 
                 chan.on('ON_DOWNLOADAS', blob => {
                     let url = URL.createObjectURL(blob);
+                    if (!config.events.onDownloadAs) { return; }
                     config.events.onDownloadAs({
                         data: {
                             fileType: config.document && config.document.fileType,
@@ -201,6 +214,7 @@
 
                 chan.on('SAVE', function (data, cb) {
                     blob = data;
+                    if (!config.events.onSave) { return void cb(); }
                     config.events.onSave(data, cb);
                 });
                 chan.on('RELOAD', function () {
@@ -251,16 +265,22 @@
                 cryptpadURL = getInstanceURL();
             }
 
+            config.events = config.events || {};
+
             // OnlyOffice shim
             let url = config.document.url;
             if (/^http:\/\/localhost\/cache\/files\//.test(url)) {
                 url = url.replace(/(http:\/\/localhost\/cache\/files\/)/, getInstanceURL() + 'ooapi/');
             }
             config.document.url = url;
-            if (config.documentType === "spreadsheet") {
+            if (config.documentType === "spreadsheet" || config.documentType === "cell") {
                 config.documentType = "sheet";
             }
-            if (config.documentType === "text") {
+
+            if (config.documentType === "slide") {
+                config.documentType = "presentation";
+            }
+            if (config.documentType === "word" || config.documentType === "text") {
                 config.documentType = "doc";
             }
 
@@ -311,8 +331,8 @@
                     iframe.setAttribute('name', 'frameEditor');
                     iframe.setAttribute('align', 'top');
                     iframe.setAttribute("src", url);
-                    iframe.setAttribute("width", config.width);
-                    iframe.setAttribute("height", config.height);
+                    iframe.setAttribute("width", config.width || '100%');
+                    iframe.setAttribute("height", config.height || '100%');
                     if (config.editorConfig) { // OnlyOffice
                         container.replaceWith(iframe);
                         container = iframe;

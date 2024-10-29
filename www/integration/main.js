@@ -3,10 +3,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/api/config',
     '/common/sframe-common-outer.js',
     '/common/common-hash.js',
-], function (SCO, Hash) {
+    '/components/tweetnacl/nacl-fast.min.js'
+], function (Config, SCO, Hash) {
 
+    let Nacl = window.nacl;
     var getTxid = function () {
         return Math.random().toString(16).replace('0.', '');
     };
@@ -95,9 +98,17 @@ define([
             };
             http.send();
         };
+        let sanitizeKey = key => {
+            try {
+                Nacl.util.decodeBase64(key);
+                return key;
+            } catch (e) {
+                return Nacl.util.encodeBase64(Nacl.util.decodeUTF8(key));
+            }
+        };
         chan.on('GET_SESSION', function (data, cb) {
-            if (data.keepOld) {
-                var key = data.key + "000000000000000000000000000000000";
+            if (data.keepOld) { // they provide their own key, we must turn it into a hash
+                var key = sanitizeKey(data.key) + "000000000000000000000000000000000";
                 console.warn('KEY', key);
                 return void cb({
                     key: `/2/integration/edit/${key.slice(0,24)}/`
@@ -118,12 +129,6 @@ define([
             });
         });
 
-        var save = function (obj, cb) {
-            chan.send('SAVE', obj.blob, function (err) {
-                if (err) { return cb({error: err}); }
-                cb();
-            });
-        };
         var reload = function (data) {
             chan.send('RELOAD', data);
         };
@@ -152,36 +157,121 @@ define([
             chan.send('ON_DOWNLOADAS', blob);
         };
 
-        chan.on('START', function (data) {
-            console.warn('INNER START', data);
-            var href = Hash.hashToHref(data.key, data.application);
-            console.error(Hash.hrefToHexChannelId(href));
-            window.CP_integration_outer = {
-                pathname: `/${data.application}/`,
-                hash: data.key,
-                href: href,
-                initialState: data.document,
-                config: {
-                    fileType: data.ext,
-                    autosave: data.autosave
-                },
-                utils: {
-                    onReady: onReady,
-                    onDownloadAs,
-                    setDownloadAs,
-                    save: save,
-                    reload: reload,
-                    onHasUnsavedChanges: onHasUnsavedChanges,
-                    onInsertImage: onInsertImage
+
+        let getInstanceURL = function () {
+            return Config.httpUnsafeOrigin;
+        };
+        let getBlobServer = function (documentURL, cb) {
+            let xhr = new XMLHttpRequest();
+            let data = encodeURIComponent(documentURL);
+            let url = getInstanceURL() + '/ooapidl?url=' + data;
+            xhr.open('GET', url, true);
+            xhr.responseType = 'blob';
+            //xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    var blob = this.response;
+                    // myBlob is now the blob that the object URL pointed to.
+                    cb(null, blob);
+                } else {
+                    cb(this.status);
                 }
             };
-            let path = "/common/sframe-app-outer.js";
-            if (['sheet', 'doc', 'presentation'].includes(data.application)) {
-                path = '/common/onlyoffice/main.js';
+            xhr.onerror = function (e) {
+                cb(e.message);
+            };
+            xhr.send();
+        };
+        let saveBlobServer = function (cfg, blob, cb) {
+            let {callbackUrl, name, key} = cfg;
+            let xhr = new XMLHttpRequest();
+            name = encodeURIComponent(name);
+            callbackUrl = encodeURIComponent(callbackUrl);
+            key = encodeURIComponent(key);
+            let query = `name=${name}&cb=${callbackUrl}&key=${key}`
+            let url = getInstanceURL() + `/oosave?${query}`;
+            xhr.open('POST', url, true);
+            xhr.responseType = 'blob';
+            //xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function () {
+                console.error(this.status);
+                if (this.status === 200) {
+                    cb();
+                } else {
+                    cb(this.status);
+                }
+            };
+            xhr.onerror = function (e) {
+                cb(e.message);
+            };
+            xhr.send(blob);
+        };
+        chan.on('START', function (data, cb) {
+            console.warn('INNER START', data);
+            // data.key is a hash
+            var href = Hash.hashToHref(data.key, data.application);
+            if (data.editorConfig.lang) {
+                var LS_LANG = "CRYPTPAD_LANG";
+                localStorage.setItem(LS_LANG, data.editorConfig.lang);
             }
-            require([path], function () {
-                console.warn('SAO REQUIRED');
-                delete window.CP_integration_outer;
+
+            let fileName = data.name || `document.${data.ext}`;
+            var save = function (obj, cb) {
+                let cbUrl = data.editorConfig.callbackUrl;
+                if (!data.autosave && cbUrl) {
+                    saveBlobServer({
+                        callbackUrl: cbUrl,
+                        name: fileName,
+                        key: data.documentKey
+                    }, obj.blob, cb);
+                    return;
+                }
+                chan.send('SAVE', obj.blob, function (err) {
+                    if (err) { return cb({error: err}); }
+                    cb();
+                });
+            };
+
+            console.error(Hash.hrefToHexChannelId(href));
+            let startApp = function (blob) {
+                window.CP_integration_outer = {
+                    pathname: `/${data.application}/`,
+                    hash: data.key,
+                    href: href,
+                    initialState: blob,
+                    config: {
+                        fileName: data.name,
+                        fileType: data.ext,
+                        autosave: data.autosave,
+                        user: data.editorConfig.user
+                    },
+                    utils: {
+                        onReady: onReady,
+                        onDownloadAs,
+                        setDownloadAs,
+                        save: save,
+                        reload: reload,
+                        onHasUnsavedChanges: onHasUnsavedChanges,
+                        onInsertImage: onInsertImage
+                    }
+                };
+                let path = "/common/sframe-app-outer.js";
+                if (['sheet', 'doc', 'presentation'].includes(data.application)) {
+                    path = '/common/onlyoffice/main.js';
+                }
+                require([path], function () {
+                    console.warn('SAO REQUIRED');
+                    delete window.CP_integration_outer;
+                    cb();
+                });
+            };
+
+            if (data.document) { return void startApp(data.document); }
+            getBlobServer(data.url, (err, blob) => {
+                if (err) {
+                    return void cb({error: err});
+                }
+                startApp(blob);
             });
         });
 
