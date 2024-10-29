@@ -137,11 +137,6 @@
                         blob = config.document.blob;
                         return start();
                     }
-                    // XXX use server only when not zero knowledge? i.e. no save handler?
-                    // XXX or when error with client?
-                    if (!config.events.onSave) {
-                        return start();
-                    }
                     getBlob(function (err, _blob) {
                         if (err) { // Can't get blob from client, try from server
                             console.warn(err);
