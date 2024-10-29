@@ -169,10 +169,10 @@ define([
                 data: fData
             });
         }
-
         var href;
         var parsed;
-        if (fData.href.indexOf('https') !== -1 && fData.href.indexOf('http') !== -1) {
+        var linkRegex = new RegExp("^(http|https)://");
+        if (fData.href && linkRegex.test(fData.href)) {
             href = fData.href;
             parsed = {};
             parsed['hashData'] = {type: 'link'};
