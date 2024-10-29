@@ -131,7 +131,10 @@
                         return start();
                     }
                     getBlob(function (err, _blob) {
-                        if (err) { reject(err); return console.error(err); }
+                        if (err) { // Can't get blob from client, try from server
+                            console.warn(err);
+                            return void start();
+                        }
                         _blob.name = `document.${config.document.fileType}`;
                         blob = _blob;
                         start();
