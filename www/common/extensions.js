@@ -10,7 +10,14 @@ define([
     ext.getExtensions = id => {
         let e = ext[id];
         if (!Array.isArray(e)) { e = []; }
-        return e;
+        return e.map(_ext => {
+            return new Promise((resolve, reject) => {
+                if (typeof(ext.check) !== "function") { return void resolve(_ext); }
+                ext.check().then(() => {
+                    resolve(_ext);
+                }).catch(reject);
+            });
+        });
     };
 
     if (!Array.isArray(Extensions) || !Extensions.length) { return ext; }
