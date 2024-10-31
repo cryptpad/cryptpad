@@ -11,11 +11,22 @@ define([
         let e = ext[id];
         if (!Array.isArray(e)) { e = []; }
         return e.map(_ext => {
-            return new Promise((resolve, reject) => {
-                if (typeof(ext.check) !== "function") { return void resolve(_ext); }
-                ext.check().then(() => {
+            return new Promise((resolve) => {
+                if (typeof _ext.check === "function") {
+                    const checkResult = _ext.check();
+                    if (checkResult && typeof checkResult.then === "function") {
+                        checkResult.then(() => {
+                            resolve(_ext);
+                        }).catch(() => {
+                            console.error("Check failed for extension:", _ext);
+                            resolve(null);
+                        });
+                    } else {
+                        resolve(_ext);
+                    }
+                } else {
                     resolve(_ext);
-                }).catch(reject);
+                }
             });
         });
     };
