@@ -172,23 +172,25 @@ define([
         const blocks = sidebar.blocks;
 
         // EXTENSION_POINT:ADMIN_CATEGORY
-        common.getExtensions('ADMIN_CATEGORY').forEach(_ext => {
-            _ext.then(ext => {
-                console.log(ext)
-                if (!ext || !ext.id || !ext.name || !ext.content) {
-                    return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
-                }
-                if (categories[ext.id]) {
-                    return console.error('Extension point ID already used', ext);
-                }
-                //console.error(ext);
-                categories[ext.id] = {
-                    icon: ext.icon,
-                    name: ext.name,
-                    content: ext.content
-                };
-            }).catch(error => console.error("Error loading ADMIN_CATEGORY extension:", error));
-        });
+        async function processExtensions(id) {
+            const extensions = await common.getExtensions(id);
+            extensions.forEach(_ext => {
+                    _ext.then(ext => {
+                        if (!ext || !ext.id || !ext.name || !ext.content) {
+                            return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
+                        }
+                        if (categories[ext.id]) {
+                            return console.error('Extension point ID already used', ext);
+                        }
+                        categories[ext.id] = {
+                            icon: ext.icon,
+                            name: ext.name,
+                            content: ext.content
+                        };
+                    })
+                })
+          }
+
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -3930,15 +3932,14 @@ define([
             h, Util, Hash
         };
         common.getExtensions('ADMIN_ITEM').forEach(_ext => {
+            // console.log("item")
             _ext.then(ext => {
-                console.log(ext);
                 if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
                     return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
                 }
                 if (sidebar.hasItem(ext.id)) {
                     return console.error('Extension point ID already used', ext);
                 }
-
                 sidebar.addItem(ext.id, cb => {
                     ext.getContent(common, blocks, utils, content => {
                         console.log("Generated content for", ext.id, ":", content);
@@ -3953,9 +3954,10 @@ define([
             }).catch(error => console.error("Error loading ADMIN_CATEGORY extension:", error));
         });
 
-
-
-        sidebar.makeLeftside(categories);
+        (async () => {
+            await processExtensions('ADMIN_CATEGORY');
+            sidebar.makeLeftside(categories);
+          })();
     };
 
 

@@ -170,61 +170,15 @@ define([
 
         Extensions.getExtensions('HOMEPAGE_POPUP').forEach(_ext => {
             _ext.then(ext => {
-                ext.getContent(utils, content => {
-                    $(popup).append(h('div.cp-extensions-popup', content));
-                    resolve();
-                });
+                if (ext) {
+                    ext.getContent(utils, content => {
+                        $(popup).append(h('div.cp-extensions-popup', content));
+                    });
+                }
+            }).catch(error => {
+                console.error(error);
             });
         });
-
-        common.getExtensions('ADMIN_CATEGORY').forEach(_ext => {
-            console.log("category")
-            _ext.then(ext => {
-                console.log(ext);
-                if (!ext || !ext.id || !ext.name || !ext.content) {
-                    return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
-                }
-                if (categories[ext.id]) {
-                    return console.error('Extension point ID already used', ext);
-                }
-                console.log("inside category")
-                categories[ext.id] = {
-                    icon: ext.icon,
-                    name: ext.name,
-                    content: ext.content
-                };
-            }).catch(error => console.error("Error loading ADMIN_CATEGORY extension:", error));
-        });
-
-        common.getExtensions('ADMIN_ITEM').forEach(_ext => {
-            console.log("item")
-            _ext.then(ext => {
-                console.log("Loading ADMIN_ITEM extension:", ext); // Added log for debugging
-                if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
-                    return console.error('Invalid extension point', 'ADMIN_ITEM', ext);
-                }
-                if (sidebar.hasItem(ext.id)) {
-                    return console.error('Extension point ID already used', ext);
-                }
-        
-                sidebar.addItem(ext.id, cb => {
-                    console.log("inside sidebar")
-                    ext.getContent(common, blocks, utils, content => {
-                        if (!content) {
-                            console.warn("Content is undefined for extension:", ext.id); // Added war
-                        }
-                        console.log("inside getContent: ", content);
-                        cb(content);
-                    });
-                }, {
-                    noTitle: !ext.title,
-                    noHint: !ext.description,
-                    title: ext.title,
-                    hint: ext.description
-                });
-            }).catch(error => console.error("Error loading ADMIN_ITEM extension:", error));
-        });
-        
 
 
         return [
