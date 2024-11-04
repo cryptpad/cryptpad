@@ -35,6 +35,26 @@ define([
         });
     };
 
+    ext.getExtensionsSync = id => {
+        let e = ext[id];
+        if (!Array.isArray(e)) { e = []; }
+
+        return e.map(_ext => {
+            if (typeof _ext.check !== "function") {
+                return _ext;
+            }
+
+            const extPassed = _ext.check();
+
+            if (extPassed) {
+                return _ext;
+            } else {
+                return null;
+            }
+        }).filter(ext => ext !== null);
+    };
+
+
     if (!Array.isArray(Extensions) || !Extensions.length) { return ext; }
 
     let all = Extensions.slice();

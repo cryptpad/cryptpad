@@ -172,24 +172,20 @@ define([
         const blocks = sidebar.blocks;
 
         // EXTENSION_POINT:ADMIN_CATEGORY
-        async function processExtensions(id) {
-            const extensions = await common.getExtensions(id);
-            extensions.forEach(_ext => {
-                    _ext.then(ext => {
-                        if (!ext || !ext.id || !ext.name || !ext.content) {
-                            return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
-                        }
-                        if (categories[ext.id]) {
-                            return console.error('Extension point ID already used', ext);
-                        }
-                        categories[ext.id] = {
-                            icon: ext.icon,
-                            name: ext.name,
-                            content: ext.content
-                        };
-                    })
-                })
-          }
+        common.getExtensionsSync('ADMIN_CATEGORY').forEach(ext => {
+            if (!ext || !ext.id || !ext.name || !ext.content) {
+                return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
+            }
+            if (categories[ext.id]) {
+                return console.error('Extension point ID already used', ext);
+            }
+            console.error(ext);
+            categories[ext.id] = {
+                icon: ext.icon,
+                name: ext.name,
+                content: ext.content
+            };
+        });
 
 
         const flushCache = (cb) => {
@@ -3931,36 +3927,27 @@ define([
         let utils = {
             h, Util, Hash
         };
-        common.getExtensions('ADMIN_ITEM').forEach(_ext => {
-            // console.log("item")
-            _ext.then(ext => {
-                if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
-                    return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
-                }
-                if (sidebar.hasItem(ext.id)) {
-                    return console.error('Extension point ID already used', ext);
-                }
-                sidebar.addItem(ext.id, cb => {
-                    ext.getContent(common, blocks, utils, content => {
-                        console.log("Generated content for", ext.id, ":", content);
-                        cb(content);
-                    });
-                }, {
-                    noTitle: !ext.title,
-                    noHint: !ext.description,
-                    title: ext.title,
-                    hint: ext.description
+        common.getExtensionsSync('ADMIN_ITEM').forEach(ext => {
+            if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
+                return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
+            }
+            if (sidebar.hasItem(ext.id)) {
+                return console.error('Extension point ID already used', ext);
+            }
+            sidebar.addItem(ext.id, cb => {
+                ext.getContent(common, blocks, utils, content => {
+                    cb(content);
                 });
-            }).catch(error => console.error("Error loading ADMIN_CATEGORY extension:", error));
+            }, {
+                noTitle: !ext.title,
+                noHint: !ext.description,
+                title: ext.title,
+                hint: ext.description
+            });
         });
 
-        (async () => {
-            await processExtensions('ADMIN_CATEGORY');
-            sidebar.makeLeftside(categories);
-          })();
+        sidebar.makeLeftside(categories);
     };
-
-
     var updateStatus = APP.updateStatus = function (cb) {
         sFrameChan.query('Q_ADMIN_RPC', {
             cmd: 'INSTANCE_STATUS',
