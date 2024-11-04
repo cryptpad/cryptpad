@@ -22,7 +22,7 @@ define([
                     .then((extPassed) => {
                         if (!extPassed) {
                             // Reject if the check didn't pass
-                            resolve(null);
+                            undefined (resolve());
                         } else {
                             // Extension passed the check
                             resolve(_ext);
