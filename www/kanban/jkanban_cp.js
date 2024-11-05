@@ -109,16 +109,19 @@ define([
             //create container
             var boardContainerOuter = document.createElement('div');
             boardContainerOuter.classList.add('kanban-container-outer');
+            var kanbanContainer = document.createElement('div');
+            kanbanContainer.classList.add('kanban-container');
+            boardContainerOuter.appendChild(kanbanContainer);
             var boardContainer = document.createElement('div');
-            boardContainer.classList.add('kanban-container');
-            boardContainerOuter.appendChild(boardContainer);
+            boardContainer.classList.add('kanban-boards-container');
+            kanbanContainer.appendChild(boardContainer);
             self.container = boardContainer;
             //add boards
             self.addBoards();
             var addBoard = document.createElement('div');
             addBoard.id = 'kanban-addboard';
             addBoard.innerHTML = '<i class="fa fa-plus"></i>';
-            boardContainer.appendChild(addBoard);
+            kanbanContainer.appendChild(addBoard);
             var trash = self.trashContainer = document.createElement('div');
             trash.setAttribute('id', 'kanban-trash');
             trash.setAttribute('class', 'kanban-trash');
@@ -131,7 +134,7 @@ define([
 
             //appends to container
             self.element.appendChild(boardContainerOuter);
-            self.element.appendChild(trash);
+            boardContainerOuter.appendChild(trash);
 
             // send event that board has changed
             self.onChange();
