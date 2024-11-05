@@ -185,6 +185,7 @@ nThen(function (w) {
         for (const worker of Object.values(Cluster.workers)) {
             sendCommand(worker, command, data /*, cb */);
         }
+        return Object.values(Cluster.workers);
     };
 
     var throttledEnvChange = Util.throttle(function () {
