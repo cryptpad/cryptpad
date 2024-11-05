@@ -134,7 +134,7 @@ define([
 
             //appends to container
             self.element.appendChild(boardContainerOuter);
-            boardContainerOuter.appendChild(trash);
+            self.element.appendChild(trash);
 
             // send event that board has changed
             self.onChange();
