@@ -49,7 +49,13 @@ define([
                         // Access modal and the pad is not stored: get the hashes from outer
                         var hashes = priv.hashes || {};
                         // For calendars, individual href is passed via opts
-                        data.href = ((priv.app === 'calendar') && opts.href) || Hash.hashToHref(hashes.editHash || hashes.fileHash, priv.app);
+                        if (priv.app === 'calendar') {
+                            data.href = (priv.app === 'calendar') && opts.href;
+                        } else if (hashes.editHash || hashes.fileHash) {
+                            data.href = Hash.hashToHref(hashes.editHash || hashes.fileHash);
+                        } else {
+                            data.href = undefined;
+                        }
                         if (hashes.viewHash) {
                             data.roHref = Hash.hashToHref(hashes.viewHash, priv.app);
                         }
