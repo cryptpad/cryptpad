@@ -1843,7 +1843,7 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
-                Cache: Cache, // ICE pad cache
+                Cache: store.neverCache ? undefined : Cache, // ICE pad cache
                 onCacheStart: function () {
                     postMessage(clientId, "PAD_CACHE");
                 },
@@ -3271,6 +3271,7 @@ define([
             // ==> don't create a drive
             // Or "neverDrive" (integration into another platform?)
             // ==> don't create a drive BUT create temp RPC (we may need to upload)
+            if (data.neverDrive) { store.neverCache = true; }
             if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
