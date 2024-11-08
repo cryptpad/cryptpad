@@ -239,6 +239,10 @@ define([
                         transform(ctx, parsed.type, val, function (res) {
                             if (ctx.stop) { return; }
                             if (!res.data) { return void error('EEMPTY'); }
+                            ctx.sframeChan.query("Q_FORM_FETCH_ANSWERS", JSON.parse(val)["answers"], function (err, obj) {
+                                var answers = obj && obj.results;
+                                console.log("ANSWERS", answers)
+                            });
                             var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
                             existingNames.push(fileName.toLowerCase());
                             zip.file(fileName, res.data, opts);

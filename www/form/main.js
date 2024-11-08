@@ -36,6 +36,8 @@ define([
             }
 
             var formData = Utils.Hash.getFormData(Utils.secret);
+            console.log("SECRET", Utils.secret)
+            console.log("FORMDATA", formData)
             if (!formData) { return; }
 
             var validateKey = keys.secondaryValidateKey;
@@ -187,6 +189,10 @@ define([
                         curvePublic: publicKey || data.publicKey,
                         validateKey: data.validateKey
                     });
+
+                    console.log("PRIVATE", curvePrivate)
+                    console.log("PUBLIC", publicKey, data.publicKey)
+                    console.log("VALIDATE", data.validateKey)
                     var config = {
                         network: network,
                         channel: data.channel,
