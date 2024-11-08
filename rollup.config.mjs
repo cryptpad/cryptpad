@@ -1,6 +1,6 @@
 import {nodeResolve} from "@rollup/plugin-node-resolve"
 import commonjs from '@rollup/plugin-commonjs';
-import builtins from 'rollup-plugin-node-builtins';
+//import builtins from 'rollup-plugin-node-builtins';
 import typescript from '@rollup/plugin-typescript';
 import terser from '@rollup/plugin-terser';
 import json from '@rollup/plugin-json';
@@ -19,7 +19,7 @@ export default {
     plugins: [
         json(),
         typescript(),
-        builtins(),
+        //builtins(),
         nodeResolve({
         }),
         commonjs({

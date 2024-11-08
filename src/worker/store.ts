@@ -72,7 +72,6 @@ let start = (cfg: StoreConfig):void => {
         }
     });
 
-    /*
     const AppConfig = cfg.AppConfig;
     const ApiConfig = cfg.ApiConfig;
 
@@ -101,9 +100,8 @@ let start = (cfg: StoreConfig):void => {
     //Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', true, console.error);
     //Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', false, console.error);
     console.error(Store);
-    let StoreObj = Store.create();
+    let StoreObj = Store.create({});
     console.error(StoreObj);
-    */
 };
 
 let inWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
