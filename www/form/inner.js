@@ -50,6 +50,7 @@ define([
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/form/app-form.less',
+    '/common/sframe-common-outer.js'
 ], function (
     $,
     Sortify,
@@ -78,7 +79,8 @@ define([
     DatePicker,
     Share, Access, Properties,
     Flatpickr,
-    Sortable
+    Sortable,
+    SFCommonO
     )
 {
 
@@ -5375,6 +5377,7 @@ define([
             }
 
             var getMyAnswers = APP.getMyAnswers = function () {
+            var sframeChan = framework._.sfCommon.getSframeChannel();
                 sframeChan.query("Q_FETCH_MY_ANSWERS", {
                     channel: content.answers.channel,
                     validateKey: content.answers.validateKey,

@@ -239,10 +239,23 @@ define([
                         transform(ctx, parsed.type, val, function (res) {
                             if (ctx.stop) { return; }
                             if (!res.data) { return void error('EEMPTY'); }
-                            ctx.sframeChan.query("Q_FORM_FETCH_ANSWERS", JSON.parse(val)["answers"], function (err, obj) {
-                                var answers = obj && obj.results;
-                                console.log("ANSWERS", answers)
-                            });
+                            var data =  JSON.parse(val)
+                            var _answers = data["answers"]
+                            if (data.form) {
+                                _answers['href'] = parsed.hash
+                                _answers['password'] = fData.password
+                                _answers['drive'] = true
+                                var answers
+                                ctx.sframeChan.query("Q_FORM_FETCH_ANSWERS", _answers, function (err, obj) {
+                                    answers = obj && obj.results;
+                                    console.log("ANSWERS", answers)
+                                });
+                                // var opts = {
+                                //     binary: true,
+                                // };
+                                // zip.file(fileName, answers, opts);
+                            }
+                            
                             var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
                             existingNames.push(fileName.toLowerCase());
                             zip.file(fileName, res.data, opts);

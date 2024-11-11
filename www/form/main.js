@@ -129,6 +129,9 @@ define([
                     return false;
                 }
             };
+             var beep = function () {
+             
+             }
 
             var deleteLines = false; // "false" to support old forms
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {

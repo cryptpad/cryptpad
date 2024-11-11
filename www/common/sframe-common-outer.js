@@ -2433,6 +2433,7 @@ define([
             });
 
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
+                var formHref = data.href
                 var cb = Utils.Util.once(_cb);
                 var myKeys = {};
                 var myFormKeys;
@@ -2489,14 +2490,18 @@ define([
                     if (myFormKeys.formSeed) {
                         myFormKeys = getAnonymousKeys(myFormKeys.formSeed, data.channel);
                     }
-
-                    var keys = Utils.secret && Utils.secret.keys;
-
-                    var formData = Utils.Hash.getFormData(Utils.secret);
-                    console.log("SECRET", Utils.secret)
-                    console.log("FORMDATA", formData)
-                    privateKey = formData.form_private;
-                    publicKey = formData.form_public;
+                    var keys;
+                    var privateKey, publicKey;
+                    if (data.drive) {
+                        var secret = Utils.Hash.getSecrets('form', formHref, data.password);
+                        keys = secret && secret.keys;
+                        var formData = Utils.Hash.getFormData(secret);
+                        privateKey = formData.form_private;
+                        publicKey = formData.form_public;
+                        
+                    } else {
+                        keys = Utils.secret && Utils.secret.keys;
+                    }
 
                     var curvePrivate = privateKey || data.privateKey;
                     if (!curvePrivate) { return void cb({error: 'EFORBIDDEN'}); }
@@ -2505,10 +2510,6 @@ define([
                         curvePublic: publicKey || data.publicKey,
                         validateKey: data.validateKey
                     });
-
-                    console.log("PRIVATE", curvePrivate)
-                    console.log("PUBLIC", publicKey, data.publicKey)
-                    console.log("VALIDATE", data.validateKey)
 
                     var config = {
                         network: network,
@@ -2563,6 +2564,28 @@ define([
                         // If we have a "non-anonymous" answer, it may be the edition of a
                         // previous anonymous answer. Check if a previous anonymous answer exists
                         // with the same uid and delete it.
+                        var u8_slice = function (A, start, end) {
+                            return new Uint8Array(Array.prototype.slice.call(A, start, end));
+                        };
+                        var checkAnonProof = function (proofObj, channel, curvePrivate) {
+                            var pub = proofObj.key;
+                            var proofTxt = proofObj.proof;
+                            try {
+                                var u8_bundle = Nacl.util.decodeBase64(proofTxt);
+                                var u8_nonce = u8_slice(u8_bundle, 0, Nacl.box.nonceLength);
+                                var u8_cipher = u8_slice(u8_bundle, Nacl.box.nonceLength);
+                                var u8_plain = Nacl.box.open(
+                                    u8_cipher,
+                                    u8_nonce,
+                                    Nacl.util.decodeBase64(pub),
+                                    Nacl.util.decodeBase64(curvePrivate)
+                                );
+                                return channel === Nacl.util.encodeUTF8(u8_plain);
+                            } catch (e) {
+                                console.error(e);
+                                return false;
+                            }
+                        };
                         if (parsed._proof) {
                             var check = checkAnonProof(parsed._proof, data.channel, curvePrivate);
                             var theirAnonKey = parsed._proof.key;
