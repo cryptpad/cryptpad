@@ -240,18 +240,19 @@ define([
                         transform(ctx, parsed.type, val, function (res) {
                             if (ctx.stop) { return; }
                             if (!res.data) { return void error('EEMPTY'); }
-                            var data =  JSON.parse(val);
+                            var data =  JSON.parse(val)
+                            
                             if (data.form) {
-                                var _answers = data["answers"];
-                                _answers['href'] = parsed.hash;
-                                _answers['password'] = fData.password;
-                                _answers['drive'] = true;
+                                var _answers = data["answers"]
+                                _answers['href'] = parsed.hash
+                                _answers['password'] = fData.password
+                                _answers['drive'] = true
                                 var answers;
                                 ctx.sframeChan.query("Q_FORM_FETCH_ANSWERS", _answers, function (err, obj) {
                                     answers = obj && obj.results;
                                     var fileName = getUnique(sanitize(rawName + ' (answers)'), '.json', existingNames);
                                     existingNames.push(fileName.toLowerCase());
-                                    var types = {input: {},  textarea: {}, radio: {}, multiradio: {}, date: {}, checkbox: {}, multicheck: {}, sort: {}, poll: {}};
+                                    var types = {input: {},  textarea: {}, radio: {}, multiradio: {}, date: {}, checkbox: {}, multicheck: {}, sort: {}, poll: {}}
                                     var getFullOrder = function (content) {
                                         var order = content.order.slice();
                                         var getSections = function (content) {

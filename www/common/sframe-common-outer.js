@@ -2434,7 +2434,7 @@ define([
 
             var deleteLines = false; // "false" to support old forms
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
-                var formHref = data.href;
+                var formHref = data.href
                 var cb = Utils.Util.once(_cb);
                 var myKeys = {};
                 var myFormKeys;
