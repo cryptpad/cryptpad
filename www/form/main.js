@@ -21,7 +21,6 @@ define([
         href = obj.href;
         hash = obj.hash;
     }).nThen(function (/*waitFor*/) {
-        var privateKey, publicKey;
         var channels = {};
         var getPropChannels = function () {
             return channels;
@@ -40,9 +39,6 @@ define([
 
             var validateKey = keys.secondaryValidateKey;
             meta.form_answerValidateKey = validateKey;
-
-            publicKey = meta.form_public = formData.form_public;
-            privateKey = meta.form_private = formData.form_private;
             meta.form_auditorHash = formData.form_auditorHash;
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
@@ -105,6 +101,7 @@ define([
                     proof: Nacl.util.encodeBase64(u8_bundle)
                 };
             };
+            var deleteLines = false; // "false" to support old forms
             sframeChan.on("Q_FETCH_MY_ANSWERS", function (data, cb) {
                 var answers = [];
                 var myKeys;
