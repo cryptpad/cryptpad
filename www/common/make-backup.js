@@ -15,8 +15,9 @@ define([
     '/components/nthen/index.js',
     '/components/saferphore/index.js',
     '/components/jszip/dist/jszip.min.js',
+    '/form/export.js',
 ], function ($, FileCrypto, Hash, Util, UI, h, Feedback,
-             Cache, Messages, nThen, Saferphore, JsZip) {
+             Cache, Messages, nThen, Saferphore, JsZip, Exporter) {
     var saveAs = window.saveAs;
 
     var sanitize = function (str) {
@@ -249,15 +250,33 @@ define([
                                 var answers;
                                 ctx.sframeChan.query("Q_FORM_FETCH_ANSWERS", _answers, function (err, obj) {
                                     answers = obj && obj.results;
-                                    console.log("ANSWERS", answers)
+                                    var fileName = getUnique(sanitize(rawName + ' (answers)'), '.json', existingNames);
+                                    existingNames.push(fileName.toLowerCase());
+                                    var types = {input: {},  textarea: {}, radio: {}, multiradio: {}, date: {}, checkbox: {}, multicheck: {}, sort: {}, poll: {}}
+                                    var getFullOrder = function (content) {
+                                        var order = content.order.slice();
+                                        var getSections = function (content) {
+                                            var uids = Object.keys(content.form).filter(function (uid) {
+                                                return content.form[uid].type === 'section';
+                                            });
+                                            return uids;
+                                        };
+                                        getSections(content).forEach(function (uid) {
+                                            var block = content.form[uid];
+                                            if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+                                            var idx = order.indexOf(uid);
+                                            if (idx === -1) { return; }
+                                            idx++;
+                                            block.opts.questions.forEach(function (el, i) {
+                                                order.splice(idx+i, 0, el);
+                                            });
+                                        });
+                                        return order;
+                                    };
+                                    var arr = Exporter.results(data, answers, types, getFullOrder(data), "json");                                
+                                    var content = new Blob([arr], { type : "application/json" });
+                                    zip.file(fileName, content, opts);
                                 });
-                                var opts = {
-                                    binary: true,
-                                };
-                                var fileName = getUnique(sanitize(rawName + ' (answers)'), '.json', existingNames);
-                                existingNames.push(fileName.toLowerCase());
-                                var content = new Blob([answers], { type : "application/json" });
-                                zip.file(fileName, content, opts);
                             }
                             
                             var fileName = getUnique(sanitize(rawName), res.ext, existingNames);

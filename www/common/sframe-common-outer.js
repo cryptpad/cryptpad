@@ -2432,6 +2432,7 @@ define([
                 Utils.Feedback.send("BURN_AFTER_READING", Boolean(cfg.noDrive));
             });
 
+            var deleteLines = false; // "false" to support old forms
             sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
                 var formHref = data.href
                 var cb = Utils.Util.once(_cb);
@@ -2477,7 +2478,7 @@ define([
                     }));
                 }).nThen(function () {
                     if (!network) { return void cb({error: "E_CONNECT"}); }
-                                var getAnonymousKeys = function (formSeed, channel) {
+                        var getAnonymousKeys = function (formSeed, channel) {
                             var array = Nacl.util.decodeBase64(formSeed + channel);
                             var hash = Nacl.hash(array);
                             var secretKey = Nacl.util.encodeBase64(hash.subarray(32));
@@ -2492,17 +2493,17 @@ define([
                     }
                     var keys;
                     var privateKey, publicKey;
+                    var formData;
                     if (data.drive) {
                         var secret = Utils.Hash.getSecrets('form', formHref, data.password);
                         keys = secret && secret.keys;
-                        var formData = Utils.Hash.getFormData(secret);
-                        privateKey = formData.form_private;
-                        publicKey = formData.form_public;
-                        
+                        formData = Utils.Hash.getFormData(secret);
                     } else {
+                        formData = Utils.Hash.getFormData(Utils.secret);
                         keys = Utils.secret && Utils.secret.keys;
                     }
-
+                    privateKey = formData.form_private;
+                    publicKey = formData.form_public;
                     var curvePrivate = privateKey || data.privateKey;
                     if (!curvePrivate) { return void cb({error: 'EFORBIDDEN'}); }
                     var crypto = Utils.Crypto.Mailbox.createEncryptor({
