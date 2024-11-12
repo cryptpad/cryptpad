@@ -240,20 +240,24 @@ define([
                             if (ctx.stop) { return; }
                             if (!res.data) { return void error('EEMPTY'); }
                             var data =  JSON.parse(val)
-                            var _answers = data["answers"]
+                            
                             if (data.form) {
+                                var _answers = data["answers"]
                                 _answers['href'] = parsed.hash
                                 _answers['password'] = fData.password
                                 _answers['drive'] = true
-                                var answers
+                                var answers;
                                 ctx.sframeChan.query("Q_FORM_FETCH_ANSWERS", _answers, function (err, obj) {
                                     answers = obj && obj.results;
                                     console.log("ANSWERS", answers)
                                 });
-                                // var opts = {
-                                //     binary: true,
-                                // };
-                                // zip.file(fileName, answers, opts);
+                                var opts = {
+                                    binary: true,
+                                };
+                                var fileName = getUnique(sanitize(rawName + ' (answers)'), '.json', existingNames);
+                                existingNames.push(fileName.toLowerCase());
+                                var content = new Blob([answers], { type : "application/json" });
+                                zip.file(fileName, content, opts);
                             }
                             
                             var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
