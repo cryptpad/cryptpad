@@ -30,7 +30,6 @@ define([
     '/common/outer/login-block.js', // OK
     '/common/outer/network-config.js', // OK
     '/customize/application_config.js', // OK
-    '/common/worker.bundle.js?pezpze',
     '/customize/messages.js',
 
     '/components/chainpad-crypto/crypto.js',
@@ -43,12 +42,9 @@ define([
 ], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
-             Calendar, Block, NetConfig, AppConfig, Build, Messages,
+             Calendar, Block, NetConfig, AppConfig, Messages,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
 
-    /*Build.start({
-        AppConfig, ApiConfig, Messages, Broadcast: {}
-    })*/
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
 
@@ -878,7 +874,7 @@ define([
                             }
                         }));
                     }).nThen(function (waitFor) {
-                        self.accountDeletion = clientId;
+                        globalThis.accountDeletion = clientId;
                         // Log out from other workers
                         store.proxy[Constants.tokenKey] = 'DELETED';
                         onSync(null, waitFor());
@@ -3317,7 +3313,7 @@ define([
         };
 
         Store.disconnect = function () {
-            if (self.accountDeletion) { return; }
+            if (globalThis.accountDeletion) { return; }
             if (!store.network) { return; }
             store.network.disconnect();
         };

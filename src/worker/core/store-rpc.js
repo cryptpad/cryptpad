@@ -113,7 +113,7 @@ const factory = AStore => {
         return Rpc;
     };
 
-    return create;
+    return { create };
 };
 
 if (typeof(module) !== 'undefined' && module.exports) {

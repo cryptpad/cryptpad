@@ -1,4 +1,4 @@
-import nacl from 'tweetnacl';
+import nacl from 'tweetnacl/nacl-fast';
 import { Module, ModuleObject } from '../types'
 
 export interface TestModuleObject extends ModuleObject {

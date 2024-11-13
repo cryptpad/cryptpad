@@ -28,7 +28,7 @@ const factory = (SRpc, Channel, Util) => {
                 });
             });
         };
-        Rpc = Rpc.create({
+        Rpc = SRpc.create({
             query, broadcast
         });
         closeStore = _closeStore;
@@ -38,7 +38,7 @@ const factory = (SRpc, Channel, Util) => {
             console.error('Not initialized');
             return void cb('NOT_INIT');
         }
-        const { postMsg, disconnect } = cfg;
+        const { postMsg } = cfg;
         const onMsg = Util.mkEvent();
         // onMsg: mkEvent
         // postMsg: data {} arg
@@ -50,7 +50,7 @@ const factory = (SRpc, Channel, Util) => {
 
         Channel.create(onMsg, postMsg, function (chan) {
             let client = clients[clientId] = { chan };
-            debug('SharedW Channel created');
+            console.debug('SharedW Channel created');
 
             Object.keys(Rpc.queries).forEach(function (q) {
                 if (q === 'CONNECT') { return; }
@@ -66,22 +66,25 @@ const factory = (SRpc, Channel, Util) => {
                         console.log(data);
                     }
                     if (q === "DISCONNECT") {
-                        // XXX
-                        disconnect();
+                        onClose();
+                        if (globalThis.accountDeletion && globalThis.accountDeletion === client.id) {
+                            Rpc = undefined;
+                            store = undefined;
+                        }
+
                     }
                 });
             });
             chan.on('STOPWORKER', function (data, cb) {
-                // XXX
                 closeStore();
                 Rpc.queries['DISCONNECT'](clientId, data, cb);
             });
             chan.on('CONNECT', function (cfg, cb) {
-                debug('Connecting to store...');
+                console.debug('Connecting to store...');
 
                 Rpc.queries['CONNECT'](clientId, cfg, function (data) {
                     if (data && data.state === "ALREADY_INIT") {
-                        debug('Store already exists!');
+                        console.debug('Store already exists!');
                         store = store || data.returned;
                         return void cb(data);
                     }

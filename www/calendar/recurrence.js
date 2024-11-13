@@ -898,7 +898,7 @@ const factory = (Util) => {
 };
 
 if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory('../../common/common-util');
+    module.exports = factory(require('../../common/common-util'));
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define(['/common/common-util.js'], factory);
 } else {

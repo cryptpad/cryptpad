@@ -5,25 +5,38 @@
 /* global importScripts */
 
 const Interface = require('./interface');
-
-
-let start = () => {
-    Interface.init();
+let start = (setConfig) => {
+    let ready = false;
+    let closeStore = () => {
+        globalThis.close();
+    };
+    let initBuild = (cfg) => {
+        if (ready) { return; }
+        setConfig(cfg);
+        Interface.init(closeStore);
+        ready = true;
+    };
+    globalThis.window = globalThis;
     addEventListener('connect', (e) => {
         console.error("TEST");
         console.debug('New SharedWorker client');
         const port = e.ports[0];
         const postMsg = (data) => { port.postMessage(data); };
-        let init = false;
+        console.error(port);
+        let connected = false;
         let onMsg;
         let onClose = () => {};
 
         port.onmessage = function (e) {
-            if (e.data === "INIT") {
-                if (init) { return; }
-                init = true;
+            if (e.data?.type === 'INIT') {
+                // Initialize build
+                let cfg = e.data.cfg;
+                initBuild(cfg);
+                // Initialize client
+                if (connected) { return; }
+                connected = true;
                 Interface.initClient({
-                    onMsg
+                    postMsg
                 }, function (_onMsg, _onClose) {
                     onMsg = _onMsg;
                     onClose = _onClose;
@@ -39,5 +52,5 @@ let start = () => {
     });
 }
 
-module.exports = start;
+module.exports = { start };
 

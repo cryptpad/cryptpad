@@ -50,7 +50,6 @@ interface StoreConfig {
 
 
 let start = (cfg: StoreConfig):void => {
-
     // Provide custom data to the modules
     [
         Feedback,
@@ -72,6 +71,7 @@ let start = (cfg: StoreConfig):void => {
         }
     });
 
+    /*
     const AppConfig = cfg.AppConfig;
     const ApiConfig = cfg.ApiConfig;
 
@@ -100,15 +100,16 @@ let start = (cfg: StoreConfig):void => {
     //Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', true, console.error);
     //Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', false, console.error);
     console.error(Store);
-    let StoreObj = Store.create({});
-    console.error(StoreObj);
+    //let StoreObj = Store.create({});
+    //console.error(StoreObj);
+    */
 };
 
 let inWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 let inSharedWorker = typeof SharedWorkerGlobalScope !== 'undefined' && self instanceof SharedWorkerGlobalScope;
 if (inSharedWorker) {
     console.error('SHAREDWORKER');
-    SWConnector();
+    SWConnector.start(start);
 } else if (inWorker) {
     console.error("WEBWORKER");
 } else if (typeof module !== 'undefined' && typeof module.exports) {

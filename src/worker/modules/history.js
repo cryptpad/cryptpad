@@ -260,7 +260,6 @@ const factory = (Util, Hash, UserObject, nThen) => {
 if (typeof(module) !== 'undefined' && module.exports) {
     // Code from customize can't be laoded directly in the build
     module.exports = factory(
-        undefined,
         require('../../common/common-util'),
         require('../../common/common-hash'),
         require('../../common/user-object'),

@@ -372,7 +372,7 @@
         const url = new URL(origin);
         url.pathname = `api/${type}`;
         let href = url.href + (ignoreCache ? '?'+(+new Date()) : '');
-        if (typeof(window) !== "undefined" && window.crypto) {
+        if (typeof(self) !== "undefined" && self.crypto) {
             // Browser
             fetch(url.href).then(res => {
                 if (!res.ok) {

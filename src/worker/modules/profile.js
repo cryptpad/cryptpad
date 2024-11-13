@@ -159,7 +159,6 @@ const factory = (Util, Hash, Constants, Realtime,
 if (typeof(module) !== 'undefined' && module.exports) {
     // Code from customize can't be laoded directly in the build
     module.exports = factory(
-        undefined,
         require('../../common/common-util'),
         require('../../common/common-hash'),
         require('../../common/common-constants'),

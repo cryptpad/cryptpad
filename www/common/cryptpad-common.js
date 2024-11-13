@@ -4,6 +4,7 @@
 
 define([
     '/api/config',
+    '/api/broadcast',
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -18,13 +19,13 @@ define([
     '/common/outer/login-block.js',
     '/common/common-credential.js',
     '/customize/login.js',
-    '/common/worker.bundle.js',
+    //'/common/worker.bundle.js',
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
-], function (Config, Messages, Util, Hash, Cache,
+], function (Config, Broadcast, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, Build, AppConfig, Nthen) {
+            Cred, Login, /*Build,*/ AppConfig, Nthen) {
 
     /*Build.start({
         AppConfig, ApiConfig:Config, Messages, Broadcast: {}
@@ -2696,7 +2697,40 @@ define([
                     }
                 }
             }).nThen(function (waitFor2) {
-                if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
+                if (true) {
+                    worker = new SharedWorker('/common/worker.bundle.js?' + urlArgs);
+                    worker.onerror = function (e) {
+                        console.error(e.message); // FIXME seeing lots of errors here as of 2.20.0
+                    };
+                    worker.port.onmessage = function (ev) {
+                        if (ev.data === "SW_READY") {
+                            return;
+                        }
+                        msgEv.fire(ev);
+                    };
+                    postMsg = function (data) {
+                        worker.port.postMessage(Util.clone(data));
+                    };
+                    postMsg({
+                        type: 'INIT',
+                        cfg: {
+                            AppConfig,
+                            ApiConfig:Config,
+                            Messages,
+                            Broadcast
+                        }
+                    });
+
+                    /*
+                    window.addEventListener('beforeunload', function () {
+                        postMsg('CLOSE');
+                    });
+                    */
+                    window.addEventListener('unload', function () {
+                        postMsg('CLOSE');
+                    });
+                // eslint-disable-next-line no-constant-condition
+                } else if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
                         console.error(e.message); // FIXME seeing lots of errors here as of 2.20.0
