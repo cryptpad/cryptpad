@@ -778,6 +778,7 @@ define([
     };
 
     funcs.getExtensions = Ext.getExtensions;
+    funcs.getExtensionsSync = Ext.getExtensionsSync;
 
     funcs.mailbox = {};
 
