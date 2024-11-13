@@ -3925,7 +3925,7 @@ define([
 
         // EXTENSION_POINT:ADMIN_ITEM
         let utils = {
-            h, Util, Hash
+            h, Util, Hash, UIElements
         };
         common.getExtensionsSync('ADMIN_ITEM').forEach(ext => {
             if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
