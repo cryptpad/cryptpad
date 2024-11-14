@@ -15,9 +15,8 @@ define([
     '/components/nthen/index.js',
     '/components/saferphore/index.js',
     '/components/jszip/dist/jszip.min.js',
-    '/form/export.js',
 ], function ($, FileCrypto, Hash, Util, UI, h, Feedback,
-             Cache, Messages, nThen, Saferphore, JsZip, Exporter) {
+             Cache, Messages, nThen, Saferphore, JsZip) {
     var saveAs = window.saveAs;
 
     var sanitize = function (str) {
@@ -33,7 +32,7 @@ define([
         return n;
     };
 
-    var transform = function (ctx, type, sjson, cb, padData) {
+    var transform = function (ctx, parsed, sjson, cb, padData, zip, existingNames) {
         var result = {
             data: sjson,
             ext: '.json',
@@ -44,13 +43,13 @@ define([
         } catch (e) {
             return void cb(result);
         }
-        var path = '/' + type + '/export.js';
+        var path = '/' + parsed.type + '/export.js';
         require([path], function (Exporter) {
             Exporter.main(json, function (data, _ext) {
                 result.ext = _ext || Exporter.ext || '';
                 result.data = data;
                 cb(result);
-            }, null, ctx.sframeChan, padData);
+            }, null, ctx.sframeChan, padData, zip, sanitize, getUnique, existingNames);
         }, function () {
             cb(result);
         });
@@ -141,7 +140,7 @@ define([
             if (cancelled) { return; }
             if (err) { return; }
             if (!val) { return; }
-            transform(ctx, parsed.type, val, function (res) {
+            transform(ctx, parsed, val, function (res) {
                 if (cancelled) { return; }
                 if (!res.data) { return; }
                 var dl = function () {
@@ -237,47 +236,9 @@ define([
                         var opts = {
                             binary: true,
                         };
-                        transform(ctx, parsed.type, val, function (res) {
+                        transform(ctx, parsed, val, function (res) {
                             if (ctx.stop) { return; }
                             if (!res.data) { return void error('EEMPTY'); }
-                            var data =  JSON.parse(val);
-                            if (data.form) {
-                                var _answers = data["answers"];
-                                _answers['href'] = parsed.hash;
-                                _answers['password'] = fData.password;
-                                _answers['drive'] = true;
-                                var answers;
-                                ctx.sframeChan.query("Q_FORM_FETCH_ANSWERS", _answers, function (err, obj) {
-                                    answers = obj && obj.results;
-                                    var fileName = getUnique(sanitize(rawName + ' (answers)'), '.json', existingNames);
-                                    existingNames.push(fileName.toLowerCase());
-                                    var types = {input: {},  textarea: {}, radio: {}, multiradio: {}, date: {}, checkbox: {}, multicheck: {}, sort: {}, poll: {}};
-                                    var getFullOrder = function (content) {
-                                        var order = content.order.slice();
-                                        var getSections = function (content) {
-                                            var uids = Object.keys(content.form).filter(function (uid) {
-                                                return content.form[uid].type === 'section';
-                                            });
-                                            return uids;
-                                        };
-                                        getSections(content).forEach(function (uid) {
-                                            var block = content.form[uid];
-                                            if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
-                                            var idx = order.indexOf(uid);
-                                            if (idx === -1) { return; }
-                                            idx++;
-                                            block.opts.questions.forEach(function (el, i) {
-                                                order.splice(idx+i, 0, el);
-                                            });
-                                        });
-                                        return order;
-                                    };
-                                    var arr = Exporter.results(data, answers, types, getFullOrder(data), "json");                                
-                                    var content = new Blob([arr], { type : "application/json" });
-                                    zip.file(fileName, content, opts);
-                                });
-                            }
-                            
                             var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
                             existingNames.push(fileName.toLowerCase());
                             zip.file(fileName, res.data, opts);
@@ -286,7 +247,7 @@ define([
                         }, {
                             hash: parsed.hash,
                             password: fData.password
-                        });
+                        }, zip, existingNames);
                     });
                 };
 
