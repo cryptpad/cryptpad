@@ -234,11 +234,7 @@ define([
                     }
                 };
 
-                
-
                 var addFirstHandlers = () => {
-
-                    
                     sframeChan.on('Q_SETTINGS_CHECK_PASSWORD', function (data, cb) {
                         var blockHash = Utils.LocalStore.getBlockHash();
                         var userHash = Utils.LocalStore.getUserHash();
@@ -1078,7 +1074,6 @@ define([
                 sframeChan.event("EV_NEW_VERSION");
             });
 
-            
 
 
             // Put in the following function the RPC queries that should also work in filepicker
@@ -1569,8 +1564,6 @@ define([
                         });
                     });
                 });
-
-                
             };
             addCommonRpc(sframeChan, isSafe);
 

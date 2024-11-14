@@ -5,7 +5,6 @@
 define([
     '/common/common-util.js',
     '/customize/messages.js', 
-    ''
 ], function (Util, Messages) {
     var Export = {
         ext: '.json'
