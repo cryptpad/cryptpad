@@ -25,6 +25,7 @@ import * as Store from './async-store.js';
 import * as StoreRpc from './core/store-rpc.js';
 import * as Interface from './core/interface.js';
 import * as SWConnector from './core/sw-connector.js';
+import * as AsyncConnector from './core/async-connector.js';
 
 // Components
 import * as Migrate from './components/migrate-user-object.js';
@@ -107,6 +108,7 @@ let start = (cfg: StoreConfig):void => {
 
 let inWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 let inSharedWorker = typeof SharedWorkerGlobalScope !== 'undefined' && self instanceof SharedWorkerGlobalScope;
+let storeObject = {};
 if (inSharedWorker) {
     console.error('SHAREDWORKER');
     SWConnector.start(start);
@@ -116,10 +118,11 @@ if (inSharedWorker) {
     console.error('NODEJS');
 } else {
     console.error('BROWSER');
+    storeObject = AsyncConnector.start(start);
 }
 
 
 export {
-    start
+    storeObject
 };
 
