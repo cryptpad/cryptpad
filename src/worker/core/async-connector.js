@@ -23,7 +23,7 @@ let start = (setConfig) => {
         if (closed) { return; }
         sendMsgEv.fire(data);
     };
-    const query = () => {
+    const query = (data) => {
         if (!onMsg || closed) { return; }
         onMsg.fire({data, origin:''});
     };

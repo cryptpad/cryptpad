@@ -62,7 +62,7 @@ const factory = function () {
                 window.addEventListener('unload', function () {
                     postMsg('CLOSE');
                 });
-                return void resolve(postMsg, msgEv);
+                return void resolve({postMsg, msgEv});
             }
 
             // eslint-disable-next-line no-constant-condition
@@ -77,28 +77,31 @@ const factory = function () {
                 postMsg = function (data) {
                     worker.postMessage(data);
                 };
-                return void resolve(postMsg, msgEv);
+                return void resolve({postMsg, msgEv});
             }
 
             // Use the async store in the main thread if workers
             // aren't available
             if (typeof(require) === "undefined") { return; }
             require(['/common/worker.bundle.js'], function (Store) {
-                Store.onMessage(function (data) {
+                let store = Store?.store
+                if (!store) { return void console.error("No store"); }
+                store.onMessage(function (data) {
+                    if (data === "STORE_READY") { return; }
                     msgEv.fire({data: data, origin: ''});
                 });
                 postMsg = function (d) {
                     setTimeout(function () {
-                        Store.query(d);
+                        store.query(d);
                     });
                 };
-                Store.init({
+                store.init({
                     AppConfig,
                     ApiConfig,
                     Messages,
                     Broadcast
                 });
-                resolve(postMsg, msgEv);
+                resolve({postMsg, msgEv});
             });
         };
 

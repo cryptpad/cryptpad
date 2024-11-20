@@ -108,7 +108,7 @@ let start = (cfg: StoreConfig):void => {
 
 let inWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 let inSharedWorker = typeof SharedWorkerGlobalScope !== 'undefined' && self instanceof SharedWorkerGlobalScope;
-let storeObject = {};
+let store = {};
 if (inSharedWorker) {
     console.error('SHAREDWORKER');
     SWConnector.start(start);
@@ -118,11 +118,12 @@ if (inSharedWorker) {
     console.error('NODEJS');
 } else {
     console.error('BROWSER');
-    storeObject = AsyncConnector.start(start);
+    store = AsyncConnector.start(start);
 }
 
 
 export {
-    storeObject
+    start,
+    store
 };
 
