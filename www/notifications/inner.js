@@ -143,7 +143,7 @@ define([
             $(loadmore).click();
         }
 
-        common.mailbox.subscribe(["notifications"], {
+        common.mailbox.subscribe(["notifications", "reminders"], {
             onMessage: function (data, el) {
                 addNotification(data, el);
             },
