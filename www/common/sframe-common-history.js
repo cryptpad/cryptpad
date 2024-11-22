@@ -212,6 +212,9 @@ define([
                 sharedFolder: config.sharedFolder
             }, function (err, data) {
                 if (err) { return void console.error(err); }
+                if (data && data.error) {
+                    return void cb(data.error);
+                }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
                 lastKnownHash = data.lastKnownHash;
                 isComplete = data.isFull;
@@ -287,6 +290,14 @@ define([
         $cke.hide();
 
         UI.spinner($hist).get().show();
+
+        let closeAll = () => {
+            History.state = false;
+            $hist.hide()
+            $bottom.show();
+            $cke.show();
+            $(window).trigger('resize');
+        };
 
         var update = function (newRt) {
             realtime = newRt;
@@ -567,11 +578,7 @@ define([
 
             var onKeyDown, onKeyUp;
             var closeUI = function () {
-                History.state = false;
-                $hist.hide();
-                $bottom.show();
-                $cke.show();
-                $(window).trigger('resize');
+                closeAll();
                 $(window).off('keydown', onKeyDown);
                 $(window).off('keyup', onKeyUp);
             };
@@ -681,7 +688,12 @@ define([
         loadMoreHistory(config, common, function (err, newRt, isFull) {
             History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
             History.loading = false;
-            if (err) { throw new Error(err); }
+            if (err) {
+                console.error(err);
+                UI.warn(`${Messages.error}: ${err}`);
+                closeAll();
+                return;
+            }
             update(newRt);
             display();
             if (isFull) {

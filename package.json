@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "a collaborative office suite that is end-to-end encrypted and open-source",
-  "version": "2024.9.0",
+  "version": "2024.9.1",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
     "chainpad-crypto": "^0.2.5",
     "chainpad-listmap": "^1.1.1",
     "chainpad-netflux": "^1.2.0",
-    "chainpad-server": "^5.2.3",
+    "chainpad-server": "^5.2.4",
     "ckeditor": "npm:ckeditor4@~4.22.1",
     "codemirror": "^5.19.0",
     "components-font-awesome": "^4.6.3",
