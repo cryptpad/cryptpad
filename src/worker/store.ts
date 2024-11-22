@@ -42,6 +42,9 @@ import * as Messenger from './modules/messenger.js';
 import * as History from './modules/history.js';
 import * as Calendar from './modules/calendar.js';
 
+declare var WorkerGlobalScope: any
+declare var SharedWorkerGlobalScope: any
+
 interface StoreConfig {
     ApiConfig: any,
     AppConfig: any,

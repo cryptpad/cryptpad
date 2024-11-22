@@ -2,12 +2,6 @@
 // specific methods for each module
 type Callback = (...args: any[]) => void
 
-declare module globalThis {
-    let CryptPad_Messages: any;
-    let CryptPad_AppConfig: any;
-    let window: any;
-}
-
 export type ModuleConfig = {
     emit: Function
 }
