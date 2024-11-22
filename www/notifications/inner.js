@@ -145,7 +145,7 @@ define([
 
         common.mailbox.subscribe(["notifications", "reminders"], {
             onMessage: function (data, el) {
-                el.innerHTML = el.innerHTML.replace('<i', '<span class="cp-avatar"><span class="cp-avatar-default" alt="" aria-hidden="true"><i').replace('/i>', '/i></span></span>')
+                el.innerHTML = el.innerHTML.replace('<i', '<span class="cp-avatar"><span class="cp-avatar-default" alt="" aria-hidden="true"><i').replace('/i>', '/i></span></span>');
                 addNotification(data, el);
             },
             onViewed: function (data) {
