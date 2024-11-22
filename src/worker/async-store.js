@@ -2309,6 +2309,12 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 if (completed) { return; }
                 var parsed = parse(msg);
                 if (parsed[1] !== txid) { console.log('bad txid'); return; }
+                if (parsed[0] === 'HISTORY_RANGE_ERROR') {
+                    cb({
+                        error: parsed[2]
+                    });
+                    return;
+                }
                 if (parsed[0] === 'HISTORY_RANGE_END') {
                     cb({
                         messages: msgs,

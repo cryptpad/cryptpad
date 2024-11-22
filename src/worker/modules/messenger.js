@@ -376,7 +376,8 @@ const factory = (Crypto, Hash, Util, Realtime, Messaging,
             }
             // History cleared while we were offline
             // ==> we asked for an invalid last known hash
-            if (parsed.error && parsed.error === "EINVAL") {
+            if (parsed.error && (parsed.error === "EINVAL"
+                              || parsed.error === "EUNKNOWN")) {
                 setChannelHead(ctx, parsed.channel, '', function () {
                     getChannelMessagesSince(ctx, channel, {}, {});
                 });
