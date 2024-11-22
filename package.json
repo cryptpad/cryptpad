@@ -61,7 +61,7 @@
     "sortify": "^1.0.4",
     "stream-to-pull-stream": "^1.7.2",
     "thirty-two": "^1.0.2",
-    "tweetnacl": "~0.12.2",
+    "tweetnacl": "file:./src/tweetnacl",
     "ulimit": "0.0.2",
     "ws": "^8.17.1",
     "x2js": "^3.4.4"

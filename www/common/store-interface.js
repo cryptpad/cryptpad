@@ -11,6 +11,7 @@ const factory = function () {
         let { noWorker, noSharedWorker, AppConfig,
                 ApiConfig, Messages, Broadcast } = cfg;
 
+        let urlArgs = ApiConfig?.requireConf?.urlArgs;
         const mkEvent = function () {
             var handlers = [];
             return {
@@ -48,7 +49,7 @@ const factory = function () {
                     msgEv.fire(ev);
                 };
                 postMsg = function (data) {
-                    worker.port.postMessage(Util.clone(data));
+                    worker.port.postMessage(JSON.parse(JSON.stringify(data)));
                 };
                 postMsg({
                     type: 'INIT',
