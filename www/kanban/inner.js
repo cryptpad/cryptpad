@@ -559,6 +559,71 @@ define([
                 e.stopPropagation();
             }).appendTo($(el).find('.kanban-board-header'));
         });
+        $container.find('.kanban-board').each(function (i, el) {
+            $('<button>', {
+                'class': 'kanban-edit-item fa fa-arrow-left',
+                'alt': '', 
+            }).click(function (e) {
+                var boardList = $container[0].childNodes[0].childNodes[0].childNodes
+                var newKanban = boardList[boardList.length-1]
+                var boardsArray = Array.from(boardList)
+                boardsArray.slice(boardsArray.length-1, 1)
+                var moveBoards = function (arr, oldIndex, newIndex) {
+                    if (newIndex >= arr.length) {
+                        var k = newIndex - arr.length + 1;
+                        while (k--) {
+                            arr.push(undefined);
+                        }
+                    }
+                    arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+                    return arr;
+                };
+                if (i === 0) {
+                    moveBoards(boardsArray, i, boardsArray.length-1)
+                } else {
+                    moveBoards(boardsArray, i, i-1)
+                }
+                var index = boardsArray.indexOf(el)
+                i = index
+                var boardContainer = $container[0].childNodes[0].childNodes[0]
+                boardContainer.innerHTML = ''; 
+                boardsArray.forEach(board => {
+                    boardContainer.appendChild(board);
+                });
+                boardContainer.appendChild(newKanban);                
+            }).appendTo($(el).find('.kanban-board-header'));
+        });
+         $container.find('.kanban-board').each(function (i, el) {
+            $('<button>', {
+                'class': 'kanban-edit-item fa fa-arrow-right',
+                'alt': '', 
+            }).click(function (e) {
+                var boardList = $container[0].childNodes[0].childNodes[0].childNodes
+                var newKanban = boardList[boardList.length-1]
+                var boardsArray = Array.from(boardList)
+                boardsArray.slice(boardsArray.length-1, 1)
+                var moveBoards = function (arr, oldIndex, newIndex) {
+                    var element = arr[oldIndex];
+                    arr.splice(oldIndex, 1);
+                    arr.splice(newIndex, 0, element);
+                };
+                if (i === boardsArray.length-2) {
+                    moveBoards(boardsArray, i, 0)
+                } else {
+                    moveBoards(boardsArray, i, i+1)
+                }
+                var boardContainer = $container[0].childNodes[0].childNodes[0]
+                boardContainer.innerHTML = ''; 
+                boardsArray.forEach(board => {
+                    boardContainer.appendChild(board);
+                });
+                var index = boardsArray.indexOf(el)
+                i = index
+                boardContainer.appendChild(newKanban);
+                
+
+            }).appendTo($(el).find('.kanban-board-header'));
+        });
     };
 
     // Kanban code
