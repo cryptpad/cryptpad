@@ -67,7 +67,7 @@ const factory = function () {
             }
 
             // eslint-disable-next-line no-constant-condition
-            if (!noWorker && Worker) {
+            if (!noWorker && typeof(Worker) !== "undefined") {
                 worker = new Worker('/common/worker.bundle.js?' + urlArgs);
                 worker.onerror = function (e) {
                     console.error(e.message);
@@ -83,7 +83,7 @@ const factory = function () {
 
             // Use the async store in the main thread if workers
             // aren't available
-            if (typeof(require) === "undefined") { return; }
+            //if (typeof(require) === "undefined") { return; }
             require(['/common/worker.bundle.js'], function (Store) {
                 let store = Store?.store
                 if (!store) { return void console.error("No store"); }
@@ -105,8 +105,35 @@ const factory = function () {
                 resolve({postMsg, msgEv});
             });
         };
+        let todoNode = (resolve, reject) => {
+            const Store = require('./worker.bundle');
+            let store = Store?.store
+            if (!store) {
+                reject('NOSTORE');
+                return void console.error("No store");
+            }
+            store.onMessage(function (data) {
+                if (data === "STORE_READY") { return; }
+                msgEv.fire({data: data, origin: ''});
+            });
+            postMsg = function (d) {
+                setTimeout(function () {
+                    store.query(d);
+                });
+            };
+            store.init({
+                AppConfig,
+                ApiConfig,
+                Messages,
+                Broadcast
+            });
+            resolve({postMsg, msgEv});
+        };
 
         return new Promise((resolve, reject) => {
+            if (typeof (module) !== "undefined" && typeof(module.exports) !== "undefined") {
+                return void todoNode(resolve, reject);
+            }
             if (typeof(SharedWorker) !== "undefined") {
                 try {
                     new SharedWorker('');

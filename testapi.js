@@ -1,6 +1,7 @@
 const Messages = require('./src/messages');
 const AppConfig = require('./customize/application_config');
-const App = require('./_build/worker.bundle');
+//const App = require('./_build/worker.bundle');
+const Store = require('./www/common/store-interface');
 const Http = require('node:http');
 
 
@@ -25,8 +26,13 @@ let getApi = (file, cb) => {
 
 getApi('config', ApiConfig => {
     getApi('broadcast', Broadcast => {
-        App.start({
-            ApiConfig, Broadcast, AppConfig, Messages
+        Store({
+            AppConfig,
+            ApiConfig,
+            Messages,
+            Broadcast
+        }).then((store) => {
+            console.log(store);
         });
     });
 });

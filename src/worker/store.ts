@@ -119,6 +119,7 @@ if (inSharedWorker) {
     console.error("WEBWORKER");
 } else if (typeof module !== 'undefined' && typeof module.exports) {
     console.error('NODEJS');
+    store = AsyncConnector.start(start);
 } else {
     console.error('BROWSER');
     store = AsyncConnector.start(start);
