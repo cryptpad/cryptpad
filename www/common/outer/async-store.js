@@ -2,51 +2,25 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/api/config', // From outside
-    'json.sortify',
-    '/common/userObject.js', // OK
-    '/common/proxy-manager.js', // OK
-    '/common/migrate-user-object.js', // OK
-    '/common/common-hash.js', // OK
-    '/common/common-util.js', // OK
-    '/common/common-constants.js', // OK
-    '/common/common-feedback.js', // OK
-    '/common/common-realtime.js', // OK
-    '/common/common-messaging.js', // OK
-    '/common/pinpad.js', // OK
-    '/common/outer/cache-store.js', // OK
-    '/common/outer/sharedfolder.js', // OK
-    '/common/outer/cursor.js', // OK
-    '/common/outer/support.js', // OK
-    '/common/outer/integration.js', // OK
-    '/common/outer/onlyoffice.js', // OK
-    '/common/outer/mailbox.js', // OK
-    '/common/outer/profile.js', // OK
-    '/common/outer/team.js', // OK
-    '/common/outer/messenger.js', // OK
-    '/common/outer/history.js', // OK
-    '/common/outer/calendar.js', // OK
-    '/common/outer/login-block.js', // OK
-    '/common/outer/network-config.js', // OK
-    '/customize/application_config.js', // OK
-    '/customize/messages.js',
+(() => {
+const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
+                Migrate, Hash, Util, Constants, Feedback,
+                Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
+                SF, Cursor, Support, Integration, OnlyOffice,
+                Mailbox, Profile, Team, Messenger, History,
+                Calendar, Block, NetConfig, AppConfig = {},
+                Crypto, ChainPad, CpNetflux, Listmap,
+                Netflux, nThen) => {
 
-    '/components/chainpad-crypto/crypto.js',
-    '/components/chainpad/chainpad.dist.js',
-    'chainpad-netflux',
-    'chainpad-listmap',
-    'netflux-client',
-    '/components/nthen/index.js',
-    '/components/saferphore/index.js',
-], function (ApiConfig, Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad, Cache,
-             SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
-             Calendar, Block, NetConfig, AppConfig, Messages,
-             Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
-
+    const window = globalThis;
+    const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
+
+    const setCustomize = data => {
+        ApiConfig = data.ApiConfig;
+        AppConfig = data.AppConfig;
+    };
 
     // Number of days before deleting the cache for a channel or blob
     var CACHE_MAX_AGE = 90; // DAYS
@@ -68,18 +42,25 @@ define([
         }
     };
 
-    var create = function () {
+    var create = function (config) {
         var Store = window.Cryptpad_Store = {};
-        var postMessage = function () {};
-        var broadcast = function () {};
-        var sendDriveEvent = function () {};
-        var registerProxyEvents = function () {};
+        let postMessage = config.query || function () {};
+        let broadcast = config.broadcast || function () {};
 
         var store = window.CryptPad_AsyncStore = {
             modules: {}
         };
 
         Store.onReadyEvt = onReadyEvt;
+
+        // Drive clients
+        var driveEventClients = [];
+        var sendDriveEvent = function (q, data, sender) {
+            driveEventClients.forEach(function (cId) {
+                if (cId === sender) { return; }
+                postMessage(cId, q, data);
+            });
+        };
 
         var getStore = function (teamId) {
             if (!teamId) { return store; }
@@ -564,14 +545,10 @@ define([
 
         var initAnonRpc = function (clientId, data, cb) {
             if (store.anon_rpc) { return void cb(); }
-            require([
-                '/common/rpc.js',
-            ], function (Rpc) {
-                Rpc.createAnonymous(store.network, function (e, call) {
-                    if (e) { return void cb({error: e}); }
-                    store.anon_rpc = call;
-                    cb();
-                });
+            Rpc.createAnonymous(store.network, function (e, call) {
+                if (e) { return void cb({error: e}); }
+                store.anon_rpc = call;
+                cb();
             });
         };
 
@@ -650,7 +627,8 @@ define([
         Store.onMaintenanceUpdate = function (uid) {
             // use uid in /api/broadcast so that all connected users will use the same cached
             // version on the server
-            require(['/api/broadcast?'+uid], function (Broadcast) {
+            let origin = ApiConfig.httpUnsafeOrigin;
+            Util.fetchApi(origin, 'broadcast', true, (Broadcast) => {
                 if (!Broadcast) { return; }
                 broadcast([], 'UNIVERSAL_EVENT', {
                     type: 'broadcast',
@@ -659,24 +637,13 @@ define([
                         data: Broadcast.maintenance
                     }
                 });
-                setTimeout(function () {
-                    try {
-                        var ctx = require.s.contexts._;
-                        var defined = ctx.defined;
-                        Object.keys(defined).forEach(function (href) {
-                            if (/^\/api\/broadcast\?[a-z0-9]+/.test(href)) {
-                                delete defined[href];
-                                return;
-                            }
-                        });
-                    } catch (e) {}
-                });
             });
         };
         Store.onSurveyUpdate = function (uid) {
             // use uid in /api/broadcast so that all connected users will use the same cached
             // version on the server
-            require(['/api/broadcast?'+uid], function (Broadcast) {
+            let origin = ApiConfig.httpUnsafeOrigin;
+            Util.fetchApi(origin, 'broadcast', true, (Broadcast) => {
                 broadcast([], 'UNIVERSAL_EVENT', {
                     type: 'broadcast',
                     data: {
@@ -943,10 +910,8 @@ define([
          *   - anonHash
          */
         Store.migrateAnonDrive = function (clientId, data, cb) {
-            require(['/common/merge-drive.js'], function (Merge) {
-                var hash = data.anonHash;
-                Merge.anonDriveIntoUser(store, hash, cb);
-            });
+            var hash = data.anonHash;
+            Merge.anonDriveIntoUser(store, hash, cb);
         };
 
         // Set the display name (username) in the proxy
@@ -2392,6 +2357,78 @@ define([
             }]));
         };
 
+        // Special events
+        var registerProxyEvents = function (proxy, fId) {
+            if (!proxy) { return; }
+            if (proxy.deprecated || proxy.restricted) { return; }
+            if (!fId) {
+                // Listen for shared folder password change
+                proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
+                    if (p.length > 3 && p[3] === 'password') {
+                        var id = p[2];
+                        var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
+                        var href = store.manager.user.userObject.getHref ?
+                                store.manager.user.userObject.getHref(data) : data.href;
+                        var parsed = Hash.parsePadUrl(href);
+                        var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
+                        SF.updatePassword(Store, {
+                            oldChannel: secret.channel,
+                            password: n,
+                            href: href
+                        }, store.network, function () {
+                            console.log('Shared folder password changed');
+                        });
+                        return false;
+                    }
+                });
+            }
+            proxy.on('change', [], function (o, n, p) {
+                if (fId) {
+                    // Pin the new pads
+                    if (p[0] === UserObject.FILES_DATA && typeof(n) === "object" && n.channel && !n.owners) {
+                        var toPin = [n.channel];
+                        // Also pin the onlyoffice channels if they exist
+                        if (n.rtChannel) { toPin.push(n.rtChannel); }
+                        if (n.lastVersion) { toPin.push(n.lastVersion); }
+                        Store.pinPads(null, toPin, function (obj) { console.error(obj); });
+                    }
+                    // Unpin the deleted pads (deleted <=> changed to undefined)
+                    if (p[0] === UserObject.FILES_DATA && typeof(o) === "object" && o.channel && !n) {
+                        var toUnpin = [o.channel];
+                        var c = store.manager.findChannel(o.channel);
+                        var exists = c.some(function (data) {
+                            return data.fId !== fId;
+                        });
+                        if (!exists) { // Unpin
+                            // Also unpin the onlyoffice channels if they exist
+                            if (o.rtChannel) { toUnpin.push(o.rtChannel); }
+                            if (o.lastVersion) { toUnpin.push(o.lastVersion); }
+                            Store.unpinPads(null, toUnpin, function (obj) { console.error(obj); });
+                        }
+                    }
+                }
+                if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
+                    (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
+                    setTimeout(function () {
+                        Store.checkDeletedPad(o && o.channel);
+                    });
+                }
+                sendDriveEvent('DRIVE_CHANGE', {
+                    id: fId,
+                    old: o,
+                    new: n,
+                    path: p
+                });
+            });
+            proxy.on('remove', [], function (o, p) {
+                sendDriveEvent('DRIVE_REMOVE', {
+                    id: fId,
+                    old: o,
+                    path: p
+                });
+            });
+        };
+
         // SHARED FOLDERS
         var addSharedFolderHandler = function () {
             store.sharedFolders = {};
@@ -2474,8 +2511,6 @@ define([
             s.manager.command(cmdData, cb2);
         };
 
-        // Clients management
-        var driveEventClients = [];
 
         // Check if this is a channel that we shouldn't leave when closing the debug app
         var alwaysOnline = function (chanId) {
@@ -2565,98 +2600,7 @@ define([
             });
         };
 
-        // Special events
 
-        sendDriveEvent = function (q, data, sender) {
-            driveEventClients.forEach(function (cId) {
-                if (cId === sender) { return; }
-                postMessage(cId, q, data);
-            });
-        };
-        registerProxyEvents = function (proxy, fId) {
-            if (!proxy) { return; }
-            if (proxy.deprecated || proxy.restricted) { return; }
-            if (!fId) {
-                // Listen for shared folder password change
-                proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
-                    if (p.length > 3 && p[3] === 'password') {
-                        var id = p[2];
-                        var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
-                        var href = store.manager.user.userObject.getHref ?
-                                store.manager.user.userObject.getHref(data) : data.href;
-                        var parsed = Hash.parsePadUrl(href);
-                        var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
-                        SF.updatePassword(Store, {
-                            oldChannel: secret.channel,
-                            password: n,
-                            href: href
-                        }, store.network, function () {
-                            console.log('Shared folder password changed');
-                        });
-                        return false;
-                    }
-                });
-            }
-            proxy.on('change', [], function (o, n, p) {
-                if (fId) {
-                    // Pin the new pads
-                    if (p[0] === UserObject.FILES_DATA && typeof(n) === "object" && n.channel && !n.owners) {
-                        var toPin = [n.channel];
-                        // Also pin the onlyoffice channels if they exist
-                        if (n.rtChannel) { toPin.push(n.rtChannel); }
-                        if (n.lastVersion) { toPin.push(n.lastVersion); }
-                        Store.pinPads(null, toPin, function (obj) { console.error(obj); });
-                    }
-                    // Unpin the deleted pads (deleted <=> changed to undefined)
-                    if (p[0] === UserObject.FILES_DATA && typeof(o) === "object" && o.channel && !n) {
-                        var toUnpin = [o.channel];
-                        var c = store.manager.findChannel(o.channel);
-                        var exists = c.some(function (data) {
-                            return data.fId !== fId;
-                        });
-                        if (!exists) { // Unpin
-                            // Also unpin the onlyoffice channels if they exist
-                            if (o.rtChannel) { toUnpin.push(o.rtChannel); }
-                            if (o.lastVersion) { toUnpin.push(o.lastVersion); }
-                            Store.unpinPads(null, toUnpin, function (obj) { console.error(obj); });
-                        }
-                    }
-                }
-                if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
-                    (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
-                    setTimeout(function () {
-                        Store.checkDeletedPad(o && o.channel);
-                    });
-                }
-                sendDriveEvent('DRIVE_CHANGE', {
-                    id: fId,
-                    old: o,
-                    new: n,
-                    path: p
-                });
-            });
-            proxy.on('remove', [], function (o, p) {
-                sendDriveEvent('DRIVE_REMOVE', {
-                    id: fId,
-                    old: o,
-                    path: p
-                });
-            });
-        };
-
-        Store._subscribeToDrive = function (clientId) {
-            if (driveEventClients.indexOf(clientId) === -1) {
-                driveEventClients.push(clientId);
-            }
-            if (!store.driveEvents) {
-                store.driveEvents = true;
-                registerProxyEvents(store.proxy);
-                Object.keys(store.manager.folders).forEach(function (fId) {
-                    var proxy = store.manager.folders[fId].proxy;
-                    registerProxyEvents(proxy, fId);
-                });
-            }
-        };
 
 
 /*
@@ -3211,9 +3155,25 @@ define([
             andThen();
         };
 
+        let subscribeToDrive = function (clientId) {
+            if (driveEventClients.indexOf(clientId) === -1) {
+                driveEventClients.push(clientId);
+            }
+            if (!store.driveEvents) {
+                store.driveEvents = true;
+                registerProxyEvents(store.proxy);
+                Object.keys(store.manager.folders).forEach(function (fId) {
+                    var proxy = store.manager.folders[fId].proxy;
+                    registerProxyEvents(proxy, fId);
+                });
+            }
+        };
 
         Store.init = function (clientId, data, _callback) {
-            var callback = Util.once(_callback);
+            var callback = Util.once(function (obj) {
+                if (data.driveEvents) { subscribeToDrive(clientId); }
+                _callback(obj);
+            });
 
             // If this is not the first tab and we're offline, callback only if the app
             // supports offline mode
@@ -3246,26 +3206,17 @@ define([
                 Cache.disable();
             }
 
-            if (data.query && data.broadcast) {
-                postMessage = function (clientId, cmd, d, cb) {
-                    data.query(clientId, cmd, d, cb);
-                };
-                broadcast = function (excludes, cmd, d, cb) {
-                    data.broadcast(excludes, cmd, d, cb);
-                };
-            }
-
             // First tab, no user hash, no anon hash and this app doesn't need a drive
             // ==> don't create a drive
             // Or "neverDrive" (integration into another platform?)
             // ==> don't create a drive
-            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
+            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // if we can't properly initialize the noDrive mode, use normal mode
                         if (obj.error === 'GET_HK') {
                             data.noDrive = false;
-                            Store.init(clientId, data, _callback);
+                            Store.init(clientId, data, callback);
                             Feedback.send("NO_DRIVE_ERROR", true);
                             return;
                         }
@@ -3327,6 +3278,91 @@ define([
     };
 
     return {
+        setCustomize,
         create: create
     };
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    // Code from customize can't be laoded directly in the build
+    module.exports = factory(
+        undefined,
+        require('json.sortify'),
+        require('../common/user-object'),
+        require('../common/proxy-manager'),
+        require('./components/migrate-user-object'),
+        require('../common/common-hash'),
+        require('../common/common-util'),
+        require('../common/common-constants'),
+        require('../common/common-feedback'),
+        require('../common/common-realtime'),
+        require('../common/common-messaging'),
+        require('../common/pinpad'),
+        require('../common/rpc'),
+        require('./components/merge-drive'),
+        require('../common/cache-store'),
+        require('./components/sharedfolder'),
+        require('./modules/cursor'),
+        require('./modules/support'),
+        require('./modules/integration'),
+        require('./modules/onlyoffice'),
+        require('./modules/mailbox'),
+        require('./modules/profile'),
+        require('./modules/team'),
+        require('./modules/messenger'),
+        require('./modules/history'),
+        require('./modules/calendar'),
+        require('../common/login-block'),
+        require('../common/network-config'),
+        undefined,
+        require('chainpad-crypto'),
+        require('chainpad'),
+        require('chainpad-netflux'),
+        require('chainpad-listmap'),
+        require('netflux-websocket'),
+        require('nthen')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/api/config', // From outside
+        'json.sortify',
+        '/common/userObject.js', // OK
+        '/common/proxy-manager.js', // OK
+        '/common/migrate-user-object.js', // OK
+        '/common/common-hash.js', // OK
+        '/common/common-util.js', // OK
+        '/common/common-constants.js', // OK
+        '/common/common-feedback.js', // OK
+        '/common/common-realtime.js', // OK
+        '/common/common-messaging.js', // OK
+        '/common/pinpad.js', // OK
+        '/common/rpc.js', // OK
+        '/common/merge-drive.js', // OK
+        '/common/outer/cache-store.js', // OK
+        '/common/outer/sharedfolder.js', // OK
+        '/common/outer/cursor.js', // OK
+        '/common/outer/support.js', // OK
+        '/common/outer/integration.js', // OK
+        '/common/outer/onlyoffice.js', // OK
+        '/common/outer/mailbox.js', // OK
+        '/common/outer/profile.js', // OK
+        '/common/outer/team.js', // OK
+        '/common/outer/messenger.js', // OK
+        '/common/outer/history.js', // OK
+        '/common/outer/calendar.js', // OK
+        '/common/outer/login-block.js', // OK
+        '/common/outer/network-config.js', // OK
+        '/customize/application_config.js', // OK
+
+        '/components/chainpad-crypto/crypto.js',
+        '/components/chainpad/chainpad.dist.js',
+        'chainpad-netflux',
+        'chainpad-listmap',
+        'netflux-client',
+        '/components/nthen/index.js',
+    ], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

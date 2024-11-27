@@ -841,7 +841,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                             }
                         }));
                     }).nThen(function (waitFor) {
-                        self.accountDeletion = clientId;
+                        globalThis.accountDeletion = clientId;
                         // Log out from other workers
                         store.proxy[Constants.tokenKey] = 'DELETED';
                         onSync(null, waitFor());
@@ -3171,7 +3171,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(function (obj) {
-                subscribeToDrive(clientId);
+                if (data.driveEvents) { subscribeToDrive(clientId); }
                 _callback(obj);
             });
 
@@ -3270,7 +3270,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
         };
 
         Store.disconnect = function () {
-            if (self.accountDeletion) { return; }
+            if (globalThis.accountDeletion) { return; }
             if (!store.network) { return; }
             store.network.disconnect();
         };
