@@ -33,7 +33,6 @@ www/common/onlyoffice/v*
 /onlyoffice-dist/
 
 _build
-www/common/worker.bundle.js
 
 # ---> Node
 # Logs

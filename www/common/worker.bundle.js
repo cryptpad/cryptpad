@@ -1,0 +1,1 @@
+../../_build/worker.bundle.js
