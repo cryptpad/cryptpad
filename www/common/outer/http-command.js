@@ -2,14 +2,29 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/components/nthen/index.js',
-    '/common/common-util.js',
-    '/api/config',
+(() => {
+const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
 
-    '/components/tweetnacl/nacl-fast.min.js',
-], function (nThen, Util, ApiConfig) {
-    var Nacl = window.nacl;
+    const getApiOrigin = function () {
+        if (!Object.keys(ApiConfig).length) { return; }
+        var url;
+        var unsafeOriginURL = new URL(ApiConfig.httpUnsafeOrigin);
+        try {
+            url = new URL(ApiConfig.websocketPath, ApiConfig.httpUnsafeOrigin);
+            url.protocol = unsafeOriginURL.protocol;
+            return url.origin;
+        } catch (err) {
+            console.error(err);
+            return ApiConfig.httpUnsafeOrigin;
+        }
+    };
+    var API_ORIGIN = getApiOrigin();
+
+    const setCustomize = data => {
+        ApiConfig = data.ApiConfig;
+        API_ORIGIN = getApiOrigin();
+    };
+
     var clone = o => JSON.parse(JSON.stringify(o));
     var randomToken = () => Nacl.util.encodeBase64(Nacl.randomBytes(24));
     var postData = function (url, data, cb) {
@@ -36,18 +51,6 @@ define([
         });
     };
 
-    var API_ORIGIN = (function () {
-        var url;
-        var unsafeOriginURL = new URL(ApiConfig.httpUnsafeOrigin);
-        try {
-            url = new URL(ApiConfig.websocketPath, ApiConfig.httpUnsafeOrigin);
-            url.protocol = unsafeOriginURL.protocol;
-            return url.origin;
-        } catch (err) {
-            console.error(err);
-            return ApiConfig.httpUnsafeOrigin;
-        }
-    }());
     var serverCommand = function (keypair, my_data, cb) {
         var obj = clone(my_data);
         obj.publicKey = Nacl.util.encodeBase64(keypair.publicKey);
@@ -99,5 +102,29 @@ define([
         });
     };
 
+    serverCommand.setCustomize = setCustomize;
+
     return serverCommand;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        require('nthen'),
+        require('./common-util'),
+        undefined,
+        require('tweetnacl/nacl-fast')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/components/nthen/index.js',
+        '/common/common-util.js',
+        '/api/config',
+        '/components/tweetnacl/nacl-fast.min.js',
+    ], (nThen, Util, ApiConfig) => {
+        return factory(nThen, Util, ApiConfig, window.nacl);
+    });
+} else {
+    // unsupported initialization
+}
+
+})();

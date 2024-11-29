@@ -2,7 +2,8 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([], function () {
+(() => {
+const factory = () => {
     var common = {};
 
     /*
@@ -22,4 +23,14 @@ define([], function () {
     };
 
     return common;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory();
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

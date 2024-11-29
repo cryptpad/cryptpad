@@ -22,6 +22,10 @@ const factory = (AppConfig = {}, ApiConfig = {},
         );
     };
 
+    // Initialize values when using in browser directly
+    if (Object.keys(AppConfig).length) {
+        setCustomize({AppConfig,ApiConfig});
+    }
 
     const Types = { setCustomize };
 

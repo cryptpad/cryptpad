@@ -2,8 +2,13 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define(['/customize/application_config.js'], function (AppConfig) {
+(() => {
+const factory = function (AppConfig = {}) {
     return {
+        setCustomize: data => {
+            AppConfig = data.AppConfig;
+        },
+
         // localStorage
         userHashKey: 'User_hash',
         userNameKey: 'User_name',
@@ -29,4 +34,14 @@ define(['/customize/application_config.js'], function (AppConfig) {
         criticalApps: ['profile', 'settings', 'debug', 'admin', 'support', 'notifications', 'calendar', 'moderation', 'oldadmin'], // XXX oldadmin
         earlyAccessApps: ['doc', 'presentation']
     };
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(undefined);
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define(['/customize/application_config.js'], factory);
+} else {
+    // unsupported initialization
+}
+})();
+

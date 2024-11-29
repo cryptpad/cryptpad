@@ -6,6 +6,7 @@
 const factory = (Util) => {
     var Rec = {};
 
+    const window = globalThis;
     var debug = function () {};
 
     // Get week number with any "WKST" (firts day of the week)
@@ -898,7 +899,7 @@ const factory = (Util) => {
 };
 
 if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory(require('../../common/common-util'));
+    module.exports = factory(require('./common-util'));
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define(['/common/common-util.js'], factory);
 } else {

@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/common/common-util.js',
-    '/components/localforage/dist/localforage.min.js',
-], function (Util, localForage) {
+(() => {
+const factory = (Util, localForage) => {
+    let window = globalThis;
+    let self = globalThis;
     var S = window.CryptPad_Cache = {};
     var onReady = Util.mkEvent(true);
 
@@ -191,4 +191,20 @@ define([
     self.CryptPad_clearIndexedDB = S.clear;
 
     return S;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        require('./common-util'),
+        require('localforage'),
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/common/common-util.js',
+        '/components/localforage/dist/localforage.min.js',
+    ], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

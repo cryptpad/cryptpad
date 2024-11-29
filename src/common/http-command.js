@@ -121,7 +121,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/api/config',
         '/components/tweetnacl/nacl-fast.min.js',
     ], (nThen, Util, ApiConfig) => {
-        factory(nThen, Util, ApiConfig, window.nacl);
+        return factory(nThen, Util, ApiConfig, window.nacl);
     });
 } else {
     // unsupported initialization

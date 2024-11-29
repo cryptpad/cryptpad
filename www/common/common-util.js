@@ -368,6 +368,42 @@
     };
 
 
+    Util.fetchApi = function (origin, type, ignoreCache, cb) {
+        const url = new URL(origin);
+        url.pathname = `api/${type}`;
+        let href = url.href + (ignoreCache ? '?'+(+new Date()) : '');
+        if (typeof(self) !== "undefined" && self.crypto) {
+            // Browser
+            fetch(url.href).then(res => {
+                if (!res.ok) {
+                    throw new Error(`Fetch error: ${res.status}`);
+                }
+                return res.text();
+            }).then(body => {
+                cb(JSON.parse(body.slice(27,-5)));
+            }).catch(err => {
+                console.error(err.message);
+                cb({});
+            });
+        } else if (typeof(require) !== "undefined") {
+            // NodeJS
+            const H = url.protocol === 'http:' ?
+                        require('node:http') : require('node:https');
+            H.get(url.href, res => {
+                let body = '';
+                res.on('data', data => { body += data; });
+                res.on('end', () => {
+                    try {
+                        cb(JSON.parse(body.slice(27,-5)));
+                    } catch (e) {
+                        console.error(e);
+                        cb({});
+                    }
+                });
+            });
+        }
+    };
+
     Util.fetch = function (src, cb, progress, cache) {
         var CB = Util.once(Util.mkAsync(cb));
 
@@ -761,7 +797,6 @@
         return ver || undefined;
     };
 
-
     /** Saferphore copied from the npm package:
       * https://www.npmjs.com/package/saferphore (MIT license)
       * because the umd definition doesn't work with rollup build
@@ -797,9 +832,7 @@
             }
         };
     };
-    /**
-      * End of code copied from saferphore
-      */
+    /* End of code copied from saferphore */
 
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;

@@ -3,12 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 // This file provides the API for the channel for talking to and from the sandbox iframe.
-define([
-    //'/common/sframe-protocol.js',
-    '/common/common-util.js',
-    '/api/config',
-], function (/*SFrameProtocol,*/ Util, ApiConfig) {
-
+(() => {
+const factory = (Util, ApiConfig = {}) => {
     var mkTxid = function () {
         return Math.random().toString(16).replace('0.', '') + Math.random().toString(16).replace('0.', '');
     };
@@ -161,11 +157,13 @@ define([
             });
         };
 
-        var trusted = [
-            ApiConfig.httpUnsafeOrigin,
-            ApiConfig.httpSafeOrigin,
-            '', // sharedworkers
-        ];
+        var trusted = [''];
+        if (ApiConfig.httpUnsafeOrigin) {
+            trusted.push(ApiConfig.httpUnsafeOrigin);
+            trusted.push(ApiConfig.httpSafeOrigin);
+        } else if (globalThis.location) {
+            trusted.push(globalThis.location.origin);
+        }
 
         onMsg.reg(function (msg) {
             if (!chanLoaded) { return; }
@@ -220,4 +218,18 @@ define([
     };
 
     return { create: create };
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        require('./common-util')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/common/common-util.js',
+        '/api/config',
+    ], factory);
+} else {
+    // unsupported initialization
+}
+})();

@@ -2,11 +2,14 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/customize/messages.js',
-    '/customize/application_config.js'
-], function (Messages, AppConfig) {
+(() => {
+const factory = (AppConfig = {}, Messages= {}) => {
     var Feedback = {};
+
+    Feedback.setCustomize = data => {
+        Messages = data.Messages;
+        AppConfig = data.AppConfig;
+    };
 
     Feedback.init = function (state) {
         Feedback.state = state;
@@ -53,9 +56,24 @@ define([
         Feedback.send('DIMENSIONS:' + h + 'x' + w);
     };
     Feedback.reportLanguage = function () {
+        if (!Messages) { return; }
         Feedback.send('LANG_' + Messages._languageUsed);
     };
 
 
     return Feedback;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    // Code from customize can't be laoded directly in the build
+    module.exports = factory(undefined, undefined);
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/customize/application_config.js',
+        '/customize/messages.js'
+    ], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

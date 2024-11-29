@@ -8,7 +8,7 @@ const factory = (UserObject, Util, Hash,
 
     let setCustomize = data => {
         Messages = data.Messages;
-        UO.setCustomize(data);
+        UserObject.setCustomize(data);
     };
 
     var getConfig = function (Env) {
@@ -1788,17 +1788,17 @@ const factory = (UserObject, Util, Hash,
 if (typeof(module) !== 'undefined' && module.exports) {
     // We don't need Messages in worker or node
     module.exports = factory(
-        require('./userObject'),
+        require('./user-object'),
         require('./common-util'),
         require('./common-hash'),
-        require('../worker/modules/sharedfolder'),
+        require('../worker/components/sharedfolder'),
         undefined,
         require('./common-feedback'),
         require('nthen')
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
-        '/common/userObject.js',
+        '/common/user-object.js',
         '/common/common-util.js',
         '/common/common-hash.js',
         '/common/outer/sharedfolder.js',

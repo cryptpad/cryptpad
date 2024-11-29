@@ -2,19 +2,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/components/chainpad-crypto/crypto.js',
-    'chainpad-netflux',
-    'netflux-client',
-    '/common/common-util.js',
-    '/common/common-hash.js',
-    '/common/common-realtime.js',
-    '/common/outer/network-config.js',
-    '/common/outer/cache-store.js',
-    '/common/pinpad.js',
-    '/components/nthen/index.js',
-    '/components/chainpad/chainpad.dist.js',
-], function (Crypto, CPNetflux, Netflux, Util, Hash, Realtime, NetConfig, Cache, Pinpad, nThen) {
+(() => {
+const factory = (Crypto, CPNetflux, Netflux, Util,
+            Hash, Realtime, NetConfig, Cache, Pinpad, nThen) => {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
         S.cb((err && err.error), doc, err);
@@ -211,4 +201,38 @@ define([
         get: get,
         put: put,
     };
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        require('chainpad-crypto'),
+        require('chainpad-netflux'),
+        require('netflux-websocket'),
+        require('./common-util'),
+        require('./common-hash'),
+        require('./common-realtime'),
+        require('./network-config'),
+        require('./cache-store'),
+        require('./pinpad'),
+        require('nthen'),
+        require('chainpad')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/components/chainpad-crypto/crypto.js',
+        'chainpad-netflux',
+        'netflux-client',
+        '/common/common-util.js',
+        '/common/common-hash.js',
+        '/common/common-realtime.js',
+        '/common/outer/network-config.js',
+        '/common/outer/cache-store.js',
+        '/common/pinpad.js',
+        '/components/nthen/index.js',
+        '/components/chainpad/chainpad.dist.js',
+    ], factory);
+} else {
+    // unsupported initialization
+}
+})();
+

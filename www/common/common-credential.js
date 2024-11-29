@@ -3,8 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (function () {
-var factory = function (AppConfig, Scrypt) {
+var factory = function (AppConfig = {}, Scrypt) {
     var Cred = {};
+
+    Cred.setCustomize = data => {
+        AppConfig = data.AppConfig;
+    };
 
     Cred.MINIMUM_PASSWORD_LENGTH = typeof(AppConfig.minimumPasswordLength) === 'number'?
         AppConfig.minimumPasswordLength: 8; // TODO 14 or higher is a decent default for 2023
@@ -98,8 +102,8 @@ var factory = function (AppConfig, Scrypt) {
 
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory(
-            {}, //require("../../customize.dist/application_config.js"),
-            require("../components/scrypt-async/scrypt-async.min.js")
+            undefined, //require("../../customize.dist/application_config.js"),
+            require("scrypt-async")
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([

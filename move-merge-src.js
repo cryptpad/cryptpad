@@ -6,6 +6,11 @@
 const REVERSE = false;
 const Fs = require('node:fs');
 const map = {
+    './src/worker/components/roster.js': './www/common/outer/roster.js',
+    './src/worker/components/sharedfolder.js': './www/common/outer/sharedfolder.js',
+
+
+
     './src/common/cache-store.js': './www/common/outer/cache-store.js',
     './src/common/common-constants.js': './www/common/common-constants.js',
     './src/common/common-credential.js': './www/common/common-credential.js',
@@ -41,5 +46,5 @@ Object.keys(map).forEach(newPath => {
     }
     const from = REVERSE ? oldPath : newPath;
     const to = REVERSE ? newPath : oldPath;
-    Fs.copySync(from, to);
+    Fs.cpSync(from, to);
 });

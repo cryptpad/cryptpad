@@ -4,11 +4,19 @@
 
 /* eslint compat/compat: "off" */
 
-define(['/api/config'], function (ApiConfig) {
+(() => {
+const factory = (ApiConfig = {}) => {
+    let window = globalThis;
     var Module = {};
 
+    ApiConfig.requireConf = ApiConfig.requireConf || {};
+
+    Module.setCustomize = data => {
+        ApiConfig = data.ApiConfig;
+    };
+
     var apps = ['code', 'slide', 'pad', 'kanban', 'whiteboard', 'diagram', 'sheet', 'poll', 'teams', 'form', 'doc', 'presentation'];
-    var app = window.location.pathname.slice(1, -1); // remove "/" at the beginnin and the end
+    var app = window.location && window.location.pathname.slice(1, -1); // remove "/" at the beginnin and the end
     var suffix = apps.indexOf(app) !== -1 ? '-'+app : '';
 
     var DEFAULT_MAIN = '/customize/favicon/main-favicon' + suffix + '.png?' + ApiConfig.requireConf.urlArgs;
@@ -180,4 +188,14 @@ define(['/api/config'], function (ApiConfig) {
     };
 
     return Module;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(undefined);
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define(['/api/config'], factory);
+} else {
+    // unsupported initialization
+}
+
+})();

@@ -2,15 +2,15 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([
-    '/common/common-util.js',
-    '/api/config',
-    '/common/outer/http-command.js',
-    '/components/tweetnacl/nacl-fast.min.js',
-], function (Util, ApiConfig, ServerCommand) {
-    var Nacl = window.nacl;
+(() => {
+const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
     var Block = {};
+
+    Block.setCustomize = data => {
+        ApiConfig = data.ApiConfig;
+        ServerCommand.setCustomize(data);
+    };
 
     Block.join = Util.uint8ArrayJoin;
 
@@ -220,4 +220,26 @@ define([
     };
 
     return Block;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        require('./common-util'),
+        undefined,
+        require('./http-command'),
+        require('tweetnacl/nacl-fast')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([
+        '/common/common-util.js',
+        '/api/config',
+        '/common/outer/http-command.js',
+        '/components/tweetnacl/nacl-fast.min.js',
+    ], (Util, ApiConfig, ServerCommand) => {
+        return factory(Util, ApiConfig, ServerCommand, window.nacl);
+    });
+} else {
+    // unsupported initialization
+}
+
+})();

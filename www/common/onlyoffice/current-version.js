@@ -2,6 +2,16 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define({
-    currentVersion: 'v7'
-});
+(() => {
+const factory = () => {
+    return {
+        currentVersion: 'v7'
+    };
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory();
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([], factory);
+}
+})();

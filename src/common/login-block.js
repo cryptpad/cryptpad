@@ -236,7 +236,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/common/outer/http-command.js',
         '/components/tweetnacl/nacl-fast.min.js',
     ], (Util, ApiConfig, ServerCommand) => {
-        factory(Util, ApiConfig, ServerCommand, window.nacl);
+        return factory(Util, ApiConfig, ServerCommand, window.nacl);
     });
 } else {
     // unsupported initialization
