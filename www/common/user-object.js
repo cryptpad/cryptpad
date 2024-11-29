@@ -5,6 +5,7 @@
 (() => {
 const factory = (AppConfig = {}, Util, Hash,
                 Constants, UOSetter, Crypto, Messages = {}) => {
+    let window = globalThis;
     var module = {};
 
     module.setCustomize = (data) => {
@@ -975,7 +976,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('./common-util'),
         require('./common-hash'),
         require('./common-constants'),
-        require('./userObjectSetter'),
+        require('./user-object-setter'),
         require('chainpad-crypto'),
         undefined
     );
@@ -985,7 +986,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/common/common-util.js',
         '/common/common-hash.js',
         '/common/common-constants.js',
-        '/common/userObjectSetter.js',
+        '/common/user-object-setter.js',
         '/components/chainpad-crypto/crypto.js',
         '/customize/messages.js',
     ], factory);

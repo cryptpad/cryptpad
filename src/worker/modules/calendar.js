@@ -1217,7 +1217,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../../common/common-constants'),
         require('../../common/common-realtime'),
         require('../../common/cache-store'),
-        require('../components/recurrence'),
+        require('../../common/recurrence'),
         undefined,
         require('nthen'),
         require('chainpad-listmap'),

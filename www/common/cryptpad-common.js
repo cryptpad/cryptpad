@@ -13,7 +13,7 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/visible.js',
-    '/common/userObject.js',
+    '/common/user-object.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
     '/common/outer/login-block.js',

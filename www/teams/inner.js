@@ -15,7 +15,7 @@ define([
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
-    '/common/userObject.js',
+    '/common/user-object.js',
     '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',

@@ -144,7 +144,7 @@ const factory = function () {
             }
             if (typeof(Worker) !== "undefined") {
                 try {
-                    worker = new Worker('/common/outer/testworker.js?' + urlArgs);
+                    worker = new Worker('/common/testworker.js?' + urlArgs);
                     worker.onerror = function (errEv) {
                         errEv.preventDefault();
                         errEv.stopPropagation();

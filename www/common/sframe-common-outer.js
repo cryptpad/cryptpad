@@ -154,7 +154,7 @@ define([
                 '/common/outer/cache-store.js',
                 '/customize/application_config.js',
                 //'/common/test.js',
-                '/common/userObject.js',
+                '/common/user-object.js',
                 'optional!/api/instance',
                 '/common/pad-types.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,

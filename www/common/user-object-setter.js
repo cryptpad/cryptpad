@@ -5,12 +5,12 @@
 (() => {
 const factory = (AppConfig = {}, Util, Hash,
                 Realtime, Messages = {}) => {
+    let window = globalThis;
     var module = {};
 
     module.setCustomize = (data) => {
         Messages = data.Messages;
         AppConfig = data.AppConfig;
-        UOSetter.setCustomize(data);
     };
 
     var clone = function (o) {

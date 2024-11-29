@@ -3326,7 +3326,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
     define([
         '/api/config', // From outside
         'json.sortify',
-        '/common/userObject.js', // OK
+        '/common/user-object.js', // OK
         '/common/proxy-manager.js', // OK
         '/common/migrate-user-object.js', // OK
         '/common/common-hash.js', // OK
