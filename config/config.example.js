@@ -174,6 +174,17 @@ module.exports = {
     ],
 
     /* =====================
+     *      PERMISSIONS
+     * ===================== */
+
+    /*  Prevent anonymous users from creating new pads (including user objects,
+     *  and other internal pads).
+     *  This setting works on the server side, so it should in theory
+     *  work against malicious clients.
+     */
+    // disableAnonymousPadCreationServerside: false,
+
+    /* =====================
      *        STORAGE
      * ===================== */
 
