@@ -796,8 +796,8 @@ define([
                 h('i.cp-calendar-inactive.fa.fa-calendar-o')
             ]),
             h('span.cp-calendar-title', md.title),
-            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted}, {'aria-hidden': 'true'}) :
-                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined, {'aria-hidden': 'true'}),
+            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted, 'aria-hidden': 'true'}) :
+                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly, 'aria-hidden': 'true'}) : undefined),
             edit
         ]);
         var $calendar = $(calendar).click(function () {
@@ -906,7 +906,7 @@ define([
                 var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
                 var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
                 var showCalendarsBtn = h('button', [
-                    h('i.fa.' + iconClass, {'aria-hidden': 'true'}),
+                    h('i.fa.' + iconClass, {'aria-hidden': "true"}),
                     h('span.cp-calendar-title', buttonText),
                     h('span')
                 ]);
@@ -916,7 +916,7 @@ define([
                     $contentContainer.toggle(visible);
                     iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
                     buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
-                    $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass);
+                    $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass).attr('aria-hidden', "true");
                     $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
                 }).appendTo($showContainer);
             }
