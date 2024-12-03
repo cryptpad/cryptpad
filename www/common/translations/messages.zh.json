@@ -20,7 +20,7 @@
         "diagram": "图表"
     },
     "common_connectionLost": "<b>伺服器連線中斷</b><br>現在是唯讀狀態，直到連線恢復正常。",
-    "typeError": "此文档与所选应用进程不兼容",
+    "typeError": "此文档与所选应用不兼容",
     "onLogout": "您已退出登录，{0}点击此处{1}登录<br>或按 Esc 以只读模式访问您的文档。",
     "loading": "載入中...",
     "error": "錯誤",
