@@ -990,6 +990,9 @@ define([
         // Arrow keys to modify the selection
         var onWindowKeydown = function (e) {
             if (!$content.is(':visible')) { return; }
+            if ($('.cp-modal').is(':visible')) {
+                return;
+            }
             var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
             if (document.activeElement && document.activeElement.nodeName === 'INPUT') { return; }
             if ($searchBar.is(':focus') && $searchBar.val()) { return; }
@@ -1060,10 +1063,6 @@ define([
                             $elements.index($selection.last()[0]);
             var length = $elements.length;
             if (length === 0) { return; }
-
-            if ($('.cp-modal').is(':visible')) {
-                return;
-            }
 
             // List mode
             if (getViewMode() === "list") {
