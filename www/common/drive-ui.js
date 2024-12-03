@@ -2968,6 +2968,16 @@ define([
             });
             UI.openCustomModal(m);
         };
+
+        function triggerEnter(selector, $context) {
+            $context.find(selector).on('keypress', function (event) {
+                if (event.which === 13) { // enter
+                    event.preventDefault();
+                    $(this).trigger('click'); // the keypress event triggers the click event
+                }
+            });
+        }
+
         var addNewPadHandlers = function ($block, isInRoot) {
             // Handlers
             if (isInRoot) {
@@ -2983,56 +2993,51 @@ define([
                     refresh();
                 };
                 $block.find('a.cp-app-drive-new-folder, li.cp-app-drive-new-folder')
-                    .on('click keypress', function (event) {
-                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                            event.preventDefault();
-                            manager.addFolder(currentPath, null, onCreated);
-                        }
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        manager.addFolder(currentPath, null, onCreated);
                     });
+                triggerEnter('a.cp-app-drive-new-folder, li.cp-app-drive-new-folder', $block);
                 if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
                     $block.find('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder')
-                        .on('click keypress', function (event) {
-                            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                                event.preventDefault();
-                                addSharedFolderModal(function (obj) {
-                                    if (!obj) { return; }
-                                    manager.addSharedFolder(currentPath, obj, refresh);
-                                });
-                            }
+                        .on('click', function (event) {
+                            event.preventDefault();
+                            addSharedFolderModal(function (obj) {
+                                if (!obj) { return; }
+                                manager.addSharedFolder(currentPath, obj, refresh);
+                            });
                         });
+                    triggerEnter('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder', $block);
                 }
                 $block.find('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload')
-                    .on('click keypress', function (event) {
-                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                            event.preventDefault();
-                            showUploadFilesModal();
-                        }
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        showUploadFilesModal();
                     });
+                triggerEnter('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload', $block);
                 $block.find('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload')
-                    .on('click keypress', function (event) {
-                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                            event.preventDefault();
-                            showUploadFolderModal();
-                        }
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        showUploadFolderModal();
                     });
+                triggerEnter('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload', $block);
                 $block.find('a.cp-app-drive-new-link, li.cp-app-drive-new-link')
-                    .on('click keypress', function (event) {
-                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                            event.preventDefault();
-                            showLinkModal();
-                        }
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        showLinkModal();
                     });
+                triggerEnter('a.cp-app-drive-new-link, li.cp-app-drive-new-link', $block);
             }
             $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
-                .on('click auxclick keypress', function (event) {
-                    if (event.type === 'click' || event.type === 'auxclick' || (event.type === 'keypress' && event.which === 13))
-                    {
+                .on('click auxclick', function (event) {
+                    if (event.type === 'click' || event.type === 'auxclick') {
                         event.preventDefault();
                         var type = $(this).attr('data-type') || 'pad';
                         var path = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
                         openIn(type, path, APP.team);
                     }
                 });
+            triggerEnter('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc', $block);
         };
         var getNewPadOptions = function (isInRoot) {
             var options = [];
