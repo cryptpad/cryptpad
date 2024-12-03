@@ -1045,9 +1045,7 @@ define([
             // If the arrow keys aren't caught by another listener before, it means we can
             // use them to select content in the drive. If that's the case, we'll also
             // focus the drive container to avoid conflicts with other focused elements
-            if (!$('.cp-modal').is(':visible')) {
-                $content.focus();
-            }
+            $content.focus();
 
             var click = function (el) {
                 if (!el) { return; }
@@ -1062,6 +1060,11 @@ define([
                             $elements.index($selection.last()[0]);
             var length = $elements.length;
             if (length === 0) { return; }
+
+            if ($('.cp-modal').is(':visible')) {
+                return;
+            }
+
             // List mode
             if (getViewMode() === "list") {
                 if (e.which === 40) { click($elements.get(Math.min(lastIndex+1, length -1))); }
