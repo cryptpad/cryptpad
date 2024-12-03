@@ -537,172 +537,124 @@ define([
     };
 
     addMoveItemButton = function (framework, kanban) {
-        if (!kanban) { return; }
-        if (framework.isReadOnly() || framework.isLocked()) { return; }
-        var $container = $(kanban.element);
+        if ('ontouchstart' in window) {
+            if (!kanban) { return; }
+            if (framework.isReadOnly() || framework.isLocked()) { return; }
+            var $container = $(kanban.element);
 
-        var moveBoards = function (arr, oldIndex, newIndex) {
-            arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
-            return arr;
-        };
+            var move = function (arr, oldIndex, newIndex) {
+                arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+                return arr;
+            };
 
-        $container.find('.kanban-board').each(function (i, el) {
+            $container.find('.kanban-board').each(function (i, el) {
+                $('<button>', {
+                    'class': 'kanban-edit-item fa fa-arrow-left',
+                    'alt': '', 
+                }).click(function (e) { 
+                    var elId = $(el).attr("data-id")
+                    var index = kanban.options.boards.list.indexOf(parseInt(elId))
+                    if (index > 0) {
+                        move(kanban.options.boards.list, index, index-1)
+                        updateBoards(framework, kanban, kanban.options.boards)
+                        el.scrollIntoView()
+                    }
+                }).appendTo($(el).find('.kanban-board-header'));
+            });
+            $container.find('.kanban-board').each(function (i, el) {
+                $('<button>', {
+                    'class': 'kanban-edit-item fa fa-arrow-right',
+                    'alt': '', 
+                }).click(function (e) {
+                    var elId = $(el).attr("data-id")
+                    var index = kanban.options.boards.list.indexOf(parseInt(elId))
+                    if (index < kanban.options.boards.list.length-1) {
+                        move(kanban.options.boards.list, index, index+1)
+                        updateBoards(framework, kanban, kanban.options.boards)
+                        setTimeout(() => {
+                            el.scrollIntoView()
+                        }, 3000);
+                    }
+                }).appendTo($(el).find('.kanban-board-header'));
+            });
+            $container.find('.kanban-item').each(function (i, el) {
+                $('<button>', {
+                    'class': 'kanban-edit-item fa fa-arrow-down',
+                    'alt': Messages.kanban_editCard,
+                }).click(function (e) {
+                    var board = el.parentNode.parentNode.parentNode     
+                    var elId = parseInt($(el).attr("data-eid"))
+                    var boardId = $(board).attr("data-id")
+                    var boardItems = kanban.options.boards.data[boardId].item
+                    var index = boardItems.indexOf(elId)
+                    if (index < boardItems.length-1) {
+                        move(boardItems, index, index+1)
+                        updateBoards(framework, kanban, kanban.options.boards)
+                    }
+                }).insertAfter($(el).find('.kanban-item-text'));
+            });
+            $container.find('.kanban-item').each(function (i, el) {
+                $('<button>', {
+                    'class': 'kanban-edit-item fa fa-arrow-up',
+                    'alt': Messages.kanban_editCard,
+                }).click(function (e) {
+                    var board = el.parentNode.parentNode.parentNode     
+                    var elId = parseInt($(el).attr("data-eid"))
+                    var boardId = $(board).attr("data-id")
+                    var boardItems = kanban.options.boards.data[boardId].item
+                    var index = boardItems.indexOf(elId)
+                    if (index > 0) {
+                        move(boardItems, index, index-1)
+                        updateBoards(framework, kanban, kanban.options.boards)
+                    }
+                }).insertAfter($(el).find('.kanban-item-text'));
+            });
+        $container.find('.kanban-item').each(function (i, el) {
             $('<button>', {
                 'class': 'kanban-edit-item fa fa-arrow-left',
-                'alt': '', 
-            }).click(function (e) { 
-                var boardList = $container[0].childNodes[0].childNodes[0].childNodes
-                var newKanban = boardList[boardList.length-1]
-                var boardsArray = Array.from(boardList)
-                boardsArray.slice(boardsArray.length-1, 1)
-                var index = boardsArray.indexOf(el)
-                if (index > 0) {
-                    moveBoards(boardsArray, index, index-1)
-                    var index = boardsArray.indexOf(el)
-                    i = index
-                    var boardContainer = $container[0].childNodes[0].childNodes[0]
-                    boardContainer.innerHTML = ''; 
-                    boardsArray.forEach(board => {
-                        boardContainer.appendChild(board);
-                    });
-                    boardContainer.appendChild(newKanban); 
+                'alt': Messages.kanban_editCard,
+            }).click(function (e) {
+                var board = el.parentNode.parentNode.parentNode  
+                var boards = kanban.options.boards
+                var boardId = $(board).attr("data-id")
+                var boardIndex = boards.list.indexOf(parseInt(boardId))
+                var elId = parseInt($(el).attr("data-eid"))
+                var boardItems = boards.data[boardId].item
+                let itemIndex = boardItems.indexOf(elId)
+            
+                if (boardIndex > 0) {
+                    var nextBoardItems = boards.data[boardId-1].item
+                    nextBoardItems.unshift(elId)
+                    boardItems.splice(itemIndex, 1)
+                    boards.data[boardId].item = boardItems
+                    updateBoards(framework, kanban, boards)
                 }
-            }).appendTo($(el).find('.kanban-board-header'));
+            }).insertAfter($(el).find('.kanban-item-text'));
         });
-        $container.find('.kanban-board').each(function (i, el) {
+         $container.find('.kanban-item').each(function (i, el) {
             $('<button>', {
                 'class': 'kanban-edit-item fa fa-arrow-right',
-                'alt': '', 
-            }).click(function (e) {
-                var boardList = $container[0].childNodes[0].childNodes[0].childNodes
-                var newKanban = boardList[boardList.length-1]
-                var boardsArray = Array.from(boardList)
-                boardsArray.slice(boardsArray.length-1, 1)
-                var index = boardsArray.indexOf(el)
-                if (index < boardsArray.length-1) {
-                    moveBoards(boardsArray, index, index+1)
-                    var index = boardsArray.indexOf(el)
-                    i = index
-                    var boardContainer = $container[0].childNodes[0].childNodes[0]
-                    boardContainer.innerHTML = ''; 
-                    boardsArray.forEach(board => {
-                        boardContainer.appendChild(board);
-                    });
-                    boardContainer.appendChild(newKanban); 
-                }
-
-            }).appendTo($(el).find('.kanban-board-header'));
-        });
-        $container.find('.kanban-item').each(function (i, el) {
-            $('<button>', {
-                'class': 'kanban-edit-item fa fa-arrow-down',
                 'alt': Messages.kanban_editCard,
             }).click(function (e) {
-                var itemList = el.parentNode.childNodes                
-                var itemArray = Array.from(itemList)
-                var index = itemArray.indexOf(el)
-                if (index < itemArray.length-1) {
-                    moveBoards(itemArray, index, index+1)
-                    var index = itemArray.indexOf(el)
-                    i = index
-                    var itemContainer = el.parentNode
-                    itemContainer.innerHTML = ''; 
-                    itemArray.forEach(item => {
-                        itemContainer.appendChild(item);
-                    });
+                var board = el.parentNode.parentNode.parentNode  
+                var boards = kanban.options.boards
+                var boardId = parseInt($(board).attr("data-id"))
+                var boardIndex = boards.list.indexOf(parseInt(boardId))
+                var elId = parseInt($(el).attr("data-eid"))
+                var boardItems = boards.data[boardId].item
+                let itemIndex = boardItems.indexOf(elId)
+            
+                if (boardIndex < kanban.options.boards.list.length-1) {
+                    var nextBoardItems = boards.data[boardId+1].item
+                    nextBoardItems.unshift(elId)
+                    boardItems.splice(itemIndex, 1)
+                    boards.data[boardId].item = boardItems
+                    updateBoards(framework, kanban, boards)
                 }
             }).insertAfter($(el).find('.kanban-item-text'));
         });
-        $container.find('.kanban-item').each(function (i, el) {
-            $('<button>', {
-                'class': 'kanban-edit-item fa fa-arrow-up',
-                'alt': Messages.kanban_editCard,
-            }).click(function (e) {
-                var itemList = el.parentNode.childNodes                
-                var itemArray = Array.from(itemList)
-                var index = itemArray.indexOf(el)
-                if (index > 0) {
-                    moveBoards(itemArray, index, index-1)
-                    var index = itemArray.indexOf(el)
-                    i = index
-                    var itemContainer = el.parentNode
-                    itemContainer.innerHTML = ''; 
-                    itemArray.forEach(item => {
-                        itemContainer.appendChild(item);
-                    });
-                }
-            }).insertAfter($(el).find('.kanban-item-text'));
-        });
-        // $container.find('.kanban-item').each(function (i, el) {
-        //     $('<button>', {
-        //         'class': 'kanban-edit-item fa fa-arrow-left',
-        //         'alt': Messages.kanban_editCard,
-        //     }).click(function (e) {
-        //         // var itemList = el.parentNode.childNodes     
-        //         var boardList = $container[0].childNodes[0].childNodes[0].childNodes
-
-        //         var board = el.parentNode.parentNode.parentNode     
-        //         // var itemArray = Array.from(itemList)
-        //         var boardsArray = Array.from(boardList)
-        //         boardsArray.slice(boardsArray.length-1, 1)
-        //         console.log(board)
-        //         console.log(boardsArray)
-        //         var index = boardsArray.indexOf(board)
-        //         console.log(index)
-        //         // var index = itemArray.indexOf(el)
-        //         if (index > 0) {
-        //             var moveBoards = function (arr, oldIndex, newIndex) {
-        //                 if (newIndex >= arr.length) {
-        //                     var k = newIndex - arr.length + 1;
-        //                     while (k--) {
-        //                         arr.push(undefined);
-        //                     }
-        //                 }
-        //                 arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
-        //                 return arr;
-        //             };
-        //             moveBoards(itemArray, index, index-1)
-        //             var index = itemArray.indexOf(el)
-        //             i = index
-        //             var itemContainer = el.parentNode
-        //             itemContainer.innerHTML = ''; 
-        //             itemArray.forEach(item => {
-        //                 itemContainer.appendChild(item);
-        //             });
-        //         }
-        //     }).insertAfter($(el).find('.kanban-item-text'));
-        // });
-        // $container.find('.kanban-item').each(function (i, el) {
-        //     $('<button>', {
-        //         'class': 'kanban-edit-item fa fa-arrow-right',
-        //         'alt': Messages.kanban_editCard,
-        //     }).click(function (e) {
-        //         var itemList = el.parentNode.childNodes                
-        //         // var itemArray = Array.from(itemList)
-        //         var index = itemArray.indexOf(el)
-        //         // if (index > 0) {
-        //         //     var moveBoards = function (arr, oldIndex, newIndex) {
-        //         //         if (newIndex >= arr.length) {
-        //         //             var k = newIndex - arr.length + 1;
-        //         //             while (k--) {
-        //         //                 arr.push(undefined);
-        //         //             }
-        //         //         }
-        //         //         arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
-        //         //         return arr;
-        //         //     };
-        //         //     moveBoards(itemArray, index, index-1)
-        //         //     var index = itemArray.indexOf(el)
-        //         //     i = index
-        //         //     var itemContainer = el.parentNode
-        //         //     itemContainer.innerHTML = ''; 
-        //         //     itemArray.forEach(item => {
-        //         //         itemContainer.appendChild(item);
-        //         //     });
-        //         // }
-        //     }).insertAfter($(el).find('.kanban-item-text'));
-        // });
-    
+        }
+        
     }
 
     addEditItemButton = function (framework, kanban) {
