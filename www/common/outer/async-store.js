@@ -1843,7 +1843,7 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
-                Cache: store.neverCache ? undefined : Cache, // ICE pad cache
+                Cache: store.neverCache ? undefined : Cache,
                 onCacheStart: function () {
                     postMessage(clientId, "PAD_CACHE");
                 },

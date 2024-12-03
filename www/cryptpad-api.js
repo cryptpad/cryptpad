@@ -113,7 +113,7 @@
                 };
 
                 var start = function () {
-                    config.document.key = key;
+                    //config.document.key = key;
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
@@ -137,6 +137,7 @@
                         blob = config.document.blob;
                         return start();
                     }
+                    // XXX Nextcloud will log us out if we try from the client
                     getBlob(function (err, _blob) {
                         if (err) { // Can't get blob from client, try from server
                             console.warn(err);
