@@ -818,7 +818,7 @@ define([
             });
         }
         if (APP.$calendars) { APP.$calendars.append(calendar); }
-        return $calendar;  // return jQuery element
+        return calendar;  // return jQuery element
     };
 
     var makeLeftside = function (calendar, $container) {
@@ -834,16 +834,17 @@ define([
 
             var filter = (teamId) => {
                 var LOOKUP = {};
-                return Object.keys(APP.calendars || {}).filter((id) => {
+                return Object.keys(APP.calendars || {}).filter(function(id) {
                     var cal = APP.calendars[id] || {};
-                    var teams = (cal.teams || []).map((tId) => Number(tId));
-                    return teams.indexOf(typeof (teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
-                }).map((k) => {
+                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
+                    return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
+                }).map(function (k) {
+                    // nearly constant-time pre-sort
                     var cal = APP.calendars[k] || {};
                     var title = Util.find(cal, ['content', 'metadata', 'title']) || '';
                     LOOKUP[k] = title;
                     return k;
-                }).sort((a, b) => {
+                }).sort(function(a, b) {
                     var t1 = LOOKUP[a];
                     var t2 = LOOKUP[b];
                     return t1 > t2 ? 1 : (t1 === t2 ? 0 : -1);
@@ -862,10 +863,10 @@ define([
                 var avatar = h('span.cp-avatar');
                 var uid = user.uid;
                 var name = user.name || Messages.anonymous;
-                common.displayAvatar($(avatar), user.avatar, name, () => {}, uid);
+                common.displayAvatar($(avatar), user.avatar, name, function(){}, uid);
                 $contentContainer.append(h('div.cp-calendar-team', [
                     avatar,
-                    h('span.cp-name', { title: name }, name)
+                    h('span.cp-name', {title: name}, name)
                 ]));
                 myCalendars.forEach((id) => {
                     var calendarEntry = makeCalendarEntry(id, 1);
@@ -891,7 +892,7 @@ define([
                 common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
                 var $teamContainer = h('div.cp-calendar-team', [
                     avatar,
-                    h('span.cp-name', { title: team.name }, team.name),
+                    h('span.cp-name', {title: team.name}, team.name),
                     h('span')
                 ]);
                 $contentContainer.append($teamContainer);
@@ -901,15 +902,15 @@ define([
                 });
             });
             if(isMobileView) {
-            if (totalCalendars > 2) {
-                var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
-                var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
-                var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
-                var showCalendarsBtn = h('button', [
-                    h('i.fa.' + iconClass, {'aria-hidden': "true"}),
-                    h('span.cp-calendar-title', buttonText),
-                    h('span')
-                ]);
+                if (totalCalendars > 2) {
+                    var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+                    var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                    var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
+                    var showCalendarsBtn = h('button', [
+                        h('i.fa.' + iconClass, {'aria-hidden': "true"}),
+                        h('span.cp-calendar-title', buttonText),
+                        h('span')
+                    ]);
 
                 $(showCalendarsBtn).click(() => {
                     visible = !visible;
