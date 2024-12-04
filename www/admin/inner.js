@@ -172,7 +172,7 @@ define([
         const blocks = sidebar.blocks;
 
         // EXTENSION_POINT:ADMIN_CATEGORY
-        common.getExtensions('ADMIN_CATEGORY').forEach(ext => {
+        common.getExtensionsSync('ADMIN_CATEGORY').forEach(ext => {
             if (!ext || !ext.id || !ext.name || !ext.content) {
                 return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
             }
@@ -186,6 +186,7 @@ define([
                 content: ext.content
             };
         });
+
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -3924,16 +3925,15 @@ define([
 
         // EXTENSION_POINT:ADMIN_ITEM
         let utils = {
-            h, Util, Hash
+            h, Util, Hash, UIElements
         };
-        common.getExtensions('ADMIN_ITEM').forEach(ext => {
+        common.getExtensionsSync('ADMIN_ITEM').forEach(ext => {
             if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
                 return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
             }
             if (sidebar.hasItem(ext.id)) {
                 return console.error('Extension point ID already used', ext);
             }
-
             sidebar.addItem(ext.id, cb => {
                 ext.getContent(common, blocks, utils, content => {
                     cb(content);
@@ -3946,12 +3946,8 @@ define([
             });
         });
 
-
-
         sidebar.makeLeftside(categories);
     };
-
-
     var updateStatus = APP.updateStatus = function (cb) {
         sFrameChan.query('Q_ADMIN_RPC', {
             cmd: 'INSTANCE_STATUS',
