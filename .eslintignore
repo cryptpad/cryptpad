@@ -16,6 +16,9 @@ www/accounts
 www/worker
 www/todo
 
+*worker.bundle.js
+_build
+
 #lib/plugins/
 
 www/common/hyperscript.js
