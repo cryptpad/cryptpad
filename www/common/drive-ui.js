@@ -2969,14 +2969,14 @@ define([
             UI.openCustomModal(m);
         };
 
-        function triggerEnter(selector, $context) {
+        var triggerEnter = function (selector, $context) {
             $context.find(selector).on('keypress', function (event) {
                 if (event.which === 13) { // enter
                     event.preventDefault();
                     $(this).trigger('click'); // the keypress event triggers the click event
                 }
             });
-        }
+        };
 
         var addNewPadHandlers = function ($block, isInRoot) {
             // Handlers
