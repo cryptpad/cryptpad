@@ -86,6 +86,8 @@ define([
         var addNotification = function (data, el) {
             // if the type of notification correspond
             if (filterTypes.indexOf(data.content.msg.type) !== -1) {
+                var icon = $(".cp-reminder");
+                $(icon).wrap('<span class="cp-avatar"></span>').wrap('<span class="cp-avatar-default" alt="" aria-hidden="true"></span>')
                 notifsData.push(data);
                 $(notifsList).prepend(el);
             }
@@ -145,7 +147,6 @@ define([
 
         common.mailbox.subscribe(["notifications", "reminders"], {
             onMessage: function (data, el) {
-                el.innerHTML = el.innerHTML.replace('<i', '<span class="cp-avatar"><span class="cp-avatar-default" alt="" aria-hidden="true"><i').replace('/i>', '/i></span></span>');
                 addNotification(data, el);
             },
             onViewed: function (data) {
