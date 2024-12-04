@@ -1201,7 +1201,6 @@ MessengerUI, Messages, Pages, PadTypes) {
                     setTimeout(function () {
                         $(el).find('.cp-notification-content').click();
                     }, 0);
-
                 });
                 refresh();
             },
