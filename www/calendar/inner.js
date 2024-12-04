@@ -818,7 +818,7 @@ define([
             });
         }
         if (APP.$calendars) { APP.$calendars.append(calendar); }
-        return calendar;  // return jQuery element
+        return calendar;
     };
 
     var makeLeftside = function (calendar, $container) {
@@ -832,9 +832,9 @@ define([
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
 
-            var filter = (teamId) => {
+            var filter = function (teamId) {
                 var LOOKUP = {};
-                return Object.keys(APP.calendars || {}).filter(function(id) {
+                return Object.keys(APP.calendars || {}).filter(function (id) {
                     var cal = APP.calendars[id] || {};
                     var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
                     return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
@@ -844,12 +844,39 @@ define([
                     var title = Util.find(cal, ['content', 'metadata', 'title']) || '';
                     LOOKUP[k] = title;
                     return k;
-                }).sort(function(a, b) {
+                }).sort(function (a, b) {
                     var t1 = LOOKUP[a];
                     var t2 = LOOKUP[b];
                     return t1 > t2 ? 1 : (t1 === t2 ? 0 : -1);
                 });
             };
+            var tempCalendars = filter(0);
+            if (tempCalendars.length && tempCalendars[0] === APP.currentCalendar) {
+                APP.$calendars.append(h('div.cp-calendar-team', [
+                    h('span', Messages.calendar_tempCalendar)
+                ]));
+                makeCalendarEntry(tempCalendars[0], 0);
+                var importTemp = h('button', [
+                    h('i.fa.fa-calendar-plus-o'),
+                    h('span', Messages.calendar_import_temp),
+                    h('span')
+                ]);
+                $(importTemp).click(function () {
+                    importCalendar({
+                        id: tempCalendars[0],
+                        teamId: 0
+                    }, function (err) {
+                        if (err) {
+                            console.error(err);
+                            return void UI.warn(Messages.error);
+                        }
+                    });
+                });
+                if (APP.loggedIn) {
+                    APP.$calendars.append(h('div.cp-calendar-entry.cp-ghost', importTemp));
+                }
+                return;
+            }
 
             var myCalendars = filter(1);
             var totalCalendars = myCalendars.length + Object.keys(privateData.teams).reduce((sum, teamId) => {
