@@ -38,7 +38,7 @@
     "http-proxy-middleware": "^3.0.3",
     "hyper-json": "~1.4.0",
     "jquery": "3.6.0",
-    "json.sortify": "~2.1.0",
+    "json.sortify": "github:cryptpad/JSON.sortify",
     "jsonwebtoken": "^9.0.0",
     "jszip": "3.10.1",
     "localforage": "^1.5.2",
@@ -67,8 +67,8 @@
     "x2js": "^3.4.4"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "eslint-plugin-compat": "^4.2.0",
+    "eslint": "^9.16.0",
+    "eslint-plugin-compat": "^6.0.1",
     "stylelint": "^16.9.0",
     "stylelint-config-standard-less": "^3.0.1"
   },
