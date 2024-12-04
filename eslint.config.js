@@ -71,6 +71,7 @@ module.exports = [{
         "no-useless-escape": ["off"],
         "no-extra-boolean-cast": ["off"],
         "no-prototype-builtins": ["off"],
+        "no-use-before-define": ["error"],
         "no-unused-vars": [
             "error",
             {
