@@ -285,6 +285,9 @@ define([
                             console.error(err || obj);
                         });
                     });
+                    var u8_slice = function (A, start, end) {
+                        return new Uint8Array(Array.prototype.slice.call(A, start, end));
+                    };
                     var checkAnonProof = function (proofObj, channel, curvePrivate) {
                         var pub = proofObj.key;
                         var proofTxt = proofObj.proof;
@@ -303,9 +306,6 @@ define([
                             console.error(e);
                             return false;
                         }
-                    };
-                    var u8_slice = function (A, start, end) {
-                        return new Uint8Array(Array.prototype.slice.call(A, start, end));
                     };
                     var deleteLines = false; // "false" to support old forms
                     sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
