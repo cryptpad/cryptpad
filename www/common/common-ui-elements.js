@@ -2510,13 +2510,14 @@ define([
                 } else {
                     next();
                 }
+                return;
               }
-            else if (e.which === 13) {
+            if (e.which === 13) {
                 if ($container.find('.cp-icons-element-selected').length === 1) {
                     $container.find('.cp-icons-element-selected').click();
-                    return;
                 }
             }
+            return;
         });
 
 
