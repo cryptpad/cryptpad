@@ -1063,7 +1063,6 @@ define([
                             $elements.index($selection.last()[0]);
             var length = $elements.length;
             if (length === 0) { return; }
-
             // List mode
             if (getViewMode() === "list") {
                 if (e.which === 40) { click($elements.get(Math.min(lastIndex+1, length -1))); }
