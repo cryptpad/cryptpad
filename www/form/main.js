@@ -64,16 +64,6 @@ define([
                 if (!a) { sframeChan.event('EV_POPUP_BLOCKED'); }
                 delete sessionStorage.CP_formExportSheet;
             });
-            var getAnonymousKeys = function (formSeed, channel) {
-                var array = Nacl.util.decodeBase64(formSeed + channel);
-                var hash = Nacl.hash(array);
-                var secretKey = Nacl.util.encodeBase64(hash.subarray(32));
-                var publicKey = Utils.Hash.getCurvePublicFromPrivate(secretKey);
-                return {
-                    curvePrivate: secretKey,
-                    curvePublic: publicKey,
-                };
-            };
             var u8_concat = function (A) {
                 var length = 0;
                 A.forEach(function (a) { length += a.length; });
@@ -150,7 +140,7 @@ define([
                                     console.error('ANONYMOUS_ERROR', answer);
                                     return;
                                 }
-                                finalKeys = getAnonymousKeys(myKeys.formSeed, data.channel);
+                                finalKeys = Cryptpad.getAnonymousKeys(myKeys.formSeed, data.channel, Utils);
                             }
                             Cryptpad.getHistoryRange({
                                 channel: data.channel,
@@ -209,9 +199,9 @@ define([
                     var myAnonymousKeys;
                     if (data.anonymous) {
                         if (!myKeys.formSeed) { return void cb({ error: "ANONYMOUS_ERROR" }); }
-                        myKeys = getAnonymousKeys(myKeys.formSeed, box.channel);
+                        myKeys = Cryptpad.getAnonymousKeys(myKeys.formSeed, box.channel, Utils);
                     } else {
-                        myAnonymousKeys = getAnonymousKeys(myKeys.formSeed, box.channel);
+                        myAnonymousKeys = Cryptpad.getAnonymousKeys(myKeys.formSeed, box.channel, Utils);
                     }
                     var keys = Utils.secret && Utils.secret.keys;
                     myKeys.signingKey = keys.secondarySignKey;

@@ -353,18 +353,8 @@ define([
                             }));
                         }).nThen(function () {
                             if (!network) { return void cb({error: "E_CONNECT"}); }
-                                var getAnonymousKeys = function (formSeed, channel) {
-                                    var array = Nacl.util.decodeBase64(formSeed + channel);
-                                    var hash = Nacl.hash(array);
-                                    var secretKey = Nacl.util.encodeBase64(hash.subarray(32));
-                                    var publicKey = Utils.Hash.getCurvePublicFromPrivate(secretKey);
-                                    return {
-                                        curvePrivate: secretKey,
-                                        curvePublic: publicKey,
-                                    };
-                                };
                             if (myFormKeys.formSeed) {
-                                myFormKeys = getAnonymousKeys(myFormKeys.formSeed, data.channel);
+                                myFormKeys = _Cryptpad.getAnonymousKeys(myFormKeys.formSeed, data.channel, Utils);
                             }
                             var keys;
                             var privateKey, publicKey;

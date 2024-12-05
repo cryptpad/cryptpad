@@ -4,7 +4,7 @@
 
 define([
     '/common/common-util.js',
-    '/customize/messages.js', 
+    '/customize/messages.js'
 ], function (Util, Messages) {
     var Export = {
         ext: '.json'
@@ -194,11 +194,11 @@ define([
         }
 
         var json = Util.clone(content || {});
-            delete json.answers;
-            cb(new Blob([JSON.stringify(json, 0, 2)], {
-                type: 'application/json;charset=utf-8'
-            }));
-        };
+        delete json.answers;
+        cb(new Blob([JSON.stringify(json, 0, 2)], {
+            type: 'application/json;charset=utf-8'
+        }));
+    };
 
     return Export;
 });
