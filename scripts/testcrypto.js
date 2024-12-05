@@ -39,7 +39,7 @@ console.log(LibSodium.crypto_sign_verify_detached(sig, msg, pub));
 
     console.log('start sodium-native');
     a = +new Date();
-    for (var i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
         SodiumNative.crypto_sign_open(msg, signedMsg, pub);
         SodiumNative.crypto_sign_verify_detached(sig, msg, pub);
     }
@@ -47,7 +47,7 @@ console.log(LibSodium.crypto_sign_verify_detached(sig, msg, pub));
 
     console.log('start libsodium');
     a = +new Date();
-    for (var i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
         LibSodium.crypto_sign_open(signedMsg, pub);
         LibSodium.crypto_sign_verify_detached(sig, msg, pub);
     }
@@ -55,7 +55,7 @@ console.log(LibSodium.crypto_sign_verify_detached(sig, msg, pub));
 
     console.log('start tweetnacl');
     a = +new Date();
-    for (var i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
         Nacl.sign.open(signedMsg, pub);
         Nacl.sign.detached.verify(msg, sig, pub);
     }

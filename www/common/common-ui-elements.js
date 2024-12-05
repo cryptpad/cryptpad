@@ -2525,6 +2525,7 @@ define([
         window.setTimeout(function () {
             modal.show();
             $modal.focus();
+            next();
         });
     };
 

@@ -1418,7 +1418,7 @@ MessengerUI, Messages, Pages, PadTypes) {
 
         tb['pad'] = function () {
             toolbar.$file.show();
-            addElement([
+            toolbar.addElement([
                 'chat',
                 'collapse',
                 'userlist', 'title', 'useradmin', 'spinner',
