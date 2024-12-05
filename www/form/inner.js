@@ -1097,6 +1097,11 @@ define([
                             block = h('div.cp-form-edit-options-block', [t]);
                             cm = SFCodeMirror.create("gfm", CMeditor, t);
                             editor = cm.editor;
+                            editor.setOption("extraKeys", {
+                                "Esc": function () {
+                                    editor.display.input.blur();
+                                },
+                            });
                             editor.setOption('lineNumbers', true);
                             editor.setOption('lineWrapping', true);
                             editor.setOption('styleActiveLine', true);
