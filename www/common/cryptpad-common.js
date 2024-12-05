@@ -2449,6 +2449,17 @@ define([
             window.RTCPeerConnection);
     };
 
+    common.getAnonymousKeys = function (formSeed, channel, Utils) {
+        var array = window.nacl.util.decodeBase64(formSeed + channel);
+        var hash = window.nacl.hash(array);
+        var secretKey = window.nacl.util.encodeBase64(hash.subarray(32));
+        var publicKey = Utils.Hash.getCurvePublicFromPrivate(secretKey);
+        return {
+            curvePrivate: secretKey,
+            curvePublic: publicKey,
+        };
+    };
+
     common.ready = (function () {
         var env = {};
         var initialized = false;
