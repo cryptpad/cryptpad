@@ -25,7 +25,6 @@ define([
     'css!/customize/fonts/cptools/style.css',
 ], function ($, Config, Broadcast, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
              Messages, AppConfig, Pages, NThen, InviteInner, Visible, PadTypes) {
-
     var UIElements = {};
     var urlArgs = Config.requireConf.urlArgs;
 
