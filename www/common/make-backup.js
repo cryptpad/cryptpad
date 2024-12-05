@@ -290,7 +290,7 @@ define([
                     };
                     var fileName = getUnique(sanitize(rawName), '.txt', existingNames);
                     existingNames.push(fileName.toLowerCase());
-                    var content = new Blob([fData.href], { type : "text/html;charset=utf-8" });
+                    var content = new Blob([fData.href, '\n'], { type: "text/plain;charset=utf-8" });
                     zip.file(fileName, content, opts);
                     console.log('DONE ---- ' + fileName);
                     setTimeout(done, 1000);
