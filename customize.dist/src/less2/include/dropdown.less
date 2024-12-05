@@ -160,11 +160,23 @@
             li[role="menuitem"] {
                 border-radius: @variables_radius;
                 white-space: nowrap;
-                &:hover {
-                    background-color: @cp_dropdown-bg-hover !important;
-                }
                 &:focus-visible {
                     outline-color: @cp_dropdown-fg;
+                }
+                &:hover {
+                    background-color: @cp_dropdown-bg-hover;
+                }
+            }
+            li[role="menuitem"].cp-notification-avatar {
+                &:hover {
+                    background-color: transparent;
+                }
+                .cp-avatar:hover {
+                    background-color: @cp_dropdown-bg-hover;
+                }
+                .cp-notification-content:hover {
+                    border-radius: @variables_radius;
+                    background-color: @cp_dropdown-bg-hover;
                 }
             }
             &> span {
