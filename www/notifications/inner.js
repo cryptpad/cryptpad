@@ -86,9 +86,9 @@ define([
         var addNotification = function (data, el) {
             // if the type of notification correspond
             if (filterTypes.indexOf(data.content.msg.type) !== -1) {
-                var icon = $(".cp-reminder");
-                $(icon).wrap('<span class="cp-avatar"></span>').wrap('<span class="cp-avatar-default" alt="" aria-hidden="true"></span>')
                 notifsData.push(data);
+                var icon = $(el).find(".cp-reminder");
+                $(icon).addClass('cp-avatar-calendar')
                 $(notifsList).prepend(el);
             }
         };
