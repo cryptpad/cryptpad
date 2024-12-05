@@ -96,7 +96,34 @@ define([
             if (ext === ".md") {
                 var md = Turndown({
                     headingStyle: 'atx'
-                }).turndown(toExport);
+                }).addRule('table', {
+                filter: ['tr'],
+                replacement: function (content, node) {
+                    var indexOf = Array.prototype.indexOf;
+                    var index = indexOf.call(node.parentNode.childNodes, node);
+                    var rowContent = node.innerHTML.replace(/<td>/g, '').replace(/<br>/g, ' ').split('</td>');
+                    rowContent[0] = `|${rowContent[0]}`;
+                    var row = '';
+                    var rowLength = rowContent.filter(Boolean).length;
+                    for (var i =0; i < rowLength; i++) {
+                        var cell = rowContent[i] + ' |';
+                        row += cell;
+                    }                    
+                    var newRow = row.concat('\n');
+                    if (index === 0) {
+                        var separator = '|-';
+                        newRow += `${separator.repeat(rowLength)}\n`;
+                    }
+                    var parser = new DOMParser();
+                    newRow = parser.parseFromString(newRow, 'text/html').children[0].innerText;
+                    return newRow;
+                }}).addRule('strikethrough', {
+                    filter: ['s', 'del', 'strike'],
+                    replacement: function (content) {
+                        return '~' + content + '~';
+                    }
+                })
+                .turndown(toExport);
                 var mdBlob = new Blob([md], {
                     type: 'text/markdown;charset=utf-8'
                 });
