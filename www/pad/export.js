@@ -114,8 +114,8 @@ define([
                         var separator = '|-';
                         newRow += `${separator.repeat(rowLength)}\n`;
                     }
-                    var parser = new DOMParser()
-                    newRow = parser.parseFromString(newRow, 'text/html').children[0].innerText
+                    var parser = new DOMParser();
+                    newRow = parser.parseFromString(newRow, 'text/html').children[0].innerText;
                     return newRow;
                 }}).addRule('strikethrough', {
                     filter: ['s', 'del', 'strike'],
