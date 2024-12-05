@@ -88,7 +88,7 @@ define([
             if (filterTypes.indexOf(data.content.msg.type) !== -1) {
                 notifsData.push(data);
                 var icon = $(el).find(".cp-reminder");
-                $(icon).addClass('cp-avatar-calendar')
+                $(icon).addClass('cp-avatar-calendar');
                 $(notifsList).prepend(el);
             }
         };
