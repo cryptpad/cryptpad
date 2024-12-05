@@ -906,13 +906,13 @@ define([
                 h('span', Messages.calendar_new),
                 h('span')
             ]);
-            $(newButton).click(() => {
+            $(newButton).click(function () {
                 editCalendar();
             }).appendTo($newContainer);
 
-            Object.keys(privateData.teams).sort().forEach((teamId) => {
+            Object.keys(privateData.teams).sort().forEach(function (teamId) {
                 var calendars = filter(teamId);
-                if (!calendars.length) return;
+                if (!calendars.length) { return; }
                 var team = privateData.teams[teamId];
                 var avatar = h('span.cp-avatar');
                 common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
