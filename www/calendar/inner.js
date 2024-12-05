@@ -831,7 +831,6 @@ define([
         onCalendarsUpdate.reg(function () {
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
-
             var filter = function (teamId) {
                 var LOOKUP = {};
                 return Object.keys(APP.calendars || {}).filter(function (id) {
