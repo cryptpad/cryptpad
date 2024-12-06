@@ -136,6 +136,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.fm_restoreMultipleDialog = "Are you sure you want to restore {0} files and/or folders to their previous locations?"; // XXX: new translation key
+
     return Messages;
 
 });
