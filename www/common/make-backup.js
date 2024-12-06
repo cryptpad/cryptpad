@@ -358,7 +358,8 @@ define([
             sframeChan: sframeChan
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
-        var links = ctx.data.static;
+        var links = ctx.sf[data.sharedFolderId] && ctx.sf[data.sharedFolderId].static ? ctx.data.static && ctx.sf[data.sharedFolderId].static : ctx.data.static
+
         Object.keys(links).forEach(function(key) {
             filesData[key] = links[key];
         });
