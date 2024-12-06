@@ -1108,7 +1108,7 @@ define([
             var owned = Modal.isOwned(Env, data);
 
             // Request edit access
-            if (common.isLoggedIn() && data.roHref && !owned && !opts.calendar && priv.app !== 'form') {
+            if (common.isLoggedIn() && data.roHref && !owned && !opts.calendar && priv.app !== 'form' && !data.href) {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);
