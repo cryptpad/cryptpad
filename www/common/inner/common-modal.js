@@ -50,9 +50,9 @@ define([
                         var hashes = priv.hashes || {};
                         // For calendars, individual href is passed via opts
                         if (priv.app === 'calendar') {
-                            data.href = (priv.app === 'calendar') && opts.href;
+                            data.href = opts.href;
                         } else if (hashes.editHash || hashes.fileHash) {
-                            data.href = Hash.hashToHref(hashes.editHash || hashes.fileHash);
+                            data.href = Hash.hashToHref(hashes.editHash || hashes.fileHash, priv.app);
                         } else {
                             data.href = undefined;
                         }
