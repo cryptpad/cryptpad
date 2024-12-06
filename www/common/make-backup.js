@@ -327,7 +327,7 @@ define([
             }
             var sData;
             var fData = fd[el];
-            sd ? sData = sd[el] : sData = undefined
+            sd ? sData = sd[el] : sData = undefined;
             if (fData) {
                 addFile(ctx, zip, fData, existingNames);
                 return;
