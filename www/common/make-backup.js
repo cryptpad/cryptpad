@@ -325,9 +325,8 @@ define([
                 existingNames.push(sfName.toLowerCase());
                 return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData, staticData);
             }
-            var sData;
             var fData = fd[el];
-            sd ? sData = sd[el] : sData = undefined;
+            var sData = sd ? sd[el] : undefined;
             if (fData) {
                 addFile(ctx, zip, fData, existingNames);
                 return;
