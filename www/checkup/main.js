@@ -423,34 +423,39 @@ define([
         });
     });
 
+    const ooEnabled = ApiConfig.onlyOffice && ApiConfig.onlyOffice.availableVersions.includes(
+        OOCurrentVersion.currentVersion,
+    );
     var sheetURL = `/common/onlyoffice/dist/${OOCurrentVersion.currentVersion}/web-apps/apps/spreadsheeteditor/main/index.html`;
 
-    assert(function (cb, msg) {
-        msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
-        var expect = {
-            'cross-origin-resource-policy': 'cross-origin',
-            'cross-origin-embedder-policy': 'require-corp',
-        };
-
-        Tools.common_xhr(sheetURL, function (xhr) {
-            var result = !Object.keys(expect).some(function (k) {
-                var response = xhr.getResponseHeader(k);
-                if (response !== expect[k]) {
-                    msg.appendChild(h('span', [
-                        'A value of ',
-                        code(expect[k]),
-                        ' was expected for the ',
-                        code(k),
-                        ' HTTP header, but instead a value of "',
-                        code(response),
-                        '" was received.',
-                    ]));
-                    return true; // returning true indicates that a value is incorrect
-                }
+    if (ooEnabled) {
+        assert(function (cb, msg) {
+            msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
+            var expect = {
+                'cross-origin-resource-policy': 'cross-origin',
+                'cross-origin-embedder-policy': 'require-corp',
+            };
+    
+            Tools.common_xhr(sheetURL, function (xhr) {
+                var result = !Object.keys(expect).some(function (k) {
+                    var response = xhr.getResponseHeader(k);
+                    if (response !== expect[k]) {
+                        msg.appendChild(h('span', [
+                            'A value of ',
+                            code(expect[k]),
+                            ' was expected for the ',
+                            code(k),
+                            ' HTTP header, but instead a value of "',
+                            code(response),
+                            '" was received.',
+                        ]));
+                        return true; // returning true indicates that a value is incorrect
+                    }
+                });
+                cb(result || xhr.getAllResponseHeaders());
             });
-            cb(result || xhr.getAllResponseHeaders());
         });
-    });
+    }
 
     assert(function (cb, msg) {
         setWarningClass(msg);
@@ -720,12 +725,11 @@ define([
     });
 
     assert(function (cb, msg) { // FIXME possibly superseded by more advanced CSP tests?
-        var url = `/common/onlyoffice/dist/${OOCurrentVersion.currentVersion}/web-apps/apps/spreadsheeteditor/main/index.html`;
-        msg.appendChild(CSP_WARNING(url));
+        msg.appendChild(CSP_WARNING(sheetURL));
         deferredPostMessage({
             command: 'GET_HEADER',
             content: {
-                url: url,
+                url: sheetURL,
                 header: 'content-security-policy',
             },
         }, function (content) {
