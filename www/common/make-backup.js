@@ -316,7 +316,7 @@ define([
             if (typeof el === "object" && el.metadata !== true) { // if folder
                 var fName = getUnique(sanitize(k), '', existingNames);
                 existingNames.push(fName.toLowerCase());
-                return void makeFolder(ctx, el, zip.folder(fName), fd);
+                return void makeFolder(ctx, el, zip.folder(fName), fd, sd);
             }
             if (ctx.data.sharedFolders[el]) { // if shared folder
                 staticData = ctx.sf[el].static;
@@ -325,8 +325,9 @@ define([
                 existingNames.push(sfName.toLowerCase());
                 return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData, staticData);
             }
+            var sData;
             var fData = fd[el];
-            var sData = sd[el];
+            sd ? sData = sd[el] : sData = undefined
             if (fData) {
                 addFile(ctx, zip, fData, existingNames);
                 return;
