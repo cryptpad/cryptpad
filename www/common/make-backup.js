@@ -307,25 +307,31 @@ define([
     };
 
     // Add folders and their content recursively in the zip
-    var makeFolder = function (ctx, root, zip, fd) {
+    var makeFolder = function (ctx, root, zip, fd, sd) {
         if (typeof (root) !== "object") { return; }
         var existingNames = [];
         Object.keys(root).forEach(function (k) {
             var el = root[k];
+            let staticData;
             if (typeof el === "object" && el.metadata !== true) { // if folder
                 var fName = getUnique(sanitize(k), '', existingNames);
                 existingNames.push(fName.toLowerCase());
                 return void makeFolder(ctx, el, zip.folder(fName), fd);
             }
             if (ctx.data.sharedFolders[el]) { // if shared folder
+                staticData = ctx.sf[el].static;
                 var sfData = ctx.sf[el].metadata;
                 var sfName = getUnique(sanitize((sfData && sfData.title) || 'Folder'), '', existingNames);
                 existingNames.push(sfName.toLowerCase());
-                return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData);
+                return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData, staticData);
             }
             var fData = fd[el];
+            var sData = sd[el];
             if (fData) {
                 addFile(ctx, zip, fData, existingNames);
+                return;
+            }  else if (sData) {
+                addFile(ctx, zip, sData, existingNames);
                 return;
             }
         });
