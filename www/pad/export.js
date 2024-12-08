@@ -97,26 +97,40 @@ define([
                 var md = Turndown({
                     headingStyle: 'atx'
                 }).addRule('table', {
-                filter: ['tr'],
+                filter: ['table'],
                 replacement: function (content, node) {
-                    var indexOf = Array.prototype.indexOf;
-                    var index = indexOf.call(node.parentNode.childNodes, node);
-                    var rowContent = node.innerHTML.replace(/<td>/g, '').replace(/<br>/g, ' ').split('</td>');
-                    rowContent[0] = `|${rowContent[0]}`;
-                    var row = '';
-                    var rowLength = rowContent.filter(Boolean).length;
-                    for (var i =0; i < rowLength; i++) {
-                        var cell = rowContent[i] + ' |';
-                        row += cell;
-                    }                    
-                    var newRow = row.concat('\n');
-                    if (index === 0) {
-                        var separator = '|-';
-                        newRow += `${separator.repeat(rowLength)}\n`;
-                    }
-                    var parser = new DOMParser();
-                    newRow = parser.parseFromString(newRow, 'text/html').children[0].innerText;
-                    return newRow;
+                    var childNodeArr = Array.from(node.childNodes)
+                    var table = ''
+                    childNodeArr.forEach(function(cN) {
+                        cN.childNodes.forEach(function(childNode) {
+                            var childNodes = Array.from(childNode.childNodes)
+                            var rowContent = childNodes
+                            var indexOf = Array.prototype.indexOf;
+                            var index;
+                            if (childNodeArr.length > 1) {
+                                index = indexOf.call(node.childNodes, cN);
+                            } else {
+                                index = indexOf.call(cN.childNodes, childNode);
+                            }
+                            rowContent[0].textContent = `|${rowContent[0].textContent}`;
+                            var row = '';
+                            var rowLength = rowContent.filter(Boolean).length;
+                            for (var i =0; i < rowLength; i++) {
+                                var cell = rowContent[i].textContent + ' |';
+                                row += cell;
+                            }
+                            var newRow = row.concat('\n');
+                            if (index === 0) {
+                                var separator = '|-';
+                                newRow += `${separator.repeat(rowLength)}\n`;
+                            }
+                            var parser = new DOMParser();
+                            newRow = parser.parseFromString(newRow, 'text/html').children[0].innerText;
+                            table += newRow
+                            return newRow;
+                        })
+                    })
+                    return table
                 }}).addRule('strikethrough', {
                     filter: ['s', 'del', 'strike'],
                     replacement: function (content) {
