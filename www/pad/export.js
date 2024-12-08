@@ -97,40 +97,45 @@ define([
                 var md = Turndown({
                     headingStyle: 'atx'
                 }).addRule('table', {
-                filter: ['table'],
-                replacement: function (content, node) {
-                    var childNodeArr = Array.from(node.childNodes)
-                    var table = ''
-                    childNodeArr.forEach(function(cN) {
-                        cN.childNodes.forEach(function(childNode) {
-                            var childNodes = Array.from(childNode.childNodes)
-                            var rowContent = childNodes
-                            var indexOf = Array.prototype.indexOf;
-                            var index;
-                            if (childNodeArr.length > 1) {
-                                index = indexOf.call(node.childNodes, cN);
-                            } else {
-                                index = indexOf.call(cN.childNodes, childNode);
-                            }
-                            rowContent[0].textContent = `|${rowContent[0].textContent}`;
-                            var row = '';
-                            var rowLength = rowContent.filter(Boolean).length;
-                            for (var i =0; i < rowLength; i++) {
-                                var cell = rowContent[i].textContent + ' |';
-                                row += cell;
-                            }
-                            var newRow = row.concat('\n');
-                            if (index === 0) {
-                                var separator = '|-';
-                                newRow += `${separator.repeat(rowLength)}\n`;
-                            }
-                            var parser = new DOMParser();
-                            newRow = parser.parseFromString(newRow, 'text/html').children[0].innerText;
-                            table += newRow
-                            return newRow;
-                        })
-                    })
-                    return table
+                    filter: ['table'],
+                    replacement: function (content, node) {
+                        var childNodeArr = Array.from(node.childNodes);
+                        var table = '';
+                        childNodeArr.forEach(function(rowNode) {
+                            rowNode.childNodes.forEach(function(childNode) {
+                                var rowContent = Array.from(childNode.childNodes);
+                                var indexOf = Array.prototype.indexOf;
+                                var index = childNodeArr.length > 1 ? indexOf.call(node.childNodes, rowNode) : indexOf.call(rowNode.childNodes, childNode);
+                                var row = '';
+                                var rowLength = rowContent.filter(Boolean).length;
+                                for (var i =0; i < rowLength; i++) {
+                                    var cell = rowContent[i];
+                                    var cellContent = Array.from(cell.childNodes);
+                                    cellContent.pop();
+                                    if (cellContent.length > 1) {
+                                        var cellString = '';
+                                        cellContent.forEach(function(string) {
+                                            if (string.nodeType === 3) {
+                                                cellString += string.textContent;
+                                            } else if (string.nodeName === "BR") {
+                                                cellString += '<br>';
+                                            }
+                                        });
+                                        row += cellString + ' |';
+                                    } else {
+                                        row += cellContent[0].textContent + ' |';
+                                    }
+                                }
+                                var newRow = row.concat('\n');
+                                if (index === 0) {
+                                    var separator = '|-';
+                                    newRow += `${separator.repeat(rowLength)}\n`;
+                                }
+                                table += newRow;
+                                return newRow;
+                            });
+                        });
+                    return table;
                 }}).addRule('strikethrough', {
                     filter: ['s', 'del', 'strike'],
                     replacement: function (content) {
