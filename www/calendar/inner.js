@@ -938,17 +938,17 @@ define([
                         h('span')
                     ]);
 
-                $(showCalendarsBtn).click(() => {
-                    visible = !visible;
-                    $contentContainer.toggle(visible);
-                    iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
-                    buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
-                    $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass).attr('aria-hidden', "true");
-                    $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
-                }).appendTo($showContainer);
+                    $(showCalendarsBtn).click(() => {
+                        visible = !visible;
+                        $contentContainer.toggle(visible);
+                        iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                        buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
+                        $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass).attr('aria-hidden', "true");
+                        $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
+                    }).appendTo($showContainer);
+                }
+                else {visible = true;}
             }
-            else {visible = true;}
-        }
 
             $contentContainer.toggle(visible);
             $(window).resize(function () {
