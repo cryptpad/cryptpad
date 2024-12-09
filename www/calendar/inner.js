@@ -928,7 +928,9 @@ define([
                 });
             });
             if(isMobileView) {
-                if (totalCalendars > 2) {
+                // If initial number of calendars or current number > 2,
+                // hide the calendars list and display a "show" button
+                if (APP.numberCalendars > 2 || totalCalendars > 2) {
                     var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
                     var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
                     var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
@@ -2389,7 +2391,9 @@ APP.recurrenceRule = {
         });
         var store = window.cryptpadStore;
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
-            if (obj.empty && !privateData.calendarHash) {
+            let empty = !obj.length;
+            APP.numberCalendars = obj.length;
+            if (empty && !privateData.calendarHash) {
                 if (!privateData.loggedIn) {
                     return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                         common.setLoginRedirect('login');
