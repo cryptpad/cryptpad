@@ -169,10 +169,18 @@ define([
                 data: fData
             });
         }
-
-        var href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
-        var parsed = Hash.parsePadUrl(href);
-        if (['pad', 'file'].indexOf(parsed.hashData.type) === -1) { return; }
+        var href;
+        var parsed;
+        var linkRegex = new RegExp("^(http|https)://");
+        if (fData.href && linkRegex.test(fData.href)) {
+            href = fData.href;
+            parsed = {};
+            parsed['hashData'] = {type: 'link'};
+        } else {
+            href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
+            parsed = Hash.parsePadUrl(href);
+        }
+        if (['pad', 'file', 'link'].indexOf(parsed.hashData.type) === -1) { return; }
 
         // waitFor is used to make sure all the pads and files are process before downloading the zip.
         var w = ctx.waitFor();
@@ -220,7 +228,7 @@ define([
                 var opts = {
                     password: fData.password
                 };
-                var rawName = fData.filename || fData.title || 'File';
+                var rawName = fData.filename || fData.title || fData.name || 'File';
                 console.log(rawName);
 
                 // Pads (pad,code,slide,kanban,poll,...)
@@ -276,8 +284,21 @@ define([
                         }
                     }, 50);
                 };
+                var todoLink = function () {
+                    var opts = {
+                        binary: true,
+                    };
+                    var fileName = getUnique(sanitize(rawName), '.txt', existingNames);
+                    existingNames.push(fileName.toLowerCase());
+                    var content = new Blob([fData.href, '\n'], { type: "text/plain;charset=utf-8" });
+                    zip.file(fileName, content, opts);
+                    console.log('DONE ---- ' + fileName);
+                    setTimeout(done, 1000);
+                };
                 if (parsed.hashData.type === 'file') {
                     return void todoFile();
+                } else if (parsed.hashData.type === 'link') {
+                    return void todoLink();
                 }
                 todoPad();
             });
@@ -286,25 +307,31 @@ define([
     };
 
     // Add folders and their content recursively in the zip
-    var makeFolder = function (ctx, root, zip, fd) {
+    var makeFolder = function (ctx, root, zip, fd, sd) {
         if (typeof (root) !== "object") { return; }
         var existingNames = [];
         Object.keys(root).forEach(function (k) {
             var el = root[k];
+            let staticData;
             if (typeof el === "object" && el.metadata !== true) { // if folder
                 var fName = getUnique(sanitize(k), '', existingNames);
                 existingNames.push(fName.toLowerCase());
-                return void makeFolder(ctx, el, zip.folder(fName), fd);
+                return void makeFolder(ctx, el, zip.folder(fName), fd, sd);
             }
             if (ctx.data.sharedFolders[el]) { // if shared folder
+                staticData = ctx.sf[el].static;
                 var sfData = ctx.sf[el].metadata;
                 var sfName = getUnique(sanitize((sfData && sfData.title) || 'Folder'), '', existingNames);
                 existingNames.push(sfName.toLowerCase());
-                return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData);
+                return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData, staticData);
             }
             var fData = fd[el];
+            var sData = sd ? sd[el] : undefined;
             if (fData) {
                 addFile(ctx, zip, fData, existingNames);
+                return;
+            }  else if (sData) {
+                addFile(ctx, zip, sData, existingNames);
                 return;
             }
         });
@@ -330,6 +357,11 @@ define([
             sframeChan: sframeChan
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
+        var links = ctx.sf[data.sharedFolderId] && ctx.sf[data.sharedFolderId].static ? ctx.data.static && ctx.sf[data.sharedFolderId].static : ctx.data.static;
+
+        Object.keys(links).forEach(function(key) {
+            filesData[key] = links[key];
+        });
         progress('reading', -1); // Msg.settings_export_reading
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
