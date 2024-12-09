@@ -531,6 +531,11 @@ define([
                     if (last.sender) {
                         entry.lastAdmin = !last.sender.blockLocation;
                     }
+                    if (last.close) {
+                        doc.tickets.closed[data.channel] = entry;
+                        delete doc.tickets.active[data.channel];
+                        notifyClient(ctx, true, 'UPDATE_TICKET', data.channel);
+                    }
                     /*
                     let senderKey = last.sender && last.sender.edPublic;
                     if (senderKey) {
@@ -589,7 +594,9 @@ define([
                 doc.tickets.closed[data.channel] = entry;
                 delete doc.tickets.active[data.channel];
                 delete doc.tickets.pending[data.channel];
-                cb({closed: true});
+                Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
+                    cb({closed: true});
+                });
             });
         });
     };

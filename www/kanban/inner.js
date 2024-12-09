@@ -22,6 +22,7 @@ define([
     'cm/lib/codemirror',
     '/kanban/jkanban_cp.js',
     '/kanban/export.js',
+    '/common/TypingTests.js',
 
     'cm/mode/gfm/gfm',
     'cm/addon/edit/closebrackets',
@@ -54,7 +55,8 @@ define([
     ChainPad,
     CodeMirror,
     jKanban,
-    Export)
+    Export,
+    TypingTest)
 {
 
     var verbose = function (x) { console.log(x); };
@@ -251,6 +253,10 @@ define([
         // Body
         var cm = SFCodeMirror.create("gfm", CodeMirror, text);
         var editor = cm.editor;
+        window.easyTest = function () {
+            var test = TypingTest.testCode(editor);
+            return test;
+        };
         editor.setOption('gutters', []);
         editor.setOption('lineNumbers', false);
         editor.setOption('readOnly', false);
@@ -1209,6 +1215,8 @@ define([
 
                 var json = kanban.getBoardJSON(id) || kanban.getItemJSON(id);
                 var oldVal = json && json.title;
+
+                if (id === "new") { $el.remove(); }
 
                 return {
                     id: id,
