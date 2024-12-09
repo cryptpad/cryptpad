@@ -94,6 +94,18 @@ define([
                 return void cb(blob);
             }
             if (ext === ".md") {
+                let strikethrough = {
+                    filter: ['s', 'del', 'strike'],
+                    replacement: function (content) {
+                        return '~' + content + '~';
+                    }
+                };
+                let underline = {
+                    filter: ['u'],
+                    replacement: function (content) {
+                        return '<u>' + content + '</u>';
+                    }
+                };
                 var md = Turndown({
                     headingStyle: 'atx'
                 }).addRule('table', {
@@ -111,29 +123,15 @@ define([
                                 for (var i =0; i < rowLength; i++) {
                                     var cell = rowContent[i];
                                     var cellContent = Array.from(cell.childNodes);
-                                    if (cellContent.length > 1) {
-                                        var cellString = '';
-                                        cellContent.forEach(function(string) {  
-                                        var stringContent = string.childNodes.length ? string.innerHTML : string.textContent;
-                                            if (string.nodeType === 3) {
-                                                cellString += stringContent;
-                                            } else if (string.nodeName === "BR") {
-                                                cellString += '<br>';
-                                            }  else if (string.nodeName === "EM") {
-                                                cellString += '<i>' + stringContent + '</i>';
-                                            } else if (string.nodeName === "STRONG") {
-                                                cellString += '<b>' + stringContent + '</b>';
-                                            } else if (string.nodeName === "U") {
-                                                cellString += '<u>' + stringContent + '</u>';
-                                            } else if (string.nodeName === "S") {
-                                                cellString += '~' + stringContent + '~';
-                                            }
-                                        });
-                                        row += cellString + ' |';
-                                    } else if (cellContent[0].nodeName === "BR") {    
-                                        row += '|  |';
-                                    } else {    
-                                        row += cellContent[0].innerHTML + ' |';
+                                    if ((cellContent.length === 1  && cellContent[0].nodeName === "BR") || !cellContent.length) {
+                                        row += '|';
+                                    } else if (cellContent.length >= 1) {
+                                        row += Turndown({
+                                            headingStyle: 'atx'
+                                        }).addRule('strikethrough', strikethrough)
+                                        .addRule('underline', underline)
+                                        .turndown(cell.innerHTML).replaceAll('\n', '<br>');
+                                        row += '|';
                                     }
                                 }
                                 var newRow = row.concat('\n');
@@ -146,17 +144,8 @@ define([
                             });
                         });
                     return table;
-                }}).addRule('strikethrough', {
-                    filter: ['s', 'del', 'strike'],
-                    replacement: function (content) {
-                        return '~' + content + '~';
-                    }
-                }).addRule('strikethrough', {
-                    filter: ['u'],
-                    replacement: function (content) {
-                        return '<u>' + content + '</u>';
-                    }
-                })
+                }}).addRule('strikethrough', strikethrough)
+                .addRule('underline', underline)
                 .turndown(toExport);
                 var mdBlob = new Blob([md], {
                     type: 'text/markdown;charset=utf-8'
