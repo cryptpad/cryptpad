@@ -147,15 +147,15 @@ define([
                         });
                     return table;
                 }}).addRule('strikethrough', {
-                        filter: ['s', 'del', 'strike'],
-                        replacement: function (content) {
-                            return '~' + content + '~';
-                        }
+                    filter: ['s', 'del', 'strike'],
+                    replacement: function (content) {
+                        return '~' + content + '~';
+                    }
                 }).addRule('strikethrough', {
-                        filter: ['u'],
-                        replacement: function (content) {
-                            return '<u>' + content + '</u>';
-                        }
+                    filter: ['u'],
+                    replacement: function (content) {
+                        return '<u>' + content + '</u>';
+                    }
                 })
                 .turndown(toExport);
                 var mdBlob = new Blob([md], {
