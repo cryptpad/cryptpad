@@ -114,7 +114,7 @@ define([
                                     if (cellContent.length > 1) {
                                         var cellString = '';
                                         cellContent.forEach(function(string) {  
-                                        var stringContent = string.childNodes.length ? string.innerHTML : string.textContent
+                                        var stringContent = string.childNodes.length ? string.innerHTML : string.textContent;
                                             if (string.nodeType === 3) {
                                                 cellString += stringContent;
                                             } else if (string.nodeName === "BR") {
