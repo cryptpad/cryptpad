@@ -78,7 +78,6 @@ define([
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
         $i.attr('allowfullscreen', 'true');
         $i.attr('allow', 'clipboard-write');
-        $i.attr('title', 'iframe');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -1322,6 +1321,9 @@ define([
                         toHash: data.toHash,
                         lastKnownHash: data.lastKnownHash
                     }, function (data) {
+                        if (data && data.error) {
+                            return void cb(data);
+                        }
                         cb({
                             isFull: data.isFull,
                             messages: data.messages.map(function (obj) {

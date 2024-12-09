@@ -25,6 +25,13 @@ var app = Express();
     }
 }());
 
+Object.keys(Env.plugins || {}).forEach(name => {
+    let plugin = Env.plugins[name];
+    if (!plugin.initialize) { return; }
+    try { plugin.initialize(Env, "main"); }
+    catch (e) {}
+});
+
 var COMMANDS = {};
 
 COMMANDS.LOG = function (msg, cb) {
@@ -48,6 +55,25 @@ COMMANDS.UPDATE_QUOTA = function (msg, cb) {
 COMMANDS.GET_PROFILING_DATA = function (msg, cb) {
     cb(void 0, Env.bytesWritten);
 };
+
+Object.keys(Env.plugins || {}).forEach(name => {
+    let plugin = Env.plugins[name];
+    if (!plugin.addMainCommands) { return; }
+    try {
+        let commands = plugin.addMainCommands(Env);
+        Object.keys(commands || {}).forEach(cmd => {
+            // Uppercase command name?
+            if (cmd !== cmd.toUpperCase()) { return; }
+            // Command is a function?
+            if (typeof(commands[cmd]) !== "function") { return; }
+            // Command doesn't already exists?
+            if (COMMANDS[cmd]) { return; }
+
+            COMMANDS[cmd] = commands[cmd];
+        });
+    } catch (e) {}
+});
+
 
 nThen(function (w) {
     require("./lib/log").create(config, w(function (_log) {
@@ -93,6 +119,7 @@ nThen(function (w) {
 
     var launchWorker = (online) => {
         var worker = Cluster.fork(workerState);
+        var pid = worker.process.pid;
         worker.on('online', () => {
             online();
         });
@@ -122,6 +149,13 @@ nThen(function (w) {
         });
 
         worker.on('exit', (code, signal) => {
+            Object.keys(Env.plugins || {}).forEach(name => {
+                let plugin = Env.plugins[name];
+                if (!plugin.onWorkerClosed) { return; }
+                try { plugin.onWorkerClosed("http-worker", pid); }
+                catch (e) {}
+            });
+
             if (!signal && code === 0) { return; }
             // relaunch http workers if they crash
             Env.Log.error('HTTP_WORKER_EXIT', {
@@ -147,10 +181,11 @@ nThen(function (w) {
         });
     };
 
-    var broadcast = (command, data/*, cb*/) => {
+    var broadcast = Env.broadcast = (command, data/*, cb*/) => {
         for (const worker of Object.values(Cluster.workers)) {
             sendCommand(worker, command, data /*, cb */);
         }
+        return Object.values(Cluster.workers);
     };
 
     var throttledEnvChange = Util.throttle(function () {

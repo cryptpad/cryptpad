@@ -32,6 +32,8 @@ www/common/onlyoffice/v*
 /onlyoffice-conf/
 /onlyoffice-dist/
 
+_build
+
 # ---> Node
 # Logs
 logs
