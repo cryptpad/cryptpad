@@ -254,7 +254,7 @@ define([
                         accepts: function (el, target, source, sibling) {
                             if (self.options.readOnly) { return false; }
                             if (sibling && sibling.getAttribute('id') === "kanban-addboard") { return false; }
-                            return target.classList.contains('kanban-container') ||
+                            return target.classList.contains('kanban-boards-container') ||
                                    target.classList.contains('kanban-trash');
                         },
                         revertOnSpill: true,
