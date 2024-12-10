@@ -2782,7 +2782,6 @@ define([
                     type: "text" // TODO type password with click to show
                 }),*/
             ]),
-            text,
             //createHelper('#', "TODO: password protection adds another layer of security ........") // TODO
         ]);
 
@@ -2813,6 +2812,7 @@ define([
                 expire,
                 password,
             ]),
+            text,
             templates,
             createDiv
         ])).appendTo($creation);
