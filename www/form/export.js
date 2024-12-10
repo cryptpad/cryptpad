@@ -59,18 +59,7 @@ define([
             var type = obj.type;
             if (!TYPES[type]) { return; } // Ignore static types
             var id = `q${i++}`;
-            if (TYPES[type] && TYPES[type].exportCSV) {
-                var _obj = Util.clone(obj);
-                _obj.q = "tmp";
-                q[id] = {
-                    question: obj.q,
-                    items: TYPES[type].exportCSV(false, _obj).map(function (str) {
-                        return str.slice(6); // Remove "tmp | "
-                    })
-                };
-            } else {
-                q[id] = obj.q || Messages.form_default;
-            }
+            q[id] = obj.q || Messages.form_default;
         });
 
         sortedKeys.forEach(function (k) {
@@ -84,14 +73,14 @@ define([
                 };
 
                 var i = 1;
+
                 order.forEach(function (key) {
                     if (!form[key]) { return; }
                     var type = form[key].type;
                     if (!TYPES[type]) { return; } // Ignore static types
                     var id = `q${i++}`;
-                    if (TYPES[type].exportCSV) {
-                        data[id] = TYPES[type].exportCSV(msg[key], form[key]);
-                        return;
+                    if (type === 'date') {
+                        msg[key] = new Date(msg[key]).toISOString();
                     }
                     data[id] = msg[key];
                 });
@@ -115,7 +104,6 @@ define([
         var form = content.form;
 
         var questions = [Messages.form_poll_time, Messages.share_formView];
-
         order.forEach(function (key) {
             var obj = form[key];
             if (!obj) { return; }
@@ -162,7 +150,49 @@ define([
         return csv;
     };
 
-    Export.main = function (content, cb) {
+    var getFullOrder = function (content) {
+        var order = content.order.slice();
+        var getSections = function (content) {
+            var uids = Object.keys(content.form).filter(function (uid) {
+                return content.form[uid].type === 'section';
+            });
+            return uids;
+        };
+        getSections(content).forEach(function (uid) {
+            var block = content.form[uid];
+            if (!block.opts || !Array.isArray(block.opts.questions)) { return; }
+            var idx = order.indexOf(uid);
+            if (idx === -1) { return; }
+            idx++;
+            block.opts.questions.forEach(function (el, i) {
+                order.splice(idx+i, 0, el);
+            });
+        });
+        return order;
+    };
+
+    Export.main = function (content, cb, ext, sframeChan, parsed, zip, sanitize, getUnique, existingNames) {
+        if (sframeChan && content.form) {
+            var _answers = content["answers"];
+            _answers['href'] = parsed.hash;
+            _answers['password'] = parsed.password;
+            _answers['drive'] = true;
+            var answers;
+            sframeChan.query("Q_FORM_FETCH_ANSWERS", _answers, function (err, obj) {
+                answers = obj && obj.results;
+                var rawName = content.metadata.title || 'File';
+                var fileName = getUnique(sanitize(rawName + ' (answers)'), '.json', existingNames);
+                existingNames.push(fileName.toLowerCase());
+                var types = {input: {},  textarea: {}, radio: {}, multiradio: {}, date: {}, checkbox: {}, multicheck: {}, sort: {}, poll: {}};
+                var arr = Export.results(content, answers, types, getFullOrder(content), "json");    
+                var results = new Blob([arr], { type : "application/json" });
+                var opts = {
+                    binary: true,
+                };
+                zip.file(fileName, results, opts);
+            });
+        }
+
         var json = Util.clone(content || {});
         delete json.answers;
         cb(new Blob([JSON.stringify(json, 0, 2)], {
