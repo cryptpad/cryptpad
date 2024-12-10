@@ -724,19 +724,21 @@ define([
         });
     });
 
-    assert(function (cb, msg) { // FIXME possibly superseded by more advanced CSP tests?
-        msg.appendChild(CSP_WARNING(sheetURL));
-        deferredPostMessage({
-            command: 'GET_HEADER',
-            content: {
-                url: sheetURL,
-                header: 'content-security-policy',
-            },
-        }, function (content) {
-            var CSP_headers = parseCSP(content);
-            cb(hasOnlyOfficeHeaders(CSP_headers) || CSP_headers);
+    if (ooEnabled) {
+        assert(function (cb, msg) { // FIXME possibly superseded by more advanced CSP tests?
+            msg.appendChild(CSP_WARNING(sheetURL));
+            deferredPostMessage({
+                command: 'GET_HEADER',
+                content: {
+                    url: sheetURL,
+                    header: 'content-security-policy',
+                },
+            }, function (content) {
+                var CSP_headers = parseCSP(content);
+                cb(hasOnlyOfficeHeaders(CSP_headers) || CSP_headers);
+            });
         });
-    });
+    }
 
 /*
     assert(function (cb, msg) {
