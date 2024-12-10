@@ -109,19 +109,17 @@ define([
             //create container
             var boardContainerOuter = document.createElement('div');
             boardContainerOuter.classList.add('kanban-container-outer');
-            var kanbanContainer = document.createElement('div');
-            kanbanContainer.classList.add('kanban-container');
-            boardContainerOuter.appendChild(kanbanContainer);
             var boardContainer = document.createElement('div');
-            boardContainer.classList.add('kanban-boards-container');
-            kanbanContainer.appendChild(boardContainer);
+            boardContainer.setAttribute('id', 'kanban-container');
+            boardContainer.classList.add('kanban-container');
+            boardContainerOuter.appendChild(boardContainer);
             self.container = boardContainer;
             //add boards
             self.addBoards();
             var addBoard = document.createElement('div');
             addBoard.id = 'kanban-addboard';
             addBoard.innerHTML = '<i class="fa fa-plus"></i>';
-            kanbanContainer.appendChild(addBoard);
+            boardContainer.appendChild(addBoard);
             var trash = self.trashContainer = document.createElement('div');
             trash.setAttribute('id', 'kanban-trash');
             trash.setAttribute('class', 'kanban-trash');
@@ -254,7 +252,7 @@ define([
                         accepts: function (el, target, source, sibling) {
                             if (self.options.readOnly) { return false; }
                             if (sibling && sibling.getAttribute('id') === "kanban-addboard") { return false; }
-                            return target.classList.contains('kanban-boards-container') ||
+                            return target.classList.contains('kanban-container') ||
                                    target.classList.contains('kanban-trash');
                         },
                         revertOnSpill: true,
@@ -740,6 +738,15 @@ define([
 
             return boardNode;
         };
+
+        let reorder = () => {
+            // Push "add" button to the end of the list
+            let add = document.getElementById('kanban-addboard');
+            let list = document.getElementById('kanban-container');
+            if (!add || !list) { return; }
+            list.appendChild(add);
+        };
+
         this.addBoard = function (board) {
             if (!board || !board.id) { return; }
             // We need to store all the columns in _boards too because it's used to
@@ -760,6 +767,7 @@ define([
             _boards.list.push(board.id);
             var boardNode = getBoardNode(board);
             self.container.appendChild(boardNode);
+            reorder();
         };
 
         this.addBoards = function() {
@@ -827,6 +835,7 @@ define([
                     $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
                 });
                 $el.scrollLeft(scrollLeft);
+                reorder();
             };
 
             // If the tab is not focused, redraw on focus
