@@ -118,7 +118,7 @@ define([
                                 var rowContent = Array.from(childNode.childNodes);
                                 var indexOf = Array.prototype.indexOf;
                                 var index = childNodeArr.length > 1 ? indexOf.call(node.childNodes, rowNode) : indexOf.call(rowNode.childNodes, childNode);
-                                var row = '';
+                                var row = '|';
                                 var rowLength = rowContent.filter(Boolean).length;
                                 for (var i =0; i < rowLength; i++) {
                                     var cell = rowContent[i];
@@ -137,7 +137,7 @@ define([
                                 var newRow = row.concat('\n');
                                 if (index === 0) {
                                     var separator = '|-';
-                                    newRow += `${separator.repeat(rowLength)}\n`;
+                                    newRow += `${separator.repeat(rowLength)}|\n`;
                                 }
                                 table += newRow;
                                 return newRow;
