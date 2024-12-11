@@ -110,6 +110,7 @@ define([
             var boardContainerOuter = document.createElement('div');
             boardContainerOuter.classList.add('kanban-container-outer');
             var boardContainer = document.createElement('div');
+            boardContainer.setAttribute('id', 'kanban-container');
             boardContainer.classList.add('kanban-container');
             boardContainerOuter.appendChild(boardContainer);
             self.container = boardContainer;
@@ -737,6 +738,15 @@ define([
 
             return boardNode;
         };
+
+        let reorder = () => {
+            // Push "add" button to the end of the list
+            let add = document.getElementById('kanban-addboard');
+            let list = document.getElementById('kanban-container');
+            if (!add || !list) { return; }
+            list.appendChild(add);
+        };
+
         this.addBoard = function (board) {
             if (!board || !board.id) { return; }
             // We need to store all the columns in _boards too because it's used to
@@ -757,6 +767,7 @@ define([
             _boards.list.push(board.id);
             var boardNode = getBoardNode(board);
             self.container.appendChild(boardNode);
+            reorder();
         };
 
         this.addBoards = function() {
@@ -824,6 +835,7 @@ define([
                     $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
                 });
                 $el.scrollLeft(scrollLeft);
+                reorder();
             };
 
             // If the tab is not focused, redraw on focus
