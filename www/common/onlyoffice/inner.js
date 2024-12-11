@@ -74,7 +74,6 @@ define([
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x, type) {
-        console.log('XXX debug', type, x);
         if (!window.CP_DEV_MODE) { return; }
         console.debug(x, type);
     };
@@ -162,7 +161,6 @@ define([
             Object.keys(ids).forEach(function (id) {
                 var nId = id.slice(0,32);
                 if (users.indexOf(nId) === -1) {
-                    console.log('XXX deleteOffline', { nId, id });
                     delete ids[id];
                 }
             });
@@ -195,7 +193,6 @@ define([
 
         var setMyId = function () {
             deleteOffline(); // Remove ids for users that have left the channel
-            console.log('XXX setMyId start', { content: structuredClone(content) });
             const ids = content.ids;
             if (!myOOId) {
                 myOOId = Util.createRandomInteger();
@@ -203,7 +200,6 @@ define([
                 var f = function (id) {
                     return ids[id].ooid === myOOId;
                 };
-                // TODO Object.keys(ids) is incorrect here
                 while (Object.keys(ids).some(f)) {
                     myOOId = Util.createRandomInteger();
                 }
@@ -223,7 +219,6 @@ define([
             }
 
             oldIds = structuredClone(ids);
-            console.log('XXX setMyId end', { myOOId, myIndex, content: structuredClone(content) });
             APP.onLocal();
         };
 
@@ -940,7 +935,6 @@ define([
 
         const getParticipants = function () {
             const users = metadataMgr.getMetadata().users;
-            console.log('XXX getParticipants', users);
             // Add an history keeper user to show that we're never alone
             var hkId = Util.createRandomInteger();
             const historyKeeper = [{
@@ -968,7 +962,6 @@ define([
             });
 
             const participants = historyKeeper.concat(realParticipants);
-            console.log('XXX getParticipants end', participants);
 
             return {
                 index: getMyOOIndex(),
@@ -981,17 +974,13 @@ define([
             var type = common.getMetadataMgr().getPrivateData().ooType;
             content.locks = content.locks || {};
             var l = content.locks[id] || {};
-            console.log('XXX getUserLock l', structuredClone(l));
             if (type === "sheet" || forceArray) {
-                const res = Object.keys(l).map(function (uid) { return l[uid]; });
-                console.log('XXX getUserLock result', structuredClone(res));
-                return res;
+                return Object.keys(l).map(function (uid) { return l[uid]; });
             }
             var res = {};
             Object.keys(l).forEach(function (uid) {
                 res[uid] = l[uid];
             });
-            console.log('XXX getUserLock result', structuredClone(res));
             return res;
         };
         var getLock = function () {
@@ -1001,14 +990,12 @@ define([
                 Object.keys(content.locks || {}).forEach(function (id) {
                     Array.prototype.push.apply(locks, getUserLock(id));
                 });
-                console.log('XXX getLock result', structuredClone(locks));
                 return locks;
             }
             locks = {};
             Object.keys(content.locks || {}).forEach(function (id) {
                 Util.extend(locks, getUserLock(id));
             });
-            console.log('XXX getLock result', structuredClone(locks));
             return locks;
         };
 
