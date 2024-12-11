@@ -68,6 +68,7 @@ define([
     var NEW_VERSION = 7; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
+    const HISTORY_KEEPER_INDEX_USER = 1;
 
     //var READONLY_REFRESH_TO = 15000;
 
@@ -181,11 +182,25 @@ define([
             });
         };
 
-        const getNewUserIndex = function () {
+        /**
+        * This function retrieves the highest `indexUser`/`index` value, when `latestIndexUser` is not set.
+        * This is case for older OO documents.
+        *
+        * @returns the higest `indexUser` value or `-Infinity`
+        */
+        const getHighestLegacyIndexUser = function() {
             const ids = content.ids || {};
-            const indexes = Object.values(ids).map((user) => user.index);
-            const maxIndex = Math.max(...indexes);
-            return maxIndex === -Infinity ? 1 : maxIndex+1;
+            const indexes = Object.values(ids)
+                .map((user) => user.index)
+                .filter(Boolean);
+            return Math.max(...indexes);
+        }
+
+        const getNextUserIndex = function () {
+            const latestIndexUser = content.latestIndexUser
+                ? content.latestIndexUser
+                : getHighestLegacyIndexUser();
+            return Math.max(latestIndexUser, HISTORY_KEEPER_INDEX_USER) + 1;
         };
 
         var setMyId = function () {
@@ -205,7 +220,6 @@ define([
             var myId = getId();
             ids[myId] = {
                 ooid: myOOId,
-                index: getNewUserIndex(),
                 netflux: metadataMgr.getNetfluxId()
             };
             oldIds = JSON.parse(JSON.stringify(ids));
@@ -925,7 +939,53 @@ define([
                 : content.ids.length; // Assign an unused id to read-only users
         };
 
-        var getParticipants = function () {
+        const getParticipants = function () {
+            // Add an history keeper user to show that we're never alone
+            var hkId = Util.createRandomInteger();
+            const historyKeeper = [{
+                id: hkId,
+                idOriginal: String(hkId),
+                username: "History",
+                indexUser: HISTORY_KEEPER_INDEX_USER,
+                connectionId: Hash.createChannelId(),
+                isCloseCoAuthoring:false,
+                view: false
+            }];
+
+            const other = content.ids.map(user => ({
+                id: String(user.ooId),
+                idOriginal: String(user.ooId),
+                username: TODO user.name || Messages.anonymous,
+                indexUser: user.index,
+                connectionId: user.netflux || Hash.createChannelId(),
+                isCloseCoAuthoring: false,
+                view: false
+            }));
+
+            const myOOIndex = getNextUserIndex();
+
+            const me = [{
+                id: String(myOOId),
+                idOriginal: String(myOOId),
+                username: metadataMgr.getUserData().name || Messages.anonymous,
+                indexUser: myOOIndex,
+                connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
+                isCloseCoAuthoring:false,
+                view: false
+            }];
+
+
+
+
+
+            return {
+                index: myOOIndex,
+                list: p.filter(Boolean)
+            };
+        };
+
+        // TODO remove me
+        var getParticipantsOld = function () {
             var users = metadataMgr.getMetadata().users;
             var i = 1;
             var p = Object.keys(content.ids || {}).map(function (id) {
