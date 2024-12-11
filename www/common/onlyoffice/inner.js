@@ -69,6 +69,7 @@ define([
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
     const HISTORY_KEEPER_INDEX_USER = 1;
+    const READ_ONLY_INDEX_USER = 2;
 
     //var READONLY_REFRESH_TO = 15000;
 
@@ -184,25 +185,12 @@ define([
             });
         };
 
-        /**
-        * This function retrieves the highest `indexUser`/`index` value, when `latestIndexUser` is not set.
-        * This is case for older OO documents.
-        *
-        * @returns the higest `indexUser` value or `-Infinity`
-        */
-        const getHighestLegacyIndexUser = function () {
-            const ids = content.ids || {};
-            const indexes = Object.values(ids)
-                .map((user) => user.index)
-                .filter(Boolean);
-            return Math.max(...indexes);
-        };
-
         const getNextUserIndex = function () {
-            const latestIndexUser = content.latestIndexUser
-                ? content.latestIndexUser
-                : getHighestLegacyIndexUser();
-            return Math.max(latestIndexUser, HISTORY_KEEPER_INDEX_USER) + 1;
+            let nextUserIndex;
+            do {
+                nextUserIndex = Util.createRandomInteger();
+            } while (nextUserIndex === HISTORY_KEEPER_INDEX_USER || nextUserIndex === READ_ONLY_INDEX_USER);
+            return nextUserIndex;
         };
 
         var setMyId = function () {
@@ -234,7 +222,6 @@ define([
                 myUniqueOOId = String(myOOId) + myIndex;
             }
 
-            content.latestIndexUser = myIndex;
             oldIds = structuredClone(ids);
             console.log('XXX setMyId end', { myOOId, myIndex, content: structuredClone(content) });
             APP.onLocal();
@@ -948,7 +935,7 @@ define([
 
         const getMyOOIndex = function() {
             const user = findUserByOOId(myOOId);
-            return user.index;
+            return user ? user.index : READ_ONLY_INDEX_USER;
         };
 
         const getParticipants = function () {
@@ -966,15 +953,19 @@ define([
                 view: false
             }];
 
-            const realParticipants = Object.entries(content.ids).map(([id, user]) => ({
-                id: String(user.ooid),
-                idOriginal: String(user.ooid),
-                username: (users[id.slice(0, 32)] || {}).name || Messages.anonymous,
-                indexUser: user.index,
-                connectionId: user.netflux || Hash.createChannelId(),
-                isCloseCoAuthoring: false,
-                view: false
-            }));
+            const realParticipants = Object.entries(content.ids).map(([id, user]) => {
+                const nId = id.slice(0,32);
+                const username = (users[nId] || {}).name || Messages.anonymous;
+                return {
+                    id: String(user.ooid),
+                    idOriginal: String(user.ooid),
+                    username,
+                    indexUser: user.index,
+                    connectionId: user.netflux || Hash.createChannelId(),
+                    isCloseCoAuthoring: false,
+                    view: false
+                };
+            });
 
             const participants = historyKeeper.concat(realParticipants);
             console.log('XXX getParticipants end', participants);
@@ -982,55 +973,6 @@ define([
             return {
                 index: getMyOOIndex(),
                 list: participants,
-            };
-        };
-
-        // TODO remove me
-        var getParticipantsOld = function () {
-            var users = metadataMgr.getMetadata().users;
-            var i = 1;
-            var p = Object.keys(content.ids || {}).map(function (id) {
-                var nId = id.slice(0,32);
-                if (!users[nId]) { return; }
-                var ooId = content.ids[id].ooid;
-                var idx = content.ids[id].index;
-                if (!ooId || ooId === myOOId) { return; }
-                if (idx >= i) { i = idx + 1; }
-                return {
-                    id: String(ooId) + idx,
-                    idOriginal: String(ooId),
-                    username: (users[nId] || {}).name || Messages.anonymous,
-                    indexUser: idx,
-                    connectionId: content.ids[id].netflux || Hash.createChannelId(),
-                    isCloseCoAuthoring:false,
-                    view: false
-                };
-            });
-            // Add an history keeper user to show that we're never alone
-            var hkId = Util.createRandomInteger();
-            p.push({
-                id: hkId,
-                idOriginal: String(hkId),
-                username: "History",
-                indexUser: i,
-                connectionId: Hash.createChannelId(),
-                isCloseCoAuthoring:false,
-                view: false
-            });
-            const myOOIndex = getMyOOIndex();
-            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + myOOIndex; }
-            p.push({
-                id: String(myOOId),
-                idOriginal: String(myOOId),
-                username: metadataMgr.getUserData().name || Messages.anonymous,
-                indexUser: myOOIndex,
-                connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
-                isCloseCoAuthoring:false,
-                view: false
-            });
-            return {
-                index: myOOIndex,
-                list: p.filter(Boolean)
             };
         };
 
