@@ -314,20 +314,29 @@ define([
     };
 
     APP.selectedFiles = [];
-
+    var findElementId = function ($element) {
+        var isTrashed = $element.data("path")[0] === TRASH;
+        let elementId;
+        if (isTrashed) {
+            elementId = $element.data("path").join(',');
+        } else {
+            elementId = $element.data("path").slice(-1)[0];
+        }
+        return elementId;
+    };
     var isElementSelected = function ($element) {
-        var elementId = $element.data("path").slice(-1)[0];
+        var elementId = findElementId($element);
         return APP.selectedFiles.indexOf(elementId) !== -1;
     };
     var selectElement = function ($element) {
-        var elementId = $element.data("path").slice(-1)[0];
+        var elementId = findElementId($element);
         if (APP.selectedFiles.indexOf(elementId) === -1) {
             APP.selectedFiles.push(elementId);
         }
         $element.addClass("cp-app-drive-element-selected");
     };
     var unselectElement = function ($element) {
-        var elementId = $element.data("path").slice(-1)[0];
+        var elementId = findElementId($element);
         var index = APP.selectedFiles.indexOf(elementId);
         if (index !== -1) {
             APP.selectedFiles.splice(index, 1);
