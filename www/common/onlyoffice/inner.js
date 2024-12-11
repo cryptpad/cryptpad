@@ -957,7 +957,7 @@ define([
                 const nId = id.slice(0,32);
                 const username = (users[nId] || {}).name || Messages.anonymous;
                 return {
-                    id: String(user.ooid),
+                    id: String(user.ooid) + user.index,
                     idOriginal: String(user.ooid),
                     username,
                     indexUser: user.index,
