@@ -105,7 +105,9 @@ define([
                     h('p', data.content.msg.type + ' - ' +formatData(data))
                 ])
             ]);
-
+            if ($(notif).find('.cp-avatar').length) {
+                $(notif).addClass('cp-notification-avatar');
+            }
             if (typeof(data.content.getFormatText) === "function") {
                 $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
                 if (data.content.autorefresh) {
