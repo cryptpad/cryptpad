@@ -73,6 +73,7 @@ define([
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x, type) {
+        console.log('XXX debug', type, x);
         if (!window.CP_DEV_MODE) { return; }
         console.debug(x, type);
     };
@@ -160,6 +161,7 @@ define([
             Object.keys(ids).forEach(function (id) {
                 var nId = id.slice(0,32);
                 if (users.indexOf(nId) === -1) {
+                    console.log('XXX deleteOffline', { nId, id });
                     delete ids[id];
                 }
             });
@@ -188,13 +190,13 @@ define([
         *
         * @returns the higest `indexUser` value or `-Infinity`
         */
-        const getHighestLegacyIndexUser = function() {
-            const ids = content.ids || {};
+        const getHighestLegacyIndexUser = function () {
+            const ids = content.ids || {};
             const indexes = Object.values(ids)
                 .map((user) => user.index)
                 .filter(Boolean);
             return Math.max(...indexes);
-        }
+        };
 
         const getNextUserIndex = function () {
             const latestIndexUser = content.latestIndexUser
@@ -204,25 +206,33 @@ define([
         };
 
         var setMyId = function () {
-            // Remove ids for users that have left the channel
-            deleteOffline();
-            var ids = content.ids;
+            deleteOffline(); // Remove ids for users that have left the channel
+            console.log('XXX setMyId start', { content: structuredClone(content) });
+            const ids = content.ids;
             if (!myOOId) {
                 myOOId = Util.createRandomInteger();
                 // f: function used in .some(f) but defined outside of the while
                 var f = function (id) {
                     return ids[id].ooid === myOOId;
                 };
+                // TODO Object.keys(ids) is incorrect here
                 while (Object.keys(ids).some(f)) {
                     myOOId = Util.createRandomInteger();
                 }
             }
-            var myId = getId();
+
+            const myId = getId();
+            const myIndex = getNextUserIndex();
+
             ids[myId] = {
                 ooid: myOOId,
+                index: myIndex,
                 netflux: metadataMgr.getNetfluxId()
             };
-            oldIds = JSON.parse(JSON.stringify(ids));
+
+            content.latestIndexUser = myIndex;
+            oldIds = structuredClone(ids);
+            console.log('XXX setMyId end', { myOOId, myIndex, content: structuredClone(content) });
             APP.onLocal();
         };
 
@@ -934,16 +944,16 @@ define([
 
         const getMyOOIndex = function() {
             const user = findUserByOOId(myOOId);
-            return user
-                ? user.index
-                : content.ids.length; // Assign an unused id to read-only users
+            return user.index;
         };
 
         const getParticipants = function () {
+            const users = metadataMgr.getMetadata().users;
+            console.log('XXX getParticipants', users);
             // Add an history keeper user to show that we're never alone
             var hkId = Util.createRandomInteger();
             const historyKeeper = [{
-                id: hkId,
+                id: String(hkId),
                 idOriginal: String(hkId),
                 username: "History",
                 indexUser: HISTORY_KEEPER_INDEX_USER,
@@ -952,35 +962,22 @@ define([
                 view: false
             }];
 
-            const other = content.ids.map(user => ({
-                id: String(user.ooId),
-                idOriginal: String(user.ooId),
-                username: TODO user.name || Messages.anonymous,
+            const realParticipants = Object.entries(content.ids).map(([id, user]) => ({
+                id: String(user.ooid),
+                idOriginal: String(user.ooid),
+                username: (users[id.slice(0, 32)] || {}).name || Messages.anonymous,
                 indexUser: user.index,
                 connectionId: user.netflux || Hash.createChannelId(),
                 isCloseCoAuthoring: false,
                 view: false
             }));
 
-            const myOOIndex = getNextUserIndex();
-
-            const me = [{
-                id: String(myOOId),
-                idOriginal: String(myOOId),
-                username: metadataMgr.getUserData().name || Messages.anonymous,
-                indexUser: myOOIndex,
-                connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
-                isCloseCoAuthoring:false,
-                view: false
-            }];
-
-
-
-
+            const participants = historyKeeper.concat(realParticipants);
+            console.log('XXX getParticipants end', participants);
 
             return {
-                index: myOOIndex,
-                list: p.filter(Boolean)
+                index: getMyOOIndex(),
+                list: participants,
             };
         };
 
@@ -3469,7 +3466,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             if (content.ids) {
                 handleNewIds(oldIds, content.ids);
-                oldIds = JSON.parse(JSON.stringify(content.ids));
+                oldIds = structuredClone(content.ids);
             }
             if (content.locks) {
                 handleNewLocks(oldLocks, content.locks);
