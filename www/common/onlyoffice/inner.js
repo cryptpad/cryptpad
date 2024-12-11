@@ -230,6 +230,10 @@ define([
                 netflux: metadataMgr.getNetfluxId()
             };
 
+            if (!myUniqueOOId) {
+                myUniqueOOId = String(myOOId) + myIndex;
+            }
+
             content.latestIndexUser = myIndex;
             oldIds = structuredClone(ids);
             console.log('XXX setMyId end', { myOOId, myIndex, content: structuredClone(content) });
@@ -1035,13 +1039,17 @@ define([
             var type = common.getMetadataMgr().getPrivateData().ooType;
             content.locks = content.locks || {};
             var l = content.locks[id] || {};
+            console.log('XXX getUserLock l', structuredClone(l));
             if (type === "sheet" || forceArray) {
-                return Object.keys(l).map(function (uid) { return l[uid]; });
+                const res = Object.keys(l).map(function (uid) { return l[uid]; });
+                console.log('XXX getUserLock result', structuredClone(res));
+                return res;
             }
             var res = {};
             Object.keys(l).forEach(function (uid) {
                 res[uid] = l[uid];
             });
+            console.log('XXX getUserLock result', structuredClone(res));
             return res;
         };
         var getLock = function () {
@@ -1051,12 +1059,14 @@ define([
                 Object.keys(content.locks || {}).forEach(function (id) {
                     Array.prototype.push.apply(locks, getUserLock(id));
                 });
+                console.log('XXX getLock result', structuredClone(locks));
                 return locks;
             }
             locks = {};
             Object.keys(content.locks || {}).forEach(function (id) {
                 Util.extend(locks, getUserLock(id));
             });
+            console.log('XXX getLock result', structuredClone(locks));
             return locks;
         };
 
