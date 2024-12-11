@@ -69,7 +69,7 @@
         outline: none;
         width: 700px;
         max-width: 90vw;
-        height: 500px;
+        //height: 500px;
         border-radius: @variables_radius_L;
         max-height: ~"calc(100vh - 20px)";
         margin: 0px;
@@ -85,6 +85,7 @@
         }
 
         .cp-creation-checkboxes {
+            min-width: 300px;
             flex-flow: column;
             align-items: baseline !important;
             max-height: 150px;
@@ -156,11 +157,10 @@
             flex: 1 0 auto;
             justify-content: space-around;
             & > div {
-                width: 300px;
+                //width: 300px;
                 max-width: 100%;
                 display: flex;
                 align-items: center;
-                flex-wrap: wrap;
                 font-size: 16px;
                 //margin: 10px 0;
                 min-height: 28px;
@@ -293,6 +293,11 @@
                     }
                 }
             }
+            .cp-creation-password-warning {
+                font-size: 0.75em;
+                line-height: 120%;
+                margin: 0.4rem 1rem calc(0.4rem + 6px);
+            }
             .cp-creation-settings {
                 button {
                     margin: 0;
@@ -421,7 +426,6 @@
             #cp-creation-form {
                 & > div {
                     width: 95%;
-                    margin: 0 auto;
                 }
                 .cp-creation-expire {
                     &.active {
@@ -431,7 +435,6 @@
                         .cp-creation-slider {
                             flex: none;
                             order: 10;
-                            width: 100%;
                         }
                     }
                 }
@@ -440,7 +443,7 @@
     }
     @media screen and (max-width: 800px) {
         #cp-creation {
-            height: 550px;
+            //height: 550px;
             #cp-creation-form {
                 div.cp-creation-template {
                     flex-flow: column;
