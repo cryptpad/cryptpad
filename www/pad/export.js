@@ -94,9 +94,59 @@ define([
                 return void cb(blob);
             }
             if (ext === ".md") {
+                let strikethrough = {
+                    filter: ['s', 'del', 'strike'],
+                    replacement: function (content) {
+                        return '~' + content + '~';
+                    }
+                };
+                let underline = {
+                    filter: ['u'],
+                    replacement: function (content) {
+                        return '<u>' + content + '</u>';
+                    }
+                };
                 var md = Turndown({
                     headingStyle: 'atx'
-                }).turndown(toExport);
+                }).addRule('table', {
+                    filter: ['table'],
+                    replacement: function (content, node) {
+                        var childNodeArr = Array.from(node.childNodes);
+                        var table = '';
+                        childNodeArr.forEach(function(rowNode) {
+                            rowNode.childNodes.forEach(function(childNode) {
+                                var rowContent = Array.from(childNode.childNodes);
+                                var indexOf = Array.prototype.indexOf;
+                                var index = childNodeArr.length > 1 ? indexOf.call(node.childNodes, rowNode) : indexOf.call(rowNode.childNodes, childNode);
+                                var row = '|';
+                                var rowLength = rowContent.filter(Boolean).length;
+                                for (var i =0; i < rowLength; i++) {
+                                    var cell = rowContent[i];
+                                    var cellContent = Array.from(cell.childNodes);
+                                    if ((cellContent.length === 1  && cellContent[0].nodeName === "BR") || !cellContent.length) {
+                                        row += '|';
+                                    } else if (cellContent.length >= 1) {
+                                        row += Turndown({
+                                            headingStyle: 'atx'
+                                        }).addRule('strikethrough', strikethrough)
+                                        .addRule('underline', underline)
+                                        .turndown(cell.innerHTML).replaceAll('\n', '<br>');
+                                        row += '|';
+                                    }
+                                }
+                                var newRow = row.concat('\n');
+                                if (index === 0) {
+                                    var separator = '|-';
+                                    newRow += `${separator.repeat(rowLength)}|\n`;
+                                }
+                                table += newRow;
+                                return newRow;
+                            });
+                        });
+                    return table;
+                }}).addRule('strikethrough', strikethrough)
+                .addRule('underline', underline)
+                .turndown(toExport);
                 var mdBlob = new Blob([md], {
                     type: 'text/markdown;charset=utf-8'
                 });
