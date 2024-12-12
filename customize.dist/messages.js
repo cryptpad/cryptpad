@@ -135,6 +135,10 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+    
+    Messages.form_passwordWarning = 'For Forms, you can only set the password during creation. It cannot be changed later.' // XXX
+
+    Messages.form_passwordWarning = 'Please note that a Form password can only be set now at creation time and cannot be changed later.' // XXX
 
     Messages.fm_restoreMultipleDialog = "Are you sure you want to restore {0} files and/or folders to their previous locations?"; // XXX: new translation key
 
