@@ -137,8 +137,6 @@ define(req, function(AppConfig, Default, Language) {
     };
     Messages.calendar_show = 'Show calendars'; // XXX
     Messages.calendar_hide = 'Hide calendars'; // XXX
-    Messages.admin_mfa_confirm_enable = "Are you sure you want to enable Multi-Factor Authentication?"; // XXX
-    Messages.admin_mfa_confirm_disable = "Are you sure you want to disable Multi-Factor Authentication?"; // XXX
     return Messages;
 
 });
