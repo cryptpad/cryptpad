@@ -1783,5 +1783,9 @@
     "admin_onboardingNameHint": "Bitte wähle einen Namen, eine Beschreibung, eine Akzentfarbe und ein Logo (alle Angaben sind optional)",
     "team_autoTrim": "Verlauf des Team-Drives wird gelöscht... Bitte warten.",
     "admin_mfa_confirm_enable": "Bist du sicher, dass du die Multi-Faktor-Authentifizierung aktivieren möchtest?",
-    "admin_mfa_confirm_disable": "Bist du sicher, dass du die Multi-Faktor-Authentifizierung deaktivieren möchtest?"
+    "admin_mfa_confirm_disable": "Bist du sicher, dass du die Multi-Faktor-Authentifizierung deaktivieren möchtest?",
+    "fm_restoreMultipleDialog": "Bist du sicher, dass du {0} Dateien/Ordner zurück in den ursprünglichen Ordner verschieben möchtest?",
+    "calendar_show": "Kalender anzeigen",
+    "form_passwordWarning": "Bitte beachte, dass ein Formularpasswort nur zum Zeitpunkt der Erstellung festgelegt und später nicht mehr geändert werden kann.",
+    "calendar_hide": "Kalender verbergen"
 }
