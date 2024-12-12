@@ -1462,7 +1462,6 @@ define([
                     }
                 });
                 if (paths.length > 1) {
-                    hide.push('restore');
                     hide.push('properties', 'access');
                     hide.push('rename');
                     hide.push('openparent');
@@ -5189,24 +5188,45 @@ define([
                 return void deletePaths(paths);
             }
             else if ($this.hasClass("cp-app-drive-context-restore")) {
-                if (paths.length !== 1) { return; }
-                var restorePath = paths[0].path;
-                var restoreName = paths[0].path[paths[0].path.length - 1];
-                if (restorePath.length === 4) {
-                    var rEl = manager.find(restorePath);
-                    if (manager.isFile(rEl)) {
-                        restoreName = manager.getTitle(rEl);
-                    } else if (manager.isSharedFolder(rEl)) {
-                        var sfData = manager.getSharedFolderData(rEl);
-                        restoreName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
-                    } else {
-                        restoreName = restorePath[1];
+                let getRestoreProperties = (path) => {
+                    let restorePath = path;
+                    let restoreName = path.at(-1);
+                    if (restorePath.length === 4) {
+                        let rEl = manager.find(restorePath);
+                        if (manager.isFile(rEl)) {
+                            restoreName = manager.getTitle(rEl);
+                        } else if (manager.isSharedFolder(rEl)) {
+                            let sfData = manager.getSharedFolderData(rEl);
+                            restoreName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
+                        } else {
+                            restoreName = restorePath[1];
+                        }
                     }
+                    return [restorePath, restoreName];
+                };
+                let restoreNumber = paths.length;
+                if (restoreNumber === 0) { return; }
+                if (restoreNumber === 1) { // single file restoration
+                    let [restorePath, restoreName] = getRestoreProperties(paths[0].path);
+                    UI.confirm(Messages._getKey("fm_restoreDialog", [restoreName]), res =>  {
+                        if (!res) { return; }
+                        manager.restore(restorePath, refresh);
+                    });
+                } else { // multiple files restoration
+                    UI.confirm(Messages._getKey("fm_restoreMultipleDialog", [restoreNumber]), res => {
+                        if (!res) { return; }
+                        nThen(waitFor => {
+                            paths.forEach(path => {
+                                if (!path) { // We met an error
+                                    console.error("Error while restoring files: no path");
+                                    return;
+                                }
+                                let restorePath = getRestoreProperties(path.path)[0];
+                                setTimeout(manager.restore(restorePath, waitFor()), 10);
+                            });
+                        }).nThen(refresh);
+                    });
                 }
-                UI.confirm(Messages._getKey("fm_restoreDialog", [restoreName]), function(res) {
-                    if (!res) { return; }
-                    manager.restore(restorePath, refresh);
-                });
             }
             else if ($this.hasClass("cp-app-drive-context-openparent")) {
                 if (paths.length !== 1) { return; }
