@@ -24,7 +24,7 @@ Configuring CryptPad for production requires additional steps. Refer to our [adm
 
 ## Current version
 
-The most recent version and all past release notes can be found on [releases page on GitHub](https://github.com/cryptpad/cryptpad/releases/).
+The most recent version and all past release notes can be found on the [releases page on GitHub](https://github.com/cryptpad/cryptpad/releases/).
 
 ## Setup using Docker
 
