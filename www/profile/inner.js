@@ -575,10 +575,10 @@ define([
             addLink($rightside);
             addFriendRequest($rightside);
             addMuteButton($rightside);
-            addDescription(APP.$rightside);
             addPublicKey($rightside);
             addCopyData($rightside);
             addViewButton($rightside);
+            addDescription($rightside);
             APP.initialized = true;
             createLeftside();
         }
