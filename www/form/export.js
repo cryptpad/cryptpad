@@ -59,7 +59,18 @@ define([
             var type = obj.type;
             if (!TYPES[type]) { return; } // Ignore static types
             var id = `q${i++}`;
-            q[id] = obj.q || Messages.form_default;
+            if (TYPES[type] && TYPES[type].exportCSV) {
+                var _obj = Util.clone(obj);
+                _obj.q = "tmp";
+                q[id] = {
+                    question: obj.q,
+                    items: TYPES[type].exportCSV(false, _obj).map(function (str) {
+                        return str.slice(6); // Remove "tmp | "
+                    })
+                };
+            } else {
+                q[id] = obj.q || Messages.form_default;
+            }
         });
 
         sortedKeys.forEach(function (k) {
@@ -73,14 +84,14 @@ define([
                 };
 
                 var i = 1;
-
                 order.forEach(function (key) {
                     if (!form[key]) { return; }
                     var type = form[key].type;
                     if (!TYPES[type]) { return; } // Ignore static types
                     var id = `q${i++}`;
-                    if (type === 'date') {
-                        msg[key] = new Date(msg[key]).toISOString();
+                    if (TYPES[type].exportCSV) {
+                        data[id] = TYPES[type].exportCSV(msg[key], form[key]);
+                        return;
                     }
                     data[id] = msg[key];
                 });
