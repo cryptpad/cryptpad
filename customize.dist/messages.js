@@ -134,7 +134,6 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
-
     return Messages;
 
 });
