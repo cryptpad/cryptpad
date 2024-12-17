@@ -4,6 +4,71 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+
+# ❄️ Winter release (2024.12.0)
+
+## Goals
+
+This version delivers fixes and improvements across CryptPad. We are particularly happy to release a fix of our OnlyOffice integration that could address long-standing issues with documents becoming corrupted. If confirmed at scale, this fix could dramatically improve the use of OnlyOffice apps in CryptPad.
+
+## Improvements
+
+- OnlyOffice integration
+  - Fix bug resulting in corrupted documents [#1736](https://github.com/cryptpad/cryptpad/pull/1736)
+- Drive
+  - Links included in Drive exports [#1695](https://github.com/cryptpad/cryptpad/pull/1695)
+- Rich Text
+  - Formatted tables and strikethrough text in Pad .md exports [#1720](https://github.com/cryptpad/cryptpad/pull/1720)
+- Forms
+  - Form password warning [#1690](https://github.com/cryptpad/cryptpad/pull/1690)
+- Performance improvements (1/3) to example-advanced.nginx.conf [#1709](https://github.com/cryptpad/cryptpad/pull/1709)
+- Enable toggle in and out of calendars on small screens [#1584](https://github.com/cryptpad/cryptpad/pull/1584)
+
+## Fixes
+
+- Accessibility
+  - Kanban Focus order fix [#1708](https://github.com/cryptpad/cryptpad/pull/1708)
+  - Change iframe title [#1706](https://github.com/cryptpad/cryptpad/pull/1706)
+  - Fix keyboard trap inside Form description [#1672](https://github.com/cryptpad/cryptpad/pull/1672)
+  - Disable arrow key navigation in the drive while modal is active [#1669](https://github.com/cryptpad/cryptpad/pull/1669)
+  - Simulate click action for keyboard users in Ctrl+E modal [#1726](https://github.com/cryptpad/cryptpad/pull/1726)
+- Drive
+  - Prevent links in trash from disappearing after drive reload [#1697](https://github.com/cryptpad/cryptpad/pull/1697)
+  - Restore multiple files/directories [#1692](https://github.com/cryptpad/cryptpad/pull/1692)
+  - Stop selection of all other trashed files when restoring single file [#1681](https://github.com/cryptpad/cryptpad/pull/1681)
+- Notifications
+  - Calendar reminders in notification panel [#1721](https://github.com/cryptpad/cryptpad/pull/1721)
+  - Add Notifications padding [#1688](https://github.com/cryptpad/cryptpad/pull/1688)
+  - Notification fixes [#1674](https://github.com/cryptpad/cryptpad/pull/1674)
+- Forms
+  - Fix some form storage-related bugs [#1723](https://github.com/cryptpad/cryptpad/pull/1723)
+  - Fix spacing issues in Forms  [#1682](https://github.com/cryptpad/cryptpad/pull/1682)
+  - Fix padding in form questions [#1670](https://github.com/cryptpad/cryptpad/pull/1670)
+- Helpdesk
+  - Fix "Closed" support tickets remaining in Inbox [#1719](https://github.com/cryptpad/cryptpad/pull/1719)
+- 'Request edit' button [#1680](https://github.com/cryptpad/cryptpad/pull/1680)
+- Fix example-code-typo [#1703](https://github.com/cryptpad/cryptpad/pull/1703)
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2024.9.1` please read the upgrade notes of all versions between yours and `2024.9.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.12.0
+npm ci
+npm run install:components
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
 # Autumn release (2024.9.0)
 
 ## Goals
