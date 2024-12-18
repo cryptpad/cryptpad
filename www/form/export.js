@@ -182,7 +182,7 @@ define([
         return order;
     };
 
-    Export.main = function (content, cb, ext, sframeChan, parsed, zip, sanitize, getUnique, existingNames) {
+    Export.main = function (content, cb, ext, sframeChan, parsed) {
         if (sframeChan && content.form) {
             var _answers = content["answers"];
             _answers['href'] = parsed.hash;
@@ -191,24 +191,19 @@ define([
             var answers;
             sframeChan.query("Q_FORM_FETCH_ANSWERS", _answers, function (err, obj) {
                 answers = obj && obj.results;
-                var rawName = content.metadata.title || 'File';
-                var fileName = getUnique(sanitize(rawName + ' (answers)'), '.json', existingNames);
-                existingNames.push(fileName.toLowerCase());
                 var types = {input: {},  textarea: {}, radio: {}, multiradio: {}, date: {}, checkbox: {}, multicheck: {}, sort: {}, poll: {}};
-                var arr = Export.results(content, answers, types, getFullOrder(content), "json");    
-                var results = new Blob([arr], { type : "application/json" });
-                var opts = {
-                    binary: true,
-                };
-                zip.file(fileName, results, opts);
+                var arr = Export.results(content, answers, types, getFullOrder(content), "json");
+                cb(new Blob([arr], {
+                    type: 'application/json;charset=utf-8'
+                }));
             });
+        } else {
+            var json = Util.clone(content || {});
+            delete json.answers;
+            cb(new Blob([JSON.stringify(json, 0, 2)], {
+                type: 'application/json;charset=utf-8'
+            }));
         }
-
-        var json = Util.clone(content || {});
-        delete json.answers;
-        cb(new Blob([JSON.stringify(json, 0, 2)], {
-            type: 'application/json;charset=utf-8'
-        }));
     };
 
     return Export;

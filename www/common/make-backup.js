@@ -32,7 +32,7 @@ define([
         return n;
     };
 
-    var transform = function (ctx, parsed, sjson, cb, padData, zip, existingNames) {
+    var transform = function (ctx, parsed, sjson, cb, padData) {
         var result = {
             data: sjson,
             ext: '.json',
@@ -49,7 +49,7 @@ define([
                 result.ext = _ext || Exporter.ext || '';
                 result.data = data;
                 cb(result);
-            }, null, ctx.sframeChan, padData, zip, sanitize, getUnique, existingNames);
+            }, null, ctx.sframeChan, padData);
         }, function () {
             cb(result);
         });
@@ -247,7 +247,7 @@ define([
                         }, {
                             hash: parsed.hash,
                             password: fData.password
-                        }, zip, existingNames);
+                        });
                     });
                 };
 
