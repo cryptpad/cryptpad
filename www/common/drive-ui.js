@@ -3453,6 +3453,58 @@ define([
             return $fihElement;
         };
 
+        var lexicographicCompare = function(a, b) {
+            if (!Array.isArray(a)) {
+                a = [a];
+            }
+            if (!Array.isArray(b)) {
+                b = [b];
+            }
+
+            if(a.length == 0 && b.length == 0) {
+                return 0;
+            } else if (a.length == 0) {
+                return -1;
+            } else if (b.length == 0) {
+                return 1;
+            } else if(a[0] < b[0]) {
+                return -1;
+            } else if(a[0] > b[0]) {
+                return 1;
+            } else {
+                // This means `a[0] == b[0]`. Chop off the first elements and compare the rest.
+                return lexicographicCompare(a.slice(1), b.slice(1));
+            }
+        };
+
+        var splitStringToTextAndNumbers = function(s) {
+            var textOrDigitsRe = /(?<text>\D+)?(?<digits>\d+)?/g;
+            var split = [];
+
+            for (var match of s.matchAll(textOrDigitsRe)) {
+                if (match.groups.text !== undefined) {
+                    split.push(match.groups.text);
+                }
+                if (match.groups.digits !== undefined) {
+                    split.push(parseInt(match.groups.digits));
+                }
+            }
+
+            return split;
+        };
+
+        var naturalSort = function(a, b) {
+            if (typeof(a) == "string") {
+                a = splitStringToTextAndNumbers(a);
+            }
+            if (typeof(b) == "string") {
+                b = splitStringToTextAndNumbers(b);
+            }
+
+            var comp = lexicographicCompare(a, b);
+            return comp;
+        };
+
         var sortElements = function (folder, path, oldkeys, prop, asc, useId) {
             var root = path && manager.find(path);
             if (path[0] === SHARED_FOLDER) {
@@ -3497,9 +3549,8 @@ define([
             keys.sort(function(a, b) {
                 var _a = props[(a && a.uid) || a];
                 var _b = props[(b && b.uid) || b];
-                if (_a < _b) { return mult * -1; }
-                if (_b < _a) { return mult; }
-                return 0;
+
+                return mult * naturalSort(_a, _b);
             });
             return keys;
         };
@@ -4513,8 +4564,7 @@ define([
                             manager.getSharedFolderData(root[a]).title : a;
                 var newB = manager.isSharedFolder(root[b]) ?
                             manager.getSharedFolderData(root[b]).title : b;
-                return newA < newB ? -1 :
-                        (newA === newB ? 0 : 1);
+                return naturalSort(newA, newB);
             });
             keys.forEach(function (key) {
                 // Do not display files in the menu
