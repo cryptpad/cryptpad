@@ -93,7 +93,11 @@ define([
                         data[id] = TYPES[type].exportCSV(msg[key], form[key]);
                         return;
                     }
-                    data[id] = msg[key];
+                    if (type === 'date') {
+                        data[id] = new Date(msg[key]).toISOString();
+                    } else {
+                        data[id] = msg[key];
+                    }
                 });
                 r.push(data);
         });
