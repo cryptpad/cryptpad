@@ -32,7 +32,7 @@ define([
         return n;
     };
 
-    var transform = function (ctx, type, sjson, cb, padData) {
+    var transform = function (ctx, parsed, sjson, cb, padData) {
         var result = {
             data: sjson,
             ext: '.json',
@@ -43,7 +43,7 @@ define([
         } catch (e) {
             return void cb(result);
         }
-        var path = '/' + type + '/export.js';
+        var path = '/' + parsed.type + '/export.js';
         require([path], function (Exporter) {
             Exporter.main(json, function (data, _ext) {
                 result.ext = _ext || Exporter.ext || '';
@@ -140,7 +140,7 @@ define([
             if (cancelled) { return; }
             if (err) { return; }
             if (!val) { return; }
-            transform(ctx, parsed.type, val, function (res) {
+            transform(ctx, parsed, val, function (res) {
                 if (cancelled) { return; }
                 if (!res.data) { return; }
                 var dl = function () {
@@ -243,7 +243,7 @@ define([
                         var opts = {
                             binary: true,
                         };
-                        transform(ctx, parsed.type, val, function (res) {
+                        transform(ctx, parsed, val, function (res) {
                             if (ctx.stop) { return; }
                             if (!res.data) { return void error('EEMPTY'); }
                             var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
