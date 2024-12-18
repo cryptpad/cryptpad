@@ -23,6 +23,7 @@
 
     #cp-app-profile-header {
         display: flex;
+        flex-flow: row wrap;
         #cp-app-profile-rightside {
             flex: 1;
             display: flex;
@@ -77,6 +78,12 @@
             min-width: 40px;
             height: 40px;
             margin: 5px !important;
+        }
+    }
+
+    @media screen and (max-width: 550px) {
+        #cp-app-profile-avatar {
+            margin: auto;
         }
     }
     .cp-app-profile-resizer {
@@ -153,6 +160,7 @@
         position: relative;
         font-size: 16px;
         margin-bottom: 20px;
+        margin-top: 1em;
         .cp-app-profile-description-code {
             display: none;
         }
