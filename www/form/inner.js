@@ -4364,14 +4364,6 @@ define([
                         }
                     }
 
-                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
-                    evOnChange.reg(function(){
-                        togglePageArrows()
-                        var shownContent = checkEmptyPages()[0];
-                        var shownPages = checkEmptyPages()[1];
-                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
-                        
-                    });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
                     ]);
@@ -4379,29 +4371,38 @@ define([
                         h('i.fa.fa-arrow-right'),
                     ]);
 
-                    if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
-                    if (current === 1) { $(left).css('visibility', 'hidden'); }
-
                     var togglePageArrows = function() {
                         var shownContent = checkEmptyPages()[0];
                         var shownPages = checkEmptyPages()[1];
                         if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) {
                             $(right).css('visibility', 'hidden');
                         } else {
-                            $(right).css('visibility', 'visible')
+                            $(right).css('visibility', 'visible');
                         }
 
                         if (current === 1) {$(left).css('visibility', 'hidden');}
-                        $container.find('.cp-form-page').hide()
-                        $($container.find('.cp-form-page').get(current-1)).show()
+                        $container.find('.cp-form-page').hide();
+                        $($container.find('.cp-form-page').get(current-1)).show();
                         if (current !== shownContent.length) {
-                            $container.find('.cp-form-send-container').hide()
+                            $container.find('.cp-form-send-container').hide();
                         } else {
-                            $container.find('.cp-form-send-container').show()
+                            $container.find('.cp-form-send-container').show();
                         }
-                    }
+                    };
 
-                    togglePageArrows()
+                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
+                    evOnChange.reg(function(){
+                        togglePageArrows();
+                        var shownContent = checkEmptyPages()[0];
+                        var shownPages = checkEmptyPages()[1];
+                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
+                        
+                    });
+
+                    if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
+                    if (current === 1) { $(left).css('visibility', 'hidden'); }
+
+                    togglePageArrows();
 
                     $(left).click(function () {
                         refreshPage(current - 1, 'prev');
