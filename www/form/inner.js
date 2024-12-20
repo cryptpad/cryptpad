@@ -4346,11 +4346,8 @@ define([
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
 
-                    var checkPages = checkEmptyPages();
-                    var shownContent = checkPages[0];
-                    var shownPages = checkPages[1];
-                    var shownLength = shownContent.length;
-
+                    var shownContent = checkEmptyPages()[0];
+                    var shownPages = checkEmptyPages()[1];
                     if (pgcontent[(current - 1)] && pgcontent[current-1].empty) {
                         if (direction === 'next') {
                             current++;
@@ -4367,14 +4364,13 @@ define([
                         }
                     }
 
-                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
+                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
                     evOnChange.reg(function(){
-                        var checkPages = checkEmptyPages();
-                        var shownContent = checkPages[0];
-                        var shownPages = checkPages[1];
-                        var shownLength = shownContent.length;
-                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
-                        togglePageArrows(shownLength)
+                        togglePageArrows()
+                        var shownContent = checkEmptyPages()[0];
+                        var shownPages = checkEmptyPages()[1];
+                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
+                        
                     });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
@@ -4386,12 +4382,10 @@ define([
                     if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
 
-                    var togglePageArrows = function(shownLength) {
-                        var checkPages = checkEmptyPages();
-                        var shownContent = checkPages[0];
-                        var shownPages = checkPages[1];
-                        var shownLength = shownContent.length;
-                        if (shownPages.indexOf(_content[current-1])+1 === shownLength) {
+                    var togglePageArrows = function() {
+                        var shownContent = checkEmptyPages()[0];
+                        var shownPages = checkEmptyPages()[1];
+                        if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) {
                             $(right).css('visibility', 'hidden');
                         } else {
                             $(right).css('visibility', 'visible')
@@ -4400,7 +4394,7 @@ define([
                         if (current === 1) {$(left).css('visibility', 'hidden');}
                         $container.find('.cp-form-page').hide()
                         $($container.find('.cp-form-page').get(current-1)).show()
-                        if (current !== shownLength) {
+                        if (current !== shownContent.length) {
                             $container.find('.cp-form-send-container').hide()
                         } else {
                             $container.find('.cp-form-send-container').show()
