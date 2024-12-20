@@ -4374,6 +4374,7 @@ define([
                         var shownPages = checkPages[1];
                         var shownLength = shownContent.length;
                         $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
+                        togglePageArrows(shownLength)
                     });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
@@ -4385,6 +4386,29 @@ define([
                     if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
 
+                    var togglePageArrows = function(shownLength) {
+                        var checkPages = checkEmptyPages();
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
+                        var shownLength = shownContent.length;
+                        if (shownPages.indexOf(_content[current-1])+1 === shownLength) {
+                            $(right).css('visibility', 'hidden');
+                        } else {
+                            $(right).css('visibility', 'visible')
+                        }
+
+                        if (current === 1) {$(left).css('visibility', 'hidden');}
+                        $container.find('.cp-form-page').hide()
+                        $($container.find('.cp-form-page').get(current-1)).show()
+                        if (current !== shownLength) {
+                            $container.find('.cp-form-send-container').hide()
+                        } else {
+                            $container.find('.cp-form-send-container').show()
+                        }
+                    }
+
+                    togglePageArrows()
+
                     $(left).click(function () {
                         refreshPage(current - 1, 'prev');
                     });
@@ -4392,14 +4416,6 @@ define([
                         refreshPage(current + 1, 'next');
                     });
                     $page.append([left, state, right]);
-
-                    $container.find('.cp-form-page').hide();
-                    $($container.find('.cp-form-page').get(current-1)).show();
-                    if (current !== pages) {
-                        $container.find('.cp-form-send-container').hide();
-                    } else {
-                        $container.find('.cp-form-send-container').show();
-                    }
                 };
                 setTimeout(refreshPage);
             }
