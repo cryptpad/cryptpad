@@ -59,7 +59,7 @@ To upgrade:
 2. Get the latest code with git
 
 ```bash
-git fetch origin --tags
+git fetch --depth 1 origin tag 2024.12.0
 git checkout 2024.12.0
 npm ci
 npm run install:components
