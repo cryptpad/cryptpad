@@ -136,12 +136,12 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    Messages.kanban_moveItemUp = 'Move item up'
-    Messages.kanban_moveitemDown = 'Move item down'
-    Messages.kanban_moveitemLeft = 'Move item left'
-    Messages.kanban_moveitemRight = 'Move item right'
-    Messages.kanban_moveBoardLeft = 'Move board left'
-    Messages.kanban_moveBoardRight = 'Move board right'
+    Messages.kanban_moveItemUp = 'Move item up' // XXX
+    Messages.kanban_moveitemDown = 'Move item down' // XXX
+    Messages.kanban_moveitemLeft = 'Move item left' // XXX
+    Messages.kanban_moveitemRight = 'Move item right' // XXX
+    Messages.kanban_moveBoardLeft = 'Move board left' // XXX
+    Messages.kanban_moveBoardRight = 'Move board right' // XXX
 
     return Messages;
 
