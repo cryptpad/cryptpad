@@ -44,7 +44,7 @@ define([
             getTextColor: function () { return '#000'; },
             cursors: {},
             tags: [],
-            dragBoards: true,
+            dragBoards: 'ontouchstart' in window ? false : true,
             addItemButton: false,
             readOnly: false,
             dragEl: function (/*el, source*/) {},
