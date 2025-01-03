@@ -594,7 +594,7 @@ define([
             $container.find('.kanban-board').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-left',
-                    'alt': '', 
+                    'alt': Messages.kanban_moveBoardLeft,
                 }).click(function () { 
                     shiftBoards('left', el);
                 }).appendTo($(el).find('.kanban-board-header'));
@@ -602,7 +602,7 @@ define([
             $container.find('.kanban-board').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-right',
-                    'alt': '', 
+                    'alt': Messages.kanban_moveBoardUp,
                 }).click(function () {
                     shiftBoards('right', el);
                 }).appendTo($(el).find('.kanban-board-header'));
@@ -610,7 +610,7 @@ define([
             $container.find('.kanban-item').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-down',
-                    'alt': Messages.kanban_editCard,
+                    'alt': Messages.kanban_moveItemDown,
                 }).click(function () {
                     shiftItem('down', el);
                 }).insertAfter($(el).find('.kanban-item-text'));
@@ -618,7 +618,7 @@ define([
             $container.find('.kanban-item').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-up',
-                    'alt': Messages.kanban_editCard,
+                    'alt': Messages.kanban_moveItemUp,
                 }).click(function () {
                     shiftItem('up', el);
                 }).insertAfter($(el).find('.kanban-item-text'));
@@ -626,7 +626,7 @@ define([
             $container.find('.kanban-item').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-left',
-                    'alt': Messages.kanban_editCard,
+                    'alt': Messages.kanban_moveItemLeft,
                 }).click(function () {
                     shiftItem('left', el);
                 }).insertAfter($(el).find('.kanban-item-text'));
@@ -634,7 +634,7 @@ define([
             $container.find('.kanban-item').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-right',
-                    'alt': Messages.kanban_editCard,
+                    'alt': Messages.kanban_moveItemRight,
                 }).click(function () {
                     shiftItem('right', el);
                 }).insertAfter($(el).find('.kanban-item-text'));

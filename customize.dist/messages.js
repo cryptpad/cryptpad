@@ -136,6 +136,13 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.kanban_moveItemUp = 'Move item up'
+    Messages.kanban_moveitemDown = 'Move item down'
+    Messages.kanban_moveitemLeft = 'Move item left'
+    Messages.kanban_moveitemRight = 'Move item right'
+    Messages.kanban_moveBoardLeft = 'Move board left'
+    Messages.kanban_moveBoardRight = 'Move board right'
+
     return Messages;
 
 });
