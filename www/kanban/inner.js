@@ -544,14 +544,14 @@ define([
 
             var move = function (arr, oldIndex, newIndex) {
                 arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
-                updateBoards(framework, kanban, kanban.options.boards);
+                _updateBoards(framework, kanban, kanban.options.boards);
             };
 
             var moveBetweenBoards = function (nextBoardItems, elId, boardItems, index, boards, boardId) {
                 nextBoardItems.unshift(elId);
                 boardItems.splice(index, 1);
                 boards.data[boardId].item = boardItems;
-                updateBoards(framework, kanban, boards);
+                _updateBoards(framework, kanban, boards);
             };
 
             var shiftItem = function (direction, el) {
