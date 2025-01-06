@@ -4260,12 +4260,38 @@ define([
                     }
                 }
             }
+            let shiftButtons;
+            if ('ontouchstart' in window) {
+                var upButton = h('div.kanban-edit-item.fa.fa-arrow-up.direction-arrow');
+                var downButton = h('div.kanban-edit-item.fa.fa-arrow-down.direction-arrow');
+                var shiftBlock = function(direction) {
+                    var blockIndex = content.order.indexOf(uid);
+                    if (direction === 'up' && blockIndex > 0) {
+                        content.order.splice(blockIndex-1, 0, content.order.splice(blockIndex, 1)[0]);
+                    } else if (direction === 'down' && blockIndex < content.order.length-1) {
+                        content.order.splice(blockIndex+1, 0, content.order.splice(blockIndex, 1)[0]);
+                    }
+                    framework.localChange();
+                    updateForm(framework, content, true);
+                };
+                $(upButton).click(function () {
+                    shiftBlock('up');
+                });
+                $(downButton).click(function () {
+                    shiftBlock('down');
+                });
+                shiftButtons = h('div.cp-form-block-arrows', [
+                    upButton,
+                    downButton
+                ]);
+            }
             var editableCls = editable ? ".editable" : "";
             elements.push(h('div.cp-form-block'+editableCls, {
                 'data-id':uid,
                 'data-type':type
             }, [
                 APP.isEditor ? dragHandle : undefined,
+                shiftButtons,
                 changeType,
                 isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
@@ -4505,7 +4531,7 @@ define([
             return true;
         });
 
-        if (editable) {
+        if (editable && !('ontouchstart' in window)) {
             if (APP.mainSortable) { APP.mainSortable.destroy(); }
             var grabHandle;
             if (window.matchMedia("(pointer: coarse)").matches) {
