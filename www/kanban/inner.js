@@ -547,9 +547,9 @@ define([
                 updateBoards(framework, kanban, kanban.options.boards);
             };
 
-            var moveBetweenBoards = function (nextBoardItems, elId, boardItems, itemIndex, boards, boardId) {
+            var moveBetweenBoards = function (nextBoardItems, elId, boardItems, index, boards, boardId) {
                 nextBoardItems.unshift(elId);
-                boardItems.splice(itemIndex, 1);
+                boardItems.splice(index, 1);
                 boards.data[boardId].item = boardItems;
                 updateBoards(framework, kanban, boards);
             };
@@ -562,7 +562,6 @@ define([
                 var boardItems = direction === ('up' || 'down') ? kanban.options.boards.data[boardId].item : boards.data[boardId].item;
                 var index = boardItems.indexOf(elId);
                 var boardIndex = boards.list.indexOf(parseInt(boardId));
-                var itemIndex = boardItems.indexOf(elId);
                 let nextBoardItems;
 
                 if (direction === 'up' && index > 0) {
@@ -571,10 +570,10 @@ define([
                     move(boardItems, index, index+1);
                 } else if (direction === 'left' && boardIndex > 0) {
                     nextBoardItems = boards.data[boards.list[boardIndex-1]].item;
-                    moveBetweenBoards(nextBoardItems, elId, boardItems, itemIndex, boards, boardId);
+                    moveBetweenBoards(nextBoardItems, elId, boardItems, index, boards, boardId);
                 } else if (direction === 'right' && boardIndex < kanban.options.boards.list.length-1){
                     nextBoardItems = boards.data[boards.list[boardIndex+1]].item;
-                    moveBetweenBoards(nextBoardItems, elId, boardItems, itemIndex, boards, boardId);
+                    moveBetweenBoards(nextBoardItems, elId, boardItems, index, boards, boardId);
                 }
             };
 
@@ -602,7 +601,7 @@ define([
             $container.find('.kanban-board').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-right',
-                    'alt': Messages.kanban_moveBoardUp,
+                    'alt': Messages.kanban_moveBoardRight,
                 }).click(function () {
                     shiftBoards('right', el);
                 }).appendTo($(el).find('.kanban-board-header'));
@@ -667,8 +666,6 @@ define([
                 e.stopPropagation();
             }).appendTo($(el).find('.kanban-board-header'));
         });
-        
-
     };
 
     // Kanban code
