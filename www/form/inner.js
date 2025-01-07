@@ -4020,10 +4020,8 @@ define([
             var changeType;
             if (editable) {
                 // Drag handle
-                dragHandle = h('span.cp-form-block-drag-handle', [
-                    h('i.fa.fa-ellipsis-h'),
-                    h('i.fa.fa-ellipsis-h'),
-                ]);
+                var dragEllipses = 'ontouchstart' in window ? undefined : [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')]
+                dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
 
                 // Question
                 var inputQ = h('input', {
@@ -4262,8 +4260,8 @@ define([
             }
             let shiftButtons;
             if ('ontouchstart' in window) {
-                var upButton = h('div.kanban-edit-item.fa.fa-arrow-up.direction-arrow');
-                var downButton = h('div.kanban-edit-item.fa.fa-arrow-down.direction-arrow');
+                var upButton = h('div.kanban-edit-item.fa.fa-arrow-up');
+                var downButton = h('div.kanban-edit-item.fa.fa-arrow-down.direction-arrow-down');
                 var shiftBlock = function(direction) {
                     var blockIndex = content.order.indexOf(uid);
                     if (direction === 'up' && blockIndex > 0) {
