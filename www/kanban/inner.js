@@ -552,6 +552,7 @@ define([
                 boardItems.splice(index, 1);
                 boards.data[boardId].item = boardItems;
                 _updateBoards(framework, kanban, boards);
+                $(`.kanban-item[data-eid="${elId}"]`)[0].scrollIntoView()
             };
 
             var shiftItem = function (direction, el) {
@@ -585,9 +586,7 @@ define([
                 } else if (direction === 'right' && index < kanban.options.boards.list.length-1) {
                     move(kanban.options.boards.list, index, index+1);
                 }
-                setTimeout(function () {
-                    el.scrollIntoView();
-                }, 100);
+                $(`.kanban-board[data-id="${elId}"]`)[0].scrollIntoView()
             };
 
             $container.find('.kanban-board').each(function (i, el) {
