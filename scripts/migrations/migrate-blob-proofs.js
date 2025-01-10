@@ -2,24 +2,24 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+const { parentPort } = require('node:worker_threads');
 const Path = require('node:path');
+const Fs = require('node:fs');
 const nThen = require("nthen");
 const Semaphore = require("saferphore");
 const Logger = require("../../lib/log");
-const config = require("../../lib/load-config");
 const BlobStorage = require("../../lib/storage/blob");
-const Fs = require('node:fs');
+let config = require("../../lib/load-config");
 
 
 const blobPath = config.blobPath || './blob';
 let Log = {};
 
-// XXX NOTE: in cleaning mode, we DON'T migrate
+// NOTE: in cleaning mode, we DON'T migrate
 // (we suppose data has already been migrated)
-const DRY_RUN = true;
-const CLEAN_OLD = false;
+const start = (clean, dry, cb) => {
+    const DRY_RUN = dry;
 
-const start = (clean) => {
     let dirList = [];
     let blobStore;
     nThen(w => {
@@ -156,9 +156,43 @@ const start = (clean) => {
         });
         n(() => {
             Log.info("DONE");
-            process.exit(0);
+            cb();
         });
     });
 };
 
-start(CLEAN_OLD);
+if (parentPort) {
+    // Loaded as worker script
+    config = JSON.parse(JSON.stringify(config));
+    config.logToStdout = false;
+    parentPort.on('message', (message) => {
+        let parsed = message; //JSON.parse(message);
+        if (!parsed?.start) { return; }
+        // Migrate
+        start(false, false, () => {
+            parentPort.postMessage('MIGRATED');
+            // If success, clean
+            start(true, false, () => {
+                parentPort.postMessage('CLEANED');
+            });
+        });
+    });
+    parentPort.postMessage('READY');
+} else if (require.main === module) {
+    // Loaded from command-line
+    let dry = false;
+    let clean = false;
+    process.argv.forEach(key => {
+        if (key === '--dry') {
+            dry = true;
+            return;
+        }
+        if (key === '--clean') {
+            clean = true;
+            return;
+        }
+    });
+    start(clean, dry, () => {
+        process.exit(0);
+    });
+}
