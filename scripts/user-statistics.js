@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const Path = require('node:path');
 const nThen = require("nthen");
 const Semaphore = require("saferphore");
 const Logger = require("../lib/log");
@@ -24,7 +23,7 @@ const start = () => {
     let time = +new Date();
     let Log = {};
     let all = {};
-    let blobStore, pinStore, store;
+    let blobStore, store;
     nThen(w => {
         Logger.create(config, w(function (_log) {
             Env.Log = Log = _log;

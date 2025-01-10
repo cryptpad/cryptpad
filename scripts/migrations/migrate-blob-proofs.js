@@ -101,7 +101,7 @@ const start = (clean, dry, cb) => {
                                     err
                                 });
                             }
-                            let blobs = []
+                            let blobs = [];
                             nThen(www => {
                                 list.forEach(dir => {
                                     // ./blob/abc/abcdefg.../01
@@ -142,7 +142,7 @@ const start = (clean, dry, cb) => {
 
                                         }));
                                         }));
-                                    })
+                                    });
                                 });
                             }).nThen(ww(give(() => {
                                 Log.info("END_USER", edPublic);
