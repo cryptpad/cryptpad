@@ -3928,7 +3928,7 @@ define([
 
         // EXTENSION_POINT:ADMIN_ITEM
         let utils = {
-            h, Util, Hash, UIElements
+            $, h, Util, Hash, UIElements, UI, APP
         };
         common.getExtensionsSync('ADMIN_ITEM').forEach(ext => {
             if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
@@ -3952,13 +3952,19 @@ define([
         sidebar.makeLeftside(categories);
     };
     var updateStatus = APP.updateStatus = function (cb) {
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'INSTANCE_STATUS',
-        }, function (e, data) {
-            if (e) { console.error(e); return void cb(e); }
-            if (!Array.isArray(data)) { return void cb('EINVAL'); }
-            APP.instanceStatus = data[0];
-            console.log("Status", APP.instanceStatus);
+        nThen(w => {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'INSTANCE_STATUS',
+            }, w(function (e, data) {
+                if (e) { console.error(e); return void cb(e); }
+                if (!Array.isArray(data)) { return void cb('EINVAL'); }
+                APP.instanceStatus = data[0];
+                console.log("Status", APP.instanceStatus);
+            }));
+            require([`/api/config?${+new Date()}`], w(ApiConfig => {
+                APP.instanceConfig = ApiConfig;
+            }));
+        }).nThen(() => {
             cb();
         });
     };
