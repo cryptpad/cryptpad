@@ -2186,29 +2186,48 @@ APP.recurrenceRule = {
                 // If at least one calendar is editable, show the popup
                 show = true;
             });
-
-            $el.find('.tui-full-calendar-dropdown-button').on('keydown', function () {
+            $el.find('.tui-full-calendar-dropdown-button').on('click keydown', function (event) {
                 setTimeout(() => {
-                    $el.find('.tui-full-calendar-dropdown-menu').find('li').first().focus();
-                }, 0);
+                    if($el.find('.tui-full-calendar-open').length){
+                        $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "true");
+                    }
+                    else {
+                        $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
+                    }
+                    if(event.type === 'keydown'){
+                        $el.find('.tui-full-calendar-dropdown-menu').find('li').first().focus();
+                    }
+                },0);
             });
+            $el.find('.tui-full-calendar-dropdown-menu li').on('click', function () {
+                $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
+            });
+
             $el.find('.tui-full-calendar-dropdown-menu').on('keydown', function (event) {
                 var $dropdown = $(this);
                 var $focused = $dropdown.find('li:focus');
 
+                if(event.key === 'Escape') {
+                    $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
+                    return;
+                }
                if(event.key === 'Enter') {
                     event.preventDefault();
                     $focused.click();
+                    $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
+                    $el.find('#tui-full-calendar-schedule-title').focus();
                     return;
                }
                 if (event.shiftKey && event.key === 'Tab') {
                     event.preventDefault();
+                    $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
                     $el.find('.tui-full-calendar-popup-section').removeClass('tui-full-calendar-open');
                     $el.find('.tui-full-calendar-popup-save').focus();
                     return;
                 }
                 if (event.key === 'Tab') {
                     event.preventDefault();
+                    $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
                     $el.find('.tui-full-calendar-popup-section').removeClass('tui-full-calendar-open');
                     $el.find('#tui-full-calendar-schedule-title').focus();
                     return;
