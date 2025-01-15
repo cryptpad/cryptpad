@@ -2155,7 +2155,6 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o'));
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
-            $el.find('.tui-full-calendar-popup-section-item').attr('aria-expanded', 'false');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
             $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
             $el.find('.cp-calendar-close').attr('tabindex',-1);
@@ -2186,70 +2185,72 @@ APP.recurrenceRule = {
                 // If at least one calendar is editable, show the popup
                 show = true;
             });
-            $el.find('.tui-full-calendar-dropdown-button').on('click keydown', function (event) {
-                setTimeout(() => {
-                    if($el.find('.tui-full-calendar-open').length){
-                        $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "true");
-                    }
-                    else {
-                        $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
-                    }
-                    if(event.type === 'keydown'){
-                        $el.find('.tui-full-calendar-dropdown-menu').find('li').first().focus();
-                    }
-                },0);
-            });
-            $el.find('.tui-full-calendar-dropdown-menu li').on('click', function () {
-                $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
-            });
+            let calendarDropdown = function ($el) {
+                let $dropdownButton = $el.find('.tui-full-calendar-dropdown-button');
+                let $dropdownMenu = $el.find('.tui-full-calendar-dropdown-menu');
 
-            $el.find('.tui-full-calendar-dropdown-menu').on('keydown', function (event) {
-                var $dropdown = $(this);
-                var $focused = $dropdown.find('li:focus');
+                let toggleAriaExpanded = function (isOpen) {
+                    $dropdownButton.attr('aria-expanded', isOpen ? 'true' : 'false');
+                };
 
-                if(event.key === 'Escape') {
-                    $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
-                    return;
-                }
-               if(event.key === 'Enter') {
-                    event.preventDefault();
-                    $focused.click();
-                    $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
-                    $el.find('#tui-full-calendar-schedule-title').focus();
-                    return;
-               }
-                if (event.shiftKey && event.key === 'Tab') {
-                    event.preventDefault();
-                    $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
-                    $el.find('.tui-full-calendar-popup-section').removeClass('tui-full-calendar-open');
-                    $el.find('.tui-full-calendar-popup-save').focus();
-                    return;
-                }
-                if (event.key === 'Tab') {
-                    event.preventDefault();
-                    $el.find('.tui-full-calendar-dropdown-button').attr("aria-expanded", "false");
-                    $el.find('.tui-full-calendar-popup-section').removeClass('tui-full-calendar-open');
-                    $el.find('#tui-full-calendar-schedule-title').focus();
-                    return;
-                }
-                if (event.key === 'ArrowDown') {
-                    event.preventDefault();
-                    var $next = $focused.next('li');
-                    if ($next.length) {
-                        $next.focus();
-                    } else {
-                        $dropdown.find('li').first().focus();
+                let calendarDropdownNavigation = function (event) {
+                    let $focusedItem = $dropdownMenu.find('li:focus');
+                    switch (event.key) {
+                        case 'Enter':
+                            event.preventDefault();
+                            $focusedItem.click();
+                            toggleAriaExpanded(false);
+                            $el.find('#tui-full-calendar-schedule-title').focus();
+                            break;
+                        case 'Tab':
+                            event.preventDefault();
+                            toggleAriaExpanded(false);
+                            $el.find('.tui-full-calendar-popup-section').removeClass('tui-full-calendar-open');
+                            if (event.shiftKey) {
+                                $el.find('.tui-full-calendar-popup-save').focus();
+                            } else {
+                                $el.find('#tui-full-calendar-schedule-title').focus();
+                            }
+                            break;
+                        case 'ArrowDown':
+                            event.preventDefault();
+                            var $next = $focusedItem.next('li');
+                            if ($next.length) {
+                                $next.focus();
+                            } else {
+                                $dropdownMenu.find('li').first().focus();
+                            }
+                            break;
+                        case 'ArrowUp':
+                            event.preventDefault();
+                            var $prev = $focusedItem.prev('li');
+                            if ($prev.length) {
+                                $prev.focus();
+                            } else {
+                                $dropdownMenu.find('li').last().focus();
+                            }
+                            break;
                     }
-                } else if (event.key === 'ArrowUp') {
-                    event.preventDefault();
-                    var $prev = $focused.prev('li');
-                    if ($prev.length) {
-                        $prev.focus();
-                    } else {
-                        $dropdown.find('li').last().focus();
-                    }
-                }
-            });
+                };
+
+                $dropdownButton.on('click keydown', function(event){
+                    setTimeout(() => {
+                        let isOpen = $el.find('.tui-full-calendar-open').length > 0;
+                        toggleAriaExpanded(isOpen);
+                        if (event.type === 'keydown') {
+                            $dropdownMenu.find('li').first().focus();
+                        }
+                    }, 0);
+                });
+
+                $dropdownMenu.on('click', function () {
+                    toggleAriaExpanded(false);
+                });
+
+                $dropdownMenu.on('keydown', calendarDropdownNavigation);
+            };
+            calendarDropdown($el);
+
             if ($el.find('.tui-full-calendar-hide.tui-full-calendar-dropdown').length || !show) {
                 $el.hide();
                 UI.warn(Messages.calendar_errorNoCalendar);
