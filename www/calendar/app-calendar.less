@@ -176,6 +176,7 @@
             }
             .tui-full-calendar-icon {
                 text-align:center;
+                flex-shrink: 0;
             }
             .tui-full-calendar-popup-detail-item {
                 a {
@@ -193,7 +194,7 @@
         }
         li.tui-full-calendar-popup-section-item {
             padding: 0 6px;
-            height: 32px;
+            min-height: 32px;
         }
         .tui-full-calendar-popup-section-item {
             height: auto;
@@ -215,6 +216,7 @@
                 }
                 .tui-full-calendar-content {
                     text-overflow: ellipsis;
+                    overflow: hidden;
                     font: @colortheme_app-font;
                     padding: 0 10px;
                     &:focus{
