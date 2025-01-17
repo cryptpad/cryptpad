@@ -188,38 +188,31 @@
 
     .item-arrow-container {
         width: 17%;
-        margin-top: 2%
+        margin-top: 2%;
+        .fa-arrow-down {
+            position: absolute;
+            left: 42%;
+        }
+        .fa-arrow-up {
+            position: absolute;
+            left: 54%;
+        }
     }
 
     .fa-arrow-right {
         &.item-arrow {
             margin-right: -250%
         }
-        &.board-arrow {
-        
-        }
     }
 
     .fa-arrow-left {
+        float: left;
         &.item-arrow {
-            float: left;
             margin-left: -250%;
         }
         &.board-arrow {
-
-        float: left;
             margin-left: -2%;
         }
-    }
-
-    .fa-arrow-down {
-        position: absolute;
-        left: 42%;
-    }
-    
-    .fa-arrow-up {
-        position: absolute;
-        left: 54%;
     }
 
     .cp-kanban-cursors {
@@ -245,7 +238,6 @@
             }
         }
     }
-    
     .kanban-item {
         display: flex;
         flex-direction: column;
@@ -349,6 +341,18 @@
                 margin: 0;
                 padding: 0;
                 height: auto;
+            }
+        }
+        .item-arrow-container {
+            width: 17%;
+            margin-top: 2%;
+            .fa-arrow-down {
+                position: absolute;
+                left: 42%;
+            }
+            .fa-arrow-up {
+                position: absolute;
+                left: 54%;
             }
         }
         &.kanban-item-hidden {
@@ -567,14 +571,12 @@
         &:not(.cp-kanban-quick) {
             #cp-kanban-controls {
                 .cp-kanban-changeView {
-                 &:not(.drag) {
-                    span.cp-kanban-view {
-                        background-color: @cp_kanban-fg !important;
-                        color: @cp_app-bg;
+                    &:not(.drag) {
+                        span.cp-kanban-view, .toggle-active {
+                            background-color: @cp_kanban-fg !important;
+                            color: @cp_app-bg;
+                        }
                     }
-                 }
-                    // span.cp-kanban-view-small {
-                    // }
                 }
             }
         }

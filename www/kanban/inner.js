@@ -152,16 +152,12 @@ define([
 
     var now = function () { return +new Date(); };
     var _lastUpdate = 0;
-    var _updateBoards = function (framework, kanban, boards, drag) {
+    var _updateBoards = function (framework, kanban, boards) {
         _lastUpdate = now();
         kanban.setBoards(Util.clone(boards));
         kanban.inEditMode = false;
-        if (drag  === undefined) {
-            var toggle = $('#toggle-drag').attr('class').indexOf('toggle-active')
-            drag = toggle != -1 ? false : true
-        }
         addEditItemButton(framework, kanban);
-        addMoveElementButton(framework, kanban, drag);
+        addMoveElementButton(framework, kanban);
     };
     var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
     var updateBoards = function (framework, kanban, boards) {
@@ -540,8 +536,11 @@ define([
         UI.openCustomModal(editModal.modal);
     };
 
-    addMoveElementButton = function (framework, kanban, drag) {
+    addMoveElementButton = function (framework, kanban) {
         var $container = $(kanban.element);
+        var drag = $('#toggle-drag').attr('class').indexOf('toggle-active') !== -1 ? false : true;
+        kanban.options.dragBoards = drag;
+        kanban.options.dragItems = drag;
         if ('ontouchstart' in window || drag === false) {
             if (!kanban) { return; }
             if (framework.isReadOnly() || framework.isLocked()) { return; }
@@ -556,7 +555,7 @@ define([
                 boardItems.splice(index, 1);
                 boards.data[boardId].item = boardItems;
                 _updateBoards(framework, kanban, boards, false);
-                $(`.kanban-item[data-eid="${elId}"]`)[0].scrollIntoView()
+                $(`.kanban-item[data-eid="${elId}"]`)[0].scrollIntoView();
             };
 
             var shiftItem = function (direction, el) {
@@ -590,11 +589,11 @@ define([
                 } else if (direction === 'right' && index < kanban.options.boards.list.length-1) {
                     move(kanban.options.boards.list, index, index+1);
                 }
-                $(`.kanban-board[data-id="${elId}"]`)[0].scrollIntoView()
+                $(`.kanban-board[data-id="${elId}"]`)[0].scrollIntoView();
             };
             $container.find('.kanban-board').each(function (i, el) {
                 $(el).find('.item-icon-container').remove();
-                var arrowContainer = h('div.item-icon-container')
+                var arrowContainer = h('div.item-icon-container');
                 $(arrowContainer).appendTo($(el).find('.kanban-board-header'));
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-left board-arrow',
@@ -613,9 +612,8 @@ define([
             });
             $container.find('.kanban-item').each(function (i, el) {
                 $(el).find('.item-arrow-container').remove();
-                var arrowContainerItem = h('div.item-arrow-container')
+                var arrowContainerItem = h('div.item-arrow-container');
                 $(arrowContainerItem).appendTo((el));
-                $(el).addClass('kanban-item-mobile')
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-left item-arrow',
                     'alt': Messages.kanban_moveItemLeft,
@@ -790,10 +788,8 @@ define([
                 verbose("Board object has changed");
                 framework.localChange();
                 if (kanban) {
-                    var toggle = $('#toggle-drag').attr('class').indexOf('toggle-active')
-                    var drag = toggle != -1 ? false : true
                     addEditItemButton(framework, kanban);
-                    addMoveElementButton(framework, kanban, drag);
+                    addMoveElementButton(framework, kanban);
                 }
             },
             click: function (el) {
@@ -961,9 +957,7 @@ define([
                         item.tags = kanban.options.tags;
                     }
                     kanban.addElement(boardId, item, isTop);
-                    var toggle = $('#toggle-drag').attr('class').indexOf('toggle-active')
-                    var drag = toggle != -1 ? false : true
-                    addMoveElementButton(framework, kanban, drag)
+                    addMoveElementButton(framework, kanban);
                 };
                 $input.blur(save);
                 $input.keydown(function (e) {
@@ -1188,23 +1182,15 @@ define([
             }
 
             var toggleDrag = h('span#toggle-drag.cp-kanban-view.fa.fa-arrows');
-            let drag = true
             $(toggleDrag).click(function() {
-                if (drag === false) {
-                    drag = true
-                    kanban.options.dragBoards = true
-                    kanban.options.dragItems = true
-                    $(toggleDrag).removeClass('fa-hand-o-up').addClass('fa-arrows')
-                    addMoveElementButton(framework, kanban, drag);
+                if ($('#toggle-drag').attr('class').indexOf('toggle-active') !== -1) {
+                    $(toggleDrag).removeClass('fa-hand-o-up').addClass('fa-arrows');
                 } else {
-                    drag = false
-                    kanban.options.dragBoards = false
-                    kanban.options.dragItems = false
-                    $(toggleDrag).removeClass('fa-arrows').addClass('fa-hand-o-up')
-                    addMoveElementButton(framework, kanban, drag);
+                    $(toggleDrag).removeClass('fa-arrows').addClass('fa-hand-o-up');
                 }
-                $(toggleDrag).toggleClass('toggle-active')
-            })
+                $(toggleDrag).toggleClass('toggle-active');
+                addMoveElementButton(framework, kanban);
+            });
 
             var container = h('div#cp-kanban-controls', [
                 tags,
