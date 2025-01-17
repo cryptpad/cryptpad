@@ -4345,9 +4345,9 @@ define([
                 var refreshPage = APP.refreshPage = function (current, direction) {
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
-
-                    var shownContent = checkEmptyPages()[0];
-                    var shownPages = checkEmptyPages()[1];
+                    var checkPages = checkEmptyPages()
+                    var shownContent = checkPages[0];
+                    var shownPages = checkPages[1];
                     if (pgcontent[(current - 1)] && pgcontent[current-1].empty) {
                         if (direction === 'next') {
                             current++;
@@ -4372,8 +4372,9 @@ define([
                     ]);
 
                     var togglePageArrows = function() {
-                        var shownContent = checkEmptyPages()[0];
-                        var shownPages = checkEmptyPages()[1];
+                        var checkPages = checkEmptyPages()
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
                         if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) {
                             $(right).css('visibility', 'hidden');
                         } else {
@@ -4393,8 +4394,9 @@ define([
                     var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
                     evOnChange.reg(function(){
                         togglePageArrows();
-                        var shownContent = checkEmptyPages()[0];
-                        var shownPages = checkEmptyPages()[1];
+                        var checkPages = checkEmptyPages()
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
                         $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
                         
                     });
