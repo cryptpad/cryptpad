@@ -4371,8 +4371,7 @@ define([
                         h('i.fa.fa-arrow-right'),
                     ]);
 
-                    var togglePageArrows = function() {
-                        var checkPages = checkEmptyPages();
+                    var togglePageArrows = function(checkPages) {
                         var shownContent = checkPages[0];
                         var shownPages = checkPages[1];
                         if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) {
@@ -4384,7 +4383,7 @@ define([
                         if (current === 1) {$(left).css('visibility', 'hidden');}
                         $container.find('.cp-form-page').hide();
                         $($container.find('.cp-form-page').get(current-1)).show();
-                        if (current !== shownContent.length) {
+                        if (current < shownContent.length) {
                             $container.find('.cp-form-send-container').hide();
                         } else {
                             $container.find('.cp-form-send-container').show();
@@ -4393,8 +4392,8 @@ define([
 
                     var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
                     evOnChange.reg(function(){
-                        togglePageArrows();
                         var checkPages = checkEmptyPages();
+                        togglePageArrows(checkPages);
                         var shownContent = checkPages[0];
                         var shownPages = checkPages[1];
                         $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
@@ -4404,7 +4403,7 @@ define([
                     if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
 
-                    togglePageArrows();
+                    togglePageArrows(checkPages);
 
                     $(left).click(function () {
                         refreshPage(current - 1, 'prev');
