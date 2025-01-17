@@ -336,6 +336,7 @@ define([
                     moves: function (el) {
                         if (self.options.readOnly) { return false; }
                         if (el.classList.contains('new-item')) { return false; }
+                        if ('ontouchstart' in window || self.options.dragItems === false) {return false;}
                         return el.classList.contains('kanban-item');
                     },
                     accepts: function () {

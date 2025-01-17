@@ -171,8 +171,8 @@
     }
 
     .kanban-edit-item {
-        padding: 5px;
         border: 0;
+        float:right;
         background: transparent;
         align-self: flex-start;
         outline-style: none;
@@ -184,6 +184,42 @@
         {
             margin-right:0px;
         }
+    }
+
+    .item-arrow-container {
+        width: 17%;
+        margin-top: 2%
+    }
+
+    .fa-arrow-right {
+        &.item-arrow {
+            margin-right: -250%
+        }
+        &.board-arrow {
+        
+        }
+    }
+
+    .fa-arrow-left {
+        &.item-arrow {
+            float: left;
+            margin-left: -250%;
+        }
+        &.board-arrow {
+
+        float: left;
+            margin-left: -2%;
+        }
+    }
+
+    .fa-arrow-down {
+        position: absolute;
+        left: 42%;
+    }
+    
+    .fa-arrow-up {
+        position: absolute;
+        left: 54%;
     }
 
     .cp-kanban-cursors {
@@ -209,8 +245,10 @@
             }
         }
     }
+    
     .kanban-item {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: space-between;
         padding: 5px;
@@ -299,6 +337,7 @@
             }
         }
         .kanban-item-text {
+            width: 100%;
             .tools_unselectable();
             cursor: text;
             overflow-wrap: anywhere;
@@ -350,7 +389,6 @@
             }
         }
         header {
-            display: flex;
             flex-wrap: wrap;
             align-items: center;
             padding: 5px 10px;
@@ -521,14 +559,20 @@
             }
         }
     }
+    .toggle-active {
+        background-color: @cp_kanban-fg !important;
+                        color: @cp_app-bg !important;
+    }
     #cp-app-kanban-container {
         &:not(.cp-kanban-quick) {
             #cp-kanban-controls {
                 .cp-kanban-changeView {
+                 &:not(.drag) {
                     span.cp-kanban-view {
                         background-color: @cp_kanban-fg !important;
                         color: @cp_app-bg;
                     }
+                 }
                     // span.cp-kanban-view-small {
                     // }
                 }
