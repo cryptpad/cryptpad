@@ -4345,7 +4345,7 @@ define([
                 var refreshPage = APP.refreshPage = function (current, direction) {
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
-                    var checkPages = checkEmptyPages()
+                    var checkPages = checkEmptyPages();
                     var shownContent = checkPages[0];
                     var shownPages = checkPages[1];
                     if (pgcontent[(current - 1)] && pgcontent[current-1].empty) {
@@ -4372,7 +4372,7 @@ define([
                     ]);
 
                     var togglePageArrows = function() {
-                        var checkPages = checkEmptyPages()
+                        var checkPages = checkEmptyPages();
                         var shownContent = checkPages[0];
                         var shownPages = checkPages[1];
                         if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) {
@@ -4394,7 +4394,7 @@ define([
                     var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
                     evOnChange.reg(function(){
                         togglePageArrows();
-                        var checkPages = checkEmptyPages()
+                        var checkPages = checkEmptyPages();
                         var shownContent = checkPages[0];
                         var shownPages = checkPages[1];
                         $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
