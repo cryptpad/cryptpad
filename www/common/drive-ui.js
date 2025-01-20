@@ -2936,9 +2936,13 @@ define([
             };
 
             var $warning = $(warning).hide();
-            var $url = $(url).on('change keypress keyup keydown', function () {
+            var $url = $(url).on('change keypress keydown', function () {
                 var v = $url.val().trim();
-                $url.toggleClass('cp-input-invalid', !Util.isValidURL(v));
+                if (Util.isValidURL(v)) {
+                    $url.removeClass('cp-input-invalid');
+                } else {
+                    $url.addClass('cp-input-invalid');
+                }
                 if (v.length > 200) {
                     $warning.show();
                     return;
@@ -2961,8 +2965,8 @@ define([
                     var $name = $(name);
                     var n = $name.val().trim() || $name.attr('placeholder');
                     var u = $url.val().trim();
-                    if (!n || !u) { return true; }
-                    if (!Util.isValidURL(u)) {
+                    if (!n || !u || !Util.isValidURL(u)) {
+                        Messages.fm_link_invalid = "Please provide a valid URL"; // XXX
                         UI.warn(Messages.fm_link_invalid);
                         return true;
                     }
