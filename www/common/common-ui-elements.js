@@ -865,9 +865,7 @@ define([
                 if (callback) { button.click(callback); }
                 break;
             case 'storeindrive':
-                button = $(h('button.cp-toolbar-storeindrive', {
-                    style: 'display:none;'
-                }, [
+                button = $(h('button.cp-toolbar-storeindrive', [
                     h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
@@ -3351,7 +3349,6 @@ define([
                 $('.cp-toolbar-storeindrive').show();
             } else {
                 $('.cp-toolbar-storeindrive').hide();
-
             }
             return;
         }
