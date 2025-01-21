@@ -4020,7 +4020,7 @@ define([
             var changeType;
             if (editable) {
                 // Drag handle
-                var dragEllipses = 'ontouchstart' in window ? undefined : [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')]
+                var dragEllipses = 'ontouchstart' in window ? undefined : [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')];
                 dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
                 // Question
                 var inputQ = h('input', {
