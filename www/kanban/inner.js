@@ -596,8 +596,8 @@ define([
                 var arrowContainer = h('div.item-icon-container');
                 $(arrowContainer).appendTo($(el).find('.kanban-board-header'));
                 $('<button>', {
-                    'class': 'kanban-edit-item fa fa-arrow-left board-arrow',
-                    'alt': Messages.kanban_moveBoardLeft,
+                    'class': 'cp-kanban-arrow fa fa-arrow-left board-arrow',
+                    'title': Messages.kanban_moveBoardLeft,
                 }).click(function () { 
                     shiftBoards('left', el);
                 }).appendTo($(el).find('.item-icon-container'));
@@ -605,7 +605,7 @@ define([
             $container.find('.kanban-board').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-right board-arrow',
-                    'alt': Messages.kanban_moveBoardRight,
+                    'title': Messages.kanban_moveBoardRight,
                 }).click(function () {
                     shiftBoards('right', el);
                 }).appendTo($(el).find('.item-icon-container'));
@@ -616,7 +616,7 @@ define([
                 $(arrowContainerItem).appendTo((el));
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-left item-arrow',
-                    'alt': Messages.kanban_moveItemLeft,
+                    'title': Messages.kanban_moveItemLeft,
                 }).click(function () {
                     shiftItem('left', el);
                 }).appendTo($(el).find('.item-arrow-container'));
@@ -624,7 +624,7 @@ define([
             $container.find('.kanban-item').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-down',
-                    'alt': Messages.kanban_moveItemDown,
+                    'title': Messages.kanban_moveItemDown,
                 }).click(function () {
                     shiftItem('down', el);
                 }).appendTo($(el).find('.item-arrow-container'));
@@ -632,7 +632,7 @@ define([
             $container.find('.kanban-item').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-up',
-                    'alt': Messages.kanban_moveItemUp,
+                    'title': Messages.moveItemUp,
                 }).click(function () {
                     shiftItem('up', el);
                 }).appendTo($(el).find('.item-arrow-container'));
@@ -640,7 +640,7 @@ define([
             $container.find('.kanban-item').each(function (i, el) {
                 $('<button>', {
                     'class': 'kanban-edit-item fa fa-arrow-right item-arrow',
-                    'alt': Messages.kanban_moveItemRight,
+                    'title': Messages.moveItemRight,
                 }).click(function () {
                     shiftItem('right', el);
                 }).appendTo($(el).find('.item-arrow-container'));

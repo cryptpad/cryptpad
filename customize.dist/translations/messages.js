@@ -13,6 +13,15 @@ define(['/common/translations/messages.js'], function (Messages) {
     // Replace the existing keys in your copied file here:
     // Messages.button_newpad = "New Rich Text Document";
 
+    Messages.kanban_moveitemLeft = 'Move item left'; // XXX
+    Messages.kanban_moveitemRight = 'Move item right'; // XXX
+    Messages.kanban_moveBoardLeft = 'Move board left'; // XXX
+    Messages.kanban_moveBoardRight = 'Move board right'; // XXX
+
+    //NOTE: these keys are also added to the Form mobile UI PR #1753
+    Messages.moveItemUp = 'Move item up'; // XXX
+    Messages.moveitemDown = 'Move item down'; // XXX
+
     return Messages;
 });
 
