@@ -122,12 +122,21 @@
                         flex-flow: column;
                         align-items: baseline;
                     }
+                    .cp-usergrid-container {
+                        margin-bottom: 0px !important;
+                        .cp-usergrid-grid {
+                            margin-bottom: -3px;
+                        }
+                    }
                     label {
                         margin-bottom: 0;
                     }
                     input, textarea {
                         font-family: inherit;
                         max-width: @sidebar_block-width;
+                    }
+                    input:invalid {
+                        border: 1px solid red;
                     }
                     [type="color"] {
                         width: @sidebar_block-width/5;

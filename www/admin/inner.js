@@ -67,7 +67,7 @@ define([
                     'description',
                     'email',
                     'jurisdiction',
-                    'flush-cache'
+                    'flush-cache',
                 ]
             },
             'customize': { // Msg.admin_cat_customize
@@ -75,6 +75,13 @@ define([
                 content: [
                     'logo',
                     'color',
+                ]
+            },
+            'admins': {
+                icon: 'fa fa-users',
+                content: [
+                    'list-admins',
+                    'add-admins'
                 ]
             },
             'broadcast' : { // Msg.admin_cat_broadcast
@@ -94,7 +101,7 @@ define([
                 ]
             },
             'apps': { // Msg.admin_cat_apps
-                icon: 'fa  fa-wrench',
+                icon: 'fa fa-wrench',
                 content: [
                     'apps',
                 ]
@@ -224,6 +231,194 @@ define([
                 });
             });
             cb(button);
+        });
+
+        const evRefreshAdmins = Util.mkEvent();
+        sidebar.addItem('list-admins', cb => {
+            const metadataMgr = common.getMetadataMgr();
+            const privateData = metadataMgr.getPrivateData();
+
+            const removeAdmin = (edPublic, _cb) => {
+                const cb = Util.mkAsync(_cb);
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RM_ADMIN_KEY', [edPublic]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return void cb('ERROR');
+                    }
+                    if (typeof(cb) === "function") { cb(); }
+                });
+            };
+
+            const header = [
+                Messages.admin_listName,
+                Messages.admin_listKey,
+                Messages.admin_listAction
+            ];
+            var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
+
+            const refreshTable = () => {
+                const admins = APP.instanceStatus.admins || [];
+                const newRows = admins.map(obj => {
+                    let { name, edPublic, hardcoded } = obj;
+                    name = name || Messages.admin_admin;
+                    let button = blocks.button('danger','fa-ban', Messages.admin_usersRemove);
+                    let $b = $(button);
+                    Util.onClickEnter($b, () => {
+                        $b.prop('disabled', 'disabled');
+                        UI.confirm(Messages.admin_listConfirm, yes => {
+                            if (!yes) { return $b.prop('disabled', false); }
+                            removeAdmin(edPublic, err => {
+                                $b.prop('disabled', false);
+                                if (err) { return; }
+                                APP.updateStatus(function () {
+                                    evRefreshAdmins.fire();
+                                });
+                            });
+                        });
+                    });
+                    let note = Messages.admin_listHardcoded;
+                    let action = hardcoded ? note : button;
+
+                    return [name, edPublic, action];
+                });
+                list.updateContent(newRows);
+            };
+            refreshTable();
+            evRefreshAdmins.reg(() => {
+                refreshTable();
+            });
+
+            cb(div);
+        });
+        sidebar.addItem('add-admins', cb => {
+            const content = blocks.block();
+            const metadataMgr = common.getMetadataMgr();
+            const privateData = metadataMgr.getPrivateData();
+            const $div = $(content);
+
+            const addAdmin = (data, _cb) => {
+                const cb = Util.mkAsync(_cb);
+                const { ed, name } = data;
+                const key = Hash.getPublicSigningKeyString(privateData.origin, name, ed);
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['ADD_ADMIN_KEY', [key]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return void cb('ERROR');
+                    }
+                    if (typeof(cb) === "function") { cb(); }
+                });
+            };
+
+            const keyInput = blocks.input({
+                placeholder: Messages.admin_accountMetadataPlaceholder
+            });
+            const keyLabel = blocks.labelledInput(Messages.admin_addKeyLabel, keyInput);
+            const keyButton = blocks.button('primary', 'fa-plus', Messages.tag_add);
+            const keyForm = blocks.form([keyLabel], blocks.nav([keyButton]));
+            const $keyInput = $(keyInput).on('input', () => {
+                let val = $keyInput.val().trim();
+                if (!val) {
+                    keyInput.setCustomValidity('');
+                    return;
+                }
+                let key = Keys.canonicalize(val);
+
+                if (keyInput.setCustomValidity) {
+                    if (!key) {
+                        const msg = Messages.admin_invalKey;
+                        keyInput.setCustomValidity(msg);
+                    } else {
+                        keyInput.setCustomValidity('');
+                    }
+                }
+            });
+            const $keyBtn = $(keyButton);
+            Util.onClickEnter($keyBtn, () => {
+                let val = $keyInput.val().trim();
+                let key = Keys.canonicalize(val);
+                if (!key) { return; }
+                // We have a valid key
+                let name = Messages.admin_admin;
+                try {
+                    let parsed = Keys.parseUser(val);
+                    name = parsed.user;
+                } catch (e) {}
+                $keyBtn.prop('disabled', 'disabled');
+                addAdmin({ ed:key, name }, (err) => {
+                    $keyBtn.prop('disabled', false);
+                    if (!err) { $keyInput.val(''); }
+                    // refresh
+                    APP.updateStatus(function () {
+                        evRefreshAdmins.fire();
+                    });
+                });
+            });
+
+            const drawContacts = () => {
+                $div.empty();
+                const members = {};
+                const admins = APP.instanceStatus.admins || [];
+                admins.forEach(obj => {
+                    const { edPublic, name, hardcoded, first } = obj;
+                    members[edPublic] = { name, hardcoded, first };
+                });
+
+                // Remove admins from contacts list
+                const friends = Util.clone(common.getFriends(false));
+                Object.keys(friends).forEach((curve) => {
+                    const ed = friends[curve]?.edPublic;
+                    if (members[ed]) { delete friends[curve]; }
+                });
+                let contactsGrid = UIElements.getUserGrid(Messages.admin_addAdminsAdd, {
+                    common: common,
+                    list: true,
+                    large: true,
+                    data: friends
+                }, function () {});
+                let addBtn = blocks.button('primary', 'fa-plus', Messages.tag_add);
+                Util.onClickEnter($(addBtn), () => {
+                    var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
+                    nThen((waitFor) => {
+                        $sel.each((i, el) => {
+                            const $el = $(el);
+                            let ed = $el.attr('data-ed');
+                            let name = $el.attr('data-name');
+                            if (!ed || !name) {
+                                console.error('Missing data on selected user', el);
+                                return void UI.warn(Messages.error);
+                            }
+                            addAdmin({ed, name}, waitFor());
+                        });
+                    }).nThen(() => {
+                        APP.updateStatus(function () {
+                            evRefreshAdmins.fire();
+                            drawContacts();
+                        });
+                    });
+                });
+                evRefreshAdmins.reg(() => {
+                    drawContacts();
+                });
+
+                const list = blocks.form([
+                    //currentList.div,
+                    contactsGrid.div,
+                ], blocks.nav([addBtn]));
+                $div.append([keyForm, list]);
+            };
+            drawContacts();
+            cb(content);
         });
 
         var isHex = s => !/[^0-9a-f]/.test(s);
