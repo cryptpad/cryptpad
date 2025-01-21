@@ -871,7 +871,7 @@ define([
                     h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
-                    $(button).hide();
+                    $('.cp-toolbar-storeindrive').hide();
                     common.getSframeChannel().query("Q_AUTOSTORE_STORE", {
                         forceOwnDrive: true,
                     }, function (err, obj) {
@@ -3349,6 +3349,9 @@ define([
         if (data && data.stored) {
             if (!data.inMyDrive) {
                 $('.cp-toolbar-storeindrive').show();
+            } else {
+                $('.cp-toolbar-storeindrive').hide();
+
             }
             return;
         }
