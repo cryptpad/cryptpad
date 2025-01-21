@@ -4540,7 +4540,6 @@ define([
                 grabHandle = '.cp-form-block-drag-handle';
             } else {
                 grabHandle = null;
-                
             }
             APP.mainSortable = Sortable.create($container[0], {
                 handle: grabHandle,
