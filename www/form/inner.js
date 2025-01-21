@@ -4022,7 +4022,6 @@ define([
                 // Drag handle
                 var dragEllipses = 'ontouchstart' in window ? undefined : [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')]
                 dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
-
                 // Question
                 var inputQ = h('input', {
                     value: block.q || Messages.form_default
@@ -4260,8 +4259,12 @@ define([
             }
             let shiftButtons;
             if ('ontouchstart' in window) {
-                var upButton = h('div.kanban-edit-item.fa.fa-arrow-up');
-                var downButton = h('div.kanban-edit-item.fa.fa-arrow-down.direction-arrow-down');
+                var upButton = h('div.fa.fa-arrow-up',  {
+                    'title': Messages.moveItemUp
+                });
+                var downButton = h('div.fa.fa-arrow-down', {
+                    'title': Messages.moveitemDown
+                });
                 var shiftBlock = function(direction) {
                     var blockIndex = content.order.indexOf(uid);
                     if (direction === 'up' && blockIndex > 0) {
@@ -4284,7 +4287,8 @@ define([
                 ]);
             }
             var editableCls = editable ? ".editable" : "";
-            elements.push(h('div.cp-form-block'+editableCls, {
+            var draggable = 'ontouchstart' in window ? '.nodrag' : '';
+            elements.push(h('div.cp-form-block'+editableCls+draggable, {
                 'data-id':uid,
                 'data-type':type
             }, [
@@ -4529,13 +4533,14 @@ define([
             return true;
         });
 
-        if (editable && !('ontouchstart' in window)) {
+        if (editable) {
             if (APP.mainSortable) { APP.mainSortable.destroy(); }
             var grabHandle;
             if (window.matchMedia("(pointer: coarse)").matches) {
                 grabHandle = '.cp-form-block-drag-handle';
             } else {
                 grabHandle = null;
+                
             }
             APP.mainSortable = Sortable.create($container[0], {
                 handle: grabHandle,
