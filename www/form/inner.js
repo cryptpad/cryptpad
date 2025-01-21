@@ -4259,11 +4259,13 @@ define([
             }
             let shiftButtons;
             if ('ontouchstart' in window) {
-                var upButton = h('div.fa.fa-arrow-up',  {
-                    'title': Messages.moveItemUp
+                var upButton = h('i.fa.fa-arrow-up',  {
+                    'title': Messages.moveItemUp,
+                    'aria-hidden': true
                 });
-                var downButton = h('div.fa.fa-arrow-down', {
-                    'title': Messages.moveitemDown
+                var downButton = h('i.fa.fa-arrow-down', {
+                    'title': Messages.moveitemDown,
+                    'aria-hidden': true
                 });
                 var shiftBlock = function(direction) {
                     var blockIndex = content.order.indexOf(uid);
