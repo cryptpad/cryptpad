@@ -595,17 +595,19 @@ define([
                 $(el).find('.item-icon-container').remove();
                 var arrowContainer = h('div.item-icon-container');
                 $(arrowContainer).appendTo($(el).find('.kanban-board-header'));
-                $('<button>', {
+                $('<i>', {
                     'class': 'cp-kanban-arrow fa fa-arrow-left board-arrow',
                     'title': Messages.kanban_moveBoardLeft,
+                    'aria-hidden': true
                 }).click(function () { 
                     shiftBoards('left', el);
                 }).appendTo($(el).find('.item-icon-container'));
             });
             $container.find('.kanban-board').each(function (i, el) {
-                $('<button>', {
-                    'class': 'kanban-edit-item fa fa-arrow-right board-arrow',
+                $('<i>', {
+                    'class': 'cp-kanban-arrow fa fa-arrow-right board-arrow',
                     'title': Messages.kanban_moveBoardRight,
+                    'aria-hidden': true
                 }).click(function () {
                     shiftBoards('right', el);
                 }).appendTo($(el).find('.item-icon-container'));
@@ -614,33 +616,37 @@ define([
                 $(el).find('.item-arrow-container').remove();
                 var arrowContainerItem = h('div.item-arrow-container');
                 $(arrowContainerItem).appendTo((el));
-                $('<button>', {
-                    'class': 'kanban-edit-item fa fa-arrow-left item-arrow',
+                $('<i>', {
+                    'class': 'cp-kanban-arrow fa fa-arrow-left item-arrow',
                     'title': Messages.kanban_moveItemLeft,
+                    'aria-hidden': true
                 }).click(function () {
                     shiftItem('left', el);
                 }).appendTo($(el).find('.item-arrow-container'));
             });
             $container.find('.kanban-item').each(function (i, el) {
-                $('<button>', {
-                    'class': 'kanban-edit-item fa fa-arrow-down',
+                $('<i>', {
+                    'class': 'cp-kanban-arrow fa fa-arrow-down',
                     'title': Messages.kanban_moveItemDown,
+                    'aria-hidden': true
                 }).click(function () {
                     shiftItem('down', el);
                 }).appendTo($(el).find('.item-arrow-container'));
             });
             $container.find('.kanban-item').each(function (i, el) {
-                $('<button>', {
-                    'class': 'kanban-edit-item fa fa-arrow-up',
+                $('<i>', {
+                    'class': 'cp-kanban-arrow fa fa-arrow-up',
                     'title': Messages.moveItemUp,
+                    'aria-hidden': true
                 }).click(function () {
                     shiftItem('up', el);
                 }).appendTo($(el).find('.item-arrow-container'));
             });
             $container.find('.kanban-item').each(function (i, el) {
-                $('<button>', {
-                    'class': 'kanban-edit-item fa fa-arrow-right item-arrow',
+                $('<i>', {
+                    'class': 'cp-kanban-arrow fa fa-arrow-right item-arrow',
                     'title': Messages.moveItemRight,
+                    'aria-hidden': true
                 }).click(function () {
                     shiftItem('right', el);
                 }).appendTo($(el).find('.item-arrow-container'));
