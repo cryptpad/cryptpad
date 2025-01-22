@@ -980,6 +980,7 @@
         .cp-radio, .cp-checkmark {
             display: inline-flex;
             max-width: 100%;
+            padding: 0.313rem 0;
         }
         .cp-checkmark-label {
             word-break: break-word;
@@ -1011,7 +1012,6 @@
                     min-width: 300px;
                     width: 300px;
                     position: absolute;
-                    left: 20px;
                     word-break: break-word;
                     background: @cp_form-bg1;
                     z-index: 2;
@@ -1044,7 +1044,7 @@
         }
         .cp-form-sort-order {
             border: 1px solid @cryptpad_text_col;
-            padding: 0 5px;
+            padding: 0 0.313rem;
             margin-right: 5px;
         }
         &:hover {
@@ -1318,6 +1318,22 @@
                         margin-right: 10px;
                     }
                 }
+            }
+            .cp-radio {
+                margin: 0.2rem 0;
+            }
+            .cp-form-status {
+                margin-bottom: 0.2rem;
+            }
+            .cp-form-mute-radio {
+                margin-top: 0.2rem;
+            }
+            .cp-form-privacy-container {
+                margin-top: 0.8rem
+            }
+            .cp-form-results-type {
+                display: inline-block;
+                margin: 0.2rem 0 0.2rem 0;
             }
         }
     }

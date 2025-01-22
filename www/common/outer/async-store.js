@@ -252,7 +252,7 @@ define([
             list.push(userChannel);
 
             if (store.data && store.data.blockId) {
-                //list.push(`${store.data.blockId}#block`); // NEXT 5.7.0?
+                list.push(`${store.data.blockId}#block`);
             }
 
             list.sort();
@@ -2343,6 +2343,12 @@ define([
                 if (completed) { return; }
                 var parsed = parse(msg);
                 if (parsed[1] !== txid) { console.log('bad txid'); return; }
+                if (parsed[0] === 'HISTORY_RANGE_ERROR') {
+                    cb({
+                        error: parsed[2]
+                    });
+                    return;
+                }
                 if (parsed[0] === 'HISTORY_RANGE_END') {
                     cb({
                         messages: msgs,
@@ -2671,6 +2677,7 @@ define([
         };
 */
         var loadOnlyOffice = function () {
+            if (store.onlyoffice) { return; }
             store.onlyoffice = OnlyOffice.init(store, function (ev, data, clients) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'OO_EVENT', {

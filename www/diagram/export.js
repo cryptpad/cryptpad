@@ -3,15 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
-    '/components/x2js/x2js.js',
     '/diagram/util.js',
 ], function (
-    X2JS,
     DiagramUtil
 ) {
-    const x2js = new X2JS();
-    const jsonContentAsXML = (content) => x2js.js2xml(content);
-
     const parseDrawioStyle = (styleAttrValue) => {
         if (!styleAttrValue) {
             return;
@@ -70,12 +65,12 @@ define([
         }
         return doc;
     };
-    
+
     return {
         main: function(userDoc, cb) {
             delete userDoc.metadata;
 
-            const xml = jsonContentAsXML(userDoc);
+            const xml = DiagramUtil.jsonContentAsXML(userDoc);
 
             let doc;
             try {

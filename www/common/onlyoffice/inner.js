@@ -62,6 +62,8 @@ define([
     var FORCE_CHECKPOINT_INTERVAL = 10000;
     var DISPLAY_RESTORE_BUTTON = false;
     var PENDING_TIMEOUT = 30000;
+    const HISTORY_KEEPER_INDEX_USER = 1;
+    const READ_ONLY_INDEX_USER = 2;
 
     //var READONLY_REFRESH_TO = 15000;
 
@@ -175,17 +177,17 @@ define([
             });
         };
 
-        const getNewUserIndex = function () {
-            const ids = content.ids || {};
-            const indexes = Object.values(ids).map((user) => user.index);
-            const maxIndex = Math.max(...indexes);
-            return maxIndex === -Infinity ? 1 : maxIndex+1;
+        const getNextUserIndex = function () {
+            let nextUserIndex;
+            do {
+                nextUserIndex = Util.createRandomInteger();
+            } while (nextUserIndex === HISTORY_KEEPER_INDEX_USER || nextUserIndex === READ_ONLY_INDEX_USER);
+            return nextUserIndex;
         };
 
         var setMyId = function () {
-            // Remove ids for users that have left the channel
-            deleteOffline();
-            var ids = content.ids;
+            deleteOffline(); // Remove ids for users that have left the channel
+            const ids = content.ids;
             if (!myOOId) {
                 myOOId = Util.createRandomInteger();
                 // f: function used in .some(f) but defined outside of the while
@@ -196,13 +198,21 @@ define([
                     myOOId = Util.createRandomInteger();
                 }
             }
-            var myId = getId();
+
+            const myId = getId();
+            const myIndex = getNextUserIndex();
+
             ids[myId] = {
                 ooid: myOOId,
-                index: getNewUserIndex(),
+                index: myIndex,
                 netflux: metadataMgr.getNetfluxId()
             };
-            oldIds = JSON.parse(JSON.stringify(ids));
+
+            if (!myUniqueOOId) {
+                myUniqueOOId = String(myOOId) + myIndex;
+            }
+
+            oldIds = structuredClone(ids);
             APP.onLocal();
         };
 
@@ -913,54 +923,43 @@ define([
         };
 
         const getMyOOIndex = function() {
-            return findUserByOOId(myOOId).index;
+            const user = findUserByOOId(myOOId);
+            return user ? user.index : READ_ONLY_INDEX_USER;
         };
 
-        var getParticipants = function () {
-            var users = metadataMgr.getMetadata().users;
-            var i = 1;
-            var p = Object.keys(content.ids || {}).map(function (id) {
-                var nId = id.slice(0,32);
-                if (!users[nId]) { return; }
-                var ooId = content.ids[id].ooid;
-                var idx = content.ids[id].index;
-                if (!ooId || ooId === myOOId) { return; }
-                if (idx >= i) { i = idx + 1; }
-                return {
-                    id: String(ooId) + idx,
-                    idOriginal: String(ooId),
-                    username: (users[nId] || {}).name || Messages.anonymous,
-                    indexUser: idx,
-                    connectionId: content.ids[id].netflux || Hash.createChannelId(),
-                    isCloseCoAuthoring:false,
-                    view: false
-                };
-            });
+        const getParticipants = function () {
+            const users = metadataMgr.getMetadata().users;
             // Add an history keeper user to show that we're never alone
             var hkId = Util.createRandomInteger();
-            p.push({
-                id: hkId,
+            const historyKeeper = [{
+                id: String(hkId),
                 idOriginal: String(hkId),
                 username: "History",
-                indexUser: i,
+                indexUser: HISTORY_KEEPER_INDEX_USER,
                 connectionId: Hash.createChannelId(),
                 isCloseCoAuthoring:false,
                 view: false
+            }];
+
+            const realParticipants = Object.entries(content.ids).map(([id, user]) => {
+                const nId = id.slice(0,32);
+                const username = (users[nId] || {}).name || Messages.anonymous;
+                return {
+                    id: String(user.ooid) + user.index,
+                    idOriginal: String(user.ooid),
+                    username,
+                    indexUser: user.index,
+                    connectionId: user.netflux || Hash.createChannelId(),
+                    isCloseCoAuthoring: false,
+                    view: false
+                };
             });
-            const myOOIndex = getMyOOIndex();
-            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + myOOIndex; }
-            p.push({
-                id: String(myOOId),
-                idOriginal: String(myOOId),
-                username: metadataMgr.getUserData().name || Messages.anonymous,
-                indexUser: myOOIndex,
-                connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
-                isCloseCoAuthoring:false,
-                view: false
-            });
+
+            const participants = historyKeeper.concat(realParticipants);
+
             return {
-                index: myOOIndex,
-                list: p.filter(Boolean)
+                index: getMyOOIndex(),
+                list: participants,
             };
         };
 
@@ -3360,7 +3359,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             if (content.ids) {
                 handleNewIds(oldIds, content.ids);
-                oldIds = JSON.parse(JSON.stringify(content.ids));
+                oldIds = structuredClone(content.ids);
             }
             if (content.locks) {
                 handleNewLocks(oldLocks, content.locks);

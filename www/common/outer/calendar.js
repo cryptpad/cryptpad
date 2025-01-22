@@ -599,7 +599,7 @@ define([
             ctx.clients.push(cId);
         }
         cb({
-            empty: !Object.keys(ctx.calendars).length
+            length: Object.keys(ctx.calendars).length
         });
         Object.keys(ctx.calendars).forEach(function (channel) {
             var c = ctx.calendars[channel] || {};
@@ -1055,7 +1055,7 @@ define([
 
     var removeClient = function (ctx, cId) {
         var idx = ctx.clients.indexOf(cId);
-        ctx.clients.splice(idx, 1);
+        if (idx !== -1) { ctx.clients.splice(idx, 1); }
 
         Object.keys(ctx.calendars).forEach(function (id) {
             var cal = ctx.calendars[id];

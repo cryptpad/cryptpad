@@ -22,12 +22,48 @@
     flex-flow: column;
     font: @colortheme_app-font;
 
+    input, textarea, .cp-appblock {
+        &:focus-visible {
+            outline: @variables_focus_style;
+        }
+    }
     .cp-admin-customize-logo {
         padding: 1em;
         img {
             max-height: 250px;
         }
     }
+    #cp-sidebarlayout-container {
+        #cp-sidebarlayout-rightside {
+            .cp-sidebarlayout-element[data-item] {
+                div#cp-admin-table-container {
+                    overflow-x: auto;
+                    .cp-sidebar-table#cp-admin-table {
+                        tr {
+                            display: flex;
+                        }
+                        th, td {
+                            flex: 1;
+                            word-wrap: break-word;
+                            white-space: normal;
+                            min-width: 13rem;
+                            margin-right: 0px;
+                        }
+                        @media (max-width: @browser_media-not-small) {
+                            width: 100%;
+                            tr {
+                                width: 100%;
+                            }
+                            th, td {
+                                margin-right: 0;
+                                min-width: 7rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+}
     .cp-admin-color-current {
         width: 20px;
         height: 20px;

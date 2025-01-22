@@ -628,8 +628,8 @@
     "admin_activeSessionsHint": "Number of active websocket connections (and unique IP addresses connected)",
     "admin_activePadsTitle": "Active documents",
     "admin_activePadsHint": "Number of unique documents currently being viewed or edited",
-    "admin_registeredTitle": "Registered users",
-    "admin_registeredHint": "Number of users registered on your instance",
+    "admin_registeredTitle": "User and team drives",
+    "admin_registeredHint": "Number of active drives on your instance",
     "admin_updateLimitTitle": "Update user quotas",
     "admin_updateLimitHint": "Forcing an update of user storage limits can be done any time, but is only necessary in the event of an error",
     "admin_updateLimitButton": "Update quotas",
@@ -1780,5 +1780,12 @@
     "admin_onboardingOptionsTitle": "Instance options",
     "admin_onboardingOptionsHint": "Please select the appropriate option for your instance.<br>These settings can be changed later in the admin panel.",
     "admin_onboardingNamePlaceholder": "Instance title",
-    "admin_onboardingDescPlaceholder": "Instance description text"
+    "admin_onboardingDescPlaceholder": "Instance description text",
+    "team_autoTrim": "Trimming team drive history... Please wait.",
+    "admin_mfa_confirm_enable": "Are you sure you want to enable Multi-Factor Authentication?",
+    "admin_mfa_confirm_disable": "Are you sure you want to disable Multi-Factor Authentication?",
+    "form_passwordWarning": "Please note that a Form password can only be set now at creation time and cannot be changed later.",
+    "fm_restoreMultipleDialog": "Are you sure you want to restore {0} files and/or folders to their previous locations?",
+    "calendar_show": "Show calendars",
+    "calendar_hide": "Hide calendars"
 }

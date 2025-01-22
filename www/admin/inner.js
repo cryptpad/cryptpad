@@ -172,7 +172,7 @@ define([
         const blocks = sidebar.blocks;
 
         // EXTENSION_POINT:ADMIN_CATEGORY
-        common.getExtensions('ADMIN_CATEGORY').forEach(ext => {
+        common.getExtensionsSync('ADMIN_CATEGORY').forEach(ext => {
             if (!ext || !ext.id || !ext.name || !ext.content) {
                 return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
             }
@@ -186,6 +186,7 @@ define([
                 content: ext.content
             };
         });
+
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -578,21 +579,36 @@ define([
                 return APP.instanceStatus.enforceMFA;
             },
             query: function (val, setState) {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'ADMIN_DECREE',
-                    data: ['ENFORCE_MFA', [val]]
-                }, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                    }
-                    APP.updateStatus(function () {
-                        setState(APP.instanceStatus.enforceMFA);
-                        flushCache();
+                var isChecked = APP.instanceStatus.enforceMFA;
+                function showConfirmation(isChecked, setState) {
+                    const confirmationContent = isChecked ? Messages.admin_mfa_confirm_disable : Messages.admin_mfa_confirm_enable;
+                    UI.confirm(confirmationContent, function (confirmed) {
+                        if (!confirmed) {
+                            // User canceled their changes, restore the checkbox value
+                            setState(isChecked);
+                            return;
+                        }
+                        // User confirmed their changes, call the command and update the state
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADMIN_DECREE',
+                            data: ['ENFORCE_MFA', [val]]
+                        }, function (e, response) {
+                            if (e || response.error) {
+                                UI.warn(Messages.error);
+                                console.error(e, response);
+                            } else {
+                                APP.updateStatus(function () {
+                                    setState(APP.instanceStatus.enforceMFA);
+                                    flushCache();
+                                });
+                            }
+                        });
                     });
-                });
-            },
+                }
+                showConfirmation(isChecked, setState);
+            }
         });
+
 
 
         var getInstanceString = function (attr) {
@@ -952,12 +968,7 @@ define([
                 });
             };
 
-            let btn = blocks.activeButton('primary', '',
-              Messages.admin_colorChange, (done) => {
-                let color = $input.val();
-                setColor(color, done);
-            });
-
+            let $input = $();
             let onColorPicked = () => {
                 require(['/lib/less.min.js'], (Less) => {
                     let color = $input.val();
@@ -979,7 +990,14 @@ define([
                     $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
                 });
             };
-            let $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
+            $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
+
+            let btn = blocks.activeButton('primary', '',
+              Messages.admin_colorChange, (done) => {
+                let color = $input.val();
+                setColor(color, done);
+            });
+
 
             UI.confirmButton($remove, {
                 classes: 'btn-danger',
@@ -1101,6 +1119,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
@@ -1201,7 +1222,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         var getBlockId = (val) => {
@@ -1413,6 +1434,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
 
@@ -1581,7 +1605,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         // Msg.admin_defaultlimitHint, .admin_defaultlimitTitle
@@ -1741,6 +1765,9 @@ define([
                 Messages.admin_note
             ];
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
             let $table = $(table).hide();
 
             APP.refreshLimits = function () {
@@ -1798,7 +1825,7 @@ define([
                 });
             };
             APP.refreshLimits();
-            cb(table);
+            cb(div);
         });
 
         // Msg.admin_accountMetadataHint.admin_accountMetadataTitle
@@ -2713,8 +2740,7 @@ define([
                 }, function (e, arr) {
                     pre.innerText = '';
                     let data = arr[0];
-                    pre.append(String(data.blocks));
-                    pre.append(' (old value including teams: ' + String(data.users) + ')'); // XXX
+                    pre.append(String(data.users));
                 });
             };
             onRefresh();
@@ -3161,6 +3187,7 @@ define([
                 labelEnd,
             ], blocks.nav([button]));
 
+            let send = function () {};
             var refresh = getApi(function (Broadcast) {
                 $active.empty();
                 var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel);
@@ -3222,7 +3249,7 @@ define([
                 };
             };
 
-            var send = function (data) {
+            send = function (data) {
                 disable($button);
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
@@ -3595,6 +3622,9 @@ define([
             ];
 
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             const onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3627,7 +3657,7 @@ define([
             onRefresh();
             onRefreshPerformance.reg(onRefresh);
 
-            cb(table);
+            cb(div);
         });
 
 
@@ -3898,16 +3928,15 @@ define([
 
         // EXTENSION_POINT:ADMIN_ITEM
         let utils = {
-            h, Util, Hash
+            h, Util, Hash, UIElements
         };
-        common.getExtensions('ADMIN_ITEM').forEach(ext => {
+        common.getExtensionsSync('ADMIN_ITEM').forEach(ext => {
             if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
                 return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
             }
             if (sidebar.hasItem(ext.id)) {
                 return console.error('Extension point ID already used', ext);
             }
-
             sidebar.addItem(ext.id, cb => {
                 ext.getContent(common, blocks, utils, content => {
                     cb(content);
@@ -3920,12 +3949,8 @@ define([
             });
         });
 
-
-
         sidebar.makeLeftside(categories);
     };
-
-
     var updateStatus = APP.updateStatus = function (cb) {
         sFrameChan.query('Q_ADMIN_RPC', {
             cmd: 'INSTANCE_STATUS',
