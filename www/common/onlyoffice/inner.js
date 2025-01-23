@@ -101,7 +101,6 @@ define([
         var oldLocks = {};
         var myUniqueOOId;
         var myOOId;
-        var sessionId = Hash.createChannelId();
         var cpNfInner;
         let integrationChannel;
 
