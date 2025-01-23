@@ -177,6 +177,7 @@
         align-self: flex-start;
         outline-style: none;
         border-radius: @variables_radius;
+        cursor: pointer;
         &:focus-visible {
             outline: @variables_focus_style;
         }
@@ -189,31 +190,22 @@
     
 
     .item-arrow-container {
-        width: 17%;
+        width: 100%;
         margin-top: 2%;
+        display: flex;
+        justify-content: space-between;
         .fa-arrow-down {
-            position: absolute;
-            left: 42%;
+            margin-left: 5px
         }
         .fa-arrow-up {
-            position: absolute;
-            left: 54%;
-        }
-    }
-
-    .fa-arrow-right {
-        &.item-arrow {
-            margin-right: -250%
+            margin-right: 5px
         }
     }
 
     .fa-arrow-left {
-        float: left;
-        &.item-arrow {
-            margin-left: -250%;
-        }
         &.board-arrow {
             margin-left: -2%;
+            float: left;
         }
     }
 
@@ -252,8 +244,11 @@
         box-shadow: @cryptpad_ui_shadow;
         .tools_unselectable();
         touch-action: none;
-        cursor: move;
-        cursor: grab;
+        &:not(.no-drag) {
+            cursor: move;
+            cursor: grab;
+        }
+        
 
         margin-bottom: 5px;
         &:last-child {
@@ -330,11 +325,12 @@
                 font-size: 12px;
             }
         }
-        .kanban-item-text {
+        .kanban-item-text-container {
             width: 100%;
             .tools_unselectable();
             cursor: text;
             overflow-wrap: anywhere;
+            display: flex;
             flex: 1;
             &:empty::before {
               content: "\200b";
@@ -344,19 +340,11 @@
                 padding: 0;
                 height: auto;
             }
-        }
-        .item-arrow-container {
-            width: 17%;
-            margin-top: 2%;
-            .fa-arrow-down {
-                position: absolute;
-                left: 42%;
-            }
-            .fa-arrow-up {
-                position: absolute;
-                left: 54%;
+            .kanban-item-text {
+                width: 100%;
             }
         }
+
         &.kanban-item-hidden {
             display: none;
         }
@@ -398,9 +386,10 @@
             flex-wrap: wrap;
             align-items: center;
             padding: 5px 10px;
-            // cursor: pointer;
-            cursor: move;
-            cursor: grab;
+            &:not(.no-drag) {
+                cursor: move;
+                cursor: grab;
+            }
             .kanban-title-board {
                 flex: 1;
                 min-width: 0;
@@ -546,6 +535,10 @@
             right: 10px;
             height: 30px;
             width: 60px;
+            &.drag {
+                margin-right: 10px;
+            }
+            
             span {
                 height: 30px;
                 width: 30px;
@@ -563,6 +556,7 @@
                 &:last-child {
                     border-radius: 0px @variables_radius @variables_radius 0px;
                 }
+
             }
         }
     }
@@ -570,14 +564,19 @@
         &:not(.cp-kanban-quick) {
             #cp-kanban-controls {
                 .cp-kanban-changeView {
-                    &:not(.drag) {
-                        span.cp-kanban-view, .toggle-active {
+                    span.cp-kanban-view {
+                        &:not(.toggle-inactive) {
                             background-color: @cp_kanban-fg !important;
                             color: @cp_app-bg;
                         }
+                        
                     }
                 }
             }
+        }
+        .toggle-active {
+            background-color: @cp_kanban-fg !important;
+            color: @cp_app-bg;
         }
         &.cp-kanban-quick {
             #cp-kanban-controls {
