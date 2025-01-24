@@ -8,9 +8,7 @@ define([
     '/api/config',
     '/common/dom-ready.js',
     '/common/sframe-common-outer.js',
-    '/components/tweetnacl/nacl-fast.min.js',
 ], function (nThen, ApiConfig, DomReady, SFCommonO) {
-    var Nacl = window.nacl;
 
     var href, hash;
     // Loaded in load #2
@@ -44,7 +42,7 @@ define([
             meta.form_private = formData.form_private;
             meta.form_auditorHash = formData.form_auditorHash;
         };
-        var addRpc = function (sframeChan, Cryptpad, Utils) {
+        var addRpc = function (sframeChan, Cryptpad) {
             sframeChan.on('EV_FORM_PIN', function (data) {
                 channels.answersChannel = data.channel;
                 Cryptpad.changeMetadata();

@@ -185,7 +185,6 @@ define([
                 Utils.Block = _Block;
                 Utils.PadTypes = _PadTypes;
                 AppConfig = _AppConfig;
-                var Nacl = window.nacl;
                 //Test = _Test;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
@@ -2075,7 +2074,7 @@ define([
                 }
             });
 
-            Handler.fetchFormAnswers(sframeChan, Utils, nThen, Cryptpad, window.nacl)
+            Handler.fetchFormAnswers(sframeChan, Utils, nThen, Cryptpad, window.nacl);
 
             var integrationSave = function () {};
             if (cfg.integration) {

@@ -45,6 +45,7 @@ define([], function () {
                 proof: Nacl.util.encodeBase64(u8_bundle)
             };
         };
+        var deleteLines = false; // "false" to support old forms
         sframeChan.on("Q_FETCH_MY_ANSWERS", function (data, cb) {
             var answers = [];
             var myKeys;
@@ -152,7 +153,6 @@ define([], function () {
                 return false;
             }
         };
-        var deleteLines = false; // "false" to support old forms
         sframeChan.on('Q_FORM_FETCH_ANSWERS', function (data, _cb) {
             var formHref = data.href;
             var cb = Utils.Util.once(_cb);

@@ -21,10 +21,9 @@ define([
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
-    '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, AppConfig, Nthen, Nacl) {
+            Cred, Login, AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
