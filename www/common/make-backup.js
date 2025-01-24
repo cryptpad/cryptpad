@@ -141,7 +141,7 @@ define([
             if (cancelled) { return; }
             if (err) { return; }
             if (!val) { return; }
-            transform(ctx, parsed, val, function (res) {
+            transform(ctx, parsed.type, val, function (res) {
                 if (cancelled) { return; }
                 if (!res.data) { return; }
                 var dl = function () {
@@ -237,7 +237,7 @@ define([
                         var opts = {
                             binary: true,
                         };
-                        transform(ctx, parsed, val, function (res) {
+                        transform(ctx, parsed.type, val, function (res) {
                             if (ctx.stop) { return; }
                             if (!res.data) { return void error('EEMPTY'); }
                             var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
