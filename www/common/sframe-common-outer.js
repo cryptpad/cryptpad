@@ -2074,7 +2074,7 @@ define([
                 }
             });
 
-            Handler.fetchFormAnswers(sframeChan, Utils, nThen, Cryptpad, window.nacl);
+            Handler.formCommandHandlers(sframeChan, Utils, nThen, Cryptpad, window.nacl);
 
             var integrationSave = function () {};
             if (cfg.integration) {

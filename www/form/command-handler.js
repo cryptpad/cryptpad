@@ -6,7 +6,7 @@ define([], function () {
 
     var Handler = {};
 
-    Handler.fetchFormAnswers = function(sframeChan, Utils, nThen, Cryptpad, Nacl) {
+    Handler.formCommandHandlers = function(sframeChan, Utils, nThen, Cryptpad, Nacl) {
         sframeChan.on('EV_EXPORT_SHEET', function (data) {
             if (!data || !Array.isArray(data.content)) { return; }
             sessionStorage.CP_formExportSheet = JSON.stringify(data);
