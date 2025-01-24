@@ -21,6 +21,7 @@ define([
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
+    '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             Cred, Login, AppConfig, Nthen) {

@@ -1,12 +1,15 @@
-// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+// SPDX-FileCopyrightText: 2025 XWiki CryptPad Team <contact@cryptpad.org> and contributors
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-define([], function () {
+define([
+    '/components/tweetnacl/nacl-fast.min.js'
+], function () {
 
     var Handler = {};
 
-    Handler.formCommandHandlers = function(sframeChan, Utils, nThen, Cryptpad, Nacl) {
+    var Nacl = window.nacl;
+    Handler.formCommandHandlers = function(sframeChan, Utils, nThen, Cryptpad) {
         sframeChan.on('EV_EXPORT_SHEET', function (data) {
             if (!data || !Array.isArray(data.content)) { return; }
             sessionStorage.CP_formExportSheet = JSON.stringify(data);
