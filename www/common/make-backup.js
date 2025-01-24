@@ -33,7 +33,7 @@ define([
         return n;
     };
 
-    var transform = function (ctx, parsed, sjson, cb, padData) {
+    var transform = function (ctx, type, sjson, cb, padData) {
         var result = {
             data: sjson,
             ext: '.json',
@@ -44,7 +44,7 @@ define([
         } catch (e) {
             return void cb(result);
         }
-        var path = '/' + parsed.type + '/export.js';
+        var path = '/' + type + '/export.js';
         require([path], function (Exporter) {
             Exporter.main(json, function (data, _ext) {
                 result.ext = _ext || Exporter.ext || '';

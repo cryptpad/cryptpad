@@ -21,9 +21,10 @@ define([
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
+    '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, AppConfig, Nthen) {
+            Cred, Login, AppConfig, Nthen, Nacl) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -227,7 +228,6 @@ define([
             n = n(function (waitFor) {
                 require([
                     '/api/broadcast?'+ (+new Date()),
-                    '/components/tweetnacl/nacl-fast.min.js'
                 ], waitFor(function (Broadcast) {
                     nacl = window.nacl;
                     theirs = nacl.util.decodeBase64(Broadcast.curvePublic);
@@ -1578,7 +1578,6 @@ define([
             require([
                 '/common/media-tag.js',
                 '/common/outer/upload.js',
-                '/components/tweetnacl/nacl-fast.min.js'
             ], waitFor(function (_MT, _Upload) {
                 MediaTag = _MT;
                 Upload = _Upload;
@@ -2449,11 +2448,11 @@ define([
             window.RTCPeerConnection);
     };
 
-    common.getAnonymousKeys = function (formSeed, channel, Utils) {
+    common.getAnonymousKeys = function (formSeed, channel) {
         var array = window.nacl.util.decodeBase64(formSeed + channel);
         var hash = window.nacl.hash(array);
         var secretKey = window.nacl.util.encodeBase64(hash.subarray(32));
-        var publicKey = Utils.Hash.getCurvePublicFromPrivate(secretKey);
+        var publicKey = Hash.getCurvePublicFromPrivate(secretKey);
         return {
             curvePrivate: secretKey,
             curvePublic: publicKey,
