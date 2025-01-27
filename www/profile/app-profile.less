@@ -24,6 +24,7 @@
     #cp-app-profile-header {
         display: flex;
         flex-flow: row wrap;
+        justify-content: center;
         #cp-app-profile-rightside {
             flex: 1;
             display: flex;
@@ -32,17 +33,15 @@
         }
     }
     #cp-app-profile-avatar {
-        width: 300px;
-        //height: 350px;
         margin: 10px;
         margin-right: 20px;
         text-align: center;
+        max-width: 300px;
+        max-height: 300px;
+        margin-bottom: 5rem;
         &> span {
             display: inline-block;
             text-align: center;
-            height: 300px;
-            width: 300px;
-            border: 1px solid @cp_profile-border;
             border-radius: 4px;
             overflow: hidden;
             position: relative;
@@ -59,6 +58,7 @@
             max-width: 100%;
             max-height: 100%;
             vertical-align: top;
+            border-radius: @variables_radius_L;
         }
         media-tag {
             height: 100%;
@@ -81,11 +81,6 @@
         }
     }
 
-    @media screen and (max-width: 550px) {
-        #cp-app-profile-avatar {
-            margin: auto;
-        }
-    }
     .cp-app-profile-resizer {
         text-align: center;
     }
