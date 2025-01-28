@@ -73,7 +73,7 @@ const factory = (AppConfig = {}, Util, Hash,
             // Href exists and is not encrypted: return href
             return pad.href;
         }
-        if (pad.href) {
+        if (pad.href && cryptor) {
             // Href exists and is encrypted
             var d = cryptor.decrypt(pad.href);
             // If we can decrypt, return the decrypted value, otherwise continue and return roHref
