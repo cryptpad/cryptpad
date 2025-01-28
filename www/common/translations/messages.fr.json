@@ -1442,8 +1442,8 @@
     "admin_uptimeHint": "Date et heure auxquelles le serveur a été démarré",
     "admin_cat_database": "Base de données",
     "admin_generatedAt": "Horodatage du rapport",
-    "ui_true": "activé",
-    "ui_false": "désactivé",
+    "ui_true": "vrai",
+    "ui_false": "faux",
     "ui_none": "aucun",
     "ui_generateReport": "Générer un rapport",
     "ui_success": "Succès",
@@ -1783,5 +1783,9 @@
     "install_notes": "<ul class=\"cp-notes-list\"><li>Créez votre premier compte administrateur·ice sur cette page. Les administrateur·ices peuvent paramétrer l'instance, ceci incluant les quotas de stockage, et ont accès aux outils de modération.</li><li>Votre mot de passe est la clé secrète qui chiffre l'ensemble de vos documents et vos privilèges d'administration sur l'instance. <span class=\"red\">Si vous le perdez il n'est pas possible de récupérer vos données.</span></li><li>Si vous utilisez un ordinateur partagé, <span class=\"red\">n'oubliez pas de vous déconnecter</span> quand vous aurez terminé. Simplement fermer la fenêtre du navigateur web laisse votre compte exposé à des risques de sécurité. </li></ul>",
     "team_autoTrim": "Suppression de l'historique du drive d'équipe... Veuillez patienter.",
     "admin_mfa_confirm_disable": "Êtes-vous sûr de vouloir désactiver l'authentification multi-facteur ?",
-    "admin_mfa_confirm_enable": "Êtes-vous sûr de vouloir activer l'authentification multi-facteur ?"
+    "admin_mfa_confirm_enable": "Êtes-vous sûr de vouloir activer l'authentification multi-facteur ?",
+    "fm_restoreMultipleDialog": "Êtes-vous sûr·e de vouloir restaurer {0} fichiers et/ou dossiers à leurs emplacements précédents ?",
+    "calendar_hide": "Cacher les calendriers",
+    "calendar_show": "Afficher les calendriers",
+    "form_passwordWarning": "Veuillez noter qu'un mot de passe pour Formulaire peut uniquement être spécifié lors de la création du document et ne peut pas être changé plus tard."
 }

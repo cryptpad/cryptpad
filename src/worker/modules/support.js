@@ -98,6 +98,7 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
                     msg = JSON.parse(msg);
                 } catch (e) {
                     console.error(e);
+                    return; // Don't show "undefined" messages
                 }
                 msg.time = time;
                 if (author) { msg.author = author; }
@@ -226,6 +227,7 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
         var anonRpc = Util.find(ctx, [ 'store', 'anon_rpc' ]);
         if (!mailbox) { return void cb('E_NOT_READY'); }
         if (!anonRpc) { return void cb("anonymous rpc session not ready"); }
+        if (!data?.ticket) { return void cb('E_NO_DATA'); }
         var theirPublic, myCurve, notifKey;
         var time;
         nThen((waitFor) => {
@@ -525,6 +527,11 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
                     if (last.sender) {
                         entry.lastAdmin = !last.sender.blockLocation;
                     }
+                    if (last.close) {
+                        doc.tickets.closed[data.channel] = entry;
+                        delete doc.tickets.active[data.channel];
+                        notifyClient(ctx, true, 'UPDATE_TICKET', data.channel);
+                    }
                     /*
                     let senderKey = last.sender && last.sender.edPublic;
                     if (senderKey) {
@@ -583,7 +590,9 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
                 doc.tickets.closed[data.channel] = entry;
                 delete doc.tickets.active[data.channel];
                 delete doc.tickets.pending[data.channel];
-                cb({closed: true});
+                Realtime.whenRealtimeSyncs(ctx.adminDoc.realtime, function () {
+                    cb({closed: true});
+                });
             });
         });
     };

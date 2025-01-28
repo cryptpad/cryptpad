@@ -133,7 +133,7 @@ const factory = () => {
         // en: "Hello world",
         // fr: "Bonjour le monde",
         // de: "Hallo Welt",
-        // "pt-br": "Olá Mundo"<
+        // "pt-br": "Olá Mundo"
     };
 
     /*  Cryptpad apps use a common API to display notifications to users

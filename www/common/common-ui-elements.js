@@ -2525,6 +2525,7 @@ define([
         window.setTimeout(function () {
             modal.show();
             $modal.focus();
+            next();
         });
     };
 
@@ -2770,7 +2771,11 @@ define([
         ]);
 
         // Password
-        var password = h('div.cp-creation-password', [
+        let text;
+        if (type === 'form') {
+            text =  h('div.cp-creation-password-warning.alert.alert-info.dismissable', h('span.cp-inline-alert-text', Messages.form_passwordWarning));
+        }
+        var password = h('div.cp-creation-password',  [ 
             UI.createCheckbox('cp-creation-password', Messages.properties_addPassword, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
                 UI.passwordInput({id: 'cp-creation-password-val'})
@@ -2808,6 +2813,7 @@ define([
                 expire,
                 password,
             ]),
+            text,
             templates,
             createDiv
         ])).appendTo($creation);

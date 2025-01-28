@@ -592,7 +592,7 @@ const factory = (Util, Hash, Constants, Realtime, Cache, Rec,
             ctx.clients.push(cId);
         }
         cb({
-            empty: !Object.keys(ctx.calendars).length
+            length: Object.keys(ctx.calendars).length
         });
         Object.keys(ctx.calendars).forEach(function (channel) {
             var c = ctx.calendars[channel] || {};

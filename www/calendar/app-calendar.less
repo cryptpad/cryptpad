@@ -599,6 +599,18 @@
                     margin-top: 30px;
                 }
             }
+            @media screen and (max-width: @browser_media-medium-screen) {
+                .cp-calendar-entries {
+                    display: none;
+                }
+
+                .cp-calendar-entries.visible {
+                    display: block;
+                }
+            }
+            .cp-calendar-entries {
+                margin-bottom: 10px;
+            }
             .cp-calendar-entry {
                 display: flex;
                 align-items: center;
@@ -628,6 +640,7 @@
                 }
                 &.cp-ghost {
                     padding: 0;
+                    margin-top: 1rem;
                     button {
                         .tools_unselectable();
                         cursor: pointer;
