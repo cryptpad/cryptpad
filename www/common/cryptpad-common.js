@@ -21,6 +21,7 @@ define([
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
+    '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             Cred, Login, AppConfig, Nthen) {
@@ -227,7 +228,6 @@ define([
             n = n(function (waitFor) {
                 require([
                     '/api/broadcast?'+ (+new Date()),
-                    '/components/tweetnacl/nacl-fast.min.js'
                 ], waitFor(function (Broadcast) {
                     nacl = window.nacl;
                     theirs = nacl.util.decodeBase64(Broadcast.curvePublic);
@@ -1580,7 +1580,6 @@ define([
             require([
                 '/common/media-tag.js',
                 '/common/outer/upload.js',
-                '/components/tweetnacl/nacl-fast.min.js'
             ], waitFor(function (_MT, _Upload) {
                 MediaTag = _MT;
                 Upload = _Upload;
@@ -2449,6 +2448,17 @@ define([
             navigator.mozGetUserMedia ||
             navigator.msGetUserMedia ||
             window.RTCPeerConnection);
+    };
+
+    common.getAnonymousKeys = function (formSeed, channel) {
+        var array = window.nacl.util.decodeBase64(formSeed + channel);
+        var hash = window.nacl.hash(array);
+        var secretKey = window.nacl.util.encodeBase64(hash.subarray(32));
+        var publicKey = Hash.getCurvePublicFromPrivate(secretKey);
+        return {
+            curvePrivate: secretKey,
+            curvePublic: publicKey,
+        };
     };
 
     common.ready = (function () {
