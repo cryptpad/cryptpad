@@ -10,7 +10,7 @@ define([
     '/common/common-interface.js',
     '/common/hyperscript.js',
     '/common/common-feedback.js',
-    '/common/userObject.js',
+    '/common/user-object.js',
     '/common/inner/cache.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
