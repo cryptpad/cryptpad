@@ -4345,12 +4345,9 @@ define([
                 var refreshPage = APP.refreshPage = function (current, direction) {
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
-
                     var checkPages = checkEmptyPages();
                     var shownContent = checkPages[0];
                     var shownPages = checkPages[1];
-                    var shownLength = shownContent.length;
-
                     if (pgcontent[(current - 1)] && pgcontent[current-1].empty) {
                         if (direction === 'next') {
                             current++;
@@ -4367,14 +4364,6 @@ define([
                         }
                     }
 
-                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
-                    evOnChange.reg(function(){
-                        var checkPages = checkEmptyPages();
-                        var shownContent = checkPages[0];
-                        var shownPages = checkPages[1];
-                        var shownLength = shownContent.length;
-                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
-                    });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
                     ]);
@@ -4382,8 +4371,39 @@ define([
                         h('i.fa.fa-arrow-right'),
                     ]);
 
+                    var togglePageArrows = function(checkPages) {
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
+                        if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) {
+                            $(right).css('visibility', 'hidden');
+                        } else {
+                            $(right).css('visibility', 'visible');
+                        }
+
+                        if (current === 1) {$(left).css('visibility', 'hidden');}
+                        $container.find('.cp-form-page').hide();
+                        $($container.find('.cp-form-page').get(current-1)).show();
+                        if (current < shownContent.length) {
+                            $container.find('.cp-form-send-container').hide();
+                        } else {
+                            $container.find('.cp-form-send-container').show();
+                        }
+                    };
+
+                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
+                    evOnChange.reg(function(){
+                        var checkPages = checkEmptyPages();
+                        togglePageArrows(checkPages);
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
+                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
+                        
+                    });
+
                     if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
+
+                    togglePageArrows(checkPages);
 
                     $(left).click(function () {
                         refreshPage(current - 1, 'prev');
@@ -4392,14 +4412,6 @@ define([
                         refreshPage(current + 1, 'next');
                     });
                     $page.append([left, state, right]);
-
-                    $container.find('.cp-form-page').hide();
-                    $($container.find('.cp-form-page').get(current-1)).show();
-                    if (current !== pages) {
-                        $container.find('.cp-form-send-container').hide();
-                    } else {
-                        $container.find('.cp-form-send-container').show();
-                    }
                 };
                 setTimeout(refreshPage);
             }
