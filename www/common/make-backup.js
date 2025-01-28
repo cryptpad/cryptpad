@@ -10,12 +10,13 @@ define([
     '/common/common-interface.js',
     '/common/hyperscript.js',
     '/common/common-feedback.js',
+    '/common/userObject.js',
     '/common/inner/cache.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/components/saferphore/index.js',
     '/components/jszip/dist/jszip.min.js',
-], function ($, FileCrypto, Hash, Util, UI, h, Feedback,
+], function ($, FileCrypto, Hash, Util, UI, h, Feedback, UO,
              Cache, Messages, nThen, Saferphore, JsZip) {
     var saveAs = window.saveAs;
 
@@ -169,6 +170,7 @@ define([
                 data: fData
             });
         }
+
         var href;
         var parsed;
         if (!fData.channel) {
@@ -176,7 +178,7 @@ define([
             parsed = {};
             parsed['hashData'] = {type: 'link'};
         } else {
-            href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
+            href = UO.getHref(fData, ctx.currentCryptor);
             parsed = Hash.parsePadUrl(href);
         }
         if (['pad', 'file', 'link'].indexOf(parsed.hashData.type) === -1) { return; }
@@ -314,20 +316,27 @@ define([
             if (typeof el === "object" && el.metadata !== true) { // if folder
                 var fName = getUnique(sanitize(k), '', existingNames);
                 existingNames.push(fName.toLowerCase());
+                ctx.currentCryptor = undefined;
                 return void makeFolder(ctx, el, zip.folder(fName), fd, sd);
             }
             if (ctx.data.sharedFolders[el]) { // if shared folder
-                let staticData = ctx.sf[el].static;
+                let obj = ctx.data.sharedFolders[el];
+                let parsed = Hash.parsePadUrl(obj.href || obj.roHref);
+                var secret = Hash.getSecrets('drive', parsed.hash, obj.password);
+                let cryptor = secret.keys?.secondaryKey ? UO.createCryptor(secret.keys?.secondaryKey)
+                                                        : undefined;
+                ctx.currentCryptor = cryptor;
                 var sfData = ctx.sf[el].metadata;
                 var sfName = getUnique(sanitize((sfData && sfData.title) || 'Folder'), '', existingNames);
                 existingNames.push(sfName.toLowerCase());
+                let staticData = ctx.sf[el].static;
                 return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData, staticData);
             }
             var fData = fd[el] || (sd && sd[el]);
             if (fData) {
                 addFile(ctx, zip, fData, existingNames);
                 return;
-            }  
+            }
         });
     };
 

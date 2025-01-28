@@ -190,7 +190,15 @@ nThen(function (w) {
 
     var throttledEnvChange = Util.throttle(function () {
         Env.Log.info('WORKER_ENV_UPDATE', 'Updating HTTP workers with latest state');
-        broadcast('ENV_UPDATE', Environment.serialize(Env));
+        let serialized = Environment.serialize(Env);
+        broadcast('ENV_UPDATE', serialized);
+        if (Env.broadcastWorkerCommand) {
+            Env.broadcastWorkerCommand({
+                command: 'ENV_UPDATE',
+                value: serialized,
+                txid: Util.uid()
+            });
+        }
     }, 250); // NOTE: changing this value will impact lib/commands/admin-rpc.js#adminDecree callback
 
     var throttledCacheFlush = Util.throttle(function () {

@@ -123,6 +123,7 @@ define([
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
+        var Handler;
 
         var currentPad = window.CryptPad_location = {
             app: '',
@@ -156,10 +157,11 @@ define([
                 '/common/user-object.js',
                 'optional!/api/instance',
                 '/common/pad-types.js',
+                '/form/command-handler.js'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
-            _Instance, _PadTypes) {
+            _Instance, _PadTypes, _Handler) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -183,6 +185,7 @@ define([
                 Utils.Block = _Block;
                 Utils.PadTypes = _PadTypes;
                 AppConfig = _AppConfig;
+                Handler = _Handler;
                 //Test = _Test;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
@@ -2071,6 +2074,8 @@ define([
                     sframeChan.event('EV_POPUP_BLOCKED');
                 }
             });
+
+            Handler.formCommandHandlers(sframeChan, Utils, nThen, Cryptpad);
 
             var integrationSave = function () {};
             if (cfg.integration) {
