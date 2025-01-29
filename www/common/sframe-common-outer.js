@@ -735,6 +735,7 @@ define([
                 }));
             }
         }).nThen(function () {
+            console.info('READY SCO');
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             var isNewHash = true;
             if (!secret.keys) {
