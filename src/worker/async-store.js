@@ -6,12 +6,13 @@
 const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
-                SF, Cursor, Support, Integration, OnlyOffice,
+                SF, AccountTS, Cursor, Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
                 Calendar, Block, NetConfig, AppConfig = {},
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
+    const Account = AccountTS.Account;
     const window = globalThis;
     const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
@@ -2894,160 +2895,56 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             });
         };
 
-        var connect = function (clientId, data, cb) {
-            var hash = data.userHash || data.anonHash || Hash.createRandomHash('drive');
+        const connect = (clientId, data, cb) => {
+            const account = Account.init({
+                userHash: data.userHash,
+                anonHash: data.anonHash,
+                cache: data.cache,
+                form_seed: data.form_seed,
+                store,
+                broadcast,
+                postMessage
 
-            if (!hash) {
-                return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
-            }
+            });
+            const {
+                channel, onAccountReady, onAccountCacheReady,
+                onDisconnect, onReconnect
+            } = account;
 
-            var updateProgress = function (data) {
-                data.type = 'drive';
-                postMessage(clientId, 'LOADING_DRIVE', data);
-            };
+            store.driveChannel = channel;
 
-            // No password for drive
-            var secret = Hash.getSecrets('drive', hash);
-            store.driveChannel = secret.channel;
-            var listmapConfig = {
-                data: {},
-                websocketURL: NetConfig.getWebsocketURL(),
-                network: store.network,
-                channel: secret.channel,
-                readOnly: false,
-                validateKey: secret.keys.validateKey || undefined,
-                crypto: Crypto.createEncryptor(secret.keys),
-                Cache: Cache,
-                userName: 'fs',
-                logLevel: 1,
-                ChainPad: ChainPad,
-                updateProgress: updateProgress,
-                classic: true,
-            };
-            var rt = window.rt = Listmap.create(listmapConfig);
-            store.driveSecret = secret;
-            store.proxy = rt.proxy;
-            store.onRpcReadyEvt = Util.mkEvent(true);
-            store.loggedIn = typeof(data.userHash) !== "undefined";
-
-            var returned = {
-                loggedIn: Boolean(data.userHash)
-            };
-            rt.proxy.on('create', function (info) {
-                store.realtime = info.realtime;
-                store.network = info.network;
-                if (!data.userHash) {
-                    returned.anonHash = Hash.getEditHashFromKeys(secret);
-                }
-            }).on('cacheready', function (info) {
-                store.offline = true;
-                store.realtime = info.realtime;
-                store.networkPromise = info.networkPromise;
-                store.cacheReturned = returned;
-
-                if (store.networkPromise && store.networkPromise.then) {
-                    // Check if we can connect
-                    var to = setTimeout(function () {
-                        store.networkTimeout = true;
-                        broadcast([], "LOADING_DRIVE", {
-                            type: "offline"
-                        });
-                    }, 5000);
-
-                    store.networkPromise.then(function () {
-                        clearTimeout(to);
-                    }, function (err) {
-                        console.error(err);
-                        clearTimeout(to);
-                    });
-                }
-
-                if (!data.cache) { return; }
-
-                // Make sure we have a valid user object before emitting cacheready
-                if (rt.proxy && !rt.proxy.drive) { return; }
-
-                returned.edPublic = rt.proxy.edPublic;
-
+            // XXX don't always call onCacheReady and onReady?
+            // it depends on what was required by the first tab
+            onAccountCacheReady(returned => {
                 onCacheReady(clientId, function () {
-                    if (typeof(cb) === "function") { cb(returned); }
+                    if (typeof(cb) === "function") {
+                        cb(returned);
+                    }
                     onCacheReadyEvt.fire();
                 });
-            }).on('ready', function (info) {
-                delete store.networkTimeout;
-                if (store.ready) { return; } // the store is already ready, it is a reconnection
-                store.driveMetadata = info.metadata;
-                if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
-                if (!rt.proxy[Constants.displayNameKey] && store.noDriveName) {
-                    rt.proxy[Constants.displayNameKey] = store.noDriveName;
-                }
-                if (!rt.proxy.uid && store.noDriveUid) {
-                    rt.proxy.uid = store.noDriveUid;
-                }
-                if (!rt.proxy.form_seed && data.form_seed) {
-                    rt.proxy.form_seed = data.form_seed;
-                }
-
-                if (rt.proxy.edPublic && Array.isArray(ApiConfig.adminKeys) &&
-                    ApiConfig.adminKeys.indexOf(rt.proxy.edPublic) !== -1) {
-                    store.isAdmin = true;
-                }
-
-                /*
-                // deprecating localStorage migration as of 4.2.0
-                var drive = rt.proxy.drive;
-                // Creating a new anon drive: import anon pads from localStorage
-                if ((!drive[Constants.oldStorageKey] || !Array.isArray(drive[Constants.oldStorageKey]))
-                    && !drive['filesData']) {
-                    drive[Constants.oldStorageKey] = [];
-                }
-                */
-
-                returned.edPublic = rt.proxy.edPublic;
-                // Drive already exist: return the existing drive, don't load data from legacy store
+            });
+            onAccountReady(returned => {
                 if (store.manager) {
-                    // If a cache is loading, make sure it is complete before calling onReady
                     return void onCacheReadyEvt.reg(function () {
                         onReady(clientId, returned, cb);
                     });
                 }
-
                 onReady(clientId, returned, cb);
-            })
-            .on('change', ['drive', 'migrate'], function () {
-                var path = arguments[2];
-                var value = arguments[1];
-                if (path[0] === 'drive' && path[1] === "migrate" && value === 1) {
-                    rt.network.disconnect();
-                    rt.realtime.abort();
-                    sendDriveEvent('NETWORK_DISCONNECT');
-                }
-            })
-            .on('error', function (info) {
-                if (info.error && info.error === 'EDELETED') {
-                    if (store.ownDeletion) { return; }
-                    store.isDeleted = true;
-                    broadcast([], "DRIVE_DELETED", info.message);
-                }
+            });
+            // XXX move to drive
+            onDisconnect(() => {
+                sendDriveEvent('NETWORK_DISCONNECT');
+            });
+            onReconnect(() => {
+                sendDriveEvent('NETWORK_RECONNECT');
             });
 
-            // Proxy handlers (reconnect only called when the proxy is ready)
-            rt.proxy.on('disconnect', function () {
-                store.offline = true;
-                sendDriveEvent('NETWORK_DISCONNECT');
-                broadcast([], "UPDATE_METADATA");
-            });
-            rt.proxy.on('reconnect', function () {
-                store.offline = false;
-                sendDriveEvent('NETWORK_RECONNECT');
-                broadcast([], "UPDATE_METADATA");
-            });
 
             // Ping clients regularly to make sure one tab was not closed without sending a removeClient()
             // command. This allow us to avoid phantom viewers in pads.
-            var PING_INTERVAL = 120000;
-            var MAX_PING = 30000;
-            var MAX_FAILED_PING = 2;
+            const PING_INTERVAL = 120000;
+            const MAX_PING = 30000;
+            const MAX_FAILED_PING = 2;
 
             setInterval(function () {
                 var clients = [];
@@ -3302,6 +3199,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('./components/merge-drive'),
         require('../common/cache-store'),
         require('./components/sharedfolder'),
+        require('./components/account'), // XXX
         require('./modules/cursor'),
         require('./modules/support'),
         require('./modules/integration'),

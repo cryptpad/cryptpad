@@ -1,6 +1,6 @@
 // Default CryptPad worker module, extended with
 // specific methods for each module
-type Callback = (...args: any[]) => void
+export type Callback = (...args: any[]) => void
 
 export type ModuleConfig = {
     emit: Function
@@ -18,5 +18,28 @@ export interface ModuleObject {
 
 export interface Module<T> {
     init: (config: ModuleConfig, cb: Callback) => T
+}
+
+
+export type AccountConfig = {
+    anonHash: string,
+    userHash: string,
+    store: any,
+    cache: boolean,
+    form_seed: string,
+
+    broadcast: (exclude: object, cmd: string, data?: any, cb?: any) => void,
+    postMessage: (clientId: string, cmd: string, data?: any, cb?: any) => void
+}
+export interface AccountObject {
+    channel: string,
+    onAccountCacheReady: any,
+    onAccountReady: any,
+    onDisconnect: any,
+    onReconnect: any
+}
+export interface Account {
+    init: (config: AccountConfig) => AccountObject,
+    setCustomize: Callback
 }
 

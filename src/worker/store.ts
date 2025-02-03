@@ -2,6 +2,8 @@ import nacl from 'tweetnacl/nacl-fast';
 import { Module } from './types';
 import { TestModule, TestModuleObject } from './modules/test';
 
+import { Account } from './components/account';
+
 // Manage all imports in order to provide them ApiConfig, AppConfig, etc.
 
 // Common
@@ -52,7 +54,6 @@ interface StoreConfig {
     Messages: any
 }
 
-
 let start = (cfg: StoreConfig):void => {
     // Provide custom data to the modules
     [
@@ -68,7 +69,8 @@ let start = (cfg: StoreConfig):void => {
         Cursor,
         Support,
         Calendar,
-        Store
+        Store,
+        Account
     ].forEach(dep => {
         if (typeof(dep.setCustomize) === "function") {
             dep.setCustomize(cfg);
