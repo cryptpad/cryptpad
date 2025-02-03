@@ -534,6 +534,7 @@ define([
                 contentUpdate(newContent, function () { return function () {}; });
             }
 
+            console.error('REMOVE LAODING SCREEN - CACHE');
             UI.removeLoadingScreen(emitResize);
         };
         var onReady = function () {
@@ -668,6 +669,7 @@ define([
 
                 firstConnection = false;
 
+                console.error('REMOVE LOADING SCREEN - ONLINE'); // XXX ORDER
                 UI.removeLoadingScreen(emitResize);
 
                 if (AppConfig.textAnalyzer && textContentGetter) {
