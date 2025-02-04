@@ -316,10 +316,10 @@ define([
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
 
-                let safeHash = false;
+                let canNoDrive = false;
                 try {
                     var parsed = Utils.Hash.parsePadUrl(currentPad.href);
-                    safeHash = !!(parsed?.hashData?.version === 3);
+                    canNoDrive = !(parsed?.hashData?.version === 3) && !parsed?.hashData?.password;
                     var options = parsed.getOptions();
                     if (options.loginOpts) {
                         var loginOpts = Utils.Hash.decodeDataOptions(options.loginOpts);
@@ -350,7 +350,7 @@ define([
                         sframeChan.event('EV_LOADING_ERROR', 'ACCOUNT');
                     }
                 }), {
-                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash && !safeHash,
+                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash && canNoDrive,
                     neverDrive: cfg.integration,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),

@@ -2630,6 +2630,7 @@ define([
                 cache: rdyCfg.cache,
                 noDrive: rdyCfg.noDrive,
                 neverDrive: rdyCfg.neverDrive,
+                requires: rdyCfg.requires,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
                 lastVisit: Number(localStorage.lastVisit) || undefined,

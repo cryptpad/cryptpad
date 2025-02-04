@@ -14,6 +14,8 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
     const Account = AccountTS.Account;
     const window = globalThis;
+    globalThis.nacl = globalThis.nacl || Crypto.Nacl;
+
     const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
@@ -559,7 +561,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
         //////////////////////////////////////////////////////////////////
 
         var getAllStores = Store.getAllStores = function () {
-            if (!store.proxy) { return []; }
+            if (!store.proxy || !store.manager) { return []; }
             var stores = [store];
             var teamModule = store.modules['team'];
             if (teamModule) {
@@ -2793,15 +2795,10 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     };
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 });
-                loadUniversal(Cursor, 'cursor', waitFor);
-                loadUniversal(Integration, 'integration', waitFor);
-                loadOnlyOffice();
-                loadUniversal(Messenger, 'messenger', waitFor);
-                store.messenger = store.modules['messenger'];
+                loadSyncModules(waitFor);
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Calendar, 'calendar', waitFor);
                 if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
-                loadUniversal(History, 'history', waitFor);
                 loadUniversal(Support, 'support', waitFor);
             }).nThen(function () {
                 console.error('SF & TEAM READY');
@@ -3015,20 +3012,28 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             });
         };
 
+        // Modules that won't load anything from the server
+        const loadSyncModules = (waitFor = function (){}) => {
+            loadUniversal(Cursor, 'cursor', waitFor);
+            loadUniversal(Integration, 'integration', waitFor);
+            loadUniversal(Messenger, 'messenger', waitFor);
+            loadUniversal(History, 'history', waitFor);
+            loadOnlyOffice();
+            if (store) {
+                store.messenger = store.modules['messenger'];
+            }
+        };
+
         // If we load CryptPad for the first time from an existing pad, don't create a
         // drive automatically.
         var onNoDrive = function (clientId, cb) {
             var andThen = function () {
-                // To be able to use all the features inside the pad, we need to
-                // initialize the chat (messenger) and the cursor modules.
-                loadUniversal(Cursor, 'cursor', function () {});
-                loadUniversal(Integration, 'integration', function () {});
-                loadUniversal(Messenger, 'messenger', function () {});
-                loadOnlyOffice();
-                store.messenger = store.modules['messenger'];
-
-                // And now we're ready
+                // Initialize modules that can be used by pads
+                // and don't require account data
+                loadSyncModules();
+                // Load anonymous rpc
                 initAnonRpc(null, null, function () {
+                    Feedback.send("NO_DRIVE", true);
                     cb({});
                 });
             };
@@ -3064,6 +3069,70 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 });
             }
             andThen();
+        };
+
+        let start = (clientId, data, cb) => {
+            // Don't create a drive if the user only wants to
+            // open an existing pad
+            const noDrive = data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash);
+            if (noDrive) {
+                return void onNoDrive(clientId, cb);
+            }
+
+            const requires = data.requires;
+
+            // Mark initialized to true: new tabs will have to
+            // wait for the entire worker to be ready
+            initialized = true;
+            store.data = data;
+
+            // Now users will create a drive, but they may not
+            // own an account
+            if (requires === 'pad') {
+                // Start with only the pad modules, callback
+                // and then load the account and other modules
+                return void onNoDrive(clientId, function (obj) {
+                    if (obj && obj.error) {
+                        // handle error
+                        return; // XXX
+                    }
+                    // Callback now to unfreeze the loading screen
+                    // Pad can now start to be loaded
+                    cb(obj);
+                    // Once pad is joined, continue the loading process
+                    onJoinedEvt.reg(function () {
+                        connect(clientId, data, function (ret) {
+                            if (Object.keys(store.proxy).length === 1) {
+                                Feedback.send("FIRST_APP_USE", true);
+                            }
+                            if (ret && ret.error) {
+                                initialized = false;
+                            }
+                        });
+                    });
+                });
+            }
+
+            if (requires === 'drive') {
+                // TODO
+            }
+
+            // XXX to improve: load everything
+            connect(clientId, data, function (ret) {
+                if (Object.keys(store.proxy).length === 1) {
+                    Feedback.send("FIRST_APP_USE", true);
+                }
+                if (ret && ret.error) {
+                    initialized = false;
+                }
+
+                const redirect = Constants.prefersDriveRedirectKey;
+                const redirectPreference = Util.find(store, [ 'proxy', 'settings', 'general', redirect ]);
+
+                ret[redirect] = redirectPreference;
+
+                cb(ret);
+            });
         };
 
         let subscribeToDrive = function (clientId) {
@@ -3117,92 +3186,42 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 Cache.disable();
             }
 
-            // First tab, no user hash, no anon hash and this app doesn't need a drive
-            // ==> don't create a drive
-            // Or "neverDrive" (integration into another platform?)
-            // ==> don't create a drive
-            if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
-                return void onNoDrive(clientId, function (obj) {
-                    if (obj && obj.error) {
-                        // if we can't properly initialize the noDrive mode, use normal mode
-                        if (obj.error === 'GET_HK') {
-                            data.noDrive = false;
-                            Store.init(clientId, data, callback);
-                            Feedback.send("NO_DRIVE_ERROR", true);
-                            return;
-                        }
-                    }
-                    Feedback.send("NO_DRIVE", true);
-                    callback(obj);
-                });
+            // XXX replace noDrive
+            if (data.noDrive && !data.requires) {
+                data.requires = 'pad';
             }
 
-            initialized = true;
-            if (store.noDriveUid) {
-                Feedback.send('NO_DRIVE_CONVERSION', true);
-            }
-
-            store.data = data;
-            if (data.noDrive) {
-                return void onNoDrive(clientId, function (obj) {
-                    if (obj && obj.error) {
-                        // if we can't properly initialize the noDrive mode, use normal mode
-                        if (obj.error === 'GET_HK') {
-                            data.noDrive = false;
-                            Store.init(clientId, data, _callback);
-                            Feedback.send("NO_DRIVE_ERROR", true);
-                            return;
-                        }
-                    }
-                    callback(obj);
-                    onJoinedEvt.reg(function () {
-                        connect(clientId, data, function (ret) {
-                            if (Object.keys(store.proxy).length === 1) {
-                                Feedback.send("FIRST_APP_USE", true);
-                            }
-                            if (ret && ret.error) {
-                                initialized = false;
-                            }
-                        });
+            start(clientId, data, obj => {
+                if (obj.error === 'GET_HK') {
+                    Feedback.send("NO_DRIVE_ERROR", true);
+                    return void callback({
+                        error: 'ERROR' // XXX
                     });
-                });
-            }
-            connect(clientId, data, function (ret) {
-                if (Object.keys(store.proxy).length === 1) {
-                    Feedback.send("FIRST_APP_USE", true);
                 }
-                if (ret && ret.error) {
-                    initialized = false;
-                }
-
-                var redirect = Constants.prefersDriveRedirectKey;
-                var redirectPreference = Util.find(store, [ 'proxy', 'settings', 'general', redirect, ]);
-                ret[redirect] = redirectPreference;
-
-                callback(ret);
-            });
-
-            // Clear inactive channels from cache
-            onReadyEvt.reg(function () {
-                var inactiveTime = (+new Date()) - CACHE_MAX_AGE * (24 * 3600 * 1000);
-                Cache.getKeys(function (err, keys) {
-                    if (err) { return void console.error(err); }
-                    var next = function () {
-                        if (!keys.length) { return; }
-                        var key = keys.pop();
-                        Cache.getTime(key, function (err, atime) {
-                            if (err) { return void next(); }
-                            if (!atime || atime < inactiveTime) {
-                                Cache.clearChannel(key, next());
-                                return;
-                            }
-                            next();
-                        });
-                    };
-                    next();
-                });
+                callback(obj);
             });
         };
+
+        // Clear inactive channels from cache
+        onReadyEvt.reg(function () {
+            var inactiveTime = (+new Date()) - CACHE_MAX_AGE * (24 * 3600 * 1000);
+            Cache.getKeys(function (err, keys) {
+                if (err) { return void console.error(err); }
+                var next = function () {
+                    if (!keys.length) { return; }
+                    var key = keys.pop();
+                    Cache.getTime(key, function (err, atime) {
+                        if (err) { return void next(); }
+                        if (!atime || atime < inactiveTime) {
+                            Cache.clearChannel(key, next());
+                            return;
+                        }
+                        next();
+                    });
+                };
+                next();
+            });
+        });
 
         Store.disconnect = function () {
             if (globalThis.accountDeletion) { return; }
