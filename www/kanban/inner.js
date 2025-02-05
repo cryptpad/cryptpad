@@ -596,7 +596,7 @@ define([
                 $(el).find('.item-icon-container').remove();
                 var arrowContainer = h('div.item-icon-container');
                 $(arrowContainer).appendTo($(el).find('.kanban-board-header'));
-                $('<i>', {
+                $('<button>', {
                     'class': 'cp-kanban-arrow fa fa-arrow-left board-arrow',
                     'title': Messages.kanban_moveBoardLeft,
                     'aria-hidden': true
@@ -605,7 +605,7 @@ define([
                 }).appendTo($(el).find('.item-icon-container'));
             });
             $container.find('.kanban-board').each(function (i, el) {
-                $('<i>', {
+                $('<button>', {
                     'class': 'cp-kanban-arrow fa fa-arrow-right board-arrow',
                     'title': Messages.kanban_moveBoardRight,
                     'aria-hidden': true
@@ -618,7 +618,7 @@ define([
                 $(el).find('.item-arrow-container').remove();
                 var arrowContainerItem = h('div.item-arrow-container');
                 $(arrowContainerItem).appendTo((el));
-                $('<i>', {
+                $('<button>', {
                     'class': 'cp-kanban-arrow fa fa-arrow-left item-arrow',
                     'title': Messages.kanban_moveItemLeft,
                     'aria-hidden': true
@@ -629,7 +629,7 @@ define([
             $container.find('.kanban-item').each(function (i, el) {
                 var centralArrowContainerItem = h('div.item-central-arrow-container');
                 $(centralArrowContainerItem).appendTo($(el).find('.item-arrow-container'));
-                $('<i>', {
+                $('<button>', {
                     'class': 'cp-kanban-arrow fa fa-arrow-down',
                     'title': Messages.kanban_moveItemDown,
                     'aria-hidden': true
@@ -638,7 +638,7 @@ define([
                 }).appendTo($(el).find('.item-central-arrow-container'));
             });
             $container.find('.kanban-item').each(function (i, el) {
-                $('<i>', {
+                $('<button>', {
                     'class': 'cp-kanban-arrow fa fa-arrow-up',
                     'title': Messages.moveItemUp,
                     'aria-hidden': true
@@ -647,7 +647,7 @@ define([
                 }).appendTo($(el).find('.item-central-arrow-container'));
             });
             $container.find('.kanban-item').each(function (i, el) {
-                $('<i>', {
+                $('<button>', {
                     'class': 'cp-kanban-arrow fa fa-arrow-right item-arrow',
                     'title': Messages.moveItemRight,
                     'aria-hidden': true
@@ -1194,13 +1194,13 @@ define([
             }
             var toggleOffclass = 'ontouchstart' in window ? 'toggle-active' : 'toggle-inactive'; 
             var toggleOnclass = 'ontouchstart' in window ? 'toggle-inactive' : 'toggle-active'; 
-            var toggleDragOff = h(`span#toggle-drag-off.cp-kanban-view.${toggleOffclass}.fa.fa-arrows`);
+            var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view.${toggleOffclass}.fa.fa-arrows`);
             $(toggleDragOff).click(function() {
                 $(toggleDragOff).toggleClass('toggle-active').toggleClass('toggle-inactive');
                 $(toggleDragOn).toggleClass('toggle-active').toggleClass('toggle-inactive');
                 addMoveElementButton(framework, kanban);
             });
-            var toggleDragOn = h(`span#toggle-drag-on.cp-kanban-view.${toggleOnclass}.fa.fa-hand-o-up`);
+            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view.${toggleOnclass}.fa.fa-hand-o-up`);
             $(toggleDragOn).click(function() {
                 $(toggleDragOn).toggleClass('toggle-active').toggleClass('toggle-inactive');
                 $(toggleDragOff).toggleClass('toggle-active').toggleClass('toggle-inactive');

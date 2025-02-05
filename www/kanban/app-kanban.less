@@ -539,7 +539,8 @@
                 margin-right: 10px;
             }
             
-            span {
+            span, button {
+                border: 0;
                 height: 30px;
                 width: 30px;
                 line-height: 30px;
@@ -557,6 +558,7 @@
                     border-radius: 0px @variables_radius @variables_radius 0px;
                 }
 
+
             }
         }
     }
@@ -565,11 +567,13 @@
             #cp-kanban-controls {
                 .cp-kanban-changeView {
                     span.cp-kanban-view {
-                        &:not(.toggle-inactive) {
-                            background-color: @cp_kanban-fg !important;
-                            color: @cp_app-bg;
+                        background-color: @cp_kanban-fg !important;
+                        color: @cp_app-bg;
+                    }
+                    button.cp-kanban-view {
+                        &:not(.toggle-active) {
+                            color: @cp_kanban-fg !important;
                         }
-                        
                     }
                 }
             }
@@ -583,7 +587,7 @@
                 .cp-kanban-changeView {
                     // span.cp-kanban-view {
                     // }
-                    span.cp-kanban-view-small {
+                    button.cp-kanban-view-small {
                         background-color: @cp_kanban-fg !important;
                         color: @cp_app-bg;
                     }
