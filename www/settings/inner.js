@@ -1978,6 +1978,7 @@ define([
             $container: APP.$toolbar,
             pageTitle: Messages.settings_title,
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-leftside'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();

@@ -445,6 +445,22 @@
                 display: none !important;
             }
 
+            .cp-toolbar-skip-link {
+                position: absolute;
+                top: -100px;
+                left: 0;
+                background-color: @cryptpad_color_brand;
+                color: @cryptpad_text_col;
+                padding: 8px 12px;
+                text-decoration: none;
+                border-radius: @variables_radius;
+                z-index: 1000;
+                transition: top 0.3s ease;
+            }
+            .cp-toolbar-skip-link:focus {
+                top: 10px;
+            }
+
             @media screen and (max-width: @browser_media-medium-screen),
                    screen and (max-height: 500px) {
                 flex-wrap: wrap;
