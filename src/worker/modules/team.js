@@ -323,7 +323,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             ctx.teams[id] = team;
             registerChangeEvents(ctx, team, proxy);
             var network = ctx.store.network || ctx.store.networkPromise;
-            SF.loadSharedFolders(ctx.Store, network, team,
+            SF.loadSharedFolders(ctx.Store, network, team, team.proxy.drive,
                                 team.userObject, waitFor, function (data) {
                 ctx.progress += 70/(ctx.numberOfTeams * data.max);
                 ctx.updateProgress({
@@ -354,8 +354,8 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         }).nThen(function (waitFor) {
             // Load the shared folders
             team.userObject.fixFiles();
-            SF.checkMigration(team.secondaryKey, team.proxy, team.userObject, waitFor());
-            SF.loadSharedFolders(ctx.Store, ctx.store.network, team,
+            SF.checkMigration(team.secondaryKey, team.proxy?.drive, team.userObject, waitFor());
+            SF.loadSharedFolders(ctx.Store, ctx.store.network, team, team.proxy?.drive,
                                 team.userObject, waitFor, function (data) {
                 ctx.progress += 70/(ctx.numberOfTeams * data.max);
                 ctx.updateProgress({

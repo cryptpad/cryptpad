@@ -19,18 +19,18 @@ const factory = (Hash, Util, UserObject, Cache,
     // Version 2: encrypted edit links
     SF.checkMigration = function (secondaryKey, proxy, uo, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
-        var drive = proxy.drive || proxy;
+        if (!proxy) { return void cb(); }
         // View access: can't migrate
         if (!secondaryKey) { return void cb(); }
         // Already migrated: nothing to do
-        if (drive.version >= 2) { return void cb(); }
+        if (proxy.version >= 2) { return void cb(); }
         // Not yet migrating: migrate
-        if (!drive.migrateRo) { return void uo.migrateReadOnly(cb); }
+        if (!proxy.migrateRo) { return void uo.migrateReadOnly(cb); }
         // Already migrating: wait for the end...
         var done = false;
         var to;
         var it = setInterval(function () {
-            if (drive.version >= 2) {
+            if (proxy.version >= 2) {
                 done = true;
                 clearTimeout(to);
                 clearInterval(it);
@@ -44,10 +44,10 @@ const factory = (Hash, Util, UserObject, Cache,
                 cb();
             });
         }, 20000);
-        var path = proxy.drive ? ['drive', 'version'] : ['version'];
+        var path = ['version'];
         proxy.on('change', path, function () {
             if (done) { return; }
-            if (drive.version >= 2) {
+            if (proxy.version >= 2) {
                 done = true;
                 clearTimeout(to);
                 clearInterval(it);
@@ -352,8 +352,8 @@ const factory = (Hash, Util, UserObject, Cache,
         - userObject: userObject associated to the main drive
         - handler: a function (sfid, rt) called for each shared folder loaded
     */
-    SF.loadSharedFolders = function (Store, network, store, userObject, waitFor, progress, cache) {
-        var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+    SF.loadSharedFolders = function (Store, network, store, drive, userObject, waitFor, progress, cache) {
+        var shared = drive[UserObject.SHARED_FOLDERS] || {};
         var steps = Object.keys(shared).length;
         var i = 1;
         var w = waitFor();

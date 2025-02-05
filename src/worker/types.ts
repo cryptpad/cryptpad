@@ -43,3 +43,18 @@ export interface Account {
     setCustomize: Callback
 }
 
+export type DriveConfig = {
+    store: any,
+    broadcast: (exclude: object, cmd: string, data?: any, cb?: any) => void,
+    postMessage: (clientId: string, cmd: string, data?: any, cb?: any) => void
+}
+export interface DriveObject {
+    channel: string,
+    onDriveCacheReady: any,
+    onDriveReady: any,
+    onDisconnect: any,
+    onReconnect: any
+}
+export interface Drive {
+    init: (config: DriveConfig) => DriveObject
+}

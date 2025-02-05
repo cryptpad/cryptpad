@@ -1200,13 +1200,13 @@ define([
             }
 
         };
-        var refresh = APP.refresh = function (cb) {
+        var refresh = APP.refresh = function (cb, opt) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
             APP.displayDirectory(path, undefined, () => {
                 refreshDeprecated();
                 if (typeof(cb) === "function") { cb(); }
-            });
+            }, opt);
         };
 
         // `app`: true (force open with the app), false (force open in preview),
@@ -4378,8 +4378,8 @@ define([
 
             appStatus.ready(true);
         };
-        var displayDirectory = APP.displayDirectory = function (path, force, cb) {
-            cb = cb || function () {};
+        var displayDirectory = APP.displayDirectory = function (path, force, cb, opt) {
+            cb = Util.once(cb || function () {});
             if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
             if (history.isHistoryMode) {
                 _displayDirectory(path, force);
@@ -4390,6 +4390,12 @@ define([
             }
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
+                files.restrictedFolders ||= {};
+                let fpath = currentPath;
+                if (opt?.init && !manager.isInSharedFolder(fpath)) {
+                    _displayDirectory(path, force);
+                    cb();
+                }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
                     cb();
@@ -5474,7 +5480,7 @@ define([
 
         refresh(function () {
             UI.removeLoadingScreen();
-        });
+        }, {init:true});
 
         /*
         if (!APP.team) {

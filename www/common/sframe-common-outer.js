@@ -350,6 +350,7 @@ define([
                         sframeChan.event('EV_LOADING_ERROR', 'ACCOUNT');
                     }
                 }), {
+                    requires: cfg.requires,
                     noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash && canNoDrive,
                     neverDrive: cfg.integration,
                     driveEvents: cfg.driveEvents,

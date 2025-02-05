@@ -139,7 +139,7 @@ define([
 
     var main = function () {
         var common;
-        var proxy = {};
+        var proxy = { drive: {} };
         var folders = {};
 
         var startOnline = false;
@@ -188,9 +188,12 @@ define([
             }
 
             var sframeChan = common.getSframeChannel();
+            /*
             updateObject(sframeChan, proxy, waitFor(function () {
+                console.error('DRVE RDY');
                 updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
             }));
+            */
         }).nThen(function () {
             var sframeChan = common.getSframeChannel();
             var metadataMgr = common.getMetadataMgr();

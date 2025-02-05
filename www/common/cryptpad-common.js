@@ -417,6 +417,14 @@ define([
         }, function (obj) {
             cb(obj);
         });
+        /*
+        // XXX DRIVE
+        postMessage("GET_DRIVE", {
+            teamId: teamId,
+        }, function (obj) {
+            cb(obj);
+        });
+        */
     };
     common.getSharedFolder = function (data, cb) {
         postMessage("GET_SHARED_FOLDER", data, function (obj) {
@@ -454,9 +462,20 @@ define([
             });
             return;
         }
+        /*
+        // XXX DRIVE
+        postMessage("SET_DRIVE", {
+            teamId: data.teamId,
+            value: data.drive
+        }, function (obj) {
+            cb(obj);
+        }, {
+            timeout: 5 * 60 * 1000
+        });
+        */
         postMessage("SET", {
             teamId: data.teamId,
-            key:['drive'],
+            key: ['drive'],
             value: data.drive
         }, function (obj) {
             cb(obj);
@@ -2710,6 +2729,7 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
+                        console.error('CC CALLED BACK');
                         // FIXME data should always exist
                         // this indicates a false condition in sharedWorker
                         // got here via a reference error:

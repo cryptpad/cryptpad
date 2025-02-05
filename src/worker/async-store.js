@@ -6,13 +6,15 @@
 const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
-                SF, AccountTS, Cursor, Support, Integration, OnlyOffice,
+                SF, AccountTS, DriveTS, Cursor,
+                Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
                 Calendar, Block, NetConfig, AppConfig = {},
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
     const Account = AccountTS.Account;
+    const Drive = DriveTS.Drive;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
 
@@ -88,6 +90,9 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             nThen(function (waitFor) {
                 Realtime.whenRealtimeSyncs(s.realtime, waitFor());
+                if (!s.id && s.drive?.realtime) {
+                    Realtime.whenRealtimeSyncs(s.drive.realtime, waitFor());
+                }
                 if (s.sharedFolders && typeof (s.sharedFolders) === "object") {
                     for (var k in s.sharedFolders) {
                         if (!s.sharedFolders[k].realtime) { continue; } // Deprecated
@@ -123,6 +128,38 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 }
             }
             onSync(data.teamId, cb);
+        };
+
+        const copyObject = (src, target) => {
+            Object.keys(src).forEach(k => {
+                delete src[k];
+            });
+            Object.keys(target).forEach(k => {
+                src[k] = Util.clone(target[k]);
+            });
+        };
+        const getProxy = teamId => {
+            let proxy;
+            if (!teamId) {
+                proxy = store.drive?.proxy;
+            } else {
+                const s = getStore(teamId);
+                proxy = s?.drive?.proxy;
+            }
+            return proxy;
+        };
+        Store.drive = {
+            get: (clientId, data, cb) => {
+                let proxy = getProxy(data.teamId);
+                if (!proxy) { return void cb({error: 'ENOTFOUND'}); }
+                cb(proxy);
+            },
+            set: (clientId, data, cb) => {
+                let proxy = getProxy(data.teamId);
+                if (!proxy) { return void cb({error: 'ENOTFOUND'}); }
+                copyObject(proxy, data.value);
+                onSync(data.teamId, cb);
+            }
         };
 
         Store.getSharedFolder = function (clientId, data, cb) {
@@ -939,6 +976,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             nThen(function (waitFor) {
                 removeOwnedPads(waitFor);
             }).nThen(function () {
+                // XXX TODO DRIVE
                 store.proxy.drive = store.userObject.getStructure();
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', 'filesData']
@@ -2379,6 +2417,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
                     if (p.length > 3 && p[3] === 'password') {
                         var id = p[2];
+                        // XXX DRIVE
                         var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
                         var href = store.manager.user.userObject.getHref ?
                                 store.manager.user.userObject.getHref(data) : data.href;
@@ -2685,6 +2724,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
         var onCacheReady = function (clientId, cb) {
             var proxy = store.proxy;
+            var drive = store.drive;
             if (store.manager) { return void cb(); }
             var unpin = function (data, cb) {
                 if (!store.loggedIn) { return void cb(); }
@@ -2694,14 +2734,16 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
-            var manager = store.manager = ProxyManager.create(proxy.drive, {
+            var manager = store.manager = ProxyManager.create(drive.proxy, {
                 onSync: function (cb) { onSync(null, cb); },
                 edPublic: proxy.edPublic,
                 pin: pin,
                 unpin: unpin,
                 loadSharedFolder: loadSharedFolder,
                 settings: proxy.settings,
-                removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
+                removeOwnedChannel: function (channel, cb) {
+                    Store.removeOwnedChannel('', channel, cb);
+                },
                 store: store,
                 Store: Store
             }, {
@@ -2712,15 +2754,17 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     // broadcast to all drive apps
                     sendDriveEvent("DRIVE_LOG", msg);
                 },
-                rt: store.realtime
+                rt: drive.realtime
             });
             var userObject = store.userObject = manager.user.userObject;
             nThen(function (waitFor) {
                 addSharedFolderHandler();
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
+                console.error('START LOADING SF');
                 var network = store.network || store.networkPromise;
-                SF.loadSharedFolders(Store, network, store, userObject, waitFor, function (obj) {
+                SF.loadSharedFolders(Store, network, store,
+                    drive.proxy, userObject, waitFor, obj => {
                     var data = {
                         type: 'sf',
                         progress: 100*obj.progress/obj.max
@@ -2788,7 +2832,8 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     progress: 0
                 });
                 userObject.fixFiles();
-                SF.loadSharedFolders(Store, store.network, store, userObject, waitFor, function (obj) {
+                SF.loadSharedFolders(Store, store.network, store,
+                    store.drive.proxy, userObject, waitFor, obj => {
                     var data = {
                         type: 'sf',
                         progress: 100*obj.progress/obj.max
@@ -2906,7 +2951,36 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             });
         };
 
-        const connect = (clientId, data, cb) => {
+        const loadDrive = (clientId, data, cacheCb, cb) => {
+            const startDrive = Util.once(ret => {
+                const drive = Drive.init({
+                    store,
+                    broadcast,
+                    postMessage
+                });
+
+                const {
+                    channel, onDriveReady, onDriveCacheReady,
+                    onDisconnect, onReconnect
+                } = drive;
+
+                onDriveCacheReady(() => {
+                    cacheCb(ret);
+                });
+                onDriveReady(() => {
+                    cb(ret);
+                });
+
+                // XXX TODO
+                onDisconnect(() => {
+                });
+                onReconnect(() => {
+                });
+            });
+
+            loadAccount(clientId, data, startDrive, startDrive);
+        };
+        const loadAccount = (clientId, data, cacheCb, cb) => {
             const account = Account.init({
                 userHash: data.userHash,
                 anonHash: data.anonHash,
@@ -2927,6 +3001,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             // XXX don't always call onCacheReady and onReady?
             // it depends on what was required by the first tab
             onAccountCacheReady(returned => {
+                cacheCb(returned);
                 onCacheReady(clientId, function () {
                     if (typeof(cb) === "function") {
                         cb(returned);
@@ -2935,6 +3010,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 });
             });
             onAccountReady(returned => {
+                cb(returned);
                 if (store.manager) {
                     return void onCacheReadyEvt.reg(function () {
                         onReady(clientId, returned, cb);
@@ -3071,7 +3147,25 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             andThen();
         };
 
-        let start = (clientId, data, cb) => {
+        const startCacheModules = (clientId, returned, cb) => {
+            onCacheReady(clientId, function () {
+                cb(returned);
+                onCacheReadyEvt.fire();
+            });
+        };
+        const startModules = (clientId, returned, cb) => {
+            if (store.manager) {
+                return void onCacheReadyEvt.reg(function () {
+                    onReady(clientId, returned, () => {
+                        cb(returned);
+                    });
+                });
+            }
+            onReady(clientId, returned, () => {
+                cb(returned);
+            });
+        };
+        const start = (clientId, data, cb) => {
             // Don't create a drive if the user only wants to
             // open an existing pad
             const noDrive = data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash);
@@ -3085,6 +3179,15 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             // wait for the entire worker to be ready
             initialized = true;
             store.data = data;
+
+            let onInit = (ret) => {
+                if (Object.keys(store.proxy).length === 1) {
+                    Feedback.send("FIRST_APP_USE", true);
+                }
+                if (ret && ret.error) {
+                    initialized = false;
+                }
+            };
 
             // Now users will create a drive, but they may not
             // own an account
@@ -3101,37 +3204,41 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     cb(obj);
                     // Once pad is joined, continue the loading process
                     onJoinedEvt.reg(function () {
-                        connect(clientId, data, function (ret) {
-                            if (Object.keys(store.proxy).length === 1) {
-                                Feedback.send("FIRST_APP_USE", true);
-                            }
-                            if (ret && ret.error) {
-                                initialized = false;
-                            }
+                        // XXX load drive too
+                        loadDrive(clientId, data, ret => {
+                            startCacheModules(clientId, ret, onInit);
+                        }, ret => {
+                            startModules(clientId, ret, onInit);
                         });
                     });
                 });
             }
 
             if (requires === 'drive') {
+                loadDrive(clientId, data, ret => {
+                    cb(ret);
+                    startCacheModules(clientId, ret, onInit);
+                }, ret => {
+                    cb(ret);
+                    startModules(clientId, ret, onInit);
+                });
                 // TODO
             }
 
-            // XXX to improve: load everything
-            connect(clientId, data, function (ret) {
-                if (Object.keys(store.proxy).length === 1) {
-                    Feedback.send("FIRST_APP_USE", true);
-                }
-                if (ret && ret.error) {
-                    initialized = false;
-                }
-
+            // XXX load drive too
+            let done = ret => {
+                onInit(ret);
                 const redirect = Constants.prefersDriveRedirectKey;
                 const redirectPreference = Util.find(store, [ 'proxy', 'settings', 'general', redirect ]);
 
                 ret[redirect] = redirectPreference;
 
                 cb(ret);
+            };
+            loadDrive(clientId, data, ret => {
+                startCacheModules(clientId, ret, done);
+            }, ret => {
+                startModules(clientId, ret, done);
             });
         };
 
@@ -3257,6 +3364,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../common/cache-store'),
         require('./components/sharedfolder'),
         require('./components/account'), // XXX
+        require('./components/drive'), // XXX
         require('./modules/cursor'),
         require('./modules/support'),
         require('./modules/integration'),

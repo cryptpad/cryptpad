@@ -26,7 +26,7 @@ const init = (config) => {
     // Update loading screen status
     const updateProgress = function (data) {
         data.type = 'drive';
-        broadcast([], 'LOADING_DRIVE', data);
+        broadcast([], 'LOADING_DRIVE', data); // XXX ACCOUNT
     };
 
     // Create account secret from hash
@@ -66,7 +66,6 @@ const init = (config) => {
         }
     }).on('cacheready', function (info) {
         store.offline = true; // XXX move to account
-        store.realtime = info.realtime; // XXX move to account
         store.networkPromise = info.networkPromise;
         store.cacheReturned = returned; // XXX move to account
 
@@ -89,9 +88,6 @@ const init = (config) => {
 
         if (!config.cache) { return; }
 
-        // Make sure we have a valid user object before emitting cacheready
-        if (rt.proxy && !rt.proxy.drive) { return; }
-
         returned.edPublic = rt.proxy.edPublic;
 
         onCacheReadyEvt.fire(returned);
@@ -99,8 +95,7 @@ const init = (config) => {
         delete store.networkTimeout;
         if (store.ready) { return; } // the store is already ready, it is a reconnection
 
-        // XXX DRIVE
-        store.driveMetadata = info.metadata; // XXX move to drive
+        store.driveMetadata = info.metadata; // XXX move to account
 
         // XXX DRIVE
         // New drive? create empty object
@@ -130,7 +125,7 @@ const init = (config) => {
         if (info.error !== 'EDELETED') { return; }
         if (store.ownDeletion) { return; }
         store.isDeleted = true;
-        broadcast([], "DRIVE_DELETED", info.message);
+        broadcast([], "DRIVE_DELETED", info.message); // XXX ACCOUNT
     }).on('disconnect', function () {
         store.offline = true;
         onDisconnectEvt.fire();

@@ -37,6 +37,8 @@ const factory = AStore => {
             // Store
             GET: Store.get,
             SET: Store.set,
+            GET_DRIVE: Store.drive.get,
+            SET_DRIVE: Store.drive.set,
             ADD_PAD: Store.addPad,
             SET_PAD_TITLE: Store.setPadTitle,
             MOVE_TO_TRASH: Store.moveToTrash,

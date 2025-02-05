@@ -22,7 +22,7 @@ const factory = (UserObject, Util, Hash,
         if (Env.folders[id] && !force && !Env.folders[id].restricted) {
             // Shared folder already added to the proxy-manager, probably
             // a cached version
-            if (Env.folders[id].offline && !lm.cache) {
+            if (Env.folders[id].offline && !lm.cache && Env.Store) {
                 Env.folders[id].offline = false;
                 if (Env.folders[id].userObject.fixFiles) { Env.folders[id].userObject.fixFiles(); }
                 Env.Store.refreshDriveUI();
@@ -322,7 +322,7 @@ const factory = (UserObject, Util, Hash,
             if (uo.isSharedFolder(current)) {
                 res = {
                     id: current,
-                    userObject: Env.folders[current].userObject,
+                    userObject: Env.folders[current]?.userObject,
                     path: path.slice(i)
                 };
                 break;
