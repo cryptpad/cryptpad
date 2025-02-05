@@ -21,6 +21,8 @@ define(['/common/translations/messages.js'], function (Messages) {
     //NOTE: these keys are also added to the Form mobile UI PR #1753
     Messages.moveItemUp = 'Move item up'; // XXX
     Messages.moveitemDown = 'Move item down'; // XXX
+    Messages.toggleArrows = 'Switch to arrow view'; // XXX
+    Messages.toggleDrag = 'Switch to drag view'; // XXX
 
     return Messages;
 });

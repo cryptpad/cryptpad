@@ -1194,13 +1194,13 @@ define([
             }
             var toggleOffclass = 'ontouchstart' in window ? 'toggle-active' : 'toggle-inactive'; 
             var toggleOnclass = 'ontouchstart' in window ? 'toggle-inactive' : 'toggle-active'; 
-            var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}.fa.fa-arrows`);
+            var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows});
             $(toggleDragOff).click(function() {
                 $(toggleDragOff).toggleClass('toggle-active').toggleClass('toggle-inactive');
                 $(toggleDragOn).toggleClass('toggle-active').toggleClass('toggle-inactive');
                 addMoveElementButton(framework, kanban);
             });
-            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}.fa.fa-hand-o-up`);
+            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag});
             $(toggleDragOn).click(function() {
                 $(toggleDragOn).toggleClass('toggle-active').toggleClass('toggle-inactive');
                 $(toggleDragOff).toggleClass('toggle-active').toggleClass('toggle-inactive');
