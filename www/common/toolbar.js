@@ -885,10 +885,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         $skipLink.on('click', function (event) {
             event.preventDefault();
 
-            var $firstFocusable = $targetElement.find(
-                'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])    '
-            ).first();
-
+            var $firstFocusable = $targetElement.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])').first();
             if ($firstFocusable.length) {
                 $firstFocusable.trigger('focus');
             }
