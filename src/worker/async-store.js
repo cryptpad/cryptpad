@@ -89,7 +89,9 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             var s = getStore(teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             nThen(function (waitFor) {
-                Realtime.whenRealtimeSyncs(s.realtime, waitFor());
+                if (s.realtime) {
+                    Realtime.whenRealtimeSyncs(s.realtime, waitFor());
+                }
                 if (!s.id && s.drive?.realtime) {
                     Realtime.whenRealtimeSyncs(s.drive.realtime, waitFor());
                 }
@@ -2722,7 +2724,8 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             });
         };
 
-        var onCacheReady = function (clientId, cb) {
+        var onCacheReady = function (clientId, _cb) {
+            const cb = Util.mkAsync(_cb);
             var proxy = store.proxy;
             var drive = store.drive;
             if (store.manager) { return void cb(); }
@@ -3215,7 +3218,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             }
 
             if (requires === 'drive') {
-                loadDrive(clientId, data, ret => {
+                return void loadDrive(clientId, data, ret => {
                     cb(ret);
                     startCacheModules(clientId, ret, onInit);
                 }, ret => {

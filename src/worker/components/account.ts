@@ -65,6 +65,7 @@ const init = (config) => {
             returned.anonHash = Hash.getEditHashFromKeys(secret);
         }
     }).on('cacheready', function (info) {
+        store.realtime = info.realtime; // XXX move to account
         store.offline = true; // XXX move to account
         store.networkPromise = info.networkPromise;
         store.cacheReturned = returned; // XXX move to account
