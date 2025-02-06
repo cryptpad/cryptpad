@@ -255,7 +255,7 @@
          */
         var init = function (cryptpadURL, containerId, config) {
             // OnlyOffice shim: don't provide a URL
-            if (!config && typeof(containerId) === "object") {
+            if (typeof(config) !== "object" && typeof(containerId) === "object") {
                 config = containerId;
                 containerId = cryptpadURL;
                 cryptpadURL = getInstanceURL();

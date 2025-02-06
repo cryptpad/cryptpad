@@ -103,7 +103,7 @@ define([
                 Nacl.util.decodeBase64(key);
                 return key;
             } catch (e) {
-                return Nacl.util.encodeBase64(Nacl.util.decodeUTF8(key));
+                return Nacl.util.encodeBase64(Nacl.util.decodeUTF8(key)).replaceAll('=', '');
             }
         };
         chan.on('GET_SESSION', function (data, cb) {
