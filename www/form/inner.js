@@ -3903,7 +3903,7 @@ define([
         var updateAddInline = APP.updateAddInline = function () {
             $container.find('.cp-form-creator-add-inline').remove();
             // Add before existing question
-            $container.find('.cp-form-block:not(.nodrag)').each(function (i, el) {
+            $container.find('.cp-form-block').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
                 $el.before(getFormCreator(uid));
@@ -4021,7 +4021,7 @@ define([
             if (editable) {
                 // Drag handle
                 let drag = $('#toggle-drag-off').attr('class').indexOf('toggle-active') !== -1 ? false : true;
-                var dragEllipses = drag ? [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')] : undefined
+                var dragEllipses = drag ? [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')] : undefined;
                 dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
                 // Question
                 var inputQ = h('input', {
@@ -4259,16 +4259,18 @@ define([
                 }
             }
             let shiftButtons;
-            let drag = $('#toggle-drag-off').attr('class').indexOf('toggle-active') !== -1 ? false : true;
+            let drag;
+            if (editable) {
+                drag = $('#toggle-drag-off').attr('class').indexOf('toggle-active') !== -1 ? false : true;
             if (!drag) {
                 var upButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-up',  {
                     'title': Messages.moveItemUp,
                     'aria-hidden': true
-                }))
+                }));
                 var downButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-down', {
                     'title': Messages.moveItemDown,
                     'aria-hidden': true
-                }))
+                }));
                 var shiftBlock = function(direction) {
                     var blockIndex = content.order.indexOf(uid);
                     if (direction === 'up' && blockIndex > 0) {
@@ -4289,10 +4291,10 @@ define([
                     downButton
                 ]);
             }
+            }
+
             var editableCls = editable ? ".editable" : "";
             var draggable = drag ? '' : '.nodrag';
-                        console.log("draggable", draggable)
-
             elements.push(h('div.cp-form-block'+editableCls+draggable, {
                 'data-id':uid,
                 'data-type':type
@@ -4566,8 +4568,8 @@ define([
                     }
                 }
             });
-            let drag = $('#toggle-drag-off').attr('class').indexOf('toggle-active') !== -1 ? false : true;
-            APP.mainSortable.options.disabled = drag ? false : true;
+            APP.mainSortable.options.disabled = 'ontouchstart' in window ? true : false;
+
             return;
         }
 
@@ -5137,20 +5139,22 @@ define([
             var toggleOffclass = 'ontouchstart' in window ? 'toggle-active' : 'toggle-inactive'; 
             var toggleOnclass = 'ontouchstart' in window ? 'toggle-inactive' : 'toggle-active'; 
             var toggleDragOff = h(`button#toggle-drag-off.cp-form-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows});
-            $(toggleDragOff).click(function() {
-                $(toggleDragOff).attr('class').indexOf('toggle-inactive') !== -1 ? $(toggleDragOff).toggleClass('toggle-inactive').toggleClass('toggle-active') && $(toggleDragOn).toggleClass('toggle-active').toggleClass('toggle-inactive') : undefined
-                updateForm(framework, content, true)
-            });
             var toggleDragOn = h(`button#toggle-drag-on.cp-form-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag});
+            $(toggleDragOff).click(function() {
+                $(toggleDragOff).attr('class').indexOf('toggle-inactive') !== -1 ? $(toggleDragOff).toggleClass('toggle-inactive').toggleClass('toggle-active') && $(toggleDragOn).toggleClass('toggle-active').toggleClass('toggle-inactive') : undefined;
+                updateForm(framework, content, true);
+                APP.mainSortable.options.disabled =  true;
+            });
             $(toggleDragOn).click(function() {
-                $(toggleDragOn).attr('class').indexOf('toggle-inactive') !== -1 ? $(toggleDragOn).toggleClass('toggle-inactive').toggleClass('toggle-active') && $(toggleDragOff).toggleClass('toggle-active').toggleClass('toggle-inactive') : undefined
-                updateForm(framework, content, true)
+                $(toggleDragOn).attr('class').indexOf('toggle-inactive') !== -1 ? $(toggleDragOn).toggleClass('toggle-inactive').toggleClass('toggle-active') && $(toggleDragOff).toggleClass('toggle-active').toggleClass('toggle-inactive') : undefined;
+                updateForm(framework, content, true);
+                APP.mainSortable.options.disabled =  false; 
             });
 
             var drag = h('div', [
                 toggleDragOff,
                 toggleDragOn
-            ])
+            ]);
 
             return [
                 preview,
