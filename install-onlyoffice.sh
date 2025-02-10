@@ -33,7 +33,7 @@ main() {
     install_old_version v4 6ebc6938
     install_old_version v5 88a356f0
     install_old_version v6 abd8a309
-    install_version v7 v7.3.3.60+8 064ba9bc11f8e31d0de1b4698ff8c6876cbdb042a199821d180aac1f51b35a3394005309794c2c53ab74cf1e4e5c0bd2569fe133b8e9eef1fcb158f14b8fd0a1
+    install_version v7 v7.3.3.60+9 315eaf6705bf350a5c4475d3efcd6d3964d28b2237e0b6bc475ac6e71ecc0dae4e565141d39b79fccc35308b559497fca5c4a39f69ac290c117a57290b942d8b
     install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1
 
     rm -rf "$BUILDS_DIR"
