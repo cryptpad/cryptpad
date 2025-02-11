@@ -112,6 +112,18 @@
                     xhr.send();
                 };
 
+                let serializedConfig = () => {
+                    let _config = {};
+                     _config.editorConfig = config.editorConfig;
+                     _config.document = {
+                         permissions: config.document?.permissions,
+                         title: config.document?.title,
+                         info: config.document?.info,
+                         referenceData: config.document?.referenceData
+                    };
+                    return _config;
+                };
+
                 var start = function () {
                     //config.document.key = key;
                     chan.send('START', {
@@ -123,7 +135,8 @@
                         document: blob,
                         ext: config.document.fileType,
                         autosave: config.events.onSave && (config.autosave || 10),
-                        editorConfig: config.editorConfig || {}
+                        editorConfig: config.editorConfig || {},
+                        _config: serializeConfig()
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         resolve({});
@@ -137,7 +150,12 @@
                         blob = config.document.blob;
                         return start();
                     }
-                    // XXX Nextcloud will log us out if we try from the client
+                    // NOTE: Nextcloud will log us out if we try from the client
+                    // TODO: make sure the server plugin is installed if we don't
+                    // call getBlob()
+                    if (!config.events?.onSave) {
+                        return void start();
+                    }
                     getBlob(function (err, _blob) {
                         if (err) { // Can't get blob from client, try from server
                             console.warn(err);

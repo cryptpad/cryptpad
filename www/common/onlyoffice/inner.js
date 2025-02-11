@@ -1685,16 +1685,20 @@ define([
                             || metadataMgr.getUserData().name
                             || Messages.anonymous;
 
+            let integrationConfig = privateData?.integrationConfig?._;
+            let ec = integrationConfig?.editorConfig;
+            let dc = integrationConfig?.document;
+
             // Config
             APP.ooconfig = {
-                "document": {
-                    "fileType": file.type,
-                    "key": "fresh",
-                    "title": file.title,
-                    "url": url,
-                    "permissions": {
-                        "download": false,
-                        "print": true,
+                document: {
+                    fileType: file.type,
+                    key: "fresh",
+                    title: dc?.title || file.title,
+                    url: url,
+                    permissions: {
+                        download: dc?.permissions?.download || false,
+                        print: dc?.permissions?.print || true,
                     }
                 },
                 "documentType": file.doc,
@@ -2139,6 +2143,31 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                 }, void 0, common.getCache());
             };
+
+            let copy = (a, b) => {
+                Object.keys(b).forEach(k => {
+                    if (a[k]) {
+                        if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
+                            copy(a[k], b[k]);
+                        }
+                        return;
+                    }
+                    a[k] = b[k];
+                });
+            };
+            let integrationConfig = privateData?.integrationConfig?._;
+            if (integrationConfig) {
+                let ec = integrationConfig.editorConfig;
+                copy(APP.ooconfig.editorConfig, ec);
+                // Open "goback" in new tabs because of csp and
+                // iframes
+                if (ec.editorConfig?.customization?.goback) {
+                    let c = APP.ooconfig.editorConfig.customization;
+                    c.goback.blank = true;
+                }
+            }
+            console.error('updated config', APP.ooconfig);
+
 
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
             ooLoaded = true;

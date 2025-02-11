@@ -243,7 +243,8 @@ define([
                         fileName: data.name,
                         fileType: data.ext,
                         autosave: data.autosave,
-                        user: data.editorConfig.user
+                        user: data.editorConfig.user,
+                        _: data._config
                     },
                     utils: {
                         onReady: onReady,
