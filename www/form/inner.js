@@ -4018,11 +4018,46 @@ define([
 
 
             var changeType;
+            let shiftButtons;
             if (editable) {
+                // Arrows 
+                var upButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-up',  {
+                    'title': Messages.moveItemUp,
+                    'aria-hidden': true
+                }));
+                var downButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-down', {
+                    'title': Messages.moveItemDown,
+                    'aria-hidden': true
+                }));
+                var shiftBlock = function(direction) {
+                    var blockIndex = content.order.indexOf(uid);
+                    if (direction === 'up' && blockIndex > 0) {
+                        content.order.splice(blockIndex-1, 0, content.order.splice(blockIndex, 1)[0]);
+                    } else if (direction === 'down' && blockIndex < content.order.length-1) {
+                        content.order.splice(blockIndex+1, 0, content.order.splice(blockIndex, 1)[0]);
+                    }
+                    updateForm(framework, content, true);
+                };
+                $(upButton).click(function () {
+                    shiftBlock('up');
+                });
+                $(downButton).click(function () {
+                    shiftBlock('down');
+                });
+                shiftButtons = h('div.cp-form-block-arrows', 
+                    {style: 'display: none'}, [
+                    upButton,
+                    downButton
+                ]);
+
                 // Drag handle
-                let drag = $('#toggle-drag-off').attr('class').indexOf('toggle-active') !== -1 ? false : true;
-                var dragEllipses = drag ? [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')] : undefined;
+                var drag = APP.drag
+                var dragEllipses = [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')] 
                 dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
+                if (!drag) {
+                   $(shiftButtons).css({display: 'flex'}) 
+                   $(dragEllipses).css({display: 'none'}) 
+                }
                 // Question
                 var inputQ = h('input', {
                     value: block.q || Messages.form_default
@@ -4258,40 +4293,9 @@ define([
                     }
                 }
             }
-            let shiftButtons;
-            let drag;
-            if (editable) {
-                drag = $('#toggle-drag-off').attr('class').indexOf('toggle-active') !== -1 ? false : true;
-            if (!drag) {
-                var upButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-up',  {
-                    'title': Messages.moveItemUp,
-                    'aria-hidden': true
-                }));
-                var downButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-down', {
-                    'title': Messages.moveItemDown,
-                    'aria-hidden': true
-                }));
-                var shiftBlock = function(direction) {
-                    var blockIndex = content.order.indexOf(uid);
-                    if (direction === 'up' && blockIndex > 0) {
-                        content.order.splice(blockIndex-1, 0, content.order.splice(blockIndex, 1)[0]);
-                    } else if (direction === 'down' && blockIndex < content.order.length-1) {
-                        content.order.splice(blockIndex+1, 0, content.order.splice(blockIndex, 1)[0]);
-                    }
-                    updateForm(framework, content, true);
-                };
-                $(upButton).click(function () {
-                    shiftBlock('up');
-                });
-                $(downButton).click(function () {
-                    shiftBlock('down');
-                });
-                shiftButtons = h('div.cp-form-block-arrows', [
-                    upButton,
-                    downButton
-                ]);
-            }
-            }
+
+            
+
 
             var editableCls = editable ? ".editable" : "";
             var draggable = drag ? '' : '.nodrag';
@@ -5136,20 +5140,38 @@ define([
                 editableStr
             ]);
 
-            var toggleOffclass = 'ontouchstart' in window ? 'toggle-active' : 'toggle-inactive'; 
-            var toggleOnclass = 'ontouchstart' in window ? 'toggle-inactive' : 'toggle-active'; 
-            var toggleDragOff = h(`button#toggle-drag-off.cp-form-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows});
-            var toggleDragOn = h(`button#toggle-drag-on.cp-form-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag});
-            $(toggleDragOff).click(function() {
-                $(toggleDragOff).attr('class').indexOf('toggle-inactive') !== -1 ? $(toggleDragOff).toggleClass('toggle-inactive').toggleClass('toggle-active') && $(toggleDragOn).toggleClass('toggle-active').toggleClass('toggle-inactive') : undefined;
-                updateForm(framework, content, true);
-                APP.mainSortable.options.disabled =  true;
-            });
-            $(toggleDragOn).click(function() {
-                $(toggleDragOn).attr('class').indexOf('toggle-inactive') !== -1 ? $(toggleDragOn).toggleClass('toggle-inactive').toggleClass('toggle-active') && $(toggleDragOff).toggleClass('toggle-active').toggleClass('toggle-inactive') : undefined;
-                updateForm(framework, content, true);
-                APP.mainSortable.options.disabled =  false; 
-            });
+            var toggleOffclass;
+            var toggleOnclass;
+            if ('ontouchstart' in window) {
+                toggleOffclass = 'cp-toggle-active'
+                APP.drag = false
+            } else {
+                toggleOnclass = 'cp-toggle-active'
+                APP.drag = true
+            }
+
+            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows});
+            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag});
+            // var container = $('.cp-form-creator-content')
+            // $(container).addClass('cp-drag')    
+            const updateDrag = state => {
+                return function () {
+                    $(toggleDragOn).toggleClass('cp-toggle-active', state);
+                    $(toggleDragOff).toggleClass('cp-toggle-active', !state);
+                    APP.mainSortable.options.disabled = !state;
+                    APP.drag = state
+                    if (state) {
+                        $('.cp-form-block-arrows').css({display: 'none'})
+                        $('.fa-ellipsis-h').css({display: 'block'})
+
+                    } else {
+                        $('.cp-form-block-arrows').css({display: 'flex'})
+                        $('.fa-ellipsis-h').css({display: 'none'})
+                    }
+                };
+            };
+            $(toggleDragOn).click(updateDrag(true));
+            $(toggleDragOff).click(updateDrag(false));
 
             var drag = h('div', [
                 toggleDragOff,

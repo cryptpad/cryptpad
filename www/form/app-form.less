@@ -207,16 +207,22 @@
                 width: 30px;
                 height: 30px;
                 border: none;
-                border-radius: 5px 0px 0px 5px;
+                border-radius: @variables_radius 0px 0px @variables_radius;
                 background-color: @cp_form-bg1;
                 color: @cryptpad_text_col; 
-                &.toggle-active {
-                    color: @cp_form-bg1 !important;
+                @media (max-width:723px) and (min-width:693px), (max-width:553px) and (min-width:524px) {
+                    border-radius: @variables_radius @variables_radius 0px 0px;
+                }
+                &.cp-toggle-active {
+                    color: @cp_form-bg1;
                     background-color: @cryptpad_text_col;
                 }
             }
-            #toggle-drag-on {
-                border-radius: 0px 5px 5px 0px !important;
+            #cp-toggle-drag-on {
+                border-radius: 0px @variables_radius @variables_radius 0px !important;
+                @media (max-width:723px) and (min-width:693px), (max-width:553px) and (min-width:524px) {
+                    border-radius: 0px 0px @variables_radius @variables_radius !important;
+                }
             }
 
             @media screen and (max-width: 1000px) {
@@ -604,18 +610,18 @@
                         }
                     }
                     .cp-form-block-arrows {
-                        .cp-form-arrow {
-                            background-color: transparent;
-                            border: none;
-                            color:@cryptpad_text_col;
-                        }
+                        justify-content: space-between;
                         max-width: fit-content;
                         margin-inline: auto;
                         padding: 6px;
                         margin-top: -35px;
                         border-radius: 0px @variables_radius 0px 0px;
-                        .fa-arrow-down {
-                            margin-left: 20px; 
+                        display: flex;
+                        column-gap: 20px;
+                        .cp-form-arrow {
+                            background-color: transparent;
+                            border: none;
+                            color: @cryptpad_text_col;
                         }
                     }
 

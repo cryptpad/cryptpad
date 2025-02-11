@@ -135,6 +135,13 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+
+    //NOTE: these keys are also added to the Kanban mobile UI PR #1727
+    Messages.moveItemUp = 'Move item up'; // XXX
+    Messages.moveItemDown = 'Move item down'; // XXX
+    Messages.toggleArrows = 'Switch to arrow view'; // XXX
+    Messages.toggleDrag = 'Switch to drag view'; // XXX
+    
     return Messages;
 
 });
