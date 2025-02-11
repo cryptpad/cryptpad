@@ -865,6 +865,7 @@ MessengerUI, Messages, Pages, PadTypes) {
 
     var createSkipLink = function (toolbar, config) {
         var targetId = config.skipLink;
+        console.log("Skip link id: " + targetId);
         var $targetElement = $(targetId);
         console.log(targetId);
         if(targetId === undefined){

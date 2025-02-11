@@ -2145,7 +2145,7 @@ APP.recurrenceRule = {
             $container: APP.$toolbar,
             pageTitle: Messages.calendar,
             metadataMgr: common.getMetadataMgr(),
-            skipLink: '#cp-sidebarlayout-leftside'
+            skipLink: '#cp-sidebarlayout-container'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
