@@ -2146,6 +2146,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             let copy = (a, b) => {
                 Object.keys(b).forEach(k => {
+                    if (k === "user") { return; } // Don't change user values
                     if (a[k]) {
                         if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
                             copy(a[k], b[k]);
@@ -2155,7 +2156,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     a[k] = b[k];
                 });
             };
-            let integrationConfig = privateData?.integrationConfig?._;
             if (integrationConfig) {
                 let ec = integrationConfig.editorConfig;
                 copy(APP.ooconfig.editorConfig, ec);

@@ -136,7 +136,7 @@
                         ext: config.document.fileType,
                         autosave: config.events.onSave && (config.autosave || 10),
                         editorConfig: config.editorConfig || {},
-                        _config: serializeConfig()
+                        _config: serializedConfig()
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         resolve({});
