@@ -1475,7 +1475,7 @@ define([
                                 });
                             }
                             break;
-                        case "forceSaveStart"
+                        case "forceSaveStart":
                             if (APP.integrationSave) {
                                 APP.integrationSave(err => {
                                     if (err) {
