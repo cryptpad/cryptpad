@@ -953,7 +953,9 @@ define([
 
             const realParticipants = Object.entries(content.ids).map(([id, user]) => {
                 const nId = id.slice(0,32);
-                const username = (users[nId] || {}).name || Messages.anonymous;
+                const username = Util.find(privateData, ['integrationConfig', 'user', 'name']) ||
+                       (users[nId] || {}).name || Messages.anonymous;
+
                 return {
                     id: String(user.ooid) + user.index,
                     idOriginal: String(user.ooid),
@@ -1470,6 +1472,18 @@ define([
                                         user: myUniqueOOId,
                                         useridoriginal: myOOId
                                     }]
+                                });
+                            }
+                            break;
+                        case "forceSaveStart"
+                            if (APP.integrationSave) {
+                                APP.integrationSave(err => {
+                                    if (err) {
+                                        console.error(err);
+                                        UI.warn(Messages.error);
+                                        return;
+                                    }
+                                    UI.log(Messages.saved);
                                 });
                             }
                             break;
@@ -2158,13 +2172,14 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             };
             if (integrationConfig) {
                 let ec = integrationConfig.editorConfig;
+                let c = APP.ooconfig.editorConfig.customization;
                 copy(APP.ooconfig.editorConfig, ec);
                 // Open "goback" in new tabs because of csp and
                 // iframes
                 if (ec.editorConfig?.customization?.goback) {
-                    let c = APP.ooconfig.editorConfig.customization;
                     c.goback.blank = true;
                 }
+                c.forcesave = true;
             }
             console.error('updated config', APP.ooconfig);
 
@@ -3262,7 +3277,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         });
                     });
 
-                    if (!cfg.autosave) {
+                    if (!cfg.autosave && false) {
+                        APP.integrationSave = integrationSave;
                         let $save = common.createButton('save', true, {}, function () {
                             $save.attr('disabled', 'disabled');
                             integrationSave(err => {
