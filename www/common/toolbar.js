@@ -864,34 +864,24 @@ MessengerUI, Messages, Pages, PadTypes) {
     };
 
     var createSkipLink = function (toolbar, config) {
-        var targetId = config.skipLink;
-        console.log("Skip link id: " + targetId);
-        var $targetElement = $(targetId);
-        console.log(targetId);
-        if(targetId === undefined){
-            targetId = '#cp-skip-link';
-        }
-        if(!$targetElement.length){
-            return;
-        }
-        var $skipLink = $('<a>', {
+        const targetId = config.skipLink || '#cp-skip-link';
+        const $targetElement = $(targetId);
+        const $skipLink = $('<a>', {
             'class': 'cp-toolbar-skip-link',
             'href': targetId,
             'tabindex': 0,
             'text': 'Skip to Main Content'
         });
-
         toolbar.$top.append($skipLink);
 
         $skipLink.on('click', function (event) {
             event.preventDefault();
 
-            var $firstFocusable = $targetElement.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])').first();
+            const $firstFocusable = $targetElement.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])').first();
             if ($firstFocusable.length) {
                 $firstFocusable.trigger('focus');
             }
         });
-
         return $skipLink;
     };
     var createLinkToMain = function (toolbar, config) {
