@@ -540,7 +540,7 @@ define([
         if (!kanban) { return; }
         if (framework.isReadOnly() || framework.isLocked()) { return; }
         var $container = $(kanban.element);
-        var drag = $('#toggle-drag-off').attr('class').indexOf('toggle-active') !== -1 ? false : true;
+        var drag = kanban.drag;
         kanban.options.dragBoards = drag;
         kanban.options.dragItems = drag;
         $container.find('.kanban-board').each(function (i, el) {
@@ -557,7 +557,7 @@ define([
                 _updateBoards(framework, kanban, kanban.options.boards, false);
             };
 
-            var moveBetweenBoards = function (nextBoardItems, elId, boardItems, index, boards, boardId) {
+            var moveBetweenBoards = function (nextBoardItems, elId, boardItems, index, boards) {
                 nextBoardItems.unshift(elId);
                 boardItems.splice(index, 1);
                 _updateBoards(framework, kanban, boards, false);
@@ -565,7 +565,7 @@ define([
             };
 
             var shiftItem = function (direction, el) {
-                var board = $(el).closest('.kanban-board')
+                var board = $(el).closest('.kanban-board');
                 var boards = kanban.options.boards;
                 var elId = parseInt($(el).attr("data-eid"));
                 var boardId = parseInt($(board).attr("data-id"));
@@ -1179,18 +1179,23 @@ define([
                 });
     
             }
-            var toggleOffclass = 'ontouchstart' in window ? 'toggle-active' : 'toggle-inactive'; 
-            var toggleOnclass = 'ontouchstart' in window ? 'toggle-inactive' : 'toggle-active'; 
+
+
+            var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : 'cp-toggle-inactive'; 
+            var toggleOnclass = 'ontouchstart' in window ? 'cp-toggle-inactive' : 'cp-toggle-active'; 
             var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows});
-            $(toggleDragOff).click(function() {
-                $(toggleDragOff).attr('class').indexOf('toggle-inactive') !== -1 ? $(toggleDragOff).toggleClass('toggle-inactive').toggleClass('toggle-active') && $(toggleDragOn).toggleClass('toggle-active').toggleClass('toggle-inactive') : undefined;
-                addMoveElementButton(framework, kanban);
-            });
             var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag});
-            $(toggleDragOn).click(function() {
-                $(toggleDragOn).attr('class').indexOf('toggle-inactive') !== -1 ? $(toggleDragOn).toggleClass('toggle-inactive').toggleClass('toggle-active') && $(toggleDragOff).toggleClass('toggle-active').toggleClass('toggle-inactive') : undefined;
-                addMoveElementButton(framework, kanban);
-            });
+
+            const updateDrag = state => {
+                return function () {
+                    $(toggleDragOn).toggleClass('cp-toggle-active', state).toggleClass('cp-toggle-inactive', !state);
+                    $(toggleDragOff).toggleClass('cp-toggle-active', !state).toggleClass('cp-toggle-inactive', state);
+                    kanban.drag = state;
+                    addMoveElementButton(framework, kanban);
+                };
+            };
+            $(toggleDragOn).click(updateDrag(true));
+            $(toggleDragOff).click(updateDrag(false));
 
             var container = h('div#cp-kanban-controls', [
                 tags,
