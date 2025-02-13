@@ -1477,11 +1477,10 @@ define([
                             break;
                         case "forceSaveStart":
                             if (APP.integrationSave) {
-                                APP.integrationSave(err => {
-                                    if (err) {
-                                        console.error(err);
-                                        UI.warn(Messages.error);
-                                        return;
+                                APP.integrationSave(obj => {
+                                    if (obj?.error) {
+                                        console.error(obj.error);
+                                        return void UI.warn(Messages.error);
                                     }
                                     UI.log(Messages.saved);
                                 });
@@ -3237,13 +3236,17 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     let cfg = privateData.integrationConfig || {};
                     common.openIntegrationChannel(APP.onLocal);
                     integrationChannel = common.getSframeChannel();
+                    let hasUnsavedChanges = false;
                     var integrationSave = function (cb) {
                         var ext = cfg.fileType;
 
                         var upload = Util.once(function (_blob) {
                             integrationChannel.query('Q_INTEGRATION_SAVE', {
                                 blob: _blob
-                            }, cb, {
+                            }, obj => {
+                                if (!obj?.error) { hasUnsavedChanges = false; }
+                                cb(obj);
+                            }, {
                                 raw: true
                             });
                         });
@@ -3264,11 +3267,20 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     };
                     var inte = common.createIntegration(integrationSave,
                                                 integrationHasUnsavedChanges);
-                    if (inte) {
+                    if (inte && cfg.autosave) {
                         evIntegrationSave.reg(function () {
                             inte.changed();
                         });
+                    } else {
+                        APP.integrationSave = integrationSave;
+                        evIntegrationSave.reg(function () {
+                            hasUnsavedChanges = true;
+                        });
                     }
+                    $(window).on('beforeunload', function (ev) {
+                        if (hasUnsavedChanges) { return false; }
+                        ev.returnValue = '';
+                    });
                     integrationChannel.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
                         if (!cfg.autosave) { return; }
                         integrationSave(function (obj) {
@@ -3277,16 +3289,17 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         });
                     });
 
-                    if (!cfg.autosave && false) {
-                        APP.integrationSave = integrationSave;
+                    /* test button
+                    if (!cfg.autosave) {
                         let $save = common.createButton('save', true, {}, function () {
                             $save.attr('disabled', 'disabled');
-                            integrationSave(err => {
+                            integrationSave(() => {
                                 $save.removeAttr('disabled');
                             });
                         });
                         $('body').prepend($save);
                     }
+                    */
 
                     if (privateData.initialState && (!content || !content.hashes || !Object.keys(content.hashes).length)) {
                         var blob = privateData.initialState;

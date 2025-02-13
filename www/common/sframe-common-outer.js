@@ -2242,7 +2242,7 @@ define([
                             }
                         };
 
-                        // on server crash, try to save to Nextcloud
+                        // on server crash, try to save to the outer platform
                         if (ready) { return integrationSave(reload); }
 
                         // if error during loading, reload without saving

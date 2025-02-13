@@ -17,7 +17,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
 
         var config = privateData.integrationConfig;
-        if (!config.autosave) { return void exp; }
+        if (!config.autosave) { return; }
         if (typeof(saveHandler) !== "function") {
             throw new Error("Incorrect save handler");
         }
