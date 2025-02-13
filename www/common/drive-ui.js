@@ -4961,6 +4961,14 @@ define([
                         });
                     }
                 }
+                // anonymous drive
+                // `el` already contain file data, and there are no "blobs"
+                else if (el.channel) {
+                    APP.FM.downloadPad(el, function(err, obj) {
+                        console.log(err, obj);
+                        console.log('DONE');
+                    });
+                }
             }
             else if ($this.hasClass('cp-app-drive-context-share')) {
                 if (paths.length !== 1) { return; }
