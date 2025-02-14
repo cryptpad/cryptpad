@@ -4961,9 +4961,9 @@ define([
                         });
                     }
                 }
-                // anonymous drive
-                // `el` already contain file data, and there are no "blobs"
                 else if (el.channel) {
+                    // Anonymous Drive
+                    // `el` already contain file data, and there are no "blobs"
                     APP.FM.downloadPad(el, function(err, obj) {
                         console.log(err, obj);
                         console.log('DONE');
