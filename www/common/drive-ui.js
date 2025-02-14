@@ -4923,7 +4923,7 @@ define([
             else if ($this.hasClass('cp-app-drive-context-download')) {
                 if (paths.length !== 1) { return; }
                 var path = paths[0];
-                el = manager.find(path.path);
+                el = $(path.element).data('element') || manager.find(path.path);
                 // folder
                 if (manager.isFolder(el)) {
                     // folder
@@ -4960,14 +4960,6 @@ define([
                             console.log('DONE');
                         });
                     }
-                }
-                else if (el.channel) {
-                    // Anonymous Drive
-                    // `el` already contain file data, and there are no "blobs"
-                    APP.FM.downloadPad(el, function(err, obj) {
-                        console.log(err, obj);
-                        console.log('DONE');
-                    });
                 }
             }
             else if ($this.hasClass('cp-app-drive-context-share')) {
