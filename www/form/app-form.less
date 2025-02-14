@@ -391,6 +391,26 @@
                 display: flex;
                 flex-flow: column;
                 flex: 1 1 1000px;
+                &.cp-no-drag {
+                    .cp-form-block-arrows {
+                        justify-content: space-between;
+                        max-width: fit-content;
+                        margin-inline: auto;
+                        padding: 6px;
+                        margin-top: -35px;
+                        border-radius: 0px @variables_radius 0px 0px;
+                        display: flex !important;
+                        column-gap: 20px;
+                        .cp-form-arrow {
+                            background-color: transparent;
+                            border: none;
+                            color: @cryptpad_text_col;
+                        }
+                    }
+                    .fa-ellipsis-h {
+                        display: none !important;
+                    }
+                }
 
                 .cp-form-creator-add-inline {
                     display: flex;
@@ -610,19 +630,7 @@
                         }
                     }
                     .cp-form-block-arrows {
-                        justify-content: space-between;
-                        max-width: fit-content;
-                        margin-inline: auto;
-                        padding: 6px;
-                        margin-top: -35px;
-                        border-radius: 0px @variables_radius 0px 0px;
-                        display: flex;
-                        column-gap: 20px;
-                        .cp-form-arrow {
-                            background-color: transparent;
-                            border: none;
-                            color: @cryptpad_text_col;
-                        }
+                        display: none;
                     }
 
                     &.sortable-ghost { visibility: hidden; }
