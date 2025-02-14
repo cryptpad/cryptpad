@@ -353,7 +353,7 @@ define([
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
         var links = ctx.sf[data.sharedFolderId] && ctx.sf[data.sharedFolderId].static ? ctx.data.static && ctx.sf[data.sharedFolderId].static : ctx.data.static;
 
-        if (data.uo.curvePublic === undefined && Object.keys(ctx.data.root).length === 0) {
+        if (!data.uo.curvePublic && Object.keys(ctx.data.root).length === 0) {
             // Anonymous Drive
             // In anonymous drive, there are no root folder in the data
             // We are going to emulate it
