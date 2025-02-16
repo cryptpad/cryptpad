@@ -177,15 +177,8 @@ define([
         });
     };
 
-    function showEditor() {
-        $previewContainer.hide();
-        $codeMirrorContainer.show();
-        $previewButton.removeClass('cp-toolbar-button-active');
-        framework._.sfCommon.setPadAttribute('previewMode', false, function (e) {
-            if (e) { console.error(e); }
-        });
-    }
 
+    var isSmallScreen = () => window.innerWidth <= 600;
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
         var $preview = $('#cp-app-code-preview-content');
@@ -219,37 +212,64 @@ define([
         }, 400);
 
         var previewTo;
+
+        var togglePreview = function (show) {
+            if (show) {
+                $previewContainer.show();
+                $codeMirrorContainer.hide();
+                $previewButton.addClass('cp-toolbar-button-active');
+                forceDrawPreview();
+            } else {
+                $previewContainer.hide();
+                $codeMirrorContainer.show();
+                $previewButton.removeClass('cp-toolbar-button-active');
+            }
+            framework._.sfCommon.setPadAttribute('previewMode', show);
+        };
+
+        var handleResize = function () {
+            framework._.sfCommon.getPadAttribute('previewMode', function (e, previewMode) {
+                if (e) { return console.error(e); }
+                if (isPresentMode) {
+                    $previewContainer.show();
+                    $codeMirrorContainer.hide();
+                    $previewButton.hide();
+                    forceDrawPreview();
+                } else {
+                    if (isSmallScreen()) {
+                        togglePreview(previewMode);
+                    } else {
+                        if (previewMode) {
+                            $previewContainer.show();
+                            $codeMirrorContainer.removeClass('cp-app-code-fullpage');
+                            $previewButton.addClass('cp-toolbar-button-active');
+                            forceDrawPreview();
+                        } else {
+                            $previewContainer.hide();
+                            $codeMirrorContainer.addClass('cp-app-code-fullpage');
+                            $previewButton.removeClass('cp-toolbar-button-active');
+                        }
+                    }
+                }
+            });
+        };
+
         $previewButton.click(function () {
             clearTimeout(previewTo);
             $codeMirror.addClass('transition');
             previewTo = setTimeout(function () {
                 $codeMirror.removeClass('transition');
             }, 500);
-            var isSmallScreen = window.innerWidth <= 600;
 
-            if (isSmallScreen) {
-                if ($previewContainer.is(':visible')) {
-                    $previewContainer.hide();
-                    $codeMirrorContainer.show(); // Show the editor container
-                    $previewButton.removeClass('cp-toolbar-button-active');
-                    framework._.sfCommon.setPadAttribute('previewMode', false, function (e) {
-                        if (e) { return console.log(e); }
-                    });
-                } else {
-                    $previewContainer.show();
-                    $codeMirrorContainer.hide(); // Hide the editor container
-                    $previewButton.addClass('cp-toolbar-button-active');
-                    forceDrawPreview();
-                    framework._.sfCommon.setPadAttribute('previewMode', true, function (e) {
-                        if (e) { return console.log(e); }
-                    });
-                }
+            var show = !isVisible();
+            if (isSmallScreen()) {
+                togglePreview(show);
             } else {
                 if (!previews[CodeMirror.highlightMode]) {
                     $previewContainer.show();
                 }
                 $previewContainer.toggle();
-                if ($previewContainer.is(':visible')) {
+                if (isVisible()) {
                     forceDrawPreview();
                     $codeMirrorContainer.removeClass('cp-app-code-fullpage');
                     $previewButton.addClass('cp-toolbar-button-active');
@@ -316,37 +336,8 @@ define([
         };
 
         framework.onReady(function () {
-
-            //handle refresh
-            var isSmallScreen = window.innerWidth <= 700;
-
-            framework._.sfCommon.getPadAttribute('previewMode', function (e, previewMode) {
-                if (e) { return console.error(e); }
-                if (isSmallScreen) {
-                    if (previewMode) {
-
-                        $previewContainer.show();
-                        $codeMirrorContainer.hide();
-                        $previewButton.addClass('cp-toolbar-button-active');
-                        forceDrawPreview();
-                    } else {
-                        $previewContainer.hide();
-                        $codeMirrorContainer.show();
-                        $previewButton.removeClass('cp-toolbar-button-active');
-                    }
-                } else {
-                    if (previewMode) {
-                        $previewContainer.show();
-                        $codeMirrorContainer.removeClass('cp-app-code-fullpage');
-                        $previewButton.addClass('cp-toolbar-button-active');
-                        forceDrawPreview();
-                    } else {
-                        $previewContainer.hide();
-                        $codeMirrorContainer.addClass('cp-app-code-fullpage');
-                        $previewButton.removeClass('cp-toolbar-button-active');
-                    }
-                }
-            });
+            handleResize();
+            window.addEventListener('resize', handleResize);
 
             // add the splitter
             var splitter = $('<div>', {
