@@ -4742,6 +4742,7 @@ define([
                 data.sharedFolderId = sfId;
                 data.name = Util.fixFileName(folderName);
                 data.folderName = Util.fixFileName(folderName) + '.zip';
+                data.common = common;
 
                 var uo = manager.user.userObject;
                 if (sfId && manager.folders[sfId]) {

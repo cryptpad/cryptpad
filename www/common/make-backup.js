@@ -348,17 +348,14 @@ define([
             max: 0,
             done: 0,
             cache: cache,
-            sframeChan: sframeChan
+            sframeChan: sframeChan,
+            common: data.common,
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
         var links = ctx.sf[data.sharedFolderId] && ctx.sf[data.sharedFolderId].static ? ctx.data.static && ctx.sf[data.sharedFolderId].static : ctx.data.static;
 
-        if (!data.uo.curvePublic && Object.keys(ctx.data.root).length === 0) {
+        if (ctx.common && !ctx.common.isLoggedIn()) {
             // Anonymous Drive
-            // In anonymous drive, there are no root folder in the data
-            // We are going to emulate it
-            // One false positive: empty team drive but the result is
-            // functionally equivalent
             console.log("Anonymous drive"); // XXX: remove after testing phase
             ctx.data.root = {};
             let index = 0;

@@ -1196,6 +1196,7 @@ define([
             Feedback.send('FULL_DRIVE_EXPORT_START');
             var todo = function(data, filename) {
                 var ui = Backup.createExportUI(privateData.origin);
+                data.common = common;
 
                 var bu = Backup.create(data, common.getPad, privateData.fileHost, function(blob, errors) {
                     saveAs(blob, filename);
