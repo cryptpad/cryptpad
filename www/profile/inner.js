@@ -116,7 +116,7 @@ define([
 
         $('<button>', {
             'class': 'btn btn-primary '+VIEW_PROFILE_BUTTON,
-        }).append(h('i.fa.fa-shhare-alt'))
+        }).append(h('i', { 'class': 'fa fa-share-alt', 'aria-hidden': 'true' }))
           .append(h('span', Messages.shareButton))
           .click(function () {
             Clipboard.copy(url, (err) => {
@@ -227,7 +227,7 @@ define([
             if (!friends[data.curvePublic].notifications) { return; }
             // Add unfriend button
             var unfriendButton = h('button.btn.btn-primary.cp-app-profile-friend-request', [
-                h('i.fa.fa-user-times'),
+                h('i', { 'class': 'fa fa-user-times', 'aria-hidden': 'true' }),
                 Messages.contacts_remove
             ]);
             $(unfriendButton).click(function () {
@@ -339,7 +339,7 @@ define([
                 return;
             }
             var muteButton = h('button.btn.btn-danger-outline.cp-app-profile-friend-request', [
-                h('i.fa.fa-bell-slash'),
+                h('i', { 'class': 'fa fa-bell-slash', 'aria-hidden': 'true' }),
                 Messages.contacts_mute || 'mute'
             ]);
             $(muteButton).click(function () {
@@ -422,7 +422,7 @@ define([
         var $upButton = common.createButton('upload', false, data);
         $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
-        $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
+        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true'}));
         $block.append($upButton);
     };
     var refreshAvatar = function (data) {
@@ -437,7 +437,7 @@ define([
         if (APP.readOnly) { return; }
 
         var button = h('button.btn.btn-primary', [
-            h('i.fa.fa-pencil'),
+            h('i', { 'class': 'fa fa-pencil', 'aria-hidden': 'true' }),
             h('span', Messages.profile_addDescription)
         ]);
         APP.$descriptionEdit = $(button);
@@ -512,7 +512,7 @@ define([
         var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
         APP.$edPublic = $('<button>', {
             'class': 'btn',
-        }).append(h('i.fa.fa-key'))
+        }).append(h('i', { 'class': 'fa fa-key', 'aria-hidden': 'true' }))
           .append(h('span', Messages.profile_copyKey))
           .click(function () {
             if (!APP.getEdPublic) { return; }
