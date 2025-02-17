@@ -1184,7 +1184,7 @@ define([
             var toggleOnclass = 'ontouchstart' in window ? 'cp-toggle-inactive' : 'cp-toggle-active'; 
             var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows});
             var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag});
-
+            kanban.drag = 'ontouchstart' in window ? false : true
             const updateDrag = state => {
                 return function () {
                     $(toggleDragOn).toggleClass('cp-toggle-active', state).toggleClass('cp-toggle-inactive', !state);
