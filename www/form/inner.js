@@ -3775,7 +3775,7 @@ define([
         });
         $body.addClass('cp-form-palette-'+color);
 
-        $container.attr('class', 'cp-form-creator-content'+(APP.isEditor? ' cp-form-iseditor': ''));
+        $container.attr('class', 'cp-form-creator-content'+(APP.isEditor? ' cp-form-iseditor': '')+ ('ontouchstart' in window ? ' cp-no-drag' : ''));
 
         if (APP.isClosed && content.answers.privateKey && !APP.isEditor && !APP.hasAnswered) {
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -3903,7 +3903,7 @@ define([
         var updateAddInline = APP.updateAddInline = function () {
             $container.find('.cp-form-creator-add-inline').remove();
             // Add before existing question
-            $container.find('.cp-form-block:not(.nodrag)').each(function (i, el) {
+            $container.find('.cp-form-block:not(.cp-form-submit-message)').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
                 $el.before(getFormCreator(uid));
@@ -4018,12 +4018,43 @@ define([
 
 
             var changeType;
+            let shiftButtons;
             if (editable) {
-                // Drag handle
-                dragHandle = h('span.cp-form-block-drag-handle', [
-                    h('i.fa.fa-ellipsis-h'),
-                    h('i.fa.fa-ellipsis-h'),
+                // Arrows 
+                var upButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-up',  {
+                    'title': Messages.moveItemUp,
+                    'aria-hidden': true
+                }));
+                var downButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-down', {
+                    'title': Messages.moveItemDown,
+                    'aria-hidden': true
+                }));
+                var shiftBlock = function(direction) {
+                    var blockIndex = content.order.indexOf(uid);
+                    if (direction === 'up' && blockIndex > 0) {
+                        content.order.splice(blockIndex-1, 0, content.order.splice(blockIndex, 1)[0]);
+                        updateForm(framework, content, true);
+                        framework.localChange();
+                    } else if (direction === 'down' && blockIndex < content.order.length-1) {
+                        content.order.splice(blockIndex+1, 0, content.order.splice(blockIndex, 1)[0]);
+                        updateForm(framework, content, true);
+                        framework.localChange();
+                    }
+                };
+                $(upButton).click(function () {
+                    shiftBlock('up');
+                });
+                $(downButton).click(function () {
+                    shiftBlock('down');
+                });
+                shiftButtons = h('div.cp-form-block-arrows', [ 
+                    upButton,
+                    downButton
                 ]);
+
+                // Drag handle
+                var dragEllipses = [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')]; 
+                dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
 
                 // Question
                 var inputQ = h('input', {
@@ -4260,12 +4291,15 @@ define([
                     }
                 }
             }
+
             var editableCls = editable ? ".editable" : "";
-            elements.push(h('div.cp-form-block'+editableCls, {
+            var draggable = APP.drag ? '' : '.nodrag';
+            elements.push(h('div.cp-form-block'+editableCls+draggable, {
                 'data-id':uid,
                 'data-type':type
             }, [
                 APP.isEditor ? dragHandle : undefined,
+                shiftButtons,
                 changeType,
                 isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
@@ -4545,6 +4579,8 @@ define([
                     }
                 }
             });
+            APP.mainSortable.options.disabled = 'ontouchstart' in window ? true : false;
+
             return;
         }
 
@@ -5111,9 +5147,37 @@ define([
                 editableStr
             ]);
 
+            var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : undefined;
+            var toggleOnclass = 'ontouchstart' in window ? undefined : 'cp-toggle-active';
+            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows});
+            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag});
+            const updateDrag = state => {
+                return function () {
+                    var $container = $('.cp-form-creator-content');
+                    $(toggleDragOn).toggleClass('cp-toggle-active', state);
+                    $(toggleDragOff).toggleClass('cp-toggle-active', !state);
+                    APP.mainSortable.options.disabled = !state;
+                    APP.drag = state;
+                    if (state) {
+                        $container.removeClass('cp-no-drag');
+                    } else {
+                        $container.addClass('cp-no-drag');  
+                    }
+                };
+            };
+
+            $(toggleDragOn).click(updateDrag(true));
+            $(toggleDragOff).click(updateDrag(false));
+
+            var drag = h('div', [
+                toggleDragOff,
+                toggleDragOn
+            ]);
+
             return [
                 preview,
                 previewSettings,
+                drag,
                 colorTheme
             ];
         };
@@ -5229,7 +5293,7 @@ define([
                 fillerContainer = h('div.cp-form-filler-container');
             }
 
-            var contentContainer = h('div.cp-form-creator-content' + (APP.isEditor ? '.cp-form-iseditor' : ''));
+            var contentContainer = h('div.cp-form-creator-content' + (APP.isEditor ? '.cp-form-iseditor' : '') + ('ontouchstart' in window ? '.cp-no-drag' : ''));
             var resultsContainer = h('div.cp-form-creator-results');
             var answeredContainer = h('div.cp-form-creator-answered', {
                 style: 'display: none;'
@@ -5499,7 +5563,7 @@ define([
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
 
             var editDiv, previewDiv;
-            var div = h('div.cp-form-block.editable.nodrag', [
+            var div = h('div.cp-form-block.editable.nodrag.cp-form-submit-message', [
                 h('div.cp-form-block-content', [
                     p,
                     editDiv = h('div.cp-form-response-modal', t),

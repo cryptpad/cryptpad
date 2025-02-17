@@ -203,6 +203,28 @@
             //flex-wrap: wrap;
             overflow: auto;
 
+            .cp-form-view-drag {
+                width: 30px;
+                height: 30px;
+                border: none;
+                border-radius: @variables_radius 0px 0px @variables_radius;
+                background-color: @cp_form-bg1;
+                color: @cryptpad_text_col; 
+                @media (max-width:723px) and (min-width:693px), (max-width:553px) and (min-width:524px) {
+                    border-radius: @variables_radius @variables_radius 0px 0px;
+                }
+                &.cp-toggle-active {
+                    color: @cp_form-bg1;
+                    background-color: @cryptpad_text_col;
+                }
+            }
+            #cp-toggle-drag-on {
+                border-radius: 0px @variables_radius @variables_radius 0px !important;
+                @media (max-width:723px) and (min-width:693px), (max-width:553px) and (min-width:524px) {
+                    border-radius: 0px 0px @variables_radius @variables_radius !important;
+                }
+            }
+
             @media screen and (max-width: 1000px) {
                 flex-wrap: wrap;
                 justify-content: flex-start;
@@ -369,6 +391,26 @@
                 display: flex;
                 flex-flow: column;
                 flex: 1 1 1000px;
+                &.cp-no-drag {
+                    .cp-form-block-arrows {
+                        justify-content: space-between;
+                        max-width: fit-content;
+                        margin-inline: auto;
+                        padding: 6px;
+                        margin-top: -35px;
+                        border-radius: 0px @variables_radius 0px 0px;
+                        display: flex !important;
+                        column-gap: 20px;
+                        .cp-form-arrow {
+                            background-color: transparent;
+                            border: none;
+                            color: @cryptpad_text_col;
+                        }
+                    }
+                    .fa-ellipsis-h {
+                        display: none !important;
+                    }
+                }
 
                 .cp-form-creator-add-inline {
                     display: flex;
@@ -586,6 +628,9 @@
                                 margin-bottom: 1px;
                             }
                         }
+                    }
+                    .cp-form-block-arrows {
+                        display: none;
                     }
 
                     &.sortable-ghost { visibility: hidden; }
