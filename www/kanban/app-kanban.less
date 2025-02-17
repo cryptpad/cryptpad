@@ -34,7 +34,7 @@
         background-color: @palette0;
         color: @cryptpad_color_grey_800;
         border-radius: @variables_radius @variables_radius 0px 0px;
-        button.kanban-edit-item {
+        button.kanban-edit-item, .cp-kanban-arrow {
             color: @cryptpad_color_grey_800;
         }
     }
@@ -170,22 +170,40 @@
         overflow: hidden;
     }
 
-    .kanban-edit-item {
-        padding: 5px;
+    .kanban-edit-item, .cp-kanban-arrow {
         border: 0;
+        float: right;
         background: transparent;
         align-self: flex-start;
         outline-style: none;
         border-radius: @variables_radius;
+        cursor: pointer;
         &:focus-visible {
             outline: @variables_focus_style;
-        }
-        @media (hover: none) {
-            margin-right: 20px;
         }
         @media(max-width:500px) or (max-height:700px)
         {
             margin-right:0px;
+        }
+    }
+
+    .item-arrow-container {
+        width: 100%;
+        margin-top: 5%;
+        display: flex;
+        justify-content: space-between;
+        .fa-arrow-down {
+            margin-left: 5px
+        }
+        .fa-arrow-up {
+            margin-right: 5px
+        }
+    }
+
+    .fa-arrow-left {
+        &.board-arrow {
+            margin-left: -2%;
+            float: left;
         }
     }
 
@@ -214,6 +232,7 @@
     }
     .kanban-item {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: space-between;
         padding: 5px;
@@ -223,8 +242,10 @@
         box-shadow: @cryptpad_ui_shadow;
         .tools_unselectable();
         touch-action: none;
-        cursor: move;
-        cursor: grab;
+        &:not(.no-drag) {
+            cursor: move;
+            cursor: grab;
+        }
 
         margin-bottom: 5px;
         &:last-child {
@@ -301,10 +322,12 @@
                 font-size: 12px;
             }
         }
-        .kanban-item-text {
+        .kanban-item-text-container {
+            width: 100%;
             .tools_unselectable();
             cursor: text;
             overflow-wrap: anywhere;
+            display: flex;
             flex: 1;
             &:empty::before {
               content: "\200b";
@@ -313,6 +336,9 @@
                 margin: 0;
                 padding: 0;
                 height: auto;
+            }
+            .kanban-item-text {
+                width: 100%;
             }
         }
         &.kanban-item-hidden {
@@ -347,21 +373,19 @@
             overflow-y: auto;
             justify-content: space-around;
             min-height: 38px; // Size of one card
-            @media (hover: none) {
-                padding-right: 30px;
-            }
             @media(max-width:500px) or (max-height:700px)
             {
                 padding-right:5px;
             }
         }
         header {
-            display: flex;
             flex-wrap: wrap;
             align-items: center;
             padding: 5px 10px;
-            cursor: move;
-            cursor: grab;
+            &:not(.no-drag) {
+                cursor: move;
+                cursor: grab;
+            }
             .kanban-title-board {
                 flex: 1;
                 min-width: 0;
@@ -507,13 +531,19 @@
             right: 10px;
             height: 30px;
             width: 60px;
-            span {
+            &.drag {
+                margin-right: 10px;
+            }
+            
+            button {
+                border: 0;
                 height: 30px;
                 width: 30px;
                 line-height: 30px;
                 text-align: center;
                 display: inline-block;
                 background-color: @board-bg;
+                color: @cp_kanban-fg !important;
                 cursor: pointer;
                 &:hover {
                     background-color: darken(@board-bg, 10%);
@@ -531,23 +561,19 @@
         &:not(.cp-kanban-quick) {
             #cp-kanban-controls {
                 .cp-kanban-changeView {
-                    span.cp-kanban-view {
-                        background-color: @cp_kanban-fg !important;
-                        color: @cp_app-bg;
+                    button.cp-kanban-view {
+                        background-color: @cp_kanban-fg;
+                        color: @cp_app-bg !important;
                     }
-                    // span.cp-kanban-view-small {
-                    // }
                 }
             }
         }
         &.cp-kanban-quick {
             #cp-kanban-controls {
                 .cp-kanban-changeView {
-                    // span.cp-kanban-view {
-                    // }
-                    span.cp-kanban-view-small {
-                        background-color: @cp_kanban-fg !important;
-                        color: @cp_app-bg;
+                    button.cp-kanban-view-small {
+                        background-color: @cp_kanban-fg;
+                        color: @cp_app-bg !important;
                     }
                 }
             }
@@ -555,6 +581,15 @@
                 .kanban-item-body, .kanban-item-tags {
                     display: none;
                 }
+            }
+        }
+        button.cp-kanban-view-drag {
+            &.cp-toggle-active {
+                background-color: @cp_kanban-fg;
+                color: @cp_app-bg !important;
+            }
+            &.cp-toggle-inactive {
+                color: @cp_kanban-fg;
             }
         }
     }

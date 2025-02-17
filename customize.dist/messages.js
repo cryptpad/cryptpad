@@ -160,6 +160,11 @@ define(req, function(AppConfig, Default, Language) {
     Messages.toggleDrag = 'Switch to drag view'; // XXX
 
 
+    Messages.kanban_moveitemLeft = 'Move item left'; // XXX
+    Messages.kanban_moveitemRight = 'Move item right'; // XXX
+    Messages.kanban_moveBoardLeft = 'Move board left'; // XXX
+    Messages.kanban_moveBoardRight = 'Move board right'; // XXX
+
     return Messages;
 
 });

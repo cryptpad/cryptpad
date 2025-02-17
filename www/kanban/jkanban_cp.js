@@ -44,7 +44,7 @@ define([
             getTextColor: function () { return '#000'; },
             cursors: {},
             tags: [],
-            dragBoards: true,
+            dragBoards: 'ontouchstart' in window ? false : true,
             addItemButton: false,
             readOnly: false,
             dragEl: function (/*el, source*/) {},
@@ -337,6 +337,7 @@ define([
                     moves: function (el) {
                         if (self.options.readOnly) { return false; }
                         if (el.classList.contains('new-item')) { return false; }
+                        if (self.options.dragItems === false) {return false;}
                         return el.classList.contains('kanban-item');
                     },
                     accepts: function () {
@@ -530,11 +531,15 @@ define([
                 var el = self.options.getAvatar(c);
                 nodeCursors.appendChild(el);
             });
-            var nodeItemText = document.createElement('div');
+            var nodeItemTextContainer = document.createElement('div');
+            nodeItemTextContainer.classList.add('kanban-item-text-container');
+            nodeItem.appendChild(nodeItemTextContainer);
+            var nodeItemText  = document.createElement('div');
             nodeItemText.classList.add('kanban-item-text');
             nodeItemText.dataset.eid = element.id;
             nodeItemText.innerText = element.title;
-            nodeItem.appendChild(nodeItemText);
+            nodeItemTextContainer.appendChild(nodeItemText);
+            
             // Check if this card is filtered out
             if (Array.isArray(self.options.tags) && self.options.tags.length) {
                 var hide;
