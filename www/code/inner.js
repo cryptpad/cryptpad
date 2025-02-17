@@ -228,30 +228,30 @@ define([
         };
 
         var handleResize = function () {
-            framework._.sfCommon.getPadAttribute('previewMode', function (e, previewMode) {
-                if (e) { return console.error(e); }
-                if (isPresentMode) {
-                    $previewContainer.show();
-                    $codeMirrorContainer.hide();
-                    $previewButton.hide();
-                    forceDrawPreview();
+            var wasPreviewVisible = isVisible(); // Capture preview state before resize
+
+            if (isPresentMode) {
+                $previewContainer.show();
+                $codeMirrorContainer.hide();
+                $previewButton.hide();
+                forceDrawPreview();
+            } else {
+                if (isSmallScreen()) {
+                    togglePreview(wasPreviewVisible); // Restore previous preview state
                 } else {
-                    if (isSmallScreen()) {
-                        togglePreview(previewMode);
+                    if (wasPreviewVisible) {
+                        $previewContainer.show();
+                        $codeMirrorContainer.show();
+                        $codeMirrorContainer.removeClass('cp-app-code-fullpage');
+                        $previewButton.addClass('cp-toolbar-button-active');
+                        forceDrawPreview();
                     } else {
-                        if (previewMode) {
-                            $previewContainer.show();
-                            $codeMirrorContainer.removeClass('cp-app-code-fullpage');
-                            $previewButton.addClass('cp-toolbar-button-active');
-                            forceDrawPreview();
-                        } else {
-                            $previewContainer.hide();
-                            $codeMirrorContainer.addClass('cp-app-code-fullpage');
-                            $previewButton.removeClass('cp-toolbar-button-active');
-                        }
+                        $previewContainer.hide();
+                        $codeMirrorContainer.addClass('cp-app-code-fullpage');
+                        $previewButton.removeClass('cp-toolbar-button-active');
                     }
                 }
-            });
+            }
         };
 
         $previewButton.click(function () {
