@@ -2628,12 +2628,10 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 driveEventClients.splice(driveIdx, 1);
             }
             try {
-                store.onlyoffice.removeClient(clientId);
+                store.onlyoffice?.removeClient(clientId);
             } catch (e) { console.error(e); }
             try {
-                if (store.mailbox) {
-                    store.mailbox.removeClient(clientId);
-                }
+                store.mailbox?.removeClient(clientId);
             } catch (e) { console.error(e); }
             Object.keys(store.modules).forEach(function (key) {
                 if (!store.modules[key]) { return; }
@@ -2954,36 +2952,10 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             });
         };
 
-        const loadDrive = (clientId, data, cacheCb, cb) => {
-            const startDrive = Util.once(ret => {
-                const drive = Drive.init({
-                    store,
-                    broadcast,
-                    postMessage
-                });
-
-                const {
-                    channel, onDriveReady, onDriveCacheReady,
-                    onDisconnect, onReconnect
-                } = drive;
-
-                onDriveCacheReady(() => {
-                    cacheCb(ret);
-                });
-                onDriveReady(() => {
-                    cb(ret);
-                });
-
-                // XXX TODO
-                onDisconnect(() => {
-                });
-                onReconnect(() => {
-                });
-            });
-
-            loadAccount(clientId, data, startDrive, startDrive);
-        };
         const loadAccount = (clientId, data, cacheCb, cb) => {
+            if (store.accountModule) {
+                return store.accountModule;
+            }
             const account = Account.init({
                 userHash: data.userHash,
                 anonHash: data.anonHash,
@@ -2992,8 +2964,8 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 store,
                 broadcast,
                 postMessage
-
             });
+            store.accountModule = account;
             const {
                 channel, onAccountReady, onAccountCacheReady,
                 onDisconnect, onReconnect
@@ -3004,22 +2976,12 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             // XXX don't always call onCacheReady and onReady?
             // it depends on what was required by the first tab
             onAccountCacheReady(returned => {
+                store.returned ||= returned;
                 cacheCb(returned);
-                onCacheReady(clientId, function () {
-                    if (typeof(cb) === "function") {
-                        cb(returned);
-                    }
-                    onCacheReadyEvt.fire();
-                });
             });
             onAccountReady(returned => {
+                store.returned ||= returned;
                 cb(returned);
-                if (store.manager) {
-                    return void onCacheReadyEvt.reg(function () {
-                        onReady(clientId, returned, cb);
-                    });
-                }
-                onReady(clientId, returned, cb);
             });
             // XXX move to drive
             onDisconnect(() => {
@@ -3062,6 +3024,44 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     ping();
                 });
             }, PING_INTERVAL);
+            return account;
+        };
+        const loadDrive = (clientId, data, cacheCb, cb) => {
+            const startDrive = Util.once((account) => {
+                const drive = Drive.init({
+                    account,
+                    store,
+                    broadcast,
+                    postMessage
+                });
+
+                const {
+                    channel, onDriveReady, onDriveCacheReady,
+                    onDisconnect, onReconnect
+                } = drive;
+
+                onDriveCacheReady(() => {
+                    cacheCb(store.returned);
+                });
+                onDriveReady(() => {
+                    cb(store.returned);
+                });
+
+                // XXX TODO
+                onDisconnect(() => {
+                });
+                onReconnect(() => {
+                });
+            });
+
+            const noop = () => {};
+            const account = loadAccount(clientId, data, noop, noop);
+            account.onAccountCacheReady(() => {
+                startDrive(account);
+            });
+            account.onAccountReady(() => {
+                startDrive(account);
+            });
         };
 
         Store.disableCache = function (clientId, disabled, cb) {
@@ -3103,6 +3103,33 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             }
         };
 
+        const loadHK = (cb) => {
+            if (store?.network?.historyKeeper) {
+                return setTimeout(cb);
+            }
+            // Join a basic ephemeral channel
+            // get the ID and leave it instantly
+            const onNetwork = network => {
+                store.network ||= network;
+                const chan = '0000000000000000000000000000000000';
+                network.join(chan).then(function (wc) {
+                    let hk;
+                    wc.members.forEach(p => {
+                        if (p.length === 16) { hk = p; }
+                    });
+                    network.historyKeeper = hk;
+                    wc.leave();
+                    cb();
+                }, function (err) {
+                    console.error(err);
+                    cb({error: 'GET_HK'});
+                });
+            };
+            if (store.network) {
+                return onNetwork(store.network);
+            }
+            store.networkPromise?.then(onNetwork);
+        };
         // If we load CryptPad for the first time from an existing pad, don't create a
         // drive automatically.
         var onNoDrive = function (clientId, cb) {
@@ -3130,17 +3157,9 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                         network = store.network;
                     }
                     // We need to know the HistoryKeeper ID to initialize the anon RPC
-                    // Join a basic ephemeral channel, get the ID and leave it instantly
-                    network.join('0000000000000000000000000000000000').then(function (wc) {
-                        var hk;
-                        wc.members.forEach(function (p) { if (p.length === 16) { hk = p; } });
-                        network.historyKeeper = hk;
-                        wc.leave();
-
+                    loadHK(err => {
+                        if (err) { return void cb(err); }
                         andThen();
-                    }, function (err) {
-                        console.error(err);
-                        cb({error: 'GET_HK'});
                     });
                 }, function (err) {
                     console.error(err);
@@ -3159,9 +3178,13 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
         const startModules = (clientId, returned, cb) => {
             if (store.manager) {
                 return void onCacheReadyEvt.reg(function () {
-                    onReady(clientId, returned, () => {
-                        cb(returned);
-                    });
+                    const onNetwork = (_network) => {
+                        store.network ||= _network;
+                        onReady(clientId, returned, () => {
+                            cb(returned);
+                        });
+                    };
+                    loadHK(onNetwork);
                 });
             }
             onReady(clientId, returned, () => {
@@ -3217,6 +3240,25 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 });
             }
 
+            if (requires === 'team') {
+                const initTeams = Util.once(ret => {
+                    // On cache ready (if cache enabled)
+                    // or on ready (if cache disabled)
+                    nThen(w => {
+                        loadUniversal(Team, 'team', w, clientId);
+                    }).nThen(() => {
+                        cb(ret);
+                        loadDrive(clientId, data, ret => {
+                            startCacheModules(clientId, ret, onInit);
+                        }, ret => {
+                            startModules(clientId, ret, onInit);
+                        });
+                    });
+                });
+                return void loadAccount(clientId, data,
+                                initTeams, initTeams);
+            }
+
             if (requires === 'drive') {
                 return void loadDrive(clientId, data, ret => {
                     cb(ret);
@@ -3246,17 +3288,20 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
         };
 
         let subscribeToDrive = function (clientId) {
-            if (driveEventClients.indexOf(clientId) === -1) {
-                driveEventClients.push(clientId);
-            }
-            if (!store.driveEvents) {
-                store.driveEvents = true;
-                registerProxyEvents(store.proxy);
-                Object.keys(store.manager.folders).forEach(function (fId) {
-                    var proxy = store.manager.folders[fId].proxy;
-                    registerProxyEvents(proxy, fId);
-                });
-            }
+            onCacheReadyEvt.reg(() => {
+                if (driveEventClients.indexOf(clientId) === -1) {
+                    driveEventClients.push(clientId);
+                }
+                if (!store.driveEvents) {
+                    store.driveEvents = true;
+                    registerProxyEvents(store.proxy);
+                    Object.keys(store.manager.folders)
+                      .forEach(function (fId) {
+                        var proxy = store.manager.folders[fId].proxy;
+                        registerProxyEvents(proxy, fId);
+                    });
+                }
+            });
         };
 
         Store.init = function (clientId, data, _callback) {
@@ -3301,7 +3346,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 data.requires = 'pad';
             }
 
-            start(clientId, data, obj => {
+            start(clientId, data, Util.once(obj => {
                 if (obj.error === 'GET_HK') {
                     Feedback.send("NO_DRIVE_ERROR", true);
                     return void callback({
@@ -3309,7 +3354,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     });
                 }
                 callback(obj);
-            });
+            }));
         };
 
         // Clear inactive channels from cache

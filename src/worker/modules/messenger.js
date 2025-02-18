@@ -983,15 +983,20 @@ const factory = (Crypto, Hash, Util, Realtime, Messaging,
         };
         messenger.addListener();
 
-        ctx.store.network.on('message', function(msg, sender) {
-            onDirectMessage(ctx, msg, sender);
+        let onNetwork = Util.once((_network) => {
+            const network = ctx.store.network || _network;
+            network.on('message', function(msg, sender) {
+                onDirectMessage(ctx, msg, sender);
+            });
+            network.on('disconnect', function () {
+                ctx.emit('DISCONNECT', null, getAllClients(ctx));
+            });
+            network.on('reconnect', function () {
+                ctx.emit('RECONNECT', null, getAllClients(ctx));
+            });
         });
-        ctx.store.network.on('disconnect', function () {
-            ctx.emit('DISCONNECT', null, getAllClients(ctx));
-        });
-        ctx.store.network.on('reconnect', function () {
-            ctx.emit('RECONNECT', null, getAllClients(ctx));
-        });
+        store.networkPromise?.then(onNetwork);
+        if (ctx.store.network) { onNetwork(); }
 
         messenger.onFriendUpdate = function (curve) {
             var friend = getFriend(store.proxy, curve);

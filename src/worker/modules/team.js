@@ -478,7 +478,10 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 }));
                 return;
             }
-            checkTeamChannels(ctx, id, secret.channel, rosterKeys.channel, waitFor, cb);
+            ctx.Store.onReady(() => {
+                checkTeamChannels(ctx, id, secret.channel,
+                            rosterKeys.channel, waitFor, cb);
+            });
         }).nThen(function (waitFor) {
             var cacheRdy = {
                 lm: false,
@@ -1874,6 +1877,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var team = {};
         var store = cfg.store;
         if (!store.loggedIn || !store.proxy.edPublic) { return; }
+        if (store.modules?.['team']) { return; }
         var ctx = {
             store: store,
             Store: cfg.Store,

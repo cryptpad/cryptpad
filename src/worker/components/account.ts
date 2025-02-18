@@ -79,7 +79,8 @@ const init = (config) => {
                 });
             }, 5000);
 
-            store.networkPromise.then(function () {
+            store.networkPromise.then(function (network) {
+                store.network ||= network;
                 clearTimeout(to);
             }, function (err) {
                 console.error(err);

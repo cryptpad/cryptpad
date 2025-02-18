@@ -18,13 +18,13 @@ const onDisconnectEvt: any = Util.mkEvent();
 const onReconnectEvt: any = Util.mkEvent();
 
 const init = (config) => {
-    const { broadcast } = config;
-    const store = config.store;
+    const { broadcast, store, account } = config;
 
     const drive = store.drive = store.drive || {};
     let data = store.proxy?.drive;
 
-    const hash:string = data.hash || Hash.createRandomHash('drive');
+    console.error(data, store.proxy);
+    const hash:string = data?.hash || Hash.createRandomHash('drive');
 
     // Update loading screen status
     const updateProgress = function (data) {
@@ -38,11 +38,11 @@ const init = (config) => {
     // XXX remove and migrate instead
     if (!data.hash) {
         drive.proxy = data;
-        setTimeout(() => {
+        account.onAccountCacheReady(() => {
             onCacheReadyEvt.fire();
-            setTimeout(() => {
-                onReadyEvt.fire();
-            });
+        });
+        account.onAccountReady(() => {
+            onReadyEvt.fire();
         });
         return {
             channel: '',
