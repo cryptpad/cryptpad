@@ -3726,7 +3726,10 @@ define([
                 }
             }, function () {
                 var d = parseInt($(newDuration).val());
-                if (!isPositiveInteger(d)) { return void UI.warn(Messages.error); }
+                if (!isPositiveInteger(d)) {
+                    Messages.positiveNumber_error = "Please enter a positive number"; // XXX
+                    return void UI.warn(Messages.positiveNumber_error);
+                }
 
                 var data = [d];
                 sFrameChan.query('Q_ADMIN_RPC', {
