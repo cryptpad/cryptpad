@@ -1640,7 +1640,10 @@ define([
                 multiple: true,
                 validate: function () {
                     var l = parseInt($(newLimit).val());
-                    if (isNaN(l)) { return false; }
+                    if (isNaN(l)) {
+                        Messages.limit_error = "Please enter a valid number"; // XXX
+                        return UI.warn(Messages.limit_error);
+                    }
                     return true;
                 }
             }, function () {
@@ -1657,6 +1660,7 @@ define([
                     }
                     var limit = getPrettySize(l);
                     $(text).text(Messages._getKey('admin_limit', [limit]));
+                    UI.log(Messages.saved);
                 });
             });
 
