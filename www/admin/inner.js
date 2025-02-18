@@ -3718,7 +3718,10 @@ define([
                 multiple: true,
                 validate: function () {
                     var l = parseInt($(newDuration).val());
-                    if (isNaN(l)) { return false; }
+                    if (isNaN(l)) {
+                        Messages.limit_error = "Please enter a valid number"; // XXX
+                        return void UI.warn(Messages.limit_error);
+                    }
                     return true;
                 }
             }, function () {
