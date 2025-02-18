@@ -902,7 +902,8 @@ define([
 
         var todo = function () {
             var val = parseInt($input.val());
-            if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.error); }
+            Messages.download_limit_error = "Please enter a valid number"; // XXX
+            if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.download_limit_error); }
             if (val === oldVal) { return; }
             spinner.spin();
             common.setAttribute(['general', 'mediatag-size'], val, function (err) {
