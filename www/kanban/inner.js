@@ -664,10 +664,10 @@ define([
             $(h('.button', {
                 'class': 'kanban-edit-item fa fa-pencil',
                 'alt': Messages.kanban_editCard,
-            }).click(function (e) {
+            })).click(function (e) {
                 getItemEditModal(framework, kanban, itemId);
                 e.stopPropagation();
-            })).appendTo($(el).find('.kanban-item-text-container'));
+            }).insertAfter($(el).find('.kanban-item-text'));
         });
         $container.find('.kanban-board').each(function (i, el) {
             var itemId = $(el).attr('data-id');
