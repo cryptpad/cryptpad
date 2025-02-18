@@ -3741,6 +3741,7 @@ define([
                         return void console.error(e, response);
                     }
                     $(form).find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_bytesWrittenDuration', [d]));
+                    UI.log(Messages.saved);
                 });
             });
             cb(form);
