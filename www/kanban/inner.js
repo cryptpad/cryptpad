@@ -604,14 +604,16 @@ define([
                 $(h('.button', {
                     'class': 'cp-kanban-arrow fa fa-arrow-left board-arrow',
                     'title': Messages.kanban_moveBoardLeft,
-                    'aria-hidden': true
+                    'aria-hidden': true,
+                    'tabindex': 0
                 })).click(function () { 
                     shiftBoards('left', el);
                 }).appendTo(arrowContainer);
                 $(h('.button', {
                     'class': 'cp-kanban-arrow fa fa-arrow-right board-arrow',
                     'title': Messages.kanban_moveBoardRight,
-                    'aria-hidden': true
+                    'aria-hidden': true,
+                    'tabindex': 0
                 })).click(function () {
                     shiftBoards('right', el);
                 }).appendTo(arrowContainer);
@@ -623,7 +625,8 @@ define([
                 $(h('.button', {
                     'class': 'cp-kanban-arrow fa fa-arrow-left item-arrow',
                     'title': Messages.kanban_moveItemLeft,
-                    'aria-hidden': true
+                    'aria-hidden': true,
+                    'tabindex': 0
                 })).click(function () {
                     shiftItem('left', el);
                 }).appendTo(arrowContainerItem);
@@ -632,21 +635,24 @@ define([
                 $(h('.button', {
                     'class': 'cp-kanban-arrow fa fa-arrow-down',
                     'title': Messages.kanban_moveItemDown,
-                    'aria-hidden': true
+                    'aria-hidden': true,
+                    'tabindex': 0
                 })).click(function () {
                     shiftItem('down', el);
                 }).appendTo(centralArrowContainerItem);
                 $(h('.button', {
                     'class': 'cp-kanban-arrow fa fa-arrow-up',
                     'title': Messages.moveItemUp,
-                    'aria-hidden': true
+                    'aria-hidden': true,
+                    'tabindex': 0
                 })).click(function () {
                     shiftItem('up', el);
                 }).appendTo(centralArrowContainerItem);
                 $(h('.button', {
                     'class': 'cp-kanban-arrow fa fa-arrow-right item-arrow',
                     'title': Messages.moveItemRight,
-                    'aria-hidden': true
+                    'aria-hidden': true,
+                    'tabindex': 0
                 })).click(function () {
                     shiftItem('right', el);
                 }).appendTo(arrowContainerItem);
@@ -664,6 +670,8 @@ define([
             $(h('.button', {
                 'class': 'kanban-edit-item fa fa-pencil',
                 'alt': Messages.kanban_editCard,
+                'aria-hidden': true,
+                'tabindex': 0
             })).click(function (e) {
                 getItemEditModal(framework, kanban, itemId);
                 e.stopPropagation();
@@ -674,6 +682,8 @@ define([
             $(h('.button', {
                 'class': 'kanban-edit-item fa fa-pencil',
                 'alt': Messages.kanban_editBoard,
+                'aria-hidden': true,
+                'tabindex': 0
             })).click(function (e) {
                 getBoardEditModal(framework, kanban, itemId);
                 e.stopPropagation();
@@ -1182,8 +1192,8 @@ define([
 
             var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : 'cp-toggle-inactive'; 
             var toggleOnclass = 'ontouchstart' in window ? 'cp-toggle-inactive' : 'cp-toggle-active'; 
-            var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows});
-            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag});
+            var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows, 'tabindex': 0});
+            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag, 'tabindex': 0});
             kanban.drag = 'ontouchstart' in window ? false : true
             const updateDrag = state => {
                 return function () {
