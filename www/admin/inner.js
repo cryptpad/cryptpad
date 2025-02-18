@@ -884,6 +884,12 @@ define([
                     UI.warn(Messages.error);
                     return;
                 }
+                if (files[0].size > 200 * 1024) {
+                    Messages.admin_logoSize_error = "The logo size must be smaller than 200KB"; // XXX
+                    UI.warn(Messages.admin_logoSize_error);
+                    $(input).val('');
+                    return;
+                }
                 spinner.spin();
                 $button.attr('disabled', 'disabled');
                 let reader = new FileReader();
