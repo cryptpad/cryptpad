@@ -5664,5 +5664,6 @@ define([
     Framework.create({
         toolbarContainer: '#cp-toolbar',
         contentContainer: '#cp-app-form-editor',
+        skipLink: '#cp-app-form-editor'
     }, andThen);
 });
