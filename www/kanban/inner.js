@@ -1391,6 +1391,7 @@ define([
             Framework.create({
                 toolbarContainer: '#cme_toolbox',
                 contentContainer: '#cp-app-kanban-editor',
+                skipLink: '#cp-app-kanban-content'
             }, waitFor(function (framework) {
                 andThen2(framework);
             }));
