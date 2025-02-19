@@ -1335,6 +1335,7 @@ define([
             Framework.create({
                 toolbarContainer: '#cp-app-pad-toolbar',
                 contentContainer: '#cp-app-pad-editor',
+                skipLink: '#cke_1_contents',
                 patchTransformer: ChainPad.NaiveJSONTransformer,
                 /*thumbnail: {
                     getContainer: function () { return $('iframe').contents().find('html')[0]; },
