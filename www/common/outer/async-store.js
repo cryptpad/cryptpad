@@ -1212,7 +1212,7 @@ define([
                 }
 
                 // Check if the pad is already stored in the specified drive (data.teamId)
-                if ((!s.id && !data.teamId) || Number(s.id) === data.teamId) {
+                if ((!s.id && (!data.teamId || data.teamId === -1)) || Number(s.id) === data.teamId) {
                     if (!inTargetDrive) {
                         inTargetDrive = res.length;
                     }
@@ -1268,7 +1268,7 @@ define([
                 obj.userObject.setHref(channel, null, href);
             });
             // Add the pad if it does not exist in our drive
-            if (!contains || (data.forceSave && !inTargetDrive) || (data.teamId === -1 && !inMyDrive)) {
+            if (!contains || (data.forceSave && !inTargetDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path) {
                     // send event to inner to display the corner popup

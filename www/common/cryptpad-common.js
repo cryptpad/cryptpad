@@ -1184,7 +1184,7 @@ define([
                 path: data.path,
                 owners: data.owners,
                 expire: data.expire,
-                forceSave: typeof(data.forceSave) === "undefined" ? 1 : data.forceSave
+                forceSave: 1
             }, function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }
                 cb();

@@ -5097,7 +5097,7 @@ define([
                     path: paths[0].path[0],
                     title: data.title || '',
                     teamId: -1,
-                    forceSave: 0
+                    path: paths[0].path[0] === 'template' ? ['template'] : undefined
                 }, function (err) {
                     if (err) { return void console.error(err); }
                 });
