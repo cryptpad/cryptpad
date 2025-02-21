@@ -1198,7 +1198,8 @@ define([
             // If it is stored, update its data, otherwise ask the user if they want to store it
             var allData = [];
             var sendTo = [];
-            var inTargetDrive, inMyDrive;
+            var inTargetDrive, inMyDrive, inTrash;
+            var path = [];
             getAllStores().forEach(function (s) {
                 // If this is an edit link but we don't have edit rights, this entry is not useful
                 if (h.mode === "edit" && s.id && !s.secondaryKey) {
@@ -1220,7 +1221,20 @@ define([
                 if (!s.id) { inMyDrive = res.length; }
 
                 Array.prototype.push.apply(allData, res);
+
+                if (res) {
+                    var elementPath = store.manager.user.userObject.findFile(res[0].id)[0];
+                    if (elementPath) {
+                        path.push(elementPath);
+                    }
+                }    
+
             });
+
+            if (path[0]) {
+                inTrash = (path[0][0] === 'trash' && path[0].length === 4) ? true : false;
+            }
+
             var contains = allData.length !== 0;
             if (store.offline && !contains) {
                 return void cb({ error: 'OFFLINE' });
@@ -1253,9 +1267,8 @@ define([
                 }
                 obj.userObject.setHref(channel, null, href);
             });
-
             // Add the pad if it does not exist in our drive
-            if (!contains || (data.forceSave && !inTargetDrive)) {
+            if (!contains || (data.forceSave && !inTargetDrive) || (data.teamId === -1 && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path) {
                     // send event to inner to display the corner popup
@@ -1287,6 +1300,8 @@ define([
                     });
                     return;
                 }
+            } else if (inTrash) {
+                store.manager.user.userObject.restore(path[0]);
             }
 
             sendTo.forEach(function (teamId) {

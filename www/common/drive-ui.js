@@ -5094,9 +5094,10 @@ define([
                 sframeChan.query('Q_STORE_IN_TEAM', {
                     href: data.href || data.rohref,
                     password: data.password,
-                    path: paths[0].path[0] === 'template' ? ['template'] : undefined,
+                    path: paths[0].path[0],
                     title: data.title || '',
-                    teamId: -1
+                    teamId: -1,
+                    forceSave: 0
                 }, function (err) {
                     if (err) { return void console.error(err); }
                 });

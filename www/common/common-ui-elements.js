@@ -594,16 +594,19 @@ define([
         let $icon = $button.find('> i');
 
         let attributes = {};
+        let style = {};
         let btnClass = $button.attr('class');
         let btnId = $button.attr('id');
         let btnTitle = $button.attr('title');
+        let btnVisibility = $button.attr('style');
         if (btnClass) { attributes['class'] = btnClass; }
         if (btnId) { attributes['id'] = btnId; }
         if (btnTitle && !attributes.title) { attributes['title'] = btnTitle; }
-
+        if (btnVisibility) { attributes['style'] = btnVisibility; }
         return UIElements.createDropdownEntry({
             tag: 'a',
             attributes: attributes,
+            style: style,
             content: [
                 h('i',{ 'class': $icon.attr('class') }),
                 h('span', $button.text())
@@ -865,7 +868,9 @@ define([
                 if (callback) { button.click(callback); }
                 break;
             case 'storeindrive':
-                button = $(h('button.cp-toolbar-storeindrive', [
+                button = $(h('button.cp-toolbar-storeindrive', {
+                    style: 'display:none;'
+                }, [
                     h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
@@ -3347,9 +3352,7 @@ define([
         if (data && data.stored) {
             if (!data.inMyDrive) {
                 $('.cp-toolbar-storeindrive').show();
-            } else {
-                $('.cp-toolbar-storeindrive').hide();
-            }
+            } 
             return;
         }
         var priv = common.getMetadataMgr().getPrivateData();
