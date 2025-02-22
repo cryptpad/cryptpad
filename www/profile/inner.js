@@ -116,7 +116,7 @@ define([
 
         $('<button>', {
             'class': 'btn btn-primary '+VIEW_PROFILE_BUTTON,
-        }).append(h('i', { 'class': 'fa fa-share-alt', 'aria-hidden': 'true' }))
+        }).append(h('i', { 'class': 'fa fa-share-alt', 'aria-hidden': 'true', 'aria-labelledby': Messages.shareButton }))
           .append(h('span', Messages.shareButton))
           .click(function () {
             Clipboard.copy(url, (err) => {
@@ -227,7 +227,7 @@ define([
             if (!friends[data.curvePublic].notifications) { return; }
             // Add unfriend button
             var unfriendButton = h('button.btn.btn-primary.cp-app-profile-friend-request', [
-                h('i', { 'class': 'fa fa-user-times', 'aria-hidden': 'true' }),
+                h('i', { 'class': 'fa fa-user-times', 'aria-hidden': 'true', 'aria-labelledby': Messages.contacts_remove}),
                 Messages.contacts_remove
             ]);
             $(unfriendButton).click(function () {
@@ -339,7 +339,7 @@ define([
                 return;
             }
             var muteButton = h('button.btn.btn-danger-outline.cp-app-profile-friend-request', [
-                h('i', { 'class': 'fa fa-bell-slash', 'aria-hidden': 'true' }),
+                h('i', { 'class': 'fa fa-bell-slash', 'aria-hidden': 'true', 'aria-labelledby': Messages.contacts_mute}),
                 Messages.contacts_mute || 'mute'
             ]);
             $(muteButton).click(function () {
@@ -374,7 +374,7 @@ define([
 
         var $delButton = $('<button>', {
             'class': 'cp-app-profile-avatar-delete btn btn-danger fa fa-times',
-            title: Messages.fc_delete
+            title: Messages.profile_remove_avatar
         });
         $span.append($delButton);
         $delButton.click(function () {
@@ -422,7 +422,7 @@ define([
         var $upButton = common.createButton('upload', false, data);
         $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
-        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true'}));
+        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true', 'aria-labelledby': Messages.profile_upload}));
         $block.append($upButton);
     };
     var refreshAvatar = function (data) {
@@ -437,7 +437,7 @@ define([
         if (APP.readOnly) { return; }
 
         var button = h('button.btn.btn-primary', [
-            h('i', { 'class': 'fa fa-pencil', 'aria-hidden': 'true' }),
+            h('i', { 'class': 'fa fa-pencil', 'aria-hidden': 'true', 'aria-labelledby': Messages.profile_addDescription}),
             h('span', Messages.profile_addDescription)
         ]);
         APP.$descriptionEdit = $(button);
@@ -512,7 +512,7 @@ define([
         var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
         APP.$edPublic = $('<button>', {
             'class': 'btn',
-        }).append(h('i', { 'class': 'fa fa-key', 'aria-hidden': 'true' }))
+        }).append(h('i', { 'class': 'fa fa-key', 'aria-hidden': 'true', 'aria-labelledby': Messages.profile_copyKey }))
           .append(h('span', Messages.profile_copyKey))
           .click(function () {
             if (!APP.getEdPublic) { return; }

@@ -212,6 +212,7 @@
     "canvas_imageEmbed": "Embed an image from your computer",
     "profileButton": "Profile",
     "profile_upload": " Upload a new avatar",
+    "profile_remove_avatar": "Remove this avatar",
     "profile_uploadSizeError": "Error: your avatar must be smaller than {0}",
     "profile_uploadTypeError": "Error: your avatar type is not allowed. Allowed types are: {0}",
     "profile_error": "Error while creating your profile: {0}",

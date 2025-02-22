@@ -21,6 +21,10 @@
         display: none !important;
     }
 
+    #cp-app-profile-rightside:has(.cp-app-profile-friend-container) #cp-app-profile-link {
+        display: none;
+    }
+
     #cp-app-profile-header {
         display: flex;
         flex-flow: row wrap;
@@ -84,8 +88,11 @@
     .cp-app-profile-resizer {
         text-align: center;
     }
+    #cp-app-profile-displayname {
+        margin-top: 1rem;
+    }
     #cp-app-profile-displayname, #cp-app-profile-link {
-        margin: 10px 0;
+        margin-bottom: 1rem;
         input {
             width: 100%;
             font-size: 20px;
@@ -144,12 +151,16 @@
         margin-top: 10px;
     }
 
+    .cp-app-profile-friend-container {
+        margin-bottom: 1rem;
+    }
+
     // I tried using flexbox but messed with how the pencil icon was displayed
     #cp-app-profile-invite-button {
         float: right;
     }
     .cp-app-profile-viewprofile-button {
-        margin-bottom: 5px !important;
+        margin-bottom: 1rem!important;
     }
     #cp-app-profile-description {
         position: relative;
@@ -197,10 +208,14 @@
         justify-content: center;
     }
     .cp-app-profile-mute-container {
-        margin-top: 5px;
         p {
             margin-top: 5px;
             font-size: 13px;
+        }
+
+        margin-bottom: 1rem;
+        &:has(p) {
+            margin-bottom: 0;
         }
     }
 }
