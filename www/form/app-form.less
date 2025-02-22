@@ -613,10 +613,12 @@
                             margin-top: -10px;
                             margin-right: -10px;
                             &.cp-is-empty {
-                                max-height: 2rem;
+                                max-height: fit-content;
                                 padding: 3px;
-                                border: 2px solid @cryptpad_color_red;
-                                color: @cp_form-invalid;
+                                border: 2px solid @cp_alerts-danger-fg;
+                                border-radius: @variables_radius;
+                                background-color: @cp_alerts-danger-bg;
+                                color: @cp_alerts-danger-text;
                             }
                         }
                     }
