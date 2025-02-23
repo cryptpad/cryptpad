@@ -1783,5 +1783,9 @@
     "install_header": "Instalare",
     "team_autoTrim": "Scurtăm istoricul drive-ului de echipa... Vă rugăm să așteptați.",
     "admin_mfa_confirm_enable": "Sunteți sigur că doriți să activați Autentificarea În Mai Mulți Pași?",
-    "admin_mfa_confirm_disable": "Sunteți sigur că doriți să dezactivați Autentificarea În Mai Mulți Pași?"
+    "admin_mfa_confirm_disable": "Sunteți sigur că doriți să dezactivați Autentificarea În Mai Mulți Pași?",
+    "form_passwordWarning": "Vă rugăm să țineți minte că parola la Form poate fi setată doar acum, în momentul creării și nu poate fi schimbată mai târziu.",
+    "fm_restoreMultipleDialog": "Sigur doriți să restaurați {0} fișiere și/sau dosare către locația lor anterioară?",
+    "calendar_show": "Arată calendare",
+    "calendar_hide": "Ascunde calendare"
 }
