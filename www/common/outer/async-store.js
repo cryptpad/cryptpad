@@ -1222,7 +1222,7 @@ define([
 
                 Array.prototype.push.apply(allData, res);
 
-                if (res) {
+                if (res && res[0]) {
                     var elementPath = store.manager.user.userObject.findFile(res[0].id)[0];
                     if (elementPath) {
                         path.push(elementPath);

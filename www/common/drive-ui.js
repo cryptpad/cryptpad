@@ -5094,7 +5094,6 @@ define([
                 sframeChan.query('Q_STORE_IN_TEAM', {
                     href: data.href || data.rohref,
                     password: data.password,
-                    path: paths[0].path[0],
                     title: data.title || '',
                     teamId: -1,
                     path: paths[0].path[0] === 'template' ? ['template'] : undefined
