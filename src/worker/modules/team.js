@@ -478,7 +478,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 }));
                 return;
             }
-            ctx.Store.onReady(() => {
+            ctx.Store.onReadyEvt.reg(() => {
                 checkTeamChannels(ctx, id, secret.channel,
                             rosterKeys.channel, waitFor, cb);
             });
