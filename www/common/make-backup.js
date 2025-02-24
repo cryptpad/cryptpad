@@ -356,7 +356,6 @@ define([
 
         if (ctx.common && !ctx.common.isLoggedIn()) {
             // Anonymous Drive
-            console.log("Anonymous drive"); // XXX: remove after testing phase
             ctx.data.root = {};
             let index = 0;
             Object.keys(ctx.data.filesData).forEach(file => {
