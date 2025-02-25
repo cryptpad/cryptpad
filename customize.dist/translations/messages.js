@@ -13,6 +13,8 @@ define(['/common/translations/messages.js'], function (Messages) {
     // Replace the existing keys in your copied file here:
     // Messages.button_newpad = "New Rich Text Document";
 
+    Messages.profile_remove_avatar = "Remove this avatar"; // XXX
+
     return Messages;
 });
 

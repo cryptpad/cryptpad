@@ -374,7 +374,7 @@ define([
 
         var $delButton = $('<button>', {
             'class': 'cp-app-profile-avatar-delete btn btn-danger fa fa-times',
-            title: Messages.profile_remove_avatar //XX Remove this avatar
+            title: Messages.profile_remove_avatar //XXX
         });
         $span.append($delButton);
         $delButton.click(function () {
