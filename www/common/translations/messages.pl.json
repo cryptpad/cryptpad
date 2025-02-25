@@ -444,7 +444,7 @@
     "support_formContentError": "Błąd: treść jest pusta",
     "support_formTitleError": "Błąd: tytuł jest pusty",
     "support_formButton": "Wyślij",
-    "support_formHint": "Użyj tego formularza, aby bezpiecznie skontaktować się z administratorami.<br>Proszę zauważyć, że niektóre kwestie/pytania mogą być już poruszone w <a>Podręczniku Użytkownika CryptPad</a>. Prosimy nie tworzyć nowego zgłoszenia, jeśli masz już otwarte zgłoszenie dotyczące tego samego problemu. Zamiast tego odpowiedz na oryginalną wiadomość, podając dodatkowe informacje.",
+    "support_formHint": "Użyj tego formularza, aby bezpiecznie skontaktować się z administratorami.<br>Zwróć uwagę, że niektóre kwestie/pytania mogą być już poruszone w <a>Podręczniku Użytkownika CryptPad</a>. Prosimy nie tworzyć nowego zgłoszenia, jeśli masz już otwarte zgłoszenie dotyczące tego samego problemu. Zamiast tego odpowiedz na oryginalną wiadomość, podając dodatkowe informacje.",
     "support_formTitle": "Nowe Zgłoszenie",
     "support_cat_new": "Nowe zgłoszenie",
     "support_disabledHint": "Ta instancja CryptPad nie jest jeszcze skonfigurowana do korzystania z formularza pomocy technicznej.",
@@ -1783,5 +1783,9 @@
     "admin_onboardingOptionsHint": "Zaznacz właściwą opcję dla Twojej instancji.<br>To ustawienie może być później zmienione w panelu administratora.",
     "team_autoTrim": "Zmniejszanie historii dysku zespołu... Proszę czekać.",
     "admin_mfa_confirm_enable": "Czy na pewno chcesz włączyć uwierzytelnianie wieloetapowe?",
-    "admin_mfa_confirm_disable": "Czy na pewno chcesz wyłączyć uwierzytelnianie wieloetapowe?"
+    "admin_mfa_confirm_disable": "Czy na pewno chcesz wyłączyć uwierzytelnianie wieloetapowe?",
+    "form_passwordWarning": "Zwróć uwagę, że hasło do formularza można ustawić tylko teraz, podczas tworzenia go, i nie może być ono zmienione później.",
+    "fm_restoreMultipleDialog": "Czy na pewni chcesz przywrócić {0} plików i/lub folderów do ich poprzedniej lokalizacji?",
+    "calendar_show": "Pokaż kalendarze",
+    "calendar_hide": "Ukryj kalendarze"
 }
