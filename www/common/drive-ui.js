@@ -2966,7 +2966,6 @@ define([
                     var n = $name.val().trim() || $name.attr('placeholder');
                     var u = $url.val().trim();
                     if (!n || !u || !Util.isValidURL(u)) {
-                        Messages.fm_link_invalid = "Please provide a valid URL"; // XXX
                         UI.warn(Messages.fm_link_invalid);
                         return true;
                     }
