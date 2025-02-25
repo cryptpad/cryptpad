@@ -21,7 +21,7 @@
     "chainpad": "^5.2.6",
     "chainpad-crypto": "^0.2.5",
     "chainpad-listmap": "^1.1.0",
-    "chainpad-netflux": "^1.2.0",
+    "chainpad-netflux": "^1.2.2",
     "chainpad-server": "^5.2.4",
     "ckeditor": "npm:ckeditor4@~4.22.1",
     "codemirror": "^5.19.0",
