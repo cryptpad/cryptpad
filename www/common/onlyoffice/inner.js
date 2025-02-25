@@ -1482,6 +1482,9 @@ define([
                                         console.error(obj.error);
                                         return void UI.warn(Messages.error);
                                     }
+                                    content.integrationSave = `${myUniqueOOId}-${+new Date()}`;
+                                    APP.integrationSaved = content.integrationSave;
+                                    APP.onLocal();
                                     UI.log(Messages.saved);
                                 });
                             }
@@ -3273,6 +3276,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         });
                     } else {
                         APP.integrationSave = integrationSave;
+                        APP.integrationSetSaved = () => {
+                            hasUnsavedChanges = false;
+                        };
                         evIntegrationSave.reg(function () {
                             hasUnsavedChanges = true;
                         });
@@ -3438,6 +3444,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var wasMigrating = content.migration;
 
             var myLocks = getUserLock(getId(), true);
+            var integrationSave = content.integrationSave;
 
             content = json.content;
 
@@ -3446,6 +3453,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 fixSheets();
                 // If the checkpoint is not saved in 20s to 40s, do it ourselves
                 checkCheckpoint();
+            }
+
+            // Integration: mark the current content as saved
+            // if manually saved by someone else
+            if (content.integrationSave !== APP.integrationSaved) {
+                APP.integrationSaved = content.integrationSave;
+                if (APP.integrationSetSaved) {
+                    APP.integrationSetSaved();
+                }
             }
 
             var editor = getEditor();
