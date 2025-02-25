@@ -78,6 +78,7 @@
                 justify-content: flex-start;
                 align-items: center;
                 background-color: @cp_notif-bg;
+                border-top: 1px solid @cp_notif-table-border;
                 &.no-notifications {
                     display: none;
                     padding: 1rem 1rem;
@@ -95,11 +96,13 @@
                         background-color: @cp_notif-hover;
                     }
                 }
+                .cp-avatar-calendar {
+                    font-size: 45px;
+                    padding: 0 12px;
+                    overflow: hidden;
+                }
                 &.cp-app-notification-archived {
                     background-color: @cp_notif-bg;
-                }
-                &:not(:first-child) {
-                    border-top: 1px solid @cp_notif-table-border;
                 }
                 &.dismissed {
                     display: none;
