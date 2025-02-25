@@ -214,7 +214,7 @@ define([
         var previewTo;
 
         var togglePreview = function (show) {
-            if (show) {
+            if (show && previews[CodeMirror.highlightMode]) {
                 $previewContainer.show();
                 $codeMirrorContainer.hide();
                 $previewButton.addClass('cp-toolbar-button-active');
@@ -230,14 +230,14 @@ define([
         var handleResize = function () {
             var wasPreviewVisible = isVisible(); // Capture preview state before resize
 
-            if (isPresentMode) {
+            if (isPresentMode && previews[CodeMirror.highlightMode]) {
                 $previewContainer.show();
                 $codeMirrorContainer.hide();
                 $previewButton.hide();
                 forceDrawPreview();
             } else {
                 if (isSmallScreen()) {
-                    togglePreview(wasPreviewVisible); // Restore previous preview state
+                    togglePreview(wasPreviewVisible);
                 } else {
                     if (wasPreviewVisible) {
                         $previewContainer.show();
@@ -309,10 +309,14 @@ define([
 
         var modeChange = function (mode) {
             if (previews[mode]) {
+                console.log(previews[mode]);
                 $previewButton.show();
+                if(isSmallScreen()) {
+                    togglePreview(false);
+                }
                 framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
-                    if (data !== false) {
+                    if (data !== false && data !== undefined) {
                         $previewContainer.show();
                         $previewButton.addClass('cp-toolbar-button-active');
                         $codeMirrorContainer.removeClass('cp-app-code-fullpage');
@@ -328,6 +332,7 @@ define([
             $previewButton.hide();
             $previewContainer.hide();
             $previewButton.removeClass('active');
+            $codeMirrorContainer.show();
             $codeMirrorContainer.addClass('cp-app-code-fullpage');
         };
 
