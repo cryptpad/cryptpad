@@ -842,6 +842,13 @@ define([
                     additionalPriv.initialState = cfg.initialState instanceof Blob ?
                                                     cfg.initialState : undefined;
 
+                    if (cfg.integrationConfig) {
+                        if (metaObj?.user && !metaObj.user.name) {
+                            metaObj.user.name = cfg.integrationConfig?.user?.name ||
+                                            cfg.integrationConfig?.user?.firstname;
+                        }
+                    }
+
                     // Early access
                     var priv = metaObj.priv;
                     var _plan = typeof(priv.plan) === "undefined" ? Utils.LocalStore.getPremium() : priv.plan;
