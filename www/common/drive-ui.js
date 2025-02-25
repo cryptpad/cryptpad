@@ -2918,7 +2918,7 @@ define([
                 h('span', Messages.fm_link_warning)
             ]);
             var content = h('p', [
-            h('label', {for: 'cp-app-drive-link-name'}, Messages.fm_link_name),
+                h('label', {for: 'cp-app-drive-link-name'}, Messages.fm_link_name),
                 name = h('input#cp-app-drive-link-name', { autocomplete: 'off', placeholder: Messages.fm_link_name_placeholder}),
                 h('label', {for: 'cp-app-drive-link-url'}, Messages.fm_link_url),
                 url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url}),
