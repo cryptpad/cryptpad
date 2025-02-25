@@ -775,7 +775,7 @@ define([
         var data = APP.calendars[id];
         var edit;
         if (data.loading) {
-            edit = h('i.fa.fa-spinner.fa-spin');
+            edit = h('i.fa.fa-spinner.fa-spin', {'aria-hidden': 'true'});
         } else {
             edit = makeEditDropdown(id, teamId);
         }
@@ -796,8 +796,8 @@ define([
                 h('i.cp-calendar-inactive.fa.fa-calendar-o')
             ]),
             h('span.cp-calendar-title', md.title),
-            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted}) :
-                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined),
+            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted, 'aria-hidden': 'true'}) :
+                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly, 'aria-hidden': 'true'}) : undefined),
             edit
         ]);
         var $calendar = $(calendar).click(function () {
@@ -820,10 +820,14 @@ define([
         if (APP.$calendars) { APP.$calendars.append(calendar); }
         return calendar;
     };
+
     var makeLeftside = function (calendar, $container) {
         // Show calendars
         var calendars = h('div.cp-calendar-list');
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
+        var isMobileView = window.innerWidth <= 600;
+        var visible = !isMobileView;  // Initialize 'visible' state: true for large screens, false for mobile
+
         onCalendarsUpdate.reg(function () {
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
@@ -831,7 +835,7 @@ define([
                 var LOOKUP = {};
                 return Object.keys(APP.calendars || {}).filter(function (id) {
                     var cal = APP.calendars[id] || {};
-                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
+                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
                     return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
                 }).map(function (k) {
                     // nearly constant-time pre-sort
@@ -872,26 +876,33 @@ define([
                 }
                 return;
             }
+
             var myCalendars = filter(1);
+            var totalCalendars = myCalendars.length + Object.keys(privateData.teams).reduce((sum, teamId) => {
+                return sum + filter(teamId).length;
+            }, 0);
+
+            var $contentContainer = $(h('div.cp-calendar-content')).appendTo($calendars);
+
             if (myCalendars.length) {
                 var user = metadataMgr.getUserData();
                 var avatar = h('span.cp-avatar');
                 var uid = user.uid;
                 var name = user.name || Messages.anonymous;
                 common.displayAvatar($(avatar), user.avatar, name, function(){}, uid);
-                APP.$calendars.append(h('div.cp-calendar-team', [
+                $contentContainer.append(h('div.cp-calendar-team', [
                     avatar,
                     h('span.cp-name', {title: name}, name)
                 ]));
+                myCalendars.forEach((id) => {
+                    var calendarEntry = makeCalendarEntry(id, 1);
+                    $contentContainer.append(calendarEntry);
+                });
             }
-            myCalendars.forEach(function (id) {
-                makeCalendarEntry(id, 1);
-            });
-
-            // Add new button
-            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+            // Add the new calendar button
+            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($contentContainer);
             var newButton = h('button', [
-                h('i.fa.fa-calendar-plus-o'),
+                h('i.fa.fa-calendar-plus-o', {'aria-hidden': 'true'}),
                 h('span', Messages.calendar_new),
                 h('span')
             ]);
@@ -905,19 +916,61 @@ define([
                 var team = privateData.teams[teamId];
                 var avatar = h('span.cp-avatar');
                 common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
-                APP.$calendars.append(h('div.cp-calendar-team', [
+                var $teamContainer = h('div.cp-calendar-team', [
                     avatar,
-                    h('span.cp-name', {title: team.name}, team.name)
-                ]));
-                calendars.forEach(function (id) {
-                    makeCalendarEntry(id, teamId);
+                    h('span.cp-name', {title: team.name}, team.name),
+                    h('span')
+                ]);
+                $contentContainer.append($teamContainer);
+                calendars.forEach((id) => {
+                    var calendarEntry = makeCalendarEntry(id, teamId);
+                    $contentContainer.append(calendarEntry);
                 });
+            });
+            if(isMobileView) {
+                // If initial number of calendars or current number > 2,
+                // hide the calendars list and display a "show" button
+                if (APP.numberCalendars > 2 || totalCalendars > 2) {
+                    var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+                    var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                    var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
+                    var showCalendarsBtn = h('button', [
+                        h('i.fa.' + iconClass, {'aria-hidden': "true"}),
+                        h('span.cp-calendar-title', buttonText),
+                        h('span')
+                    ]);
+
+                    $(showCalendarsBtn).click(() => {
+                        visible = !visible;
+                        $contentContainer.toggle(visible);
+                        iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                        buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
+                        $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass).attr('aria-hidden', "true");
+                        $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
+                    }).appendTo($showContainer);
+                }
+                else {visible = true;}
+            }
+
+            $contentContainer.toggle(visible);
+            $(window).resize(function () {
+                var newIsMobileView = window.innerWidth <= 600;
+                if (!newIsMobileView) {
+                    visible = true;
+                    $contentContainer.show();
+                }
+                if (newIsMobileView !== isMobileView) {
+                    isMobileView = newIsMobileView;
+                    if (isMobileView) {
+                        visible = false;
+                        $contentContainer.hide();
+                    }
+                    onCalendarsUpdate.fire();
+                }
             });
         });
         onCalendarsUpdate.fire();
-
     };
-
     var _updateRecurring = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
@@ -1275,17 +1328,15 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             store.put('calendarView', mode, function () {});
         });
         APP.toolbar.$bottomR.append($block);
-
         // New event button
         var newEventBtn = h('button.cp-calendar-newevent', [
-            h('i.fa.fa-plus'),
+            h('i.fa.fa-plus', {'aria-hidden': 'true'}),
             h('span', Messages.calendar_newEvent)
         ]);
         $(newEventBtn).click(function (e) {
             e.preventDefault();
             cal.openCreationPopup({isAllDay:false});
         }).appendTo(APP.toolbar.$bottomL);
-
         // Change page
         var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft});
         var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight});
@@ -2152,7 +2203,7 @@ APP.recurrenceRule = {
         // Customize creation/update popup
         var onCalendarPopup = function (el) {
             var $el = $(el);
-            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o'));
+            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o', {'aria-hidden': 'true'}));
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
@@ -2301,7 +2352,7 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
 
             var delButton = h('button.btn.btn-danger', [
-                h('i.fa.fa-trash'),
+                h('i.fa.fa-trash', {'aria-hidden': 'true'}),
                 h('span', Messages.kanban_delete)
             ]);
             var $del = $el.find('.tui-full-calendar-popup-delete').hide();
@@ -2334,7 +2385,7 @@ APP.recurrenceRule = {
 
             // This is a recurring event, add button to stop recurrence now
             var $b = $(h('button.btn.btn-default', [
-                h('i.fa.fa-times'),
+                h('i.fa.fa-times', {'aria-hidden': 'true'}),
                 h('span', Messages.calendar_rec_stop)
             ])).insertBefore($section);
             UI.confirmButton($b[0], { classes: 'btn-default' }, function () {
@@ -2407,7 +2458,9 @@ APP.recurrenceRule = {
         });
         var store = window.cryptpadStore;
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
-            if (obj.empty && !privateData.calendarHash) {
+            let empty = !obj.length;
+            APP.numberCalendars = obj.length;
+            if (empty && !privateData.calendarHash) {
                 if (!privateData.loggedIn) {
                     return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                         common.setLoginRedirect('login');

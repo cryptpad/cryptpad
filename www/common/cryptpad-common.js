@@ -928,13 +928,15 @@ define([
             delete meta.cursor;
 
             if (meta.type === "form") {
-                // Keep anonymous and makeAnonymous values from templates
+                // Keep anonymous, makeAnonymous and submit message values from templates
                 var anonymous = parsed.answers.anonymous || false;
                 var makeAnonymous = parsed.answers.makeAnonymous || false;
+                var msg = parsed.answers.msg || undefined;
                 delete parsed.answers;
                 parsed.answers = {
                     anonymous: anonymous,
-                    makeAnonymous: makeAnonymous
+                    makeAnonymous: makeAnonymous,
+                    msg: msg
                 };
             }
         }
@@ -2713,7 +2715,7 @@ define([
                     window.addEventListener('unload', function () {
                         postMsg('CLOSE');
                     });
-                // eslint-disable-next-line no-constant-condition
+                // eslint-disable-next-line no-constant-condition,no-constant-binary-expression
                 } else if (false && !noWorker && !noSharedWorker && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready
