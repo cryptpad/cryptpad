@@ -3574,7 +3574,6 @@ define([
         });
         var $send = $(send).click(function () {
             if (!$radio.find('input[type="radio"]:checked').length) {
-                Messages.answerType_error = "Please select how to answer the form"; // XXX
                 return UI.warn(Messages.answerType_error);
             }
 

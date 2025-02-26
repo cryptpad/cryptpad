@@ -902,7 +902,6 @@ define([
 
         var todo = function () {
             var val = parseInt($input.val());
-            Messages.limit_error = "Please enter a valid number"; // XXX
             if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.limit_error); }
             if (val === oldVal) { return; }
             spinner.spin();

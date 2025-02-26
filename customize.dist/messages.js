@@ -118,6 +118,10 @@ define(req, function(AppConfig, Default, Language) {
 
     Messages._languages = map;
     Messages._languageUsed = language;
+    Messages.admin_logoSize_error = "The logo size must be smaller than 200KB"; // XXX
+    Messages.limit_error = "Please enter a valid number"; // XXX
+    Messages.positiveNumber_error = "Please enter a positive number"; // XXX
+    Messages.answerType_error = "Please select how to answer the form"; // XXX
 
     // Get keys with parameters
     Messages._getKey = function (key, argArray) {

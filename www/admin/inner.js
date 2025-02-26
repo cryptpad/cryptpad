@@ -885,7 +885,6 @@ define([
                     return;
                 }
                 if (files[0].size > 200 * 1024) {
-                    Messages.admin_logoSize_error = "The logo size must be smaller than 200KB"; // XXX
                     UI.warn(Messages.admin_logoSize_error);
                     $(input).val('');
                     return;
@@ -1641,7 +1640,6 @@ define([
                 validate: function () {
                     var l = parseInt($(newLimit).val());
                     if (isNaN(l)) {
-                        Messages.limit_error = "Please enter a valid number"; // XXX
                         return UI.warn(Messages.limit_error);
                     }
                     return true;
@@ -3719,7 +3717,6 @@ define([
                 validate: function () {
                     var l = parseInt($(newDuration).val());
                     if (isNaN(l)) {
-                        Messages.limit_error = "Please enter a valid number"; // XXX
                         return void UI.warn(Messages.limit_error);
                     }
                     return true;
@@ -3727,7 +3724,6 @@ define([
             }, function () {
                 var d = parseInt($(newDuration).val());
                 if (!isPositiveInteger(d)) {
-                    Messages.positiveNumber_error = "Please enter a positive number"; // XXX
                     return void UI.warn(Messages.positiveNumber_error);
                 }
 
