@@ -904,6 +904,8 @@ define([
             case 'toggle':
                 button = $(h('button.cp-toolbar-tools', {
                     //title: data.title || '', // TODO display if the label text is collapsed
+                    'aria-labelledby': data.text ? 'toolbar-button-label' : undefined,
+                    'aria-label': data.text || Messages.toolbar_tools // Fallback
                 }, [
                     h('i.fa.' + (data.icon || 'fa-wrench')),
                     h('span.cp-toolbar-name', data.text || Messages.toolbar_tools)
