@@ -698,7 +698,7 @@ const factory = (Util, Hash, Realtime) => {
                     }
                     if (exp.isFolder(obj.element)) { fixRoot(obj.element); }
                     if (typeof obj.element === "number") {
-                        var data = files[FILES_DATA][obj.element];
+                        var data = files[FILES_DATA][obj.element] || files[STATIC_DATA][obj.element];
                         if (!data) {
                             debug("An element in TRASH doesn't have associated data", obj.element, el);
                             toClean.push(idx);
