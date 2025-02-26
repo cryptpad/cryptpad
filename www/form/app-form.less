@@ -650,15 +650,19 @@
                         }
                         .cp-form-block-question-text {
                             flex: 1;
+                            word-wrap: break-word;
+                            overflow: hidden;
                         }
                         .cp-form-required-tag {
                             padding: 5px;
                             margin-top: -10px;
                             margin-right: -10px;
                             &.cp-is-empty {
+                                height: fit-content;
                                 padding: 3px;
-                                border: 2px solid @cryptpad_color_red;
-                                color: @cp_form-invalid;
+                                border-radius: 0 @variables_radius 0 0;
+                                background-color: @cp_alerts-danger-bg;
+                                color: @cp_alerts-danger-text;
                             }
                         }
                     }
