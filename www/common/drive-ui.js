@@ -2919,9 +2919,9 @@ define([
             ]);
             var content = h('p', [
                 h('label', {for: 'cp-app-drive-link-name'}, Messages.fm_link_name),
-                name = h('input#cp-app-drive-link-name', { autocomplete: 'off', placeholder: Messages.fm_link_name_placeholder, tabindex:'1'}),
+                name = h('input#cp-app-drive-link-name', { autocomplete: 'off', placeholder: Messages.fm_link_name_placeholder}),
                 h('label', {for: 'cp-app-drive-link-url'}, Messages.fm_link_url),
-                url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url,tabindex:'1'}),
+                url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url}),
                 warning,
             ]);
 
@@ -2936,9 +2936,13 @@ define([
             };
 
             var $warning = $(warning).hide();
-            var $url = $(url).on('change keypress keyup keydown', function () {
+            var $url = $(url).on('change keypress keydown', function () {
                 var v = $url.val().trim();
-                $url.toggleClass('cp-input-invalid', !Util.isValidURL(v));
+                if (Util.isValidURL(v)) {
+                    $url.removeClass('cp-input-invalid');
+                } else {
+                    $url.addClass('cp-input-invalid');
+                }
                 if (v.length > 200) {
                     $warning.show();
                     return;
@@ -2961,8 +2965,7 @@ define([
                     var $name = $(name);
                     var n = $name.val().trim() || $name.attr('placeholder');
                     var u = $url.val().trim();
-                    if (!n || !u) { return true; }
-                    if (!Util.isValidURL(u)) {
+                    if (!n || !u || !Util.isValidURL(u)) {
                         UI.warn(Messages.fm_link_invalid);
                         return true;
                     }
