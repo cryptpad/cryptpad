@@ -16,7 +16,8 @@
         "teams": "Equipos",
         "form": "Formulario",
         "presentation": "Presentación",
-        "doc": "Documento"
+        "doc": "Documento",
+        "diagram": "Diagrama"
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronizando",
@@ -1573,5 +1574,13 @@
     "team_linkUsesInfinite": "(sin límite de usos)",
     "form_settingsButton": "Configuración del formulario",
     "form_editable_on": "Una vez y editar",
-    "form_responseNotification": "Nuevas respuestas a la forma: <b>{0}</b>"
+    "form_responseNotification": "Nuevas respuestas a la forma: <b>{0}</b>",
+    "settings_mfaHint": "Proteja su cuenta con un código de verificación adicional proporcionado por una aplicación autenticadora de su elección.",
+    "form_anonymized": "Las respuestas son anónimas",
+    "form_condorcetSchulze": "Schulze",
+    "form_showCondorcetWinner": "ganador: ",
+    "form_showDetails": "Detalles",
+    "form_condorcetExtendedDisplay": "Número de partidos ganados por cada candidato: ",
+    "form_type_date": "Fecha",
+    "team_linkUses": "({0}/{1} restante)"
 }
