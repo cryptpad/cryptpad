@@ -239,7 +239,7 @@ define([
                 $previewContainer.show();
                 $codeMirrorContainer.hide();
                 $previewButton.hide();
-                return forceDrawPreview();
+                return drawPreview();
             }
             // Small screen: toggle between editor and preview
             if (isSmallScreen()) {
@@ -251,7 +251,7 @@ define([
                 $codeMirrorContainer.show();
                 $codeMirrorContainer.removeClass('cp-app-code-fullpage');
                 $previewButton.addClass('cp-toolbar-button-active');
-                return forceDrawPreview();
+                return drawPreview();
             }
             // Normal screen: editor only to split view
             $previewContainer.hide();
