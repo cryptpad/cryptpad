@@ -67,7 +67,6 @@ const factory = function () {
                 return void resolve({postMsg, msgEv});
             }
 
-            // eslint-disable-next-line no-constant-condition
             if (!noWorker && typeof(Worker) !== "undefined") {
                 worker = new Worker('/common/worker.bundle.js?' + urlArgs);
                 worker.onerror = function (e) {

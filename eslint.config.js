@@ -44,6 +44,7 @@ module.exports = [{
         "www/code/mermaid*.js",
         "www/code/orgmode.js",
         "testapi.js",
+        "rollup.config.mjs",
         "**/src/tweetnacl"
     ],
 }, ...compat.extends("eslint:recommended", "plugin:compat/recommended"), {
