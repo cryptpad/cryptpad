@@ -309,7 +309,6 @@ define([
 
         var modeChange = function (mode) {
             if (previews[mode]) {
-                console.log(previews[mode]);
                 $previewButton.show();
                 if(isSmallScreen()) {
                     togglePreview(false);
