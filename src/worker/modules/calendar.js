@@ -4,11 +4,10 @@
 
 (() => {
 const factory = (Util, Hash, Constants, Realtime, Cache, Rec,
-            Messages = {}, nThen, Listmap, FP, Crypto, ChainPad) => {
+            nThen, Listmap, FP, Crypto, ChainPad) => {
     var Calendar = {};
 
-    Calendar.setCustomize = data => {
-        Messages = data.Messages;
+    Calendar.setCustomize = (/*data*/) => {
     };
 
     var getStore = function (ctx, id) {
@@ -1218,7 +1217,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../../common/common-realtime'),
         require('../../common/cache-store'),
         require('../../common/recurrence'),
-        undefined,
         require('nthen'),
         require('chainpad-listmap'),
         require('../../../www/lib/datepicker/flatpickr'),
@@ -1233,7 +1231,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/common/common-realtime.js',
         '/common/outer/cache-store.js',
         '/calendar/recurrence.js',
-        '/customize/messages.js',
         '/components/nthen/index.js',
         'chainpad-listmap',
         '/lib/datepicker/flatpickr.js',

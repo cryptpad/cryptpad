@@ -3,12 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (AppConfig = {}, Feedback, Hash, Util,
+const factory = (Feedback, Hash, Util,
             Messaging, Crypt, Mailbox, Messages = {},
             Realtime, nThen, Crypto) => {
 
     const setCustomize = data => {
-        AppConfig = data.AppConfig;
         Messages = data.Messages;
     };
 
@@ -510,7 +509,6 @@ const factory = (AppConfig = {}, Feedback, Hash, Util,
 
 if (typeof(module) !== 'undefined' && module.exports) {
     module.exports = factory(
-        undefined,
         require('../../common/common-feedback'),
         require('../../common/common-hash'),
         require('../../common/common-util'),
@@ -524,7 +522,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
-        '/customize/application_config.js',
         '/common/common-feedback.js',
         '/common/common-hash.js',
         '/common/common-util.js',

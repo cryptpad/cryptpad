@@ -293,7 +293,7 @@ define([
 
         let closeAll = () => {
             History.state = false;
-            $hist.hide()
+            $hist.hide();
             $bottom.show();
             $cke.show();
             $(window).trigger('resize');

@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* global importScripts */
-
 const Interface = require('./interface');
 let start = (setConfig) => {
     let ready = false;
@@ -50,7 +48,7 @@ let start = (setConfig) => {
             }
         };
     });
-}
+};
 
 module.exports = { start };
 

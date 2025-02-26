@@ -33,10 +33,11 @@ const factory = function () {
 
         let called = false;
         let msgEv = mkEvent();
-        let todo = (resolve, reject) => {
+        let todo = (resolve/*, reject*/) => {
             if (called) { return; }
             called = true;
 
+            let worker, postMsg;
             if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
                 worker = new SharedWorker('/common/worker.bundle.js?' + urlArgs);
                 worker.onerror = function (e) {
@@ -85,7 +86,7 @@ const factory = function () {
             // aren't available
             //if (typeof(require) === "undefined") { return; }
             require(['/common/worker.bundle.js'], function (Store) {
-                let store = Store?.store
+                let store = Store?.store;
                 if (!store) { return void console.error("No store"); }
                 store.onMessage(function (data) {
                     if (data === "STORE_READY") { return; }
@@ -107,7 +108,7 @@ const factory = function () {
         };
         let todoNode = (resolve, reject) => {
             const Store = require('./worker.bundle');
-            let store = Store?.store
+            let store = Store?.store;
             if (!store) {
                 reject('NOSTORE');
                 return void console.error("No store");
@@ -116,7 +117,7 @@ const factory = function () {
                 if (data === "STORE_READY") { return; }
                 msgEv.fire({data: data, origin: ''});
             });
-            postMsg = function (d) {
+            let postMsg = function (d) {
                 setTimeout(function () {
                     store.query(d);
                 });
@@ -144,7 +145,7 @@ const factory = function () {
             }
             if (typeof(Worker) !== "undefined") {
                 try {
-                    worker = new Worker('/common/testworker.js?' + urlArgs);
+                    let worker = new Worker('/common/testworker.js?' + urlArgs);
                     worker.onerror = function (errEv) {
                         errEv.preventDefault();
                         errEv.stopPropagation();

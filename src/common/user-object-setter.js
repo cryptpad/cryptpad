@@ -3,14 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (AppConfig = {}, Util, Hash,
-                Realtime, Messages = {}) => {
+const factory = (Util, Hash, Realtime) => {
     let window = globalThis;
     var module = {};
 
-    module.setCustomize = (data) => {
-        Messages = data.Messages;
-        AppConfig = data.AppConfig;
+    module.setCustomize = (/*data*/) => {
     };
 
     var clone = function (o) {
@@ -985,19 +982,15 @@ const factory = (AppConfig = {}, Util, Hash,
 
 if (typeof(module) !== 'undefined' && module.exports) {
     module.exports = factory(
-        undefined,
         require('./common-util'),
         require('./common-hash'),
         require('./common-realtime'),
-        undefined
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
-        '/customize/application_config.js',
         '/common/common-util.js',
         '/common/common-hash.js',
         '/common/common-realtime.js',
-        '/customize/messages.js',
     ], factory);
 } else {
     // unsupported initialization

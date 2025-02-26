@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-/* global importScripts */
-
 const Interface = require('./interface');
 const Util = require('../../common/common-util');
 let start = (setConfig) => {

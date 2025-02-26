@@ -33,8 +33,6 @@ define([
 
     Additionally, there is some basic functionality for import/export.
 */
-    var urlArgs = Util.find(Config, ['requireConf', 'urlArgs']) || '';
-
     var postMessage = function (/*cmd, data, cb*/) {
         /*setTimeout(function () {
             AStore.query(cmd, data, cb);
@@ -2669,7 +2667,7 @@ define([
                 }).then(waitFor(store => {
                     postMsg = store?.postMsg;
                     msgEv = store?.msgEv;
-                }))
+                }));
             }).nThen(function () {
                 Channel.create(msgEv, postMsg, function (chan) {
                     console.log('Outer ready');
