@@ -4795,6 +4795,7 @@ define([
                 data.sharedFolderId = sfId;
                 data.name = Util.fixFileName(folderName);
                 data.folderName = Util.fixFileName(folderName) + '.zip';
+                data.common = common;
 
                 var uo = manager.user.userObject;
                 if (sfId && manager.folders[sfId]) {
@@ -4976,7 +4977,7 @@ define([
             else if ($this.hasClass('cp-app-drive-context-download')) {
                 if (paths.length !== 1) { return; }
                 var path = paths[0];
-                el = manager.find(path.path);
+                el = $(path.element).data('element') || manager.find(path.path);
                 // folder
                 if (manager.isFolder(el)) {
                     // folder
