@@ -188,7 +188,7 @@ define([
             name = encodeURIComponent(name);
             callbackUrl = encodeURIComponent(callbackUrl);
             key = encodeURIComponent(key);
-            let query = `name=${name}&cb=${callbackUrl}&key=${key}`
+            let query = `name=${name}&cb=${callbackUrl}&key=${key}`;
             let url = getInstanceURL() + `/oosave?${query}`;
             xhr.open('POST', url, true);
             xhr.responseType = 'blob';
