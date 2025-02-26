@@ -968,12 +968,7 @@ define([
                 });
             };
 
-            let btn = blocks.activeButton('primary', '',
-              Messages.admin_colorChange, (done) => {
-                let color = $input.val();
-                setColor(color, done);
-            });
-
+            let $input = $();
             let onColorPicked = () => {
                 require(['/lib/less.min.js'], (Less) => {
                     let color = $input.val();
@@ -995,7 +990,14 @@ define([
                     $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
                 });
             };
-            let $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
+            $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
+
+            let btn = blocks.activeButton('primary', '',
+              Messages.admin_colorChange, (done) => {
+                let color = $input.val();
+                setColor(color, done);
+            });
+
 
             UI.confirmButton($remove, {
                 classes: 'btn-danger',
@@ -3185,6 +3187,7 @@ define([
                 labelEnd,
             ], blocks.nav([button]));
 
+            let send = function () {};
             var refresh = getApi(function (Broadcast) {
                 $active.empty();
                 var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel);
@@ -3246,7 +3249,7 @@ define([
                 };
             };
 
-            var send = function (data) {
+            send = function (data) {
                 disable($button);
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',

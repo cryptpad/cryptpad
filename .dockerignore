@@ -3,14 +3,18 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 .dockerignore
+.editorconfig
 .git
 .gitignore
 .gitmodules
 .github
+.reuse
+.stylelintrc.js
+.eslint.config.js
 docker-compose.yml
-traefik2.yml
 Dockerfile*
 *.png
+*.md
 /onlyoffice-builds.git/
 /www/common/onlyoffice/dist/
 blob
@@ -18,3 +22,4 @@ block
 customize
 data
 datastore
+docs
