@@ -50,7 +50,7 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
 ].forEach(l => {
     let s = l;
     if (s === 'tweetnacl') {
-        s += '-old';
+        //s += '-old';
     }
     const source = Path.join("node_modules", s);
     const destination = Path.join(componentsPath, l);
