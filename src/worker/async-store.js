@@ -492,6 +492,19 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             });
         };
 
+        var initTempRpc = (clientId, cb) => {
+            if (store.rpc) { return void cb(store.rpc); }
+            var kp = Crypto.Nacl.sign.keyPair();
+            var keys = {
+                edPublic: Crypto.Nacl.util.encodeBase64(kp.publicKey),
+                edPrivate: Crypto.Nacl.util.encodeBase64(kp.secretKey)
+            };
+            Pinpad.create(store.network, keys, function (e, call) {
+                if (e) { return void cb({error: e}); }
+                store.rpc = call;
+                cb(call);
+            });
+        };
         var initRpc = function (clientId, data, cb) {
             if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
@@ -1840,7 +1853,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
-                Cache: Cache, // ICE pad cache
+                Cache: store.neverCache ? undefined : Cache,
                 priority: 1,
                 onCacheStart: function () {
                     postMessage(clientId, "PAD_CACHE");
@@ -3132,16 +3145,23 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
         };
         // If we load CryptPad for the first time from an existing pad, don't create a
         // drive automatically.
-        var onNoDrive = function (clientId, cb) {
+        var onNoDrive = function (clientId, cb, initRpc) {
             var andThen = function () {
                 // Initialize modules that can be used by pads
                 // and don't require account data
                 loadSyncModules();
-                // Load anonymous rpc
-                initAnonRpc(null, null, function () {
-                    Feedback.send("NO_DRIVE", true);
-                    cb({});
-                });
+                let getAnon = () => {
+                    // Load anonymous rpc
+                    initAnonRpc(null, null, function () {
+                        Feedback.send("NO_DRIVE", true);
+                        cb({});
+                    });
+                };
+                if (initRpc) {
+                    // In integration mode, we may need an RPC
+                    return initTempRpc(clientId, getAnon);
+                }
+                getAnon();
             };
 
             // We need an anonymous RPC to be able to check if the pad exists and to get
@@ -3196,7 +3216,13 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             // open an existing pad
             const noDrive = data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash);
             if (noDrive) {
-                return void onNoDrive(clientId, cb);
+                if (data.neverDrive) { store.neverCache = true; }
+                return void onNoDrive(clientId, obj => {
+                    if (obj?.error) {
+                        Feedback.send("NO_DRIVE_ERROR", true);
+                    }
+                    cb(obj);
+                }, !!data.neverDrive);
             }
 
             const requires = data.requires;
@@ -3348,7 +3374,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
             start(clientId, data, Util.once(obj => {
                 if (obj.error === 'GET_HK') {
-                    Feedback.send("NO_DRIVE_ERROR", true);
                     return void callback({
                         error: 'ERROR' // XXX
                     });
