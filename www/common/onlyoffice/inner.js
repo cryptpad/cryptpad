@@ -1702,7 +1702,7 @@ define([
                             || Messages.anonymous;
 
             let integrationConfig = privateData?.integrationConfig?._;
-            let ec = integrationConfig?.editorConfig;
+            //let ec = integrationConfig?.editorConfig;
             let dc = integrationConfig?.document;
 
             // Config
@@ -3444,7 +3444,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var wasMigrating = content.migration;
 
             var myLocks = getUserLock(getId(), true);
-            var integrationSave = content.integrationSave;
+            //var integrationSave = content.integrationSave;
 
             content = json.content;
 
