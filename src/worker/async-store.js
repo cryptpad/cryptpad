@@ -2797,6 +2797,18 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             });
         };
 
+        // Modules that won't load anything from the server
+        const loadSyncModules = (waitFor = function (){}) => {
+            loadUniversal(Cursor, 'cursor', waitFor);
+            loadUniversal(Integration, 'integration', waitFor);
+            loadUniversal(Messenger, 'messenger', waitFor);
+            loadUniversal(History, 'history', waitFor);
+            loadOnlyOffice();
+            if (store) {
+                store.messenger = store.modules['messenger'];
+            }
+        };
+
         // onReady: called when the drive is synced (not using the cache anymore)
         // "cb" is wrapped in Util.once() and may have already been called
         // if we have a local cache
@@ -3049,7 +3061,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 });
 
                 const {
-                    channel, onDriveReady, onDriveCacheReady,
+                    /*channel,*/ onDriveReady, onDriveCacheReady,
                     onDisconnect, onReconnect
                 } = drive;
 
@@ -3102,18 +3114,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             cb({
                 state: Boolean(store.proxy)
             });
-        };
-
-        // Modules that won't load anything from the server
-        const loadSyncModules = (waitFor = function (){}) => {
-            loadUniversal(Cursor, 'cursor', waitFor);
-            loadUniversal(Integration, 'integration', waitFor);
-            loadUniversal(Messenger, 'messenger', waitFor);
-            loadUniversal(History, 'history', waitFor);
-            loadOnlyOffice();
-            if (store) {
-                store.messenger = store.modules['messenger'];
-            }
         };
 
         const loadHK = (cb) => {

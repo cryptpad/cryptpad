@@ -171,7 +171,7 @@ define([
                     privReady();
                 }
             });
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             APP.loggedIn = common.isLoggedIn();
             if (!APP.loggedIn) { Feedback.send('ANONYMOUS_DRIVE'); }
             APP.$body = $('body');
@@ -187,8 +187,8 @@ define([
                 APP.anonSFPassword = privateData.password;
             }
 
-            var sframeChan = common.getSframeChannel();
             /*
+            var sframeChan = common.getSframeChannel();
             updateObject(sframeChan, proxy, waitFor(function () {
                 console.error('DRVE RDY');
                 updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
