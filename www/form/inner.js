@@ -115,10 +115,13 @@ define([
     };
 
     var saveAndCancelOptions = function (cb) {
-        var cancelBlock = h('button.btn.btn-default.cp-form-preview-button',[
-                            h('i.fa.fa-eye'),
-                            Messages.form_preview_button
-                        ]);
+       var cancelBlock = h('button.btn.btn-default.cp-form-preview-button', {
+            attrs: { 'aria-labelledby': Messages.form_preview_button }
+        }, [
+            h('i.fa.fa-eye', { attrs: { 'aria-hidden': 'true' } }),
+            h('span', { attrs: { id: Messages.form_preview_button } }, Messages.form_preview_button)
+        ]);
+
         $(cancelBlock).click(function () { cb(undefined, true); });
 
         return cancelBlock;
@@ -220,13 +223,18 @@ define([
     var editOptions = function (v, isDefaultOpts, setCursorGetter, cb, tmp) {
         var evOnSave = Util.mkEvent();
 
-        var add = h('button.btn', [
-            h('i.fa.fa-plus'),
-            h('span', Messages.form_add_option)
+        var add = h('button.btn', {
+            attrs: { 'aria-labelledby':  Messages.form_add_option }
+        }, [
+            h('i.fa.fa-plus', { attrs: { 'aria-hidden': 'true' } }),
+            h('span', { attrs: { id: Messages.form_add_option } }, Messages.form_add_option)
         ]);
-        var addItem = h('button.btn.btn-secondary', [
-            h('i.fa.fa-plus'),
-            h('span', Messages.form_add_item)
+
+        var addItem = h('button.btn.btn-secondary', {
+            attrs: { 'aria-labelledby': Messages.form_add_item }
+        }, [
+            h('i.fa.fa-plus', { attrs: { 'aria-hidden': 'true' } }),
+            h('span', { attrs: { id: Messages.form_add_item } }, Messages.form_add_item)
         ]);
 
         var cursor;
@@ -5068,9 +5076,9 @@ define([
             });
             var $modal = modal.$modal;
             $modal.find('.cp-modal').append([
-                h('h2', [
-                    h('i.fa.fa-wrench'),
-                    h('span', Messages.form_settingsButton)
+                h('h2', { attrs: { 'aria-labelledby': Messages.form_settingsButton} }, [
+                    h('i.fa.fa-wrench', { attrs: { 'aria-hidden': 'true' } }),
+                    h('span', { attrs: { id: Messages.form_settingsButton } }, Messages.form_settingsButton)
                 ]),
                 endDateContainer,
                 anonContainer,
@@ -5079,9 +5087,9 @@ define([
                 privacyContainer,
                 editableContainer,
             ]);
-            var modalBtn = h('button.btn.btn-secondary', [
-                h('i.fa.fa-wrench'),
-                h('span', Messages.form_settingsButton)
+            var modalBtn = h('button.btn.btn-secondary', { attrs: { 'aria-labelledby': Messages.form_settingsButton } }, [
+                h('i.fa.fa-wrench', { attrs: { 'aria-hidden': 'true' } }),
+                h('span', { attrs: { id: Messages.form_settingsButton } }, Messages.form_settingsButton)
             ]);
             $(modalBtn).click(function () {
                 setTimeout(function () {
@@ -5472,17 +5480,23 @@ define([
             var t = h('textarea');
             var p = h('p.cp-form-response-msg-hint', Messages.form_responseMsg);
 
-            var preview = h('button.btn.btn-default.cp-form-preview-button',[
-                h('i.fa.fa-eye'),
-                h('span', Messages.form_preview_button)
+            var preview = h('button.btn.btn-default.cp-form-preview-button', {
+                attrs: { 'aria-labelledby':  Messages.form_preview_button }
+            }, [
+                h('i.fa.fa-eye', { attrs: { 'aria-hidden': 'true' } }),
+                h('span', { attrs: { id: Messages.form_preview_button } }, Messages.form_preview_button)
             ]);
-            var edit = h('button.btn.btn-default.cp-form-edit-button', [
-                h('i.fa.fa-pencil'),
-                h('span', Messages.form_editBlock)
+            var edit = h('button.btn.btn-default.cp-form-edit-button', {
+                attrs: { 'aria-labelledby': Messages.form_editBlock }
+            }, [
+                h('i.fa.fa-pencil', { attrs: { 'aria-hidden': 'true' } }),
+                h('span', { attrs: { id: Messages.form_editBlock } }, Messages.form_editBlock)
             ]);
-            var del = h('button.btn.btn-danger-alt', [
-                h('i.fa.fa-trash-o'),
-                h('span', Messages.form_delete)
+            var del = h('button.btn.btn-danger-alt', {
+                attrs: { 'aria-labelledby': Messages.form_delete }
+            }, [
+                h('i.fa.fa-trash-o', { attrs: { 'aria-hidden': 'true' } }),
+                h('span', { attrs: { id: Messages.form_delete } }, Messages.form_delete)
             ]);
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
 
