@@ -227,6 +227,10 @@ define([
             framework._.sfCommon.setPadAttribute('previewMode', show);
         };
 
+        var isVisible = function () {
+            return $previewContainer.is(':visible');
+        };
+
         var handleResize = function () {
             var wasPreviewVisible = isVisible(); // Capture preview state before resize
 
@@ -335,9 +339,6 @@ define([
             $codeMirrorContainer.addClass('cp-app-code-fullpage');
         };
 
-        var isVisible = function () {
-            return $previewContainer.is(':visible');
-        };
 
         framework.onReady(function () {
             handleResize();
