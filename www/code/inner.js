@@ -218,7 +218,7 @@ define([
                 $previewContainer.show();
                 $codeMirrorContainer.hide();
                 $previewButton.addClass('cp-toolbar-button-active');
-                forceDrawPreview();
+                drawPreview();
             } else {
                 $previewContainer.hide();
                 $codeMirrorContainer.show();
@@ -234,29 +234,31 @@ define([
         var handleResize = function () {
             var wasPreviewVisible = isVisible(); // Capture preview state before resize
 
+            // Present mode: always draw preview
             if (isPresentMode && previews[CodeMirror.highlightMode]) {
                 $previewContainer.show();
                 $codeMirrorContainer.hide();
                 $previewButton.hide();
-                forceDrawPreview();
-            } else {
-                if (isSmallScreen()) {
-                    togglePreview(wasPreviewVisible);
-                } else {
-                    if (wasPreviewVisible) {
-                        $previewContainer.show();
-                        $codeMirrorContainer.show();
-                        $codeMirrorContainer.removeClass('cp-app-code-fullpage');
-                        $previewButton.addClass('cp-toolbar-button-active');
-                        forceDrawPreview();
-                    } else {
-                        $previewContainer.hide();
-                        $codeMirrorContainer.addClass('cp-app-code-fullpage');
-                        $previewButton.removeClass('cp-toolbar-button-active');
-                    }
-                }
+                return forceDrawPreview();
             }
+            // Small screen: toggle between editor and preview
+            if (isSmallScreen()) {
+                return togglePreview(wasPreviewVisible);
+            }
+            // Normal screen: split view to editor only
+            if (wasPreviewVisible) {
+                $previewContainer.show();
+                $codeMirrorContainer.show();
+                $codeMirrorContainer.removeClass('cp-app-code-fullpage');
+                $previewButton.addClass('cp-toolbar-button-active');
+                return forceDrawPreview();
+            }
+            // Normal screen: editor only to split view
+            $previewContainer.hide();
+            $codeMirrorContainer.addClass('cp-app-code-fullpage');
+            $previewButton.removeClass('cp-toolbar-button-active');
         };
+
 
         $previewButton.click(function () {
             clearTimeout(previewTo);
@@ -266,28 +268,32 @@ define([
             }, 500);
 
             var show = !isVisible();
+
+            // Small screen: toggle between editor and preview
             if (isSmallScreen()) {
-                togglePreview(show);
-            } else {
-                if (!previews[CodeMirror.highlightMode]) {
-                    $previewContainer.show();
-                }
-                $previewContainer.toggle();
-                if (isVisible()) {
-                    forceDrawPreview();
-                    $codeMirrorContainer.removeClass('cp-app-code-fullpage');
-                    $previewButton.addClass('cp-toolbar-button-active');
-                    framework._.sfCommon.setPadAttribute('previewMode', true, function (e) {
-                        if (e) { return console.log(e); }
-                    });
-                } else {
-                    $codeMirrorContainer.addClass('cp-app-code-fullpage');
-                    $previewButton.removeClass('cp-toolbar-button-active');
-                    framework._.sfCommon.setPadAttribute('previewMode', false, function (e) {
-                        if (e) { return console.log(e); }
-                    });
-                }
+                return togglePreview(show);
+            } 
+            
+            if (!previews[CodeMirror.highlightMode]) {
+                $previewContainer.show();
             }
+            $previewContainer.toggle();
+            //Normal screen: split view to editor only
+            if (isVisible()) {
+                $codeMirrorContainer.removeClass('cp-app-code-fullpage');
+                $previewButton.addClass('cp-toolbar-button-active');
+                framework._.sfCommon.setPadAttribute('previewMode', true, function (e) {
+                    if (e) { return console.log(e); }
+                });
+                return forceDrawPreview();
+            }
+
+            // Normal screen: editor only to split view
+            $codeMirrorContainer.addClass('cp-app-code-fullpage');
+            $previewButton.removeClass('cp-toolbar-button-active');
+            framework._.sfCommon.setPadAttribute('previewMode', false, function (e) {
+                if (e) { return console.log(e); }
+            });
         });
 
         framework._.toolbar.$bottomM.append($previewButton);
@@ -315,7 +321,7 @@ define([
             if (previews[mode]) {
                 $previewButton.show();
                 if(isSmallScreen()) {
-                    togglePreview(false);
+                    return togglePreview(false);
                 }
                 framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
