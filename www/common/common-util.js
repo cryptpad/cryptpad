@@ -386,7 +386,7 @@
         let href = url.href + (ignoreCache ? '?'+(+new Date()) : '');
         if (typeof(self) !== "undefined" && self.crypto) {
             // Browser
-            fetch(url.href).then(res => {
+            fetch(href).then(res => {
                 if (!res.ok) {
                     throw new Error(`Fetch error: ${res.status}`);
                 }

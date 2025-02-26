@@ -680,7 +680,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             return metadata;
         };
 
-        Store.onMaintenanceUpdate = function (uid) {
+        Store.onMaintenanceUpdate = function (/*uid*/) {
             // use uid in /api/broadcast so that all connected users will use the same cached
             // version on the server
             let origin = ApiConfig.httpUnsafeOrigin;
@@ -695,7 +695,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 });
             });
         };
-        Store.onSurveyUpdate = function (uid) {
+        Store.onSurveyUpdate = function (/*uid*/) {
             // use uid in /api/broadcast so that all connected users will use the same cached
             // version on the server
             let origin = ApiConfig.httpUnsafeOrigin;
