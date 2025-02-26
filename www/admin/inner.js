@@ -235,9 +235,6 @@ define([
 
         const evRefreshAdmins = Util.mkEvent();
         sidebar.addItem('list-admins', cb => {
-            const metadataMgr = common.getMetadataMgr();
-            const privateData = metadataMgr.getPrivateData();
-
             const removeAdmin = (edPublic, _cb) => {
                 const cb = Util.mkAsync(_cb);
                 sFrameChan.query('Q_ADMIN_RPC', {
