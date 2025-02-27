@@ -3140,7 +3140,7 @@ define([
 
                 var newObj = {
                     tag: 'a',
-                    attributes: { 'class': obj.class, href: '#' },
+                    attributes: { 'class': obj.class },
                     content: [obj.icon, obj.name]
                 };
 
@@ -3182,7 +3182,6 @@ define([
                     tag: 'a',
                     attributes: {
                         'class': 'cp-app-drive-rm-filter',
-                        'href': '#'
                     },
                     content: [
                         h('i.fa.fa-times'),
@@ -3195,7 +3194,6 @@ define([
                 var attributes = {
                     'class': 'cp-app-drive-filter-doc',
                     'data-type': type,
-                    'href': '#'
                 };
 
                 var premium = common.checkRestrictedApp(type);
@@ -3221,7 +3219,6 @@ define([
                     attributes: {
                         'class': 'cp-app-drive-filter-doc',
                         'data-type': 'link',
-                        'href': '#'
                     },
                     content: [
                         getIcon('link')[0],
@@ -3233,7 +3230,6 @@ define([
                     attributes: {
                         'class': 'cp-app-drive-filter-doc',
                         'data-type': 'file',
-                        'href': '#'
                     },
                     content: [
                         getIcon('file')[0],

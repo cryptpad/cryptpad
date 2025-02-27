@@ -670,7 +670,6 @@ define([
                         tag: 'a',
                         attributes: {
                             'data-value': '.ics',
-                            'href': '#'
                         },
                         content: '.ics'
                     });
@@ -1303,7 +1302,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 attributes: {
                     'class': 'cp-calendar-view',
                     'data-value': k,
-                    'href': '#',
                 },
                 content: Messages['calendar_'+k]
                 // Messages.calendar_day
@@ -1564,7 +1562,6 @@ APP.recurrenceRule = {
             attributes: {
                 'class': 'cp-calendar-recurrence',
                 'data-value': '',
-                'href': '#',
             },
             content: Messages.calendar_rec_no
         }];
@@ -1577,7 +1574,6 @@ APP.recurrenceRule = {
                 attributes: {
                     'class': 'cp-calendar-recurrence',
                     'data-value': basicStr[rec],
-                    'href': '#',
                 },
                 content: Messages._getKey('calendar_rec_' + rec, [
                     getWeekDays(true)[date.getDay()],
@@ -1598,7 +1594,6 @@ APP.recurrenceRule = {
             attributes: {
                 'class': 'cp-calendar-recurrence',
                 'data-value': basicStr.days,
-                'href': '#',
             },
             content: Messages['calendar_rec_' + (isWeekend ? 'weekend' : 'weekdays')]
         });
@@ -1608,7 +1603,6 @@ APP.recurrenceRule = {
             attributes: {
                 'class': 'cp-calendar-recurrence',
                 'data-value': 'custom',
-                'href': '#',
             },
             content: Messages.calendar_rec_custom
         });
@@ -1690,7 +1684,6 @@ APP.recurrenceRule = {
                     attributes: {
                         'class': 'cp-calendar-recurrence-freq',
                         'data-value': rec,
-                        'href': '#',
                     },
                     content: Messages['calendar_rec_freq_' + rec]
                 });
@@ -2000,7 +1993,6 @@ APP.recurrenceRule = {
                 attributes: {
                     'class': 'cp-calendar-reminder',
                     'data-value': k,
-                    'href': '#',
                 },
                 content: Messages['calendar_'+k]
                 // Messages.calendar_minutes

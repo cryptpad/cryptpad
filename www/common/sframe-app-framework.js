@@ -721,7 +721,6 @@ define([
                             tag: 'a',
                             attributes: {
                                 'data-value': _ext,
-                                'href': '#'
                             },
                             content: _ext
                         });
@@ -732,7 +731,6 @@ define([
                         tag: 'a',
                         attributes: {
                             'data-value': ext,
-                            'href': '#'
                         },
                         content: ext
                     });
@@ -741,7 +739,6 @@ define([
                     tag: 'a',
                     attributes: {
                         'data-value': '',
-                        'href': '#'
                     },
                     content: ' ',
                 });
