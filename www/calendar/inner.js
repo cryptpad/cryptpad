@@ -2247,6 +2247,7 @@ APP.recurrenceRule = {
                 let calendarDropdownNavigation = function (event) {
                     let $focusedItem = $dropdownMenu.find('li:focus');
                     switch (event.key) {
+                        case ' ':
                         case 'Enter':
                             event.preventDefault();
                             $focusedItem.click();
