@@ -160,12 +160,20 @@ define([
         }
 
         function __onAddItemClickHandler(nodeItem) {
-            nodeItem.addEventListener('click', function (e) {
+            function handleAddItem(e, item) {
                 e.preventDefault();
                 e.stopPropagation();
-                self.options.addItemClick(this);
-                if (typeof (this.clickfn) === 'function') {
-                    this.clickfn(this);
+                self.options.addItemClick(item);
+                if (typeof (item.clickfn) === 'function') {
+                    item.clickfn(item);
+                }
+            }
+            nodeItem.addEventListener('click', function (e) {
+                handleAddItem(e,this);
+            });
+            nodeItem.addEventListener('keydown', function (e) {
+                if (e.keyCode === 13) {
+                    handleAddItem(e,this);
                 }
             });
         }
