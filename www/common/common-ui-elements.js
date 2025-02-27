@@ -2357,9 +2357,9 @@ define([
             var myData = metadataMgr.getUserData();
             var privateData = metadataMgr.getPrivateData();
             var uid = myData.uid;
-            if (!priv.plan && privateData.plan) {
+            if ((!priv.plan && privateData.plan) ||
+                (!priv.accountName && privateData.accountName)) {
                 config.$initBlock.empty();
-                metadataMgr.off('change', updateButton);
                 UIElements.createUserAdminMenu(Common, config);
                 return;
             }
