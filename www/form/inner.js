@@ -5171,7 +5171,7 @@ define([
             $(toggleDragOn).click(updateDrag(true));
             $(toggleDragOff).click(updateDrag(false));
 
-            var drag = h('div', [
+            var drag = h('div.cp-drag-container', [
                 toggleDragOff,
                 toggleDragOn
             ]);
