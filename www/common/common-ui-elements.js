@@ -1517,6 +1517,9 @@ define([
                 });
 
                 Util.onClickEnter(entry, function(e) {
+                    if ($(e.target).attr('href') === '#') {
+                        e.preventDefault();
+                    }
                     if (config.isSelect) { return; }
                     e.stopPropagation();
                     if (typeof(config.action) === "function") {
@@ -2406,7 +2409,6 @@ define([
                 attributes: {
                     'class': 'cp-language-value',
                     'data-value': l,
-                    'href': '#',
                 },
                 content: [ // supplying content as an array ensures it's a text node, not parsed HTML
                     languages[l] // Pretty name of the language value
@@ -3547,14 +3549,15 @@ define([
 
         var text = Messages._getKey('owner_add', [name, title]);
 
+        var obj = { pw: msg.content.password || '', f: 1 };
+        let newHref = Hash.getNewPadURL(msg.content.href, obj);
         var link = h('a', {
-            href: '#'
+            href: newHref
         }, Messages.requestEdit_viewPad);
         $(link).click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var obj = { pw: msg.content.password || '', f: 1 };
-            common.openURL(Hash.getNewPadURL(msg.content.href, obj));
+            common.openURL(newHref);
         });
 
         var div = h('div', [
