@@ -101,32 +101,45 @@ define([
     var sFrameChan;
 
     var addViewButton = function ($container) {
-        if (APP.readOnly) {
-            return;
-        }
-
         var hash = common.getMetadataMgr().getPrivateData().hashes.viewHash;
         var url = APP.origin + '/profile/#' + hash;
-
-        $('<button>', {
-            'class': 'btn '+VIEW_PROFILE_BUTTON,
-        }).text(Messages.profile_viewMyProfile).click(function () {
-            window.open(url, '_blank');
-        }).appendTo($container);
-
-        $('<button>', {
-            'class': 'btn btn-primary '+VIEW_PROFILE_BUTTON,
-        }).append(h('i', { 'class': 'fa fa-share-alt', 'aria-hidden': 'true', 'aria-labelledby': Messages.shareButton }))
-          .append(h('span', Messages.shareButton))
-          .click(function () {
-            Clipboard.copy(url, (err) => {
-                if (!err) { UI.log(Messages.shareSuccess); }
-            });
-        }).appendTo($container);
+        
+        // Only add view and share buttons if not read-only
+        if (!APP.readOnly) {
+            var $blockView = $('<div>', {class: LINK_ID}).appendTo($container);
+            $('<button>', {
+                'class': 'btn ' + VIEW_PROFILE_BUTTON,
+            }).text(Messages.profile_viewMyProfile).click(function () {
+                window.open(url, '_blank');
+            }).appendTo($blockView);
+        }
+        
+        // Always create the description container
+        var $blockDescription = $('<div>', {class: DESCRIPTION_ID}).appendTo($container);
+        APP.$descriptionContainer = $blockDescription;
+        APP.$description = $('<div>', {
+            'id': 'cp-app-profile-description-info'
+        }).appendTo($blockDescription);
+        
+        // Add the share button only for editable profiles
+        if (!APP.readOnly) {
+            var $blockShare = $('<div>', {class: LINK_ID}).appendTo($container);
+            $('<button>', {
+                'class': 'btn btn-primary ' + VIEW_PROFILE_BUTTON,
+            }).append(
+                h('i', { 'class': 'fa fa-share-alt', 'aria-hidden': 'true', 'aria-labelledby': Messages.shareButton })
+            ).append(
+                h('span', Messages.shareButton)
+            ).click(function () {
+                Clipboard.copy(url, (err) => {
+                    if (!err) { UI.log(Messages.shareSuccess); }
+                });
+            }).appendTo($blockShare);
+        }
     };
-
+    
     var addDisplayName = function ($container) {
-        var $block = $('<div>', {id: DISPLAYNAME_ID}).appendTo($container);
+        var $block = $('<div>', {class: DISPLAYNAME_ID}).appendTo($container);
         APP.$name = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
     };
     var refreshName = function (data) {
@@ -134,7 +147,7 @@ define([
     };
 
     var addLink = function ($container) {
-        var $block = $('<div>', {id: LINK_ID}).appendTo($container);
+        var $block = $('<div>', {class: LINK_ID}).appendTo($container);
 
         APP.$link = $('<a>', {
             'class': LINK_ID,
@@ -199,8 +212,9 @@ define([
 
     var addFriendRequest = function ($container) {
         if (!APP.readOnly || !APP.common.isLoggedIn()) { return; }
+        var $block = $('<div>', {class: LINK_ID}).appendTo($container);
         APP.$friend = $(h('div.cp-app-profile-friend-container'));
-        $container.append(APP.$friend);
+        $block.append(APP.$friend);
     };
     var refreshFriendRequest = function (data) {
         if (!APP.$friend) { return; }
@@ -305,7 +319,7 @@ define([
 
     var addMuteButton = function ($container) {
         if (!APP.readOnly || !APP.common.isLoggedIn()) { return; }
-        APP.$mute = $(h('div.cp-app-profile-mute-container'));
+        APP.$mute = $(h('div.cp-app-profile-mute-container.cp-app-profile-link'));
         $container.append(APP.$mute);
     };
     var refreshMute = function (data) {
@@ -432,7 +446,6 @@ define([
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
 
-        APP.$description = $('<div>', {'class': 'cp-app-profile-description-rendered'}).appendTo($block);
         APP.$descriptionEdit = $();
         if (APP.readOnly) { return; }
 
@@ -486,7 +499,8 @@ define([
         });
     };
     var refreshDescription = function (data) {
-        var val = Marked.parse(data.description || "");
+        var descriptionData = data.description || "";
+        var val = Marked.parse(descriptionData);
         APP.$description.html(val);
         APP.$description.off('click');
         APP.$description.click(function (e) {
@@ -503,6 +517,11 @@ define([
         if (!APP.editor) { return; }
         APP.editor.setValue(data.description || "");
         APP.editor.save();
+        if ($.trim(descriptionData) === "") {
+            APP.$descriptionContainer.addClass('hidden');
+        } else {
+            APP.$descriptionContainer.removeClass('hidden');
+        }
     };
 
     var addPublicKey = function ($container) {
@@ -535,15 +554,14 @@ define([
 
     var addCopyData = function ($container) {
         if (!APP.isModerator) { return; }
-
-        var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
+        var $block = $('<div>', {class:LINK_ID}).appendTo($container);
         APP.$copyData = $(h('button.btn.btn-secondary', [
             h('i.fa.fa-clipboard'),
             h('span', Messages.support_copyUserData)
         ])).click(function () {
             if (!APP.getCopyData) { return; }
             APP.getCopyData();
-        }).appendTo($div).hide();
+        }).appendTo($block).hide();
     };
     var setCopyDataButton = function (data) {
         if (!data.curvePublic) { return; }

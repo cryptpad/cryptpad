@@ -21,9 +21,6 @@
         display: none !important;
     }
 
-    #cp-app-profile-rightside:has(.cp-app-profile-friend-container) #cp-app-profile-link {
-        display: none;
-    }
 
     #cp-app-profile-header {
         display: flex;
@@ -42,7 +39,7 @@
         text-align: center;
         max-width: 300px;
         max-height: 300px;
-        margin-bottom: 5rem;
+        margin-bottom: 1rem;
         &> span {
             display: inline-block;
             text-align: center;
@@ -88,10 +85,14 @@
     .cp-app-profile-resizer {
         text-align: center;
     }
-    #cp-app-profile-displayname {
+    .cp-app-profile-displayname {
         margin-top: 1rem;
     }
-    #cp-app-profile-displayname, #cp-app-profile-link {
+    div.cp-app-profile-link.hidden{
+        display:none;
+    }
+
+    .cp-app-profile-displayname, .cp-app-profile-link {
         margin-bottom: 1rem;
         input {
             width: 100%;
@@ -138,6 +139,14 @@
         }
     }
 
+    div.cp-app-profile-link {
+        &.cp-app-profile-description-rendered,
+        &.cp-app-profile-mute-container {
+          &:has(p) {
+            margin-bottom: 0;
+          }
+        }
+      }
     .cp-app-profile-friend {
         display: flex;
         align-items: center;
@@ -151,31 +160,16 @@
         margin-top: 10px;
     }
 
-    .cp-app-profile-friend-container {
-        margin-bottom: 1rem;
-    }
-
     // I tried using flexbox but messed with how the pencil icon was displayed
     #cp-app-profile-invite-button {
         float: right;
-    }
-    .cp-app-profile-viewprofile-button {
-        margin-bottom: 1rem!important;
     }
     #cp-app-profile-description {
         position: relative;
         font-size: 16px;
         margin-bottom: 20px;
-        margin-top: 1em;
         .cp-app-profile-description-code {
             display: none;
-        }
-        .cp-app-profile-description-rendered {
-            border: 1px solid @cp_profile-border;
-            padding: 0 15px;
-            &:empty {
-                display: none;
-            }
         }
         .cp-app-profile-description-ok, .cp-app-profile-description-spin {
             position: absolute;
@@ -211,11 +205,6 @@
         p {
             margin-top: 5px;
             font-size: 13px;
-        }
-
-        margin-bottom: 1rem;
-        &:has(p) {
-            margin-bottom: 0;
         }
     }
 }
