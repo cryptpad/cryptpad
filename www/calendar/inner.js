@@ -2242,6 +2242,12 @@ APP.recurrenceRule = {
 
                 let toggleAriaExpanded = function (isOpen) {
                     $dropdownButton.attr('aria-expanded', isOpen ? 'true' : 'false');
+                    if(isOpen){
+                        $dropdownMenu.show();
+                    }
+                    else{
+                        $dropdownMenu.hide();
+                    }
                 };
 
                 let calendarDropdownNavigation = function (event) {
@@ -2252,7 +2258,6 @@ APP.recurrenceRule = {
                             event.preventDefault();
                             $focusedItem.click();
                             toggleAriaExpanded(false);
-                            $dropdownMenu.hide();
                             $el.find('#tui-full-calendar-schedule-title').focus();
                             break;
                         case 'Tab':
@@ -2286,9 +2291,7 @@ APP.recurrenceRule = {
                         case 'Escape':
                             event.preventDefault();
                             event.stopPropagation();
-                            $dropdownMenu.hide();
                             toggleAriaExpanded(false);
-                                $dropdownButton.focus();
                             break;
                     }
                 };
@@ -2298,7 +2301,6 @@ APP.recurrenceRule = {
                         let isOpen = $el.find('.tui-full-calendar-open').length > 0;
                         toggleAriaExpanded(isOpen);
                         if (event.type === 'keydown') {
-                            $dropdownMenu.show();
                             $dropdownMenu.find('li').first().focus();
                         }
                     }, 0);
