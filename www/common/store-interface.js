@@ -50,9 +50,9 @@ const factory = function () {
                     msgEv.fire(ev);
                 };
                 postMsg = function (data) {
-                    worker.port.postMessage(JSON.parse(JSON.stringify(data)));
+                    worker.port.postMessage(data);
                 };
-                postMsg({
+                postMsg(JSON.parse(JSON.stringify({
                     type: 'INIT',
                     cfg: {
                         AppConfig,
@@ -60,7 +60,7 @@ const factory = function () {
                         Messages,
                         Broadcast
                     }
-                });
+                })));
                 window.addEventListener('unload', function () {
                     postMsg('CLOSE');
                 });
