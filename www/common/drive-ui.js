@@ -4391,6 +4391,8 @@ define([
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
                 files.restrictedFolders ||= {};
+                files.root ||= {};
+                files.filesData ||= {};
                 let fpath = currentPath;
                 if (opt?.init && !manager.isInSharedFolder(fpath)) {
                     _displayDirectory(path, force);
