@@ -696,7 +696,7 @@ define([
         // Templates enabled: display template category
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         // Tags used: display Tags category
-        if (Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
+        if (Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
 
         var virtualCategories = [SEARCH, RECENT, OWNED, TAGS];
 
@@ -4398,6 +4398,8 @@ define([
                 }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
+                    if (!displayedCategories.includes(TAGS) &&
+                        Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
                     cb();
                 });
             });
