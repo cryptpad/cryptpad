@@ -29,7 +29,7 @@ const factory = function (AppConfig = {}) {
         MAX_TEAMS_SLOTS: AppConfig.maxTeamsSlots || 5,
         MAX_TEAMS_OWNED: AppConfig.maxOwnedTeams || 5,
         MAX_PREMIUM_TEAMS_SLOTS: Math.max(AppConfig.maxTeamsSlots || 0, AppConfig.maxPremiumTeamsSlots || 0) || 5,
-        MAX_PREMIUM_TEAMS_OWNED: Math.max(AppConfig.maxTeamsOwned || 0, AppConfig.maxPremiumTeamsOwned || 0) || 5,
+        MAX_PREMIUM_TEAMS_OWNED: Math.max(AppConfig.maxOwnedTeams || 0, AppConfig.maxPremiumTeamsOwned || 0) || 5,
         // Apps
         criticalApps: ['profile', 'settings', 'debug', 'admin', 'support', 'notifications', 'calendar', 'moderation', 'oldadmin'], // XXX oldadmin
         earlyAccessApps: ['doc', 'presentation']
