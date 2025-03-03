@@ -70,7 +70,8 @@ let start = (cfg: StoreConfig):void => {
         Support,
         Calendar,
         Store,
-        Account
+        Account,
+        Mailbox
     ].forEach(dep => {
         if (typeof(dep.setCustomize) === "function") {
             dep.setCustomize(cfg);

@@ -7,7 +7,7 @@ const factory = (Config = {}, BCast = {}, Util, Hash,
     Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) => {
     var Mailbox = {};
 
-    Config.setCustomize = data => {
+    Mailbox.setCustomize = data => {
         Config = data.ApiConfig;
         BCast = data.Broadcast;
     };
