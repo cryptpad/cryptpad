@@ -3,12 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (Config = {}, BCast = {}, Util, Hash,
+const factory = (BCast = {}, Util, Hash,
     Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) => {
     var Mailbox = {};
 
     Mailbox.setCustomize = data => {
-        Config = data.ApiConfig;
         BCast = data.Broadcast;
     };
 
@@ -677,7 +676,6 @@ proxy.mailboxes = {
 if (typeof(module) !== 'undefined' && module.exports) {
     module.exports = factory(
         undefined,
-        undefined,
         require('../../common/common-util'),
         require('../../common/common-hash'),
         require('../../common/common-realtime'),
@@ -689,7 +687,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
-        '/api/config',
         '/api/broadcast',
         '/common/common-util.js',
         '/common/common-hash.js',
