@@ -2242,12 +2242,7 @@ APP.recurrenceRule = {
 
                 let toggleAriaExpanded = function (isOpen) {
                     $dropdownButton.attr('aria-expanded', isOpen ? 'true' : 'false');
-                    if(isOpen){
-                        $dropdownMenu.show();
-                    }
-                    else{
-                        $dropdownMenu.hide();
-                    }
+                    isOpen ? $dropdownMenu.show() : $dropdownMenu.hide();
                 };
 
                 let calendarDropdownNavigation = function (event) {
@@ -2303,15 +2298,11 @@ APP.recurrenceRule = {
                     }
                     let isOpen = $el.find('.tui-full-calendar-open').length > 0;
                     toggleAriaExpanded(!isOpen);
-                    if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
-                        if (!isOpen) {
-                            $dropdownMenu.find('li').first().focus();
-                        }
+                    if (!isOpen && event.key !== 'ArrowUp') {
+                        $dropdownMenu.find('li').first().focus();
                     }
-                    else if(event.key === 'ArrowUp'){
-                        if (!isOpen) {
-                            $dropdownMenu.find('li').last().focus();
-                        }
+                    else if(!isOpen){
+                        $dropdownMenu.find('li').last().focus();
                     }
                 });
                 // click outside the dropdown button => closes the dropdown => aria-expanded is false
