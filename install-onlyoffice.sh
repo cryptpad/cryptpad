@@ -23,17 +23,18 @@ main() {
 
     ask_for_license
 
-    # Remeber the 1st version that is installed. This will help us install only
+    # Remember the 1st version that is installed. This will help us install only
     # needed OnlyOffice versions in a later version of this script.
     set_prop oldest_needed_version v1
 
     mkdir -p "$OO_DIR"
-    install_version v1 4f370beb
-    install_version v2b d9da72fd
-    install_version v4 6ebc6938
-    install_version v5 88a356f0
-    install_version v6 abd8a309
-    install_version v7 e1267803
+    install_old_version v1 4f370beb
+    install_old_version v2b d9da72fd
+    install_old_version v4 6ebc6938
+    install_old_version v5 88a356f0
+    install_old_version v6 abd8a309
+    install_version v7 v7.3.3.60+9 315eaf6705bf350a5c4475d3efcd6d3964d28b2237e0b6bc475ac6e71ecc0dae4e565141d39b79fccc35308b559497fca5c4a39f69ac290c117a57290b942d8b
+    install_version v8 v8.3.0.82+10 1734b1e46cad5e3e8af0bdbae08989c66bb717c2df0c06a6cfc962162cdeafdc4c1d6afb77a435e8e665fce2a6703e4d354cb8d15e575d8939df5e4be67fd4fc
     install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1
 
     rm -rf "$BUILDS_DIR"
@@ -136,12 +137,11 @@ ensure_oo_is_downloaded() {
   fi
 }
 
-install_version() {
+install_old_version() {
     local DIR=$1
     local COMMIT=$2
     local FULL_DIR=$OO_DIR/$DIR
-    local LAST_DIR
-    LAST_DIR=$(pwd)
+    local LAST_DIR=$(pwd)
 
     if [ ! -e "$FULL_DIR"/.commit ] || [ "$(cat "$FULL_DIR"/.commit)" != "$COMMIT" ]; then
         ensure_oo_is_downloaded
@@ -165,6 +165,40 @@ install_version() {
     fi
 }
 
+install_version() {
+    ensure_command_available curl
+    ensure_command_available sha512sum
+    ensure_command_available unzip
+
+    local DIR=$1
+    local VERSION=$2
+    local HASH=$3
+    local FULL_DIR=$OO_DIR/$DIR
+    local LAST_DIR=$(pwd)
+
+    if [ ! -e "$FULL_DIR"/.version ] || [ "$(cat "$FULL_DIR"/.version)" != "$VERSION" ]; then
+        rm -rf "$FULL_DIR"
+        mkdir -p "$FULL_DIR"
+
+        cd "$FULL_DIR"
+
+        curl "https://github.com/cryptpad/onlyoffice-editor/releases/download/$VERSION/onlyoffice-editor.zip" --location --output "onlyoffice-editor.zip"
+        echo "$HASH onlyoffice-editor.zip" >onlyoffice-editor.zip.sha512
+        if ! sha512sum --check onlyoffice-editor.zip.sha512; then
+            echo "onlyoffice-editor.zip does not match expected checksum"
+            exit 1
+        fi
+        unzip onlyoffice-editor.zip
+        rm onlyoffice-editor.zip*
+
+        echo "$VERSION" >"$FULL_DIR"/.version
+
+        echo "$DIR updated"
+    else
+        echo "$DIR was up to date"
+    fi
+}
+
 install_x2t() {
     ensure_command_available curl
     ensure_command_available sha512sum
@@ -183,7 +217,6 @@ install_x2t() {
         cd "$X2T_DIR"
 
         curl "https://github.com/cryptpad/onlyoffice-x2t-wasm/releases/download/$VERSION/x2t.zip" --location --output x2t.zip
-        # curl "https://github.com/cryptpad/onlyoffice-x2t-wasm/releases/download/v7.3%2B1/x2t.zip" --location --output x2t.zip
         echo "$HASH x2t.zip" >x2t.zip.sha512
         if ! sha512sum --check x2t.zip.sha512; then
             echo "x2t.zip does not match expected checksum"
