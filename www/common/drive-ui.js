@@ -4087,7 +4087,8 @@ define([
             ];
             sortedTags.forEach(function (tag) {
                 var tagLink = h('a', { href: '#' }, '#' + tag);
-                $(tagLink).click(function () {
+                $(tagLink).click(function (e) {
+                    e.preventDefault();
                     if (displayedCategories.indexOf(SEARCH) !== -1) {
                         APP.displayDirectory([SEARCH, '#' + tag]);
                     }
