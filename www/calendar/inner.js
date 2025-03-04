@@ -2292,6 +2292,7 @@ APP.recurrenceRule = {
                             event.preventDefault();
                             event.stopPropagation();
                             toggleAriaExpanded(false);
+                            $dropdownButton.focus();
                             break;
                     }
                 };
