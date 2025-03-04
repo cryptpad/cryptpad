@@ -4388,6 +4388,12 @@ define([
             if (!manager.comparePath(currentPath, path)) {
                 removeSelected();
             }
+
+            const fixTags = () => {
+                if (!displayedCategories.includes(TAGS) &&
+                    Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
+            };
+
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
                 files.restrictedFolders ||= {};
@@ -4395,13 +4401,13 @@ define([
                 files.filesData ||= {};
                 let fpath = currentPath;
                 if (opt?.init && !manager.isInSharedFolder(fpath) && !priv.anonSFHref) {
+                    fixTags();
                     _displayDirectory(path, force);
                     cb();
                 }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
-                    if (!displayedCategories.includes(TAGS) &&
-                        Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
+                    fixTags();
                     cb();
                 });
             });
