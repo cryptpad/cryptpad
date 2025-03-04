@@ -4394,7 +4394,7 @@ define([
                 files.root ||= {};
                 files.filesData ||= {};
                 let fpath = currentPath;
-                if (opt?.init && !manager.isInSharedFolder(fpath)) {
+                if (opt?.init && !manager.isInSharedFolder(fpath) && !priv.anonSFHref) {
                     _displayDirectory(path, force);
                     cb();
                 }
