@@ -22,6 +22,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
     var onJoinedEvt = Util.mkEvent(true);
+    var onPadRejectedEvt = Util.mkEvent(true);
 
     const setCustomize = data => {
         ApiConfig = data.ApiConfig;
@@ -1727,49 +1728,52 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
         Store.onRejected = function (allowed, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
-
-            // There is an allow list: check if we can authenticate
             if (!Array.isArray(allowed)) { return void cb('ERESTRICTED'); }
-            if (!store.loggedIn || !store.proxy.edPublic) { return void cb('ERESTRICTED'); }
 
-            var teamModule = store.modules['team'];
-            var teams = (teamModule && teamModule.getTeams()) || [];
-            var _store;
+            onPadRejectedEvt.fire();
+            onReadyEvt.reg(() => {
+                // There is an allow list: check if we can authenticate
+                if (!store.loggedIn || !store.proxy.edPublic) { return void cb('ERESTRICTED'); }
 
-            if (allowed.indexOf(store.proxy.edPublic) !== -1) {
-                // We are allowed: use our own rpc
-                _store = store;
-            } else if (teams.some(function (teamId) {
-                // We're not allowed: check our teams
-                var ed = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPublic']);
-                var edPrivate = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPrivate']);
-                if (allowed.indexOf(ed) === -1) { return false; }
-                if (!edPrivate) { return false; } // FIXME: Only editors can authenticate...
-                // This team is allowed: use its rpc
-                var t = teamModule.getTeam(teamId);
-                _store = t;
-                return true;
-            })) {}
+                var teamModule = store.modules['team'];
+                var teams = (teamModule && teamModule.getTeams()) || [];
+                var _store;
 
-            var auth = function () {
-                if (!_store) { return void cb('ERESTRICTED'); }
-                var rpc = _store.rpc;
-                if (!rpc) { return void cb('ERESTRICTED'); }
-                rpc.send('COOKIE', '', function (err) {
-                    cb(err);
-                });
-            };
+                if (allowed.indexOf(store.proxy.edPublic) !== -1) {
+                    // We are allowed: use our own rpc
+                    _store = store;
+                } else if (teams.some(function (teamId) {
+                    // We're not allowed: check our teams
+                    var ed = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPublic']);
+                    var edPrivate = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPrivate']);
+                    if (allowed.indexOf(ed) === -1) { return false; }
+                    if (!edPrivate) { return false; } // FIXME: Only editors can authenticate...
+                    // This team is allowed: use its rpc
+                    var t = teamModule.getTeam(teamId);
+                    _store = t;
+                    return true;
+                })) {}
 
-            // Wait for the RPC we need to be ready and then tyr to authenticate
-            if (_store && _store.onRpcReadyEvt) {
-                _store.onRpcReadyEvt.reg(function () {
-                    auth();
-                });
-                return;
-            }
+                var auth = function () {
+                    if (!_store) { return void cb('ERESTRICTED'); }
+                    var rpc = _store.rpc;
+                    if (!rpc) { return void cb('ERESTRICTED'); }
+                    rpc.send('COOKIE', '', function (err) {
+                        cb(err);
+                    });
+                };
 
-            // Fall back to the old system in case onRpcReadyEvt doesn't exist (shouldn't happen)
-            auth();
+                // Wait for the RPC we need to be ready and then tyr to authenticate
+                if (_store && _store.onRpcReadyEvt) {
+                    _store.onRpcReadyEvt.reg(function () {
+                        auth();
+                    });
+                    return;
+                }
+
+                // Fall back to the old system in case onRpcReadyEvt doesn't exist (shouldn't happen)
+                auth();
+            });
         };
 
         Store.joinPad = function (clientId, data) {
@@ -3255,14 +3259,15 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     // Pad can now start to be loaded
                     cb(obj);
                     // Once pad is joined, continue the loading process
-                    onJoinedEvt.reg(function () {
-                        // XXX load drive too
+                    let next = Util.once(() => {
                         loadDrive(clientId, data, ret => {
                             startCacheModules(clientId, ret, onInit);
                         }, ret => {
                             startModules(clientId, ret, onInit);
                         });
                     });
+                    onJoinedEvt.reg(next);
+                    onPadRejectedEvt.reg(next);
                 });
             }
 
