@@ -2298,6 +2298,9 @@ APP.recurrenceRule = {
                 };
 
                 $dropdownButton.on('click keydown', function (event) {
+                    if (event.type !== 'click' && event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
+                        return;
+                    }
                     let isOpen = $el.find('.tui-full-calendar-open').length > 0;
                     toggleAriaExpanded(!isOpen);
                     if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
