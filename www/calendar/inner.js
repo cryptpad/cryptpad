@@ -2314,11 +2314,6 @@ APP.recurrenceRule = {
                         }
                     }
                 });
-
-
-                $dropdownMenu.on('click', function () {
-                    toggleAriaExpanded(false);
-                });
                 // click outside the dropdown button => closes the dropdown => aria-expanded is false
                 $(document).on('click', function (event) {
                     if (!$(event.target).closest($dropdownButton).length) {
