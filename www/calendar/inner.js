@@ -2297,15 +2297,21 @@ APP.recurrenceRule = {
                     }
                 };
 
-                $dropdownButton.on('click keydown', function(event){
-                    setTimeout(() => {
-                        let isOpen = $el.find('.tui-full-calendar-open').length > 0;
-                        toggleAriaExpanded(isOpen);
-                        if (event.type === 'keydown') {
+                $dropdownButton.on('click keydown', function (event) {
+                    let isOpen = $el.find('.tui-full-calendar-open').length > 0;
+                    toggleAriaExpanded(!isOpen);
+                    if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+                        if (!isOpen) {
                             $dropdownMenu.find('li').first().focus();
                         }
-                    }, 0);
+                    }
+                    else if(event.key === 'ArrowUp'){
+                        if (!isOpen) {
+                            $dropdownMenu.find('li').last().focus();
+                        }
+                    }
                 });
+
 
                 $dropdownMenu.on('click', function () {
                     toggleAriaExpanded(false);
