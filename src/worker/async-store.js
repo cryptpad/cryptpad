@@ -3270,6 +3270,24 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     onPadRejectedEvt.reg(next);
                 });
             }
+            if (requires === 'file') {
+                // Start with only the pad modules, callback
+                // and then load the account and other modules
+                return void onNoDrive(clientId, function (obj) {
+                    if (obj && obj.error) {
+                        // handle error
+                        return; // XXX
+                    }
+                    // Callback now to unfreeze the loading screen
+                    // Pad can now start to be loaded
+                    cb(obj);
+                    loadDrive(clientId, data, ret => {
+                        startCacheModules(clientId, ret, onInit);
+                    }, ret => {
+                        startModules(clientId, ret, onInit);
+                    });
+                });
+            }
 
             if (requires === 'team') {
                 const initTeams = Util.once(ret => {
