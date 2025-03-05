@@ -884,11 +884,6 @@ define([
                     UI.warn(Messages.error);
                     return;
                 }
-                if (files[0].size > 200 * 1024) {
-                    UI.warn(Messages.admin_logoSize_error);
-                    $(input).val('');
-                    return;
-                }
                 spinner.spin();
                 $button.attr('disabled', 'disabled');
                 let reader = new FileReader();
@@ -897,7 +892,12 @@ define([
                     sframeCommand('UPLOAD_LOGO', {dataURL}, (err, response) => {
                         $button.removeAttr('disabled');
                         if (err) {
-                            UI.warn(Messages.error);
+                            if(err === 'E_TOO_LARGE') {
+                                UI.warn(Messages.admin_logoSize_error);
+                            }
+                            else{
+                                UI.warn(Messages.error);
+                            }
                             $(input).val('');
                             console.error(err, response);
                             spinner.hide();
