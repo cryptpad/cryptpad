@@ -78,6 +78,15 @@ const factory = function () {
                 postMsg = function (data) {
                     worker.postMessage(data);
                 };
+                postMsg(JSON.parse(JSON.stringify({
+                    type: 'INIT',
+                    cfg: {
+                        AppConfig,
+                        ApiConfig,
+                        Messages,
+                        Broadcast
+                    }
+                })));
                 return void resolve({postMsg, msgEv});
             }
 

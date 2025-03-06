@@ -27,6 +27,7 @@ import * as Store from './async-store.js';
 import * as StoreRpc from './core/store-rpc.js';
 import * as Interface from './core/interface.js';
 import * as SWConnector from './core/sw-connector.js';
+import * as WWConnector from './core/ww-connector.js';
 import * as AsyncConnector from './core/async-connector.js';
 
 // Components
@@ -120,6 +121,7 @@ if (inSharedWorker) {
     SWConnector.start(start);
 } else if (inWorker) {
     console.error("WEBWORKER");
+    WWConnector.start(start);
 } else if (typeof module !== 'undefined' && typeof module.exports) {
     console.error('NODEJS');
     store = AsyncConnector.start(start);
