@@ -930,8 +930,6 @@ define([
                 //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
-            var toggleTagsButton = h('button.btn.btn-default.kanban-tag-btn-toggle', Messages.kanban_showTags);
-
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
@@ -941,7 +939,6 @@ define([
             ]);
             var hint = h('span.cp-kanban-filterTags-name', Messages.kanban_tags);
             var tags = h('div.cp-kanban-filterTags', [
-
                 h('span.cp-kanban-filterTags-toggle', [
                     hint,
                     reset,
@@ -1022,41 +1019,20 @@ define([
                 commitTags();
             });
 
+            let toggleTagsButton = h('button.btn.btn-default.cp-kanban-toggle-tags', [
+                h('i.fa.fa-tags'),
+                h('span', Messages.fm_tagsName)
+            ]);
 
-            if ($(window).width() < 500) {
-
-                $(tags).append(toggleTagsButton);
-
-                var hideTags = function () {
-                    for (var tag of list.children) {
-                        if (existing.indexOf(tag.innerHTML) > 10) {
-                            $(tag).hide();                    
-                        }
-                    }
-                };
-                hideTags();
-    
-                var toggleTags = function () {
-                    for (var tag of list.children) {
-                        if (existing.indexOf(tag.innerHTML) > 10 && kanban.options.tags.indexOf(tag.innerHTML) === -1) {
-                            if ($(tag).is(":visible")) { 
-                                $(tag).hide();
-                                $(toggleTagsButton).text(Messages.kanban_showTags);
-                            } else {
-                                $(tag).show();
-                                $(toggleTagsButton).text(Messages.kanban_hideTags);
-                            }
-                        }
-                    }
-                };
-    
-                $(toggleTagsButton).click(function() {
-                    toggleTags();
-                });
-    
-            }
+            let $toggleBtn = $(toggleTagsButton).click(function() {
+                let $t = $(tags).toggle();
+                let visible = $t.is(':visible');
+                $toggleBtn.toggleClass('btn-default', visible);
+                $toggleBtn.toggleClass('btn-default-alt', !visible);
+            });
 
             var container = h('div#cp-kanban-controls', [
+                toggleTagsButton,
                 tags,
                 h('div.cp-kanban-changeView', [
                     small,
@@ -1064,18 +1040,6 @@ define([
                 ])
             ]);
             $container.before(container);
-
-            var common = framework._.sfCommon;
-            var $button = common.createButton('toggle', true, {
-                element: $(container),
-                icon: 'fa-tags',
-                text: Messages.fm_tagsName,
-            }, function () {
-                $button.toggleClass('cp-toolbar-button-active');
-
-            });
-            $button.addClass('cp-toolbar-button-active');
-            framework._.toolbar.$bottomL.append($button);
 
             onRedraw.reg(function () {
                 // Redraw if new tags have been added to items
