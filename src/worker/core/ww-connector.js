@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 const Interface = require('./interface');
-const Util = require('../../common/common-util');
 let start = (setConfig) => {
     let onMsg;
     let ready = false;
