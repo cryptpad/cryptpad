@@ -177,7 +177,6 @@
         align-self: flex-start;
         outline-style: none;
         border-radius: @variables_radius;
-        cursor: pointer;
         &:focus-visible {
             outline: @variables_focus_style;
         }
@@ -187,25 +186,23 @@
         }
     }
 
-    .item-arrow-container {
-        width: 100%;
-        margin-top: 5%;
+    .item-icon-container{ // Board arrows
         display: flex;
+        width: 100%;
         justify-content: space-between;
-        .fa-arrow-down {
-            margin-left: 5px
-        }
-        .fa-arrow-up {
-            margin-right: 5px
+        .board-arrow {
+            padding: 0px;
         }
     }
 
-    .fa-arrow-left {
-        &.board-arrow {
-            margin-left: -2%;
-            float: left;
-        }
+    .item-arrow-container { // Card arrows
+        width: 100%;
+        margin-top: 0.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
+   
 
     .cp-kanban-cursors {
         &:empty { display: none; }
