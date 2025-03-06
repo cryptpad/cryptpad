@@ -603,7 +603,8 @@ define([
                 $(arrowContainer).appendTo($(el).find('.kanban-board-header'));
                 $(h('button', {
                     'class': 'cp-kanban-arrow board-arrow',
-                    'title': Messages.kanban_moveBoardLeft
+                    'title': Messages.kanban_moveBoardLeft,
+                    'aria-label': Messages.kanban_moveBoardLeft
                 }, [
                     h('i.fa.fa-arrow-left', {'aria-hidden': true})
                 ])).click(function () { 
@@ -612,6 +613,7 @@ define([
                 $(h('button', {
                     'class': 'cp-kanban-arrow board-arrow',
                     'title': Messages.kanban_moveBoardRight,
+                    'aria-label': Messages.kanban_moveBoardRight
                 }, [
                     h('i.fa.fa-arrow-right', {'aria-hidden': true})
                 ])).click(function () {
@@ -625,6 +627,7 @@ define([
                 $(h('button', {
                     'class': 'cp-kanban-arrow item-arrow',
                     'title': Messages.moveItemLeft,
+                    'aria-label': Messages.moveItemLeft
                 }, [
                     h('i.fa.fa-arrow-left', {'aria-hidden': true})
                 ])).click(function () {
@@ -635,6 +638,7 @@ define([
                 $(h('button', {
                     'class': 'cp-kanban-arrow item-arrow',
                     'title': Messages.moveItemDown,
+                    'aria-label': Messages.moveItemDown
                 }, [
                     h('i.fa.fa-arrow-down', {'aria-hidden': true})
                 ])).click(function () {
@@ -642,7 +646,8 @@ define([
                 }).appendTo(centralArrowContainerItem);
                 $(h('button', {
                     'class': 'cp-kanban-arrow item-arrow',
-                    'title': Messages.moveItemUp
+                    'title': Messages.moveItemUp,
+                    'aria-label': Messages.moveItemUp
                 }, [
                     h('i.fa.fa-arrow-up', {'aria-hidden': true})
                 ])).click(function () {
@@ -650,7 +655,8 @@ define([
                 }).appendTo(centralArrowContainerItem);
                 $(h('button', {
                     'class': 'cp-kanban-arrow item-arrow',
-                    'title': Messages.moveItemRight
+                    'title': Messages.moveItemRight,
+                    'aria-label': Messages.moveItemRight
                 }, [
                     h('i.fa.fa-arrow-right', {'aria-hidden': true})
                 ])).click(function () {
@@ -669,7 +675,8 @@ define([
             var itemId = $(el).attr('data-eid');
             $(h('button', {
                 'class': 'kanban-edit-item',
-                'title': Messages.kanban_editCard
+                'title': Messages.kanban_editCard,
+                'aria-label': Messages.kanban_editCard
             }, [
                 h('i.fa.fa-pencil', {'aria-hidden': true})
             ])).click(function (e) {
@@ -681,7 +688,8 @@ define([
             var itemId = $(el).attr('data-id');
             $(h('button', {
                 'class': 'kanban-edit-item',
-                'title': Messages.kanban_editBoard
+                'title': Messages.kanban_editBoard,
+                'aria-label': Messages.kanban_editBoard
             }, [
                 h('i.fa.fa-pencil', {'aria-hidden': true})
             ])).click(function (e) {
