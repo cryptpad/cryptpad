@@ -136,14 +136,14 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    Messages.kanban_moveitemLeft = 'Move item left'; // XXX
-    Messages.kanban_moveitemRight = 'Move item right'; // XXX
+    Messages.moveItemLeft = 'Move item left'; // XXX
+    Messages.moveItemRight = 'Move item right'; // XXX
     Messages.kanban_moveBoardLeft = 'Move board left'; // XXX
     Messages.kanban_moveBoardRight = 'Move board right'; // XXX
 
     //NOTE: these keys are also added to the Form mobile UI PR #1753
     Messages.moveItemUp = 'Move item up'; // XXX
-    Messages.moveitemDown = 'Move item down'; // XXX
+    Messages.moveItemDown = 'Move item down'; // XXX
     Messages.toggleArrows = 'Switch to arrow view'; // XXX
     Messages.toggleDrag = 'Switch to drag view'; // XXX
 
