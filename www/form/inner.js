@@ -4021,16 +4021,14 @@ define([
             let shiftButtons;
             if (editable) {
                 // Arrows 
-                var upButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-up',  {
+                var upButton = h('button.cp-form-arrow', {
                     'title': Messages.moveItemUp,
-                    'aria-hidden': true,
-                    'tabindex': 0
-                }));
-                var downButton = h('button.cp-form-arrow', h('i.fa.fa-arrow-down', {
+                    'aria-label': Messages.moveItemUp
+                }, [h('i.fa.fa-arrow-up',  {'aria-hidden': true})]);
+                var downButton = h('button.cp-form-arrow', {
                     'title': Messages.moveItemDown,
-                    'aria-hidden': true,
-                    'tabindex': 0
-                }));
+                    'aria-label': Messages.moveItemDown
+                }, [h('i.fa.fa-arrow-down', {'aria-hidden': true})]);
                 var shiftBlock = function(direction) {
                     var blockIndex = content.order.indexOf(uid);
                     if (direction === 'up' && blockIndex > 0) {
