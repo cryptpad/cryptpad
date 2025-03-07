@@ -1023,16 +1023,43 @@ define([
                 h('i.fa.fa-tags'),
                 h('span', Messages.fm_tagsName)
             ]);
+            let toggleContainer = h('div.cp-kanban-toggle-container', toggleTagsButton);
 
-            let $toggleBtn = $(toggleTagsButton).click(function() {
-                let $t = $(tags).toggle();
-                let visible = $t.is(':visible');
+            let toggleClicked = false;
+            let $tags = $(tags);
+            let toggle = () => {
+                $tags.toggle();
+                let visible = $tags.is(':visible');
+                $(toggleContainer).toggleClass('cp-kanban-container-flex', !visible);
                 $toggleBtn.toggleClass('btn-default', visible);
                 $toggleBtn.toggleClass('btn-default-alt', !visible);
+            };
+            let $toggleBtn = $(toggleTagsButton).click(function() {
+                toggleClicked = true;
+                toggle();
             });
 
+            const resizeTags = () => {
+                if (toggleClicked) { return; }
+                let visible = $tags.is(':visible');
+                // Small screen and visible: hide
+                if ($(window).width() < 500) {
+                    if (visible) {
+                        $(tags).show();
+                        toggle();
+                    }
+                    return;
+                }
+                // Large screen: make visible by default
+                if (visible) { return; }
+                $(tags).hide();
+                toggle();
+            };
+
+            $(window).on('resize', resizeTags);
+
             var container = h('div#cp-kanban-controls', [
-                toggleTagsButton,
+                toggleContainer,
                 tags,
                 h('div.cp-kanban-changeView', [
                     small,
