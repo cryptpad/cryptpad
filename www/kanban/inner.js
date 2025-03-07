@@ -933,9 +933,9 @@ define([
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
-            var reset = h('button.btn.btn-cancel.cp-kanban-filterTags-reset', [
+            var reset = h('button.btn.btn-cancel.cp-kanban-filterTags-reset.cp-kanban-toggle-tags', [
                 h('i.fa.fa-times'),
-                Messages.kanban_clearFilter
+                h('span', Messages.kanban_clearFilter)
             ]);
             var hint = h('span.cp-kanban-filterTags-name', Messages.kanban_tags);
             var tags = h('div.cp-kanban-filterTags', [
@@ -951,8 +951,16 @@ define([
             var $hint = $(hint);
 
             var setTagFilterState = function (bool) {
+                //$hint.toggle(!bool);
+                //$reset.toggle(!!bool);
                 $hint.css('visibility', bool? 'hidden': 'visible');
+                $hint.css('height', bool ? 0 : '');
+                $hint.css('padding-top', bool ? 0 : '');
+                $hint.css('padding-bottom', bool ? 0 : '');
                 $reset.css('visibility', bool? 'visible': 'hidden');
+                $reset.css('height', !bool ? 0 : '');
+                $reset.css('padding-top', !bool ? 0 : '');
+                $reset.css('padding-bottom', !bool ? 0 : '');
             };
             setTagFilterState();
 
