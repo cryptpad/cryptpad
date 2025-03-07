@@ -320,7 +320,7 @@
     "chatButton": "Chat",
     "userListButton": "Seznam uživatelů",
     "shareButton": "Sdílet",
-    "movedToTrash": "Dokument byl přesunut do koše.<br>Otevřít CryptDrive<a></a>",
+    "movedToTrash": "Dokument byl přesunut do koše.<br><a>Otevřít CryptDrive</a>",
     "forgetPrompt": "Kliknutí na OK přesune dokument do koše. Jste si jistí?",
     "forgetButton": "Smazat",
     "saveTitle": "Uložit název (enter)",
