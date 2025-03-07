@@ -1043,7 +1043,7 @@ define([
                 if (toggleClicked) { return; }
                 let visible = $tags.is(':visible');
                 // Small screen and visible: hide
-                if ($(window).width() < 500) {
+                if ($(window).width() < 600) {
                     if (visible) {
                         $(tags).show();
                         toggle();
