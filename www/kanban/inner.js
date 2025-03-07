@@ -65,6 +65,9 @@ define([
     var onCursorUpdate = Util.mkEvent();
     var remoteCursors = {};
 
+    let getCursor = () => {};
+    let restoreCursor = () => {};
+
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
         var $input = $(input);
@@ -153,9 +156,12 @@ define([
     var _lastUpdate = 0;
     var _updateBoards = function (framework, kanban, boards) {
         _lastUpdate = now();
+        var cursor = getCursor();
         kanban.setBoards(Util.clone(boards));
         kanban.inEditMode = false;
         addEditItemButton(framework, kanban);
+        restoreCursor(cursor);
+        onRemoteChange.fire();
     };
     var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
     var updateBoards = function (framework, kanban, boards) {
@@ -700,8 +706,11 @@ define([
                     var item = kanban.getItemJSON(eid);
                     item.title = name;
                     kanban.onChange();
-                    // Unlock edit mode
-                    kanban.inEditMode = false;
+                    // Unlock edit mode unless we're already editing
+                    // something else
+                    if (kanban.inEditMode === eid) {
+                        kanban.inEditMode = false;
+                    }
                     onCursorUpdate.fire({});
                 };
                 $input.blur(save);
@@ -764,7 +773,9 @@ define([
                     kanban.getBoardJSON(boardId).title = name;
                     kanban.onChange();
                     // Unlock edit mode
-                    kanban.inEditMode = false;
+                    if (kanban.inEditMode === boardId) {
+                        kanban.inEditMode = false;
+                    }
                     onCursorUpdate.fire({});
                 };
                 $input.blur(save);
@@ -819,7 +830,9 @@ define([
                 });
                 var save = function () {
                     $item.remove();
-                    kanban.inEditMode = false;
+                    if (kanban.inEditMode === "new") {
+                        kanban.inEditMode = false;
+                    }
                     onCursorUpdate.fire({});
                     if (!$input.val()) { return; }
                     var id = Util.createRandomInteger();
@@ -1191,7 +1204,7 @@ define([
             $container.find('.kanban-edit-item').remove();
         });
 
-        var getCursor = function () {
+        getCursor = function () {
             if (!kanban || !kanban.inEditMode) { return; }
             try {
                 var id = kanban.inEditMode;
@@ -1232,7 +1245,7 @@ define([
                 return {};
             }
         };
-        var restoreCursor = function (data) {
+        restoreCursor = function (data) {
             if (!data) { return; }
             try {
                 var id = data.id;
@@ -1296,12 +1309,9 @@ define([
             var remoteContent = newContent.content;
 
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
-                var cursor = getCursor();
                 verbose("Content is different.. Applying content");
                 kanban.options.boards = remoteContent;
                 updateBoards(framework, kanban, remoteContent);
-                restoreCursor(cursor);
-                onRemoteChange.fire();
             }
         });
 
