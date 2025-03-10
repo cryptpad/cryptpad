@@ -625,6 +625,7 @@ define([
                 var arrowContainerItem = h('div.item-arrow-container');
                 $(arrowContainerItem).appendTo((el));
                 $(h('button', {
+                    'data-notippy':1,
                     'class': 'cp-kanban-arrow item-arrow',
                     'title': Messages.moveItemLeft,
                     'aria-label': Messages.moveItemLeft
@@ -636,6 +637,7 @@ define([
                 var centralArrowContainerItem = h('div.item-central-arrow-container');
                 $(centralArrowContainerItem).appendTo(arrowContainerItem);
                 $(h('button', {
+                    'data-notippy':1,
                     'class': 'cp-kanban-arrow item-arrow',
                     'title': Messages.moveItemDown,
                     'aria-label': Messages.moveItemDown
@@ -645,6 +647,7 @@ define([
                     shiftItem('down', el);
                 }).appendTo(centralArrowContainerItem);
                 $(h('button', {
+                    'data-notippy':1,
                     'class': 'cp-kanban-arrow item-arrow',
                     'title': Messages.moveItemUp,
                     'aria-label': Messages.moveItemUp
@@ -654,6 +657,7 @@ define([
                     shiftItem('up', el);
                 }).appendTo(centralArrowContainerItem);
                 $(h('button', {
+                    'data-notippy':1,
                     'class': 'cp-kanban-arrow item-arrow',
                     'title': Messages.moveItemRight,
                     'aria-label': Messages.moveItemRight
