@@ -594,7 +594,6 @@ define([
         let $icon = $button.find('> i');
 
         let attributes = {};
-        let style = {};
         let btnClass = $button.attr('class');
         let btnId = $button.attr('id');
         let btnTitle = $button.attr('title');
@@ -606,7 +605,6 @@ define([
         return UIElements.createDropdownEntry({
             tag: 'a',
             attributes: attributes,
-            style: style,
             content: [
                 h('i',{ 'class': $icon.attr('class') }),
                 h('span', $button.text())
@@ -3352,7 +3350,7 @@ define([
         if (data && data.stored) {
             if (!data.inMyDrive) {
                 $('.cp-toolbar-storeindrive').show();
-            } 
+            }
             return;
         }
         var priv = common.getMetadataMgr().getPrivateData();
