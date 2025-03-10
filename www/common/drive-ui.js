@@ -314,20 +314,29 @@ define([
     };
 
     APP.selectedFiles = [];
-
+    var findElementId = function ($element) {
+        var isTrashed = $element.data("path")[0] === TRASH;
+        let elementId;
+        if (isTrashed) {
+            elementId = $element.data("path").join(',');
+        } else {
+            elementId = $element.data("path").slice(-1)[0];
+        }
+        return elementId;
+    };
     var isElementSelected = function ($element) {
-        var elementId = $element.data("path").slice(-1)[0];
+        var elementId = findElementId($element);
         return APP.selectedFiles.indexOf(elementId) !== -1;
     };
     var selectElement = function ($element) {
-        var elementId = $element.data("path").slice(-1)[0];
+        var elementId = findElementId($element);
         if (APP.selectedFiles.indexOf(elementId) === -1) {
             APP.selectedFiles.push(elementId);
         }
         $element.addClass("cp-app-drive-element-selected");
     };
     var unselectElement = function ($element) {
-        var elementId = $element.data("path").slice(-1)[0];
+        var elementId = findElementId($element);
         var index = APP.selectedFiles.indexOf(elementId);
         if (index !== -1) {
             APP.selectedFiles.splice(index, 1);
@@ -990,6 +999,9 @@ define([
         // Arrow keys to modify the selection
         var onWindowKeydown = function (e) {
             if (!$content.is(':visible')) { return; }
+            if ($('.cp-modal').is(':visible')) {
+                return;
+            }
             var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
             if (document.activeElement && document.activeElement.nodeName === 'INPUT') { return; }
             if ($searchBar.is(':focus') && $searchBar.val()) { return; }
@@ -1459,7 +1471,6 @@ define([
                     }
                 });
                 if (paths.length > 1) {
-                    hide.push('restore');
                     hide.push('properties', 'access');
                     hide.push('rename');
                     hide.push('openparent');
@@ -2968,6 +2979,16 @@ define([
             });
             UI.openCustomModal(m);
         };
+
+        var triggerEnter = function (selector, $context) {
+            $context.find(selector).on('keypress', function (event) {
+                if (event.which === 13) { // enter
+                    event.preventDefault();
+                    $(this).trigger('click'); // the keypress event triggers the click event
+                }
+            });
+        };
+
         var addNewPadHandlers = function ($block, isInRoot) {
             // Handlers
             if (isInRoot) {
@@ -2983,56 +3004,51 @@ define([
                     refresh();
                 };
                 $block.find('a.cp-app-drive-new-folder, li.cp-app-drive-new-folder')
-                    .on('click keypress', function (event) {
-                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                            event.preventDefault();
-                            manager.addFolder(currentPath, null, onCreated);
-                        }
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        manager.addFolder(currentPath, null, onCreated);
                     });
+                triggerEnter('a.cp-app-drive-new-folder, li.cp-app-drive-new-folder', $block);
                 if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
                     $block.find('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder')
-                        .on('click keypress', function (event) {
-                            if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                                event.preventDefault();
-                                addSharedFolderModal(function (obj) {
-                                    if (!obj) { return; }
-                                    manager.addSharedFolder(currentPath, obj, refresh);
-                                });
-                            }
+                        .on('click', function (event) {
+                            event.preventDefault();
+                            addSharedFolderModal(function (obj) {
+                                if (!obj) { return; }
+                                manager.addSharedFolder(currentPath, obj, refresh);
+                            });
                         });
+                    triggerEnter('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder', $block);
                 }
                 $block.find('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload')
-                    .on('click keypress', function (event) {
-                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                            event.preventDefault();
-                            showUploadFilesModal();
-                        }
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        showUploadFilesModal();
                     });
+                triggerEnter('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload', $block);
                 $block.find('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload')
-                    .on('click keypress', function (event) {
-                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                            event.preventDefault();
-                            showUploadFolderModal();
-                        }
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        showUploadFolderModal();
                     });
+                triggerEnter('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload', $block);
                 $block.find('a.cp-app-drive-new-link, li.cp-app-drive-new-link')
-                    .on('click keypress', function (event) {
-                        if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
-                            event.preventDefault();
-                            showLinkModal();
-                        }
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        showLinkModal();
                     });
+                triggerEnter('a.cp-app-drive-new-link, li.cp-app-drive-new-link', $block);
             }
             $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
-                .on('click auxclick keypress', function (event) {
-                    if (event.type === 'click' || event.type === 'auxclick' || (event.type === 'keypress' && event.which === 13))
-                    {
+                .on('click auxclick', function (event) {
+                    if (event.type === 'click' || event.type === 'auxclick') {
                         event.preventDefault();
                         var type = $(this).attr('data-type') || 'pad';
                         var path = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
                         openIn(type, path, APP.team);
                     }
                 });
+            triggerEnter('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc', $block);
         };
         var getNewPadOptions = function (isInRoot) {
             var options = [];
@@ -5181,24 +5197,45 @@ define([
                 return void deletePaths(paths);
             }
             else if ($this.hasClass("cp-app-drive-context-restore")) {
-                if (paths.length !== 1) { return; }
-                var restorePath = paths[0].path;
-                var restoreName = paths[0].path[paths[0].path.length - 1];
-                if (restorePath.length === 4) {
-                    var rEl = manager.find(restorePath);
-                    if (manager.isFile(rEl)) {
-                        restoreName = manager.getTitle(rEl);
-                    } else if (manager.isSharedFolder(rEl)) {
-                        var sfData = manager.getSharedFolderData(rEl);
-                        restoreName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
-                    } else {
-                        restoreName = restorePath[1];
+                let getRestoreProperties = (path) => {
+                    let restorePath = path;
+                    let restoreName = path.at(-1);
+                    if (restorePath.length === 4) {
+                        let rEl = manager.find(restorePath);
+                        if (manager.isFile(rEl)) {
+                            restoreName = manager.getTitle(rEl);
+                        } else if (manager.isSharedFolder(rEl)) {
+                            let sfData = manager.getSharedFolderData(rEl);
+                            restoreName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
+                        } else {
+                            restoreName = restorePath[1];
+                        }
                     }
+                    return [restorePath, restoreName];
+                };
+                let restoreNumber = paths.length;
+                if (restoreNumber === 0) { return; }
+                if (restoreNumber === 1) { // single file restoration
+                    let [restorePath, restoreName] = getRestoreProperties(paths[0].path);
+                    UI.confirm(Messages._getKey("fm_restoreDialog", [restoreName]), res =>  {
+                        if (!res) { return; }
+                        manager.restore(restorePath, refresh);
+                    });
+                } else { // multiple files restoration
+                    UI.confirm(Messages._getKey("fm_restoreMultipleDialog", [restoreNumber]), res => {
+                        if (!res) { return; }
+                        nThen(waitFor => {
+                            paths.forEach(path => {
+                                if (!path) { // We met an error
+                                    console.error("Error while restoring files: no path");
+                                    return;
+                                }
+                                let restorePath = getRestoreProperties(path.path)[0];
+                                setTimeout(manager.restore(restorePath, waitFor()), 10);
+                            });
+                        }).nThen(refresh);
+                    });
                 }
-                UI.confirm(Messages._getKey("fm_restoreDialog", [restoreName]), function(res) {
-                    if (!res) { return; }
-                    manager.restore(restorePath, refresh);
-                });
             }
             else if ($this.hasClass("cp-app-drive-context-openparent")) {
                 if (paths.length !== 1) { return; }

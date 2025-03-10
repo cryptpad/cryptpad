@@ -97,6 +97,26 @@
             margin: 0;
         }
     }
+    .cp-dropdown-container .cp-dropdown-content {
+        li[role="menuitem"]{
+            .cp-notification-dismiss:hover {
+                border-radius: @variables_radius;
+                background-color: @cp_dropdown-bg-hover;
+            }
+        }
+        li[role="menuitem"].cp-notification-avatar {
+            &:hover {
+                background-color: transparent;
+            }
+            .cp-avatar:hover {
+                background-color: @cp_dropdown-bg-hover;
+            }
+            .cp-notification-content:hover {
+                border-radius: @variables_radius;
+                background-color: @cp_dropdown-bg-hover;
+            }
+        }
+    }
 }
 
 

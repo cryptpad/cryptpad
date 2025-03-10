@@ -20,7 +20,7 @@
         "diagram": "图表"
     },
     "common_connectionLost": "<b>伺服器連線中斷</b><br>現在是唯讀狀態，直到連線恢復正常。",
-    "typeError": "此文档与所选应用进程不兼容",
+    "typeError": "此文档与所选应用不兼容",
     "onLogout": "您已退出登录，{0}点击此处{1}登录<br>或按 Esc 以只读模式访问您的文档。",
     "loading": "載入中...",
     "error": "錯誤",
@@ -1783,5 +1783,9 @@
     "dph_tmp_pw": "此模板受新密码保护。从您的云盘打开它以输入新密码。",
     "duplicate": "重复",
     "admin_logoButton": "上传新的",
-    "install_notes": "<ul class=\"cp-notes-list\"><li>在此页面上创建您的第一个管理员账号。管理员管理实例设置，包括存储配额，并有权访问审核工具。</li><li>您的密码是加密此实例上所有文档和管理员权限的密钥。<span class=\"red\">如果您丢失了密码，我们将无法恢复您的数据。</span></li><li>如果您使用的是共享计算机，<span class=\"red\">请记住在使用完后登出</span>。只关闭浏览器窗口会暴露您的账号。</li></ul>"
+    "install_notes": "<ul class=\"cp-notes-list\"><li>在此页面上创建您的第一个管理员账号。管理员管理实例设置，包括存储配额，并有权访问审核工具。</li><li>您的密码是加密此实例上所有文档和管理员权限的密钥。<span class=\"red\">如果您丢失了密码，我们将无法恢复您的数据。</span></li><li>如果您使用的是共享计算机，<span class=\"red\">请记住在使用完后登出</span>。只关闭浏览器窗口会暴露您的账号。</li></ul>",
+    "fm_restoreMultipleDialog": "是否确定要将 {0} 个文件和/或文件夹还原到其以前的位置？",
+    "calendar_hide": "隐藏日历",
+    "form_passwordWarning": "请注意，表单密码只能在创建时设置，以后不能更改。",
+    "calendar_show": "显示日历"
 }
