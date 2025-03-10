@@ -1253,6 +1253,7 @@ define([
                 }
                 obj.userObject.setHref(channel, null, href);
             });
+            
             // Add the pad if it does not exist in our drive
             if (!contains || (data.forceSave && !inTargetDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
