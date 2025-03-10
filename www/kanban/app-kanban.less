@@ -586,6 +586,9 @@
             }
         }
         button.cp-kanban-view-drag {
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
             &.cp-toggle-active {
                 background-color: @cp_kanban-fg;
                 color: @cp_app-bg !important;
