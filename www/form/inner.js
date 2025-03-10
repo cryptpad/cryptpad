@@ -4022,10 +4022,12 @@ define([
             if (editable) {
                 // Arrows 
                 var upButton = h('button.cp-form-arrow', {
+                    'data-notippy':1,
                     'title': Messages.moveItemUp,
                     'aria-label': Messages.moveItemUp
                 }, [h('i.fa.fa-arrow-up',  {'aria-hidden': true})]);
                 var downButton = h('button.cp-form-arrow', {
+                    'data-notippy':1,
                     'title': Messages.moveItemDown,
                     'aria-label': Messages.moveItemDown
                 }, [h('i.fa.fa-arrow-down', {'aria-hidden': true})]);
