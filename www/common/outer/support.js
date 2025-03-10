@@ -104,6 +104,7 @@ define([
                     msg = JSON.parse(msg);
                 } catch (e) {
                     console.error(e);
+                    return; // Don't show "undefined" messages
                 }
                 msg.time = time;
                 if (author) { msg.author = author; }
@@ -232,6 +233,7 @@ define([
         var anonRpc = Util.find(ctx, [ 'store', 'anon_rpc' ]);
         if (!mailbox) { return void cb('E_NOT_READY'); }
         if (!anonRpc) { return void cb("anonymous rpc session not ready"); }
+        if (!data?.ticket) { return void cb('E_NO_DATA'); }
         var theirPublic, myCurve, notifKey;
         var time;
         nThen((waitFor) => {
