@@ -11,7 +11,6 @@ import * as Util from '../common/common-util.js';
 import * as Hash from '../common/common-hash.js';
 import * as Feedback from '../common/common-feedback.js';
 import * as Realtime from '../common/common-realtime.js';
-import * as Messaging from '../common/common-messaging.js';
 import * as Constants from '../common/common-constants.js';
 import * as Credential from '../common/common-credential.js';
 import * as ProxyManager from '../common/proxy-manager.js';
@@ -32,6 +31,7 @@ import * as AsyncConnector from './core/async-connector.js';
 
 // Components
 import * as Migrate from './components/migrate-user-object.js';
+import * as Messaging from './components/messaging.js';
 
 // Modules
 import * as Mailbox from './modules/mailbox.js';

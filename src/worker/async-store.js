@@ -3453,7 +3453,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../common/common-constants'),
         require('../common/common-feedback'),
         require('../common/common-realtime'),
-        require('../common/common-messaging'),
+        require('./components/messaging'),
         require('../common/pinpad'),
         require('../common/rpc'),
         require('./components/merge-drive'),
@@ -3493,7 +3493,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/common/common-constants.js', // OK
         '/common/common-feedback.js', // OK
         '/common/common-realtime.js', // OK
-        '/common/common-messaging.js', // OK
+        '/common/outer/messaging.js', // OK
         '/common/pinpad.js', // OK
         '/common/rpc.js', // OK
         '/common/merge-drive.js', // OK
