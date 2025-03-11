@@ -15,6 +15,7 @@ const factory = (Crypto, Hash, Util, Constants, Realtime) => {
             curvePublic: proxy.curvePublic,
             notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar,
+            badge: proxy.profile && proxy.profile.badge,
             uid: proxy.uid,
         };
         if (hash === false) { delete data.channel; }

@@ -658,6 +658,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     color: Store.getUserColor(),
                     notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: proxy.curvePublic,
+                    badge: Util.find(proxy, ['profile', 'badge'])
                 },
                 // "priv" is not shared with other users but is needed by the apps
                 priv: {

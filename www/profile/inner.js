@@ -389,6 +389,12 @@ define([
                 });
             });
         });
+
+        // XXX badge temp
+        APP.module.execCommand("SET", {
+            key: 'badge',
+            value: "administrator"
+        }, function () {});
     };
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
