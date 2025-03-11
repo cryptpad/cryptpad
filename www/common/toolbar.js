@@ -145,7 +145,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer);
-        $(h('div.'+BOTTOM_CLS +"#cp-skip-link", [
+        $(h('div.'+BOTTOM_CLS, [
             h('div.'+BOTTOM_LEFT_CLS),
             h('div.'+BOTTOM_MID_CLS),
             h('div.'+BOTTOM_RIGHT_CLS)
@@ -863,7 +863,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         };
     };
 
-    var createSkipLink = function (toolbar, config) {
+    Bar.createSkipLink = function (toolbar, config) {
         const targetId = config.skipLink || '#cp-skip-link';
         const $targetElement = $(targetId);
         const $skipLink = $('<a>', {
@@ -1478,7 +1478,7 @@ MessengerUI, Messages, Pages, PadTypes) {
 
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);
-        toolbar['skipLink'] = createSkipLink(toolbar, config);
+        toolbar['skipLink'] = Bar.createSkipLink(toolbar, config);
 
         if (!config.realtime) { toolbar.connected = true; }
 
