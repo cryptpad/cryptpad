@@ -703,6 +703,7 @@ define([
             //content board
             var contentBoard = document.createElement('main');
             contentBoard.classList.add('kanban-drag');
+            contentBoard.setAttribute('tabindex', '-1');
             //add drag to array for dragula
             self.boardContainer.push(contentBoard);
             (board.item || []).forEach(function (itemkey) {
