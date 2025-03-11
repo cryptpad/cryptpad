@@ -3774,7 +3774,7 @@ define([
             }
         });
         $body.addClass('cp-form-palette-'+color);
-        var containerDragClass = ('ontouchstart' in window || APP.drag === false) ? ' cp-no-drag' : ''
+        var containerDragClass = ('ontouchstart' in window || APP.drag === false) ? ' cp-no-drag' : '';
         $container.attr('class', 'cp-form-creator-content'+(APP.isEditor? ' cp-form-iseditor': '')+ containerDragClass);
 
         if (APP.isClosed && content.answers.privateKey && !APP.isEditor && !APP.hasAnswered) {
@@ -5139,8 +5139,8 @@ define([
 
             var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : undefined;
             var toggleOnclass = 'ontouchstart' in window ? undefined : 'cp-toggle-active';
-            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}.fa.fa-arrows`, {'aria-hidden': true, 'title': Messages.toggleArrows, 'tabindex': 0});
-            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'aria-hidden': true, 'title': Messages.toggleDrag, 'tabindex': 0});
+            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}.fa.fa-arrows`, {'title': Messages.toggleArrows, 'tabindex': 0});
+            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'title': Messages.toggleDrag, 'tabindex': 0});
             const updateDrag = state => {
                 return function () {
                     var $container = $('.cp-form-creator-content');
