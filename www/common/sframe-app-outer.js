@@ -17,7 +17,9 @@ define([
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
-        var obj = SFCommonO.initIframe(waitFor, true, integration.pathname);
+        let lang = integration && integration.config && integration.config.editorConfig
+                   && integration.config.editorConfig.lang;
+        var obj = SFCommonO.initIframe(waitFor, true, integration.pathname, lang);
         href = obj.href;
         hash = obj.hash;
         if (isIntegration) {
