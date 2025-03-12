@@ -2666,7 +2666,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 },
                 sfCommon: common,
                 $container: $bar,
-                $contentContainer: $('#cp-app-oo-container')
+                $contentContainer: $('#cp-app-oo-container'),
+                skipLink: 'iframe[name="frameEditor"]|#editor_sdk'
             };
             toolbar = APP.toolbar = Toolbar.create(configTb);
             toolbar.showColors();

@@ -865,22 +865,35 @@ MessengerUI, Messages, Pages, PadTypes) {
 
     Bar.createSkipLink = function (toolbar, config) {
         const targetId = config.skipLink || '#cp-skip-link';
-        const $targetElement = $(targetId);
         const $skipLink = $('<a>', {
             'class': 'cp-toolbar-skip-link',
             'href': targetId,
             'tabindex': 0,
-            'text': 'Skip to Main Content'
+            'text': 'Skip to Main Content' // XXX
         });
         toolbar.$top.append($skipLink);
 
         $skipLink.on('click', function (event) {
             event.preventDefault();
 
-            const $firstFocusable = $targetElement.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])').first();
-            if ($firstFocusable.length) {
-                $firstFocusable.trigger('focus');
-            }
+            let split = targetId.split('|'); // split for iframes
+            let $container = $('body');
+            split.some(selector => {
+                let $targetElement = $container.find(selector);
+                if ($targetElement.is('iframe')) {
+                    $container = $targetElement.contents();
+                    return;
+                }
+                const $firstFocusable = $targetElement.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]').first();
+                if ($firstFocusable.length) {
+                    $firstFocusable.trigger('focus');
+                }
+                return true;
+            });
+
+
+            /*
+            */
         });
         return $skipLink;
     };
