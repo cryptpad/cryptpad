@@ -152,6 +152,7 @@ define([
 
     var addEditItemButton = function () {};
 
+    var onRemoteChange = Util.mkEvent();
     var now = function () { return +new Date(); };
     var _lastUpdate = 0;
     var _updateBoards = function (framework, kanban, boards) {
@@ -172,7 +173,6 @@ define([
         _updateBoardsThrottle(framework, kanban, boards);
     };
 
-    var onRemoteChange = Util.mkEvent();
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
     var BOARD_PROPERTIES = ['title', 'color'];
@@ -1048,6 +1048,7 @@ define([
 
             let toggleClicked = false;
             let $tags = $(tags);
+            let $toggleBtn = $(toggleTagsButton);
             let toggle = () => {
                 $tags.toggle();
                 let visible = $tags.is(':visible');
@@ -1055,7 +1056,7 @@ define([
                 $toggleBtn.toggleClass('btn-default', visible);
                 $toggleBtn.toggleClass('btn-default-alt', !visible);
             };
-            let $toggleBtn = $(toggleTagsButton).click(function() {
+            $toggleBtn.click(function() {
                 toggleClicked = true;
                 toggle();
             });
