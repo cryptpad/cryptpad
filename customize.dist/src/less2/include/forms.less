@@ -199,6 +199,16 @@
                 background-color: @cp_buttons-default;
             }
         }
+        &.btn-default-alt {
+            border-color: @cp_buttons-default-alt-color;
+            color: @cp_buttons-default-alt-color;
+            background-color: @cp_buttons-default-color;
+            &:hover, &:not(:disabled):active, &:focus {
+                border-color: @cp_buttons-default-color;
+                color: @cp_buttons-default-color;
+                background-color: @cp_toolbar-fade3;
+            }
+        }
 
         &.danger, &.btn-danger {
             background-color: @cp_buttons-red;

@@ -1720,11 +1720,14 @@ define([
                 "documentType": file.doc,
                 "editorConfig": {
                     customization: {
+                        compactHeader: true,
                         chat: false,
                         logo: {
                             url: "/bounce/#" + encodeURIComponent('https://www.onlyoffice.com')
                         },
-                        comments: !lock && !readOnly
+                        comments: !lock && !readOnly,
+                        hideRightMenu: true,
+                        uiTheme: window.CryptPad_theme === "dark" ? "theme-dark" : "theme-classic-light"
                     },
                     "user": {
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
@@ -2183,8 +2186,11 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
                 c.forcesave = true;
             }
-            console.error('updated config', APP.ooconfig);
 
+            // Always hide right menu
+            localStorage?.original.removeItem('sse-hide-right-settings');
+            localStorage?.original.removeItem('de-hide-right-settings');
+            localStorage?.original.removeItem('pe-hide-right-settings');
 
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
             ooLoaded = true;
