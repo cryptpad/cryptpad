@@ -275,6 +275,7 @@ define([
                                 $b.prop('disabled', false);
                                 if (err) { return; }
                                 APP.updateStatus(function () {
+                                    flushCache();
                                     evRefreshAdmins.fire();
                                 });
                             });
@@ -314,6 +315,7 @@ define([
                         return void cb('ERROR');
                     }
                     if (typeof(cb) === "function") { cb(); }
+                    flushCache();
                 });
             };
 
