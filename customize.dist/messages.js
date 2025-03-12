@@ -118,6 +118,7 @@ define(req, function(AppConfig, Default, Language) {
 
     Messages._languages = map;
     Messages._languageUsed = language;
+    Messages.skipLink = "Skip to main content"; // XXX
 
     // Get keys with parameters
     Messages._getKey = function (key, argArray) {

@@ -869,7 +869,7 @@ MessengerUI, Messages, Pages, PadTypes) {
             'class': 'cp-toolbar-skip-link',
             'href': targetId,
             'tabindex': 0,
-            'text': 'Skip to Main Content' // XXX
+            'text': Messages.skipLink
         });
         toolbar.$top.append($skipLink);
 
