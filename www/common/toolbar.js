@@ -864,6 +864,7 @@ MessengerUI, Messages, Pages, PadTypes) {
     };
 
     Bar.createSkipLink = function (toolbar, config) {
+        if (config.readOnly === 1) {return;}
         const targetId = config.skipLink || '#cp-skip-link';
         const $skipLink = $('<a>', {
             'class': 'cp-toolbar-skip-link',
@@ -872,7 +873,6 @@ MessengerUI, Messages, Pages, PadTypes) {
             'text': Messages.skipLink
         });
         toolbar.$top.append($skipLink);
-
         $skipLink.on('click', function (event) {
             event.preventDefault();
 
