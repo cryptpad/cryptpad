@@ -887,13 +887,11 @@ MessengerUI, Messages, Pages, PadTypes) {
                 const $firstFocusable = $targetElement.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]').first();
                 if ($firstFocusable.length) {
                     $firstFocusable.trigger('focus');
+                } else {
+                    $skipLink.hide();
                 }
                 return true;
             });
-
-
-            /*
-            */
         });
         return $skipLink;
     };
