@@ -4,6 +4,7 @@
 
 // This is the initialization loading the CryptPad libraries
 define([
+    '/api/config',
     'jquery',
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
@@ -15,6 +16,7 @@ define([
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
 ], function (
+    ApiConfig,
     $,
     Framework,
     Messages,
@@ -207,7 +209,7 @@ define([
         // starting the CryptPad framework
         framework.start();
 
-        drawioFrame.src = '/components/drawio/src/main/webapp/index.html?'
+        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
             + new URLSearchParams({
                 test: 1,
                 stealth: 1,
