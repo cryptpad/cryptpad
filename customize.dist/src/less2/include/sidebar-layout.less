@@ -7,6 +7,7 @@
 @import (reference) "/customize/src/less2/include/colortheme-all.less";
 @import (reference) "/customize/src/less2/include/leftside-menu.less";
 @import (reference) "/customize/src/less2/include/browser.less";
+@import (reference) "/customize/src/less2/include/variables.less";
 
 @sidebar_block-width: 25rem;;
 @sidebar_base-margin: 0.5rem;
@@ -121,12 +122,21 @@
                         flex-flow: column;
                         align-items: baseline;
                     }
+                    .cp-usergrid-container {
+                        margin-bottom: 0px !important;
+                        .cp-usergrid-grid {
+                            margin-bottom: -3px;
+                        }
+                    }
                     label {
                         margin-bottom: 0;
                     }
                     input, textarea {
                         font-family: inherit;
                         max-width: @sidebar_block-width;
+                    }
+                    input:invalid {
+                        border: 1px solid red;
                     }
                     [type="color"] {
                         width: @sidebar_block-width/5;
@@ -214,7 +224,7 @@
                             border-top-left-radius: 0px;
                             border-bottom-left-radius: 0px;
                             border-left: 0px;
-                            height: 40px;
+                            height: @variables_input-height;
                             margin: 0 !important;
                         }
                     }
@@ -235,6 +245,12 @@
                     p {
                         margin-bottom: 0;
                     }
+                }
+                .cp-sidebarlayout-description-item {
+                    display: block;
+                    color: @cp_sidebar-hint;
+                    margin-top: @sidebar_base-margin;
+                    margin-bottom: 0;
                 }
                 label.noTitle {
                     display: inline-flex;
