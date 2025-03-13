@@ -65,6 +65,7 @@ module.exports = [{
         "linebreak-style": ["off", "unix"],
         quotes: ["off", "single"],
         semi: ["error", "always"],
+        eqeqeq: ["error", "always"],
         "no-irregular-whitespace": ["off"],
         "no-self-assign": ["off"],
         "no-empty": ["off"],

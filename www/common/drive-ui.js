@@ -3461,11 +3461,11 @@ define([
                 b = [b];
             }
 
-            if(a.length == 0 && b.length == 0) {
+            if(a.length === 0 && b.length === 0) {
                 return 0;
-            } else if (a.length == 0) {
+            } else if (a.length === 0) {
                 return -1;
-            } else if (b.length == 0) {
+            } else if (b.length === 0) {
                 return 1;
             } else if(a[0] < b[0]) {
                 return -1;
@@ -3494,10 +3494,10 @@ define([
         };
 
         var naturalSort = function(a, b) {
-            if (typeof(a) == "string") {
+            if (typeof(a) === "string") {
                 a = splitStringToTextAndNumbers(a);
             }
-            if (typeof(b) == "string") {
+            if (typeof(b) === "string") {
                 b = splitStringToTextAndNumbers(b);
             }
 
