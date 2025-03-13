@@ -619,7 +619,8 @@ define([
                         }
                         $(el).css('background-color', '');
                     }
-                }
+                },
+                skipLink: '.CodeMirror',
             }, waitFor(function (fw) { framework = fw; }));
 
             nThen(function (waitFor) {

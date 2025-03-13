@@ -250,6 +250,7 @@ define([
     Framework.create({
         toolbarContainer: '#cme_toolbox',
         contentContainer: '#cp-app-diagram-editor',
+        skipLink: '#cp-app-diagram-content|body .geSearchSidebar',
         // validateContent: validateXml,
     }, function (framework) {
         onFrameworkReady(framework);

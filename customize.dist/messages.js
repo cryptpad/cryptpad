@@ -117,8 +117,6 @@ define(req, function(AppConfig, Default, Language) {
 
     Messages._languages = map;
     Messages._languageUsed = language;
-    Messages.fm_link_invalid = "Please provide a valid URL"; // XXX
-
     // Get keys with parameters
     Messages._getKey = function (key, argArray) {
         if (!Messages[key]) { return '?'; }
@@ -152,6 +150,9 @@ define(req, function(AppConfig, Default, Language) {
 
         Messages.admin_listHardcoded = "Admin added into config.js. Can only be removed by editing the config file.";
         Messages.admin_listConfirm = "Are you sure you want to remove the admin rights of this user?";
+
+    Messages.fm_link_invalid = "Please provide a valid URL"; // XXX
+    Messages.skipLink = "Skip to main content"; // XXX
 
     return Messages;
 

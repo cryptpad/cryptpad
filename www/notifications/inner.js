@@ -240,6 +240,7 @@ define([
             $container: APP.$toolbar,
             pageTitle: Messages.notificationsPage || 'Notifications',
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-container',
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
