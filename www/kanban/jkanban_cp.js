@@ -727,6 +727,7 @@ define([
             var addTopBoardItem = document.createElement('span');
             addTopBoardItem.classList.add('kanban-title-button');
             $(addTopBoardItem).attr('tabindex', '0');
+            $(addTopBoardItem).attr('aria-label', Messages.addItemTop);
             addTopBoardItem.setAttribute('data-top', "1");
             addTopBoardItem.innerHTML = '<i class="cptools cptools-add-top">';
             footerBoard.appendChild(addTopBoardItem);
@@ -734,6 +735,7 @@ define([
             var addBoardItem = document.createElement('span');
             addBoardItem.classList.add('kanban-title-button');
             $(addBoardItem).attr('tabindex', '0');
+            $(addBoardItem).attr('aria-label', Messages.addItemBottom);
             addBoardItem.innerHTML = '<i class="cptools cptools-add-bottom">';
             footerBoard.appendChild(addBoardItem);
             __onAddItemClickHandler(addBoardItem);

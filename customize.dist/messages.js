@@ -118,7 +118,8 @@ define(req, function(AppConfig, Default, Language) {
 
     Messages._languages = map;
     Messages._languageUsed = language;
-
+    Messages.addItemBottom = 'Add item to bottom of the board'; // XXX or 'Add card..'
+    Messages.addItemTop = 'Add item to top of the board'; // XXX or 'Add card..'
     // Get keys with parameters
     Messages._getKey = function (key, argArray) {
         if (!Messages[key]) { return '?'; }
