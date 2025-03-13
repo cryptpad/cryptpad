@@ -38,11 +38,10 @@ var getStoredLanguage = function () { return localStorage && localStorage.getIte
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
 var getLanguage = Messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
-    try {
-        if (getStoredLanguage()) { return getStoredLanguage(); }
-    } catch (e) { console.log(e); }
     var l = getBrowserLanguage();
-    // Edge returns 'fr-FR' --> transform it to 'fr' and check again
+    try {
+        l = getStoredLanguage() || getBrowserLanguage();
+    } catch (e) { console.log(e); }
     return map[l] ? l :
             (map[l.split('-')[0]] ? l.split('-')[0] :
                 (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
@@ -136,6 +135,24 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+
+        // XXX
+        Messages.admin_cat_admins = "Administrators";
+        Messages.admin_admin = "Admin";
+        Messages.admin_listAdminsTitle = "Current administrators";
+        Messages.admin_listAdminsHint = "View and remove administrators";
+        Messages.admin_addAdminsTitle = "Add administrators";
+        Messages.admin_addAdminsHint = "Add administrators from their public key or from your contacts list";
+        Messages.admin_addAdminsAdd = "Promote a contact to admin";
+        Messages.admin_addKeyLabel = "Add an admin using their public key";
+
+        Messages.admin_listName = "Admin name";
+        Messages.admin_listKey = "Admin key";
+        Messages.admin_listAction = "Remove admin rights";
+
+        Messages.admin_listHardcoded = "Admin added into config.js. Can only be removed by editing the config file.";
+        Messages.admin_listConfirm = "Are you sure you want to remove the admin rights of this user?";
+
     return Messages;
 
 });
