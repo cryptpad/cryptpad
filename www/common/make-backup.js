@@ -348,10 +348,21 @@ define([
             max: 0,
             done: 0,
             cache: cache,
-            sframeChan: sframeChan
+            sframeChan: sframeChan,
+            common: data.common,
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
         var links = ctx.sf[data.sharedFolderId] && ctx.sf[data.sharedFolderId].static ? ctx.data.static && ctx.sf[data.sharedFolderId].static : ctx.data.static;
+
+        if (ctx.common && !ctx.common.isLoggedIn()) {
+            // Anonymous Drive
+            ctx.data.root = {};
+            let index = 0;
+            Object.keys(ctx.data.filesData).forEach(file => {
+                ctx.data.root[index] = file;
+                index += 1;
+            });
+        }
 
         progress('reading', -1); // Msg.settings_export_reading
         nThen(function (waitFor) {
