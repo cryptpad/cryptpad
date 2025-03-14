@@ -1,6 +1,7 @@
 import nacl from 'tweetnacl/nacl-fast';
 import { Module } from './types';
-import { TestModule, TestModuleObject } from './modules/test';
+//import { TestModule, TestModuleObject } from './modules/test';
+import { Badge } from './modules/badge';
 
 import { Account } from './components/account';
 
@@ -72,7 +73,8 @@ let start = (cfg: StoreConfig):void => {
         Calendar,
         Store,
         Account,
-        Mailbox
+        Mailbox,
+        Badge
     ].forEach(dep => {
         if (typeof(dep.setCustomize) === "function") {
             dep.setCustomize(cfg);
@@ -84,10 +86,9 @@ let start = (cfg: StoreConfig):void => {
     const ApiConfig = cfg.ApiConfig;
 
     let test = TestModule.init({
-        emit: () => {}
     }, () => {
         console.log('Test initialized');
-    });
+    }, () => {});
     let b64 = test.toBase64('pewpewPEZPEZ');
     console.error(b64);
     console.error(AppConfig.minimumPasswordLength, AppConfig.degradedLimit);

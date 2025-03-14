@@ -9,12 +9,13 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 SF, AccountTS, DriveTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
-                Calendar, Block, NetConfig, AppConfig = {},
+                Calendar, BadgeTS, Block, NetConfig, AppConfig = {},
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
     const Account = AccountTS.Account;
     const Drive = DriveTS.Drive;
+    const Badge = BadgeTS.Badge;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
 
@@ -2808,6 +2809,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             loadUniversal(Integration, 'integration', waitFor);
             loadUniversal(Messenger, 'messenger', waitFor);
             loadUniversal(History, 'history', waitFor);
+            loadUniversal(Badge, 'badge', waitFor);
             loadOnlyOffice();
             if (store) {
                 store.messenger = store.modules['messenger'];
@@ -3472,6 +3474,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('./modules/messenger'),
         require('./modules/history'),
         require('./modules/calendar'),
+        require('./modules/badge'),
         require('../common/login-block'),
         require('../common/network-config'),
         undefined,

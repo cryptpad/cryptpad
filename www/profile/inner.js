@@ -92,6 +92,7 @@ define([
     var LINK_ID = "cp-app-profile-link";
     var AVATAR_ID = "cp-app-profile-avatar";
     var DESCRIPTION_ID = "cp-app-profile-description";
+    var BADGES_ID = "cp-app-profile-badges";
     var CREATE_ID = "cp-app-profile-create";
     var HEADER_ID = "cp-app-profile-header";
     var HEADER_RIGHT_ID = "cp-app-profile-rightside";
@@ -435,6 +436,18 @@ define([
         displayAvatar(data.avatar);
     };
 
+    const addBadges = $container => {
+        if (APP.readOnly) { return; }
+        var $block = $('<div>', {id: BADGES_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
+        APP.$badges = $(h('span')).appendTo($block);
+    };
+    const refreshBadges = () => {
+        if (!APP.$badges) { return; }
+        APP.badge.execCommand('LIST_BADGES', {}, data => {
+            console.error(data);
+        });
+    };
+
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
 
@@ -582,6 +595,7 @@ define([
             addFriendRequest($rightside);
             addMuteButton($rightside);
             addDescription(APP.$rightside);
+            addBadges(APP.$rightside);
             addPublicKey($rightside);
             addCopyData($rightside);
             addViewButton($rightside);
@@ -595,6 +609,7 @@ define([
         refreshName(data);
         refreshLink(data);
         refreshDescription(data);
+        refreshBadges(data);
         refreshFriendRequest(data);
         refreshMute(data);
         setPublicKeyButton(data);
@@ -669,6 +684,9 @@ define([
         if (privateData.isOwnProfile) {
 
             APP.module = common.makeUniversal('profile', {
+                onEvent: onEvent
+            });
+            APP.badge = common.makeUniversal('badge', {
                 onEvent: onEvent
             });
             var execCommand = APP.module.execCommand;

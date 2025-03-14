@@ -7,7 +7,7 @@ export interface TestModuleObject extends ModuleObject {
 
 const TestModule: Module<TestModuleObject> = {
 
-    init: (config, cb) => {
+    init: (config, cb, emit) => {
         let myTest = {};
 
         cb();
