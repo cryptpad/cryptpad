@@ -103,15 +103,19 @@ define([
     var addViewButton = function ($container) {
         var hash = common.getMetadataMgr().getPrivateData().hashes.viewHash;
         var url = APP.origin + '/profile/#' + hash;
-        
         // Only add view and share buttons if not read-only
         if (!APP.readOnly) {
             var $blockView = $('<div>', {class: LINK_ID}).appendTo($container);
-            $('<button>', {
+            var $button = $('<button>', {
                 'class': 'btn ' + VIEW_PROFILE_BUTTON,
-            }).text(Messages.profile_viewMyProfile).click(function () {
-                window.open(url, '_blank');
+                'aria-labelledby': 'cp-view-button'
             }).appendTo($blockView);
+            $button.append(
+                h('span', { id: 'cp-view-button' }, Messages.profile_viewMyProfile)
+            );
+            $button.click(function () {
+                window.open(url, '_blank');
+            });
         }
         
         // Always create the description container
@@ -125,11 +129,11 @@ define([
         if (!APP.readOnly) {
             var $blockShare = $('<div>', {class: LINK_ID}).appendTo($container);
             $('<button>', {
-                'class': 'btn btn-primary ' + VIEW_PROFILE_BUTTON,
+                'class': 'btn btn-primary ' + VIEW_PROFILE_BUTTON, 'aria-labelledby': 'cp-share-button'
             }).append(
-                h('i', { 'class': 'fa fa-share-alt', 'aria-hidden': 'true', 'aria-labelledby': Messages.shareButton })
+                h('i', { 'class': 'fa fa-share-alt', 'aria-hidden': 'true'})
             ).append(
-                h('span', Messages.shareButton)
+                h('span', {'id': 'cp-share-button'}, Messages.shareButton)
             ).click(function () {
                 Clipboard.copy(url, (err) => {
                     if (!err) { UI.log(Messages.shareSuccess); }
@@ -171,8 +175,11 @@ define([
         }, Messages.profile_addLink);
         APP.$linkEdit = $(button);
         $block.append(button);
-        var save = h('button.btn.btn-primary', Messages.settings_save);
-        var text = h('input');
+        var save = h('button.btn.btn-primary', Messages.settings_save, { 'aria-labelledby': 'cp-save-link' });
+        var text = h('input', { 
+            id: 'cp-save-link', 
+            type: 'text' 
+        });        
         var code = h('div.cp-app-profile-link-code', [
             text,
             save
@@ -235,14 +242,17 @@ define([
         if (friends[data.curvePublic]) {
             // Add friend message
             APP.$friend.append(h('p.cp-app-profile-friend', [
-                h('i.fa.fa-address-book'),
+                h('i', { class: 'fa fa-address-book', 'aria-hidden': 'true' }),
                 Messages._getKey('isContact', [name])
             ]));
             if (!friends[data.curvePublic].notifications) { return; }
             // Add unfriend button
-            var unfriendButton = h('button.btn.btn-primary.cp-app-profile-friend-request', [
-                h('i', { 'class': 'fa fa-user-times', 'aria-hidden': 'true', 'aria-labelledby': Messages.contacts_remove}),
-                Messages.contacts_remove
+            var unfriendButton = h('button', { 
+                class: 'btn btn-primary cp-app-profile-friend-request', 
+                'aria-labelledby': 'cp-unfriend-button'
+            }, [
+                h('i', { class: 'fa fa-user-times', 'aria-hidden': 'true' }), 
+                h('span', { id: 'cp-unfriend-button' }, Messages.contacts_remove)
             ]);
             $(unfriendButton).click(function () {
                 // Unfriend confirm
@@ -260,7 +270,7 @@ define([
         }
 
         var button = h('button.btn.btn-success.cp-app-profile-friend-request', [
-            h('i.fa.fa-user-plus'),
+            h('i', { 'class': 'fa fa-user-plus', 'aria-hidden': 'true'}),
         ]);
         var $button = $(button).appendTo(APP.$friend);
 
@@ -275,10 +285,13 @@ define([
         }
 
         var addCancel = function () {
-            var cancelButton = h('button.btn.btn-danger.cp-app-profile-friend-request', [
-                h('i.fa.fa-user-times'),
-                Messages.cancel
-            ]);
+            var cancelButton = h('button', 
+                { class: 'btn btn-danger cp-app-profile-friend-request', 'aria-labelledby': 'cp-cancel-button' }, 
+                [
+                    h('i', { class: 'fa fa-user-times', 'aria-hidden': 'true' }),
+                    h('span', { id: 'cp-cancel-button' }, Messages.contacts_remove || 'Cancel Request')
+                ]
+            );
             $(cancelButton).click(function () {
                 // Unfriend confirm
                 var content = h('div', [
@@ -340,10 +353,13 @@ define([
             $mute.html('');
             var isMuted = muted[data.curvePublic];
             if (isMuted) {
-                var unmuteButton = h('button.btn.btn-secondary.cp-app-profile-friend-request', [
-                    h('i.fa.fa-bell'),
-                    Messages.contacts_unmute || 'unmute'
-                ]);
+                var unmuteButton = h('button', 
+                    { class: 'btn btn-secondary cp-app-profile-friend-request', 'aria-labelledby': 'cp-unmute-button' }, 
+                    [
+                        h('i', { class: 'fa fa-bell', 'aria-hidden': 'true' }),
+                        h('span', { id: 'cp-unmute-button' }, Messages.contacts_unmute || 'Unmute')
+                    ]
+                );
                 $(unmuteButton).click(function () {
                     module.execCommand('UNMUTE_USER', data.curvePublic, function (e) {
                         if (e) { console.error(e); return void UI.warn(Messages.error); }
@@ -352,10 +368,13 @@ define([
                 }).appendTo($mute);
                 return;
             }
-            var muteButton = h('button.btn.btn-danger-outline.cp-app-profile-friend-request', [
-                h('i', { 'class': 'fa fa-bell-slash', 'aria-hidden': 'true', 'aria-labelledby': Messages.contacts_mute}),
-                Messages.contacts_mute || 'mute'
-            ]);
+            var muteButton = h('button', 
+                { class: 'btn btn-danger-outline cp-app-profile-friend-request', 'aria-labelledby': 'cp-mute-button' }, 
+                [
+                    h('i', { class: 'fa fa-bell-slash', 'aria-hidden': 'true' }),
+                    h('span', { id: 'cp-mute-button' }, Messages.contacts_mute || 'Mute')
+                ]
+            );            
             $(muteButton).click(function () {
                 module.execCommand('MUTE_USER', {
                     curvePublic: data.curvePublic,
@@ -436,7 +455,7 @@ define([
         var $upButton = common.createButton('upload', false, data);
         $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
-        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true', 'aria-labelledby': Messages.profile_upload}));
+        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true'}));
         $block.append($upButton);
     };
     var refreshAvatar = function (data) {
@@ -449,10 +468,13 @@ define([
         APP.$descriptionEdit = $();
         if (APP.readOnly) { return; }
 
-        var button = h('button.btn.btn-primary', [
-            h('i', { 'class': 'fa fa-pencil', 'aria-hidden': 'true', 'aria-labelledby': Messages.profile_addDescription}),
-            h('span', Messages.profile_addDescription)
-        ]);
+        var button = h('button', 
+            { class: 'btn btn-primary', 'aria-labelledby': 'cp-add-description-button' }, 
+            [
+                h('i', { class: 'fa fa-pencil', 'aria-hidden': 'true' }),
+                h('span', { id: 'cp-add-description-button' }, Messages.profile_addDescription)
+            ]
+        );        
         APP.$descriptionEdit = $(button);
         var save = h('button.btn.btn-primary', Messages.settings_save);
         var text = h('textarea');
@@ -531,9 +553,12 @@ define([
         var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
         APP.$edPublic = $('<button>', {
             'class': 'btn',
-        }).append(h('i', { 'class': 'fa fa-key', 'aria-hidden': 'true', 'aria-labelledby': Messages.profile_copyKey }))
-          .append(h('span', Messages.profile_copyKey))
-          .click(function () {
+            'aria-labelledby': 'cp-copy-key-button'
+        }).append(
+            h('i', { 'class': 'fa fa-key', 'aria-hidden': 'true' })
+        ).append(
+            h('span', { id: 'cp-copy-key-button' }, Messages.profile_copyKey)
+        ).click(function () {
             if (!APP.getEdPublic) { return; }
             APP.getEdPublic();
         }).appendTo($div).hide();
@@ -555,10 +580,11 @@ define([
     var addCopyData = function ($container) {
         if (!APP.isModerator) { return; }
         var $block = $('<div>', {class:LINK_ID}).appendTo($container);
-        APP.$copyData = $(h('button.btn.btn-secondary', [
-            h('i.fa.fa-clipboard'),
-            h('span', Messages.support_copyUserData)
-        ])).click(function () {
+        APP.$copyData = $(h('button', 
+            { class: 'btn btn-secondary', 'aria-labelledby': 'cp-copy-data-button' }, 
+            [   h('i', { class: 'fa fa-clipboard', 'aria-hidden': 'true' }), 
+                h('span', { id: 'cp-copy-data-button' }, Messages.support_copyUserData)
+            ])).click(function () {
             if (!APP.getCopyData) { return; }
             APP.getCopyData();
         }).appendTo($block).hide();
