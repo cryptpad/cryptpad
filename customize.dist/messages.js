@@ -134,6 +134,9 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.addItemBottom = 'Add item to bottom of the board'; // XXX or 'Add card..'
+    Messages.addItemTop = 'Add item to top of the board'; // XXX or 'Add card..'
+
         // XXX
         Messages.admin_cat_admins = "Administrators";
         Messages.admin_admin = "Admin";

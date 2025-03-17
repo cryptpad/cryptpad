@@ -160,12 +160,20 @@ define([
         }
 
         function __onAddItemClickHandler(nodeItem) {
-            nodeItem.addEventListener('click', function (e) {
+            function handleAddItem(e, item) {
                 e.preventDefault();
                 e.stopPropagation();
-                self.options.addItemClick(this);
-                if (typeof (this.clickfn) === 'function') {
-                    this.clickfn(this);
+                self.options.addItemClick(item);
+                if (typeof (item.clickfn) === 'function') {
+                    item.clickfn(item);
+                }
+            }
+            nodeItem.addEventListener('click', function (e) {
+                handleAddItem(e,this);
+            });
+            nodeItem.addEventListener('keydown', function (e) {
+                if (e.keyCode === 13) {
+                    handleAddItem(e,this);
                 }
             });
         }
@@ -719,6 +727,7 @@ define([
             var addTopBoardItem = document.createElement('span');
             addTopBoardItem.classList.add('kanban-title-button');
             $(addTopBoardItem).attr('tabindex', '0');
+            $(addTopBoardItem).attr('aria-label', Messages.addItemTop);
             addTopBoardItem.setAttribute('data-top', "1");
             addTopBoardItem.innerHTML = '<i class="cptools cptools-add-top">';
             footerBoard.appendChild(addTopBoardItem);
@@ -726,6 +735,7 @@ define([
             var addBoardItem = document.createElement('span');
             addBoardItem.classList.add('kanban-title-button');
             $(addBoardItem).attr('tabindex', '0');
+            $(addBoardItem).attr('aria-label', Messages.addItemBottom);
             addBoardItem.innerHTML = '<i class="cptools cptools-add-bottom">';
             footerBoard.appendChild(addBoardItem);
             __onAddItemClickHandler(addBoardItem);
