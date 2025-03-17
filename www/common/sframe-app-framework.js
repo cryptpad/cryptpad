@@ -723,7 +723,6 @@ define([
                             tag: 'a',
                             attributes: {
                                 'data-value': _ext,
-                                'href': '#'
                             },
                             content: _ext
                         });
@@ -734,7 +733,6 @@ define([
                         tag: 'a',
                         attributes: {
                             'data-value': ext,
-                            'href': '#'
                         },
                         content: ext
                     });
@@ -743,7 +741,6 @@ define([
                     tag: 'a',
                     attributes: {
                         'data-value': '',
-                        'href': '#'
                     },
                     content: ' ',
                 });
@@ -978,7 +975,8 @@ define([
                 realtime: cpNfInner.chainpad,
                 sfCommon: common,
                 $container: $(toolbarContainer),
-                $contentContainer: $(contentContainer)
+                $contentContainer: $(contentContainer),
+                skipLink: options.skipLink,
             };
             toolbar = Toolbar.create(configTb);
             title.setToolbar(toolbar);

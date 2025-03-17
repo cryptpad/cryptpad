@@ -1564,7 +1564,8 @@ define([
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,
-                $container: $bar
+                $container: $bar,
+                skipLink: '#cp-sidebarlayout-leftside'
             };
             var toolbar = APP.toolbar = Toolbar.create(configTb);
             // Update the name in the user menu

@@ -513,6 +513,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 if (e) { return void cb({error: e}); }
 
                 store.rpc = call;
+
                 store.onRpcReadyEvt.fire();
 
                 Store.getPinLimit(null, null, function (obj) {

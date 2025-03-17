@@ -159,7 +159,6 @@ define([
                     attributes: {
                         'class': 'cp-form-type-value',
                         'data-value': t,
-                        'href': '#',
                     },
                     content: Messages['form_text_'+t]
                 };
@@ -262,7 +261,6 @@ define([
                     attributes: {
                         'class': 'cp-form-type-value',
                         'data-value': t,
-                        'href': '#',
                     },
                     content: Messages['form_poll_'+t]
                 };
@@ -1295,7 +1293,6 @@ define([
                             attributes: {
                                 'class': 'cp-form-condition-question',
                                 'data-value': obj.uid,
-                                'href': '#',
                             },
                             content: obj.q
                         };
@@ -1316,14 +1313,12 @@ define([
                         tag: 'a',
                         attributes: {
                             'data-value': 1,
-                            'href': '#',
                         },
                         content: Messages.form_condition_is
                     }, {
                         tag: 'a',
                         attributes: {
                             'data-value': 0,
-                            'href': '#',
                         },
                         content: Messages.form_condition_isnot
                     }];
@@ -1402,7 +1397,6 @@ define([
                                 attributes: {
                                     'class': 'cp-form-condition-value',
                                     'data-value': str,
-                                    'href': '#',
                                 },
                                 content: str
                             };
@@ -1576,7 +1570,6 @@ define([
                                         attributes: {
                                             'class': 'cp-form-condition-question',
                                             'data-value': obj.uid,
-                                            'href': '#',
                                         },
                                         content: obj.q
                                     };
@@ -1604,7 +1597,6 @@ define([
                                         attributes: {
                                             'class': 'cp-form-condition-value',
                                             'data-value': str,
-                                            'href': '#',
                                         },
                                         content: str
                                     };
@@ -2988,7 +2980,6 @@ define([
                             attributes: {
                                 'class': 'cp-form-type-value',
                                 'data-value': t.key,
-                                'href': '#',
                             },
                             content: t.str
                         };
@@ -3574,7 +3565,7 @@ define([
         });
         var $send = $(send).click(function () {
             if (!$radio.find('input[type="radio"]:checked').length) {
-                return UI.warn(Messages.error);
+                return UI.warn(Messages.answerType_error);
             }
 
             var results = getFormResults();
@@ -5676,5 +5667,6 @@ define([
     Framework.create({
         toolbarContainer: '#cp-toolbar',
         contentContainer: '#cp-app-form-editor',
+        skipLink: '#cp-app-form-editor'
     }, andThen);
 });

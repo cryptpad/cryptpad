@@ -342,27 +342,6 @@ define([
                     }
                 }
             });
-            const $keyBtn = $(keyButton);
-            Util.onClickEnter($keyBtn, () => {
-                let val = $keyInput.val().trim();
-                let key = Keys.canonicalize(val);
-                if (!key) { return; }
-                // We have a valid key
-                let name = Messages.admin_admin;
-                try {
-                    let parsed = Keys.parseUser(val);
-                    name = parsed.user;
-                } catch (e) {}
-                $keyBtn.prop('disabled', 'disabled');
-                addAdmin({ ed:key, name }, (err) => {
-                    $keyBtn.prop('disabled', false);
-                    if (!err) { $keyInput.val(''); }
-                    // refresh
-                    APP.updateStatus(function () {
-                        evRefreshAdmins.fire();
-                    });
-                });
-            });
 
             const drawContacts = () => {
                 $div.empty();
@@ -388,6 +367,9 @@ define([
                 let addBtn = blocks.button('primary', 'fa-plus', Messages.tag_add);
                 Util.onClickEnter($(addBtn), () => {
                     var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
+                    if (!$sel.length) {
+                        return UI.warn(Messages.admin_errorAddAdmins);
+                    }
                     nThen((waitFor) => {
                         $sel.each((i, el) => {
                             const $el = $(el);
@@ -402,12 +384,35 @@ define([
                     }).nThen(() => {
                         APP.updateStatus(function () {
                             evRefreshAdmins.fire();
-                            drawContacts();
                         });
                     });
                 });
                 evRefreshAdmins.reg(() => {
                     drawContacts();
+                });
+
+                const $keyBtn = $(keyButton);
+                Util.onClickEnter($keyBtn, () => {
+                    let val = $keyInput.val().trim();
+                    let key = Keys.canonicalize(val);
+                    if (!key) {
+                        return UI.warn(Messages.admin_errorAddKeyLabel);
+                    }
+                    // We have a valid key
+                    let name = Messages.admin_admin;
+                    try {
+                        let parsed = Keys.parseUser(val);
+                        name = parsed.user;
+                    } catch (e) {}
+                    $keyBtn.prop('disabled', 'disabled');
+                    addAdmin({ ed:key, name }, (err) => {
+                        $keyBtn.prop('disabled', false);
+                        if (!err) { $keyInput.val(''); }
+                        // refresh
+                        APP.updateStatus(function () {
+                            evRefreshAdmins.fire();
+                        });
+                    });
                 });
 
                 const list = blocks.form([
@@ -1086,7 +1091,12 @@ define([
                     sframeCommand('UPLOAD_LOGO', {dataURL}, (err, response) => {
                         $button.removeAttr('disabled');
                         if (err) {
-                            UI.warn(Messages.error);
+                            if(err === 'E_TOO_LARGE') {
+                                UI.warn(Messages.admin_logoSize_error);
+                            }
+                            else{
+                                UI.warn(Messages.error);
+                            }
                             $(input).val('');
                             console.error(err, response);
                             spinner.hide();
@@ -1828,7 +1838,9 @@ define([
                 multiple: true,
                 validate: function () {
                     var l = parseInt($(newLimit).val());
-                    if (isNaN(l)) { return false; }
+                    if (isNaN(l)) {
+                        return UI.warn(Messages.limit_error);
+                    }
                     return true;
                 }
             }, function () {
@@ -1845,6 +1857,7 @@ define([
                     }
                     var limit = getPrettySize(l);
                     $(text).text(Messages._getKey('admin_limit', [limit]));
+                    UI.log(Messages.saved);
                 });
             });
 
@@ -3902,12 +3915,16 @@ define([
                 multiple: true,
                 validate: function () {
                     var l = parseInt($(newDuration).val());
-                    if (isNaN(l)) { return false; }
+                    if (isNaN(l)) {
+                        return void UI.warn(Messages.limit_error);
+                    }
                     return true;
                 }
             }, function () {
                 var d = parseInt($(newDuration).val());
-                if (!isPositiveInteger(d)) { return void UI.warn(Messages.error); }
+                if (!isPositiveInteger(d)) {
+                    return void UI.warn(Messages.positiveNumber_error);
+                }
 
                 var data = [d];
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3919,6 +3936,7 @@ define([
                         return void console.error(e, response);
                     }
                     $(form).find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_bytesWrittenDuration', [d]));
+                    UI.log(Messages.saved);
                 });
             });
             cb(form);
@@ -4171,6 +4189,7 @@ define([
             $container: APP.$toolbar,
             pageTitle: Messages.adminPage || 'Admin',
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-container'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
