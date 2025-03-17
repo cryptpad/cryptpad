@@ -146,6 +146,8 @@ define(req, function(AppConfig, Default, Language) {
         Messages.admin_addAdminsHint = "Add administrators from their public key or from your contacts list";
         Messages.admin_addAdminsAdd = "Promote a contact to admin";
         Messages.admin_addKeyLabel = "Add an admin using their public key";
+        Messages.admin_errorAddKeyLabel = "Add a valid public key";
+        Messages.admin_errorAddAdmins = "Pick a contact to promote to admin";
 
         Messages.admin_listName = "Admin name";
         Messages.admin_listKey = "Admin key";
