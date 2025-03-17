@@ -902,7 +902,7 @@ define([
 
         var todo = function () {
             var val = parseInt($input.val());
-            if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.error); }
+            if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.limit_error); }
             if (val === oldVal) { return; }
             spinner.spin();
             common.setAttribute(['general', 'mediatag-size'], val, function (err) {

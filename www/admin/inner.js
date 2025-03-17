@@ -1091,7 +1091,12 @@ define([
                     sframeCommand('UPLOAD_LOGO', {dataURL}, (err, response) => {
                         $button.removeAttr('disabled');
                         if (err) {
-                            UI.warn(Messages.error);
+                            if(err === 'E_TOO_LARGE') {
+                                UI.warn(Messages.admin_logoSize_error);
+                            }
+                            else{
+                                UI.warn(Messages.error);
+                            }
                             $(input).val('');
                             console.error(err, response);
                             spinner.hide();
@@ -1833,7 +1838,9 @@ define([
                 multiple: true,
                 validate: function () {
                     var l = parseInt($(newLimit).val());
-                    if (isNaN(l)) { return false; }
+                    if (isNaN(l)) {
+                        return UI.warn(Messages.limit_error);
+                    }
                     return true;
                 }
             }, function () {
@@ -1850,6 +1857,7 @@ define([
                     }
                     var limit = getPrettySize(l);
                     $(text).text(Messages._getKey('admin_limit', [limit]));
+                    UI.log(Messages.saved);
                 });
             });
 
@@ -3907,12 +3915,16 @@ define([
                 multiple: true,
                 validate: function () {
                     var l = parseInt($(newDuration).val());
-                    if (isNaN(l)) { return false; }
+                    if (isNaN(l)) {
+                        return void UI.warn(Messages.limit_error);
+                    }
                     return true;
                 }
             }, function () {
                 var d = parseInt($(newDuration).val());
-                if (!isPositiveInteger(d)) { return void UI.warn(Messages.error); }
+                if (!isPositiveInteger(d)) {
+                    return void UI.warn(Messages.positiveNumber_error);
+                }
 
                 var data = [d];
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3924,6 +3936,7 @@ define([
                         return void console.error(e, response);
                     }
                     $(form).find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_bytesWrittenDuration', [d]));
+                    UI.log(Messages.saved);
                 });
             });
             cb(form);

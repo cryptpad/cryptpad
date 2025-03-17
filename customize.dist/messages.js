@@ -137,6 +137,11 @@ define(req, function(AppConfig, Default, Language) {
     Messages.addItemBottom = 'Add item to bottom of the board'; // XXX or 'Add card..'
     Messages.addItemTop = 'Add item to top of the board'; // XXX or 'Add card..'
 
+    Messages.admin_logoSize_error = "The logo size is too large"; // XXX
+    Messages.limit_error = "Please enter a valid number"; // XXX
+    Messages.positiveNumber_error = "Please enter a positive number"; // XXX
+    Messages.answerType_error = "Please select how to answer the form"; // XXX
+
         // XXX
         Messages.admin_cat_admins = "Administrators";
         Messages.admin_admin = "Admin";

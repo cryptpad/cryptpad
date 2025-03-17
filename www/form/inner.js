@@ -3565,7 +3565,7 @@ define([
         });
         var $send = $(send).click(function () {
             if (!$radio.find('input[type="radio"]:checked').length) {
-                return UI.warn(Messages.error);
+                return UI.warn(Messages.answerType_error);
             }
 
             var results = getFormResults();
