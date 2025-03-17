@@ -64,7 +64,7 @@ define([
                 let prefix = icon.slice(0, icon.indexOf('-'));
                 cls = `.${prefix}.${icon}`;
             }
-            return h(`i${cls}`);
+            return h(`i${cls}`, { 'aria-hidden': 'true' });
         };
         blocks.button = (type, icon, text) => {
             type = type || 'primary';

@@ -367,6 +367,9 @@ define([
                 let addBtn = blocks.button('primary', 'fa-plus', Messages.tag_add);
                 Util.onClickEnter($(addBtn), () => {
                     var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
+                    if (!$sel.length) {
+                        return UI.warn(Messages.admin_errorAddAdmins);
+                    }
                     nThen((waitFor) => {
                         $sel.each((i, el) => {
                             const $el = $(el);
@@ -392,7 +395,9 @@ define([
                 Util.onClickEnter($keyBtn, () => {
                     let val = $keyInput.val().trim();
                     let key = Keys.canonicalize(val);
-                    if (!key) { return; }
+                    if (!key) {
+                        return UI.warn(Messages.admin_errorAddKeyLabel);
+                    }
                     // We have a valid key
                     let name = Messages.admin_admin;
                     try {
