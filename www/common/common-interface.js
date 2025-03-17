@@ -1237,6 +1237,7 @@ define([
         var addTippy = function (i, el) {
             if (el._tippy) { return; }
             if (!el.getAttribute('title')) { return; }
+            if (el.getAttribute('data-notippy')) { return; }
             if (el.nodeName === 'IFRAME') { return; }
             var opts = {
                 distance: 15

@@ -78,7 +78,6 @@ define([
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
         $i.attr('allowfullscreen', 'true');
         $i.attr('allow', 'clipboard-write');
-        $i.attr('title', 'iframe');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -843,6 +842,13 @@ define([
                     additionalPriv.initialState = cfg.initialState instanceof Blob ?
                                                     cfg.initialState : undefined;
 
+                    if (cfg.integrationConfig) {
+                        if (metaObj?.user && !metaObj.user.name) {
+                            metaObj.user.name = cfg.integrationConfig?.user?.name ||
+                                            cfg.integrationConfig?.user?.firstname;
+                        }
+                    }
+
                     // Early access
                     var priv = metaObj.priv;
                     var _plan = typeof(priv.plan) === "undefined" ? Utils.LocalStore.getPremium() : priv.plan;
@@ -1322,6 +1328,9 @@ define([
                         toHash: data.toHash,
                         lastKnownHash: data.lastKnownHash
                     }, function (data) {
+                        if (data && data.error) {
+                            return void cb(data);
+                        }
                         cb({
                             isFull: data.isFull,
                             messages: data.messages.map(function (obj) {
@@ -2240,7 +2249,7 @@ define([
                             }
                         };
 
-                        // on server crash, try to save to Nextcloud
+                        // on server crash, try to save to the outer platform
                         if (ready) { return integrationSave(reload); }
 
                         // if error during loading, reload without saving

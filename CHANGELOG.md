@@ -4,6 +4,165 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+
+# ❄️ Winter release (2024.12.0)
+
+## Goals
+
+This version delivers fixes and improvements across CryptPad. We are particularly happy to release a fix of our OnlyOffice integration that could address long-standing issues with documents becoming corrupted. If confirmed at scale, this fix could dramatically improve the use of OnlyOffice apps in CryptPad.
+
+## Improvements
+
+- OnlyOffice integration
+  - Fix bug resulting in corrupted documents [#1736](https://github.com/cryptpad/cryptpad/pull/1736)
+- Drive
+  - Links included in Drive exports [#1695](https://github.com/cryptpad/cryptpad/pull/1695)
+- Rich Text
+  - Formatted tables and strikethrough text in Pad .md exports [#1720](https://github.com/cryptpad/cryptpad/pull/1720)
+- Forms
+  - Form password warning [#1690](https://github.com/cryptpad/cryptpad/pull/1690)
+- Performance improvements (1/3) to example-advanced.nginx.conf [#1709](https://github.com/cryptpad/cryptpad/pull/1709)
+- Enable toggle in and out of calendars on small screens [#1584](https://github.com/cryptpad/cryptpad/pull/1584)
+
+## Fixes
+
+- Accessibility
+  - Kanban Focus order fix [#1708](https://github.com/cryptpad/cryptpad/pull/1708)
+  - Change iframe title [#1706](https://github.com/cryptpad/cryptpad/pull/1706)
+  - Fix keyboard trap inside Form description [#1672](https://github.com/cryptpad/cryptpad/pull/1672)
+  - Disable arrow key navigation in the drive while modal is active [#1669](https://github.com/cryptpad/cryptpad/pull/1669)
+  - Simulate click action for keyboard users in Ctrl+E modal [#1726](https://github.com/cryptpad/cryptpad/pull/1726)
+- Drive
+  - Prevent links in trash from disappearing after drive reload [#1697](https://github.com/cryptpad/cryptpad/pull/1697)
+  - Restore multiple files/directories [#1692](https://github.com/cryptpad/cryptpad/pull/1692)
+  - Stop selection of all other trashed files when restoring single file [#1681](https://github.com/cryptpad/cryptpad/pull/1681)
+- Notifications
+  - Calendar reminders in notification panel [#1721](https://github.com/cryptpad/cryptpad/pull/1721)
+  - Add Notifications padding [#1688](https://github.com/cryptpad/cryptpad/pull/1688)
+  - Notification fixes [#1674](https://github.com/cryptpad/cryptpad/pull/1674)
+- Forms
+  - Fix some form storage-related bugs [#1723](https://github.com/cryptpad/cryptpad/pull/1723)
+  - Fix spacing issues in Forms  [#1682](https://github.com/cryptpad/cryptpad/pull/1682)
+  - Fix padding in form questions [#1670](https://github.com/cryptpad/cryptpad/pull/1670)
+- Helpdesk
+  - Fix "Closed" support tickets remaining in Inbox [#1719](https://github.com/cryptpad/cryptpad/pull/1719)
+- 'Request edit' button [#1680](https://github.com/cryptpad/cryptpad/pull/1680)
+- Fix example-code-typo [#1703](https://github.com/cryptpad/cryptpad/pull/1703)
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2024.9.1` please read the upgrade notes of all versions between yours and `2024.9.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.12.0
+npm ci
+npm run install:components
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
+# Autumn release (2024.9.0)
+
+## Goals
+
+This release improves the performance of CryptPad with server optimizations and an optional cryptography plugin. We also include lots of improvements and fixes across various areas.
+
+## Features
+
+- Add support for cryptography plugins to replace tweetnacl on the server [#1667](https://github.com/cryptpad/cryptpad/pull/1667)
+  - We use our [CryptPad Sodium plugin](https://github.com/cryptpad/cryptpad-sodium-plugin) to improve the performance of our flagship instance cryptpad.fr.
+  - Documentation will be available shortly in the form of a blog post and section in the admin guide.
+
+## Improvements
+
+- Server memory improvements [#1543](https://github.com/cryptpad/cryptpad/pull/1543)
+- Server optimization when computing metadata [#1566](https://github.com/cryptpad/cryptpad/pull/1566)
+- Team roster channels slow down team members accounts [#1614](https://github.com/cryptpad/cryptpad/pull/1614)
+- Deployment
+  - Add example configs for Caddy [#1603](https://github.com/cryptpad/cryptpad/pull/1603)
+  - Add support for HTTP -> HTTPS (80 -> 443 ports) redirection [#1582](https://github.com/cryptpad/cryptpad/pull/1582)
+  - Added "git config --add safe.directory" [#1539](https://github.com/cryptpad/cryptpad/pull/1539)
+- Add confirmation modal when admins turn on mandatory 2FA [#1552](https://github.com/cryptpad/cryptpad/pull/1552)
+- Developers on Windows can now launch their local instance with `npm run windev`
+
+## Fixes
+
+- Modals accessibility
+  - `Shift-Tab` option for `Ctrl-E` modals [#1647](https://github.com/cryptpad/cryptpad/pull/1647)
+  - Remove focus from disabled elements on modals [#1618](https://github.com/cryptpad/cryptpad/pull/1618)
+  - `+New` button fixes on Drive [#1610](https://github.com/cryptpad/cryptpad/pull/1610)
+  - Accessibility improvements to modals [#1563](https://github.com/cryptpad/cryptpad/pull/1563)
+  - `Ctrl+E` modal fixes [#1559](https://github.com/cryptpad/cryptpad/pull/1559)
+  - Focus style fixes [#1560](https://github.com/cryptpad/cryptpad/pull/1560)
+  - Make password change confirmation button responsive on mobile [#1569](https://github.com/cryptpad/cryptpad/pull/1569)
+- Calendar
+  - Fix calendar ownership sharing bug [#1655](https://github.com/cryptpad/cryptpad/pull/1655)
+  - Calendar modal UI fixes [#1615](https://github.com/cryptpad/cryptpad/pull/1615)
+  - Make 'New Event' modal appear in user view for small screens [#1583](https://github.com/cryptpad/cryptpad/pull/1583)
+- Teams
+  - Improve Teams card list accessibility [#1585](https://github.com/cryptpad/cryptpad/pull/1585)
+  - Fix emoji avatar handling and team name overflowing in sidebar teams [#1598](https://github.com/cryptpad/cryptpad/pull/1598)
+- Toolbar/menus
+  - Make code history buttons not overlap on small screens [#1586](https://github.com/cryptpad/cryptpad/pull/1586)
+  - Fix misaligned/missing file dropdown menu items  [#1578](https://github.com/cryptpad/cryptpad/pull/1578)
+- Diagram
+  -  Ignore unknown fields in diagram document [#1666](https://github.com/cryptpad/cryptpad/commit/02da76d3de76455a5573dd43d7ef6e68bf62c959)
+- Forms
+  - Fix overflowing check and radio items in form app conditional [#1591](https://github.com/cryptpad/cryptpad/pull/1591)
+- Kanban 
+  - fixed a bug that was causing duplicate cards when many editors were collaborating [02da76d](https://github.com/cryptpad/cryptpad/commit/02da76d3de76455a5573dd43d7ef6e68bf62c959)
+- OnlyOffice
+  -  OnlyOffice document out of sync with multiple tabs as guest [#1671](https://github.com/cryptpad/cryptpad/issues/1671) 
+- Miscellaneous
+  - Fix ownership/sharing issues with password-protected pads [#1565](https://github.com/cryptpad/cryptpad/pull/1565)
+  - Make performance table responsive for mobile (admin panel) [#1555](https://github.com/cryptpad/cryptpad/pull/1555)
+  - Fix bash indentation and trailing whitespaces [#1548](https://github.com/cryptpad/cryptpad/pull/1548)
+  - Drive focus fixes [#1611](https://github.com/cryptpad/cryptpad/pull/1611)
+
+
+## Dependencies
+
+We upgraded the following packages
+
+- cryptpad
+  - chainpad-server to `5.2.2`
+  - netflux-websocket to `1.2.1`
+- third-party
+  - express to `4.21.0`
+  - http-proxy-middleware to `3.0.2`
+  - requirejs to `2.3.7`
+  - stylelint to `16.9.0`
+
+
+## Upgrade notes
+
+If you are upgrading from a version older than `2024.6.1` please read the upgrade notes of all versions between yours and `2024.9.0` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch origin --tags
+git checkout 2024.9.0
+npm ci
+npm run install:components
+./install-onlyoffice.sh
+```
+
+3. Restart your server
+4. Review your instance's checkup page to ensure that you are passing all tests
+
+
 # 2024.6.1
 
 ## Goals

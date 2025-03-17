@@ -610,6 +610,7 @@ define([
             Framework.create({
                 toolbarContainer: '#cme_toolbox',
                 contentContainer: '#cp-app-code-editor',
+                skipLink: '.CodeMirror',
                 thumbnail: {
                     getContainer: getThumbnailContainer,
                     filter: function (el, before) {

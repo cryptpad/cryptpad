@@ -145,16 +145,23 @@
         margin-bottom: 15px;
     }
 
+    .cp-kanban-toggle-container.cp-kanban-container-flex {
+        flex: 1;
+    }
+    .cp-kanban-toggle-tags {
+        text-transform: unset;
+        margin-right: 0.5rem;
+        padding: 3px 10px;
+        span {
+            font: @colortheme_app-font;
+        }
+    }
     #cp-kanban-edit-tags {
         .tokenfield {
             margin: 0;
             width: 100%;
         }
         margin-bottom: 15px;
-    }
-    .kanban-tag-btn-toggle {
-        margin-top: 10px;
-        margin-left: 10px
     }
     #cp-app-kanban-container {
         flex: 1;
@@ -430,12 +437,10 @@
         justify-content: space-between;
         position: relative;
         min-height: 50px;
+        align-items: center;
         .cp-kanban-filterTags {
             @media (min-width: 505px) {
                 display: inline-flex;
-                .kanban-tag-btn-toggle {
-                    margin-right: 10px;
-                }
             }
             align-items: center;
             flex: 1;
@@ -449,16 +454,8 @@
                 }
                 flex-flow: column;
                 flex-shrink: 0;
-                & > * {
-                    visibility: hidden;
-                }
                 & > span {
                     display: inline-block;
-                    height: 38px;
-                    line-height: 38px;
-                }
-                & > button {
-                    margin-top: -38px;
                 }
             }
             button.cp-kanban-filterTags-reset {
@@ -571,7 +568,7 @@
             display: flex;
             min-height: 0;
             .kanban-container {
-                padding: 30px 5px;
+                padding: 0px 5px;
                 flex: 1;
                 display: flex;
                 max-height: 100%;
@@ -699,6 +696,15 @@
                 resize: none;
             }
         }
+
+        @media (pointer: none), (pointer:coarse) {
+            .kanban-container-outer {
+                .kanban-container {
+                    padding: 30px 5px;
+                }
+            }
+        }
+
 
         &.cp-app-readonly {
             .kanban-item, .kanban-title-board {

@@ -1556,5 +1556,22 @@
     "calendar_rec_warn_updateall": "La regla para repetir este evento ha sido modificada. El primer evento en {0} será mantenido, todos los demás serán sustituidos.",
     "calendar_rec_warn_update": "La regla para repetir este evento ha sido modificada. Los eventos futuros serán sustituidos.",
     "calendar_rec_warn_delall": "Este evento ya no se va a repetir. El primer evento en {0} se mantendrá, todos los demás serán eliminados.",
-    "calendar_rec_warn_del": "Este evento ya no se va a repetir. Los eventos futuros serán eliminados."
+    "calendar_rec_warn_del": "Este evento ya no se va a repetir. Los eventos futuros serán eliminados.",
+    "continue": "Continuar",
+    "team_inviteRole": "Rol inicial",
+    "team_inviteUses": "Uso(s) permitido(s) para este enlace (0 = sin límite)",
+    "form_exportJSON": "Exportar a JSON",
+    "form_alreadyAnsweredMult": "Ha respondido a este formulario el:",
+    "form_deleteAll": "Borrar todo",
+    "form_answer_new": "Enviar de nuevo",
+    "form_allowNotifications": "Notificaciones de nuevas respuestas",
+    "form_editable_off": "Sólo una vez",
+    "form_editable_on_del": "Una vez y editar/borrar",
+    "form_multiple": "Múltiples veces",
+    "form_multiple_edit": "Múltiples veces y editar/borrar",
+    "form_editable_str": "Envío",
+    "team_linkUsesInfinite": "(sin límite de usos)",
+    "form_settingsButton": "Configuración del formulario",
+    "form_editable_on": "Una vez y editar",
+    "form_responseNotification": "Nuevas respuestas a la forma: <b>{0}</b>"
 }

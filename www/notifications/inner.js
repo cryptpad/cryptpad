@@ -87,6 +87,8 @@ define([
             // if the type of notification correspond
             if (filterTypes.indexOf(data.content.msg.type) !== -1) {
                 notifsData.push(data);
+                var icon = $(el).find(".cp-reminder");
+                $(icon).addClass('cp-avatar-calendar');
                 $(notifsList).prepend(el);
             }
         };
@@ -143,7 +145,7 @@ define([
             $(loadmore).click();
         }
 
-        common.mailbox.subscribe(["notifications"], {
+        common.mailbox.subscribe(["notifications", "reminders"], {
             onMessage: function (data, el) {
                 addNotification(data, el);
             },
@@ -238,6 +240,7 @@ define([
             $container: APP.$toolbar,
             pageTitle: Messages.notificationsPage || 'Notifications',
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-container',
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
