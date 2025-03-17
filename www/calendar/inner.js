@@ -2221,6 +2221,7 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-dropdown-menu li').each(function (i, li) {
                 var $li = $(li);
                 var id = $li.attr('data-calendar-id');
+                $li.attr('tabindex', 0);
                 var c = calendars[id];
                 if (!c || c.readOnly) {
                     return void $li.remove();
@@ -2228,6 +2229,86 @@ APP.recurrenceRule = {
                 // If at least one calendar is editable, show the popup
                 show = true;
             });
+            let calendarDropdown = function ($el) {
+                let $dropdownButton = $el.find('.tui-full-calendar-dropdown-button');
+                let $dropdownMenu = $el.find('.tui-full-calendar-dropdown-menu');
+
+                let toggleAriaExpanded = function (isOpen) {
+                    $dropdownButton.attr('aria-expanded', isOpen ? 'true' : 'false');
+                    isOpen ? $dropdownMenu.show() : $dropdownMenu.hide();
+                };
+
+                let calendarDropdownNavigation = function (event) {
+                    let $focusedItem = $dropdownMenu.find('li:focus');
+                    switch (event.key) {
+                        case ' ':
+                        case 'Enter':
+                            event.preventDefault();
+                            $focusedItem.click();
+                            toggleAriaExpanded(false);
+                            $el.find('#tui-full-calendar-schedule-title').focus();
+                            break;
+                        case 'Tab':
+                            event.preventDefault();
+                            toggleAriaExpanded(false);
+                            $el.find('.tui-full-calendar-popup-section').removeClass('tui-full-calendar-open');
+                            if (event.shiftKey) {
+                                $el.find('.tui-full-calendar-popup-save').focus();
+                            } else {
+                                $el.find('#tui-full-calendar-schedule-title').focus();
+                            }
+                            break;
+                        case 'ArrowDown':
+                            event.preventDefault();
+                            var $next = $focusedItem.next('li');
+                            if ($next.length) {
+                                $next.focus();
+                            } else {
+                                $dropdownMenu.find('li').first().focus();
+                            }
+                            break;
+                        case 'ArrowUp':
+                            event.preventDefault();
+                            var $prev = $focusedItem.prev('li');
+                            if ($prev.length) {
+                                $prev.focus();
+                            } else {
+                                $dropdownMenu.find('li').last().focus();
+                            }
+                            break;
+                        case 'Escape':
+                            event.preventDefault();
+                            event.stopPropagation();
+                            toggleAriaExpanded(false);
+                            $dropdownButton.focus();
+                            break;
+                    }
+                };
+
+                $dropdownButton.on('click keydown', function (event) {
+                    if (event.type !== 'click' && event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
+                        return;
+                    }
+                    let isOpen = $el.find('.tui-full-calendar-open').length > 0;
+                    toggleAriaExpanded(!isOpen);
+                    if (!isOpen && event.key !== 'ArrowUp') {
+                        $dropdownMenu.find('li').first().focus();
+                    }
+                    else if(!isOpen){
+                        $dropdownMenu.find('li').last().focus();
+                    }
+                });
+                // click outside the dropdown button => closes the dropdown => aria-expanded is false
+                $(document).on('click', function (event) {
+                    if (!$(event.target).closest($dropdownButton).length) {
+                        toggleAriaExpanded(false);
+                    }
+                });
+
+                $dropdownMenu.on('keydown', calendarDropdownNavigation);
+            };
+            calendarDropdown($el);
+
             if ($el.find('.tui-full-calendar-hide.tui-full-calendar-dropdown').length || !show) {
                 $el.hide();
                 UI.warn(Messages.calendar_errorNoCalendar);
