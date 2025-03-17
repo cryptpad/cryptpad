@@ -248,7 +248,7 @@ const factory = (Util, Hash,
 
         var isFolder = exp.isFolder = function (element) {
             if (isFolderData(element)) { return false; }
-            return typeof(element) === "object" || isSharedFolder(element);
+            return (typeof(element) === "object" && !element.channel) || isSharedFolder(element);
         };
         exp.isFolderEmpty = function (element) {
             if (!isFolder(element)) { return false; }
