@@ -43,6 +43,7 @@ define([
              SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, Block, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
+    const Nacl = window.nacl;
 
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
@@ -487,6 +488,7 @@ define([
                 if (e) { return void cb({error: e}); }
 
                 store.rpc = call;
+
                 store.onRpcReadyEvt.fire();
 
                 Store.getPinLimit(null, null, function (obj) {
