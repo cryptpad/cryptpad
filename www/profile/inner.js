@@ -498,6 +498,13 @@ define([
         editor.setOption('readOnly', false);
         cm.configureTheme(common, function () {});
 
+        editor.on("keydown", function (cm, event) {
+            if (event.key === "Escape") {
+                cm.getInputField().blur();
+                event.preventDefault();
+            }
+        });
+
         var markdownTb = common.createMarkdownToolbar(editor);
         $(code).prepend(markdownTb.toolbar);
         $(markdownTb.toolbar).show();
