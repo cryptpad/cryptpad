@@ -347,8 +347,8 @@ define([
                 let val = $keyInput.val().trim();
                 let key = Keys.canonicalize(val);
                 if (!key) {
-                    UI.warn(Messages.admin_errorAddKeyLabel);
-                    return; }
+                    return UI.warn(Messages.admin_errorAddKeyLabel);
+                }
                 // We have a valid key
                 let name = Messages.admin_admin;
                 try {
@@ -391,8 +391,8 @@ define([
                 Util.onClickEnter($(addBtn), () => {
                     var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
                     if (!$sel.length) {
-                        UI.warn(Messages.admin_errorAddAdminsAdd);
-                        return; }
+                        return UI.warn(Messages.admin_errorAddAdmins);
+                    }
                     nThen((waitFor) => {
                         $sel.each((i, el) => {
                             const $el = $(el);
