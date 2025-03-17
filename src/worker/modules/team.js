@@ -931,6 +931,14 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var team = data.team;
         if (!(team.hash || team.roHash) || !team.channel || !team.password
             || !team.keys || !team.metadata) { return void cb({error: 'EINVAL'}); }
+
+        let myTeams = ctx.store.proxy.teams;
+        if (Object.values(myTeams).some(obj => {
+            return obj.channel === team.channel;
+        })) {
+            return void cb({error: 'EEXISTS'});
+        }
+
         var id = Util.createRandomInteger();
         ctx.store.proxy.teams[id] = team;
         ctx.onReadyHandlers[id] = [];
