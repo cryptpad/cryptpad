@@ -1998,7 +1998,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     return void console.error(err);
                 }
                 console.debug('Team '+id+' cache ready');
-            }), true);
+            }), (true && Cache.isEnabled()));
         });
 
         // Proxy is ready, check if our team list has changed
