@@ -341,6 +341,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var state = roster.getState();
         var teamData = Util.find(ctx, ['store', 'proxy', 'teams', id]);
         if (teamData) { teamData.metadata = state.metadata; }
+        delete ctx.nocache[id];
 
         var team;
         if (!ctx.store.proxy.teams[id]) { return; }
@@ -462,7 +463,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     var c = obj && obj.c; // content
                     if (!c) {
                         waitFor.abort();
-                        cb({error: 'NOCACHE_DRIVE'});
+                        cb({error: 'NOCACHE'});
                     }
                 }));
                 Cache.getChannelCache(rosterKeys.channel, waitFor(function (err, obj) {
@@ -473,7 +474,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     }
                     if (!c) {
                         waitFor.abort();
-                        cb({error: 'NOCACHE_ROSTER'});
+                        cb({error: 'NOCACHE'});
                     }
                 }));
                 return;
@@ -1894,6 +1895,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             onReadyHandlers: {},
             teams: {},
             cache: {},
+            nocache: {},
             updateMetadata: cfg.updateMetadata,
             updateProgress: cfg.updateLoadingProgress,
             progress: 0
@@ -1993,12 +1995,15 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 if (err) {
                     delete ctx.onReadyHandlers[id];
                     delete ctx.cache[id];
+                    if (err?.error === 'NOCACHE') {
+                        ctx.nocache[id] = true;
+                    }
                     var txt = typeof(err) === "string" ? err : (err.type || err.message);
                     Feedback.send("TEAM_LOADING_ERROR="+txt);
                     return void console.error(err);
                 }
                 console.debug('Team '+id+' cache ready');
-            }), (true && Cache.isEnabled()));
+            }), Cache.isEnabled());
         });
 
         // Proxy is ready, check if our team list has changed
@@ -2149,6 +2154,9 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     return;
                 }
                 t[id].error = true;
+                if (ctx.nocache[id]) {
+                    t[id].offline = true;
+                }
             });
             cb(t);
         };

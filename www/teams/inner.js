@@ -542,7 +542,11 @@ define([
                     }, team.metadata.name),
                 ]);
                 list.push(teamDiv);
-                common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
+                if (team.offline) {
+                    $(avatar).append(h('div.cp-team-spinner-container', h('span.cp-team-spinner')));
+                } else {
+                    common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
+                }
                 $(teamDiv).on('click keypress', function (event) {
                     if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                         if (team.error) {
