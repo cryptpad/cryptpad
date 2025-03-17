@@ -976,7 +976,8 @@ define([
                 realtime: cpNfInner.chainpad,
                 sfCommon: common,
                 $container: $(toolbarContainer),
-                $contentContainer: $(contentContainer)
+                $contentContainer: $(contentContainer),
+                skipLink: options.skipLink,
             };
             toolbar = Toolbar.create(configTb);
             title.setToolbar(toolbar);

@@ -13,6 +13,18 @@
         return Array.prototype.slice.call(A, start, end);
     };
 
+    Util.u8ToBase64 = (u8, cb) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            let res = reader.result;
+            let trim = res.slice(res.indexOf(',') + 1);
+            cb(trim);
+        };
+        reader.readAsDataURL(new Blob([u8]));
+    };
+
+
+
     Util.shuffleArray = function (a) {
         for (var i = a.length - 1; i > 0; i--) {
             var j = Math.floor(Math.random() * (i + 1));
@@ -74,6 +86,12 @@
     Util.mkEvent = function (once) {
         var handlers = [];
         var fired = false;
+        let promiseResolve;
+
+        const promise = new Promise(resolve => {
+            promiseResolve = resolve;
+        });
+
         return {
             reg: function (cb) {
                 if (once && fired) { return void setTimeout(cb); }
@@ -87,10 +105,13 @@
             },
             fire: function () {
                 if (once && fired) { return; }
-                fired = true;
                 var args = Array.prototype.slice.call(arguments);
+                if (!fired) { promiseResolve.apply(null, args); }
+                fired = true;
                 handlers.forEach(function (h) { h.apply(null, args); });
-            }
+            },
+            // Since a promise can only resolve once only the 1st call to fire() is reflected here. Even is `once` is `false`.
+            promise
         };
     };
 

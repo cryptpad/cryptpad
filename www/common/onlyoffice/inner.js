@@ -68,6 +68,8 @@ define([
     var NEW_VERSION = 7; // version of the .bin, patches and ChainPad formats
     var PENDING_TIMEOUT = 30000;
     var CURRENT_VERSION = X2T.CURRENT_VERSION;
+    const HISTORY_KEEPER_INDEX_USER = 1;
+    const READ_ONLY_INDEX_USER = 2;
 
     //var READONLY_REFRESH_TO = 15000;
 
@@ -181,17 +183,17 @@ define([
             });
         };
 
-        const getNewUserIndex = function () {
-            const ids = content.ids || {};
-            const indexes = Object.values(ids).map((user) => user.index);
-            const maxIndex = Math.max(...indexes);
-            return maxIndex === -Infinity ? 1 : maxIndex+1;
+        const getNextUserIndex = function () {
+            let nextUserIndex;
+            do {
+                nextUserIndex = Util.createRandomInteger();
+            } while (nextUserIndex === HISTORY_KEEPER_INDEX_USER || nextUserIndex === READ_ONLY_INDEX_USER);
+            return nextUserIndex;
         };
 
         var setMyId = function () {
-            // Remove ids for users that have left the channel
-            deleteOffline();
-            var ids = content.ids;
+            deleteOffline(); // Remove ids for users that have left the channel
+            const ids = content.ids;
             if (!myOOId) {
                 myOOId = Util.createRandomInteger();
                 // f: function used in .some(f) but defined outside of the while
@@ -202,13 +204,21 @@ define([
                     myOOId = Util.createRandomInteger();
                 }
             }
-            var myId = getId();
+
+            const myId = getId();
+            const myIndex = getNextUserIndex();
+
             ids[myId] = {
                 ooid: myOOId,
-                index: getNewUserIndex(),
+                index: myIndex,
                 netflux: metadataMgr.getNetfluxId()
             };
-            oldIds = JSON.parse(JSON.stringify(ids));
+
+            if (!myUniqueOOId) {
+                myUniqueOOId = String(myOOId) + myIndex;
+            }
+
+            oldIds = structuredClone(ids);
             APP.onLocal();
         };
 
@@ -388,6 +398,10 @@ define([
         };
 
         var onUploaded = function (ev, data, err) {
+            if (!ev && err) {
+                console.error(err);
+                return void UI.warn(Messages.error);
+            }
             if (ev.newTemplate) {
                 if (err) {
                     console.error(err);
@@ -545,7 +559,7 @@ define([
 
         var saveToServer = function (blob, title) {
             if (APP.cantCheckpoint) { return; } // TOO_LARGE
-            var text = getContent();
+            var text = !blob && getContent();
             if (!text && !blob) {
                 setEditable(false, true);
                 sframeChan.query('Q_CLEAR_CACHE_CHANNELS', [
@@ -920,56 +934,44 @@ define([
 
         const getMyOOIndex = function() {
             const user = findUserByOOId(myOOId);
-            return user
-                ? user.index
-                : content.ids.length; // Assign an unused id to read-only users
+            return user ? user.index : READ_ONLY_INDEX_USER;
         };
 
-        var getParticipants = function () {
-            var users = metadataMgr.getMetadata().users;
-            var i = 1;
-            var p = Object.keys(content.ids || {}).map(function (id) {
-                var nId = id.slice(0,32);
-                if (!users[nId]) { return; }
-                var ooId = content.ids[id].ooid;
-                var idx = content.ids[id].index;
-                if (!ooId || ooId === myOOId) { return; }
-                if (idx >= i) { i = idx + 1; }
-                return {
-                    id: String(ooId) + idx,
-                    idOriginal: String(ooId),
-                    username: (users[nId] || {}).name || Messages.anonymous,
-                    indexUser: idx,
-                    connectionId: content.ids[id].netflux || Hash.createChannelId(),
-                    isCloseCoAuthoring:false,
-                    view: false
-                };
-            });
+        const getParticipants = function () {
+            const users = metadataMgr.getMetadata().users;
             // Add an history keeper user to show that we're never alone
             var hkId = Util.createRandomInteger();
-            p.push({
-                id: hkId,
+            const historyKeeper = [{
+                id: String(hkId),
                 idOriginal: String(hkId),
                 username: "History",
-                indexUser: i,
+                indexUser: HISTORY_KEEPER_INDEX_USER,
                 connectionId: Hash.createChannelId(),
                 isCloseCoAuthoring:false,
                 view: false
+            }];
+
+            const realParticipants = Object.entries(content.ids).map(([id, user]) => {
+                const nId = id.slice(0,32);
+                const username = Util.find(privateData, ['integrationConfig', 'user', 'name']) ||
+                       (users[nId] || {}).name || Messages.anonymous;
+
+                return {
+                    id: String(user.ooid) + user.index,
+                    idOriginal: String(user.ooid),
+                    username,
+                    indexUser: user.index,
+                    connectionId: user.netflux || Hash.createChannelId(),
+                    isCloseCoAuthoring: false,
+                    view: false
+                };
             });
-            const myOOIndex = getMyOOIndex();
-            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + myOOIndex; }
-            p.push({
-                id: String(myOOId),
-                idOriginal: String(myOOId),
-                username: metadataMgr.getUserData().name || Messages.anonymous,
-                indexUser: myOOIndex,
-                connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
-                isCloseCoAuthoring:false,
-                view: false
-            });
+
+            const participants = historyKeeper.concat(realParticipants);
+
             return {
-                index: myOOIndex,
-                list: p.filter(Boolean)
+                index: getMyOOIndex(),
+                list: participants,
             };
         };
 
@@ -1473,6 +1475,20 @@ define([
                                 });
                             }
                             break;
+                        case "forceSaveStart":
+                            if (APP.integrationSave) {
+                                APP.integrationSave(obj => {
+                                    if (obj?.error) {
+                                        console.error(obj.error);
+                                        return void UI.warn(Messages.error);
+                                    }
+                                    content.integrationSave = `${myUniqueOOId}-${+new Date()}`;
+                                    APP.integrationSaved = content.integrationSave;
+                                    APP.onLocal();
+                                    UI.log(Messages.saved);
+                                });
+                            }
+                            break;
                         case "getLock":
                             handleLock(obj, send);
                             break;
@@ -1681,31 +1697,42 @@ define([
 
             var lang = (window.cryptpadLanguage || navigator.language || navigator.userLanguage || '').slice(0,2);
 
+            let username = Util.find(privateData, ['integrationConfig', 'user', 'name'])
+                            || metadataMgr.getUserData().name
+                            || Messages.anonymous;
+
+            let integrationConfig = privateData?.integrationConfig?._;
+            //let ec = integrationConfig?.editorConfig;
+            let dc = integrationConfig?.document;
+
             // Config
             APP.ooconfig = {
-                "document": {
-                    "fileType": file.type,
-                    "key": "fresh",
-                    "title": file.title,
-                    "url": url,
-                    "permissions": {
-                        "download": false,
-                        "print": true,
+                document: {
+                    fileType: file.type,
+                    key: "fresh",
+                    title: dc?.title || file.title,
+                    url: url,
+                    permissions: {
+                        download: dc?.permissions?.download || false,
+                        print: dc?.permissions?.print || true,
                     }
                 },
                 "documentType": file.doc,
                 "editorConfig": {
                     customization: {
+                        compactHeader: true,
                         chat: false,
                         logo: {
                             url: "/bounce/#" + encodeURIComponent('https://www.onlyoffice.com')
                         },
-                        comments: !lock && !readOnly
+                        comments: !lock && !readOnly,
+                        hideRightMenu: true,
+                        uiTheme: window.CryptPad_theme === "dark" ? "theme-dark" : "theme-classic-light"
                     },
                     "user": {
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
-                        "firstname": metadataMgr.getUserData().name || Messages.anonymous,
-                        "name": metadataMgr.getUserData().name || Messages.anonymous,
+                        "firstname": username,
+                        "name": username
                     },
                     "mode": "edit",
                     "lang": lang
@@ -2135,6 +2162,35 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                 }, void 0, common.getCache());
             };
+
+            let copy = (a, b) => {
+                Object.keys(b).forEach(k => {
+                    if (k === "user") { return; } // Don't change user values
+                    if (a[k]) {
+                        if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
+                            copy(a[k], b[k]);
+                        }
+                        return;
+                    }
+                    a[k] = b[k];
+                });
+            };
+            if (integrationConfig) {
+                let ec = integrationConfig.editorConfig;
+                let c = APP.ooconfig.editorConfig.customization;
+                copy(APP.ooconfig.editorConfig, ec);
+                // Open "goback" in new tabs because of csp and
+                // iframes
+                if (ec.editorConfig?.customization?.goback) {
+                    c.goback.blank = true;
+                }
+                c.forcesave = true;
+            }
+
+            // Always hide right menu
+            localStorage?.original.removeItem('sse-hide-right-settings');
+            localStorage?.original.removeItem('de-hide-right-settings');
+            localStorage?.original.removeItem('pe-hide-right-settings');
 
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
             ooLoaded = true;
@@ -2670,7 +2726,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 },
                 sfCommon: common,
                 $container: $bar,
-                $contentContainer: $('#cp-app-oo-container')
+                $contentContainer: $('#cp-app-oo-container'),
+                skipLink: 'iframe[name="frameEditor"]|#editor_sdk'
             };
             toolbar = APP.toolbar = Toolbar.create(configTb);
             toolbar.showColors();
@@ -3176,9 +3233,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                                 return void UI.errorLoadingScreen(Messages.error);
                             }
                             var blob = new Blob([bin], {type: 'text/plain'});
-                            var file = getFileType();
-                            resetData(blob, file);
-                            //saveToServer(blob, title);
+                            //var file = getFileType();
+                            //resetData(blob, file);
+                            saveToServer(blob, title);
                             Title.updateTitle(title);
                             UI.removeLoadingScreen();
                         });
@@ -3189,13 +3246,17 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     let cfg = privateData.integrationConfig || {};
                     common.openIntegrationChannel(APP.onLocal);
                     integrationChannel = common.getSframeChannel();
+                    let hasUnsavedChanges = false;
                     var integrationSave = function (cb) {
                         var ext = cfg.fileType;
 
                         var upload = Util.once(function (_blob) {
                             integrationChannel.query('Q_INTEGRATION_SAVE', {
                                 blob: _blob
-                            }, cb, {
+                            }, obj => {
+                                if (!obj?.error) { hasUnsavedChanges = false; }
+                                cb(obj);
+                            }, {
                                 raw: true
                             });
                         });
@@ -3216,21 +3277,46 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     };
                     var inte = common.createIntegration(integrationSave,
                                                 integrationHasUnsavedChanges);
-                    if (inte) {
+                    if (inte && cfg.autosave) {
                         evIntegrationSave.reg(function () {
                             inte.changed();
                         });
+                    } else {
+                        APP.integrationSave = integrationSave;
+                        APP.integrationSetSaved = () => {
+                            hasUnsavedChanges = false;
+                        };
+                        evIntegrationSave.reg(function () {
+                            hasUnsavedChanges = true;
+                        });
                     }
+                    $(window).on('beforeunload', function (ev) {
+                        if (hasUnsavedChanges) { return false; }
+                        ev.returnValue = '';
+                    });
                     integrationChannel.on('Q_INTEGRATION_NEEDSAVE', function (data, cb) {
+                        if (!cfg.autosave) { return; }
                         integrationSave(function (obj) {
                             if (obj && obj.error) { console.error(obj.error); }
                             cb();
                         });
                     });
-                    if (privateData.initialState) {
+
+                    /* test button
+                    if (!cfg.autosave) {
+                        let $save = common.createButton('save', true, {}, function () {
+                            $save.attr('disabled', 'disabled');
+                            integrationSave(() => {
+                                $save.removeAttr('disabled');
+                            });
+                        });
+                        $('body').prepend($save);
+                    }
+                    */
+
+                    if (privateData.initialState && (!content || !content.hashes || !Object.keys(content.hashes).length)) {
                         var blob = privateData.initialState;
                         let title = `document.${cfg.fileType}`;
-                        console.error(blob, title);
                         return convertImportBlob(blob, title);
                     }
                 }
@@ -3365,6 +3451,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             var wasMigrating = content.migration;
 
             var myLocks = getUserLock(getId(), true);
+            //var integrationSave = content.integrationSave;
 
             content = json.content;
 
@@ -3373,6 +3460,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 fixSheets();
                 // If the checkpoint is not saved in 20s to 40s, do it ourselves
                 checkCheckpoint();
+            }
+
+            // Integration: mark the current content as saved
+            // if manually saved by someone else
+            if (content.integrationSave !== APP.integrationSaved) {
+                APP.integrationSaved = content.integrationSave;
+                if (APP.integrationSetSaved) {
+                    APP.integrationSetSaved();
+                }
             }
 
             var editor = getEditor();
@@ -3409,7 +3505,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             if (content.ids) {
                 handleNewIds(oldIds, content.ids);
-                oldIds = JSON.parse(JSON.stringify(content.ids));
+                oldIds = structuredClone(content.ids);
             }
             if (content.locks) {
                 handleNewLocks(oldLocks, content.locks);

@@ -43,6 +43,7 @@ define([
              SF, Cursor, Support, Integration, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              Calendar, Block, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, Netflux, nThen, Saferphore) {
+    const Nacl = window.nacl;
 
     var onReadyEvt = Util.mkEvent(true);
     var onCacheReadyEvt = Util.mkEvent(true);
@@ -467,6 +468,19 @@ define([
             });
         };
 
+        var initTempRpc = (clientId, cb) => {
+            if (store.rpc) { return void cb(store.rpc); }
+            var kp = Crypto.Nacl.sign.keyPair();
+            var keys = {
+                edPublic: Crypto.Nacl.util.encodeBase64(kp.publicKey),
+                edPrivate: Crypto.Nacl.util.encodeBase64(kp.secretKey)
+            };
+            Pinpad.create(store.network, keys, function (e, call) {
+                if (e) { return void cb({error: e}); }
+                store.rpc = call;
+                cb(call);
+            });
+        };
         var initRpc = function (clientId, data, cb) {
             if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
@@ -474,6 +488,7 @@ define([
                 if (e) { return void cb({error: e}); }
 
                 store.rpc = call;
+
                 store.onRpcReadyEvt.fire();
 
                 Store.getPinLimit(null, null, function (obj) {
@@ -1830,7 +1845,7 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
-                Cache: Cache, // ICE pad cache
+                Cache: store.neverCache ? undefined : Cache,
                 onCacheStart: function () {
                     postMessage(clientId, "PAD_CACHE");
                 },
@@ -3160,7 +3175,7 @@ define([
 
         // If we load CryptPad for the first time from an existing pad, don't create a
         // drive automatically.
-        var onNoDrive = function (clientId, cb) {
+        var onNoDrive = function (clientId, cb, initRpc) {
             var andThen = function () {
                 // To be able to use all the features inside the pad, we need to
                 // initialize the chat (messenger) and the cursor modules.
@@ -3171,9 +3186,16 @@ define([
                 store.messenger = store.modules['messenger'];
 
                 // And now we're ready
-                initAnonRpc(null, null, function () {
-                    cb({});
-                });
+                let getAnon = () => {
+                    initAnonRpc(null, null, function () {
+                        cb({});
+                    });
+                };
+
+                if (initRpc) {
+                    return initTempRpc(clientId, getAnon);
+                }
+                getAnon();
             };
 
             // We need an anonymous RPC to be able to check if the pad exists and to get
@@ -3256,7 +3278,8 @@ define([
             // First tab, no user hash, no anon hash and this app doesn't need a drive
             // ==> don't create a drive
             // Or "neverDrive" (integration into another platform?)
-            // ==> don't create a drive
+            // ==> don't create a drive BUT create temp RPC (we may need to upload)
+            if (data.neverDrive) { store.neverCache = true; }
             if (data.neverDrive || (data.noDrive && !data.userHash && !data.anonHash)) {
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
@@ -3270,7 +3293,7 @@ define([
                     }
                     Feedback.send("NO_DRIVE", true);
                     callback(obj);
-                });
+                }, !!data.neverDrive);
             }
 
             initialized = true;
