@@ -342,27 +342,6 @@ define([
                     }
                 }
             });
-            const $keyBtn = $(keyButton);
-            Util.onClickEnter($keyBtn, () => {
-                let val = $keyInput.val().trim();
-                let key = Keys.canonicalize(val);
-                if (!key) { return; }
-                // We have a valid key
-                let name = Messages.admin_admin;
-                try {
-                    let parsed = Keys.parseUser(val);
-                    name = parsed.user;
-                } catch (e) {}
-                $keyBtn.prop('disabled', 'disabled');
-                addAdmin({ ed:key, name }, (err) => {
-                    $keyBtn.prop('disabled', false);
-                    if (!err) { $keyInput.val(''); }
-                    // refresh
-                    APP.updateStatus(function () {
-                        evRefreshAdmins.fire();
-                    });
-                });
-            });
 
             const drawContacts = () => {
                 $div.empty();
@@ -402,12 +381,33 @@ define([
                     }).nThen(() => {
                         APP.updateStatus(function () {
                             evRefreshAdmins.fire();
-                            drawContacts();
                         });
                     });
                 });
                 evRefreshAdmins.reg(() => {
                     drawContacts();
+                });
+
+                const $keyBtn = $(keyButton);
+                Util.onClickEnter($keyBtn, () => {
+                    let val = $keyInput.val().trim();
+                    let key = Keys.canonicalize(val);
+                    if (!key) { return; }
+                    // We have a valid key
+                    let name = Messages.admin_admin;
+                    try {
+                        let parsed = Keys.parseUser(val);
+                        name = parsed.user;
+                    } catch (e) {}
+                    $keyBtn.prop('disabled', 'disabled');
+                    addAdmin({ ed:key, name }, (err) => {
+                        $keyBtn.prop('disabled', false);
+                        if (!err) { $keyInput.val(''); }
+                        // refresh
+                        APP.updateStatus(function () {
+                            evRefreshAdmins.fire();
+                        });
+                    });
                 });
 
                 const list = blocks.form([
