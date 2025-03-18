@@ -133,6 +133,19 @@
         }
     }
 
+    .cp-form-iseditor {
+        .cp-form-block header {
+            display: flex !important;
+        }
+    }
+    .cp-form-creator-results {
+        .cp-form-block-type {
+            float: right;
+            margin-top: -10px;
+            margin-right: -10px;
+        }
+    }
+
     &.cp-form-readonly {
         .cp-form-creator-inline-add {
             display: none;
@@ -321,7 +334,6 @@
             div.cp-form-creator-content {
                 position: relative;
                 .cp-form-block-type {
-                    margin-top: -35px;
                     &.editable {
                         cursor: pointer;
                     }
@@ -396,27 +408,26 @@
                 flex-flow: column;
                 flex: 1 1 1000px;
                 &.cp-no-drag {
-                    .cp-form-block-arrows {
-                        justify-content: space-between;
-                        max-width: fit-content;
-                        margin-inline: auto;
-                        padding: 5px;
-                        margin-top: -35px;
-                        border-radius: 0px @variables_radius 0px 0px;
-                        display: flex !important;
-                        column-gap: 20px;
-                        .cp-form-arrow {
-                            background-color: transparent;
-                            border: none;
-                            color: @cryptpad_text_col;
-                            &:focus-visible {
-                                border-radius: @variables_radius;
-                                outline: @variables_focus_style;
+                    .cp-form-block {
+                        .cp-form-block-arrows {
+                            padding-left: 5px;
+                            border-radius: 0px @variables_radius 0px 0px;
+                            display: flex;
+                            column-gap: 10px;
+                            .cp-form-arrow {
+                                display: block;
+                                background-color: transparent;
+                                border: none;
+                                color: @cryptpad_text_col;
+                                &:focus-visible {
+                                    border-radius: @variables_radius;
+                                    outline: @variables_focus_style;
+                                }
                             }
                         }
-                    }
-                    .fa-ellipsis-h {
-                        display: none !important;
+                        .cp-form-block-drag-handle {
+                            display: none !important;
+                        }
                     }
                 }
 
@@ -610,6 +621,14 @@
                         margin-bottom: 20px;
                     }
 
+                    header {
+                        display: none;
+                        justify-content: space-between;
+                        margin-top: -10px;
+                        margin-left: -10px;
+                        margin-right: -10px;
+                    }
+
                     .cp-form-disabled {
                         .cp-form-poll-choice, .cp-form-type-sort {
                             cursor: not-allowed !important;
@@ -625,15 +644,16 @@
                     .cp-form-block-drag-handle {
                         display: flex;
                         flex-flow: column;
-                        height: 25px;
-                        align-items: center;
+                        width: 50px;
+                        justify-content: center;
+                        padding-left: 10px;
+                        font-size: 20px;
                         color: @cp_sidebar-hint;
                         i {
                             cursor: grab;
                             &:first-child {
                                 height: 3px;
-                                margin-top: -10px;
-                                margin-bottom: 1px;
+                                margin-bottom: 2px;
                             }
                         }
                     }
@@ -1016,10 +1036,10 @@
             }
         }
         .cp-form-block-type {
-            float: right;
+            //float: right;
             padding: 5px;
-            margin-top: -10px;
-            margin-right: -10px;
+            //margin-top: -10px;
+            //margin-right: -10px;
             border-radius: 0px @variables_radius 0px 0px;
             i { margin-right: 5px; }
             background: fade(@cryptpad_text_col, 10%);

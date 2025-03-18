@@ -4020,7 +4020,7 @@ define([
             var changeType;
             let shiftButtons;
             if (editable) {
-                // Arrows 
+                // Arrows
                 var upButton = h('button.cp-form-arrow', {
                     'data-notippy':1,
                     'title': Messages.moveItemUp,
@@ -4049,13 +4049,14 @@ define([
                 $(downButton).click(function () {
                     shiftBlock('down');
                 });
-                shiftButtons = h('div.cp-form-block-arrows', [ 
+                shiftButtons = h('div.cp-form-block-arrows', [
                     upButton,
                     downButton
                 ]);
 
+
                 // Drag handle
-                var dragEllipses = [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')]; 
+                var dragEllipses = [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')];
                 dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
 
                 // Question
@@ -4300,9 +4301,11 @@ define([
                 'data-id':uid,
                 'data-type':type
             }, [
-                APP.isEditor ? dragHandle : undefined,
-                shiftButtons,
-                changeType,
+                h('header', [
+                    APP.isEditor ? dragHandle : undefined,
+                    shiftButtons,
+                    changeType
+                ]),
                 isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
                     APP.isEditor && !isStatic ? requiredDiv : undefined,
