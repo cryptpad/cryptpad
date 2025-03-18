@@ -1186,7 +1186,7 @@ define([
                 commitTags();
             });
 
-            let toggleTagsButton = h('button.btn.btn-default.cp-kanban-toggle-tags', [
+            let toggleTagsButton = h('button.btn.btn-default-alt.cp-kanban-toggle-tags', [
                 h('i.fa.fa-tags'),
                 h('span', Messages.fm_tagsName)
             ]);
@@ -1199,8 +1199,8 @@ define([
                 $tags.toggle();
                 let visible = $tags.is(':visible');
                 $(toggleContainer).toggleClass('cp-kanban-container-flex', !visible);
-                $toggleBtn.toggleClass('btn-default', visible);
-                $toggleBtn.toggleClass('btn-default-alt', !visible);
+                $toggleBtn.toggleClass('btn-default-alt', visible);
+                $toggleBtn.toggleClass('btn-default', !visible);
             };
             $toggleBtn.click(function() {
                 toggleClicked = true;
