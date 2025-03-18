@@ -133,6 +133,19 @@
         }
     }
 
+    .cp-form-iseditor {
+        .cp-form-block header {
+            display: flex !important;
+        }
+    }
+    .cp-form-creator-results {
+        .cp-form-block-type {
+            float: right;
+            margin-top: -10px;
+            margin-right: -10px;
+        }
+    }
+
     &.cp-form-readonly {
         .cp-form-creator-inline-add {
             display: none;
@@ -202,6 +215,32 @@
             min-width: 300px;
             //flex-wrap: wrap;
             overflow: auto;
+
+            .cp-drag-container {
+                display: flex;
+                flex-direction: row;
+
+                button.cp-form-view-drag {
+                    margin: 0;
+                    padding: 1px 4px;
+                    width: 30px;
+                    height: 30px;
+                    border: none;
+                    border-radius: @variables_radius 0px 0px @variables_radius;
+                    background-color: @cp_form-bg1;
+                    color: @cryptpad_text_col;
+                    &:focus-visible {
+                        outline: @variables_focus_style;
+                    }
+                    &.cp-toggle-active {
+                        color: @cp_form-bg1;
+                        background-color: @cryptpad_text_col;
+                    }
+                }
+                #cp-toggle-drag-on {
+                    border-radius: 0px @variables_radius @variables_radius 0px !important;
+                }
+            }
 
             @media screen and (max-width: 1000px) {
                 flex-wrap: wrap;
@@ -295,7 +334,6 @@
             div.cp-form-creator-content {
                 position: relative;
                 .cp-form-block-type {
-                    margin-top: -35px;
                     &.editable {
                         cursor: pointer;
                     }
@@ -369,6 +407,29 @@
                 display: flex;
                 flex-flow: column;
                 flex: 1 1 1000px;
+                &.cp-no-drag {
+                    .cp-form-block {
+                        .cp-form-block-arrows {
+                            padding-left: 5px;
+                            border-radius: 0px @variables_radius 0px 0px;
+                            display: flex;
+                            column-gap: 10px;
+                            .cp-form-arrow {
+                                display: block;
+                                background-color: transparent;
+                                border: none;
+                                color: @cryptpad_text_col;
+                                &:focus-visible {
+                                    border-radius: @variables_radius;
+                                    outline: @variables_focus_style;
+                                }
+                            }
+                        }
+                        .cp-form-block-drag-handle {
+                            display: none !important;
+                        }
+                    }
+                }
 
                 .cp-form-creator-add-inline {
                     display: flex;
@@ -560,6 +621,14 @@
                         margin-bottom: 20px;
                     }
 
+                    header {
+                        display: none;
+                        justify-content: space-between;
+                        margin-top: -10px;
+                        margin-left: -10px;
+                        margin-right: -10px;
+                    }
+
                     .cp-form-disabled {
                         .cp-form-poll-choice, .cp-form-type-sort {
                             cursor: not-allowed !important;
@@ -575,17 +644,21 @@
                     .cp-form-block-drag-handle {
                         display: flex;
                         flex-flow: column;
-                        height: 25px;
-                        align-items: center;
+                        width: 50px;
+                        justify-content: center;
+                        padding-left: 10px;
+                        font-size: 20px;
                         color: @cp_sidebar-hint;
                         i {
                             cursor: grab;
                             &:first-child {
                                 height: 3px;
-                                margin-top: -10px;
-                                margin-bottom: 1px;
+                                margin-bottom: 2px;
                             }
                         }
+                    }
+                    .cp-form-block-arrows {
+                        display: none;
                     }
 
                     &.sortable-ghost { visibility: hidden; }
@@ -963,10 +1036,10 @@
             }
         }
         .cp-form-block-type {
-            float: right;
+            //float: right;
             padding: 5px;
-            margin-top: -10px;
-            margin-right: -10px;
+            //margin-top: -10px;
+            //margin-right: -10px;
             border-radius: 0px @variables_radius 0px 0px;
             i { margin-right: 5px; }
             background: fade(@cryptpad_text_col, 10%);
