@@ -502,6 +502,7 @@ define([
             if (event.key === "Escape") {
                 cm.getInputField().blur();
                 event.preventDefault();
+                $(save).focus();
             }
         });
 
