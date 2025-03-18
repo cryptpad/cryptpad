@@ -10,7 +10,6 @@ define([
     '/components/pako/dist/pako.min.js',
     '/common/common-hash.js',
     '/api/config',
-    'jquery',
 ], function (
     Util,
     FileCrypto,
@@ -19,7 +18,6 @@ define([
     pako,
     Hash,
     ApiConfig,
-    $,
 ) {
     const Nacl = window.nacl;
     const x2js = new X2JS();
@@ -82,11 +80,6 @@ define([
         }
     };
 
-    const xmlAsJsonContent = (xml) => {
-        var decompressedXml = decompressDrawioXml(xml);
-        return numbersToNumbers(x2js.xml2js(decompressedXml));
-    };
-
     // As described here: https://drawio-app.com/extracting-the-xml-from-mxfiles/
     const decompressDrawioXml = function(xmlDocStr) {
         var TEXT_NODE = 3;
@@ -121,6 +114,12 @@ define([
         var result = new XMLSerializer().serializeToString(doc);
         return result;
     };
+
+    const xmlAsJsonContent = (xml) => {
+        var decompressedXml = decompressDrawioXml(xml);
+        return numbersToNumbers(x2js.xml2js(decompressedXml));
+    };
+
 
     const parseDrawioStyle = (styleAttrValue) => {
         if (!styleAttrValue) {
