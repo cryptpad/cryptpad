@@ -542,7 +542,7 @@ define([
                     }, team.metadata.name),
                 ]);
                 list.push(teamDiv);
-                if (team.offline) {
+                if (team.offline && team.error) {
                     $(avatar).append(h('div.cp-team-spinner-container', h('span.cp-team-spinner')));
                 } else {
                     common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
