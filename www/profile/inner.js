@@ -119,7 +119,7 @@ define([
         }
         
         // Always create the description container
-        var $blockDescription = $('<div>', {class: DESCRIPTION_ID}).appendTo($container);
+        var $blockDescription = $('<div>', {id: DESCRIPTION_ID}).appendTo($container);
         APP.$descriptionContainer = $blockDescription;
         APP.$description = $('<div>', {
             'id': 'cp-app-profile-description-info'
