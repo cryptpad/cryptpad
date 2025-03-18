@@ -151,6 +151,7 @@ define([
     };
 
     var addEditItemButton = function () {};
+    var addMoveElementButton = function () {};
 
     var onRemoteChange = Util.mkEvent();
     var now = function () { return +new Date(); };
@@ -161,6 +162,7 @@ define([
         kanban.setBoards(Util.clone(boards));
         kanban.inEditMode = false;
         addEditItemButton(framework, kanban);
+        addMoveElementButton(framework, kanban);
         restoreCursor(cursor);
         onRemoteChange.fire();
     };
@@ -540,6 +542,140 @@ define([
         UI.openCustomModal(editModal.modal);
     };
 
+    addMoveElementButton = function (framework, kanban) {
+        if (!kanban) { return; }
+        if (framework.isReadOnly() || framework.isLocked()) { return; }
+        var $container = $(kanban.element);
+        var drag = kanban.drag;
+        kanban.options.dragBoards = drag;
+        kanban.options.dragItems = drag;
+        $container.find('.kanban-board').each(function (i, el) {
+            $(el).find('.item-icon-container').remove();
+            $(el).find('.kanban-board-header').removeClass('no-drag');
+        });
+        $container.find('.kanban-item').each(function (i, el) {
+            $(el).find('.item-arrow-container').remove();
+            $(el).removeClass('no-drag');
+        });
+        if (drag === false) {
+            var move = function (arr, oldIndex, newIndex) {
+                arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+                _updateBoards(framework, kanban, kanban.options.boards, false);
+            };
+
+            var moveBetweenBoards = function (nextBoardItems, elId, boardItems, index, boards) {
+                nextBoardItems.unshift(elId);
+                boardItems.splice(index, 1);
+                _updateBoards(framework, kanban, boards, false);
+                $(`.kanban-item[data-eid="${elId}"]`)[0].scrollIntoView();
+            };
+
+            var shiftItem = function (direction, el) {
+                var board = $(el).closest('.kanban-board');
+                var boards = kanban.options.boards;
+                var elId = parseInt($(el).attr("data-eid"));
+                var boardId = parseInt($(board).attr("data-id"));
+                var boardItems = boards.data[boardId].item;
+                var index = boardItems.indexOf(elId);
+                var boardIndex = boards.list.indexOf(parseInt(boardId));
+                let nextBoardItems;
+
+                if (direction === 'up' && index > 0) {
+                    move(boardItems, index, index-1);
+                } else if (direction === 'down' && index < boardItems.length-1) {
+                    move(boardItems, index, index+1);
+                } else if (direction === 'left' && boardIndex > 0) {
+                    nextBoardItems = boards.data[boards.list[boardIndex-1]].item;
+                    moveBetweenBoards(nextBoardItems, elId, boardItems, index, boards, boardId);
+                } else if (direction === 'right' && boardIndex < kanban.options.boards.list.length-1){
+                    nextBoardItems = boards.data[boards.list[boardIndex+1]].item;
+                    moveBetweenBoards(nextBoardItems, elId, boardItems, index, boards, boardId);
+                }
+            };
+
+            var shiftBoards = function (direction, el) {
+                var elId = $(el).attr("data-id");
+                var index = kanban.options.boards.list.indexOf(parseInt(elId));
+                if (direction === 'left' && index > 0) {
+                    move(kanban.options.boards.list, index, index-1);
+                } else if (direction === 'right' && index < kanban.options.boards.list.length-1) {
+                    move(kanban.options.boards.list, index, index+1);
+                }
+                $(`.kanban-board[data-id="${elId}"]`)[0].scrollIntoView();
+            };
+            $container.find('.kanban-board').each(function (i, el) {
+                $(el).find('.kanban-board-header').addClass('no-drag');
+                var arrowContainer = h('div.item-icon-container');
+                $(arrowContainer).appendTo($(el).find('.kanban-board-header'));
+                $(h('button', {
+                    'class': 'cp-kanban-arrow board-arrow',
+                    'title': Messages.kanban_moveBoardLeft,
+                    'aria-label': Messages.kanban_moveBoardLeft
+                }, [
+                    h('i.fa.fa-arrow-left', {'aria-hidden': true})
+                ])).click(function () { 
+                    shiftBoards('left', el);
+                }).appendTo(arrowContainer);
+                $(h('button', {
+                    'class': 'cp-kanban-arrow board-arrow',
+                    'title': Messages.kanban_moveBoardRight,
+                    'aria-label': Messages.kanban_moveBoardRight
+                }, [
+                    h('i.fa.fa-arrow-right', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftBoards('right', el);
+                }).appendTo(arrowContainer);
+            });
+            $container.find('.kanban-item').each(function (i, el) {
+                $(el).addClass('no-drag');
+                var arrowContainerItem = h('div.item-arrow-container');
+                $(arrowContainerItem).appendTo((el));
+                $(h('button', {
+                    'data-notippy':1,
+                    'class': 'cp-kanban-arrow item-arrow',
+                    'title': Messages.moveItemLeft,
+                    'aria-label': Messages.moveItemLeft
+                }, [
+                    h('i.fa.fa-arrow-left', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftItem('left', el);
+                }).appendTo(arrowContainerItem);
+                var centralArrowContainerItem = h('div.item-central-arrow-container');
+                $(centralArrowContainerItem).appendTo(arrowContainerItem);
+                $(h('button', {
+                    'data-notippy':1,
+                    'class': 'cp-kanban-arrow item-arrow',
+                    'title': Messages.moveItemDown,
+                    'aria-label': Messages.moveItemDown
+                }, [
+                    h('i.fa.fa-arrow-down', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftItem('down', el);
+                }).appendTo(centralArrowContainerItem);
+                $(h('button', {
+                    'data-notippy':1,
+                    'class': 'cp-kanban-arrow item-arrow',
+                    'title': Messages.moveItemUp,
+                    'aria-label': Messages.moveItemUp
+                }, [
+                    h('i.fa.fa-arrow-up', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftItem('up', el);
+                }).appendTo(centralArrowContainerItem);
+                $(h('button', {
+                    'data-notippy':1,
+                    'class': 'cp-kanban-arrow item-arrow',
+                    'title': Messages.moveItemRight,
+                    'aria-label': Messages.moveItemRight
+                }, [
+                    h('i.fa.fa-arrow-right', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftItem('right', el);
+                }).appendTo(arrowContainerItem);
+            });
+        } 
+    };
+
     addEditItemButton = function (framework, kanban) {
         if (!kanban) { return; }
         if (framework.isReadOnly() || framework.isLocked()) { return; }
@@ -547,20 +683,26 @@ define([
         $container.find('.kanban-edit-item').remove();
         $container.find('.kanban-item').each(function (i, el) {
             var itemId = $(el).attr('data-eid');
-            $('<button>', {
-                'class': 'kanban-edit-item fa fa-pencil',
-                'alt': Messages.kanban_editCard,
-            }).click(function (e) {
+            $(h('button', {
+                'class': 'kanban-edit-item',
+                'title': Messages.kanban_editCard,
+                'aria-label': Messages.kanban_editCard
+            }, [
+                h('i.fa.fa-pencil', {'aria-hidden': true})
+            ])).click(function (e) {
                 getItemEditModal(framework, kanban, itemId);
                 e.stopPropagation();
             }).insertAfter($(el).find('.kanban-item-text'));
         });
         $container.find('.kanban-board').each(function (i, el) {
             var itemId = $(el).attr('data-id');
-            $('<button>', {
-                'class': 'kanban-edit-item fa fa-pencil',
-                'alt': Messages.kanban_editBoard,
-            }).click(function (e) {
+            $(h('button', {
+                'class': 'kanban-edit-item',
+                'title': Messages.kanban_editBoard,
+                'aria-label': Messages.kanban_editBoard
+            }, [
+                h('i.fa.fa-pencil', {'aria-hidden': true})
+            ])).click(function (e) {
                 getBoardEditModal(framework, kanban, itemId);
                 e.stopPropagation();
             }).appendTo($(el).find('.kanban-board-header'));
@@ -665,6 +807,7 @@ define([
             buttonContent: '❌',
             readOnly: framework.isReadOnly() || framework.isLocked(),
             tagsAnd: _tagsAnd,
+            dragItems: true,
             refresh: function () {
                 onRedraw.fire();
             },
@@ -673,6 +816,7 @@ define([
                 framework.localChange();
                 if (kanban) {
                     addEditItemButton(framework, kanban);
+                    addMoveElementButton(framework, kanban);
                 }
             },
             click: function (el) {
@@ -847,6 +991,7 @@ define([
                         item.tags = kanban.options.tags;
                     }
                     kanban.addElement(boardId, item, isTop);
+                    addMoveElementButton(framework, kanban);
                 };
                 $input.blur(save);
                 $input.keydown(function (e) {
@@ -930,8 +1075,8 @@ define([
         var $cContainer = $('#cp-app-kanban-container');
         var addControls = function () {
             // Quick or normal mode
-            var small = h('span.cp-kanban-view-small.fa.fa-minus');
-            var big = h('span.cp-kanban-view.fa.fa-bars');
+            var small = h('button.cp-kanban-view-small.fa.fa-minus');
+            var big = h('button.cp-kanban-view.fa.fa-bars');
             $(small).click(function () {
                 if ($cContainer.hasClass('cp-kanban-quick')) { return; }
                 $cContainer.addClass('cp-kanban-quick');
@@ -990,6 +1135,7 @@ define([
                 kanban.options.tags = t;
                 kanban.setBoards(kanban.options.boards);
                 addEditItemButton(framework, kanban);
+                addMoveElementButton(framework, kanban);
             };
 
             var redrawList = function (allTags) {
@@ -1080,9 +1226,29 @@ define([
 
             $(window).on('resize', resizeTags);
 
+            var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : 'cp-toggle-inactive'; 
+            var toggleOnclass = 'ontouchstart' in window ? 'cp-toggle-inactive' : 'cp-toggle-active'; 
+            var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}.fa.fa-arrows`, {'title': Messages.toggleArrows, 'tabindex': 0});
+            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'title': Messages.toggleDrag, 'tabindex': 0});
+            kanban.drag = 'ontouchstart' in window ? false : true;
+            const updateDrag = state => {
+                return function () {
+                    $(toggleDragOn).toggleClass('cp-toggle-active', state).toggleClass('cp-toggle-inactive', !state);
+                    $(toggleDragOff).toggleClass('cp-toggle-active', !state).toggleClass('cp-toggle-inactive', state);
+                    kanban.drag = state;
+                    addMoveElementButton(framework, kanban);
+                };
+            };
+            $(toggleDragOn).click(updateDrag(true));
+            $(toggleDragOff).click(updateDrag(false));
+
             var container = h('div#cp-kanban-controls', [
                 toggleContainer,
                 tags,
+                h('div.cp-kanban-changeView.drag', [
+                    toggleDragOff,
+                    toggleDragOn
+                ]),
                 h('div.cp-kanban-changeView', [
                     small,
                     big
@@ -1196,6 +1362,7 @@ define([
             if (!kanban) { return; }
             if (unlocked) {
                 addEditItemButton(framework, kanban);
+                addMoveElementButton(framework, kanban);
                 kanban.options.readOnly = false;
                 return void $container.removeClass('cp-app-readonly');
             }
@@ -1300,6 +1467,7 @@ define([
             if (!kanban) {
                 kanban = initKanban(framework, (newContent || {}).content);
                 addEditItemButton(framework, kanban);
+                addMoveElementButton(framework, kanban);
                 return;
             }
 

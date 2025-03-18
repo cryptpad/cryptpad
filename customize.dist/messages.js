@@ -142,6 +142,16 @@ define(req, function(AppConfig, Default, Language) {
     Messages.positiveNumber_error = "Please enter a positive number"; // XXX
     Messages.answerType_error = "Please select how to answer the form"; // XXX
 
+    Messages.moveItemLeft = 'Move item left'; // XXX
+    Messages.moveItemRight = 'Move item right'; // XXX
+    Messages.kanban_moveBoardLeft = 'Move board left'; // XXX
+    Messages.kanban_moveBoardRight = 'Move board right'; // XXX
+
+    Messages.moveItemUp = 'Move item up'; // XXX
+    Messages.moveItemDown = 'Move item down'; // XXX
+    Messages.toggleArrows = 'Switch to arrow view'; // XXX
+    Messages.toggleDrag = 'Switch to drag view'; // XXX
+
         // XXX
         Messages.admin_cat_admins = "Administrators";
         Messages.admin_admin = "Admin";
@@ -164,11 +174,6 @@ define(req, function(AppConfig, Default, Language) {
     Messages.fm_link_invalid = "Please provide a valid URL"; // XXX
     Messages.skipLink = "Skip to main content"; // XXX
 
-    //NOTE: these keys are also added to the Kanban mobile UI PR #1727
-    Messages.moveItemUp = 'Move item up'; // XXX
-    Messages.moveItemDown = 'Move item down'; // XXX
-    Messages.toggleArrows = 'Switch to arrow view'; // XXX
-    Messages.toggleDrag = 'Switch to drag view'; // XXX
     return Messages;
 
 });
