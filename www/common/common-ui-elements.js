@@ -597,10 +597,11 @@ define([
         let btnClass = $button.attr('class');
         let btnId = $button.attr('id');
         let btnTitle = $button.attr('title');
+        let btnVisibility = $button.attr('style');
         if (btnClass) { attributes['class'] = btnClass; }
         if (btnId) { attributes['id'] = btnId; }
         if (btnTitle && !attributes.title) { attributes['title'] = btnTitle; }
-
+        if (btnVisibility) { attributes['style'] = btnVisibility; }
         return UIElements.createDropdownEntry({
             tag: 'a',
             attributes: attributes,
@@ -871,7 +872,7 @@ define([
                     h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
-                    $(button).hide();
+                    $('.cp-toolbar-storeindrive').hide();
                     common.getSframeChannel().query("Q_AUTOSTORE_STORE", {
                         forceOwnDrive: true,
                     }, function (err, obj) {
