@@ -2161,24 +2161,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
         };
 
         var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
-            var type = common.getMetadataMgr().getPrivateData().ooType;
             var e = getEditor();
 
-            // PDF
-            if (type === "sheet" && extension === "pdf") {
-                var d = e.asc_nativePrint(undefined, undefined, 0x101).ImData;
-                x2tConvertData({
-                    buffer: d.data,
-                    bin: data
-                }, filename, extension, function (res) {
-                    if (res) {
-                        var _blob = new Blob([res], {type: "application/pdf;charset=utf-8"});
-                        UI.removeModals();
-                        saveAs(_blob, finalFilename);
-                    }
-                });
-                return;
-            }
             if (extension === "pdf") {
                 APP.exportPdfName = finalFilename;
                 return void e.asc_Print({});
