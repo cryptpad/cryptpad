@@ -1839,7 +1839,7 @@ define([
                 validate: function () {
                     var l = parseInt($(newLimit).val());
                     if (isNaN(l)) {
-                        return UI.warn(Messages.limit_error);
+                        return UI.warn(Messages.error_limit);
                     }
                     return true;
                 }
@@ -3916,14 +3916,14 @@ define([
                 validate: function () {
                     var l = parseInt($(newDuration).val());
                     if (isNaN(l)) {
-                        return void UI.warn(Messages.limit_error);
+                        return void UI.warn(Messages.error_limit);
                     }
                     return true;
                 }
             }, function () {
                 var d = parseInt($(newDuration).val());
                 if (!isPositiveInteger(d)) {
-                    return void UI.warn(Messages.positiveNumber_error);
+                    return void UI.warn(Messages.error_positiveNumber);
                 }
 
                 var data = [d];
