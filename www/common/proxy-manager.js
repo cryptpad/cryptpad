@@ -235,11 +235,25 @@ define([
     var findFile = function (Env, id) {
         var ret = [];
         var userObjects = _getUserObjects(Env);
+        let mainRes = {};
         userObjects.forEach(function (uo) {
-            var fPath = _getUserObjectPath(Env, uo);
-            var results = uo.findFile(id);
-            if (fPath) {
+            var fId = Number(uo.id);
+            let results;
+            if (!fId) {
+                // Main drive: get the paths of all the SF
+                // in addition to the paths of the requested file
+                let ids = [id];
+                let fIds = userObjects.map(uo => {
+                    return +uo.id;
+                }).filter(Boolean);
+                Array.prototype.push.apply(ids, fIds);
+                mainRes = uo.findFiles(ids); // Store paths of each SF
+                results = mainRes[id]; // Paths of requested file
+            } else {
+                results = uo.findFile(id);
                 // This is a shared folder, we have to fix the paths in the results
+                let fPath = (mainRes[fId] || [])[0];
+                if (!fPath) { return; } // Can't search into this sf
                 results.forEach(function (p) {
                     Array.prototype.unshift.apply(p, fPath);
                 });
@@ -263,9 +277,7 @@ define([
                 Array.prototype.push.apply(ids, fIds);
             }
             var results = uo.findFiles(ids);
-            if (!uo.id) {
-                mainRes = results;
-            }
+            if (!uo.id) { mainRes = results; }
             //console.error(results);
             if (fId) {
                 // This is a shared folder, we have to fix the paths in the results

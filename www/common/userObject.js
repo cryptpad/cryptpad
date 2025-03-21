@@ -609,13 +609,13 @@ define([
             return _findFileInRoot([ROOT], files);
         };
         */
-        var _findFileInHrefArray = function (rootName, files) {
+        var _findFileInHrefArray = function (rootName, toFind) {
             if (sharedFolder) { return {}; }
             if (!files[rootName]) { return {}; }
             var unsorted = files[rootName].slice();
             var ret = {};
             var i = -1;
-            files.forEach(file => {
+            toFind.forEach(file => {
                 while ((i = unsorted.indexOf(file, i+1)) !== -1){
                     ret[file] ||= [];
                     ret[file].push([rootName, i]);
@@ -650,7 +650,7 @@ define([
                     nPath.push('element');
                     if (isFile(el.element)) {
                         files.some(file => {
-                            if (compareFiles(file, root)) {
+                            if (compareFiles(file, el.element)) {
                                 paths[file] ||= [];
                                 paths[file].push(nPath);
                             }
