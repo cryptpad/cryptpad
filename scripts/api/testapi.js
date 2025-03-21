@@ -1,7 +1,7 @@
-const Messages = require('./src/messages');
-const AppConfig = require('./customize/application_config');
+const Messages = require('../../src/messages');
+const AppConfig = require('../../customize/application_config');
 //const App = require('./_build/worker.bundle');
-const Store = require('./www/common/store-interface');
+const Store = require('../../www/common/store-interface');
 const Http = require('node:http');
 
 

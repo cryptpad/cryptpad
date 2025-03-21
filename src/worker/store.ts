@@ -1,6 +1,6 @@
-import nacl from 'tweetnacl/nacl-fast';
+//import nacl from 'tweetnacl/nacl-fast';
 import { Module } from './types';
-import { TestModule, TestModuleObject } from './modules/test';
+//import { TestModule, TestModuleObject } from './modules/test';
 
 import { Account } from './components/account';
 

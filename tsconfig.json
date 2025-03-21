@@ -4,7 +4,7 @@
         "target": "es6",
         "lib": ["ES2017", "DOM", "ES2020"],
         "moduleResolution": "node",
-        "outDir": "./_build"
+        "outDir": "./www/common"
     },
     "include": ["src/**/*"]
 }

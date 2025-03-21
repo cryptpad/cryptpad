@@ -44,6 +44,7 @@ module.exports = [{
         "www/code/mermaid*.js",
         "www/code/orgmode.js",
         "www/common/worker.bundle.js",
+        "www/common/worker.bundle.min.js",
         "src/tweetnacl",
         "_build",
         "testapi.js",

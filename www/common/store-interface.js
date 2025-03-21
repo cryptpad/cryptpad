@@ -1,11 +1,9 @@
 (() => {
 const factory = function () {
-    // XXX TODO
-    // Support NodeJS
-    // Support WebWorker
-    // Return a usable API instead of postMsg/msgEv
-    // XXX handle AppConfig, ApiConfig, MEssages and Broadcast in this file directly?
-    // --> pull them using require if browser or... ?
+    let USE_MIN = false;
+
+    let path = '/common/worker.bundle.js?';
+    if (USE_MIN) { path = '/common/worker.bundle.min.js?'; }
 
     let create = function (cfg = {}) {
         let { noWorker, noSharedWorker, AppConfig,
@@ -39,7 +37,7 @@ const factory = function () {
 
             let worker, postMsg;
             if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
-                worker = new SharedWorker('/common/worker.bundle.js?' + urlArgs);
+                worker = new SharedWorker(path + urlArgs);
                 worker.onerror = function (e) {
                     console.error(e.message);
                 };
@@ -68,7 +66,7 @@ const factory = function () {
             }
 
             if (!noWorker && typeof(Worker) !== "undefined") {
-                worker = new Worker('/common/worker.bundle.js?' + urlArgs);
+                worker = new Worker(path + urlArgs);
                 worker.onerror = function (e) {
                     console.error(e.message);
                 };
@@ -93,7 +91,7 @@ const factory = function () {
             // Use the async store in the main thread if workers
             // aren't available
             //if (typeof(require) === "undefined") { return; }
-            require(['/common/worker.bundle.js'], function (Store) {
+            require([path], function (Store) {
                 let store = Store?.store;
                 if (!store) { return void console.error("No store"); }
                 store.onMessage(function (data) {

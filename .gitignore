@@ -32,6 +32,7 @@ www/common/onlyoffice/v*
 /onlyoffice-conf/
 /onlyoffice-dist/
 
+www/common/worker.bundle.js
 _build
 
 # ---> Node

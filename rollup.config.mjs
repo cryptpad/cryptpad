@@ -10,11 +10,30 @@ import json from '@rollup/plugin-json';
 export default {
     //input: "./_src/worker/index.ts",
     input: "./src/worker/store.ts",
-    output: {
+    output: [{
         name: 'cryptpad-worker',
-        file: "./_build/worker.bundle.js",
-        format: "umd"
-    },
+        file: "./www/common/worker.bundle.js",
+        format: "umd",
+        plugins: [
+            terser({
+                format: {
+                    comments: 'some',
+                    beautify: true,
+                    ecma: '2015',
+                },
+                compress: false,
+                mangle: false,
+                module: true,
+            }),
+        ]
+    }, {
+        name: 'cryptpad-worker-min',
+        file: "./www/common/worker.bundle.min.js",
+        format: "umd",
+        plugins: [terser({
+            format: { comments: false, ecma: '2015' }
+        })]
+    }],
     preserveSymlinks: true,
     plugins: [
         json(),
@@ -24,16 +43,6 @@ export default {
         }),
         commonjs({
             ignore:['crypto', 'node:http', 'node:https'] // required by tweetnacl for node
-        }),
-        terser({
-            format: {
-                comments: 'some',
-                beautify: true,
-                ecma: '2015',
-            },
-            compress: false,
-            mangle: false,
-            module: true,
         }),
         //nodePolyfills( /* options */ )
     ]
