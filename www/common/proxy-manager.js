@@ -249,6 +249,43 @@ define([
         });
         return ret;
     };
+    var findFiles = function (Env, ids) {
+        var ret = {};
+        var userObjects = _getUserObjects(Env);
+        let mainRes = {};
+        userObjects.forEach(function (uo) {
+            //var fPath = _getUserObjectPath(Env, uo);
+            var fId = Number(uo.id);
+            if (!uo.id) {
+                let fIds = userObjects.map(uo => {
+                    return +uo.id;
+                }).filter(Boolean);
+                Array.prototype.push.apply(ids, fIds);
+            }
+            var results = uo.findFiles(ids);
+            if (!uo.id) {
+                mainRes = results;
+            }
+            //console.error(results);
+            if (fId) {
+                // This is a shared folder, we have to fix the paths in the results
+                let fPath = (mainRes[fId] || [])[0];
+                if (!fPath) { return; } // Can't search into this sf
+                Object.keys(results).forEach(file => {
+                    results[file].forEach(p => {
+                        Array.prototype.unshift.apply(p, fPath);
+                    });
+                });
+            }
+            // Push the results from this proxy
+            Object.keys(results).forEach(file => {
+                ret[file] ||= [];
+                Array.prototype.push.apply(ret[file], results[file]);
+            });
+        });
+        return ret;
+    };
+
 
     // Returns file IDs corresponding to the provided channels
     var _findChannels = function (Env, channels, onlyMain) {
@@ -1753,6 +1790,7 @@ define([
             getOwnedPads: callWithEnv(getOwnedPads),
             getTagsList: callWithEnv(getTagsList),
             findFile: callWithEnv(findFile),
+            findFiles: callWithEnv(findFiles),
             findChannels: callWithEnv(findChannels),
             getSharedFolderData: callWithEnv(getSharedFolderData),
             getFolderData: callWithEnv(getFolderData),
