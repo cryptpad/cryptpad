@@ -166,7 +166,7 @@ define([
         }, Messages.profile_addLink);
         APP.$linkEdit = $(button);
         $block.append(button);
-        var save = h('button.btn.btn-secondary', { 'aria-labelledby': 'cp-save-link' }, Messages.settings_save);
+        var save = h('button.btn.btn-primary', { 'aria-labelledby': 'cp-save-link' }, Messages.settings_save);
         var text = h('input#cp-save-link');
         var code = h('div.cp-app-profile-link-code', [
             text,
@@ -448,8 +448,9 @@ define([
     };
 
     var addDescription = function ($container) {
-        var $block = $('<div>', {id: DESCRIPTION_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
+        var $block = $('<div>', {id: DESCRIPTION_ID, class: PROFILE_SECTION}).appendTo($container);
 
+        APP.$description = $('<div>', {'id': 'cp-app-profile-description-info'}).appendTo($block);
         APP.$descriptionEdit = $();
         if (APP.readOnly) { return; }
 
@@ -542,7 +543,7 @@ define([
         if (!APP.readOnly) { return; }
         if (!Messages.profile_copyKey) { return; }
 
-        var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
+        var $div = $(h('div.cp-app-profile-section')).appendTo($container);
         APP.$edPublic = $('<button>', {
             'class': 'btn',
             'aria-labelledby': 'cp-profile-copy-key-button'
