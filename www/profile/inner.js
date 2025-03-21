@@ -450,6 +450,10 @@ define([
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID, class: PROFILE_SECTION}).appendTo($container);
 
+        APP.$description = $('<div>', {
+            'id': 'cp-app-profile-description-info'
+        }).appendTo($block);
+
         APP.$descriptionEdit = $();
         if (APP.readOnly) { return; }
 
@@ -473,10 +477,7 @@ define([
             code
         ]);
         $block.append(div);
-
-        APP.$description = $('<div>', {
-            'id': 'cp-app-profile-description-info'
-        }).appendTo($block);
+        $(div).insertBefore(APP.$description);
 
         var cm = SFCodeMirror.create("gfm", CodeMirror, text);
         var editor = APP.editor = cm.editor;
@@ -515,9 +516,6 @@ define([
         });
     };
     var refreshDescription = function (data) {
-        if (!APP.$description) {
-            return;
-        }
         var descriptionData = data.description || "";
         var val = Marked.parse(descriptionData);
         APP.$description.html(val);
