@@ -1,0 +1,10 @@
+Go programs to generate random test vectors for TweetNaCl.js.
+
+Install dependencies:
+
+$ go get code.google.com/p/go.crypto/nacl/box
+$ go get github.com/agl/ed25519
+
+Generate required test vectors:
+
+$ go run FILENAME.go > ../OUTPUT_FILENAME.random.js
