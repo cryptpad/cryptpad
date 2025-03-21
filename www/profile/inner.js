@@ -134,7 +134,7 @@ define([
     };
 
     var addDisplayName = function ($container) {
-        var $block = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
+        var $block = $('<div>', {'class': DISPLAYNAME_ID}).appendTo($container);
         APP.$name = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
     };
     var refreshName = function (data) {
@@ -339,10 +339,10 @@ define([
             var isMuted = muted[data.curvePublic];
             if (isMuted) {
                 var unmuteButton = h('button.btn.btn-secondary.cp-app-profile-friend-request', { 
-                    'aria-labelledby': 'cp-unmute-button'
+                    'aria-labelledby': 'cp-profile-unmute-button'
                 }, [
                     h('i.fa.fa-bell', {'aria-hidden': 'true' }),
-                    h('span#cp-profile-unmute-button', Messages.contacts_unmute || 'Unmute')
+                    h('span#cp-profile-unmute-button', Messages.contacts_unmute || 'unmute')
                 ]);
                 $(unmuteButton).click(function () {
                     module.execCommand('UNMUTE_USER', data.curvePublic, function (e) {
@@ -356,7 +356,7 @@ define([
                  'aria-labelledby': 'cp-profile-mute-button'
                 }, [
                     h('i.fa.fa-bell-slash', {'aria-hidden': 'true' }),
-                    h('span#cp-profile-mute-button', Messages.contacts_mute || 'Mute')
+                    h('span#cp-profile-mute-button', Messages.contacts_mute || 'mute')
                 ]);            
             $(muteButton).click(function () {
                 module.execCommand('MUTE_USER', {
@@ -485,7 +485,6 @@ define([
         editor.setOption('styleActiveLine', true);
         editor.setOption('readOnly', false);
         cm.configureTheme(common, function () {});
-
         editor.setOption("extraKeys", {
             "Esc": function () {
                 cm.getInputField().blur();
@@ -519,7 +518,6 @@ define([
         if (!APP.$description) {
             return;
         }
-        
         var descriptionData = data.description || "";
         var val = Marked.parse(descriptionData);
         APP.$description.html(val);

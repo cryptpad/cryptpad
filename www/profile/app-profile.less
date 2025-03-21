@@ -6,6 +6,7 @@
 
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+@import (reference) '../../customize/src/less2/include/variables.less';
 
 &.cp-app-profile {
 
@@ -115,8 +116,7 @@
         }
         .cp-app-profile-link {
             font-size: 25px;
-            vertical-align: middle;
-            display: inline-block;
+            display: inline;
             overflow-wrap: anywhere;
         }
         .cp-app-profile-displayname, .cp-app-profile-link {
@@ -136,6 +136,11 @@
         & > button:empty {
             margin-left: 25px !important;
         }
+        @media screen and (max-width: @browser_media-medium-screen) {
+            .cp-app-profile-link-code {
+                min-width: 0;
+            }
+        }    
     }
 
     div.cp-app-profile-mute-container.cp-app-profile-section {
