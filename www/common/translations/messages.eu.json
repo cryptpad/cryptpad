@@ -1783,5 +1783,9 @@
     "admin_onboardingOptionsHint": "Mesedez, hautatu aukera egokia zure instantziarako.<br>Ezarpen hauek geroago alda daitezke administrazio panelean.",
     "admin_mfa_confirm_disable": "Ziur faktore anitzeko autentifikazioa desgaitu nahi duzula?",
     "admin_mfa_confirm_enable": "Ziur faktore anitzeko autentifikazioa gaitu nahi duzula?",
-    "team_autoTrim": "Taldeko diskoen historia mozten... Itxaron mesedez."
+    "team_autoTrim": "Taldeko diskoen historia mozten... Itxaron mesedez.",
+    "fm_restoreMultipleDialog": "Ziur {0} fitxategi edo/eta karpeta lehengo kokapenetara leheneratu nahi dituzula?",
+    "calendar_show": "Erakutsi egutegiak",
+    "calendar_hide": "Ezkutatu egutegiak",
+    "form_passwordWarning": "Kontuan izan Inprimakiaren pasahitza orain bakarrik ezar daitekeela sortzean eta ezin dela geroago aldatu."
 }

@@ -1236,7 +1236,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 }
 
                 // Check if the pad is already stored in the specified drive (data.teamId)
-                if ((!s.id && !data.teamId) || Number(s.id) === data.teamId) {
+                if ((!s.id && (!data.teamId || data.teamId === -1)) || Number(s.id) === data.teamId) {
                     if (!inTargetDrive) {
                         inTargetDrive = res.length;
                     }

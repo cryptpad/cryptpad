@@ -573,56 +573,65 @@ const factory = (Util, Hash,
         };
 
         // SEARCH
-        var _findFileInRoot = function (path, file) {
+        var _findFileInRoot = function (path, files) {
             if (!isPathIn(path, [ROOT, TRASH])) { return []; }
-            var paths = [];
+            files = Array.isArray(files) ? files : [files];
+            var paths = {};
             var root = find(path);
             var addPaths = function (p) {
-                if (paths.indexOf(p) === -1) {
-                    paths.push(p);
-                }
+                Object.keys(p).forEach(file => {
+                    paths[file] ||= [];
+                    Array.prototype.push.apply(paths[file], p[file]);
+                });
             };
 
             if (isFile(root) || isSharedFolder(root)) {
-                if (compareFiles(file, root)) {
-                    if (paths.indexOf(path) === -1) {
-                        paths.push(path);
+                files.some(file => {
+                    if (compareFiles(file, root)) {
+                        paths[file] ||= [];
+                        paths[file].push(path);
                     }
-                }
+                });
                 return paths;
             }
             if (isFolder(root)) {
                 for (var e in root) {
-                    var nPath = path.slice();
+                    let nPath = path.slice();
                     nPath.push(e);
-                    _findFileInRoot(nPath, file).forEach(addPaths);
+                    addPaths(_findFileInRoot(nPath, files));
                 }
             }
 
             return paths;
         };
-        exp.findFileInRoot = function (file) {
-            return _findFileInRoot([ROOT], file);
+        /*
+        exp.findFileInRoot = function (files) {
+            return _findFileInRoot([ROOT], files);
         };
-        var _findFileInHrefArray = function (rootName, file) {
-            if (sharedFolder) { return []; }
-            if (!files[rootName]) { return []; }
+        */
+        var _findFileInHrefArray = function (rootName, toFind) {
+            if (sharedFolder) { return {}; }
+            if (!files[rootName]) { return {}; }
             var unsorted = files[rootName].slice();
-            var ret = [];
+            var ret = {};
             var i = -1;
-            while ((i = unsorted.indexOf(file, i+1)) !== -1){
-                ret.push([rootName, i]);
-            }
+            toFind.forEach(file => {
+                while ((i = unsorted.indexOf(file, i+1)) !== -1){
+                    ret[file] ||= [];
+                    ret[file].push([rootName, i]);
+                }
+            });
             return ret;
         };
-        var _findFileInTrash = function (path, file) {
+        var _findFileInTrash = function (path, files) {
             if (sharedFolder) { return []; }
             var root = find(path);
-            var paths = [];
+            var paths = {};
             var addPaths = function (p) {
-                if (paths.indexOf(p) === -1) {
-                    paths.push(p);
-                }
+                Object.keys(p).forEach(file => {
+                    paths[file] ||= [];
+                    Array.prototype.push.apply(paths[file], p[file]);
+                });
             };
             if (path.length === 1 && typeof(root) === 'object') {
                 Object.keys(root).forEach(function (key) {
@@ -630,7 +639,7 @@ const factory = (Util, Hash,
                     if (!Array.isArray(arr)) { return; }
                     var nPath = path.slice();
                     nPath.push(key);
-                    _findFileInTrash(nPath, file).forEach(addPaths);
+                    addPaths(_findFileInTrash(nPath, files));
                 });
             }
             if (path.length === 2) {
@@ -640,24 +649,39 @@ const factory = (Util, Hash,
                     nPath.push(i);
                     nPath.push('element');
                     if (isFile(el.element)) {
-                        if (compareFiles(file, el.element)) {
-                            addPaths(nPath);
-                        }
+                        files.some(file => {
+                            if (compareFiles(file, el.element)) {
+                                paths[file] ||= [];
+                                paths[file].push(nPath);
+                            }
+                        });
                         return;
                     }
-                    _findFileInTrash(nPath, file).forEach(addPaths);
+                    addPaths(_findFileInTrash(nPath, files));
                 });
             }
             if (path.length >= 4) {
-                _findFileInRoot(path, file).forEach(addPaths);
+                addPaths(_findFileInRoot(path, files));
             }
             return paths;
         };
+        var findFiles = exp.findFiles = function (files) {
+            var rootpaths = _findFileInRoot([ROOT], files);
+            var templatepaths = _findFileInHrefArray(TEMPLATE, files);
+            var trashpaths = _findFileInTrash([TRASH], files);
+            let res = {};
+            files.forEach(file => { res[file] = []; });
+            [rootpaths, templatepaths, trashpaths].forEach(r => {
+                Object.keys(r).forEach(file => {
+                    res[file] ||= [];
+                    Array.prototype.push.apply(res[file], r[file]);
+                });
+            });
+            return res;
+        };
         var findFile = exp.findFile = function (file) {
-            var rootpaths = _findFileInRoot([ROOT], file);
-            var templatepaths = _findFileInHrefArray(TEMPLATE, file);
-            var trashpaths = _findFileInTrash([TRASH], file);
-            return rootpaths.concat(templatepaths, trashpaths);
+            let res = findFiles([file]);
+            return res[file] || [];
         };
 
         // Get drive ids of files from their channel ids

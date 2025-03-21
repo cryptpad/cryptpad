@@ -134,35 +134,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    Messages.addItemBottom = 'Add item to bottom of the board'; // XXX or 'Add card..'
-    Messages.addItemTop = 'Add item to top of the board'; // XXX or 'Add card..'
-
-    Messages.admin_logoSize_error = "The logo size is too large"; // XXX
-    Messages.limit_error = "Please enter a valid number"; // XXX
-    Messages.positiveNumber_error = "Please enter a positive number"; // XXX
-    Messages.answerType_error = "Please select how to answer the form"; // XXX
-
-        // XXX
-        Messages.admin_cat_admins = "Administrators";
-        Messages.admin_admin = "Admin";
-        Messages.admin_listAdminsTitle = "Current administrators";
-        Messages.admin_listAdminsHint = "View and remove administrators";
-        Messages.admin_addAdminsTitle = "Add administrators";
-        Messages.admin_addAdminsHint = "Add administrators from their public key or from your contacts list";
-        Messages.admin_addAdminsAdd = "Promote a contact to admin";
-        Messages.admin_addKeyLabel = "Add an admin using their public key";
-        Messages.admin_errorAddKeyLabel = "Add a valid public key";
-        Messages.admin_errorAddAdmins = "Pick a contact to promote to admin";
-
-        Messages.admin_listName = "Admin name";
-        Messages.admin_listKey = "Admin key";
-        Messages.admin_listAction = "Remove admin rights";
-
-        Messages.admin_listHardcoded = "Admin added into config.js. Can only be removed by editing the config file.";
-        Messages.admin_listConfirm = "Are you sure you want to remove the admin rights of this user?";
-
-    Messages.fm_link_invalid = "Please provide a valid URL"; // XXX
-    Messages.skipLink = "Skip to main content"; // XXX
+    
 
     return Messages;
 

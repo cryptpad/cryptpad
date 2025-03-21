@@ -4025,9 +4025,10 @@ define([
             var header7, header28, headerOld;
             var i = 0;
             var channels = [];
+            var toShow = [];
 
             if (typeFilter) {
-                var ids = filesList.map(function (arr) { return arr[0]; });
+                let ids = filesList.map(function (arr) { return arr[0]; });
                 var idsFilter = filterPads(ids, typeFilter, false, true);
                 filesList = filesList.filter(function (arr) {
                     return (idsFilter.indexOf(arr[0]) !== -1);
@@ -4046,15 +4047,18 @@ define([
                     return true;
                 }
 
-                var paths = manager.findFile(id);
-                if (!paths.length) { return; }
-                var path = paths[0];
-                if (manager.isPathIn(path, [TRASH])) { return; }
-
                 if (!file.channel) { file.channel = id; }
                 if (channels.indexOf(file.channel) !== -1) { return; }
                 channels.push(file.channel);
+                toShow.push({id, file});
+                i++;
+            });
 
+            let ids = toShow.map(obj => { return obj.id });
+            var allPaths = manager.findFiles(ids);
+            toShow.forEach(obj => {
+                let file = obj.file;
+                let id = obj.id;
                 if (!header7 && file.atime < last1) {
                     $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active7Days)));
                     header7 = true;
@@ -4078,6 +4082,12 @@ define([
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-element cp-app-drive-element-notrash cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                 });*/
+                var paths = allPaths[id];
+                if (paths.every(path => {
+                    return manager.isPathIn(path, [TRASH])
+                })) { return; }
+                var path = paths[0];
+
                 var parentPath = path.slice();
                 var key = parentPath.pop();
                 var root = manager.find(parentPath);
@@ -4085,7 +4095,6 @@ define([
                 $element.off('contextmenu').contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
                 $list.append($element);
-                i++;
             });
         };
 
