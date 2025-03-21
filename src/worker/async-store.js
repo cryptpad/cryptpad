@@ -1864,11 +1864,9 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     postMessage(clientId, "PAD_CACHE");
                 },
                 onCacheReady: function () {
-                    console.error('PAD CACHE READY');
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
-                    console.error('PAD READY');
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
@@ -2780,7 +2778,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 addSharedFolderHandler();
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
-                console.error('START LOADING SF');
                 var network = store.network || store.networkPromise;
                 SF.loadSharedFolders(Store, network, store,
                     drive.proxy, userObject, waitFor, obj => {
@@ -2791,11 +2788,8 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 }, true);
             }).nThen(function (waitFor) {
-                console.error('SF CACHE READY');
-
                 loadUniversal(Team, 'team', waitFor, clientId);
             }).nThen(function (waitFor) {
-                console.error('TEAM CACHE READY');
                 loadUniversal(Calendar, 'calendar', waitFor);
             }).nThen(function () {
                 cb();
@@ -2877,7 +2871,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(Support, 'support', waitFor);
             }).nThen(function () {
-                console.error('SF & TEAM READY');
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
                 };

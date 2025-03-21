@@ -2381,7 +2381,6 @@ define([
             $displayName.text(newName);
             if ((accountName && oldUrl !== url) || !accountName && uid !== oldUid || oldName !== newName) {
                 $avatar.html('');
-                if (newName) { console.error("AVATAR IN TOOLBAR", newName); } // XXX
                 Common.displayAvatar($avatar, url, newName, function ($img) {
                     oldUrl = url;
                     oldUid = uid;

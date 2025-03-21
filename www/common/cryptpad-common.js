@@ -2727,7 +2727,6 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
-                        console.error('CC CALLED BACK');
                         // FIXME data should always exist
                         // this indicates a false condition in sharedWorker
                         // got here via a reference error:

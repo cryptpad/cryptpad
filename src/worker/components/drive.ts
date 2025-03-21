@@ -23,7 +23,6 @@ const init = (config) => {
     const drive = store.drive = store.drive || {};
     let data = store.proxy?.drive;
 
-    console.error(data, store.proxy);
     const hash:string = data?.hash || Hash.createRandomHash('drive');
 
     // Update loading screen status
