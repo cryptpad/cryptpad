@@ -53,13 +53,5 @@
   "bugs": {
     "url": "https://github.com/dchest/tweetnacl-js/issues"
   },
-  "homepage": "https://dchest.github.io/tweetnacl-js",
-  "devDependencies": {
-    "browserify": "4.x.x",
-    "faucet": "0.x.x",
-    "tap-browser-color": "0.x.x",
-    "tape": "2.x.x",
-    "testling": "1.x.x",
-    "uglify-js": "2.x.x"
-  }
+  "homepage": "https://dchest.github.io/tweetnacl-js"
 }
