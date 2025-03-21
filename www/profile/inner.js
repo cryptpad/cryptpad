@@ -450,7 +450,6 @@ define([
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID, class: PROFILE_SECTION}).appendTo($container);
 
-        APP.$description = $('<div>', {'id': 'cp-app-profile-description-info'}).appendTo($block);
         APP.$descriptionEdit = $();
         if (APP.readOnly) { return; }
 
