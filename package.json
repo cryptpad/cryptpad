@@ -97,7 +97,8 @@
     "evict-inactive": "node scripts/evict-inactive.js",
     "build": "node scripts/build.js",
     "clear": "node scripts/clear.js",
-    "installtoken": "node scripts/install.js"
+    "installtoken": "node scripts/install.js",
+    "playwright-test-anon": "npx playwright test anon --project='chrome'"
   },
   "browserslist": [
     "> 0.5%, last 2 versions, Firefox ESR, not dead, not op_mini all"
