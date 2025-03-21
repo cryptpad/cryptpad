@@ -102,38 +102,37 @@ define([
     var sFrameChan;
 
     var addViewButton = function ($container) {
+        if (APP.readOnly) {
+            return;
+        }
+
         var hash = common.getMetadataMgr().getPrivateData().hashes.viewHash;
         var url = APP.origin + '/profile/#' + hash;
-        // Only add view and share buttons if not read-only
-        if (!APP.readOnly) {
-            var $blockView = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
-            var $button = $('<button>', {
-                'class': 'btn ' + VIEW_PROFILE_BUTTON,
-                'aria-labelledby': 'cp-profile-view-button'
-            }).appendTo($blockView);
-            $button.append(
-                h('span#cp-profile-view-button', Messages.profile_viewMyProfile)
-            );
-            $button.click(function () {
-                window.open(url, '_blank');
+
+        var $blockView = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
+        var button = h('button.btn.' + VIEW_PROFILE_BUTTON, {
+            'aria-labelledby': 'cp-profile-view-button'
+        }, [
+            h('span#cp-profile-view-button', Messages.profile_viewMyProfile)
+        ]);
+        $(button).click(function () {
+            window.open(url, '_blank');
+        }).appendTo($blockView);
+
+        var $blockShare = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
+        var button = h('button.btn.btn-primary.' + VIEW_PROFILE_BUTTON, {
+            'aria-labelledby': 'cp-profile-share-button'
+        }, [
+            h('i.fa.fa-share-alt', { 'aria-hidden': 'true' }),
+            h('span#cp-profile-share-button', Messages.shareButton)
+        ]);
+        $(button).click(function () {
+            Clipboard.copy(url, (err) => {
+                if (!err) { UI.log(Messages.shareSuccess); }
             });
-        }
-        
-        // Add the share button only for editable profiles
-        if (!APP.readOnly) {
-            var $blockShare = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
-            $('<button>', {
-                'class': 'btn btn-primary ' + VIEW_PROFILE_BUTTON, 'aria-labelledby': 'cp-profile-share-button'
-            }).append([
-                    h('i.fa.fa-share-alt', {'aria-hidden': 'true'}),
-                    h('span#cp-profile-share-button', Messages.shareButton)
-            ]).click(function () {
-                Clipboard.copy(url, (err) => {
-                    if (!err) { UI.log(Messages.shareSuccess); }
-                });
-            }).appendTo($blockShare);
-        }
+        }).appendTo($blockShare);      
     };
+
     var addDisplayName = function ($container) {
         var $block = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
         APP.$name = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
@@ -518,9 +517,9 @@ define([
     };
     var refreshDescription = function (data) {
         if (!APP.$description) {
-            console.error("APP.$description is not initialized. Skipping refreshDescription.");
             return;
         }
+        
         var descriptionData = data.description || "";
         var val = Marked.parse(descriptionData);
         APP.$description.html(val);
