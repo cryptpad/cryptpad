@@ -1787,5 +1787,21 @@
     "admin_onboardingOptionsTitle": "Paràmetres de la instància",
     "admin_onboardingNamePlaceholder": "Títol de la instància",
     "admin_onboardingDescPlaceholder": "Descripció de la instància",
-    "admin_onboardingOptionsHint": "Trieu la opció apropiada per la vostra instància.<br>Aquests paràmetres es poden canviar després des del panell d'administració."
+    "admin_onboardingOptionsHint": "Trieu la opció apropiada per la vostra instància.<br>Aquests paràmetres es poden canviar després des del panell d'administració.",
+    "error_limit": "Introduiu un nombre vàlid",
+    "form_answerType_error": "Trieu com s'ha de contestar el formulari",
+    "admin_addKeyLabel": "Afegiu un administrador amb la seva clau pública",
+    "error_positiveNumber": "Introduiu un nombre positiu",
+    "admin_cat_admins": "Administradors",
+    "admin_listAdminsTitle": "Administradors actuals",
+    "admin_addAdminsAdd": "Fes administrador a un contacte",
+    "admin_addAdminsTitle": "Afegeix administradors",
+    "admin_addAdminsHint": "Afegeix administradors amb la seva clau pública o des de la llista de contactes",
+    "admin_errorAddKeyLabel": "Afegiu una clau pública vàlida",
+    "admin_listName": "Nom de l'administrador",
+    "admin_listKey": "Clau de l'administrador",
+    "admin_listAction": "Elimina els drets d'administrador",
+    "admin_errorAddAdmins": "Trieu un contacte per fer-lo administrador",
+    "admin_admin": "Admin",
+    "admin_listAdminsHint": "Mostra i esborra administradors"
 }
