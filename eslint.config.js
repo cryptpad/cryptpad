@@ -47,7 +47,7 @@ module.exports = [{
         "www/common/worker.bundle.min.js",
         "src/tweetnacl",
         "_build",
-        "testapi.js",
+        "scripts/api/testapi.js",
         "rollup.config.mjs",
     ],
 }, ...compat.extends("eslint:recommended", "plugin:compat/recommended"), {

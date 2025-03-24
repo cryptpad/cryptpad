@@ -120,17 +120,17 @@ define([
         }).appendTo($blockView);
 
         var $blockShare = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
-        var button = h('button.btn.btn-primary.' + VIEW_PROFILE_BUTTON, {
+        var buttonS = h('button.btn.btn-primary.' + VIEW_PROFILE_BUTTON, {
             'aria-labelledby': 'cp-profile-share-button'
         }, [
             h('i.fa.fa-share-alt', { 'aria-hidden': 'true' }),
             h('span#cp-profile-share-button', Messages.shareButton)
         ]);
-        $(button).click(function () {
+        $(buttonS).click(function () {
             Clipboard.copy(url, (err) => {
                 if (!err) { UI.log(Messages.shareSuccess); }
             });
-        }).appendTo($blockShare);      
+        }).appendTo($blockShare);
     };
 
     var addDisplayName = function ($container) {

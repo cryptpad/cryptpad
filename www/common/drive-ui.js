@@ -4054,7 +4054,7 @@ define([
                 i++;
             });
 
-            let ids = toShow.map(obj => { return obj.id });
+            let ids = toShow.map(obj => { return obj.id; });
             var allPaths = manager.findFiles(ids);
             toShow.forEach(obj => {
                 let file = obj.file;
@@ -4084,7 +4084,7 @@ define([
                 });*/
                 var paths = allPaths[id];
                 if (paths.every(path => {
-                    return manager.isPathIn(path, [TRASH])
+                    return manager.isPathIn(path, [TRASH]);
                 })) { return; }
                 var path = paths[0];
 
