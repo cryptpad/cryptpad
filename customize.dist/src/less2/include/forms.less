@@ -191,6 +191,15 @@
         }
 
         &.btn-default {
+            border-color: @cp_buttons-default-border;
+            color: @cp_buttons-default-color;
+            &:hover, &:not(:disabled):active, &:focus {
+                border-color: @cp_buttons-default-border;
+                color: @cp_buttons-default-color;
+                background-color: @cp_buttons-default;
+            }
+        }
+        &.btn-toolbar {
             background-color: @cp_buttons-default-bg;
             color: @cp_buttons-default-fg;
             border-color: @cp_buttons-default-bg;
@@ -200,7 +209,7 @@
                 color: @cryptpad_text_col;
             }
         }
-        &.btn-default-alt {
+        &.btn-toolbar-alt {
             border-color: @cp_buttons-default-alt-fg;
             color: @cp_buttons-default-alt-fg;
             background-color: @cp_buttons-default-alt-bg;
