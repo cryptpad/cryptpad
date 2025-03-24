@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 const Messages = require('../../src/messages');
 const AppConfig = require('../../customize/application_config');
 //const App = require('./_build/worker.bundle');

@@ -224,3 +224,15 @@ path = "www/common/onlyoffice/x2t/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "src/tweetnacl/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Unknown"
+SPDX-License-Identifier = "Unlicense"
+
+[[annotations]]
+path = "www/common/worker.bundle.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
