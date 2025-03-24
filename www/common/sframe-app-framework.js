@@ -668,7 +668,6 @@ define([
 
                 firstConnection = false;
 
-                console.error('REMOVE LOADING SCREEN - ONLINE'); // XXX ORDER
                 UI.removeLoadingScreen(emitResize);
 
                 if (AppConfig.textAnalyzer && textContentGetter) {

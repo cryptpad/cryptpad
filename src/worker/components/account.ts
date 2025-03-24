@@ -26,7 +26,7 @@ const init = (config) => {
     // Update loading screen status
     const updateProgress = function (data) {
         data.type = 'drive';
-        broadcast([], 'LOADING_DRIVE', data); // XXX ACCOUNT
+        broadcast([], 'LOADING_DRIVE', data);
     };
 
     // Create account secret from hash
@@ -59,16 +59,16 @@ const init = (config) => {
     };
 
     rt.proxy.on('create', function (info) {
-        store.realtime = info.realtime; // XXX move to account
+        store.realtime = info.realtime;
         store.network = info.network; // init if not exists
         if (!store.loggedIn) {
             returned.anonHash = Hash.getEditHashFromKeys(secret);
         }
     }).on('cacheready', function (info) {
-        store.realtime = info.realtime; // XXX move to account
-        store.offline = true; // XXX move to account
+        store.realtime = info.realtime;
+        store.offline = true;
         store.networkPromise = info.networkPromise;
-        store.cacheReturned = returned; // XXX move to account
+        store.cacheReturned = returned;
 
         if (store.networkPromise && store.networkPromise.then) {
             // Check if we can connect
@@ -97,9 +97,8 @@ const init = (config) => {
         delete store.networkTimeout;
         if (store.ready) { return; } // the store is already ready, it is a reconnection
 
-        store.driveMetadata = info.metadata; // XXX move to account
+        store.driveMetadata = info.metadata;
 
-        // XXX DRIVE
         // New drive? create empty object
         if (!rt.proxy.drive) { rt.proxy.drive = {}; }
 
@@ -127,7 +126,7 @@ const init = (config) => {
         if (info.error !== 'EDELETED') { return; }
         if (store.ownDeletion) { return; }
         store.isDeleted = true;
-        broadcast([], "DRIVE_DELETED", info.message); // XXX ACCOUNT
+        broadcast([], "DRIVE_DELETED", info.message);
     }).on('disconnect', function () {
         store.offline = true;
         onDisconnectEvt.fire();

@@ -27,7 +27,6 @@ const init = (config) => {
 
     // Update loading screen status
     const updateProgress = function (data) {
-        // XXX
         /*
         data.type = 'drive';
         broadcast([], 'LOADING_DRIVE', data);
@@ -92,11 +91,11 @@ const init = (config) => {
     }).on('disconnect', function () {
         drive.offline = true;
         onDisconnectEvt.fire();
-        broadcast([], "UPDATE_METADATA"); // XXX ?
+        broadcast([], "UPDATE_METADATA");
     }).on('reconnect', function () {
         drive.offline = false;
         onReconnectEvt.fire();
-        broadcast([], "UPDATE_METADATA"); // XXX ?
+        broadcast([], "UPDATE_METADATA");
     });
 
     return {

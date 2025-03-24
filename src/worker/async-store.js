@@ -993,7 +993,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             nThen(function (waitFor) {
                 removeOwnedPads(waitFor);
             }).nThen(function () {
-                // XXX TODO DRIVE
                 store.proxy.drive = store.userObject.getStructure();
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', 'filesData']
@@ -2435,7 +2434,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
                     if (p.length > 3 && p[3] === 'password') {
                         var id = p[2];
-                        // XXX DRIVE
                         var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
                         var href = store.manager.user.userObject.getHref ?
                                 store.manager.user.userObject.getHref(data) : data.href;
@@ -2996,7 +2994,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
             store.driveChannel = channel;
 
-            // XXX don't always call onCacheReady and onReady?
+            // don't always call onCacheReady and onReady?
             // it depends on what was required by the first tab
             onAccountCacheReady(returned => {
                 store.returned ||= returned;
@@ -3006,7 +3004,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 store.returned ||= returned;
                 cb(returned);
             });
-            // XXX move to drive
             onDisconnect(() => {
                 sendDriveEvent('NETWORK_DISCONNECT');
             });
@@ -3070,7 +3067,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     cb(store.returned);
                 });
 
-                // XXX TODO
                 onDisconnect(() => {
                 });
                 onReconnect(() => {
@@ -3247,7 +3243,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // handle error
-                        return; // XXX
+                        return;
                     }
                     // Callback now to unfreeze the loading screen
                     // Pad can now start to be loaded
@@ -3270,7 +3266,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // handle error
-                        return; // XXX
+                        return;
                     }
                     // Callback now to unfreeze the loading screen
                     // Pad can now start to be loaded
@@ -3313,7 +3309,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 // TODO
             }
 
-            // XXX load drive too
             let done = ret => {
                 onInit(ret);
                 const redirect = Constants.prefersDriveRedirectKey;
@@ -3384,7 +3379,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 Cache.disable();
             }
 
-            // XXX replace noDrive
             if (data.noDrive && !data.requires) {
                 data.requires = 'pad';
             }
@@ -3392,7 +3386,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             start(clientId, data, Util.once(obj => {
                 if (obj.error === 'GET_HK') {
                     return void callback({
-                        error: 'ERROR' // XXX
+                        error: 'ERROR'
                     });
                 }
                 callback(obj);
@@ -3453,8 +3447,8 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('./components/merge-drive'),
         require('../common/cache-store'),
         require('./components/sharedfolder'),
-        require('./components/account'), // XXX
-        require('./components/drive'), // XXX
+        require('./components/account'), // .ts
+        require('./components/drive'), // .ts
         require('./modules/cursor'),
         require('./modules/support'),
         require('./modules/integration'),
@@ -3475,45 +3469,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('netflux-websocket'),
         require('nthen')
     );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/api/config', // From outside
-        'json.sortify',
-        '/common/user-object.js', // OK
-        '/common/proxy-manager.js', // OK
-        '/common/migrate-user-object.js', // OK
-        '/common/common-hash.js', // OK
-        '/common/common-util.js', // OK
-        '/common/common-constants.js', // OK
-        '/common/common-feedback.js', // OK
-        '/common/common-realtime.js', // OK
-        '/common/common-messaging.js', // OK
-        '/common/pinpad.js', // OK
-        '/common/rpc.js', // OK
-        '/common/merge-drive.js', // OK
-        '/common/outer/cache-store.js', // OK
-        '/common/outer/sharedfolder.js', // OK
-        '/common/outer/cursor.js', // OK
-        '/common/outer/support.js', // OK
-        '/common/outer/integration.js', // OK
-        '/common/outer/onlyoffice.js', // OK
-        '/common/outer/mailbox.js', // OK
-        '/common/outer/profile.js', // OK
-        '/common/outer/team.js', // OK
-        '/common/outer/messenger.js', // OK
-        '/common/outer/history.js', // OK
-        '/common/outer/calendar.js', // OK
-        '/common/outer/login-block.js', // OK
-        '/common/outer/network-config.js', // OK
-        '/customize/application_config.js', // OK
-
-        '/components/chainpad-crypto/crypto.js',
-        '/components/chainpad/chainpad.dist.js',
-        'chainpad-netflux',
-        'chainpad-listmap',
-        'netflux-client',
-        '/components/nthen/index.js',
-    ], factory);
 } else {
     // unsupported initialization
 }

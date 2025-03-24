@@ -416,7 +416,6 @@ define([
             cb(obj);
         });
         /*
-        // XXX DRIVE
         postMessage("GET_DRIVE", {
             teamId: teamId,
         }, function (obj) {
@@ -461,7 +460,6 @@ define([
             return;
         }
         /*
-        // XXX DRIVE
         postMessage("SET_DRIVE", {
             teamId: data.teamId,
             value: data.drive
