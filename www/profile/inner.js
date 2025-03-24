@@ -134,7 +134,7 @@ define([
     };
 
     var addDisplayName = function ($container) {
-        var $block = $('<div>', {'class': DISPLAYNAME_ID}).appendTo($container);
+        var $block = $('<div>', {'class': PROFILE_SECTION}).appendTo($container);
         APP.$name = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
     };
     var refreshName = function (data) {
