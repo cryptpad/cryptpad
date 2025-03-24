@@ -619,7 +619,11 @@ define([
     };
 
     var updateValues = APP.updateValues = function (data) {
-        refreshAvatar(data);
+        // Only update avatar if it has changed
+        if (!APP._lastUpdate || APP._lastUpdate.avatar !== data.avatar) {
+            refreshAvatar(data);
+        }
+        // Always update other profile information
         refreshName(data);
         refreshLink(data);
         refreshDescription(data);
@@ -627,6 +631,7 @@ define([
         refreshMute(data);
         setPublicKeyButton(data);
         setCopyDataButton(data);
+        APP._lastUpdate = data;
     };
 
     var createToolbar = function () {
