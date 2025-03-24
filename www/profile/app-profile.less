@@ -22,6 +22,9 @@
         display: none !important;
     }
 
+    .cp-app-profile-section:first-child {
+        margin-top: 1rem;
+    }
 
     #cp-app-profile-header {
         display: flex;
@@ -172,9 +175,15 @@
     #cp-app-profile-description {
         position: relative;
         font-size: 16px;
+        max-width: 100%;
         //margin-bottom: 20px;
         .cp-app-profile-description-code {
             display: none;
+            .cp-markdown-toolbar {
+                display: flex;
+                height: auto;
+                flex-wrap: wrap;
+            }
         }
         #cp-app-profile-description-info {
             overflow-wrap: anywhere;

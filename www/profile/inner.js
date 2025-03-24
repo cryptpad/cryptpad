@@ -134,7 +134,7 @@ define([
     };
 
     var addDisplayName = function ($container) {
-        var $block = $('<div>', {'class': DISPLAYNAME_ID}).appendTo($container);
+        var $block = $('<div>', {'class': PROFILE_SECTION}).appendTo($container);
         APP.$name = $('<span>', {'class': DISPLAYNAME_ID}).appendTo($block);
     };
     var refreshName = function (data) {
@@ -619,7 +619,11 @@ define([
     };
 
     var updateValues = APP.updateValues = function (data) {
-        refreshAvatar(data);
+        // Only update avatar if it has changed
+        if (!APP._lastUpdate || APP._lastUpdate.avatar !== data.avatar) {
+            refreshAvatar(data);
+        }
+        // Always update other profile information
         refreshName(data);
         refreshLink(data);
         refreshDescription(data);
@@ -627,6 +631,7 @@ define([
         refreshMute(data);
         setPublicKeyButton(data);
         setCopyDataButton(data);
+        APP._lastUpdate = data;
     };
 
     var createToolbar = function () {
@@ -750,6 +755,8 @@ define([
             if (JSON.stringify(lm.proxy) === '{}') {
                 return void onCorruptedCache();
             }
+            // Force avatar update on initial load
+            APP._lastUpdate = null;
             updateValues(lm.proxy);
             UI.removeLoadingScreen();
             common.mailbox.subscribe(["notifications"], {
