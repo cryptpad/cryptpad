@@ -1776,5 +1776,8 @@
     "calendar_hide": "Nascondi i calendari",
     "calendar_show": "Mostra i calendari",
     "form_passwordWarning": "La password del modulo può essere impostata solo al momento della creazione e non può essere modificata in seguito.",
-    "admin_blockKey": "Chiave pubblica di blocco"
+    "admin_blockKey": "Chiave pubblica di blocco",
+    "error_limit": "Inserisci un numero valido",
+    "form_answerType_error": "Seleziona come vuoi rispondere al modulo",
+    "error_positiveNumber": "Inserisci un numero positivo"
 }
