@@ -754,6 +754,8 @@ define([
             if (JSON.stringify(lm.proxy) === '{}') {
                 return void onCorruptedCache();
             }
+            // Force avatar update on initial load
+            APP._lastUpdate = null;
             updateValues(lm.proxy);
             UI.removeLoadingScreen();
             common.mailbox.subscribe(["notifications"], {
