@@ -1817,5 +1817,6 @@
     "toggleDrag": "Drag to move items",
     "moveItemUp": "Move item up",
     "moveItemDown": "Move item down",
-    "toggleArrows": "Arrow buttons to move items"
+    "toggleArrows": "Arrow buttons to move items",
+    "profile_remove_avatar": "Remove this avatar"
 }
