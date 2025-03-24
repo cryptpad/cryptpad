@@ -1,0 +1,9 @@
+This directory contains test files for browsers.
+
+In the root project directory:
+
+    $ npm run browser
+
+to build new _bundle.js.
+
+Then open test.html.

@@ -696,7 +696,7 @@ define([
         // Templates enabled: display template category
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         // Tags used: display Tags category
-        if (Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
+        if (Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
 
         var virtualCategories = [SEARCH, RECENT, OWNED, TAGS];
 
@@ -1200,13 +1200,13 @@ define([
             }
 
         };
-        var refresh = APP.refresh = function (cb) {
+        var refresh = APP.refresh = function (cb, opt) {
             var type = APP.store[FILTER_BY];
             var path = type ? [FILTER, type, currentPath] : currentPath;
             APP.displayDirectory(path, undefined, () => {
                 refreshDeprecated();
                 if (typeof(cb) === "function") { cb(); }
-            });
+            }, opt);
         };
 
         // `app`: true (force open with the app), false (force open in preview),
@@ -2919,9 +2919,9 @@ define([
             ]);
             var content = h('p', [
                 h('label', {for: 'cp-app-drive-link-name'}, Messages.fm_link_name),
-                name = h('input#cp-app-drive-link-name', { autocomplete: 'off', placeholder: Messages.fm_link_name_placeholder, tabindex:'1'}),
+                name = h('input#cp-app-drive-link-name', { autocomplete: 'off', placeholder: Messages.fm_link_name_placeholder}),
                 h('label', {for: 'cp-app-drive-link-url'}, Messages.fm_link_url),
-                url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url,tabindex:'1'}),
+                url = h('input#cp-app-drive-link-url', { type: 'url', autocomplete: 'off', placeholder: Messages.form_input_ph_url}),
                 warning,
             ]);
 
@@ -2936,9 +2936,13 @@ define([
             };
 
             var $warning = $(warning).hide();
-            var $url = $(url).on('change keypress keyup keydown', function () {
+            var $url = $(url).on('change keypress keydown', function () {
                 var v = $url.val().trim();
-                $url.toggleClass('cp-input-invalid', !Util.isValidURL(v));
+                if (Util.isValidURL(v)) {
+                    $url.removeClass('cp-input-invalid');
+                } else {
+                    $url.addClass('cp-input-invalid');
+                }
                 if (v.length > 200) {
                     $warning.show();
                     return;
@@ -2961,8 +2965,7 @@ define([
                     var $name = $(name);
                     var n = $name.val().trim() || $name.attr('placeholder');
                     var u = $url.val().trim();
-                    if (!n || !u) { return true; }
-                    if (!Util.isValidURL(u)) {
+                    if (!n || !u || !Util.isValidURL(u)) {
                         UI.warn(Messages.fm_link_invalid);
                         return true;
                     }
@@ -3137,7 +3140,7 @@ define([
 
                 var newObj = {
                     tag: 'a',
-                    attributes: { 'class': obj.class, href: '#' },
+                    attributes: { 'class': obj.class },
                     content: [obj.icon, obj.name]
                 };
 
@@ -3179,7 +3182,6 @@ define([
                     tag: 'a',
                     attributes: {
                         'class': 'cp-app-drive-rm-filter',
-                        'href': '#'
                     },
                     content: [
                         h('i.fa.fa-times'),
@@ -3192,7 +3194,6 @@ define([
                 var attributes = {
                     'class': 'cp-app-drive-filter-doc',
                     'data-type': type,
-                    'href': '#'
                 };
 
                 var premium = common.checkRestrictedApp(type);
@@ -3218,7 +3219,6 @@ define([
                     attributes: {
                         'class': 'cp-app-drive-filter-doc',
                         'data-type': 'link',
-                        'href': '#'
                     },
                     content: [
                         getIcon('link')[0],
@@ -3230,7 +3230,6 @@ define([
                     attributes: {
                         'class': 'cp-app-drive-filter-doc',
                         'data-type': 'file',
-                        'href': '#'
                     },
                     content: [
                         getIcon('file')[0],
@@ -3453,6 +3452,58 @@ define([
             return $fihElement;
         };
 
+        var lexicographicCompare = function(a, b) {
+            if (!Array.isArray(a)) {
+                a = [a];
+            }
+            if (!Array.isArray(b)) {
+                b = [b];
+            }
+
+            if(a.length === 0 && b.length === 0) {
+                return 0;
+            } else if (a.length === 0) {
+                return -1;
+            } else if (b.length === 0) {
+                return 1;
+            } else if(a[0] < b[0]) {
+                return -1;
+            } else if(a[0] > b[0]) {
+                return 1;
+            } else {
+                // This means `a[0] == b[0]`. Chop off the first elements and compare the rest.
+                return lexicographicCompare(a.slice(1), b.slice(1));
+            }
+        };
+
+        var splitStringToTextAndNumbers = function(s) {
+            var textOrDigitsRe = /(?<text>\D+)?(?<digits>\d+)?/g;
+            var split = [];
+
+            for (var match of s.matchAll(textOrDigitsRe)) {
+                if (match.groups.text !== undefined) {
+                    split.push(match.groups.text);
+                }
+                if (match.groups.digits !== undefined) {
+                    split.push(parseInt(match.groups.digits));
+                }
+            }
+
+            return split;
+        };
+
+        var naturalSort = function(a, b) {
+            if (typeof(a) === "string") {
+                a = splitStringToTextAndNumbers(a);
+            }
+            if (typeof(b) === "string") {
+                b = splitStringToTextAndNumbers(b);
+            }
+
+            var comp = lexicographicCompare(a, b);
+            return comp;
+        };
+
         var sortElements = function (folder, path, oldkeys, prop, asc, useId) {
             var root = path && manager.find(path);
             if (path[0] === SHARED_FOLDER) {
@@ -3497,9 +3548,8 @@ define([
             keys.sort(function(a, b) {
                 var _a = props[(a && a.uid) || a];
                 var _b = props[(b && b.uid) || b];
-                if (_a < _b) { return mult * -1; }
-                if (_b < _a) { return mult; }
-                return 0;
+
+                return mult * naturalSort(_a, _b);
             });
             return keys;
         };
@@ -3975,9 +4025,10 @@ define([
             var header7, header28, headerOld;
             var i = 0;
             var channels = [];
+            var toShow = [];
 
             if (typeFilter) {
-                var ids = filesList.map(function (arr) { return arr[0]; });
+                let ids = filesList.map(function (arr) { return arr[0]; });
                 var idsFilter = filterPads(ids, typeFilter, false, true);
                 filesList = filesList.filter(function (arr) {
                     return (idsFilter.indexOf(arr[0]) !== -1);
@@ -3996,15 +4047,18 @@ define([
                     return true;
                 }
 
-                var paths = manager.findFile(id);
-                if (!paths.length) { return; }
-                var path = paths[0];
-                if (manager.isPathIn(path, [TRASH])) { return; }
-
                 if (!file.channel) { file.channel = id; }
                 if (channels.indexOf(file.channel) !== -1) { return; }
                 channels.push(file.channel);
+                toShow.push({id, file});
+                i++;
+            });
 
+            let ids = toShow.map(obj => { return obj.id });
+            var allPaths = manager.findFiles(ids);
+            toShow.forEach(obj => {
+                let file = obj.file;
+                let id = obj.id;
                 if (!header7 && file.atime < last1) {
                     $list.append(h('li.cp-app-drive-element-separator', h('span', Messages.drive_active7Days)));
                     header7 = true;
@@ -4028,6 +4082,12 @@ define([
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-element cp-app-drive-element-notrash cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                 });*/
+                var paths = allPaths[id];
+                if (paths.every(path => {
+                    return manager.isPathIn(path, [TRASH])
+                })) { return; }
+                var path = paths[0];
+
                 var parentPath = path.slice();
                 var key = parentPath.pop();
                 var root = manager.find(parentPath);
@@ -4035,7 +4095,6 @@ define([
                 $element.off('contextmenu').contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
                 $list.append($element);
-                i++;
             });
         };
 
@@ -4091,7 +4150,8 @@ define([
             ];
             sortedTags.forEach(function (tag) {
                 var tagLink = h('a', { href: '#' }, '#' + tag);
-                $(tagLink).click(function () {
+                $(tagLink).click(function (e) {
+                    e.preventDefault();
                     if (displayedCategories.indexOf(SEARCH) !== -1) {
                         APP.displayDirectory([SEARCH, '#' + tag]);
                     }
@@ -4378,8 +4438,8 @@ define([
 
             appStatus.ready(true);
         };
-        var displayDirectory = APP.displayDirectory = function (path, force, cb) {
-            cb = cb || function () {};
+        var displayDirectory = APP.displayDirectory = function (path, force, cb, opt) {
+            cb = Util.once(cb || function () {});
             if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
             if (history.isHistoryMode) {
                 _displayDirectory(path, force);
@@ -4388,10 +4448,26 @@ define([
             if (!manager.comparePath(currentPath, path)) {
                 removeSelected();
             }
+
+            const fixTags = () => {
+                if (!displayedCategories.includes(TAGS) &&
+                    Object.keys(manager.getTagsList()).length) { displayedCategories.push(TAGS); }
+            };
+
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
+                files.restrictedFolders ||= {};
+                files.root ||= {};
+                files.filesData ||= {};
+                let fpath = currentPath;
+                if (opt?.init && !manager.isInSharedFolder(fpath) && !priv.anonSFHref) {
+                    fixTags();
+                    _displayDirectory(path, force);
+                    cb();
+                }
                 updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
+                    fixTags();
                     cb();
                 });
             });
@@ -4513,8 +4589,7 @@ define([
                             manager.getSharedFolderData(root[a]).title : a;
                 var newB = manager.isSharedFolder(root[b]) ?
                             manager.getSharedFolderData(root[b]).title : b;
-                return newA < newB ? -1 :
-                        (newA === newB ? 0 : 1);
+                return naturalSort(newA, newB);
             });
             keys.forEach(function (key) {
                 // Do not display files in the menu
@@ -4742,6 +4817,7 @@ define([
                 data.sharedFolderId = sfId;
                 data.name = Util.fixFileName(folderName);
                 data.folderName = Util.fixFileName(folderName) + '.zip';
+                data.common = common;
 
                 var uo = manager.user.userObject;
                 if (sfId && manager.folders[sfId]) {
@@ -4923,7 +4999,7 @@ define([
             else if ($this.hasClass('cp-app-drive-context-download')) {
                 if (paths.length !== 1) { return; }
                 var path = paths[0];
-                el = manager.find(path.path);
+                el = $(path.element).data('element') || manager.find(path.path);
                 // folder
                 if (manager.isFolder(el)) {
                     // folder
@@ -5474,7 +5550,7 @@ define([
 
         refresh(function () {
             UI.removeLoadingScreen();
-        });
+        }, {init:true});
 
         /*
         if (!APP.team) {

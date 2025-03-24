@@ -534,6 +534,7 @@ define([
                 contentUpdate(newContent, function () { return function () {}; });
             }
 
+            console.error('REMOVE LAODING SCREEN - CACHE');
             UI.removeLoadingScreen(emitResize);
         };
         var onReady = function () {
@@ -668,6 +669,7 @@ define([
 
                 firstConnection = false;
 
+                console.error('REMOVE LOADING SCREEN - ONLINE'); // XXX ORDER
                 UI.removeLoadingScreen(emitResize);
 
                 if (AppConfig.textAnalyzer && textContentGetter) {
@@ -721,7 +723,6 @@ define([
                             tag: 'a',
                             attributes: {
                                 'data-value': _ext,
-                                'href': '#'
                             },
                             content: _ext
                         });
@@ -732,7 +733,6 @@ define([
                         tag: 'a',
                         attributes: {
                             'data-value': ext,
-                            'href': '#'
                         },
                         content: ext
                     });
@@ -741,7 +741,6 @@ define([
                     tag: 'a',
                     attributes: {
                         'data-value': '',
-                        'href': '#'
                     },
                     content: ' ',
                 });
@@ -976,7 +975,8 @@ define([
                 realtime: cpNfInner.chainpad,
                 sfCommon: common,
                 $container: $(toolbarContainer),
-                $contentContainer: $(contentContainer)
+                $contentContainer: $(contentContainer),
+                skipLink: options.skipLink,
             };
             toolbar = Toolbar.create(configTb);
             title.setToolbar(toolbar);

@@ -1,0 +1,226 @@
+version = 1
+SPDX-PackageName = "CryptPad"
+SPDX-PackageSupplier = "XWiki <contact@cryptpad.org>"
+SPDX-PackageDownloadLocation = "https://cryptpad.org"
+
+[[annotations]]
+path = "**.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "**.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = ".jshintignore"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = ".jshintrc"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = ".stylelintrc.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "scripts/tests/test-data/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 XWiki CryptPad Team <contact@cryptpad.org> and contributors"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/theme/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2017 by Marijn Haverbeke <marijn@haverbeke.berlin> and others"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/mermaid/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "(c) 2014 - 2021 Knut Sveidqvist"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/calendar/moment.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "(c) JS Foundation and other contributors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/pdfjs/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2017 Mozilla Foundation"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "www/lib/codemirror-extra-modes/asciidoc/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "(c) 2015, the Asciidoctor Project"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "www/lib/datepicker/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2017 Gregory Petrosyan"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/diff-dom/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Johannes Wilm, Fidus Writer"
+SPDX-License-Identifier = "LGPL-3.0-only"
+
+[[annotations]]
+path = "www/lib/fabric-history.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2008-2015 Printio (Juriy Zaytsev, Maxim Chernyak)"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/fabric.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2008-2015 Printio (Juriy Zaytsev, Maxim Chernyak)"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/pdfjs/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2012 Mozilla Foundation"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "www/lib/qrcode.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Sangmin Shim"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/rangy/rangy-core.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2015, Tim Down"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/textFit.min.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "11/2014 by STRML (strml.github.com)"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/tippy/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2017 atomiks"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/turndown.browser.umd.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2017 Dom Christie"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/lib/markmap/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2015 Jakub Dundalek"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/pad/mathjax/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2009-2018 The MathJax Consortium"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "www/pad/wordcount/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ingo Herbote"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "www/pad/wysiwygarea-plugin.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2003-2017, CKSource - Frederico Knabben. All rights reserved"
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "www/pad/icons/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "unknown"
+SPDX-License-Identifier = "GPL-2.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/AllFonts.js"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/fonts_thumbnail.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/fonts_thumbnail@2x.png"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/plugins.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/v1/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/v2b/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/v4/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/v5/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/v6/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/v7/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+[[annotations]]
+path = "www/common/onlyoffice/x2t/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ascensio System Limited 2010-2022"
+SPDX-License-Identifier = "AGPL-3.0-or-later"

@@ -10,8 +10,8 @@
    but you should not change it directly (/common/application_config_internal.js)
 */
 
-define(['/common/application_config_internal.js'], function (AppConfig) {
-
+(() => {
+const factory = (AppConfig) => {
     // Example: If you want to remove the survey link in the menu:
     // AppConfig.surveyURL = "";
 
@@ -19,4 +19,16 @@ define(['/common/application_config_internal.js'], function (AppConfig) {
     //AppConfig.supportLanguages = [ 'en', 'fr' ];
     
     return AppConfig;
-});
+};
+
+
+// Do not change code below
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory(
+        require('../www/common/application_config_internal.js')
+    );
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define(['/common/application_config_internal.js'], factory);
+}
+
+})();

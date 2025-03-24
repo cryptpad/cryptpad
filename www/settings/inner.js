@@ -902,7 +902,7 @@ define([
 
         var todo = function () {
             var val = parseInt($input.val());
-            if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.error); }
+            if (typeof(val) !== 'number' || isNaN(val)) { return UI.warn(Messages.error_limit); }
             if (val === oldVal) { return; }
             spinner.spin();
             common.setAttribute(['general', 'mediatag-size'], val, function (err) {
@@ -1196,6 +1196,7 @@ define([
             Feedback.send('FULL_DRIVE_EXPORT_START');
             var todo = function(data, filename) {
                 var ui = Backup.createExportUI(privateData.origin);
+                data.common = common;
 
                 var bu = Backup.create(data, common.getPad, privateData.fileHost, function(blob, errors) {
                     saveAs(blob, filename);
@@ -1978,6 +1979,7 @@ define([
             $container: APP.$toolbar,
             pageTitle: Messages.settings_title,
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-leftside'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();

@@ -19,9 +19,7 @@ define([
     '/common/media-tag.js',
 
     '/components/file-saver/FileSaver.min.js',
-    '/components/tweetnacl/nacl-fast.min.js',
 ], function ($, ApiConfig, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages, Pages, nThen, MT) {
-    var Nacl = window.nacl;
     var module = {};
 
     var blobToArrayBuffer = function (blob, cb) {
@@ -221,10 +219,12 @@ define([
 
             file.noStore = config.noStore;
             try {
-                file.blob = Nacl.util.encodeBase64(u8);
-                file.teamId = teamId;
-                common.uploadFile(file, function () {
-                    console.log('Upload started...');
+                Util.u8ToBase64(u8, b64 => {
+                    file.blob = b64;
+                    file.teamId = teamId;
+                    common.uploadFile(file, function () {
+                        console.log('Upload started...');
+                    });
                 });
             } catch (e) {
                 UI.alert(Messages.upload_serverError);

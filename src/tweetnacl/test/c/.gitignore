@@ -1,0 +1,6 @@
+cscalarmult
+cbox
+csecretbox
+csign
+chash
+*.o

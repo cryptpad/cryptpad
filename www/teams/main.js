@@ -115,6 +115,7 @@ define([
             getSecrets: getSecrets,
             hash: hash,
             href: href,
+            requires: 'team',
             noHash: true,
             noRealtime: true,
             //driveEvents: true,

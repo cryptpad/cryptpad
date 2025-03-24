@@ -4,6 +4,7 @@
 
 define([
     '/api/config',
+    '/api/broadcast',
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -12,18 +13,20 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/visible.js',
-    '/common/userObject.js',
+    '/common/user-object.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
     '/common/outer/login-block.js',
     '/common/common-credential.js',
     '/customize/login.js',
+    '/common/store-interface.js',
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
-], function (Config, Messages, Util, Hash, Cache,
+    '/components/tweetnacl/nacl-fast.min.js'
+], function (Config, Broadcast, Messages, Util, Hash, Cache,
             Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, AppConfig, Nthen) {
+            Cred, Login, Store, AppConfig, nThen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -31,8 +34,6 @@ define([
 
     Additionally, there is some basic functionality for import/export.
 */
-    var urlArgs = Util.find(Config, ['requireConf', 'urlArgs']) || '';
-
     var postMessage = function (/*cmd, data, cb*/) {
         /*setTimeout(function () {
             AStore.query(cmd, data, cb);
@@ -77,7 +78,7 @@ define([
 
     common.getAccessKeys = function (cb) {
         var keys = [];
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             // Push account keys
             postMessage("GET", {
                 key: ['edPrivate'],
@@ -117,7 +118,7 @@ define([
     common.getFormKeys = function (cb) {
         var curvePrivate;
         var formSeed;
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             postMessage("GET", {
                 key: ['curvePrivate'],
             }, waitFor(function (obj) {
@@ -187,7 +188,7 @@ define([
             anonymous: data.anonymous
         };
         var answers = [];
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             common.getFormAnswer(data, waitFor(function (obj) {
                 if (!obj || obj.error) { return; }
                 answers = obj;
@@ -222,12 +223,11 @@ define([
         common.getFormAnswer(data, function (obj) {
             if (!obj || obj.error) { return void cb(); }
             if (!obj.length) { return void cb(); }
-            var n = Nthen;
+            var n = nThen;
             var nacl, theirs;
             n = n(function (waitFor) {
                 require([
                     '/api/broadcast?'+ (+new Date()),
-                    '/components/tweetnacl/nacl-fast.min.js'
                 ], waitFor(function (Broadcast) {
                     nacl = window.nacl;
                     theirs = nacl.util.decodeBase64(Broadcast.curvePublic);
@@ -283,7 +283,7 @@ define([
     };
     common.muteChannel = function (channel, state, cb) {
         var mutedChannels = [];
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             postMessage("GET", {
                 key: ['mutedChannels'],
             }, waitFor(function (obj) {
@@ -415,6 +415,14 @@ define([
         }, function (obj) {
             cb(obj);
         });
+        /*
+        // XXX DRIVE
+        postMessage("GET_DRIVE", {
+            teamId: teamId,
+        }, function (obj) {
+            cb(obj);
+        });
+        */
     };
     common.getSharedFolder = function (data, cb) {
         postMessage("GET_SHARED_FOLDER", data, function (obj) {
@@ -452,9 +460,20 @@ define([
             });
             return;
         }
+        /*
+        // XXX DRIVE
+        postMessage("SET_DRIVE", {
+            teamId: data.teamId,
+            value: data.drive
+        }, function (obj) {
+            cb(obj);
+        }, {
+            timeout: 5 * 60 * 1000
+        });
+        */
         postMessage("SET", {
             teamId: data.teamId,
-            key:['drive'],
+            key: ['drive'],
             value: data.drive
         }, function (obj) {
             cb(obj);
@@ -644,7 +663,7 @@ define([
         var cb = Util.once(Util.mkAsync(_cb));
         var channel = Hash.hrefToHexChannelId(href, password);
         var error;
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             // Blobs can't change, if it's in the cache, use it
             Cache.getBlobCache(channel, waitFor(function(err, blob) {
                 if (err) { return; }
@@ -704,7 +723,7 @@ define([
         var cb = Util.once(Util.mkAsync(_cb));
         var channel = Hash.hrefToHexChannelId(href, password);
         var error;
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             Cache.getChannelCache(channel, waitFor(function(err, data) {
                 if (err || !data) { return; }
                 waitFor.abort();
@@ -876,7 +895,7 @@ define([
         var optsPut = {};
         if (p.type === 'poll') { optsPut.initialState = '{}'; }
         // PPP: add password as cryptput option
-        Nthen(function (w) {
+        nThen(function (w) {
             common.getEdPublic(null, w(function (obj) {
                 if (obj && obj.error) { return; }
                 optsPut.owners = [obj];
@@ -958,7 +977,7 @@ define([
         if (parsed.type === 'poll') { optsGet.initialState = '{}'; }
         if (parsed2.type === 'poll') { optsPut.initialState = '{}'; }
 
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             if (parsed.hashData && parsed.hashData.password) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
                     optsGet.password = password;
@@ -1004,7 +1023,7 @@ define([
         if (parsed2.type === 'poll') { optsPut.initialState = '{}'; }
 
         var val;
-        Nthen(function(_waitFor) {
+        nThen(function(_waitFor) {
             // If pad, use cryptget
             if (parsed.hashData && parsed.hashData.type === 'pad') {
                 var optsGet = {
@@ -1012,7 +1031,7 @@ define([
                     initialState: parsed.type === 'poll' ? '{}' : undefined
                 };
                 var next = _waitFor();
-                Nthen(function (waitFor) {
+                nThen(function (waitFor) {
                     // Authenticate in case the pad os restricted
                     common.getAccessKeys(waitFor(function (keys) {
                         optsGet.accessKeys = keys;
@@ -1045,7 +1064,7 @@ define([
             var mode;
 
             // Otherwise, it's a text blob "open in code": get blob data & convert format
-            Nthen(function (waitFor) {
+            nThen(function (waitFor) {
                 Util.fetch(src, waitFor(function (err, _u8) {
                     if (err) {
                         _waitFor.abort();
@@ -1164,7 +1183,7 @@ define([
             return;
         }
 
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }
             // Set the correct owner and expiration time if we can find them
             postMessage('GET_PAD_METADATA', {
@@ -1380,7 +1399,7 @@ define([
 
         var cryptgetVal;
 
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             if (parsed.hashData && parsed.hashData.password && !oldPassword) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
                     optsGet.password = password;
@@ -1570,7 +1589,7 @@ define([
 
         var MediaTag;
         var Upload;
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             if (parsed.hashData && parsed.hashData.password) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
                     oldPassword = password || '';
@@ -1580,7 +1599,6 @@ define([
             require([
                 '/common/media-tag.js',
                 '/common/outer/upload.js',
-                '/components/tweetnacl/nacl-fast.min.js'
             ], waitFor(function (_MT, _Upload) {
                 MediaTag = _MT;
                 Upload = _Upload;
@@ -1706,7 +1724,7 @@ define([
             password: oldPassword
         };
 
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             common.getPadAttribute('', waitFor(function (err, _data) {
                 if (!oldPassword && _data) {
                     optsGet.password = _data.password;
@@ -1962,7 +1980,7 @@ define([
         var blockKeys = newAllocated.blockKeys;
         var auth = data.auth;
 
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             // Check if our drive is already owned
             console.log("checking if old drive is owned");
             common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
@@ -2451,6 +2469,17 @@ define([
             window.RTCPeerConnection);
     };
 
+    common.getAnonymousKeys = function (formSeed, channel) {
+        var array = window.nacl.util.decodeBase64(formSeed + channel);
+        var hash = window.nacl.hash(array);
+        var secretKey = window.nacl.util.encodeBase64(hash.subarray(32));
+        var publicKey = Hash.getCurvePublicFromPrivate(secretKey);
+        return {
+            curvePrivate: secretKey,
+            curvePublic: publicKey,
+        };
+    };
+
     common.ready = (function () {
         var env = {};
         var initialized = false;
@@ -2494,7 +2523,7 @@ define([
             } catch (err) { console.error(err); }
         }());
 
-        Nthen(function (waitFor) {
+        nThen(function (waitFor) {
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
             }
@@ -2618,11 +2647,14 @@ define([
                 cache: rdyCfg.cache,
                 noDrive: rdyCfg.noDrive,
                 neverDrive: rdyCfg.neverDrive,
+                requires: rdyCfg.requires,
                 disableCache: localStorage['CRYPTPAD_STORE|disableCache'],
                 driveEvents: !rdyCfg.noDrive, //rdyCfg.driveEvents // Boolean
                 lastVisit: Number(localStorage.lastVisit) || undefined,
                 blockId: blockId,
-                blockHash: blockHash
+                blockHash: blockHash,
+                Messages,
+                AppConfig
             };
             common.userHash = userHash || LocalStore.getUserHash();
 
@@ -2651,142 +2683,23 @@ define([
             var channelIsReady = waitFor();
             updateLocalVersion();
 
-            var msgEv = Util.mkEvent();
-            var postMsg, worker;
+            var msgEv, postMsg;
             var noWorker = AppConfig.disableWorkers || false;
             var noSharedWorker = false;
             if (localStorage.CryptPad_noWorkers) {
                 noWorker = localStorage.CryptPad_noWorkers === '1';
                 console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
             }
-            Nthen(function (waitFor2) {
-                if (Worker) {
-                    var w = waitFor2();
-                    try {
-                        worker = new Worker('/common/outer/testworker.js?' + urlArgs);
-                        worker.onerror = function (errEv) {
-                            errEv.preventDefault();
-                            errEv.stopPropagation();
-                            noWorker = true;
-                            worker.terminate();
-                            w();
-                        };
-                        worker.onmessage = function (ev) {
-                            if (ev.data === "OK") {
-                                worker.terminate();
-                                w();
-                            }
-                        };
-                    } catch (e) {
-                        noWorker = true;
-                        w();
-                    }
-                }
-                if (typeof(SharedWorker) !== "undefined") {
-                    try {
-                        new SharedWorker('');
-                    } catch (e) {
-                        noSharedWorker = true;
-                        console.log('Disabling SharedWorker because of privacy settings.');
-                    }
-                }
-            }).nThen(function (waitFor2) {
-                if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
-                    worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
-                    worker.onerror = function (e) {
-                        console.error(e.message); // FIXME seeing lots of errors here as of 2.20.0
-                    };
-                    worker.port.onmessage = function (ev) {
-                        if (ev.data === "SW_READY") {
-                            return;
-                        }
-                        msgEv.fire(ev);
-                    };
-                    postMsg = function (data) {
-                        worker.port.postMessage(data);
-                    };
-                    postMsg('INIT');
 
-                    /*
-                    window.addEventListener('beforeunload', function () {
-                        postMsg('CLOSE');
-                    });
-                    */
-                    window.addEventListener('unload', function () {
-                        postMsg('CLOSE');
-                    });
-                // eslint-disable-next-line no-constant-condition,no-constant-binary-expression
-                } else if (false && !noWorker && !noSharedWorker && 'serviceWorker' in navigator) {
-                    var initializing = true;
-                    var stopWaiting = waitFor2(); // Call this function when we're ready
-
-                    postMsg = function (data) {
-                        if (worker) { return void worker.postMessage(data); }
-                    };
-
-                    navigator.serviceWorker.register('/common/outer/serviceworker.js?' + urlArgs, {scope: '/'})
-                        .then(function(reg) {
-                            // Add handler for receiving messages from the service worker
-                            navigator.serviceWorker.addEventListener('message', function (ev) {
-                                if (initializing && ev.data === "SW_READY") {
-                                    initializing = false;
-                                } else {
-                                    msgEv.fire(ev);
-                                }
-                            });
-
-                            // Initialize the worker
-                            // If it is active (probably running in another tab), just post INIT
-                            if (reg.active) {
-                                worker = reg.active;
-                                postMsg("INIT");
-                            }
-                            // If it was not active, wait for the "activated" state and post INIT
-                            reg.onupdatefound = function () {
-                                if (initializing) {
-                                    var w = reg.installing;
-                                    var onStateChange = function () {
-                                        if (w.state === "activated") {
-                                            worker = w;
-                                            postMsg("INIT");
-                                            w.removeEventListener("statechange", onStateChange);
-                                        }
-                                    };
-                                    w.addEventListener('statechange', onStateChange);
-                                    return;
-                                }
-                                // New version detected (from another tab): kill?
-                                console.error('New version detected: ABORT?');
-                            };
-                            return void stopWaiting();
-                        }).catch(function(error) {
-                            /**/console.log('Registration failed with ' + error);
-                        });
-
-                    window.addEventListener('beforeunload', function () {
-                        postMsg('CLOSE');
-                    });
-                } else if (!noWorker && Worker) {
-                    worker = new Worker('/common/outer/webworker.js?' + urlArgs);
-                    worker.onerror = function (e) {
-                        console.error(e.message);
-                    };
-                    worker.onmessage = function (ev) {
-                        msgEv.fire(ev);
-                    };
-                    postMsg = function (data) {
-                        worker.postMessage(data);
-                    };
-                } else {
-                    // Use the async store in the main thread if workers are not available
-                    require(['/common/outer/noworker.js'], waitFor2(function (NoWorker) {
-                        NoWorker.onMessage(function (data) {
-                            msgEv.fire({data: data, origin: ''});
-                        });
-                        postMsg = function (d) { setTimeout(function () { NoWorker.query(d); }); };
-                        NoWorker.create();
-                    }));
-                }
+            nThen(waitFor => {
+                Store({
+                    noWorker, noSharedWorker,
+                    AppConfig, Messages, Broadcast,
+                    ApiConfig: Config
+                }).then(waitFor(store => {
+                    postMsg = store?.postMsg;
+                    msgEv = store?.msgEv;
+                }));
             }).nThen(function () {
                 Channel.create(msgEv, postMsg, function (chan) {
                     console.log('Outer ready');

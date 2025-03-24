@@ -64,7 +64,7 @@ define([
                 let prefix = icon.slice(0, icon.indexOf('-'));
                 cls = `.${prefix}.${icon}`;
             }
-            return h(`i${cls}`);
+            return h(`i${cls}`, { 'aria-hidden': 'true' });
         };
         blocks.button = (type, icon, text) => {
             type = type || 'primary';
@@ -154,6 +154,35 @@ define([
                 });
             }
             return box;
+        };
+
+        // opts.values = { key1:label1, key2:label2 }
+        blocks.radio = (key, state, opts, onChange) => {
+            if (!opts?.values) {
+                return void console.error('NO_VALUES');
+            }
+            let all = Object.keys(opts.values).map(k => {
+                let v = opts.values[k];
+                let r = UI.createRadio(
+                    `cp-${app}-${key}`,
+                    `cp-${app}-${key}-${k}`,
+                    v, state === k, {
+                        input: { value: k },
+                        label: { class: 'noTitle' }
+                    }
+                );
+                if (typeof(onChange) === "function"){
+                    $(r).find('input').on('change', function() {
+                        onChange(k);
+                    });
+                }
+                return r;
+            });
+            let block = h('div.cp-sidebar-flex-block', all);
+            if (opts && opts.spinner) {
+                block.spinner = UI.makeSpinner($(block));
+            }
+            return block;
         };
 
         blocks.table = function (header, entries) {
@@ -253,6 +282,13 @@ define([
                 });
             });
             return box;
+        };
+
+        blocks.hintItem = (hint, item) => {
+            return blocks.form([
+                h('span.cp-sidebarlayout-description-item', hint),
+                item
+            ]);
         };
 
         return blocks;

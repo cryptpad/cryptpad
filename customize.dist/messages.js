@@ -38,11 +38,10 @@ var getStoredLanguage = function () { return localStorage && localStorage.getIte
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
 var getLanguage = Messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
-    try {
-        if (getStoredLanguage()) { return getStoredLanguage(); }
-    } catch (e) { console.log(e); }
     var l = getBrowserLanguage();
-    // Edge returns 'fr-FR' --> transform it to 'fr' and check again
+    try {
+        l = getStoredLanguage() || getBrowserLanguage();
+    } catch (e) { console.log(e); }
     return map[l] ? l :
             (map[l.split('-')[0]] ? l.split('-')[0] :
                 (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
@@ -118,7 +117,6 @@ define(req, function(AppConfig, Default, Language) {
 
     Messages._languages = map;
     Messages._languageUsed = language;
-
     // Get keys with parameters
     Messages._getKey = function (key, argArray) {
         if (!Messages[key]) { return '?'; }
@@ -135,6 +133,9 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+
+    
+
     return Messages;
 
 });

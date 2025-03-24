@@ -160,6 +160,20 @@
                 height: 384px;
                 padding: 50px;
                 margin: 5px;
+                .cp-team-spinner-container {
+                    height: 200px;
+                    .cp-team-spinner {
+                        display: inline-block;
+                        box-sizing: border-box;
+                        width: 180px;
+                        height: 180px;
+                        border: 11px solid @cp_loading-spinner;
+                        border-radius: 50%;
+                        border-top-color: transparent;
+                        animation: spin infinite 3s; // defined in loading.less
+                        animation-timing-function: cubic-bezier(.6,0.15,0.4,0.85);
+                    }
+                }
                 &:focus-visible {
                     outline: @variables_focus_style;
                 }

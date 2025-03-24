@@ -17,7 +17,7 @@ define([
     '/common/common-interface.js',
     'chainpad-netflux',
     '/components/chainpad-crypto/crypto.js',
-    '/common/userObject.js',
+    '/common/user-object.js',
     '/common/clipboard.js',
     '/common/outer/login-block.js',
     '/common/outer/roster.js',
