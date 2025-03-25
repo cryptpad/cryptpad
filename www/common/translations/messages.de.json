@@ -1817,5 +1817,6 @@
     "admin_logoSize_error": "Das Logo ist zu groß",
     "addItemBottom": "Karte am Ende des Boards hinzufügen",
     "kanban_moveBoardRight": "Board nach rechts verschieben",
-    "admin_listConfirm": "Bist du sicher, dass du die Admin-Rechte dieses Benutzers entfernen möchtest?"
+    "admin_listConfirm": "Bist du sicher, dass du die Admin-Rechte dieses Benutzers entfernen möchtest?",
+    "profile_remove_avatar": "Diesen Avatar entfernen"
 }
