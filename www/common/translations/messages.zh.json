@@ -1817,5 +1817,6 @@
     "toggleArrows": "箭头按钮移动项目",
     "toggleDrag": "拖动移动项目",
     "error_limit": "请输入有效数字",
-    "admin_addKeyLabel": "使用管理员的公钥添加管理员"
+    "admin_addKeyLabel": "使用管理员的公钥添加管理员",
+    "profile_remove_avatar": "移除此头像"
 }
