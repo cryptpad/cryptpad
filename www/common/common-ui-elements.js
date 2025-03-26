@@ -1280,7 +1280,7 @@ define([
         common.fixLinks(text);
 
         var closeButton = h('button.cp-help-close.fa.fa-times', {
-            title: 'Close help notification'
+            title: Messages.help_close_button
         });
         var $toolbarButton = common.createButton('', true, {
             text: Messages.help_button,
