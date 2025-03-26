@@ -1287,8 +1287,8 @@ define([
             name: 'help'
         }).addClass('cp-toolbar-button-active');
         var help = h('div.cp-help-container', [
-            closeButton,
-            text
+            text,
+            closeButton
         ]);
 
         $toolbarButton.attr('title', Messages.show_help_button);
