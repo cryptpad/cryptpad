@@ -74,7 +74,7 @@ define([
                 h("h5.cp-app-notifications-panel-title",
                     (Messages.notificationsPage || "Notifications") + " - " + categoryName),
                 h("div.cp-app-notifications-panel-titlebar-buttons", [
-                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { title: Messages.notifications_dismissAll || "Dismiss All" }, h("span.fa.fa-trash")),
+                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { tabindex: 0, title: Messages.notifications_dismissAll || "Dismiss All" }, h("span.fa.fa-trash")),
                 ]),
             ]),
             notifsList = h("div.cp-app-notifications-panel-list", [
@@ -154,6 +154,11 @@ define([
             }
         });
 
+        $(dismissAll).keydown(function (e) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+                $(dismissAll).click();
+            }
+        });
         $(dismissAll).click(function () {
             notifsData.forEach(function (data) {
                 if (data.content.isDismissible) {
