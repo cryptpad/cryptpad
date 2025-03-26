@@ -4,6 +4,7 @@
 
 define([
     'jquery',
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
@@ -16,7 +17,7 @@ define([
     '/components/croppie/croppie.min.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/components/croppie/croppie.css',
-], function ($, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
+], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
     var MT = {};
 
     var Nacl = window.nacl;
@@ -46,7 +47,7 @@ define([
         let path = 'legacy';
         if (isModernFirefox || isModernChromium) { path = 'modern'; }
         MediaTag.setDefaultConfig('pdf', {
-            viewer: `/lib/pdfjs/${path}/web/viewer.html`
+            viewer: `${ApiConfig.httpSafeOrigin}/lib/pdfjs/${path}/web/viewer.html`
         });
         MediaTag.setDefaultConfig('download', {
             text: Messages.mediatag_saveButton,
