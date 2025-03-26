@@ -637,7 +637,9 @@ const factory = (UserObject, Util, Hash,
                     var parsed = Hash.parsePadUrl(folderData.href);
                     var secret = Hash.getSecrets('drive', parsed.hash, folderData.password);
                     SF.upgrade(secret.channel, secret);
-                    Env.folders[folderId].userObject.setReadOnly(false, secret.keys.secondaryKey);
+                    if (Env.folders[folderId]) {
+                        Env.folders[folderId].userObject.setReadOnly(false, secret.keys.secondaryKey);
+                    }
                     waitFor.abort();
                     return void cb(folderId);
                 }
