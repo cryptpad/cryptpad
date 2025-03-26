@@ -2188,9 +2188,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }
 
             // Always hide right menu
-            localStorage?.original.removeItem('sse-hide-right-settings');
-            localStorage?.original.removeItem('de-hide-right-settings');
-            localStorage?.original.removeItem('pe-hide-right-settings');
+            localStorage?.original?.removeItem('sse-hide-right-settings');
+            localStorage?.original?.removeItem('de-hide-right-settings');
+            localStorage?.original?.removeItem('pe-hide-right-settings');
 
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
             ooLoaded = true;
