@@ -162,7 +162,7 @@ define([
     var makeForm = function (ctx, opts, cb) {
         let { oldData, recorded, title, hideNotice } = opts || {};
         var button;
-        cb = Util.once(cb);
+        cb = cb && Util.once(cb);
 
         if (typeof(cb) === "function") {
             button = h('button.btn.btn-primary.cp-support-list-send', Messages.contacts_send);
