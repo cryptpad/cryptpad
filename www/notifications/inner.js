@@ -89,6 +89,7 @@ define([
                 notifsData.push(data);
                 var icon = $(el).find(".cp-reminder");
                 $(icon).addClass('cp-avatar-calendar');
+                $(el).attr('tabindex', -1);
                 $(notifsList).prepend(el);
             }
         };
@@ -107,6 +108,7 @@ define([
                 var time = new Date(data.content.time);
                 $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleString()));
                 $(el).addClass("cp-app-notification-archived");
+                $(el).attr('tabindex', -1);
                 if (isDataUnread) {
                     $(el).hide();
                 } else {

@@ -131,7 +131,9 @@ define([
 
             $(notif).mouseenter((e) => {
                 e.stopPropagation();
-                $(notif).focus();
+                if($(notif).find('li[tabindex="0"]').length) {
+                    $(notif).focus();
+                };
             });
 
             if (data.content.isClickable) {
