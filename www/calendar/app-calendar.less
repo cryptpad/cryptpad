@@ -182,13 +182,20 @@
                 display: flex;
                 align-items: center;
                 margin-bottom: 0.2rem;
-                a {
-                    color: @cryptpad_color_link;
-                    text-decoration: underline;
-                }
-                span {
+                .event-location {
                     display: flex;
                     align-items: center;
+                }
+                a {
+                    margin:0.1rem;
+                    border-radius: @variables_radius;
+                    color: @cryptpad_color_link;
+                    text-decoration: underline;
+                    &:focus-visible{
+                        outline: @variables_focus_style;
+                    }
+                }
+                span {
                     overflow: hidden;
                     word-break: break-word;
                     text-overflow: ellipsis;

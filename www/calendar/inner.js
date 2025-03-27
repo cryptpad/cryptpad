@@ -409,7 +409,7 @@ define([
                 APP.nextLocationUid = uid;
             }
             let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-label': Messages.calendar_loc }, []);
-            return location_icon.outerHTML + str;
+            return `<div class="event-location"> ${location_icon.outerHTML} ${str} </div>`;
         },
         popupDetailBody: function(schedule) {
             var str = schedule.body;
