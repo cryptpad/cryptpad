@@ -179,9 +179,19 @@
                 flex-shrink: 0;
             }
             .tui-full-calendar-popup-detail-item {
+                display: flex;
+                align-items: center;
+                margin-bottom: 0.2rem;
                 a {
                     color: @cryptpad_color_link;
                     text-decoration: underline;
+                }
+                span {
+                    display: flex;
+                    align-items: center;
+                    overflow: hidden;
+                    word-break: break-word;
+                    text-overflow: ellipsis;
                 }
             }
             .tui-full-calendar-section-button-save {
