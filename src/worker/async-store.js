@@ -2866,8 +2866,11 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 loadSyncModules(waitFor);
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Calendar, 'calendar', waitFor);
-                if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(Support, 'support', waitFor);
+                nThen(waitFor => {
+                    // Make teams non-blocking
+                    if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
+                });
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -3280,22 +3283,36 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             }
 
             if (requires === 'team') {
-                const initTeams = Util.once(ret => {
-                    // On cache ready (if cache enabled)
-                    // or on ready (if cache disabled)
-                    nThen(w => {
-                        loadUniversal(Team, 'team', w, clientId);
-                    }).nThen(() => {
-                        cb(ret);
-                        loadDrive(clientId, data, ret => {
-                            startCacheModules(clientId, ret, onInit);
-                        }, ret => {
-                            startModules(clientId, ret, onInit);
+                let called = false;
+                const initTeams = cache => {
+                    return ret => {
+                        if (called) { return; }
+                        called = true;
+                        // On cache ready (if cache enabled)
+                        // or on ready (if cache disabled)
+                        nThen(w => {
+                            if (cache) { return; }
+                            initAnonRpc(null, null, w());
+                        }).nThen(w => {
+                            loadUniversal(Team, 'team', w, clientId);
+                        }).nThen(w => {
+                            // Sync teams before other modules
+                            // when cache is empty
+                            if (!cache && store.modules['team']) {
+                                store.modules['team'].onReady(w);
+                            }
+                        }).nThen(() => {
+                            cb(ret);
+                            loadDrive(clientId, data, ret => {
+                                startCacheModules(clientId, ret, onInit);
+                            }, ret => {
+                                startModules(clientId, ret, onInit);
+                            });
                         });
-                    });
-                });
+                    };
+                };
                 return void loadAccount(clientId, data,
-                                initTeams, initTeams);
+                                initTeams(true), initTeams(false));
             }
 
             if (requires === 'drive') {

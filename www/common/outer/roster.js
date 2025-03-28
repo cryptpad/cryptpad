@@ -641,11 +641,17 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
              return Boolean(ready && me);
         };
 
+        var lastHash;
         var onMessage = function (msg, user, vKey, isCp , hash, author) {
             // count messages received since the last checkpoint
             // even if they fail to parse
-            ref.internal.sinceLastCheckpoint++;
 
+            if (lastHash !== hash) {
+                // Don't count duplicate lkh message on reconnect
+                ref.internal.sinceLastCheckpoint++;
+            }
+
+            lastHash = hash;
             var parsed = Util.tryParse(msg);
 
             if (!parsed) { return void console.error("could not parse"); }
