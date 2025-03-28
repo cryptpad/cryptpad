@@ -104,11 +104,12 @@ define([
     var hash;
 
     nThen(function (waitFor) {
-        // If this instance is configured to enforce MFA for all registered users,
-        // request the login block with no credential to check if it is protected.
         let done = waitFor();
         var parsed = Block.parseBlockHash(blockHash);
-        Util.getBlock(parsed.href, { }, waitFor((err, response) => {
+        var sessionToken = LocalStore.getSessionToken() || undefined;
+        Util.getBlock(parsed.href, {
+            bearer: sessionToken
+        }, waitFor((err, response) => {
             if (err) {
                 waitFor.abort();
                 return void UI.alert('Invalid user');
