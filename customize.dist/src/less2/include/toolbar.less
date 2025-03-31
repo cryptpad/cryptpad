@@ -66,11 +66,11 @@
     .cp-markdown-toolbar {
         min-height: @toolbar_line-height;
         height: auto;
-        display: flex;
         flex-wrap: wrap;
         background-color: @cp_toolbar-bg;
         color: @cp_toolbar-fg;
         display: none;
+        margin-left: 0.3rem;
         button {
             height: @toolbar_line-height !important;
             outline: 0;
@@ -84,16 +84,6 @@
             &:focus-visible {
                 outline: @variables_focus_style;
             }
-        }
-        button:nth-of-type(1) {
-            margin-left: 0.3rem;
-        }
-        
-        @media screen and (max-width: @browser_media-medium-screen) {
-            button:nth-of-type(1) {
-                margin-left: 0;
-            }
-            margin-left: 0.3rem;
         }
     }
 
