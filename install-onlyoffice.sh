@@ -38,7 +38,17 @@ main() {
     install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1
 
     rm -rf "$BUILDS_DIR"
-    if command -v rdfind &>/dev/null; then
+
+    if [ "${RDFIND+x}" != "x" ]; then
+        if command -v rdfind &>/dev/null; then
+            RDFIND="1"
+        else
+            RDFIND="0"
+        fi
+    fi
+
+    if [ "$RDFIND" = "1" ]; then
+        ensure_command_available rdfind
         rdfind -makehardlinks true -makeresultsfile false $OO_DIR/v*
     fi
 }
@@ -74,6 +84,18 @@ parse_arguments() {
             TRUST_REPOSITORY="1"
             shift
             ;;
+        --check)
+            CHECK="1"
+            shift
+            ;;
+        --rdfind)
+            RDFIND="1"
+            shift
+            ;;
+        --no-rdfind)
+            RDFIND="0"
+            shift
+            ;;
         *)
             show_help
             shift
@@ -104,9 +126,6 @@ show_help() {
     cat <<EOF
 install-onlyoffice installs or upgrades OnlyOffice.
 
-NOTE: When you have rdfind installed, it will be used to save ~650MB of disk
-space.
-
 OPTIONS:
     -h, --help
             Show this help.
@@ -120,6 +139,18 @@ OPTIONS:
             Automatically configure the cloned onlyoffice-builds repository
             as a safe.directory.
             https://git-scm.com/docs/git-config/#Documentation/git-config.txt-safedirectory
+
+    --check
+            Do not install OnlyOffice, only check if the existing installation
+            is up to date. Exits 0 if it is up to date, nonzero otherwise.
+
+    --rdfind
+            Run rdfind to save ~650MB of disk space.
+            If neither '--rdfind' nor '--no-rdfind' is specified, then rdfind
+            will only run if rdfind is installed.
+
+    --no-rdfind
+            Do not run rdfind, even if it is installed.
 
 EOF
     exit 1
@@ -143,7 +174,17 @@ install_old_version() {
     local FULL_DIR=$OO_DIR/$DIR
     local LAST_DIR=$(pwd)
 
-    if [ ! -e "$FULL_DIR"/.commit ] || [ "$(cat "$FULL_DIR"/.commit)" != "$COMMIT" ]; then
+    local ACTUAL_COMMIT="not installed"
+    if [ -e "$FULL_DIR"/.commit ]; then
+        ACTUAL_COMMIT="$(cat "$FULL_DIR"/.commit)"
+    fi
+
+    if [ "$ACTUAL_COMMIT" != "$COMMIT" ]; then
+        if [ ${CHECK+x} ]; then
+            echo "Wrong commit of $FULL_DIR found. Expected: $COMMIT. Actual: $ACTUAL_COMMIT"
+            exit 1
+        fi
+
         ensure_oo_is_downloaded
 
         rm -rf "$FULL_DIR"
@@ -200,22 +241,31 @@ install_version() {
 }
 
 install_x2t() {
-    ensure_command_available curl
-    ensure_command_available sha512sum
-    ensure_command_available unzip
-
     local VERSION=$1
     local HASH=$2
     local LAST_DIR
     LAST_DIR=$(pwd)
     local X2T_DIR=$OO_DIR/x2t
 
+    local ACTUAL_VERSION="not installed"
+    if [ -e "$X2T_DIR"/.version ]; then
+        ACTUAL_VERSION="$(cat "$X2T_DIR"/.version)"
+    fi
+
     if [ ! -e "$X2T_DIR"/.version ] || [ "$(cat "$X2T_DIR"/.version)" != "$VERSION" ]; then
+        if [ ${CHECK+x} ]; then
+            echo "Wrong version of x2t found. Expected: $VERSION. Actual: $ACTUAL_VERSION"
+            exit 1
+        fi
+
         rm -rf "$X2T_DIR"
         mkdir -p "$X2T_DIR"
 
         cd "$X2T_DIR"
 
+        ensure_command_available curl
+        ensure_command_available sha512sum
+        ensure_command_available unzip
         curl "https://github.com/cryptpad/onlyoffice-x2t-wasm/releases/download/$VERSION/x2t.zip" --location --output x2t.zip
         echo "$HASH x2t.zip" >x2t.zip.sha512
         if ! sha512sum --check x2t.zip.sha512; then

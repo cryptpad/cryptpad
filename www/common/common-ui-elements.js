@@ -597,10 +597,11 @@ define([
         let btnClass = $button.attr('class');
         let btnId = $button.attr('id');
         let btnTitle = $button.attr('title');
+        let btnVisibility = $button.attr('style');
         if (btnClass) { attributes['class'] = btnClass; }
         if (btnId) { attributes['id'] = btnId; }
         if (btnTitle && !attributes.title) { attributes['title'] = btnTitle; }
-
+        if (btnVisibility) { attributes['style'] = btnVisibility; }
         return UIElements.createDropdownEntry({
             tag: 'a',
             attributes: attributes,
@@ -871,7 +872,7 @@ define([
                     h('i.fa.fa-hdd-o'),
                     h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_storeInDrive)
                 ])).click(common.prepareFeedback(type)).click(function () {
-                    $(button).hide();
+                    $('.cp-toolbar-storeindrive').hide();
                     common.getSframeChannel().query("Q_AUTOSTORE_STORE", {
                         forceOwnDrive: true,
                     }, function (err, obj) {
@@ -904,6 +905,7 @@ define([
             case 'toggle':
                 button = $(h('button.cp-toolbar-tools', {
                     //title: data.title || '', // TODO display if the label text is collapsed
+                    'aria-label': data.text || Messages.toolbar_tools // Fallback
                 }, [
                     h('i.fa.' + (data.icon || 'fa-wrench')),
                     h('span.cp-toolbar-name', data.text || Messages.toolbar_tools)
@@ -1517,6 +1519,9 @@ define([
                 });
 
                 Util.onClickEnter(entry, function(e) {
+                    if ($(e.target).attr('href') === '#') {
+                        e.preventDefault();
+                    }
                     if (config.isSelect) { return; }
                     e.stopPropagation();
                     if (typeof(config.action) === "function") {
@@ -2357,9 +2362,9 @@ define([
             var myData = metadataMgr.getUserData();
             var privateData = metadataMgr.getPrivateData();
             var uid = myData.uid;
-            if (!priv.plan && privateData.plan) {
+            if ((!priv.plan && privateData.plan) ||
+                (!priv.accountName && privateData.accountName)) {
                 config.$initBlock.empty();
-                metadataMgr.off('change', updateButton);
                 UIElements.createUserAdminMenu(Common, config);
                 return;
             }
@@ -2406,7 +2411,6 @@ define([
                 attributes: {
                     'class': 'cp-language-value',
                     'data-value': l,
-                    'href': '#',
                 },
                 content: [ // supplying content as an array ensures it's a text node, not parsed HTML
                     languages[l] // Pretty name of the language value
@@ -3547,14 +3551,15 @@ define([
 
         var text = Messages._getKey('owner_add', [name, title]);
 
+        var obj = { pw: msg.content.password || '', f: 1 };
+        let newHref = Hash.getNewPadURL(msg.content.href, obj);
         var link = h('a', {
-            href: '#'
+            href: newHref
         }, Messages.requestEdit_viewPad);
         $(link).click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var obj = { pw: msg.content.password || '', f: 1 };
-            common.openURL(Hash.getNewPadURL(msg.content.href, obj));
+            common.openURL(newHref);
         });
 
         var div = h('div', [

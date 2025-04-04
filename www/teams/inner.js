@@ -15,7 +15,7 @@ define([
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
-    '/common/userObject.js',
+    '/common/user-object.js',
     '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',
@@ -542,7 +542,11 @@ define([
                     }, team.metadata.name),
                 ]);
                 list.push(teamDiv);
-                common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
+                if (team.offline && team.error) {
+                    $(avatar).append(h('div.cp-team-spinner-container', h('span.cp-team-spinner')));
+                } else {
+                    common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
+                }
                 $(teamDiv).on('click keypress', function (event) {
                     if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                         if (team.error) {
@@ -1564,7 +1568,8 @@ define([
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,
-                $container: $bar
+                $container: $bar,
+                skipLink: '#cp-sidebarlayout-leftside'
             };
             var toolbar = APP.toolbar = Toolbar.create(configTb);
             // Update the name in the user menu

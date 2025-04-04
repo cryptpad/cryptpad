@@ -1771,5 +1771,13 @@
     "admin_onboardingOptionsHint": "Scegli l’opzione appropriata per la tua istanza.<br> Queste configurazioni possono essere cambiate successivamente nel pannello di amministrazione.",
     "team_autoTrim": "Eliminazione della cronologia del drive del gruppo... Si prega di attendere.",
     "admin_mfa_confirm_enable": "Sei sicuro/a di voler attivare l'autenticazione a più fattori?",
-    "admin_mfa_confirm_disable": "Sei sicuro/a di voler disattivare l'autenticazione a più fattori?"
+    "admin_mfa_confirm_disable": "Sei sicuro/a di voler disattivare l'autenticazione a più fattori?",
+    "fm_restoreMultipleDialog": "Sei sicuro/a di voler ripristinare {0} file e/o cartelle nelle loro posizioni precedenti?",
+    "calendar_hide": "Nascondi i calendari",
+    "calendar_show": "Mostra i calendari",
+    "form_passwordWarning": "La password del modulo può essere impostata solo al momento della creazione e non può essere modificata in seguito.",
+    "admin_blockKey": "Chiave pubblica di blocco",
+    "error_limit": "Inserisci un numero valido",
+    "form_answerType_error": "Seleziona come vuoi rispondere al modulo",
+    "error_positiveNumber": "Inserisci un numero positivo"
 }

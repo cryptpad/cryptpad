@@ -48,7 +48,11 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "pako",
     "x2js"
 ].forEach(l => {
-    const source = Path.join("node_modules", l);
+    let s = l;
+    if (s === 'tweetnacl') {
+        //s += '-old';
+    }
+    const source = Path.join("node_modules", s);
     const destination = Path.join(componentsPath, l);
     Fs.rmSync(destination, { recursive: true, force: true });
     Fs.cpSync(source, destination, { recursive: true });

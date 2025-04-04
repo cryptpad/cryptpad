@@ -1859,11 +1859,14 @@ define([
                 "documentType": file.doc,
                 "editorConfig": {
                     customization: {
+                        compactHeader: true,
                         chat: false,
                         logo: {
                             url: "/bounce/#" + encodeURIComponent('https://www.onlyoffice.com')
                         },
-                        comments: !lock && !readOnly
+                        comments: !lock && !readOnly,
+                        hideRightMenu: true,
+                        uiTheme: window.CryptPad_theme === "dark" ? "theme-dark" : "theme-classic-light"
                     },
                     "user": {
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
@@ -1903,6 +1906,7 @@ define([
                 }
                 c.forcesave = true;
             }
+
             console.error('updated config', ooconfig);
             return ooconfig;
         };
@@ -2126,6 +2130,13 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 });
             };
 
+            // Always hide right menu
+            try {
+                localStorage?.original?.removeItem('sse-hide-right-settings');
+                localStorage?.original?.removeItem('de-hide-right-settings');
+                localStorage?.original?.removeItem('pe-hide-right-settings');
+            } catch (e) {}
+
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
 
             ooLoaded = true;
@@ -2200,7 +2211,6 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     tag: 'a',
                     attributes: {
                         'data-value': val,
-                        href: '#'
                     },
                     content: val
                 };
@@ -2620,7 +2630,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                           (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
             var s = h('script', {
                 type:'text/javascript',
-                src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
+                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
             });
             $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a')).append(s);
 
@@ -2656,7 +2666,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 },
                 sfCommon: common,
                 $container: $bar,
-                $contentContainer: $('#cp-app-oo-container')
+                $contentContainer: $('#cp-app-oo-container'),
+                skipLink: 'iframe[name="frameEditor"]|#editor_sdk'
             };
             toolbar = APP.toolbar = Toolbar.create(configTb);
             toolbar.showColors();
@@ -3077,7 +3088,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var s = h('script', {
                 type:'text/javascript',
-                src: '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
+                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
             });
             $('#cp-app-oo-editor').append(s);
 

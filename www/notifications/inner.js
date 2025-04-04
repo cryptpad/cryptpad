@@ -205,7 +205,7 @@ define([
         var active = privateData.category || 'all';
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category', 'tabindex': 0}).appendTo($categories);
             if (key === 'all') { $category.append($('<span>', {'class': 'fa fa-bars'})); }
             if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user'})); }
             if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-richtext'})); }
@@ -215,6 +215,11 @@ define([
                 $category.addClass('cp-leftside-active');
             }
 
+            $category.keydown(function (e) {
+                if (e.keyCode === 13) {
+                    $category.click();
+                }
+            });
             $category.click(function () {
                 if (!Array.isArray(categories[key]) && categories[key].onClick) {
                     categories[key].onClick();
@@ -240,6 +245,7 @@ define([
             $container: APP.$toolbar,
             pageTitle: Messages.notificationsPage || 'Notifications',
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-container',
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();

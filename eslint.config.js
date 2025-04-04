@@ -43,6 +43,12 @@ module.exports = [{
         "www/pad/mathjax/",
         "www/code/mermaid*.js",
         "www/code/orgmode.js",
+        "www/common/worker.bundle.js",
+        "www/common/worker.bundle.min.js",
+        "src/tweetnacl",
+        "_build",
+        "scripts/api/testapi.js",
+        "rollup.config.mjs",
     ],
 }, ...compat.extends("eslint:recommended", "plugin:compat/recommended"), {
     plugins: {
@@ -65,6 +71,7 @@ module.exports = [{
         "linebreak-style": ["off", "unix"],
         quotes: ["off", "single"],
         semi: ["error", "always"],
+        eqeqeq: ["error", "always"],
         "no-irregular-whitespace": ["off"],
         "no-self-assign": ["off"],
         "no-empty": ["off"],

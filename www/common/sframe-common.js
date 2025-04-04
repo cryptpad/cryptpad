@@ -1057,6 +1057,11 @@ define([
 
             Mailbox.create(funcs);
 
+            // automatically configure all relative links in the inner iframe
+            // to point to the outer domain by adding a 'base' element to iframe's <head>
+            // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+            document.head.appendChild(h('base', { href: ApiConfig.httpUnsafeOrigin }));
+
             cb(funcs);
         });
     } };

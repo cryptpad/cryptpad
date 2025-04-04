@@ -159,7 +159,6 @@ define([
                     attributes: {
                         'class': 'cp-form-type-value',
                         'data-value': t,
-                        'href': '#',
                     },
                     content: Messages['form_text_'+t]
                 };
@@ -262,7 +261,6 @@ define([
                     attributes: {
                         'class': 'cp-form-type-value',
                         'data-value': t,
-                        'href': '#',
                     },
                     content: Messages['form_poll_'+t]
                 };
@@ -1295,7 +1293,6 @@ define([
                             attributes: {
                                 'class': 'cp-form-condition-question',
                                 'data-value': obj.uid,
-                                'href': '#',
                             },
                             content: obj.q
                         };
@@ -1316,14 +1313,12 @@ define([
                         tag: 'a',
                         attributes: {
                             'data-value': 1,
-                            'href': '#',
                         },
                         content: Messages.form_condition_is
                     }, {
                         tag: 'a',
                         attributes: {
                             'data-value': 0,
-                            'href': '#',
                         },
                         content: Messages.form_condition_isnot
                     }];
@@ -1402,7 +1397,6 @@ define([
                                 attributes: {
                                     'class': 'cp-form-condition-value',
                                     'data-value': str,
-                                    'href': '#',
                                 },
                                 content: str
                             };
@@ -1576,7 +1570,6 @@ define([
                                         attributes: {
                                             'class': 'cp-form-condition-question',
                                             'data-value': obj.uid,
-                                            'href': '#',
                                         },
                                         content: obj.q
                                     };
@@ -1604,7 +1597,6 @@ define([
                                         attributes: {
                                             'class': 'cp-form-condition-value',
                                             'data-value': str,
-                                            'href': '#',
                                         },
                                         content: str
                                     };
@@ -2988,7 +2980,6 @@ define([
                             attributes: {
                                 'class': 'cp-form-type-value',
                                 'data-value': t.key,
-                                'href': '#',
                             },
                             content: t.str
                         };
@@ -3574,7 +3565,7 @@ define([
         });
         var $send = $(send).click(function () {
             if (!$radio.find('input[type="radio"]:checked').length) {
-                return UI.warn(Messages.error);
+                return UI.warn(Messages.form_answerType_error);
             }
 
             var results = getFormResults();
@@ -3774,8 +3765,8 @@ define([
             }
         });
         $body.addClass('cp-form-palette-'+color);
-
-        $container.attr('class', 'cp-form-creator-content'+(APP.isEditor? ' cp-form-iseditor': ''));
+        var containerDragClass = ('ontouchstart' in window || APP.drag === false) ? ' cp-no-drag' : '';
+        $container.attr('class', 'cp-form-creator-content'+(APP.isEditor? ' cp-form-iseditor': '')+ containerDragClass);
 
         if (APP.isClosed && content.answers.privateKey && !APP.isEditor && !APP.hasAnswered) {
             var sframeChan = framework._.sfCommon.getSframeChannel();
@@ -3903,7 +3894,7 @@ define([
         var updateAddInline = APP.updateAddInline = function () {
             $container.find('.cp-form-creator-add-inline').remove();
             // Add before existing question
-            $container.find('.cp-form-block:not(.nodrag)').each(function (i, el) {
+            $container.find('.cp-form-block:not(.cp-form-submit-message)').each(function (i, el) {
                 var $el = $(el);
                 var uid = $el.attr('data-id');
                 $el.before(getFormCreator(uid));
@@ -4018,12 +4009,46 @@ define([
 
 
             var changeType;
+            let shiftButtons;
             if (editable) {
-                // Drag handle
-                dragHandle = h('span.cp-form-block-drag-handle', [
-                    h('i.fa.fa-ellipsis-h'),
-                    h('i.fa.fa-ellipsis-h'),
+                // Arrows
+                var upButton = h('button.cp-form-arrow', {
+                    'data-notippy':1,
+                    'title': Messages.moveItemUp,
+                    'aria-label': Messages.moveItemUp
+                }, [h('i.fa.fa-arrow-up',  {'aria-hidden': true})]);
+                var downButton = h('button.cp-form-arrow', {
+                    'data-notippy':1,
+                    'title': Messages.moveItemDown,
+                    'aria-label': Messages.moveItemDown
+                }, [h('i.fa.fa-arrow-down', {'aria-hidden': true})]);
+                var shiftBlock = function(direction) {
+                    var blockIndex = content.order.indexOf(uid);
+                    if (direction === 'up' && blockIndex > 0) {
+                        content.order.splice(blockIndex-1, 0, content.order.splice(blockIndex, 1)[0]);
+                        updateForm(framework, content, true);
+                        framework.localChange();
+                    } else if (direction === 'down' && blockIndex < content.order.length-1) {
+                        content.order.splice(blockIndex+1, 0, content.order.splice(blockIndex, 1)[0]);
+                        updateForm(framework, content, true);
+                        framework.localChange();
+                    }
+                };
+                $(upButton).click(function () {
+                    shiftBlock('up');
+                });
+                $(downButton).click(function () {
+                    shiftBlock('down');
+                });
+                shiftButtons = h('div.cp-form-block-arrows', [
+                    upButton,
+                    downButton
                 ]);
+
+
+                // Drag handle
+                var dragEllipses = [h('i.fa.fa-ellipsis-h'), h('i.fa.fa-ellipsis-h')];
+                dragHandle = h('span.cp-form-block-drag-handle', dragEllipses);
 
                 // Question
                 var inputQ = h('input', {
@@ -4260,13 +4285,18 @@ define([
                     }
                 }
             }
+
             var editableCls = editable ? ".editable" : "";
-            elements.push(h('div.cp-form-block'+editableCls, {
+            var draggable = APP.drag ? '' : '.nodrag';
+            elements.push(h('div.cp-form-block'+editableCls+draggable, {
                 'data-id':uid,
                 'data-type':type
             }, [
-                APP.isEditor ? dragHandle : undefined,
-                changeType,
+                h('header', [
+                    APP.isEditor ? dragHandle : undefined,
+                    shiftButtons,
+                    changeType
+                ]),
                 isStatic ? undefined : q,
                 h('div.cp-form-block-content', [
                     APP.isEditor && !isStatic ? requiredDiv : undefined,
@@ -4345,12 +4375,9 @@ define([
                 var refreshPage = APP.refreshPage = function (current, direction) {
                     $page.empty();
                     if (!current || current < 1) { current = 1; }
-
                     var checkPages = checkEmptyPages();
                     var shownContent = checkPages[0];
                     var shownPages = checkPages[1];
-                    var shownLength = shownContent.length;
-
                     if (pgcontent[(current - 1)] && pgcontent[current-1].empty) {
                         if (direction === 'next') {
                             current++;
@@ -4367,14 +4394,6 @@ define([
                         }
                     }
 
-                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
-                    evOnChange.reg(function(){
-                        var checkPages = checkEmptyPages();
-                        var shownContent = checkPages[0];
-                        var shownPages = checkPages[1];
-                        var shownLength = shownContent.length;
-                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownLength]));
-                    });
                     var left = h('button.btn.btn-secondary.cp-prev', [
                         h('i.fa.fa-arrow-left'),
                     ]);
@@ -4382,8 +4401,39 @@ define([
                         h('i.fa.fa-arrow-right'),
                     ]);
 
+                    var togglePageArrows = function(checkPages) {
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
+                        if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) {
+                            $(right).css('visibility', 'hidden');
+                        } else {
+                            $(right).css('visibility', 'visible');
+                        }
+
+                        if (current === 1) {$(left).css('visibility', 'hidden');}
+                        $container.find('.cp-form-page').hide();
+                        $($container.find('.cp-form-page').get(current-1)).show();
+                        if (current < shownContent.length) {
+                            $container.find('.cp-form-send-container').hide();
+                        } else {
+                            $container.find('.cp-form-send-container').show();
+                        }
+                    };
+
+                    var state = h('span', Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
+                    evOnChange.reg(function(){
+                        var checkPages = checkEmptyPages();
+                        togglePageArrows(checkPages);
+                        var shownContent = checkPages[0];
+                        var shownPages = checkPages[1];
+                        $(state).text(Messages._getKey('form_page', [shownPages.indexOf(_content[current-1])+1, shownContent.length]));
+                        
+                    });
+
                     if (shownPages.indexOf(_content[current-1])+1 === shownContent.length) { $(right).css('visibility', 'hidden'); }
                     if (current === 1) { $(left).css('visibility', 'hidden'); }
+
+                    togglePageArrows(checkPages);
 
                     $(left).click(function () {
                         refreshPage(current - 1, 'prev');
@@ -4392,14 +4442,6 @@ define([
                         refreshPage(current + 1, 'next');
                     });
                     $page.append([left, state, right]);
-
-                    $container.find('.cp-form-page').hide();
-                    $($container.find('.cp-form-page').get(current-1)).show();
-                    if (current !== pages) {
-                        $container.find('.cp-form-send-container').hide();
-                    } else {
-                        $container.find('.cp-form-send-container').show();
-                    }
                 };
                 setTimeout(refreshPage);
             }
@@ -4533,6 +4575,8 @@ define([
                     }
                 }
             });
+            APP.mainSortable.options.disabled = 'ontouchstart' in window ? true : false;
+
             return;
         }
 
@@ -5099,9 +5143,37 @@ define([
                 editableStr
             ]);
 
+            var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : undefined;
+            var toggleOnclass = 'ontouchstart' in window ? undefined : 'cp-toggle-active';
+            var toggleDragOff = h(`button#cp-toggle-drag-off.cp-form-view-drag.${toggleOffclass}.fa.fa-arrows`, {'title': Messages.toggleArrows, 'tabindex': 0});
+            var toggleDragOn = h(`button#cp-toggle-drag-on.cp-form-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'title': Messages.toggleDrag, 'tabindex': 0});
+            const updateDrag = state => {
+                return function () {
+                    var $container = $('.cp-form-creator-content');
+                    $(toggleDragOn).toggleClass('cp-toggle-active', state);
+                    $(toggleDragOff).toggleClass('cp-toggle-active', !state);
+                    APP.mainSortable.options.disabled = !state;
+                    APP.drag = state;
+                    if (state) {
+                        $container.removeClass('cp-no-drag');
+                    } else {
+                        $container.addClass('cp-no-drag');  
+                    }
+                };
+            };
+
+            $(toggleDragOn).click(updateDrag(true));
+            $(toggleDragOff).click(updateDrag(false));
+
+            var drag = h('div.cp-drag-container', [
+                toggleDragOff,
+                toggleDragOn
+            ]);
+
             return [
                 preview,
                 previewSettings,
+                drag,
                 colorTheme
             ];
         };
@@ -5217,7 +5289,7 @@ define([
                 fillerContainer = h('div.cp-form-filler-container');
             }
 
-            var contentContainer = h('div.cp-form-creator-content' + (APP.isEditor ? '.cp-form-iseditor' : ''));
+            var contentContainer = h('div.cp-form-creator-content' + (APP.isEditor ? '.cp-form-iseditor' : '') + ('ontouchstart' in window ? '.cp-no-drag' : ''));
             var resultsContainer = h('div.cp-form-creator-results');
             var answeredContainer = h('div.cp-form-creator-answered', {
                 style: 'display: none;'
@@ -5487,7 +5559,7 @@ define([
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
 
             var editDiv, previewDiv;
-            var div = h('div.cp-form-block.editable.nodrag', [
+            var div = h('div.cp-form-block.editable.nodrag.cp-form-submit-message', [
                 h('div.cp-form-block-content', [
                     p,
                     editDiv = h('div.cp-form-response-modal', t),
@@ -5664,5 +5736,6 @@ define([
     Framework.create({
         toolbarContainer: '#cp-toolbar',
         contentContainer: '#cp-app-form-editor',
+        skipLink: '#cp-app-form-editor'
     }, andThen);
 });

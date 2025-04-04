@@ -71,6 +71,7 @@
         button {
             height: @toolbar_line-height !important;
             outline: 0;
+            border-radius: @variables_radius;
             color: @toolbar-color;
             .toolbar_button;
             font: normal normal normal 14px/1 FontAwesome;
@@ -443,6 +444,23 @@
         .cp-toolbar-top {
             &.toolbar-hidden {
                 display: none !important;
+            }
+
+            .cp-toolbar-skip-link {
+                position: absolute;
+                top: -100px;
+                left: 45%;
+                background-color: @cp_buttons-primary;
+                color: @cp_buttons-primary-text;
+                padding: 0.3rem 0.5rem;
+                font-size: 1rem;
+                text-decoration: none;
+                border-radius: @variables_radius;
+                z-index: 1000;
+                transition: top 0.3s ease;
+            }
+            .cp-toolbar-skip-link:focus {
+                top: 10px;
             }
 
             @media screen and (max-width: @browser_media-medium-screen),

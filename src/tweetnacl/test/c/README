@@ -1,0 +1,8 @@
+Tests that call C programs based on original tweetnacl.c,
+and compare results with TweetNaCl-js.
+
+Work only in Node.js.
+
+To run, in this directory:
+
+$ make test

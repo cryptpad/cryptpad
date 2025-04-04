@@ -117,7 +117,6 @@ define(req, function(AppConfig, Default, Language) {
 
     Messages._languages = map;
     Messages._languageUsed = language;
-
     // Get keys with parameters
     Messages._getKey = function (key, argArray) {
         if (!Messages[key]) { return '?'; }
@@ -134,6 +133,9 @@ define(req, function(AppConfig, Default, Language) {
             return text;
         }
     };
+
+    
+
     return Messages;
 
 });

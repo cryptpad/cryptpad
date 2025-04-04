@@ -123,6 +123,7 @@ define([
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
+        var Handler;
 
         var currentPad = window.CryptPad_location = {
             app: '',
@@ -153,13 +154,14 @@ define([
                 '/common/outer/cache-store.js',
                 '/customize/application_config.js',
                 //'/common/test.js',
-                '/common/userObject.js',
+                '/common/user-object.js',
                 'optional!/api/instance',
                 '/common/pad-types.js',
+                '/form/command-handler.js'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
-            _Instance, _PadTypes) {
+            _Instance, _PadTypes, _Handler) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -183,6 +185,7 @@ define([
                 Utils.Block = _Block;
                 Utils.PadTypes = _PadTypes;
                 AppConfig = _AppConfig;
+                Handler = _Handler;
                 //Test = _Test;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
@@ -313,8 +316,10 @@ define([
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
 
+                let canNoDrive = false;
                 try {
                     var parsed = Utils.Hash.parsePadUrl(currentPad.href);
+                    canNoDrive = !(parsed?.hashData?.version === 3) && !parsed?.hashData?.password;
                     var options = parsed.getOptions();
                     if (options.loginOpts) {
                         var loginOpts = Utils.Hash.decodeDataOptions(options.loginOpts);
@@ -345,7 +350,8 @@ define([
                         sframeChan.event('EV_LOADING_ERROR', 'ACCOUNT');
                     }
                 }), {
-                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
+                    requires: cfg.requires,
+                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash && canNoDrive,
                     neverDrive: cfg.integration,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
@@ -732,6 +738,7 @@ define([
                 }));
             }
         }).nThen(function () {
+            console.info('READY SCO');
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             var isNewHash = true;
             if (!secret.keys) {
@@ -2079,6 +2086,8 @@ define([
                 }
             });
 
+            Handler.formCommandHandlers(sframeChan, Utils, nThen, Cryptpad);
+
             var integrationSave = function () {};
             if (cfg.integration) {
                 sframeChan.on('Q_INTEGRATION_SAVE', function (obj, cb) {
@@ -2454,4 +2463,3 @@ define([
 
     return common;
 });
-
