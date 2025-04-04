@@ -34,6 +34,7 @@ Fse.rmSync(oldComponentsPath, { recursive: true, force: true });
     "mathjax",
     "open-sans-fontface",
     "tweetnacl",
+    "tweetnacl-util",
     "require-css",
     "requirejs",
     "requirejs-plugins",

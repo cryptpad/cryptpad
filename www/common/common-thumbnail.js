@@ -8,9 +8,7 @@ define([
     '/common/visible.js',
     '/common/common-hash.js',
     '/common/media-tag.js',
-    '/components/tweetnacl/nacl-fast.min.js',
 ], function ($, Util, Visible, Hash, MediaTag) {
-    var Nacl = window.nacl;
     var Thumb = {
         dimension: 100,
         padDimension: 200,
@@ -45,7 +43,7 @@ define([
     Thumb.fromMetadata = function (metadata) {
         if (!metadata || typeof(metadata) !== 'object' || !metadata.thumbnail) { return; }
         try {
-            var u8 = Nacl.util.decodeBase64(metadata.thumbnail);
+            var u8 = Util.decodeBase64(metadata.thumbnail);
             var blob = new Blob([u8], {
                 type: 'image/png'
             });
@@ -285,7 +283,7 @@ define([
 
     var addThumbnail = function (err, thumb, $span, cb) {
         var split = thumb.split(',');
-        var u8 = Nacl.util.decodeBase64(split[1] || split[0]);
+        var u8 = Util.decodeBase64(split[1] || split[0]);
         var blob = new Blob([u8], {
             type: 'image/png'
         });

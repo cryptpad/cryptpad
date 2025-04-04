@@ -14,8 +14,8 @@ var factory = function (Util, Nacl) {
     // we will sign various message with our edPrivate keys
     // this handles that in a generic way
     var signMsg = function (data, signKey) {
-        var buffer = Nacl.util.decodeUTF8(JSON.stringify(data));
-        return Nacl.util.encodeBase64(Nacl.sign.detached(buffer, signKey));
+        var buffer = Util.decodeUTF8(JSON.stringify(data));
+        return Util.encodeBase64(Nacl.sign.detached(buffer, signKey));
     };
 
     // sendMsg takes a pre-formed message, does a little validation
@@ -299,7 +299,7 @@ var factory = function (Util, Nacl) {
         var signKey;
 
         try {
-            signKey = Nacl.util.decodeBase64(edPrivateKey);
+            signKey = Util.decodeBase64(edPrivateKey);
             if (signKey.length !== 64) {
                 throw new Error('private key did not match expected length of 64');
             }
@@ -308,7 +308,7 @@ var factory = function (Util, Nacl) {
         }
 
         try {
-            if (Nacl.util.decodeBase64(edPublicKey).length !== 32) {
+            if (Util.decodeBase64(edPublicKey).length !== 32) {
                 return void cb('expected public key to be 32 uint');
             }
         } catch (err) { return void cb(err); }

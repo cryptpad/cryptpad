@@ -7,6 +7,7 @@ const nThen = require('nthen');
 const Nacl = require('tweetnacl/nacl-fast');
 const Path = require('path');
 const Pins = require('../lib/pins');
+const Util = require('../lib/common-util');
 const Config = require('../lib/load-config');
 
 var escapeKeyCharacters = function (key) {
@@ -24,9 +25,9 @@ if (dataIdx === -1) {
     const deleteData = JSON.parse(process.argv[dataIdx+1]);
     if (!deleteData.toSign || !deleteData.proof) { return void console.error("Invalid arguments"); }
     // Check sig
-    const ed = Nacl.util.decodeBase64(deleteData.toSign.edPublic);
-    const signed = Nacl.util.decodeUTF8(JSON.stringify(deleteData.toSign));
-    const proof = Nacl.util.decodeBase64(deleteData.proof);
+    const ed = Util.decodeBase64(deleteData.toSign.edPublic);
+    const signed = Util.decodeUTF8(JSON.stringify(deleteData.toSign));
+    const proof = Util.decodeBase64(deleteData.proof);
     if (!Nacl.sign.detached.verify(signed, proof, ed)) { return void console.error("Invalid signature"); }
     edPublic = escapeKeyCharacters(deleteData.toSign.edPublic);
 }

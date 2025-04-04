@@ -7,7 +7,7 @@
 // merge code more easily.
 // Set REVERSE to true to copy from "www" to "src" once the changes have been merged.
 
-const REVERSE = true;
+const REVERSE = false;
 const Fs = require('node:fs');
 const map = {
     './src/worker/components/roster.js': './www/common/outer/roster.js',

@@ -2767,9 +2767,9 @@ define([
             var clone = Util.clone(json);
             delete clone.proof;
 
-            var msg = Nacl.util.decodeUTF8(Sortify(clone));
-            var sig = Nacl.util.decodeBase64(json.proof);
-            var pub = Nacl.util.decodeBase64(json.blockId);
+            var msg = Util.decodeUTF8(Sortify(clone));
+            var sig = Util.decodeBase64(json.proof);
+            var pub = Util.decodeBase64(json.blockId);
             return Nacl.sign.detached.verify(msg, sig, pub);
         };
 

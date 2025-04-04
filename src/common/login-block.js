@@ -23,7 +23,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
     // [b64_public, b64_sig, b64_block [version, nonce, content]]
 
     Block.seed = function () {
-        return Nacl.hash(Nacl.util.decodeUTF8('pewpewpew'));
+        return Nacl.hash(Util.decodeUTF8('pewpewpew'));
     };
 
     // should be deterministic from a seed...
@@ -49,8 +49,8 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
         try {
             var sign = keys.sign;
             return {
-                edPrivate: Nacl.util.encodeBase64(sign.secretKey),
-                edPublic: Nacl.util.encodeBase64(sign.publicKey),
+                edPrivate: Util.encodeBase64(sign.secretKey),
+                edPublic: Util.encodeBase64(sign.publicKey),
             };
         } catch (err) {
             console.error(err);
@@ -60,7 +60,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
     // (UTF8 content, keys object) => Uint8Array block
     Block.encrypt = function (version, content, keys) {
-        var u8 = Nacl.util.decodeUTF8(content);
+        var u8 = Util.decodeUTF8(content);
         var nonce = Nacl.randomBytes(Nacl.secretbox.nonceLength);
         return Block.join([
             [0],
@@ -77,7 +77,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
         var plaintext = Nacl.secretbox.open(box, nonce, keys.symmetric);
         try {
-            return JSON.parse(Nacl.util.encodeUTF8(plaintext));
+            return JSON.parse(Util.encodeUTF8(plaintext));
         } catch (e) {
             console.error(e);
             return;
@@ -98,9 +98,9 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
         // serialize {publickey, sig, ciphertext}
         return {
-            publicKey: Nacl.util.encodeBase64(keys.sign.publicKey),
-            signature: Nacl.util.encodeBase64(sig),
-            ciphertext: Nacl.util.encodeBase64(ciphertext),
+            publicKey: Util.encodeBase64(keys.sign.publicKey),
+            signature: Util.encodeBase64(sig),
+            ciphertext: Util.encodeBase64(ciphertext),
         };
     };
 
@@ -111,14 +111,14 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
         // sign your old publicKey with your old privateKey
             var u8_sig = Nacl.sign.detached(u8_pub, u8_secret);
         // return an array with the sig and the pubkey
-            return JSON.stringify([u8_pub, u8_sig].map(Nacl.util.encodeBase64));
+            return JSON.stringify([u8_pub, u8_sig].map(Util.encodeBase64));
         } catch (err) {
             return void console.error(err);
         }
     };
 
     var urlSafeB64 = function (u8) {
-        return Nacl.util.encodeBase64(u8).replace(/\//g, '-');
+        return Util.encodeBase64(u8).replace(/\//g, '-');
     };
 
     Block.getBlockUrl = function (keys) {
@@ -138,7 +138,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
     var decodeSafeB64 = function (b64) {
         try {
-            return Nacl.util.decodeBase64(b64.replace(/\-/g, '/'));
+            return Util.decodeBase64(b64.replace(/\-/g, '/'));
         } catch (e) {
             console.error(e);
             return;

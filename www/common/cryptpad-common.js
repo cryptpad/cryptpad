@@ -230,7 +230,7 @@ define([
                     '/api/broadcast?'+ (+new Date()),
                 ], waitFor(function (Broadcast) {
                     nacl = window.nacl;
-                    theirs = nacl.util.decodeBase64(Broadcast.curvePublic);
+                    theirs = Util.decodeBase64(Broadcast.curvePublic);
                 }));
             }).nThen;
             var toDelete = [];
@@ -238,14 +238,14 @@ define([
                 if (answer.uid !== data.uid) { return; }
                 n = n(function (waitFor) {
                     var hash = answer.hash;
-                    var h = nacl.util.decodeUTF8(hash);
+                    var h = Util.decodeUTF8(hash);
 
                     // Make proof
                     var curve = answer.curvePrivate;
-                    var mySecret = nacl.util.decodeBase64(curve);
+                    var mySecret = Util.decodeBase64(curve);
                     var nonce = nacl.randomBytes(24);
                     var proofBytes = nacl.box(h, nonce, theirs, mySecret);
-                    var proof = nacl.util.encodeBase64(nonce) +'|'+ nacl.util.encodeBase64(proofBytes);
+                    var proof = Util.encodeBase64(nonce) +'|'+ Util.encodeBase64(proofBytes);
                     var lineData = {
                         channel: data.channel,
                         hash: hash,
@@ -1606,7 +1606,7 @@ define([
             oldChannel = oldSecret.channel;
             var src = fileHost + Hash.getBlobPathFromHex(oldChannel);
             var key = oldSecret.keys && oldSecret.keys.cryptKey;
-            var cryptKey = window.nacl.util.encodeBase64(key);
+            var cryptKey = window.Util.encodeBase64(key);
 
             var mt = document.createElement('media-tag');
             mt.setAttribute('src', src);
@@ -2468,9 +2468,9 @@ define([
     };
 
     common.getAnonymousKeys = function (formSeed, channel) {
-        var array = window.nacl.util.decodeBase64(formSeed + channel);
+        var array = window.Util.decodeBase64(formSeed + channel);
         var hash = window.nacl.hash(array);
-        var secretKey = window.nacl.util.encodeBase64(hash.subarray(32));
+        var secretKey = window.Util.encodeBase64(hash.subarray(32));
         var publicKey = Hash.getCurvePublicFromPrivate(secretKey);
         return {
             curvePrivate: secretKey,

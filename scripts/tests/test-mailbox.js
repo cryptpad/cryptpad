@@ -55,16 +55,16 @@ var state = {};
 var makeCurveKeys = function () {
     var pair = Nacl.box.keyPair();
     return {
-        curvePrivate: Nacl.util.encodeBase64(pair.secretKey),
-        curvePublic: Nacl.util.encodeBase64(pair.publicKey),
+        curvePrivate: Util.encodeBase64(pair.secretKey),
+        curvePublic: Util.encodeBase64(pair.publicKey),
     };
 };
 
 var makeEdKeys = function () {
     var keys = Nacl.sign.keyPair.fromSeed(Nacl.randomBytes(Nacl.sign.seedLength));
     return {
-        edPrivate: Nacl.util.encodeBase64(keys.secretKey),
-        edPublic: Nacl.util.encodeBase64(keys.publicKey),
+        edPrivate: Util.encodeBase64(keys.secretKey),
+        edPublic: Util.encodeBase64(keys.publicKey),
     };
 };
 
@@ -198,7 +198,7 @@ nThen(function  (w) {
         alice.anonRpc.send('WRITE_PRIVATE_MESSAGE', [
             alice.mailboxChannel,
             msg
-            //Nacl.util.encodeBase64(Nacl.randomBytes(128))
+            //Util.encodeBase64(Nacl.randomBytes(128))
         ], w(function (err) {
             if (err) { throw new Error(err); }
             console.log('message %s written successfully', i);

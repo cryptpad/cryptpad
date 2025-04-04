@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (function (window) {
-var factory = function () {
+var factory = function (Util) {
     var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
@@ -373,7 +373,7 @@ var factory = function () {
 
         // Gets the key from the key string.
         getKeyFromStr: function (str) {
-            return window.nacl.util.decodeBase64(str);
+            return Util.decodeBase64(str);
         }
     };
 
@@ -448,7 +448,7 @@ var factory = function () {
         var metaChunk = window.nacl.secretbox.open(metaBox, Decrypt.createNonce(), key);
 
         try {
-            return JSON.parse(window.nacl.util.encodeUTF8(metaChunk));
+            return JSON.parse(Util.encodeUTF8(metaChunk));
         }
         catch (e) { return null; }
     };
@@ -487,7 +487,7 @@ var factory = function () {
 
         Decrypt.increment(nonce);
 
-        try { res.metadata = JSON.parse(Nacl.util.encodeUTF8(metaChunk)); }
+        try { res.metadata = JSON.parse(Util.encodeUTF8(metaChunk)); }
         catch (e) { return void done('E_METADATA_DECRYPTION'); }
 
         if (!res.metadata) { return void done('NO_METADATA'); }
@@ -822,8 +822,8 @@ var factory = function () {
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory();
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        define([], function () {
-            return factory();
+        define(['/common/common-util.js'], function (Util) {
+            return factory(Util);
         });
     } else {
         // unsupported initialization

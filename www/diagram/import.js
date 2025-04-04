@@ -5,11 +5,10 @@
 
 define([
     '/diagram/util.js',
+    '/common/common-util.js'
 ], function (
-    DiagramUtil,
+    DiagramUtil, Util
 ) {
-    const Nacl = window.nacl;
-
     const splitAt = function (str, char) {
         const pos = str.indexOf(char);
         if (pos <= 0) {
@@ -23,7 +22,7 @@ define([
         const [, metadata] = splitAt(prefix, ':');
         const [mimeType, ] = splitAt(metadata, ';');
 
-        const u8 = Nacl.util.decodeBase64(data);
+        const u8 = Util.decodeBase64(data);
         return new Blob([u8], { type: mimeType });
     };
 
