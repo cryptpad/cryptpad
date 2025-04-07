@@ -1631,9 +1631,9 @@ define([
                         '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
                         '#panel-info { display: none !important; }' + // Same but content
                         '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
-                        '.cp-from-url, #textart-button-from-url { display: none !important; }' + // Spellcheck language
-                        '.statusbar .cnt-lang { display: none !important; }' + // Spellcheck language
-                        '.statusbar #btn-doc-spell { display: none !important; }' + // Spellcheck button
+                        // '.cp-from-url, #textart-button-from-url { display: none !important; }' + // Spellcheck language
+                        // '.statusbar .cnt-lang { display: none !important; }' + // Spellcheck language
+                        // '.statusbar #btn-doc-spell { display: none !important; }' + // Spellcheck button
                         '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
                         '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                         'div.btn-users.dropdown-toggle { display: none; !important }';
