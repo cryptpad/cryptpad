@@ -134,7 +134,8 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    
+    Messages.admin_documentsDeletionHint = "Archive a list of documents using their id (one document id per line)";
+    Messages.admin_documentsDeletionTitle = "Archive multiple documents";
 
     return Messages;
 
