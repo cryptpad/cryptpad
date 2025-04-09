@@ -365,7 +365,6 @@ define([
                     tag: 'a',
                     attributes: {
                         'data-value': l.mode,
-                        'href': '#',
                     },
                     content: [l.language] // Pretty name of the language value
                 });
@@ -431,7 +430,6 @@ define([
                         tag: 'a',
                         attributes: {
                             'data-value': l.name,
-                            'href': '#',
                         },
                         content: [l.name] // Pretty name of the language value
                     });

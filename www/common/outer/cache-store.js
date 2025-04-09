@@ -36,6 +36,7 @@ const factory = (Util, localForage) => {
         disabled = true;
         allowed = supported && !disabled;
     };
+    S.isEnabled = () => allowed;
 
     var cache = localForage.createInstance({
         driver: localForage.INDEXEDDB,

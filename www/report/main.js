@@ -23,6 +23,7 @@ define([
     '/common/outer/roster.js',
     '/common/rpc.js',
     '/common/pinpad.js',
+    '/common/outer/local-store.js',
 
 
     '/components/tweetnacl/nacl-fast.min.js',
@@ -30,7 +31,7 @@ define([
     'less!/customize/src/less2/pages/page-report.less',
 ], function ($, ApiConfig, h, Messages,
             nThen, Hash, Util, Constants, Crypt, Cryptpad, Cache, UI, CPNetflux,
-            Crypto, UserObject, Clipboard, Block, Roster, Rpc, Pinpad) {
+            Crypto, UserObject, Clipboard, Block, Roster, Rpc, Pinpad, LocalStore) {
     var $report = $('#cp-report');
     var blockHash = localStorage.Block_hash;
     if (!blockHash) {
@@ -104,11 +105,12 @@ define([
     var hash;
 
     nThen(function (waitFor) {
-        // If this instance is configured to enforce MFA for all registered users,
-        // request the login block with no credential to check if it is protected.
         let done = waitFor();
         var parsed = Block.parseBlockHash(blockHash);
-        Util.getBlock(parsed.href, { }, waitFor((err, response) => {
+        var sessionToken = LocalStore.getSessionToken() || undefined;
+        Util.getBlock(parsed.href, {
+            bearer: sessionToken
+        }, waitFor((err, response) => {
             if (err) {
                 waitFor.abort();
                 return void UI.alert('Invalid user');

@@ -215,8 +215,8 @@ define([
                     formData = Utils.Hash.getFormData(Utils.secret);
                     keys = Utils.secret && Utils.secret.keys;
                 }
-                privateKey = formData.form_private;
-                publicKey = formData.form_public;
+                privateKey = formData?.form_private;
+                publicKey = formData?.form_public;
                 var curvePrivate = privateKey || data.privateKey;
                 if (!curvePrivate) { return void cb({error: 'EFORBIDDEN'}); }
                 var crypto = Utils.Crypto.Mailbox.createEncryptor({

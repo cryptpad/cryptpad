@@ -415,7 +415,6 @@ define([
             cb(obj);
         });
         /*
-        // XXX DRIVE
         postMessage("GET_DRIVE", {
             teamId: teamId,
         }, function (obj) {
@@ -460,7 +459,6 @@ define([
             return;
         }
         /*
-        // XXX DRIVE
         postMessage("SET_DRIVE", {
             teamId: data.teamId,
             value: data.drive
@@ -2726,7 +2724,6 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
-                        console.error('CC CALLED BACK');
                         // FIXME data should always exist
                         // this indicates a false condition in sharedWorker
                         // got here via a reference error:

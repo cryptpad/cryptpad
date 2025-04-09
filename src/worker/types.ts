@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // Default CryptPad worker module, extended with
 // specific methods for each module
 export type Callback = (...args: any[]) => void

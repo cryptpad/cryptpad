@@ -199,6 +199,24 @@
                 background-color: @cp_buttons-default;
             }
         }
+        &.btn-toolbar {
+            background-color: @cp_buttons-default-bg;
+            color: @cp_buttons-default-fg;
+            border-color: @cp_buttons-default-bg;
+            &:hover, &:not(:disabled):active, &:focus {
+                background-color: fade(@cryptpad_text_col, 20%);
+                border-color: @cryptpad_text_col;
+                color: @cryptpad_text_col;
+            }
+        }
+        &.btn-toolbar-alt {
+            border-color: @cp_buttons-default-alt-fg;
+            color: @cp_buttons-default-alt-fg;
+            background-color: @cp_buttons-default-alt-bg;
+            &:hover, &:not(:disabled):active, &:focus {
+                background-color: fade(@cryptpad_text_col, 20%);
+            }
+        }
 
         &.danger, &.btn-danger {
             background-color: @cp_buttons-red;

@@ -121,7 +121,7 @@
     "pinLimitReachedAlertNoAccounts": "U heeft uw opslaglimiet bereikt",
     "pinLimitReachedAlert": "U heeft uw opslaglimiet bereikt. Nieuwe documenten worden niet opgeslagen in uw CryptDrive.<br>U kunt documenten verwijderen van uw CryptDrive of <a>opwaarderen naar een premium-account</a> om uw opslaglimiet te verhogen.",
     "pinLimitReached": "U heeft uw opslaglimiet bereikt",
-    "formattedKB": "{0} KB",
+    "formattedKB": "{0} kB",
     "formattedGB": "{0} GB",
     "formattedMB": "{0} MB",
     "KB": "KB",

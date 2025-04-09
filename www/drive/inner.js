@@ -220,7 +220,8 @@ define([
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,
-                $container: APP.$bar
+                $container: APP.$bar,
+                skipLink: '#cp-app-drive-tree'
             };
             var toolbar = Toolbar.create(configTb);
 

@@ -514,6 +514,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 if (e) { return void cb({error: e}); }
 
                 store.rpc = call;
+
                 store.onRpcReadyEvt.fire();
 
                 Store.getPinLimit(null, null, function (obj) {
@@ -994,7 +995,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             nThen(function (waitFor) {
                 removeOwnedPads(waitFor);
             }).nThen(function () {
-                // XXX TODO DRIVE
                 store.proxy.drive = store.userObject.getStructure();
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', 'filesData']
@@ -1237,7 +1237,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 }
 
                 // Check if the pad is already stored in the specified drive (data.teamId)
-                if ((!s.id && !data.teamId) || Number(s.id) === data.teamId) {
+                if ((!s.id && (!data.teamId || data.teamId === -1)) || Number(s.id) === data.teamId) {
                     if (!inTargetDrive) {
                         inTargetDrive = res.length;
                     }
@@ -1865,11 +1865,9 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     postMessage(clientId, "PAD_CACHE");
                 },
                 onCacheReady: function () {
-                    console.error('PAD CACHE READY');
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
-                    console.error('PAD READY');
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
@@ -2438,7 +2436,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
                     if (p.length > 3 && p[3] === 'password') {
                         var id = p[2];
-                        // XXX DRIVE
                         var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
                         var href = store.manager.user.userObject.getHref ?
                                 store.manager.user.userObject.getHref(data) : data.href;
@@ -2781,7 +2778,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 addSharedFolderHandler();
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
-                console.error('START LOADING SF');
                 var network = store.network || store.networkPromise;
                 SF.loadSharedFolders(Store, network, store,
                     drive.proxy, userObject, waitFor, obj => {
@@ -2792,11 +2788,8 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     postMessage(clientId, 'LOADING_DRIVE', data);
                 }, true);
             }).nThen(function (waitFor) {
-                console.error('SF CACHE READY');
-
                 loadUniversal(Team, 'team', waitFor, clientId);
             }).nThen(function (waitFor) {
-                console.error('TEAM CACHE READY');
                 loadUniversal(Calendar, 'calendar', waitFor);
             }).nThen(function () {
                 cb();
@@ -2876,10 +2869,12 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 loadSyncModules(waitFor);
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Calendar, 'calendar', waitFor);
-                if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
                 loadUniversal(Support, 'support', waitFor);
+                nThen(waitFor => {
+                    // Make teams non-blocking
+                    if (store.modules['team']) { store.modules['team'].onReady(waitFor); }
+                });
             }).nThen(function () {
-                console.error('SF & TEAM READY');
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
                 };
@@ -3005,7 +3000,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
             store.driveChannel = channel;
 
-            // XXX don't always call onCacheReady and onReady?
+            // don't always call onCacheReady and onReady?
             // it depends on what was required by the first tab
             onAccountCacheReady(returned => {
                 store.returned ||= returned;
@@ -3015,7 +3010,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 store.returned ||= returned;
                 cb(returned);
             });
-            // XXX move to drive
             onDisconnect(() => {
                 sendDriveEvent('NETWORK_DISCONNECT');
             });
@@ -3079,7 +3073,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     cb(store.returned);
                 });
 
-                // XXX TODO
                 onDisconnect(() => {
                 });
                 onReconnect(() => {
@@ -3256,7 +3249,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // handle error
-                        return; // XXX
+                        return;
                     }
                     // Callback now to unfreeze the loading screen
                     // Pad can now start to be loaded
@@ -3279,7 +3272,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 return void onNoDrive(clientId, function (obj) {
                     if (obj && obj.error) {
                         // handle error
-                        return; // XXX
+                        return;
                     }
                     // Callback now to unfreeze the loading screen
                     // Pad can now start to be loaded
@@ -3293,22 +3286,36 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             }
 
             if (requires === 'team') {
-                const initTeams = Util.once(ret => {
-                    // On cache ready (if cache enabled)
-                    // or on ready (if cache disabled)
-                    nThen(w => {
-                        loadUniversal(Team, 'team', w, clientId);
-                    }).nThen(() => {
-                        cb(ret);
-                        loadDrive(clientId, data, ret => {
-                            startCacheModules(clientId, ret, onInit);
-                        }, ret => {
-                            startModules(clientId, ret, onInit);
+                let called = false;
+                const initTeams = cache => {
+                    return ret => {
+                        if (called) { return; }
+                        called = true;
+                        // On cache ready (if cache enabled)
+                        // or on ready (if cache disabled)
+                        nThen(w => {
+                            if (cache) { return; }
+                            initAnonRpc(null, null, w());
+                        }).nThen(w => {
+                            loadUniversal(Team, 'team', w, clientId);
+                        }).nThen(w => {
+                            // Sync teams before other modules
+                            // when cache is empty
+                            if (!cache && store.modules['team']) {
+                                store.modules['team'].onReady(w);
+                            }
+                        }).nThen(() => {
+                            cb(ret);
+                            loadDrive(clientId, data, ret => {
+                                startCacheModules(clientId, ret, onInit);
+                            }, ret => {
+                                startModules(clientId, ret, onInit);
+                            });
                         });
-                    });
-                });
+                    };
+                };
                 return void loadAccount(clientId, data,
-                                initTeams, initTeams);
+                                initTeams(true), initTeams(false));
             }
 
             if (requires === 'drive') {
@@ -3322,7 +3329,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 // TODO
             }
 
-            // XXX load drive too
             let done = ret => {
                 onInit(ret);
                 const redirect = Constants.prefersDriveRedirectKey;
@@ -3393,7 +3399,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 Cache.disable();
             }
 
-            // XXX replace noDrive
             if (data.noDrive && !data.requires) {
                 data.requires = 'pad';
             }
@@ -3401,7 +3406,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             start(clientId, data, Util.once(obj => {
                 if (obj.error === 'GET_HK') {
                     return void callback({
-                        error: 'ERROR' // XXX
+                        error: 'ERROR'
                     });
                 }
                 callback(obj);
@@ -3462,8 +3467,8 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('./components/merge-drive'),
         require('../common/cache-store'),
         require('./components/sharedfolder'),
-        require('./components/account'), // XXX
-        require('./components/drive'), // XXX
+        require('./components/account'), // .ts
+        require('./components/drive'), // .ts
         require('./modules/cursor'),
         require('./modules/support'),
         require('./modules/integration'),
@@ -3485,45 +3490,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('netflux-websocket'),
         require('nthen')
     );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/api/config', // From outside
-        'json.sortify',
-        '/common/user-object.js', // OK
-        '/common/proxy-manager.js', // OK
-        '/common/migrate-user-object.js', // OK
-        '/common/common-hash.js', // OK
-        '/common/common-util.js', // OK
-        '/common/common-constants.js', // OK
-        '/common/common-feedback.js', // OK
-        '/common/common-realtime.js', // OK
-        '/common/outer/messaging.js', // OK
-        '/common/pinpad.js', // OK
-        '/common/rpc.js', // OK
-        '/common/merge-drive.js', // OK
-        '/common/outer/cache-store.js', // OK
-        '/common/outer/sharedfolder.js', // OK
-        '/common/outer/cursor.js', // OK
-        '/common/outer/support.js', // OK
-        '/common/outer/integration.js', // OK
-        '/common/outer/onlyoffice.js', // OK
-        '/common/outer/mailbox.js', // OK
-        '/common/outer/profile.js', // OK
-        '/common/outer/team.js', // OK
-        '/common/outer/messenger.js', // OK
-        '/common/outer/history.js', // OK
-        '/common/outer/calendar.js', // OK
-        '/common/outer/login-block.js', // OK
-        '/common/outer/network-config.js', // OK
-        '/customize/application_config.js', // OK
-
-        '/components/chainpad-crypto/crypto.js',
-        '/components/chainpad/chainpad.dist.js',
-        'chainpad-netflux',
-        'chainpad-listmap',
-        'netflux-client',
-        '/components/nthen/index.js',
-    ], factory);
 } else {
     // unsupported initialization
 }

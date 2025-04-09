@@ -53,7 +53,5 @@
   "bugs": {
     "url": "https://github.com/dchest/tweetnacl-js/issues"
   },
-  "homepage": "https://dchest.github.io/tweetnacl-js",
-  "devDependencies": {
-  }
+  "homepage": "https://dchest.github.io/tweetnacl-js"
 }

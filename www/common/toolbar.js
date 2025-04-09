@@ -863,6 +863,38 @@ MessengerUI, Messages, Pages, PadTypes) {
         };
     };
 
+    Bar.createSkipLink = function (toolbar, config) {
+        if (config.readOnly === 1) {return;}
+        const targetId = config.skipLink;
+        const $skipLink = $('<a>', {
+            'class': 'cp-toolbar-skip-link',
+            'href': targetId,
+            'tabindex': 0,
+            'text': Messages.skipLink
+        });
+        toolbar.$top.append($skipLink);
+        $skipLink.on('click', function (event) {
+            event.preventDefault();
+
+            let split = targetId.split('|'); // split for iframes
+            let $container = $('body');
+            split.some(selector => {
+                let $targetElement = $container.find(selector);
+                if ($targetElement.is('iframe')) {
+                    $container = $targetElement.contents();
+                    return;
+                }
+                const $firstFocusable = $targetElement.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]').first();
+                if ($firstFocusable.length) {
+                    $firstFocusable.trigger('focus');
+                } else {
+                    $skipLink.hide();
+                }
+                return true;
+            });
+        });
+        return $skipLink;
+    };
     var createLinkToMain = function (toolbar, config) {
         var $linkContainer = $('<span>', {
             'class': LINK_CLS
@@ -1457,6 +1489,7 @@ MessengerUI, Messages, Pages, PadTypes) {
 
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);
+        toolbar['skipLink'] = Bar.createSkipLink(toolbar, config);
 
         if (!config.realtime) { toolbar.connected = true; }
 

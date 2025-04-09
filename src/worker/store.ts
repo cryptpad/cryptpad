@@ -1,7 +1,10 @@
-import nacl from 'tweetnacl/nacl-fast';
+// SPDX-FileCopyrightText: 2025 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+//import nacl from 'tweetnacl/nacl-fast';
 import { Module } from './types';
 //import { TestModule, TestModuleObject } from './modules/test';
-import { Badge } from './modules/badge';
 
 import { Account } from './components/account';
 
@@ -45,6 +48,7 @@ import * as Team from './modules/team.js';
 import * as Messenger from './modules/messenger.js';
 import * as History from './modules/history.js';
 import * as Calendar from './modules/calendar.js';
+import { Badge } from './modules/badge';
 
 declare var WorkerGlobalScope: any
 declare var SharedWorkerGlobalScope: any
@@ -80,54 +84,18 @@ let start = (cfg: StoreConfig):void => {
             dep.setCustomize(cfg);
         }
     });
-
-    /*
-    const AppConfig = cfg.AppConfig;
-    const ApiConfig = cfg.ApiConfig;
-
-    let test = TestModule.init({
-    }, () => {
-        console.log('Test initialized');
-    }, () => {});
-    let b64 = test.toBase64('pewpewPEZPEZ');
-    console.error(b64);
-    console.error(AppConfig.minimumPasswordLength, AppConfig.degradedLimit);
-    console.error(Hash.getSecrets);
-    console.error(Util.mkEvent);
-    console.error(Messaging.createData);
-    console.log('UO & UOSetter:');
-    console.error(UO.getDefaultName({type:'pad'}));
-    console.error(UO.getDefaultName);
-    console.error(UOSetter.init);
-    console.error(ProxyManager.createInner);
-    console.log('Pinpad');
-    console.error(Pinpad.create);
-    console.error(LoginBlock.getBlockUrl);
-    console.error(Mailbox.init, Cursor.init, Support.init, Integration.init);
-    console.error(Profile.init, OnlyOffice.init, Team.init, Messenger.init);
-    console.error(History.init, Calendar.init);
-    //Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', true, console.error);
-    //Util.fetchApi(ApiConfig.httpUnsafeOrigin, 'config', false, console.error);
-    console.error(Store);
-    //let StoreObj = Store.create({});
-    //console.error(StoreObj);
-    */
 };
 
 let inWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
 let inSharedWorker = typeof SharedWorkerGlobalScope !== 'undefined' && self instanceof SharedWorkerGlobalScope;
 let store = {};
 if (inSharedWorker) {
-    console.error('SHAREDWORKER');
     SWConnector.start(start);
 } else if (inWorker) {
-    console.error("WEBWORKER");
     WWConnector.start(start);
 } else if (typeof module !== 'undefined' && typeof module.exports) {
-    console.error('NODEJS');
     store = AsyncConnector.start(start);
 } else {
-    console.error('BROWSER');
     store = AsyncConnector.start(start);
 }
 

@@ -1,0 +1,11 @@
+This directory contains benchmarks that run in Node.js and browsers.
+
+To run benchmarks in Node.js, from the root project directory:
+
+    $ npm run bench
+
+alternatively, in this directory, run:
+
+    $ node bench.js
+
+To run benchmarks in a browser, open bench.html.

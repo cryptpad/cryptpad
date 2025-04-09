@@ -65,6 +65,9 @@ define([
     var onCursorUpdate = Util.mkEvent();
     var remoteCursors = {};
 
+    let getCursor = () => {};
+    let restoreCursor = () => {};
+
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
         var $input = $(input);
@@ -148,14 +151,20 @@ define([
     };
 
     var addEditItemButton = function () {};
+    var addMoveElementButton = function () {};
 
+    var onRemoteChange = Util.mkEvent();
     var now = function () { return +new Date(); };
     var _lastUpdate = 0;
     var _updateBoards = function (framework, kanban, boards) {
         _lastUpdate = now();
+        var cursor = getCursor();
         kanban.setBoards(Util.clone(boards));
         kanban.inEditMode = false;
         addEditItemButton(framework, kanban);
+        addMoveElementButton(framework, kanban);
+        restoreCursor(cursor);
+        onRemoteChange.fire();
     };
     var _updateBoardsThrottle = Util.throttle(_updateBoards, 1000);
     var updateBoards = function (framework, kanban, boards) {
@@ -166,7 +175,6 @@ define([
         _updateBoardsThrottle(framework, kanban, boards);
     };
 
-    var onRemoteChange = Util.mkEvent();
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
     var BOARD_PROPERTIES = ['title', 'color'];
@@ -534,6 +542,140 @@ define([
         UI.openCustomModal(editModal.modal);
     };
 
+    addMoveElementButton = function (framework, kanban) {
+        if (!kanban) { return; }
+        if (framework.isReadOnly() || framework.isLocked()) { return; }
+        var $container = $(kanban.element);
+        var drag = kanban.drag;
+        kanban.options.dragBoards = drag;
+        kanban.options.dragItems = drag;
+        $container.find('.kanban-board').each(function (i, el) {
+            $(el).find('.item-icon-container').remove();
+            $(el).find('.kanban-board-header').removeClass('no-drag');
+        });
+        $container.find('.kanban-item').each(function (i, el) {
+            $(el).find('.item-arrow-container').remove();
+            $(el).removeClass('no-drag');
+        });
+        if (drag === false) {
+            var move = function (arr, oldIndex, newIndex) {
+                arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+                _updateBoards(framework, kanban, kanban.options.boards, false);
+            };
+
+            var moveBetweenBoards = function (nextBoardItems, elId, boardItems, index, boards) {
+                nextBoardItems.unshift(elId);
+                boardItems.splice(index, 1);
+                _updateBoards(framework, kanban, boards, false);
+                $(`.kanban-item[data-eid="${elId}"]`)[0].scrollIntoView();
+            };
+
+            var shiftItem = function (direction, el) {
+                var board = $(el).closest('.kanban-board');
+                var boards = kanban.options.boards;
+                var elId = parseInt($(el).attr("data-eid"));
+                var boardId = parseInt($(board).attr("data-id"));
+                var boardItems = boards.data[boardId].item;
+                var index = boardItems.indexOf(elId);
+                var boardIndex = boards.list.indexOf(parseInt(boardId));
+                let nextBoardItems;
+
+                if (direction === 'up' && index > 0) {
+                    move(boardItems, index, index-1);
+                } else if (direction === 'down' && index < boardItems.length-1) {
+                    move(boardItems, index, index+1);
+                } else if (direction === 'left' && boardIndex > 0) {
+                    nextBoardItems = boards.data[boards.list[boardIndex-1]].item;
+                    moveBetweenBoards(nextBoardItems, elId, boardItems, index, boards, boardId);
+                } else if (direction === 'right' && boardIndex < kanban.options.boards.list.length-1){
+                    nextBoardItems = boards.data[boards.list[boardIndex+1]].item;
+                    moveBetweenBoards(nextBoardItems, elId, boardItems, index, boards, boardId);
+                }
+            };
+
+            var shiftBoards = function (direction, el) {
+                var elId = $(el).attr("data-id");
+                var index = kanban.options.boards.list.indexOf(parseInt(elId));
+                if (direction === 'left' && index > 0) {
+                    move(kanban.options.boards.list, index, index-1);
+                } else if (direction === 'right' && index < kanban.options.boards.list.length-1) {
+                    move(kanban.options.boards.list, index, index+1);
+                }
+                $(`.kanban-board[data-id="${elId}"]`)[0].scrollIntoView();
+            };
+            $container.find('.kanban-board').each(function (i, el) {
+                $(el).find('.kanban-board-header').addClass('no-drag');
+                var arrowContainer = h('div.item-icon-container');
+                $(arrowContainer).appendTo($(el).find('.kanban-board-header'));
+                $(h('button', {
+                    'class': 'cp-kanban-arrow board-arrow',
+                    'title': Messages.kanban_moveBoardLeft,
+                    'aria-label': Messages.kanban_moveBoardLeft
+                }, [
+                    h('i.fa.fa-arrow-left', {'aria-hidden': true})
+                ])).click(function () { 
+                    shiftBoards('left', el);
+                }).appendTo(arrowContainer);
+                $(h('button', {
+                    'class': 'cp-kanban-arrow board-arrow',
+                    'title': Messages.kanban_moveBoardRight,
+                    'aria-label': Messages.kanban_moveBoardRight
+                }, [
+                    h('i.fa.fa-arrow-right', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftBoards('right', el);
+                }).appendTo(arrowContainer);
+            });
+            $container.find('.kanban-item').each(function (i, el) {
+                $(el).addClass('no-drag');
+                var arrowContainerItem = h('div.item-arrow-container');
+                $(arrowContainerItem).appendTo((el));
+                $(h('button', {
+                    'data-notippy':1,
+                    'class': 'cp-kanban-arrow item-arrow',
+                    'title': Messages.moveItemLeft,
+                    'aria-label': Messages.moveItemLeft
+                }, [
+                    h('i.fa.fa-arrow-left', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftItem('left', el);
+                }).appendTo(arrowContainerItem);
+                var centralArrowContainerItem = h('div.item-central-arrow-container');
+                $(centralArrowContainerItem).appendTo(arrowContainerItem);
+                $(h('button', {
+                    'data-notippy':1,
+                    'class': 'cp-kanban-arrow item-arrow',
+                    'title': Messages.moveItemDown,
+                    'aria-label': Messages.moveItemDown
+                }, [
+                    h('i.fa.fa-arrow-down', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftItem('down', el);
+                }).appendTo(centralArrowContainerItem);
+                $(h('button', {
+                    'data-notippy':1,
+                    'class': 'cp-kanban-arrow item-arrow',
+                    'title': Messages.moveItemUp,
+                    'aria-label': Messages.moveItemUp
+                }, [
+                    h('i.fa.fa-arrow-up', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftItem('up', el);
+                }).appendTo(centralArrowContainerItem);
+                $(h('button', {
+                    'data-notippy':1,
+                    'class': 'cp-kanban-arrow item-arrow',
+                    'title': Messages.moveItemRight,
+                    'aria-label': Messages.moveItemRight
+                }, [
+                    h('i.fa.fa-arrow-right', {'aria-hidden': true})
+                ])).click(function () {
+                    shiftItem('right', el);
+                }).appendTo(arrowContainerItem);
+            });
+        } 
+    };
+
     addEditItemButton = function (framework, kanban) {
         if (!kanban) { return; }
         if (framework.isReadOnly() || framework.isLocked()) { return; }
@@ -541,20 +683,26 @@ define([
         $container.find('.kanban-edit-item').remove();
         $container.find('.kanban-item').each(function (i, el) {
             var itemId = $(el).attr('data-eid');
-            $('<button>', {
-                'class': 'kanban-edit-item fa fa-pencil',
-                'alt': Messages.kanban_editCard,
-            }).click(function (e) {
+            $(h('button', {
+                'class': 'kanban-edit-item',
+                'title': Messages.kanban_editCard,
+                'aria-label': Messages.kanban_editCard
+            }, [
+                h('i.fa.fa-pencil', {'aria-hidden': true})
+            ])).click(function (e) {
                 getItemEditModal(framework, kanban, itemId);
                 e.stopPropagation();
             }).insertAfter($(el).find('.kanban-item-text'));
         });
         $container.find('.kanban-board').each(function (i, el) {
             var itemId = $(el).attr('data-id');
-            $('<button>', {
-                'class': 'kanban-edit-item fa fa-pencil',
-                'alt': Messages.kanban_editBoard,
-            }).click(function (e) {
+            $(h('button', {
+                'class': 'kanban-edit-item',
+                'title': Messages.kanban_editBoard,
+                'aria-label': Messages.kanban_editBoard
+            }, [
+                h('i.fa.fa-pencil', {'aria-hidden': true})
+            ])).click(function (e) {
                 getBoardEditModal(framework, kanban, itemId);
                 e.stopPropagation();
             }).appendTo($(el).find('.kanban-board-header'));
@@ -659,6 +807,7 @@ define([
             buttonContent: '❌',
             readOnly: framework.isReadOnly() || framework.isLocked(),
             tagsAnd: _tagsAnd,
+            dragItems: true,
             refresh: function () {
                 onRedraw.fire();
             },
@@ -667,6 +816,7 @@ define([
                 framework.localChange();
                 if (kanban) {
                     addEditItemButton(framework, kanban);
+                    addMoveElementButton(framework, kanban);
                 }
             },
             click: function (el) {
@@ -700,8 +850,11 @@ define([
                     var item = kanban.getItemJSON(eid);
                     item.title = name;
                     kanban.onChange();
-                    // Unlock edit mode
-                    kanban.inEditMode = false;
+                    // Unlock edit mode unless we're already editing
+                    // something else
+                    if (kanban.inEditMode === eid) {
+                        kanban.inEditMode = false;
+                    }
                     onCursorUpdate.fire({});
                 };
                 $input.blur(save);
@@ -764,7 +917,9 @@ define([
                     kanban.getBoardJSON(boardId).title = name;
                     kanban.onChange();
                     // Unlock edit mode
-                    kanban.inEditMode = false;
+                    if (kanban.inEditMode === boardId) {
+                        kanban.inEditMode = false;
+                    }
                     onCursorUpdate.fire({});
                 };
                 $input.blur(save);
@@ -819,7 +974,9 @@ define([
                 });
                 var save = function () {
                     $item.remove();
-                    kanban.inEditMode = false;
+                    if (kanban.inEditMode === "new") {
+                        kanban.inEditMode = false;
+                    }
                     onCursorUpdate.fire({});
                     if (!$input.val()) { return; }
                     var id = Util.createRandomInteger();
@@ -834,6 +991,7 @@ define([
                         item.tags = kanban.options.tags;
                     }
                     kanban.addElement(boardId, item, isTop);
+                    addMoveElementButton(framework, kanban);
                 };
                 $input.blur(save);
                 $input.keydown(function (e) {
@@ -917,8 +1075,8 @@ define([
         var $cContainer = $('#cp-app-kanban-container');
         var addControls = function () {
             // Quick or normal mode
-            var small = h('span.cp-kanban-view-small.fa.fa-minus');
-            var big = h('span.cp-kanban-view.fa.fa-bars');
+            var small = h('button.cp-kanban-view-small.fa.fa-minus');
+            var big = h('button.cp-kanban-view.fa.fa-bars');
             $(small).click(function () {
                 if ($cContainer.hasClass('cp-kanban-quick')) { return; }
                 $cContainer.addClass('cp-kanban-quick');
@@ -930,18 +1088,15 @@ define([
                 //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
-            var toggleTagsButton = h('button.btn.btn-default.kanban-tag-btn-toggle', Messages.kanban_showTags);
-
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
-            var reset = h('button.btn.btn-cancel.cp-kanban-filterTags-reset', [
+            var reset = h('button.btn.btn-cancel.cp-kanban-filterTags-reset.cp-kanban-toggle-tags', [
                 h('i.fa.fa-times'),
-                Messages.kanban_clearFilter
+                h('span', Messages.kanban_clearFilter)
             ]);
             var hint = h('span.cp-kanban-filterTags-name', Messages.kanban_tags);
             var tags = h('div.cp-kanban-filterTags', [
-
                 h('span.cp-kanban-filterTags-toggle', [
                     hint,
                     reset,
@@ -954,8 +1109,16 @@ define([
             var $hint = $(hint);
 
             var setTagFilterState = function (bool) {
+                //$hint.toggle(!bool);
+                //$reset.toggle(!!bool);
                 $hint.css('visibility', bool? 'hidden': 'visible');
+                $hint.css('height', bool ? 0 : '');
+                $hint.css('padding-top', bool ? 0 : '');
+                $hint.css('padding-bottom', bool ? 0 : '');
                 $reset.css('visibility', bool? 'visible': 'hidden');
+                $reset.css('height', !bool ? 0 : '');
+                $reset.css('padding-top', !bool ? 0 : '');
+                $reset.css('padding-bottom', !bool ? 0 : '');
             };
             setTagFilterState();
 
@@ -972,6 +1135,7 @@ define([
                 kanban.options.tags = t;
                 kanban.setBoards(kanban.options.boards);
                 addEditItemButton(framework, kanban);
+                addMoveElementButton(framework, kanban);
             };
 
             var redrawList = function (allTags) {
@@ -1022,60 +1186,75 @@ define([
                 commitTags();
             });
 
+            let toggleTagsButton = h('button.btn.btn-toolbar-alt.cp-kanban-toggle-tags', [
+                h('i.fa.fa-tags'),
+                h('span', Messages.fm_tagsName)
+            ]);
+            let toggleContainer = h('div.cp-kanban-toggle-container', toggleTagsButton);
 
-            if ($(window).width() < 500) {
+            let toggleClicked = false;
+            let $tags = $(tags);
+            let $toggleBtn = $(toggleTagsButton);
+            let toggle = () => {
+                $tags.toggle();
+                let visible = $tags.is(':visible');
+                $(toggleContainer).toggleClass('cp-kanban-container-flex', !visible);
+                $toggleBtn.toggleClass('btn-toolbar-alt', visible);
+                $toggleBtn.toggleClass('btn-toolbar', !visible);
+            };
+            $toggleBtn.click(function() {
+                toggleClicked = true;
+                toggle();
+            });
 
-                $(tags).append(toggleTagsButton);
-
-                var hideTags = function () {
-                    for (var tag of list.children) {
-                        if (existing.indexOf(tag.innerHTML) > 10) {
-                            $(tag).hide();                    
-                        }
+            const resizeTags = () => {
+                if (toggleClicked) { return; }
+                let visible = $tags.is(':visible');
+                // Small screen and visible: hide
+                if ($(window).width() < 600) {
+                    if (visible) {
+                        $(tags).show();
+                        toggle();
                     }
+                    return;
+                }
+                // Large screen: make visible by default
+                if (visible) { return; }
+                $(tags).hide();
+                toggle();
+            };
+
+            $(window).on('resize', resizeTags);
+
+            var toggleOffclass = 'ontouchstart' in window ? 'cp-toggle-active' : 'cp-toggle-inactive'; 
+            var toggleOnclass = 'ontouchstart' in window ? 'cp-toggle-inactive' : 'cp-toggle-active'; 
+            var toggleDragOff = h(`button#toggle-drag-off.cp-kanban-view-drag.${toggleOffclass}.fa.fa-arrows`, {'title': Messages.toggleArrows, 'tabindex': 0});
+            var toggleDragOn = h(`button#toggle-drag-on.cp-kanban-view-drag.${toggleOnclass}.fa.fa-hand-o-up`, {'title': Messages.toggleDrag, 'tabindex': 0});
+            kanban.drag = 'ontouchstart' in window ? false : true;
+            const updateDrag = state => {
+                return function () {
+                    $(toggleDragOn).toggleClass('cp-toggle-active', state).toggleClass('cp-toggle-inactive', !state);
+                    $(toggleDragOff).toggleClass('cp-toggle-active', !state).toggleClass('cp-toggle-inactive', state);
+                    kanban.drag = state;
+                    addMoveElementButton(framework, kanban);
                 };
-                hideTags();
-    
-                var toggleTags = function () {
-                    for (var tag of list.children) {
-                        if (existing.indexOf(tag.innerHTML) > 10 && kanban.options.tags.indexOf(tag.innerHTML) === -1) {
-                            if ($(tag).is(":visible")) { 
-                                $(tag).hide();
-                                $(toggleTagsButton).text(Messages.kanban_showTags);
-                            } else {
-                                $(tag).show();
-                                $(toggleTagsButton).text(Messages.kanban_hideTags);
-                            }
-                        }
-                    }
-                };
-    
-                $(toggleTagsButton).click(function() {
-                    toggleTags();
-                });
-    
-            }
+            };
+            $(toggleDragOn).click(updateDrag(true));
+            $(toggleDragOff).click(updateDrag(false));
 
             var container = h('div#cp-kanban-controls', [
+                toggleContainer,
                 tags,
+                h('div.cp-kanban-changeView.drag', [
+                    toggleDragOff,
+                    toggleDragOn
+                ]),
                 h('div.cp-kanban-changeView', [
                     small,
                     big
                 ])
             ]);
             $container.before(container);
-
-            var common = framework._.sfCommon;
-            var $button = common.createButton('toggle', true, {
-                element: $(container),
-                icon: 'fa-tags',
-                text: Messages.fm_tagsName,
-            }, function () {
-                $button.toggleClass('cp-toolbar-button-active');
-
-            });
-            $button.addClass('cp-toolbar-button-active');
-            framework._.toolbar.$bottomL.append($button);
 
             onRedraw.reg(function () {
                 // Redraw if new tags have been added to items
@@ -1183,6 +1362,7 @@ define([
             if (!kanban) { return; }
             if (unlocked) {
                 addEditItemButton(framework, kanban);
+                addMoveElementButton(framework, kanban);
                 kanban.options.readOnly = false;
                 return void $container.removeClass('cp-app-readonly');
             }
@@ -1191,7 +1371,7 @@ define([
             $container.find('.kanban-edit-item').remove();
         });
 
-        var getCursor = function () {
+        getCursor = function () {
             if (!kanban || !kanban.inEditMode) { return; }
             try {
                 var id = kanban.inEditMode;
@@ -1232,7 +1412,7 @@ define([
                 return {};
             }
         };
-        var restoreCursor = function (data) {
+        restoreCursor = function (data) {
             if (!data) { return; }
             try {
                 var id = data.id;
@@ -1287,6 +1467,7 @@ define([
             if (!kanban) {
                 kanban = initKanban(framework, (newContent || {}).content);
                 addEditItemButton(framework, kanban);
+                addMoveElementButton(framework, kanban);
                 return;
             }
 
@@ -1296,12 +1477,9 @@ define([
             var remoteContent = newContent.content;
 
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
-                var cursor = getCursor();
                 verbose("Content is different.. Applying content");
                 kanban.options.boards = remoteContent;
                 updateBoards(framework, kanban, remoteContent);
-                restoreCursor(cursor);
-                onRemoteChange.fire();
             }
         });
 
@@ -1391,6 +1569,7 @@ define([
             Framework.create({
                 toolbarContainer: '#cme_toolbox',
                 contentContainer: '#cp-app-kanban-editor',
+                skipLink: '#cp-app-kanban-content'
             }, waitFor(function (framework) {
                 andThen2(framework);
             }));

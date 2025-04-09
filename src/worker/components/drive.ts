@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 XWiki CryptPad Team <contact@cryptpad.org> and contributors
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import nacl from 'tweetnacl/nacl-fast';
 import { Drive } from '../types'
 
@@ -23,12 +27,10 @@ const init = (config) => {
     const drive = store.drive = store.drive || {};
     let data = store.proxy?.drive;
 
-    console.error(data, store.proxy);
     const hash:string = data?.hash || Hash.createRandomHash('drive');
 
     // Update loading screen status
     const updateProgress = function (data) {
-        // XXX
         /*
         data.type = 'drive';
         broadcast([], 'LOADING_DRIVE', data);
@@ -93,11 +95,11 @@ const init = (config) => {
     }).on('disconnect', function () {
         drive.offline = true;
         onDisconnectEvt.fire();
-        broadcast([], "UPDATE_METADATA"); // XXX ?
+        broadcast([], "UPDATE_METADATA");
     }).on('reconnect', function () {
         drive.offline = false;
         onReconnectEvt.fire();
-        broadcast([], "UPDATE_METADATA"); // XXX ?
+        broadcast([], "UPDATE_METADATA");
     });
 
     return {

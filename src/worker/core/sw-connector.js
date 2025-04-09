@@ -16,11 +16,9 @@ let start = (setConfig) => {
     };
     globalThis.window = globalThis;
     addEventListener('connect', (e) => {
-        console.error("TEST");
         console.debug('New SharedWorker client');
         const port = e.ports[0];
         const postMsg = (data) => { port.postMessage(data); };
-        console.error(port);
         let connected = false;
         let onMsg;
         let onClose = () => {};

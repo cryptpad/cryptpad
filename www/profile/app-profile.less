@@ -6,6 +6,7 @@
 
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+@import (reference) '../../customize/src/less2/include/variables.less';
 
 &.cp-app-profile {
 
@@ -21,36 +22,41 @@
         display: none !important;
     }
 
+    .cp-app-profile-section:first-child {
+        margin-top: 1rem;
+    }
+
     #cp-app-profile-header {
         display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
         #cp-app-profile-rightside {
             flex: 1;
             display: flex;
             flex-flow: column;
             align-items: start;
+            max-width: 100%;
         }
     }
     #cp-app-profile-avatar {
-        width: 300px;
-        //height: 350px;
         margin: 10px;
         margin-right: 20px;
         text-align: center;
+        max-width: 300px;
+        max-height: 300px;
+        margin-bottom: 3.5rem;
         &> span {
             display: inline-block;
             text-align: center;
-            height: 300px;
-            width: 300px;
-            border: 1px solid @cp_profile-border;
             border-radius: 4px;
             overflow: hidden;
             position: relative;
             .cp-app-profile-avatar-delete {
                 right: 0;
                 position: absolute;
-                opacity: 0.7;
+                opacity: 1;
                 &:hover {
-                    opacity: 1;
+                    opacity: 0.7;
                 }
             }
         }
@@ -58,6 +64,7 @@
             max-width: 100%;
             max-height: 100%;
             vertical-align: top;
+            border-radius: @variables_radius_L;
         }
         media-tag {
             height: 100%;
@@ -79,11 +86,18 @@
             margin: 5px !important;
         }
     }
+
     .cp-app-profile-resizer {
         text-align: center;
     }
-    #cp-app-profile-displayname, #cp-app-profile-link {
-        margin: 10px 0;
+    .cp-app-profile-displayname {
+        margin-top: 1rem;
+    }
+    .cp-app-profile-section:empty {
+        display: none;
+    }
+    .cp-app-profile-displayname, .cp-app-profile-link, .cp-app-profile-section {
+        margin-bottom: 1rem;
         input {
             width: 100%;
             font-size: 20px;
@@ -108,7 +122,8 @@
         }
         .cp-app-profile-link {
             font-size: 25px;
-            vertical-align: middle;
+            display: inline;
+            overflow-wrap: anywhere;
         }
         .cp-app-profile-displayname, .cp-app-profile-link {
             line-height: 40px;
@@ -127,8 +142,19 @@
         & > button:empty {
             margin-left: 25px !important;
         }
+        @media screen and (max-width: @browser_media-medium-screen) {
+            .cp-app-profile-link-code {
+                min-width: 0;
+            }
+        }    
     }
 
+    div.cp-app-profile-mute-container.cp-app-profile-section {
+        p {
+            margin-bottom: 0;
+        }
+    
+    }
     .cp-app-profile-friend {
         display: flex;
         align-items: center;
@@ -146,22 +172,22 @@
     #cp-app-profile-invite-button {
         float: right;
     }
-    .cp-app-profile-viewprofile-button {
-        margin-bottom: 5px !important;
-    }
     #cp-app-profile-description {
         position: relative;
         font-size: 16px;
-        margin-bottom: 20px;
+        max-width: 100%;
+        //margin-bottom: 20px;
         .cp-app-profile-description-code {
             display: none;
-        }
-        .cp-app-profile-description-rendered {
-            border: 1px solid @cp_profile-border;
-            padding: 0 15px;
-            &:empty {
-                display: none;
+            .cp-markdown-toolbar {
+                display: flex;
+                height: auto;
+                flex-wrap: wrap;
             }
+        }
+        #cp-app-profile-description-info {
+            overflow-wrap: anywhere;
+            margin-top: 1rem;
         }
         .cp-app-profile-description-ok, .cp-app-profile-description-spin {
             position: absolute;
@@ -178,6 +204,7 @@
             font-family: monospace;
             font-size: 16px;
             line-height: initial;
+            max-width: 31rem;
             pre {
                 margin: 0;
                 font-family: inherit;
@@ -194,7 +221,6 @@
         justify-content: center;
     }
     .cp-app-profile-mute-container {
-        margin-top: 5px;
         p {
             margin-top: 5px;
             font-size: 13px;
