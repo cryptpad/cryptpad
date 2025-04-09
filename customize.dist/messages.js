@@ -135,7 +135,7 @@ define(req, function(AppConfig, Default, Language) {
     };
 
     
-
+    Messages.help_close_button = 'Close help notification'; // XXX
     return Messages;
 
 });
