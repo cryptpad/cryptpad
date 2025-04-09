@@ -81,8 +81,16 @@ define([
                     Common.openURL(Hash.hashToHref('', 'calendar'));
                 });
             } else if (userData && typeof(userData) === "object" && userData.profile) {
-                avatar = h('span.cp-avatar');
+                avatar = h('span.cp-avatar',{
+                    tabindex: 0,
+                    title: Messages.user_profile
+                });
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
+                $(avatar).keydown(function (e) {
+                    if (e.which === 13 || e.which === 32) {
+                        $(avatar).click();
+                    }
+                });
                 $(avatar).click(function (e) {
                     e.stopPropagation();
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
@@ -91,7 +99,7 @@ define([
                 avatar = h('span.cp-avatar-image', h('img', { src:'/customize/CryptPad_logo.svg' }));
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
-            const tabIndexValue = undefined;//data.content.isDismissible ? undefined : '0';
+            const tabIndexValue = data.content.isClickable ? '0': 'undefined';
             notif = h('li.cp-notification', {
                 role: 'menuitem',
                 tabindex: '0',
@@ -123,7 +131,9 @@ define([
 
             $(notif).mouseenter((e) => {
                 e.stopPropagation();
-                $(notif).focus();
+                if($(notif).find('li[tabindex="0"]').length) {
+                    $(notif).focus();
+                };
             });
 
             if (data.content.isClickable) {
@@ -136,6 +146,7 @@ define([
             if (data.content.isDismissible) {
                 var dismissIcon = h('span.fa.fa-times');
                 var dismiss = h('div.cp-notification-dismiss', {
+                    tabindex: 0,
                     title: Messages.notifications_dismiss,
                 }, dismissIcon);
                 $(dismiss).addClass("cp-clickable")

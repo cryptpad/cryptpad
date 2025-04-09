@@ -74,7 +74,7 @@ define([
                 h("h5.cp-app-notifications-panel-title",
                     (Messages.notificationsPage || "Notifications") + " - " + categoryName),
                 h("div.cp-app-notifications-panel-titlebar-buttons", [
-                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { title: Messages.notifications_dismissAll || "Dismiss All" }, h("span.fa.fa-trash")),
+                    dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { tabindex: 0, title: Messages.notifications_dismissAll || "Dismiss All" }, h("span.fa.fa-trash")),
                 ]),
             ]),
             notifsList = h("div.cp-app-notifications-panel-list", [
@@ -89,6 +89,7 @@ define([
                 notifsData.push(data);
                 var icon = $(el).find(".cp-reminder");
                 $(icon).addClass('cp-avatar-calendar');
+                $(el).attr('tabindex', -1);
                 $(notifsList).prepend(el);
             }
         };
@@ -107,6 +108,7 @@ define([
                 var time = new Date(data.content.time);
                 $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleString()));
                 $(el).addClass("cp-app-notification-archived");
+                $(el).attr('tabindex', -1);
                 if (isDataUnread) {
                     $(el).hide();
                 } else {
@@ -122,7 +124,7 @@ define([
             var loadmore;
             var lastKnownHash;
             $(dismissAll).remove();
-            loadmore = h("div.cp-app-notification-loadmore.cp-clickable", Messages.history_loadMore);
+            loadmore = h("button.cp-app-notification-loadmore.cp-clickable", Messages.history_loadMore);
             $(loadmore).click(function () {
                 common.mailbox.getNotificationsHistory('notifications', 10, lastKnownHash, function (err, messages, end) {
                     if (!Array.isArray(messages)) { return; }
@@ -154,6 +156,11 @@ define([
             }
         });
 
+        $(dismissAll).keydown(function (e) {
+            if (e.keyCode === 13 || e.keyCode === 32) {
+                $(dismissAll).click();
+            }
+        });
         $(dismissAll).click(function () {
             notifsData.forEach(function (data) {
                 if (data.content.isDismissible) {
