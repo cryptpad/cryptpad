@@ -171,7 +171,7 @@
             color: @cryptpad_text_col;
             border-radius: @variables_radius_L;
             font-weight: normal;
-            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker) {
+            .tui-full-calendar-icon:not(.tui-full-calendar-calendar-dot):not(.tui-full-calendar-dropdown-arrow):not(.tui-full-calendar-ic-checkbox):not(.fa-map-marker):not(.fa-align-justify) {
                 display: none;
             }
             .tui-full-calendar-icon {
@@ -180,11 +180,14 @@
             }
             .tui-full-calendar-popup-detail-item {
                 display: flex;
+                margin-bottom: 0.3rem;
                 align-items: center;
-                margin-bottom: 0.2rem;
-                .event-location {
+                .event-location,.event-description {
                     display: flex;
                     align-items: center;
+                }
+                .event-description p {
+                    margin:0.1rem;
                 }
                 a {
                     margin:0.1rem;
