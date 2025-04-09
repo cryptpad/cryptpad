@@ -17,6 +17,7 @@ define([
     '/common/common-realtime.js',
     '/common/clipboard.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
@@ -48,6 +49,7 @@ define([
     Realtime,
     Clipboard,
     MT,
+    Badges,
     h,
     Messages,
     AppConfig,
@@ -459,10 +461,35 @@ define([
         var $block = $('<div>', {id: BADGES_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
         APP.$badges = $(h('span')).appendTo($block);
     };
-    const refreshBadges = () => {
+    const refreshBadges = (obj) => {
         if (!APP.$badges) { return; }
         APP.badge.execCommand('LIST_BADGES', {}, data => {
-            console.error(data);
+            APP.$badges.empty();
+            let spinner;
+            let all = data.map(str => {
+                const i = Badges.render(str);
+                const $i = $(i).attr('tabindex', 0);
+                const selected = obj?.badge === str;
+                if (selected) { $i.addClass('cp-selected'); }
+                Util.onClickEnter($i, () => {
+                    let value = selected ? '' : str;
+                    spinner.spin();
+                    APP.module.execCommand('SET', {
+                        key: 'badge',
+                        value
+                    }, function (data) {
+                        spinner.hide();
+                        APP.updateValues(data);
+                    });
+                });
+                return i;
+            });
+            let content = h('div.cp-profile-badges', [
+                h('span', 'Badges'),
+                h('div.cp-profile-badges-list', all)
+            ]);
+            APP.$badges.append(content);
+            spinner = UI.makeSpinner(APP.$badges.find('> div'));
         });
     };
 
@@ -481,7 +508,7 @@ define([
             }, [
                 h('i.fa.fa-pencil', {'aria-hidden': 'true' }),
                 h('span#cp-profile-add-description-button', Messages.profile_addDescription)
-            ]);        
+            ]);
         APP.$descriptionEdit = $(button);
         var save = h('button.btn.btn-primary', Messages.settings_save);
         var text = h('textarea');
