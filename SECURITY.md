@@ -22,4 +22,5 @@ We do also communicate about this topic on:
 
 ## Reporting a Vulnerability
 
-Vulnerabilities can be reported using the GitHub Security interface. You can also send us an email at security@cryptpad.org
+Brefore reaching out to us about a potential vulnerability, ensure it falls in the scope of our project. Please read thoroughly our [whitepaper](https://blog.cryptpad.org/2023/02/02/Whitepaper/) describing our threat model and what we consider acceptable or not security-wirse. If you are sure you found a real vulnerability, you can report it using the GitHub Security interface. You can also send us an email at security@cryptpad.org
+
