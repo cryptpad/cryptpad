@@ -51,12 +51,11 @@ define([
             const promises = loadCryptPadImages(doc);
 
             Promise.all(promises).then(() => {
-                console.log('Exported images:', new XMLSerializer().serializeToString(doc), '.drawio');
+
                 try {
                     const xmlString = new XMLSerializer().serializeToString(doc);
                     const blob = new Blob([xmlString], { type: 'application/xml' });
                     cb(blob, '.drawio');
-
 
                 } catch (error) {
                     console.error('Error exporting diagram:', error);
