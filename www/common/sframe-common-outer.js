@@ -1682,7 +1682,7 @@ define([
                             }
                         });
                     };
-                    data.blob = Crypto.Nacl.util.decodeBase64(data.blob);
+                    data.blob = Utils.Util.decodeBase64(data.blob);
                     Files.upload(data, data.noStore, Cryptpad, updateProgress, onComplete, onError, onPending);
                     cb();
                 });

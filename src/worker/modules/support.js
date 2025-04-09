@@ -302,9 +302,9 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
         if (!curvePrivate) { return void cb('EFORBIDDEN'); }
         let edPrivate, edPublic;
         try {
-            let pair = Nacl.sign.keyPair.fromSeed(Nacl.util.decodeBase64(curvePrivate));
-            edPrivate = Nacl.util.encodeBase64(pair.secretKey);
-            edPublic = Nacl.util.encodeBase64(pair.publicKey);
+            let pair = Nacl.sign.keyPair.fromSeed(Util.decodeBase64(curvePrivate));
+            edPrivate = Util.encodeBase64(pair.secretKey);
+            edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
             return void cb(e);
         }
@@ -999,8 +999,8 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
     let updateServerKey = (ctx, curvePublic, curvePrivate, cb) => {
         let edPublic;
         try {
-            let pair = Nacl.sign.keyPair.fromSeed(Nacl.util.decodeBase64(curvePrivate));
-            edPublic = Nacl.util.encodeBase64(pair.publicKey);
+            let pair = Nacl.sign.keyPair.fromSeed(Util.decodeBase64(curvePrivate));
+            edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
             return void cb(e);
         }
@@ -1022,8 +1022,8 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
         let edPublic = proxy.edPublic;
 
         const keyPair = Nacl.box.keyPair();
-        const newKeyPub = Nacl.util.encodeBase64(keyPair.publicKey);
-        const newKey = Nacl.util.encodeBase64(keyPair.secretKey);
+        const newKeyPub = Util.encodeBase64(keyPair.publicKey);
+        const newKey = Util.encodeBase64(keyPair.secretKey);
 
         const oldKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
         const oldKeyPub = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);

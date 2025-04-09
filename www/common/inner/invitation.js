@@ -9,7 +9,7 @@ var factory = function (Util, Nacl, Scrypt) {
     Invite.deriveSeeds = function (safeSeed) {
         // take the hash of the provided seed
         var seed = safeSeed.replace(/\-/g, '/');
-        var u8_seed = Nacl.hash(Nacl.util.decodeBase64(seed));
+        var u8_seed = Nacl.hash(Util.decodeBase64(seed));
 
         // hash the first half again for scrypt's input
         var subseed1 = Nacl.hash(u8_seed.subarray(0, 32));
@@ -17,8 +17,8 @@ var factory = function (Util, Nacl, Scrypt) {
         var subseed2 = Nacl.hash(u8_seed.subarray(32));
 
         return {
-            scrypt: Nacl.util.encodeBase64(subseed1),
-            preview: Nacl.util.encodeBase64(subseed2),
+            scrypt: Util.encodeBase64(subseed1),
+            preview: Util.encodeBase64(subseed2),
         };
     };
 

@@ -19,7 +19,7 @@
     "bootstrap": "^4.0.0",
     "bootstrap-tokenfield": "^0.12.0",
     "chainpad": "^5.2.6",
-    "chainpad-crypto": "^0.2.5",
+    "chainpad-crypto": "^0.3.0",
     "chainpad-listmap": "^1.1.1",
     "chainpad-netflux": "^1.2.3",
     "chainpad-server": "^5.2.4",
@@ -61,7 +61,8 @@
     "sortify": "^1.0.4",
     "stream-to-pull-stream": "^1.7.2",
     "thirty-two": "^1.0.2",
-    "tweetnacl": "file:./src/tweetnacl",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1",
     "ulimit": "0.0.2",
     "ws": "^8.17.1",
     "x2js": "^3.4.4"

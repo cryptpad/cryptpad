@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 const Nacl = require('tweetnacl/nacl-fast');
+const Util = require('../lib/common-util');
 
 const keyPair = Nacl.box.keyPair();
 console.log("You've just generated a new key pair for your support mailbox.");
@@ -19,9 +20,9 @@ console.log("NOTE: You can change the key pair at any time if you want to revoke
 console.log();
 console.log();
 console.log("Your public key (add it to config.js):");
-console.log(Nacl.util.encodeBase64(keyPair.publicKey));
+console.log(Util.encodeBase64(keyPair.publicKey));
 
 console.log();
 console.log();
 console.log("Your private key (store it in a safe place and send it to your instance's admins):");
-console.log(Nacl.util.encodeBase64(keyPair.secretKey));
+console.log(Util.encodeBase64(keyPair.secretKey));

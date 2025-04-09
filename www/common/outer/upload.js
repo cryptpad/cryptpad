@@ -8,9 +8,7 @@ define([
     '/common/common-util.js',
     '/common/outer/cache-store.js',
     '/components/nthen/index.js',
-    '/components/tweetnacl/nacl-fast.min.js',
 ], function (FileCrypto, Hash, Util, Cache, nThen) {
-    var Nacl = window.nacl;
     var module = {};
 
     module.uploadU8 =function (common, data, cb) {
@@ -30,7 +28,7 @@ define([
         var estimate = FileCrypto.computeEncryptedSize(u8.length, metadata);
 
         var sendChunk = function (box, cb) {
-            var enc = Nacl.util.encodeBase64(box);
+            var enc = Util.encodeBase64(box);
             common.uploadChunk(teamId, enc, function (e, msg) {
                 cb(e, msg);
             });
