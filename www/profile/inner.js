@@ -378,7 +378,7 @@ define([
     var displayAvatar = function (val) {
         var sframeChan = common.getSframeChannel();
         var $span = APP.$avatar;
-        $span.html('');
+        $span.empty();
         if (!val) {
             $('<img>', {
                 src: '/customize/images/avatar.png',
@@ -408,12 +408,6 @@ define([
                 });
             });
         });
-
-        // XXX badge temp
-        APP.module.execCommand("SET", {
-            key: 'badge',
-            value: "administrator"
-        }, function () {});
     };
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
@@ -457,18 +451,23 @@ define([
     };
 
     const addBadges = $container => {
-        if (APP.readOnly) { return; }
         var $block = $('<div>', {id: BADGES_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
         APP.$badges = $(h('span')).appendTo($block);
     };
     const refreshBadges = (obj) => {
         if (!APP.$badges) { return; }
-        APP.badge.execCommand('LIST_BADGES', {}, data => {
+        const metadataMgr = APP.common.getMetadataMgr();
+        const privateData = metadataMgr.getPrivateData();
+        let args = {};
+        if (!privateData.isOwnProfile) { args.edPublic = obj.edPublic; }
+        APP.badge.execCommand('LIST_BADGES', args, data => {
             APP.$badges.empty();
             let spinner;
+            APP.$badges.toggle(!!data.length);
             let all = data.map(str => {
                 const i = Badges.render(str);
                 const $i = $(i).attr('tabindex', 0);
+                if (APP.readOnly) { return i; }
                 const selected = obj?.badge === str;
                 if (selected) { $i.addClass('cp-selected'); }
                 Util.onClickEnter($i, () => {
@@ -485,7 +484,7 @@ define([
                 return i;
             });
             let content = h('div.cp-profile-badges', [
-                h('span', 'Badges'),
+                h('span', Messages.profile_badges),
                 h('div.cp-profile-badges-list', all)
             ]);
             APP.$badges.append(content);
@@ -748,12 +747,12 @@ define([
             return;
         }
 
+        APP.badge = common.makeUniversal('badge', {
+            onEvent: onEvent
+        });
         if (privateData.isOwnProfile) {
 
             APP.module = common.makeUniversal('profile', {
-                onEvent: onEvent
-            });
-            APP.badge = common.makeUniversal('badge', {
                 onEvent: onEvent
             });
             var execCommand = APP.module.execCommand;

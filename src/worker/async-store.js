@@ -660,12 +660,14 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     color: Store.getUserColor(),
                     notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: proxy.curvePublic,
+                    edPublic: proxy.edPublic,
                     badge: Util.find(proxy, ['profile', 'badge'])
                 },
                 // "priv" is not shared with other users but is needed by the apps
                 priv: {
                     clientId: clientId,
                     edPublic: proxy.edPublic,
+                    edPrivate: proxy.edPrivate,
                     friends: proxy.friends || {},
                     settings: proxy.settings || NEW_USER_SETTINGS,
                     thumbnails: disableThumbnails === false,

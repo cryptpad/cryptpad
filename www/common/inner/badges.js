@@ -20,7 +20,10 @@ define([
         let icon = badges[id];
         if (!icon) { return; }
         let cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
-        return h('i', { 'class': `cp-badge ${cls}` });
+        return h('i', {
+            'class': `cp-badge ${cls}`,
+            'title': Messages[`badges_${id}`] || 'id'
+        });
     };
 
     return Badges;

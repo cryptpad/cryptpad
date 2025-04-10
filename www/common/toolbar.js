@@ -13,12 +13,13 @@ define([
     '/common/common-util.js',
     '/common/common-feedback.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
-], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, h,
+], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, Badges, h,
 MessengerUI, Messages, Pages, PadTypes) {
     var Common;
 
@@ -223,6 +224,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         });
     };
     var showColors = false;
+    const validatedBadges = {};
     var updateUserList = function (toolbar, config, forceOffline) {
         if (!config.displayed || config.displayed.indexOf('userlist') === -1) { return; }
         if (toolbar.isAlone) { return; }
@@ -427,6 +429,31 @@ MessengerUI, Messages, Pages, PadTypes) {
                 $span.append($rightCol);
             }, data.uid);
             $span.data('uid', data.uid);
+            if (data.badge && data.edPublic) {
+                const addBadge = (badge) => {
+                    let i = Badges.render(badge);
+                    if (!i) { return; }
+                    $rightCol.append(h('div.cp-userlist-badge', i));
+                };
+                const key = data.edPublic + '-' + data.badge;
+                const v = validatedBadges[key];
+                if (typeof (v) === "string") {
+                    addBadge(v);
+                } else {
+                    let ev = validatedBadges[key] ||= Util.mkEvent(true);
+                    ev.reg(badge => { addBadge(badge); });
+                    toolbar.badges.execCommand('CHECK_BADGE', {
+                        badge: data.badge,
+                        channel: priv.channel,
+                        user: data.edPublic
+                    }, res => {
+                        if (!res?.verified) { return; }
+                        validatedBadges[key] = res.badge;
+                        ev.fire(res.badge);
+                    });
+                }
+
+            }
             $editUsersList.append($span);
         });
 
@@ -1400,6 +1427,8 @@ MessengerUI, Messages, Pages, PadTypes) {
 
         toolbar.connected = false;
         toolbar.firstConnection = true;
+
+        toolbar.badges = Common.makeUniversal('badge');
 
         if (Array.isArray(cfg.displayed) && cfg.displayed.includes('pad')) {
             cfg.addFileMenu = true;

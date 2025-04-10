@@ -751,6 +751,7 @@ define([
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
+            var edPrivate;
             var settings = {};
             var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
             var isOO = ['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1;
@@ -760,6 +761,7 @@ define([
             if (isDeleted) {
                 Utils.Cache.clearChannel(secret.channel);
             }
+            const signed = {};
 
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
@@ -775,6 +777,9 @@ define([
                         curvePublic = metaObj.user.curvePublic;
                         notifications = metaObj.user.notifications;
                         settings = metaObj.priv.settings;
+
+                        edPrivate = metaObj.priv.edPrivate;
+                        delete metaObj.priv.edPrivate; // don't send to inner
                     }));
                     if (typeof(isTemplate) === "undefined") {
                         Cryptpad.isTemplate(currentPad.href, waitFor(function (err, t) {
@@ -854,6 +859,19 @@ define([
                             metaObj.user.name = cfg.integrationConfig?.user?.name ||
                                             cfg.integrationConfig?.user?.firstname;
                         }
+                    }
+
+                    if (metaObj?.user?.badge) {
+                        let b = metaObj?.user?.badge +'-'+ secret.channel;
+                        if (!signed[b]) {
+                            let bu8 = Utils.Util.decodeUTF8(b);
+                            console.log(edPrivate);
+                            let k = Utils.Util.decodeBase64(edPrivate);
+                            let nacl = Utils.Crypto.Nacl;
+                            let s = nacl.sign(bu8, k);
+                            signed[b] = Utils.Util.encodeBase64(s);
+                        }
+                        metaObj.user.badge = signed[b];
                     }
 
                     // Early access

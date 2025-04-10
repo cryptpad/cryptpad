@@ -134,7 +134,11 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
-    
+    // XXX
+    Messages.badges_admin = "Instance administrator";
+    Messages.badges_moderator = "Instance moderator";
+    Messages.badges_premium = "Premium user";
+    Messages.profile_badges = "Badges";
 
     return Messages;
 
