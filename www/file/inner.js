@@ -8,6 +8,7 @@ define([
     '/components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
@@ -26,13 +27,13 @@ define([
     nThen,
     SFCommon,
     Hash,
+    Util,
     UI,
     UIElements,
     Messages,
     MediaTag)
 {
     var saveAs = window.saveAs;
-    var Nacl = window.nacl;
 
     var APP = window.APP = {};
 
@@ -81,7 +82,7 @@ define([
                 var hexFileName = secret.channel;
                 var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
                 var key = secret.keys && secret.keys.cryptKey;
-                var cryptKey = Nacl.util.encodeBase64(key);
+                var cryptKey = Util.encodeBase64(key);
 
                 var $mt = $dlview.find('media-tag');
                 $mt.attr('src', src);

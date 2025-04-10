@@ -498,8 +498,8 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             if (store.rpc) { return void cb(store.rpc); }
             var kp = Crypto.Nacl.sign.keyPair();
             var keys = {
-                edPublic: Crypto.Nacl.util.encodeBase64(kp.publicKey),
-                edPrivate: Crypto.Nacl.util.encodeBase64(kp.secretKey)
+                edPublic: Util.encodeBase64(kp.publicKey),
+                edPrivate: Util.encodeBase64(kp.secretKey)
             };
             Pinpad.create(store.network, keys, function (e, call) {
                 if (e) { return void cb({error: e}); }
@@ -947,16 +947,16 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 };
                 toSign.drive = store.driveChannel;
                 toSign.edPublic = edPublic;
-                var signKey = Crypto.Nacl.util.decodeBase64(store.proxy.edPrivate);
-                var proof = Crypto.Nacl.sign.detached(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)), signKey);
+                var signKey = Util.decodeBase64(store.proxy.edPrivate);
+                var proof = Crypto.Nacl.sign.detached(Util.decodeUTF8(Sortify(toSign)), signKey);
 
-                var check = Crypto.Nacl.sign.detached.verify(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)),
+                var check = Crypto.Nacl.sign.detached.verify(Util.decodeUTF8(Sortify(toSign)),
                     proof,
-                    Crypto.Nacl.util.decodeBase64(edPublic));
+                    Util.decodeBase64(edPublic));
 
                 if (!check) { console.error('signed message failed verification'); }
 
-                var proofTxt = Crypto.Nacl.util.encodeBase64(proof);
+                var proofTxt = Util.encodeBase64(proof);
                 cb({
                     proof: proofTxt,
                     toSign: JSON.parse(Sortify(toSign))

@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/common/common-util.js',
     '/components/tweetnacl/nacl-fast.min.js',
-], function () {
+], function (Util) {
     var Nacl = window.nacl;
     //var PARANOIA = true;
 
@@ -12,7 +13,7 @@ define([
     var cypherChunkLength = 131088;
 
     var computeEncryptedSize = function (bytes, meta) {
-        var metasize = Nacl.util.decodeUTF8(JSON.stringify(meta)).length;
+        var metasize = Util.decodeUTF8(JSON.stringify(meta)).length;
         var chunks = Math.ceil(bytes / plainChunkLength);
         return metasize + 18 + (chunks * 16) + bytes;
     };
@@ -80,7 +81,7 @@ define([
         increment(nonce);
 
         try {
-            res.metadata = JSON.parse(Nacl.util.encodeUTF8(metaChunk));
+            res.metadata = JSON.parse(Util.encodeUTF8(metaChunk));
         } catch (e) {
             return window.setTimeout(function () {
                 done('E_METADATA_DECRYPTION');
@@ -147,13 +148,13 @@ define([
         var nonce = createNonce();
 
         // encode metadata
-        var plaintext = Nacl.util.decodeUTF8(JSON.stringify(metadata));
+        var plaintext = Util.decodeUTF8(JSON.stringify(metadata));
 
         // if metadata is too large, drop the thumbnail.
         if (plaintext.length > 65535) {
             var temp = JSON.parse(JSON.stringify(metadata));
             delete temp.thumbnail;
-            plaintext = Nacl.util.decodeUTF8(JSON.stringify(temp));
+            plaintext = Util.decodeUTF8(JSON.stringify(temp));
         }
 
         var i = 0;
