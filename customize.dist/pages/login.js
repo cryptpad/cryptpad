@@ -14,7 +14,9 @@ define([
 
         var ssoEnabled = (Config.sso && Config.sso.list && Config.sso.list.length) ?'': '.cp-hidden';
         var ssoEnforced = (Config.sso && Config.sso.force) ? '.cp-hidden' : '';
-
+        if (Config.sso && Config.sso.list && Config.sso.forceRedirect === 1) {
+            return;
+        }   
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [

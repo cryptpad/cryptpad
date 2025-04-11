@@ -31,6 +31,17 @@ define([
             // Config.sso.password => cp password required or forbidden
             // Config.sso.list => list of configured identity providers
             var $sso = $('div.cp-login-sso');
+            // Auto-redirect if only forceRedirect set to true
+            if (Config.sso && Config.sso.list && Config.sso.forceRedirect === 1) {
+                Login.ssoAuth(Config.sso.list[0], function (err, data) {
+                    if (data && data.url) {
+                        window.location.href = data.url;
+                    } else {
+                        console.error("SSO auto-redirect failed:", err || "no URL");
+                    }
+                });
+                return;
+            }
             var list = Config.sso.list.map(function (name) {
                 var b = h('button.btn.btn-secondary', name);
                 var $b = $(b).click(function () {
