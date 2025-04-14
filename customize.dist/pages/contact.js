@@ -26,7 +26,7 @@ define([
                 href: "https://matrix.to/#/#cryptpad:matrix.xwiki.com",
             },
             {
-                name: "Mastodon",
+                name: Msg.contact_mastodon || "Mastodon",
                 image: "/customize/images/mastodon.svg",
                 href: "https://fosstodon.org/@cryptpad",
             },
