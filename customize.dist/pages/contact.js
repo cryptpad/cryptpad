@@ -36,6 +36,11 @@ define([
                 href: "https://github.com/cryptpad/cryptpad/issues/",
             },
             {
+                name: Msg.contact_forum || "Forum",
+                image: "/customize/images/forum.svg",
+                href: "https://forum.cryptpad.org/",
+            },
+            {
                 name: Msg.contact_email || "Email",
                 image: "/customize/images/email.svg",
                 href: 'mailto:' + developerEmail,
