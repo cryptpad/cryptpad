@@ -347,16 +347,27 @@ var factory = function (Util) {
 
         // Increment a nonce
         increment: function (N) {
-            var l = N.length;
-            while (l-- > 1) {
-                if (N[l] !== 255) { return void N[l]++; }
-
-                // you don't need to worry about this running out.
-                // you'd need a REAAAALLY big file
-                if (l === 0) { throw new Error('E_NONCE_TOO_LARGE'); }
-
+            // start from the last element directly without relying on confusing post-decrement behaviour
+            let l = N.length - 1;
+            while (l >= 0) {
+                // increment the least significant byte unless it's already at its maximum
+                if (N[l] !== 255) {
+                    N[l] += 1;
+                    return;
+                }
+                // if the loop reaches the most significant byte and the above block fails to return
+                // then the nonce's state-space has been exhausted
+                if (l === 0) {
+                    throw new Error("E_NONCE_TOO_LARGE");
+                }
+                // otherwise reset the lesser bytes to zero
                 N[l] = 0;
+                // and proceed to the next more significant byte
+                l -= 1;
             }
+            // the loop body will never be executed if a zero-length nonce is supplied
+            // this handles that case
+            throw new Error("E_EMPTY_NONCE");
         },
 
         decodePrefix: function (A) {

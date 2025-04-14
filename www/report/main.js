@@ -23,6 +23,7 @@ define([
     '/common/outer/roster.js',
     '/common/rpc.js',
     '/common/pinpad.js',
+    '/common/outer/local-store.js',
 
 
     '/components/tweetnacl/nacl-fast.min.js',
@@ -30,7 +31,7 @@ define([
     'less!/customize/src/less2/pages/page-report.less',
 ], function ($, ApiConfig, h, Messages,
             nThen, Hash, Util, Constants, Crypt, Cryptpad, Cache, UI, CPNetflux,
-            Crypto, UserObject, Clipboard, Block, Roster, Rpc, Pinpad) {
+            Crypto, UserObject, Clipboard, Block, Roster, Rpc, Pinpad, LocalStore) {
     var $report = $('#cp-report');
     var blockHash = localStorage.Block_hash;
     if (!blockHash) {
