@@ -54,27 +54,27 @@ const allBadges = {
 };
 
 const checkBadge:Callback = (ctx, data, clientId, cb) => {
-    const { badge, channel, user } = data;
+    const { badge, ed, sig, nid/*, channel*/ } = data;
 
-    const ed = Util.decodeBase64(user); // Public key uint8
-    const b = Util.decodeBase64(badge); // badge uint8
+    const publicKey = Util.decodeBase64(ed); // Public key uint8
+    const signature = Util.decodeBase64(sig); // badge uint8
 
     // Check signature
-    const msg = nacl.sign.open(b, ed);
+    const msg = nacl.sign.open(signature, publicKey);
     if (!msg) { return void cb({verified: false}); }
 
     // Check channel (replay attack)
-    const msgArr = Util.encodeUTF8(msg).split('-');
-    if (msgArr[1] !== channel) { return void cb({verified: false}); }
+    const msgStr:string = Util.encodeUTF8(msg);
+    const expected:string = nid; // + channel;
+    if (msgStr !== expected) { return void cb({verified: false}); }
 
-    const badgeStr = msgArr[0];
-    let f = allBadges[badgeStr];
-    if (!f) { return void cb({verified: false}); }
+    let f = allBadges[badge];
+    if (!f) { return void cb({verified: false, error: 'EINVAL'}); }
 
-    f(ctx, user, list => {
+    f(ctx, ed, list => {
         cb({
-            verified: list.includes(badgeStr),
-            badge: badgeStr
+            verified: list.includes(badge),
+            badge: badge
         });
     });
 };

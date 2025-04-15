@@ -661,6 +661,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: proxy.curvePublic,
                     edPublic: proxy.edPublic,
+                    netfluxId:  store?.network?.webChannels?.[0]?.myID,
                     badge: Util.find(proxy, ['profile', 'badge'])
                 },
                 // "priv" is not shared with other users but is needed by the apps

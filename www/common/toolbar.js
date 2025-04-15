@@ -194,16 +194,14 @@ MessengerUI, Messages, Pages, PadTypes) {
         // Display only one time each user (if he is connected in multiple tabs)
         var uids = [];
         Object.keys(userData).forEach(function(user) {
-            //if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userId = data.uid;
                 if (!userId) { return; }
-                //data.netfluxId = user;
-                if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
+                if (user !== data.netfluxId) { return; }
+                if (uids.indexOf(userId) === -1) {
                     uids.push(userId);
                     list.push(data);
                 } else { i++; }
-            //}
         });
         return {
             list: list,
@@ -435,19 +433,26 @@ MessengerUI, Messages, Pages, PadTypes) {
                     if (!i) { return; }
                     $rightCol.append(h('div.cp-userlist-badge', i));
                 };
-                const key = data.edPublic + '-' + data.badge;
+                const key = data.signature + '-' + data.badge;
                 const v = validatedBadges[key];
                 if (typeof (v) === "string") {
                     addBadge(v);
+                } else if (v === false) {
+                    addBadge('error');
                 } else {
                     let ev = validatedBadges[key] ||= Util.mkEvent(true);
                     ev.reg(badge => { addBadge(badge); });
                     toolbar.badges.execCommand('CHECK_BADGE', {
                         badge: data.badge,
                         channel: priv.channel,
-                        user: data.edPublic
+                        ed: data.edPublic,
+                        sig: data.signature,
+                        nid: data.netfluxId
                     }, res => {
-                        if (!res?.verified) { return; }
+                        if (!res?.verified) {
+                            validatedBadges[key] = false;
+                            return void addBadge('error');
+                        }
                         validatedBadges[key] = res.badge;
                         ev.fire(res.badge);
                     });

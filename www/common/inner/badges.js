@@ -3,26 +3,26 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
-    'jquery',
-    '/common/common-interface.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-], function ($, UI, h, Messages, nThen) {
+], function (h, Messages) {
     var Badges = {};
 
     const badges = {
-        admin: 'fa-star-o',
+        admin: 'fa-star',
         moderator: 'fa-life-ring',
-        premium: 'fa-check-circle'
-    }
+        premium: 'fa-check-circle',
+        error: 'fa-exclamation-circle'
+    };
 
     Badges.render = id => {
         let icon = badges[id];
         if (!icon) { return; }
         let cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
+        if (id === 'error') { cls += ' cp-badge-error'; }
         return h('i', {
             'class': `cp-badge ${cls}`,
-            'title': Messages[`badges_${id}`] || 'id'
+            'title': Messages[`badges_${id}`] || id
         });
     };
 
