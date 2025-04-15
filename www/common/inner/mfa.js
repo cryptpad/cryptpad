@@ -212,7 +212,7 @@ define([
             }).nThen(function (waitFor) {
                 $content.empty();
                 var next = waitFor();
-                recoverySecret = Nacl.util.encodeBase64(Nacl.randomBytes(24));
+                recoverySecret = Util.encodeBase64(Nacl.randomBytes(24));
                 var button = h('button.btn.btn-primary', [
                     h('i.fa.fa-check'),
                     h('span', Messages.done)
