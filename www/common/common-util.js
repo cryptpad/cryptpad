@@ -4,7 +4,7 @@
 
 (function (window) {
 const factory = (NaclUtil) => {
-    var Util = {};
+    var Util = window.CryptPad_Util = {};
 
     // polyfill for atob in case you're using this from node...
     window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); };
@@ -12,8 +12,8 @@ const factory = (NaclUtil) => {
 
     Util.encodeBase64 = NaclUtil.encodeBase64;
     Util.decodeBase64 = str => {
-        let i;
-        if (i = str.length % 4) { str += '='.repeat(4-i); }
+        let i = str.length % 4;
+        if (i) { str += '='.repeat(4-i); }
         return NaclUtil.decodeBase64(str);
     };
     Util.encodeUTF8 = NaclUtil.encodeUTF8;
@@ -877,6 +877,6 @@ const factory = (NaclUtil) => {
             return factory(globalThis?.nacl?.util);
         });
     } else {
-        window.CryptPad_Util = Util;
+        // Unsupported initialization
     }
 }(typeof(self) !== 'undefined'? self: this));
