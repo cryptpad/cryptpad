@@ -20,7 +20,6 @@ var compare = function () {
         Pins.list(w(function (err, p) {
             if (err) { throw err; }
             list = p;
-            console.log(p);
             console.log(list);
             console.log();
         }), conf);
