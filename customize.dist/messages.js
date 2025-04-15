@@ -135,7 +135,7 @@ define(req, function(AppConfig, Default, Language) {
     };
 
     
-
+    Messages.user_profile = 'Go to user profile';
     return Messages;
 
 });
