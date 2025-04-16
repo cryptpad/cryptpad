@@ -52,7 +52,6 @@ define([
     OOCurrentVersion)
 {
     var saveAs = window.saveAs;
-    var Nacl = window.nacl;
     var APP = window.APP = {
         $: $,
         urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs'])
@@ -2092,7 +2091,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                         }
                         try {
                             debug("Decrypt with key " + data.key);
-                            FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                            FileCrypto.decrypt(u8, Util.decodeBase64(data.key), function (err, res) {
                                 APP.loadingImage--;
                                 if (err || !res.content) {
                                     debug("Decrypting failed");

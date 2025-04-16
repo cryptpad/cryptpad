@@ -26,7 +26,7 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
     };
 
     var clone = o => JSON.parse(JSON.stringify(o));
-    var randomToken = () => Nacl.util.encodeBase64(Nacl.randomBytes(24));
+    var randomToken = () => Util.encodeBase64(Nacl.randomBytes(24));
     var postData = function (url, data, cb) {
         var CB = Util.once(Util.mkAsync(cb));
         fetch(url, {
@@ -53,7 +53,7 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
 
     var serverCommand = function (keypair, my_data, cb) {
         var obj = clone(my_data);
-        obj.publicKey = Nacl.util.encodeBase64(keypair.publicKey);
+        obj.publicKey = Util.encodeBase64(keypair.publicKey);
         obj.nonce = randomToken();
         var href = new URL('/api/auth/', API_ORIGIN);
         var txid, date;
@@ -82,9 +82,9 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
             var copy = clone(obj);
             copy.txid = txid;
             copy.date = date;
-            var toSign = Nacl.util.decodeUTF8(JSON.stringify(copy));
+            var toSign = Util.decodeUTF8(JSON.stringify(copy));
             var sig = Nacl.sign.detached(toSign, keypair.secretKey);
-            var encoded = Nacl.util.encodeBase64(sig);
+            var encoded = Util.encodeBase64(sig);
             var obj2 = {
                 sig: encoded,
                 txid: txid,
