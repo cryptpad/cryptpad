@@ -19,7 +19,6 @@ define([
     Hash,
     ApiConfig,
 ) {
-    const Nacl = window.nacl;
     const x2js = new X2JS();
 
     const parseCryptPadUrl = function(href) {
@@ -102,7 +101,7 @@ define([
         diagrams.forEach(function(diagram) {
             if (diagram.childNodes.length === 1 && diagram.firstChild && diagram.firstChild.nodeType === TEXT_NODE)  {
                 const innerText = diagram.firstChild.nodeValue;
-                const bin = Nacl.util.decodeBase64(innerText);
+                const bin = Util.decodeBase64(innerText);
                 const xmlUrlStr = pako.inflateRaw(bin, {to: 'string'});
                 const xmlStr = decodeURIComponent(xmlUrlStr);
                 const diagramDoc = parser.parseFromString(xmlStr, "application/xml");
@@ -151,7 +150,7 @@ define([
         const hexFileName = secret.channel;
         const src = fileHost + Hash.getBlobPathFromHex(hexFileName);
         const key = secret.keys && secret.keys.cryptKey;
-        const cryptKey = Nacl.util.encodeBase64(key);
+        const cryptKey = Util.encodeBase64(key);
         return getCryptPadUrl(src, cryptKey, data.fileType);
     };
 
@@ -199,7 +198,7 @@ define([
                         return void reject(err);
                     }
                     try {
-                        FileCrypto.decrypt(u8, Nacl.util.decodeBase64(key), (err, res) => {
+                        FileCrypto.decrypt(u8, Util.decodeBase64(key), (err, res) => {
                             if (err || !res.content) {
                                 console.error("Decrypting failed");
                                 return void reject(err);
