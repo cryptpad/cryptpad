@@ -1153,11 +1153,6 @@ define([
                         'data-tag': t,
                         'tabindex': 0
                     }, t));
-                    $(tag).keydown(function (e) {
-                        if (e.which === 13 || e.which === 32) {
-                            $(tag).click();
-                        }
-                    });
                     var $tag = $(tag).click(function () {
                         if ($tag.hasClass('active')) {
                             $tag.removeClass('active');
@@ -1165,6 +1160,10 @@ define([
                             $tag.addClass('active');
                         }
                         commitTags();
+                    }).keydown(function (e) {
+                        if (e.which === 13 || e.which === 32) {
+                            $tag.click();
+                        }
                     });
                 });
             };
