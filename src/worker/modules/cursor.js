@@ -12,9 +12,6 @@ const factory = (Util, Constants, Messages = {},
         AppConfig = data.AppConfig;
     };
 
-
-    var DEGRADED = AppConfig.degradedLimit || 8;
-
     var convertToUint8 = function (obj) {
         var l = Object.keys(obj).length;
         var u = new Uint8Array(l);
@@ -59,6 +56,7 @@ const factory = (Util, Constants, Messages = {},
 
     var updateDegraded = function (ctx, wc, chan) {
         var m = wc.members;
+        var DEGRADED = AppConfig.degradedLimit || 8;
         chan.degraded = (m.length-1) >= DEGRADED;
         ctx.emit('DEGRADED', { degraded: chan.degraded }, chan.clients);
     };
