@@ -2378,10 +2378,17 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                 var parsed = parse(msg);
                 if (parsed[1] !== txid) { console.log('bad txid'); return; }
                 if (parsed[0] === 'HISTORY_RANGE_ERROR') {
-                    cb({
+                    let err = parsed[2];
+                    if (err?.code === 'ENOENT') {
+                        completed = true;
+                        return void cb({
+                            messages: msgs,
+                            isFull: true
+                        });
+                    }
+                    return void cb({
                         error: parsed[2]
                     });
-                    return;
                 }
                 if (parsed[0] === 'HISTORY_RANGE_END') {
                     cb({
