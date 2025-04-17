@@ -1724,7 +1724,7 @@ define([
                 deleteOfflineLocks();
                 handleNewLocks({}, content.locks);
                 if (APP.unsavedChanges) {
-                    var unsaved = APP.unsavedChanges;
+                    var unsaved = APP.unsavedChanges;
                     delete APP.unsavedChanges;
                     rtChannel.sendMsg(unsaved, null, function (err, hash) {
                         if (err) { return void UI.alert(Messages.oo_lostEdits); }
@@ -1853,6 +1853,7 @@ define([
                     permissions: {
                         download: dc?.permissions?.download || false,
                         print: dc?.permissions?.print || true,
+                        protect: false
                     }
                 },
                 "documentType": file.doc,
