@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
-const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
+const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
                 SF, AccountTS, DriveTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
-                Calendar, Block, NetConfig, AppConfig = {},
+                Calendar, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
@@ -17,6 +16,9 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
     const Drive = DriveTS.Drive;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
+
+    let ApiConfig = {};
+    let AppConfig = {};
 
     const Saferphore = Util.Saferphore;
     var onReadyEvt = Util.mkEvent(true);
@@ -3452,49 +3454,40 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
     };
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        undefined,
-        require('json.sortify'),
-        require('../common/user-object'),
-        require('../common/proxy-manager'),
-        require('./components/migrate-user-object'),
-        require('../common/common-hash'),
-        require('../common/common-util'),
-        require('../common/common-constants'),
-        require('../common/common-feedback'),
-        require('../common/common-realtime'),
-        require('../common/common-messaging'),
-        require('../common/pinpad'),
-        require('../common/rpc'),
-        require('./components/merge-drive'),
-        require('../common/cache-store'),
-        require('./components/sharedfolder'),
-        require('./components/account'), // .ts
-        require('./components/drive'), // .ts
-        require('./modules/cursor'),
-        require('./modules/support'),
-        require('./modules/integration'),
-        require('./modules/onlyoffice'),
-        require('./modules/mailbox'),
-        require('./modules/profile'),
-        require('./modules/team'),
-        require('./modules/messenger'),
-        require('./modules/history'),
-        require('./modules/calendar'),
-        require('../common/login-block'),
-        require('../common/network-config'),
-        undefined,
-        require('chainpad-crypto'),
-        require('chainpad'),
-        require('chainpad-netflux'),
-        require('chainpad-listmap'),
-        require('netflux-websocket'),
-        require('nthen')
-    );
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('json.sortify'),
+    require('../common/user-object'),
+    require('../common/proxy-manager'),
+    require('./components/migrate-user-object'),
+    require('../common/common-hash'),
+    require('../common/common-util'),
+    require('../common/common-constants'),
+    require('../common/common-feedback'),
+    require('../common/common-realtime'),
+    require('../common/common-messaging'),
+    require('../common/pinpad'),
+    require('../common/rpc'),
+    require('./components/merge-drive'),
+    require('../common/cache-store'),
+    require('./components/sharedfolder'),
+    require('./components/account'), // .ts
+    require('./components/drive'), // .ts
+    require('./modules/cursor'),
+    require('./modules/support'),
+    require('./modules/integration'),
+    require('./modules/onlyoffice'),
+    require('./modules/mailbox'),
+    require('./modules/profile'),
+    require('./modules/team'),
+    require('./modules/messenger'),
+    require('./modules/history'),
+    require('./modules/calendar'),
+    require('../common/outer/login-block'),
+    require('../common/network-config'),
+    require('chainpad-crypto'),
+    require('chainpad'),
+    require('chainpad-netflux'),
+    require('chainpad-listmap'),
+    require('netflux-websocket'),
+    require('nthen')
+);

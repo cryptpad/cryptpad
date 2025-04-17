@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = AStore => {
     var create = function (config) {
         var Store = AStore.create(config);
@@ -118,16 +117,6 @@ const factory = AStore => {
     return { create };
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../async-store')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/outer/async-store.js'
-    ], factory);
-} else {
-    // unsupported initialization
-}
-})();
+module.exports = factory(
+    require('../async-store')
+);

@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and contributors
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
-(() => {
 const factory = (SRpc, Channel, Util) => {
     const Interface = {};
     let store;
@@ -122,19 +121,8 @@ const factory = (SRpc, Channel, Util) => {
     return Interface;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory(
-        require('./store-rpc'),
-        require('../../common/worker-channel'),
-        require('../../common/common-util')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/outer/store-rpc.js',
-        '/common/outer/worker-channel.js',
-        '/common/common-util.js'
-    ], factory);
-} else {
-    // unsupported initialization
-}
-})();
+module.exports = factory(
+    require('./store-rpc'),
+    require('../../common/events-channel'),
+    require('../../common/common-util')
+);

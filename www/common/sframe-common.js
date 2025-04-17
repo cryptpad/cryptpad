@@ -8,7 +8,7 @@ define([
     '/components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
-    '/common/outer/worker-channel.js',
+    '/common/events-channel.js',
     '/common/sframe-common-title.js',
     '/common/common-ui-elements.js',
     '/common/sframe-common-history.js',

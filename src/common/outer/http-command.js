@@ -110,7 +110,7 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
 if (typeof(module) !== 'undefined' && module.exports) {
     module.exports = factory(
         require('nthen'),
-        require('./common-util'),
+        require('../common-util'),
         undefined,
         require('tweetnacl/nacl-fast')
     );

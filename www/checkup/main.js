@@ -15,7 +15,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/pinpad.js',
-    '/common/outer/network-config.js',
+    '/common/network-config.js',
     '/common/outer/login-block.js',
     '/customize/pages.js',
     '/checkup/checkup-tools.js',

@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Messaging, Hash, Util, Crypto, Block) => {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
@@ -983,24 +982,10 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
     };
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory(
-        require('../../common/common-messaging'),
-        require('../../common/common-hash'),
-        require('../../common/common-util'),
-        require('chainpad-crypto'),
-        require('../../common/login-block')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-messaging.js',
-        '/common/common-hash.js',
-        '/common/common-util.js',
-        '/components/chainpad-crypto/crypto.js',
-        '/common/outer/login-block.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('../../common/common-messaging'),
+    require('../../common/common-hash'),
+    require('../../common/common-util'),
+    require('chainpad-crypto'),
+    require('../../common/outer/login-block')
+);

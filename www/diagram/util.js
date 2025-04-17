@@ -5,7 +5,7 @@
 define([
     '/common/common-util.js',
     '/file/file-crypto.js',
-    '/common/outer/cache-store.js',
+    '/common/cache-store.js',
     '/components/x2js/x2js.js',
     '/components/pako/dist/pako.min.js',
     '/common/common-hash.js',

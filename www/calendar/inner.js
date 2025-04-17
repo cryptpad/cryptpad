@@ -21,7 +21,7 @@ define([
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
     '/calendar/export.js',
-    '/calendar/recurrence.js',
+    '/common/recurrence.js',
     '/lib/datepicker/flatpickr.js',
     'tui-date-picker',
 

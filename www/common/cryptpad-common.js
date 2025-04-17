@@ -8,14 +8,13 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/outer/cache-store.js',
-    '/common/common-messaging.js',
+    '/common/cache-store.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/visible.js',
     '/common/user-object.js',
     '/common/outer/local-store.js',
-    '/common/outer/worker-channel.js',
+    '/common/events-channel.js',
     '/common/outer/login-block.js',
     '/common/common-credential.js',
     '/customize/login.js',
@@ -25,7 +24,7 @@ define([
     '/components/nthen/index.js',
     '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Broadcast, Messages, Util, Hash, Cache,
-            Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
+            Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             Cred, Login, Store, AppConfig, nThen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -310,7 +309,7 @@ define([
     common.makeNetwork = function (cb) {
         require([
             'netflux-client',
-            '/common/outer/network-config.js'
+            '/common/network-config.js'
         ], function (Netflux, NetConfig) {
             var wsUrl = NetConfig.getWebsocketURL();
             Netflux.connect(wsUrl).then(function (network) {
