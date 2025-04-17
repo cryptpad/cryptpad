@@ -3231,6 +3231,10 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
             const requires = data.requires;
 
+            // data.noDrive indicates that we can use drive-less
+            // mode. It will be false is we are loading a safe hash
+            const requiresDrive = !data.noDrive;
+
             // Mark initialized to true: new tabs will have to
             // wait for the entire worker to be ready
             initialized = true;
@@ -3247,7 +3251,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
             // Now users will create a drive, but they may not
             // own an account
-            if (requires === 'pad') {
+            if (requires === 'pad' && !requiresDrive) {
                 // Start with only the pad modules, callback
                 // and then load the account and other modules
                 return void onNoDrive(clientId, function (obj) {
@@ -3270,7 +3274,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     onPadRejectedEvt.reg(next);
                 });
             }
-            if (requires === 'file') {
+            if (requires === 'file' && !requiresDrive) {
                 // Start with only the pad modules, callback
                 // and then load the account and other modules
                 return void onNoDrive(clientId, function (obj) {
