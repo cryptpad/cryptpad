@@ -4,7 +4,7 @@
 
 (() => {
 const factory = function () {
-    let USE_MIN = false;
+    let USE_MIN = true;
 
     let path = '/common/worker.bundle.js?';
     if (USE_MIN) { path = '/common/worker.bundle.min.js?'; }
