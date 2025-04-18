@@ -617,7 +617,7 @@ const factory = (UserObject, Util, Hash,
             if (data.password) { folderData.password = data.password; }
             if (data.owned) { folderData.owners = [Env.edPublic]; }
         }).nThen(function (waitFor) {
-            Env.Store.getPadMetadata(null, {
+            Env.Store.pad.getMetadata(null, {
                 channel: folderData.channel
             }, waitFor(function (obj) {
                 if (obj && (obj.error || obj.rejected)) {
@@ -669,7 +669,7 @@ const factory = (UserObject, Util, Hash,
                 }
                 if (data.folderData) {
                     // If we're importing a folder, check its serverside metadata
-                    Env.Store.getPadMetadata(null, { channel: folderData.channel }, function (md) {
+                    Env.Store.pad.getMetadata(null, { channel: folderData.channel }, function (md) {
                         var fData = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
                         if (md.owners) { fData.owners = md.owners; }
                         if (md.expire) { fData.expire = +md.expire; }

@@ -297,7 +297,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                         teamId: id
                     };
                 }
-                ctx.Store.removeOwnedChannel('', data, cb);
+                ctx.Store.pad.destroy('', data, cb);
             },
             Store: ctx.Store,
             store: ctx.store
@@ -879,7 +879,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                         }));
                     }).nThen(function (_w) {
                         if (otherOwners) {
-                            ctx.Store.setPadMetadata(null, {
+                            ctx.Store.pad.setMetadata(null, {
                                 channel: c,
                                 command: 'RM_OWNERS',
                                 value: [teamEdPublic],
@@ -983,7 +983,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var md;
         nThen(function (waitFor) {
             // Get pending owners
-            ctx.Store.getPadMetadata(null, {
+            ctx.Store.pad.getMetadata(null, {
                 channel: teamData.channel
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
@@ -1006,7 +1006,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                     });
                     if (!member && teamData.owner) {
                         var removeOwnership = function (chan) {
-                            ctx.Store.setPadMetadata(null, {
+                            ctx.Store.pad.setMetadata(null, {
                                 channel: chan,
                                 command: 'RM_PENDING_OWNERS',
                                 value: [ed],
@@ -1119,7 +1119,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 }
             };
             var addPendingOwner = function (chan) {
-                ctx.Store.setPadMetadata(null, {
+                ctx.Store.pad.setMetadata(null, {
                     channel: chan,
                     command: 'ADD_PENDING_OWNERS',
                     value: [user.edPublic],
@@ -1175,7 +1175,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 }
             };
             var removeOwnership = function (chan) {
-                ctx.Store.setPadMetadata(null, {
+                ctx.Store.pad.setMetadata(null, {
                     channel: chan,
                     command: cmd,
                     value: [user.edPublic],
@@ -1392,7 +1392,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var md;
         nThen(function (waitFor) {
             // Get pending owners
-            ctx.Store.getPadMetadata(null, {
+            ctx.Store.pad.getMetadata(null, {
                 channel: teamData.channel
             }, waitFor(function (obj) {
                 if (obj && obj.error) {

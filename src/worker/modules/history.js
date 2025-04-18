@@ -132,7 +132,7 @@ const factory = (Util, Hash, UserObject, nThen) => {
                 history = messages.join('\n').length;
             }), true);
             // Metadata
-            Store.getPadMetadata(null, {
+            Store.pad.getMetadata(null, {
                 channel: channel
             }, waitFor(function (obj) {
                 if (obj && obj.error) { return; }

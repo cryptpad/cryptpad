@@ -5,6 +5,7 @@
 // Default CryptPad worker module, extended with
 // specific methods for each module
 export type Callback = (...args: any[]) => void
+export type RpcCall = (clientId: string, data: any, cb: Callback) => void;
 
 export type ModuleConfig = {
     store: any,
@@ -65,4 +66,27 @@ export interface DriveObject {
 }
 export interface Drive {
     init: (config: DriveConfig) => DriveObject
+}
+
+export type PadConfig = {
+    Store: any,
+    store: any,
+    broadcast: (exclude: object, cmd: string, data?: any, cb?: any) => void,
+    postMessage: (clientId: string, cmd: string, data?: any, cb?: any) => void
+}
+export interface PadObject {
+    join: RpcCall,
+    destroy: RpcCall,
+    setMetadata: RpcCall,
+    getMetadata: RpcCall,
+    leave: RpcCall,
+    removeClient: (clientId: string) => void,
+    sendMessage: RpcCall,
+    getLastHash: RpcCall,
+    onCorruptedCache: RpcCall,
+    getChannels: () => string[],
+    onJoined: any,
+}
+export interface Pad {
+    init: (config: PadConfig) => PadObject
 }
