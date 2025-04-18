@@ -1124,7 +1124,7 @@ module.exports = factory(
     require('../../common/common-hash'),
     require('../../common/common-util'),
     require('../../common/common-realtime'),
-    require('../../common/common-messaging'),
+    require('../components/messaging'),
     require('../../common/common-constants'),
     require('../../common/pad-types'),
     require('nthen')

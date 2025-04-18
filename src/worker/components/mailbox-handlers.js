@@ -983,7 +983,7 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
 };
 
 module.exports = factory(
-    require('../../common/common-messaging'),
+    require('./messaging'),
     require('../../common/common-hash'),
     require('../../common/common-util'),
     require('chainpad-crypto'),

@@ -2250,7 +2250,7 @@ module.exports = factory(
     require('../../common/user-object'),
     require('../components/sharedfolder'),
     require('../components/roster'),
-    require('../../common/common-messaging'),
+    require('../components/messaging'),
     require('../../common/common-feedback'),
     require('../components/invitation'),
     require('../../common/cryptget'),

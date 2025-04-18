@@ -677,7 +677,7 @@ module.exports = factory(
     require('../../common/common-util'),
     require('../../common/common-hash'),
     require('../../common/common-realtime'),
-    require('../../common/common-messaging'),
+    require('../components/messaging'),
     require('../../common/notify'),
     require('../components/mailbox-handlers'),
     require('chainpad-netflux'),

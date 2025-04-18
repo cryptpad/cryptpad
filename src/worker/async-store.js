@@ -8,12 +8,13 @@ const factory = (Sortify, UserObject, ProxyManager,
                 SF, AccountTS, DriveTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
-                Calendar, Block, NetConfig,
+                Calendar, BadgeTS, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
     const Account = AccountTS.Account;
     const Drive = DriveTS.Drive;
+    const Badge = BadgeTS.Badge;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
 
@@ -661,11 +662,15 @@ const factory = (Sortify, UserObject, ProxyManager,
                     color: Store.getUserColor(),
                     notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: proxy.curvePublic,
+                    edPublic: proxy.edPublic,
+                    netfluxId:  store?.network?.webChannels?.[0]?.myID,
+                    badge: Util.find(proxy, ['profile', 'badge'])
                 },
                 // "priv" is not shared with other users but is needed by the apps
                 priv: {
                     clientId: clientId,
                     edPublic: proxy.edPublic,
+                    edPrivate: proxy.edPrivate,
                     friends: proxy.friends || {},
                     settings: proxy.settings || NEW_USER_SETTINGS,
                     thumbnails: disableThumbnails === false,
@@ -2809,6 +2814,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             loadUniversal(Integration, 'integration', waitFor);
             loadUniversal(Messenger, 'messenger', waitFor);
             loadUniversal(History, 'history', waitFor);
+            loadUniversal(Badge, 'badge', waitFor);
             loadOnlyOffice();
             if (store) {
                 store.messenger = store.modules['messenger'];
@@ -3464,7 +3470,7 @@ module.exports = factory(
     require('../common/common-constants'),
     require('../common/common-feedback'),
     require('../common/common-realtime'),
-    require('../common/common-messaging'),
+    require('./components/messaging'),
     require('../common/pinpad'),
     require('../common/rpc'),
     require('./components/merge-drive'),
@@ -3482,6 +3488,7 @@ module.exports = factory(
     require('./modules/messenger'),
     require('./modules/history'),
     require('./modules/calendar'),
+    require('./modules/badge'), // .ts
     require('../common/outer/login-block'),
     require('../common/network-config'),
     require('chainpad-crypto'),

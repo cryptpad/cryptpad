@@ -511,7 +511,7 @@ module.exports = factory(
     require('../../common/common-feedback'),
     require('../../common/common-hash'),
     require('../../common/common-util'),
-    require('../../common/common-messaging'),
+    require('./messaging'),
     require('../../common/cryptget'),
     require('../modules/mailbox'),
     require('../../common/common-realtime'),
