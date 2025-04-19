@@ -1011,6 +1011,29 @@ define([
         return button;
     };
 
+    let hideTooltipsTimer;
+    const hideOtherTooltips = (except) => {
+        clearTimeout(hideTooltipsTimer);
+        hideTooltipsTimer = setTimeout(() => {
+            if (typeof tippy !== 'undefined' && typeof tippy.hideAll === 'function') {
+                tippy.hideAll({ exclude: except });
+            } else {
+                $('[aria-describedby]').each(function () {
+                    const tooltipId = this.getAttribute('aria-describedby');
+                    const tooltip = document.getElementById(tooltipId);
+                    if (
+                        tooltip &&
+                        tooltip._tippy &&
+                        tooltip._tippy.reference !== except
+                    ) {
+                        tooltip._tippy.hide();
+                    }
+                });
+            }
+        }, 60); // ~1 frame delay to buffer fast movement
+    };
+
+
     var createMdToolbar = function (common, editor, cfg) {
         cfg = cfg || {};
         var $toolbar = $('<div>', {
@@ -1161,6 +1184,9 @@ define([
                 'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
             }).click(onClick);
+            $b.on('mouseenter focus', function () {
+                hideOtherTooltips(this);
+            });
             if (k === "embed") { $toolbar.prepend($b); }
             else { $toolbar.append($b); }
         }
@@ -1171,6 +1197,14 @@ define([
             var href = Messages.mdToolbar_tutorial;
             common.openUnsafeURL(href);
         }).appendTo($toolbar);
+
+        $toolbar.on('keydown', function (e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                editor.focus();
+                e.preventDefault();
+            }
+        });
+
         return $toolbar;
     };
     UIElements.createMarkdownToolbar = function (common, editor, opts) {
