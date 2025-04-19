@@ -1011,6 +1011,29 @@ define([
         return button;
     };
 
+    let hideTooltipsTimer;
+    const hideOtherTooltips = (except) => {
+        clearTimeout(hideTooltipsTimer);
+        hideTooltipsTimer = setTimeout(() => {
+            if (typeof tippy !== 'undefined' && typeof tippy.hideAll === 'function') {
+                tippy.hideAll({ exclude: except });
+            } else {
+                $('[aria-describedby]').each(function () {
+                    const tooltipId = this.getAttribute('aria-describedby');
+                    const tooltip = document.getElementById(tooltipId);
+                    if (
+                        tooltip &&
+                        tooltip._tippy &&
+                        tooltip._tippy.reference !== except
+                    ) {
+                        tooltip._tippy.hide();
+                    }
+                });
+            }
+        }, 60); // ~1 frame delay to buffer fast movement
+    };
+
+
     var createMdToolbar = function (common, editor, cfg) {
         cfg = cfg || {};
         var $toolbar = $('<div>', {
@@ -1162,12 +1185,7 @@ define([
                 title: Messages['mdToolbar_' + k] || k
             }).click(onClick);
             $b.on('mouseenter focus', function () {
-                $('[aria-describedby]').each(function () {
-                    const tip = document.getElementById(this.getAttribute('aria-describedby'));
-                    if (tip && tip._tippy) {
-                        tip._tippy.hide(); // hide tooltips on unfocused elements
-                    }
-                });
+                hideOtherTooltips(this);
             });
             if (k === "embed") { $toolbar.prepend($b); }
             else { $toolbar.append($b); }
