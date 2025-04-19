@@ -533,7 +533,7 @@ define([
         cm.configureTheme(common, function () {});
         editor.setOption("extraKeys", {
             "Esc": function () {
-                cm.getInputField().blur();
+                editor.getInputField().blur();
                 $(save).focus();
             }
         });

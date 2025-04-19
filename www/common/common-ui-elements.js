@@ -1161,6 +1161,14 @@ define([
                 'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
             }).click(onClick);
+            $b.on('mouseenter focus', function () {
+                $('[aria-describedby]').each(function () {
+                    const tip = document.getElementById(this.getAttribute('aria-describedby'));
+                    if (tip && tip._tippy) {
+                        tip._tippy.hide(); // hide tooltips on unfocused elements
+                    }
+                });
+            });
             if (k === "embed") { $toolbar.prepend($b); }
             else { $toolbar.append($b); }
         }
