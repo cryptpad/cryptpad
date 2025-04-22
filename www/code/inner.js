@@ -580,19 +580,8 @@ define([
 
         editor.setOption("extraKeys", {
             "Esc": function() {
-                const $toolbar = $('.cp-markdown-toolbar:visible'); 
-                if ($toolbar.length) {
-                    const $btn = $toolbar.find('button:visible').first();
-                    if ($btn.length) {
-                        setTimeout(() => {
-                            $btn[0].focus();
-                            $btn[0].scrollIntoView({ block: 'center', behavior: 'smooth' }); // if toolbar is visible then escape key focuses on first button of toolbar
-                        }, 0);
-                    }
-                }
-                else {
-                    $(body).focus(); //fallback
-                }
+                e.preventDefault();
+                $(body).focus();
             }
         });
         

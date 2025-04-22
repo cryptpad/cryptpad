@@ -1160,6 +1160,7 @@ define([
         for (var k in actions) {
             let $b = $('<button>', {
                 'data-notippy':1,
+                'data-type': k,
                 'class': 'pure-button cp-markdown-' + k,
                 'title': Messages['mdToolbar_' + k] || k,
                 'aria-label': Messages['mdToolbar_' + k] || k
