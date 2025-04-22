@@ -662,19 +662,23 @@ define([
             h('i.fa.fa-ellipsis-v')
         ]);
         $contentContainer.append(splitter);
-        APP.$splitter = $(splitter).on('mousedown', function (e) {
+        APP.$splitter = $(splitter).on('mousedown touchstart', function (e) {
             e.preventDefault();
-            var x = e.pageX;
+            var x = e.type === 'touchstart' ? e.originalEvent.touches[0].pageX : e.pageX;
             var w = $tree.width();
+            
             var handler = function (evt) {
-                if (evt.type === 'mouseup') {
-                    $(window).off('mouseup mousemove', handler);
-                    return;
+                if (evt.type === 'mouseup' || evt.type === 'touchend') {
+                    $(window).off('mouseup mousemove touchend touchmove', handler);
+                    return; 
                 }
-                $tree.css('width', (w - x + evt.pageX) + 'px');
+                var pageX = evt.type === 'touchmove'
+                    ? evt.originalEvent.touches[0].pageX
+                    : evt.pageX;
+                $tree.css('width', (w - x + pageX) + 'px');
             };
-            $(window).off('mouseup mousemove', handler);
-            $(window).on('mouseup mousemove', handler);
+            $(window).off('mouseup mousemove touchend touchmove', handler);
+            $(window).on('mouseup mousemove touchend touchmove', handler);
         });
 
         // TOOLBAR
