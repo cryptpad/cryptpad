@@ -819,6 +819,9 @@
                     display: flex;
                     flex-wrap: wrap;
                     align-items: baseline;
+                    border: 1px solid @cp_forms-border;
+                    border-radius: @variables_radius;
+                    margin-top: 0.5rem;
                     .CodeMirror {
                         cursor: default;
                         flex: 1;
@@ -827,13 +830,15 @@
                         width: 80%;
                         min-height: 200px;
                         height: 200px;
-                        border: 1px solid @cp_forms-border;
                         .CodeMirror-placeholder {
                             color: #777;
                         }
                     }
                     .cp-markdown-toolbar {
                         display: block;
+                        padding: 0.1rem 0;
+                        border-radius: @variables_radius 0;
+                        width: 100%;
                         background-color: transparent;
                     }
                 }
