@@ -679,10 +679,10 @@ define([
                     : evt.pageX;
                 $tree.css('width', (w - x + pageX) + 'px');
             };
-            $(window).off('mouseup mousemove touchend touchmove', handler);
+            $(window).off('mouseup mousemove touchend touchmove', handler, { passive: false });
             $(window).on('mouseup mousemove touchend touchmove', handler);
         });
-
+       
         // TOOLBAR
 
         // DRIVE
