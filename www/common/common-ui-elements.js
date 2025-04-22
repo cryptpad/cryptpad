@@ -905,7 +905,8 @@ define([
             case 'toggle':
                 button = $(h('button.cp-toolbar-tools', {
                     //title: data.title || '', // TODO display if the label text is collapsed
-                    'aria-label': data.text || Messages.toolbar_tools // Fallback
+                    'aria-label': data.text || Messages.toolbar_tools, // Fallback
+                    'aria-pressed': false
                 }, [
                     h('i.fa.' + (data.icon || 'fa-wrench')),
                     h('span.cp-toolbar-name', data.text || Messages.toolbar_tools)
@@ -923,6 +924,7 @@ define([
                 button.click(function (e) {
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
+                    button.attr('aria-pressed', isVisible ? 'true' : 'false');
                     if (callback) { callback(isVisible); }
                     if (isVisible) {
                         button.addClass('cp-toolbar-button-active');
@@ -1010,29 +1012,6 @@ define([
         }
         return button;
     };
-
-    let hideTooltipsTimer;
-    const hideOtherTooltips = (except) => {
-        clearTimeout(hideTooltipsTimer);
-        hideTooltipsTimer = setTimeout(() => {
-            if (typeof tippy !== 'undefined' && typeof tippy.hideAll === 'function') {
-                tippy.hideAll({ exclude: except });
-            } else {
-                $('[aria-describedby]').each(function () {
-                    const tooltipId = this.getAttribute('aria-describedby');
-                    const tooltip = document.getElementById(tooltipId);
-                    if (
-                        tooltip &&
-                        tooltip._tippy &&
-                        tooltip._tippy.reference !== except
-                    ) {
-                        tooltip._tippy.hide();
-                    }
-                });
-            }
-        }, 60); // ~1 frame delay to buffer fast movement
-    };
-
 
     var createMdToolbar = function (common, editor, cfg) {
         cfg = cfg || {};
@@ -1180,20 +1159,28 @@ define([
         };
         for (var k in actions) {
             let $b = $('<button>', {
-                'data-type': k,
-                'class': 'pure-button fa ' + actions[k].icon,
-                title: Messages['mdToolbar_' + k] || k
-            }).click(onClick);
-            $b.on('mouseenter focus', function () {
-                hideOtherTooltips(this);
-            });
+                'data-notippy':1,
+                'class': 'pure-button cp-markdown-' + k,
+                'title': Messages['mdToolbar_' + k] || k,
+                'aria-label': Messages['mdToolbar_' + k] || k
+                }).append(
+                $('<i>', {
+                    'class': 'fa ' + actions[k].icon,
+                    'aria-hidden': 'true'
+                })).click(onClick);
             if (k === "embed") { $toolbar.prepend($b); }
             else { $toolbar.append($b); }
         }
         $('<button>', {
-            'class': 'pure-button fa fa-question cp-markdown-help',
-            title: Messages.mdToolbar_help
-        }).click(function () {
+            'data-notippy':1,
+            'class': 'pure-button cp-markdown-help',
+            'title': Messages.mdToolbar_help,
+            'aria-label': Messages.mdToolbar_help
+        }).append(
+            $('<i>', {
+                'class': 'fa fa-question',
+                'aria-hidden': 'true'
+            })).click(function () {
             var href = Messages.mdToolbar_tutorial;
             common.openUnsafeURL(href);
         }).appendTo($toolbar);
