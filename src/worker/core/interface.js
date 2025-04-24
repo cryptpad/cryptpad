@@ -91,6 +91,7 @@ const factory = (SRpc, Channel, Util) => {
                     cb(data);
                 });
             });
+            // XXX allow multiple pads in same tab
             chan.on('JOIN_PAD', function (data, cb) {
                 client.channelId = data.channel;
                 try {

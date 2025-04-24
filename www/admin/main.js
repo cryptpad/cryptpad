@@ -24,11 +24,6 @@ define([
             sframeChan.on('Q_ADMIN_RPC', function (data, cb) {
                 Cryptpad.adminRpc(data, cb);
             });
-            sframeChan.on('Q_UPDATE_LIMIT', function (data, cb) {
-                Cryptpad.updatePinLimit(function (e) {
-                    cb({error: e});
-                });
-            });
         };
         var category;
         if (window.location.hash) {

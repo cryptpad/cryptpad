@@ -11,11 +11,18 @@ const factory = function (Channel, NodeWS) {
 
 
     const commands = {
+        account: {
+            load: 'CONNECT'
+        },
+        drive: {
+            migrateAnon: 'MIGRATE_ANON_DRIVE'
+        },
         pad: {
             join: 'JOIN_PAD',
             leave: 'LEAVE_PAD',
             sendMsg: 'SEND_PAD_MSG',
             destroy: 'REMOVE_OWNED_CHANNEL',
+            clear: 'CLEAR_OWNED_CHANNEL',
             setMetadata: 'SET_PAD_METADATA',
             getMetadata: 'GET_PAD_METADATA'
         }

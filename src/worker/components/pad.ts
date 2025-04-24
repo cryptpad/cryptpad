@@ -373,6 +373,16 @@ const _getLastHash: Callback = (ctx, clientId, data, cb) => {
     });
 };
 
+// clearOwnedChannel is only used for private chat and forms
+const _clear: Callback = (ctx, clientId, data, cb) => {
+    const { Store } = ctx;
+    const s = Store.getStore(data && data.teamId);
+    if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+    s.rpc.clearOwnedChannel(data.channel, err => {
+        cb({error:err});
+    });
+};
+
 const _destroy: Callback = (ctx, clientId, data, cb) => {
     const { store, Store, channels, myDeletions } = ctx;
 
@@ -464,6 +474,9 @@ const init = (config) => {
     const destroy: RpcCall = (clientId, data, cb) => {
         _destroy(ctx, clientId, data, cb);
     };
+    const clear: RpcCall = (clientId, data, cb) => {
+        _clear(ctx, clientId, data, cb);
+    };
     const setMetadata: RpcCall = (clientId, data, cb) => {
         _setMetadata(ctx, clientId, data, cb);
     };
@@ -505,6 +518,7 @@ const init = (config) => {
     return {
         join,
         destroy,
+        clear,
         setMetadata,
         getMetadata,
         sendMessage,

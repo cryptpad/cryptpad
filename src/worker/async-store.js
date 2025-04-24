@@ -4,7 +4,7 @@
 
 const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
-                Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
+                Realtime, Messaging, Pinpad, Rpc, Cache,
                 SF, AccountTS, DriveTS, PadTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
@@ -64,6 +64,9 @@ const factory = (Sortify, UserObject, ProxyManager,
         Store.onReadyEvt = onReadyEvt;
 
         Store.pad = Pad.init({
+            Store, store, postMessage, broadcast
+        });
+        Store.drive = Drive.initAPI({
             Store, store, postMessage, broadcast
         });
 
@@ -140,37 +143,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             onSync(data.teamId, cb);
         };
 
-        const copyObject = (src, target) => {
-            Object.keys(src).forEach(k => {
-                delete src[k];
-            });
-            Object.keys(target).forEach(k => {
-                src[k] = Util.clone(target[k]);
-            });
-        };
-        const getProxy = teamId => {
-            let proxy;
-            if (!teamId) {
-                proxy = store.drive?.proxy;
-            } else {
-                const s = getStore(teamId);
-                proxy = s?.drive?.proxy;
-            }
-            return proxy;
-        };
-        Store.drive = {
-            get: (clientId, data, cb) => {
-                let proxy = getProxy(data.teamId);
-                if (!proxy) { return void cb({error: 'ENOTFOUND'}); }
-                cb(proxy);
-            },
-            set: (clientId, data, cb) => {
-                let proxy = getProxy(data.teamId);
-                if (!proxy) { return void cb({error: 'ENOTFOUND'}); }
-                copyObject(proxy, data.value);
-                onSync(data.teamId, cb);
-            }
-        };
 
         Store.getSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
@@ -355,17 +327,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
         };
 
-        // Update for all users from accounts and return current user limits
-        Store.updatePinLimit = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            store.rpc.updatePinLimits(function (e, limit, plan, note) {
-                if (e) { return void cb({error: e}); }
-                account.limit = limit;
-                account.plan = plan;
-                account.note = note;
-                cb(account);
-            });
-        };
         // Get current user limits
         Store.getPinLimit = function (clientId, data, cb) {
             var s = getStore(data && data.teamId);
@@ -385,15 +346,6 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             }
             cb(account);
-        };
-
-        // clearOwnedChannel is only used for private chat and forms
-        Store.clearOwnedChannel = function (clientId, data, cb) {
-            var s = getStore(data && data.teamId);
-            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.clearOwnedChannel(data.channel, function (err) {
-                cb({error:err});
-            });
         };
 
         var arePinsSynced = function (cb) {
@@ -941,15 +893,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
         };
 
-        /**
-         * Merge the anonymous drive into the user drive at registration
-         * data
-         *   - anonHash
-         */
-        Store.migrateAnonDrive = function (clientId, data, cb) {
-            var hash = data.anonHash;
-            Merge.anonDriveIntoUser(store, hash, cb);
-        };
 
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
@@ -2652,13 +2595,6 @@ const factory = (Sortify, UserObject, ProxyManager,
          */
         var initialized = false;
 
-        // Are we still in noDrive mode?
-        Store.hasDrive = function (clientId, data, cb) {
-            cb({
-                state: Boolean(store.proxy)
-            });
-        };
-
         const loadHK = (cb) => {
             if (store?.network?.historyKeeper) {
                 return setTimeout(cb);
@@ -2805,7 +2741,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                             startModules(clientId, ret, onInit);
                         });
                     });
-                    Store.pad.onJoined.reg(next);
+                    Store.pad.onJoined(next);
                     onPadRejectedEvt.reg(next);
                 });
             }
@@ -3004,7 +2940,6 @@ module.exports = factory(
     require('./components/messaging'),
     require('../common/pinpad'),
     require('../common/rpc'),
-    require('./components/merge-drive'),
     require('../common/cache-store'),
     require('./components/sharedfolder'),
     require('./components/account'), // .ts

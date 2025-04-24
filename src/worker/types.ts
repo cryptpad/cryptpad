@@ -54,6 +54,7 @@ export interface Account {
 
 export type DriveConfig = {
     store: any,
+    Store: any,
     broadcast: (exclude: object, cmd: string, data?: any, cb?: any) => void,
     postMessage: (clientId: string, cmd: string, data?: any, cb?: any) => void
 }
@@ -65,6 +66,7 @@ export interface DriveObject {
     onReconnect: any
 }
 export interface Drive {
+    initAPI: (config: DriveConfig) => any
     init: (config: DriveConfig) => DriveObject
 }
 
@@ -77,6 +79,7 @@ export type PadConfig = {
 export interface PadObject {
     join: RpcCall,
     destroy: RpcCall,
+    clear: RpcCall,
     setMetadata: RpcCall,
     getMetadata: RpcCall,
     leave: RpcCall,

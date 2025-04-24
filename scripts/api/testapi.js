@@ -37,7 +37,9 @@ getApi('config', ApiConfig => {
             Broadcast
         }).then((store) => {
             console.log('API added to global "CP"');
-            globalThis.CP = store.api;
+            const api = globalThis.CP = store.api;
+            const cfg = { channel: '0123456789abcdef0123456789abcedf' };
+            api.pad.join(cfg, console.log);
         });
     });
 });

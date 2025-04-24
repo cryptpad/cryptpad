@@ -408,19 +408,19 @@ define([
     };
     // Settings and drive and auth
     common.getUserObject = function (teamId, cb) {
+        /*
         postMessage("GET", {
             teamId: teamId,
             key: []
         }, function (obj) {
             cb(obj);
         });
-        /*
+        */
         postMessage("GET_DRIVE", {
             teamId: teamId,
         }, function (obj) {
             cb(obj);
         });
-        */
     };
     common.getSharedFolder = function (data, cb) {
         postMessage("GET_SHARED_FOLDER", data, function (obj) {
@@ -458,7 +458,6 @@ define([
             });
             return;
         }
-        /*
         postMessage("SET_DRIVE", {
             teamId: data.teamId,
             value: data.drive
@@ -467,7 +466,7 @@ define([
         }, {
             timeout: 5 * 60 * 1000
         });
-        */
+        /*
         postMessage("SET", {
             teamId: data.teamId,
             key: ['drive'],
@@ -477,6 +476,7 @@ define([
         }, {
             timeout: 5 * 60 * 1000
         });
+        */
     };
     common.addSharedFolder = function (teamId, secret, cb) {
         var href = (secret.keys && secret.keys.editKeyStr) ? '/drive/#' + Hash.getEditHashFromKeys(secret) : undefined;
@@ -559,13 +559,6 @@ define([
         postMessage("GET_PINNED_USAGE", data, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             cb(null, obj.bytes);
-        });
-    };
-
-    common.updatePinLimit = function (cb) {
-        postMessage("UPDATE_PIN_LIMIT", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb(undefined, obj.limit, obj.plan, obj.note);
         });
     };
 
