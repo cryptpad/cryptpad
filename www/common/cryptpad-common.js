@@ -1605,7 +1605,7 @@ define([
             oldChannel = oldSecret.channel;
             var src = fileHost + Hash.getBlobPathFromHex(oldChannel);
             var key = oldSecret.keys && oldSecret.keys.cryptKey;
-            var cryptKey = window.Util.encodeBase64(key);
+            var cryptKey = Util.encodeBase64(key);
 
             var mt = document.createElement('media-tag');
             mt.setAttribute('src', src);
@@ -2467,9 +2467,9 @@ define([
     };
 
     common.getAnonymousKeys = function (formSeed, channel) {
-        var array = window.Util.decodeBase64(formSeed + channel);
+        var array = Util.decodeBase64(formSeed + channel);
         var hash = window.nacl.hash(array);
-        var secretKey = window.Util.encodeBase64(hash.subarray(32));
+        var secretKey = Util.encodeBase64(hash.subarray(32));
         var publicKey = Hash.getCurvePublicFromPrivate(secretKey);
         return {
             curvePrivate: secretKey,
