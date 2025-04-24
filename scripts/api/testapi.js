@@ -36,7 +36,8 @@ getApi('config', ApiConfig => {
             Messages,
             Broadcast
         }).then((store) => {
-            console.log(store);
+            console.log('API added to global "CP"');
+            globalThis.CP = store.api;
         });
     });
 });
