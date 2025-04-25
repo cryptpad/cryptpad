@@ -77,7 +77,7 @@ define([
                     dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { tabindex: 0, title: Messages.notifications_dismissAll || "Dismiss All", 'aria-label': Messages.notifications_dismissAll || "Dismiss All", role: 'button' }, h("span.fa.fa-trash")),
                 ]),
             ]),
-            notifsList = h("div.cp-app-notifications-panel-list", [
+            notifsList = h("div.cp-app-notifications-panel-list", {'role': 'menu'},[
                 h("div.cp-notification.no-notifications", Messages.notifications_empty),
             ]),
         ]);
