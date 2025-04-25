@@ -34,7 +34,7 @@ main() {
     install_old_version v5 88a356f0
     install_old_version v6 abd8a309
     install_version v7 v7.3.3.60+10 be3c926d534b0c77aa1ed83b170a38b9e56ebbbfd73a1a968f523d63c5ed69ecdb063fad08740812de82c1e79af7309faf67ffdd81b45451adce539192f3414c
-    install_version v8 v8.3.0.83+3 fbf77671ea8b960b6c65fdad025980894dfc9ed0b79d9540951f56c79871d0bde3361f29a35b9653764f7802ec74df01601b6c9961e0f3118988422667563470
+    install_version v8 v8.3.3.23+0 d3752926a68a487c5f855651a8966c04b320277a0dd2dfc3a4c1537b8d925cf59ec93a15f97664cbdb8867c32a94e105798b28751e0ef49521bc72c323b634a8
     install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1
 
     rm -rf "$BUILDS_DIR"
@@ -157,15 +157,15 @@ EOF
 }
 
 ensure_oo_is_downloaded() {
-  ensure_command_available git
+    ensure_command_available git
 
-	if ! [ -d "$BUILDS_DIR" ]; then
-		echo "Downloading OnlyOffice..."
-		git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
-	fi
-  if [ ${TRUST_REPOSITORY+x} ] || [ "${PROPS[trust_repository]:-no}" == yes ]; then
-    git config --global --add safe.directory /cryptpad/onlyoffice-conf/onlyoffice-builds.git
-  fi
+    if ! [ -d "$BUILDS_DIR" ]; then
+        echo "Downloading OnlyOffice..."
+        git clone --bare https://github.com/cryptpad/onlyoffice-builds.git "$BUILDS_DIR"
+    fi
+    if [ ${TRUST_REPOSITORY+x} ] || [ "${PROPS[trust_repository]:-no}" == yes ]; then
+        git config --global --add safe.directory /cryptpad/onlyoffice-conf/onlyoffice-builds.git
+    fi
 }
 
 install_old_version() {
