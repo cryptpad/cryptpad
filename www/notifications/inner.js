@@ -213,10 +213,10 @@ define([
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category', 'tabindex': 0}).appendTo($categories);
-            if (key === 'all') { $category.append($('<span>', {'class': 'fa fa-bars'})); }
-            if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user'})); }
-            if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-richtext'})); }
-            if (key === 'archived') { $category.append($('<span>', {'class': 'fa fa-archive'})); }
+            if (key === 'all') { $category.append($('<span>', {'class': 'fa fa-bars', 'aria-hidden': 'true'})); }
+            if (key === 'friends') { $category.append($('<span>', {'class': 'fa fa-user', 'aria-hidden': 'true'})); }
+            if (key === 'pads') { $category.append($('<span>', {'class': 'cptools cptools-richtext', 'aria-hidden': 'true'})); }
+            if (key === 'archived') { $category.append($('<span>', {'class': 'fa fa-archive', 'aria-hidden': 'true'})); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
