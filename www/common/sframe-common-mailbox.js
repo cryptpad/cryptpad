@@ -83,7 +83,8 @@ define([
             } else if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar',{
                     tabindex: 0,
-                    title: Messages.user_profile
+                    title: Messages.user_profile,
+                    'aria-label': Messages.user_profile
                 });
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
                 $(avatar).keydown(function (e) {
@@ -148,6 +149,7 @@ define([
                 var dismiss = h('div.cp-notification-dismiss', {
                     tabindex: 0,
                     title: Messages.notifications_dismiss,
+                    'aria-label': Messages.notifications_dismiss
                 }, dismissIcon);
                 $(dismiss).addClass("cp-clickable")
                     .on('click keypress', function (event) {
