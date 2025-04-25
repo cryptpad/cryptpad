@@ -100,7 +100,7 @@ define([
                 avatar = h('span.cp-avatar-image', h('img', { src:'/customize/CryptPad_logo.svg' }));
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
-            const tabIndexValue = data.content.isClickable ? '0': 'undefined';
+            const tabIndexValue = 0; //data.content.isClickable ? '0': 'undefined';
             notif = h('li.cp-notification', {
                 role: 'menuitem',
                 tabindex: '0',
@@ -128,6 +128,7 @@ define([
                         $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
                     }, 60000);
                 }
+                $(notif).find('.cp-notification-content').attr('aria-label', data.content.getFormatText().replace(/<[^>]*>/g, '')); // removes html tags from the text
             }
 
             $(notif).mouseenter((e) => {
