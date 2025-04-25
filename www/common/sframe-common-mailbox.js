@@ -84,7 +84,8 @@ define([
                 avatar = h('span.cp-avatar',{
                     tabindex: 0,
                     title: Messages.user_profile,
-                    'aria-label': Messages.user_profile
+                    'aria-label': Messages.user_profile,
+                    role: 'button'
                 });
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
                 $(avatar).keydown(function (e) {
@@ -139,7 +140,7 @@ define([
             });
 
             if (data.content.isClickable) {
-                $(notif).find('.cp-notification-content').addClass("cp-clickable").on('click keypress', function (event) {
+                $(notif).find('.cp-notification-content').addClass("cp-clickable").attr('role', 'link').on('click keypress', function (event) {
                     if (event.type === 'click' || (event.type === 'keypress' && event.which === 13)) {
                         data.content.handler();
                     }
@@ -150,7 +151,8 @@ define([
                 var dismiss = h('div.cp-notification-dismiss', {
                     tabindex: 0,
                     title: Messages.notifications_dismiss,
-                    'aria-label': Messages.notifications_dismiss
+                    'aria-label': Messages.notifications_dismiss,
+                    role: 'button'
                 }, dismissIcon);
                 $(dismiss).addClass("cp-clickable")
                     .on('click keypress', function (event) {
