@@ -2174,7 +2174,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     a[k] = b[k];
                 });
             };
-            if (integrationConfig) {
+            if (integrationConfig?.editorConfig) {
                 let ec = integrationConfig.editorConfig;
                 let c = APP.ooconfig.editorConfig.customization;
                 copy(APP.ooconfig.editorConfig, ec);
@@ -2183,7 +2183,9 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 if (ec.editorConfig?.customization?.goback) {
                     c.goback.blank = true;
                 }
-                c.forcesave = true;
+                if (!privateData?.integrationConfig?.autosave) {
+                    c.forcesave = true;
+                }
             }
 
             // Always hide right menu
