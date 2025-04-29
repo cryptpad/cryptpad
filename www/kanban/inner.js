@@ -199,7 +199,23 @@ define([
             dataObject.color = color;
             commit();
         });
-
+        var toggleButton = $(h('button.btn.btn-toolbar-alt.cp-markdown-toolbar-toggle-button.cp-toolbar-small-button', {
+            'aria-label': Messages.toolbar_tools,
+            'title': Messages.toolbar_tools,
+            'aria-pressed': false
+        }, [
+            h('i.fa.fa-wrench')
+        ])).on('click', function () {
+            var isExpanded = $(markdownTb?.toolbar).is(':visible');
+            $(this).attr('aria-pressed', String(!isExpanded));
+            $(markdownTb?.toolbar).toggle();
+        });
+        
+        var markdownEditorWrapper = h('div.markdown-label-row', [
+            h('label', { for: 'cp-kanban-edit-body' }, Messages.kanban_body),
+            toggleButton[0]
+        ]);
+        
         var conflicts, conflictContainer, titleInput, tagsDiv, text;
         var content = h('div', [
             conflictContainer = h('div#cp-kanban-edit-conflicts', [
@@ -208,10 +224,10 @@ define([
             ]),
             h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
             titleInput = h('input#cp-kanban-edit-title'),
-            h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
+            markdownEditorWrapper,
             h('div#cp-kanban-edit-body', [
                 text = h('textarea')
-            ]),
+            ]),            
             h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
             tagsDiv = h('div#cp-kanban-edit-tags'),
             h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
@@ -282,8 +298,16 @@ define([
                 editor.replaceSelection($(mt)[0].outerHTML);
             }
         });
+        $(markdownTb.toolbar).on('keydown', function (e) {
+            if (e.which === 27) { // Escape key
+                e.preventDefault();
+                e.stopPropagation();
+                editor.focus(); // Focus the editor instead of closing the modal
+            }
+        });        
         $(text).before(markdownTb.toolbar);
-        $(markdownTb.toolbar).show();
+        // Initially hide the toolbar
+        $(markdownTb.toolbar).hide();
         editor.refresh();
         var body = {
             getValue: function () {

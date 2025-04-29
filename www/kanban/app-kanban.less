@@ -120,9 +120,37 @@
         }
         margin-bottom: 5px;
     }
+    .markdown-label-row {
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+    .markdown-label-row label {
+        display: inline-block;
+        margin: 0;
+        vertical-align: middle;
+    }
+    
+    .cp-markdown-toolbar-toggle-button {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 3px 10px;
+        height: 32px;
+        margin: 0;
+        line-height: 1;
+        border-radius: @variables_radius;
+        display: inline-flex;
+    }
+
+    .cp-markdown-toolbar-toggle-button i.fa {
+        margin: 0 !important;
+    }
+        
     #cp-kanban-edit-body {
         border: 1px solid @cp_forms-border;
         border-radius: @variables_radius;
+        overflow: hidden; 
         .CodeMirror {
             height: 105px;
             resize: vertical;
