@@ -175,6 +175,19 @@ define([
         _updateBoardsThrottle(framework, kanban, boards);
     };
 
+    var updateToolbarVisibility = function(markdownEditorWrapper, toolbar, editor) {
+        if (Util.isSmallScreen()) {
+            if (!$(markdownEditorWrapper).find('.cp-markdown-toolbar-toggle-button').length) {
+                var toggleButton = UIElements.createMarkdownToolbarToggle(toolbar, editor);
+                $(markdownEditorWrapper).append(toggleButton);
+            }
+            $(toolbar).hide();
+        } else {
+            $(markdownEditorWrapper).find('.cp-markdown-toolbar-toggle-button').remove();
+            $(toolbar).show();
+        }
+    };
+    
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
     var BOARD_PROPERTIES = ['title', 'color'];
@@ -286,8 +299,10 @@ define([
                 editor.replaceSelection($(mt)[0].outerHTML);
             }
         });
-        var toggleButton = UIElements.createMarkdownToolbarToggle(markdownTb.toolbar, editor);
-        $(markdownEditorWrapper).append(toggleButton);
+        updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
+        $(window).on('resize', function() {
+            updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
+        });
         $(markdownTb.toolbar).on('keydown', function (e) {
             if (e.which === 27) { // Escape key
                 e.preventDefault();
@@ -296,8 +311,6 @@ define([
             }
         });    
         $(text).before(markdownTb.toolbar);
-        // Initially hide the toolbar
-        $(markdownTb.toolbar).hide(); 
         editor.refresh();
         var body = {
             getValue: function () {
