@@ -199,21 +199,9 @@ define([
             dataObject.color = color;
             commit();
         });
-        var toggleButton = $(h('button.btn.btn-toolbar-alt.cp-markdown-toolbar-toggle-button.cp-toolbar-small-button', {
-            'aria-label': Messages.toolbar_tools,
-            'title': Messages.toolbar_tools,
-            'aria-pressed': false
-        }, [
-            h('i.fa.fa-wrench')
-        ])).on('click', function () {
-            var isExpanded = $(markdownTb?.toolbar).is(':visible');
-            $(this).attr('aria-pressed', String(!isExpanded));
-            $(markdownTb?.toolbar).toggle();
-        });
-        
+
         var markdownEditorWrapper = h('div.markdown-label-row', [
-            h('label', { for: 'cp-kanban-edit-body' }, Messages.kanban_body),
-            toggleButton[0]
+            h('label', { for: 'cp-kanban-edit-body' }, Messages.kanban_body)
         ]);
         
         var conflicts, conflictContainer, titleInput, tagsDiv, text;
@@ -290,7 +278,7 @@ define([
                 $tags.find('.token-input').focus();
             }
             e.stopPropagation();
-        });
+        });  
         var common = framework._.sfCommon;
         var markdownTb = common.createMarkdownToolbar(editor, {
             embed: function (mt) {
@@ -298,16 +286,18 @@ define([
                 editor.replaceSelection($(mt)[0].outerHTML);
             }
         });
+        var toggleButton = UIElements.createMarkdownToolbarToggle(markdownTb.toolbar, editor);
+        $(markdownEditorWrapper).append(toggleButton);
         $(markdownTb.toolbar).on('keydown', function (e) {
             if (e.which === 27) { // Escape key
                 e.preventDefault();
                 e.stopPropagation();
                 editor.focus(); // Focus the editor instead of closing the modal
             }
-        });        
+        });    
         $(text).before(markdownTb.toolbar);
         // Initially hide the toolbar
-        $(markdownTb.toolbar).hide();
+        $(markdownTb.toolbar).hide(); 
         editor.refresh();
         var body = {
             getValue: function () {

@@ -1341,6 +1341,41 @@ define([
         };
     };
 
+    UIElements.createMarkdownToolbarToggle = function(toolbarElement, editor) {
+        var $button = $('<button>', {
+            'class': 'btn btn-toolbar-alt cp-markdown-toolbar-toggle-button',
+            'aria-label': Messages.toolbar_tools,
+            'data-notippy':1,
+            'title': Messages.toolbar_tools,
+            'aria-pressed': false,
+            'type': 'button'
+        }).append(
+            $('<i>', {
+                'class': 'fa fa-wrench',
+                'aria-hidden': true
+            })
+        );
+    
+        $button.on('click', function () {
+            var isExpanded = $(toolbarElement).is(':visible');
+            $(this).attr('aria-pressed', String(!isExpanded));
+            $(toolbarElement).toggle();
+        });
+    
+        $(toolbarElement).on('keydown', function (e) {
+            if (e.key === 'Escape' || e.which === 27) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (editor && editor.focus) {
+                    editor.focus();
+                }
+            }
+        });
+    
+        return $button;
+    };
+    
+
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
         so we throttle its usage. Clients will not update more than once per
