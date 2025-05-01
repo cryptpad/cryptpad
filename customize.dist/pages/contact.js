@@ -79,7 +79,7 @@ define([
                         )
                     ),
                     h('div',
-                        h('a.card-small', {href : "https://fosstodon.org/@cryptpad"},
+                        h('a.card-small', {href : "https://social.xwiki.com/@CryptPad"},
                             h('div.card-body',
                                 h('p', [
                                     h('img', {
