@@ -140,6 +140,8 @@ define(req, function(AppConfig, Default, Language) {
     Messages.badges_premium = "Premium user";
     Messages.badges_error = "Error while validating this user's data";
     Messages.profile_badges = "Badges";
+    Messages.oo_unstableMigrationWarning = "In- and exporting from and to LibreOffice file formats is not very stable right now. "
+        + "However, we'll try our best to convert your document.";
 
     return Messages;
 

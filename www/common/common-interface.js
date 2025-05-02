@@ -727,6 +727,36 @@ define([
         };
     };
 
+    UI.alertPromise = function (msg, opt) {
+        return new Promise((resolve) => {
+            UI.alert(msg, resolve, opt);
+        });
+    };
+
+    /**
+     * @callback promptCallback
+     * @param {string} value - the value the user chose
+     */
+
+    /**
+     * Optional parameters for UI.prompt()
+     * @typedef {Object} PromptParams
+     * @property {boolean} [password] - if true: ask the user for a password
+     * @property {Element} [typeInput] - if set: add a dropdown next to the text input field (create it with UIElements.createDropdown())
+     * @property {Object} [inputOpts] - parameters for dialog.textInput()
+     * @property {string} [ok] - caption for the OK button
+     * @property {string} [cancel] - caption for the cancel button
+     */
+
+    /**
+     * Show a popup to ask something.
+     *
+     * @param {(string|Element)} [msg] - Message/title to show
+     * @param {string} [def] - the default value
+     * @param {promptCallback} [cb] - called when the used selected a value
+     * @param {PromptParams} [opt] - optional settings for the prompt
+     * @param {boolean} [force] - if true: do not HTML escape msg
+     */
     UI.prompt = function (msg, def, cb, opt, force) {
         cb = cb || function () {};
         opt = opt || {};

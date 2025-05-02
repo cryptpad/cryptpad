@@ -63,7 +63,8 @@ define([
     var PENDING_TIMEOUT = 30000;
     const HISTORY_KEEPER_INDEX_USER = 1;
     const READ_ONLY_INDEX_USER = 2;
-
+    const BROKEN_EXPORT_FORMATS = ['odt', 'odp'];
+    const BROKEN_IMPORT_FORMATS = ['odp'];
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x, type) {
@@ -2230,7 +2231,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 warning
             ]);
 
-            UI.prompt(promptMessage, Util.fixFileName(suggestion), function (filename) {
+            UI.prompt(promptMessage, Util.fixFileName(suggestion), async function (filename) {
                 // $select.getValue()
                 if (!(typeof(filename) === 'string' && filename)) { return; }
                 var ext = ($select.getValue() || '').slice(1);
@@ -2238,6 +2239,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
                     saveAs(blob, filename+'.bin');
                     return;
+                }
+
+                if (BROKEN_EXPORT_FORMATS.includes(ext)) {
+                    await UI.alertPromise(Messages.oo_unstableMigrationWarning);
                 }
 
                 var content = h('div.cp-oo-x2tXls', [
@@ -2335,7 +2340,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!content) {
                 UI.removeModals();
                 return void UI.alert(Messages.oo_invalidFormat);
-            }
+            }
             var blob = new Blob([content], {type: 'plain/text'});
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
@@ -2357,10 +2362,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             APP.FM.handleFile(blob, data);
         };
 
-        var importXLSXFile = function(content, filename, ext) {
+        var importXLSXFile = async function(content, filename, ext) {
             // Perform the x2t conversion
             debug("Filename");
             debug(filename);
+
+            if (BROKEN_IMPORT_FORMATS.includes(ext)) {
+                await UI.alertPromise(Messages.oo_unstableMigrationWarning);
+            }
+
             if (ext === "bin") {
                 return void importFile(content);
             }
