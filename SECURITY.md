@@ -18,7 +18,7 @@ Note that every GitHub release page has an RSS compatible feed that you can subs
 We do also communicate about this topic on:
 - [Our blog](https://blog.cryptpad.org)
 - [Our Matrix public space](https://matrix.to/#/#cryptpad:matrix.xwiki.com)
-- [Our Mastodon account](https://fosstodon.org/@cryptpad)
+- [Our Mastodon account](https://social.xwiki.com/@CryptPad)
 
 ## Reporting a Vulnerability
 
