@@ -5,6 +5,7 @@
 (() => {
 const factory = function () {
     let USE_MIN = true;
+    if (localStorage.CryptPad_dev === "1") { USE_MIN = false; }
 
     let path = '/common/worker.bundle.js?';
     if (USE_MIN) { path = '/common/worker.bundle.min.js?'; }
