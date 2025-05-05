@@ -63,8 +63,6 @@ define([
     var PENDING_TIMEOUT = 30000;
     const HISTORY_KEEPER_INDEX_USER = 1;
     const READ_ONLY_INDEX_USER = 2;
-    const BROKEN_EXPORT_FORMATS = ['odt', 'odp'];
-    const BROKEN_IMPORT_FORMATS = ['odp'];
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x, type) {
@@ -2241,7 +2239,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     return;
                 }
 
-                if (BROKEN_EXPORT_FORMATS.includes(ext)) {
+                const brokenFormats = await Util.requirePromise('/common/onlyoffice/broken-formats.js');
+                if (brokenFormats.brokenExportFormats.includes(ext)) {
                     await UI.alertPromise(Messages.oo_unstableMigrationWarning);
                 }
 
@@ -2367,7 +2366,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             debug("Filename");
             debug(filename);
 
-            if (BROKEN_IMPORT_FORMATS.includes(ext)) {
+            const brokenFormats = await Util.requirePromise('/common/onlyoffice/broken-formats.js');
+            if (brokenFormats.brokenImportFormats.includes(ext)) {
                 await UI.alertPromise(Messages.oo_unstableMigrationWarning);
             }
 
