@@ -1961,82 +1961,7 @@ define([
             APP.UploadImageFiles = function (files, type, id, jwt, cb) {
                 return void cb();
             };
-            APP.AddImage = function(cb1, cb2) {
-                APP.AddImageSuccessCallback = cb1;
-                APP.AddImageErrorCallback = cb2;
-                common.openFilePicker({
-                    types: ['file'],
-                    where: ['root'],
-                    filter: {
-                        fileType: ['image/']
-                    }
-                }, function (data) {
-                    if (data.type !== 'file') {
-                        debug("Unexpected data type picked " + data.type);
-                        return;
-                    }
-                    var name = data.name;
 
-                    // Add image to the list
-                    var mediasSources = getMediasSources();
-
-                    // Check if name already exists
-                    var getUniqueName = function (name, mediasSources) {
-                        var get = function () {
-                            var s = name.split('.');
-                            if (s.length > 1) {
-                                s[s.length - 2] = s[s.length - 2] + '-' + Util.uid();
-                                name = s.join('.');
-                            } else {
-                                name += '-'+ Util.uid();
-                            }
-                        };
-                        while (mediasSources[name]) { get(); }
-                        return name;
-                    };
-                    if (mediasSources[name]) {
-                        name = getUniqueName(name, mediasSources);
-                        data.name = name;
-                    }
-                    mediasSources[name] = data;
-                    APP.onLocal();
-
-                    APP.realtime.onSettle(function () {
-                        getImageURL(name).then(function(url) {
-                            debug("CRYPTPAD success add " + name);
-                            common.setPadAttribute('atime', +new Date(), null, data.href);
-                            APP.AddImageSuccessCallback({
-                                name: name,
-                                url: url
-                            });
-                        });
-                    });
-                });
-            };
-
-            APP.remoteTheme = function () {
-                /*
-                    APP.themeRemote = true;
-                */
-            };
-            APP.changeTheme = function (/*id*/) {
-                /*
-                // disabled:
-Uncaught TypeError: Cannot read property 'calculatedType' of null
-    at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
-                */
-
-                /*
-                APP.themeChanged = {
-                    id: id
-                };
-                */
-            };
-            APP.openURL = function (url) {
-                common.openUnsafeURL(url);
-            };
-
-            APP.loadingImage = 0;
             const getImageURL = function(name) {
                 return new Promise((resolve) => {
                     if (name && /^data:image/.test(name)) {
@@ -2129,6 +2054,82 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 });
             };
 
+            APP.AddImage = function(cb1, cb2) {
+                APP.AddImageSuccessCallback = cb1;
+                APP.AddImageErrorCallback = cb2;
+                common.openFilePicker({
+                    types: ['file'],
+                    where: ['root'],
+                    filter: {
+                        fileType: ['image/']
+                    }
+                }, function (data) {
+                    if (data.type !== 'file') {
+                        debug("Unexpected data type picked " + data.type);
+                        return;
+                    }
+                    var name = data.name;
+
+                    // Add image to the list
+                    var mediasSources = getMediasSources();
+
+                    // Check if name already exists
+                    var getUniqueName = function (name, mediasSources) {
+                        var get = function () {
+                            var s = name.split('.');
+                            if (s.length > 1) {
+                                s[s.length - 2] = s[s.length - 2] + '-' + Util.uid();
+                                name = s.join('.');
+                            } else {
+                                name += '-'+ Util.uid();
+                            }
+                        };
+                        while (mediasSources[name]) { get(); }
+                        return name;
+                    };
+                    if (mediasSources[name]) {
+                        name = getUniqueName(name, mediasSources);
+                        data.name = name;
+                    }
+                    mediasSources[name] = data;
+                    APP.onLocal();
+
+                    APP.realtime.onSettle(function () {
+                        getImageURL(name).then(function(url) {
+                            debug("CRYPTPAD success add " + name);
+                            common.setPadAttribute('atime', +new Date(), null, data.href);
+                            APP.AddImageSuccessCallback({
+                                name: name,
+                                url: url
+                            });
+                        });
+                    });
+                });
+            };
+
+            APP.remoteTheme = function () {
+                /*
+                    APP.themeRemote = true;
+                */
+            };
+            APP.changeTheme = function (/*id*/) {
+                /*
+                // disabled:
+Uncaught TypeError: Cannot read property 'calculatedType' of null
+    at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
+                */
+
+                /*
+                APP.themeChanged = {
+                    id: id
+                };
+                */
+            };
+            APP.openURL = function (url) {
+                common.openUnsafeURL(url);
+            };
+
+            APP.loadingImage = 0;
             // Always hide right menu
             try {
                 localStorage?.original?.removeItem('sse-hide-right-settings');
