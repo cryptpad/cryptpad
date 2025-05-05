@@ -213,7 +213,7 @@ define([
             commit();
         });
 
-        var markdownEditorWrapper = h('div.markdown-label-row', [
+        var markdownEditorWrapper = h('div.cp-markdown-label-row', [
             h('label', { for: 'cp-kanban-edit-body' }, Messages.kanban_body)
         ]);
         

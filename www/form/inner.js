@@ -1125,8 +1125,17 @@ define([
                                     editor.replaceSelection($(mt)[0].outerHTML);
                                 }
                             });
+                            var toggleRow = h('div.cp-markdown-toggle-row');
                             $(block).prepend(markdownTb.toolbar);
-                            $(markdownTb.toolbar).show();
+                            if(Util.isSmallScreen()) {
+                                var toggleButton = UIElements.createMarkdownToolbarToggle(markdownTb.toolbar, editor);
+                                $(toggleRow).append(toggleButton);
+                                $(markdownTb.toolbar).hide();
+                            }
+                            else {
+                                $(markdownTb.toolbar).show();
+                            }
+                            $(block).prepend(toggleRow);
                             cm.configureTheme(APP.common, function () {});
                         }
 
@@ -1159,8 +1168,14 @@ define([
                             };
                         };
 
+                        var outerWrapper = h('div.cp-editor-wrapper', [
+                            toggleRow,
+                            block
+                        ]);
+                        
+
                         return [
-                            block,
+                            outerWrapper,
                             cancelBlock
                         ];
                     },
