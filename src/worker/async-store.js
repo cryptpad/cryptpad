@@ -2833,7 +2833,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
                 // Call onCacheReady if the manager is not yet defined
                 if (!manager) {
-                    onCacheReady(clientId, waitFor());
+                    startCacheModules(clientId, returned, waitFor());
                     manager = store.manager;
                     userObject = store.userObject;
                 }
@@ -3193,10 +3193,11 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             andThen();
         };
 
-        const startCacheModules = (clientId, returned, cb) => {
+        const startCacheModules = (clientId, returned, _cb) => {
+            const cb = Util.mkAsync(_cb);
             onCacheReady(clientId, function () {
-                cb(returned);
                 onCacheReadyEvt.fire();
+                cb(returned);
             });
         };
         const startModules = (clientId, returned, cb) => {
