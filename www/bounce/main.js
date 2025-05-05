@@ -11,13 +11,32 @@ define(['/api/config'], function (ApiConfig) {
 
 */
 
+
     // when a URL is rejected we close the window
     var reject = function () {
         window.close();
     };
+
+    // only redirect if the request comes from CryptPad's sandbox
+    const safeOrigin = new URL(ApiConfig.httpSafeOrigin).origin;
+    if (!document.referrer) {
+        window.alert('This link only works when loaded from a CryptPad document');
+        return void reject();
+    }
+    try {
+        const parsed = new URL(document.referrer);
+        if (parsed.origin !== safeOrigin) {
+            window.alert('Invalid referrer');
+            return void reject();
+        }
+    } catch (e) {
+        console.error("Invalid referrer", e);
+        return;
+    }
+
     // this app is intended to be loaded and used exclusively from the sandbox domain
     // where stricter CSP blocks various attacks. Reject any other usage.
-    if (ApiConfig.httpSafeOrigin !== window.location.origin) {
+    if (safeOrigin !== window.location.origin) {
         window.alert('The bounce application must only be used from the sandbox domain, ' +
             'please report this issue on https://github.com/cryptpad/cryptpad');
         return void reject();
