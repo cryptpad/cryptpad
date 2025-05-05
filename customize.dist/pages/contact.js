@@ -28,7 +28,7 @@ define([
             {
                 name: Msg.contact_mastodon || "Mastodon",
                 image: "/customize/images/mastodon.svg",
-                href: "https://fosstodon.org/@cryptpad",
+                href: "https://social.xwiki.com/@CryptPad",
             },
             {
                 name: Msg.contact_bug || "Bug report",
