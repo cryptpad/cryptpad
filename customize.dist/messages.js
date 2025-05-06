@@ -140,7 +140,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.badges_premium = "Premium user";
     Messages.badges_error = "Error while validating this user's data";
     Messages.profile_badges = "Badges";
-
+    Messages.oo_couldNotConvertDocument = "The conversion of the document failed. Note that MS file formats are currently more stable.";
     return Messages;
 
 });
