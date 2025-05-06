@@ -539,8 +539,19 @@ define([
         });
 
         var markdownTb = common.createMarkdownToolbar(editor);
+        var toggleRow = h('div.cp-markdown-toggle-row');
+        if(Util.isSmallScreen()) {
+            var toggleButton = UIElements.createMarkdownToolbarToggle(markdownTb.toolbar, editor);
+            $(toggleRow).append(toggleButton);
+            $(markdownTb.toolbar).hide();
+            $(toggleButton).removeClass('btn-toolbar-alt');
+            $(toggleButton).append('<span class="toggle-label">Show tools</span>');
+        }
+        else {
+            $(markdownTb.toolbar).show();
+        }
         $(code).prepend(markdownTb.toolbar);
-        $(markdownTb.toolbar).show();
+        $(code).prepend(toggleRow); 
 
         $(button).click(function () {
             $(code).show();
