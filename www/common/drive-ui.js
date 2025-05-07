@@ -3460,19 +3460,23 @@ define([
                 b = [b];
             }
 
-            if(a.length === 0 && b.length === 0) {
+            if (a.length === 0 && b.length === 0) {
                 return 0;
             } else if (a.length === 0) {
                 return -1;
             } else if (b.length === 0) {
                 return 1;
-            } else if(a[0] < b[0]) {
-                return -1;
-            } else if(a[0] > b[0]) {
-                return 1;
+            } else if (typeof (a[0]) !== typeof (b[0])) {
+                return String(a[0]) < String(b[0]) ? -1 : 1;
             } else {
-                // This means `a[0] == b[0]`. Chop off the first elements and compare the rest.
-                return lexicographicCompare(a.slice(1), b.slice(1));
+                if (a[0] < b[0]) {
+                    return -1;
+                } else if (a[0] > b[0]) {
+                    return 1;
+                } else {
+                    // This means `a[0] == b[0]`. Chop off the first elements and compare the rest.
+                    return lexicographicCompare(a.slice(1), b.slice(1));
+                }
             }
         };
 
