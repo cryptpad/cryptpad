@@ -3,16 +3,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
+const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
                 SF, AccountTS, DriveTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
-                Calendar, Block, NetConfig, AppConfig = {},
+                Calendar, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
+    let ApiConfig = {};
+    let AppConfig = {};
     const Account = AccountTS.Account;
     const Drive = DriveTS.Drive;
     const window = globalThis;
@@ -3460,7 +3462,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 if (typeof(module) !== 'undefined' && module.exports) {
     // Code from customize can't be laoded directly in the build
     module.exports = factory(
-        undefined,
         require('json.sortify'),
         require('../common/user-object'),
         require('../common/proxy-manager'),
@@ -3490,7 +3491,6 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('./modules/calendar'),
         require('../common/login-block'),
         require('../common/network-config'),
-        undefined,
         require('chainpad-crypto'),
         require('chainpad'),
         require('chainpad-netflux'),
