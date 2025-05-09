@@ -431,6 +431,24 @@
                     }
                 }
 
+                .cp-editor-wrapper {
+                    .cp-markdown-toggle-row {
+                        margin: 0.5rem 0;
+                        position: relative;
+                        .cp-markdown-toolbar-toggle-button {
+                            padding: 3px 10px;
+                            height: 32px;
+                            margin: 0;
+                            line-height: 1;
+                            border-radius: @variables_radius;
+                            display: inline-flex;
+                        }
+                        .cp-markdown-toolbar-toggle-button i.fa {
+                            margin: 0 !important;
+                        }
+                    }
+                }
+
                 .cp-form-creator-add-inline {
                     display: flex;
                     flex-flow: row;
@@ -819,6 +837,9 @@
                     display: flex;
                     flex-wrap: wrap;
                     align-items: baseline;
+                    border: 1px solid @cp_forms-border;
+                    border-radius: @variables_radius;
+                    margin-top: 0.5rem;
                     .CodeMirror {
                         cursor: default;
                         flex: 1;
@@ -827,13 +848,16 @@
                         width: 80%;
                         min-height: 200px;
                         height: 200px;
-                        border: 1px solid @cp_forms-border;
                         .CodeMirror-placeholder {
                             color: #777;
                         }
                     }
                     .cp-markdown-toolbar {
                         display: block;
+                        padding: 0.1rem 0;
+                        border-radius: @variables_radius 0;
+                        width: 100%;
+                        background-color: transparent;
                     }
                 }
                 .cp-form-edit-block {

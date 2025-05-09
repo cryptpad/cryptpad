@@ -1125,8 +1125,13 @@ define([
                                     editor.replaceSelection($(mt)[0].outerHTML);
                                 }
                             });
+                            var toggleRow = h('div.cp-markdown-toggle-row');
                             $(block).prepend(markdownTb.toolbar);
-                            $(markdownTb.toolbar).show();
+                            UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+                            $(window).on('resize', function() {
+                                UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+                            });
+                            $(block).prepend(toggleRow);
                             cm.configureTheme(APP.common, function () {});
                         }
 
@@ -1159,8 +1164,14 @@ define([
                             };
                         };
 
+                        var outerWrapper = h('div.cp-editor-wrapper', [
+                            toggleRow,
+                            block
+                        ]);
+                        
+
                         return [
-                            block,
+                            outerWrapper,
                             cancelBlock
                         ];
                     },

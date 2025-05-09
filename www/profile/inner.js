@@ -488,15 +488,24 @@ define([
         cm.configureTheme(common, function () {});
         editor.setOption("extraKeys", {
             "Esc": function () {
-                cm.getInputField().blur();
+                editor.getInputField().blur();
                 $(save).focus();
             }
         });
 
         var markdownTb = common.createMarkdownToolbar(editor);
+        var toggleRow = h('div.cp-markdown-toggle-row');
+        var toggleButton = UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+        $(window).on('resize', function() {
+            UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+        });
+        $(toggleButton).removeClass('btn-toolbar-alt');
+        $(toggleButton).append('<span class="toggle-label">Show tools</span>');
         $(code).prepend(markdownTb.toolbar);
-        $(markdownTb.toolbar).show();
-
+        $(code).prepend(toggleRow); 
+        if(!Util.isSmallScreen()) {
+            $(markdownTb.toolbar).show();
+        }
         $(button).click(function () {
             $(code).show();
             APP.editor.refresh();
