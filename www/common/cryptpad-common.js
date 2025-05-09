@@ -9,7 +9,6 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/outer/cache-store.js',
-    '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/visible.js',
@@ -25,7 +24,7 @@ define([
     '/components/nthen/index.js',
     '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Broadcast, Messages, Util, Hash, Cache,
-            Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
+            Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             Cred, Login, Store, AppConfig, nThen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to

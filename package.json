@@ -26,6 +26,7 @@
     "ckeditor": "npm:ckeditor4@~4.22.1",
     "codemirror": "^5.19.0",
     "components-font-awesome": "^4.6.3",
+    "connect-gzip-static": "^4.2.1",
     "cookie-parser": "^1.4.7",
     "croppie": "^2.5.0",
     "dragula": "3.7.2",
