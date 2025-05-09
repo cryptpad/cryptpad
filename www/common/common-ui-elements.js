@@ -1374,6 +1374,20 @@ define([
     
         return $button;
     };
+    UIElements.updateToolbarVisibility = function(markdownEditorWrapper, toolbar, editor) {
+        let toggleButton = null;
+        if (Util.isSmallScreen()) {
+            if (!$(markdownEditorWrapper).find('.cp-markdown-toolbar-toggle-button').length) {
+                toggleButton = UIElements.createMarkdownToolbarToggle(toolbar, editor);
+                $(markdownEditorWrapper).append(toggleButton);
+            }
+            $(toolbar).hide();
+        } else {
+            $(markdownEditorWrapper).find('.cp-markdown-toolbar-toggle-button').remove();
+            $(toolbar).show();
+        }
+        return toggleButton; // May return null if not created
+    };
     
 
     /*  Create a usage bar which keeps track of how much storage space is used

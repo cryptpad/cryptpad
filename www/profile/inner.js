@@ -540,19 +540,17 @@ define([
 
         var markdownTb = common.createMarkdownToolbar(editor);
         var toggleRow = h('div.cp-markdown-toggle-row');
-        if(Util.isSmallScreen()) {
-            var toggleButton = UIElements.createMarkdownToolbarToggle(markdownTb.toolbar, editor);
-            $(toggleRow).append(toggleButton);
-            $(markdownTb.toolbar).hide();
-            $(toggleButton).removeClass('btn-toolbar-alt');
-            $(toggleButton).append('<span class="toggle-label">Show tools</span>');
-        }
-        else {
-            $(markdownTb.toolbar).show();
-        }
+        var toggleButton = UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+        $(window).on('resize', function() {
+            UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+        });
+        $(toggleButton).removeClass('btn-toolbar-alt');
+        $(toggleButton).append('<span class="toggle-label">Show tools</span>');
         $(code).prepend(markdownTb.toolbar);
         $(code).prepend(toggleRow); 
-
+        if(!Util.isSmallScreen()) {
+            $(markdownTb.toolbar).show();
+        }
         $(button).click(function () {
             $(code).show();
             APP.editor.refresh();

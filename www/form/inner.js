@@ -1127,14 +1127,10 @@ define([
                             });
                             var toggleRow = h('div.cp-markdown-toggle-row');
                             $(block).prepend(markdownTb.toolbar);
-                            if(Util.isSmallScreen()) {
-                                var toggleButton = UIElements.createMarkdownToolbarToggle(markdownTb.toolbar, editor);
-                                $(toggleRow).append(toggleButton);
-                                $(markdownTb.toolbar).hide();
-                            }
-                            else {
-                                $(markdownTb.toolbar).show();
-                            }
+                            UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+                            $(window).on('resize', function() {
+                                UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+                            });
                             $(block).prepend(toggleRow);
                             cm.configureTheme(APP.common, function () {});
                         }
