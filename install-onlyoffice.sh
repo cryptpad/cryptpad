@@ -27,24 +27,28 @@ main() {
 
     ask_for_license
 
-    # Remember the 1st version that is installed. This will help us install only
-    # needed OnlyOffice versions in a later version of this script.
-    set_prop oldest_needed_version v1
+    # Check if 'oldest_needed_version' is already set, if not, set it to v8
+    if [ -z "${PROPS['oldest_needed_version']}" ]; then
+        echo "'oldest_needed_version' is not set. Setting it to v8."
+        set_prop "oldest_needed_version" "v8"
+    else
+        echo "'oldest_needed_version' is already set to ${PROPS['oldest_needed_version']}. No changes made."
+    fi
 
     mkdir -p "$OO_DIR"
 
-    echo "Do you want to install all available OnlyOffice versions? (Y/N)"
-    read -r install_all
+    available_versions=(v1 v2b v4 v5 v6 v7 v8 x2t)
 
-    declare -a selected_versions
-
-    if [[ "$install_all" =~ ^[Yy] ]]; then
-        selected_versions=(v1 v2b v4 v5 v6 v7 v8 x2t)
-    else
-        echo "Select which versions to install (space-separated), options are:"
-        echo "  v1 v2b v4 v5 v6 v7 v8 x2t"
-        read -ra selected_versions
-    fi
+    start_installing=false
+    for version in "${available_versions[@]}"; do
+        if [ "$start_installing" = true ]; then
+            selected_versions+=("$version")
+        elif [ "$version" = "${PROPS['oldest_needed_version']}" ]; then
+            start_installing=true
+            selected_versions+=("$version")
+        fi
+    done
+    
 
     for version in "${selected_versions[@]}"; do
         case $version in
