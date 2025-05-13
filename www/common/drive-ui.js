@@ -25,6 +25,7 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
+    '/common/onlyoffice/broken-formats.js',
 ], function (
     $,
     ApiConfig,
@@ -45,7 +46,8 @@ define([
     AppConfig,
     Messages,
     Pages,
-    PadTypes)
+    PadTypes,
+    BrokenFormats)
 {
 
     var APP = window.APP = {
@@ -4856,8 +4858,7 @@ define([
             };
 
             const ext = _simpleData.title.split('.').pop();
-            const brokenFormats = await Util.requirePromise('/common/onlyoffice/broken-formats.js');
-            if (brokenFormats.brokenImportFormats.includes(ext)) {
+            if (BrokenFormats.brokenImportFormats.includes(ext)) {
                 await UI.alertPromise(Messages.oo_unstableMigrationWarning);
             }
 

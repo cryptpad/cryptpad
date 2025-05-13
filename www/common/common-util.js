@@ -867,12 +867,6 @@ const factory = (NaclUtil) => {
     };
     /* End of code copied from saferphore */
 
-    Util.requirePromise = function (modulePath) {
-        return new Promise((resolve) => {
-            require([modulePath], resolve);
-        });
-    };
-
     return Util;
 };
 

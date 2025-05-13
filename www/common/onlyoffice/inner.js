@@ -24,6 +24,7 @@ define([
     '/common/onlyoffice/ooslide_base.js',
 
     '/common/onlyoffice/current-version.js',
+    '/common/onlyoffice/broken-formats.js',
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -49,7 +50,8 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    OOCurrentVersion)
+    OOCurrentVersion,
+    BrokenFormats)
 {
     var saveAs = window.saveAs;
     var APP = window.APP = {
@@ -2240,8 +2242,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     return;
                 }
 
-                const brokenFormats = await Util.requirePromise('/common/onlyoffice/broken-formats.js');
-                if (brokenFormats.brokenExportFormats.includes(ext)) {
+                if (BrokenFormats.brokenExportFormats.includes(ext)) {
                     await UI.alertPromise(Messages.oo_unstableMigrationWarning);
                 }
 
@@ -2367,8 +2368,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             debug("Filename");
             debug(filename);
 
-            const brokenFormats = await Util.requirePromise('/common/onlyoffice/broken-formats.js');
-            if (brokenFormats.brokenImportFormats.includes(ext)) {
+            if (BrokenFormats.brokenImportFormats.includes(ext)) {
                 await UI.alertPromise(Messages.oo_unstableMigrationWarning);
             }
 
