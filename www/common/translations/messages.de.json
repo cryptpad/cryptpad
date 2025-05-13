@@ -1818,5 +1818,7 @@
     "addItemBottom": "Karte am Ende des Boards hinzufügen",
     "kanban_moveBoardRight": "Board nach rechts verschieben",
     "admin_listConfirm": "Bist du sicher, dass du die Admin-Rechte dieses Benutzers entfernen möchtest?",
-    "profile_remove_avatar": "Diesen Avatar entfernen"
+    "profile_remove_avatar": "Diesen Avatar entfernen",
+    "oo_couldNotConvertDocument": "Die Konvertierung des Dokuments ist fehlgeschlagen. Bitte beachten Sie, dass die Microsoft Office-Formate (.docx, .xlsx, .pptx) derzeit die besten Ergebnisse beim Im- und Export liefern.",
+    "oo_unstableMigrationWarning": "Der Im- und Export einiger Formate (.odt, .odp) ist derzeit nicht stabil. Wenn möglich, empfehlen wir es, andere Dateiformate zu verwenden. CryptPad wird nun eine bestmögliche Konvertierung vornehmen."
 }
