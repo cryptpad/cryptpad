@@ -15,6 +15,10 @@ PROPS_FILE="$CONF_DIR"/onlyoffice.properties
 declare -A PROPS
 
 main() {
+
+    # clean build env in case a previous build has failed
+    rm -rf "$BUILDS_DIR"
+    
     mkdir -p "$CONF_DIR"
 
     load_props
