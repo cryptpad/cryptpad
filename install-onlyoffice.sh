@@ -15,6 +15,10 @@ PROPS_FILE="$CONF_DIR"/onlyoffice.properties
 declare -A PROPS
 
 main() {
+
+    # clean build env in case a previous build has failed
+    rm -rf "$BUILDS_DIR"
+
     mkdir -p "$CONF_DIR"
 
     load_props
@@ -23,19 +27,79 @@ main() {
 
     ask_for_license
 
-    # Remember the 1st version that is installed. This will help us install only
-    # needed OnlyOffice versions in a later version of this script.
-    set_prop oldest_needed_version v1
+    # Check if 'oldest_needed_version' is already set, if not, set it to v8
+    if [ -z "${PROPS['oldest_needed_version']}" ]; then
+        echo "'oldest_needed_version' is not set. Setting it to v8."
+        set_prop "oldest_needed_version" "v8"
+    else
+        echo "'oldest_needed_version' is already set to ${PROPS['oldest_needed_version']}. No changes made."
+    fi
 
     mkdir -p "$OO_DIR"
-    install_old_version v1 4f370beb
-    install_old_version v2b d9da72fd
-    install_old_version v4 6ebc6938
-    install_old_version v5 88a356f0
-    install_old_version v6 abd8a309
-    install_version v7 v7.3.3.60+10 be3c926d534b0c77aa1ed83b170a38b9e56ebbbfd73a1a968f523d63c5ed69ecdb063fad08740812de82c1e79af7309faf67ffdd81b45451adce539192f3414c
-    install_version v8 v8.3.3.23+0 d3752926a68a487c5f855651a8966c04b320277a0dd2dfc3a4c1537b8d925cf59ec93a15f97664cbdb8867c32a94e105798b28751e0ef49521bc72c323b634a8
-    install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1
+
+    available_versions=(v1 v2b v4 v5 v6 v7 v8 x2t)
+
+    start_installing=false
+    for version in "${available_versions[@]}"; do
+        if [ "$start_installing" = true ]; then
+            selected_versions+=("$version")
+        elif [ "$version" = "${PROPS['oldest_needed_version']}" ]; then
+            start_installing=true
+            selected_versions+=("$version")
+        fi
+    done
+    
+
+    for version in "${selected_versions[@]}"; do
+        case $version in
+            v1)  
+                set_prop oldest_needed_version v1; install_old_version v1 4f370beb
+                # We delete 'help' from previous versions as they are useless and take up storage
+                rm -rf "$OO_DIR/v1/web-apps/apps/documenteditor/main/resources/help"
+                rm -rf "$OO_DIR/v1/web-apps/apps/presentationeditor/main/resources/help" 
+                rm -rf "$OO_DIR/v1/web-apps/apps/spreadsheeteditor/main/resources/help"
+                ;;
+            v2b) 
+                install_old_version v2b d9da72fd
+                rm -rf "$OO_DIR/v2b/web-apps/apps/documenteditor/main/resources/help"
+                rm -rf "$OO_DIR/v2b/web-apps/apps/presentationeditor/main/resources/help" 
+                rm -rf "$OO_DIR/v2b/web-apps/apps/spreadsheeteditor/main/resources/help"
+                ;;
+            v4)  
+                install_old_version v4 6ebc6938
+                rm -rf "$OO_DIR/v4/web-apps/apps/documenteditor/main/resources/help"
+                rm -rf "$OO_DIR/v4/web-apps/apps/presentationeditor/main/resources/help" 
+                rm -rf "$OO_DIR/v4/web-apps/apps/spreadsheeteditor/main/resources/help"
+                ;;
+            v5)  
+                install_old_version v5 88a356f0 
+                rm -rf "$OO_DIR/v5/web-apps/apps/documenteditor/main/resources/help"
+                rm -rf "$OO_DIR/v5/web-apps/apps/presentationeditor/main/resources/help" 
+                rm -rf "$OO_DIR/v5/web-apps/apps/spreadsheeteditor/main/resources/help"
+                ;;
+            v6)  
+                install_old_version v6 abd8a309
+                rm -rf "$OO_DIR/v6/web-apps/apps/documenteditor/main/resources/help"
+                rm -rf "$OO_DIR/v6/web-apps/apps/presentationeditor/main/resources/help" 
+                rm -rf "$OO_DIR/v6/web-apps/apps/spreadsheeteditor/main/resources/help"
+                ;;
+            v7)  
+                install_version v7 v7.3.3.60+10 be3c926d534b0c77aa1ed83b170a38b9e56ebbbfd73a1a968f523d63c5ed69ecdb063fad08740812de82c1e79af7309faf67ffdd81b45451adce539192f3414c 
+                rm -rf "$OO_DIR/v7/web-apps/apps/documenteditor/main/resources/help"
+                rm -rf "$OO_DIR/v7/web-apps/apps/presentationeditor/main/resources/help" 
+                rm -rf "$OO_DIR/v7/web-apps/apps/spreadsheeteditor/main/resources/help"
+                rm -rf "$OO_DIR/v7/web-apps/apps/common/main/resources/help/"
+                # From all the older versions only v7 has 'dictionaries', we remove it for the same reasons
+                rm -rf "$OO_DIR/v7/dictionaries/"
+                ;;
+            v8)  install_version v8 v8.3.0.83+3 fbf77671ea8b960b6c65fdad025980894dfc9ed0b79d9540951f56c79871d0bde3361f29a35b9653764f7802ec74df01601b6c9961e0f3118988422667563470 ;;
+            x2t) install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1 ;;
+            *)
+                echo "Unknown version: $version"
+                exit 1
+                ;;
+        esac
+    done
 
     rm -rf "$BUILDS_DIR"
 

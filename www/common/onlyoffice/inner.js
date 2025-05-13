@@ -1599,8 +1599,8 @@ define([
                 mediasData: mediasData
             }, function (err, obj) {
                 if (err || !obj || !obj.data) {
-                    UI.warn(Messages.error);
-                    return void cb();
+                    UI.alert(Messages.oo_couldNotConvertDocument, cb);
+                    return;
                 }
                 cb(obj.data, obj.images);
             }, {
@@ -2187,7 +2187,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     saveAs(blob, finalFilename);
                     return;
                 }
-                UI.warn(Messages.error);
+                UI.alert(Messages.oo_couldNotConvertDocument);
             });
         };
 
