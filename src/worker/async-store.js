@@ -3,18 +3,21 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
+const factory = (Sortify, UserObject, ProxyManager,
                 Migrate, Hash, Util, Constants, Feedback,
                 Realtime, Messaging, Pinpad, Rpc, Merge, Cache,
                 SF, AccountTS, DriveTS, Cursor,
                 Support, Integration, OnlyOffice,
                 Mailbox, Profile, Team, Messenger, History,
-                Calendar, Block, NetConfig, AppConfig = {},
+                Calendar, BadgeTS, Block, NetConfig,
                 Crypto, ChainPad, CpNetflux, Listmap,
                 Netflux, nThen) => {
 
+    let ApiConfig = {};
+    let AppConfig = {};
     const Account = AccountTS.Account;
     const Drive = DriveTS.Drive;
+    const Badge = BadgeTS.Badge;
     const window = globalThis;
     globalThis.nacl = globalThis.nacl || Crypto.Nacl;
 
@@ -659,11 +662,15 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     color: Store.getUserColor(),
                     notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
                     curvePublic: proxy.curvePublic,
+                    edPublic: proxy.edPublic,
+                    netfluxId:  store?.network?.webChannels?.[0]?.myID,
+                    badge: Util.find(proxy, ['profile', 'badge'])
                 },
                 // "priv" is not shared with other users but is needed by the apps
                 priv: {
                     clientId: clientId,
                     edPublic: proxy.edPublic,
+                    edPrivate: proxy.edPrivate,
                     friends: proxy.friends || {},
                     settings: proxy.settings || NEW_USER_SETTINGS,
                     thumbnails: disableThumbnails === false,
@@ -2807,6 +2814,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             loadUniversal(Integration, 'integration', waitFor);
             loadUniversal(Messenger, 'messenger', waitFor);
             loadUniversal(History, 'history', waitFor);
+            loadUniversal(Badge, 'badge', waitFor);
             loadOnlyOffice();
             if (store) {
                 store.messenger = store.modules['messenger'];
@@ -2833,7 +2841,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
                 // Call onCacheReady if the manager is not yet defined
                 if (!manager) {
-                    onCacheReady(clientId, waitFor());
+                    startCacheModules(clientId, returned, waitFor());
                     manager = store.manager;
                     userObject = store.userObject;
                 }
@@ -3193,10 +3201,11 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
             andThen();
         };
 
-        const startCacheModules = (clientId, returned, cb) => {
+        const startCacheModules = (clientId, returned, _cb) => {
+            const cb = Util.mkAsync(_cb);
             onCacheReady(clientId, function () {
-                cb(returned);
                 onCacheReadyEvt.fire();
+                cb(returned);
             });
         };
         const startModules = (clientId, returned, cb) => {
@@ -3231,6 +3240,10 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
             const requires = data.requires;
 
+            // data.noDrive indicates that we can use drive-less
+            // mode. It will be false is we are loading a safe hash
+            const requiresDrive = !data.noDrive;
+
             // Mark initialized to true: new tabs will have to
             // wait for the entire worker to be ready
             initialized = true;
@@ -3247,7 +3260,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 
             // Now users will create a drive, but they may not
             // own an account
-            if (requires === 'pad') {
+            if (requires === 'pad' && !requiresDrive) {
                 // Start with only the pad modules, callback
                 // and then load the account and other modules
                 return void onNoDrive(clientId, function (obj) {
@@ -3270,7 +3283,7 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
                     onPadRejectedEvt.reg(next);
                 });
             }
-            if (requires === 'file') {
+            if (requires === 'file' && !requiresDrive) {
                 // Start with only the pad modules, callback
                 // and then load the account and other modules
                 return void onNoDrive(clientId, function (obj) {
@@ -3455,7 +3468,6 @@ const factory = (ApiConfig = {}, Sortify, UserObject, ProxyManager,
 if (typeof(module) !== 'undefined' && module.exports) {
     // Code from customize can't be laoded directly in the build
     module.exports = factory(
-        undefined,
         require('json.sortify'),
         require('../common/user-object'),
         require('../common/proxy-manager'),
@@ -3465,7 +3477,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../common/common-constants'),
         require('../common/common-feedback'),
         require('../common/common-realtime'),
-        require('../common/common-messaging'),
+        require('./components/messaging'),
         require('../common/pinpad'),
         require('../common/rpc'),
         require('./components/merge-drive'),
@@ -3483,9 +3495,9 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('./modules/messenger'),
         require('./modules/history'),
         require('./modules/calendar'),
+        require('./modules/badge'),
         require('../common/login-block'),
         require('../common/network-config'),
-        undefined,
         require('chainpad-crypto'),
         require('chainpad'),
         require('chainpad-netflux'),

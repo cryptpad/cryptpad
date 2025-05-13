@@ -7,7 +7,11 @@
 export type Callback = (...args: any[]) => void
 
 export type ModuleConfig = {
-    emit: Function
+    store: any,
+    Store: any,
+    updateMetadata: Callback,
+    pinPads: Callback,
+    unpinPads: Callback
 }
 
 export type CommandData = {
@@ -21,7 +25,7 @@ export interface ModuleObject {
 }
 
 export interface Module<T> {
-    init: (config: ModuleConfig, cb: Callback) => T
+    init: (config: ModuleConfig, cb: Callback, emit: Callback) => T
 }
 
 
