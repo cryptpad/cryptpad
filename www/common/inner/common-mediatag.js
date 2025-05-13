@@ -186,7 +186,7 @@ define([
         if (avatars[href]) {
             var nodes = $.parseHTML(avatars[href]);
             var $el = $(nodes[0]);
-            $container.append($el);
+            $container.empty().append($el);
             return void cb($el);
         }
 
@@ -222,7 +222,7 @@ define([
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var mt = UI.mediaTag(src, cryptKey);
-                var $img = $(mt).appendTo($container);
+                var $img = $(mt).appendTo($container.empty());
                 MT.displayMediatagImage(common, $img, function (err, $image) {
                     if (err) { return void console.error(err); }
                     centerImage($img, $image);

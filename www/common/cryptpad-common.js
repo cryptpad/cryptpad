@@ -9,7 +9,6 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/outer/cache-store.js',
-    '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/visible.js',
@@ -20,13 +19,14 @@ define([
     '/common/common-credential.js',
     '/customize/login.js',
     '/common/store-interface.js',
+    '/common/pad-types.js',
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
     '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Broadcast, Messages, Util, Hash, Cache,
-            Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, Store, AppConfig, nThen) {
+            Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
+            Cred, Login, Store, Types, AppConfig, nThen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -1606,7 +1606,7 @@ define([
             oldChannel = oldSecret.channel;
             var src = fileHost + Hash.getBlobPathFromHex(oldChannel);
             var key = oldSecret.keys && oldSecret.keys.cryptKey;
-            var cryptKey = window.Util.encodeBase64(key);
+            var cryptKey = Util.encodeBase64(key);
 
             var mt = document.createElement('media-tag');
             mt.setAttribute('src', src);
@@ -1690,7 +1690,7 @@ define([
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
-        if (parsed.type !== 'sheet') { return void cb({ error: 'EINVAL_TYPE' }); }
+        if (!Types.OO_APPS.includes(parsed.type)) { return void cb({ error: 'EINVAL_TYPE' }); }
 
         var warning = false;
         var newHash, newRoHref;
@@ -2468,9 +2468,9 @@ define([
     };
 
     common.getAnonymousKeys = function (formSeed, channel) {
-        var array = window.Util.decodeBase64(formSeed + channel);
+        var array = Util.decodeBase64(formSeed + channel);
         var hash = window.nacl.hash(array);
-        var secretKey = window.Util.encodeBase64(hash.subarray(32));
+        var secretKey = Util.encodeBase64(hash.subarray(32));
         var publicKey = Hash.getCurvePublicFromPrivate(secretKey);
         return {
             curvePrivate: secretKey,

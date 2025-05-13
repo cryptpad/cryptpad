@@ -15,6 +15,7 @@ const factory = (Crypto, Hash, Util, Constants, Realtime) => {
             curvePublic: proxy.curvePublic,
             notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar,
+            badge: proxy.profile && proxy.profile.badge,
             uid: proxy.uid,
         };
         if (hash === false) { delete data.channel; }
@@ -142,10 +143,10 @@ const factory = (Crypto, Hash, Util, Constants, Realtime) => {
 if (typeof(module) !== 'undefined' && module.exports) {
     module.exports = factory(
         require('chainpad-crypto'),
-        require('./common-hash'),
-        require('./common-util'),
-        require('./common-constants'),
-        require('./common-realtime')
+        require('../../common/common-hash'),
+        require('../../common/common-util'),
+        require('../../common/common-constants'),
+        require('../../common/common-realtime')
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
