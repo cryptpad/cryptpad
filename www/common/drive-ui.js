@@ -25,6 +25,7 @@ define([
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
+    '/common/onlyoffice/broken-formats.js',
 ], function (
     $,
     ApiConfig,
@@ -45,7 +46,8 @@ define([
     AppConfig,
     Messages,
     Pages,
-    PadTypes)
+    PadTypes,
+    BrokenFormats)
 {
 
     var APP = window.APP = {
@@ -1652,15 +1654,15 @@ define([
                 if (($(e.target).offset().top + $(e.target).height()) > ($(window).height()-$menu.height())) {
                     if ( $(e.target).offset().top < $menu.height()) {
                         menuPositionTop = 0;
-                        
+
                     } else {
-                        menuPositionTop = ($(e.target).offset().top - $menu.height()); 
-                    } 
+                        menuPositionTop = ($(e.target).offset().top - $menu.height());
+                    }
                 } else {
                     menuPositionTop = $(e.target).offset().top + $(e.target).outerHeight();
                 }
                 if (($(e.target).offset().left + $(e.target).width()) < $menu.width()) {
-                    menuPositionLeft = $(e.target).offset().left; 
+                    menuPositionLeft = $(e.target).offset().left;
                 } else {
                     menuPositionLeft = $(e.target).offset().left - ($menu.width() - $(e.target).width()) + 10;
                 }
@@ -4841,7 +4843,7 @@ define([
             });
         };
 
-        var openInApp = function (paths, app) {
+        var openInApp = async function (paths, app) {
             var p = paths[0];
             var el = manager.find(p.path);
             var path = currentPath;
@@ -4854,6 +4856,12 @@ define([
                 password: _metadata.password,
                 channel: _metadata.channel,
             };
+
+            const ext = _simpleData.title.split('.').pop();
+            if (BrokenFormats.brokenImportFormats.includes(ext)) {
+                await UI.alertPromise(Messages.oo_unstableMigrationWarning);
+            }
+
             openIn(app, path, APP.team, _simpleData);
         };
 
@@ -5642,4 +5650,3 @@ define([
         logError: logError
     };
 });
-
