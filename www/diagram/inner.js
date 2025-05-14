@@ -148,11 +148,18 @@ define([
 
         framework.onEditableChange(function () {
             const editable = !framework.isLocked() && !framework.isReadOnly();
-            postMessageToDrawio({
-                action: 'spinner',
-                message: Messages.reconnecting,
-                show: !editable
-            });
+            var pointerEvents = editable ? "auto" : "none"
+            $(drawioFrame).css("pointer-events", pointerEvents)
+            var spinner  = $("#cp-app-diagram-content").contents().find(".spinner");
+            if (!editable) {
+                postMessageToDrawio({
+                    action: 'spinner',
+                    message: Messages.reconnecting,
+                });
+                $(spinner).show()
+            } else {
+                $(spinner).hide()
+            }
         });
 
         // starting the CryptPad framework
