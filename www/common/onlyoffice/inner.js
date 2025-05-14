@@ -2641,7 +2641,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                           (content.version <= 3 ? 'v2b/' : OOCurrentVersion.currentVersion + '/');
             var s = h('script', {
                 type:'text/javascript',
-                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
+                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js?' + APP.urlArgs
             });
             $('#cp-app-oo-editor').empty().append(h('div#cp-app-oo-placeholder-a')).append(s);
 
@@ -3099,7 +3099,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
             var s = h('script', {
                 type:'text/javascript',
-                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js'
+                src: ApiConfig.httpSafeOrigin + '/common/onlyoffice/dist/'+version+'web-apps/apps/api/documents/api.js?' + APP.urlArgs
             });
             $('#cp-app-oo-editor').append(s);
 
