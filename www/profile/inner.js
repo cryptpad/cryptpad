@@ -533,15 +533,22 @@ define([
         cm.configureTheme(common, function () {});
         editor.setOption("extraKeys", {
             "Esc": function () {
-                cm.getInputField().blur();
+                editor.getInputField().blur();
                 $(save).focus();
             }
         });
 
         var markdownTb = common.createMarkdownToolbar(editor);
+        var toggleRow = h('div.cp-markdown-toggle-row');
+        UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+        $(window).on('resize', function() {
+            UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+        });
         $(code).prepend(markdownTb.toolbar);
-        $(markdownTb.toolbar).show();
-
+        $(code).prepend(toggleRow); 
+        if(!Util.isSmallScreen()) {
+            $(markdownTb.toolbar).show();
+        }
         $(button).click(function () {
             $(code).show();
             APP.editor.refresh();
