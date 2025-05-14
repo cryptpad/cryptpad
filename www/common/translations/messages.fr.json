@@ -1818,5 +1818,7 @@
     "admin_listKey": "Clé de l'admin",
     "admin_admin": "Admin",
     "admin_addAdminsTitle": "Ajouter des administrateur·ices",
-    "profile_remove_avatar": "Supprimer cet avatar"
+    "profile_remove_avatar": "Supprimer cet avatar",
+    "oo_couldNotConvertDocument": "La conversion du document a échoué. Veuillez noter que les formats Microsoft Office (.docx, .xlsx, .pptx) donnent actuellement les meilleurs résultats à l'import et à l'export.",
+    "oo_unstableMigrationWarning": "L'import et l'export de certains formats OpenDocument (.odt, .odp) sont actuellement instables. Nous recommandons d'utiliser d'autres formats dans la mesure du possible. CryptPad va maintenant faire une tentative de conversion."
 }
