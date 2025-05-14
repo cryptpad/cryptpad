@@ -241,9 +241,8 @@
         background: @cp_kanban-item-bg;
         box-shadow: @cryptpad_ui_shadow;
         .tools_unselectable();
-        touch-action: none;
         &:not(.no-drag) {
-            cursor: move;
+            touch-action: none;
             cursor: grab;
         }
 
