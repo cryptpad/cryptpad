@@ -28,7 +28,7 @@ main() {
     ask_for_license
 
     # Check if 'oldest_needed_version' is already set, if not, set it to v8
-    if [ -z "${PROPS['oldest_needed_version']}" ]; then
+    if [ -z "${PROPS['oldest_needed_version']+set}" ]; then
         echo "'oldest_needed_version' is not set. Setting it to v8."
         set_prop "oldest_needed_version" "v8"
     else
