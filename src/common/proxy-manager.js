@@ -4,7 +4,7 @@
 
 (() => {
 const factory = (UserObject, Util, Hash,
-                SF, Messages = {}, Feedback, nThen) => {
+                Messages = {}, Feedback, nThen, SF = {}) => {
 
     let setCustomize = data => {
         Messages = data.Messages;
@@ -617,7 +617,7 @@ const factory = (UserObject, Util, Hash,
             if (data.password) { folderData.password = data.password; }
             if (data.owned) { folderData.owners = [Env.edPublic]; }
         }).nThen(function (waitFor) {
-            Env.Store.getPadMetadata(null, {
+            Env.Store.pad.getMetadata(null, {
                 channel: folderData.channel
             }, waitFor(function (obj) {
                 if (obj && (obj.error || obj.rejected)) {
@@ -669,7 +669,7 @@ const factory = (UserObject, Util, Hash,
                 }
                 if (data.folderData) {
                     // If we're importing a folder, check its serverside metadata
-                    Env.Store.getPadMetadata(null, { channel: folderData.channel }, function (md) {
+                    Env.Store.pad.getMetadata(null, { channel: folderData.channel }, function (md) {
                         var fData = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
                         if (md.owners) { fData.owners = md.owners; }
                         if (md.expire) { fData.expire = +md.expire; }
@@ -1843,20 +1843,20 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('./user-object'),
         require('./common-util'),
         require('./common-hash'),
-        require('../worker/components/sharedfolder'),
         undefined,
         require('./common-feedback'),
-        require('nthen')
+        require('nthen'),
+        require('../worker/components/sharedfolder'),
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
         '/common/user-object.js',
         '/common/common-util.js',
         '/common/common-hash.js',
-        '/common/outer/sharedfolder.js',
         '/customize/messages.js',
         '/common/common-feedback.js',
         '/components/nthen/index.js',
+        // sharedfolder.js not needed outside of worker
     ], factory);
 } else {
     // unsupported initialization

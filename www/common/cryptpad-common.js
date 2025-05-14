@@ -8,13 +8,13 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/outer/cache-store.js',
+    '/common/cache-store.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/visible.js',
     '/common/user-object.js',
     '/common/outer/local-store.js',
-    '/common/outer/worker-channel.js',
+    '/common/events-channel.js',
     '/common/outer/login-block.js',
     '/common/common-credential.js',
     '/customize/login.js',
@@ -310,7 +310,7 @@ define([
     common.makeNetwork = function (cb) {
         require([
             'netflux-client',
-            '/common/outer/network-config.js'
+            '/common/network-config.js'
         ], function (Netflux, NetConfig) {
             var wsUrl = NetConfig.getWebsocketURL();
             Netflux.connect(wsUrl).then(function (network) {
@@ -409,19 +409,19 @@ define([
     };
     // Settings and drive and auth
     common.getUserObject = function (teamId, cb) {
+        /*
         postMessage("GET", {
             teamId: teamId,
             key: []
         }, function (obj) {
             cb(obj);
         });
-        /*
+        */
         postMessage("GET_DRIVE", {
             teamId: teamId,
         }, function (obj) {
             cb(obj);
         });
-        */
     };
     common.getSharedFolder = function (data, cb) {
         postMessage("GET_SHARED_FOLDER", data, function (obj) {
@@ -459,7 +459,6 @@ define([
             });
             return;
         }
-        /*
         postMessage("SET_DRIVE", {
             teamId: data.teamId,
             value: data.drive
@@ -468,7 +467,7 @@ define([
         }, {
             timeout: 5 * 60 * 1000
         });
-        */
+        /*
         postMessage("SET", {
             teamId: data.teamId,
             key: ['drive'],
@@ -478,6 +477,7 @@ define([
         }, {
             timeout: 5 * 60 * 1000
         });
+        */
     };
     common.addSharedFolder = function (teamId, secret, cb) {
         var href = (secret.keys && secret.keys.editKeyStr) ? '/drive/#' + Hash.getEditHashFromKeys(secret) : undefined;
@@ -560,13 +560,6 @@ define([
         postMessage("GET_PINNED_USAGE", data, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             cb(null, obj.bytes);
-        });
-    };
-
-    common.updatePinLimit = function (cb) {
-        postMessage("UPDATE_PIN_LIMIT", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb(undefined, obj.limit, obj.plan, obj.note);
         });
     };
 

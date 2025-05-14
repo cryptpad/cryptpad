@@ -5560,22 +5560,6 @@ define([
             UI.removeLoadingScreen();
         }, {init:true});
 
-        /*
-        if (!APP.team) {
-            sframeChan.query('Q_DRIVE_GETDELETED', null, function (err, data) {
-                var ids = manager.findChannels(data);
-                var titles = [];
-                ids.forEach(function (id) {
-                    var title = manager.getTitle(id);
-                    titles.push(title);
-                    var paths = manager.findFile(id);
-                    manager.delete(paths, refresh);
-                });
-                if (!titles.length) { return; }
-                UI.log(Messages._getKey('fm_deletedPads', [titles.join(', ')]));
-            });
-        }
-        */
         APP.passwordModal = function (fId, data, cb) {
             var content = [];
 

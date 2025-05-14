@@ -6,7 +6,7 @@ define([
     '/file/file-crypto.js',
     '/common/common-hash.js',
     '/common/common-util.js',
-    '/common/outer/cache-store.js',
+    '/common/cache-store.js',
     '/components/nthen/index.js',
 ], function (FileCrypto, Hash, Util, Cache, nThen) {
     var module = {};

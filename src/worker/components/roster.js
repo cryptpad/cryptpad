@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(function () {
-var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback) {
+var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
     var Roster = {};
 
     // this constant is somewhat arbitrary.
@@ -618,7 +617,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
         // deleted while you are open
         // emit an event
         var onChannelError = function (info) {
-            if (Feedback) { Feedback.send('ROSTER_CHANNEL_ERROR='+(info && info.type)); }
             if (info && info.type === "EUNKNOWN") {
                 // chainpad-netflux should recover by itself
                 return;
@@ -926,39 +924,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto, Feedback)
     return Roster;
 };
 
-    if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = factory(
-            require("../../common/common-util"),
-            require("../../common/common-hash"),
-            require('chainpad-netflux'),
-            require('json.sortify'),
-            require("nthen"),
-            require("chainpad-crypto"),
-            null // no feedback here
-        );
-    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        require.config({ paths:  { 'json.sortify': '/components/json.sortify/dist/JSON.sortify' } });
-        define([
-            '/common/common-util.js',
-            '/common/common-hash.js',
-            'chainpad-netflux',
-            'json.sortify',
-            '/components/nthen/index.js',
-            '/components/chainpad-crypto/crypto.js',
-            '/common/common-feedback.js',
-            //'/components/tweetnacl/nacl-fast.min.js',
-        ], function (Util, Hash, CPNF, Sortify, nThen, Crypto, Feedback) {
-            return factory.apply(null, [
-                Util,
-                Hash,
-                CPNF,
-                Sortify,
-                nThen,
-                Crypto,
-                Feedback
-            ]);
-        });
-    } else {
-        // I'm not gonna bother supporting any other kind of instanciation
-    }
-}());
+module.exports = factory(
+    require("../../common/common-util"),
+    require("../../common/common-hash"),
+    require('chainpad-netflux'),
+    require('json.sortify'),
+    require("nthen"),
+    require("chainpad-crypto")
+);

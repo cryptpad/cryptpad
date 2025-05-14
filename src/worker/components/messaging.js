@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Crypto, Hash, Util, Constants, Realtime) => {
     var Msg = {};
 
@@ -140,23 +139,10 @@ const factory = (Crypto, Hash, Util, Constants, Realtime) => {
     return Msg;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory(
-        require('chainpad-crypto'),
-        require('../../common/common-hash'),
-        require('../../common/common-util'),
-        require('../../common/common-constants'),
-        require('../../common/common-realtime')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/components/chainpad-crypto/crypto.js',
-        '/common/common-hash.js',
-        '/common/common-util.js',
-        '/common/common-constants.js',
-        '/common/common-realtime.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-})();
+module.exports = factory(
+    require('chainpad-crypto'),
+    require('../../common/common-hash'),
+    require('../../common/common-util'),
+    require('../../common/common-constants'),
+    require('../../common/common-realtime')
+);

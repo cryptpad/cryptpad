@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
-const factory = (BCast = {}, Util, Hash,
+const factory = (Util, Hash,
     Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) => {
-    var Mailbox = {};
+    const Mailbox = {};
+    let BCast = {};
 
     Mailbox.setCustomize = data => {
         BCast = data.Broadcast;
@@ -673,32 +673,13 @@ proxy.mailboxes = {
     return Mailbox;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    module.exports = factory(
-        undefined,
-        require('../../common/common-util'),
-        require('../../common/common-hash'),
-        require('../../common/common-realtime'),
-        require('../components/messaging'),
-        require('../../common/notify'),
-        require('../components/mailbox-handlers'),
-        require('chainpad-netflux'),
-        require('chainpad-crypto')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/api/broadcast',
-        '/common/common-util.js',
-        '/common/common-hash.js',
-        '/common/common-realtime.js',
-        '/common/outer/messaging.js',
-        '/common/notify.js',
-        '/common/outer/mailbox-handlers.js',
-        'chainpad-netflux',
-        '/components/chainpad-crypto/crypto.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-hash'),
+    require('../../common/common-realtime'),
+    require('../components/messaging'),
+    require('../../common/notify'),
+    require('../components/mailbox-handlers'),
+    require('chainpad-netflux'),
+    require('chainpad-crypto')
+);

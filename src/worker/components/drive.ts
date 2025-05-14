@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import nacl from 'tweetnacl/nacl-fast';
-import { Drive } from '../types'
+import { Drive } from '../types';
+import * as Merge from './merge-drive';
 
 // node modules
 import * as Listmap from 'chainpad-listmap';
@@ -21,10 +22,59 @@ const onReadyEvt: any = Util.mkEvent(true);
 const onDisconnectEvt: any = Util.mkEvent();
 const onReconnectEvt: any = Util.mkEvent();
 
-const init = (config) => {
-    const { broadcast, store, account } = config;
+const copyObject = (src, target) => {
+    Object.keys(src).forEach(k => {
+        delete src[k];
+    });
+    Object.keys(target).forEach(k => {
+        src[k] = Util.clone(target[k]);
+    });
+};
+const getProxy = (ctx, teamId) => {
+    const store = ctx.store;
+    const Store = ctx.Store;
+    let proxy;
+    if (!teamId) {
+        proxy = store.drive?.proxy;
+    } else {
+        const s = Store.getStore(teamId);
+        proxy = s?.proxy?.drive;
+    }
+    return proxy;
+};
 
-    const drive = store.drive = store.drive || {};
+const initAPI = (config) => {
+    const { broadcast, store, Store, account } = config;
+    const ctx = {
+        store,
+        Store
+    };
+
+    return {
+        exists: (clientId, data, cb) => {
+            cb({ state: Boolean(store.proxy) });
+        },
+        get: (clientId, data, cb) => {
+            let proxy = getProxy(ctx, data.teamId);
+            if (!proxy) { return void cb({error: 'ENOTFOUND'}); }
+            cb({drive: proxy});
+        },
+        set: (clientId, data, cb) => {
+            let proxy = getProxy(ctx, data.teamId);
+            if (!proxy) { return void cb({error: 'ENOTFOUND'}); }
+            copyObject(proxy, data.value);
+            Store.onSync(data.teamId, cb);
+        },
+        migrateAnon: (clientId, data, cb) => {
+            Merge.anonDriveIntoUser(store, data.anonHash, cb);
+        }
+    };
+
+};
+const init = (config) => {
+    const { broadcast, store, Store, account } = config;
+
+    const drive = store.drive ||= {};
     let data = store.proxy?.drive;
 
     const hash:string = data?.hash || Hash.createRandomHash('drive');
@@ -112,7 +162,8 @@ const init = (config) => {
 };
 
 const Drive: Drive = {
-    init: init,
+    init,
+    initAPI
 };
 
 export { Drive }

@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Crypto, Hash, Util, Realtime, Messaging,
-                Constants, Messages = {}, PadTypes, nThen) => {
+                Constants, PadTypes, nThen) => {
     var Curve = Crypto.Curve;
 
-    var Msg = {};
+    const Msg = {};
+    let Messages = {};
 
     Msg.setCustomize = data => {
         Messages = data.Messages;
@@ -1119,34 +1119,13 @@ const factory = (Crypto, Hash, Util, Realtime, Messaging,
     return Msg;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('chainpad-crypto'),
-        require('../../common/common-hash'),
-        require('../../common/common-util'),
-        require('../../common/common-realtime'),
-        require('../components/messaging'),
-        require('../../common/common-constants'),
-        undefined,
-        require('../../common/pad-types'),
-        require('nthen')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/components/chainpad-crypto/crypto.js',
-        '/common/common-hash.js',
-        '/common/common-util.js',
-        '/common/common-realtime.js',
-        '/common/outer/messaging.js',
-        '/common/common-constants.js',
-        '/customize/messages.js',
-        '/common/pad-types.js',
-
-        '/components/nthen/index.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('chainpad-crypto'),
+    require('../../common/common-hash'),
+    require('../../common/common-util'),
+    require('../../common/common-realtime'),
+    require('../components/messaging'),
+    require('../../common/common-constants'),
+    require('../../common/pad-types'),
+    require('nthen')
+);
