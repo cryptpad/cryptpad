@@ -1127,7 +1127,6 @@ define([
                             });
                             var toggleRow = h('div.cp-markdown-toggle-row');
                             $(block).prepend(markdownTb.toolbar);
-                            UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
                             $(window).on('resize', function() {
                                 UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
                             });

@@ -1343,7 +1343,7 @@ define([
 
     UIElements.createMarkdownToolbarToggle = function(toolbarElement, editor) {
         var $button = $('<button>', {
-            'class': 'btn btn-toolbar-alt cp-markdown-toolbar-toggle-button',
+            'class': 'btn cp-markdown-toolbar-toggle-button',
             'aria-label': Messages.toolbar_tools,
             'data-notippy':1,
             'title': Messages.toolbar_tools,
@@ -1353,6 +1353,10 @@ define([
             $('<i>', {
                 'class': 'fa fa-wrench',
                 'aria-hidden': true
+            }),
+            $('<span>', {
+                'class': 'cp-toolbar-label',
+                'text': Messages.toolbar_tools
             })
         );
     

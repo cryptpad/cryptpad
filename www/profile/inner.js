@@ -544,8 +544,6 @@ define([
         $(window).on('resize', function() {
             UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
         });
-        $(toggleButton).removeClass('btn-toolbar-alt');
-        $(toggleButton).append('<span class="toggle-label">Show tools</span>');
         $(code).prepend(markdownTb.toolbar);
         $(code).prepend(toggleRow); 
         if(!Util.isSmallScreen()) {
