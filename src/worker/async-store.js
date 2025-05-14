@@ -2821,6 +2821,14 @@ const factory = (Sortify, UserObject, ProxyManager,
             }
         };
 
+        const startCacheModules = (clientId, returned, _cb) => {
+            const cb = Util.mkAsync(_cb);
+            onCacheReady(clientId, function () {
+                onCacheReadyEvt.fire();
+                cb(returned);
+            });
+        };
+
         // onReady: called when the drive is synced (not using the cache anymore)
         // "cb" is wrapped in Util.once() and may have already been called
         // if we have a local cache
@@ -3201,13 +3209,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             andThen();
         };
 
-        const startCacheModules = (clientId, returned, _cb) => {
-            const cb = Util.mkAsync(_cb);
-            onCacheReady(clientId, function () {
-                onCacheReadyEvt.fire();
-                cb(returned);
-            });
-        };
         const startModules = (clientId, returned, cb) => {
             if (store.manager) {
                 return void onCacheReadyEvt.reg(function () {
