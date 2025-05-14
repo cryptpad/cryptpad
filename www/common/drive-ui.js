@@ -3790,8 +3790,6 @@ define([
                 });
                 $element.contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
-                var $fileMenu = $('<li>').append($fileMenuIcon);
-                $element.append($fileMenu);
                 $container.append($element);
             });
             createGhostIcon($container);
