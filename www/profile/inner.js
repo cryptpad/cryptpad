@@ -540,7 +540,7 @@ define([
 
         var markdownTb = common.createMarkdownToolbar(editor);
         var toggleRow = h('div.cp-markdown-toggle-row');
-        var toggleButton = UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+        UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
         $(window).on('resize', function() {
             UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
         });
