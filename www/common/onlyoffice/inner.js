@@ -1724,7 +1724,7 @@ define([
                 deleteOfflineLocks();
                 handleNewLocks({}, content.locks);
                 if (APP.unsavedChanges) {
-                    var unsaved = APP.unsavedChanges;
+                    var unsaved = APP.unsavedChanges;
                     delete APP.unsavedChanges;
                     rtChannel.sendMsg(unsaved, null, function (err, hash) {
                         if (err) { return void UI.alert(Messages.oo_lostEdits); }
@@ -1853,6 +1853,7 @@ define([
                     permissions: {
                         download: dc?.permissions?.download || false,
                         print: dc?.permissions?.print || true,
+                        protect: false
                     }
                 },
                 "documentType": file.doc,
@@ -2128,6 +2129,19 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }, void 0, common.getCache());
                 });
             };
+            if (integrationConfig?.editorConfig) {
+                let ec = integrationConfig.editorConfig;
+                let c = APP.ooconfig.editorConfig.customization;
+                copy(APP.ooconfig.editorConfig, ec);
+                // Open "goback" in new tabs because of csp and
+                // iframes
+                if (ec.editorConfig?.customization?.goback) {
+                    c.goback.blank = true;
+                }
+                if (!privateData?.integrationConfig?.autosave) {
+                    c.forcesave = true;
+                }
+            }
 
             // Always hide right menu
             try {

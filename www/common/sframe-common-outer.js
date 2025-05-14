@@ -1055,12 +1055,6 @@ define([
                 });
                 sframeChan.on('EV_OPEN_URL', openURL);
 
-                sframeChan.on('EV_OPEN_UNSAFE_URL', function (url) {
-                    if (url) {
-                        window.open(ApiConfig.httpSafeOrigin + '/bounce/#' + encodeURIComponent(url));
-                    }
-                });
-
                 sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
                     if (!data || !data.channel) {
                         data = {

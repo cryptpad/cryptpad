@@ -19,13 +19,14 @@ define([
     '/common/common-credential.js',
     '/customize/login.js',
     '/common/store-interface.js',
+    '/common/pad-types.js',
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
     '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Broadcast, Messages, Util, Hash, Cache,
             Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, Store, AppConfig, nThen) {
+            Cred, Login, Store, Types, AppConfig, nThen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -1682,7 +1683,7 @@ define([
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
-        if (parsed.type !== 'sheet') { return void cb({ error: 'EINVAL_TYPE' }); }
+        if (!Types.OO_APPS.includes(parsed.type)) { return void cb({ error: 'EINVAL_TYPE' }); }
 
         var warning = false;
         var newHash, newRoHref;

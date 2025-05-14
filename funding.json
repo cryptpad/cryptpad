@@ -1,0 +1,151 @@
+{
+    "version": "v1.0.0",
+    "drips": {
+      "ethereum": {
+        "ownedBy": "0xa117114b3a22e038c1545043d610dbd4029355b1"
+      }
+    },
+    "entity": {
+      "type": "organisation",
+      "role": "owner",
+      "name": "XWiki SAS",
+      "email": "funding@xwiki.com",
+      "phone": "",
+      "description": "XWiki SAS is a European Open Source organization, maintaining Open Source Collaboration projects, XWiki and CryptPad. We believe that Open Source projects are key to getting back control on software, and that companies are important to allow the maintenance of Open Source projects.",
+      "webpageUrl": {
+        "url": "https://xwiki.com",
+        "wellKnown": "https://xwiki.com/.well-known/funding-manifest-urls"
+      }
+    },
+    "projects": [
+      {
+        "guid": "cryptpad",
+        "name": "CryptPad",
+        "description": "CryptPad is an end-to-end encrypted Collaboration Platform focused on providing real-time editing tools while protecting privacy.",
+        "webpageUrl": {
+          "url": "https://cryptpad.org",
+          "wellKnown": "https://cryptpad.org/.well-known/funding-manifest-urls"
+        },
+        "repositoryUrl": {
+          "url": "https://github.com/cryptpad/cryptpad"
+        },
+        "licenses": [
+          "spdx:AGPL-3.0-or-later"
+        ],
+        "tags": [
+          "privacy",
+          "e2ee",
+          "collaboration",
+          "realtimeediting",
+          "office",
+          "drive"
+        ]
+      }
+    ],
+    "funding": {
+      "channels": [
+        {
+          "guid": "opencollective-cryptpad",
+          "type": "payment-provider",
+          "address": "https://opencollective.com/cryptpad",
+          "description": "OpenCollective CryptPad Account"
+        },
+        {
+          "guid": "bank",
+          "type": "bank",
+          "address": "Contact XWiki SAS",
+          "description": "Donation by Bank Transfer or other means with XWiki SAS"
+        }
+      ],
+      "plans": [
+        {
+          "guid": "cryptpad-individual-helper",
+          "status": "active",
+          "name": "Individual Donator - Starter",
+          "description": "Individual Donator would like to help us fund the maintenance and further improvement of the software.\n\n35000 people donating this every year would be needed to fund the current team to allow CryptPad to be independent from outside grants.\n\nThis plans corresponds to:\n\n- an occasional user of CryptPad\n- a regular user with limited funds\n- somebody just wanting to give us a nudge",
+          "amount": 20,
+          "currency": "EUR",
+          "frequency": "yearly",
+          "channels": [
+            "opencollective-cryptpad"
+          ]
+        },
+        {
+          "guid": "cryptpad-individual-user",
+          "status": "active",
+          "name": "Individual Donator - User",
+          "description": "Individual Donator would like to help us fund the maintenance and further improvement of the software.\n\n14000 people donating this every year would be needed to fund the current team to allow CryptPad to be independent from outside grants.\n\nThis plans corresponds to:\n\n- an regular user of CryptPad\n- a privacy believer who would like to help us\n- a personal instance owner with limited funds",
+          "amount": 50,
+          "currency": "EUR",
+          "frequency": "yearly",
+          "channels": [
+            "opencollective-cryptpad"
+          ]
+        },
+        {
+          "guid": "cryptpad-individual-sponsor",
+          "status": "active",
+          "name": "Individual Donator - Sponsor",
+          "description": "Individual Donator would like to help us fund the maintenance and further improvement of the software.\n\n3500 people donating this every year would be needed to fund the current team to allow CryptPad to be independent from outside grants.\n\nThis plans corresponds to:\n\n- an regular user of CryptPad who really likes CryptPad\n- a privacy believer who wants to accelerate privacy online\n- a personal or community small size instance owner",
+          "amount": 200,
+          "currency": "EUR",
+          "frequency": "yearly",
+          "channels": [
+            "opencollective-cryptpad"
+          ]
+        },
+        {
+          "guid": "cryptpad-instanceowner-smallorg",
+          "status": "active",
+          "name": "Small Organization Using CryptPad",
+          "description": "Small Organization which would like to help us fund the maintenance and further improvement of the software.\n\n1500 organizations donating this every year would be needed to fund the current team to allow CryptPad to be independent from outside grants.\n\nThis plans corresponds to:\n\n- a non-profit organization having some funds hosting CryptPad for their members\n- a small company using CryptPad for its users\n- any organizations wanting Privacy software to progress",
+          "amount": 500,
+          "currency": "EUR",
+          "frequency": "yearly",
+          "channels": [
+            "opencollective-cryptpad"
+          ]
+        },
+        {
+          "guid": "cryptpad-instanceowner-bigorg",
+          "status": "active",
+          "name": "Small Organization Using CryptPad",
+          "description": "Small Organization which would like to help us fund the maintenance and further improvement of the software.\n\n350 organizations donating this every year would be needed to fund the current team to allow CryptPad to be independent from outside grants.\n\nThis plans corresponds to:\n\n- a commercial company using CryptPad regularly internally or externally\n- any organization having sufficient funds wanting to support Open Source Software doing the right thing\n",
+          "amount": 2000,
+          "currency": "EUR",
+          "frequency": "yearly",
+          "channels": [
+            "opencollective-cryptpad",
+            "bank"
+          ]
+        },
+        {
+          "guid": "cryptpad-instanceowner-bigorg",
+          "status": "active",
+          "name": "Organization using CryptPad heavily or as part of their offering",
+          "description": "Organization using CryptPad heavily or as part of it's commercial offering and which would like to significantly contribute to it's development.\n\n70 organizations donating this every year would be needed to fund the current team to allow CryptPad to be independent from outside grants.\n\nThis plans corresponds to:\n\n- a commercial company using CryptPad heavily or as part of a commercial offering\n- foundations who would like to support the development.",
+          "amount": 10000,
+          "currency": "EUR",
+          "frequency": "yearly",
+          "channels": [
+            "opencollective-cryptpad",
+            "bank"
+          ]
+        },
+        {
+          "guid": "cryptpad-org-funder",
+          "status": "active",
+          "name": "Funding organization or large company supporting the maintenance and development of CryptPad",
+          "description": "This is meant for an organization investing in Privacy Preserving technologies and/or Open Source software which is important for the internet and wanting to support CryptPad with a grant. The grant can be for specific development useful for our roadmap or just for maintenance of the software.\n\n12 such grants would be needed to fund the current team.",
+          "amount": 50000,
+          "currency": "EUR",
+          "frequency": "one-time",
+          "channels": [
+            "opencollective-cryptpad",
+            "bank"
+          ]
+        }
+      ],
+      "history": []
+    }
+  }

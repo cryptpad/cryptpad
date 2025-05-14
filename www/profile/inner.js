@@ -654,7 +654,7 @@ define([
             addLink($rightside);
             addFriendRequest($rightside);
             addMuteButton($rightside);
-            addBadges($rightside);
+            //addBadges($rightside); // XXX 2025.6
             addPublicKey($rightside);
             addCopyData($rightside);
             addViewButton($rightside);
