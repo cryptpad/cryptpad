@@ -18,7 +18,7 @@ main() {
 
     # clean build env in case a previous build has failed
     rm -rf "$BUILDS_DIR"
-
+    
     mkdir -p "$CONF_DIR"
 
     load_props
@@ -92,7 +92,7 @@ main() {
                 # From all the older versions only v7 has 'dictionaries', we remove it for the same reasons
                 rm -rf "$OO_DIR/v7/dictionaries/"
                 ;;
-            v8)  install_version v8 v8.3.0.83+3 fbf77671ea8b960b6c65fdad025980894dfc9ed0b79d9540951f56c79871d0bde3361f29a35b9653764f7802ec74df01601b6c9961e0f3118988422667563470 ;;
+            v8)  install_version v8 v8.3.3.23+1 b9647468ef26c915788da3b2528e0496ba5fa78d5e7acb85eca11241cc325478d94f5508fdcf085b42adf0cad8eda830d71be87c58918d1f01a86c979da6f4e5 ;;
             x2t) install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1 ;;
             *)
                 echo "Unknown version: $version"

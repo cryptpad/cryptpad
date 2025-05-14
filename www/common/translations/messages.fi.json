@@ -1295,5 +1295,7 @@
     "form_anonymized": "Vastaukset anonymisoidaan",
     "form_settingsButton": "Lomakkeen asetukset",
     "admin_surveyCancel": "Poista",
-    "broadcast_end": "Loppu"
+    "broadcast_end": "Loppu",
+    "form_type_poll": "Kysely",
+    "form_type_sort": "Järjestetty lista"
 }

@@ -24,6 +24,7 @@ define([
     '/common/onlyoffice/ooslide_base.js',
 
     '/common/onlyoffice/current-version.js',
+    '/common/onlyoffice/broken-formats.js',
     '/components/file-saver/FileSaver.min.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -49,7 +50,8 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    OOCurrentVersion)
+    OOCurrentVersion,
+    BrokenFormats)
 {
     var saveAs = window.saveAs;
     var APP = window.APP = {
@@ -63,7 +65,6 @@ define([
     var PENDING_TIMEOUT = 30000;
     const HISTORY_KEEPER_INDEX_USER = 1;
     const READ_ONLY_INDEX_USER = 2;
-
     //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x, type) {
@@ -1598,8 +1599,8 @@ define([
                 mediasData: mediasData
             }, function (err, obj) {
                 if (err || !obj || !obj.data) {
-                    UI.warn(Messages.error);
-                    return void cb();
+                    UI.alert(Messages.oo_couldNotConvertDocument, cb);
+                    return;
                 }
                 cb(obj.data, obj.images);
             }, {
@@ -1962,82 +1963,7 @@ define([
             APP.UploadImageFiles = function (files, type, id, jwt, cb) {
                 return void cb();
             };
-            APP.AddImage = function(cb1, cb2) {
-                APP.AddImageSuccessCallback = cb1;
-                APP.AddImageErrorCallback = cb2;
-                common.openFilePicker({
-                    types: ['file'],
-                    where: ['root'],
-                    filter: {
-                        fileType: ['image/']
-                    }
-                }, function (data) {
-                    if (data.type !== 'file') {
-                        debug("Unexpected data type picked " + data.type);
-                        return;
-                    }
-                    var name = data.name;
 
-                    // Add image to the list
-                    var mediasSources = getMediasSources();
-
-                    // Check if name already exists
-                    var getUniqueName = function (name, mediasSources) {
-                        var get = function () {
-                            var s = name.split('.');
-                            if (s.length > 1) {
-                                s[s.length - 2] = s[s.length - 2] + '-' + Util.uid();
-                                name = s.join('.');
-                            } else {
-                                name += '-'+ Util.uid();
-                            }
-                        };
-                        while (mediasSources[name]) { get(); }
-                        return name;
-                    };
-                    if (mediasSources[name]) {
-                        name = getUniqueName(name, mediasSources);
-                        data.name = name;
-                    }
-                    mediasSources[name] = data;
-                    APP.onLocal();
-
-                    APP.realtime.onSettle(function () {
-                        getImageURL(name).then(function(url) {
-                            debug("CRYPTPAD success add " + name);
-                            common.setPadAttribute('atime', +new Date(), null, data.href);
-                            APP.AddImageSuccessCallback({
-                                name: name,
-                                url: url
-                            });
-                        });
-                    });
-                });
-            };
-
-            APP.remoteTheme = function () {
-                /*
-                    APP.themeRemote = true;
-                */
-            };
-            APP.changeTheme = function (/*id*/) {
-                /*
-                // disabled:
-Uncaught TypeError: Cannot read property 'calculatedType' of null
-    at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
-                */
-
-                /*
-                APP.themeChanged = {
-                    id: id
-                };
-                */
-            };
-            APP.openURL = function (url) {
-                common.openUnsafeURL(url);
-            };
-
-            APP.loadingImage = 0;
             const getImageURL = function(name) {
                 return new Promise((resolve) => {
                     if (name && /^data:image/.test(name)) {
@@ -2143,6 +2069,82 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
             }
 
+            APP.AddImage = function(cb1, cb2) {
+                APP.AddImageSuccessCallback = cb1;
+                APP.AddImageErrorCallback = cb2;
+                common.openFilePicker({
+                    types: ['file'],
+                    where: ['root'],
+                    filter: {
+                        fileType: ['image/']
+                    }
+                }, function (data) {
+                    if (data.type !== 'file') {
+                        debug("Unexpected data type picked " + data.type);
+                        return;
+                    }
+                    var name = data.name;
+
+                    // Add image to the list
+                    var mediasSources = getMediasSources();
+
+                    // Check if name already exists
+                    var getUniqueName = function (name, mediasSources) {
+                        var get = function () {
+                            var s = name.split('.');
+                            if (s.length > 1) {
+                                s[s.length - 2] = s[s.length - 2] + '-' + Util.uid();
+                                name = s.join('.');
+                            } else {
+                                name += '-'+ Util.uid();
+                            }
+                        };
+                        while (mediasSources[name]) { get(); }
+                        return name;
+                    };
+                    if (mediasSources[name]) {
+                        name = getUniqueName(name, mediasSources);
+                        data.name = name;
+                    }
+                    mediasSources[name] = data;
+                    APP.onLocal();
+
+                    APP.realtime.onSettle(function () {
+                        getImageURL(name).then(function(url) {
+                            debug("CRYPTPAD success add " + name);
+                            common.setPadAttribute('atime', +new Date(), null, data.href);
+                            APP.AddImageSuccessCallback({
+                                name: name,
+                                url: url
+                            });
+                        });
+                    });
+                });
+            };
+
+            APP.remoteTheme = function () {
+                /*
+                    APP.themeRemote = true;
+                */
+            };
+            APP.changeTheme = function (/*id*/) {
+                /*
+                // disabled:
+Uncaught TypeError: Cannot read property 'calculatedType' of null
+    at CPresentation.changeTheme (sdk-all.js?ver=4.11.0-1633612942653-1633619288217:15927)
+                */
+
+                /*
+                APP.themeChanged = {
+                    id: id
+                };
+                */
+            };
+            APP.openURL = function (url) {
+                common.openUnsafeURL(url);
+            };
+
+            APP.loadingImage = 0;
             // Always hide right menu
             try {
                 localStorage?.original?.removeItem('sse-hide-right-settings');
@@ -2198,7 +2200,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     saveAs(blob, finalFilename);
                     return;
                 }
-                UI.warn(Messages.error);
+                UI.alert(Messages.oo_couldNotConvertDocument);
             });
         };
 
@@ -2243,7 +2245,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 warning
             ]);
 
-            UI.prompt(promptMessage, Util.fixFileName(suggestion), function (filename) {
+            UI.prompt(promptMessage, Util.fixFileName(suggestion), async function (filename) {
                 // $select.getValue()
                 if (!(typeof(filename) === 'string' && filename)) { return; }
                 var ext = ($select.getValue() || '').slice(1);
@@ -2251,6 +2253,10 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
                     saveAs(blob, filename+'.bin');
                     return;
+                }
+
+                if (BrokenFormats.brokenExportFormats.includes(ext)) {
+                    await UI.alertPromise(Messages.oo_unstableMigrationWarning);
                 }
 
                 var content = h('div.cp-oo-x2tXls', [
@@ -2348,7 +2354,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             if (!content) {
                 UI.removeModals();
                 return void UI.alert(Messages.oo_invalidFormat);
-            }
+            }
             var blob = new Blob([content], {type: 'plain/text'});
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
@@ -2370,10 +2376,15 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             APP.FM.handleFile(blob, data);
         };
 
-        var importXLSXFile = function(content, filename, ext) {
+        var importXLSXFile = async function(content, filename, ext) {
             // Perform the x2t conversion
             debug("Filename");
             debug(filename);
+
+            if (BrokenFormats.brokenImportFormats.includes(ext)) {
+                await UI.alertPromise(Messages.oo_unstableMigrationWarning);
+            }
+
             if (ext === "bin") {
                 return void importFile(content);
             }
