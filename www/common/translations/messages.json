@@ -1818,5 +1818,7 @@
     "moveItemUp": "Move item up",
     "moveItemDown": "Move item down",
     "toggleArrows": "Arrow buttons to move items",
-    "profile_remove_avatar": "Remove this avatar"
+    "profile_remove_avatar": "Remove this avatar",
+    "oo_couldNotConvertDocument": "The conversion of the document failed. Please note that Microsoft Office formats (.docx, .xlsx, .pptx) currently give the best results for import and export.",
+    "oo_unstableMigrationWarning": "Import and Export of some OpenDocument formats (.odt, .odp) are currently unstable. We recommend using other formats where possible. CryptPad will now attempt a best-effort conversion."
 }
