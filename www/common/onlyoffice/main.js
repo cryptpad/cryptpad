@@ -46,20 +46,32 @@ define([
             sframeChan.on('Q_OO_SAVE', function (data, cb) {
                 var chanId = Utils.Hash.hrefToHexChannelId(data.url);
                 Cryptpad.getPadAttribute('lastVersion', function (err, data) {
-                    if (data) {
-                        var oldChanId = Utils.Hash.hrefToHexChannelId(data);
-                        if (oldChanId !== chanId) { Cryptpad.unpinPads([oldChanId], function () {}); }
-                    }
+                    if (!data) { return; }
+                    var oldChanId = Utils.Hash.hrefToHexChannelId(data);
+                    if (oldChanId !== chanId) { Cryptpad.unpinPads([oldChanId], function () {}); }
                 });
-                Cryptpad.pinPads([chanId], function (e) {
-                    if (e) { return void cb(e); }
-                    Cryptpad.setPadAttribute('lastVersion', data.url, cb);
-                    channels.lastVersion = data.url;
+
+                // If pad is stored, pin
+                Cryptpad.getPadAttribute('channel', function (err, data) {
+                    if (err || !data) { return; }
+                    Cryptpad.pinPads([chanId], function (e) {
+                        if (e) { return void cb(e); }
+                    });
                 });
+                Cryptpad.setPadAttribute('lastVersion', data.url, cb);
+                channels.lastVersion = data.url;
                 Cryptpad.setPadAttribute('lastCpHash', data.hash, cb);
                 channels.lastCpHash = data.hash;
             });
             sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
+                const other = Cryptpad.otherPadAttrs = {
+                    rtChannel: data.channel
+                };
+                if (channels.lastVersion) {
+                    other.lastVersion = channels.lastVersion;
+                }
+                other.lastCpHash = channels.lastCpHash;
+
                 Cryptpad.getPadAttribute('rtChannel', function (err, res) {
                     // If already stored, don't pin it again
                     if (res && res === data.channel) { return; }

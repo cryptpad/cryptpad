@@ -746,6 +746,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (data.password) { pad.password = data.password; }
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
             if (data.readme) { pad.readme = 1; }
+            Object.keys(data.attributes || {}).forEach(k => {
+                if (!data.attributes[k]) { return; } // undefined
+                pad[k] = data.attributes[k];
+            });
 
             if (data.teamId === -1) { data.teamId = undefined; }
             var s = getStore(data.teamId);
@@ -1309,7 +1313,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                         owners: owners,
                         expire: expire,
                         password: data.password,
-                        path: data.path
+                        path: data.path,
+                        attributes: data.attributes
                     }, cb);
                     // Let inner know that dropped files shouldn't trigger the popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {

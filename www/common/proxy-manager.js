@@ -1401,7 +1401,15 @@ const factory = (UserObject, Util, Hash,
             });
         };
         if (!Env.pinPads) { return void todo(); }
-        Env.pinPads([pad.channel], function (obj) {
+        let channels = [pad.channel];
+
+        if (pad.rtChannel) { channels.push(pad.rtChannel); }
+        if (pad.answersChannel) { channels.push(pad.answersChannel); }
+        if (pad.lastVersion) {
+            channels.push(Hash.hrefToHexChannelId(pad.lastVersion));
+        }
+
+        Env.pinPads(channels, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             todo();
         });
