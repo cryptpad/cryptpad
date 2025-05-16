@@ -56,6 +56,7 @@ define([
     BrokenFormats)
 {
     var saveAs = window.saveAs;
+    var Nacl = window.nacl;
     var APP = window.APP = {
         $: $,
         urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs'])
@@ -2420,6 +2421,98 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             };
 
             APP.loadingImage = 0;
+
+            APP.getImageURL = function(name, callback) {
+                if (name && /^data:image/.test(name)) {
+                    return void callback('');
+                }
+
+                var mediasSources = getMediasSources();
+                var data = mediasSources[name];
+                downloadImages[name] = Util.mkEvent(true);
+
+                if (typeof data === 'undefined') {
+                    if (/^http/.test(name) && /slide\/themes\/theme/.test(name)) {
+                        Util.fetch(name, function (err, u8) {
+                            if (err) { return; }
+                            mediasData[name] = {
+                                blobUrl: name,
+                                content: u8,
+                                name: name
+                            };
+                            var b = new Blob([u8], {type: "image/jpeg"});
+                            var blobUrl = URL.createObjectURL(b);
+                            return void callback(blobUrl);
+                        });
+                        return;
+                    }
+                    debug("CryptPad - could not find matching media for " + name);
+                    return void callback("");
+                }
+
+                var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].blobUrl;
+                if (blobUrl) {
+                    delete downloadImages[name];
+                    debug("CryptPad Image already loaded " + blobUrl);
+
+                    // Fix: https://github.com/cryptpad/cryptpad/issues/1500
+                    // Maybe OO was reloaded, but the CryptPad cache is still intact?
+                    // -> Add the image to OnlyOffice again.
+                    const documentUrls = window.frames[0].AscCommon.g_oDocumentUrls;
+                    if (!(data.name in documentUrls.getUrls())) {
+                        documentUrls.addImageUrl(data.name, blobUrl);
+                    }
+
+                    return void callback(blobUrl);
+                }
+
+                APP.loadingImage++;
+                Util.fetch(data.src, function (err, u8) {
+                    if (err) {
+                        APP.loadingImage--;
+                        console.error(err);
+                        return void callback("");
+                    }
+                    try {
+                        debug("Decrypt with key " + data.key);
+                        FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                            APP.loadingImage--;
+                            if (err || !res.content) {
+                                debug("Decrypting failed");
+                                return void callback("");
+                            }
+
+                            try {
+                                var blobUrl = URL.createObjectURL(res.content);
+                                // store media blobUrl and content for cache and export
+                                var mediaData = {
+                                    blobUrl : blobUrl,
+                                    content : "",
+                                    name: name
+                                };
+                                mediasData[data.src] = mediaData;
+                                var reader = new FileReader();
+                                reader.onloadend = function () {
+                                    debug("MediaData set");
+                                    mediaData.content = reader.result;
+                                    downloadImages[name].fire();
+                                };
+                                reader.readAsArrayBuffer(res.content);
+                                debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
+                                window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
+                                callback(blobUrl);
+                            } catch (e) {}
+                        });
+                    } catch (e) {
+                        APP.loadingImage--;
+                        debug("Exception decrypting image " + data.name);
+                        console.error(e);
+                        callback("");
+                    }
+                }, void 0, common.getCache());
+            };
+
+            
             // Always hide right menu
             try {
                 localStorage?.original?.removeItem('sse-hide-right-settings');
