@@ -1844,12 +1844,12 @@ define([
                         return res;
                     },
                     reset: function () { 
-                    $(tag).find('input').each(function (i, input) {
-                        var $i = $(input);
-                        if (Util.isChecked($i)) { 
-                            $i.prop('checked',false)
-                        }
-                    });
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false)
+                            }
+                        });
                     },
                     setEditable: function (state) {
                         if (state) { $(tag).find('input').removeAttr('disabled'); }
@@ -1976,13 +1976,12 @@ define([
                         return res;
                     },
                     reset: function () { 
-                    // $(tag).find('input').removeAttr('checked'); 
-                    $(tag).find('input').each(function (i, input) {
-                        var $i = $(input);
-                        if (Util.isChecked($i)) { 
-                            $i.prop('checked',false)
-                        }
-                    });
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked',false)
+                            }
+                        });
                     },
                     setEditable: function (state) {
                         if (state) { $tag.find('input').removeAttr('disabled'); }
