@@ -1847,7 +1847,7 @@ define([
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
                             if (Util.isChecked($i)) { 
-                                $i.prop('checked', false)
+                                $i.prop('checked', false);
                             }
                         });
                     },
@@ -1979,7 +1979,7 @@ define([
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
                             if (Util.isChecked($i)) { 
-                                $i.prop('checked',false)
+                                $i.prop('checked', false);
                             }
                         });
                     },
@@ -2202,7 +2202,7 @@ define([
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
                             if (Util.isChecked($i)) { 
-                                $i.prop('checked',false)
+                                $i.prop('checked', false);
                             }
                         });
                         checkDisabled();
@@ -2351,7 +2351,7 @@ define([
                         $(tag).find('input').each(function (i, input) {
                             var $i = $(input);
                             if (Util.isChecked($i)) { 
-                                $i.prop('checked',false)
+                                $i.prop('checked', false);
                             }
                         });
                     },
