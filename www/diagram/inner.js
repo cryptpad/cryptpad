@@ -62,6 +62,9 @@ define([
 
         var onDrawioInit = function() {
             drawIoInitalized = true;
+            var readOnly = framework.isReadOnly() || framework.isLocked();
+            var grid = readOnly ? 0 : 1;
+            lastContent.mxfile.diagram.mxGraphModel._grid = grid;
             var xmlStr = DiagramUtil.jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'load',
@@ -147,26 +150,22 @@ define([
         );
 
         framework.onEditableChange(function () {
-            const editable = !framework.isLocked() && !framework.isReadOnly();
-            var pointerEvents = editable ? "auto" : "none"
-            $(drawioFrame).css("pointer-events", pointerEvents)
-            var spinner  = $("#cp-app-diagram-content").contents().find(".spinner");
-            if (!editable) {
-                postMessageToDrawio({
-                    action: 'spinner',
-                    message: Messages.reconnecting,
-                });
-                $(spinner).show()
+            var readOnly = framework.isReadOnly() || framework.isLocked()
+            if (readOnly) {
+                parameters.set('chrome', '0'); 
+                parameters.set('grid', '0');
             } else {
-                $(spinner).hide()
+                parameters.set('chrome', '1');
+                parameters.set('grid', '1');
             }
+            drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+            + parameters
         });
 
         // starting the CryptPad framework
         framework.start();
 
-        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + new URLSearchParams({
+        var parameters = new URLSearchParams({
                 test: 1,
                 stealth: 1,
                 embed: 1,
@@ -191,6 +190,9 @@ define([
 
                 lang: Messages._languageUsed
             });
+
+        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
+            + parameters
 
         window.addEventListener("message", (event) => {
             if (event.source === drawioFrame.contentWindow) {
