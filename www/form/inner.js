@@ -1850,11 +1850,6 @@ define([
                             $i.prop('checked',false)
                         }
                     });
-                        // var $i = $( $(tag).find('input'));
-                        // if (Util.isChecked($i)) { 
-                        //     console.log('beep', $i)
-                        //     $i.prop('checked',false)
-                        // }
                     },
                     setEditable: function (state) {
                         if (state) { $(tag).find('input').removeAttr('disabled'); }
