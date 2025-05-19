@@ -150,7 +150,7 @@ define([
         );
 
         framework.onEditableChange(function () {
-            var readOnly = framework.isReadOnly() || framework.isLocked()
+            var readOnly = framework.isReadOnly() || framework.isLocked();
             if (readOnly) {
                 parameters.set('chrome', '0'); 
                 parameters.set('grid', '0');
@@ -159,7 +159,7 @@ define([
                 parameters.set('grid', '1');
             }
             drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + parameters
+            + parameters;
         });
 
         // starting the CryptPad framework
