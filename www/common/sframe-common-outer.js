@@ -319,7 +319,7 @@ define([
                 let canNoDrive = false;
                 try {
                     var parsed = Utils.Hash.parsePadUrl(currentPad.href);
-                    canNoDrive = !(parsed?.hashData?.version === 3) && !parsed?.hashData?.password;
+                    canNoDrive = ![3,4].includes(parsed?.hashData?.version) && !parsed?.hashData?.password;
                     var options = parsed.getOptions();
                     if (options.loginOpts) {
                         var loginOpts = Utils.Hash.decodeDataOptions(options.loginOpts);
