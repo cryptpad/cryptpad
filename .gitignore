@@ -31,7 +31,7 @@ www/common/onlyoffice/v*
 /www/common/onlyoffice/dist/
 /onlyoffice-conf/
 /onlyoffice-dist/
-
+funding.json
 www/common/worker.bundle.js
 _build
 
