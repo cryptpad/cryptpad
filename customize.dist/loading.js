@@ -15,7 +15,7 @@ define([
 
     elem.innerHTML = [
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="' + Messages.label_logo + '">',
+            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="" aria-hidden="true">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
