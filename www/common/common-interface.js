@@ -196,7 +196,7 @@ define([
     };
 
     dialog.nav = function (content) {
-        return h('nav', content || [
+        return h('section', content || [
             dialog.cancelButton(),
             dialog.okButton(),
         ]);
@@ -212,6 +212,12 @@ define([
                 h('div'+cls, content),
             ])
         ]);
+
+        var dialogContent = frame.querySelector('div' + cls);
+        dialogContent.setAttribute('aria-live', 'assertive');
+        dialogContent.setAttribute('role', 'alertdialog');
+        dialogContent.setAttribute('aria-modal', 'true');
+
         var $frame = $(frame);
         frame.closeModal = function (cb) {
             frame.closeModal = function () {}; // Prevent further calls
