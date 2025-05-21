@@ -8,7 +8,7 @@ define([
     '/components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
-    '/common/outer/worker-channel.js',
+    '/common/events-channel.js',
     '/common/sframe-common-title.js',
     '/common/common-ui-elements.js',
     '/common/sframe-common-history.js',
@@ -708,10 +708,6 @@ define([
         return window.location.origin + '/bounce/#' + encodeURIComponent(url);
     };
     funcs.openUnsafeURL = function (url) {
-        var app = ctx.metadataMgr.getPrivateData().app;
-        if (app === "sheet") {
-            return void ctx.sframeChan.event('EV_OPEN_UNSAFE_URL', url);
-        }
         var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(url);
         window.open(bounceHref);
     };

@@ -2,10 +2,9 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Util, Hash, UserObject, nThen) => {
-    var History = {};
-    var commands = {};
+    const History = {};
+    const commands = {};
 
     var getAccountChannels = function (ctx) {
         var channels = [];
@@ -133,7 +132,7 @@ const factory = (Util, Hash, UserObject, nThen) => {
                 history = messages.join('\n').length;
             }), true);
             // Metadata
-            Store.getPadMetadata(null, {
+            Store.pad.getMetadata(null, {
                 channel: channel
             }, waitFor(function (obj) {
                 if (obj && obj.error) { return; }
@@ -257,22 +256,9 @@ const factory = (Util, Hash, UserObject, nThen) => {
     return History;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../../common/common-util'),
-        require('../../common/common-hash'),
-        require('../../common/user-object'),
-        require('nthen')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-util.js',
-        '/common/common-hash.js',
-        '/common/user-object.js',
-        '/components/nthen/index.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-})();
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-hash'),
+    require('../../common/user-object'),
+    require('nthen')
+);

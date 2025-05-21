@@ -15,13 +15,9 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/login-block.js',
     '/customize/messages.js',
-
-    '/components/tweetnacl/nacl-fast.min.js',
 ], function (ApiConfig, $, h, Util, Cred, UI, Login, Constants,
         ServerCommand, LocalStore, Block, Messages) {
     if (window.top !== window) { return; }
-
-    let Nacl = window.nacl;
 
     let ssoAuthCb = function (cb) {
         var b64Keys = Util.tryParse(localStorage.CP_sso_auth);
@@ -30,8 +26,8 @@ define([
             return;
         }
         var keys = {
-            secretKey: Nacl.util.decodeBase64(b64Keys.s),
-            publicKey: Nacl.util.decodeBase64(b64Keys.p)
+            secretKey: Util.decodeBase64(b64Keys.s),
+            publicKey: Util.decodeBase64(b64Keys.p)
         };
         var inviteToken = b64Keys.token;
         ServerCommand(keys, {

@@ -4,7 +4,7 @@
 
 define([
     '/components/localforage/dist/localforage.min.js',
-    '/common/outer/cache-store.js',
+    '/common/cache-store.js',
     '/components/nthen/index.js',
 ], function (localForage, Cache, nThen) {
     nThen(function (w) {

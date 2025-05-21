@@ -7,7 +7,7 @@ define([
     'chainpad-listmap',
     '/components/chainpad-crypto/crypto.js',
     '/common/common-util.js',
-    '/common/outer/network-config.js',
+    '/common/network-config.js',
     '/common/common-login.js',
     '/common/common-credential.js',
     '/components/chainpad/chainpad.dist.js',
@@ -53,8 +53,8 @@ define([
         var keys = Nacl.sign.keyPair();
         var inviteToken = window.location.hash.slice(1);
         localStorage.CP_sso_auth = JSON.stringify({
-            s: Nacl.util.encodeBase64(keys.secretKey),
-            p: Nacl.util.encodeBase64(keys.publicKey),
+            s: Util.encodeBase64(keys.secretKey),
+            p: Util.encodeBase64(keys.publicKey),
             token: inviteToken
         });
         ServerCommand(keys, {

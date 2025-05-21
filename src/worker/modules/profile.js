@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
 const factory = (Util, Hash, Constants, Realtime,
                 Listmap, Crypto, ChainPad) => {
     var Profile = {};
@@ -99,6 +98,12 @@ const factory = (Util, Hash, Constants, Realtime,
             ctx.emit('UPDATE', ctx.listmap.proxy, ctx.clients.filter(function (clientId) {
                 return clientId !== cId;
             }));
+            if (key === 'badge') {
+                ctx.Store.set(null, {
+                    key: ['profile', 'badge'],
+                    value: value || undefined
+                }, () => {});
+            }
             cb(ctx.listmap.proxy);
         });
     };
@@ -113,6 +118,7 @@ const factory = (Util, Hash, Constants, Realtime,
         var store = cfg.store;
         if (!store.loggedIn || !store.proxy.edPublic) { return; }
         var ctx = {
+            Store: cfg.Store,
             store: store,
             pinPads: cfg.pinPads,
             updateMetadata: cfg.updateMetadata,
@@ -156,29 +162,12 @@ const factory = (Util, Hash, Constants, Realtime,
     return Profile;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../../common/common-util'),
-        require('../../common/common-hash'),
-        require('../../common/common-constants'),
-        require('../../common/common-realtime'),
-        require('chainpad-listmap'),
-        require('chainpad-crypto'),
-        require('chainpad')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-util.js',
-        '/common/common-hash.js',
-        '/common/common-constants.js',
-        '/common/common-realtime.js',
-        'chainpad-listmap',
-        '/components/chainpad-crypto/crypto.js',
-        '/components/chainpad/chainpad.dist.js',
-        ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-hash'),
+    require('../../common/common-constants'),
+    require('../../common/common-realtime'),
+    require('chainpad-listmap'),
+    require('chainpad-crypto'),
+    require('chainpad')
+);
