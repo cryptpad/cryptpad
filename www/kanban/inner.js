@@ -285,7 +285,7 @@ define([
                 editor.replaceSelection($(mt)[0].outerHTML);
             }
         });
-        UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
+        var toggleButtonMarkdown = UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
         $(window).on('resize', function() {
             UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
         });
@@ -295,7 +295,19 @@ define([
                 e.stopPropagation();
                 editor.focus(); // Focus the editor instead of closing the modal
             }
-        });    
+            else if (e.which == 13 || e.which == 9) { // "Enter" or "Tab" key should not close modal
+                e.stopPropagation();
+            }
+        });  
+        $(toggleButtonMarkdown).on('keydown', function (e) {
+            if (e.which === 13) { // "Enter" should toggle the toolbar, but not close the modal
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).click(); // simulate click to toggle
+            } else if (e.which === 9) {
+                e.stopPropagation();
+            }
+        });
         $(text).before(markdownTb.toolbar);
         editor.refresh();
         var body = {
