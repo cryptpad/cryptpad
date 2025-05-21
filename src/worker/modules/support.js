@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
-const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
+const factory = (Util, Hash, Realtime, Pinpad, Crypt,
             nThen, Crypto, Listmap, ChainPad, CpNetflux) => {
-    var Support = {};
+    const Support = {};
+    let ApiConfig = {};
 
     Support.setCustomize = data => {
         ApiConfig = data.ApiConfig;
@@ -302,9 +302,9 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
         if (!curvePrivate) { return void cb('EFORBIDDEN'); }
         let edPrivate, edPublic;
         try {
-            let pair = Nacl.sign.keyPair.fromSeed(Nacl.util.decodeBase64(curvePrivate));
-            edPrivate = Nacl.util.encodeBase64(pair.secretKey);
-            edPublic = Nacl.util.encodeBase64(pair.publicKey);
+            let pair = Nacl.sign.keyPair.fromSeed(Util.decodeBase64(curvePrivate));
+            edPrivate = Util.encodeBase64(pair.secretKey);
+            edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
             return void cb(e);
         }
@@ -999,8 +999,8 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
     let updateServerKey = (ctx, curvePublic, curvePrivate, cb) => {
         let edPublic;
         try {
-            let pair = Nacl.sign.keyPair.fromSeed(Nacl.util.decodeBase64(curvePrivate));
-            edPublic = Nacl.util.encodeBase64(pair.publicKey);
+            let pair = Nacl.sign.keyPair.fromSeed(Util.decodeBase64(curvePrivate));
+            edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
             return void cb(e);
         }
@@ -1022,8 +1022,8 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
         let edPublic = proxy.edPublic;
 
         const keyPair = Nacl.box.keyPair();
-        const newKeyPub = Nacl.util.encodeBase64(keyPair.publicKey);
-        const newKey = Nacl.util.encodeBase64(keyPair.secretKey);
+        const newKeyPub = Util.encodeBase64(keyPair.publicKey);
+        const newKey = Util.encodeBase64(keyPair.secretKey);
 
         const oldKey = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePrivate']);
         const oldKeyPub = Util.find(proxy, ['mailboxes', 'supportteam', 'keys', 'curvePublic']);
@@ -1420,37 +1420,15 @@ const factory = (ApiConfig = {}, Util, Hash, Realtime, Pinpad, Crypt,
     return Support;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        undefined,
-        require('../../common/common-util'),
-        require('../../common/common-hash'),
-        require('../../common/common-realtime'),
-        require('../../common/pinpad'),
-        require('../../common/cryptget'),
-        require('nthen'),
-        require('chainpad-crypto'),
-        require('chainpad-listmap'),
-        require('chainpad'),
-        require('chainpad-netflux')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/api/config',
-        '/common/common-util.js',
-        '/common/common-hash.js',
-        '/common/common-realtime.js',
-        '/common/pinpad.js',
-        '/common/cryptget.js',
-        '/components/nthen/index.js',
-        '/components/chainpad-crypto/crypto.js',
-        'chainpad-listmap',
-        '/components/chainpad/chainpad.dist.js',
-        'chainpad-netflux'
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-hash'),
+    require('../../common/common-realtime'),
+    require('../../common/pinpad'),
+    require('../../common/cryptget'),
+    require('nthen'),
+    require('chainpad-crypto'),
+    require('chainpad-listmap'),
+    require('chainpad'),
+    require('chainpad-netflux')
+);

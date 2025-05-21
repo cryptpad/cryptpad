@@ -7,6 +7,7 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) '../../customize/src/less2/include/variables.less';
+@import (reference) '../../customize/src/less2/include/badges.less';
 
 &.cp-app-profile {
 
@@ -24,6 +25,29 @@
 
     .cp-app-profile-section:first-child {
         margin-top: 1rem;
+    }
+
+    .cp-profile-badges {
+        display: flex;
+        align-items: center;
+        & > span {
+            margin-right: 1em;
+        }
+        .cp-profile-badges-list {
+            .badges_main(40px);
+            i {
+                cursor: pointer;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                }
+                &:not(:last-child) {
+                    margin-right: 0.5em;
+                }
+                &.cp-selected {
+                    border-color: @cryptpad_color_brand;
+                }
+            }
+        }
     }
 
     #cp-app-profile-header {

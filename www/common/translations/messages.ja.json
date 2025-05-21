@@ -1817,5 +1817,6 @@
     "admin_listConfirm": "このユーザーの管理者の権限を削除してよろしいですか？",
     "admin_errorAddKeyLabel": "正しい公開鍵を追加してください",
     "skipLink": "メインの内容にスキップ",
-    "addItemTop": "カードをボードの最上部に追加"
+    "addItemTop": "カードをボードの最上部に追加",
+    "profile_remove_avatar": "このアバターを削除"
 }

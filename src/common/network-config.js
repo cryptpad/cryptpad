@@ -14,7 +14,7 @@ const factory = (ApiConfig = {}) => {
         var path = ApiConfig.websocketPath || '/cryptpad_websocket';
         if (/^ws{1,2}:\/\//.test(path)) { return path; }
 
-        var l = new URL(origin || self?.location?.href);
+        var l = new URL(origin || globalThis?.location?.href || ApiConfig.httpUnsafeOrigin);
         if (origin) {
             l.href = origin;
         }

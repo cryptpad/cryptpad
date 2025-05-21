@@ -7,7 +7,7 @@
 define([
     '/customize/pages.js',
     '/common/common-util.js',
-    '/calendar/recurrence.js',
+    '/common/recurrence.js',
 
     '/lib/ical.min.js'
 ], function (Pages, Util, Rec) {

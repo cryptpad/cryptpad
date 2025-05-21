@@ -15,7 +15,6 @@ import * as Util from '../common/common-util.js';
 import * as Hash from '../common/common-hash.js';
 import * as Feedback from '../common/common-feedback.js';
 import * as Realtime from '../common/common-realtime.js';
-import * as Messaging from '../common/common-messaging.js';
 import * as Constants from '../common/common-constants.js';
 import * as Credential from '../common/common-credential.js';
 import * as ProxyManager from '../common/proxy-manager.js';
@@ -24,7 +23,7 @@ import * as UOSetter from '../common/user-object-setter.js';
 import * as Pinpad from '../common/pinpad.js';
 import * as PadTypes from '../common/pad-types.js';
 import * as NetworkConfig from '../common/network-config.js';
-import * as LoginBlock from '../common/login-block.js';
+import * as LoginBlock from '../common/outer/login-block.js';
 
 // Core
 import * as Store from './async-store.js';
@@ -36,6 +35,7 @@ import * as AsyncConnector from './core/async-connector.js';
 
 // Components
 import * as Migrate from './components/migrate-user-object.js';
+import * as Messaging from './components/messaging.js';
 
 // Modules
 import * as Mailbox from './modules/mailbox.js';
@@ -48,6 +48,7 @@ import * as Team from './modules/team.js';
 import * as Messenger from './modules/messenger.js';
 import * as History from './modules/history.js';
 import * as Calendar from './modules/calendar.js';
+import { Badge } from './modules/badge';
 
 declare var WorkerGlobalScope: any
 declare var SharedWorkerGlobalScope: any
@@ -76,7 +77,8 @@ let start = (cfg: StoreConfig):void => {
         Calendar,
         Store,
         Account,
-        Mailbox
+        Mailbox,
+        Badge
     ].forEach(dep => {
         if (typeof(dep.setCustomize) === "function") {
             dep.setCustomize(cfg);

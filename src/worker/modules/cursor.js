@@ -2,18 +2,15 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(() => {
-const factory = (Util, Constants, Messages = {},
-                    AppConfig = {}, Crypto) => {
-    var Cursor = {};
+const factory = (Util, Constants, Crypto) => {
+    const Cursor = {};
+    let Messages = {};
+    let AppConfig = {};
 
     Cursor.setCustomize = data => {
         Messages = data.Messages;
         AppConfig = data.AppConfig;
     };
-
-
-    var DEGRADED = AppConfig.degradedLimit || 8;
 
     var convertToUint8 = function (obj) {
         var l = Object.keys(obj).length;
@@ -59,6 +56,7 @@ const factory = (Util, Constants, Messages = {},
 
     var updateDegraded = function (ctx, wc, chan) {
         var m = wc.members;
+        var DEGRADED = AppConfig.degradedLimit || 8;
         chan.degraded = (m.length-1) >= DEGRADED;
         ctx.emit('DEGRADED', { degraded: chan.degraded }, chan.clients);
     };
@@ -288,25 +286,8 @@ const factory = (Util, Constants, Messages = {},
     return Cursor;
 };
 
-if (typeof(module) !== 'undefined' && module.exports) {
-    // Code from customize can't be laoded directly in the build
-    module.exports = factory(
-        require('../../common/common-util'),
-        require('../../common/common-constants'),
-        undefined,
-        undefined,
-        require('chainpad-crypto')
-    );
-} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-    define([
-        '/common/common-util.js',
-        '/common/common-constants.js',
-        '/customize/messages.js',
-        '/customize/application_config.js',
-        '/components/chainpad-crypto/crypto.js',
-    ], factory);
-} else {
-    // unsupported initialization
-}
-
-})();
+module.exports = factory(
+    require('../../common/common-util'),
+    require('../../common/common-constants'),
+    require('chainpad-crypto')
+);
