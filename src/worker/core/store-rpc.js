@@ -22,7 +22,6 @@ const factory = AStore => {
             GET_PIN_LIMIT: Store.getPinLimit,
             CLEAR_OWNED_CHANNEL: Store.clearOwnedChannel,
             REMOVE_OWNED_CHANNEL: Store.removeOwnedChannel,
-            UPLOAD_CHUNK: Store.uploadChunk,
             UPLOAD_COMPLETE: Store.uploadComplete,
             UPLOAD_STATUS: Store.uploadStatus,
             UPLOAD_CANCEL: Store.uploadCancel,

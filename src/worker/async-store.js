@@ -484,18 +484,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             });
         };
 
-        Store.uploadChunk = function (clientId, data, cb) {
-            var s = getStore(data.teamId);
-            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
-            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            s.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
-                cb({
-                    error: e,
-                    msg: msg
-                });
-            });
-        };
-
         var initTempRpc = (clientId, cb) => {
             if (store.rpc) { return void cb(store.rpc); }
             var kp = Crypto.Nacl.sign.keyPair();
