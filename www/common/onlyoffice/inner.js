@@ -2344,6 +2344,8 @@ define([
                     }, void 0, common.getCache());
                 });
             };
+
+            let integrationConfig = privateData?.integrationConfig?._;
             if (integrationConfig?.editorConfig) {
                 let ec = integrationConfig.editorConfig;
                 let c = APP.ooconfig.editorConfig.customization;
