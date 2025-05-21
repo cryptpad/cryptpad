@@ -45,6 +45,9 @@ define([
         var addRpc = function (sframeChan, Cryptpad) {
             sframeChan.on('EV_FORM_PIN', function (data) {
                 channels.answersChannel = data.channel;
+                Cryptpad.otherPadAttrs = {
+                    answersChannel: data.channel
+                };
                 Cryptpad.changeMetadata();
                 Cryptpad.getPadAttribute('answersChannel', function (err, res) {
                     // If already stored, don't pin it again

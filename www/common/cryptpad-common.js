@@ -1145,6 +1145,13 @@ define([
             }
         }
 
+        // Make sure we also store additionnal data to pin all the channels
+        // (OO and forms)
+        data.attributes = {};
+        Object.keys(common?.otherPadAttrs || {}).forEach(k => {
+            data.attributes[k] = common.otherPadAttrs[k];
+        });
+
         postMessage("SET_PAD_TITLE", data, function (obj) {
             if (obj && obj.error) {
                 if (obj.error !== "EAUTH") { console.log("unable to set pad title"); }
@@ -1167,6 +1174,8 @@ define([
             return;
         }
 
+        let rtChannel, lastVersion, answersChannel;
+        let attributes = {};
         nThen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }
             // Set the correct owner and expiration time if we can find them
@@ -1177,6 +1186,14 @@ define([
                 data.owners = obj.owners;
                 data.expire = +obj.expire;
             }));
+            common.getPadAttribute('', waitFor(function (err, _data) {
+                attributes.rtChannel = _data?.rtChannel;
+                attributes.lastVersion = _data?.lastVersion;
+                attributes.answersChannel = _data?.answersChannel;
+                Object.keys(common?.otherPadAttrs || {}).forEach(k => {
+                    attributes[k] = common.otherPadAttrs[k];
+                });
+            }), data.href);
         }).nThen(function () {
             postMessage("SET_PAD_TITLE", {
                 teamId: data.teamId,
@@ -1187,6 +1204,7 @@ define([
                 path: data.path,
                 owners: data.owners,
                 expire: data.expire,
+                attributes,
                 forceSave: 1
             }, function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }

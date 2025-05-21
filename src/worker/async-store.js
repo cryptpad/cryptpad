@@ -658,6 +658,10 @@ const factory = (Sortify, UserObject, ProxyManager,
             if (data.password) { pad.password = data.password; }
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
             if (data.readme) { pad.readme = 1; }
+            Object.keys(data.attributes || {}).forEach(k => {
+                if (!data.attributes[k]) { return; } // undefined
+                pad[k] = data.attributes[k];
+            });
 
             if (data.teamId === -1) { data.teamId = undefined; }
             var s = getStore(data.teamId);
@@ -1212,7 +1216,8 @@ const factory = (Sortify, UserObject, ProxyManager,
                         owners: owners,
                         expire: expire,
                         password: data.password,
-                        path: data.path
+                        path: data.path,
+                        attributes: data.attributes
                     }, cb);
                     // Let inner know that dropped files shouldn't trigger the popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
@@ -2282,6 +2287,14 @@ const factory = (Sortify, UserObject, ProxyManager,
             }
         };
 
+        const startCacheModules = (clientId, returned, _cb) => {
+            const cb = Util.mkAsync(_cb);
+            onCacheReady(clientId, function () {
+                onCacheReadyEvt.fire();
+                cb(returned);
+            });
+        };
+
         // onReady: called when the drive is synced (not using the cache anymore)
         // "cb" is wrapped in Util.once() and may have already been called
         // if we have a local cache
@@ -2656,13 +2669,6 @@ const factory = (Sortify, UserObject, ProxyManager,
             andThen();
         };
 
-        const startCacheModules = (clientId, returned, _cb) => {
-            const cb = Util.mkAsync(_cb);
-            onCacheReady(clientId, function () {
-                onCacheReadyEvt.fire();
-                cb(returned);
-            });
-        };
         const startModules = (clientId, returned, cb) => {
             if (store.manager) {
                 return void onCacheReadyEvt.reg(function () {
