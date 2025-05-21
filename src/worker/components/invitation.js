@@ -2,12 +2,11 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-(function () {
 var factory = function (Util, Cred, Nacl, Crypto) {
     var Invite = {};
 
-    var encode64 = Nacl.util.encodeBase64;
-    var decode64 = Nacl.util.decodeBase64;
+    var encode64 = Util.encodeBase64;
+    var decode64 = Util.decodeBase64;
 
     // ed and curve keys can be random...
     Invite.generateKeys = function () {
@@ -56,7 +55,7 @@ var factory = function (Util, Cred, Nacl, Crypto) {
     // Invite links should only be visible to members or above, so
     // we store them in the roster encrypted with a string only available
     // to users with edit rights
-    var decodeUTF8 = Nacl.util.decodeUTF8;
+    var decodeUTF8 = Util.decodeUTF8;
     Invite.encryptHash = function (data, seedStr) {
         var array = decodeUTF8(seedStr);
         var bytes = Nacl.hash(array);
@@ -102,21 +101,9 @@ var factory = function (Util, Cred, Nacl, Crypto) {
 
     return Invite;
 };
-    if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = factory(
-            require("../../common/common-util"),
-            require("../../common/common-credential"),
-            require("tweetnacl/nacl-fast"),
-            require("chainpad-crypto")
-        );
-    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        define([
-            '/common/common-util.js',
-            '/common/common-credential.js',
-            '/components/chainpad-crypto/crypto.js',
-            '/components/tweetnacl/nacl-fast.min.js',
-        ], function (Util, Cred, Crypto) {
-            return factory(Util, Cred, window.nacl, Crypto);
-        });
-    }
-}());
+module.exports = factory(
+    require("../../common/common-util"),
+    require("../../common/common-credential"),
+    require("tweetnacl/nacl-fast"),
+    require("chainpad-crypto")
+);

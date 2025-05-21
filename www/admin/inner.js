@@ -734,20 +734,6 @@ define([
             return tableObj.table;
         };
 
-        // Msg.admin_updateLimitHint, .admin_updateLimitTitle, .admin_updateLimitButton
-        sidebar.addItem('update-limit', function (cb) {
-            var button = blocks.activeButton('primary', '',
-                    Messages.admin_updateLimitButton, done => {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'Q_UPDATE_LIMIT',
-                }, function (e, data) {
-                    done(!!data);
-                    UI.alert(data ? Messages.admin_updateLimitDone  || 'done' : 'error' + e);
-                });
-            });
-            cb(button);
-        });
-
         // Msg.admin_enableembedsHint, .admin_enableembedsTitle
         sidebar.addCheckboxItem({
             key: 'enableembeds',
@@ -2767,9 +2753,9 @@ define([
             var clone = Util.clone(json);
             delete clone.proof;
 
-            var msg = Nacl.util.decodeUTF8(Sortify(clone));
-            var sig = Nacl.util.decodeBase64(json.proof);
-            var pub = Nacl.util.decodeBase64(json.blockId);
+            var msg = Util.decodeUTF8(Sortify(clone));
+            var sig = Util.decodeBase64(json.proof);
+            var pub = Util.decodeBase64(json.blockId);
             return Nacl.sign.detached.verify(msg, sig, pub);
         };
 

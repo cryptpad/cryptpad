@@ -8,11 +8,12 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/pad-types.js',
     '/common/inner/common-modal.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
-], function ($, Util, Hash, UI, UIElements, Modal, h,
+], function ($, Util, Hash, UI, UIElements, Types, Modal, h,
              Messages, nThen) {
     var Access = {};
 
@@ -908,7 +909,7 @@ define([
             // We should know it because the pad is stored, but it's better to check...
             //if (!data.noEditPassword && !opts.noEditPassword && owned && data.href) {
             if (!data.noEditPassword && !opts.noEditPassword && owned && data.href && parsed.type !== "form") { // TODO password change in forms block responses (validation & decryption)
-                var isOO = parsed.type === 'sheet';
+                var isOO = Types?.OO_APPS?.includes(parsed.type);
                 var isFile = parsed.hashData.type === 'file';
                 var isSharedFolder = parsed.type === 'drive';
 
