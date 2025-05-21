@@ -629,13 +629,6 @@ define([
         });
     };
 
-    common.uploadChunk = function (teamId, data, cb) {
-        postMessage("UPLOAD_CHUNK", {teamId: teamId, chunk: data}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj);
-        });
-    };
-
     // ANON RPC
 
     // SFRAME: talk to anon_rpc from the iframe

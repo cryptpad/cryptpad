@@ -20,7 +20,6 @@ const factory = AStore => {
             UNPIN_PADS: Store.unpinPads,
             GET_PINNED_USAGE: Store.getPinnedUsage,
             GET_DELETED_PADS: Store.getDeletedPads,
-            UPLOAD_CHUNK: Store.uploadChunk,
             UPLOAD_COMPLETE: Store.uploadComplete,
             UPLOAD_STATUS: Store.uploadStatus,
             UPLOAD_CANCEL: Store.uploadCancel,
