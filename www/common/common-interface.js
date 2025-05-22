@@ -986,14 +986,14 @@ define([
             type: 'password',
             tabindex: '0',
             autocomplete: 'one-time-code', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
-            'aria-label': 'Enter your document password', // XXX
+            'aria-label': Messages.add_password
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
         var eye = h('span.fa.fa-eye.cp-password-reveal', {
             tabindex: 0,
             role: 'button',
-            'aria-label': 'Show password', // XXX
+            'aria-label': Messages.show_password,
             'aria-pressed': 'false'
         });
 
@@ -1017,12 +1017,12 @@ define([
                 if ($eye.hasClass('fa-eye')) {
                     $input.prop('type', 'text');
                     $input.focus();
-                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', 'Hide password').attr('aria-pressed', 'true'); // XXX
+                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
                     return;
                 }
                 $input.prop('type', 'password');
                 $input.focus();
-                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', 'Show password').attr('aria-pressed', 'false'); // XXX
+                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
             });
         }
 
@@ -1040,7 +1040,7 @@ define([
             href: href,
             target: "_blank",
             'data-tippy-placement': "right",
-            'aria-label': text
+            'aria-label': tex
         });
         return q;
     };
