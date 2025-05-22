@@ -1036,7 +1036,7 @@ define([
             href: href,
             target: "_blank",
             'data-tippy-placement': "right",
-            'aria-label': Messages.help_genericMore //TBC XXX
+            'aria-label': text
         });
         return q;
     };
