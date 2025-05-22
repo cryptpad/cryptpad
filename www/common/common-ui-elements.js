@@ -2649,7 +2649,7 @@ define([
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
 
-        var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs });
+        var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs, alt:'', 'aria-hidden': 'true' });
         var fill1 = h('div.cp-creation-fill.cp-creation-logo',{ role: 'presentation' }, logo);
         var fill2 = h('div.cp-creation-fill');
         var $creation = $('<div>', { id: 'cp-creation' });
