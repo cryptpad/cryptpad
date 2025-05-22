@@ -1040,7 +1040,7 @@ define([
             href: href,
             target: "_blank",
             'data-tippy-placement': "right",
-            'aria-label': tex
+            'aria-label': text
         });
         return q;
     };

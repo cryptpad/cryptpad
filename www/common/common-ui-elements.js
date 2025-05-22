@@ -2980,7 +2980,6 @@ define([
             }
             $creation.find('.cp-creation-expire-picker').removeClass('active');
             $creation.find('.cp-creation-expire').removeClass('active');
-            $creation.focus();
         });
 
         // Display password form when checkbox checked
@@ -2993,7 +2992,6 @@ define([
             }
             $creation.find('.cp-creation-password-picker').removeClass('active');
             $creation.find('.cp-creation-password').removeClass('active');
-            $creation.focus();
         });
 
         // Keyboard shortcuts
@@ -3083,19 +3081,6 @@ define([
             create();
         });
 
-        // $creation.keydown(function (e) {
-        //     if (e.which === 9) {
-        //         e.preventDefault();
-        //         e.stopPropagation();
-        //         next(e.shiftKey);
-        //         return;
-        //     }
-        //     if (e.which === 13) {
-        //         $button.click();
-        //         return;
-        //     }
-        // }
-        // $creation.focus();
         UI.addTabListener($creation);
     };
 
