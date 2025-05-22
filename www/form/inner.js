@@ -1843,7 +1843,14 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { $(tag).find('input').removeAttr('checked'); },
+                    reset: function () { 
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false);
+                            }
+                        });
+                    },
                     setEditable: function (state) {
                         if (state) { $(tag).find('input').removeAttr('disabled'); }
                         else { $(tag).find('input').attr('disabled', 'disabled'); }
@@ -1968,7 +1975,14 @@ define([
                         });
                         return res;
                     },
-                    reset: function () { $(tag).find('input').removeAttr('checked'); },
+                    reset: function () { 
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false);
+                            }
+                        });
+                    },
                     setEditable: function (state) {
                         if (state) { $tag.find('input').removeAttr('disabled'); }
                         else { $tag.find('input').attr('disabled', 'disabled'); }
@@ -2185,7 +2199,12 @@ define([
                         return res;
                     },
                     reset: function () {
-                        $(tag).find('input').removeAttr('checked');
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false);
+                            }
+                        });
                         checkDisabled();
                     },
                     setEditable: function (state) {
@@ -2328,8 +2347,13 @@ define([
                         return res;
                     },
                     reset: function () {
-                        $(tag).find('input').removeAttr('checked');
                         lines.forEach(checkDisabled);
+                        $(tag).find('input').each(function (i, input) {
+                            var $i = $(input);
+                            if (Util.isChecked($i)) { 
+                                $i.prop('checked', false);
+                            }
+                        });
                     },
                     setEditable: function (state) {
                         if (state) { lines.forEach(checkDisabled); }
