@@ -986,11 +986,15 @@ define([
             type: 'password',
             tabindex: '0',
             autocomplete: 'one-time-code', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
+            'aria-label': 'Enter your document password', // XXX
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
         var eye = h('span.fa.fa-eye.cp-password-reveal', {
-            tabindex: 0
+            tabindex: 0,
+            role: 'button',
+            'aria-label': 'Show password', // XXX
+            'aria-pressed': 'false'
         });
 
         var $eye = $(eye);
@@ -1013,12 +1017,12 @@ define([
                 if ($eye.hasClass('fa-eye')) {
                     $input.prop('type', 'text');
                     $input.focus();
-                    $eye.removeClass('fa-eye').addClass('fa-eye-slash');
+                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', 'Hide password').attr('aria-pressed', 'true'); // XXX
                     return;
                 }
                 $input.prop('type', 'password');
                 $input.focus();
-                $eye.removeClass('fa-eye-slash').addClass('fa-eye');
+                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', 'Show password').attr('aria-pressed', 'false'); // XXX
             });
         }
 
@@ -1036,7 +1040,7 @@ define([
             href: href,
             target: "_blank",
             'data-tippy-placement': "right",
-            'aria-label': Messages.help_genericMore //TBC XXX
+            'aria-label': text
         });
         return q;
     };
@@ -1353,13 +1357,12 @@ define([
         });
 
         $input.change(function () {
+            $mark.attr('aria-checked', $input.is(':checked'));
             if (!opts.labelAlt) { return; }
             if ($input.is(':checked') !== checked) {
                 $(label).text(opts.labelAlt);
-                $mark.attr('aria-checked', 'true');
             } else {
                 $(label).text(labelTxt);
-                $mark.attr('aria-checked', 'false');
             }
         });
 

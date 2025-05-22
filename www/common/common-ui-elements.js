@@ -2652,7 +2652,7 @@ define([
         var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs });
         var fill1 = h('div.cp-creation-fill.cp-creation-logo',{ role: 'presentation' }, logo);
         var fill2 = h('div.cp-creation-fill');
-        var $creation = $('<div>', { id: 'cp-creation', tabindex:1 });
+        var $creation = $('<div>', { id: 'cp-creation' });
         $creationContainer.append([fill1, $creation, fill2]);
 
         var createHelper = function (href, text) {
@@ -2865,10 +2865,17 @@ define([
                     var $span = $('<span>', {
                         'class': 'cp-creation-template-element',
                         'title': name,
+                        'aria-label': name,
+                        'tabindex': 0,
+                        'role':'radio',
+                        'aria-checked': false,
                     }).appendTo($container);
                     $span.data('id', obj.id);
                     if (obj.content) { $span.data('content', obj.content); }
-                    if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
+                    if (idx === selected) {
+                        $span.addClass('cp-creation-template-selected');
+                        $span.attr('aria-checked', true);
+                    }
                     if (!obj.thumbnail) {
                         $span.append(obj.icon || h('span.cptools.cptools-template'));
                     }
@@ -2876,8 +2883,9 @@ define([
                         .appendTo($span);
                     $span.click(function () {
                         $container.find('.cp-creation-template-selected')
-                            .removeClass('cp-creation-template-selected');
+                            .removeClass('cp-creation-template-selected').attr('aria-checked', 'false');
                         $span.addClass('cp-creation-template-selected');
+                        $span.attr('aria-checked', true);
                         selected = idx;
                     });
 
@@ -3075,19 +3083,20 @@ define([
             create();
         });
 
-        $creation.keydown(function (e) {
-            if (e.which === 9) {
-                e.preventDefault();
-                e.stopPropagation();
-                next(e.shiftKey);
-                return;
-            }
-            if (e.which === 13) {
-                $button.click();
-                return;
-            }
-        });
-        $creation.focus();
+        // $creation.keydown(function (e) {
+        //     if (e.which === 9) {
+        //         e.preventDefault();
+        //         e.stopPropagation();
+        //         next(e.shiftKey);
+        //         return;
+        //     }
+        //     if (e.which === 13) {
+        //         $button.click();
+        //         return;
+        //     }
+        // }
+        // $creation.focus();
+        UI.addTabListener($creation);
     };
 
     UIElements.loginErrorScreenContent = function (common) {
