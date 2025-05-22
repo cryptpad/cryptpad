@@ -13,6 +13,7 @@ define([
     '/components/nthen/index.js',
 ], function (ApiConfig, FileCrypto, Hash, Util, Cache, ServerCommand, Crypto, nThen) {
     var module = {};
+    const USE_WS = false;
 
     module.uploadU8 = function (common, data, cb) {
         var teamId = data.teamId;
@@ -30,13 +31,23 @@ define([
 
         var estimate = FileCrypto.computeEncryptedSize(u8.length, metadata);
 
+
+
+        var sendChunkWs = function (box, cb) {
+            var enc = Util.encodeBase64(box);
+            common.uploadChunk(teamId, enc, function (e, msg) {
+                cb(e, msg);
+            });
+        };
+
+
         let uploadUrl = '/upload-blob';
         let size = 0;
         if (ApiConfig.fileHost) {
             const origin = new URL(ApiConfig.fileHost).origin;
             uploadUrl = origin + uploadUrl;
         }
-        var sendChunk = function (box,  cb) {
+        var sendChunk = function (box, cb) {
             const enc = Util.encodeBase64(box);
             size += enc.length;
 
@@ -78,7 +89,11 @@ define([
                 progressValue = Math.min(progressValue, 100);
                 updateProgress(progressValue);
 
-                return void sendChunk(box, function (e) {
+                let send = sendChunk;
+                if (USE_WS) {
+                    send = sendChunkWs;
+                }
+                return void send(box, function (e) {
                     if (e) { return console.error(e); }
                     next(again);
                 });
@@ -103,6 +118,9 @@ define([
         };
 
         const startUpload = () => {
+            if (USE_WS) {
+                return void next(again);
+            }
             common.getAccessKeys(arr => {
                 const myKeys = arr.find(obj => {
                     return (!obj.id && !teamId) || +obj.id === +teamId;
