@@ -3082,6 +3082,7 @@ define([
         });
 
         UI.addTabListener($creation);
+        $button.focus();
     };
 
     UIElements.loginErrorScreenContent = function (common) {
