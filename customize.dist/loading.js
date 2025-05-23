@@ -15,13 +15,13 @@ define([
 
     elem.innerHTML = [
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="' + Messages.label_logo + '">',
+            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="" aria-hidden="true">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
                 '<span class="cp-spinner"></span>',
             '</div>',
-            '<div class="cp-loading-progress">',
+            '<div class="cp-loading-progress" aria-hidden="true" role="presentation">',
                 '<div class="cp-loading-progress-list"></div>',
                 '<div class="cp-loading-progress-container"></div>',
             '</div>',
