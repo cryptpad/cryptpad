@@ -32,12 +32,12 @@
 & {
     .creation_vars();
 
-    &:focus-visible {
-        outline: @variables_focus_style;
-        border-radius: @variables_radius;
-    }
-
     #cp-creation-container {
+        &:focus-visible {
+            outline: @variables_focus_style;
+            border-radius: @variables_radius;
+        }
+
         position: absolute;
         z-index: 100000000; // #loading * 10
         top: 0px;
