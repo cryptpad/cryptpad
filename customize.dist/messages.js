@@ -140,6 +140,11 @@ define(req, function(AppConfig, Default, Language) {
     Messages.badges_premium = "Premium user";
     Messages.badges_error = "Error while validating this user's data";
     Messages.profile_badges = "Badges";
+    Messages.add_password = "Add your document password";
+    Messages.show_password = "Show password";
+    Messages.hide_password = "Hide password";
+    Messages.next_templateList = "Next template list";
+    Messages.previous_templateList = "Previous template list";
     return Messages;
 
 });

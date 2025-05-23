@@ -990,7 +990,10 @@ define([
 
         var input = h('input.cp-password-input', attributes);
         var eye = h('span.fa.fa-eye.cp-password-reveal', {
-            tabindex: 0
+            tabindex: 0,
+            role: 'button',
+            'aria-label': Messages.show_password,
+            'aria-pressed': 'false'
         });
 
         var $eye = $(eye);
@@ -1013,12 +1016,12 @@ define([
                 if ($eye.hasClass('fa-eye')) {
                     $input.prop('type', 'text');
                     $input.focus();
-                    $eye.removeClass('fa-eye').addClass('fa-eye-slash');
+                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
                     return;
                 }
                 $input.prop('type', 'password');
                 $input.focus();
-                $eye.removeClass('fa-eye-slash').addClass('fa-eye');
+                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
             });
         }
 
@@ -1036,7 +1039,7 @@ define([
             href: href,
             target: "_blank",
             'data-tippy-placement': "right",
-            'aria-label': Messages.help_genericMore //TBC XXX
+            'aria-label': text
         });
         return q;
     };
@@ -1354,13 +1357,12 @@ define([
         });
 
         $input.change(function () {
+            $mark.attr('aria-checked', $input.is(':checked'));
             if (!opts.labelAlt) { return; }
             if ($input.is(':checked') !== checked) {
                 $(label).text(opts.labelAlt);
-                $mark.attr('aria-checked', 'true');
             } else {
                 $(label).text(labelTxt);
-                $mark.attr('aria-checked', 'false');
             }
         });
 
