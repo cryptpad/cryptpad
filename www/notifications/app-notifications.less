@@ -21,6 +21,10 @@
         &:hover {
             background-color: @cp_notif-hover;
         }
+        &:focus-visible {
+            outline: @variables_focus_style;
+            border-radius: @variables_radius;
+        }
     }
 
     .cp-app-notifications-panel {
@@ -59,6 +63,8 @@
                     justify-content: center;
                     align-items: center;
                     width: 3rem;
+                    border-radius: @variables_radius;
+                    margin: 0.2rem;
                 }
             }
         }
@@ -90,16 +96,20 @@
                 }
                 .cp-avatar {
                     .avatar_main(48px);
-                    padding: 0 10px;
+                    padding: 5px;
+                    margin: 0.2rem;
                     cursor: pointer;
                     &:hover {
                         background-color: @cp_notif-hover;
                     }
+                    &:focus-visible {
+                        outline: @variables_focus_style;
+                        border-radius: @variables_radius;
+                    }
                 }
                 .cp-avatar-calendar {
                     font-size: 45px;
-                    padding: 0 12px;
-                    overflow: hidden;
+                    padding: 12px;
                 }
                 &.cp-app-notification-archived {
                     background-color: @cp_notif-bg;
@@ -114,16 +124,18 @@
                     flex-direction: row;
                     justify-content: flex-start;
                     align-items: center;
+                    margin: 0.1rem;
+                    &:focus-visible {
+                        outline: @variables_focus_style;
+                        border-radius: @variables_radius;
+                    }
                     p {
                         display: inline-block;
                         margin: 1rem 1rem;
                         flex: 1;
-                        min-width: 0;
                     }
                     .notification-time {
-                        margin: 1rem 1rem;
-                        color: grey;
-                        margin-left: auto;
+                        margin: 1rem 1rem 1rem auto;
                     }
                 }
 
@@ -136,6 +148,10 @@
                     align-items: center;
                     border-left: 1px solid @cp_notif-table-border;
                     width: 3rem;
+                    margin: 0.2rem;
+                    &:focus-visible{
+                        border-radius: @variables_radius;
+                    }
                 }
             }
         }
