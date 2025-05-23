@@ -196,7 +196,7 @@ define([
     };
 
     dialog.nav = function (content) {
-        return h('section', content || [
+        return h('nav', content || [
             dialog.cancelButton(),
             dialog.okButton(),
         ]);
