@@ -182,12 +182,25 @@
                 display: flex;
                 margin-bottom: 0.3rem;
                 align-items: center;
-                .event-location,.event-description {
+                .event-location {
                     display: flex;
                     align-items: center;
                 }
-                .event-description p {
-                    margin:0.1rem;
+                .fa-align-justify {
+                    margin-top: 3px;
+                }
+                &.tui-full-calendar-popup-detail-item-separate {
+                    &>span {
+                        display: flex;
+                        width: 100%;
+                    }
+                    .event-description {
+                        display: block;
+                        line-height: 1.1em;
+                        p, ul {
+                            margin:0.1rem;
+                        }
+                    }
                 }
                 a {
                     margin:0.1rem;

@@ -417,7 +417,7 @@ define([
 
             let description_icon = h('i.fa.fa-align-justify.tui-full-calendar-icon', { 'aria-hidden': true }, []);
             let description = diffMk.render(str, true);
-            return `<div class="event-description">${description_icon.outerHTML} ${description}</div>`;
+            return `${description_icon.outerHTML}<div class="event-description">${description}</div>`;
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
