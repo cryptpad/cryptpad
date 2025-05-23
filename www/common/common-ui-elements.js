@@ -2793,14 +2793,10 @@ define([
         var $w = $(window);
         var big = $w.width() > 800;
 
-        var right = h('span.fa.fa-chevron-right.cp-creation-template-more', {
-            tabindex: 0,
-            role: 'button',
+        var right = h('button.fa.fa-chevron-right.cp-creation-template-more', {
             'aria-label': Messages.next_templateList
         });
-        var left = h('span.fa.fa-chevron-left.cp-creation-template-more', {
-            tabindex: 0,
-            role: 'button',
+        var left = h('button.fa.fa-chevron-left.cp-creation-template-more', {
             'aria-label': Messages.previous_templateList
         });
         if (!big) {
