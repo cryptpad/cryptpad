@@ -82,6 +82,7 @@ define([
         if (!ref) { return; }
         var attrs =  {
             href: ref,
+            role: 'button',
         };
         var iconName = '';
         if (!/^\//.test(ref)) {
@@ -160,7 +161,7 @@ define([
 
         return h('footer.cp-footer', [
             h('div.cp-footer-left', [
-                h('a', {href:"https://cryptpad.org"}, [
+                h('a', {href:"https://cryptpad.org", role: 'button'}, [
                     h('div.cp-logo-foot', [
                         h('img', {
                             src: '/customize/CryptPad_logo.svg',
@@ -193,7 +194,7 @@ define([
         var registerLink;
 
         if (!ApiConfig.restrictRegistration) {
-            registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/'}, [
+            registerLink = h('a.nav-item.nav-link.cp-register-btn', { href: '/register/', role: 'button'}, [
                 h('i.fa.fa-user', {'aria-hidden':'true'}),
                 Msg.login_register
             ]);
@@ -201,14 +202,14 @@ define([
 
         if (username === null) {
             rightLinks = [
-                h('a.nav-item.nav-link.cp-login-btn', { href: '/login/'}, [
+                h('a.nav-item.nav-link.cp-login-btn', { href: '/login/', role: 'button'}, [
                     h('i.fa.fa-sign-in', {'aria-hidden':'true'}),
                     Msg.login_login
                 ]),
                 registerLink,
             ];
         } else {
-            rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/' }, [
+            rightLinks = h('a.nav-item.nav-link.cp-user-btn', { href: '/drive/', role: 'button'}, [
                 h('i.fa.fa-user-circle', {'aria-hidden':'true'}),
                 " ",
                 username
@@ -216,7 +217,7 @@ define([
         }
 
         var isHome = ['/', '/index.html'].includes(window.location.pathname);
-        var homeLink = h('a.nav-item.nav-link.cp-back-home' /* .navbar-brand */, { href: '/index.html' }, [
+        var homeLink = h('a.nav-item.nav-link.cp-back-home' /* .navbar-brand */, { href: '/index.html', role: 'button'}, [
             h('i.fa.fa-arrow-left'),
             h('img', {
                 src: '/customize/CryptPad_logo.svg',
@@ -229,7 +230,7 @@ define([
         return h('nav.navbar.navbar-expand-lg',
             [
                 !isHome? homeLink: undefined,
-                h('a.nav-item.nav-link', { href: '/features.html'}, [
+                h('a.nav-item.nav-link', { href: '/features.html', role: 'button'}, [
                     h('i.fa.fa-info-circle'),
                     Pages.areSubscriptionsAllowed()? Msg.pricing: Msg.features
                 ]),
