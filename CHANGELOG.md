@@ -4,6 +4,11 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# Release (2025.3.1)
+
+> [!NOTE]  
+> The new version of OnlyOffice is much bigger than the previous versions. When installing version 8.3 with `install-onlyoffice.sh` ~830MB additional disk space is needed.
+
 # 💐 Spring 2025 release (2025.3.0)
 
 ## Goals

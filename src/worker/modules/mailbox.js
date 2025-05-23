@@ -161,8 +161,8 @@ proxy.mailboxes = {
         var Nacl = Crypto.Nacl;
         var curveSeed = Nacl.randomBytes(32);
         var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
-        var curvePrivate = Nacl.util.encodeBase64(curvePair.secretKey);
-        var curvePublic = Nacl.util.encodeBase64(curvePair.publicKey);
+        var curvePrivate = Util.encodeBase64(curvePair.secretKey);
+        var curvePublic = Util.encodeBase64(curvePair.publicKey);
         sendTo({
             store: {
                 anon_rpc: anonRpc,
@@ -679,7 +679,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../../common/common-util'),
         require('../../common/common-hash'),
         require('../../common/common-realtime'),
-        require('../../common/common-messaging'),
+        require('../components/messaging'),
         require('../../common/notify'),
         require('../components/mailbox-handlers'),
         require('chainpad-netflux'),
@@ -691,7 +691,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/common/common-util.js',
         '/common/common-hash.js',
         '/common/common-realtime.js',
-        '/common/common-messaging.js',
+        '/common/outer/messaging.js',
         '/common/notify.js',
         '/common/outer/mailbox-handlers.js',
         'chainpad-netflux',

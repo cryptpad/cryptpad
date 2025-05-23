@@ -137,6 +137,13 @@ define(req, function(AppConfig, Default, Language) {
     Messages.admin_documentsDeletionHint = "Archive a list of documents using their id (one document id per line)";
     Messages.admin_documentsDeletionTitle = "Archive multiple documents";
 
+    // XXX
+    Messages.badges_admin = "Instance administrator";
+    Messages.badges_moderator = "Instance moderator";
+    Messages.badges_premium = "Premium user";
+    Messages.badges_error = "Error while validating this user's data";
+    Messages.profile_badges = "Badges";
+
     return Messages;
 
 });

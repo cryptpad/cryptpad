@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (function (window) {
-var factory = function () {
+var factory = function (Util) {
     var Promise = window.Promise;
     var cache;
     var cypherChunkLength = 131088;
@@ -347,16 +347,27 @@ var factory = function () {
 
         // Increment a nonce
         increment: function (N) {
-            var l = N.length;
-            while (l-- > 1) {
-                if (N[l] !== 255) { return void N[l]++; }
-
-                // you don't need to worry about this running out.
-                // you'd need a REAAAALLY big file
-                if (l === 0) { throw new Error('E_NONCE_TOO_LARGE'); }
-
+            // start from the last element directly without relying on confusing post-decrement behaviour
+            let l = N.length - 1;
+            while (l >= 0) {
+                // increment the least significant byte unless it's already at its maximum
+                if (N[l] !== 255) {
+                    N[l] += 1;
+                    return;
+                }
+                // if the loop reaches the most significant byte and the above block fails to return
+                // then the nonce's state-space has been exhausted
+                if (l === 0) {
+                    throw new Error("E_NONCE_TOO_LARGE");
+                }
+                // otherwise reset the lesser bytes to zero
                 N[l] = 0;
+                // and proceed to the next more significant byte
+                l -= 1;
             }
+            // the loop body will never be executed if a zero-length nonce is supplied
+            // this handles that case
+            throw new Error("E_EMPTY_NONCE");
         },
 
         decodePrefix: function (A) {
@@ -373,7 +384,7 @@ var factory = function () {
 
         // Gets the key from the key string.
         getKeyFromStr: function (str) {
-            return window.nacl.util.decodeBase64(str);
+            return Util.decodeBase64(str);
         }
     };
 
@@ -448,7 +459,7 @@ var factory = function () {
         var metaChunk = window.nacl.secretbox.open(metaBox, Decrypt.createNonce(), key);
 
         try {
-            return JSON.parse(window.nacl.util.encodeUTF8(metaChunk));
+            return JSON.parse(Util.encodeUTF8(metaChunk));
         }
         catch (e) { return null; }
     };
@@ -487,7 +498,7 @@ var factory = function () {
 
         Decrypt.increment(nonce);
 
-        try { res.metadata = JSON.parse(Nacl.util.encodeUTF8(metaChunk)); }
+        try { res.metadata = JSON.parse(Util.encodeUTF8(metaChunk)); }
         catch (e) { return void done('E_METADATA_DECRYPTION'); }
 
         if (!res.metadata) { return void done('NO_METADATA'); }
@@ -822,8 +833,8 @@ var factory = function () {
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory();
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        define([], function () {
-            return factory();
+        define(['/common/common-util.js'], function (Util) {
+            return factory(Util);
         });
     } else {
         // unsupported initialization

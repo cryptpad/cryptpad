@@ -9,7 +9,6 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/outer/cache-store.js',
-    '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/visible.js',
@@ -20,13 +19,14 @@ define([
     '/common/common-credential.js',
     '/customize/login.js',
     '/common/store-interface.js',
+    '/common/pad-types.js',
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
     '/components/tweetnacl/nacl-fast.min.js'
 ], function (Config, Broadcast, Messages, Util, Hash, Cache,
-            Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, Store, AppConfig, nThen) {
+            Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
+            Cred, Login, Store, Types, AppConfig, nThen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -230,7 +230,7 @@ define([
                     '/api/broadcast?'+ (+new Date()),
                 ], waitFor(function (Broadcast) {
                     nacl = window.nacl;
-                    theirs = nacl.util.decodeBase64(Broadcast.curvePublic);
+                    theirs = Util.decodeBase64(Broadcast.curvePublic);
                 }));
             }).nThen;
             var toDelete = [];
@@ -238,14 +238,14 @@ define([
                 if (answer.uid !== data.uid) { return; }
                 n = n(function (waitFor) {
                     var hash = answer.hash;
-                    var h = nacl.util.decodeUTF8(hash);
+                    var h = Util.decodeUTF8(hash);
 
                     // Make proof
                     var curve = answer.curvePrivate;
-                    var mySecret = nacl.util.decodeBase64(curve);
+                    var mySecret = Util.decodeBase64(curve);
                     var nonce = nacl.randomBytes(24);
                     var proofBytes = nacl.box(h, nonce, theirs, mySecret);
-                    var proof = nacl.util.encodeBase64(nonce) +'|'+ nacl.util.encodeBase64(proofBytes);
+                    var proof = Util.encodeBase64(nonce) +'|'+ Util.encodeBase64(proofBytes);
                     var lineData = {
                         channel: data.channel,
                         hash: hash,
@@ -1159,6 +1159,13 @@ define([
             }
         }
 
+        // Make sure we also store additionnal data to pin all the channels
+        // (OO and forms)
+        data.attributes = {};
+        Object.keys(common?.otherPadAttrs || {}).forEach(k => {
+            data.attributes[k] = common.otherPadAttrs[k];
+        });
+
         postMessage("SET_PAD_TITLE", data, function (obj) {
             if (obj && obj.error) {
                 if (obj.error !== "EAUTH") { console.log("unable to set pad title"); }
@@ -1181,6 +1188,8 @@ define([
             return;
         }
 
+        let rtChannel, lastVersion, answersChannel;
+        let attributes = {};
         nThen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }
             // Set the correct owner and expiration time if we can find them
@@ -1191,6 +1200,14 @@ define([
                 data.owners = obj.owners;
                 data.expire = +obj.expire;
             }));
+            common.getPadAttribute('', waitFor(function (err, _data) {
+                attributes.rtChannel = _data?.rtChannel;
+                attributes.lastVersion = _data?.lastVersion;
+                attributes.answersChannel = _data?.answersChannel;
+                Object.keys(common?.otherPadAttrs || {}).forEach(k => {
+                    attributes[k] = common.otherPadAttrs[k];
+                });
+            }), data.href);
         }).nThen(function () {
             postMessage("SET_PAD_TITLE", {
                 teamId: data.teamId,
@@ -1201,6 +1218,7 @@ define([
                 path: data.path,
                 owners: data.owners,
                 expire: data.expire,
+                attributes,
                 forceSave: 1
             }, function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }
@@ -1606,7 +1624,7 @@ define([
             oldChannel = oldSecret.channel;
             var src = fileHost + Hash.getBlobPathFromHex(oldChannel);
             var key = oldSecret.keys && oldSecret.keys.cryptKey;
-            var cryptKey = window.nacl.util.encodeBase64(key);
+            var cryptKey = Util.encodeBase64(key);
 
             var mt = document.createElement('media-tag');
             mt.setAttribute('src', src);
@@ -1690,7 +1708,7 @@ define([
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
-        if (parsed.type !== 'sheet') { return void cb({ error: 'EINVAL_TYPE' }); }
+        if (!Types.OO_APPS.includes(parsed.type)) { return void cb({ error: 'EINVAL_TYPE' }); }
 
         var warning = false;
         var newHash, newRoHref;
@@ -2468,9 +2486,9 @@ define([
     };
 
     common.getAnonymousKeys = function (formSeed, channel) {
-        var array = window.nacl.util.decodeBase64(formSeed + channel);
+        var array = Util.decodeBase64(formSeed + channel);
         var hash = window.nacl.hash(array);
-        var secretKey = window.nacl.util.encodeBase64(hash.subarray(32));
+        var secretKey = Util.encodeBase64(hash.subarray(32));
         var publicKey = Hash.getCurvePublicFromPrivate(secretKey);
         return {
             curvePrivate: secretKey,

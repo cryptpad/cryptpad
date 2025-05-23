@@ -27,7 +27,7 @@ const factory = (AppConfig = {}, ApiConfig = {},
         setCustomize({AppConfig,ApiConfig});
     }
 
-    const Types = { setCustomize };
+    const Types = { OO_APPS, setCustomize };
 
     Types.__defineGetter__("availableTypes", function () {
         if (ApiConfig.appsToDisable) {

@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/common/common-util.js',
     '/components/tweetnacl/nacl-fast.min.js'
-], function () {
+], function (Util) {
 
     var Handler = {};
 
@@ -31,13 +32,13 @@ define([
             return total;
         };
         var anonProof = function (channel, theirPub, anonKeys) {
-            var u8_plain = Nacl.util.decodeUTF8(channel);
+            var u8_plain = Util.decodeUTF8(channel);
             var u8_nonce = Nacl.randomBytes(Nacl.box.nonceLength);
             var u8_cipher = Nacl.box(
                 u8_plain,
                 u8_nonce,
-                Nacl.util.decodeBase64(theirPub),
-                Nacl.util.decodeBase64(anonKeys.curvePrivate)
+                Util.decodeBase64(theirPub),
+                Util.decodeBase64(anonKeys.curvePrivate)
             );
             var u8_bundle = u8_concat([
                 u8_nonce, // 24 uint8s
@@ -45,7 +46,7 @@ define([
             ]);
             return {
                 key: anonKeys.curvePublic,
-                proof: Nacl.util.encodeBase64(u8_bundle)
+                proof: Util.encodeBase64(u8_bundle)
             };
         };
         var deleteLines = false; // "false" to support old forms
@@ -111,9 +112,9 @@ define([
                             try {
                                 var res = Utils.Crypto.Mailbox.openOwnSecretLetter(messages[0].msg, {
                                     validateKey: data.validateKey,
-                                    ephemeral_private: Nacl.util.decodeBase64(answer.curvePrivate),
-                                    my_private: Nacl.util.decodeBase64(finalKeys.curvePrivate),
-                                    their_public: Nacl.util.decodeBase64(data.publicKey)
+                                    ephemeral_private: Util.decodeBase64(answer.curvePrivate),
+                                    my_private: Util.decodeBase64(finalKeys.curvePrivate),
+                                    their_public: Util.decodeBase64(data.publicKey)
                                 });
                                 var parsed = JSON.parse(res.content);
                                 parsed._isAnon = answer.anonymous;
@@ -141,16 +142,16 @@ define([
             var pub = proofObj.key;
             var proofTxt = proofObj.proof;
             try {
-                var u8_bundle = Nacl.util.decodeBase64(proofTxt);
+                var u8_bundle = Util.decodeBase64(proofTxt);
                 var u8_nonce = u8_slice(u8_bundle, 0, Nacl.box.nonceLength);
                 var u8_cipher = u8_slice(u8_bundle, Nacl.box.nonceLength);
                 var u8_plain = Nacl.box.open(
                     u8_cipher,
                     u8_nonce,
-                    Nacl.util.decodeBase64(pub),
-                    Nacl.util.decodeBase64(curvePrivate)
+                    Util.decodeBase64(pub),
+                    Util.decodeBase64(curvePrivate)
                 );
-                return channel === Nacl.util.encodeUTF8(u8_plain);
+                return channel === Util.encodeUTF8(u8_plain);
             } catch (e) {
                 console.error(e);
                 return false;
@@ -327,7 +328,7 @@ define([
                 myKeys.signingKey = keys.secondarySignKey;
 
                 var ephemeral_keypair = Nacl.box.keyPair();
-                var ephemeral_private = Nacl.util.encodeBase64(ephemeral_keypair.secretKey);
+                var ephemeral_private = Util.encodeBase64(ephemeral_keypair.secretKey);
                 myKeys.ephemeral_keypair = ephemeral_keypair;
 
                 if (myAnonymousKeys) {

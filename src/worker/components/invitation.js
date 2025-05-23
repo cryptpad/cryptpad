@@ -6,8 +6,8 @@
 var factory = function (Util, Cred, Nacl, Crypto) {
     var Invite = {};
 
-    var encode64 = Nacl.util.encodeBase64;
-    var decode64 = Nacl.util.decodeBase64;
+    var encode64 = Util.encodeBase64;
+    var decode64 = Util.decodeBase64;
 
     // ed and curve keys can be random...
     Invite.generateKeys = function () {
@@ -56,7 +56,7 @@ var factory = function (Util, Cred, Nacl, Crypto) {
     // Invite links should only be visible to members or above, so
     // we store them in the roster encrypted with a string only available
     // to users with edit rights
-    var decodeUTF8 = Nacl.util.decodeUTF8;
+    var decodeUTF8 = Util.decodeUTF8;
     Invite.encryptHash = function (data, seedStr) {
         var array = decodeUTF8(seedStr);
         var bytes = Nacl.hash(array);
