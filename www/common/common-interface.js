@@ -986,7 +986,6 @@ define([
             type: 'password',
             tabindex: '0',
             autocomplete: 'one-time-code', // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values
-            'aria-label': Messages.add_password
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
