@@ -408,13 +408,16 @@ define([
                 str = `<a href="${l}" id="${uid}">${str}</a>`;
                 APP.nextLocationUid = uid;
             }
-            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-label': Messages.calendar_loc }, []);
-            return location_icon.outerHTML + str;
+            let location_icon = h('i.fa.fa-map-marker.tui-full-calendar-icon', { 'aria-hidden': true }, []);
+            return `<div class="event-location"> ${location_icon.outerHTML} ${str} </div>`;
         },
         popupDetailBody: function(schedule) {
             var str = schedule.body;
             delete APP.eventBody;
-            return diffMk.render(str, true);
+
+            let description_icon = h('i.fa.fa-align-justify.tui-full-calendar-icon', { 'aria-hidden': true }, []);
+            let description = diffMk.render(str, true);
+            return `${description_icon.outerHTML}<div class="event-description">${description}</div>`;
         },
         popupIsAllDay: function() { return Messages.calendar_allDay; },
         titlePlaceholder: function() { return Messages.calendar_title; },
