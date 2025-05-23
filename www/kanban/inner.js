@@ -174,7 +174,6 @@ define([
         }
         _updateBoardsThrottle(framework, kanban, boards);
     };
-
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
     var BOARD_PROPERTIES = ['title', 'color'];
@@ -200,6 +199,10 @@ define([
             commit();
         });
 
+        var markdownEditorWrapper = h('div.cp-markdown-label-row', [
+            h('label', { for: 'cp-kanban-edit-body' }, Messages.kanban_body)
+        ]);
+        
         var conflicts, conflictContainer, titleInput, tagsDiv, text;
         var content = h('div', [
             conflictContainer = h('div#cp-kanban-edit-conflicts', [
@@ -208,10 +211,10 @@ define([
             ]),
             h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
             titleInput = h('input#cp-kanban-edit-title'),
-            h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
+            markdownEditorWrapper,
             h('div#cp-kanban-edit-body', [
                 text = h('textarea')
-            ]),
+            ]),            
             h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
             tagsDiv = h('div#cp-kanban-edit-tags'),
             h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
@@ -274,7 +277,7 @@ define([
                 $tags.find('.token-input').focus();
             }
             e.stopPropagation();
-        });
+        });  
         var common = framework._.sfCommon;
         var markdownTb = common.createMarkdownToolbar(editor, {
             embed: function (mt) {
@@ -282,8 +285,30 @@ define([
                 editor.replaceSelection($(mt)[0].outerHTML);
             }
         });
+        var toggleButtonMarkdown = UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
+        $(window).on('resize', function() {
+            UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
+        });
+        $(markdownTb.toolbar).on('keydown', function (e) {
+            if (e.which === 27) { // Escape key
+                e.preventDefault();
+                e.stopPropagation();
+                editor.focus(); // Focus the editor instead of closing the modal
+            }
+            else if (e.which == 13 || e.which == 9) { // "Enter" or "Tab" key should not close modal
+                e.stopPropagation();
+            }
+        });  
+        $(toggleButtonMarkdown).on('keydown', function (e) {
+            if (e.which === 13) { // "Enter" should toggle the toolbar, but not close the modal
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).click(); // simulate click to toggle
+            } else if (e.which === 9) {
+                e.stopPropagation();
+            }
+        });
         $(text).before(markdownTb.toolbar);
-        $(markdownTb.toolbar).show();
         editor.refresh();
         var body = {
             getValue: function () {

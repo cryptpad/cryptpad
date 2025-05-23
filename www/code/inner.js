@@ -578,6 +578,13 @@ define([
         framework.setCursorGetter(CodeMirror.getCursor);
         editor.on('cursorActivity', updateCursor);
 
+        editor.setOption("extraKeys", {
+            "Esc": function() {
+                e.preventDefault();
+                $(body).focus();
+            }
+        });
+        
         framework.onEditableChange(function () {
             editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
         });
