@@ -2793,8 +2793,16 @@ define([
         var $w = $(window);
         var big = $w.width() > 800;
 
-        var right = h('span.fa.fa-chevron-right.cp-creation-template-more');
-        var left = h('span.fa.fa-chevron-left.cp-creation-template-more');
+        var right = h('span.fa.fa-chevron-right.cp-creation-template-more', {
+            tabindex: 0,
+            role: 'button',
+            'aria-label': Messages.next_templateList
+        });
+        var left = h('span.fa.fa-chevron-left.cp-creation-template-more', {
+            tabindex: 0,
+            role: 'button',
+            'aria-label': Messages.previous_templateList
+        });
         if (!big) {
             $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
             $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
@@ -2881,7 +2889,7 @@ define([
                     }
                     $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
                         .appendTo($span);
-                    $span.click(function () {
+                    Util.onClickEnter($span, function () {
                         $container.find('.cp-creation-template-selected')
                             .removeClass('cp-creation-template-selected').attr('aria-checked', 'false');
                         $span.addClass('cp-creation-template-selected');
@@ -2897,11 +2905,13 @@ define([
                 $(right).off('click').removeClass('hidden').click(function () {
                     selected = 0;
                     redraw(i + TEMPLATES_DISPLAYED);
+                    $('.cp-creation-template-container').find('[tabindex]:not([tabindex="-1"])').filter(':visible').first().focus();
                 });
                 if (i >= allData.length - TEMPLATES_DISPLAYED ) { $(right).addClass('hidden'); }
                 $(left).off('click').removeClass('hidden').click(function () {
                     selected = TEMPLATES_DISPLAYED - 1;
                     redraw(i - TEMPLATES_DISPLAYED);
+                    $('.cp-creation-template-container').find('[tabindex]:not([tabindex="-1"])').filter(':visible').first().focus();
                 });
                 if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
             };
