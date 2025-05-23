@@ -78,7 +78,7 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         }
     };
 
-    Hash.getHiddenHashFromKeys = function (type, secret, opts) {
+    Hash.getHiddenHashFromKeys = function (type, secret, opts, auditor) {
         opts = opts || {};
         var canEdit = (secret.keys && secret.keys.editKeyStr) || secret.key;
         var mode = (!opts.view && canEdit) ? 'edit/' : 'view/';
@@ -87,6 +87,9 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         if (secret.keys && secret.keys.fileKeyStr) { mode = ''; }
 
         var hash =  '/3/' + type + '/' + mode + secret.channel + '/' + pass;
+        if (auditor) {
+            hash += 'auditor=' + auditor;
+        }
         var hashData = Hash.parseTypeHash(type, hash);
         if (hashData && hashData.getHash) {
             return hashData.getHash(opts || {});

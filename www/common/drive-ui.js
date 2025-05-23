@@ -1248,7 +1248,8 @@ define([
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             var opts = {};
             if (isRo) { opts.view = true; }
-            var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
+            var auditor = parsed.hashData.auditorKey ? parsed.hashData.auditorKey : undefined;
+            var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts, auditor);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
             common.openURL(Hash.getNewPadURL(hiddenHref, obj));
         };
