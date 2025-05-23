@@ -149,6 +149,8 @@ define([
             }, true
         );
 
+        var parameters;
+
         framework.onEditableChange(function () {
             var readOnly = framework.isReadOnly() || framework.isLocked();
             if (readOnly) {
@@ -165,7 +167,7 @@ define([
         // starting the CryptPad framework
         framework.start();
 
-        var parameters = new URLSearchParams({
+        parameters = new URLSearchParams({
                 test: 1,
                 stealth: 1,
                 embed: 1,
@@ -192,7 +194,7 @@ define([
             });
 
         drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
-            + parameters
+            + parameters;
 
         window.addEventListener("message", (event) => {
             if (event.source === drawioFrame.contentWindow) {
