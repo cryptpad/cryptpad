@@ -2143,7 +2143,6 @@ define([
                     permissions: {
                         download: dc?.permissions?.download || false,
                         print: dc?.permissions?.print || true,
-                        protect: false
                     }
                 },
                 "documentType": file.doc,
