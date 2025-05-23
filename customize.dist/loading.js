@@ -21,7 +21,7 @@ define([
             '<div class="cp-loading-spinner-container">',
                 '<span class="cp-spinner"></span>',
             '</div>',
-            '<div class="cp-loading-progress">',
+            '<div class="cp-loading-progress" aria-hidden="true" role="presentation">',
                 '<div class="cp-loading-progress-list"></div>',
                 '<div class="cp-loading-progress-container"></div>',
             '</div>',
