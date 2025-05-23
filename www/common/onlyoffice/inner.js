@@ -2155,6 +2155,7 @@ define([
                     permissions: {
                         download: dc?.permissions?.download || false,
                         print: dc?.permissions?.print || true,
+                        protect: file.type === 'xlsx',
                     }
                 },
                 "documentType": file.doc,
