@@ -35,7 +35,7 @@
     "fs-extra": "^7.0.0",
     "get-folder-size": "^2.0.1",
     "html2canvas": "^1.4.0",
-    "http-proxy-middleware": "^3.0.3",
+    "http-proxy-middleware": "^3.0.5",
     "hyper-json": "~1.4.0",
     "jquery": "3.6.0",
     "json.sortify": "github:cryptpad/JSON.sortify",
