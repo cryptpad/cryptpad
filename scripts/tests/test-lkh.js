@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 var Client = require("../../lib/client");
-var Nacl = require("tweetnacl/nacl-fast");
 var nThen = require("nthen");
 var CPNetflux = require("../../www/components/chainpad-netflux/chainpad-netflux");
 var Hash = require("../../www/common/common-hash");
 var Util = require("../../lib/common-util");
 var Rpc = require("../../www/common/rpc");
 var HK = require("../../lib/hk-util");
+var Crypto = require("../../www/components/chainpad-crypto");
 
 
 var identity = function (x) {
@@ -70,7 +70,7 @@ nThen(function (w) {
         //console.log(i);
         if (i-- <= 0) { return void done(); }
 
-        var ciphertext = Util.encodeBase64(Nacl.randomBytes(256));
+        var ciphertext = Util.encodeBase64(Crypto.Random.bytes(256));
 
         client.anonRpc.send('WRITE_PRIVATE_MESSAGE', [
             client.channel,

@@ -4,7 +4,7 @@
 
 const Fs = require('fs');
 const nThen = require('nthen');
-const Nacl = require('tweetnacl/nacl-fast');
+const Crypto = require('chainpad-crypto/crypto');
 const Path = require('path');
 const Pins = require('../lib/pins');
 const Util = require('../lib/common-util');
@@ -28,7 +28,7 @@ if (dataIdx === -1) {
     const ed = Util.decodeBase64(deleteData.toSign.edPublic);
     const signed = Util.decodeUTF8(JSON.stringify(deleteData.toSign));
     const proof = Util.decodeBase64(deleteData.proof);
-    if (!Nacl.sign.detached.verify(signed, proof, ed)) { return void console.error("Invalid signature"); }
+    if (!Crypto.Random.verifyDetached(signed, proof, ed)) { return void console.error("Invalid signature"); }
     edPublic = escapeKeyCharacters(deleteData.toSign.edPublic);
 }
 

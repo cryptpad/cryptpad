@@ -3,17 +3,17 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 let SodiumNative = require('sodium-native');
-let Nacl = require('tweetnacl/nacl-fast');
+let Crypto = require('chainpad-crypto/crypto');
 let LibSodium = require('libsodium-wrappers');
 let Util = require('../lib/common-util');
 
 
 let msgStr = "This is a test";
-let keys = Nacl.sign.keyPair();
+let keys = Crypto.Random.signKeyPair();
 let pub = keys.publicKey;
 
 let msg = Util.decodeUTF8(msgStr);
-let signedMsg = Nacl.sign(msg, keys.secretKey);
+let signedMsg = Crypto.Random.sign(msg, keys.secretKey);
 let sig = signedMsg.subarray(0, 64);
 
 LibSodium.ready.then(() => {
@@ -57,8 +57,8 @@ console.log(LibSodium.crypto_sign_verify_detached(sig, msg, pub));
     console.log('start tweetnacl');
     a = +new Date();
     for (let i = 0; i < n; i++) {
-        Nacl.sign.open(signedMsg, pub);
-        Nacl.sign.detached.verify(msg, sig, pub);
+        Crypto.Random.signOpen(signedMsg, pub);
+        Crypto.Random.verifyDetached(msg, sig, pub);
     }
 
     console.log('end tweetnacl ', (+new Date() - a), ' ms');
