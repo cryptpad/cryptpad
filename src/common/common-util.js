@@ -11,11 +11,8 @@ const factory = (Crypto) => {
     window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); };
 
     Util.encodeBase64 = Crypto.Random.encodeBase64;
-    Util.decodeBase64 = str => {
-        let i = str.length % 4;
-        if (i) { str += '='.repeat(4-i); }
-        return Crypto.Random.decodeBase64(str);
-    };
+    Util.decodeBase64 = Crypto.Random.decodeBase64;
+
     Util.encodeUTF8 = Crypto.Random.encodeUTF8;
     Util.decodeUTF8 = Crypto.Random.decodeUTF8;
 
