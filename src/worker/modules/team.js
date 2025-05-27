@@ -758,13 +758,13 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                         channel: Hash.createChannelId(),
                         viewed: [],
                         keys: {
-                            curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
-                            curvePublic: Nacl.util.encodeBase64(curvePair.publicKey)
+                            curvePrivate: Util.encodeBase64(curvePair.secretKey),
+                            curvePublic: Util.encodeBase64(curvePair.publicKey)
                         }
                     },
                     drive: {
-                        edPrivate: Nacl.util.encodeBase64(keyPair.secretKey),
-                        edPublic: Nacl.util.encodeBase64(keyPair.publicKey)
+                        edPrivate: Util.encodeBase64(keyPair.secretKey),
+                        edPublic: Util.encodeBase64(keyPair.publicKey)
                     },
                     chat: {
                         edit: chatHashes.editHash,
@@ -1868,7 +1868,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         if (team.keys && team.keys.mailbox) { return team.keys.mailbox; }
         var strSeed = Util.find(team, ['keys', 'roster', 'edit']);
         if (!strSeed) { return; }
-        var hash = Nacl.hash(Nacl.util.decodeUTF8(strSeed));
+        var hash = Nacl.hash(Util.decodeUTF8(strSeed));
         var seed = hash.slice(0,32);
         var mailboxChannel = Util.uint8ArrayToHex(hash.slice(32,48));
         var curvePair = Nacl.box.keyPair.fromSecretKey(seed);
@@ -1876,8 +1876,8 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             channel: mailboxChannel,
             viewed: [],
             keys: {
-                curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
-                curvePublic: Nacl.util.encodeBase64(curvePair.publicKey)
+                curvePrivate: Util.encodeBase64(curvePair.secretKey),
+                curvePublic: Util.encodeBase64(curvePair.publicKey)
             }
         };
     };
@@ -1919,9 +1919,9 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var checkKeyPair = function (edPrivate, edPublic) {
             if (!edPrivate || !edPublic) { return true; }
             try {
-                var secretKey = Nacl.util.decodeBase64(edPrivate);
+                var secretKey = Util.decodeBase64(edPrivate);
                 var pair = Nacl.sign.keyPair.fromSecretKey(secretKey);
-                return Nacl.util.encodeBase64(pair.publicKey) === edPublic;
+                return Util.encodeBase64(pair.publicKey) === edPublic;
             } catch (e) {
                 return false;
             }
@@ -2253,7 +2253,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../../common/user-object'),
         require('../components/sharedfolder'),
         require('../components/roster'),
-        require('../../common/common-messaging'),
+        require('../components/messaging'),
         require('../../common/common-feedback'),
         require('../components/invitation'),
         require('../../common/cryptget'),
@@ -2278,7 +2278,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/common/user-object.js',
         '/common/outer/sharedfolder.js',
         '/common/outer/roster.js',
-        '/common/common-messaging.js',
+        '/common/outer/messaging.js',
         '/common/common-feedback.js',
         '/common/outer/invitation.js',
         '/common/cryptget.js',

@@ -113,6 +113,7 @@ const factory = () => {
                 txid: txid,
                 lastKnownHash: chan.lastKnownHash || chan.lastCpHash,
                 metadata: {
+                    forcePlaceholder: true,
                     validateKey: obj.validateKey,
                     owners: obj.owners,
                     expire: obj.expire
@@ -158,7 +159,10 @@ const factory = () => {
                 ctx.emit('READY', chan.clients, chan.clients);
                 return;
             }
-            if (parsed.error && parsed.channel) { return; }
+            if (parsed.error && parsed.channel) {
+                ctx.emit('READY', chan.clients, chan.clients);
+                return;
+            }
 
             // If there is a txid, make sure it's ours or abort
             if (Array.isArray(parsed) && parsed[0] && parsed[0] !== txid) {

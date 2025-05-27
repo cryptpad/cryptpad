@@ -13,14 +13,11 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
 
-    '/components/tweetnacl/nacl-fast.min.js',
     '/components/croppie/croppie.min.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/components/croppie/croppie.css',
 ], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
     var MT = {};
-
-    var Nacl = window.nacl;
 
     // Configure MediaTags to use our local viewer
     // This file is loaded by sframe-common so the following config is used in all the inner apps
@@ -189,7 +186,7 @@ define([
         if (avatars[href]) {
             var nodes = $.parseHTML(avatars[href]);
             var $el = $(nodes[0]);
-            $container.append($el);
+            $container.empty().append($el);
             return void cb($el);
         }
 
@@ -225,7 +222,7 @@ define([
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var mt = UI.mediaTag(src, cryptKey);
-                var $img = $(mt).appendTo($container);
+                var $img = $(mt).appendTo($container.empty());
                 MT.displayMediatagImage(common, $img, function (err, $image) {
                     if (err) { return void console.error(err); }
                     centerImage($img, $image);
@@ -384,7 +381,7 @@ define([
                     var host = priv.fileHost || priv.origin || '';
                     src = host + Hash.getBlobPathFromHex(secret.channel);
                     var _key = secret.keys && secret.keys.cryptKey;
-                    if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
+                    if (_key) { key = 'cryptpad:' + Util.encodeBase64(_key); }
                 }
                 if (!src || !key) {
                     $spinner.hide();

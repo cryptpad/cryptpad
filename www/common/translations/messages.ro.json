@@ -1817,5 +1817,7 @@
     "admin_addAdminsHint": "Adăugați administratori folosind cheia lor publică sau din lista dumneavoastră de contacte",
     "admin_addAdminsAdd": "Promovează un contact la admin",
     "admin_listName": "Nume admin",
-    "admin_listHardcoded": "Admin adăugat în config.js. Poate fi șters doar prin modificarea fișierului de configurație."
+    "admin_listHardcoded": "Admin adăugat în config.js. Poate fi șters doar prin modificarea fișierului de configurație.",
+    "profile_remove_avatar": "Șterge acest avatar",
+    "oo_unstableMigrationWarning": "Funcționalitatea de Import și Export pentru unele formate OpenDocument (.odt, .odp) sunt instabile în momentul de față. Recomandăm utilizarea altor formate dacă este posibil. CryptPad va încerca acum să realizeze conversia."
 }
