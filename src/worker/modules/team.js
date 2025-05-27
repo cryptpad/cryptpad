@@ -5,10 +5,9 @@
 const factory = (Util, Hash, Constants, Realtime, ProxyManager,
                 UserObject, SF, Roster, Messaging, Feedback,
                 Invite, Crypt, Cache, Pinpad, Listmap, Crypto,
-                CpNetflux, ChainPad, nThen, Nacl) => {
+                CpNetflux, ChainPad, nThen) => {
     const Team = {};
 
-    Nacl = Nacl || (typeof(window) !== "undefined" && window.nacl);
     var onStoreReady = Util.mkEvent(true);
     var openCachedTeamChat = function () {}; // Placeholder
 
@@ -654,9 +653,9 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         var hash = Hash.createRandomHash('team', password);
         var secret = Hash.getSecrets('team', hash, password);
         var roHash = Hash.getViewHashFromKeys(secret);
-        var keyPair = Nacl.sign.keyPair(); // keyPair.secretKey , keyPair.publicKey
+        var keyPair = Crypto.Random.signKeyPair(); // keyPair.secretKey , keyPair.publicKey
 
-        var curvePair = Nacl.box.keyPair();
+        var curvePair = Crypto.Random.curveKeyPair(); // curvePair.secretKey, curvePair.publicKey
 
         var rosterSeed = Crypto.Team.createSeed();
         var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, {
@@ -1867,10 +1866,10 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
         if (team.keys && team.keys.mailbox) { return team.keys.mailbox; }
         var strSeed = Util.find(team, ['keys', 'roster', 'edit']);
         if (!strSeed) { return; }
-        var hash = Nacl.hash(Util.decodeUTF8(strSeed));
+        var hash = Crypto.Random.createHash(Util.decodeUTF8(strSeed));
         var seed = hash.slice(0,32);
         var mailboxChannel = Util.uint8ArrayToHex(hash.slice(32,48));
-        var curvePair = Nacl.box.keyPair.fromSecretKey(seed);
+        var curvePair = Crypto.Random.boxKeyPairFromSecretKey(seed);
         return {
             channel: mailboxChannel,
             viewed: [],
@@ -1919,7 +1918,7 @@ const factory = (Util, Hash, Constants, Realtime, ProxyManager,
             if (!edPrivate || !edPublic) { return true; }
             try {
                 var secretKey = Util.decodeBase64(edPrivate);
-                var pair = Nacl.sign.keyPair.fromSecretKey(secretKey);
+                var pair = Crypto.Random.signKeyPairFromSecretKey(secretKey);
                 return Util.encodeBase64(pair.publicKey) === edPublic;
             } catch (e) {
                 return false;

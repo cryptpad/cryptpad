@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
+const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
 
     var Block = {};
 
@@ -23,7 +23,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
     // [b64_public, b64_sig, b64_block [version, nonce, content]]
 
     Block.seed = function () {
-        return Nacl.hash(Util.decodeUTF8('pewpewpew'));
+        return Crypto.Random.createHash(Util.decodeUTF8('pewpewpew'));
     };
 
     // should be deterministic from a seed...
@@ -35,12 +35,12 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
             throw new Error('INVALID_SEED_LENGTH');
         }
 
-        var signSeed = seed.subarray(0, Nacl.sign.seedLength);
-        var symmetric = seed.subarray(Nacl.sign.seedLength,
-            Nacl.sign.seedLength + Nacl.secretbox.keyLength);
+        var signSeed = seed.subarray(0, Crypto.Random.signSeedLength());
+        var symmetric = seed.subarray(Crypto.Random.signSeedLength(),
+            Crypto.Random.signSeedLength() + Crypto.Random.secretboxKeyLength());
 
         return {
-            sign: Nacl.sign.keyPair.fromSeed(signSeed), // 32 bytes
+            sign: Crypto.Random.signKeyPairFromSeed(signSeed), // 32 bytes
             symmetric: symmetric, // 32 bytes ...
         };
     };
@@ -61,21 +61,21 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
     // (UTF8 content, keys object) => Uint8Array block
     Block.encrypt = function (version, content, keys) {
         var u8 = Util.decodeUTF8(content);
-        var nonce = Nacl.randomBytes(Nacl.secretbox.nonceLength);
+        var nonce = Crypto.Random.bytes(Crypto.Random.secretboxNonceLength());
         return Block.join([
             [0],
             nonce,
-            Nacl.secretbox(u8, nonce, keys.symmetric)
+            Crypto.Random.secretbox(u8, nonce, keys.symmetric)
         ]);
     };
 
     // (uint8Array block) => payload object
     Block.decrypt = function (u8_content, keys) {
         // version is currently ignored since there is only one
-        var nonce = u8_content.subarray(1, 1 + Nacl.secretbox.nonceLength);
-        var box = u8_content.subarray(1 + Nacl.secretbox.nonceLength);
+        var nonce = u8_content.subarray(1, 1 + Crypto.Random.secretboxNonceLength());
+        var box = u8_content.subarray(1 + Crypto.Random.secretboxNonceLength());
 
-        var plaintext = Nacl.secretbox.open(box, nonce, keys.symmetric);
+        var plaintext = Crypto.Random.secretboxOpen(box, nonce, keys.symmetric);
         try {
             return JSON.parse(Util.encodeUTF8(plaintext));
         } catch (e) {
@@ -86,7 +86,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
 
     // (Uint8Array block) => signature
     Block.sign = function (ciphertext, keys) {
-        return Nacl.sign.detached(Nacl.hash(ciphertext), keys.sign.secretKey);
+        return Crypto.Random.signDetached(Crypto.Random.createHash(ciphertext), keys.sign.secretKey);
     };
 
     Block.serialize = function (content, keys) {
@@ -109,7 +109,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl) => {
         var u8_secret = Util.find(O, ['sign', 'secretKey']);
         try {
         // sign your old publicKey with your old privateKey
-            var u8_sig = Nacl.sign.detached(u8_pub, u8_secret);
+            var u8_sig = Crypto.Random.signDetached(u8_pub, u8_secret);
         // return an array with the sig and the pubkey
             return JSON.stringify([u8_pub, u8_sig].map(Util.encodeBase64));
         } catch (err) {
@@ -227,7 +227,8 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('../common-util'),
         undefined,
         require('./http-command'),
-        require('tweetnacl/nacl-fast')
+        require('tweetnacl/nacl-fast'),
+        require('chainpad-crypto/crypto')
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
@@ -235,8 +236,9 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/api/config',
         '/common/outer/http-command.js',
         '/components/tweetnacl/nacl-fast.min.js',
-    ], (Util, ApiConfig, ServerCommand) => {
-        return factory(Util, ApiConfig, ServerCommand, window.nacl);
+        '/components/chainpad-crypto/crypto.js',
+    ], (Util, ApiConfig, ServerCommand, Nacl, Crypto) => {
+        return factory(Util, ApiConfig, ServerCommand, window.nacl, Crypto);
     });
 } else {
     // unsupported initialization

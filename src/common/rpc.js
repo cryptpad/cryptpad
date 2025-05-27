@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (function () {
-var factory = function (Util, Nacl) {
+var factory = function (Util, Nacl, Crypto) {
     // we will send messages with a unique id for each RPC
     // that id is returned with each response, indicating which call it was in response to
     var uid = Util.uid;
@@ -15,7 +15,7 @@ var factory = function (Util, Nacl) {
     // this handles that in a generic way
     var signMsg = function (data, signKey) {
         var buffer = Util.decodeUTF8(JSON.stringify(data));
-        return Util.encodeBase64(Nacl.sign.detached(buffer, signKey));
+        return Util.encodeBase64(Crypto.Random.signDetached(buffer, signKey));
     };
 
     // sendMsg takes a pre-formed message, does a little validation
@@ -408,13 +408,14 @@ var factory = function (Util, Nacl) {
 };
 
     if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = factory(require("./common-util"), require("tweetnacl/nacl-fast"));
+        module.exports = factory(require("./common-util"), require("tweetnacl/nacl-fast"), require("chainpad-crypto/crypto"));
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-util.js',
             '/components/tweetnacl/nacl-fast.min.js',
-        ], function (Util) {
-            return factory(Util, window.nacl);
+            '/components/chainpad-crypto/crypto.js'
+        ], function (Util, Crypto) {
+            return factory(Util, window.nacl, Crypto);
         });
     } else {
         // I'm not gonna bother supporting any other kind of instanciation

@@ -11,7 +11,6 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         ApiConfig = data.ApiConfig;
     };
 
-    var Nacl = Crypto.Nacl;
 
     // UTILS
 
@@ -302,7 +301,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         if (!curvePrivate) { return void cb('EFORBIDDEN'); }
         let edPrivate, edPublic;
         try {
-            let pair = Nacl.sign.keyPair.fromSeed(Util.decodeBase64(curvePrivate));
+            let pair = Crypto.Random.signKeyPairFromSeed(Util.decodeBase64(curvePrivate));
             edPrivate = Util.encodeBase64(pair.secretKey);
             edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
@@ -999,7 +998,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
     let updateServerKey = (ctx, curvePublic, curvePrivate, cb) => {
         let edPublic;
         try {
-            let pair = Nacl.sign.keyPair.fromSeed(Util.decodeBase64(curvePrivate));
+            let pair = Crypto.Random.signKeyPairFromSeed(Util.decodeBase64(curvePrivate));
             edPublic = Util.encodeBase64(pair.publicKey);
         } catch (e) {
             return void cb(e);
@@ -1021,7 +1020,7 @@ const factory = (Util, Hash, Realtime, Pinpad, Crypt,
         let proxy = ctx.store.proxy;
         let edPublic = proxy.edPublic;
 
-        const keyPair = Nacl.box.keyPair();
+        const keyPair = Crypto.Random.curveKeyPair();
         const newKeyPub = Util.encodeBase64(keyPair.publicKey);
         const newKey = Util.encodeBase64(keyPair.secretKey);
 

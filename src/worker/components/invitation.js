@@ -10,8 +10,8 @@ var factory = function (Util, Cred, Nacl, Crypto) {
 
     // ed and curve keys can be random...
     Invite.generateKeys = function () {
-        var ed = Nacl.sign.keyPair();
-        var curve = Nacl.box.keyPair();
+        var ed = Crypto.Random.signKeyPair();
+        var curve = Crypto.Random.curveKeyPair();
         return {
             edPublic: encode64(ed.publicKey),
             edPrivate: encode64(ed.secretKey),
@@ -21,7 +21,7 @@ var factory = function (Util, Cred, Nacl, Crypto) {
     };
 
     Invite.generateSignPair = function () {
-        var ed = Nacl.sign.keyPair();
+        var ed = Crypto.Random.signKeyPair();
         return {
             validateKey: encode64(ed.publicKey),
             signKey: encode64(ed.secretKey),
@@ -32,7 +32,7 @@ var factory = function (Util, Cred, Nacl, Crypto) {
         var dispense = Cred.dispenser(decode64(b64));
         return {
             channel: Util.uint8ArrayToHex(dispense(16)),
-            cryptKey: dispense(Nacl.secretbox.keyLength),
+            cryptKey: dispense(Crypto.Random.secretboxKeyLength()),
         };
     };
 
@@ -58,13 +58,13 @@ var factory = function (Util, Cred, Nacl, Crypto) {
     var decodeUTF8 = Util.decodeUTF8;
     Invite.encryptHash = function (data, seedStr) {
         var array = decodeUTF8(seedStr);
-        var bytes = Nacl.hash(array);
+        var bytes = Crypto.Random.createHash(array);
         var cryptKey = bytes.subarray(0, 32);
         return Crypto.encrypt(data, cryptKey);
     };
     Invite.decryptHash = function (encryptedStr, seedStr) {
         var array = decodeUTF8(seedStr);
-        var bytes = Nacl.hash(array);
+        var bytes = Crypto.Random.createHash(array);
         var cryptKey = bytes.subarray(0, 32);
         return Crypto.decrypt(encryptedStr, cryptKey);
     };

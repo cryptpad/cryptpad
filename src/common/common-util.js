@@ -3,21 +3,21 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (function (window) {
-const factory = (NaclUtil) => {
+const factory = (Crypto) => {
     var Util = window.CryptPad_Util = {};
 
     // polyfill for atob in case you're using this from node...
     window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); };
     window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); };
 
-    Util.encodeBase64 = NaclUtil.encodeBase64;
+    Util.encodeBase64 = Crypto.Random.encodeBase64;
     Util.decodeBase64 = str => {
         let i = str.length % 4;
         if (i) { str += '='.repeat(4-i); }
-        return NaclUtil.decodeBase64(str);
+        return Crypto.Random.decodeBase64(str);
     };
-    Util.encodeUTF8 = NaclUtil.encodeUTF8;
-    Util.decodeUTF8 = NaclUtil.decodeUTF8;
+    Util.encodeUTF8 = Crypto.Random.encodeUTF8;
+    Util.decodeUTF8 = Crypto.Random.decodeUTF8;
 
     Util.slice = function (A, start, end) {
         return Array.prototype.slice.call(A, start, end);
@@ -871,10 +871,10 @@ const factory = (NaclUtil) => {
 };
 
     if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = factory(require('tweetnacl-util'));
+        module.exports = factory(require('chainpad-crypto/crypto'));
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
-        define(['/components/tweetnacl-util/nacl-util.min.js'], function () {
-            return factory(globalThis?.nacl?.util);
+        define(['/components/chainpad-crypto/crypto.js'], function (Crypto) {
+            return factory(Crypto);
         });
     } else {
         // Unsupported initialization

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 (() => {
-const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
+const factory = (nThen, Util, ApiConfig = {}, Nacl, Crypto) => {
 
     const getApiOrigin = function () {
         if (!Object.keys(ApiConfig).length) { return; }
@@ -26,7 +26,7 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
     };
 
     var clone = o => JSON.parse(JSON.stringify(o));
-    var randomToken = () => Util.encodeBase64(Nacl.randomBytes(24));
+    var randomToken = () => Util.encodeBase64(Crypto.Random.bytes(24));
     var postData = function (url, data, cb) {
         var CB = Util.once(Util.mkAsync(cb));
         fetch(url, {
@@ -83,7 +83,7 @@ const factory = (nThen, Util, ApiConfig = {}, Nacl) => {
             copy.txid = txid;
             copy.date = date;
             var toSign = Util.decodeUTF8(JSON.stringify(copy));
-            var sig = Nacl.sign.detached(toSign, keypair.secretKey);
+            var sig = Crypto.Random.signDetached(toSign, keypair.secretKey);
             var encoded = Util.encodeBase64(sig);
             var obj2 = {
                 sig: encoded,
@@ -112,7 +112,8 @@ if (typeof(module) !== 'undefined' && module.exports) {
         require('nthen'),
         require('../common-util'),
         undefined,
-        require('tweetnacl/nacl-fast')
+        require('tweetnacl/nacl-fast'),
+        require('chainpad-crypto/crypto')
     );
 } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
     define([
@@ -120,8 +121,9 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/common/common-util.js',
         '/api/config',
         '/components/tweetnacl/nacl-fast.min.js',
+        '/components/chainpad-crypto/crypto.js',
     ], (nThen, Util, ApiConfig) => {
-        return factory(nThen, Util, ApiConfig, window.nacl);
+        return factory(nThen, Util, ApiConfig, window.nacl, Crypto);
     });
 } else {
     // unsupported initialization

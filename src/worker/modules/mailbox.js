@@ -158,9 +158,8 @@ proxy.mailboxes = {
         });
     };
     Mailbox.sendToAnon = function (anonRpc, type, msg, user, cb) {
-        var Nacl = Crypto.Nacl;
-        var curveSeed = Nacl.randomBytes(32);
-        var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
+        var curveSeed = Crypto.Random.bytes(32);
+        var curvePair = Crypto.Random.boxKeyPairFromSecretKey(new Uint8Array(curveSeed));
         var curvePrivate = Util.encodeBase64(curvePair.secretKey);
         var curvePublic = Util.encodeBase64(curvePair.publicKey);
         sendTo({
