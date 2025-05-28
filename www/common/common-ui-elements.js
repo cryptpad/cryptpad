@@ -3280,6 +3280,7 @@ define([
             }, button),
         ]);
         UI.errorLoadingScreen(block);
+        $(button).focus();
     };
     UIElements.getBurnAfterReadingWarning = function (common) {
         var priv = common.getMetadataMgr().getPrivateData();
