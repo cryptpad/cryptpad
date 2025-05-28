@@ -145,6 +145,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.hide_password = "Hide password";
     Messages.next_templateList = "Next template list";
     Messages.previous_templateList = "Previous template list";
+    Messages.fc_open_formaud = 'Open (as auditor)';
     return Messages;
 
 });

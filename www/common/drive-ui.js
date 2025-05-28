@@ -1250,7 +1250,8 @@ define([
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             var opts = {};
             if (isRo) { opts.view = true; }
-            var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
+            var auditorKey = parsed.hashData.auditorKey ? parsed.hashData.auditorKey : undefined;
+            var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts, auditorKey);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
             common.openURL(Hash.getNewPadURL(hiddenHref, obj));
         };
@@ -1757,7 +1758,11 @@ define([
                             var parsed = Hash.parsePadUrl(metadata.roHref);
                             // Forms: change "Open (read-only)" to "Open (as participant)"
                             if (parsed.type === "form") {
-                                $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formro);
+                                if (parsed.hash.indexOf('auditor') !== -1) {
+                                    $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formaud);
+                                } else {
+                                    $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formro);
+                                }
                             }
                         }
                     }
