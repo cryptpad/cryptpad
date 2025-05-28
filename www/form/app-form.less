@@ -176,6 +176,13 @@
         flex: 1;
         justify-content: center;
         min-width: 300px;
+        .cp-markdown-toggle-row {
+            margin: 0.5rem 0;
+            position: relative;
+            .cp-markdown-toggle-button {
+                .markdown-toolbar-button-style() !important;
+            }
+        }
 
         div.timeline-container {
             width: 100%;
@@ -381,6 +388,12 @@
                         }
                     }
                 }
+                div.cp-form-response-msg-container {
+                    .cp-markdown-toolbar {
+                        background-color: transparent;
+                        border-radius: @variables_radius @variables_radius 0 0;
+                    }
+                }
             }
             div.cp-form-creator-results {
                 .cp-form-block {
@@ -432,18 +445,12 @@
                 }
 
                 .cp-editor-wrapper {
-                    .cp-markdown-toggle-row {
-                        margin: 0.5rem 0;
-                        position: relative;
-                        .cp-markdown-toolbar-toggle-button {
-                            padding: 3px 10px;
-                            height: 32px;
-                            margin: 0;
-                            line-height: 1;
-                            border-radius: @variables_radius;
-                            display: inline-flex;
-                        }
+                    .cp-form-edit-options-block {
+                        padding: 1px;
+                        overflow: hidden;
+                        border: 1px solid @cp_forms-border;
                     }
+                   
                 }
 
                 .cp-form-creator-add-inline {
@@ -547,7 +554,6 @@
                     padding-bottom: 75px;
                     button {
                         white-space: initial;
-                        line-height: 25px;
                         padding: 5.5px 6px;
                     }
                     .cp-form-response-msg-hint {
@@ -834,7 +840,6 @@
                     display: flex;
                     flex-wrap: wrap;
                     align-items: baseline;
-                    border: 1px solid @cp_forms-border;
                     border-radius: @variables_radius;
                     margin-top: 0.5rem;
                     padding: 1px; 
@@ -1380,8 +1385,12 @@
         }
     }
     .cp-form-response-modal {
-        .CodeMirror {
+        .cp-form-markdown-editor-wrapper {
             border: 1px solid @cp_forms-border;
+            border-radius: @variables_radius; 
+        }
+        .CodeMirror {
+            border-radius: 0 0 @variables_radius @variables_radius; 
         }
     }
 

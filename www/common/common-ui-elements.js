@@ -1343,7 +1343,7 @@ define([
 
     UIElements.createMarkdownToolbarToggle = function(toolbarElement, editor) {
         var $button = $('<button>', {
-            'class': 'btn cp-markdown-toolbar-toggle-button',
+            'class': 'btn cp-markdown-toggle-button',
             'aria-label': Messages.toolbar_tools,
             'data-notippy':1,
             'title': Messages.toolbar_tools,
@@ -1363,6 +1363,7 @@ define([
         $button.on('click', function () {
             var isExpanded = $(toolbarElement).is(':visible');
             $(this).attr('aria-pressed', String(!isExpanded));
+            $(this).toggleClass('cp-toolbar-button-active', !isExpanded);
             $(toolbarElement).toggle();
         });
     
@@ -1378,16 +1379,21 @@ define([
     
         return $button;
     };
+
+    var isSmallScreenToolbar = function () {
+        return window.innerHeight < 530 || window.innerWidth < 530;
+    }
+
     UIElements.updateToolbarVisibility = function(markdownEditorWrapper, toolbar, editor) {
         let toggleButton = null;
-        if (Util.isSmallScreen()) {
-            if (!$(markdownEditorWrapper).find('.cp-markdown-toolbar-toggle-button').length) {
+        if (isSmallScreenToolbar()) {
+            if (!$(markdownEditorWrapper).find('.cp-markdown-toggle-button').length) {
                 toggleButton = UIElements.createMarkdownToolbarToggle(toolbar, editor);
                 $(markdownEditorWrapper).append(toggleButton);
             }
             $(toolbar).hide();
         } else {
-            $(markdownEditorWrapper).find('.cp-markdown-toolbar-toggle-button').remove();
+            $(markdownEditorWrapper).find('.cp-markdown-toggle-button').remove();
             $(toolbar).show();
         }
         return toggleButton; // May return null if not created

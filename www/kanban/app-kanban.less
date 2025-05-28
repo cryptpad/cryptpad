@@ -130,18 +130,14 @@
         vertical-align: middle;
     }
     
-    .cp-markdown-toolbar-toggle-button {
+    .cp-markdown-toggle-button {
+        .markdown-toolbar-button-style();
         position: absolute;
         right: 0;
         top: 50%;
         transform: translateY(-50%);
-        padding: 3px 10px;
-        height: 32px;
-        margin: 0;
-        line-height: 1;
-        border-radius: @variables_radius;
-        display: inline-flex;
-    }
+    } 
+
     #cp-kanban-edit-body {
         border: 1px solid @cp_forms-border;
         border-radius: @variables_radius;
@@ -155,7 +151,7 @@
             box-sizing: content-box;
         }
         .cp-markdown-toolbar {
-            background-color: @cp_kanban-conflict-bg;
+            background-color: transparent;
             color: @cp_kanban-fg;
             border-radius: @variables_radius @variables_radius 0px 0px;
             button {
@@ -164,6 +160,20 @@
                     color: @cp_kanban-conflict-bg;
                 }
             }
+            .btn {
+            outline: 0;
+            border-radius: @variables_radius;
+            .fa {
+                font: normal normal normal 14px/1 FontAwesome;
+                font-family: FontAwesome;
+            }
+            &:hover {
+                background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
+            }
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
+        }
         }
         margin-bottom: 15px;
     }

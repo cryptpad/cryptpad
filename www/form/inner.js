@@ -5571,30 +5571,45 @@ define([
             ]);
             var editButtons = h('div.cp-form-edit-buttons-container', [ preview, edit, del ]);
 
+            var toggleRow = h('div.cp-markdown-toggle-row'); 
+            var markdownWrapper = h('div.cp-form-markdown-editor-wrapper', t);
             var editDiv, previewDiv;
             var div = h('div.cp-form-block.editable.nodrag.cp-form-submit-message', [
                 h('div.cp-form-block-content', [
                     p,
-                    editDiv = h('div.cp-form-response-modal', t),
+                    editDiv = h('div.cp-form-response-modal', toggleRow, markdownWrapper),
                     previewDiv = h('div.cp-form-response-preview#cp-response-preview'),
                     editButtons
                 ]),
             ]);
             var cm = APP.responseCM = SFCodeMirror.create("gfm", CMeditor, t);
             var editor = APP.responseEditor = cm.editor;
-
+            editor.setOption("extraKeys", {
+                "Esc": function() {
+                    $(preview).focus();
+                }
+            });
             var markdownTb = APP.common.createMarkdownToolbar(editor, {
                 embed: function (mt) {
                     editor.focus();
                     editor.replaceSelection($(mt)[0].outerHTML);
                 }
             });
-            var $tb = $(markdownTb.toolbar).insertAfter($(p));
+            var toggleButton = UIElements.createMarkdownToolbarToggle(markdownTb.toolbar, editor)[0];
+            toggleRow.appendChild(toggleButton);
+            markdownWrapper.insertBefore(markdownTb.toolbar instanceof jQuery ? markdownTb.toolbar[0] : markdownTb.toolbar,t);
+            setTimeout(() => {
+                UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+            }, 10);
+            $(window).on('resize', function () {
+                UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
+            });
 
             var $edit = $(editDiv);
             var $preview = $(previewDiv);
             var $p = $(preview);
             var $e = $(edit);
+            var $tb = $(markdownTb);
             var previewState = true;
 
             var updatePreview = function () {
