@@ -7,7 +7,7 @@
 // merge code more easily.
 // Set REVERSE to true to copy from "www" to "src" once the changes have been merged.
 
-const REVERSE = true;
+const REVERSE = false;
 const Fs = require('node:fs');
 const map = {
     './src/worker/components/roster.js': './www/common/outer/roster.js',
@@ -20,7 +20,6 @@ const map = {
     './src/common/common-credential.js': './www/common/common-credential.js',
     './src/common/common-feedback.js': './www/common/common-feedback.js',
     './src/common/common-hash.js': './www/common/common-hash.js',
-    './src/common/common-messaging.js': './www/common/common-messaging.js',
     './src/common/common-realtime.js': './www/common/common-realtime.js',
     './src/common/common-signing-keys.js': './www/common/common-signing-keys.js',
     './src/common/common-util.js': './www/common/common-util.js',

@@ -305,5 +305,13 @@
     "fm_info_root": "Môžete vytvoriť ľubovolné množstvo podpriečinkov pre triedenie súborov.",
     "fm_info_template": "Tieto dokumenty sú uložené ako šablóny. Môžu sa znova použiť pri vytváraní nových dokumentov.",
     "fm_info_recent": "Tieto dokumenty boli nedávno upravené alebo otvorené vami alebo ľuďmi, s ktorými spolupracujete.",
-    "fm_info_trash": "Vyprázdnite kôš pre uvoľnenie miesta na CryptDrive."
+    "fm_info_trash": "Vyprázdnite kôš pre uvoľnenie miesta na CryptDrive.",
+    "profile_remove_avatar": "Odstrániť avatara",
+    "fm_info_anonymous": "Nie ste prihlásení, takže platnosť vašich dokumentov vyprší po {0} dňoch. Vymazaním histórie prehliadača môžu zmiznúť.<br><a href=\"/register/\"> Zaregistrujte sa</a> (žiadne osobné údaje nie sú potrebné) alebo <a href=\"/login/\"> prihláste sa </a> pre permanentné uloženie dokumentov. <a href=\"#docs\">Prečítajte si dalšie informácie o registrácii účtu</a>.",
+    "fm_info_sharedFolder": "Toto je zdieľaný priečinok. Nie ste prihlásení, takže k nej máte prístup iba v režime na čítanie.<br><a href=\"/register/\"Zaregistrujte sa</a> alebo sa <a href=\"/login/\">Prihláste</a>, aby ho mohli pridať do svojho CryptDrive a upravovať ho.",
+    "fm_viewListButton": "Zoznam",
+    "fm_viewGridButton": "Mriežka",
+    "fm_info_owned": "Ste vlastníkom zobrazených dokumentov. To znamená, že ich môžete permanentne odstrániť zo serveru, kedykoľvek chcete. Ak tak spravíte, ostatní používatelia k nim nebudú mať prístup.",
+    "fm_error_cantPin": "Chyba serveru. Prosím obnovte stránku a skúste to znova.",
+    "fm_renamedPad": "Pre tento dokument ste nastavili vlastný názov. Jeho zdieľaný názov je:<br><b>{0}</b>"
 }

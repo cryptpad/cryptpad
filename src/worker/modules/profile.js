@@ -99,6 +99,12 @@ const factory = (Util, Hash, Constants, Realtime,
             ctx.emit('UPDATE', ctx.listmap.proxy, ctx.clients.filter(function (clientId) {
                 return clientId !== cId;
             }));
+            if (key === 'badge') {
+                ctx.Store.set(null, {
+                    key: ['profile', 'badge'],
+                    value: value || undefined
+                }, () => {});
+            }
             cb(ctx.listmap.proxy);
         });
     };
@@ -113,6 +119,7 @@ const factory = (Util, Hash, Constants, Realtime,
         var store = cfg.store;
         if (!store.loggedIn || !store.proxy.edPublic) { return; }
         var ctx = {
+            Store: cfg.Store,
             store: store,
             pinPads: cfg.pinPads,
             updateMetadata: cfg.updateMetadata,

@@ -9,13 +9,13 @@ var factory = function (Util, Crypto, Keys, Nacl) {
     var uint8ArrayToHex = Util.uint8ArrayToHex;
     var hexToBase64 = Util.hexToBase64;
     var base64ToHex = Util.base64ToHex;
-    Hash.encodeBase64 = Nacl.util.encodeBase64;
-    Hash.decodeBase64 = Nacl.util.decodeBase64;
+    Hash.encodeBase64 = Util.encodeBase64;
+    Hash.decodeBase64 = Util.decodeBase64;
 
     // This implementation must match that on the server
     // it's used for a checksum
     Hash.hashChannelList = function (list) {
-        return Nacl.util.encodeBase64(Nacl.hash(Nacl.util
+        return Util.encodeBase64(Nacl.hash(Util
             .decodeUTF8(JSON.stringify(list))));
     };
 
@@ -34,15 +34,15 @@ var factory = function (Util, Crypto, Keys, Nacl) {
 
     Hash.getSignPublicFromPrivate = function (edPrivateSafeStr) {
         var edPrivateStr = Crypto.b64AddSlashes(edPrivateSafeStr);
-        var privateKey = Nacl.util.decodeBase64(edPrivateStr);
+        var privateKey = Util.decodeBase64(edPrivateStr);
         var keyPair = Nacl.sign.keyPair.fromSecretKey(privateKey);
-        return Nacl.util.encodeBase64(keyPair.publicKey);
+        return Util.encodeBase64(keyPair.publicKey);
     };
     Hash.getCurvePublicFromPrivate = function (curvePrivateSafeStr) {
         var curvePrivateStr = Crypto.b64AddSlashes(curvePrivateSafeStr);
-        var privateKey = Nacl.util.decodeBase64(curvePrivateStr);
+        var privateKey = Util.decodeBase64(curvePrivateStr);
         var keyPair = Nacl.box.keyPair.fromSecretKey(privateKey);
-        return Nacl.util.encodeBase64(keyPair.publicKey);
+        return Util.encodeBase64(keyPair.publicKey);
     };
 
     var getEditHashFromKeys = Hash.getEditHashFromKeys = function (secret) {
@@ -585,7 +585,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                     secret.channel = base64ToHex(parsed.channel);
                     secret.keys = {
                         fileKeyStr: parsed.key,
-                        cryptKey: Nacl.util.decodeBase64(parsed.key)
+                        cryptKey: Util.decodeBase64(parsed.key)
                     };
                 } else if (parsed.type === "user") {
                     throw new Error("User hashes can't be opened (yet)");
@@ -653,15 +653,15 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         var keys = secret && secret.keys;
         var secondary = keys && keys.secondaryKey;
         if (!secondary) { return; }
-        var curvePair = Nacl.box.keyPair.fromSecretKey(Nacl.util.decodeUTF8(secondary).slice(0,32));
+        var curvePair = Nacl.box.keyPair.fromSecretKey(Util.decodeUTF8(secondary).slice(0,32));
         var ret = {};
-        ret.form_public = Nacl.util.encodeBase64(curvePair.publicKey);
-        var privateKey = ret.form_private = Nacl.util.encodeBase64(curvePair.secretKey);
+        ret.form_public = Util.encodeBase64(curvePair.publicKey);
+        var privateKey = ret.form_private = Util.encodeBase64(curvePair.secretKey);
 
         var auditorHash = Hash.getViewHashFromKeys({
             version: 1,
             channel: secret.channel,
-            keys: { viewKeyStr: Nacl.util.encodeBase64(keys.cryptKey) }
+            keys: { viewKeyStr: Util.encodeBase64(keys.cryptKey) }
         });
         var _parsed = Hash.parseTypeHash('pad', auditorHash);
         ret.form_auditorHash = _parsed.getHash({auditorKey: privateKey});
@@ -720,12 +720,12 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
 
     Hash.decodeDataOptions = function (opts) {
         var b64 = decodeURIComponent(opts);
-        var str = Nacl.util.encodeUTF8(Nacl.util.decodeBase64(b64));
+        var str = Util.encodeUTF8(Util.decodeBase64(b64));
         return Util.tryParse(str) || {};
     };
     Hash.encodeDataOptions = function (opts) {
         var str = JSON.stringify(opts);
-        var b64 = Nacl.util.encodeBase64(Nacl.util.decodeUTF8(str));
+        var b64 = Util.encodeBase64(Util.decodeUTF8(str));
         return encodeURIComponent(b64);
     };
     Hash.getNewPadURL = function (href, opts) {

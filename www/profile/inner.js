@@ -17,6 +17,7 @@ define([
     '/common/common-realtime.js',
     '/common/clipboard.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
@@ -48,6 +49,7 @@ define([
     Realtime,
     Clipboard,
     MT,
+    Badges,
     h,
     Messages,
     AppConfig,
@@ -92,6 +94,7 @@ define([
     var LINK_ID = "cp-app-profile-link";
     var AVATAR_ID = "cp-app-profile-avatar";
     var DESCRIPTION_ID = "cp-app-profile-description";
+    var BADGES_ID = "cp-app-profile-badges";
     var CREATE_ID = "cp-app-profile-create";
     var HEADER_ID = "cp-app-profile-header";
     var HEADER_RIGHT_ID = "cp-app-profile-rightside";
@@ -375,7 +378,7 @@ define([
     var displayAvatar = function (val) {
         var sframeChan = common.getSframeChannel();
         var $span = APP.$avatar;
-        $span.html('');
+        $span.empty();
         if (!val) {
             $('<img>', {
                 src: '/customize/images/avatar.png',
@@ -447,6 +450,48 @@ define([
         displayAvatar(data.avatar);
     };
 
+    const addBadges = $container => {
+        var $block = $('<div>', {id: BADGES_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
+        APP.$badges = $(h('span')).appendTo($block);
+    };
+    const refreshBadges = (obj) => {
+        if (!APP.$badges) { return; }
+        const metadataMgr = APP.common.getMetadataMgr();
+        const privateData = metadataMgr.getPrivateData();
+        let args = {};
+        if (!privateData.isOwnProfile) { args.edPublic = obj.edPublic; }
+        APP.badge.execCommand('LIST_BADGES', args, data => {
+            APP.$badges.empty();
+            let spinner;
+            APP.$badges.toggle(!!data.length);
+            let all = data.map(str => {
+                const i = Badges.render(str);
+                const $i = $(i).attr('tabindex', 0);
+                if (APP.readOnly) { return i; }
+                const selected = obj?.badge === str;
+                if (selected) { $i.addClass('cp-selected'); }
+                Util.onClickEnter($i, () => {
+                    let value = selected ? '' : str;
+                    spinner.spin();
+                    APP.module.execCommand('SET', {
+                        key: 'badge',
+                        value
+                    }, function (data) {
+                        spinner.hide();
+                        APP.updateValues(data);
+                    });
+                });
+                return i;
+            });
+            let content = h('div.cp-profile-badges', [
+                h('span', Messages.profile_badges),
+                h('div.cp-profile-badges-list', all)
+            ]);
+            APP.$badges.append(content);
+            spinner = UI.makeSpinner(APP.$badges.find('> div'));
+        });
+    };
+
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID, class: PROFILE_SECTION}).appendTo($container);
 
@@ -462,7 +507,7 @@ define([
             }, [
                 h('i.fa.fa-pencil', {'aria-hidden': 'true' }),
                 h('span#cp-profile-add-description-button', Messages.profile_addDescription)
-            ]);        
+            ]);
         APP.$descriptionEdit = $(button);
         var save = h('button.btn.btn-primary', Messages.settings_save);
         var text = h('textarea');
@@ -609,6 +654,7 @@ define([
             addLink($rightside);
             addFriendRequest($rightside);
             addMuteButton($rightside);
+            //addBadges($rightside); // XXX 2025.6
             addPublicKey($rightside);
             addCopyData($rightside);
             addViewButton($rightside);
@@ -627,6 +673,7 @@ define([
         refreshName(data);
         refreshLink(data);
         refreshDescription(data);
+        refreshBadges(data);
         refreshFriendRequest(data);
         refreshMute(data);
         setPublicKeyButton(data);
@@ -700,6 +747,9 @@ define([
             return;
         }
 
+        APP.badge = common.makeUniversal('badge', {
+            onEvent: onEvent
+        });
         if (privateData.isOwnProfile) {
 
             APP.module = common.makeUniversal('profile', {

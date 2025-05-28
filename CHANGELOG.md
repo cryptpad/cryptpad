@@ -4,6 +4,58 @@ SPDX-FileCopyrightText: 2023 XWiki CryptPad Team <contact@cryptpad.org> and cont
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
+# 2025.3.1
+
+## Goals
+
+This release introduces version 8 of OnlyOffice applications (Document, Sheet, Presentation) alongside  smaller fixes and improvements.
+
+## Features
+
+- Upgrade OnlyOffice to version 8.3 [#1807](https://github.com/cryptpad/cryptpad/pull/1807)
+
+## Improvements
+
+- Show error message when x2t conversion fails in OO editor [#1890](https://github.com/cryptpad/cryptpad/pull/1890)
+- Add x2t warning [#1887](https://github.com/cryptpad/cryptpad/pull/1887)
+
+## Fixes
+
+- Fix OnlyOffice document copy [#1864](https://github.com/cryptpad/cryptpad/pull/1864)
+- Fix u8 increment issue in file-crypto [#1860](https://github.com/cryptpad/cryptpad/pull/1860) thanks @ansuz
+- Fix eviction issues [#1856](https://github.com/cryptpad/cryptpad/pull/1856)
+
+## Dependencies
+
+- Upgrade TweetNaCl [#1854](https://github.com/cryptpad/cryptpad/pull/1854)
+
+## Upgrade notes
+
+> [!NOTE]  
+> The new version of OnlyOffice is much bigger than the previous versions. When installing version 8.3 with `install-onlyoffice.sh` ~830MB additional disk space is needed.
+
+If you are upgrading from a version older than `2025.3.0` please read the upgrade notes of all versions between yours and `2025.3.1` to avoid configuration issues.
+
+To upgrade:
+
+1. Stop your server
+2. Get the latest code with git
+
+```bash
+git fetch --depth 1 origin tag 2025.3.1
+git checkout 2025.3.1
+npm ci
+npm run install:components
+```
+
+1. Restart your server
+2. Review your instance's checkup page to ensure that you are passing all tests
+
+## Contributors
+
+Alumni: @ansuz  
+CryptPad team: @AAAMON @wginolas @yflory
+
 # 💐 Spring 2025 release (2025.3.0)
 
 ## Goals

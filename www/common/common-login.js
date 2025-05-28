@@ -43,8 +43,8 @@ define([
         var curveSeed = dispense(32);
 
         var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
-        opt.curvePrivate = Nacl.util.encodeBase64(curvePair.secretKey);
-        opt.curvePublic = Nacl.util.encodeBase64(curvePair.publicKey);
+        opt.curvePrivate = Util.encodeBase64(curvePair.secretKey);
+        opt.curvePublic = Util.encodeBase64(curvePair.publicKey);
 
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
@@ -56,8 +56,8 @@ define([
         // derive a private key from the ed seed
         var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));
 
-        opt.edPrivate = Nacl.util.encodeBase64(signingKeypair.secretKey);
-        opt.edPublic = Nacl.util.encodeBase64(signingKeypair.publicKey);
+        opt.edPrivate = Util.encodeBase64(signingKeypair.secretKey);
+        opt.edPublic = Util.encodeBase64(signingKeypair.publicKey);
 
         var keys = opt.keys = Crypto.createEditCryptor(null, encryptionSeed);
 
