@@ -347,6 +347,7 @@ define([
 
 
         framework.onReady(function () {
+            showEditor();
             handleResize();
             window.addEventListener('resize', handleResize);
 
@@ -535,7 +536,12 @@ define([
             CodeMirror.configureTheme(common);
         }
 
+        const showEditor = Util.once(() => {
+            $('#cp-app-code-editor').css('display', '');
+        });
+
         framework.onContentUpdate(function (newContent) {
+            showEditor();
             var highlightMode = newContent.highlightMode;
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
@@ -696,7 +702,7 @@ define([
                     h('div#cp-app-code-preview-content'),
                     h('div#cp-app-code-print')
                 ])
-            ]);
+            ]).hide();
 
             nThen(function (waitFor) {
                 $(waitFor());
