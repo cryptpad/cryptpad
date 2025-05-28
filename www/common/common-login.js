@@ -24,7 +24,7 @@ define([
     '/components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function (Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
             Feedback, LocalStore, Messages, nThen, Block, Hash, ServerCommand) {
-    var Nacl = window.nacl;
+    //var Nacl = window.nacl;
 
     var Exports = {
         requiredBytes: 192,
@@ -42,7 +42,7 @@ define([
         // 32 bytes for a curve key
         var curveSeed = dispense(32);
 
-        var curvePair = Nacl.box.keyPair.fromSecretKey(new Uint8Array(curveSeed));
+        var curvePair = Crypto.Random.boxKeyPairFromSecretKey(new Uint8Array(curveSeed));
         opt.curvePrivate = Util.encodeBase64(curvePair.secretKey);
         opt.curvePublic = Util.encodeBase64(curvePair.publicKey);
 
@@ -54,7 +54,7 @@ define([
         opt.blockHash = Block.getBlockHash(blockKeys);
 
         // derive a private key from the ed seed
-        var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));
+        var signingKeypair = Crypto.Random.signKeyPairFromSeed(new Uint8Array(edSeed));
 
         opt.edPrivate = Util.encodeBase64(signingKeypair.secretKey);
         opt.edPublic = Util.encodeBase64(signingKeypair.publicKey);
@@ -201,7 +201,7 @@ define([
             opt.userHash = blockInfo.User_hash;
         } else {
             console.log("allocating random bytes for a new user object");
-            opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
+            opt = allocateBytes(Crypto.Random.bytes(Exports.requiredBytes));
             // create a random v2 hash, since we don't need backwards compatibility
             opt.userHash = Hash.createRandomHash('drive');
             var secret = Hash.getSecrets('drive', opt.userHash);

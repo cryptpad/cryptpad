@@ -22,6 +22,7 @@ define([
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
     '/install/onboardscreen.js',
+    '/components/chainpad-crypto/crypto.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -47,11 +48,12 @@ define([
     Instance,
     Flatpickr,
     Onboarding,
+    Crypto
 ) {
 
     var APP = window.APP = {};
 
-    var Nacl = window.nacl;
+    //var Nacl = window.nacl;
     var common;
     var sFrameChan;
 
@@ -2756,7 +2758,7 @@ define([
             var msg = Util.decodeUTF8(Sortify(clone));
             var sig = Util.decodeBase64(json.proof);
             var pub = Util.decodeBase64(json.blockId);
-            return Nacl.sign.detached.verify(msg, sig, pub);
+            return Crypto.Random.verifyDetached(msg, sig, pub);
         };
 
         // Msg.admin_totpRecoveryHint.admin_totpRecoveryTitle

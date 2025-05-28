@@ -10,8 +10,9 @@ define([
     '/components/nthen/index.js',
     '/customize.dist/login.js',
     '/common/common-util.js',
+    '/components/chainpad-crypto/crypto.js'
 
-], function ($, Messages, h, UI, nThen, Login, Util) {
+], function ($, Messages, h, UI, nThen, Login, Util, Crypto) {
     const MFA = {};
 
     MFA.totpSetup = function (common, config, content, enabled, cb) {
@@ -161,7 +162,7 @@ define([
             $(pwInput).prop('disabled', 'disabled');
             $mfaSetupBtn.prop('disabled', 'disabled');
 
-            var Base32, QRCode, Nacl;
+            var Base32, QRCode;
             var blockKeys;
             var recoverySecret;
             var ssoSeed;
@@ -173,7 +174,6 @@ define([
                 ], waitFor(function (_Base32) {
                     Base32 = _Base32;
                     QRCode = window.QRCode;
-                    Nacl = window.nacl;
                 }));
             }).nThen(function (waitFor) {
                 sframeChan.query("Q_SETTINGS_GET_SSO_SEED", {
@@ -212,7 +212,7 @@ define([
             }).nThen(function (waitFor) {
                 $content.empty();
                 var next = waitFor();
-                recoverySecret = Util.encodeBase64(Nacl.randomBytes(24));
+                recoverySecret = Util.encodeBase64(Crypto.Random.bytes(24));
                 var button = h('button.btn.btn-primary', [
                     h('i.fa.fa-check'),
                     h('span', Messages.done)
@@ -241,7 +241,7 @@ define([
                 });
             }).nThen(function () {
                 var randomSecret = function () {
-                    var U8 = Nacl.randomBytes(20);
+                    var U8 = Crypto.Random.bytes(20);
                     return Base32.encode(U8);
                 };
                 $content.empty();

@@ -20,14 +20,15 @@ define([
     '/common/outer/http-command.js',
 
     '/components/tweetnacl/nacl-fast.min.js',
+    '/components/chainpad-crypto/crypto.js',
 
     'css!/components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Sortify, Login, Cryptpad, /*Test,*/ Cred, UI, Util, Realtime, Constants, Feedback,
-    Clipboard, LocalStore, Block, ServerCommand) {
+    Clipboard, LocalStore, Block, ServerCommand, Crypto) {
     if (window.top !== window) { return; }
 
     var Messages = Cryptpad.Messages;
-    var Nacl = window.nacl;
+    //var Nacl = window.nacl;
 
     $(function () {
         if (LocalStore.isLoggedIn()) {
@@ -78,7 +79,7 @@ define([
                 date: new Date().toISOString(),
                 blockId: Util.encodeBase64(pub),
             };
-            var proof = Nacl.sign.detached(Util.decodeUTF8(Sortify(toSign)), sec);
+            var proof = Crypto.Random.signDetached(Util.decodeUTF8(Sortify(toSign)), sec);
             toSign.proof = Util.encodeBase64(proof);
             proofStr = JSON.stringify(toSign, 0, 2);
             $mfaProof.html(proofStr);

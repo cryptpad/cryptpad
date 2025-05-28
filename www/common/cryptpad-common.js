@@ -23,10 +23,11 @@ define([
 
     '/customize/application_config.js',
     '/components/nthen/index.js',
-    '/components/tweetnacl/nacl-fast.min.js'
+    '/components/tweetnacl/nacl-fast.min.js',
+    '/components/chainpad-crypto/crypto.js'
 ], function (Config, Broadcast, Messages, Util, Hash, Cache,
             Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
-            Cred, Login, Store, Types, AppConfig, nThen) {
+            Cred, Login, Store, Types, AppConfig, nThen, Crypto) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -243,8 +244,8 @@ define([
                     // Make proof
                     var curve = answer.curvePrivate;
                     var mySecret = Util.decodeBase64(curve);
-                    var nonce = nacl.randomBytes(24);
-                    var proofBytes = nacl.box(h, nonce, theirs, mySecret);
+                    var nonce = Crypto.Random.bytes(24);
+                    var proofBytes = Crypto.Random.box(h, nonce, theirs, mySecret);
                     var proof = Util.encodeBase64(nonce) +'|'+ Util.encodeBase64(proofBytes);
                     var lineData = {
                         channel: data.channel,

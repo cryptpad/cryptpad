@@ -4,12 +4,13 @@
 
 define([
     '/common/common-util.js',
-    '/components/tweetnacl/nacl-fast.min.js'
-], function (Util) {
+    '/components/tweetnacl/nacl-fast.min.js',
+    '/components/chainpad-crypto/crypto.js',
+], function (Util, Nacl, Crypto) {
 
     var Handler = {};
 
-    var Nacl = window.nacl;
+    //var Nacl = window.nacl;
     Handler.formCommandHandlers = function(sframeChan, Utils, nThen, Cryptpad) {
         sframeChan.on('EV_EXPORT_SHEET', function (data) {
             if (!data || !Array.isArray(data.content)) { return; }
@@ -33,8 +34,8 @@ define([
         };
         var anonProof = function (channel, theirPub, anonKeys) {
             var u8_plain = Util.decodeUTF8(channel);
-            var u8_nonce = Nacl.randomBytes(Nacl.box.nonceLength);
-            var u8_cipher = Nacl.box(
+            var u8_nonce = Crypto.Random.bytes(Crypto.Random.boxNonceLength());
+            var u8_cipher = Crypto.Random.box(
                 u8_plain,
                 u8_nonce,
                 Util.decodeBase64(theirPub),
@@ -143,9 +144,9 @@ define([
             var proofTxt = proofObj.proof;
             try {
                 var u8_bundle = Util.decodeBase64(proofTxt);
-                var u8_nonce = u8_slice(u8_bundle, 0, Nacl.box.nonceLength);
-                var u8_cipher = u8_slice(u8_bundle, Nacl.box.nonceLength);
-                var u8_plain = Nacl.box.open(
+                var u8_nonce = u8_slice(u8_bundle, 0, Crypto.Random.boxNonceLength());
+                var u8_cipher = u8_slice(u8_bundle, Crypto.Random.boxNonceLength());
+                var u8_plain = Crypto.Random.boxOpen(
                     u8_cipher,
                     u8_nonce,
                     Util.decodeBase64(pub),
@@ -327,7 +328,7 @@ define([
                 var keys = Utils.secret && Utils.secret.keys;
                 myKeys.signingKey = keys.secondarySignKey;
 
-                var ephemeral_keypair = Nacl.box.keyPair();
+                var ephemeral_keypair = Crypto.Random.curveKeyPair();
                 var ephemeral_private = Util.encodeBase64(ephemeral_keypair.secretKey);
                 myKeys.ephemeral_keypair = ephemeral_keypair;
 

@@ -5,8 +5,9 @@
 define([
     '/common/common-util.js',
     '/components/tweetnacl/nacl-fast.min.js',
-], function (Util) {
-    var Nacl = window.nacl;
+    '/components/chainpad-crypto/crypto.js'
+], function (Util, Crypto) {
+    //var Nacl = window.nacl;
     //var PARANOIA = true;
 
     var plainChunkLength = 128 * 1024;
@@ -91,7 +92,7 @@ define([
 
         var metaBox = new Uint8Array(u8.subarray(2, 2 + metadataLength));
 
-        var metaChunk = Nacl.secretbox.open(metaBox, nonce, key);
+        var metaChunk = Crypto.Random.secretboxOpen(metaBox, nonce, key);
         increment(nonce);
 
         try {
@@ -116,7 +117,7 @@ define([
                 var box = new Uint8Array(u8.subarray(start, end));
 
                 // decrypt the chunk
-                var plaintext = Nacl.secretbox.open(box, nonce, key);
+                var plaintext = Crypto.Random.secretboxOpen(box, nonce, key);
                 increment(nonce);
 
                 if (!plaintext) { return cb('DECRYPTION_ERROR'); }
@@ -184,7 +185,7 @@ define([
 
             if (state === 0) { // metadata...
                 part = new Uint8Array(plaintext);
-                box = Nacl.secretbox(part, nonce, key);
+                box = Crypto.Random.secretbox(part, nonce, key);
                 increment(nonce);
 
                 if (box.length > 65535) {
@@ -204,7 +205,7 @@ define([
             end = start + plainChunkLength;
 
             part = u8.subarray(start, end);
-            box = Nacl.secretbox(part, nonce, key);
+            box = Crypto.Random.secretbox(part, nonce, key);
             increment(nonce);
             i++;
 

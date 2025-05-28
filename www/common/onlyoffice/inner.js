@@ -28,6 +28,8 @@ define([
     '/common/onlyoffice/broken-formats.js',
     '/components/file-saver/FileSaver.min.js',
 
+    '/components/chainpad-crypto/crypto.js',
+
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'less!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/common/onlyoffice/app-oo.less',
@@ -40,6 +42,7 @@ define([
     UI,
     Hash,
     Util,
+    Crypto,
     UIElements,
     Feedback,
     h,
@@ -56,7 +59,7 @@ define([
     BrokenFormats)
 {
     var saveAs = window.saveAs;
-    var Nacl = window.nacl;
+    //var Nacl = window.nacl;
     var APP = window.APP = {
         $: $,
         urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs'])
@@ -2490,7 +2493,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                     }
                     try {
                         debug("Decrypt with key " + data.key);
-                        FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                        FileCrypto.decrypt(u8, Crypto.Random.decodeBase64(data.key), function (err, res) {
                             APP.loadingImage--;
                             if (err || !res.content) {
                                 debug("Decrypting failed");
