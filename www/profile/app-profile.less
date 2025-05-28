@@ -209,6 +209,11 @@
         //margin-bottom: 20px;
         .cp-app-profile-description-code {
             display: none;
+            .cp-markdown-toolbar {
+                max-width: 31rem;
+                background-color: #323232;
+                border-radius: @variables_radius @variables_radius 0 0;
+            }
         }
         #cp-app-profile-description-info {
             overflow-wrap: anywhere;
@@ -230,6 +235,7 @@
             font-size: 16px;
             line-height: initial;
             max-width: 31rem;
+            border-radius: 0 0 @variables_radius @variables_radius;
             pre {
                 margin: 0;
                 font-family: inherit;
