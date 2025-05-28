@@ -3276,7 +3276,7 @@ define([
 
         var block = h('div#cp-loading-burn-after-reading', [
             info,
-            h('section', {
+            h('nav', {
                 style: 'text-align: right'
             }, button),
         ]);
