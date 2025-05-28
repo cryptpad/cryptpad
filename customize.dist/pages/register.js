@@ -9,8 +9,7 @@ define([
     '/common/common-interface.js',
     '/customize/messages.js',
     '/customize/pages.js',
-    '/common/extensions.js'
-], function (Config, $, h, UI, Msg, Pages, Extensions) {
+], function (Config, $, h, UI, Msg, Pages) {
     return function () {
         document.title = Msg.register_header;
         var tos = $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0];
@@ -46,16 +45,6 @@ define([
         if (closed) {
             $('body').addClass('cp-register-closed');
         }
-
-        let extensions = [];
-        let utils = { h };
-        Extensions.getExtensionsSync('REGISTER_FORM').forEach(ext => {
-            try {
-                extensions.push(ext.getContent(utils));
-            } catch (error) {
-                console.error(error);
-            }
-        });
 
         return frame([
             h('div.cp-restricted-registration', [
@@ -110,7 +99,6 @@ define([
                             UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                         ]),
                         termsCheck,
-                        extensions,
                         h('button#register', Msg.login_register),
                     ]),
                     h('div#ssoForm.form-group.col-md-6'+ssoEnabled, [
@@ -118,7 +106,7 @@ define([
                     ]),
                 ]),
                 h('div.col-md-3.cp-closed-filler'+ssoEnabled),
-            ])
+            ]),
         ]);
     };
 });

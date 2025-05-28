@@ -1124,6 +1124,13 @@ define([
         $('head > link[href^="/customize/src/pre-loading.css"]').remove();
         $('html').toggleClass('cp-loading-noscroll', false);
     };
+    UI.emptyLoadingScreen = function (content) {
+        UI.addLoadingScreen();
+        var $loading = $('#' + LOADING);
+        $loading.find('.cp-loading-container').hide();
+        $loading.find('.cp-loading-logo').hide();
+        $loading.append(content);
+    };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
         if (error === 'Error: XDR encoding failure') {
             console.warn(error);
