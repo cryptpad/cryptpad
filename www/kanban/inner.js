@@ -1150,7 +1150,8 @@ define([
                 allTags.forEach(function (t) {
                     var tag;
                     $list.append(tag = h('span', {
-                        'data-tag': t
+                        'data-tag': t,
+                        'tabindex': 0
                     }, t));
                     var $tag = $(tag).click(function () {
                         if ($tag.hasClass('active')) {
@@ -1159,6 +1160,10 @@ define([
                             $tag.addClass('active');
                         }
                         commitTags();
+                    }).keydown(function (e) {
+                        if (e.which === 13 || e.which === 32) {
+                            $tag.click();
+                        }
                     });
                 });
             };
