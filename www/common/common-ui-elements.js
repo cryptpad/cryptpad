@@ -2649,10 +2649,10 @@ define([
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
 
-        var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs });
-        var fill1 = h('div.cp-creation-fill.cp-creation-logo',{ role: 'presentation' }, logo);
+        var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs, alt:'', 'aria-hidden': 'true',role: 'presentation' });
+        var fill1 = h('div.cp-creation-fill.cp-creation-logo', logo);
         var fill2 = h('div.cp-creation-fill');
-        var $creation = $('<div>', { id: 'cp-creation', tabindex:1 });
+        var $creation = $('<div>', { id: 'cp-creation' });
         $creationContainer.append([fill1, $creation, fill2]);
 
         var createHelper = function (href, text) {
@@ -2782,7 +2782,7 @@ define([
         var password = h('div.cp-creation-password',  [ 
             UI.createCheckbox('cp-creation-password', Messages.properties_addPassword, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
-                UI.passwordInput({id: 'cp-creation-password-val'})
+                UI.passwordInput({id: 'cp-creation-password-val', placeholder: Messages.add_password})
                 /*h('input#cp-creation-password-val', {
                     type: "text" // TODO type password with click to show
                 }),*/
@@ -2793,8 +2793,12 @@ define([
         var $w = $(window);
         var big = $w.width() > 800;
 
-        var right = h('span.fa.fa-chevron-right.cp-creation-template-more');
-        var left = h('span.fa.fa-chevron-left.cp-creation-template-more');
+        var right = h('button.fa.fa-chevron-right.cp-creation-template-more', {
+            'aria-label': Messages.next_templateList
+        });
+        var left = h('button.fa.fa-chevron-left.cp-creation-template-more', {
+            'aria-label': Messages.previous_templateList
+        });
         if (!big) {
             $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
             $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
@@ -2865,19 +2869,27 @@ define([
                     var $span = $('<span>', {
                         'class': 'cp-creation-template-element',
                         'title': name,
+                        'aria-label': name,
+                        'tabindex': 0,
+                        'role':'radio',
+                        'aria-checked': false,
                     }).appendTo($container);
                     $span.data('id', obj.id);
                     if (obj.content) { $span.data('content', obj.content); }
-                    if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
+                    if (idx === selected) {
+                        $span.addClass('cp-creation-template-selected');
+                        $span.attr('aria-checked', true);
+                    }
                     if (!obj.thumbnail) {
                         $span.append(obj.icon || h('span.cptools.cptools-template'));
                     }
                     $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
                         .appendTo($span);
-                    $span.click(function () {
+                    Util.onClickEnter($span, function () {
                         $container.find('.cp-creation-template-selected')
-                            .removeClass('cp-creation-template-selected');
+                            .removeClass('cp-creation-template-selected').attr('aria-checked', 'false');
                         $span.addClass('cp-creation-template-selected');
+                        $span.attr('aria-checked', true);
                         selected = idx;
                     });
 
@@ -2889,11 +2901,13 @@ define([
                 $(right).off('click').removeClass('hidden').click(function () {
                     selected = 0;
                     redraw(i + TEMPLATES_DISPLAYED);
+                    $('.cp-creation-template-container').find('[tabindex]:not([tabindex="-1"])').filter(':visible').first().focus();
                 });
                 if (i >= allData.length - TEMPLATES_DISPLAYED ) { $(right).addClass('hidden'); }
                 $(left).off('click').removeClass('hidden').click(function () {
                     selected = TEMPLATES_DISPLAYED - 1;
                     redraw(i - TEMPLATES_DISPLAYED);
+                    $('.cp-creation-template-container').find('[tabindex]:not([tabindex="-1"])').filter(':visible').first().focus();
                 });
                 if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
             };
@@ -2972,7 +2986,6 @@ define([
             }
             $creation.find('.cp-creation-expire-picker').removeClass('active');
             $creation.find('.cp-creation-expire').removeClass('active');
-            $creation.focus();
         });
 
         // Display password form when checkbox checked
@@ -2985,7 +2998,6 @@ define([
             }
             $creation.find('.cp-creation-password-picker').removeClass('active');
             $creation.find('.cp-creation-password').removeClass('active');
-            $creation.focus();
         });
 
         // Keyboard shortcuts
@@ -3075,19 +3087,8 @@ define([
             create();
         });
 
-        $creation.keydown(function (e) {
-            if (e.which === 9) {
-                e.preventDefault();
-                e.stopPropagation();
-                next(e.shiftKey);
-                return;
-            }
-            if (e.which === 13) {
-                $button.click();
-                return;
-            }
-        });
-        $creation.focus();
+        UI.addTabListener($creation);
+        $button.focus();
     };
 
     UIElements.loginErrorScreenContent = function (common) {
