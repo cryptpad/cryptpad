@@ -107,8 +107,7 @@ define([
                             )
                         )
                     )
-                ))
-                ),
+                ))),
             ]),
             Pages.infopageFooter(),
         ]);
