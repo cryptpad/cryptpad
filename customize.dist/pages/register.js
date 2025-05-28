@@ -8,7 +8,7 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js',
-    '/customize/pages.js',
+    '/customize/pages.js'
 ], function (Config, $, h, UI, Msg, Pages) {
     return function () {
         document.title = Msg.register_header;
@@ -45,6 +45,7 @@ define([
         if (closed) {
             $('body').addClass('cp-register-closed');
         }
+
 
         return frame([
             h('div.cp-restricted-registration', [
@@ -106,7 +107,7 @@ define([
                     ]),
                 ]),
                 h('div.col-md-3.cp-closed-filler'+ssoEnabled),
-            ]),
+            ])
         ]);
     };
 });
