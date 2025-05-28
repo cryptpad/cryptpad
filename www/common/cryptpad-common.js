@@ -48,6 +48,8 @@ define([
         }
     };
 
+    const Env = {};
+
     // Upgrade and donate URLs duplicated in pages.js
     var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
@@ -79,6 +81,12 @@ define([
     common.getAccessKeys = function (cb) {
         var keys = [];
         nThen(function (waitFor) {
+            // Not logged in? check for temp RPC keys
+            if (!LocalStore.isLoggedIn() && Env?.returned?.tempKeys) {
+                keys.push(Env.returned.tempKeys);
+                return;
+            }
+
             // Push account keys
             postMessage("GET", {
                 key: ['edPrivate'],
@@ -631,7 +639,7 @@ define([
 
     common.uploadChunk = function (teamId, data, cb) {
         postMessage("UPLOAD_CHUNK", {teamId: teamId, chunk: data}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
+            if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
@@ -2738,6 +2746,7 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
+                        Env.returned = data;
                         // FIXME data should always exist
                         // this indicates a false condition in sharedWorker
                         // got here via a reference error:
