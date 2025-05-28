@@ -179,6 +179,9 @@ define([
 
 
     var isSmallScreen = () => window.innerWidth <= 600;
+    const showEditor = Util.once(() => {
+    $('#cp-app-code-editor').css('display', '');
+});
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
         var $preview = $('#cp-app-code-preview-content');
@@ -344,7 +347,6 @@ define([
             $codeMirrorContainer.show();
             $codeMirrorContainer.addClass('cp-app-code-fullpage');
         };
-
 
         framework.onReady(function () {
             showEditor();
@@ -536,9 +538,6 @@ define([
             CodeMirror.configureTheme(common);
         }
 
-        const showEditor = Util.once(() => {
-            $('#cp-app-code-editor').css('display', '');
-        });
 
         framework.onContentUpdate(function (newContent) {
             showEditor();
