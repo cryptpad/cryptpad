@@ -3262,8 +3262,7 @@ define([
             ]),
         ]);
         UI.errorLoadingScreen(block, Boolean(cfg.loaded), Boolean(cfg.loaded));
-
-        $password.find('.cp-password-input').focus();
+        UI.addTabListener(block);
     };
 
     UIElements.displayBurnAfterReadingPage = function (common, cb) {
