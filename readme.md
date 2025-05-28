@@ -106,3 +106,5 @@ sales@cryptpad.org
 [Tor browser]: https://www.torproject.org/download/
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attack
 
+.
+
