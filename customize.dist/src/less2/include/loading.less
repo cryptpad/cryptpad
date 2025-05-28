@@ -135,10 +135,17 @@
             }
             .cp-password-reveal {
                 margin-left: 0.5rem;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
         }
         .cp-password-input {
             font-size: 16px;
+            &:focus-visible {
+                outline: @variables_focus_style;
+            }
         }
         .tools_placeholder-color();
     }
