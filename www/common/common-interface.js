@@ -1384,18 +1384,26 @@ define([
         $.extend(inputOpts, opts.input || {});
 
         // Label properties
-        var labelOpts = {};
+        var labelOpts = {
+            for: id
+        };
         $.extend(labelOpts, opts.label || {});
         if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
 
+        var labelId = id + '-label';
         // Mark properties
-        var markOpts = { tabindex: 0 };
+        var markOpts = {
+            tabindex: 0,
+            role: 'radio',
+            'aria-checked': checked ? 'true' : 'false',
+            'aria-labelledby': labelId
+        };
         $.extend(markOpts, opts.mark || {});
 
         var input = h('input', inputOpts);
         var $input = $(input);
         var mark = h('span.cp-radio-mark', markOpts);
-        var label = h('span.cp-checkmark-label', labelTxt);
+        var label = h('span.cp-checkmark-label', {id: labelId}, labelTxt);
 
         $(mark).keydown(function (e) {
             if ($input.is(':disabled')) { return; }
