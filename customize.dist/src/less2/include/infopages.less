@@ -190,6 +190,11 @@ body.html {
             img {
                 max-height: 40px;
                 margin-right: 10px;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 10px;
+                }
             }
             .logo-font {
                 display: block;
@@ -212,6 +217,11 @@ body.html {
                 display: inline-block;
                 i {
                     margin-right: 5px;
+
+                    [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 5px;
+                }
                 }
                 &:hover {
                     background-color: @cp_static-card-bg;
@@ -228,6 +238,11 @@ body.html {
             i {
                 font-size: 1.3em;
                 margin-right: 5px;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 5px;
+                }
             }
             select {
                 min-width: 0;
@@ -306,6 +321,11 @@ body.html {
             }
             i {
                 margin-right: 5px;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 5px;
+                }
             }
         }
         .cp-register-btn {
