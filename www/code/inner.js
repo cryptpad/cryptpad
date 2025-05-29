@@ -538,7 +538,6 @@ define([
             CodeMirror.configureTheme(common);
         }
 
-
         framework.onContentUpdate(function (newContent) {
             showEditor();
             var highlightMode = newContent.highlightMode;
