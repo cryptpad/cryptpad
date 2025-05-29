@@ -108,6 +108,10 @@
         text-align: left;
         display: none;
         overflow-y: auto;
+
+        [dir='rtl'] & {
+            text-align: right;
+        }
         a {
             color: @cp_loading-link;
         }
@@ -165,6 +169,10 @@
             display: inline-block;
             margin-bottom: 50px;
             max-width: 100%;
+
+            [dir='rtl'] & {
+                    text-align: right;
+                }
             ul {
                 list-style: none;
                 padding-left: 0;
@@ -181,6 +189,11 @@
                 }
                 span {
                     margin-left: 10px;
+
+                    [dir='rtl'] & {
+                        margin-left: unset;
+                        margin-right: 10px;
+                    }
                     &.percent {
                         position: absolute;
                     }
