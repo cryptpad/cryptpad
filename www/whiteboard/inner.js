@@ -474,6 +474,8 @@ define([
 
 
         framework.onEditableChange(function () {
+            $('#cp-app-whiteboard-canvas-area').show();
+            $('#cp-app-whiteboard-controls').show();
             var locked = framework.isLocked() || framework.isReadOnly();
             setEditable(!locked);
         });
@@ -631,6 +633,8 @@ define([
         }).nThen(function (waitFor) {
             require(['/lib/fabric-history.min.js'], waitFor());
 
+            $('#cp-app-whiteboard-canvas-area').css('display', 'none');
+            $('#cp-app-whiteboard-controls').css('display', 'none');
             // Framework initialization
             Framework.create({
                 patchTransformer: ChainPad.NaiveJSONTransformer,
