@@ -215,10 +215,13 @@ define([
             icon_to = window.setTimeout(function() {
                 $buttons.fadeOut();
             }, 1000);
-        }
+        };
         
         $modal.mousemove(mousemove);
-        $modal.on('touchstart' || 'touchend' || 'touchcancel' || 'touchmove', mousemove);
+        $modal.on('touchstart', mousemove);
+        $modal.on('touchend', mousemove);
+        $modal.on('touchcancel', mousemove);
+        $modal.on('touchmove', mousemove);
 
         $modal.find('#cp-app-slide-modal-exit').click(function () {
             var ev = $.Event("keyup");
