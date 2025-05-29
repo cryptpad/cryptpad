@@ -901,6 +901,11 @@
                 }
                 .cp-user-menu-logo-text {
                     margin-left: 10px;
+
+                    [dir='rtl'] & {
+                        margin-left: unset;
+                        margin-right: 10px;
+                    }
                 }
             }
             div.cp-toolbar-account {
@@ -917,6 +922,10 @@
                 text-align: left;
                 color: @cryptpad_text_col;
                 font-size: 14px;
+
+                [dir='rtl'] & {
+                    text-align: right;
+                }
             }
 
             .cp-toolbar-backup {
@@ -1007,6 +1016,11 @@
             align-items: center;
             i ~ span {
                 margin-left: 0.5rem;
+
+                [dir='rtl'] & {
+                    margin-left: unset;
+                    margin-right: 5px;
+                }
             }
             &:hover {
                 background-color: fade(@cp_toolbar-bottom-bg, 70%);

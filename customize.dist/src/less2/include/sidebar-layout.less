@@ -109,6 +109,10 @@
                         display: block;
                         font-weight: bold;
                         margin-bottom: 0;
+
+                        [dir='rtl'] & {
+                            text-align: right;
+                        }
                     }
                 }
                 &[data-item] { // New sidebar-layout blocks
@@ -116,6 +120,10 @@
                         display: block;
                         font-weight: bold;
                         margin-bottom: 0;
+
+                        [dir='rtl'] & {
+                            text-align: right;
+                        }
                     }
                     .cp-sidebar-form {
                         display: flex;
@@ -301,6 +309,10 @@
                 margin: 0 @sidebar_base-margin 0 0;
                 &:last-child {
                     margin-right: 0;
+
+                    [dir='rtl'] & {
+                        margin-right: unset;
+                    }
                 }
             }
             span.cp-password-container {
