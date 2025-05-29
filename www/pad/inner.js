@@ -757,6 +757,7 @@ define([
         */
 
         framework.onEditableChange(function(unlocked) {
+            $('#cp-app-pad-editor').show();
             if (!framework.isReadOnly()) {
                 $inner.attr('contenteditable', '' + Boolean(unlocked));
             }
@@ -1543,6 +1544,7 @@ define([
                 $iframe.find('html').css({
                     'background-color': '#FFF'
                 });
+                $('#cp-app-pad-editor').css('display', 'none');
             }).nThen(waitFor());
 
         }).nThen(function(waitFor) {
