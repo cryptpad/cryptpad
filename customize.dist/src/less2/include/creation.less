@@ -121,6 +121,11 @@
                     margin-left: 30px;
                     font-size: 16px;
                     color: inherit;
+
+                    [dir='rtl'] & {
+                    margin-left: unset;
+                    margin-right: 30px;
+                }
                 }
             }
         }
@@ -395,6 +400,11 @@
                         font-size: 30px;
                         text-align: center;
                         margin-right: 10px;
+
+                        [dir='rtl'] & {
+                            margin-right: unset;
+                            margin-left: 10px;
+                        }
                     }
                 }
             }
