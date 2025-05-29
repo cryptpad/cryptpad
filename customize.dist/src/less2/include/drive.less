@@ -155,6 +155,11 @@
     ul {
         list-style: none;
         padding-left: 0px; // Remove the default padding
+
+        [dir='rtl'] & {
+            padding-left: unset;
+            padding-right: 0px;
+        }
     }
 
     li {
@@ -299,6 +304,10 @@
             flex: 1;
             overflow: auto;
             padding: 0px 5px;
+
+            [dir='rtl'] & {
+                text-align: right;
+            }
         }
         img.cp-app-drive-icon {
             margin-bottom: 3px;
@@ -440,6 +449,11 @@
             }
             .cp-app-drive-tree-root > .cp-app-drive-element-row > .cp-app-drive-icon-folder {
                 margin-left: -5px;
+
+                [dir='rtl'] & {
+                    margin-left: unset;
+                    margin-right: -5px;
+                }
             }
             .cp-app-drive-tree-root {
                 &> .cp-app-drive-element-row {
@@ -447,6 +461,11 @@
                 }
                 &> ul {
                     padding-left: 30px;
+
+                    [dir='rtl'] & {
+                        padding-left: unset;
+                        padding-right: 30px;
+                }
                 }
             }
         }
@@ -468,6 +487,13 @@
                     height: ~"calc(1em + 11px)";
                     border-bottom: 1px solid @cp_drive-tree-branch;
                     width: 15px;
+
+                    [dir='rtl'] & {
+                        left: unset;
+                        right: -12px;
+                        border-left: unset;
+                        border-right: 1px solid @cp_drive-tree-branch;
+                    }
                 }
                 &:after {
                     position: absolute;
@@ -477,6 +503,13 @@
                     display: block;
                     border-left: 1px solid @cp_drive-tree-branch;
                     height: 100%;
+
+                    [dir='rtl'] & {
+                        left: unset;
+                        right: -12px;
+                        border-left: unset;
+                        border-right: 1px solid @cp_drive-tree-branch;
+                    }
                 }
                 &.cp-app-drive-tree-root {
                     margin: 0px 0px 0px -10px;
@@ -512,8 +545,18 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
+
+            [dir='rtl'] & {
+                    left: unset;
+                    right: 0;
+                }
             &:hover {
                 border-left: 1px solid @cryptpad_text_col;
+
+                [dir='rtl'] & {
+                    border-left: unset;
+                    border-right: 1px solid @cryptpad_text_col;
+                }
             }
             i {
                 color: @cryptpad_text_col;
@@ -560,6 +603,10 @@
             color: @cp_drive-infobox-fg;
             border-radius: @variables_radius;
             cursor: default;
+
+            [dir='rtl'] & {
+                    text-align: right;
+                }
             a {
                 color: @cryptpad_color_link;
                 text-decoration: underline;
@@ -568,6 +615,10 @@
                 cursor: pointer;
                 float: right;
                 margin-top: 0.5em;
+
+                [dir='rtl'] & {
+                    float: left;
+                }
             }
         }
         li {
