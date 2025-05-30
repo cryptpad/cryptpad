@@ -694,7 +694,7 @@ define([
             if (formAuditor && opts.auditorHash) {
                 hash = opts.auditorHash;
                 if (opts.hasPassword) {
-                    hash += '/p'
+                    hash += '/p';
                 }
             }
             var href = burnAfterReading ? opts.burnAfterReadingUrl
