@@ -1,0 +1,52 @@
+name: DevSecOps for CryptPad
+
+on:
+  push:
+    branches: [main, feature/pipeline-testing]
+  pull_request:
+    branches: [main, feature/pipeline-testing]
+jobs:
+  devsecops:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install React dependencies
+        run: npm install
+        working-directory: ./writeup
+
+      - name: Run React build
+        run: npm run build
+        working-directory: ./src
+        env:
+            CI: false
+      - name: Scan for secrets with Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: --verbose --redact
+          
+      - name: Scan all Compose files with Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          quiet: true
+        continue-on-error: true
+        
+      - name: Run Trivy
+        run: trivy fs . --exit-code 1
+
+        
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/analyze@v3
