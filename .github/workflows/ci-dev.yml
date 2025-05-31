@@ -15,11 +15,11 @@ jobs:
 
       - name: Install React dependencies
         run: npm install
-        working-directory: ./writeup
+        working-directory: ./
 
       - name: Run React build
         run: npm run build
-        working-directory: ./src
+        working-directory: ./
         env:
             CI: false
       - name: Scan for secrets with Gitleaks
@@ -33,7 +33,7 @@ jobs:
           directory: .
           quiet: true
         continue-on-error: true
-        
+
       - name: Run Trivy
         run: trivy fs . --exit-code 1
 
