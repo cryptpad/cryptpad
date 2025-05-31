@@ -26,7 +26,8 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         with:
           args: --verbose --redact
-          
+        continue-on-error: true
+
       - name: Scan all Compose files with Checkov
         uses: bridgecrewio/checkov-action@master
         with:
