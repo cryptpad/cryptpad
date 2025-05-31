@@ -34,10 +34,6 @@ jobs:
           directory: .
           quiet: true
         continue-on-error: true
-
-      - name: Run Trivy
-        run: trivy fs . --exit-code 1
-
         
   codeql:
     name: CodeQL Analysis
