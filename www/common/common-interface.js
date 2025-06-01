@@ -319,7 +319,7 @@ define([
 
         var $container = $(h('span.cp-tokenfield-container'));
         var $form = $(h('span.cp-tokenfield-form'));
-        $container.insertAfter($input);
+        $container.insertAfter($input.attr('dir', 'auto'));
 
         // Fix the UI to keep the "add" or "edit" button at the correct location
         var isEdit = false;
