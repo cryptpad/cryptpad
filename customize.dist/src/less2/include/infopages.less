@@ -309,9 +309,19 @@ body.html {
             img {
                 max-height: 30px;
                 margin-right: 10px;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 10px;
+                }
             }
             &.cp-back-home {
                 margin-right: auto;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: auto;
+                }
             }
             &:hover {
                 color: @cryptpad_text_col;
