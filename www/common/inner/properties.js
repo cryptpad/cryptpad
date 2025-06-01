@@ -38,6 +38,7 @@ define([
             $('<label>', { 'for': 'cp-app-prop-id'}).text(Messages.documentID).appendTo($d);
             $d.append(UI.dialog.selectable(data.channel, {
                 id: 'cp-app-prop-id',
+                dir: 'auto',
             }));
         }
 
@@ -45,6 +46,7 @@ define([
             $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
             $d.append(UI.dialog.selectable(data.href, {
                 id: 'cp-app-prop-link',
+                dir: 'auto',
             }));
         }
 
@@ -52,6 +54,7 @@ define([
             $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
             $d.append(UI.dialog.selectable(data.roHref, {
                 id: 'cp-app-prop-rolink',
+                dir: 'auto',
             }));
         }
 
