@@ -331,10 +331,19 @@
             nav {
                 padding: @alertify_padding-base;
                 text-align: right;
+
+                [dir='rtl'] & {
+                    text-align: left;
+                }
                 button, div.cp-button-confirm {
                     margin: 0px !important;
                     &:not(:first-child):not(.left) {
                         margin-left: @alertify_padding-base !important;
+
+                        [dir='rtl'] & {
+                            margin-left: unset;
+                            margin-right: @alertify_padding-base !important;
+                        }
                       }
                     &.left {
                         float: left;
