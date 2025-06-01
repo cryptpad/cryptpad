@@ -233,6 +233,10 @@
                     border-radius: @variables_radius 0px 0px @variables_radius;
                     background-color: @cp_form-bg1;
                     color: @cryptpad_text_col;
+
+                    [dir='rtl'] & {
+                        border-radius: 0px @variables_radius @variables_radius 0px;
+                    }
                     &:focus-visible {
                         outline: @variables_focus_style;
                     }
@@ -243,6 +247,10 @@
                 }
                 #cp-toggle-drag-on {
                     border-radius: 0px @variables_radius @variables_radius 0px !important;
+
+                    [dir='rtl'] & {
+                        border-radius: @variables_radius 0px 0px @variables_radius !important;
+                    }
                 }
             }
 
@@ -418,6 +426,11 @@
                             border-radius: 0px @variables_radius 0px 0px;
                             display: flex;
                             column-gap: 10px;
+
+                            [dir='rtl'] & {
+                                padding-left: unset;
+                                padding-right: 5px;
+                            }
                             .cp-form-arrow {
                                 display: block;
                                 background-color: transparent;
