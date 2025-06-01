@@ -1671,7 +1671,8 @@ define([
                 var tag = h('input', {
                     type: opts.type,
                     step: "any",
-                    placeholder: Messages['form_input_ph_'+opts.type] || ''
+                    placeholder: Messages['form_input_ph_'+opts.type] || '',
+                    dir: "auto"
                 });
                 var $tag = $(tag);
                 $tag.on('change keypress keydown', Util.throttle(function () {
