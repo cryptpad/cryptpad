@@ -391,7 +391,7 @@ define([
         if (opts.static) { linkContent = []; }
 
         linkContent.push(h('div.cp-spacer'));
-        linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 0, rows:3}));
+        linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 0, rows:3, dir: 'auto' }));
 
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
