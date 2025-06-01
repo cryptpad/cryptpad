@@ -94,6 +94,10 @@
                 .tui-full-calendar-today .tui-full-calendar-weekday-grid-date-decorator {
                     background-color: @cp_calendar-now !important;
                     color: @cp_calendar-now-fg !important;
+
+                    [dir='rtl'] & {
+                        text-align: center;
+                    }
                 }
                 .tui-full-calendar-weekday-schedule-time .tui-full-calendar-weekday-schedule-title {
                     color: @cryptpad_text_col !important;
@@ -323,8 +327,18 @@
         .cp-recurrence-label, .cp-notif-label {
             color: @cryptpad_text_col;
             margin-right: 1rem;
+
+            [dir='rtl'] & {
+                margin-right: unset;
+                margin-left: 1rem;
+            }
             i {
                 margin-right: 0.5rem;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 0.5rem;
+                }
             }
         }
 
