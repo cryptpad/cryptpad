@@ -75,6 +75,11 @@
                 align-items: center;
                 i:not(:last-child) {
                     margin-right: 0.5rem;
+
+                    [dir='rtl'] & {
+                        margin-right: unset;
+                        margin-left: 0.5rem;
+                    }
                 }
                 &:hover {
                     background-color: fade(@cp_toolbar-fg, 30%);
