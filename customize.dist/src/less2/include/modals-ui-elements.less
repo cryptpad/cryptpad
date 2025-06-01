@@ -28,6 +28,11 @@
             }
             .cp-radio {
                 margin-right: 30px;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 30px;
+                }
             }
             @media (max-width: @browser_media-medium-screen) {
                 flex-direction: column;
