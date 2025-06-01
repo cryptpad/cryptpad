@@ -458,6 +458,11 @@
             .cp-app-drive-tree-root {
                 &> .cp-app-drive-element-row {
                     padding-left: 15px;
+
+                    [dir='rtl'] & {
+                        padding-left: unset;
+                        padding-right: 15px;
+                    }
                 }
                 &> ul {
                     padding-left: 30px;
@@ -465,7 +470,7 @@
                     [dir='rtl'] & {
                         padding-left: unset;
                         padding-right: 30px;
-                }
+                    }
                 }
             }
         }
@@ -633,6 +638,10 @@
         }
         #cp-app-drive-content-folder {
             order: 20;
+
+            [dir='rtl'] & {
+                text-align: right;
+            }
             li {
                 &.cp-app-drive-search-result {
                     display: flex;
