@@ -49,6 +49,13 @@
                 // input .token-input is styled at the bottom of this file
                 border-top-left-radius: 0px;
                 border-bottom-left-radius: 0px;
+
+                [dir='rtl'] & {
+                    border-top-left-radius: unset;
+                    border-bottom-left-radius: unset;
+                    border-top-right-radius: 0px;
+                    border-bottom-right-radius: 0px;
+                }
             }
         }
         .token {
@@ -64,6 +71,11 @@
             vertical-align: middle;
             cursor: default;
             color: @cp_token-fg;
+
+            [dir='rtl'] & {
+                margin-right: unset;
+                margin-left: @tokens_margin;
+            }
 
             &:hover {
                 background-color: @cp_token-bg-hover;
@@ -81,6 +93,11 @@
                 padding-left: 4px;
                 vertical-align: middle;
                 outline: none;
+
+                [dir='rtl'] & {
+                    padding-left: unset;
+                    padding-right: 4px;
+                }
                 &:focus-visible {
                     outline: @variables_focus_style;
                 }
@@ -114,6 +131,13 @@
             min-width: 100% !important;
             border-top-right-radius: 0px !important;
             border-bottom-right-radius: 0px !important;
+
+            [dir='rtl'] & {
+                border-top-right-radius: unset !important;
+                border-bottom-right-radius: unset !important;
+                border-top-left-radius: 0px !important;
+                border-bottom-left-radius: 0px !important;
+            }
             &:focus {
                 outline: 0;
                 box-shadow: none;
