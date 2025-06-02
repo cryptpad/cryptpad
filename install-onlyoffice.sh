@@ -92,7 +92,7 @@ main() {
                 # From all the older versions only v7 has 'dictionaries', we remove it for the same reasons
                 rm -rf "$OO_DIR/v7/dictionaries/"
                 ;;
-            v8)  install_version v8 v8.3.3.23+3 6a00704df88c87bf5810257d99e83b32b76b86326ebd668b09c257f0abc283991b9ec3c121e0801173afc4b8deb21d4539c307da26e40e42f6d4f3af195526c2 ;;
+            v8)  install_version v8 v8.3.3.23+4 01abfb3e13dae2066c9fcdc9fd3a3a21cd08212feb7ee2f927d8acaa5c3e560f8ce7c78c533c6aad7048aaecc14f7445891f06cb38a1720e1637a971c0a02295 ;;
             x2t) install_x2t v7.3+1 ab0c05b0e4c81071acea83f0c6a8e75f5870c360ec4abc4af09105dd9b52264af9711ec0b7020e87095193ac9b6e20305e446f2321a541f743626a598e5318c1 ;;
             *)
                 echo "Unknown version: $version"

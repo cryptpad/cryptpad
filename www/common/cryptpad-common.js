@@ -1915,6 +1915,7 @@ define([
             // delete the old pad
             common.removeOwnedChannel({
                 channel: oldSecret.channel,
+                reason: 'PASSWORD_CHANGE',
                 teamId: teamId
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
@@ -1924,6 +1925,7 @@ define([
                 }
                 common.removeOwnedChannel({
                     channel: oldRtChannel,
+                    reason: 'PASSWORD_CHANGE',
                     teamId: teamId
                 }, waitFor());
             }));
