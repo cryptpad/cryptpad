@@ -156,7 +156,7 @@ define([
                 }
             });
             const cb = (data) => {
-                console.error(data);
+                // data.edPublic, data.edPrivate
                 const next = Util.mkAsync(() => {
                     Login.redirect();
                 });
@@ -164,7 +164,7 @@ define([
                     next();
                 } else {
                     extensions.forEach(ext => {
-                        const content = ext.getContent();
+                        const content = ext.getContent(data);
                         UI.emptyLoadingScreen(content);
                     });
                 }
