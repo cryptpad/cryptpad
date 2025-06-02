@@ -122,7 +122,7 @@ if (typeof(module) !== 'undefined' && module.exports) {
         '/api/config',
         '/components/tweetnacl/nacl-fast.min.js',
         '/components/chainpad-crypto/crypto.js',
-    ], (nThen, Util, ApiConfig) => {
+    ], (nThen, Util, ApiConfig, Nacl, Crypto) => {
         return factory(nThen, Util, ApiConfig, window.nacl, Crypto);
     });
 } else {

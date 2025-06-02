@@ -414,7 +414,7 @@ var factory = function (Util, Nacl, Crypto) {
             '/common/common-util.js',
             '/components/tweetnacl/nacl-fast.min.js',
             '/components/chainpad-crypto/crypto.js'
-        ], function (Util, Crypto) {
+        ], function (Util, Nacl, Crypto) {
             return factory(Util, window.nacl, Crypto);
         });
     } else {
