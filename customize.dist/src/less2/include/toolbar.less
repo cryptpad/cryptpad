@@ -628,6 +628,10 @@
                 font-size: 20px;
                 vertical-align: middle;
                 border-radius: 0 @variables_radius @variables_radius 0;
+
+                [dir='rtl'] & {
+                    border-radius: @variables_radius 0 0 @variables_radius;
+                }
                 .fa {
                     font-size: 20px;
                 }
@@ -668,6 +672,10 @@
                     .cp-toolbar-title-editable {
                         cursor: text;
                         border-radius: @variables_radius 0 0 @variables_radius;
+
+                        [dir='rtl'] & {
+                            border-radius: 0 @variables_radius @variables_radius 0;
+                        }
                     }
                 }
             }
