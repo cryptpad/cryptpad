@@ -687,7 +687,6 @@ const factory = (Util) => {
                         return;
                     }
 
-
                     var stop = false;
                     var newrule = false;
                     _toAdd.some(function (_newS) {
@@ -700,6 +699,11 @@ const factory = (Util) => {
                         _ev.start = +_evS;
                         _ev.end = +_evE;
                         _ev._count = c;
+
+                        Rec.applyUpdates([_ev]);
+                        _evS = new Date(_ev.start);
+                        _evE = new Date(_ev.end);
+
                         if (_ev.isAllDay && _ev.startDay) { _ev.startDay = getDateStr(_evS); }
                         if (_ev.isAllDay && _ev.endDay) { _ev.endDay = getDateStr(_evE); }
 
