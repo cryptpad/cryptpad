@@ -1000,7 +1000,8 @@ define([
         // Mark selected months as done
         todo.forEach(function (monthId) { APP.recurringDone.push(monthId); });
 
-        cal.createSchedules(applyUpdates(toAdd));
+        //cal.createSchedules(applyUpdates(toAdd));
+        cal.createSchedules(toAdd);
     };
     updateRecurring = function () {
         try {
