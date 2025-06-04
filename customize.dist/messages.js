@@ -145,6 +145,9 @@ define(req, function(AppConfig, Default, Language) {
     Messages.hide_password = "Hide password";
     Messages.next_templateList = "Next template list";
     Messages.previous_templateList = "Previous template list";
+    Messages.toolbar_text_tools  = "Text tools";
+    Messages.toolbar_show_text_tools = "Show text tools";
+    Messages.toolbar_hide_text_tools = "Hide text tools";
     return Messages;
 
 });

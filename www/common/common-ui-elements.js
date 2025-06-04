@@ -1344,9 +1344,9 @@ define([
     UIElements.createMarkdownToolbarToggle = function(toolbarElement, editor) {
         var $button = $('<button>', {
             'class': 'btn cp-markdown-toggle-button',
-            'aria-label': Messages.toolbar_tools,
+            'aria-label': Messages.toolbar_show_text_tools,
             'data-notippy':1,
-            'title': Messages.toolbar_tools,
+            'title': Messages.toolbar_show_text_tools,
             'aria-pressed': false,
             'type': 'button'
         }).append(
@@ -1356,7 +1356,7 @@ define([
             }),
             $('<span>', {
                 'class': 'cp-toolbar-label',
-                'text': Messages.toolbar_tools
+                'text': Messages.toolbar_text_tools // XXX
             })
         );
     
@@ -1365,7 +1365,11 @@ define([
             $(this).attr('aria-pressed', String(!isExpanded));
             $(this).toggleClass('cp-toolbar-button-active', !isExpanded);
             $(toolbarElement).toggle();
-            toolbarVisibleOnSmallScreen = !isExpanded;
+
+            const newLabel = !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools; // XXX
+            $button
+                .attr('title', newLabel)
+                .attr('aria-label', newLabel);
         });
     
         $(toolbarElement).on('keydown', function (e) {
