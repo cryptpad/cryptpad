@@ -12,6 +12,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/notifications.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
@@ -27,6 +28,7 @@ define([
     h,
     Messages,
     UI,
+    UIElements,
     Notifications
     )
 {
@@ -81,6 +83,8 @@ define([
                 h("div.cp-notification.no-notifications", Messages.notifications_empty),
             ]),
         ]);
+
+        UIElements.reorderDOM($(notifsList));
 
         // add notification
         var addNotification = function (data, el) {
