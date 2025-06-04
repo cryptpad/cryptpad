@@ -1365,6 +1365,7 @@ define([
             $(this).attr('aria-pressed', String(!isExpanded));
             $(this).toggleClass('cp-toolbar-button-active', !isExpanded);
             $(toolbarElement).toggle();
+            toolbarVisibleOnSmallScreen = !isExpanded;
         });
     
         $(toolbarElement).on('keydown', function (e) {
@@ -1384,19 +1385,33 @@ define([
         return window.innerHeight < 530 || window.innerWidth < 530;
     }
 
+    let toolbarVisibleOnSmallScreen = false;
+    let wasSmallScreen = isSmallScreenToolbar();
+
     UIElements.updateToolbarVisibility = function(markdownEditorWrapper, toolbar, editor) {
         let toggleButton = null;
-        if (isSmallScreenToolbar()) {
+        const isSmallScreen = isSmallScreenToolbar();
+
+        if (isSmallScreen) {
             if (!$(markdownEditorWrapper).find('.cp-markdown-toggle-button').length) {
                 toggleButton = UIElements.createMarkdownToolbarToggle(toolbar, editor);
                 $(markdownEditorWrapper).append(toggleButton);
             }
-            $(toolbar).hide();
+            if (toolbarVisibleOnSmallScreen) {
+                $(toolbar).show();
+                $(markdownEditorWrapper).find('.cp-markdown-toggle-button').addClass('cp-toolbar-button-active')
+                    .attr('aria-pressed', true);
+            } else {
+                $(toolbar).hide();
+                $(markdownEditorWrapper).find('.cp-markdown-toggle-button').removeClass('cp-toolbar-button-active')
+                    .attr('aria-pressed', false);
+            }
         } else {
             $(markdownEditorWrapper).find('.cp-markdown-toggle-button').remove();
             $(toolbar).show();
         }
-        return toggleButton; // May return null if not created
+        wasSmallScreen = isSmallScreen;
+        return toggleButton;
     };
     
 
