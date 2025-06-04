@@ -1412,7 +1412,6 @@ define([
         return toggleButton;
     };
     
-
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
         so we throttle its usage. Clients will not update more than once per

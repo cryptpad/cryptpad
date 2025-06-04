@@ -1171,7 +1171,6 @@ define([
                             block
                         ]);
                         
-
                         return [
                             outerWrapper,
                             cancelBlock

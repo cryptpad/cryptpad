@@ -214,7 +214,7 @@ define([
             markdownEditorWrapper,
             h('div#cp-kanban-edit-body', [
                 text = h('textarea')
-            ]),            
+            ]),        
             h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
             tagsDiv = h('div#cp-kanban-edit-tags'),
             h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
@@ -277,7 +277,7 @@ define([
                 $tags.find('.token-input').focus();
             }
             e.stopPropagation();
-        });  
+        });
         var common = framework._.sfCommon;
         var markdownTb = common.createMarkdownToolbar(editor, {
             embed: function (mt) {
