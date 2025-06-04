@@ -1340,6 +1340,7 @@ define([
             text: text
         };
     };
+    let toolbarVisibleOnSmallScreen = false;
 
     UIElements.createMarkdownToolbarToggle = function(toolbarElement, editor) {
         var $button = $(h('button', {
@@ -1364,6 +1365,7 @@ define([
             $button
             .attr('title', newLabel)
             .attr('aria-label', newLabel);
+            toolbarVisibleOnSmallScreen = !isExpanded;
         });
     
         $(toolbarElement).on('keydown', function (e) {
@@ -1382,9 +1384,6 @@ define([
     var isSmallScreenToolbar = function () {
         return window.innerHeight < 530 || window.innerWidth < 530;
     }
-
-    let toolbarVisibleOnSmallScreen = false;
-    let wasSmallScreen = isSmallScreenToolbar();
 
     UIElements.updateToolbarVisibility = function(markdownEditorWrapper, toolbar, editor) {
         let toggleButton = null;
@@ -1408,7 +1407,6 @@ define([
             $(markdownEditorWrapper).find('.cp-markdown-toggle-button').remove();
             $(toolbar).show();
         }
-        wasSmallScreen = isSmallScreen;
         return toggleButton;
     };
     
