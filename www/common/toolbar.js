@@ -1053,17 +1053,16 @@ MessengerUI, Messages, Pages, PadTypes) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 $limit.show().click(function () {
-                    if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
-                        var msg = Pages.setHTML(h('span'), Messages.pinLimitReachedAlert);
-                        $(msg).find('a').attr({
-                            target: '_blank',
-                            href: Config.upgradeURL,
-                        });
+                    let handled = false;
+                    // Msg.pinLimitReachedAlert
+                    Common.getExtensionsSync('QUOTA_REACHED').forEach(ext => {
+                        if (!ext.getAlert) { return; }
+                        handled = true;
+                        ext.getAlert();
+                    });
+                    if (handled) { return; }
 
-                        UI.alert(msg);
-                    } else {
-                        UI.alert(Messages.pinLimitReachedAlertNoAccounts);
-                    }
+                    UI.alert(Messages.pinLimitReachedAlertNoAccounts);
                 });
             }
         };

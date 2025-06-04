@@ -110,14 +110,7 @@ define([
         ],
         'notifications': [
             'cp-settings-notif-calendar'
-        ],
-        'subscription': {
-            onClick: function() {
-                var urls = common.getMetadataMgr().getPrivateData().accounts;
-                window.open(urls.upgradeURL);
-                Feedback.send('SUBSCRIPTION_BUTTON');
-            }
-        }
+        ]
     };
 
     if (AppConfig.disableFeedback) {
@@ -127,9 +120,6 @@ define([
     if (AppConfig.disableProfile) {
         var displaynameIdx = categories.account.indexOf('cp-settings-displayname');
         categories.account.splice(displaynameIdx, 1);
-    }
-    if (!ApiConfig.allowSubscriptions) {
-        delete categories.subscription;
     }
 
     var create = {};
@@ -546,31 +536,19 @@ define([
         }, function() {
             nThen(function (waitFor) {
                 $button.prop('disabled', 'disabled');
-                var priv = metadataMgr.getPrivateData();
-                // Check if subscriptions are enabled and you have a premium plan
-                if (priv.plan && priv.plan !== "custom" && ApiConfig.allowSubscriptions) {
-                    // Also make sure upgradeURL is defined
-                    var url = priv.accounts && priv.accounts.upgradeURL;
-                    if (!url) { return; }
-                    url += '#mysubs';
-                    var a = h('a', { href:url }, Messages.settings_deleteSubscription);
-                    $(a).click(function (e) {
-                        e.preventDefault();
-                        common.openUnsafeURL(url);
-                    });
-                    UI.confirm(h('div', [
-                        Messages.settings_deleteWarning, h('p', a)
-                    ]), waitFor(function (yes) {
-                        if (!yes) {
-                            $button.prop('disabled', '');
-                            waitFor.abort();
-                        }
-                    }), {
-                        ok: Messages.settings_deleteContinue,
-                        okClass: 'btn.btn-danger',
-                        cancelClass: 'btn.btn-primary'
-                    });
-                }
+                // Accounts plugin:
+                // Msg.settings_deleteSubscription
+                // Msg.settings_deleteWarning
+                // Msg.settings_deleteContinue
+                common.getExtensionsSync('ACCOUNT_DELETION').forEach(ext => {
+                    if (!ext?.checkDeletion) {
+                        return console.error('Invalid extension point', 'ACCOUNT_DELETION', ext);
+                    }
+                    ext.checkDeletion(common, $button, waitFor(allowed => {
+                        if (allowed) { return; }
+                        waitFor.abort();
+                    }));
+                });
             }).nThen(function () {
                 var password = $form.find('#cp-settings-delete-account').val();
                 if (!password) {
@@ -1902,11 +1880,11 @@ define([
         code: 'fa fa-file-code-o',
         pad: 'cptools cptools-richtext',
         security: 'fa fa-lock',
-        subscription: 'fa fa-star-o',
         kanban: 'cptools cptools-kanban',
         style: 'cptools cptools-palette',
         notifications: 'fa fa-bell'
     };
+    let SIDEBAR_NAMES = {}; // for extension points
 
     Messages.settings_cat_notifications = Messages.notificationsPage;
     var createLeftside = function() {
@@ -1924,12 +1902,14 @@ define([
                 });
             }
 
+            let name = SIDEBAR_NAMES[key] ||
+                       Messages['settings_cat_' + key] || key;
             var $category = $(h('div.cp-sidebarlayout-category', {
                 'tabindex': 0,
                 'data-category': key
             }, [
                 icon,
-                Messages['settings_cat_' + key] || key,
+                name,
             ])).appendTo($categories);
 
 
@@ -1984,6 +1964,21 @@ define([
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
         APP.history = common.makeUniversal('history');
+
+        // EXTENSION_POINT:SETTINGS_CATEGORY
+        common.getExtensionsSync('SETTINGS_CATEGORY').forEach(ext => {
+            if (!ext || !ext.id || !ext.name || !ext.getContent) {
+                return console.error('Invalid extension point', 'SETTINGS_CATEGORY', ext);
+            }
+            if (categories[ext.id]) {
+                return console.error('Extension point ID already used', ext);
+            }
+            SIDEBAR_ICONS[ext.id] = ext.icon;
+            SIDEBAR_NAMES[ext.id] = ext.name;
+            categories[ext.id] = ext.getContent(common);
+        });
+
+
 
         // Content
         var $rightside = APP.$rightside;

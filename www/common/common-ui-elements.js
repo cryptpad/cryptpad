@@ -1377,30 +1377,16 @@ define([
                 });
             };
 
-            var makeUpgradeButton = function () {
-                var $a = $('<a>', {
-                    'class': 'cp-limit-upgrade btn btn-success',
-                    href: urls.upgradeURL,
-                    rel: "noreferrer noopener",
-                    target: "_blank",
-                }).text(Messages.upgradeAccount).appendTo($buttons);
-                $a.click(function () {
-                    Feedback.send('UPGRADE_ACCOUNT');
-                });
-            };
-
             if (!Config.removeDonateButton) {
-                if (!common.isLoggedIn() || !Config.allowSubscriptions) {
-                    // user is not logged in, or subscriptions are disallowed
-                    makeDonateButton();
-                } else if (!plan) {
-                    // user is logged in and subscriptions are allowed
-                    // and they don't have one. show upgrades
-                    makeUpgradeButton();
-                    makeDonateButton();
-                } else {
-                    // they have a plan. show nothing
-                }
+                // Messages.upgradeAccount
+                common.getExtensionsSync('USAGE_BUTTON').some(ext => {
+                    if (!ext.getButton) { return; }
+                    let $b = ext.getButton(common, plan);
+                    if (!$b) { return; }
+                    $buttons.append($b);
+                });
+                // Add donate button
+                makeDonateButton();
             }
 
             var prettyUsage;
@@ -2198,19 +2184,16 @@ define([
         // section to determine if we have to manually hide a separator.
         var surveyAlone = true;
 
-        if (Config.allowSubscriptions) {
+        Common.getExtensionsSync('USERMENU_ITEM').forEach(ext => {
+            if (!ext.getItem) {
+                return void console.error("Missing attribute for extension point", "USERMENU_ITEM", ext);
+            }
+            let item = ext.getItem(Common);
+            if (!item) { return; }
             surveyAlone = false;
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'fa fa-star-o'
-                },
-                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing),
-                action: function () {
-                    Common.openURL(priv.plan ? priv.accounts.upgradeURL :'/features.html');
-                },
-            });
-        }
+            options.push(item);
+        });
+
         if (!priv.plan && !Config.removeDonateButton) {
             surveyAlone = false;
             options.push({
