@@ -113,15 +113,6 @@ define([
         } catch (e) {}
     }
 
-    var ACCOUNTS_URL;
-    try {
-        if (typeof(AppConfig.upgradeURL) === 'string') {
-            ACCOUNTS_URL = new URL(AppConfig.upgradeURL, trimmedUnsafe).origin;
-        }
-    } catch (err) {
-        console.error(err);
-    }
-
     var debugOrigins = {
         httpUnsafeOrigin: trimmedUnsafe,
         httpSafeOrigin: trimmedSafe,
@@ -1026,8 +1017,7 @@ define([
                     (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
                     // support for cryptpad.fr configuration
-                    accounts_api,
-                    ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
+                    accounts_api
                 ],
 
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
@@ -1066,8 +1056,7 @@ define([
                     API_URL.origin,
                     (HTTP_API_URL && HTTP_API_URL !== $outer) ? HTTP_API_URL : undefined,
                     isHTTPS(fileHost)? fileHost: undefined,
-                    accounts_api,
-                    ![trimmedUnsafe, trimmedSafe].includes(ACCOUNTS_URL)? ACCOUNTS_URL: undefined,
+                    accounts_api
                 ],
                 'img-src': ["'self'", 'data:', 'blob:', $outer],
                 'media-src': ['blob:'],

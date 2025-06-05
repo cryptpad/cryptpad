@@ -813,8 +813,7 @@ define([
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
                         notifications: notifs,
                         accounts: {
-                            donateURL: Cryptpad.donateURL,
-                            upgradeURL: Cryptpad.upgradeURL
+                            donateURL: Cryptpad.donateURL
                         },
                         isNewFile: isNewFile,
                         isDeleted: isDeleted,

@@ -53,7 +53,6 @@ define([
 
     var accounts = Pages.accounts = {
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
-        upgradeURL: AppConfig.upgradeURL
     };
 
     var languageSelector = function () {

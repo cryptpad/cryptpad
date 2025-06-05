@@ -53,7 +53,6 @@ define([
     var common = window.Cryptpad = {
         Messages: Messages,
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
-        upgradeURL: AppConfig.upgradeURL || 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
     };
 
