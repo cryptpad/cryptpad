@@ -135,6 +135,7 @@
                         document: blob,
                         ext: config.document.fileType,
                         autosave: config.events.onSave && (config.autosave || 10),
+                        readOnly: config.mode === 'view',
                         editorConfig: config.editorConfig || {},
                         _config: serializedConfig()
                     }, function (obj) {

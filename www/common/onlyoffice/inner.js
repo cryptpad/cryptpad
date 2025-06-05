@@ -2136,6 +2136,19 @@ define([
             }
         };
 
+        const copy = (a, b) => {
+            Object.keys(b).forEach(k => {
+                if (k === "user") { return; } // Don't change user values
+                if (a[k]) {
+                    if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
+                        copy(a[k], b[k]);
+                    }
+                    return;
+                }
+                a[k] = b[k];
+            });
+        };
+
         const createOOConfig = function(blob, file, lock, fromContent, lang, force) {
             const url = URL.createObjectURL(blob);
             let username = Util.find(privateData, ['integrationConfig', 'user', 'name'])
@@ -2185,18 +2198,6 @@ define([
                 }
             };
 
-            let copy = (a, b) => {
-                Object.keys(b).forEach(k => {
-                    if (k === "user") { return; } // Don't change user values
-                    if (a[k]) {
-                        if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
-                            copy(a[k], b[k]);
-                        }
-                        return;
-                    }
-                    a[k] = b[k];
-                });
-            };
             if (integrationConfig) {
                 let ec = integrationConfig.editorConfig;
                 let c = ooconfig.editorConfig.customization;
