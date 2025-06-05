@@ -270,6 +270,7 @@
          *     @param {function} events.onNewKey (data, callback) The function called when a new key is used.
          *     @param {function} events.onInsertImage (data, callback) The function called the user wants to add an image.
          *   @param {string} config.documentType The editor to load in CryptPad.
+         *   @param {string} config.mode The editing state of the document to load ("view" or "edit", defaults to edit).
          * @return {promise}
          */
         var init = function (cryptpadURL, containerId, config) {
