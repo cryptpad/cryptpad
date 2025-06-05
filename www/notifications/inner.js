@@ -79,7 +79,7 @@ define([
                     dismissAll = h("div.cp-app-notifications-dismissall.cp-clickable", { tabindex: 0, title: Messages.notifications_dismissAll || "Dismiss All", 'aria-label': Messages.notifications_dismissAll || "Dismiss All", role: 'button' }, h("span.fa.fa-trash")),
                 ]),
             ]),
-            notifsList = h("div.cp-app-notifications-panel-list", {'role': 'menu'},[
+            notifsList = h("div.cp-app-notifications-panel-list", {'role': 'list', 'aria-label': (Messages.notificationsPage || "Notifications") + " " + categoryName }, [
                 h("div.cp-notification.no-notifications", Messages.notifications_empty),
             ]),
         ]);
@@ -94,6 +94,7 @@ define([
                 var icon = $(el).find(".cp-reminder");
                 $(icon).addClass('cp-avatar-calendar');
                 $(el).attr('tabindex', -1);
+                $(el).attr('role', 'listitem');
                 $(notifsList).prepend(el);
             }
         };
@@ -244,7 +245,6 @@ define([
             });
 
             $category.append(Messages['notifications_cat_'+key] || key);
-            $category.attr('role', 'menuitem');
         });
         showCategories(categories[active]);
     };
