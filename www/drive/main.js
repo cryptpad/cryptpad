@@ -101,7 +101,20 @@ define([
                 sframeChan.event('EV_DRIVE_REMOVE', data);
             });
         };
-        var addData = function (meta, Cryptpad) {
+
+        let safeHash;
+        if (hash) {
+            const hashStr = hash.slice(1);
+            if (!/^\//.test(hashStr)) {
+                window.location.hash = '';
+                safeHash = hashStr;
+                hash = '';
+                href = href.slice(0, href.indexOf('#'));
+            }
+        }
+        var addData = function (meta, Cryptpad, Utils) {
+            if (safeHash) { meta.safeHash = safeHash; }
+
             if (!window.CryptPad_newSharedFolder) { return; }
             meta.anonSFHref = Cryptpad.currentPad.href;
         };
