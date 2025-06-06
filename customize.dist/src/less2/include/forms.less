@@ -251,6 +251,18 @@
             }
         }
 
+        &.btn-primary-alt {
+            background-color: @cp_buttons-fg;
+            border-color: @cp_buttons-fg;
+            color: @cp_buttons-default-fg;
+            text-transform: capitalize;
+            &:hover, &:not(:disabled):active, &:focus {
+                color: @cp_buttons-default-fg;
+                border-color: @cp_buttons-fg;
+                background-color: lighten(@cp_buttons-fg, 5%);
+            }
+        }
+
         &.btn-light {
             border-color: @cryptpad_text_col;
             color: @cryptpad_text_col;
