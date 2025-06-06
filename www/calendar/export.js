@@ -97,6 +97,10 @@ define([
                         });
                         return;
                     }
+                    if (k === "until") {
+                        rrule += ";"+k.toUpperCase()+"="+getICSDate(r[k]);
+                        return;
+                    }
                     rrule += ";"+k.toUpperCase()+"="+r[k];
                 });
                 return rrule;
