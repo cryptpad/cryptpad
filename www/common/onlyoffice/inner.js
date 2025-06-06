@@ -306,6 +306,10 @@ define([
                 return;
             }
             delete hashes[lastIndex];
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                UI.log(Messages.saved);
+            });
         };
 
         var rtChannel = {
@@ -641,20 +645,6 @@ define([
                     saveToServer();
                 });
             }
-        };
-        var deleteLastCp = function () {
-            var hashes = content.hashes;
-            if (!hashes || !Object.keys(hashes).length) { return; }
-            var i = 0;
-            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
-                return a-b;
-            });
-            var lastIndex = idx[idx.length - 1 - i];
-            delete content.hashes[lastIndex];
-            APP.onLocal();
-            APP.realtime.onSettle(function () {
-                UI.log(Messages.saved);
-            });
         };
         var restoreLastCp = function () {
             content.saveLock = myOOId;
