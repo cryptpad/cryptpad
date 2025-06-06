@@ -427,7 +427,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                 $span.append($rightCol);
             }, data.uid);
             $span.data('uid', data.uid);
-            if (false && data.badge && data.edPublic) { // XXX 2025.6
+            if (data.badge && data.edPublic) {
                 const addBadge = (badge) => {
                     let i = Badges.render(badge);
                     if (!i) { return; }

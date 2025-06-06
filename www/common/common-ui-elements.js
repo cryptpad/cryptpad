@@ -2813,7 +2813,6 @@ define([
 
         var selected = 0; // Selected template in the list (highlighted)
         var TEMPLATES_DISPLAYED = big ? 6 : 3; // Max templates displayed per page
-        var next = function () {}; // Function called when pressing tab to highlight the next template
         var i = 0; // Index of the first template displayed in the current page
         sframeChan.query("Q_CREATE_TEMPLATES", type, function (err, res) {
             if (!res.data || !Array.isArray(res.data)) {
@@ -2921,27 +2920,6 @@ define([
             else {
                 redraw(0);
             }
-
-
-            // Change template selection when Tab is pressed
-            next = function (revert) {
-                var max = $creation.find('.cp-creation-template-element').length;
-                if (selected + 1 === max && !revert) {
-                    selected = i + TEMPLATES_DISPLAYED < allData.length ? 0 : max;
-                    return void redraw(i + TEMPLATES_DISPLAYED);
-                }
-                if (selected === 0 && revert) {
-                    selected = i - TEMPLATES_DISPLAYED >= 0 ? TEMPLATES_DISPLAYED - 1 : 0;
-                    return void redraw(i - TEMPLATES_DISPLAYED);
-                }
-                selected = revert ?
-                            (--selected < 0 ? 0 : selected) :
-                            ++selected >= max ? max-1 : selected;
-                $creation.find('.cp-creation-template-element')
-                    .removeClass('cp-creation-template-selected');
-                $($creation.find('.cp-creation-template-element').get(selected))
-                    .addClass('cp-creation-template-selected');
-            };
 
             $w.on('resize', function () {
                 var _big = $w.width() > 800;
