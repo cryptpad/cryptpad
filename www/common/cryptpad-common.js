@@ -49,7 +49,6 @@ define([
     };
 
     // Upgrade and donate URLs duplicated in pages.js
-    var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
