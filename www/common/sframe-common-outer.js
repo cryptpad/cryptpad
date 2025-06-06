@@ -115,7 +115,6 @@ define([
         var UnsafeIframe;
         var OOIframe;
         var Notifier;
-        var Ext;
         var Utils = {
             nThen: nThen
         };
@@ -153,7 +152,6 @@ define([
                 '/common/outer/local-store.js',
                 '/common/outer/login-block.js',
                 '/common/cache-store.js',
-                '/common/extensions.js',
                 '/customize/application_config.js',
                 //'/common/test.js',
                 '/common/user-object.js',
@@ -162,7 +160,7 @@ define([
                 '/form/command-handler.js'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Notifier, _Hash, _Util, _Realtime, _Notify,
-            _Constants, _Feedback, _LocalStore, _Block, _Cache, _Ext, _AppConfig, /* _Test,*/ _UserObject,
+            _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
             _Instance, _PadTypes, _Handler) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -173,7 +171,6 @@ define([
                 UnsafeIframe = _UnsafeIframe;
                 OOIframe = _OOIframe;
                 Notifier = _Notifier;
-                Ext = _Ext;
                 Utils.Hash = _Hash;
                 Utils.Util = _Util;
                 Utils.Realtime = _Realtime;
@@ -760,8 +757,6 @@ define([
             var isOO = ['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1;
             var ooDownloadData = {};
 
-            let hashInit = false;
-
             var isDeleted = isNewFile && currentPad.hash.length > 0;
             if (isDeleted) {
                 Utils.Cache.clearChannel(secret.channel);
@@ -900,21 +895,6 @@ define([
                     if (cfg.addData) {
                         cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils);
                     }
-
-                    if (edPrivate && !hashInit) {
-                        Ext.getExtensionsSync('INIT_LOG').forEach(ext => {
-                            if (!ext || !ext.getContent) { return; }
-                            ext.getContent(sframeChan,
-                                metaObj.priv, {
-                                edPublic, edPrivate
-                            }, (err, val) => {
-                                if (hashInit) { return; }
-                                hashInit = true;
-                            });
-                            //UI.log(ext.text);d
-                        });
-                    }
-
 
                     if (metaObj && metaObj.priv && typeof(metaObj.priv.plan) === "string") {
                         Utils.LocalStore.setPremium(metaObj.priv.plan);
