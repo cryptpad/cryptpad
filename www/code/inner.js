@@ -180,7 +180,7 @@ define([
 
     var isSmallScreen = () => window.innerWidth <= 600;
     const showEditor = Util.once(() => {
-    $('#cp-app-code-editor').css('display', '');
+        $('#cp-app-code-editor').css('display', '');
 });
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
