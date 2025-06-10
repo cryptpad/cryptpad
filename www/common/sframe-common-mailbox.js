@@ -88,15 +88,11 @@ define([
                     role: 'button'
                 });
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
-                $(avatar).keydown(function (e) {
-                    if (e.which === 13 || e.which === 32) {
-                        $(avatar).click();
-                    }
-                });
-                $(avatar).click(function (e) {
+                const handler = function (e) {
                     e.stopPropagation();
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
-                });
+                };
+                Util.onClickEnter($(avatar), handler, { space: true });
             } else if (userData && userData.supportTeam) {
                 avatar = h('span.cp-avatar-image', h('img', { src:'/customize/CryptPad_logo.svg' }));
             }
@@ -128,7 +124,8 @@ define([
                         $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
                     }, 60000);
                 }
-                $(notif).find('.cp-notification-content').attr('aria-label', data.content.getFormatText().replace(/<[^>]*>/g, '')); // removes html tags from the text
+                const label = $(notif).find('.cp-notification-content p').text();
+                $(notif).find('.cp-notification-content').attr('aria-label', label);
             }
 
             $(notif).mouseenter((e) => {

@@ -14,6 +14,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/notifications.js',
+    '/common/common-util.js',
 
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
@@ -29,7 +30,8 @@ define([
     Messages,
     UI,
     UIElements,
-    Notifications
+    Notifications,
+    Util,
     )
 {
     var APP = {};
@@ -160,19 +162,17 @@ define([
                 $('.cp-app-notification-archived[data-hash="' + data.hash + '"]').css('display', 'flex');
             }
         });
-
-        $(dismissAll).keydown(function (e) {
-            if (e.keyCode === 13 || e.keyCode === 32) {
-                $(dismissAll).click();
+        const handler = function (e) {
+            if (!notifsData) {
+                return;
             }
-        });
-        $(dismissAll).click(function () {
             notifsData.forEach(function (data) {
                 if (data.content.isDismissible) {
                     data.content.dismissHandler();
                 }
             });
-        });
+        };
+        Util.onClickEnter($(dismissAll), handler, { space: true });
 
         return $div;
     };
