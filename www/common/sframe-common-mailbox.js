@@ -101,7 +101,6 @@ define([
                 avatar = h('span.cp-avatar-image', h('img', { src:'/customize/CryptPad_logo.svg' }));
             }
             var order = -Math.floor((Util.find(data, ['content', 'msg', 'ctime']) || 0) / 1000);
-            const tabIndexValue = 0; //data.content.isClickable ? '0': 'undefined';
             notif = h('li.cp-notification', {
                 role: 'menuitem',
                 tabindex: '0',
@@ -110,7 +109,7 @@ define([
             }, [
                 avatar,
                 h('div.cp-notification-content', {
-                    tabindex: tabIndexValue
+                    tabindex: 0
                 }, [
                     h('p', data.content.msg.type + ' - ' +formatData(data))
                 ])
