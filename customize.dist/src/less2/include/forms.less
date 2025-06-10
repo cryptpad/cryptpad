@@ -251,15 +251,18 @@
             }
         }
 
-        &.btn-primary-alt {
-            background-color: @cp_buttons-fg;
-            border-color: @cp_buttons-fg;
-            color: @cp_buttons-default-fg;
+        &.btn-case {
             text-transform: capitalize;
+            font-size: 16px;
+        }
+        &.btn-primary-alt {
+            background-color: @cryptpad_color_brand_300;
+            border-color: @cryptpad_color_brand_300;
+            color: @cryptpad_color_grey_800;
             &:hover, &:not(:disabled):active, &:focus {
-                color: @cp_buttons-default-fg;
-                border-color: @cp_buttons-fg;
-                background-color: lighten(@cp_buttons-fg, 5%);
+                color: @cryptpad_color_grey_800;
+                border-color: @cryptpad_color_brand_300;
+                background-color: lighten(@cryptpad_color_brand_300, 5%);
             }
         }
 
