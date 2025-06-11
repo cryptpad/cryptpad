@@ -123,6 +123,7 @@ define([
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
+        var parsedHash;
         var Handler;
 
         var currentPad = window.CryptPad_location = {
@@ -894,7 +895,7 @@ define([
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
-                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils);
+                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils, parsedHash);
                     }
 
                     if (metaObj && metaObj.priv && typeof(metaObj.priv.plan) === "string") {

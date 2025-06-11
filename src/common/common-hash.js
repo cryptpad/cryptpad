@@ -78,7 +78,7 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         }
     };
 
-    Hash.getHiddenHashFromKeys = function (type, secret, opts, auditorKey) {
+    Hash.getHiddenHashFromKeys = function (type, secret, opts) {
         opts = opts || {};
         var canEdit = (secret.keys && secret.keys.editKeyStr) || secret.key;
         var mode = (!opts.view && canEdit) ? 'edit/' : 'view/';
@@ -87,9 +87,7 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         if (secret.keys && secret.keys.fileKeyStr) { mode = ''; }
 
         var hash =  '/3/' + type + '/' + mode + secret.channel + '/' + pass;
-        if (auditorKey) {
-            hash += 'auditor=' + auditorKey;
-        }
+
         var hashData = Hash.parseTypeHash(type, hash);
         if (hashData && hashData.getHash) {
             return hashData.getHash(opts || {});
@@ -309,6 +307,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 parsed.channel = hash.slice(0, 32);
                 parsed.key = hash.slice(32, 56);
                 parsed.version = 0;
+                parsed.auditorKey = getAuditorKey(hashArr)
                 return parsed;
             }
 
