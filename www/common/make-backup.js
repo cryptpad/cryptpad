@@ -10,12 +10,13 @@ define([
     '/common/common-interface.js',
     '/common/hyperscript.js',
     '/common/common-feedback.js',
+    '/common/user-object.js',
     '/common/inner/cache.js',
     '/customize/messages.js',
     '/components/nthen/index.js',
     '/components/saferphore/index.js',
     '/components/jszip/dist/jszip.min.js',
-], function ($, FileCrypto, Hash, Util, UI, h, Feedback,
+], function ($, FileCrypto, Hash, Util, UI, h, Feedback, UO,
              Cache, Messages, nThen, Saferphore, JsZip) {
     var saveAs = window.saveAs;
 
@@ -170,9 +171,17 @@ define([
             });
         }
 
-        var href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
-        var parsed = Hash.parsePadUrl(href);
-        if (['pad', 'file'].indexOf(parsed.hashData.type) === -1) { return; }
+        var href;
+        var parsed;
+        if (!fData.channel) {
+            href = fData.href;
+            parsed = {};
+            parsed['hashData'] = {type: 'link'};
+        } else {
+            href = UO.getHref(fData, ctx.currentCryptor);
+            parsed = Hash.parsePadUrl(href);
+        }
+        if (['pad', 'file', 'link'].indexOf(parsed.hashData.type) === -1) { return; }
 
         // waitFor is used to make sure all the pads and files are process before downloading the zip.
         var w = ctx.waitFor();
@@ -220,7 +229,7 @@ define([
                 var opts = {
                     password: fData.password
                 };
-                var rawName = fData.filename || fData.title || 'File';
+                var rawName = fData.filename || fData.title || fData.name || 'File';
                 console.log(rawName);
 
                 // Pads (pad,code,slide,kanban,poll,...)
@@ -276,8 +285,21 @@ define([
                         }
                     }, 50);
                 };
+                var todoLink = function () {
+                    var opts = {
+                        binary: true,
+                    };
+                    var fileName = getUnique(sanitize(rawName), '.txt', existingNames);
+                    existingNames.push(fileName.toLowerCase());
+                    var content = new Blob([fData.href, '\n'], { type: "text/plain;charset=utf-8" });
+                    zip.file(fileName, content, opts);
+                    console.log('DONE ---- ' + fileName);
+                    setTimeout(done, 1000);
+                };
                 if (parsed.hashData.type === 'file') {
                     return void todoFile();
+                } else if (parsed.hashData.type === 'link') {
+                    return void todoLink();
                 }
                 todoPad();
             });
@@ -286,7 +308,7 @@ define([
     };
 
     // Add folders and their content recursively in the zip
-    var makeFolder = function (ctx, root, zip, fd) {
+    var makeFolder = function (ctx, root, zip, fd, sd) {
         if (typeof (root) !== "object") { return; }
         var existingNames = [];
         Object.keys(root).forEach(function (k) {
@@ -294,15 +316,23 @@ define([
             if (typeof el === "object" && el.metadata !== true) { // if folder
                 var fName = getUnique(sanitize(k), '', existingNames);
                 existingNames.push(fName.toLowerCase());
-                return void makeFolder(ctx, el, zip.folder(fName), fd);
+                ctx.currentCryptor = undefined;
+                return void makeFolder(ctx, el, zip.folder(fName), fd, sd);
             }
             if (ctx.data.sharedFolders[el]) { // if shared folder
+                let obj = ctx.data.sharedFolders[el];
+                let parsed = Hash.parsePadUrl(obj.href || obj.roHref);
+                var secret = Hash.getSecrets('drive', parsed.hash, obj.password);
+                let cryptor = secret.keys?.secondaryKey ? UO.createCryptor(secret.keys?.secondaryKey)
+                                                        : undefined;
+                ctx.currentCryptor = cryptor;
                 var sfData = ctx.sf[el].metadata;
                 var sfName = getUnique(sanitize((sfData && sfData.title) || 'Folder'), '', existingNames);
                 existingNames.push(sfName.toLowerCase());
-                return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData);
+                let staticData = ctx.sf[el].static;
+                return void makeFolder(ctx, ctx.sf[el].root, zip.folder(sfName), ctx.sf[el].filesData, staticData);
             }
-            var fData = fd[el];
+            var fData = fd[el] || (sd && sd[el]);
             if (fData) {
                 addFile(ctx, zip, fData, existingNames);
                 return;
@@ -327,14 +357,27 @@ define([
             max: 0,
             done: 0,
             cache: cache,
-            sframeChan: sframeChan
+            sframeChan: sframeChan,
+            common: data.common,
         };
         var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
+        var links = ctx.sf[data.sharedFolderId] && ctx.sf[data.sharedFolderId].static ? ctx.data.static && ctx.sf[data.sharedFolderId].static : ctx.data.static;
+
+        if (ctx.common && !ctx.common.isLoggedIn()) {
+            // Anonymous Drive
+            ctx.data.root = {};
+            let index = 0;
+            Object.keys(ctx.data.filesData).forEach(file => {
+                ctx.data.root[index] = file;
+                index += 1;
+            });
+        }
+
         progress('reading', -1); // Msg.settings_export_reading
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
             var zipRoot = ctx.zip.folder(data.name || Messages.fm_rootName);
-            makeFolder(ctx, ctx.folder || ctx.data.root, zipRoot, filesData);
+            makeFolder(ctx, ctx.folder || ctx.data.root, zipRoot, filesData, links);
             progress('download', {}); // Msg.settings_export_download
         }).nThen(function () {
             console.log(ctx.zip);

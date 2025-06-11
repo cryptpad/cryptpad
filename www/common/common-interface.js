@@ -164,12 +164,12 @@ define([
 
     dialog.okButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.btn.ok.primary';
-        return h(sel, { tabindex: '2', }, content || Messages.okButton);
+        return h(sel, content || Messages.okButton);
     };
 
     dialog.cancelButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.' + classString:'button.btn.cancel';
-        return h(sel, { tabindex: '1'}, content || Messages.cancelButton);
+        return h(sel, content || Messages.cancelButton);
     };
 
     dialog.message = function (text) {
@@ -577,7 +577,7 @@ define([
         return frame;
     };
 
-    let addTabListener = frame => {
+    let addTabListener = UI.addTabListener = frame => {
         // find focusable elements
         let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
 
@@ -670,6 +670,7 @@ define([
             $modal: $blockContainer,
             show: function () {
                 $blockContainer.css('display', 'flex');
+                addTabListener($blockContainer);
             },
             hide: hide
         };
@@ -719,12 +720,43 @@ define([
             Notifier.notify();
         });
 
+        addTabListener(frame);
         return {
             element: frame,
             delete: close
         };
     };
 
+    UI.alertPromise = function (msg, opt) {
+        return new Promise((resolve) => {
+            UI.alert(msg, resolve, opt);
+        });
+    };
+
+    /**
+     * @callback promptCallback
+     * @param {string} value - the value the user chose
+     */
+
+    /**
+     * Optional parameters for UI.prompt()
+     * @typedef {Object} PromptParams
+     * @property {boolean} [password] - if true: ask the user for a password
+     * @property {Element} [typeInput] - if set: add a dropdown next to the text input field (create it with UIElements.createDropdown())
+     * @property {Object} [inputOpts] - parameters for dialog.textInput()
+     * @property {string} [ok] - caption for the OK button
+     * @property {string} [cancel] - caption for the cancel button
+     */
+
+    /**
+     * Show a popup to ask something.
+     *
+     * @param {(string|Element)} [msg] - Message/title to show
+     * @param {string} [def] - the default value
+     * @param {promptCallback} [cb] - called when the used selected a value
+     * @param {PromptParams} [opt] - optional settings for the prompt
+     * @param {boolean} [force] - if true: do not HTML escape msg
+     */
     UI.prompt = function (msg, def, cb, opt, force) {
         cb = cb || function () {};
         opt = opt || {};
@@ -770,7 +802,7 @@ define([
 
         document.body.appendChild(frame);
         setTimeout(function () {
-            $(input).select().focus();
+            addTabListener(frame);
             Notifier.notify();
         });
     };
@@ -778,7 +810,6 @@ define([
     UI.confirm = function (msg, cb, opt, force) {
         cb = cb || function () {};
         opt = opt || {};
-
         var message;
         if (typeof(msg) === 'string') {
             if (!force) { msg = Util.fixHTML(msg); }
@@ -811,19 +842,11 @@ define([
 
         addTabListener(frame);
 
-        frame.addEventListener('keydown', function(e) {
-            if (e.keyCode === 13) {
-                if (document.activeElement === $ok[0]) {
-                    $ok.click();
-                } else if (document.activeElement === $cancel[0]) {
-                    $cancel.click();
-                }
-            } else if (e.keyCode === 27) {
-                $cancel.click();
-            }
-        });
-
         listener = listenForKeys(function () {
+            // Only trigger OK if cancel is not focused
+            if (document.activeElement === $cancel[0]) {
+                return void $cancel.click();
+            }
             $ok.click();
         }, function () {
             $cancel.click();
@@ -967,7 +990,10 @@ define([
 
         var input = h('input.cp-password-input', attributes);
         var eye = h('span.fa.fa-eye.cp-password-reveal', {
-            tabindex: 0
+            tabindex: 0,
+            role: 'button',
+            'aria-label': Messages.show_password,
+            'aria-pressed': 'false'
         });
 
         var $eye = $(eye);
@@ -990,12 +1016,12 @@ define([
                 if ($eye.hasClass('fa-eye')) {
                     $input.prop('type', 'text');
                     $input.focus();
-                    $eye.removeClass('fa-eye').addClass('fa-eye-slash');
+                    $eye.removeClass('fa-eye').addClass('fa-eye-slash').attr('aria-label', Messages.hide_password).attr('aria-pressed', 'true');
                     return;
                 }
                 $input.prop('type', 'password');
                 $input.focus();
-                $eye.removeClass('fa-eye-slash').addClass('fa-eye');
+                $eye.removeClass('fa-eye-slash').addClass('fa-eye').attr('aria-label', Messages.show_password).attr('aria-pressed', 'false');
             });
         }
 
@@ -1013,7 +1039,7 @@ define([
             href: href,
             target: "_blank",
             'data-tippy-placement': "right",
-            'aria-label': Messages.help_genericMore //TBC XXX
+            'aria-label': text
         });
         return q;
     };
@@ -1133,6 +1159,7 @@ define([
                 window.open('/bounce/#'+encodeURIComponent(href));
                 return;
             }
+            // XXX
             window.parent.location = href;
         });
         if (exitable) {
@@ -1244,6 +1271,7 @@ define([
         var addTippy = function (i, el) {
             if (el._tippy) { return; }
             if (!el.getAttribute('title')) { return; }
+            if (el.getAttribute('data-notippy')) { return; }
             if (el.nodeName === 'IFRAME') { return; }
             var opts = {
                 distance: 15
@@ -1328,13 +1356,12 @@ define([
         });
 
         $input.change(function () {
+            $mark.attr('aria-checked', $input.is(':checked'));
             if (!opts.labelAlt) { return; }
             if ($input.is(':checked') !== checked) {
                 $(label).text(opts.labelAlt);
-                $mark.attr('aria-checked', 'true');
             } else {
                 $(label).text(labelTxt);
-                $mark.attr('aria-checked', 'false');
             }
         });
 

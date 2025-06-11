@@ -4,7 +4,7 @@
 
 define([
     '/common/cryptpad-common.js',
-    '/common/userObject.js',
+    '/common/user-object.js',
 ],function (Cryptpad, FO) {
     var module = {};
 

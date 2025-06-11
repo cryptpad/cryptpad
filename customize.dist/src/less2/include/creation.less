@@ -33,6 +33,11 @@
     .creation_vars();
 
     #cp-creation-container {
+        &:focus-visible {
+            outline: @variables_focus_style;
+            border-radius: @variables_radius;
+        }
+
         position: absolute;
         z-index: 100000000; // #loading * 10
         top: 0px;
@@ -69,7 +74,7 @@
         outline: none;
         width: 700px;
         max-width: 90vw;
-        height: 500px;
+        //height: 500px;
         border-radius: @variables_radius_L;
         max-height: ~"calc(100vh - 20px)";
         margin: 0px;
@@ -85,6 +90,7 @@
         }
 
         .cp-creation-checkboxes {
+            min-width: 300px;
             flex-flow: column;
             align-items: baseline !important;
             max-height: 150px;
@@ -121,6 +127,9 @@
                     font-size: 16px;
                     color: inherit;
                 }
+                a:focus-visible {
+                    border-radius: 50%;
+                }
             }
         }
         .cp-creation-early {
@@ -141,9 +150,8 @@
                 border: none;
                 border-radius: @variables_radius;
                 cursor: pointer;
-                outline: none;
                 text-transform: uppercase;
-                &:hover {
+                &:hover, &:focus-visible {
                     background: contrast(@cp_creation-button-fg, lighten(@cp_creation-button-bg, 5%), darken(@cp_creation-button-bg, 5%));
                 }
             }
@@ -156,11 +164,10 @@
             flex: 1 0 auto;
             justify-content: space-around;
             & > div {
-                width: 300px;
+                //width: 300px;
                 max-width: 100%;
                 display: flex;
                 align-items: center;
-                flex-wrap: wrap;
                 font-size: 16px;
                 //margin: 10px 0;
                 min-height: 28px;
@@ -186,12 +193,13 @@
                 }
             }
             .cp-creation-slider {
-                display: block;
+                display: none;
                 overflow: hidden;
                 max-height: 0px;
                 max-width: 0px;
                 //margin-top: 10px;
                 &.active {
+                    display: block;
                     transition: max-height 0.5s ease-in-out;
                     max-width: none;
                     max-height: 100px;
@@ -259,13 +267,11 @@
                     input {
                         width: 45px;
                         margin: 0 5px;
-                        padding: 0;
-                        padding-left: 3px;
-                        margin: 0 5px;
+                        padding: 0 0 0 3px;
                     }
                     select {
-                        margin-right: 5px;
                         border-radius: @variables_radius;
+                        margin: 0.2rem;
                     }
                 }
                 &.active {
@@ -286,12 +292,21 @@
                         input {
                             width: 150px;
                             padding: 0 5px;
+                            margin: 0.2rem;
                         }
                         label {
                             flex: none;
                         }
+                        .cp-password-reveal {
+                            margin:0.2rem;
+                        }
                     }
                 }
+            }
+            .cp-creation-password-warning {
+                font-size: 0.75em;
+                line-height: 120%;
+                margin: 0.4rem 1rem calc(0.4rem + 6px);
             }
             .cp-creation-settings {
                 button {
@@ -308,9 +323,12 @@
                 justify-content: space-between;
                 .cp-creation-template-more {
                     font-size: 30px;
-                    cursor: pointer;
                     margin: 0 5px;
                     text-align: center;
+                    background-color: transparent;
+                    border-color: transparent;
+                    color: @cryptpad_text_col;
+                    border-radius: @variables_radius;
                     &:first-child {
                         left: 5px;
                     }
@@ -421,7 +439,6 @@
             #cp-creation-form {
                 & > div {
                     width: 95%;
-                    margin: 0 auto;
                 }
                 .cp-creation-expire {
                     &.active {
@@ -431,7 +448,6 @@
                         .cp-creation-slider {
                             flex: none;
                             order: 10;
-                            width: 100%;
                         }
                     }
                 }
@@ -440,7 +456,7 @@
     }
     @media screen and (max-width: 800px) {
         #cp-creation {
-            height: 550px;
+            //height: 550px;
             #cp-creation-form {
                 div.cp-creation-template {
                     flex-flow: column;

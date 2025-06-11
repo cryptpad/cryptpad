@@ -18,7 +18,9 @@
             var scripts = document.getElementsByTagName('script');
             for (var i = scripts.length - 1; i >= 0; i--) {
                 var match = scripts[i].src.match(/(.*)web-apps\/apps\/api\/documents\/api.js/i);
+                var match2 = scripts[i].src.match(/(.*)\/cryptpad-api.js/i);
                 if (match) { return match[1]; }
+                else if (match2) { return match2[1]; }
             }
         };
 
@@ -86,6 +88,7 @@
         var start = function (config, chan) {
             return new Promise(function (resolve, reject) {
             setTimeout(function () {
+                var docID = config.document.key;
                 var key = config.document.key;
                 var blob;
 
@@ -109,14 +112,32 @@
                     xhr.send();
                 };
 
+                let serializedConfig = () => {
+                    let _config = {};
+                     _config.editorConfig = config.editorConfig;
+                     _config.document = {
+                         permissions: config.document?.permissions,
+                         title: config.document?.title,
+                         info: config.document?.info,
+                         referenceData: config.document?.referenceData
+                    };
+                    return _config;
+                };
+
                 var start = function () {
-                    config.document.key = key;
+                    //config.document.key = key;
                     chan.send('START', {
                         key: key,
                         application: config.documentType,
+                        name: config.document.title,
+                        url: config.document.url,
+                        documentKey: docID,
                         document: blob,
                         ext: config.document.fileType,
-                        autosave: config.autosave || 10
+                        autosave: config.events.onSave && (config.autosave || 10),
+                        readOnly: config.mode === 'view',
+                        editorConfig: config.editorConfig || {},
+                        _config: serializedConfig()
                     }, function (obj) {
                         if (obj && obj.error) { reject(obj.error); return console.error(obj.error); }
                         resolve({});
@@ -130,8 +151,17 @@
                         blob = config.document.blob;
                         return start();
                     }
+                    // NOTE: Nextcloud will log us out if we try from the client
+                    // TODO: make sure the server plugin is installed if we don't
+                    // call getBlob()
+                    if (!config.events?.onSave) {
+                        return void start();
+                    }
                     getBlob(function (err, _blob) {
-                        if (err) { reject(err); return console.error(err); }
+                        if (err) { // Can't get blob from client, try from server
+                            console.warn(err);
+                            return void start();
+                        }
                         _blob.name = `document.${config.document.fileType}`;
                         blob = _blob;
                         start();
@@ -188,6 +218,7 @@
 
                 chan.on('ON_DOWNLOADAS', blob => {
                     let url = URL.createObjectURL(blob);
+                    if (!config.events.onDownloadAs) { return; }
                     config.events.onDownloadAs({
                         data: {
                             fileType: config.document && config.document.fileType,
@@ -198,6 +229,7 @@
 
                 chan.on('SAVE', function (data, cb) {
                     blob = data;
+                    if (!config.events.onSave) { return void cb(); }
                     config.events.onSave(data, cb);
                 });
                 chan.on('RELOAD', function () {
@@ -214,7 +246,7 @@
                     cb();
                 });
                 chan.on('ON_INSERT_IMAGE', function(data, cb) {
-                    if (config.events.onIntertImage) {
+                    if (config.events.onInsertImage) {
                         config.events.onInsertImage(data, cb);
                     } else { cb(); }
                 });
@@ -238,15 +270,18 @@
          *     @param {function} events.onNewKey (data, callback) The function called when a new key is used.
          *     @param {function} events.onInsertImage (data, callback) The function called the user wants to add an image.
          *   @param {string} config.documentType The editor to load in CryptPad.
+         *   @param {string} config.mode The editing state of the document to load ("view" or "edit", defaults to edit).
          * @return {promise}
          */
         var init = function (cryptpadURL, containerId, config) {
             // OnlyOffice shim: don't provide a URL
-            if (!config && typeof(containerId) === "object") {
+            if (typeof(config) !== "object" && typeof(containerId) === "object") {
                 config = containerId;
                 containerId = cryptpadURL;
                 cryptpadURL = getInstanceURL();
             }
+
+            config.events = config.events || {};
 
             // OnlyOffice shim
             let url = config.document.url;
@@ -254,10 +289,14 @@
                 url = url.replace(/(http:\/\/localhost\/cache\/files\/)/, getInstanceURL() + 'ooapi/');
             }
             config.document.url = url;
-            if (config.documentType === "spreadsheet") {
+            if (config.documentType === "spreadsheet" || config.documentType === "cell") {
                 config.documentType = "sheet";
             }
-            if (config.documentType === "text") {
+
+            if (config.documentType === "slide") {
+                config.documentType = "presentation";
+            }
+            if (config.documentType === "word" || config.documentType === "text") {
                 config.documentType = "doc";
             }
 
@@ -308,8 +347,8 @@
                     iframe.setAttribute('name', 'frameEditor');
                     iframe.setAttribute('align', 'top');
                     iframe.setAttribute("src", url);
-                    iframe.setAttribute("width", config.width);
-                    iframe.setAttribute("height", config.height);
+                    iframe.setAttribute("width", config.width || '100%');
+                    iframe.setAttribute("height", config.height || '100%');
                     if (config.editorConfig) { // OnlyOffice
                         container.replaceWith(iframe);
                         container = iframe;
@@ -362,5 +401,3 @@
         window.CryptPadAPI = factory();
     }
 }());
-
-

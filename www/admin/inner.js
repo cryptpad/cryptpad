@@ -67,7 +67,7 @@ define([
                     'description',
                     'email',
                     'jurisdiction',
-                    'flush-cache'
+                    'flush-cache',
                 ]
             },
             'customize': { // Msg.admin_cat_customize
@@ -75,6 +75,13 @@ define([
                 content: [
                     'logo',
                     'color',
+                ]
+            },
+            'admins': {
+                icon: 'fa fa-users',
+                content: [
+                    'list-admins',
+                    'add-admins'
                 ]
             },
             'broadcast' : { // Msg.admin_cat_broadcast
@@ -94,7 +101,7 @@ define([
                 ]
             },
             'apps': { // Msg.admin_cat_apps
-                icon: 'fa  fa-wrench',
+                icon: 'fa fa-wrench',
                 content: [
                     'apps',
                 ]
@@ -172,7 +179,7 @@ define([
         const blocks = sidebar.blocks;
 
         // EXTENSION_POINT:ADMIN_CATEGORY
-        common.getExtensions('ADMIN_CATEGORY').forEach(ext => {
+        common.getExtensionsSync('ADMIN_CATEGORY').forEach(ext => {
             if (!ext || !ext.id || !ext.name || !ext.content) {
                 return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
             }
@@ -186,6 +193,7 @@ define([
                 content: ext.content
             };
         });
+
 
         const flushCache = (cb) => {
             cb = cb || function () {};
@@ -223,6 +231,198 @@ define([
                 });
             });
             cb(button);
+        });
+
+        const evRefreshAdmins = Util.mkEvent();
+        sidebar.addItem('list-admins', cb => {
+            const removeAdmin = (edPublic, _cb) => {
+                const cb = Util.mkAsync(_cb);
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['RM_ADMIN_KEY', [edPublic]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return void cb('ERROR');
+                    }
+                    if (typeof(cb) === "function") { cb(); }
+                });
+            };
+
+            const header = [
+                Messages.admin_listName,
+                Messages.admin_listKey,
+                Messages.admin_listAction
+            ];
+            var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
+
+            const refreshTable = () => {
+                const admins = APP.instanceStatus.admins || [];
+                const newRows = admins.map(obj => {
+                    let { name, edPublic, hardcoded } = obj;
+                    name = name || Messages.admin_admin;
+                    let button = blocks.button('danger','fa-ban', Messages.admin_usersRemove);
+                    let $b = $(button);
+                    Util.onClickEnter($b, () => {
+                        $b.prop('disabled', 'disabled');
+                        UI.confirm(Messages.admin_listConfirm, yes => {
+                            if (!yes) { return $b.prop('disabled', false); }
+                            removeAdmin(edPublic, err => {
+                                $b.prop('disabled', false);
+                                if (err) { return; }
+                                APP.updateStatus(function () {
+                                    flushCache();
+                                    evRefreshAdmins.fire();
+                                });
+                            });
+                        });
+                    });
+                    let note = Messages.admin_listHardcoded;
+                    let action = hardcoded ? note : button;
+
+                    return [name, edPublic, action];
+                });
+                list.updateContent(newRows);
+            };
+            refreshTable();
+            evRefreshAdmins.reg(() => {
+                refreshTable();
+            });
+
+            cb(div);
+        });
+        sidebar.addItem('add-admins', cb => {
+            const content = blocks.block();
+            const metadataMgr = common.getMetadataMgr();
+            const privateData = metadataMgr.getPrivateData();
+            const $div = $(content);
+
+            const addAdmin = (data, _cb) => {
+                const cb = Util.mkAsync(_cb);
+                const { ed, name } = data;
+                const key = Hash.getPublicSigningKeyString(privateData.origin, name, ed);
+                sFrameChan.query('Q_ADMIN_RPC', {
+                    cmd: 'ADMIN_DECREE',
+                    data: ['ADD_ADMIN_KEY', [key]]
+                }, function (e, response) {
+                    if (e || response.error) {
+                        UI.warn(Messages.error);
+                        console.error(e, response);
+                        return void cb('ERROR');
+                    }
+                    if (typeof(cb) === "function") { cb(); }
+                    flushCache();
+                });
+            };
+
+            const keyInput = blocks.input({
+                placeholder: Messages.admin_accountMetadataPlaceholder
+            });
+            const keyLabel = blocks.labelledInput(Messages.admin_addKeyLabel, keyInput);
+            const keyButton = blocks.button('primary', 'fa-plus', Messages.tag_add);
+            const keyForm = blocks.form([keyLabel], blocks.nav([keyButton]));
+            const $keyInput = $(keyInput).on('input', () => {
+                let val = $keyInput.val().trim();
+                if (!val) {
+                    keyInput.setCustomValidity('');
+                    return;
+                }
+                let key = Keys.canonicalize(val);
+
+                if (keyInput.setCustomValidity) {
+                    if (!key) {
+                        const msg = Messages.admin_invalKey;
+                        keyInput.setCustomValidity(msg);
+                    } else {
+                        keyInput.setCustomValidity('');
+                    }
+                }
+            });
+
+            const drawContacts = () => {
+                $div.empty();
+                const members = {};
+                const admins = APP.instanceStatus.admins || [];
+                admins.forEach(obj => {
+                    const { edPublic, name, hardcoded, first } = obj;
+                    members[edPublic] = { name, hardcoded, first };
+                });
+
+                // Remove admins from contacts list
+                const friends = Util.clone(common.getFriends(false));
+                Object.keys(friends).forEach((curve) => {
+                    const ed = friends[curve]?.edPublic;
+                    if (members[ed]) { delete friends[curve]; }
+                });
+                let contactsGrid = UIElements.getUserGrid(Messages.admin_addAdminsAdd, {
+                    common: common,
+                    list: true,
+                    large: true,
+                    data: friends
+                }, function () {});
+                let addBtn = blocks.button('primary', 'fa-plus', Messages.tag_add);
+                Util.onClickEnter($(addBtn), () => {
+                    var $sel = $(contactsGrid.div).find('.cp-usergrid-user.cp-selected');
+                    if (!$sel.length) {
+                        return UI.warn(Messages.admin_errorAddAdmins);
+                    }
+                    nThen((waitFor) => {
+                        $sel.each((i, el) => {
+                            const $el = $(el);
+                            let ed = $el.attr('data-ed');
+                            let name = $el.attr('data-name');
+                            if (!ed || !name) {
+                                console.error('Missing data on selected user', el);
+                                return void UI.warn(Messages.error);
+                            }
+                            addAdmin({ed, name}, waitFor());
+                        });
+                    }).nThen(() => {
+                        APP.updateStatus(function () {
+                            evRefreshAdmins.fire();
+                        });
+                    });
+                });
+                evRefreshAdmins.reg(() => {
+                    drawContacts();
+                });
+
+                const $keyBtn = $(keyButton);
+                Util.onClickEnter($keyBtn, () => {
+                    let val = $keyInput.val().trim();
+                    let key = Keys.canonicalize(val);
+                    if (!key) {
+                        return UI.warn(Messages.admin_errorAddKeyLabel);
+                    }
+                    // We have a valid key
+                    let name = Messages.admin_admin;
+                    try {
+                        let parsed = Keys.parseUser(val);
+                        name = parsed.user;
+                    } catch (e) {}
+                    $keyBtn.prop('disabled', 'disabled');
+                    addAdmin({ ed:key, name }, (err) => {
+                        $keyBtn.prop('disabled', false);
+                        if (!err) { $keyInput.val(''); }
+                        // refresh
+                        APP.updateStatus(function () {
+                            evRefreshAdmins.fire();
+                        });
+                    });
+                });
+
+                const list = blocks.form([
+                    //currentList.div,
+                    contactsGrid.div,
+                ], blocks.nav([addBtn]));
+                $div.append([keyForm, list]);
+            };
+            drawContacts();
+            cb(content);
         });
 
         var isHex = s => !/[^0-9a-f]/.test(s);
@@ -534,20 +734,6 @@ define([
             return tableObj.table;
         };
 
-        // Msg.admin_updateLimitHint, .admin_updateLimitTitle, .admin_updateLimitButton
-        sidebar.addItem('update-limit', function (cb) {
-            var button = blocks.activeButton('primary', '',
-                    Messages.admin_updateLimitButton, done => {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'Q_UPDATE_LIMIT',
-                }, function (e, data) {
-                    done(!!data);
-                    UI.alert(data ? Messages.admin_updateLimitDone  || 'done' : 'error' + e);
-                });
-            });
-            cb(button);
-        });
-
         // Msg.admin_enableembedsHint, .admin_enableembedsTitle
         sidebar.addCheckboxItem({
             key: 'enableembeds',
@@ -578,21 +764,36 @@ define([
                 return APP.instanceStatus.enforceMFA;
             },
             query: function (val, setState) {
-                sFrameChan.query('Q_ADMIN_RPC', {
-                    cmd: 'ADMIN_DECREE',
-                    data: ['ENFORCE_MFA', [val]]
-                }, function (e, response) {
-                    if (e || response.error) {
-                        UI.warn(Messages.error);
-                        console.error(e, response);
-                    }
-                    APP.updateStatus(function () {
-                        setState(APP.instanceStatus.enforceMFA);
-                        flushCache();
+                var isChecked = APP.instanceStatus.enforceMFA;
+                function showConfirmation(isChecked, setState) {
+                    const confirmationContent = isChecked ? Messages.admin_mfa_confirm_disable : Messages.admin_mfa_confirm_enable;
+                    UI.confirm(confirmationContent, function (confirmed) {
+                        if (!confirmed) {
+                            // User canceled their changes, restore the checkbox value
+                            setState(isChecked);
+                            return;
+                        }
+                        // User confirmed their changes, call the command and update the state
+                        sFrameChan.query('Q_ADMIN_RPC', {
+                            cmd: 'ADMIN_DECREE',
+                            data: ['ENFORCE_MFA', [val]]
+                        }, function (e, response) {
+                            if (e || response.error) {
+                                UI.warn(Messages.error);
+                                console.error(e, response);
+                            } else {
+                                APP.updateStatus(function () {
+                                    setState(APP.instanceStatus.enforceMFA);
+                                    flushCache();
+                                });
+                            }
+                        });
                     });
-                });
-            },
+                }
+                showConfirmation(isChecked, setState);
+            }
         });
+
 
 
         var getInstanceString = function (attr) {
@@ -843,7 +1044,7 @@ define([
 
             var currentContainer = blocks.block([], 'cp-admin-customize-logo');
             let redraw = () => {
-                var current = h('img', {src: '/api/logo?'+(+new Date()),alt:'Custom logo'}); // XXX
+                var current = h('img', {src: '/api/logo?'+(+new Date()),alt:'Custom logo'});
                 $(currentContainer).empty().append(current);
             };
             redraw();
@@ -876,7 +1077,12 @@ define([
                     sframeCommand('UPLOAD_LOGO', {dataURL}, (err, response) => {
                         $button.removeAttr('disabled');
                         if (err) {
-                            UI.warn(Messages.error);
+                            if(err === 'E_TOO_LARGE') {
+                                UI.warn(Messages.admin_logoSize_error);
+                            }
+                            else{
+                                UI.warn(Messages.error);
+                            }
                             $(input).val('');
                             console.error(err, response);
                             spinner.hide();
@@ -952,12 +1158,7 @@ define([
                 });
             };
 
-            let btn = blocks.activeButton('primary', '',
-              Messages.admin_colorChange, (done) => {
-                let color = $input.val();
-                setColor(color, done);
-            });
-
+            let $input = $();
             let onColorPicked = () => {
                 require(['/lib/less.min.js'], (Less) => {
                     let color = $input.val();
@@ -979,7 +1180,14 @@ define([
                     $preview.find('.cp-admin-color-preview-light a').attr('style', `color: ${color} !important`);
                 });
             };
-            let $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
+            $input = $(input).on('change', onColorPicked).addClass('cp-admin-color-picker');
+
+            let btn = blocks.activeButton('primary', '',
+              Messages.admin_colorChange, (done) => {
+                let color = $input.val();
+                setColor(color, done);
+            });
+
 
             UI.confirmButton($remove, {
                 classes: 'btn-danger',
@@ -1101,6 +1309,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
             var form = blocks.form([
@@ -1201,7 +1412,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         var getBlockId = (val) => {
@@ -1413,6 +1624,9 @@ define([
                 ""
             ];
             var list = blocks.table(header, []);
+            list.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([list]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             var nav = blocks.nav([button, refreshButton]);
 
@@ -1581,7 +1795,7 @@ define([
                 });
             });
 
-            cb([form, list]);
+            cb([form, div]);
         });
 
         // Msg.admin_defaultlimitHint, .admin_defaultlimitTitle
@@ -1610,7 +1824,9 @@ define([
                 multiple: true,
                 validate: function () {
                     var l = parseInt($(newLimit).val());
-                    if (isNaN(l)) { return false; }
+                    if (isNaN(l)) {
+                        return UI.warn(Messages.error_limit);
+                    }
                     return true;
                 }
             }, function () {
@@ -1627,6 +1843,7 @@ define([
                     }
                     var limit = getPrettySize(l);
                     $(text).text(Messages._getKey('admin_limit', [limit]));
+                    UI.log(Messages.saved);
                 });
             });
 
@@ -1741,6 +1958,9 @@ define([
                 Messages.admin_note
             ];
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
             let $table = $(table).hide();
 
             APP.refreshLimits = function () {
@@ -1798,7 +2018,7 @@ define([
                 });
             };
             APP.refreshLimits();
-            cb(table);
+            cb(div);
         });
 
         // Msg.admin_accountMetadataHint.admin_accountMetadataTitle
@@ -2533,9 +2753,9 @@ define([
             var clone = Util.clone(json);
             delete clone.proof;
 
-            var msg = Nacl.util.decodeUTF8(Sortify(clone));
-            var sig = Nacl.util.decodeBase64(json.proof);
-            var pub = Nacl.util.decodeBase64(json.blockId);
+            var msg = Util.decodeUTF8(Sortify(clone));
+            var sig = Util.decodeBase64(json.proof);
+            var pub = Util.decodeBase64(json.blockId);
             return Nacl.sign.detached.verify(msg, sig, pub);
         };
 
@@ -2713,8 +2933,7 @@ define([
                 }, function (e, arr) {
                     pre.innerText = '';
                     let data = arr[0];
-                    pre.append(String(data.blocks));
-                    pre.append(' (old value including teams: ' + String(data.users) + ')'); // XXX
+                    pre.append(String(data.users));
                 });
             };
             onRefresh();
@@ -3161,6 +3380,7 @@ define([
                 labelEnd,
             ], blocks.nav([button]));
 
+            let send = function () {};
             var refresh = getApi(function (Broadcast) {
                 $active.empty();
                 var removeButton = blocks.button('danger', '', Messages.admin_maintenanceCancel);
@@ -3222,7 +3442,7 @@ define([
                 };
             };
 
-            var send = function (data) {
+            send = function (data) {
                 disable($button);
                 sFrameChan.query('Q_ADMIN_RPC', {
                     cmd: 'ADMIN_DECREE',
@@ -3595,6 +3815,9 @@ define([
             ];
 
             var table = blocks.table(header, []);
+            table.setAttribute('id', 'cp-admin-table');
+            let div = blocks.block([table]);
+            div.setAttribute('id', 'cp-admin-table-container');
 
             const onRefresh = function () {
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3627,7 +3850,7 @@ define([
             onRefresh();
             onRefreshPerformance.reg(onRefresh);
 
-            cb(table);
+            cb(div);
         });
 
 
@@ -3678,12 +3901,16 @@ define([
                 multiple: true,
                 validate: function () {
                     var l = parseInt($(newDuration).val());
-                    if (isNaN(l)) { return false; }
+                    if (isNaN(l)) {
+                        return void UI.warn(Messages.error_limit);
+                    }
                     return true;
                 }
             }, function () {
                 var d = parseInt($(newDuration).val());
-                if (!isPositiveInteger(d)) { return void UI.warn(Messages.error); }
+                if (!isPositiveInteger(d)) {
+                    return void UI.warn(Messages.error_positiveNumber);
+                }
 
                 var data = [d];
                 sFrameChan.query('Q_ADMIN_RPC', {
@@ -3695,6 +3922,7 @@ define([
                         return void console.error(e, response);
                     }
                     $(form).find('.cp-admin-bytes-written-duration').text(Messages._getKey('admin_bytesWrittenDuration', [d]));
+                    UI.log(Messages.saved);
                 });
             });
             cb(form);
@@ -3898,16 +4126,15 @@ define([
 
         // EXTENSION_POINT:ADMIN_ITEM
         let utils = {
-            h, Util, Hash
+            $, h, Util, Hash, UIElements, UI, APP
         };
-        common.getExtensions('ADMIN_ITEM').forEach(ext => {
+        common.getExtensionsSync('ADMIN_ITEM').forEach(ext => {
             if (!ext || !ext.id || typeof(ext.getContent) !== "function") {
                 return console.error('Invalid extension point', 'ADMIN_CATEGORY', ext);
             }
             if (sidebar.hasItem(ext.id)) {
                 return console.error('Extension point ID already used', ext);
             }
-
             sidebar.addItem(ext.id, cb => {
                 ext.getContent(common, blocks, utils, content => {
                     cb(content);
@@ -3920,20 +4147,22 @@ define([
             });
         });
 
-
-
         sidebar.makeLeftside(categories);
     };
-
-
     var updateStatus = APP.updateStatus = function (cb) {
-        sFrameChan.query('Q_ADMIN_RPC', {
-            cmd: 'INSTANCE_STATUS',
-        }, function (e, data) {
-            if (e) { console.error(e); return void cb(e); }
-            if (!Array.isArray(data)) { return void cb('EINVAL'); }
-            APP.instanceStatus = data[0];
-            console.log("Status", APP.instanceStatus);
+        nThen(w => {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'INSTANCE_STATUS',
+            }, w(function (e, data) {
+                if (e) { console.error(e); return void cb(e); }
+                if (!Array.isArray(data)) { return void cb('EINVAL'); }
+                APP.instanceStatus = data[0];
+                console.log("Status", APP.instanceStatus);
+            }));
+            require([`/api/config?${+new Date()}`], w(ApiConfig => {
+                APP.instanceConfig = ApiConfig;
+            }));
+        }).nThen(() => {
             cb();
         });
     };
@@ -3946,6 +4175,7 @@ define([
             $container: APP.$toolbar,
             pageTitle: Messages.adminPage || 'Admin',
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-container'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();

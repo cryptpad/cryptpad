@@ -636,6 +636,7 @@ define([
                 patchTransformer: ChainPad.NaiveJSONTransformer,
                 toolbarContainer: '#cp-toolbar',
                 contentContainer: '#cp-app-whiteboard-canvas-area',
+                skipLink: '#cp-app-whiteboard-controls'
             }, waitFor(function (framework) {
                 andThen2(framework);
             }));

@@ -5,7 +5,7 @@
 define([
     '/common/common-constants.js',
     '/common/common-hash.js',
-    '/common/outer/cache-store.js',
+    '/common/cache-store.js',
     '/components/localforage/dist/localforage.min.js',
     '/customize/application_config.js',
     '/common/common-util.js',

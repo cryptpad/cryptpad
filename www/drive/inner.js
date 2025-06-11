@@ -139,7 +139,7 @@ define([
 
     var main = function () {
         var common;
-        var proxy = {};
+        var proxy = { drive: {} };
         var folders = {};
 
         var startOnline = false;
@@ -171,7 +171,7 @@ define([
                     privReady();
                 }
             });
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             APP.loggedIn = common.isLoggedIn();
             if (!APP.loggedIn) { Feedback.send('ANONYMOUS_DRIVE'); }
             APP.$body = $('body');
@@ -187,10 +187,13 @@ define([
                 APP.anonSFPassword = privateData.password;
             }
 
+            /*
             var sframeChan = common.getSframeChannel();
             updateObject(sframeChan, proxy, waitFor(function () {
+                console.error('DRVE RDY');
                 updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
             }));
+            */
         }).nThen(function () {
             var sframeChan = common.getSframeChannel();
             var metadataMgr = common.getMetadataMgr();
@@ -217,7 +220,8 @@ define([
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,
-                $container: APP.$bar
+                $container: APP.$bar,
+                skipLink: '#cp-app-drive-tree'
             };
             var toolbar = Toolbar.create(configTb);
 

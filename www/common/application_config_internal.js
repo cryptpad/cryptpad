@@ -7,7 +7,8 @@
  * If you want to change some configurable values, use the '/customize/application_config.js'
  * file (make a copy from /customize.dist/application_config.js)
  */
-define(function() {
+(() => {
+const factory = () => {
     var AppConfig = {};
 
     /* Select the buttons displayed on the main page to create new collaborative sessions.
@@ -132,7 +133,7 @@ define(function() {
         // en: "Hello world",
         // fr: "Bonjour le monde",
         // de: "Hallo Welt",
-        // "pt-br": "Olá Mundo"<
+        // "pt-br": "Olá Mundo"
     };
 
     /*  Cryptpad apps use a common API to display notifications to users
@@ -300,4 +301,13 @@ define(function() {
     AppConfig.emojiAvatars = '🐵 🐒 🐶 🐩 🐺 🐱 🐯 🐴 🐎 🐮 🐷 🐗 🐑 🐫 🐘 🐭 🐹 🐰 🐻 🐨 🐼 🐔 🐣 🐥 🐢 🐍 🐲 🐳 🐬 🐟 🐠 🐡 🐙 🐚 🐌 🐛 🐝 🐞 💐 🌸 💮 🌹 🌺 🌻 🌼 🌷 🌱 🌴 🌵 🌾 🌿 🍀 🍁 🍂 🍃 🍄 💫 🌛 ⛄ 🔥 💧 🌊 🎃 👹 👺 👻 👽 👾'.split(/\s+/);
 
     return AppConfig;
-});
+};
+
+if (typeof(module) !== 'undefined' && module.exports) {
+    module.exports = factory();
+} else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+    define([], factory);
+} else {
+    // unsupported initialization
+}
+})();

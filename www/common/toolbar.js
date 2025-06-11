@@ -13,12 +13,13 @@ define([
     '/common/common-util.js',
     '/common/common-feedback.js',
     '/common/inner/common-mediatag.js',
+    '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
     '/customize/pages.js',
     '/common/pad-types.js',
-], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, h,
+], function ($, Config, ApiConfig, Broadcast, UIElements, UI, Hash, Util, Feedback, MT, Badges, h,
 MessengerUI, Messages, Pages, PadTypes) {
     var Common;
 
@@ -193,16 +194,14 @@ MessengerUI, Messages, Pages, PadTypes) {
         // Display only one time each user (if he is connected in multiple tabs)
         var uids = [];
         Object.keys(userData).forEach(function(user) {
-            //if (user !== userNetfluxId) {
                 var data = userData[user] || {};
                 var userId = data.uid;
                 if (!userId) { return; }
-                //data.netfluxId = user;
-                if (uids.indexOf(userId) === -1) {// && (!myUid || userId !== myUid)) {
+                if (user !== data.netfluxId) { return; }
+                if (uids.indexOf(userId) === -1) {
                     uids.push(userId);
                     list.push(data);
                 } else { i++; }
-            //}
         });
         return {
             list: list,
@@ -223,6 +222,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         });
     };
     var showColors = false;
+    const validatedBadges = {};
     var updateUserList = function (toolbar, config, forceOffline) {
         if (!config.displayed || config.displayed.indexOf('userlist') === -1) { return; }
         if (toolbar.isAlone) { return; }
@@ -427,6 +427,38 @@ MessengerUI, Messages, Pages, PadTypes) {
                 $span.append($rightCol);
             }, data.uid);
             $span.data('uid', data.uid);
+            if (data.badge && data.edPublic) {
+                const addBadge = (badge) => {
+                    let i = Badges.render(badge);
+                    if (!i) { return; }
+                    $rightCol.append(h('div.cp-userlist-badge', i));
+                };
+                const key = data.signature + '-' + data.badge;
+                const v = validatedBadges[key];
+                if (typeof (v) === "string") {
+                    addBadge(v);
+                } else if (v === false) {
+                    addBadge('error');
+                } else {
+                    let ev = validatedBadges[key] ||= Util.mkEvent(true);
+                    ev.reg(badge => { addBadge(badge); });
+                    toolbar.badges.execCommand('CHECK_BADGE', {
+                        badge: data.badge,
+                        channel: priv.channel,
+                        ed: data.edPublic,
+                        sig: data.signature,
+                        nid: data.netfluxId
+                    }, res => {
+                        if (!res?.verified) {
+                            validatedBadges[key] = false;
+                            return void addBadge('error');
+                        }
+                        validatedBadges[key] = res.badge;
+                        ev.fire(res.badge);
+                    });
+                }
+
+            }
             $editUsersList.append($span);
         });
 
@@ -863,6 +895,38 @@ MessengerUI, Messages, Pages, PadTypes) {
         };
     };
 
+    Bar.createSkipLink = function (toolbar, config) {
+        if (config.readOnly === 1) {return;}
+        const targetId = config.skipLink;
+        const $skipLink = $('<a>', {
+            'class': 'cp-toolbar-skip-link',
+            'href': targetId,
+            'tabindex': 0,
+            'text': Messages.skipLink
+        });
+        toolbar.$top.append($skipLink);
+        $skipLink.on('click', function (event) {
+            event.preventDefault();
+
+            let split = targetId.split('|'); // split for iframes
+            let $container = $('body');
+            split.some(selector => {
+                let $targetElement = $container.find(selector);
+                if ($targetElement.is('iframe')) {
+                    $container = $targetElement.contents();
+                    return;
+                }
+                const $firstFocusable = $targetElement.find('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]').first();
+                if ($firstFocusable.length) {
+                    $firstFocusable.trigger('focus');
+                } else {
+                    $skipLink.hide();
+                }
+                return true;
+            });
+        });
+        return $skipLink;
+    };
     var createLinkToMain = function (toolbar, config) {
         var $linkContainer = $('<span>', {
             'class': LINK_CLS
@@ -1198,7 +1262,9 @@ MessengerUI, Messages, Pages, PadTypes) {
                         $('body').find('.cp-dropdown-content li').first().focus();
                         return $(el).find('.cp-notification-dismiss').click();
                     }
-                    $(el).find('.cp-notification-content').click();
+                    setTimeout(function () {
+                        $(el).find('.cp-notification-content').click();
+                    }, 0);
                 });
                 refresh();
             },
@@ -1367,6 +1433,8 @@ MessengerUI, Messages, Pages, PadTypes) {
         toolbar.connected = false;
         toolbar.firstConnection = true;
 
+        toolbar.badges = Common.makeUniversal('badge');
+
         if (Array.isArray(cfg.displayed) && cfg.displayed.includes('pad')) {
             cfg.addFileMenu = true;
         }
@@ -1416,7 +1484,7 @@ MessengerUI, Messages, Pages, PadTypes) {
 
         tb['pad'] = function () {
             toolbar.$file.show();
-            addElement([
+            toolbar.addElement([
                 'chat',
                 'collapse',
                 'userlist', 'title', 'useradmin', 'spinner',
@@ -1455,6 +1523,7 @@ MessengerUI, Messages, Pages, PadTypes) {
 
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);
+        toolbar['skipLink'] = Bar.createSkipLink(toolbar, config);
 
         if (!config.realtime) { toolbar.connected = true; }
 

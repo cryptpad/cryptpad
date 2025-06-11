@@ -5,11 +5,13 @@
 (function () {
 // add your module to this map so it gets used
 var map = {
+    'ar': 'اَلْعَرَبِيَّةُ',
     'ca': 'Català',
     'cs': 'Čeština',
     'de': 'Deutsch',
-    'el': 'Ελληνικά',
+    //'el': 'Ελληνικά',
     'es': 'Español',
+    'es_CU': 'Español cubano',
     'eu': 'Euskara',
     'fi': 'Suomi',
     'fr': 'Français',
@@ -22,9 +24,9 @@ var map = {
     'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'pt-pt': 'Português do Portugal',
-    'ro': 'Română',
+    //'ro': 'Română',
     'ru': 'Русский',
-    //'sv': 'Svenska',
+    'sv': 'Svenska',
     //'te': 'తెలుగు',
     'uk': 'Українська',
     'zh': '中文(簡體)',
@@ -36,11 +38,10 @@ var getStoredLanguage = function () { return localStorage && localStorage.getIte
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
 var getLanguage = Messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
-    try {
-        if (getStoredLanguage()) { return getStoredLanguage(); }
-    } catch (e) { console.log(e); }
     var l = getBrowserLanguage();
-    // Edge returns 'fr-FR' --> transform it to 'fr' and check again
+    try {
+        l = getStoredLanguage() || getBrowserLanguage();
+    } catch (e) { console.log(e); }
     return map[l] ? l :
             (map[l.split('-')[0]] ? l.split('-')[0] :
                 (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
@@ -116,7 +117,6 @@ define(req, function(AppConfig, Default, Language) {
 
     Messages._languages = map;
     Messages._languageUsed = language;
-
     // Get keys with parameters
     Messages._getKey = function (key, argArray) {
         if (!Messages[key]) { return '?'; }
@@ -134,6 +134,17 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    // XXX
+    Messages.badges_admin = "Instance administrator";
+    Messages.badges_moderator = "Instance moderator";
+    Messages.badges_premium = "Premium user";
+    Messages.badges_error = "Error while validating this user's data";
+    Messages.profile_badges = "Badges";
+    Messages.add_password = "Add your document password";
+    Messages.show_password = "Show password";
+    Messages.hide_password = "Hide password";
+    Messages.next_templateList = "Next template list";
+    Messages.previous_templateList = "Previous template list";
     return Messages;
 
 });

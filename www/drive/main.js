@@ -109,6 +109,7 @@ define([
             hash: hash,
             href: href,
             afterSecrets: afterSecrets,
+            requires: hash ? '' : 'drive',
             cache: true,
             noHash: true,
             noRealtime: true,

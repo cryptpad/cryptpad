@@ -21,7 +21,7 @@ define([
     '/customize/application_config.js',
     '/lib/calendar/tui-calendar.min.js',
     '/calendar/export.js',
-    '/calendar/recurrence.js',
+    '/common/recurrence.js',
     '/lib/datepicker/flatpickr.js',
     'tui-date-picker',
 
@@ -670,7 +670,6 @@ define([
                         tag: 'a',
                         attributes: {
                             'data-value': '.ics',
-                            'href': '#'
                         },
                         content: '.ics'
                     });
@@ -775,7 +774,7 @@ define([
         var data = APP.calendars[id];
         var edit;
         if (data.loading) {
-            edit = h('i.fa.fa-spinner.fa-spin');
+            edit = h('i.fa.fa-spinner.fa-spin', {'aria-hidden': 'true'});
         } else {
             edit = makeEditDropdown(id, teamId);
         }
@@ -796,8 +795,8 @@ define([
                 h('i.cp-calendar-inactive.fa.fa-calendar-o')
             ]),
             h('span.cp-calendar-title', md.title),
-            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted}) :
-                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly}) : undefined),
+            data.restricted ? h('i.fa.fa-ban', {title: Messages.fm_restricted, 'aria-hidden': 'true'}) :
+                (isReadOnly(id, teamId) ? h('i.fa.fa-eye', {title: Messages.readonly, 'aria-hidden': 'true'}) : undefined),
             edit
         ]);
         var $calendar = $(calendar).click(function () {
@@ -820,10 +819,14 @@ define([
         if (APP.$calendars) { APP.$calendars.append(calendar); }
         return calendar;
     };
+
     var makeLeftside = function (calendar, $container) {
         // Show calendars
         var calendars = h('div.cp-calendar-list');
         var $calendars = APP.$calendars = $(calendars).appendTo($container);
+        var isMobileView = window.innerWidth <= 600;
+        var visible = !isMobileView;  // Initialize 'visible' state: true for large screens, false for mobile
+
         onCalendarsUpdate.reg(function () {
             $calendars.empty();
             var privateData = metadataMgr.getPrivateData();
@@ -831,7 +834,7 @@ define([
                 var LOOKUP = {};
                 return Object.keys(APP.calendars || {}).filter(function (id) {
                     var cal = APP.calendars[id] || {};
-                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
+                    var teams = (cal.teams || []).map(function (tId) { return Number(tId); });
                     return teams.indexOf(typeof(teamId) !== "undefined" ? Number(teamId) : 1) !== -1;
                 }).map(function (k) {
                     // nearly constant-time pre-sort
@@ -872,26 +875,33 @@ define([
                 }
                 return;
             }
+
             var myCalendars = filter(1);
+            var totalCalendars = myCalendars.length + Object.keys(privateData.teams).reduce((sum, teamId) => {
+                return sum + filter(teamId).length;
+            }, 0);
+
+            var $contentContainer = $(h('div.cp-calendar-content')).appendTo($calendars);
+
             if (myCalendars.length) {
                 var user = metadataMgr.getUserData();
                 var avatar = h('span.cp-avatar');
                 var uid = user.uid;
                 var name = user.name || Messages.anonymous;
                 common.displayAvatar($(avatar), user.avatar, name, function(){}, uid);
-                APP.$calendars.append(h('div.cp-calendar-team', [
+                $contentContainer.append(h('div.cp-calendar-team', [
                     avatar,
                     h('span.cp-name', {title: name}, name)
                 ]));
+                myCalendars.forEach((id) => {
+                    var calendarEntry = makeCalendarEntry(id, 1);
+                    $contentContainer.append(calendarEntry);
+                });
             }
-            myCalendars.forEach(function (id) {
-                makeCalendarEntry(id, 1);
-            });
-
-            // Add new button
-            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+            // Add the new calendar button
+            var $newContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($contentContainer);
             var newButton = h('button', [
-                h('i.fa.fa-calendar-plus-o'),
+                h('i.fa.fa-calendar-plus-o', {'aria-hidden': 'true'}),
                 h('span', Messages.calendar_new),
                 h('span')
             ]);
@@ -905,19 +915,61 @@ define([
                 var team = privateData.teams[teamId];
                 var avatar = h('span.cp-avatar');
                 common.displayAvatar($(avatar), team.avatar, team.displayName || team.name);
-                APP.$calendars.append(h('div.cp-calendar-team', [
+                var $teamContainer = h('div.cp-calendar-team', [
                     avatar,
-                    h('span.cp-name', {title: team.name}, team.name)
-                ]));
-                calendars.forEach(function (id) {
-                    makeCalendarEntry(id, teamId);
+                    h('span.cp-name', {title: team.name}, team.name),
+                    h('span')
+                ]);
+                $contentContainer.append($teamContainer);
+                calendars.forEach((id) => {
+                    var calendarEntry = makeCalendarEntry(id, teamId);
+                    $contentContainer.append(calendarEntry);
                 });
+            });
+            if(isMobileView) {
+                // If initial number of calendars or current number > 2,
+                // hide the calendars list and display a "show" button
+                if (APP.numberCalendars > 2 || totalCalendars > 2) {
+                    var $showContainer = $(h('div.cp-calendar-entry.cp-ghost')).appendTo($calendars);
+                    var iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                    var buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
+                    var showCalendarsBtn = h('button', [
+                        h('i.fa.' + iconClass, {'aria-hidden': "true"}),
+                        h('span.cp-calendar-title', buttonText),
+                        h('span')
+                    ]);
+
+                    $(showCalendarsBtn).click(() => {
+                        visible = !visible;
+                        $contentContainer.toggle(visible);
+                        iconClass = visible ? 'fa-eye-slash' : 'fa-eye';
+                        buttonText = visible ? Messages.calendar_hide : Messages.calendar_show;
+                        $(showCalendarsBtn).find('i').attr('class', 'fa ' + iconClass).attr('aria-hidden', "true");
+                        $(showCalendarsBtn).find('span').first().text(visible ? Messages.calendar_hide : Messages.calendar_show);
+                    }).appendTo($showContainer);
+                }
+                else {visible = true;}
+            }
+
+            $contentContainer.toggle(visible);
+            $(window).resize(function () {
+                var newIsMobileView = window.innerWidth <= 600;
+                if (!newIsMobileView) {
+                    visible = true;
+                    $contentContainer.show();
+                }
+                if (newIsMobileView !== isMobileView) {
+                    isMobileView = newIsMobileView;
+                    if (isMobileView) {
+                        visible = false;
+                        $contentContainer.hide();
+                    }
+                    onCalendarsUpdate.fire();
+                }
             });
         });
         onCalendarsUpdate.fire();
-
     };
-
     var _updateRecurring = function () {
         var cal = APP.calendar;
         if (!cal) { return; }
@@ -1250,7 +1302,6 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
                 attributes: {
                     'class': 'cp-calendar-view',
                     'data-value': k,
-                    'href': '#',
                 },
                 content: Messages['calendar_'+k]
                 // Messages.calendar_day
@@ -1275,17 +1326,15 @@ ICS ==> create a new event with the same UID and a RECURRENCE-ID field (with a v
             store.put('calendarView', mode, function () {});
         });
         APP.toolbar.$bottomR.append($block);
-
         // New event button
         var newEventBtn = h('button.cp-calendar-newevent', [
-            h('i.fa.fa-plus'),
+            h('i.fa.fa-plus', {'aria-hidden': 'true'}),
             h('span', Messages.calendar_newEvent)
         ]);
         $(newEventBtn).click(function (e) {
             e.preventDefault();
             cal.openCreationPopup({isAllDay:false});
         }).appendTo(APP.toolbar.$bottomL);
-
         // Change page
         var goLeft = h('button.fa.fa-chevron-left',{'aria-label': Messages.goLeft});
         var goRight = h('button.fa.fa-chevron-right', {'aria-label': Messages.goRight});
@@ -1513,7 +1562,6 @@ APP.recurrenceRule = {
             attributes: {
                 'class': 'cp-calendar-recurrence',
                 'data-value': '',
-                'href': '#',
             },
             content: Messages.calendar_rec_no
         }];
@@ -1526,7 +1574,6 @@ APP.recurrenceRule = {
                 attributes: {
                     'class': 'cp-calendar-recurrence',
                     'data-value': basicStr[rec],
-                    'href': '#',
                 },
                 content: Messages._getKey('calendar_rec_' + rec, [
                     getWeekDays(true)[date.getDay()],
@@ -1547,7 +1594,6 @@ APP.recurrenceRule = {
             attributes: {
                 'class': 'cp-calendar-recurrence',
                 'data-value': basicStr.days,
-                'href': '#',
             },
             content: Messages['calendar_rec_' + (isWeekend ? 'weekend' : 'weekdays')]
         });
@@ -1557,7 +1603,6 @@ APP.recurrenceRule = {
             attributes: {
                 'class': 'cp-calendar-recurrence',
                 'data-value': 'custom',
-                'href': '#',
             },
             content: Messages.calendar_rec_custom
         });
@@ -1639,7 +1684,6 @@ APP.recurrenceRule = {
                     attributes: {
                         'class': 'cp-calendar-recurrence-freq',
                         'data-value': rec,
-                        'href': '#',
                     },
                     content: Messages['calendar_rec_freq_' + rec]
                 });
@@ -1949,7 +1993,6 @@ APP.recurrenceRule = {
                 attributes: {
                     'class': 'cp-calendar-reminder',
                     'data-value': k,
-                    'href': '#',
                 },
                 content: Messages['calendar_'+k]
                 // Messages.calendar_minutes
@@ -2063,6 +2106,15 @@ APP.recurrenceRule = {
         editor.setOption('readOnly', false);
         editor.setOption('autoRefresh', true);
         editor.setOption('gutters', []);
+        editor.on('keydown', function (editor, e) {
+            if (e.which === 27) {
+                let $next = $(e.target).closest('.tui-full-calendar-popup-section').next();
+                if ($next.length) {
+                    $next.find('#tui-full-calendar-schedule-start-date').focus();
+                }
+                e.stopPropagation();
+            }
+        });
         cm.configureTheme(common, function () {});
         editor.setValue(oldEventBody);
 
@@ -2085,6 +2137,7 @@ APP.recurrenceRule = {
             $container: APP.$toolbar,
             pageTitle: Messages.calendar,
             metadataMgr: common.getMetadataMgr(),
+            skipLink: '#cp-sidebarlayout-container'
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
@@ -2143,10 +2196,17 @@ APP.recurrenceRule = {
         // Customize creation/update popup
         var onCalendarPopup = function (el) {
             var $el = $(el);
-            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o'));
+            $el.find('.tui-full-calendar-confirm').addClass('btn btn-primary').prepend(h('i.fa.fa-floppy-o', {'aria-hidden': 'true'}));
             $el.find('input').attr('autocomplete', 'off');
             $el.find('.tui-full-calendar-dropdown-button').addClass('btn btn-secondary');
             $el.find('.tui-full-calendar-popup-close').addClass('btn btn-cancel fa fa-times cp-calendar-close').empty();
+            $el.find('.tui-full-calendar-section-allday').attr('tabindex', 0);
+            $el.find('.cp-calendar-close').attr('tabindex',-1);
+            $el.find('.tui-full-calendar-section-allday').keydown(function (e) {
+                if (e.which === 13) {
+                    $(this).click();
+                }
+            });
 
             var $container = $el.closest('.tui-full-calendar-floating-layer');
             $container.addClass('cp-calendar-popup-flex');
@@ -2161,6 +2221,7 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-dropdown-menu li').each(function (i, li) {
                 var $li = $(li);
                 var id = $li.attr('data-calendar-id');
+                $li.attr('tabindex', 0);
                 var c = calendars[id];
                 if (!c || c.readOnly) {
                     return void $li.remove();
@@ -2168,6 +2229,86 @@ APP.recurrenceRule = {
                 // If at least one calendar is editable, show the popup
                 show = true;
             });
+            let calendarDropdown = function ($el) {
+                let $dropdownButton = $el.find('.tui-full-calendar-dropdown-button');
+                let $dropdownMenu = $el.find('.tui-full-calendar-dropdown-menu');
+
+                let toggleAriaExpanded = function (isOpen) {
+                    $dropdownButton.attr('aria-expanded', isOpen ? 'true' : 'false');
+                    isOpen ? $dropdownMenu.show() : $dropdownMenu.hide();
+                };
+
+                let calendarDropdownNavigation = function (event) {
+                    let $focusedItem = $dropdownMenu.find('li:focus');
+                    switch (event.key) {
+                        case ' ':
+                        case 'Enter':
+                            event.preventDefault();
+                            $focusedItem.click();
+                            toggleAriaExpanded(false);
+                            $el.find('#tui-full-calendar-schedule-title').focus();
+                            break;
+                        case 'Tab':
+                            event.preventDefault();
+                            toggleAriaExpanded(false);
+                            $el.find('.tui-full-calendar-popup-section').removeClass('tui-full-calendar-open');
+                            if (event.shiftKey) {
+                                $el.find('.tui-full-calendar-popup-save').focus();
+                            } else {
+                                $el.find('#tui-full-calendar-schedule-title').focus();
+                            }
+                            break;
+                        case 'ArrowDown':
+                            event.preventDefault();
+                            var $next = $focusedItem.next('li');
+                            if ($next.length) {
+                                $next.focus();
+                            } else {
+                                $dropdownMenu.find('li').first().focus();
+                            }
+                            break;
+                        case 'ArrowUp':
+                            event.preventDefault();
+                            var $prev = $focusedItem.prev('li');
+                            if ($prev.length) {
+                                $prev.focus();
+                            } else {
+                                $dropdownMenu.find('li').last().focus();
+                            }
+                            break;
+                        case 'Escape':
+                            event.preventDefault();
+                            event.stopPropagation();
+                            toggleAriaExpanded(false);
+                            $dropdownButton.focus();
+                            break;
+                    }
+                };
+
+                $dropdownButton.on('click keydown', function (event) {
+                    if (event.type !== 'click' && event.key !== 'Enter' && event.key !== ' ' && event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
+                        return;
+                    }
+                    let isOpen = $el.find('.tui-full-calendar-open').length > 0;
+                    toggleAriaExpanded(!isOpen);
+                    if (!isOpen && event.key !== 'ArrowUp') {
+                        $dropdownMenu.find('li').first().focus();
+                    }
+                    else if(!isOpen){
+                        $dropdownMenu.find('li').last().focus();
+                    }
+                });
+                // click outside the dropdown button => closes the dropdown => aria-expanded is false
+                $(document).on('click', function (event) {
+                    if (!$(event.target).closest($dropdownButton).length) {
+                        toggleAriaExpanded(false);
+                    }
+                });
+
+                $dropdownMenu.on('keydown', calendarDropdownNavigation);
+            };
+            calendarDropdown($el);
+
             if ($el.find('.tui-full-calendar-hide.tui-full-calendar-dropdown').length || !show) {
                 $el.hide();
                 UI.warn(Messages.calendar_errorNoCalendar);
@@ -2209,6 +2350,7 @@ APP.recurrenceRule = {
                     setFormat(allDay);
                 });
             });
+            UI.addTabListener(el);
         };
         var onCalendarEditPopup = function (el) {
             var $el = $(el);
@@ -2217,7 +2359,7 @@ APP.recurrenceRule = {
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
 
             var delButton = h('button.btn.btn-danger', [
-                h('i.fa.fa-trash'),
+                h('i.fa.fa-trash', {'aria-hidden': 'true'}),
                 h('span', Messages.kanban_delete)
             ]);
             var $del = $el.find('.tui-full-calendar-popup-delete').hide();
@@ -2244,12 +2386,13 @@ APP.recurrenceRule = {
             var data = ev.schedule || {};
             var id = data.id;
 
+            UI.addTabListener(el);
             if (!id) { return; }
             if (id.indexOf('|') === -1) { return; } // Original event ID doesn't contain |
 
             // This is a recurring event, add button to stop recurrence now
             var $b = $(h('button.btn.btn-default', [
-                h('i.fa.fa-times'),
+                h('i.fa.fa-times', {'aria-hidden': 'true'}),
                 h('span', Messages.calendar_rec_stop)
             ])).insertBefore($section);
             UI.confirmButton($b[0], { classes: 'btn-default' }, function () {
@@ -2322,7 +2465,9 @@ APP.recurrenceRule = {
         });
         var store = window.cryptpadStore;
         APP.module.execCommand('SUBSCRIBE', null, function (obj) {
-            if (obj.empty && !privateData.calendarHash) {
+            let empty = !obj.length;
+            APP.numberCalendars = obj.length;
+            if (empty && !privateData.calendarHash) {
                 if (!privateData.loggedIn) {
                     return void UI.errorLoadingScreen(Messages.mustLogin, false, function () {
                         common.setLoginRedirect('login');

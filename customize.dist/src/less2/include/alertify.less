@@ -200,8 +200,8 @@
                 }
                 .cp-usergrid-user, textarea, a, .fa-times {
                     outline: none;
-                    &:focus {
-                        outline: @cryptpad_color_brand solid 2px;
+                    &:focus-visible {
+                        outline: @variables_focus_style;
                     }
                 }
             }
@@ -244,8 +244,8 @@
                             }
                         }
                         outline: none;
-                        &:focus {
-                            outline: @cryptpad_color_brand solid 2px;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
                         }
                     }
                     span.alertify-tabs-active {
@@ -275,7 +275,7 @@
                 .tools_placeholder-color();
                 outline: none;
                 &:focus-visible {
-                    outline: @cryptpad_color_brand solid 2px;
+                    outline: @variables_focus_style;
                 }
             }
 

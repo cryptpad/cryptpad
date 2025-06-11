@@ -27,6 +27,7 @@ define([
             noDrive: true,
             hash: hash,
             href: href,
+            requires: 'file',
             noRealtime: true,
             addData: addData
         });

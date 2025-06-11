@@ -4,6 +4,7 @@
 
 define([
     'jquery',
+    '/api/config',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
@@ -12,14 +13,11 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
 
-    '/components/tweetnacl/nacl-fast.min.js',
     '/components/croppie/croppie.min.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/components/croppie/croppie.css',
-], function ($, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
+], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
     var MT = {};
-
-    var Nacl = window.nacl;
 
     // Configure MediaTags to use our local viewer
     // This file is loaded by sframe-common so the following config is used in all the inner apps
@@ -46,7 +44,7 @@ define([
         let path = 'legacy';
         if (isModernFirefox || isModernChromium) { path = 'modern'; }
         MediaTag.setDefaultConfig('pdf', {
-            viewer: `/lib/pdfjs/${path}/web/viewer.html`
+            viewer: `${ApiConfig.httpSafeOrigin}/lib/pdfjs/${path}/web/viewer.html`
         });
         MediaTag.setDefaultConfig('download', {
             text: Messages.mediatag_saveButton,
@@ -123,8 +121,19 @@ define([
         if (!seed) { return; }
         return ANIMALS[seed % ANIMALS.length] || '';
     };
-
+    //this regex identifies both discord and unicode emojis (with optional skin tone modifiers) and complex zwj emoji sequences
+    const emojiWithZWJRegex = /(?:\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?(?:\u200D\p{Extended_Pictographic}(?:\p{Emoji_Modifier}|\uFE0F)?)*|\p{Extended_Pictographic})/gu;
     var getPrettyInitials = MT.getPrettyInitials = function (name) {
+        let matches = name.match(emojiWithZWJRegex);
+        if (matches && name.startsWith(matches[0])) {
+            return matches[0];
+        }
+        else {
+            //this is for removing all trailing white characters and unnecessary/redundant emojis
+            name = name.replace(emojiWithZWJRegex, '');
+            name = name.replace(/\uFE0F/g, '').replace(/\u200D/g, '').replace(/\u2060/g, '');
+            name = name.trim();
+        }
         var parts = name.split(/\s+/);
         var text;
         if (parts.length > 1) {
@@ -177,7 +186,7 @@ define([
         if (avatars[href]) {
             var nodes = $.parseHTML(avatars[href]);
             var $el = $(nodes[0]);
-            $container.append($el);
+            $container.empty().append($el);
             return void cb($el);
         }
 
@@ -213,7 +222,7 @@ define([
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var mt = UI.mediaTag(src, cryptKey);
-                var $img = $(mt).appendTo($container);
+                var $img = $(mt).appendTo($container.empty());
                 MT.displayMediatagImage(common, $img, function (err, $image) {
                     if (err) { return void console.error(err); }
                     centerImage($img, $image);
@@ -372,7 +381,7 @@ define([
                     var host = priv.fileHost || priv.origin || '';
                     src = host + Hash.getBlobPathFromHex(secret.channel);
                     var _key = secret.keys && secret.keys.cryptKey;
-                    if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
+                    if (_key) { key = 'cryptpad:' + Util.encodeBase64(_key); }
                 }
                 if (!src || !key) {
                     $spinner.hide();

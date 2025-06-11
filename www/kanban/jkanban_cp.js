@@ -44,7 +44,7 @@ define([
             getTextColor: function () { return '#000'; },
             cursors: {},
             tags: [],
-            dragBoards: true,
+            dragBoards: 'ontouchstart' in window ? false : true,
             addItemButton: false,
             readOnly: false,
             dragEl: function (/*el, source*/) {},
@@ -110,6 +110,7 @@ define([
             var boardContainerOuter = document.createElement('div');
             boardContainerOuter.classList.add('kanban-container-outer');
             var boardContainer = document.createElement('div');
+            boardContainer.setAttribute('id', 'kanban-container');
             boardContainer.classList.add('kanban-container');
             boardContainerOuter.appendChild(boardContainer);
             self.container = boardContainer;
@@ -159,12 +160,20 @@ define([
         }
 
         function __onAddItemClickHandler(nodeItem) {
-            nodeItem.addEventListener('click', function (e) {
+            function handleAddItem(e, item) {
                 e.preventDefault();
                 e.stopPropagation();
-                self.options.addItemClick(this);
-                if (typeof (this.clickfn) === 'function') {
-                    this.clickfn(this);
+                self.options.addItemClick(item);
+                if (typeof (item.clickfn) === 'function') {
+                    item.clickfn(item);
+                }
+            }
+            nodeItem.addEventListener('click', function (e) {
+                handleAddItem(e,this);
+            });
+            nodeItem.addEventListener('keydown', function (e) {
+                if (e.keyCode === 13) {
+                    handleAddItem(e,this);
                 }
             });
         }
@@ -336,6 +345,7 @@ define([
                     moves: function (el) {
                         if (self.options.readOnly) { return false; }
                         if (el.classList.contains('new-item')) { return false; }
+                        if (self.options.dragItems === false) {return false;}
                         return el.classList.contains('kanban-item');
                     },
                     accepts: function () {
@@ -529,11 +539,15 @@ define([
                 var el = self.options.getAvatar(c);
                 nodeCursors.appendChild(el);
             });
-            var nodeItemText = document.createElement('div');
+            var nodeItemTextContainer = document.createElement('div');
+            nodeItemTextContainer.classList.add('kanban-item-text-container');
+            nodeItem.appendChild(nodeItemTextContainer);
+            var nodeItemText  = document.createElement('div');
             nodeItemText.classList.add('kanban-item-text');
             nodeItemText.dataset.eid = element.id;
             nodeItemText.innerText = element.title;
-            nodeItem.appendChild(nodeItemText);
+            nodeItemTextContainer.appendChild(nodeItemText);
+            
             // Check if this card is filtered out
             if (Array.isArray(self.options.tags) && self.options.tags.length) {
                 var hide;
@@ -697,6 +711,7 @@ define([
             //content board
             var contentBoard = document.createElement('main');
             contentBoard.classList.add('kanban-drag');
+            contentBoard.setAttribute('tabindex', '-1');
             //add drag to array for dragula
             self.boardContainer.push(contentBoard);
             (board.item || []).forEach(function (itemkey) {
@@ -718,6 +733,7 @@ define([
             var addTopBoardItem = document.createElement('span');
             addTopBoardItem.classList.add('kanban-title-button');
             $(addTopBoardItem).attr('tabindex', '0');
+            $(addTopBoardItem).attr('aria-label', Messages.addItemTop);
             addTopBoardItem.setAttribute('data-top', "1");
             addTopBoardItem.innerHTML = '<i class="cptools cptools-add-top">';
             footerBoard.appendChild(addTopBoardItem);
@@ -725,6 +741,7 @@ define([
             var addBoardItem = document.createElement('span');
             addBoardItem.classList.add('kanban-title-button');
             $(addBoardItem).attr('tabindex', '0');
+            $(addBoardItem).attr('aria-label', Messages.addItemBottom);
             addBoardItem.innerHTML = '<i class="cptools cptools-add-bottom">';
             footerBoard.appendChild(addBoardItem);
             __onAddItemClickHandler(addBoardItem);
@@ -737,6 +754,15 @@ define([
 
             return boardNode;
         };
+
+        let reorder = () => {
+            // Push "add" button to the end of the list
+            let add = document.getElementById('kanban-addboard');
+            let list = document.getElementById('kanban-container');
+            if (!add || !list) { return; }
+            list.appendChild(add);
+        };
+
         this.addBoard = function (board) {
             if (!board || !board.id) { return; }
             // We need to store all the columns in _boards too because it's used to
@@ -757,6 +783,7 @@ define([
             _boards.list.push(board.id);
             var boardNode = getBoardNode(board);
             self.container.appendChild(boardNode);
+            reorder();
         };
 
         this.addBoards = function() {
@@ -824,6 +851,7 @@ define([
                     $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
                 });
                 $el.scrollLeft(scrollLeft);
+                reorder();
             };
 
             // If the tab is not focused, redraw on focus

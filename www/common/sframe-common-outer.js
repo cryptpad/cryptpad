@@ -78,7 +78,6 @@ define([
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
         $i.attr('allowfullscreen', 'true');
         $i.attr('allow', 'clipboard-write');
-        $i.attr('title', 'iframe');
         $('iframe-placeholder').after($i).remove();
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -124,6 +123,7 @@ define([
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
+        var Handler;
 
         var currentPad = window.CryptPad_location = {
             app: '',
@@ -138,7 +138,7 @@ define([
                 '/common/cryptpad-common.js',
                 '/components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
-                '/common/outer/worker-channel.js',
+                '/common/events-channel.js',
                 '/secureiframe/main.js',
                 '/unsafeiframe/main.js',
                 '/common/onlyoffice/ooiframe.js',
@@ -151,16 +151,17 @@ define([
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
                 '/common/outer/login-block.js',
-                '/common/outer/cache-store.js',
+                '/common/cache-store.js',
                 '/customize/application_config.js',
                 //'/common/test.js',
-                '/common/userObject.js',
+                '/common/user-object.js',
                 'optional!/api/instance',
                 '/common/pad-types.js',
+                '/form/command-handler.js'
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _UnsafeIframe, _OOIframe, _Notifier, _Hash, _Util, _Realtime, _Notify,
             _Constants, _Feedback, _LocalStore, _Block, _Cache, _AppConfig, /* _Test,*/ _UserObject,
-            _Instance, _PadTypes) {
+            _Instance, _PadTypes, _Handler) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -184,6 +185,7 @@ define([
                 Utils.Block = _Block;
                 Utils.PadTypes = _PadTypes;
                 AppConfig = _AppConfig;
+                Handler = _Handler;
                 //Test = _Test;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
@@ -314,8 +316,10 @@ define([
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
 
+                let canNoDrive = false;
                 try {
                     var parsed = Utils.Hash.parsePadUrl(currentPad.href);
+                    canNoDrive = ![3,4].includes(parsed?.hashData?.version) && !parsed?.hashData?.password;
                     var options = parsed.getOptions();
                     if (options.loginOpts) {
                         var loginOpts = Utils.Hash.decodeDataOptions(options.loginOpts);
@@ -346,7 +350,8 @@ define([
                         sframeChan.event('EV_LOADING_ERROR', 'ACCOUNT');
                     }
                 }), {
-                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash,
+                    requires: cfg.requires,
+                    noDrive: cfg.noDrive && AppConfig.allowDrivelessMode && currentPad.hash && canNoDrive,
                     neverDrive: cfg.integration,
                     driveEvents: cfg.driveEvents,
                     cache: Boolean(cfg.cache),
@@ -733,6 +738,7 @@ define([
                 }));
             }
         }).nThen(function () {
+            console.info('READY SCO');
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             var isNewHash = true;
             if (!secret.keys) {
@@ -745,6 +751,7 @@ define([
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
+            var edPrivate;
             var settings = {};
             var isSafe = ['debug', 'profile', 'drive', 'teams', 'calendar', 'file'].indexOf(currentPad.app) !== -1;
             var isOO = ['sheet', 'doc', 'presentation'].indexOf(parsed.type) !== -1;
@@ -754,6 +761,7 @@ define([
             if (isDeleted) {
                 Utils.Cache.clearChannel(secret.channel);
             }
+            let signature;
 
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
@@ -769,6 +777,9 @@ define([
                         curvePublic = metaObj.user.curvePublic;
                         notifications = metaObj.user.notifications;
                         settings = metaObj.priv.settings;
+
+                        edPrivate = metaObj.priv.edPrivate;
+                        delete metaObj.priv.edPrivate; // don't send to inner
                     }));
                     if (typeof(isTemplate) === "undefined") {
                         Cryptpad.isTemplate(currentPad.href, waitFor(function (err, t) {
@@ -788,7 +799,7 @@ define([
                         origin: window.location.origin,
                         pathname: window.location.pathname,
                         fileHost: ApiConfig.fileHost,
-                        readOnly: readOnly,
+                        readOnly: cfg?.integrationConfig?.readOnly || readOnly,
                         isTemplate: isTemplate,
                         newTemplate: Array.isArray(Cryptpad.initialPath)
                                         && Cryptpad.initialPath[0] === "template",
@@ -842,6 +853,25 @@ define([
                     additionalPriv.integrationConfig = cfg.integrationConfig;
                     additionalPriv.initialState = cfg.initialState instanceof Blob ?
                                                     cfg.initialState : undefined;
+
+                    if (cfg.integrationConfig) {
+                        if (metaObj?.user && !metaObj.user.name) {
+                            metaObj.user.name = cfg.integrationConfig?.user?.name ||
+                                            cfg.integrationConfig?.user?.firstname;
+                        }
+                    }
+
+                    if (metaObj?.user?.edPublic) {
+                        let str = metaObj?.user?.netfluxId;// + secret.channel;
+                        if (!signature && str) {
+                            let myIDu8 = Utils.Util.decodeUTF8(str);
+                            let k = Utils.Util.decodeBase64(edPrivate);
+                            let nacl = Utils.Crypto.Nacl;
+                            let s = nacl.sign(myIDu8, k);
+                            signature = Utils.Util.encodeBase64(s);
+                        }
+                        metaObj.user.signature = signature;
+                    }
 
                     // Early access
                     var priv = metaObj.priv;
@@ -1025,12 +1055,6 @@ define([
                 });
                 sframeChan.on('EV_OPEN_URL', openURL);
 
-                sframeChan.on('EV_OPEN_UNSAFE_URL', function (url) {
-                    if (url) {
-                        window.open(ApiConfig.httpSafeOrigin + '/bounce/#' + encodeURIComponent(url));
-                    }
-                });
-
                 sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
                     if (!data || !data.channel) {
                         data = {
@@ -1083,7 +1107,7 @@ define([
                         Cryptpad.addSharedFolder(null, secret, cb);
                     } else {
                         var _data = {
-                            password: data.password,
+                            password: data.pw || data.password,
                             href: data.href,
                             channel: data.channel,
                             title: data.title,
@@ -1322,6 +1346,9 @@ define([
                         toHash: data.toHash,
                         lastKnownHash: data.lastKnownHash
                     }, function (data) {
+                        if (data && data.error) {
+                            return void cb(data);
+                        }
                         cb({
                             isFull: data.isFull,
                             messages: data.messages.map(function (obj) {
@@ -1359,7 +1386,7 @@ define([
                                 var viewH = Utils.Hash.getViewHashFromKeys(_secret);
                                 var href = Utils.Hash.hashToHref(editH, parsed.type);
                                 var roHref = Utils.Hash.hashToHref(viewH, parsed.type);
-                                Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
+                                Cryptpad.setPadAttribute('password', pw, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('channel', chan, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
                                 Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());
@@ -1666,7 +1693,7 @@ define([
                             }
                         });
                     };
-                    data.blob = Crypto.Nacl.util.decodeBase64(data.blob);
+                    data.blob = Utils.Util.decodeBase64(data.blob);
                     Files.upload(data, data.noStore, Cryptpad, updateProgress, onComplete, onError, onPending);
                     cb();
                 });
@@ -2070,6 +2097,8 @@ define([
                 }
             });
 
+            Handler.formCommandHandlers(sframeChan, Utils, nThen, Cryptpad);
+
             var integrationSave = function () {};
             if (cfg.integration) {
                 sframeChan.on('Q_INTEGRATION_SAVE', function (obj, cb) {
@@ -2240,7 +2269,7 @@ define([
                             }
                         };
 
-                        // on server crash, try to save to Nextcloud
+                        // on server crash, try to save to the outer platform
                         if (ready) { return integrationSave(reload); }
 
                         // if error during loading, reload without saving
@@ -2445,4 +2474,3 @@ define([
 
     return common;
 });
-

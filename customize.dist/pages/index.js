@@ -153,10 +153,10 @@ define([
             if (Pages.areSubscriptionsAllowed() && !LocalStore.getPremium()) {
                 var sub = h('div.cp-sub-prompt', [
                     h('span', Msg.home_morestorage),
-                    h('a', {href:"/accounts/"}, h('button', [
+                    h('a', {href:"/accounts/", class:'subscribe-btn'},  [
                         h('i.fa.fa-ticket'),
                         Msg.features_f_subscribe
-                    ]))
+                    ])
                 ]);
                 return sub;
             } else {
@@ -167,12 +167,19 @@ define([
 
         let popup = h('div.cp-extensions-popups');
         let utils = { h, Util, Hash };
-        Extensions.getExtensions('HOMEPAGE_POPUP').forEach(ext => {
-            if (typeof(ext.check) === "function" && !ext.check()) { return; }
-            ext.getContent(utils, content => {
-                $(popup).append(h('div.cp-extensions-popup', content));
+
+        Extensions.getExtensions('HOMEPAGE_POPUP').forEach(_ext => {
+            _ext.then(ext => {
+                if (ext) {
+                    ext.getContent(utils, content => {
+                        $(popup).append(h('div.cp-extensions-popup', content));
+                    });
+                }
+            }).catch(error => {
+                console.error(error);
             });
         });
+
 
         return [
             h('div#cp-main', [

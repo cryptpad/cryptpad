@@ -71,14 +71,15 @@
         button {
             height: @toolbar_line-height !important;
             outline: 0;
+            border-radius: @variables_radius;
             color: @toolbar-color;
             .toolbar_button;
             font: normal normal normal 14px/1 FontAwesome;
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
-            &:focus {
-                outline: @cryptpad_color_brand solid 2px;
+            &:focus-visible {
+                outline: @variables_focus_style;
             }
         }
         button:nth-of-type(1) {
@@ -262,6 +263,14 @@
                     .cp-toolbar-userlist-friend {
                         padding: 0;
                     }
+                    .cp-userlist-badge {
+                        i {
+                            color: @cryptpad_color_brand;
+                        }
+                        i.cp-badge-error {
+                            color: @cryptpad_color_warn_red;
+                        }
+                    }
                 }
             }
         }
@@ -373,7 +382,7 @@
         * {
             outline-style: none;
             &:focus-visible {
-                outline: @cryptpad_color_brand solid 2px;
+                outline: @variables_focus_style;
             }
         }
 
@@ -443,6 +452,23 @@
         .cp-toolbar-top {
             &.toolbar-hidden {
                 display: none !important;
+            }
+
+            .cp-toolbar-skip-link {
+                position: absolute;
+                top: -100px;
+                left: 45%;
+                background-color: @cp_buttons-primary;
+                color: @cp_buttons-primary-text;
+                padding: 0.3rem 0.5rem;
+                font-size: 1rem;
+                text-decoration: none;
+                border-radius: @variables_radius;
+                z-index: 1000;
+                transition: top 0.3s ease;
+            }
+            .cp-toolbar-skip-link:focus {
+                top: 10px;
             }
 
             @media screen and (max-width: @browser_media-medium-screen),
@@ -676,6 +702,10 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 border-collapse: collapse;
+                &:focus {
+                    margin: 2px;
+                    border-radius: @variables_radius;
+                }
             }
             input {
                 color: @cryptpad_text_col;
@@ -730,10 +760,6 @@
                     color: inherit;
                 }
             }
-            .cp-notifications-empty {
-                color: @cp_dropdown-fg;
-                padding: 5px;
-            }
             button {
                 position: relative;
                 .cp-dropdown-button-title {
@@ -760,6 +786,10 @@
                 li {
                     margin: 0 -5px;
                     padding: 0;
+                }
+                .cp-notifications-empty {
+                    color: @cp_dropdown-fg;
+                    padding: 0.3em;
                 }
             }
         }
@@ -983,11 +1013,8 @@
             height: @toolbar_line-height;
             display: inline-flex;
             align-items: center;
-            .fa, .cptools {
-                margin-right: 5px;
-            }
-            .cp-dropdown-button-title .cp-icon {
-                margin-left: 5px;
+            i ~ span {
+                margin-left: 0.5rem;
             }
             &:hover {
                 background-color: fade(@cp_toolbar-bottom-bg, 70%);
@@ -1109,15 +1136,6 @@
             }
         }
         .cp-toolbar-bottom-left {
-            .cp-toolbar-appmenu, .cp-toolbar-file {
-                button {
-                    &::before, .fa {
-                        min-width: 20px;
-                        text-align: center;
-                        margin-right: 0;
-                    }
-                }
-            }
             .cp-toolbar-file {
                 order: 1;
             }

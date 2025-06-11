@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 define([
+    '/common/common-util.js',
     '/components/tweetnacl/nacl-fast.min.js',
-], function () {
+], function (Util) {
     var Nacl = window.nacl;
     //var PARANOIA = true;
 
@@ -12,7 +13,7 @@ define([
     var cypherChunkLength = 131088;
 
     var computeEncryptedSize = function (bytes, meta) {
-        var metasize = Nacl.util.decodeUTF8(JSON.stringify(meta)).length;
+        var metasize = Util.decodeUTF8(JSON.stringify(meta)).length;
         var chunks = Math.ceil(bytes / plainChunkLength);
         return metasize + 18 + (chunks * 16) + bytes;
     };
@@ -37,15 +38,29 @@ define([
         return new Uint8Array(new Array(24).fill(0));
     };
 
-    var increment = function (N) {
-        var l = N.length;
-        while (l-- > 1) {
-        /*  our linter suspects this is unsafe because we lack types
-            but as long as this is only used on nonces, it should be safe  */
-            if (N[l] !== 255) { return void N[l]++; }
-            if (l === 0) { throw new Error('E_NONCE_TOO_LARGE'); }
+    // New version of "increment" from @ansuz
+    const increment = N => {
+        // start from the last element directly without relying on confusing post-decrement behaviour
+        let l = N.length - 1;
+        while (l >= 0) {
+            // increment the least significant byte unless it's already at its maximum
+            if (N[l] !== 255) {
+                N[l] += 1;
+                return;
+            }
+            // if the loop reaches the most significant byte and the above block fails to return
+            // then the nonce's state-space has been exhausted
+            if (l === 0) {
+                throw new Error("E_NONCE_TOO_LARGE");
+            }
+            // otherwise reset the lesser bytes to zero
             N[l] = 0;
+            // and proceed to the next more significant byte
+            l -= 1;
         }
+        // the loop body will never be executed if a zero-length nonce is supplied
+        // this handles that case
+        throw new Error("E_EMPTY_NONCE");
     };
 
     var joinChunks = function (chunks) {
@@ -80,7 +95,7 @@ define([
         increment(nonce);
 
         try {
-            res.metadata = JSON.parse(Nacl.util.encodeUTF8(metaChunk));
+            res.metadata = JSON.parse(Util.encodeUTF8(metaChunk));
         } catch (e) {
             return window.setTimeout(function () {
                 done('E_METADATA_DECRYPTION');
@@ -147,13 +162,13 @@ define([
         var nonce = createNonce();
 
         // encode metadata
-        var plaintext = Nacl.util.decodeUTF8(JSON.stringify(metadata));
+        var plaintext = Util.decodeUTF8(JSON.stringify(metadata));
 
         // if metadata is too large, drop the thumbnail.
         if (plaintext.length > 65535) {
             var temp = JSON.parse(JSON.stringify(metadata));
             delete temp.thumbnail;
-            plaintext = Nacl.util.decodeUTF8(JSON.stringify(temp));
+            plaintext = Util.decodeUTF8(JSON.stringify(temp));
         }
 
         var i = 0;

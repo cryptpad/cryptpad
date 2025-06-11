@@ -15,7 +15,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/pinpad.js',
-    '/common/outer/network-config.js',
+    '/common/network-config.js',
     '/common/outer/login-block.js',
     '/customize/pages.js',
     '/checkup/checkup-tools.js',
@@ -423,34 +423,39 @@ define([
         });
     });
 
+    const ooEnabled = ApiConfig.onlyOffice && ApiConfig.onlyOffice.availableVersions.includes(
+        OOCurrentVersion.currentVersion,
+    );
     var sheetURL = `/common/onlyoffice/dist/${OOCurrentVersion.currentVersion}/web-apps/apps/spreadsheeteditor/main/index.html`;
 
-    assert(function (cb, msg) {
-        msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
-        var expect = {
-            'cross-origin-resource-policy': 'cross-origin',
-            'cross-origin-embedder-policy': 'require-corp',
-        };
-
-        Tools.common_xhr(sheetURL, function (xhr) {
-            var result = !Object.keys(expect).some(function (k) {
-                var response = xhr.getResponseHeader(k);
-                if (response !== expect[k]) {
-                    msg.appendChild(h('span', [
-                        'A value of ',
-                        code(expect[k]),
-                        ' was expected for the ',
-                        code(k),
-                        ' HTTP header, but instead a value of "',
-                        code(response),
-                        '" was received.',
-                    ]));
-                    return true; // returning true indicates that a value is incorrect
-                }
+    if (ooEnabled) {
+        assert(function (cb, msg) {
+            msg.innerText = "Missing HTTP headers required for .xlsx export from sheets. ";
+            var expect = {
+                'cross-origin-resource-policy': 'cross-origin',
+                'cross-origin-embedder-policy': 'require-corp',
+            };
+    
+            Tools.common_xhr(sheetURL, function (xhr) {
+                var result = !Object.keys(expect).some(function (k) {
+                    var response = xhr.getResponseHeader(k);
+                    if (response !== expect[k]) {
+                        msg.appendChild(h('span', [
+                            'A value of ',
+                            code(expect[k]),
+                            ' was expected for the ',
+                            code(k),
+                            ' HTTP header, but instead a value of "',
+                            code(response),
+                            '" was received.',
+                        ]));
+                        return true; // returning true indicates that a value is incorrect
+                    }
+                });
+                cb(result || xhr.getAllResponseHeaders());
             });
-            cb(result || xhr.getAllResponseHeaders());
         });
-    });
+    }
 
     assert(function (cb, msg) {
         setWarningClass(msg);
@@ -574,7 +579,7 @@ define([
     });
 
     assert(function (cb, msg) {
-        var support = ApiConfig.supportMailbox;
+        var support = ApiConfig.supportMailboxKey;
         setWarningClass(msg);
         msg.appendChild(h('span', [
             "This instance's encrypted support ticket functionality has not been enabled. This can make it difficult for its users to safely report issues that concern sensitive information. ",
@@ -719,20 +724,21 @@ define([
         });
     });
 
-    assert(function (cb, msg) { // FIXME possibly superseded by more advanced CSP tests?
-        var url = `/common/onlyoffice/dist/${OOCurrentVersion.currentVersion}/web-apps/apps/spreadsheeteditor/main/index.html`;
-        msg.appendChild(CSP_WARNING(url));
-        deferredPostMessage({
-            command: 'GET_HEADER',
-            content: {
-                url: url,
-                header: 'content-security-policy',
-            },
-        }, function (content) {
-            var CSP_headers = parseCSP(content);
-            cb(hasOnlyOfficeHeaders(CSP_headers) || CSP_headers);
+    if (ooEnabled) {
+        assert(function (cb, msg) { // FIXME possibly superseded by more advanced CSP tests?
+            msg.appendChild(CSP_WARNING(sheetURL));
+            deferredPostMessage({
+                command: 'GET_HEADER',
+                content: {
+                    url: sheetURL,
+                    header: 'content-security-policy',
+                },
+            }, function (content) {
+                var CSP_headers = parseCSP(content);
+                cb(hasOnlyOfficeHeaders(CSP_headers) || CSP_headers);
+            });
         });
-    });
+    }
 
 /*
     assert(function (cb, msg) {

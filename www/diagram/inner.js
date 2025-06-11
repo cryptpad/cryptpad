@@ -4,61 +4,39 @@
 
 // This is the initialization loading the CryptPad libraries
 define([
+    '/api/config',
+    'jquery',
     '/common/sframe-app-framework.js',
     '/customize/messages.js', // translation keys
-    '/components/pako/dist/pako.min.js',
     '/components/x2js/x2js.js',
     '/diagram/util.js',
+    '/common/common-ui-elements.js',
     '/components/tweetnacl/nacl-fast.min.js',
     'less!/diagram/app-diagram.less',
     'css!/diagram/drawio.css',
 ], function (
+    ApiConfig,
+    $,
     Framework,
     Messages,
-    pako,
     X2JS,
-    DiagramUtil
+    DiagramUtil,
+    UIElements
 ) {
-    const Nacl = window.nacl;
     const APP = window.APP = {};
 
-    // As described here: https://drawio-app.com/extracting-the-xml-from-mxfiles/
-    const decompressDrawioXml = function(xmlDocStr) {
-        var TEXT_NODE = 3;
-
-        var parser = new DOMParser();
-        var doc = parser.parseFromString(xmlDocStr, "application/xml");
-
-        var errorNode = doc.querySelector("parsererror");
-        if (errorNode) {
-            console.error("error while parsing", errorNode);
-            return xmlDocStr;
-        }
-
-        doc.firstChild.removeAttribute('modified');
-        doc.firstChild.removeAttribute('agent');
-        doc.firstChild.removeAttribute('etag');
-
-        var diagrams = doc.querySelectorAll('diagram');
-
-        diagrams.forEach(function(diagram) {
-            if (diagram.childNodes.length === 1 && diagram.firstChild && diagram.firstChild.nodeType === TEXT_NODE)  {
-                const innerText = diagram.firstChild.nodeValue;
-                const bin = Nacl.util.decodeBase64(innerText);
-                const xmlUrlStr = pako.inflateRaw(bin, {to: 'string'});
-                const xmlStr = decodeURIComponent(xmlUrlStr);
-                const diagramDoc = parser.parseFromString(xmlStr, "application/xml");
-                diagram.replaceChild(diagramDoc.firstChild, diagram.firstChild);
-            }
-        });
-
-
-        var result = new XMLSerializer().serializeToString(doc);
-        return result;
-    };
 
     const deepEqual = function(o1, o2) {
         return JSON.stringify(o1) === JSON.stringify(o2);
+    };
+
+    var mkHelpMenu = function (framework) {
+        var $codeMirrorContainer = $('#cp-app-diagram-container');
+        var helpMenu = framework._.sfCommon.createHelpMenu(['diagram']);
+        $codeMirrorContainer.prepend(helpMenu.menu);
+
+        var $helpMenuButton = UIElements.getEntryFromButton(helpMenu.button);
+        framework._.toolbar.$drawer.append($helpMenuButton);
     };
 
     // This is the main initialization loop
@@ -69,6 +47,11 @@ define([
         var lastContent = x2js.xml2js(EMPTY_DRAWIO);
         var drawIoInitalized = false;
 
+        var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
+
         var postMessageToDrawio = function(msg) {
             if (!drawIoInitalized) {
                 return;
@@ -77,11 +60,9 @@ define([
             drawioFrame.contentWindow.postMessage(JSON.stringify(msg), '*');
         };
 
-        const jsonContentAsXML = (content) => x2js.js2xml(content);
-
         var onDrawioInit = function() {
             drawIoInitalized = true;
-            var xmlStr = jsonContentAsXML(lastContent);
+            var xmlStr = DiagramUtil.jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'load',
                 xml: xmlStr,
@@ -89,28 +70,8 @@ define([
             });
         };
 
-        const numbersToNumbers = function(o) {
-            const type = typeof o;
-
-            if (type === "object") {
-                for (const key in o) {
-                    o[key] = numbersToNumbers(o[key]);
-                }
-                return o;
-            } else if (type === 'string' && o.match(/^[+-]?(0|(([1-9]\d*)(\.\d+)?))$/)) {
-                return parseFloat(o, 10);
-            } else {
-                return o;
-            }
-        };
-
-        const xmlAsJsonContent = (xml) => {
-            var decompressedXml = decompressDrawioXml(xml);
-            return numbersToNumbers(x2js.xml2js(decompressedXml));
-        };
-
         var onDrawioChange = function(newXml) {
-            var newJson = xmlAsJsonContent(newXml);
+            var newJson = DiagramUtil.xmlAsJsonContent(newXml);
             if (!deepEqual(lastContent, newJson)) {
                 lastContent = newJson;
                 framework.localChange();
@@ -134,7 +95,10 @@ define([
             return new Promise((resolve) => {
                 framework.insertImage({}, (imageData) => {
                     if (imageData.blob) {
-                        resolve(imageData.blob);
+                        const fileManager = DiagramUtil.createSimpleFileManager(framework._.sfCommon);
+                        DiagramUtil.uploadFile(fileManager, imageData.blob)
+                            .then(url => resolve(url))
+                            .catch(e => console.error(e));
                     } else if (imageData.url) {
                         resolve(imageData.url);
                     } else {
@@ -147,7 +111,7 @@ define([
         // This is the function from which you will receive updates from CryptPad
         framework.onContentUpdate(function (newContent) {
             lastContent = newContent;
-            var xmlStr = jsonContentAsXML(lastContent);
+            var xmlStr = DiagramUtil.jsonContentAsXML(lastContent);
             postMessageToDrawio({
                 action: 'merge',
                 xml: xmlStr,
@@ -163,9 +127,12 @@ define([
 
         framework.setFileImporter(
             {accept: ['.drawio',  'application/x-drawio']},
-            (content) => {
-                return xmlAsJsonContent(content);
-            }
+            (content, file, cb) => {
+                require(['/diagram/import.js'], (importer) => {
+                    importer.importDiagram(framework._.sfCommon, content, file).then(cb);
+                });
+            },
+            true
         );
 
         framework.setFileExporter(
@@ -191,7 +158,7 @@ define([
         // starting the CryptPad framework
         framework.start();
 
-        drawioFrame.src = '/components/drawio/src/main/webapp/index.html?'
+        drawioFrame.src = ApiConfig.httpSafeOrigin + '/components/drawio/src/main/webapp/index.html?'
             + new URLSearchParams({
                 test: 1,
                 stealth: 1,
@@ -234,6 +201,7 @@ define([
     Framework.create({
         toolbarContainer: '#cme_toolbox',
         contentContainer: '#cp-app-diagram-editor',
+        skipLink: '#cp-app-diagram-content|body .geSearchSidebar',
         // validateContent: validateXml,
     }, function (framework) {
         onFrameworkReady(framework);
