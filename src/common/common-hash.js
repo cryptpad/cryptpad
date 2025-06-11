@@ -87,7 +87,6 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         if (secret.keys && secret.keys.fileKeyStr) { mode = ''; }
 
         var hash =  '/3/' + type + '/' + mode + secret.channel + '/' + pass;
-
         var hashData = Hash.parseTypeHash(type, hash);
         if (hashData && hashData.getHash) {
             return hashData.getHash(opts || {});
