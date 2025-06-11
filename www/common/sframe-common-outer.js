@@ -632,6 +632,7 @@ define([
                         // Use the same options in the full hash
                         var opts = parsed.getOptions();
                         parsed = Utils.Hash.parsePadUrl(newHref);
+                        parsedHash = Utils.Hash.parsePadUrl(newHref);
                         currentPad.href = parsed.getUrl(opts);
                         currentPad.hash = parsed.hashData && parsed.hashData.getHash(opts);
                     }
