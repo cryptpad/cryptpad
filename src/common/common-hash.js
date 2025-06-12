@@ -306,7 +306,6 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
                 parsed.channel = hash.slice(0, 32);
                 parsed.key = hash.slice(32, 56);
                 parsed.version = 0;
-                parsed.auditorKey = getAuditorKey(hashArr);
                 return parsed;
             }
 

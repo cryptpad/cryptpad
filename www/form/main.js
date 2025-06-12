@@ -27,11 +27,10 @@ define([
             var keys = Utils.secret && Utils.secret.keys;
             var parsed;
             if (parsedHash) {
-                parsed = Utils.Hash.parseTypeHash('pad', parsedHash.hash.slice(1));
+                parsed = parsedHash.hashData;
             } else {
                 parsed = Utils.Hash.parseTypeHash('pad', hash.slice(1));
             }
-            
             if (parsed && parsed.auditorKey) {
                 meta.form_auditorKey = parsed.auditorKey;
                 meta.form_auditorHash = hash;
