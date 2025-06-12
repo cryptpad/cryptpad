@@ -693,6 +693,9 @@ define([
                                                                        : hashes.viewHash;
             if (formAuditor && opts.auditorHash) {
                 hash = opts.auditorHash;
+                if (opts.hasPassword) {
+                    hash += '/p';
+                }
             }
             var href = burnAfterReading ? opts.burnAfterReadingUrl
                                              : (origin + pathname + '#' + hash);

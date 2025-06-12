@@ -148,7 +148,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.contact_mastodon = 'Mastodon'; // XXX
     Messages.contact_forum = 'Forum'; // XXX
     Messages.help_close_button = 'Close help notification'; // XXX
-
+    Messages.fc_open_formaud = 'Open (as auditor)';
     return Messages;
 
 });

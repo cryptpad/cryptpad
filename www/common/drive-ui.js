@@ -1761,7 +1761,11 @@ define([
                             var parsed = Hash.parsePadUrl(metadata.roHref);
                             // Forms: change "Open (read-only)" to "Open (as participant)"
                             if (parsed.type === "form") {
-                                $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formro);
+                                if (parsed.hashData.auditorKey) {
+                                    $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formaud);
+                                } else {
+                                    $('.cp-app-drive-context-openro .cp-text').text(Messages.fc_open_formro);
+                                }
                             }
                         }
                     }
