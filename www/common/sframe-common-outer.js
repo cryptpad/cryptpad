@@ -123,7 +123,7 @@ define([
         var password, newPadPassword, newPadPasswordForce;
         var initialPathInDrive;
         var burnAfterReading;
-        var parsedHash;
+        var parsedUnsafeLink;
         var Handler;
 
         var currentPad = window.CryptPad_location = {
@@ -632,7 +632,7 @@ define([
                         // Use the same options in the full hash
                         var opts = parsed.getOptions();
                         parsed = Utils.Hash.parsePadUrl(newHref);
-                        parsedHash = Utils.Hash.parsePadUrl(newHref);
+                        parsedUnsafeLink = Utils.Hash.parsePadUrl(newHref);
                         currentPad.href = parsed.getUrl(opts);
                         currentPad.hash = parsed.hashData && parsed.hashData.getHash(opts);
                     }
@@ -896,7 +896,7 @@ define([
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
-                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils, parsedHash);
+                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils, parsedUnsafeLink);
                     }
 
                     if (metaObj && metaObj.priv && typeof(metaObj.priv.plan) === "string") {
