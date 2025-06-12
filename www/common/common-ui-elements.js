@@ -199,7 +199,9 @@ define([
         }).filter(function (x) { return x; });
 
         var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
-        var classes = noOthers + (config.large?'.large':'') + (config.list?'.list':'');
+        var classes = noOthers + (config.large?'.large':'') +
+                                (config.list?'.list':'') +
+                                (config.radio?'.radio':'');
 
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
@@ -221,20 +223,24 @@ define([
                 $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="'+name+'"])').hide();
             }
         };
-        $(inputFilter).on('keydown keyup change', redraw);
+        $(inputFilter).on('input keydown keyup change', redraw);
+        if (config.evOnFilter) {
+            config.evOnFilter.reg(redraw);
+        }
 
         $(div).append(h('div.cp-usergrid-grid', icons));
         if (!config.noSelect) {
             $div.on('click', '.cp-usergrid-user', function () {
                 var sel = $(this).hasClass('cp-selected');
+                if (config.radio) {
+                    $div.find('.cp-usergrid-user.cp-selected').removeClass('cp-selected');
+                }
                 if (!sel) {
                     $(this).addClass('cp-selected');
-                } else {
-                    var order = $(this).attr('data-order');
-                    order = order ? 'order:'+order : '';
-                    $(this).removeClass('cp-selected').attr('style', order);
+                } else if (!config.radio) {
+                    $(this).removeClass('cp-selected');
                 }
-                onSelect();
+                onSelect(!sel ? this : undefined);
             });
             $div.on('keydown', '.cp-usergrid-user', function (e) {
                 if (e.which === 13) {
@@ -251,6 +257,55 @@ define([
         };
     };
 
+    UIElements.getUserTeamPicker = (common, config, onSelected) => {
+        const { msg, friendsData, teamsData } = config;
+        let teams;
+        const filter = h('input', {
+            placeholder: Messages.share_filterFriend
+        });
+        const evOnFilter = Util.mkEvent();
+        const contacts = UIElements.getUserGrid(Messages.contacts, {
+            common: common,
+            data: friendsData,
+            noFilter: false,
+            radio: true,
+            large: true,
+            evOnFilter
+        }, el => {
+            onSelected(el);
+            $(teams.div).find('.cp-selected').removeClass('cp-selected');
+        });
+        teams = UIElements.getUserGrid(Messages.teams, {
+            common: common,
+            data: teamsData,
+            noFilter: false,
+            radio: true,
+            large: true,
+            evOnFilter
+        }, el => {
+            onSelected(el);
+            $(contacts.div).find('.cp-selected').removeClass('cp-selected');
+        });
+
+        const $contactFilter = $(contacts.div).find('.cp-usergrid-filter input').hide();
+        const $teamFilter = $(teams.div).find('.cp-usergrid-filter input').hide();
+
+        $(filter).on('input', () => {
+            const val = filter.value;
+            $teamFilter.val(val);
+            $contactFilter.val(val);
+            evOnFilter.fire();
+        });
+
+        const content = h('div.cp-userteam-picker', [
+            h('div', msg),
+            h('div.cp-userteam-filter', filter),
+            contacts.div,
+            teams.div
+        ]);
+
+        return content;
+    };
 
     UIElements.noContactsMessage = function (common) {
         var metadataMgr = common.getMetadataMgr();
