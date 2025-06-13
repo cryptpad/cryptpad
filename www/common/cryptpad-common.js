@@ -1181,7 +1181,6 @@ define([
             return;
         }
 
-        let rtChannel, lastVersion, answersChannel;
         let attributes = {};
         nThen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }

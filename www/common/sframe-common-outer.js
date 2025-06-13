@@ -799,7 +799,7 @@ define([
                         origin: window.location.origin,
                         pathname: window.location.pathname,
                         fileHost: ApiConfig.fileHost,
-                        readOnly: readOnly,
+                        readOnly: cfg?.integrationConfig?.readOnly || readOnly,
                         isTemplate: isTemplate,
                         newTemplate: Array.isArray(Cryptpad.initialPath)
                                         && Cryptpad.initialPath[0] === "template",
