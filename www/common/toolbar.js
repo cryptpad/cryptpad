@@ -65,60 +65,6 @@ MessengerUI, Messages, Pages, PadTypes) {
         return 'cp-toolbar-uid-' + String(Math.random()).substring(2);
     };
 
-    var observeChildren = function ($content, isDrawer) {
-        var reorderDOM = Util.throttle(function ($content, observer) {
-            if (!$content.length) { return; }
-
-            // List all children based on their "order" property
-            var map = {};
-            $content[0].childNodes.forEach((node) => {
-                try {
-                    if (!node.attributes) { return; }
-                    let nodeWithOrder;
-                    if (isDrawer) { // HACK: the order is set on their inner "a" tag
-                        let $n = $(node);
-                        if (!$n.attr('class') &&
-                            ($n.find('.fa').length || $n.find('.cptools').length)) {
-                            nodeWithOrder = $n.find('.fa')[0] || $n.find('.cptools')[0];
-                        }
-                    }
-                    var order = getComputedStyle(nodeWithOrder || node).getPropertyValue("order");
-                    var a = map[order] = map[order] || [];
-                    a.push(node);
-                } catch (e) { console.error(e, node); }
-            });
-
-            // Disconnect the observer while we're reordering to avoid infinite loop
-            observer.disconnect();
-            Object.keys(map).sort(function (a, b) {
-                return Number(a) - Number(b);
-            }).forEach(function (k) {
-                var arr = map[k];
-                if (!Number(k)) { return; } // No need to "append" if order is 0
-                // Reorder
-                arr.forEach(function (node) {
-                    $content.append(node);
-                });
-            });
-            observer.start();
-        }, 100);
-
-        let observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes.length) {
-                    reorderDOM($content, observer);
-                }
-            });
-        });
-        observer.start = function () {
-            if (!$content.length) { return; }
-            observer.observe($content[0], {
-                childList: true
-            });
-        };
-        observer.start();
-    };
-
     var createRealtimeToolbar = function (config) {
         if (!config.$container) { return; }
         var $container = config.$container;
@@ -1226,7 +1172,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         $button.attr('aria-label', Messages.notificationsPage);
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
-        observeChildren($(div));
+        UIElements.reorderDOM($(div));
 
         var refresh = function () {
             updateUserList(toolbar, config);
@@ -1452,14 +1398,14 @@ MessengerUI, Messages, Pages, PadTypes) {
         toolbar.$history = $toolbar.find('.'+Bar.constants.history);
         toolbar.$user = $toolbar.find('.'+Bar.constants.userAdmin);
 
-        observeChildren(toolbar.$drawer, true);
-        observeChildren(toolbar.$bottomL);
-        observeChildren(toolbar.$bottomM);
-        observeChildren(toolbar.$bottomR);
-        observeChildren(toolbar.$top);
-        observeChildren(toolbar.$user);
+        UIElements.reorderDOM(toolbar.$drawer, true);
+        UIElements.reorderDOM(toolbar.$bottomL);
+        UIElements.reorderDOM(toolbar.$bottomM);
+        UIElements.reorderDOM(toolbar.$bottomR);
+        UIElements.reorderDOM(toolbar.$top);
+        UIElements.reorderDOM(toolbar.$user);
         if (config.$contentContainer) {
-            observeChildren(config.$contentContainer);
+            UIElements.reorderDOM(config.$contentContainer);
         }
 
         toolbar.$userAdmin = $toolbar.find('.'+Bar.constants.userAdmin);
