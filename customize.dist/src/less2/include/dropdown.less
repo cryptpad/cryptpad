@@ -75,6 +75,13 @@
             .cp-dropdown-content {
                 right: 0;
                 margin-right: 5px;
+
+                [dir='rtl'] & {
+                    right: unset;
+                    left: 0;
+                    margin-right: unset;
+                    margin-left: 5px;
+                }
                 &.cp-dropdown-submenu {
                     left: unset;
                     right: 250px;
@@ -131,6 +138,11 @@
                             width: 40px;
                             margin-left: -10px;
                             text-align: center;
+
+                            [dir='rtl'] & {
+                                margin-left: unset;
+                                margin-right: -10px;
+                            }
                         }
                         * {
                             font: @dropdown_font;
@@ -141,6 +153,11 @@
                         width: 20px;
                         text-align: center;
                         margin-right: 5px !important;
+
+                        [dir='rtl'] & {
+                            margin-right: unset;
+                            margin-left: 5px !important;
+                        }
                     }
 
                     &.cp-dropdown-element-active {

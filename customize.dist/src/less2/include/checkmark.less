@@ -112,6 +112,11 @@
             justify-content: center;
             border: 1px solid @cp_checkmark-disabled;
             flex-shrink: 0;
+
+            [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 10px;
+                }
             &:after {
                 content: "";
                 display: none;
@@ -206,6 +211,11 @@
             align-items: center;
             border: 1px solid @cp_checkmark-disabled;
             flex-shrink: 0;
+
+            [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 10px;
+                }
             &:after {
                 display: none;
                 content: "";

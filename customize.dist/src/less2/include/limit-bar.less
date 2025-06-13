@@ -56,6 +56,12 @@
             margin-left: 5px;
             z-index: 2; // .usageText
             font-size: @colortheme_app-font-size-small;
+
+            [dir='rtl'] & {
+                margin-left: unset;
+                margin-right: 5px;
+                text-align: right;
+            }
         }
         .cp-limit-buttons {
             display: flex;

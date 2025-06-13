@@ -207,7 +207,7 @@ define([
                 conflicts = h('div.cp-kanban-cursors')
             ]),
             h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
-            titleInput = h('input#cp-kanban-edit-title'),
+            titleInput = h('input#cp-kanban-edit-title', { dir: 'auto'}),
             h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
             h('div#cp-kanban-edit-body', [
                 text = h('textarea')

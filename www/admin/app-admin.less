@@ -136,6 +136,11 @@
     .cp-admin-support-state {
         i {
             margin-right: @sidebar_base-margin;
+
+            [dir='rtl'] & {
+                margin-right: unset;
+                margin-left: @sidebar_base-margin;
+            }
         }
     }
 }

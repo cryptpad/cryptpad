@@ -126,6 +126,11 @@
                     margin-left: 30px;
                     font-size: 16px;
                     color: inherit;
+
+                    [dir='rtl'] & {
+                    margin-left: unset;
+                    margin-right: 30px;
+                }
                 }
                 a:focus-visible {
                     border-radius: 50%;
@@ -400,6 +405,10 @@
                         height: 25px;
                         line-height: 25px;
                         max-width: 100%;
+
+                        [dir='rtl'] & {
+                            text-align: right;
+                        }
                     }
                     .fa, .cptools {
                         color: @creation-bg-color;
@@ -408,6 +417,11 @@
                         font-size: 30px;
                         text-align: center;
                         margin-right: 10px;
+
+                        [dir='rtl'] & {
+                            margin-right: unset;
+                            margin-left: 10px;
+                        }
                     }
                 }
             }

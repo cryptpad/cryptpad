@@ -236,6 +236,10 @@
 
         .cp-app-contacts-info {
             padding: 20px;
+
+            [dir='rtl'] & {
+                text-align: right;
+            }
         }
         .cp-app-contacts-header {
             background-color: @msg-bg-color-dark;
@@ -277,6 +281,10 @@
             .cp-app-contacts-header-title {
                 padding: 10px;
                 flex: 1;
+
+                [dir='rtl'] & {
+                    text-align: right;
+                }
             }
         }
         .cp-app-contacts-tips {
@@ -286,11 +294,19 @@
             font-size: 14px;
             padding: 10px;
             position: relative;
+            [dir='rtl'] & {
+                text-align: right;
+            }
             .cp-app-contacts-tips-close {
                 cursor: pointer;
                 position: absolute;
                 top: 2px;
                 right: 2px;
+
+                [dir='rtl'] & {
+                    right: unset;
+                    left: 2px;
+                }
             }
         }
         .cp-app-contacts-chat {

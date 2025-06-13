@@ -50,6 +50,11 @@
         border-radius: @variables_radius;
         box-shadow: 0 0 10px 0 @cp_shadow-color;
 
+        [dir='rtl'] & {
+            right: unset;
+            left: 10px;
+            transform-origin: bottom left;
+        }
         &.cp-corner-alt {
             background-color: fade(@corner-bg, 95%);
             color: @corner-fg;
@@ -121,6 +126,11 @@
             color: @corner-fg;
             &:not(:first-child) {
                 margin-left: 10px;
+
+                [dir='rtl'] & {
+                    margin-left: unset;
+                    margin-right: 10px;
+                }
             }
             text-transform: uppercase;
             border: 1px solid @corner-fg;

@@ -88,6 +88,10 @@
     [data-type="md"] {
         .cp-form-block-content {
             .markdown_cryptpad();
+
+            [dir='rtl'] & {
+                text-align: right;
+            }
         }
     }
 
@@ -229,6 +233,10 @@
                     border-radius: @variables_radius 0px 0px @variables_radius;
                     background-color: @cp_form-bg1;
                     color: @cryptpad_text_col;
+
+                    [dir='rtl'] & {
+                        border-radius: 0px @variables_radius @variables_radius 0px;
+                    }
                     &:focus-visible {
                         outline: @variables_focus_style;
                     }
@@ -239,6 +247,10 @@
                 }
                 #cp-toggle-drag-on {
                     border-radius: 0px @variables_radius @variables_radius 0px !important;
+
+                    [dir='rtl'] & {
+                        border-radius: @variables_radius 0px 0px @variables_radius !important;
+                    }
                 }
             }
 
@@ -414,6 +426,11 @@
                             border-radius: 0px @variables_radius 0px 0px;
                             display: flex;
                             column-gap: 10px;
+
+                            [dir='rtl'] & {
+                                padding-left: unset;
+                                padding-right: 5px;
+                            }
                             .cp-form-arrow {
                                 display: block;
                                 background-color: transparent;
@@ -440,11 +457,21 @@
                         width: 50px;
                         i {
                             margin-right: 0;
+
+                            [dir='rtl'] & {
+                                margin-right: unset;
+                                margin-left: 0;
+                            }
                         }
                     }
                     .cp-form-creator-inline-add {
                         font-size: 25px;
                         margin-right: 30px;
+
+                        [dir='rtl'] & {
+                            margin-right: unset;
+                            margin-left: 30px;
+                        }
                         .add-close { display: none; }
                         &.displayed {
                             .add-close { display: inline; }
@@ -547,6 +574,11 @@
                     button {
                         &:not(:last-child) {
                             margin-right: 10px;
+
+                            [dir='rtl'] & {
+                                margin-right: unset;
+                                margin-left: 10px;
+                            }
                         }
                     }
                     .cp-form-invalid-warning {
@@ -587,6 +619,11 @@
                         .cp-form-anon-answer-registered {
                             font-style: italic;
                             margin-left: 10px;
+
+                            [dir='rtl'] & {
+                                margin-left: unset;
+                                margin-right: 10px;
+                            }
                         }
                     }
                 }
@@ -639,6 +676,10 @@
                         color: @cp_sidebar-hint;
                         margin-bottom: 10px;
                         padding: 0;
+
+                        [dir='rtl'] & {
+                            text-align: right;
+                        }
                     }
 
                     .cp-form-block-drag-handle {
@@ -649,6 +690,11 @@
                         padding-left: 10px;
                         font-size: 20px;
                         color: @cp_sidebar-hint;
+
+                        [dir='rtl'] & {
+                            padding-left: unset;
+                            padding-right: 10px;
+                        }
                         i {
                             cursor: grab;
                             &:first-child {
@@ -675,6 +721,11 @@
                         .cp-form-block-question-number {
                             font-weight: bold;
                             margin-right: 10px;
+
+                            [dir='rtl'] & {
+                                margin-right: unset;
+                                margin-left: 10px;
+                            }
                         }
                         .cp-form-block-question-text {
                             flex: 1;
@@ -727,6 +778,11 @@
                         }
                         .cp-form-copy-button {
                             margin-right: 5px;
+
+                            [dir='rtl'] & {
+                                margin-right: unset;
+                                margin-left: 5px;
+                            }
                         }
                         .cp-empty-poll-edit-buttons {
                             padding-top: 40px
@@ -1045,7 +1101,10 @@
             //margin-top: -10px;
             //margin-right: -10px;
             border-radius: 0px @variables_radius 0px 0px;
-            i { margin-right: 5px; }
+            i { margin-right: 5px; [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 5px;
+                } }
             background: fade(@cryptpad_text_col, 10%);
         }
     }

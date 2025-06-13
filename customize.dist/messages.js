@@ -13,6 +13,7 @@ var map = {
     'es': 'Español',
     'es_CU': 'Español cubano',
     'eu': 'Euskara',
+    'fa': 'فارسی',
     'fi': 'Suomi',
     'fr': 'Français',
     //'hi': 'हिन्दी',
@@ -94,6 +95,9 @@ define(req, function(AppConfig, Default, Language) {
     let html = typeof(document) !== "undefined" && document.documentElement;
     if (html) { html.setAttribute('lang', language); }
 
+     if (['fa', 'ar', 'he', 'ps', 'ur'].includes(language)) {
+        html.setAttribute('dir', 'rtl');
+    }
     var extend = function (a, b) {
         for (var k in b) {
             if (Array.isArray(b[k])) {

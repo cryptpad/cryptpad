@@ -169,6 +169,11 @@
         i, .fa, .cptools {
             &:not(.nomargin) {
                 margin-right: 5px;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 5px;
+                }
             }
         }
 
@@ -334,6 +339,10 @@
             background-color: @cp_alerts-info-bg;
             color: @cp_alerts-info-text;
             border-color: @cp_alerts-info-fg;
+
+            [dir='rtl'] & {
+                text-align: right;
+            }
         }
         &.alert-success {
             background-color: @cp_alerts-success-bg;

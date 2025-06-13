@@ -50,6 +50,11 @@
                     background-color: @cp_context-bg;
                     border-radius: @variables_radius;
                     border: 1px solid @cp_context-border;
+
+                    [dir='rtl'] & {
+                        left: unset !important;
+                        right: 100%;
+                    }
                 }
             }
             a {
@@ -57,6 +62,12 @@
                 color: @cp_context-fg;
                 padding-left: 10px;
                 border-radius: @variables_radius;
+
+                [dir='rtl'] & {
+                    padding-left: unset;
+                    padding-right: 10px;
+                    text-align: right;
+                }
                 &:hover {
                     background-color: @cp_context-bg-hover;
                     color: @cp_context-fg;
@@ -68,6 +79,11 @@
                 .fa, .cptools {
                     &:first-child {
                         margin-right: 10px;
+
+                        [dir='rtl'] & {
+                            margin-right: unset;
+                            margin-left: 10px;
+                        }
                     }
                     &.cptools:not(:first-child) {
                         vertical-align: middle;

@@ -26,11 +26,20 @@
             top: 5px;
             right: 5px;
             cursor: pointer;
+
+            [dir='rtl'] & {
+                right: unset;
+                left: 5px;
+            }
         }
         .cp-help-text {
             color: @cp_help-fg;
             margin: 0;
             padding: 5px 15px;
+
+            [dir='rtl'] & {
+                text-align: right;
+            }
             a {
                 color: @cp_help-link;
                 text-decoration: underline;

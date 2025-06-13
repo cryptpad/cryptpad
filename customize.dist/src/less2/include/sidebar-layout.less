@@ -28,6 +28,10 @@
         min-height: 0;
         * {
             box-sizing: border-box;
+
+            [dir='rtl'] & {
+                text-align: right;
+            }
         }
         @media(min-width:800px) {
             #cp-sidebarlayout-leftside {
@@ -109,6 +113,10 @@
                         display: block;
                         font-weight: bold;
                         margin-bottom: 0;
+
+                        [dir='rtl'] & {
+                            text-align: right;
+                        }
                     }
                 }
                 &[data-item] { // New sidebar-layout blocks
@@ -116,6 +124,10 @@
                         display: block;
                         font-weight: bold;
                         margin-bottom: 0;
+
+                        [dir='rtl'] & {
+                            text-align: right;
+                        }
                     }
                     .cp-sidebar-form {
                         display: flex;
@@ -242,6 +254,10 @@
                     display: block;
                     color: @cp_sidebar-hint;
                     margin-bottom: @sidebar_base-margin;
+
+                    [dir='rtl'] & {
+                        text-align: right;
+                    }
                     p {
                         margin-bottom: 0;
                     }
@@ -301,6 +317,10 @@
                 margin: 0 @sidebar_base-margin 0 0;
                 &:last-child {
                     margin-right: 0;
+
+                    [dir='rtl'] & {
+                        margin-right: unset;
+                    }
                 }
             }
             span.cp-password-container {

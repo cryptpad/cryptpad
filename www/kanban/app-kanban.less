@@ -524,6 +524,11 @@
             width: 60px;
             &.drag {
                 margin-right: 10px;
+
+                [dir='rtl'] & {
+                    margin-right: unset;
+                    margin-left: 10px;
+                }
             }
             
             button {
@@ -543,9 +548,17 @@
                 }
                 &:first-child {
                     border-radius: @variables_radius 0px 0px @variables_radius;
+
+                    [dir='rtl'] & {
+                        border-radius: 0px @variables_radius @variables_radius 0px;
+                    }
                 }
                 &:last-child {
                     border-radius: 0px @variables_radius @variables_radius 0px;
+
+                    [dir='rtl'] & {
+                        border-radius: @variables_radius 0px 0px @variables_radius;
+                    }
                 }
                 &:focus-visible {
                     outline: @variables_focus_style;
