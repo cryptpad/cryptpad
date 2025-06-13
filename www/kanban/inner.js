@@ -214,7 +214,7 @@ define([
             markdownEditorWrapper,
             h('div#cp-kanban-edit-body', [
                 text = h('textarea')
-            ]),        
+            ]),
             h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
             tagsDiv = h('div#cp-kanban-edit-tags'),
             h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
@@ -285,10 +285,10 @@ define([
                 editor.replaceSelection($(mt)[0].outerHTML);
             }
         });
-        var toggleButtonMarkdown = UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
-        $(window).on('resize', function() {
-            UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
-        });
+        //var toggleButtonMarkdown = UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
+        // $(window).on('resize', function() {
+        //     UIElements.updateToolbarVisibility(markdownEditorWrapper, markdownTb.toolbar, editor);
+        // });
         $(markdownTb.toolbar).on('keydown', function (e) {
             if (e.which === 27) { // Escape key
                 e.preventDefault();
@@ -299,15 +299,15 @@ define([
                 e.stopPropagation();
             }
         });  
-        $(toggleButtonMarkdown).on('keydown', function (e) {
-            if (e.which === 13) { // "Enter" should toggle the toolbar, but not close the modal
-                e.preventDefault();
-                e.stopPropagation();
-                $(this).click(); // simulate click to toggle
-            } else if (e.which === 9) {
-                e.stopPropagation();
-            }
-        });
+        // $(toggleButtonMarkdown).on('keydown', function (e) {
+        //     if (e.which === 13) { // "Enter" should toggle the toolbar, but not close the modal
+        //         e.preventDefault();
+        //         e.stopPropagation();
+        //         $(this).click(); // simulate click to toggle
+        //     } else if (e.which === 9) {
+        //         e.stopPropagation();
+        //     }
+        // });
         $(text).before(markdownTb.toolbar);
         editor.refresh();
         var body = {
