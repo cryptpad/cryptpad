@@ -660,29 +660,30 @@ define([
         var $trashContextMenu = $("#cp-app-drive-context-trash");
 
         $content.attr("tabindex", "0");
-        var splitter = h('div.cp-splitter', [
-            h('i.fa.fa-ellipsis-v')
-        ]);
-        $contentContainer.append(splitter);
-        APP.$splitter = $(splitter).on('mousedown touchstart', function (e) {
-            e.preventDefault();
-            var x = e.type === 'touchstart' ? e.originalEvent.touches[0].pageX : e.pageX;
-            var w = $tree.width();
-            
-            var handler = function (evt) {
-                if (evt.type === 'mouseup' || evt.type === 'touchend') {
-                    $(window).off('mouseup mousemove touchend touchmove', handler);
-                    return; 
-                }
-                var pageX = evt.type === 'touchmove'
-                    ? evt.originalEvent.touches[0].pageX
-                    : evt.pageX;
-                $tree.css('width', (w - x + pageX) + 'px');
-            };
-            $(window).off('mouseup mousemove touchend touchmove', handler, { passive: false });
-            $(window).on('mouseup mousemove touchend touchmove', handler);
-        });
-       
+        if (APP.loggedIn) {
+            var splitter = h('div.cp-splitter', [
+                h('i.fa.fa-ellipsis-v')
+            ]);
+            $contentContainer.append(splitter);
+            APP.$splitter = $(splitter).on('mousedown touchstart', function (e) {
+                e.preventDefault();
+                var x = e.type === 'touchstart' ? e.originalEvent.touches[0].pageX : e.pageX;
+                var w = $tree.width();
+                
+                var handler = function (evt) {
+                    if (evt.type === 'mouseup' || evt.type === 'touchend') {
+                        $(window).off('mouseup mousemove touchend touchmove', handler);
+                        return; 
+                    }
+                    var pageX = evt.type === 'touchmove'
+                        ? evt.originalEvent.touches[0].pageX
+                        : evt.pageX;
+                    $tree.css('width', (w - x + pageX) + 'px');
+                };
+                $(window).off('mouseup mousemove touchend touchmove', handler, { passive: false });
+                $(window).on('mouseup mousemove touchend touchmove', handler);
+            });
+        }
         // TOOLBAR
 
         // DRIVE
