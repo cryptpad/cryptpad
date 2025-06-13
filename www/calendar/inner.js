@@ -2358,6 +2358,14 @@ APP.recurrenceRule = {
         };
         var onCalendarEditPopup = function (el) {
             var $el = $(el);
+
+            const $header = $el.find('.tui-full-calendar-section-header');
+            $header.attr('id', 'tui-full-calendar-section-header');
+            $el.attr('aria-labelledby', 'tui-full-calendar-section-header');
+            const $desc = $el.find('.tui-full-calendar-section-detail');
+            $desc.attr('id', 'tui-full-calendar-section-detail');
+            $el.attr('aria-describedby', 'tui-full-calendar-section-detail');
+
             $el.find('.tui-full-calendar-popup-edit').addClass('btn btn-primary');
             $el.find('.tui-full-calendar-popup-edit .tui-full-calendar-icon').addClass('fa fa-pencil').removeClass('tui-full-calendar-icon');
             $el.find('.tui-full-calendar-content').removeClass('tui-full-calendar-content');
