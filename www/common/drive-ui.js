@@ -660,7 +660,7 @@ define([
         var $trashContextMenu = $("#cp-app-drive-context-trash");
 
         $content.attr("tabindex", "0");
-        if (APP.currentUser) {
+        if (APP.loggedIn) {
             var splitter = h('div.cp-splitter', [
                 h('i.fa.fa-ellipsis-v')
             ]);
