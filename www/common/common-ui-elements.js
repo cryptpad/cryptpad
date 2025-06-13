@@ -1251,6 +1251,62 @@ define([
             $toolbarButton.show();
         };
 
+        function isSmallScreen() {
+            return window.innerHeight < 530 || window.innerWidth < 530;
+        }
+
+        var toolbarVisibleOnSmallScreen = false;
+        var $smallToggleButton = null;
+
+        function updateToolbarVisibility() {
+            var $wrapper = $toolbar.parent().length ? $toolbar.parent() : $('<div>').append($toolbar);
+
+            if (isSmallScreen()) {
+                if (!$smallToggleButton) {
+                    $smallToggleButton = $('<button>', {
+                        'class': 'btn cp-markdown-toggle-button',
+                        'aria-label': Messages.toolbar_show_text_tools,
+                        'aria-pressed': 'false',
+                        'data-notippy': 1,
+                        'type': 'button',
+                        'title': Messages.toolbar_show_text_tools
+                    }).append(
+                        $('<i>', { class: 'fa fa-wrench', 'aria-hidden': 'true' }),
+                        $('<span>', { class: 'cp-toolbar-label', text: Messages.toolbar_text_tools })
+                    ).on('click', function () {
+                        var isExpanded = $toolbar.is(':visible');
+                        $toolbar.toggle();
+                        $(this).toggleClass('cp-toolbar-button-active', !isExpanded)
+                            .attr('aria-pressed', String(!isExpanded))
+                            .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
+                            .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
+                        toolbarVisibleOnSmallScreen = !isExpanded;
+                    });
+
+                    $wrapper.append($smallToggleButton);
+                }
+
+                if (toolbarVisibleOnSmallScreen) {
+                    $toolbar.show();
+                    $smallToggleButton.addClass('cp-toolbar-button-active')
+                        .attr('aria-pressed', 'true');
+                } else {
+                    $toolbar.hide();
+                    $smallToggleButton.removeClass('cp-toolbar-button-active')
+                        .attr('aria-pressed', 'false');
+                }
+            } else {
+                if ($smallToggleButton) {
+                    $smallToggleButton.remove();
+                    $smallToggleButton = null;
+                }
+                $toolbar.show();
+            }
+        }
+
+        $(window).on('resize', updateToolbarVisibility);
+        updateToolbarVisibility();
+
         return {
             toolbar: $toolbar,
             button: $toolbarButton,
@@ -1340,75 +1396,75 @@ define([
             text: text
         };
     };
-    let toolbarVisibleOnSmallScreen = false;
+    // let toolbarVisibleOnSmallScreen = false;
 
-    UIElements.createMarkdownToolbarToggle = function(toolbarElement, editor) {
-        var $button = $(h('button', {
-                'class': 'btn cp-markdown-toggle-button',
-                'aria-label': Messages.toolbar_show_text_tools,
-                'aria-pressed': 'false',
-                'data-notippy':1,
-                'type': 'button',
-                'title': Messages.toolbar_show_text_tools
-            }, [
-                h('i.fa.fa-wrench', { 'aria-hidden': 'true' }),
-                h('span.cp-toolbar-label', Messages.toolbar_text_tools)
-        ]));
+    // UIElements.createMarkdownToolbarToggle = function(toolbarElement, editor) {
+    //     var $button = $(h('button', {
+    //             'class': 'btn cp-markdown-toggle-button',
+    //             'aria-label': Messages.toolbar_show_text_tools,
+    //             'aria-pressed': 'false',
+    //             'data-notippy':1,
+    //             'type': 'button',
+    //             'title': Messages.toolbar_show_text_tools
+    //         }, [
+    //             h('i.fa.fa-wrench', { 'aria-hidden': 'true' }),
+    //             h('span.cp-toolbar-label', Messages.toolbar_text_tools)
+    //     ]));
     
-        $button.on('click', function () {
-            var isExpanded = $(toolbarElement).is(':visible');
-            $(this).attr('aria-pressed', String(!isExpanded));
-            $(this).toggleClass('cp-toolbar-button-active', !isExpanded);
-            $(toolbarElement).toggle();
+    //     $button.on('click', function () {
+    //         var isExpanded = $(toolbarElement).is(':visible');
+    //         $(this).attr('aria-pressed', String(!isExpanded));
+    //         $(this).toggleClass('cp-toolbar-button-active', !isExpanded);
+    //         $(toolbarElement).toggle();
 
-            const newLabel = !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools; // XXX
-            $button
-            .attr('title', newLabel)
-            .attr('aria-label', newLabel);
-            toolbarVisibleOnSmallScreen = !isExpanded;
-        });
+    //         const newLabel = !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools; // XXX
+    //         $button
+    //         .attr('title', newLabel)
+    //         .attr('aria-label', newLabel);
+    //         toolbarVisibleOnSmallScreen = !isExpanded;
+    //     });
     
-        $(toolbarElement).on('keydown', function (e) {
-            if (e.key === 'Escape' || e.which === 27) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (editor && editor.focus) {
-                    editor.focus();
-                }
-            }
-        });
+    //     $(toolbarElement).on('keydown', function (e) {
+    //         if (e.key === 'Escape' || e.which === 27) {
+    //             e.preventDefault();
+    //             e.stopPropagation();
+    //             if (editor && editor.focus) {
+    //                 editor.focus();
+    //             }
+    //         }
+    //     });
     
-        return $button;
-    };
+    //     return $button;
+    // };
 
-    var isSmallScreenToolbar = function () {
-        return window.innerHeight < 530 || window.innerWidth < 530;
-    }
+    // var isSmallScreenToolbar = function () {
+    //     return window.innerHeight < 530 || window.innerWidth < 530;
+    // }
 
-    UIElements.updateToolbarVisibility = function(markdownEditorWrapper, toolbar, editor) {
-        let toggleButton = null;
-        const isSmallScreen = isSmallScreenToolbar();
+    // UIElements.updateToolbarVisibility = function(markdownEditorWrapper, toolbar, editor) {
+    //     let toggleButton = null;
+    //     const isSmallScreen = isSmallScreenToolbar();
 
-        if (isSmallScreen) {
-            if (!$(markdownEditorWrapper).find('.cp-markdown-toggle-button').length) {
-                toggleButton = UIElements.createMarkdownToolbarToggle(toolbar, editor);
-                $(markdownEditorWrapper).append(toggleButton);
-            }
-            if (toolbarVisibleOnSmallScreen) {
-                $(toolbar).show();
-                $(markdownEditorWrapper).find('.cp-markdown-toggle-button').addClass('cp-toolbar-button-active')
-                    .attr('aria-pressed', true);
-            } else {
-                $(toolbar).hide();
-                $(markdownEditorWrapper).find('.cp-markdown-toggle-button').removeClass('cp-toolbar-button-active')
-                    .attr('aria-pressed', false);
-            }
-        } else {
-            $(markdownEditorWrapper).find('.cp-markdown-toggle-button').remove();
-            $(toolbar).show();
-        }
-        return toggleButton;
-    };
+    //     if (isSmallScreen) {
+    //         if (!$(markdownEditorWrapper).find('.cp-markdown-toggle-button').length) {
+    //             toggleButton = UIElements.createMarkdownToolbarToggle(toolbar, editor);
+    //             $(markdownEditorWrapper).append(toggleButton);
+    //         }
+    //         if (toolbarVisibleOnSmallScreen) {
+    //             $(toolbar).show();
+    //             $(markdownEditorWrapper).find('.cp-markdown-toggle-button').addClass('cp-toolbar-button-active')
+    //                 .attr('aria-pressed', true);
+    //         } else {
+    //             $(toolbar).hide();
+    //             $(markdownEditorWrapper).find('.cp-markdown-toggle-button').removeClass('cp-toolbar-button-active')
+    //                 .attr('aria-pressed', false);
+    //         }
+    //     } else {
+    //         $(markdownEditorWrapper).find('.cp-markdown-toggle-button').remove();
+    //         $(toolbar).show();
+    //     }
+    //     return toggleButton;
+    // };
     
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
