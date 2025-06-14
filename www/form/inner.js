@@ -1117,22 +1117,17 @@ define([
                             editor.save();
                             editor.focus();
                         });
+                        var toggleRow = h('div.cp-markdown-toggle-row');
 
                         if (APP.common && !(tmp && tmp.block) && cm) {
                             var markdownTb = APP.common.createMarkdownToolbar(editor, {
                                 embed: function (mt) {
                                     editor.focus();
                                     editor.replaceSelection($(mt)[0].outerHTML);
-                                }
+                                },
+                                wrapper: toggleRow
                             });
-                            var toggleRow = h('div.cp-markdown-toggle-row');
                             $(block).prepend(markdownTb.toolbar);
-                            setTimeout(() => {
-                                UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
-                            }, 10);
-                            $(window).on('resize', function() {
-                                UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
-                            });
                             $(block).prepend(toggleRow);
                             cm.configureTheme(APP.common, function () {});
                         }
@@ -5592,17 +5587,10 @@ define([
                 embed: function (mt) {
                     editor.focus();
                     editor.replaceSelection($(mt)[0].outerHTML);
-                }
+                },
+                wrapper: toggleRow
             });
-            var toggleButton = UIElements.createMarkdownToolbarToggle(markdownTb.toolbar, editor)[0];
-            toggleRow.appendChild(toggleButton);
-            markdownWrapper.insertBefore(markdownTb.toolbar instanceof jQuery ? markdownTb.toolbar[0] : markdownTb.toolbar,t);
-            setTimeout(() => {
-                UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
-            }, 10);
-            $(window).on('resize', function () {
-                UIElements.updateToolbarVisibility(toggleRow, markdownTb.toolbar, editor);
-            });
+            $(markdownWrapper).prepend(markdownTb.toolbar);
 
             var $edit = $(editDiv);
             var $preview = $(previewDiv);
