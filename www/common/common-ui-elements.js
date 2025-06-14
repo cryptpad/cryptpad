@@ -1282,14 +1282,7 @@ define([
                             .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
                             .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
                         toolbarVisibleOnSmallScreen = !isExpanded;
-                    })
-                    // .on('keydown', function (e) {
-                    //     if (e.key === 'Enter' || e.which === 13) { // "Enter" should keep toggle functionality, not close the modal
-                    //         e.preventDefault();
-                    //         e.stopPropagation();
-                    //         $(this).click();
-                    //     }
-                    // });
+                    });
                     $wrapper.append($toolbarToggleButton);
                 }
 
