@@ -309,6 +309,10 @@ define([
                 return;
             }
             delete hashes[lastIndex];
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                UI.log(Messages.saved);
+            });
         };
 
         var rtChannel = {
@@ -644,20 +648,6 @@ define([
                     saveToServer();
                 });
             }
-        };
-        var deleteLastCp = function () {
-            var hashes = content.hashes;
-            if (!hashes || !Object.keys(hashes).length) { return; }
-            var i = 0;
-            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
-                return a-b;
-            });
-            var lastIndex = idx[idx.length - 1 - i];
-            delete content.hashes[lastIndex];
-            APP.onLocal();
-            APP.realtime.onSettle(function () {
-                UI.log(Messages.saved);
-            });
         };
         var restoreLastCp = function () {
             content.saveLock = myOOId;
@@ -2139,6 +2129,19 @@ define([
             }
         };
 
+        const copy = (a, b) => {
+            Object.keys(b).forEach(k => {
+                if (k === "user") { return; } // Don't change user values
+                if (a[k]) {
+                    if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
+                        copy(a[k], b[k]);
+                    }
+                    return;
+                }
+                a[k] = b[k];
+            });
+        };
+
         const createOOConfig = function(blob, file, lock, fromContent, lang, force) {
             const url = URL.createObjectURL(blob);
             let username = Util.find(privateData, ['integrationConfig', 'user', 'name'])
@@ -2188,18 +2191,6 @@ define([
                 }
             };
 
-            let copy = (a, b) => {
-                Object.keys(b).forEach(k => {
-                    if (k === "user") { return; } // Don't change user values
-                    if (a[k]) {
-                        if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
-                            copy(a[k], b[k]);
-                        }
-                        return;
-                    }
-                    a[k] = b[k];
-                });
-            };
             if (integrationConfig) {
                 let ec = integrationConfig.editorConfig;
                 let c = ooconfig.editorConfig.customization;

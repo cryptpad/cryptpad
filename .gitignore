@@ -35,6 +35,9 @@ www/common/onlyoffice/v*
 www/common/worker.bundle.js
 _build
 
+FUNDING.json
+funding.json
+
 # ---> Node
 # Logs
 logs

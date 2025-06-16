@@ -240,6 +240,7 @@ define([
                     href: href,
                     initialState: blob,
                     config: {
+                        readOnly: data.readOnly,
                         fileName: data.name,
                         fileType: data.ext,
                         autosave: data.autosave,
