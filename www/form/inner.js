@@ -1098,6 +1098,7 @@ define([
                             editor.setOption("extraKeys", {
                                 "Esc": function () {
                                     editor.display.input.blur();
+                                    $(cancelBlock).focus();
                                 },
                             });
                             editor.setOption('lineNumbers', true);
@@ -1115,7 +1116,12 @@ define([
                             }
                             editor.refresh();
                             editor.save();
-                            editor.focus();
+                            var firstBtn = $(markdownTb.toolbar).find('button').get(0);
+                            if (firstBtn) {
+                                firstBtn.focus();
+                            } else {
+                                editor.focus(); // fallback
+                            }
                         });
                         var toggleRow = h('div.cp-markdown-toggle-row');
 
@@ -5607,6 +5613,7 @@ define([
             var editor = APP.responseEditor = cm.editor;
             editor.setOption("extraKeys", {
                 "Esc": function() {
+                    editor.display.input.blur();
                     $(preview).focus();
                 }
             });
@@ -5640,6 +5647,14 @@ define([
                 $preview.hide();
                 editor.refresh();
                 $tb.show();
+                setTimeout(function () {
+                    var firstBtn = $(markdownTb.toolbar).find('button').get(0);
+                    if (firstBtn) {
+                        firstBtn.focus();
+                    } else {
+                        editor.focus(); // fallback
+                    }
+                }, 0);
             });
             APP.$e = $e;
             APP.$p = $p;
