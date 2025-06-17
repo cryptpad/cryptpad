@@ -1304,7 +1304,7 @@ define([
             }
         }
         
-        if (appType != 'code') {
+        if (appType !== 'code') {
             $(window).on('resize', updateToolbarVisibility);
             updateToolbarVisibility();
         }

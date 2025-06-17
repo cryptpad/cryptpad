@@ -579,9 +579,9 @@ define([
         editor.on('cursorActivity', updateCursor);
 
         editor.setOption("extraKeys", {
-            "Esc": function() {
-                e.preventDefault();
-                $(body).focus();
+            "Esc": function(cm, event) {
+                event.preventDefault();
+                document.body.focus();
             }
         });
         

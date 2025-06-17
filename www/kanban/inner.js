@@ -292,7 +292,7 @@ define([
                 e.stopPropagation();
                 editor.focus(); // Focus the editor instead of closing the modal
             }
-            else if (e.which == 13 || e.which == 9) { // "Enter" or "Tab" key should not close modal
+            else if (e.which === 13 || e.which === 9) { // "Enter" or "Tab" key should not close modal
                 e.stopPropagation();
             }
         });
