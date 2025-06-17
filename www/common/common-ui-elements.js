@@ -1281,6 +1281,10 @@ define([
                             .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
                             .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
                         toolbarVisibleOnSmallScreen = !isExpanded;
+                    }).on('keydown keyup', e => {
+                        // don't close modals when pressing Enter
+                        // on the button
+                        e.stopPropagation();
                     });
                     $wrapper.append($toolbarToggleButton);
                 }
