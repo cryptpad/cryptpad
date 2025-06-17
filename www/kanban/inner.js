@@ -174,7 +174,6 @@ define([
         }
         _updateBoardsThrottle(framework, kanban, boards);
     };
-
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
     var BOARD_PROPERTIES = ['title', 'color'];
@@ -200,6 +199,10 @@ define([
             commit();
         });
 
+        var markdownEditorWrapper = h('div.cp-markdown-label-row', [
+            h('label', { for: 'cp-kanban-edit-body' }, Messages.kanban_body)
+        ]);
+        
         var conflicts, conflictContainer, titleInput, tagsDiv, text;
         var content = h('div', [
             conflictContainer = h('div#cp-kanban-edit-conflicts', [
@@ -208,7 +211,7 @@ define([
             ]),
             h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
             titleInput = h('input#cp-kanban-edit-title'),
-            h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
+            markdownEditorWrapper,
             h('div#cp-kanban-edit-body', [
                 text = h('textarea')
             ]),
@@ -280,10 +283,20 @@ define([
             embed: function (mt) {
                 editor.focus();
                 editor.replaceSelection($(mt)[0].outerHTML);
+            },
+            wrapper: markdownEditorWrapper
+        });
+        $(markdownTb.toolbar).on('keydown', function (e) {
+            if (e.which === 27) { // Escape key
+                e.preventDefault();
+                e.stopPropagation();
+                editor.focus(); // Focus the editor instead of closing the modal
+            }
+            else if (e.which === 13 || e.which === 9) { // "Enter" or "Tab" key should not close modal
+                e.stopPropagation();
             }
         });
         $(text).before(markdownTb.toolbar);
-        $(markdownTb.toolbar).show();
         editor.refresh();
         var body = {
             getValue: function () {

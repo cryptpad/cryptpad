@@ -150,6 +150,9 @@ define(req, function(AppConfig, Default, Language) {
     Messages.contact_forum = 'Forum'; // XXX
     Messages.help_close_button = 'Close help notification'; // XXX
     Messages.fc_open_formaud = 'Open (as auditor)';
+    Messages.toolbar_text_tools  = "Text tools";
+    Messages.toolbar_show_text_tools = "Show text tools";
+    Messages.toolbar_hide_text_tools = "Hide text tools";
     return Messages;
 
 });
