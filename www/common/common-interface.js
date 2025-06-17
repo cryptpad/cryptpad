@@ -1087,6 +1087,7 @@ define([
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             $loading.removeClass('cp-loading-transparent');
+            $loading.attr('aria-live','polite');
             if (config.newProgress) {
                 var progress = h('div.cp-loading-progress', [
                     h('p.cp-loading-progress-list'),

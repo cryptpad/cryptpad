@@ -470,6 +470,7 @@ define([
         var privateData = common.getMetadataMgr().getPrivateData();
 
         var $contentContainer = $('#cp-app-slide-editor');
+        $contentContainer.show();
         var $modal = $('#cp-app-slide-modal');
         var $content = $('#cp-app-slide-modal-content');
         var $print = $('#cp-app-slide-print');
@@ -629,6 +630,7 @@ define([
                 CodeMirror = SFCodeMirror.create(null, CMeditor);
                 $('.CodeMirror').addClass('fullPage');
                 editor = CodeMirror.editor;
+                $('#cp-app-slide-editor').hide();
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {

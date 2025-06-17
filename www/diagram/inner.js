@@ -46,6 +46,7 @@ define([
         var x2js = new X2JS();
         var lastContent = x2js.xml2js(EMPTY_DRAWIO);
         var drawIoInitalized = false;
+        $('#cp-app-diagram-editor').show();
 
         var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
         if (!privateData.isEmbed) {
@@ -208,6 +209,7 @@ define([
         }, false);
     };
 
+    $('#cp-app-diagram-editor').hide();
     // Framework initialization
     Framework.create({
         toolbarContainer: '#cme_toolbox',

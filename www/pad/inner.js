@@ -662,6 +662,7 @@ define([
 
         var customCss = '/customize/ckeditor-contents.css?' + window.CKEDITOR.CRYPTPAD_URLARGS;
         $iframe.find('head').append('<link href="' + customCss + '" type="text/css" rel="stylesheet" _fcktemp="true"/>');
+        $('#cp-app-pad-editor').show();
 
         framework._.sfCommon.addShortcuts(ifrWindow);
 
@@ -1543,6 +1544,7 @@ define([
                 $iframe.find('html').css({
                     'background-color': '#FFF'
                 });
+                $('#cp-app-pad-editor').css('display', 'none');
             }).nThen(waitFor());
 
         }).nThen(function(waitFor) {

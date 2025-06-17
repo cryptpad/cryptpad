@@ -2763,7 +2763,10 @@ define([
         $creation.append(title);
 
         if (early === 1) {
-            $creation.append(h('div.cp-creation-early.alert.alert-warning', Messages._getKey('premiumAccess', [
+            $creation.append(h('div.cp-creation-early.alert.alert-warning',{
+                role: 'alert',
+                'aria-live': 'assertive'
+            }, Messages._getKey('premiumAccess', [
                 domain
             ])));
         }
@@ -2861,7 +2864,10 @@ define([
         // Password
         let text;
         if (type === 'form') {
-            text =  h('div.cp-creation-password-warning.alert.alert-info.dismissable', h('span.cp-inline-alert-text', Messages.form_passwordWarning));
+            text =  h('div.cp-creation-password-warning.alert.alert-info.dismissable',{
+                role: 'alert',
+                'aria-live': 'assertive'
+            }, h('span.cp-inline-alert-text', Messages.form_passwordWarning));
         }
         var password = h('div.cp-creation-password',  [ 
             UI.createCheckbox('cp-creation-password', Messages.properties_addPassword, false),
@@ -3324,7 +3330,6 @@ define([
             ]),
         ]);
         UI.errorLoadingScreen(block, Boolean(cfg.loaded), Boolean(cfg.loaded));
-
         $password.find('.cp-password-input').focus();
     };
 
@@ -3343,6 +3348,7 @@ define([
             }, button),
         ]);
         UI.errorLoadingScreen(block);
+        $(button).focus();
     };
     UIElements.getBurnAfterReadingWarning = function (common) {
         var priv = common.getMetadataMgr().getPrivateData();
