@@ -1257,32 +1257,32 @@ define([
 
         var toolbarVisibleOnSmallScreen = false;
         var $toolbarToggleButton = null;
-        var appType = common.getMetadataMgr().getMetadata().type;
+        var appType = common.getMetadataMgr().getPrivateData().app;
 
         function updateToolbarVisibility() {
             var $wrapper = $(opts && opts.wrapper ? opts.wrapper : $toolbar.parent());
 
             if (isSmallScreen()) {
                 if (!$toolbarToggleButton) {
-                    $toolbarToggleButton = $('<button>', {
-                        'class': 'btn cp-markdown-toggle-button',
-                        'aria-label': Messages.toolbar_show_text_tools,
-                        'aria-pressed': 'false',
-                        'data-notippy': 1,
-                        'type': 'button',
-                        'title': Messages.toolbar_show_text_tools
-                    }).append(
-                        $('<i>', { class: 'fa fa-wrench', 'aria-hidden': 'true' }),
-                        $('<span>', { class: 'cp-toolbar-label', text: Messages.toolbar_text_tools })
-                    ).on('click', function () {
-                        var isExpanded = $toolbar.is(':visible');
-                        $toolbar.toggle();
-                        $(this).toggleClass('cp-toolbar-button-active', !isExpanded)
-                            .attr('aria-pressed', String(!isExpanded))
-                            .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
-                            .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
-                        toolbarVisibleOnSmallScreen = !isExpanded;
-                    });
+                    $toolbarToggleButton = $(h('button.btn.cp-markdown-toggle-button', {
+                            'aria-label': Messages.toolbar_show_text_tools,
+                            'aria-pressed': 'false',
+                            'data-notippy': 1,
+                            'type': 'button',
+                            'title': Messages.toolbar_show_text_tools,
+                            onclick: function () {
+                                var isExpanded = $toolbar.is(':visible');
+                                $toolbar.toggle();
+                                $(this).toggleClass('cp-toolbar-button-active', !isExpanded)
+                                    .attr('aria-pressed', String(!isExpanded))
+                                    .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
+                                    .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
+                                toolbarVisibleOnSmallScreen = !isExpanded;
+                            }
+                        })).append([
+                        h('i.fa.fa-wrench', { 'aria-hidden': 'true' }),
+                        h('span.cp-toolbar-label', {}, Messages.toolbar_text_tools)
+                    ]);
                     $wrapper.append($toolbarToggleButton);
                 }
 
