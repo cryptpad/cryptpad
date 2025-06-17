@@ -1265,24 +1265,27 @@ define([
             if (isSmallScreen()) {
                 if (!$toolbarToggleButton) {
                     $toolbarToggleButton = $(h('button.btn.cp-markdown-toggle-button', {
-                            'aria-label': Messages.toolbar_show_text_tools,
-                            'aria-pressed': 'false',
-                            'data-notippy': 1,
-                            'type': 'button',
-                            'title': Messages.toolbar_show_text_tools,
-                            onclick: function () {
-                                var isExpanded = $toolbar.is(':visible');
-                                $toolbar.toggle();
-                                $(this).toggleClass('cp-toolbar-button-active', !isExpanded)
-                                    .attr('aria-pressed', String(!isExpanded))
-                                    .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
-                                    .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
-                                toolbarVisibleOnSmallScreen = !isExpanded;
-                            }
-                        })).append([
+                        'aria-label': Messages.toolbar_show_text_tools,
+                        'aria-pressed': 'false',
+                        'data-notippy': 1,
+                        'type': 'button',
+                        'title': Messages.toolbar_show_text_tools
+                    })).append([
                         h('i.fa.fa-wrench', { 'aria-hidden': 'true' }),
                         h('span.cp-toolbar-label', {}, Messages.toolbar_text_tools)
-                    ]);
+                    ]).click(function () {
+                        var isExpanded = $toolbar.is(':visible');
+                        $toolbar.toggle();
+                        $(this).toggleClass('cp-toolbar-button-active', !isExpanded)
+                            .attr('aria-pressed', String(!isExpanded))
+                            .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
+                            .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
+                        toolbarVisibleOnSmallScreen = !isExpanded;
+                    }).on('keydown keyup', e => {
+                        // don't close modals when pressing Enter
+                        // on the button
+                        e.stopPropagation();
+                    });
                     $wrapper.append($toolbarToggleButton);
                 }
 
