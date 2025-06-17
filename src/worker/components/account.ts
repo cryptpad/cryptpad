@@ -36,10 +36,12 @@ const init = (config) => {
     // Create account secret from hash
     const secret = Hash.getSecrets('drive', hash);
 
+    const network = config.store?.network ||
+                    config.store?.networkPromise;
     const listmapConfig = {
         data: {},
         websocketURL: NetConfig.getWebsocketURL(),
-        network: config.store?.network,
+        network: network,
         channel: secret.channel,
         readOnly: false,
         validateKey: secret.keys?.validateKey || undefined,
@@ -71,10 +73,14 @@ const init = (config) => {
     }).on('cacheready', function (info) {
         store.realtime = info.realtime;
         store.offline = true;
-        store.networkPromise = info.networkPromise;
+        const hadPromise = !!store.networkPromise;
+        store.networkPromise ||= info.networkPromise;
         store.cacheReturned = returned;
 
-        if (store.networkPromise && store.networkPromise.then) {
+        // Show error if we can't connect, but only if the accounts
+        // was required first
+        if (store.networkPromise && store.networkPromise.then
+                && !hadPromise) {
             // Check if we can connect
             const to = setTimeout(function () {
                 store.networkTimeout = true;
