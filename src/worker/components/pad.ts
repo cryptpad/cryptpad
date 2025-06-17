@@ -21,6 +21,7 @@ import * as UserObject from '../../common/user-object.js';
 import * as SF from './sharedfolder.js';
 
 const onJoinedEvt: any = Util.mkEvent(true);
+const onCacheReadyEvt: any = Util.mkEvent(true);
 
 const _getMetadata: Callback = (ctx, clientId, data, _cb) => {
     const cb = Util.once(Util.mkAsync(_cb));
@@ -248,6 +249,7 @@ const _join: Callback = (ctx, clientId, data) => {
         },
         onCacheReady: () => {
             postMessage(clientId, "PAD_CACHE_READY");
+            onCacheReadyEvt.fire();
         },
         onReady: pad => {
             const padData = pad.metadata || {};
@@ -527,6 +529,7 @@ const init = (config) => {
         leave,
         removeClient,
         onJoined: onJoinedEvt.reg,
+        onCacheReady: onCacheReadyEvt.reg,
         getChannels
     };
 };

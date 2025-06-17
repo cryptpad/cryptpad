@@ -2501,7 +2501,7 @@ const factory = (Sortify, UserObject, ProxyManager,
             // don't always call onCacheReady and onReady?
             // it depends on what was required by the first tab
             onAccountCacheReady(returned => {
-                store.returned ||= returned;
+                store.cacheReturned ||= returned;
                 cacheCb(returned);
             });
             onAccountReady(returned => {
@@ -2566,7 +2566,7 @@ const factory = (Sortify, UserObject, ProxyManager,
                 } = drive;
 
                 onDriveCacheReady(() => {
-                    cacheCb(store.returned);
+                    cacheCb(store.cacheReturned || store.returned);
                 });
                 onDriveReady(() => {
                     cb(store.returned);
@@ -2637,7 +2637,8 @@ const factory = (Sortify, UserObject, ProxyManager,
         };
         // If we load CryptPad for the first time from an existing pad, don't create a
         // drive automatically.
-        var onNoDrive = function (clientId, cb, initRpc) {
+        var onNoDrive = function (clientId, _cb, initRpc) {
+            const cb = Util.once(_cb);
             var andThen = function () {
                 // Initialize modules that can be used by pads
                 // and don't require account data
@@ -2649,30 +2650,37 @@ const factory = (Sortify, UserObject, ProxyManager,
                         cb({});
                     });
                 };
-                if (initRpc) {
-                    // In integration mode, we may need an RPC
-                    return initTempRpc(clientId, getAnon);
-                }
-                getAnon();
+                // We need to know the HistoryKeeper ID
+                // to initialize the anon RPC
+                loadHK(err => {
+                    if (err) { return; }
+                    if (initRpc) {
+                        // In integration mode, we may need
+                        // an authenticated RPC
+                        return initTempRpc(clientId, getAnon);
+                    }
+                    getAnon();
+                });
+                // If initRpc is true, we need to wait for a network
+                // before calling back
+                if (!store.network && !initRpc) { cb({}); }
             };
 
             // We need an anonymous RPC to be able to check if the pad exists and to get
             // its metadata, so we have to create a network first.
             if (!store.network) {
                 var wsUrl = NetConfig.getWebsocketURL();
-                return void Netflux.connect(wsUrl).then(function (network) {
-                    // If we already haave a network (race condition), use the
-                    // existing one and forget this one
+                store.networkPromise = Netflux.connect(wsUrl);
+                andThen();
+                return store.networkPromise.then((network) => {
+                    if (store.network === network) { return; }
+                    // If we already haave a network (race condition)
+                    // use the existing one and forget this one
                     if (!store.network) { store.network = network; }
                     else {
                         network.disconnect();
                         network = store.network;
                     }
-                    // We need to know the HistoryKeeper ID to initialize the anon RPC
-                    loadHK(err => {
-                        if (err) { return void cb(err); }
-                        andThen();
-                    });
                 }, function (err) {
                     console.error(err);
                     cb({error: 'OFFLINE'});
@@ -2751,6 +2759,12 @@ const factory = (Sortify, UserObject, ProxyManager,
                         }, ret => {
                             startModules(clientId, ret, onInit);
                         });
+                    });
+                    Store.pad.onCacheReady(() => {
+                        // If we're online, wait for onJoined
+                        if (store.network) { return; }
+                        // Otherwise, continue with cached drive
+                        next();
                     });
                     Store.pad.onJoined(next);
                     onPadRejectedEvt.reg(next);
@@ -2869,8 +2883,9 @@ const factory = (Sortify, UserObject, ProxyManager,
                 });
             }
 
-            // If this is not the first tab (initialized is true), it means either we don't
-            // support offline or we're already online
+            // If this is not the first tab (initialized is true),
+            // it means either we don't support offline or we're
+            // already online
             if (initialized) {
                 if (store.networkTimeout) {
                     postMessage(clientId, "LOADING_DRIVE", {
