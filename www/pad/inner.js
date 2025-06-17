@@ -662,6 +662,7 @@ define([
 
         var customCss = '/customize/ckeditor-contents.css?' + window.CKEDITOR.CRYPTPAD_URLARGS;
         $iframe.find('head').append('<link href="' + customCss + '" type="text/css" rel="stylesheet" _fcktemp="true"/>');
+        $('#cp-app-pad-editor').show();
 
         framework._.sfCommon.addShortcuts(ifrWindow);
 
@@ -757,7 +758,6 @@ define([
         */
 
         framework.onEditableChange(function(unlocked) {
-            $('#cp-app-pad-editor').show();
             if (!framework.isReadOnly()) {
                 $inner.attr('contenteditable', '' + Boolean(unlocked));
             }
