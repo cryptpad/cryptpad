@@ -551,6 +551,10 @@ define([
             $(code).show();
             APP.editor.refresh();
             $(button).hide();
+            var firstBtn = $(markdownTb.toolbar).find('button').get(0);
+            if (firstBtn) {
+                firstBtn.focus();
+            }
         });
         $(save).click(function () {
             $(save).hide();
