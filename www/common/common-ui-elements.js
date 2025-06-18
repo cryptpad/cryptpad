@@ -1310,6 +1310,10 @@ define([
         if (appType !== 'code' && appType !== 'slide') {
             $(window).on('resize', updateToolbarVisibility);
             updateToolbarVisibility();
+            // Small delay to ensure the toolbar layout has rendered before checking for wrapping (ex: profile medium screen size)
+            setTimeout(() => {
+                updateToolbarVisibility();
+            }, 10);
         }
 
         return {
