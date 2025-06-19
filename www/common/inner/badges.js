@@ -11,7 +11,7 @@ define([
     const badges = {
         admin: 'fa-star',
         moderator: 'fa-life-ring',
-        premium: 'fa-check-circle',
+        premium: 'fa-ticket',
         error: 'fa-exclamation-circle'
     };
 
@@ -21,6 +21,7 @@ define([
         let cls = icon.indexOf('cptools') === 0 ? 'cptools '+icon : 'fa '+icon;
         if (id === 'error') { cls += ' cp-badge-error'; }
         return h('i', {
+            'data-badge': id,
             'class': `cp-badge ${cls}`,
             'title': Messages[`badges_${id}`] || id
         });

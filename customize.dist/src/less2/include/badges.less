@@ -17,8 +17,18 @@
     --badges-width: @badges-width;
     --badges-font: ceil(@badges-width*2/3);
 }
+.badges_include() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+
+@badges-icon-color: @cryptpad_color_grey_800;
+@badges-bg-color: @cp_kanban-color0;
+@badges: {
+    admin: extract(@cp_palette, 3);
+    moderator: extract(@cp_palette, 1);
+    premium: extract(@cp_palette, 8);
+}
 & {
-    .badges_vars();
     i.cp-badge {
         width: var(--badges-width);
         height: var(--badges-width);
@@ -29,6 +39,19 @@
         justify-content: center;
         align-items: center;
         font-size: var(--badges-font);
+        color: @badges-icon-color;
+        background-color: @badges-bg-color;
+        z-index: 10;
+        &.cp-selected {
+            outline-offset: 3px;
+            outline: 2px solid @cryptpad_text_col;
+        }
+        each(@badges, {
+            &[data-badge="@{key}"] {
+                background-color: @value;
+            }
+        });
+
     }
 }
 

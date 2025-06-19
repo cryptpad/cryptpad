@@ -8,9 +8,10 @@ define([
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/inner/badges.js',
     '/common/hyperscript.js',
     '/common/diffMarked.js',
-], function ($, Messages, Util, UI, UIElements, h, DiffMd) {
+], function ($, Messages, Util, UI, UIElements, Badges, h, DiffMd) {
     'use strict';
 
     var debug = console.log;
@@ -74,7 +75,7 @@ define([
                 h('div.cp-app-contacts-category-content')
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
-                h('button.cp-app-contacts-muted-button', {tabindex:0},[
+                h('button.btn.btn-default.cp-app-contacts-muted-button', {tabindex:0},[
                     h('i.fa.fa-bell-slash'),
                     Messages.contacts_manageMuted
                 ]), 
@@ -323,8 +324,13 @@ define([
             });
 
             var avatar = h('div.cp-avatar');
+            var avatarDiv = h('div.cp-avatar-container', avatar);
 
-            var headerContent = [avatar, moreHistory, data.isFriendChat ? removeHistory : undefined];
+            var headerContent = [
+                avatarDiv,
+                moreHistory,
+                data.isFriendChat ? removeHistory : undefined
+            ];
             if (isApp) {
                 headerContent = [
                     h('div.cp-app-contacts-header-title', Messages.contacts_padTitle),
@@ -364,13 +370,14 @@ define([
             var friend = contactsData[curvePublic] || {};
             if (friend.avatar && avatars[friend.avatar]) {
                 $avatar.append(avatars[friend.avatar]).append(rightCol);
+                $avatar.append(Badges.render(friend.badge));
             } else {
                 common.displayAvatar($avatar, friend.avatar, displayName, function ($img) {
                     if (friend.avatar && $img) {
                         avatars[friend.avatar] = $img[0].outerHTML;
                     }
                     $(rightCol).insertAfter($avatar);
-                }, friend.uid);
+                }, friend.uid, friend.badge);
             }
 
             var sending = false;
@@ -507,6 +514,7 @@ define([
             execCommand('MUTE_USER', {
                 curvePublic: data.curvePublic,
                 name: data.displayName || data.name,
+                badge: data.badge,
                 avatar: data.avatar
             }, function (e /*, removed */) {
                 if (e) { return void console.error(e); }
@@ -610,16 +618,18 @@ define([
                 });
             });
 
+            const $avatar = $(h('div.cp-avatar')).appendTo($room);
             if (friendData.avatar && avatars[friendData.avatar]) {
-                $room.append(avatars[friendData.avatar]);
+                $avatar.append(avatars[friendData.avatar]);
+                $avatar.append(Badges.render(friendData.badge));
                 $room.append(rightCol);
             } else {
-                common.displayAvatar($room, friendData.avatar, room.name, function ($img) {
+                common.displayAvatar($avatar, friendData.avatar, room.name, function ($img) {
                     if (friendData.avatar && $img) {
                         avatars[friendData.avatar] = $img[0].outerHTML;
                     }
                     $room.append(rightCol);
-                }, friendData.uid);
+                }, friendData.uid, friendData.badge);
             }
             $room.append(status);
             return $room;
@@ -891,13 +901,13 @@ define([
                         .find('.cp-unmute-icon').show();
                     var data = muted[curve];
                     var avatar = h('span.cp-avatar');
-                    var button = h('button', {
+                    var button = h('button.btn', {
                         'data-user': curve
                     }, [
                         h('i.fa.fa-bell'),
                         Messages.contacts_unmute || 'unmute'
                     ]);
-                    common.displayAvatar($(avatar), data.avatar, data.name, Util.noop, data.uid);
+                    common.displayAvatar($(avatar), data.avatar, data.name, Util.noop, data.uid, data.badge);
                     $(button).click(function () {
                         unmuteUser(curve, button);
                         execCommand('UNMUTE_USER', curve, function (e, data) {
