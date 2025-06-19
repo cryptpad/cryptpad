@@ -221,14 +221,30 @@ const factory = (Messaging, Hash, Util, Crypto, Block) => {
         var curve = msg.author;
         var friend = ctx.store.proxy.friends && ctx.store.proxy.friends[curve];
         if (!friend || typeof msg.content !== "object") { return void cb(true); }
-        Object.keys(msg.content).forEach(function (key) {
-            friend[key] = msg.content[key];
-        });
-        if (ctx.store.messenger) {
-            ctx.store.messenger.onFriendUpdate(curve);
+        const edPublic = msg.content.edPublic;
+
+        const todo = () => {
+            Object.keys(msg.content).forEach(function (key) {
+                friend[key] = msg.content[key];
+            });
+            if (ctx.store.messenger) {
+                ctx.store.messenger.onFriendUpdate(curve);
+            }
+            ctx.updateMetadata();
+            cb(true);
+        };
+
+        if (msg.content.badge && ctx.store.modules['badge']) {
+            return ctx.store.modules['badge'].listBadges({
+                edPublic
+            }, (list => {
+                if (!list.includes(msg.content.badge)) {
+                    delete msg.content['badge'];
+                }
+                todo();
+            }));
         }
-        ctx.updateMetadata();
-        cb(true);
+        todo();
     };
 
     // Encrypt the password under the right key before sending it via URL hash

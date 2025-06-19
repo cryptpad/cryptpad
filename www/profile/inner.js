@@ -360,7 +360,7 @@ define([
                 }, [
                     h('i.fa.fa-bell-slash', {'aria-hidden': 'true' }),
                     h('span#cp-profile-mute-button', Messages.contacts_mute || 'mute')
-                ]);            
+                ]);
             $(muteButton).click(function () {
                 module.execCommand('MUTE_USER', {
                     curvePublic: data.curvePublic,
@@ -375,19 +375,42 @@ define([
         });
     };
 
-    var displayAvatar = function (val) {
+    var displayAvatar = function (val, data, badgeOK) {
         var sframeChan = common.getSframeChannel();
         var $span = APP.$avatar;
         $span.empty();
+        const badge = data?.badge;
+        if (badge && !badgeOK) {
+            var metadataMgr = common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
+            APP.badge.execCommand('CHECK_BADGE', {
+                badge: badge,
+                //channel: privateData.channel,
+                ed: data.edPublic,
+                sig: data.proof,
+                nid: privateData.channel
+            }, res => {
+                if (!res?.verified) {
+                    delete data.badge;
+                    displayAvatar(val, data);
+                    // XXX show error?
+                    return;
+                }
+                displayAvatar(val, data, true);
+            });
+            return;
+        }
         if (!val) {
             $('<img>', {
                 src: '/customize/images/avatar.png',
                 title: Messages.profile_defaultAlt,
                 alt: Messages.profile_defaultAlt,
             }).appendTo($span);
+            $span.append(Badges.render(badge));
             return;
         }
-        common.displayAvatar($span, val);
+        common.displayAvatar($span, val, void 0, void 0,
+                void 0, badge);
 
         if (APP.readOnly) { return; }
 
@@ -404,14 +427,14 @@ define([
             }, function () {
                 sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
                     if (err || err2) { return void UI.log(err || err2); }
-                    displayAvatar();
+                    displayAvatar(void 0, data);
                 });
             });
         });
     };
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
-        APP.$avatar = $('<span>').appendTo($block);
+        APP.$avatar = $(h('span.cp-avatar')).appendTo($block);
         var sframeChan = common.getSframeChannel();
         displayAvatar();
         if (APP.readOnly) { return; }
@@ -422,10 +445,11 @@ define([
                 APP.module.execCommand("SET", {
                     key: 'avatar',
                     value: data.url
-                }, function () {
+                }, function (err, newData) {
                     sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
                         if (err || err2) { return void UI.log(err || err2); }
-                        displayAvatar(data.url);
+                        // XXX badge
+                        displayAvatar(data.url, newData);
                     });
                 });
             };
@@ -447,7 +471,7 @@ define([
         $block.append($upButton);
     };
     var refreshAvatar = function (data) {
-        displayAvatar(data.avatar);
+        displayAvatar(data.avatar, data);
     };
 
     const addBadges = $container => {
@@ -459,6 +483,7 @@ define([
         const metadataMgr = APP.common.getMetadataMgr();
         const privateData = metadataMgr.getPrivateData();
         let args = {};
+        if (APP.readOnly) { return; }
         if (!privateData.isOwnProfile) { args.edPublic = obj.edPublic; }
         APP.badge.execCommand('LIST_BADGES', args, data => {
             APP.$badges.empty();
@@ -666,7 +691,9 @@ define([
 
     var updateValues = APP.updateValues = function (data) {
         // Only update avatar if it has changed
-        if (!APP._lastUpdate || APP._lastUpdate.avatar !== data.avatar) {
+        if (!APP._lastUpdate
+            || APP._lastUpdate.avatar !== data.avatar
+            || APP._lastUpdate.badge !== data.badge) {
             refreshAvatar(data);
         }
         // Always update other profile information

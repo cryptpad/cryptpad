@@ -10,13 +10,15 @@ define([
     '/common/common-interface.js',
     '/common/hyperscript.js',
     '/common/media-tag.js',
+    '/common/inner/badges.js',
     '/customize/messages.js',
     '/customize/application_config.js',
 
     '/components/croppie/croppie.min.js',
     '/components/file-saver/FileSaver.min.js',
     'css!/components/croppie/croppie.css',
-], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Messages, AppConfig) {
+], function ($, ApiConfig, Util, Hash, UI, h, MediaTag, Badges,
+            Messages, AppConfig) {
     var MT = {};
 
     // Configure MediaTags to use our local viewer
@@ -148,8 +150,9 @@ define([
         return text;
     };
 
-    MT.displayAvatar = function (common, $container, href, name, _cb, uid) {
+    MT.displayAvatar = function (common, $container, href, name, _cb, uid, badge) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
+        const badgeEl = badge ? Badges.render(badge) : undefined;
         var displayDefault = function () {
             var animal_avatar;
             if (uid && animal_avatars[uid]) {
@@ -175,6 +178,7 @@ define([
                 'aria-hidden': true,
             }).text(text);
             $container.append($avatar);
+            $container.append(badgeEl);
             if (uid && animal_avatar) {
                 animal_avatars[uid] = animal_avatar;
             }
@@ -187,6 +191,7 @@ define([
             var nodes = $.parseHTML(avatars[href]);
             var $el = $(nodes[0]);
             $container.empty().append($el);
+            $container.append(badgeEl);
             return void cb($el);
         }
 
@@ -223,6 +228,7 @@ define([
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var mt = UI.mediaTag(src, cryptKey);
                 var $img = $(mt).appendTo($container.empty());
+                $container.append(badgeEl);
                 MT.displayMediatagImage(common, $img, function (err, $image) {
                     if (err) { return void console.error(err); }
                     centerImage($img, $image);

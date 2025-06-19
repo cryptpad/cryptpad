@@ -152,8 +152,8 @@
     }
     .cp-toolbar-userlist-drawer {
         font: @colortheme_app-font-size @colortheme_font;
-        min-width: 175px;
-        width: 175px;
+        min-width: 200px;
+        width: 200px;
         display: block;
         overflow-y: auto;
         overflow-x: hidden;
@@ -203,16 +203,17 @@
             flex-flow: column;
             margin: 10px 0;
             margin-bottom: 20px;
+            .cp-userlist-entry {
+                display: flex;
+                align-items: center;
+            }
             &>span {
                 height: 48px;
                 padding: 5px;
                 margin: 2px 0;
                 background: @cp_toolbar-fade1;
                 border-right: 3px solid transparent;
-                .avatar_main(30px);
-                .cp-avatar-default, media-tag {
-                    margin-right: 5px;
-                }
+                .avatar_main(35px);
                 &.cp-userlist-clickable {
                     cursor: pointer;
                     &:hover {
@@ -224,6 +225,7 @@
                     flex: 1;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    margin-left: 5px;
                     white-space: nowrap;
                     display: flex;
                     flex-flow: column;
