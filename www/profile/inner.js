@@ -103,13 +103,14 @@ define([
     var sFrameChan;
 
     var addViewButton = function ($container) {
-        if (APP.readOnly) {
+        if (!APP.isOwnProfile) {
             return;
         }
 
         var hash = common.getMetadataMgr().getPrivateData().hashes.viewHash;
         var url = APP.origin + '/profile/#' + hash;
 
+        /*
         var $blockView = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
         var button = h('button.btn.' + VIEW_PROFILE_BUTTON, {
             'aria-labelledby': 'cp-profile-view-button'
@@ -119,7 +120,7 @@ define([
         $(button).click(function () {
             window.open(url, '_blank');
         }).appendTo($blockView);
-
+        */
         var $blockShare = $('<div>', {class: PROFILE_SECTION}).appendTo($container);
         var buttonS = h('button.btn.btn-primary.' + VIEW_PROFILE_BUTTON, {
             'aria-labelledby': 'cp-profile-share-button'
@@ -731,6 +732,7 @@ define([
             onEvent: onEvent
         });
         if (privateData.isOwnProfile) {
+            APP.isOwnProfile = true;
             APP.module = common.makeUniversal('profile', {
                 onEvent: onEvent
             });
