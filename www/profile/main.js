@@ -18,40 +18,15 @@ define([
     }).nThen(function (/*waitFor*/) {
         var getSecrets = function (Cryptpad, Utils, cb) {
             var Hash = Utils.Hash;
-            // 1st case: visiting someone else's profile with hash in the URL
+            // hash in the URL: visit someone else's profile
             if (window.location.hash) {
                 // No password for profiles
-                return void cb(null, Hash.getSecrets('profile', window.location.hash.slice(1)));
+                const hash = window.location.hash.slice(1);
+                return cb(null, Hash.getSecrets('profile', hash));
             }
-            nThen(function (waitFor) {
-                // 2nd case: visiting our own existing profile
-                Cryptpad.getProfileEditUrl(waitFor(function (hash) {
-                    waitFor.abort();
-                    return void cb(null, Hash.getSecrets('profile', hash));
-                }));
-            }).nThen(function () {
-                if (!Utils.LocalStore.isLoggedIn()) {
-                    // Unregistered users can't create a profile
-                    window.location.href = '/drive/';
-                    return void cb();
-                }
-                // No password for profile
-                var hash = Hash.createRandomHash('profile');
-                var secret = Hash.getSecrets('profile', hash);
-                Cryptpad.pinPads([secret.channel], function (e) {
-                    if (e) {
-                        if (e === 'E_OVER_LIMIT') {
-                            // TODO
-                        }
-                        return;
-                        //return void UI.log(Messages._getKey('profile_error', [e])) // TODO
-                    }
-                    var profile = {};
-                    profile.edit = Utils.Hash.getEditHashFromKeys(secret);
-                    profile.view = Utils.Hash.getViewHashFromKeys(secret);
-                    Cryptpad.setNewProfile(profile);
-                });
-                cb(null, secret);
+            // open our own profile
+            Cryptpad.getProfileViewUrl(function (hash) {
+                cb(null, Hash.getSecrets('profile', hash));
             });
         };
         var addData = function (meta, Cryptpad, user) {
@@ -59,21 +34,6 @@ define([
                 window.location.hash.slice(1) === user.profile;
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
-            // Adding a new avatar from the profile: pin it and store it in the object
-            sframeChan.on('Q_PROFILE_AVATAR_ADD', function (data, cb) {
-                var chanId = Utils.Hash.hrefToHexChannelId(data, null);
-                Cryptpad.pinPads([chanId], function (e) {
-                    if (e) { return void cb(e); }
-                    Cryptpad.setAvatar(data, cb);
-                });
-            });
-            // Removing the avatar from the profile: unpin it
-            sframeChan.on('Q_PROFILE_AVATAR_REMOVE', function (data, cb) {
-                var chanId = Utils.Hash.hrefToHexChannelId(data, null);
-                Cryptpad.unpinPads([chanId], function () {
-                    Cryptpad.setAvatar(undefined, cb);
-                });
-            });
 
             sframeChan.on('EV_PROFILE_CORRUPTED_CACHE', function () {
                 Utils.Cache.clearChannel(Utils.secret.channel, function () {

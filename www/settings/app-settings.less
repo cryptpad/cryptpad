@@ -9,6 +9,8 @@
 @import (reference) "../../customize/src/less2/include/creation.less";
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/export.less';
+@import (reference) '../../customize/src/less2/include/badges.less';
+@import (reference) '../../customize/src/less2/include/avatar.less';
 
 &.cp-app-settings {
     .framework_min_main();
@@ -227,6 +229,82 @@
                     width:1rem;
                     height:1rem;
                     margin: 0 2px 0 0;
+                }
+            }
+            .cp-settings-badges {
+                display: flex;
+                flex-flow: column;
+                align-items: flex-start;
+                .cp-settings-badges-list {
+                    display: flex;
+                    align-items: center;
+                    font-size: 24px;
+                    margin-top: 10px;
+                    .badges_main(40px);
+                    i {
+                        cursor: pointer;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                        }
+                        &:not(:last-child) {
+                            margin-right: 0.5em;
+                        }
+                        &.cp-selected {
+                            border-color: @cryptpad_color_brand;
+                        }
+                    }
+                }
+            }
+            .cp-settings-profile-avatar {
+                .cp-settings-avatar-container {
+                    width: 320px;
+                    background: @cryptpad_text_col;
+                    padding: 10px;
+                    margin-top: 10px;
+                    border-radius: 10px;
+                }
+                .cp-avatar {
+                    box-sizing: content-box;
+                    .avatar_main(300px);
+                    display: flex;
+                    text-align: center;
+                    border-radius: 4px;
+                    overflow: visible;
+                    position: relative;
+                    .cp-settings-avatar-delete {
+                        right: 0;
+                        top: 0;
+                        position: absolute;
+                        opacity: 1;
+                        &:hover {
+                            opacity: 0.7;
+                        }
+                    }
+                }
+                img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    vertical-align: top;
+                    border-radius: @variables_radius_L;
+                }
+                media-tag {
+                    height: 100%;
+                    width: 100%;
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                    img {
+                        min-width: 100%;
+                        min-height: 100%;
+                        max-width: none;
+                        max-height: none;
+                        flex: 1;
+                    }
+                }
+                button {
+                    min-width: 40px;
+                    height: 40px;
+                    margin: 5px !important;
                 }
             }
         }
