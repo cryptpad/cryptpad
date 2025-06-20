@@ -24,8 +24,16 @@ define([
     '/common/common-constants.js',
     '/customize.dist/login.js',
 
+    '/common/sframe-common-codemirror.js',
+    'cm/lib/codemirror',
+    'cm/mode/gfm/gfm',
+
     '/common/jscolor.js',
     '/components/file-saver/FileSaver.min.js',
+
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
+    'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/settings/app-settings.less',
@@ -49,7 +57,9 @@ define([
     Backup,
     Feedback,
     Constants,
-    Login
+    Login,
+    SFCodeMirror,
+    CodeMirror
 ) {
     var saveAs = window.saveAs;
     var APP = window.APP = {};
@@ -1977,8 +1987,7 @@ define([
         const val = APP.profileData?.avatar;
         const badge = APP.profileData?.badge;
 
-        console.error('REDRAW', val, badge);
-
+        /*
         if (!val) {
             $('<img>', {
                 src: '/customize/images/avatar.png',
@@ -1988,8 +1997,12 @@ define([
             $avatar.append(Badges.render(badge));
             return;
         }
+        */
 
-        common.displayAvatar($avatar, val, void 0, () => {
+        const name = APP.profileData?.name || Messages.anonymous;
+        if (!val) { $avatar.empty(); }
+        common.displayAvatar($avatar, val, APP.profileData?.name, () => {
+            if (!val) { return; }
             // avatar cb: append delete button
             const delButton = h('button.cp-settings-avatar-delete.btn.btn-danger.fa.fa-times', {
                 title: Messages.profile_remove_avatar
@@ -2080,8 +2093,23 @@ define([
 
         const $input = $(input).val(APP.profileData?.description || '');
 
+        const cm = SFCodeMirror.create("gfm", CodeMirror, input);
+        const editor = APP.editor = cm.editor;
+        editor.setOption('lineNumbers', true);
+        editor.setOption('lineWrapping', true);
+        editor.setOption('styleActiveLine', true);
+        editor.setOption('readOnly', false);
+        cm.configureTheme(common, function () {});
+        editor.setOption("extraKeys", {
+            "Esc": function () {
+                cm.getInputField().blur();
+                $(button).focus();
+            }
+        });
+        editor.refresh();
+
         Util.onClickEnter($(button), () => {
-            const value = $(input).val();
+            const value = editor.getValue();
             APP.profile.execCommand('SET', {
                 key: 'description',
                 value
@@ -2093,7 +2121,8 @@ define([
         });
 
         onProfileEvt.reg(() => {
-            $input.val(APP.profileData?.description || '');
+            editor.setValue(APP.profileData?.description || '');
+            editor.refresh();
         });
 
         cb(labelled);
