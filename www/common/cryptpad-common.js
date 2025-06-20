@@ -499,8 +499,8 @@ define([
     common.drive.onRemove = Util.mkEvent();
     common.drive.onDeleted = Util.mkEvent();
     // Profile
-    common.getProfileEditUrl = function (cb) {
-        postMessage("GET", { key: ['profile', 'edit'] }, function (obj) {
+    common.getProfileViewUrl = function (cb) {
+        postMessage("GET", { key: ['profile', 'view'] }, function (obj) {
             cb(obj);
         });
     };

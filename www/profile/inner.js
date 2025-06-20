@@ -94,7 +94,6 @@ define([
     var LINK_ID = "cp-app-profile-link";
     var AVATAR_ID = "cp-app-profile-avatar";
     var DESCRIPTION_ID = "cp-app-profile-description";
-    var BADGES_ID = "cp-app-profile-badges";
     var CREATE_ID = "cp-app-profile-create";
     var HEADER_ID = "cp-app-profile-header";
     var HEADER_RIGHT_ID = "cp-app-profile-rightside";
@@ -381,6 +380,9 @@ define([
         $span.empty();
         const badge = data?.badge;
         if (badge && !badgeOK) {
+            if (!data.proof || !data.edPublic) {
+                return displayAvatar(val);
+            }
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
             APP.badge.execCommand('CHECK_BADGE', {
@@ -445,10 +447,9 @@ define([
                 APP.module.execCommand("SET", {
                     key: 'avatar',
                     value: data.url
-                }, function (err, newData) {
+                }, function (newData) {
                     sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
                         if (err || err2) { return void UI.log(err || err2); }
-                        // XXX badge
                         displayAvatar(data.url, newData);
                     });
                 });
@@ -474,48 +475,6 @@ define([
         displayAvatar(data.avatar, data);
     };
 
-    const addBadges = $container => {
-        var $block = $('<div>', {id: BADGES_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
-        APP.$badges = $(h('span')).appendTo($block);
-    };
-    const refreshBadges = (obj) => {
-        if (!APP.$badges) { return; }
-        const metadataMgr = APP.common.getMetadataMgr();
-        const privateData = metadataMgr.getPrivateData();
-        let args = {};
-        if (APP.readOnly) { return; }
-        if (!privateData.isOwnProfile) { args.edPublic = obj.edPublic; }
-        APP.badge.execCommand('LIST_BADGES', args, data => {
-            APP.$badges.empty();
-            let spinner;
-            APP.$badges.toggle(!!data.length);
-            let all = data.map(str => {
-                const i = Badges.render(str);
-                const $i = $(i).attr('tabindex', 0);
-                if (APP.readOnly) { return i; }
-                const selected = obj?.badge === str;
-                if (selected) { $i.addClass('cp-selected'); }
-                Util.onClickEnter($i, () => {
-                    let value = selected ? '' : str;
-                    spinner.spin();
-                    APP.module.execCommand('SET', {
-                        key: 'badge',
-                        value
-                    }, function (data) {
-                        spinner.hide();
-                        APP.updateValues(data);
-                    });
-                });
-                return i;
-            });
-            let content = h('div.cp-profile-badges', [
-                h('span', Messages.profile_badges),
-                h('div.cp-profile-badges-list', all)
-            ]);
-            APP.$badges.append(content);
-            spinner = UI.makeSpinner(APP.$badges.find('> div'));
-        });
-    };
 
     var addDescription = function ($container) {
         var $block = $('<div>', {id: DESCRIPTION_ID, class: PROFILE_SECTION}).appendTo($container);
@@ -679,7 +638,6 @@ define([
             addLink($rightside);
             addFriendRequest($rightside);
             addMuteButton($rightside);
-            addBadges($rightside);
             addPublicKey($rightside);
             addCopyData($rightside);
             addViewButton($rightside);
@@ -689,18 +647,14 @@ define([
         }
     };
 
-    var updateValues = APP.updateValues = function (data) {
+    var updateValues = APP.updateValues = function (_data) {
+        const data = Util.clone(_data);
         // Only update avatar if it has changed
-        if (!APP._lastUpdate
-            || APP._lastUpdate.avatar !== data.avatar
-            || APP._lastUpdate.badge !== data.badge) {
-            refreshAvatar(data);
-        }
+        refreshAvatar(data);
         // Always update other profile information
         refreshName(data);
         refreshLink(data);
         refreshDescription(data);
-        refreshBadges(data);
         refreshFriendRequest(data);
         refreshMute(data);
         setPublicKeyButton(data);
@@ -778,7 +732,6 @@ define([
             onEvent: onEvent
         });
         if (privateData.isOwnProfile) {
-
             APP.module = common.makeUniversal('profile', {
                 onEvent: onEvent
             });
@@ -786,7 +739,6 @@ define([
 
             init();
 
-            console.log('POST SUBSCRIBE');
             execCommand('SUBSCRIBE', null, function (obj) {
                 updateValues(obj);
                 UI.removeLoadingScreen();

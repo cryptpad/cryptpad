@@ -11,6 +11,9 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/inner/sidebar-layout.js',
+    '/common/inner/badges.js',
+    '/common/inner/common-mediatag.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
     '/common/common-credential.js',
@@ -35,6 +38,9 @@ define([
     UIElements,
     Util,
     Hash,
+    Sidebar,
+    Badges,
+    MT,
     Messages,
     h,
     Cred,
@@ -52,16 +58,22 @@ define([
     var metadataMgr;
     var privateData;
     var sframeChan;
-
+    var onProfileEvt = Util.mkEvent();
 
     var categories = {
         'account': [ // Msg.settings_cat_account
             'cp-settings-own-drive',
             'cp-settings-info-block',
-            'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-mediatag-size',
             'cp-settings-delete'
+        ],
+        'profile': [ // Msg.settings_cat_profile
+            'cp-settings-displayname',
+            'cp-settings-profile-avatar',
+            'cp-settings-profile-badges',
+            'cp-settings-profile-link',
+            'cp-settings-profile-description',
         ],
         'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
@@ -146,11 +158,14 @@ define([
             .text(Messages['settings_' + safeKey + 'Hint'] || 'Coming soon...');
     };
 
-    var makeBlock = function(key, getter, full) {
+    var makeBlock = function(key, getter, full, isNew) {
         var safeKey = key.replace(/-([a-z])/g, function(g) { return g[1].toUpperCase(); });
 
         create[key] = function() {
             var $div = $('<div>', { 'class': 'cp-settings-' + key + ' cp-sidebarlayout-element' });
+            if (isNew) {
+                $div.attr('data-item', key);
+            }
             if (full) {
                 $('<label>').text(Messages['settings_' + safeKey + 'Title'] || key).appendTo($div);
 
@@ -1876,6 +1891,216 @@ define([
         cb($cbox[0]);
     }, true);
 
+    // Profile
+    makeBlock('profile-link', function(cb) {
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        const input = APP.blocks.input();
+        const button = APP.blocks.button('primary', '',
+                        Messages.settings_save);
+        const inputButton = APP.blocks.inputButton(input, button, {
+            onEnterDelegate: true
+        });
+        const labelled = APP.blocks.labelledInput(
+            Messages.settings_profileLinkLabel, input, inputButton);
+
+        const $input = $(input).val(APP.profileData?.url || '');
+
+        Util.onClickEnter($(button), () => {
+            const value = $(input).val();
+            APP.profile.execCommand('SET', {
+                key: 'url',
+                value
+            }, function (data) {
+                UI.log(Messages.saved);
+                APP.profileData = data;
+                onProfileEvt.fire();
+            });
+        });
+
+        onProfileEvt.reg(() => {
+            $input.val(APP.profileData?.url || '');
+        });
+
+        cb(labelled);
+    }, false, true);
+    const redrawBadges = ($badges) => {
+        const old = APP.profileData;
+        APP.badge.execCommand('LIST_BADGES', {}, data => {
+            let spinner;
+            $badges.toggle(!!data.length);
+            let all = data.map(str => {
+                const i = Badges.render(str);
+                const $i = $(i).attr('tabindex', 0);
+                const selected = old?.badge === str;
+                if (selected) { $i.addClass('cp-selected'); }
+                Util.onClickEnter($i, () => {
+                    let value = selected ? '' : str;
+                    spinner.spin();
+                    APP.profile.execCommand('SET', {
+                        key: 'badge',
+                        value
+                    }, function (data) {
+                        APP.profileData = data;
+                        spinner.done();
+                        onProfileEvt.fire();
+                    });
+                });
+                return i;
+            });
+            if (!all.length) {
+                return $badges.empty();
+            }
+            let content = h('div.cp-settings-badges', [
+                h('span', Messages.profile_badges),
+                h('div.cp-settings-badges-list', all)
+            ]);
+            $badges.empty().append(content);
+            spinner = UI.makeSpinner($badges.find('.cp-settings-badges-list'));
+        });
+    };
+    makeBlock('profile-badges', function(cb) {
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        const badges = h('div');
+        const $badges = $(badges);
+
+        redrawBadges($badges);
+        onProfileEvt.reg(() => {
+            redrawBadges($badges);
+        });
+
+        cb(badges);
+    }, false, true);
+
+    const redrawAvatar = ($avatar) => {
+        const val = APP.profileData?.avatar;
+        const badge = APP.profileData?.badge;
+
+        console.error('REDRAW', val, badge);
+
+        if (!val) {
+            $('<img>', {
+                src: '/customize/images/avatar.png',
+                title: Messages.profile_defaultAlt,
+                alt: Messages.profile_defaultAlt,
+            }).appendTo($avatar.empty());
+            $avatar.append(Badges.render(badge));
+            return;
+        }
+
+        common.displayAvatar($avatar, val, void 0, () => {
+            // avatar cb: append delete button
+            const delButton = h('button.cp-settings-avatar-delete.btn.btn-danger.fa.fa-times', {
+                title: Messages.profile_remove_avatar
+            });
+            $avatar.append(delButton);
+            $(delButton).click(() => {
+                const old = APP.profileData?.avatar;
+                APP.profile.execCommand("SET", {
+                    key: 'avatar',
+                    value: ""
+                }, (newData) => {
+                    APP.profileData = newData;
+                    sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old,
+                    (err, err2) => {
+                        if (err || err2) {
+                            return void UI.warn(err || err2);
+                        }
+                        onProfileEvt.fire();
+                    });
+                });
+            });
+        }, void 0, badge);
+    };
+    makeBlock('profile-avatar', function(cb) {
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        const avatar = h('div.cp-avatar');
+        const $avatar = $(avatar);
+
+        redrawAvatar($avatar);
+        onProfileEvt.reg(() => {
+            redrawAvatar($avatar);
+        });
+
+        // Upload
+        const data = MT.addAvatar(common, (ev, data) => {
+            const old = APP.profileData?.avatar;
+            const todo = () => {
+                APP.profile.execCommand("SET", {
+                    key: 'avatar',
+                    value: data.url
+                }, (newData) => {
+                    console.error(newData?.avatar, newData);
+                    sframeChan.query("Q_PROFILE_AVATAR_ADD",
+                    data.url, (err, err2) => {
+                        if (err || err2) {
+                            return void UI.warn(err || err2);
+                        }
+                        APP.profileData = newData;
+                        onProfileEvt.fire();
+                    });
+                });
+            };
+            if (old) {
+                sframeChan.query("Q_PROFILE_AVATAR_REMOVE",
+                old, (err, err2) => {
+                    if (err || err2) {
+                        return void UI.warn(err || err2);
+                    }
+                    todo();
+                });
+                return;
+            }
+            todo();
+        });
+        const $upButton = common.createButton('upload', false, data);
+        $upButton.removeClass('btn-primary').addClass('btn-secondary');
+        $upButton.removeProp('title');
+        $upButton.text(Messages.profile_upload);
+        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true'}));
+
+
+        cb([
+            h('label', Messages.settings_profileAvatarLabel),
+            h('div.cp-settings-avatar-container', avatar),
+            $upButton[0]
+        ]);
+    }, false, true);
+    makeBlock('profile-description', function(cb) {
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        const input = APP.blocks.textarea();
+        const button = APP.blocks.button('primary', '',
+                        Messages.settings_save);
+        const labelled = APP.blocks.labelledInput(
+            Messages.settings_profileDescLabel, input);
+        $(labelled).append(button);
+
+        const $input = $(input).val(APP.profileData?.description || '');
+
+        Util.onClickEnter($(button), () => {
+            const value = $(input).val();
+            APP.profile.execCommand('SET', {
+                key: 'description',
+                value
+            }, function (data) {
+                UI.log(Messages.saved);
+                APP.profileData = data;
+                onProfileEvt.fire();
+            });
+        });
+
+        onProfileEvt.reg(() => {
+            $input.val(APP.profileData?.description || '');
+        });
+
+        cb(labelled);
+    }, false, true);
+
+
+
     // Settings app
 
     var createUsageButton = function() {
@@ -1897,6 +2122,7 @@ define([
 
     var SIDEBAR_ICONS = {
         account: 'fa fa-user-o',
+        profile: 'fa fa-user-circle',
         drive: 'fa fa-hdd-o',
         cursor: 'fa fa-i-cursor',
         code: 'fa fa-file-code-o',
@@ -1909,6 +2135,7 @@ define([
     };
 
     Messages.settings_cat_notifications = Messages.notificationsPage;
+    Messages.settings_cat_profile = Messages.profileButton;
     var createLeftside = function() {
         var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories' })
             .appendTo(APP.$leftside);
@@ -1955,7 +2182,15 @@ define([
         common.setHash(active);
     };
 
-
+    var onProfileEvent = function (obj) {
+        var ev = obj.ev;
+        var data = obj.data;
+        if (ev === 'UPDATE') {
+            APP.profileData = data;
+            onProfileEvt.fire();
+            return;
+        }
+    };
 
     nThen(function(waitFor) {
         $(waitFor(UI.addLoadingScreen));
@@ -1967,6 +2202,16 @@ define([
         APP.$rightside = $('<div>', { id: 'cp-sidebarlayout-rightside' }).appendTo(APP.$container);
         sframeChan = common.getSframeChannel();
         sframeChan.onReady(waitFor());
+    }).nThen(function(waitFor) {
+        APP.profile = common.makeUniversal('profile', {
+            onEvent: onProfileEvent
+        });
+        APP.badge = common.makeUniversal('badge', {
+            onEvent: onProfileEvent
+        });
+        APP.profile.execCommand('SUBSCRIBE', null, waitFor(obj => {
+            APP.profileData = obj;
+        }));
     }).nThen(function( /*waitFor*/ ) {
         metadataMgr = common.getMetadataMgr();
         privateData = metadataMgr.getPrivateData();
@@ -1984,6 +2229,8 @@ define([
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
         APP.history = common.makeUniversal('history');
+
+        APP.blocks = Sidebar.blocks('settings', common);
 
         // Content
         var $rightside = APP.$rightside;
