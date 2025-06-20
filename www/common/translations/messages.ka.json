@@ -14,7 +14,9 @@
         "kanban": "კანბანი",
         "drive": "CryptDrive",
         "whiteboard": "ჩანახატები",
-        "file": "ფაილი"
+        "file": "ფაილი",
+        "pad": "მდიდარი ტექსტი",
+        "slide": "მარკდაუნის სლაიდები"
     },
     "calendar_nth_5": "მეხუთე",
     "poll_comment_submit": "გაგზავნა",
@@ -413,5 +415,19 @@
     "calendar_rec_daily": "ყოველდღიური",
     "goRight": "მარჯვნივ",
     "support_cat_search": "ძებნა",
-    "admin_cat_apps": "აპლიკაციები"
+    "admin_cat_apps": "აპლიკაციები",
+    "readonly": "მხოლოდ წაკითხვადი",
+    "formattedMB": "{0} მბ",
+    "formattedGB": "{0} გბ",
+    "formattedKB": "{0} კბ",
+    "admin_admin": "ადმინისტრატორი",
+    "user_displayName": "საჩვენებელი სახელი",
+    "user_accountName": "ანგარიშის სახელი",
+    "userListButton": "მომხმარებლების სია",
+    "userAccountButton": "მომხმარებლის მენიუ",
+    "deletedFromServer": "დოკუმენტი განადგურდა",
+    "upgradeAccount": "სატარიფო გეგმის აწევა",
+    "templateSaved": "შაბლონი შენახულია!",
+    "uploadButton": "ფაილების ატვირთვა",
+    "uploadFolderButton": "ატვირთვის საქაღალდე"
 }
