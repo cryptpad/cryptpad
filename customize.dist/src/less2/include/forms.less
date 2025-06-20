@@ -251,6 +251,21 @@
             }
         }
 
+        &.btn-case {
+            text-transform: capitalize;
+            font-size: 16px;
+        }
+        &.btn-primary-alt {
+            background-color: @cryptpad_color_brand_300;
+            border-color: @cryptpad_color_brand_300;
+            color: @cryptpad_color_grey_800;
+            &:hover, &:not(:disabled):active, &:focus {
+                color: @cryptpad_color_grey_800;
+                border-color: @cryptpad_color_brand_300;
+                background-color: lighten(@cryptpad_color_brand_300, 5%);
+            }
+        }
+
         &.btn-light {
             border-color: @cryptpad_text_col;
             color: @cryptpad_text_col;

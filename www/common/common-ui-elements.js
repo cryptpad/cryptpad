@@ -199,7 +199,9 @@ define([
         }).filter(function (x) { return x; });
 
         var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
-        var classes = noOthers + (config.large?'.large':'') + (config.list?'.list':'');
+        var classes = noOthers + (config.large?'.large':'') +
+                                (config.list?'.list':'') +
+                                (config.radio?'.radio':'');
 
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
@@ -221,20 +223,24 @@ define([
                 $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="'+name+'"])').hide();
             }
         };
-        $(inputFilter).on('keydown keyup change', redraw);
+        $(inputFilter).on('input keydown keyup change', redraw);
+        if (config.evOnFilter) {
+            config.evOnFilter.reg(redraw);
+        }
 
         $(div).append(h('div.cp-usergrid-grid', icons));
         if (!config.noSelect) {
             $div.on('click', '.cp-usergrid-user', function () {
                 var sel = $(this).hasClass('cp-selected');
+                if (config.radio) {
+                    $div.find('.cp-usergrid-user.cp-selected').removeClass('cp-selected');
+                }
                 if (!sel) {
                     $(this).addClass('cp-selected');
-                } else {
-                    var order = $(this).attr('data-order');
-                    order = order ? 'order:'+order : '';
-                    $(this).removeClass('cp-selected').attr('style', order);
+                } else if (!config.radio) {
+                    $(this).removeClass('cp-selected');
                 }
-                onSelect();
+                onSelect(!sel ? this : undefined);
             });
             $div.on('keydown', '.cp-usergrid-user', function (e) {
                 if (e.which === 13) {
@@ -251,6 +257,55 @@ define([
         };
     };
 
+    UIElements.getUserTeamPicker = (common, config, onSelected) => {
+        const { msg, friendsData, teamsData } = config;
+        let teams;
+        const filter = h('input', {
+            placeholder: Messages.share_filterFriend
+        });
+        const evOnFilter = Util.mkEvent();
+        const contacts = UIElements.getUserGrid(Messages.contacts, {
+            common: common,
+            data: friendsData,
+            noFilter: false,
+            radio: true,
+            large: true,
+            evOnFilter
+        }, el => {
+            onSelected(el);
+            $(teams.div).find('.cp-selected').removeClass('cp-selected');
+        });
+        teams = UIElements.getUserGrid(Messages.teams, {
+            common: common,
+            data: teamsData,
+            noFilter: false,
+            radio: true,
+            large: true,
+            evOnFilter
+        }, el => {
+            onSelected(el);
+            $(contacts.div).find('.cp-selected').removeClass('cp-selected');
+        });
+
+        const $contactFilter = $(contacts.div).find('.cp-usergrid-filter input').hide();
+        const $teamFilter = $(teams.div).find('.cp-usergrid-filter input').hide();
+
+        $(filter).on('input', () => {
+            const val = filter.value;
+            $teamFilter.val(val);
+            $contactFilter.val(val);
+            evOnFilter.fire();
+        });
+
+        const content = h('div.cp-userteam-picker', [
+            h('div', msg),
+            h('div.cp-userteam-filter', filter),
+            contacts.div,
+            teams.div
+        ]);
+
+        return content;
+    };
 
     UIElements.noContactsMessage = function (common) {
         var metadataMgr = common.getMetadataMgr();
@@ -1465,30 +1520,16 @@ define([
                 });
             };
 
-            var makeUpgradeButton = function () {
-                var $a = $('<a>', {
-                    'class': 'cp-limit-upgrade btn btn-success',
-                    href: urls.upgradeURL,
-                    rel: "noreferrer noopener",
-                    target: "_blank",
-                }).text(Messages.upgradeAccount).appendTo($buttons);
-                $a.click(function () {
-                    Feedback.send('UPGRADE_ACCOUNT');
-                });
-            };
-
             if (!Config.removeDonateButton) {
-                if (!common.isLoggedIn() || !Config.allowSubscriptions) {
-                    // user is not logged in, or subscriptions are disallowed
-                    makeDonateButton();
-                } else if (!plan) {
-                    // user is logged in and subscriptions are allowed
-                    // and they don't have one. show upgrades
-                    makeUpgradeButton();
-                    makeDonateButton();
-                } else {
-                    // they have a plan. show nothing
-                }
+                // Messages.upgradeAccount
+                common.getExtensionsSync('USAGE_BUTTON').some(ext => {
+                    if (!ext.getButton) { return; }
+                    let $b = ext.getButton(common, plan);
+                    if (!$b) { return; }
+                    $buttons.append($b);
+                });
+                // Add donate button
+                makeDonateButton();
             }
 
             var prettyUsage;
@@ -2286,19 +2327,16 @@ define([
         // section to determine if we have to manually hide a separator.
         var surveyAlone = true;
 
-        if (Config.allowSubscriptions) {
+        Common.getExtensionsSync('USERMENU_ITEM').forEach(ext => {
+            if (!ext.getItem) {
+                return void console.error("Missing attribute for extension point", "USERMENU_ITEM", ext);
+            }
+            let item = ext.getItem(Common);
+            if (!item) { return; }
             surveyAlone = false;
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'fa fa-star-o'
-                },
-                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing),
-                action: function () {
-                    Common.openURL(priv.plan ? priv.accounts.upgradeURL :'/features.html');
-                },
-            });
-        }
+            options.push(item);
+        });
+
         if (!priv.plan && !Config.removeDonateButton) {
             surveyAlone = false;
             options.push({
