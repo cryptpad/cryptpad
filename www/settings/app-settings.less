@@ -257,10 +257,10 @@
             }
             .cp-settings-profile-avatar {
                 .cp-settings-avatar-container {
-                    width: 320px;
-                    background: @cryptpad_text_col;
-                    padding: 10px;
-                    margin-top: 10px;
+                    width: 300px;
+                    //background: @cryptpad_text_col;
+                    //padding: 10px;
+                    margin: 10px 0;
                     border-radius: 10px;
                 }
                 .cp-avatar {
@@ -306,6 +306,32 @@
                     height: 40px;
                     margin: 5px !important;
                 }
+            }
+            .cp-settings-profile-description {
+                width: 31rem;
+                max-width: 31rem;
+                .cp-labelled-input {
+                    max-width: 100% !important;
+                    width: 100% !important;
+                }
+                textarea, .CodeMirror {
+                    height: 175px;
+                    border-radius: 10px;
+                }
+                .CodeMirror {
+                    font-family: monospace;
+                    font-size: 16px;
+                    line-height: initial;
+                    max-width: 31rem;
+                    border: 1px solid fade(@cryptpad_text_col, 50%);
+                    pre {
+                        margin: 0;
+                        font-family: inherit;
+                        font-size: inherit;
+                        line-height: inherit;
+                    }
+                }
+
             }
         }
     }

@@ -24,7 +24,6 @@ define([
     '/components/marked/marked.min.js',
     '/common/sframe-common-codemirror.js',
     'cm/lib/codemirror',
-
     'cm/mode/gfm/gfm',
 
 
