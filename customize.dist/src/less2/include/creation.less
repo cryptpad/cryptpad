@@ -129,6 +129,7 @@
                 }
                 a:focus-visible {
                     border-radius: 50%;
+                    outline: @variables_focus_style;
                 }
             }
         }
@@ -153,6 +154,10 @@
                 text-transform: uppercase;
                 &:hover, &:focus-visible {
                     background: contrast(@cp_creation-button-fg, lighten(@cp_creation-button-bg, 5%), darken(@cp_creation-button-bg, 5%));
+                }
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
                 }
             }
         }
@@ -268,10 +273,18 @@
                         width: 45px;
                         margin: 0 5px;
                         padding: 0 0 0 3px;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                            border-radius: @variables_radius;
+                        }
                     }
                     select {
                         border-radius: @variables_radius;
                         margin: 0.2rem;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                            border-radius: @variables_radius;
+                        }
                     }
                 }
                 &.active {
@@ -293,12 +306,20 @@
                             width: 150px;
                             padding: 0 5px;
                             margin: 0.2rem;
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
+                            }
                         }
                         label {
                             flex: none;
                         }
                         .cp-password-reveal {
                             margin:0.2rem;
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
+                            }
                         }
                     }
                 }
@@ -341,6 +362,10 @@
                     &.hidden {
                         visibility: hidden;
                     }
+                    &:focus-visible {
+                        outline: @variables_focus_style;
+                        border-radius: @variables_radius;
+                    }
                 }
             }
             .cp-creation-template-container {
@@ -378,6 +403,10 @@
                             color: @creation-color;
                             color: var(--creation-color);
                         }
+                    }
+                    &:focus-visible {
+                        outline: @variables_focus_style;
+                        border-radius: @variables_radius;
                     }
 
                     transition: all 0.1s;
