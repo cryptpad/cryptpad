@@ -2,70 +2,75 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-const fs = require('fs');
-const path = require('path');
 const { execSync } = require('child_process');
+const fs = require('fs/promises');
+const path = require('path');
 
-const outputDir = path.join('www', 'components', '@noble', 'post-quantum');
-const outputFile = path.join(outputDir, 'index.js');
-
-fs.mkdirSync(outputDir, { recursive: true });
-
-function bundleWithBrowserify() {
-    const entryFilePath = path.join(outputDir, 'entry.js');
-    fs.writeFileSync(entryFilePath, `
-// Entry point for bundling @noble post-quantum modules
-const ml_kem = require('@noble/post-quantum/ml-kem');
-const ml_dsa = require('@noble/post-quantum/ml-dsa');
-const utils = require('@noble/post-quantum/utils');
-
-module.exports = {
-  ml_kem,
-  ml_dsa,
-  utils
-};
-  `);
-
-    try {
-        console.log('Bundling with browserify...');
-        execSync(`npx browserify ${entryFilePath} -o ${outputFile}`, { stdio: 'inherit' });
-
-        let content = fs.readFileSync(outputFile, 'utf8');
-
-        const wrappedContent = `
-// Post-quantum cryptography module bundled for RequireJS
-define('components/@noble/post-quantum/index', [], function() {
-  var global = typeof self !== 'undefined' ? self : this;
-  var module = { exports: {} };
-  var exports = module.exports;
-
-  (function (module, exports) {
-${content}
-  })(module, exports);
-
-  return module.exports;
-});
+// This content will be used for a temporary entry file for the bundle.
+// It re-exports the necessary modules from the @noble/post-quantum package.
+const entryPointContent = `
+export * as ml_kem from '@noble/post-quantum/ml-kem';
+export * as ml_dsa from '@noble/post-quantum/ml-dsa';
+export * as utils from '@noble/post-quantum/utils';
 `;
 
-        fs.writeFileSync(outputFile, wrappedContent);
-        console.log(`Successfully bundled PQ modules to ${outputFile}`);
-        fs.unlinkSync(entryFilePath);
-        return true;
-    } catch (err) {
-        console.error('Browserify bundling failed:', err.message);
-        if (fs.existsSync(entryFilePath)) fs.unlinkSync(entryFilePath);
-        return false;
+async function main() {
+    try {
+        console.log('Temporarily installing esbuild...');
+        execSync('npm install esbuild', { stdio: 'inherit' });
+
+        const esbuild = require('esbuild');
+
+        const outputDir = path.join('www', 'components', '@noble', 'post-quantum');
+        const entryPointPath = path.join(outputDir, '_pqc_entry.js');
+        const outfile = path.resolve(outputDir, 'index.js');
+
+        try {
+            await fs.mkdir(outputDir, { recursive: true });
+            await fs.writeFile(entryPointPath, entryPointContent.trim());
+            console.log('Bundling for browser with esbuild...');
+
+            await esbuild.build({
+                entryPoints: [entryPointPath],
+                bundle: true,
+                outfile,
+                format: 'iife',
+                globalName: 'PostQuantum',
+                platform: 'browser',
+                minify: false,
+                sourcemap: true,
+            });
+
+            const amdLoader = `\nif (typeof define === 'function' && define.amd) { define([], function() { return window.PostQuantum; }); }`;
+            await fs.appendFile(outfile, amdLoader);
+
+            console.log(`Bundle created successfully: ${outfile}`);
+        } finally {
+            // Clean up the temporary entry file
+            await fs.unlink(entryPointPath).catch(err => {
+                if (err.code !== 'ENOENT') {
+                    console.error('Failed to remove temporary entry file:', err);
+                }
+            });
+        }
+    } catch (e) {
+        console.error('An error occurred during the process:');
+        console.error(e);
+        process.exit(1);
+    } finally {
+        console.log('Removing temporary esbuild dependency...');
+        try {
+            execSync('npm uninstall esbuild', { stdio: 'inherit' });
+        } catch (uninstallErr) {
+            console.error('Failed to uninstall esbuild. You may need to remove it manually.', uninstallErr);
+        }
     }
 }
 
 console.log('Starting PQ crypto browser conversion...');
 
-if (bundleWithBrowserify()) {
+main().then(() => {
     console.log('PQ crypto browser conversion complete!');
-    console.log('Use it with:');
-    console.log('define([\'components/@noble/post-quantum/index\'], function(PostQuantum) {');
-    console.log('  // Use PostQuantum.ml_kem, etc.');
-    console.log('});');
-} else {
+}).catch(() => {
     process.exit(1);
-}
+});
