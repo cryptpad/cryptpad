@@ -905,7 +905,8 @@ define([
             case 'toggle':
                 button = $(h('button.cp-toolbar-tools', {
                     //title: data.title || '', // TODO display if the label text is collapsed
-                    'aria-label': data.text || Messages.toolbar_tools // Fallback
+                    'aria-label': data.text || Messages.toolbar_tools, // Fallback
+                    'aria-pressed': false
                 }, [
                     h('i.fa.' + (data.icon || 'fa-wrench')),
                     h('span.cp-toolbar-name', data.text || Messages.toolbar_tools)
@@ -923,6 +924,7 @@ define([
                 button.click(function (e) {
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
+                    button.attr('aria-pressed', isVisible ? 'true' : 'false');
                     if (callback) { callback(isVisible); }
                     if (isVisible) {
                         button.addClass('cp-toolbar-button-active');
@@ -1157,20 +1159,40 @@ define([
         };
         for (var k in actions) {
             let $b = $('<button>', {
+                'data-notippy':1,
                 'data-type': k,
-                'class': 'pure-button fa ' + actions[k].icon,
-                title: Messages['mdToolbar_' + k] || k
-            }).click(onClick);
+                'class': 'pure-button cp-markdown-' + k,
+                'title': Messages['mdToolbar_' + k] || k,
+                'aria-label': Messages['mdToolbar_' + k] || k
+                }).append(
+                $('<i>', {
+                    'class': 'fa ' + actions[k].icon,
+                    'aria-hidden': 'true'
+                })).click(onClick);
             if (k === "embed") { $toolbar.prepend($b); }
             else { $toolbar.append($b); }
         }
         $('<button>', {
-            'class': 'pure-button fa fa-question cp-markdown-help',
-            title: Messages.mdToolbar_help
-        }).click(function () {
+            'data-notippy':1,
+            'class': 'pure-button cp-markdown-help',
+            'title': Messages.mdToolbar_help,
+            'aria-label': Messages.mdToolbar_help
+        }).append(
+            $('<i>', {
+                'class': 'fa fa-question',
+                'aria-hidden': 'true'
+            })).click(function () {
             var href = Messages.mdToolbar_tutorial;
             common.openUnsafeURL(href);
         }).appendTo($toolbar);
+
+        $toolbar.on('keydown', function (e) {
+            if (e.key === 'Escape' || e.keyCode === 27) {
+                editor.focus();
+                e.preventDefault();
+            }
+        });
+
         return $toolbar;
     };
     UIElements.createMarkdownToolbar = function (common, editor, opts) {
@@ -1228,6 +1250,71 @@ define([
             });
             $toolbarButton.show();
         };
+
+        function isSmallScreen() {
+            return window.innerHeight < 530 || window.innerWidth < 530;
+        }
+
+        var toolbarVisibleOnSmallScreen = false;
+        var $toolbarToggleButton = null;
+        var appType = common.getMetadataMgr().getPrivateData().app;
+
+        function updateToolbarVisibility() {
+            var $wrapper = $(opts && opts.wrapper ? opts.wrapper : $toolbar.parent());
+
+            if (isSmallScreen()) {
+                if (!$toolbarToggleButton) {
+                    $toolbarToggleButton = $(h('button.btn.cp-markdown-toggle-button', {
+                        'aria-label': Messages.toolbar_show_text_tools,
+                        'aria-pressed': 'false',
+                        'data-notippy': 1,
+                        'type': 'button',
+                        'title': Messages.toolbar_show_text_tools
+                    })).append([
+                        h('i.fa.fa-wrench', { 'aria-hidden': 'true' }),
+                        h('span.cp-toolbar-label', {}, Messages.toolbar_text_tools)
+                    ]).click(function () {
+                        var isExpanded = $toolbar.is(':visible');
+                        $toolbar.toggle();
+                        $(this).toggleClass('cp-toolbar-button-active', !isExpanded)
+                            .attr('aria-pressed', String(!isExpanded))
+                            .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
+                            .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
+                        toolbarVisibleOnSmallScreen = !isExpanded;
+                    }).on('keydown keyup', e => {
+                        // don't close modals when pressing Enter
+                        // on the button
+                        e.stopPropagation();
+                    });
+                    $wrapper.append($toolbarToggleButton);
+                }
+
+                if (toolbarVisibleOnSmallScreen) {
+                    $toolbar.show();
+                    $toolbarToggleButton.addClass('cp-toolbar-button-active')
+                        .attr('aria-pressed', 'true');
+                } else {
+                    $toolbar.hide();
+                    $toolbarToggleButton.removeClass('cp-toolbar-button-active')
+                        .attr('aria-pressed', 'false');
+                }
+            } else {
+                if ($toolbarToggleButton) {
+                    $toolbarToggleButton.remove();
+                    $toolbarToggleButton = null;
+                }
+                $toolbar.show();
+            }
+        }
+        
+        if (appType !== 'code' && appType !== 'slide') {
+            $(window).on('resize', updateToolbarVisibility);
+            updateToolbarVisibility();
+            // Small delay to ensure the toolbar layout has rendered before checking for wrapping (ex: profile medium screen size)
+            setTimeout(() => {
+                updateToolbarVisibility();
+            }, 10);
+        }
 
         return {
             toolbar: $toolbar,
@@ -1318,7 +1405,6 @@ define([
             text: text
         };
     };
-
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
         so we throttle its usage. Clients will not update more than once per

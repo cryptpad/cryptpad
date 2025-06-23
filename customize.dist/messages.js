@@ -147,6 +147,9 @@ define(req, function(AppConfig, Default, Language) {
     Messages.previous_templateList = "Previous template list";
     Messages.contact_mastodon = 'Mastodon'; // XXX
     Messages.contact_forum = 'Forum'; // XXX
+    Messages.toolbar_text_tools  = "Text tools";
+    Messages.toolbar_show_text_tools = "Show text tools";
+    Messages.toolbar_hide_text_tools = "Hide text tools";
 
     return Messages;
 
