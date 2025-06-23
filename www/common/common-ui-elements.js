@@ -1256,7 +1256,6 @@ define([
         }
 
         var toolbarVisibleOnSmallScreen = false;
-        var appType = common.getMetadataMgr().getPrivateData().app;
 
         const $toolbarToggleButton = $(h('button.btn.cp-markdown-toggle-button', {
             'aria-label': Messages.toolbar_show_text_tools,

@@ -2074,7 +2074,6 @@ define([
 
             sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
                 if (!Utils.Notify.isSupported()) { return void cb(false); }
-                // eslint-disable-next-line compat/compat
                 Notification.requestPermission(function (s) {
                     cb(s === "granted");
                 });

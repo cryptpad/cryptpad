@@ -22,14 +22,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/components/marked/marked.min.js',
-    '/common/sframe-common-codemirror.js',
-    'cm/lib/codemirror',
-    'cm/mode/gfm/gfm',
 
-
-    'css!/components/codemirror/lib/codemirror.css',
-    'css!/components/codemirror/addon/dialog/dialog.css',
-    'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/profile/app-profile.less',
@@ -52,10 +45,7 @@ define([
     h,
     Messages,
     AppConfig,
-    Marked,
-    SFCodeMirror,
-    CodeMirror
-    )
+    Marked)
 {
     var APP = window.APP = {
         _onRefresh: []
@@ -340,7 +330,6 @@ define([
     };
 
     var displayAvatar = function (val, data, badgeOK) {
-        var sframeChan = common.getSframeChannel();
         var $span = APP.$avatar;
         $span.empty();
         const badge = data?.badge;
@@ -382,7 +371,6 @@ define([
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
         APP.$avatar = $(h('span.cp-avatar')).appendTo($block);
-        var sframeChan = common.getSframeChannel();
         displayAvatar();
     };
     var refreshAvatar = function (data) {

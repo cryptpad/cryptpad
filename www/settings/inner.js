@@ -2001,7 +2001,7 @@ define([
 
         const name = APP.profileData?.name || Messages.anonymous;
         if (!val) { $avatar.empty(); }
-        common.displayAvatar($avatar, val, APP.profileData?.name, () => {
+        common.displayAvatar($avatar, val, name, () => {
             if (!val) { return; }
             // avatar cb: append delete button
             const delButton = h('button.cp-settings-avatar-delete.btn.btn-danger.fa.fa-times', {
@@ -2091,7 +2091,7 @@ define([
             Messages.settings_profileDescLabel, input);
         $(labelled).append(button);
 
-        const $input = $(input).val(APP.profileData?.description || '');
+        $(input).val(APP.profileData?.description || '');
 
         const cm = SFCodeMirror.create("gfm", CodeMirror, input);
         const editor = APP.editor = cm.editor;

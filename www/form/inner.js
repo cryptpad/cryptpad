@@ -1116,7 +1116,7 @@ define([
                             }
                             editor.refresh();
                             editor.save();
-                            var firstBtn = $(markdownTb.toolbar).find('button').get(0);
+                            var firstBtn = $(block).find('.cp-markdown-toolbar').find('button').get(0);
                             if (firstBtn) {
                                 firstBtn.focus();
                             } else {
