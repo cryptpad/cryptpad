@@ -2113,7 +2113,10 @@ define([
 
                 Object.keys(answers).forEach(function (author) {
                     var obj = answers[author];
-                    var answer = Flatpickr.formatDate(new Date(obj.msg[uid]), dateFormat);
+                    var answer;
+                    if (obj.msg[uid]) {
+                      answer = Flatpickr.formatDate(new Date(obj.msg[uid]), dateFormat);
+                    }
                     if (isEmpty(answer)) { return empty++; }
                     results.push(h('div.cp-charts-row', h('span.cp-value', answer)));
                 });
