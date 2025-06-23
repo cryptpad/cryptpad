@@ -77,10 +77,6 @@
             border-radius: @variables_radius;
             color: @toolbar-color;
             .toolbar_button;
-            .fa {
-                font: normal normal normal 14px/1 FontAwesome;
-                font-family: FontAwesome;
-            }
             &:hover {
                 background-color: contrast(@cp_toolbar-bg, darken(@cp_toolbar-bg, 5%), lighten(@cp_toolbar-bg, 5%));
             }
@@ -119,7 +115,7 @@
         border: 1px solid transparent;
         color: inherit;
         font: @toolbar_button-font;
-        * {
+        *:not(i) {
             color: inherit;
             font: @toolbar_button-font;
         }

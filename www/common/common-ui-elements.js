@@ -1256,39 +1256,34 @@ define([
         }
 
         var toolbarVisibleOnSmallScreen = false;
-        var $toolbarToggleButton = null;
         var appType = common.getMetadataMgr().getPrivateData().app;
 
-        function updateToolbarVisibility() {
-            var $wrapper = $(opts && opts.wrapper ? opts.wrapper : $toolbar.parent());
+        const $toolbarToggleButton = $(h('button.btn.cp-markdown-toggle-button', {
+            'aria-label': Messages.toolbar_show_text_tools,
+            'aria-pressed': 'false',
+            'data-notippy': 1,
+            'type': 'button',
+            'title': Messages.toolbar_show_text_tools
+        })).append([
+            h('i.fa.fa-wrench', { 'aria-hidden': 'true' }),
+            h('span.cp-toolbar-label', {}, Messages.toolbar_text_tools)
+        ]).click(function () {
+            var isExpanded = $toolbar.is(':visible');
+            $toolbar.toggle();
+            $(this).toggleClass('cp-toolbar-button-active', !isExpanded)
+                .attr('aria-pressed', String(!isExpanded))
+                .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
+                .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
+            toolbarVisibleOnSmallScreen = !isExpanded;
+        }).on('keydown keyup', e => {
+            // don't close modals when pressing Enter
+            // on the button
+            e.stopPropagation();
+        }).hide();
 
+        const updateToolbarVisibility = () => {
             if (isSmallScreen()) {
-                if (!$toolbarToggleButton) {
-                    $toolbarToggleButton = $(h('button.btn.cp-markdown-toggle-button', {
-                        'aria-label': Messages.toolbar_show_text_tools,
-                        'aria-pressed': 'false',
-                        'data-notippy': 1,
-                        'type': 'button',
-                        'title': Messages.toolbar_show_text_tools
-                    })).append([
-                        h('i.fa.fa-wrench', { 'aria-hidden': 'true' }),
-                        h('span.cp-toolbar-label', {}, Messages.toolbar_text_tools)
-                    ]).click(function () {
-                        var isExpanded = $toolbar.is(':visible');
-                        $toolbar.toggle();
-                        $(this).toggleClass('cp-toolbar-button-active', !isExpanded)
-                            .attr('aria-pressed', String(!isExpanded))
-                            .attr('title', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools)
-                            .attr('aria-label', !isExpanded ? Messages.toolbar_hide_text_tools : Messages.toolbar_show_text_tools);
-                        toolbarVisibleOnSmallScreen = !isExpanded;
-                    }).on('keydown keyup', e => {
-                        // don't close modals when pressing Enter
-                        // on the button
-                        e.stopPropagation();
-                    });
-                    $wrapper.append($toolbarToggleButton);
-                }
-
+                $toolbarToggleButton.show();
                 if (toolbarVisibleOnSmallScreen) {
                     $toolbar.show();
                     $toolbarToggleButton.addClass('cp-toolbar-button-active')
@@ -1298,27 +1293,24 @@ define([
                     $toolbarToggleButton.removeClass('cp-toolbar-button-active')
                         .attr('aria-pressed', 'false');
                 }
-            } else {
-                if ($toolbarToggleButton) {
-                    $toolbarToggleButton.remove();
-                    $toolbarToggleButton = null;
-                }
-                $toolbar.show();
+                return;
             }
-        }
-        
-        if (appType !== 'code' && appType !== 'slide') {
+
+            $toolbarToggleButton.hide();
+            $toolbar.show();
+        };
+
+        if (opts?.toggleBar) {
             $(window).on('resize', updateToolbarVisibility);
-            updateToolbarVisibility();
-            // Small delay to ensure the toolbar layout has rendered before checking for wrapping (ex: profile medium screen size)
-            setTimeout(() => {
-                updateToolbarVisibility();
-            }, 10);
+            // Small delay to ensure the toolbar layout has rendered
+            // before checking for wrapping
+            setTimeout(updateToolbarVisibility);
         }
 
         return {
             toolbar: $toolbar,
             button: $toolbarButton,
+            toggleButton: $toolbarToggleButton[0],
             setState: setState
         };
     };

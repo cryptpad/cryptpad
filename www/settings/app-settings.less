@@ -11,6 +11,7 @@
 @import (reference) '../../customize/src/less2/include/export.less';
 @import (reference) '../../customize/src/less2/include/badges.less';
 @import (reference) '../../customize/src/less2/include/avatar.less';
+@import (reference) "../../customize/src/less2/include/markdown.less";
 
 &.cp-app-settings {
     .framework_min_main();
@@ -308,7 +309,7 @@
                 }
             }
             .cp-settings-profile-description {
-                width: 31rem;
+                width: 40rem;
                 max-width: 100%;
                 .cp-labelled-input {
                     max-width: 100% !important;
@@ -322,8 +323,9 @@
                     font-family: monospace;
                     font-size: 16px;
                     line-height: initial;
-                    max-width: 31rem;
+                    max-width: 40rem;
                     border: 1px solid fade(@cryptpad_text_col, 50%);
+                    margin: 5px 0;
                     pre {
                         margin: 0;
                         font-family: inherit;
@@ -331,7 +333,9 @@
                         line-height: inherit;
                     }
                 }
-
+                .cp-markdown-toggle-button {
+                    .markdown-toolbar-button-style();
+                }
             }
         }
     }

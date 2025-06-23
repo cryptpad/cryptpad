@@ -180,9 +180,9 @@
             margin: 0.5rem 0;
             position: relative;
             .cp-markdown-toggle-button {
-                .markdown-toolbar-button-style() !important;
+                .markdown-toolbar-button-style();
                 &.cp-toolbar-button-active {
-                    background-color: transparent !important;
+                    //background-color: transparent !important;
                 }
             }
         }
@@ -554,10 +554,6 @@
                 }
                 .cp-form-response-msg-container {
                     padding-bottom: 75px;
-                    button {
-                        white-space: initial;
-                        padding: 5.5px 6px;
-                    }
                     .cp-form-response-msg-hint {
                         color: @cryptpad_color_link;
                     }

@@ -2102,7 +2102,6 @@ define([
         cm.configureTheme(common, function () {});
         editor.setOption("extraKeys", {
             "Esc": function () {
-                cm.getInputField().blur();
                 $(button).focus();
             }
         });
@@ -2120,8 +2119,20 @@ define([
             });
         });
 
+        const markdownTb = common.createMarkdownToolbar(editor, {
+            embed: function (mt) {
+                editor.focus();
+                editor.replaceSelection($(mt)[0].outerHTML);
+            },
+            toggleBar: true
+        });
+        $(input).before(markdownTb.toggleButton);
+        $(input).before(markdownTb.toolbar);
+
+
         onProfileEvt.reg(() => {
             editor.setValue(APP.profileData?.description || '');
+            editor.save();
             editor.refresh();
         });
 

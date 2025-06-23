@@ -161,41 +161,6 @@ define([
         });
 
         APP.$linkEdit = $();
-        if (APP.readOnly) { return; }
-
-        var button = h('button.btn', {
-            title: Messages.clickToEdit
-        }, Messages.profile_addLink);
-        APP.$linkEdit = $(button);
-        $block.append(button);
-        var save = h('button.btn.btn-primary', { 'aria-labelledby': 'cp-save-link' }, Messages.settings_save);
-        var text = h('input#cp-save-link');
-        var code = h('div.cp-app-profile-link-code', [
-            text,
-            save
-        ]);
-        var div = h('div.cp-app-profile-link-edit', [
-            code
-        ]);
-        $block.append(div);
-        $(button).click(function () {
-            $(text).val(APP.$link.attr('href'));
-            $(code).css('display', 'flex');
-            APP.editor.refresh();
-            $(button).hide();
-        });
-        $(save).click(function () {
-            $(save).hide();
-            APP.module.execCommand('SET', {
-                key: 'url',
-                value: $(text).val()
-            }, function (data) {
-                APP.updateValues(data);
-                $(code).hide();
-                $(button).show();
-                $(save).show();
-            });
-        });
     };
     var refreshLink = function (data) {
         APP.$linkEdit.removeClass('fa-pencil').removeClass('fa');
@@ -413,63 +378,12 @@ define([
         }
         common.displayAvatar($span, val, void 0, void 0,
                 void 0, badge);
-
-        if (APP.readOnly) { return; }
-
-        var $delButton = $('<button>', {
-            'class': 'cp-app-profile-avatar-delete btn btn-danger fa fa-times',
-            title: Messages.profile_remove_avatar
-        });
-        $span.append($delButton);
-        $delButton.click(function () {
-            var old = common.getMetadataMgr().getUserData().avatar;
-            APP.module.execCommand("SET", {
-                key: 'avatar',
-                value: ""
-            }, function () {
-                sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
-                    if (err || err2) { return void UI.log(err || err2); }
-                    displayAvatar(void 0, data);
-                });
-            });
-        });
     };
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
         APP.$avatar = $(h('span.cp-avatar')).appendTo($block);
         var sframeChan = common.getSframeChannel();
         displayAvatar();
-        if (APP.readOnly) { return; }
-
-        var data = MT.addAvatar(common, function (ev, data) {
-            var old = common.getMetadataMgr().getUserData().avatar;
-            var todo = function () {
-                APP.module.execCommand("SET", {
-                    key: 'avatar',
-                    value: data.url
-                }, function (newData) {
-                    sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
-                        if (err || err2) { return void UI.log(err || err2); }
-                        displayAvatar(data.url, newData);
-                    });
-                });
-            };
-            if (old) {
-                sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
-                    if (err || err2) { return void UI.log(err || err2); }
-                    todo();
-                });
-                return;
-            }
-            todo();
-        });
-        //upload profile photo button should be secondary
-        var $upButton = common.createButton('upload', false, data);
-        $upButton.removeClass('btn-primary').addClass('btn-secondary');
-        $upButton.removeProp('title');
-        $upButton.text(Messages.profile_upload);
-        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true'}));
-        $block.append($upButton);
     };
     var refreshAvatar = function (data) {
         displayAvatar(data.avatar, data);
@@ -484,74 +398,6 @@ define([
         }).appendTo($block);
 
         APP.$descriptionEdit = $();
-        if (APP.readOnly) { return; }
-
-        var button = h('button.btn.btn-secondary', {
-            'aria-labelledby': 'cp-profile-add-description-button' 
-            }, [
-                h('i.fa.fa-pencil', {'aria-hidden': 'true' }),
-                h('span#cp-profile-add-description-button', Messages.profile_addDescription)
-            ]);
-        APP.$descriptionEdit = $(button);
-        var save = h('button.btn.btn-primary', Messages.settings_save);
-        var text = h('textarea');
-        var code = h('div.cp-app-profile-description-code', [
-            text,
-            h('br'),
-            save
-        ]);
-        var div = h('div.cp-app-profile-description-edit', [
-            h('p.cp-app-profile-info', Messages.profile_info),
-            button,
-            code
-        ]);
-        $block.append(div);
-        $(div).insertBefore(APP.$description);
-
-        var cm = SFCodeMirror.create("gfm", CodeMirror, text);
-        var editor = APP.editor = cm.editor;
-        editor.setOption('lineNumbers', true);
-        editor.setOption('lineWrapping', true);
-        editor.setOption('styleActiveLine', true);
-        editor.setOption('readOnly', false);
-        cm.configureTheme(common, function () {});
-        editor.setOption("extraKeys", {
-            "Esc": function () {
-                editor.getInputField().blur();
-                $(save).focus();
-            }
-        });
-
-        var toggleRow = h('div.cp-markdown-toggle-row');
-        var markdownTb = common.createMarkdownToolbar(editor, {
-            wrapper: toggleRow
-        });
-        $(code).prepend(markdownTb.toolbar);
-        $(code).prepend(toggleRow); 
-        if(!Util.isSmallScreen()) {
-            $(markdownTb.toolbar).show();
-        }
-        $(button).click(function () {
-            $(code).show();
-            APP.editor.refresh();
-            $(button).hide();
-            var firstBtn = $(markdownTb.toolbar).find('button').get(0);
-            if (firstBtn) {
-                firstBtn.focus();
-            }
-        });
-        $(save).click(function () {
-            $(save).hide();
-            APP.module.execCommand('SET', {
-                key: 'description',
-                value: editor.getValue()
-            }, function (data) {
-                APP.updateValues(data);
-                $(code).hide();
-                $(button).show();
-                $(save).show();
-            });
-        });
     };
     var refreshDescription = function (data) {
         var descriptionData = data.description || "";
