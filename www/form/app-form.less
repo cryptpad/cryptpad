@@ -310,6 +310,9 @@
                             color: @cp_kanban-fg;
                             border: 1px solid fade(@cp_kanban-fg, 40%);
                             cursor: pointer;
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                            }
                         }
                     }
                 }

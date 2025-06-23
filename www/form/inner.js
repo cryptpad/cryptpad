@@ -5072,8 +5072,9 @@ define([
                     if (i === 5) { currentContainer = colorLine2; }
                     var $color = $(h('span.cp-form-palette.fa'));
                     $color.addClass('cp-form-palette-'+(_color || 'nocolor'));
+                    $color.attr('tabindex', 0);
                     if (selectedColor === _color) { $color.addClass('fa-check'); }
-                    $color.click(function () {
+                    Util.onClickEnter($color, function () {
                         if (_color === selectedColor) { return; }
                         content.answers.color = _color;
                         framework.localChange();
@@ -5091,7 +5092,8 @@ define([
                             });
                             $body.addClass('cp-form-palette-'+_color);
                         });
-                    }).appendTo(currentContainer);
+                    });
+                    $color.appendTo(currentContainer);
                 });
             };
             refreshColorTheme();
