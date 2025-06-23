@@ -143,8 +143,8 @@ define([
     };
 
     if (AppConfig.disableFeedback) {
-        var feedbackIdx = categories.account.indexOf('cp-settings-userfeedback');
-        categories.account.splice(feedbackIdx, 1);
+        var feedbackIdx = categories.security.indexOf('cp-settings-userfeedback');
+        categories.security.splice(feedbackIdx, 1);
     }
     if (AppConfig.disableProfile) {
         var displaynameIdx = categories.account.indexOf('cp-settings-displayname');
