@@ -423,7 +423,7 @@ const factory = (Sortify, UserObject, ProxyManager,
         var initTempRpc = (clientId, cb) => {
             if (store.rpc) { return void cb(store.rpc); }
             var kp = Crypto.Nacl.sign.keyPair();
-            var keys = {
+            var keys = store.tempKeys = {
                 edPublic: Util.encodeBase64(kp.publicKey),
                 edPrivate: Util.encodeBase64(kp.secretKey)
             };
@@ -2714,6 +2714,10 @@ const factory = (Sortify, UserObject, ProxyManager,
                 return void onNoDrive(clientId, obj => {
                     if (obj?.error) {
                         Feedback.send("NO_DRIVE_ERROR", true);
+                    }
+                    if (!!data.neverDrive) {
+                        // Send temp RPC keys to the browser to allow upload
+                        obj.tempKeys = store?.tempKeys;
                     }
                     cb(obj);
                 }, !!data.neverDrive);

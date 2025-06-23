@@ -90,6 +90,12 @@
             margin: 5px !important;
         }
     }
+    .cp-markdown-toggle-row {
+        margin-bottom: 0.5rem;
+        .btn.cp-markdown-toggle-button {
+            .markdown-toolbar-button-style() !important;
+        }
+    }
 
     .cp-app-profile-resizer {
         text-align: center;
@@ -184,9 +190,9 @@
         .cp-app-profile-description-code {
             display: none;
             .cp-markdown-toolbar {
-                display: flex;
-                height: auto;
-                flex-wrap: wrap;
+                max-width: 31rem;
+                background-color: @cp_toolbar-bg;
+                border-radius: @variables_radius @variables_radius 0 0;
             }
         }
         #cp-app-profile-description-info {
@@ -209,6 +215,7 @@
             font-size: 16px;
             line-height: initial;
             max-width: 31rem;
+            border-radius: 0 0 @variables_radius @variables_radius;
             pre {
                 margin: 0;
                 font-family: inherit;
