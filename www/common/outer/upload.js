@@ -42,14 +42,13 @@ define([
 
 
         let uploadUrl = '/upload-blob';
-        let size = 0;
+        let keys, cookie;
         if (ApiConfig.fileHost) {
             const origin = new URL(ApiConfig.fileHost).origin;
             uploadUrl = origin + uploadUrl;
         }
         var sendChunk = function (box, cb) {
             const enc = Util.encodeBase64(box);
-            size += enc.length;
 
             const c = Util.decodeUTF8(cookie);
             const sig_str = window.nacl.sign(c, keys.secretKey);
@@ -77,7 +76,6 @@ define([
             }).catch(cb);
         };
 
-        let keys, cookie;
         var actual = 0;
         var encryptedArr = [];
         var again = function (err, box) {
