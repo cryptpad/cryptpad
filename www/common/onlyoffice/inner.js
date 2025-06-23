@@ -296,6 +296,21 @@ define([
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
         };
+        var deleteLastCp = function (i) {
+            var hashes = content.hashes;
+            if (!hashes || !Object.keys(hashes).length) { return {}; }
+            i = i || 0;
+            var idx = sortCpIndex(hashes);
+            var lastIndex = idx[idx.length - 1 - i];
+            if (typeof(lastIndex) === "undefined" || !hashes[lastIndex]) {
+                return;
+            }
+            delete hashes[lastIndex];
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                UI.log(Messages.saved);
+            });
+        };
 
         var rtChannel = {
             ready: false,
@@ -631,20 +646,6 @@ define([
                 });
             }
         };
-        var deleteLastCp = function () {
-            var hashes = content.hashes;
-            if (!hashes || !Object.keys(hashes).length) { return; }
-            var i = 0;
-            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
-                return a-b;
-            });
-            var lastIndex = idx[idx.length - 1 - i];
-            delete content.hashes[lastIndex];
-            APP.onLocal();
-            APP.realtime.onSettle(function () {
-                UI.log(Messages.saved);
-            });
-        };
         var restoreLastCp = function () {
             content.saveLock = myOOId;
             APP.onLocal();
@@ -721,7 +722,8 @@ define([
                         var u8 = new Uint8Array(arrayBuffer);
                         FileCrypto.decrypt(u8, key, function (err, decrypted) {
                             if (err) {
-                                if (err === "DECRYPTION_ERROR") {
+                                if (err === "DECRYPTION_ERROR" ||
+                                err === "E_METADATA_DECRYPTION") {
                                     console.warn(err);
                                     return void reject(err);
                                 }
@@ -2124,6 +2126,19 @@ define([
             }
         };
 
+        const copy = (a, b) => {
+            Object.keys(b).forEach(k => {
+                if (k === "user") { return; } // Don't change user values
+                if (a[k]) {
+                    if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
+                        copy(a[k], b[k]);
+                    }
+                    return;
+                }
+                a[k] = b[k];
+            });
+        };
+
         const createOOConfig = function(blob, file, lock, fromContent, lang, force) {
             const url = URL.createObjectURL(blob);
             let username = Util.find(privateData, ['integrationConfig', 'user', 'name'])
@@ -2143,7 +2158,7 @@ define([
                     permissions: {
                         download: dc?.permissions?.download || false,
                         print: dc?.permissions?.print || true,
-                        protect: false
+                        protect: file.type === 'xlsx',
                     }
                 },
                 "documentType": file.doc,
@@ -2173,18 +2188,6 @@ define([
                 }
             };
 
-            let copy = (a, b) => {
-                Object.keys(b).forEach(k => {
-                    if (k === "user") { return; } // Don't change user values
-                    if (a[k]) {
-                        if (typeof(a[k]) === "object" && typeof(b[k]) === "object") {
-                            copy(a[k], b[k]);
-                        }
-                        return;
-                    }
-                    a[k] = b[k];
-                });
-            };
             if (integrationConfig) {
                 let ec = integrationConfig.editorConfig;
                 let c = ooconfig.editorConfig.customization;
@@ -2790,27 +2793,33 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
             }, 100);
         };
 
-        var loadDocument = function (noCp, useNewDefault, i) {
+        var loadDocument = function (noCp, useNewDefault, i, cb) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
             if (!noCp) {
                 var lastCp = getLastCp(false, i);
                 // If the last checkpoint is empty, load the "initial" doc instead
-                if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault); }
+                if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault, undefined, cb); }
                 // Load latest checkpoint
                 return void loadLastDocument(lastCp)
                     .then(({blob, fileType}) => {
-                        startOO(blob, fileType);
+                        cb({
+                            blob,
+                            file: fileType
+                        });
                     })
                     .catch(() => {
                         // Checkpoint error: load the previous one
+                        deleteLastCp(i);
                         i = i || 0;
-                        loadDocument(noCp, useNewDefault, ++i);
+                        loadDocument(noCp, useNewDefault, ++i, cb);
                     });
             }
             var blob = loadInitDocument(type, useNewDefault);
-            startOO(blob, file);
+            cb({
+                blob, file
+            });
         };
 
         var initializing = true;
@@ -3519,6 +3528,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
 
             var useNewDefault = content.version && content.version >= 2;
+
+            loadDocument(newDoc, useNewDefault,void 0, cpObj => {
             openRtChannel(Util.once(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
@@ -3582,7 +3593,8 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
                 }
 
                 var next = function () {
-                    loadDocument(newDoc, useNewDefault);
+                    const { blob, file } = cpObj;
+                    startOO(blob, file);
                     setEditable(!readOnly);
                     UI.removeLoadingScreen();
                 };
@@ -3774,6 +3786,7 @@ Uncaught TypeError: Cannot read property 'calculatedType' of null
 
                 next();
             }));
+            });
         };
 
         config.onError = function (err) {
