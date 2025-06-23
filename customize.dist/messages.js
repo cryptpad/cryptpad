@@ -157,6 +157,7 @@ define(req, function(AppConfig, Default, Language) {
     Messages.settings_profileLinkLabel = "Edit your profile link";
     Messages.settings_profileDescLabel = "Edit your profile description";
     Messages.settings_profileAvatarLabel = "Profile picture";
+
     return Messages;
 
 });
