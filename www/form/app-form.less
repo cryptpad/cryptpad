@@ -711,6 +711,12 @@
                                 border-radius: @variables_radius;
                             }
                         }
+                        input, textarea {
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
+                            }
+                        }
                         .cp-form-required-radio {
                             flex-direction: row;
                             display: flex;
