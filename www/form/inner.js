@@ -4231,7 +4231,8 @@ define([
                             h('span', Messages['form_type_'+type]),
                             h('i.fa.fa-caret-down')
                         ]);
-                        $(changeType).click(function () {
+                        $(changeType).attr('tabindex', 0);
+                        Util.onClickEnter($(changeType), function () {
                             var name = Util.uid();
                             var els = model.compatible.map(function (data, i) {
                                 var text = Messages['form_type_'+data];

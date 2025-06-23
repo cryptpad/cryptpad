@@ -339,6 +339,9 @@
                 .cp-form-block-type {
                     &.editable {
                         cursor: pointer;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                        }
                     }
                     .fa-caret-down {
                         margin-left: 5px;
