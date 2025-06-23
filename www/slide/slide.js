@@ -208,14 +208,21 @@ define([
     var addEvent = function () {
         console.log($modal);
         var icon_to;
-        $modal.mousemove(function () {
+        var mousemove = function () {
             var $buttons = $modal.find('.cp-app-slide-modal-button');
             $buttons.show();
             if (icon_to) { window.clearTimeout(icon_to); }
             icon_to = window.setTimeout(function() {
                 $buttons.fadeOut();
             }, 1000);
-        });
+        };
+        
+        $modal.mousemove(mousemove);
+        $modal.on('touchstart', mousemove);
+        $modal.on('touchend', mousemove);
+        $modal.on('touchcancel', mousemove);
+        $modal.on('touchmove', mousemove);
+
         $modal.find('#cp-app-slide-modal-exit').click(function () {
             var ev = $.Event("keyup");
             ev.which = 27;
