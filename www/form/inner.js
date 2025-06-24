@@ -2590,8 +2590,8 @@ define([
                     var $c = $(cell);
                     $c.data('option', data);
                     var val = 0;
-                    $c.attr('data-value', val);
-                    $c.click(function () {
+                    $c.attr('data-value', val).attr('tabindex', '0');
+                    Util.onClickEnter($c, function () {
                         if (disabled) { return; }
                         val = (val+1)%3;
                         $c.attr('data-value', val);

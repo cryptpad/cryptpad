@@ -1254,9 +1254,12 @@
         .cp-poll-switch {
             button.btn {
                 border-radius: 0;
+                background-color: transparent;
+                box-shadow: none;
                 &:focus-visible {
                     outline: @variables_focus_style;
                     border-radius: @variables_radius;
+                    border: 0;
                 }
             }
         }
@@ -1367,6 +1370,13 @@
             &[data-value="2"] {
                 background: @cp_form-poll-maybe;
                 .cp-maybe { display: inline; }
+            }
+            &:focus-visible {
+                outline: @variables_focus_style;
+                border-radius: @variables_radius;
+            }
+            &:last-of-type {
+                margin-right: 0.2rem;
             }
         }
         div.cp-form-poll-choice {
