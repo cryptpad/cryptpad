@@ -148,6 +148,9 @@ define(req, function(AppConfig, Default, Language) {
 
     Messages.forms_switchHorizontalAxe = 'Switch to horizontal layout';
     Messages.forms_switchVerticalAxe = 'Switch to vertical layout';
+    Messages.forms_pollOptionNo = 'No';
+    Messages.forms_pollOptionYes = 'Yes';
+    Messages.forms_pollOptionMaybe = 'Maybe';
     return Messages;
 
 });

@@ -2596,11 +2596,17 @@ define([
                     var $c = $(cell);
                     $c.data('option', data);
                     var val = 0;
-                    $c.attr('data-value', val).attr('tabindex', '0');
+                    $c.attr('data-value', val).attr('tabindex', '0').attr('role','button').attr('aria-label', Messages.forms_pollOptionNo);
+
+                    function updateAriaLabel() {
+                        const labels = [Messages.forms_pollOptionNo, Messages.forms_pollOptionYes, Messages.forms_pollOptionMaybe];
+                        $c.attr('aria-label', labels[val]);
+                    }
                     Util.onClickEnter($c, function () {
                         if (disabled) { return; }
                         val = (val+1)%3;
                         $c.attr('data-value', val);
+                        updateAriaLabel();
                         evOnChange.fire();
                     });
                     cell._setValue = function (v) {
