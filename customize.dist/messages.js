@@ -145,6 +145,9 @@ define(req, function(AppConfig, Default, Language) {
     Messages.hide_password = "Hide password";
     Messages.next_templateList = "Next template list";
     Messages.previous_templateList = "Previous template list";
+
+    Messages.forms_switchHorizontalAxe = 'Switch to horizontal layout';
+    Messages.forms_switchVerticalAxe = 'Switch to vertical layout';
     return Messages;
 
 });

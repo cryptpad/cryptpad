@@ -759,7 +759,10 @@ define([
             ]);
         });
         // Insert axis switch button
-        var switchAxis = h('button.btn.btn-default', [
+        var switchAxis = h('button.btn.btn-default', {
+            'aria-pressed': 'false',
+            'aria-label': Messages.forms_switchVerticalAxe
+            }, [
             Messages.form_poll_switch,
             h('i.fa.fa-exchange'),
         ]);
@@ -837,6 +840,9 @@ define([
 
         var $s = $(switchAxis).click(function () {
             $s.closest('.cp-form-type-poll').toggleClass('cp-form-poll-switch');
+            var pressed = $s.attr('aria-pressed') === 'true';
+            $s.attr('aria-pressed', !pressed);
+            $s.attr('aria-label', !pressed ? Messages.forms_switchHorizontalAxe  : Messages.forms_switchVerticalAxe );
         });
 
         return lines;
