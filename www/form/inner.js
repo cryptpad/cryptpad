@@ -4231,7 +4231,7 @@ define([
                             h('span', Messages['form_type_'+type]),
                             h('i.fa.fa-caret-down')
                         ]);
-                        $(changeType).attr('tabindex', 0);
+                        $(changeType).attr('tabindex', 0).attr('role', 'button');
                         Util.onClickEnter($(changeType), function () {
                             var name = Util.uid();
                             var els = model.compatible.map(function (data, i) {
@@ -4240,9 +4240,11 @@ define([
                                 var radio = UI.createRadio(name, 'cp-form-changetype-'+i,
                                            text, data===type, {});
                                 $(radio).find('input').data('val', data);
+                                $(radio).attr('role', 'radio');
                                 return radio;
                             });
                             var tag = h('div.radio-group', els);
+                            $(tag).attr('role', 'radiogroup');
                             var changeTypeContent = [
                                 APP.answers && Object.keys(APP.answers).length ?
                                     h('div.alert.alert-warning', Messages.form_corruptAnswers) :
@@ -5073,7 +5075,7 @@ define([
                     if (i === 5) { currentContainer = colorLine2; }
                     var $color = $(h('span.cp-form-palette.fa'));
                     $color.addClass('cp-form-palette-'+(_color || 'nocolor'));
-                    $color.attr('tabindex', 0);
+                    $color.attr('tabindex', 0).attr('role', 'button').attr('aria-label', 'Color'); // XXX needs to change label according to each color
                     if (selectedColor === _color) { $color.addClass('fa-check'); }
                     Util.onClickEnter($color, function () {
                         if (_color === selectedColor) { return; }
