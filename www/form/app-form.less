@@ -298,7 +298,7 @@
                         margin-bottom: 10px;
                     }
                     .cp-form-setting-title {
-                        color: @cryptpad_color_link;
+                        font-weight: bold;
                     }
                 }
 
@@ -320,6 +320,9 @@
                             color: @cp_kanban-fg;
                             border: 1px solid fade(@cp_kanban-fg, 40%);
                             cursor: pointer;
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                            }
                         }
                     }
                 }
@@ -346,6 +349,9 @@
                 .cp-form-block-type {
                     &.editable {
                         cursor: pointer;
+                        &:focus-visible {
+                            outline: @variables_focus_style;
+                        }
                     }
                     .fa-caret-down {
                         margin-left: 5px;
@@ -715,9 +721,19 @@
                     }
 
                     .cp-form-block-content {
-                        p {
+                        p, ul {
                             a {
                                 color: @cryptpad_color_link;
+                            }
+                            a:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
+                            }
+                        }
+                        input, textarea {
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                                border-radius: @variables_radius;
                             }
                         }
                         .cp-form-required-radio {
@@ -782,6 +798,9 @@
                             padding: 0 10px !important;
                             height: auto;
                             font-size: 20px;
+                            &:focus-visible {
+                                outline: @variables_focus_style;
+                            }
                         }
                         button {
                             .cp-form-edit {
@@ -1259,7 +1278,14 @@
         }
         .cp-poll-switch {
             button.btn {
-                border-radius: 0px;
+                border-radius: 0;
+                background-color: transparent;
+                box-shadow: none;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                    border: 0;
+                }
             }
         }
         &:not(.cp-form-poll-switch) {
@@ -1369,6 +1395,13 @@
             &[data-value="2"] {
                 background: @cp_form-poll-maybe;
                 .cp-maybe { display: inline; }
+            }
+            &:focus-visible {
+                outline: @variables_focus_style;
+                border-radius: @variables_radius;
+            }
+            &:last-of-type {
+                margin-right: 0.2rem;
             }
         }
         div.cp-form-poll-choice {
