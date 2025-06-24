@@ -1953,6 +1953,8 @@ define([
             }
         };
 
+        
+
         const onDocumentReady = function(lock, lang, fromContent, file, force) {
             evOnSync.fire();
             var onMigrateRdy = Util.mkEvent();
