@@ -1253,7 +1253,11 @@
         }
         .cp-poll-switch {
             button.btn {
-                border-radius: 0px;
+                border-radius: 0;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
         }
         &:not(.cp-form-poll-switch) {
