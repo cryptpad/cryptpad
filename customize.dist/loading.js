@@ -14,9 +14,9 @@ define([
     elem.setAttribute('id', 'cp-loading');
 
     elem.innerHTML = [
-        '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="' + Messages.label_logo + '">',
-        '</div>',
+        // '<div class="cp-loading-logo">',
+        //     '<img class="cp-loading-cryptofist" src="/api/logo?' + urlArgs + '" alt="' + Messages.label_logo + '">',
+        // '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
                 '<span class="cp-spinner"></span>',

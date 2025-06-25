@@ -21,7 +21,7 @@ define([
     '/api/config',
     '/api/instance',
     '/lib/datepicker/flatpickr.js',
-    '/install/onboardscreen.js',
+    //'/install/onboardscreen.js',
 
     'css!/lib/datepicker/flatpickr.min.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',

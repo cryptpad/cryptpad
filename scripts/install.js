@@ -38,6 +38,6 @@ nThen(function (w) {
 }).nThen(function () {
     console.log('Install token:');
     console.log(token);
-    var url = config.httpUnsafeOrigin + '/install/';
-    console.log(`Please visit ${url} to create your first admin user`);
+    // var url = config.httpUnsafeOrigin + '/install/';
+    // console.log(`Please visit ${url} to create your first admin user`);
 });

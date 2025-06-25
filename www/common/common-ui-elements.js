@@ -3309,21 +3309,21 @@ define([
                 Feedback.send('CROWDFUNDING_NEVER');
             };
 
-            var modal = UI.cornerPopup(text, actions, '', {
-                big: true,
-                alt: true,
-                dontShowAgain: dontShowAgain
-            });
+            // / var modal = UI.cornerPopup(text, actions, '', {
+            // /     big: true,
+            // /     alt: true,
+            // /     dontShowAgain: dontShowAgain
+            // / });
 
-            $(yes).click(function () {
-                modal.delete();
-                common.openURL(priv.accounts.donateURL);
-                Feedback.send('CROWDFUNDING_YES');
-            });
-            $(no).click(function () {
-                modal.delete();
-                Feedback.send('CROWDFUNDING_NO');
-            });
+            // / $(yes).click(function () {
+            // /     modal.delete();
+            // /     common.openURL(priv.accounts.donateURL);
+            // /     Feedback.send('CROWDFUNDING_YES');
+            // / });
+            // / $(no).click(function () {
+            // /     modal.delete();
+            // /     Feedback.send('CROWDFUNDING_NO');
+            // / });
         };
 
         if (force) {
