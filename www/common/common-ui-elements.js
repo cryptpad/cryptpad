@@ -2871,10 +2871,10 @@ define([
         var big = $w.width() > 800;
 
         var right = h('button.fa.fa-chevron-right.cp-creation-template-more', {
-            'aria-label': Messages.next_templateList
+            'aria-label': Messages.page_next
         });
         var left = h('button.fa.fa-chevron-left.cp-creation-template-more', {
-            'aria-label': Messages.previous_templateList
+            'aria-label': Messages.page_previous
         });
         if (!big) {
             $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');

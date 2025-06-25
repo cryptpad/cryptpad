@@ -143,8 +143,8 @@ define(req, function(AppConfig, Default, Language) {
     Messages.add_password = "Add your document password";
     Messages.show_password = "Show password";
     Messages.hide_password = "Hide password";
-    Messages.next_templateList = "Next template list";
-    Messages.previous_templateList = "Previous template list";
+    Messages.page_next = "Next page";
+    Messages.page_previous = "Previous page";
     Messages.contact_mastodon = 'Mastodon'; // XXX
     Messages.contact_forum = 'Forum'; // XXX
     Messages.toolbar_text_tools  = "Text tools";
