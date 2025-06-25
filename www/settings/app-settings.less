@@ -250,9 +250,6 @@
                         &:not(:last-child) {
                             margin-right: 0.5em;
                         }
-                        &.cp-selected {
-                            border-color: @cryptpad_color_brand;
-                        }
                     }
                 }
             }
@@ -272,6 +269,9 @@
                     border-radius: 4px;
                     overflow: visible;
                     position: relative;
+                    i.cp-badge {
+                        border-width: 3px;
+                    }
                     .cp-settings-avatar-delete {
                         right: 0;
                         top: 0;
@@ -286,6 +286,9 @@
                     max-width: 100%;
                     max-height: 100%;
                     vertical-align: top;
+                    border-radius: @variables_radius_L;
+                }
+                .cp-avatar-default {
                     border-radius: @variables_radius_L;
                 }
                 media-tag {

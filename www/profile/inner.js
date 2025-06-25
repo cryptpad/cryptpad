@@ -347,25 +347,16 @@ define([
                 nid: privateData.channel
             }, res => {
                 if (!res?.verified) {
-                    delete data.badge;
-                    displayAvatar(val, data);
-                    // XXX show error?
+                    data.badge = 'error';
+                    displayAvatar(val, data, true);
                     return;
                 }
                 displayAvatar(val, data, true);
             });
             return;
         }
-        if (!val) {
-            $('<img>', {
-                src: '/customize/images/avatar.png',
-                title: Messages.profile_defaultAlt,
-                alt: Messages.profile_defaultAlt,
-            }).appendTo($span);
-            $span.append(Badges.render(badge));
-            return;
-        }
-        common.displayAvatar($span, val, void 0, void 0,
+        const name = data?.name || Messages.anonymous;
+        common.displayAvatar($span, val, name, void 0,
                 void 0, badge);
     };
     var addAvatar = function ($container) {

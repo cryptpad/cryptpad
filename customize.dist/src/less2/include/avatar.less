@@ -23,7 +23,7 @@
     .avatar_vars(@width);
     --avatar-width: @avatar-width;
     --avatar-font-size: @avatar-font-size;
-    @badge-width: min(0.5*@width, 100px);
+    @badge-width: min(0.4*@width, 100px);
     --badges-width: @badge-width;
     --badges-offset: ceil(-1*@badge-width/5);
     --badges-font: ceil(@badge-width*2/3);
@@ -89,7 +89,7 @@
             z-index: 10;
             bottom: var(--badges-offset);
             right: var(--badges-offset);
-            border: 2px solid @badges-icon-color;
+            border: 1px solid @cp_badges-color;
         }
     }
 }

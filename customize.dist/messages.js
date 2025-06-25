@@ -150,9 +150,9 @@ define(req, function(AppConfig, Default, Language) {
     Messages.toolbar_text_tools  = "Text tools";
     Messages.toolbar_show_text_tools = "Show text tools";
     Messages.toolbar_hide_text_tools = "Hide text tools";
-    Messages.settings_profileLinkLabel = "Edit your profile link";
-    Messages.settings_profileDescLabel = "Edit your profile description";
-    Messages.settings_profileAvatarLabel = "Profile picture";
+    Messages.settings_profileAvatarLabel = "Avatar";
+    Messages.settings_profileHeaderTitle = "Edit your profile";
+    Messages.settings_profileHeaderHint = "Edit your public profile...";
     return Messages;
 
 });
