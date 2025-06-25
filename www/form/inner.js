@@ -739,7 +739,7 @@ define([
         }
         // Create first line with options
         var allDays = getWeekDays(true);
-        var els = extractValues(opts.values).map(function (data) {
+        var els = extractValues(opts.values).map(function (data, index) {
             var _date;
             if (opts.type === "day") {
                 _date = new Date(data);
@@ -751,6 +751,7 @@ define([
             }
             var day = _date && allDays[_date.getDay()];
             return h('div.cp-poll-cell.cp-form-poll-option', {
+                id: 'cp-form-option-' + index,
                 title: data,
             }, [
                 opts.type === 'day' ? h('span.cp-form-weekday', day) : undefined,
@@ -2587,7 +2588,7 @@ define([
 
                 var disabled = false;
                 // Add form
-                var addLine = extractValues(opts.values).map(function (data) {
+                var addLine = extractValues(opts.values).map(function (data,index) {
                     var cell = h('div.cp-poll-cell.cp-form-poll-choice', [
                         h('i.fa.fa-times.cp-no'),
                         h('i.fa.fa-check.cp-yes'),
@@ -2596,12 +2597,15 @@ define([
                     var $c = $(cell);
                     $c.data('option', data);
                     var val = 0;
-                    $c.attr('data-value', val).attr('tabindex', '0').attr('role','button').attr('aria-label', Messages.forms_pollOptionNo);
+                    $c.attr('data-value', val).attr('tabindex', '0').attr('role','button');
 
                     function updateAriaLabel() {
                         const labels = [Messages.forms_pollOptionNo, Messages.forms_pollOptionYes, Messages.forms_pollOptionMaybe];
-                        $c.attr('aria-label', labels[val]);
+                        const currentLabelText = $('#cp-form-option-' + index).text().trim();
+                        $c.attr('aria-label', currentLabelText + ', ' + labels[val]);
                     }
+                    setTimeout(updateAriaLabel, 0);
+
                     Util.onClickEnter($c, function () {
                         if (disabled) { return; }
                         val = (val+1)%3;
