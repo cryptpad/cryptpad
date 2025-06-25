@@ -97,6 +97,14 @@
     darken(extract(@cp_palette, 7), 50%),
     darken(extract(@cp_palette, 8), 50%);
 
+@cp_badges-color: @cp_app-bg;
+@cp_badges-bg: {
+    admin: #0087ff;
+    moderator: #ff6038;
+    premium: #b864f7;
+    error: @cryptpad_color_red;
+}
+
 @cryptpad_color_link: @cryptpad_color_brand;
 
 // Premium plans colors
@@ -320,6 +328,10 @@
 @cp_toolbar-bottom-bg: @cryptpad_color_grey_200;
 @cp_toolbar-bottom-fg: @cryptpad_text_col;
 @cp_toolbar-logo-bg: @cryptpad_color_white;
+//@cp_toolbar-bg2: #e5e5e5;
+//@cp_toolbar-bg3: #b2b2b2;
+@cp_toolbar-bg2: @cryptpad_color_grey_200;
+@cp_toolbar-bg3: @cryptpad_color_grey_300;
 
 @cp_toolbar-fade1: fade(@cryptpad_color_black, 10%);
 @cp_toolbar-fade3: fade(@cryptpad_color_black, 30%);

@@ -11,6 +11,7 @@
 @import (reference) '../../customize/src/less2/include/export.less';
 @import (reference) '../../customize/src/less2/include/badges.less';
 @import (reference) '../../customize/src/less2/include/avatar.less';
+@import (reference) "../../customize/src/less2/include/markdown.less";
 
 &.cp-app-settings {
     .framework_min_main();
@@ -249,18 +250,13 @@
                         &:not(:last-child) {
                             margin-right: 0.5em;
                         }
-                        &.cp-selected {
-                            border-color: @cryptpad_color_brand;
-                        }
                     }
                 }
             }
             .cp-settings-profile-avatar {
                 .cp-settings-avatar-container {
                     width: 300px;
-                    //background: @cryptpad_text_col;
-                    //padding: 10px;
-                    margin: 10px 0;
+                    margin-bottom: 1.5rem;
                     border-radius: 10px;
                 }
                 .cp-avatar {
@@ -271,6 +267,9 @@
                     border-radius: 4px;
                     overflow: visible;
                     position: relative;
+                    i.cp-badge {
+                        border-width: 3px;
+                    }
                     .cp-settings-avatar-delete {
                         right: 0;
                         top: 0;
@@ -285,6 +284,9 @@
                     max-width: 100%;
                     max-height: 100%;
                     vertical-align: top;
+                    border-radius: @variables_radius_L;
+                }
+                .cp-avatar-default {
                     border-radius: @variables_radius_L;
                 }
                 media-tag {
@@ -308,7 +310,7 @@
                 }
             }
             .cp-settings-profile-description {
-                width: 31rem;
+                width: 40rem;
                 max-width: 100%;
                 .cp-labelled-input {
                     max-width: 100% !important;
@@ -322,8 +324,9 @@
                     font-family: monospace;
                     font-size: 16px;
                     line-height: initial;
-                    max-width: 31rem;
+                    max-width: 40rem;
                     border: 1px solid fade(@cryptpad_text_col, 50%);
+                    margin: 5px 0;
                     pre {
                         margin: 0;
                         font-family: inherit;
@@ -331,7 +334,9 @@
                         line-height: inherit;
                     }
                 }
-
+                .cp-markdown-toggle-button {
+                    .markdown-toolbar-button-style();
+                }
             }
         }
     }

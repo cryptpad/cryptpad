@@ -144,8 +144,6 @@ define(req, function(AppConfig, Default, Language) {
     Messages.add_password = "Add your document password";
     Messages.show_password = "Show password";
     Messages.hide_password = "Hide password";
-    Messages.next_templateList = "Next template list";
-    Messages.previous_templateList = "Previous template list";
     Messages.contact_mastodon = 'Mastodon'; // XXX
     Messages.contact_forum = 'Forum'; // XXX
     Messages.help_close_button = 'Close help notification'; // XXX
@@ -154,10 +152,11 @@ define(req, function(AppConfig, Default, Language) {
     Messages.toolbar_show_text_tools = "Show text tools";
     Messages.toolbar_hide_text_tools = "Hide text tools";
 
-    Messages.settings_profileLinkLabel = "Edit your profile link";
-    Messages.settings_profileDescLabel = "Edit your profile description";
-    Messages.settings_profileAvatarLabel = "Profile picture";
-
+    Messages.page_next = "Next page";
+    Messages.page_previous = "Previous page";
+    Messages.settings_profileAvatarLabel = "Avatar";
+    Messages.settings_profileHeaderTitle = "Edit your profile";
+    Messages.settings_profileHeaderHint = "Edit your public profile...";
     return Messages;
 
 });

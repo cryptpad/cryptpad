@@ -202,7 +202,7 @@ define([
         var markdownEditorWrapper = h('div.cp-markdown-label-row', [
             h('label', { for: 'cp-kanban-edit-body' }, Messages.kanban_body)
         ]);
-        
+
         var conflicts, conflictContainer, titleInput, tagsDiv, text;
         var content = h('div', [
             conflictContainer = h('div#cp-kanban-edit-conflicts', [
@@ -284,8 +284,9 @@ define([
                 editor.focus();
                 editor.replaceSelection($(mt)[0].outerHTML);
             },
-            wrapper: markdownEditorWrapper
+            toggleBar: true
         });
+        $(markdownEditorWrapper).append(markdownTb.toggleButton);
         $(markdownTb.toolbar).on('keydown', function (e) {
             if (e.which === 27) { // Escape key
                 e.preventDefault();

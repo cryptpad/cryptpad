@@ -1199,17 +1199,7 @@ define([
                 return void UI.warn(Messages.error);
             }
             var val = obj.avatar;
-            if (!val) {
-                var $img = $('<img>', {
-                    src: '/customize/images/avatar.png',
-                    title: Messages.profile_defaultAlt,
-                    alt: Messages.profile_defaultAlt,
-                });
-                var mt = h('media-tag', $img[0]);
-                $avatar.append(mt);
-            } else {
-                common.displayAvatar($avatar, val);
-            }
+            common.displayAvatar($avatar, val, obj.name);
 
             // Display existing + button
             var content = [

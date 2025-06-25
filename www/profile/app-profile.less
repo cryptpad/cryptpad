@@ -23,6 +23,9 @@
     #cp-sidebarlayout-leftside {
         display: none !important;
     }
+    div#cp-sidebarlayout-container #cp-sidebarlayout-rightside {
+        padding: 1rem 2rem;
+    }
 
     .cp-app-profile-section:first-child {
         margin-top: 1rem;
@@ -32,6 +35,7 @@
         display: flex;
         flex-flow: row wrap;
         justify-content: center;
+        gap: 2rem;
         #cp-app-profile-rightside {
             flex: 1;
             display: flex;
@@ -41,12 +45,12 @@
         }
     }
     #cp-app-profile-avatar {
-        margin: 10px;
         margin-right: 20px;
         text-align: center;
         max-width: 300px;
         max-height: 300px;
         margin-bottom: 3.5rem;
+        margin-right: 0;
         &> span {
             .avatar_main(300px);
             display: flex;
@@ -54,6 +58,9 @@
             border-radius: 4px;
             overflow: visible;
             position: relative;
+            i.cp-badge {
+                border-width: 3px;
+            }
             .cp-app-profile-avatar-delete {
                 right: 0;
                 top: 0;
@@ -68,6 +75,9 @@
             max-width: 100%;
             max-height: 100%;
             vertical-align: top;
+            border-radius: @variables_radius_L;
+        }
+        .cp-avatar-default {
             border-radius: @variables_radius_L;
         }
         media-tag {
@@ -156,14 +166,13 @@
             .cp-app-profile-link-code {
                 min-width: 0;
             }
-        }    
+        }
     }
 
     div.cp-app-profile-mute-container.cp-app-profile-section {
         p {
             margin-bottom: 0;
         }
-    
     }
     .cp-app-profile-friend {
         display: flex;

@@ -1116,14 +1116,13 @@ define([
                             }
                             editor.refresh();
                             editor.save();
-                            var firstBtn = $(markdownTb.toolbar).find('button').get(0);
+                            var firstBtn = $(block).find('.cp-markdown-toolbar').find('button').get(0);
                             if (firstBtn) {
                                 firstBtn.focus();
                             } else {
                                 editor.focus(); // fallback
                             }
                         });
-                        var toggleRow = h('div.cp-markdown-toggle-row');
 
                         if (APP.common && !(tmp && tmp.block) && cm) {
                             var markdownTb = APP.common.createMarkdownToolbar(editor, {
@@ -1131,8 +1130,9 @@ define([
                                     editor.focus();
                                     editor.replaceSelection($(mt)[0].outerHTML);
                                 },
-                                wrapper: toggleRow
+                                toggleBar: true
                             });
+                            var toggleRow = h('div.cp-markdown-toggle-row', markdownTb.toggleButton);
                             $(block).prepend(markdownTb.toolbar);
                             $(block).prepend(toggleRow);
                             cm.configureTheme(APP.common, function () {});
@@ -5604,7 +5604,10 @@ define([
             var div = h('div.cp-form-block.editable.nodrag.cp-form-submit-message', [
                 h('div.cp-form-block-content', [
                     p,
-                    editDiv = h('div.cp-form-response-modal', toggleRow, markdownWrapper),
+                    editDiv = h('div.cp-form-response-modal', [
+                        toggleRow,
+                        markdownWrapper
+                    ]),
                     previewDiv = h('div.cp-form-response-preview#cp-response-preview'),
                     editButtons
                 ]),
@@ -5622,8 +5625,9 @@ define([
                     editor.focus();
                     editor.replaceSelection($(mt)[0].outerHTML);
                 },
-                wrapper: toggleRow
+                toggleBar: true
             });
+            $(toggleRow).append(markdownTb.toggleButton);
             $(markdownWrapper).prepend(markdownTb.toolbar);
 
             var $edit = $(editDiv);

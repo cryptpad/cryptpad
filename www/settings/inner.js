@@ -79,7 +79,8 @@ define([
             'cp-settings-delete'
         ],
         'profile': [ // Msg.settings_cat_profile
-            'cp-settings-displayname',
+            'cp-settings-profile-header',
+            'cp-settings-profile-name',
             'cp-settings-profile-avatar',
             'cp-settings-profile-badges',
             'cp-settings-profile-link',
@@ -140,8 +141,7 @@ define([
         categories.security.splice(feedbackIdx, 1);
     }
     if (AppConfig.disableProfile) {
-        var displaynameIdx = categories.account.indexOf('cp-settings-displayname');
-        categories.account.splice(displaynameIdx, 1);
+        delete categories.profile;
     }
 
     var create = {};
@@ -215,51 +215,6 @@ define([
             $key.append($pubLabel).append($pubInput);
         }
 
-
-        return $div;
-    };
-
-    // Create the block containing the display name field
-    create['displayname'] = function() {
-        var $div = $('<div>', { 'class': 'cp-settings-displayname cp-sidebarlayout-element' });
-        $('<label>', { 'for': 'cp-settings-displayname' }).text(Messages.user_displayName).appendTo($div);
-        var $inputBlock = $('<div>', { 'class': 'cp-sidebarlayout-input-block' }).appendTo($div);
-        var $input = $('<input>', {
-            'type': 'text',
-            'id': 'cp-settings-displayname',
-            'placeholder': Messages.anonymous
-        }).appendTo($inputBlock);
-        var $save = $('<button>', { 'class': 'btn btn-primary' }).text(Messages.settings_save).appendTo($inputBlock);
-        var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved }).hide().appendTo($div);
-        var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' }).hide().appendTo($div);
-
-        var displayName = metadataMgr.getUserData().name || '';
-        $input.val(displayName);
-
-        // When the display name is changed (enter or button clicked)
-        var todo = function() {
-            displayName = $input.val();
-            if (displayName === metadataMgr.getUserData().name) { return; }
-            $spinner.show();
-            common.setDisplayName(displayName, function() {
-                $spinner.hide();
-                $ok.show();
-            });
-        };
-        $input.on('keyup', function(e) {
-            if ($input.val() !== displayName) { $ok.hide(); }
-            if (e.which === 13) { todo(); }
-        });
-        $save.click(todo);
-
-        // On remote change
-        var onChange = function() {
-            if (metadataMgr.getUserData().name !== $input.val()) {
-                $input.val(metadataMgr.getUserData().name);
-                $input.focusout();
-            }
-        };
-        metadataMgr.onChange(onChange);
 
         return $div;
     };
@@ -1880,6 +1835,37 @@ define([
     }, true);
 
     // Profile
+    makeBlock('profile-header', function(cb) {
+        cb();
+    }, true);
+    makeBlock('profile-name', function(cb) {
+        const input = APP.blocks.input();
+        const button = APP.blocks.button('primary', '',
+                        Messages.settings_save);
+        const inputButton = APP.blocks.inputButton(input, button, {
+            onEnterDelegate: true
+        });
+        const labelled = APP.blocks.labelledInput(
+            Messages.user_displayName, input, inputButton);
+
+        let displayName = metadataMgr.getUserData().name || '';
+        const $input = $(input).val(displayName || '');
+
+        Util.onClickEnter($(button), () => {
+            const value = $(input).val();
+            if (value === displayName) { return; }
+            common.setDisplayName(value, function() {
+                displayName = value;
+                UI.log(Messages.saved);
+            });
+        });
+
+        onProfileEvt.reg(() => {
+            $input.val(APP.profileData?.name || '');
+        });
+
+        cb(labelled);
+    }, false, true);
     makeBlock('profile-link', function(cb) {
         if (!common.isLoggedIn()) { return cb(false); }
 
@@ -1890,7 +1876,7 @@ define([
             onEnterDelegate: true
         });
         const labelled = APP.blocks.labelledInput(
-            Messages.settings_profileLinkLabel, input, inputButton);
+            Messages.profile_addLink, input, inputButton);
 
         const $input = $(input).val(APP.profileData?.url || '');
 
@@ -1965,21 +1951,9 @@ define([
         const val = APP.profileData?.avatar;
         const badge = APP.profileData?.badge;
 
-        /*
-        if (!val) {
-            $('<img>', {
-                src: '/customize/images/avatar.png',
-                title: Messages.profile_defaultAlt,
-                alt: Messages.profile_defaultAlt,
-            }).appendTo($avatar.empty());
-            $avatar.append(Badges.render(badge));
-            return;
-        }
-        */
-
         const name = APP.profileData?.name || Messages.anonymous;
         if (!val) { $avatar.empty(); }
-        common.displayAvatar($avatar, val, APP.profileData?.name, () => {
+        common.displayAvatar($avatar, val, name, () => {
             if (!val) { return; }
             // avatar cb: append delete button
             const delButton = h('button.cp-settings-avatar-delete.btn.btn-danger.fa.fa-times', {
@@ -2066,10 +2040,10 @@ define([
         const button = APP.blocks.button('primary', '',
                         Messages.settings_save);
         const labelled = APP.blocks.labelledInput(
-            Messages.settings_profileDescLabel, input);
+            Messages.profile_editDescription, input);
         $(labelled).append(button);
 
-        const $input = $(input).val(APP.profileData?.description || '');
+        $(input).val(APP.profileData?.description || '');
 
         const cm = SFCodeMirror.create("gfm", CodeMirror, input);
         const editor = APP.editor = cm.editor;
@@ -2080,7 +2054,6 @@ define([
         cm.configureTheme(common, function () {});
         editor.setOption("extraKeys", {
             "Esc": function () {
-                cm.getInputField().blur();
                 $(button).focus();
             }
         });
@@ -2098,8 +2071,20 @@ define([
             });
         });
 
+        const markdownTb = common.createMarkdownToolbar(editor, {
+            embed: function (mt) {
+                editor.focus();
+                editor.replaceSelection($(mt)[0].outerHTML);
+            },
+            toggleBar: true
+        });
+        $(input).before(markdownTb.toggleButton);
+        $(input).before(markdownTb.toolbar);
+
+
         onProfileEvt.reg(() => {
             editor.setValue(APP.profileData?.description || '');
+            editor.save();
             editor.refresh();
         });
 
