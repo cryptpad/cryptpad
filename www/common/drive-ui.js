@@ -5122,6 +5122,11 @@ define([
                     }
 
                     var roParsed = Hash.parsePadUrl(data.roHref);
+                    if (!auditorHash && roParsed.type === "form" &&
+                        roParsed?.hashData?.auditorKey) {
+                        // If we have stored the auditor hash, mark it as such
+                        auditorHash = roParsed.hash;
+                    }
                     var padType = parsed.type || roParsed.type;
                     var ro = !sf || (folders[el] && folders[el].version >= 2);
                     var padData = {

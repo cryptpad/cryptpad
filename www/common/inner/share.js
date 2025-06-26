@@ -709,14 +709,13 @@ define([
             });
             return '<iframe src="' + url + '"></iframe>';
         };
-
         // disable edit share options if you don't have edit rights
         if (versionHash) {
             $rights.find('#cp-share-editable-false').attr('checked', true);
             $rights.find('#cp-share-present').removeAttr('checked').attr('disabled', true);
             $rights.find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
         } else if (!hashes.editHash) {
-            if (hash.indexOf('auditor') !== -1) {
+            if (opts.auditorHash) {
               $rights.find('#cp-share-editable-false').attr('checked', false).attr('disabled', true);
             } else {
                 $rights.find('#cp-share-editable-false').attr('checked', true);
@@ -727,7 +726,7 @@ define([
             $rights.find('#cp-share-present').removeAttr('checked').attr('disabled', true);
             $rights.find('#cp-share-editable-true').attr('checked', true);
         }
-        if (isForm && !opts.auditorHash && hash.indexOf('auditor') === -1) {
+        if (isForm && !opts.auditorHash && opts.auditorHash) {
             $rights.find('#cp-share-form').removeAttr('checked').attr('disabled', true);
         }
 
@@ -777,7 +776,7 @@ define([
                 $rights.find('#cp-share-editable-true').prop('checked', false);
                 $rights.find('#cp-share-present').prop('checked', true);
             } else if ((val.edit === false && hashes.viewHash) || !hashes.editHash) {
-                if (hash.indexOf('auditor') !== -1) {
+                if (opts.auditorHash) {
                     $rights.find('#cp-share-editable-false').prop('checked', false);
                     $rights.find('#cp-share-form').prop('checked', true);
                 } else {
