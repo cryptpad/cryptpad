@@ -1263,6 +1263,10 @@ define([
         arrow: true,
         maxWidth: '200px',
         flip: true,
+        onShow: () => {
+            // Hide other tooltips
+            $('body').find('.tippy-popper').hide();
+        },
         popperOptions: {
             modifiers: {
                 preventOverflow: { boundariesElement: 'window' }

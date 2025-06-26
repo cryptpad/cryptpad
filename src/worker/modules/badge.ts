@@ -93,10 +93,14 @@ const Badge: BadgeModule<ModuleObject> = {
             updateMetadata: config.updateMetadata
         };
 
+        const _listBadges = (data, cb) => {
+            listBadges(ctx, data, undefined, cb);
+        };
+
         return {
+            listBadges: _listBadges,
             removeClient: () => {},
             execCommand: (clientId, obj, cb) => {
-                console.log('Exex command', clientId, obj);
                 const cmd = obj.cmd;
                 const data = obj.data;
                 if (cmd === 'LIST_BADGES') {

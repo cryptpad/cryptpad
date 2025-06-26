@@ -140,11 +140,18 @@ define(req, function(AppConfig, Default, Language) {
     Messages.badges_premium = "Premium user";
     Messages.badges_error = "Error while validating this user's data";
     Messages.profile_badges = "Badges";
-    Messages.add_password = "Add your document password";
     Messages.show_password = "Show password";
     Messages.hide_password = "Hide password";
-    Messages.next_templateList = "Next template list";
-    Messages.previous_templateList = "Previous template list";
+    Messages.page_next = "Next page";
+    Messages.page_previous = "Previous page";
+    Messages.contact_mastodon = 'Mastodon'; // XXX
+    Messages.contact_forum = 'Forum'; // XXX
+    Messages.toolbar_text_tools  = "Text tools";
+    Messages.toolbar_show_text_tools = "Show text tools";
+    Messages.toolbar_hide_text_tools = "Hide text tools";
+    Messages.settings_profileAvatarLabel = "Avatar";
+    Messages.settings_profileHeaderTitle = "Edit your profile";
+    Messages.settings_profileHeaderHint = "Edit your public profile...";
     return Messages;
 
 });

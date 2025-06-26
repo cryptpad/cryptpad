@@ -309,7 +309,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var safeName = Util.fixHTML(name);
-            var $span = $('<span>', {'class': 'cp-avatar'});
+            var $span = $('<span>', {'class': 'cp-userlist-entry'});
             if (data.color && showColors) {
                 $span.css('border-color', data.color);
             }
@@ -423,7 +423,9 @@ MessengerUI, Messages, Pages, PadTypes) {
                     Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
-            Common.displayAvatar($span, data.avatar, name, function () {
+            const spanAvatar = h('span.cp-avatar');
+            const $avatar = $(spanAvatar).prependTo($span);;
+            Common.displayAvatar($avatar, data.avatar, name, function () {
                 $span.append($rightCol);
             }, data.uid);
             $span.data('uid', data.uid);
@@ -431,7 +433,8 @@ MessengerUI, Messages, Pages, PadTypes) {
                 const addBadge = (badge) => {
                     let i = Badges.render(badge);
                     if (!i) { return; }
-                    $rightCol.append(h('div.cp-userlist-badge', i));
+                    //$rightCol.append(h('div.cp-userlist-badge', i));
+                    $avatar.append(i);
                 };
                 const key = data.signature + '-' + data.badge;
                 const v = validatedBadges[key];

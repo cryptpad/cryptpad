@@ -11,6 +11,9 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/inner/sidebar-layout.js',
+    '/common/inner/badges.js',
+    '/common/inner/common-mediatag.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
     '/common/common-credential.js',
@@ -21,8 +24,16 @@ define([
     '/common/common-constants.js',
     '/customize.dist/login.js',
 
+    '/common/sframe-common-codemirror.js',
+    'cm/lib/codemirror',
+    'cm/mode/gfm/gfm',
+
     '/common/jscolor.js',
     '/components/file-saver/FileSaver.min.js',
+
+    'css!/components/codemirror/lib/codemirror.css',
+    'css!/components/codemirror/addon/dialog/dialog.css',
+    'css!/components/codemirror/addon/fold/foldgutter.css',
     'css!/components/bootstrap/dist/css/bootstrap.min.css',
     'css!/components/components-font-awesome/css/font-awesome.min.css',
     'less!/settings/app-settings.less',
@@ -35,6 +46,9 @@ define([
     UIElements,
     Util,
     Hash,
+    Sidebar,
+    Badges,
+    MT,
     Messages,
     h,
     Cred,
@@ -43,7 +57,9 @@ define([
     Backup,
     Feedback,
     Constants,
-    Login
+    Login,
+    SFCodeMirror,
+    CodeMirror
 ) {
     var saveAs = window.saveAs;
     var APP = window.APP = {};
@@ -52,16 +68,23 @@ define([
     var metadataMgr;
     var privateData;
     var sframeChan;
-
+    var onProfileEvt = Util.mkEvent();
 
     var categories = {
         'account': [ // Msg.settings_cat_account
             'cp-settings-own-drive',
             'cp-settings-info-block',
-            'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-mediatag-size',
             'cp-settings-delete'
+        ],
+        'profile': [ // Msg.settings_cat_profile
+            'cp-settings-profile-header',
+            'cp-settings-profile-name',
+            'cp-settings-profile-avatar',
+            'cp-settings-profile-badges',
+            'cp-settings-profile-link',
+            'cp-settings-profile-description',
         ],
         'security': [ // Msg.settings_cat_security
             'cp-settings-logout-everywhere',
@@ -114,12 +137,11 @@ define([
     };
 
     if (AppConfig.disableFeedback) {
-        var feedbackIdx = categories.account.indexOf('cp-settings-userfeedback');
-        categories.account.splice(feedbackIdx, 1);
+        var feedbackIdx = categories.security.indexOf('cp-settings-userfeedback');
+        categories.security.splice(feedbackIdx, 1);
     }
     if (AppConfig.disableProfile) {
-        var displaynameIdx = categories.account.indexOf('cp-settings-displayname');
-        categories.account.splice(displaynameIdx, 1);
+        delete categories.profile;
     }
 
     var create = {};
@@ -136,11 +158,14 @@ define([
             .text(Messages['settings_' + safeKey + 'Hint'] || 'Coming soon...');
     };
 
-    var makeBlock = function(key, getter, full) {
+    var makeBlock = function(key, getter, full, isNew) {
         var safeKey = key.replace(/-([a-z])/g, function(g) { return g[1].toUpperCase(); });
 
         create[key] = function() {
             var $div = $('<div>', { 'class': 'cp-settings-' + key + ' cp-sidebarlayout-element' });
+            if (isNew) {
+                $div.attr('data-item', key);
+            }
             if (full) {
                 $('<label>').text(Messages['settings_' + safeKey + 'Title'] || key).appendTo($div);
 
@@ -190,51 +215,6 @@ define([
             $key.append($pubLabel).append($pubInput);
         }
 
-
-        return $div;
-    };
-
-    // Create the block containing the display name field
-    create['displayname'] = function() {
-        var $div = $('<div>', { 'class': 'cp-settings-displayname cp-sidebarlayout-element' });
-        $('<label>', { 'for': 'cp-settings-displayname' }).text(Messages.user_displayName).appendTo($div);
-        var $inputBlock = $('<div>', { 'class': 'cp-sidebarlayout-input-block' }).appendTo($div);
-        var $input = $('<input>', {
-            'type': 'text',
-            'id': 'cp-settings-displayname',
-            'placeholder': Messages.anonymous
-        }).appendTo($inputBlock);
-        var $save = $('<button>', { 'class': 'btn btn-primary' }).text(Messages.settings_save).appendTo($inputBlock);
-        var $ok = $('<span>', { 'class': 'fa fa-check', title: Messages.saved }).hide().appendTo($div);
-        var $spinner = $('<span>', { 'class': 'fa fa-spinner fa-pulse' }).hide().appendTo($div);
-
-        var displayName = metadataMgr.getUserData().name || '';
-        $input.val(displayName);
-
-        // When the display name is changed (enter or button clicked)
-        var todo = function() {
-            displayName = $input.val();
-            if (displayName === metadataMgr.getUserData().name) { return; }
-            $spinner.show();
-            common.setDisplayName(displayName, function() {
-                $spinner.hide();
-                $ok.show();
-            });
-        };
-        $input.on('keyup', function(e) {
-            if ($input.val() !== displayName) { $ok.hide(); }
-            if (e.which === 13) { todo(); }
-        });
-        $save.click(todo);
-
-        // On remote change
-        var onChange = function() {
-            if (metadataMgr.getUserData().name !== $input.val()) {
-                $input.val(metadataMgr.getUserData().name);
-                $input.focusout();
-            }
-        };
-        metadataMgr.onChange(onChange);
 
         return $div;
     };
@@ -1854,6 +1834,265 @@ define([
         cb($cbox[0]);
     }, true);
 
+    // Profile
+    makeBlock('profile-header', function(cb) {
+        cb();
+    }, true);
+    makeBlock('profile-name', function(cb) {
+        const input = APP.blocks.input();
+        const button = APP.blocks.button('primary', '',
+                        Messages.settings_save);
+        const inputButton = APP.blocks.inputButton(input, button, {
+            onEnterDelegate: true
+        });
+        const labelled = APP.blocks.labelledInput(
+            Messages.user_displayName, input, inputButton);
+
+        let displayName = metadataMgr.getUserData().name || '';
+        const $input = $(input).val(displayName || '');
+
+        Util.onClickEnter($(button), () => {
+            const value = $(input).val();
+            if (value === displayName) { return; }
+            common.setDisplayName(value, function() {
+                displayName = value;
+                UI.log(Messages.saved);
+            });
+        });
+
+        onProfileEvt.reg(() => {
+            $input.val(APP.profileData?.name || '');
+        });
+
+        cb(labelled);
+    }, false, true);
+    makeBlock('profile-link', function(cb) {
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        const input = APP.blocks.input();
+        const button = APP.blocks.button('primary', '',
+                        Messages.settings_save);
+        const inputButton = APP.blocks.inputButton(input, button, {
+            onEnterDelegate: true
+        });
+        const labelled = APP.blocks.labelledInput(
+            Messages.profile_addLink, input, inputButton);
+
+        const $input = $(input).val(APP.profileData?.url || '');
+
+        Util.onClickEnter($(button), () => {
+            const value = $(input).val();
+            APP.profile.execCommand('SET', {
+                key: 'url',
+                value
+            }, function (data) {
+                UI.log(Messages.saved);
+                APP.profileData = data;
+                onProfileEvt.fire();
+            });
+        });
+
+        onProfileEvt.reg(() => {
+            $input.val(APP.profileData?.url || '');
+        });
+
+        cb(labelled);
+    }, false, true);
+    const redrawBadges = ($badges) => {
+        const old = APP.profileData;
+        APP.badge.execCommand('LIST_BADGES', {}, data => {
+            let spinner;
+            $badges.toggle(!!data.length);
+            let all = data.map(str => {
+                const i = Badges.render(str);
+                const $i = $(i).attr('tabindex', 0);
+                const selected = old?.badge === str;
+                if (selected) { $i.addClass('cp-selected'); }
+                Util.onClickEnter($i, () => {
+                    let value = selected ? '' : str;
+                    spinner.spin();
+                    APP.profile.execCommand('SET', {
+                        key: 'badge',
+                        value
+                    }, function (data) {
+                        APP.profileData = data;
+                        spinner.done();
+                        onProfileEvt.fire();
+                    });
+                });
+                return i;
+            });
+            if (!all.length) {
+                return $badges.empty();
+            }
+            let content = h('div.cp-settings-badges', [
+                h('span', Messages.profile_badges),
+                h('div.cp-settings-badges-list', all)
+            ]);
+            $badges.empty().append(content);
+            spinner = UI.makeSpinner($badges.find('.cp-settings-badges-list'));
+        });
+    };
+    makeBlock('profile-badges', function(cb) {
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        const badges = h('div');
+        const $badges = $(badges);
+
+        redrawBadges($badges);
+        onProfileEvt.reg(() => {
+            redrawBadges($badges);
+        });
+
+        cb(badges);
+    }, false, true);
+
+    const redrawAvatar = ($avatar) => {
+        const val = APP.profileData?.avatar;
+        const badge = APP.profileData?.badge;
+
+        const name = APP.profileData?.name || Messages.anonymous;
+        if (!val) { $avatar.empty(); }
+        common.displayAvatar($avatar, val, name, () => {
+            if (!val) { return; }
+            // avatar cb: append delete button
+            const delButton = h('button.cp-settings-avatar-delete.btn.btn-danger.fa.fa-times', {
+                title: Messages.profile_remove_avatar
+            });
+            $avatar.append(delButton);
+            $(delButton).click(() => {
+                const old = APP.profileData?.avatar;
+                APP.profile.execCommand("SET", {
+                    key: 'avatar',
+                    value: ""
+                }, (newData) => {
+                    APP.profileData = newData;
+                    sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old,
+                    (err, err2) => {
+                        if (err || err2) {
+                            return void UI.warn(err || err2);
+                        }
+                        onProfileEvt.fire();
+                    });
+                });
+            });
+        }, void 0, badge);
+    };
+    makeBlock('profile-avatar', function(cb) {
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        const avatar = h('div.cp-avatar');
+        const $avatar = $(avatar);
+
+        redrawAvatar($avatar);
+        onProfileEvt.reg(() => {
+            redrawAvatar($avatar);
+        });
+
+        // Upload
+        const data = MT.addAvatar(common, (ev, data) => {
+            const old = APP.profileData?.avatar;
+            const todo = () => {
+                APP.profile.execCommand("SET", {
+                    key: 'avatar',
+                    value: data.url
+                }, (newData) => {
+                    console.error(newData?.avatar, newData);
+                    sframeChan.query("Q_PROFILE_AVATAR_ADD",
+                    data.url, (err, err2) => {
+                        if (err || err2) {
+                            return void UI.warn(err || err2);
+                        }
+                        APP.profileData = newData;
+                        onProfileEvt.fire();
+                    });
+                });
+            };
+            if (old) {
+                sframeChan.query("Q_PROFILE_AVATAR_REMOVE",
+                old, (err, err2) => {
+                    if (err || err2) {
+                        return void UI.warn(err || err2);
+                    }
+                    todo();
+                });
+                return;
+            }
+            todo();
+        });
+        const $upButton = common.createButton('upload', false, data);
+        $upButton.removeClass('btn-primary').addClass('btn-secondary');
+        $upButton.removeProp('title');
+        $upButton.text(Messages.profile_upload);
+        $upButton.prepend($('<i>', {'class': 'fa fa-upload', 'aria-hidden': 'true'}));
+
+
+        cb([
+            h('label', Messages.settings_profileAvatarLabel),
+            h('div.cp-settings-avatar-container', avatar),
+            $upButton[0]
+        ]);
+    }, false, true);
+    makeBlock('profile-description', function(cb) {
+        if (!common.isLoggedIn()) { return cb(false); }
+
+        const input = APP.blocks.textarea();
+        const button = APP.blocks.button('primary', '',
+                        Messages.settings_save);
+        const labelled = APP.blocks.labelledInput(
+            Messages.profile_editDescription, input);
+        $(labelled).append(button);
+
+        $(input).val(APP.profileData?.description || '');
+
+        const cm = SFCodeMirror.create("gfm", CodeMirror, input);
+        const editor = APP.editor = cm.editor;
+        editor.setOption('lineNumbers', true);
+        editor.setOption('lineWrapping', true);
+        editor.setOption('styleActiveLine', true);
+        editor.setOption('readOnly', false);
+        cm.configureTheme(common, function () {});
+        editor.setOption("extraKeys", {
+            "Esc": function () {
+                $(button).focus();
+            }
+        });
+        editor.refresh();
+
+        Util.onClickEnter($(button), () => {
+            const value = editor.getValue();
+            APP.profile.execCommand('SET', {
+                key: 'description',
+                value
+            }, function (data) {
+                UI.log(Messages.saved);
+                APP.profileData = data;
+                onProfileEvt.fire();
+            });
+        });
+
+        const markdownTb = common.createMarkdownToolbar(editor, {
+            embed: function (mt) {
+                editor.focus();
+                editor.replaceSelection($(mt)[0].outerHTML);
+            },
+            toggleBar: true
+        });
+        $(input).before(markdownTb.toggleButton);
+        $(input).before(markdownTb.toolbar);
+
+
+        onProfileEvt.reg(() => {
+            editor.setValue(APP.profileData?.description || '');
+            editor.save();
+            editor.refresh();
+        });
+
+        cb(labelled);
+    }, false, true);
+
+
+
     // Settings app
 
     var createUsageButton = function() {
@@ -1875,6 +2114,7 @@ define([
 
     var SIDEBAR_ICONS = {
         account: 'fa fa-user-o',
+        profile: 'fa fa-user-circle',
         drive: 'fa fa-hdd-o',
         cursor: 'fa fa-i-cursor',
         code: 'fa fa-file-code-o',
@@ -1887,6 +2127,7 @@ define([
     let SIDEBAR_NAMES = {}; // for extension points
 
     Messages.settings_cat_notifications = Messages.notificationsPage;
+    Messages.settings_cat_profile = Messages.profileButton;
     var createLeftside = function() {
         var $categories = $('<div>', { 'class': 'cp-sidebarlayout-categories' })
             .appendTo(APP.$leftside);
@@ -1935,7 +2176,15 @@ define([
         common.setHash(active);
     };
 
-
+    var onProfileEvent = function (obj) {
+        var ev = obj.ev;
+        var data = obj.data;
+        if (ev === 'UPDATE') {
+            APP.profileData = data;
+            onProfileEvt.fire();
+            return;
+        }
+    };
 
     nThen(function(waitFor) {
         $(waitFor(UI.addLoadingScreen));
@@ -1947,6 +2196,16 @@ define([
         APP.$rightside = $('<div>', { id: 'cp-sidebarlayout-rightside' }).appendTo(APP.$container);
         sframeChan = common.getSframeChannel();
         sframeChan.onReady(waitFor());
+    }).nThen(function(waitFor) {
+        APP.profile = common.makeUniversal('profile', {
+            onEvent: onProfileEvent
+        });
+        APP.badge = common.makeUniversal('badge', {
+            onEvent: onProfileEvent
+        });
+        APP.profile.execCommand('SUBSCRIBE', null, waitFor(obj => {
+            APP.profileData = obj;
+        }));
     }).nThen(function( /*waitFor*/ ) {
         metadataMgr = common.getMetadataMgr();
         privateData = metadataMgr.getPrivateData();
@@ -1978,7 +2237,7 @@ define([
             categories[ext.id] = ext.getContent(common);
         });
 
-
+        APP.blocks = Sidebar.blocks('settings', common);
 
         // Content
         var $rightside = APP.$rightside;

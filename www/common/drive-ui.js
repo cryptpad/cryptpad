@@ -660,25 +660,30 @@ define([
         var $trashContextMenu = $("#cp-app-drive-context-trash");
 
         $content.attr("tabindex", "0");
-        var splitter = h('div.cp-splitter', [
-            h('i.fa.fa-ellipsis-v')
-        ]);
-        $contentContainer.append(splitter);
-        APP.$splitter = $(splitter).on('mousedown', function (e) {
-            e.preventDefault();
-            var x = e.pageX;
-            var w = $tree.width();
-            var handler = function (evt) {
-                if (evt.type === 'mouseup') {
-                    $(window).off('mouseup mousemove', handler);
-                    return;
-                }
-                $tree.css('width', (w - x + evt.pageX) + 'px');
-            };
-            $(window).off('mouseup mousemove', handler);
-            $(window).on('mouseup mousemove', handler);
-        });
-
+        if (APP.loggedIn) {
+            var splitter = h('div.cp-splitter', [
+                h('i.fa.fa-ellipsis-v')
+            ]);
+            $contentContainer.append(splitter);
+            APP.$splitter = $(splitter).on('mousedown touchstart', function (e) {
+                e.preventDefault();
+                var x = e.type === 'touchstart' ? e.originalEvent.touches[0].pageX : e.pageX;
+                var w = $tree.width();
+                
+                var handler = function (evt) {
+                    if (evt.type === 'mouseup' || evt.type === 'touchend') {
+                        $(window).off('mouseup mousemove touchend touchmove', handler);
+                        return; 
+                    }
+                    var pageX = evt.type === 'touchmove'
+                        ? evt.originalEvent.touches[0].pageX
+                        : evt.pageX;
+                    $tree.css('width', (w - x + pageX) + 'px');
+                };
+                $(window).off('mouseup mousemove touchend touchmove', handler, { passive: false });
+                $(window).on('mouseup mousemove touchend touchmove', handler);
+            });
+        }
         // TOOLBAR
 
         // DRIVE
@@ -3462,19 +3467,23 @@ define([
                 b = [b];
             }
 
-            if(a.length === 0 && b.length === 0) {
+            if (a.length === 0 && b.length === 0) {
                 return 0;
             } else if (a.length === 0) {
                 return -1;
             } else if (b.length === 0) {
                 return 1;
-            } else if(a[0] < b[0]) {
-                return -1;
-            } else if(a[0] > b[0]) {
-                return 1;
+            } else if (typeof (a[0]) !== typeof (b[0])) {
+                return String(a[0]) < String(b[0]) ? -1 : 1;
             } else {
-                // This means `a[0] == b[0]`. Chop off the first elements and compare the rest.
-                return lexicographicCompare(a.slice(1), b.slice(1));
+                if (a[0] < b[0]) {
+                    return -1;
+                } else if (a[0] > b[0]) {
+                    return 1;
+                } else {
+                    // This means `a[0] == b[0]`. Chop off the first elements and compare the rest.
+                    return lexicographicCompare(a.slice(1), b.slice(1));
+                }
             }
         };
 
@@ -3792,8 +3801,6 @@ define([
                 });
                 $element.contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
-                var $fileMenu = $('<li>').append($fileMenuIcon);
-                $element.append($fileMenu);
                 $container.append($element);
             });
             createGhostIcon($container);
