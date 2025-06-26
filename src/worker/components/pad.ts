@@ -239,7 +239,7 @@ const _join: Callback = (ctx, clientId, data) => {
         if (!["EDELETED","EEXPIRED","ERESTRICTED"].includes(type)) {
             return;
         }
-        Store.leavePad(null, data, function () {});
+        ctx.leavePad(null, data, function () {});
     };
     const conf = {
         Cache: store.neverCache ? undefined : Cache,
@@ -467,7 +467,8 @@ const init = (config) => {
         postMessage,
         store,
         Store,
-        myDeletions: []
+        myDeletions: [],
+        leavePad: (clientId, data, cb) => {}
     };
 
     const join: RpcCall = (clientId, data, cb) => {
@@ -512,6 +513,7 @@ const init = (config) => {
         dropChannel(ctx, data.channel);
         cb();
     };
+    ctx.leavePad = leave;
 
     const getChannels = () => {
         return ctx.channels;

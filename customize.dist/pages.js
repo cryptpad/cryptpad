@@ -51,7 +51,7 @@ define([
         return Pages.externalLink(el, Pages.localizeDocsLink(href));
     };
 
-    var accounts = Pages.accounts = {
+    Pages.accounts = {
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
     };
 
