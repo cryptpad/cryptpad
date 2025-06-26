@@ -97,6 +97,26 @@ const Badge: BadgeModule<ModuleObject> = {
             listBadges(ctx, data, undefined, cb);
         };
 
+        // On ready, check if our badge is still valid
+        const Store = ctx.Store;
+        Store.onReadyEvt.reg(() => {
+            const md = Store.getMetadata(void 0, 'drive', () => {});
+            const myBadge:string = md?.user?.badge || "";
+            if (!myBadge) { return; }
+            listBadges(ctx, {}, undefined, all => {
+                if (!all.includes(myBadge)) {
+                    const profile = ctx?.store?.modules?.profile;
+                    profile?.execCommand(void 0, {
+                        cmd: 'SET',
+                        data: {
+                            key: 'badge',
+                            value: ''
+                        }
+                    }, () => {});
+                }
+            });
+        });
+
         return {
             listBadges: _listBadges,
             removeClient: () => {},

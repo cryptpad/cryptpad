@@ -441,7 +441,9 @@ MessengerUI, Messages, Pages, PadTypes) {
                 if (typeof (v) === "string") {
                     addBadge(v);
                 } else if (v === false) {
-                    addBadge('error');
+                    if (!Badges.safeBadges.includes(data.badge)) {
+                        addBadge('error');
+                    }
                 } else {
                     let ev = validatedBadges[key] ||= Util.mkEvent(true);
                     ev.reg(badge => { addBadge(badge); });
@@ -454,6 +456,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                     }, res => {
                         if (!res?.verified) {
                             validatedBadges[key] = false;
+                            if (Badges.safeBadges.includes(data.badge)) { return; }
                             return void addBadge('error');
                         }
                         validatedBadges[key] = res.badge;

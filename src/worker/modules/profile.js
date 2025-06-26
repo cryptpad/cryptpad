@@ -6,6 +6,8 @@ const factory = (Util, Hash, Constants, Realtime,
                 Messaging, Listmap, Crypto, ChainPad) => {
     var Profile = {};
 
+    const onReady = Util.mkEvent(true);
+
     var initializeProfile = function (ctx, cb) {
         var profile = ctx.profile;
         if (!profile.edit || !profile.view) {
@@ -71,6 +73,7 @@ const factory = (Util, Hash, Constants, Realtime,
                 });
                 ctx.onReadyHandlers = [];
             }
+            onReady.fire();
         }).on('change', [], function () {
             ctx.emit('UPDATE', lm.proxy, ctx.clients);
         });
@@ -99,24 +102,26 @@ const factory = (Util, Hash, Constants, Realtime,
     };
 
     var setValue = function (ctx, data, cId, cb) {
-        var key = data.key;
-        var value = data.value;
-        if (!key) { return; }
-        ctx.listmap.proxy[key] = value;
-        Realtime.whenRealtimeSyncs(ctx.listmap.realtime, function () {
-            ctx.emit('UPDATE', ctx.listmap.proxy, ctx.clients.filter(function (clientId) {
-                return clientId !== cId;
-            }));
-            if (key === 'badge') {
-                ctx.Store.set(null, {
-                    key: ['profile', 'badge'],
-                    value: value || undefined
-                }, () => {
-                    Messaging.updateMyData(ctx.store);
-                    ctx.updateMetadata();
-                });
-            }
-            cb(ctx.listmap.proxy);
+        onReady.reg(() => {
+            var key = data.key;
+            var value = data.value;
+            if (!key) { return; }
+            ctx.listmap.proxy[key] = value;
+            Realtime.whenRealtimeSyncs(ctx.listmap.realtime, function () {
+                ctx.emit('UPDATE', ctx.listmap.proxy, ctx.clients.filter(function (clientId) {
+                    return clientId !== cId;
+                }));
+                if (key === 'badge') {
+                    ctx.Store.set(null, {
+                        key: ['profile', 'badge'],
+                        value: value || undefined
+                    }, () => {
+                        Messaging.updateMyData(ctx.store);
+                        ctx.updateMetadata();
+                    });
+                }
+                cb(ctx.listmap.proxy);
+            });
         });
     };
 

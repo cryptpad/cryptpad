@@ -347,7 +347,11 @@ define([
                 nid: privateData.channel
             }, res => {
                 if (!res?.verified) {
-                    data.badge = 'error';
+                    if (Badges.safeBadges.includes(data.badge)) {
+                        delete data.badge;
+                    } else {
+                        data.badge = 'error';
+                    }
                     displayAvatar(val, data, true);
                     return;
                 }

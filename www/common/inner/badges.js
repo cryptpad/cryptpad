@@ -15,6 +15,10 @@ define([
         error: 'fa-exclamation-circle'
     };
 
+    // safeBadges won't show an error when they aren't active anymore
+    //   --> we just hide them
+    Badges.safeBadges = ["premium"];
+
     Badges.render = id => {
         let icon = badges[id];
         if (!icon) { return; }
