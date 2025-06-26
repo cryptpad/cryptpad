@@ -798,6 +798,9 @@ define([
         common.getMetadataMgr().onChange(function () {
             // "hashes" is only available is the secure "share" app
             var _hashes = common.getMetadataMgr().getPrivateData().hashes;
+            const h = _hashes.editHash || _hashes.viewHash;
+            const c = Hash.getSecrets('pad', h, opts.password).channel;
+            if (channel !== c) { return; }
             if (!_hashes) { return; }
             hashes = _hashes;
             getLink().val(opts.getLinkValue());
