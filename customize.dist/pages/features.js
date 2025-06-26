@@ -15,8 +15,6 @@ define([
     '/common/pad-types.js',
     '/common/extensions.js'
 ], function ($, h, Msg, AppConfig, LocalStore, Pages, Config, UIElements, Constants, PadTypes, Extensions) {
-    var accounts = Pages.accounts;
-
     return function () {
         document.title = Msg.features;
         Msg.features_f_apps_note = PadTypes.availableTypes.map(function (app) {
