@@ -71,10 +71,16 @@
             .cp-form-block-question-text, .cp-form-block-question-number {
                 color: @color !important;
             }
-            .cp-form-type-sort:hover {
-                color: @color !important;
-                .cp-form-sort-order {
-                    border-color: @color !important;
+            .cp-form-type-sort {
+                border-radius: @variables_radius;
+                &:hover {
+                    color: @color !important;
+                    .cp-form-sort-order {
+                        border-color: @color !important;
+                    }
+                }
+                &:focus-visible {
+                    outline: @variables_focus_style;
                 }
             }
             .cp-form-input-block {

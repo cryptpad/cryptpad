@@ -2465,7 +2465,7 @@ define([
                     var uid = Util.uid();
                     map[uid] = data;
                     invMap[data] = uid;
-                    var div = h('div.cp-form-type-sort', {'data-id': uid}, [
+                    var div = h('div.cp-form-type-sort', {'data-id': uid, 'tabindex': 0}, [
                         h('span.cp-form-handle', [
                             h('i.fa.fa-ellipsis-v'),
                             h('i.fa.fa-ellipsis-v'),
@@ -2487,6 +2487,24 @@ define([
                     });
                     sorted = !reset;
                 };
+                $tag.on('keydown', '.cp-form-type-sort', function (e) {
+                    var $current = $(this);
+                    var $all = $tag.find('.cp-form-type-sort');
+                    var index = $all.index($current);
+                    if (e.key === 'ArrowUp' && index > 0) {
+                        e.preventDefault();
+                        $current.insertBefore($all.eq(index - 1));
+                        reorder();
+                        $current.focus();
+                        evOnChange.fire();
+                    } else if (e.key === 'ArrowDown' && index < $all.length - 1) {
+                        e.preventDefault();
+                        $current.insertAfter($all.eq(index + 1));
+                        reorder();
+                        $current.focus();
+                        evOnChange.fire();
+                    }
+                })
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
 
