@@ -2859,7 +2859,7 @@ define([
         var password = h('div.cp-creation-password',  [ 
             UI.createCheckbox('cp-creation-password', Messages.properties_addPassword, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
-                UI.passwordInput({id: 'cp-creation-password-val', placeholder: Messages.add_password})
+                UI.passwordInput({id: 'cp-creation-password-val', placeholder: Messages.properties_addPassword})
                 /*h('input#cp-creation-password-val', {
                     type: "text" // TODO type password with click to show
                 }),*/
