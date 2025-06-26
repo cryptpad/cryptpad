@@ -2465,7 +2465,7 @@ define([
                     var uid = Util.uid();
                     map[uid] = data;
                     invMap[data] = uid;
-                    var div = h('div.cp-form-type-sort', {'data-id': uid, 'tabindex': 0}, [
+                    var div = h('div.cp-form-type-sort', {'data-id': uid, 'tabindex': 0, 'role': 'option'}, [
                         h('span.cp-form-handle', [
                             h('i.fa.fa-ellipsis-v'),
                             h('i.fa.fa-ellipsis-v'),
@@ -2476,7 +2476,7 @@ define([
                     $(div).data('val', data);
                     return div;
                 });
-                var tag = h('div.cp-form-type-sort-container', [
+                var tag = h('div.cp-form-type-sort-container', { 'role': 'listbox' },[
                     h('div.cp-form-sort-hint', Messages._getKey('form_sort_hint', [els.length])),
                     els
                 ]);
@@ -2504,7 +2504,7 @@ define([
                         $current.focus();
                         evOnChange.fire();
                     }
-                })
+                });
                 var cursorGetter;
                 var setCursorGetter = function (f) { cursorGetter = f; };
 
