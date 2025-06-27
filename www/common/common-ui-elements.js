@@ -1412,14 +1412,16 @@ define([
 
         common.fixLinks(text);
 
-        var closeButton = h('span.cp-help-close.fa.fa-times');
+        var closeButton = h('button.cp-help-close.fa.fa-times', {
+            title: Messages.help_close_button
+        });
         var $toolbarButton = common.createButton('', true, {
             text: Messages.help_button,
             name: 'help'
         }).addClass('cp-toolbar-button-active');
         var help = h('div.cp-help-container', [
-            closeButton,
-            text
+            text,
+            closeButton
         ]);
 
         $toolbarButton.attr('title', Messages.show_help_button);

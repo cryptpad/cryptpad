@@ -134,6 +134,7 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.help_close_button = 'Close help notification'; // XXX
     // XXX
     Messages.badges_admin = "Instance administrator";
     Messages.badges_moderator = "Instance moderator";
