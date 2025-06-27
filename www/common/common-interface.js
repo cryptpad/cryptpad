@@ -1350,7 +1350,7 @@ define([
             if (e.which === 32 || e.which === 13){
                 e.stopPropagation();
                 e.preventDefault();
-                $input.prop('checked', !$input.is(':checked'));
+                $mark.prop('checked', !$input.is(':checked'));
                 $input.change();
             }
         });
