@@ -2077,10 +2077,6 @@ define([
         });
 
         const markdownTb = common.createMarkdownToolbar(editor, {
-            embed: function (mt) {
-                editor.focus();
-                editor.replaceSelection($(mt)[0].outerHTML);
-            },
             toggleBar: true
         });
         $(input).before(markdownTb.toggleButton);
