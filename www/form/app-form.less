@@ -267,6 +267,13 @@
                     }
                 }
             }
+            @media screen and (max-width: 379px) {
+                .cp-drag-container {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                }
+            }
             .cp-form-creator-settings {
                 .cp-form-actions {
                     margin-top: 5px;
@@ -299,6 +306,7 @@
                         display: flex;
                         justify-content: space-between;
                         margin-top: 5px;
+                        gap: 0.5rem;
                         &:last-child {
                             justify-content: space-evenly;
                         }
