@@ -4000,7 +4000,7 @@ define([
             var dragHandle;
             var q = h('div.cp-form-block-question', [
                 h('span.cp-form-block-question-number', (n++)+'.'),
-                h('span.cp-form-block-question-text', block.q || Messages.form_default),
+                h('span.cp-form-block-question-text',{ 'id': 'cp-question-' + (n-1) }, block.q || Messages.form_default),
                 requiredTag
             ]);
             // Static blocks don't have questions ("q" is not used) so we can decrement n
@@ -4332,9 +4332,10 @@ define([
 
             var editableCls = editable ? ".editable" : "";
             var draggable = APP.drag ? '' : '.nodrag';
-            elements.push(h('div.cp-form-block'+editableCls+draggable, {
+            elements.push(h('fieldset.cp-form-block'+editableCls+draggable, {
                 'data-id':uid,
-                'data-type':type
+                'data-type':type,
+                'aria-labelledby': 'cp-question-' + (n-1)
             }, [
                 h('header', [
                     APP.isEditor ? dragHandle : undefined,
