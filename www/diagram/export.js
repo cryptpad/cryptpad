@@ -10,7 +10,7 @@ define([
     const blobToImage = (blob) => {
         return new Promise((resolve) => {
             const reader = new FileReader();
-            reader.onloadend = function() {
+            reader.onloadend = function () {
                 resolve(reader.result);
             };
             reader.readAsDataURL(blob);
@@ -35,7 +35,7 @@ define([
     };
 
     return {
-        main: function(userDoc, cb) {
+        main: function (userDoc, cb) {
             delete userDoc.metadata;
 
             const xml = DiagramUtil.jsonContentAsXML(userDoc);
@@ -43,7 +43,7 @@ define([
             let doc;
             try {
                 doc = DiagramUtil.parseXML(xml);
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 return;
             }
@@ -51,7 +51,15 @@ define([
             const promises = loadCryptPadImages(doc);
 
             Promise.all(promises).then(() => {
-                cb(new XMLSerializer().serializeToString(doc), '.drawio');
+
+                try {
+                    const xmlString = new XMLSerializer().serializeToString(doc);
+                    const blob = new Blob([xmlString], { type: 'application/xml' });
+                    cb(blob, '.drawio');
+
+                } catch (error) {
+                    console.error('Error exporting diagram:', error);
+                }
             });
         }
     };
