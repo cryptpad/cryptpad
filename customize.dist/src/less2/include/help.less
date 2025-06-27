@@ -5,6 +5,7 @@
  */
 
 @import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
 
 .help_main () {
     --LessLoader_require: LessLoader_currentFile();
@@ -15,17 +16,21 @@
         position: relative;
         background-color: @cp_help-bg;
         max-height: 50%;
-        overflow-y: auto;
         &.cp-help-hidden {
             display: none;
         }
 
         .cp-help-close {
+            background: none;
+            border: none;
             position: absolute;
             color: @cryptpad_text_col;
             top: 5px;
             right: 5px;
-            cursor: pointer;
+            &:focus-visible {
+                outline: @variables_focus_style;
+                border-radius: @variables_radius;
+            }
         }
         .cp-help-text {
             color: @cp_help-fg;
@@ -34,6 +39,10 @@
             a {
                 color: @cp_help-link;
                 text-decoration: underline;
+                &:focus-visible {
+                    outline: @variables_focus_style;
+                    border-radius: @variables_radius;
+                }
             }
             h1 {
                 font-size: 20px;

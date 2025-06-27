@@ -255,7 +255,7 @@ MessengerUI, Messages, Pages, PadTypes) {
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var safeName = Util.fixHTML(name);
-            var $span = $('<span>', {'class': 'cp-avatar'});
+            var $span = $('<span>', {'class': 'cp-userlist-entry'});
             if (data.color && showColors) {
                 $span.css('border-color', data.color);
             }
@@ -369,22 +369,27 @@ MessengerUI, Messages, Pages, PadTypes) {
                     Common.openURL(origin+'/profile/#' + data.profile);
                 });
             }
-            Common.displayAvatar($span, data.avatar, name, function () {
+            const spanAvatar = h('span.cp-avatar');
+            const $avatar = $(spanAvatar).prependTo($span);;
+            Common.displayAvatar($avatar, data.avatar, name, function () {
                 $span.append($rightCol);
             }, data.uid);
             $span.data('uid', data.uid);
-            if (false && data.badge && data.edPublic) { // XXX 2025.6
+            if (data.badge && data.edPublic) {
                 const addBadge = (badge) => {
                     let i = Badges.render(badge);
                     if (!i) { return; }
-                    $rightCol.append(h('div.cp-userlist-badge', i));
+                    //$rightCol.append(h('div.cp-userlist-badge', i));
+                    $avatar.append(i);
                 };
                 const key = data.signature + '-' + data.badge;
                 const v = validatedBadges[key];
                 if (typeof (v) === "string") {
                     addBadge(v);
                 } else if (v === false) {
-                    addBadge('error');
+                    if (!Badges.safeBadges.includes(data.badge)) {
+                        addBadge('error');
+                    }
                 } else {
                     let ev = validatedBadges[key] ||= Util.mkEvent(true);
                     ev.reg(badge => { addBadge(badge); });
@@ -397,6 +402,7 @@ MessengerUI, Messages, Pages, PadTypes) {
                     }, res => {
                         if (!res?.verified) {
                             validatedBadges[key] = false;
+                            if (Badges.safeBadges.includes(data.badge)) { return; }
                             return void addBadge('error');
                         }
                         validatedBadges[key] = res.badge;
@@ -999,17 +1005,16 @@ MessengerUI, Messages, Pages, PadTypes) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 $limit.show().click(function () {
-                    if (ApiConfig.allowSubscriptions && Config.upgradeURL) {
-                        var msg = Pages.setHTML(h('span'), Messages.pinLimitReachedAlert);
-                        $(msg).find('a').attr({
-                            target: '_blank',
-                            href: Config.upgradeURL,
-                        });
+                    let handled = false;
+                    // Msg.pinLimitReachedAlert
+                    Common.getExtensionsSync('QUOTA_REACHED').forEach(ext => {
+                        if (!ext.getAlert) { return; }
+                        handled = true;
+                        ext.getAlert();
+                    });
+                    if (handled) { return; }
 
-                        UI.alert(msg);
-                    } else {
-                        UI.alert(Messages.pinLimitReachedAlertNoAccounts);
-                    }
+                    UI.alert(Messages.pinLimitReachedAlertNoAccounts);
                 });
             }
         };

@@ -209,27 +209,14 @@ define([
     };
 
     create['subscribe'] = function () {
-        if (!Pages.areSubscriptionsAllowed()) { return; }
-        try {
-            if (common.getMetadataMgr().getPrivateData().plan) { return; }
-        } catch (err) {}
-
-        var url = Pages.accounts.upgradeURL;
-        var accountsLink = h('a', {
-            href: url,
-        }, Messages.support_premiumLink);
-        $(accountsLink).click(function (ev) {
-            ev.preventDefault();
-            common.openURL(url);
+        let content;
+        // Msg.support_premiumLink
+        // Msg.support_premiumPriority,
+        common.getExtensionsSync('SUPPORT_SUBSCRIBE').forEach(ext => {
+            if (!ext.getContent) { return; }
+            content = ext.getContent(common);
         });
-
-        return $(h('div.cp-support-subscribe.cp-sidebarlayout-element', [
-            h('div.alert.alert-info', [
-                Messages.support_premiumPriority,
-                ' ',
-                accountsLink,
-            ]),
-        ]));
+        return $(content);
     };
 
     // Create a new tickets

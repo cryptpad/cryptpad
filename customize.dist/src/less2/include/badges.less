@@ -17,18 +17,33 @@
     --badges-width: @badges-width;
     --badges-font: ceil(@badges-width*2/3);
 }
+.badges_include() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+
 & {
-    .badges_vars();
     i.cp-badge {
         width: var(--badges-width);
         height: var(--badges-width);
-        box-sizing: border-box;
-        border: 1px solid @cryptpad_text_col;
+        box-sizing: content-box;
         border-radius: 50%;
         display: inline-flex;
         justify-content: center;
         align-items: center;
         font-size: var(--badges-font);
+        color: @cp_badges-color;
+        background-color: @cryptpad_color_link;
+        z-index: 10;
+        &.cp-selected {
+            outline-offset: 3px;
+            outline: 2px solid @cryptpad_text_col;
+        }
+        each(@cp_badges-bg, {
+            &[data-badge="@{key}"] {
+                background-color: @value;
+            }
+        });
+
     }
 }
 

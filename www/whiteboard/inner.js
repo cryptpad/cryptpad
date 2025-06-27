@@ -311,6 +311,8 @@ define([
         var $canvas = $('canvas');
         var $canvasContainer = $('canvas').parents('.cp-app-whiteboard-canvas-container');
         var $container = $('#cp-app-whiteboard-container');
+        $('#cp-app-whiteboard-canvas-area').show();
+        $('#cp-app-whiteboard-controls').show();
 
         // Max for old macs: 2048×1464
         // Max for IE: 8192x8192
@@ -631,6 +633,8 @@ define([
         }).nThen(function (waitFor) {
             require(['/lib/fabric-history.min.js'], waitFor());
 
+            $('#cp-app-whiteboard-canvas-area').css('display', 'none');
+            $('#cp-app-whiteboard-controls').css('display', 'none');
             // Framework initialization
             Framework.create({
                 patchTransformer: ChainPad.NaiveJSONTransformer,

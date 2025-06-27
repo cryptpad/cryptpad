@@ -104,9 +104,9 @@ define([
 
         var proceed = function (result) {
             hashing = false;
-            if (cb && typeof cb === "function" && cb(result)) { return; }
-            LocalStore.clearLoginToken();
             Realtime.whenRealtimeSyncs(result.realtime, function () {
+                if (cb && typeof cb === "function" && cb(result)) { return; }
+                LocalStore.clearLoginToken();
                 Exports.redirect();
             });
         };

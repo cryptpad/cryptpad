@@ -48,12 +48,12 @@ define([
         }
     };
 
+    const Env = {};
+
     // Upgrade and donate URLs duplicated in pages.js
-    var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,
         donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
-        upgradeURL: AppConfig.upgradeURL || 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
     };
 
@@ -79,6 +79,12 @@ define([
     common.getAccessKeys = function (cb) {
         var keys = [];
         nThen(function (waitFor) {
+            // Not logged in? check for temp RPC keys
+            if (!LocalStore.isLoggedIn() && Env?.returned?.tempKeys) {
+                keys.push(Env.returned.tempKeys);
+                return;
+            }
+
             // Push account keys
             postMessage("GET", {
                 key: ['edPrivate'],
@@ -499,8 +505,8 @@ define([
     common.drive.onRemove = Util.mkEvent();
     common.drive.onDeleted = Util.mkEvent();
     // Profile
-    common.getProfileEditUrl = function (cb) {
-        postMessage("GET", { key: ['profile', 'edit'] }, function (obj) {
+    common.getProfileViewUrl = function (cb) {
+        postMessage("GET", { key: ['profile', 'view'] }, function (obj) {
             cb(obj);
         });
     };
@@ -631,7 +637,7 @@ define([
 
     common.uploadChunk = function (teamId, data, cb) {
         postMessage("UPLOAD_CHUNK", {teamId: teamId, chunk: data}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
+            if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
@@ -1181,7 +1187,6 @@ define([
             return;
         }
 
-        let rtChannel, lastVersion, answersChannel;
         let attributes = {};
         nThen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }
@@ -2738,6 +2743,7 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
+                        Env.returned = data;
                         // FIXME data should always exist
                         // this indicates a false condition in sharedWorker
                         // got here via a reference error:
