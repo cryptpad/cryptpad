@@ -584,6 +584,7 @@ define([
     };
 
     let addTabListener = UI.addTabListener = frame => {
+        $(frame).attr('role', 'dialog').attr('aria-modal', 'true');
         // find focusable elements
         let modalElements = $(frame).find('a, button, input, [tabindex]:not([tabindex="-1"]), textarea').filter(':visible').filter(':not(:disabled)');
 
