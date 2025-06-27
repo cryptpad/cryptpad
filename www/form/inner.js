@@ -5104,7 +5104,47 @@ define([
                 h('span', Messages.form_colors),
                 colorContainer
             ]);
-            var $colors = $(colorContainer);
+            var $colorContainer = $(colorContainer);
+            var handleColorNavigation = function(e, $currentColor) { // color list navigation
+                let index;
+                const $colors = $colorContainer.find('.cp-form-palette');
+                const current = $colors.index($currentColor);
+                let next = current;
+                switch(e.which) {
+                    case 37: // left
+                        next = current > 0 ? current - 1 : $colors.length - 1;
+                        break;
+                    case 39: // right
+                        next = current < $colors.length - 1 ? current + 1 : 0;
+                        break;
+                    case 38: // up
+                        if (current >= 5) {
+                            next = current - 5;
+                        } else {
+                            index = current + 5;
+                            next = index < $colors.length ? index : $colors.length - 1;
+                        }
+                        break;
+                    case 40: // down
+                        if (current < 5) {
+                            index = current + 5;
+                            next = index < $colors.length ? index : current + ($colors.length - 5);
+                        } else {
+                            next = current - 5;
+                        }
+                        break;
+                    case 32: // space
+                        e.preventDefault();
+                        $currentColor.click();
+                        break;
+                    default:
+                        return;
+                }
+                e.preventDefault();
+                const $nextColor = $colors.eq(next);
+                $nextColor.focus();
+            };
+
             var refreshColorTheme = function () {
                 $(colorLine1).empty();
                 $(colorLine2).empty();
@@ -5117,8 +5157,15 @@ define([
                     if (i === 5) { currentContainer = colorLine2; }
                     var $color = $(h('span.cp-form-palette.fa'));
                     $color.addClass('cp-form-palette-'+(_color || 'nocolor'));
-                    $color.attr('tabindex', 0).attr('role', 'button').attr('aria-label', 'Color'); // XXX needs to change label according to each color
+                    $color.attr('tabindex', i === 0 ? 0 : -1).attr('role', 'button').attr('aria-label', 'Color'); // XXX needs to change label according to each color
                     if (selectedColor === _color) { $color.addClass('fa-check'); }
+                    $color.on('keydown', function(e) {
+                        handleColorNavigation(e, $color);
+                    });
+                    $color.on('focus', function() {
+                        $colorContainer.find('.cp-form-palette').attr('tabindex', -1);
+                        $color.attr('tabindex', 0);
+                    });
                     Util.onClickEnter($color, function () {
                         if (_color === selectedColor) { return; }
                         content.answers.color = _color;
@@ -5126,8 +5173,10 @@ define([
                         framework._.cpNfInner.chainpad.onSettle(function () {
                             UI.log(Messages.saved);
                             selectedColor = _color;
-                            $colors.find('.cp-form-palette').removeClass('fa-check');
+                            $colorContainer.find('.cp-form-palette').removeClass('fa-check');
                             $color.addClass('fa-check');
+                            $colorContainer.find('.cp-form-palette').attr('tabindex', -1);
+                            $colorContainer.find('.cp-form-palette').first().attr('tabindex', 0);
 
                             var $body = $('body');
                             $body[0].classList.forEach(function (cls) {
