@@ -1956,7 +1956,9 @@ define([
         common.displayAvatar($avatar, val, name, () => {
             if (!val) { return; }
             // avatar cb: append delete button
+            $avatar.find('.cp-settings-avatar-delete').remove();
             const delButton = h('button.cp-settings-avatar-delete.btn.btn-danger.fa.fa-times', {
+                'aria-label': Messages.profile_remove_avatar,
                 title: Messages.profile_remove_avatar
             });
             $avatar.append(delButton);
