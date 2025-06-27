@@ -134,8 +134,9 @@ define(req, function(AppConfig, Default, Language) {
         }
     };
 
+    Messages.admin_documentsDeletionHint = "Archive a list of documents using their id (one document id per line)";
+    Messages.admin_documentsDeletionTitle = "Archive multiple documents";
     Messages.help_close_button = 'Close help notification'; // XXX
-    // XXX
     Messages.badges_admin = "Instance administrator";
     Messages.badges_moderator = "Instance moderator";
     Messages.badges_premium = "Premium user";
