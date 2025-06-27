@@ -39,19 +39,55 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
         var symmetric = seed.subarray(Crypto.Random.signSeedLength(),
             Crypto.Random.signSeedLength() + Crypto.Random.secretboxKeyLength());
 
+        // Generate standard keys using the existing method
+        var sign = Crypto.Random.signKeyPairFromSeed(signSeed);
+
+        // Store the post-quantum keys separately for future use (no server validation issues)
+        var pqKeypair = null;
+        var hybridCapable = !!Crypto.PQC && !!Crypto.PQC.ml_dsa;
+
+        if (hybridCapable) {
+            try {
+                // Use separate seed for PQ keys derived from original seed
+                // ML-DSA requires a 32-byte seed, so we hash the seed to get a consistent 32-byte value
+                var pqSeed = Nacl.hash(seed).subarray(0, 32);
+
+                // Generate post-quantum keypair using the 32-byte hash
+                pqKeypair = Crypto.PQC.ml_dsa.ml_dsa44.internal.keygen(pqSeed);
+            } catch (err) {
+                console.error("Failed to generate post-quantum keys:", err);
+                pqKeypair = null;
+            }
+        }
+
         return {
-            sign: Crypto.Random.signKeyPairFromSeed(signSeed), // 32 bytes
-            symmetric: symmetric, // 32 bytes ...
+            sign: sign,
+            pqKeypair: pqKeypair,
+            symmetric: symmetric,
+            // Store whether we have post-quantum capability
+            hasPQ: pqKeypair !== null
         };
     };
 
     Block.keysToRPCFormat = function (keys) {
         try {
             var sign = keys.sign;
-            return {
+
+            // Basic format with classical keys
+            var result = {
                 edPrivate: Util.encodeBase64(sign.secretKey),
                 edPublic: Util.encodeBase64(sign.publicKey),
             };
+
+            // Add post-quantum keys if present
+            if (keys.pqKeypair) {
+                result.pqKeys = {
+                    publicKey: Util.encodeBase64(keys.pqKeypair.publicKey),
+                    secretKey: Util.encodeBase64(keys.pqKeypair.secretKey)
+                };
+            }
+
+            return result;
         } catch (err) {
             console.error(err);
             return;
@@ -86,7 +122,43 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
 
     // (Uint8Array block) => signature
     Block.sign = function (ciphertext, keys) {
-        return Crypto.Random.signDetached(Crypto.Random.createHash(ciphertext), keys.sign.secretKey);
+        var hash = Crypto.Random.createHash(ciphertext);
+
+        // Generate hybrid signature if post-quantum capabilities are available
+        if (keys.hasPQ && keys.pqKeypair) {
+            try {
+                // Generate classical signature (always required for server compatibility)
+                var classicalSig = Crypto.Random.signDetached(hash, keys.sign.secretKey);
+
+                // Generate post-quantum signature
+                var pqSig = Crypto.PQC.ml_dsa.ml_dsa44.internal.sign(keys.pqKeypair.secretKey, hash);
+
+                console.log("Hybrid signature created successfully:");
+                // Create a hybrid signature with format:
+                // [1-byte type][64-byte classical sig][4-byte PQ sig length][PQ sig bytes]
+                var hybridSig = new Uint8Array(1 + classicalSig.length + 4 + pqSig.length);
+                hybridSig[0] = 1; // Type 1 indicates hybrid signature
+                hybridSig.set(classicalSig, 1);
+
+                // Set PQ signature length as 4-byte integer (big endian)
+                var view = new DataView(hybridSig.buffer);
+                view.setUint32(1 + classicalSig.length, pqSig.length, false);
+
+                // Add the PQ signature
+                hybridSig.set(pqSig, 1 + classicalSig.length + 4);
+
+                return hybridSig;
+            } catch (e) {
+                console.error("PQ signing failed, falling back to classical:", e);
+            }
+        }
+
+        // Classical signature with a type marker
+        classicalSig = Crypto.Random.signDetached(hash, keys.sign.secretKey);
+        var taggedSig = new Uint8Array(classicalSig.length + 1);
+        taggedSig[0] = 0; // Type 0 indicates classical only
+        taggedSig.set(classicalSig, 1);
+        return taggedSig;
     };
 
     Block.serialize = function (content, keys) {
@@ -97,21 +169,28 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
         var sig = Block.sign(ciphertext, keys);
 
         // serialize {publickey, sig, ciphertext}
-        return {
+        var result = {
             publicKey: Util.encodeBase64(keys.sign.publicKey),
             signature: Util.encodeBase64(sig),
             ciphertext: Util.encodeBase64(ciphertext),
         };
+
+        // Add post-quantum public key separately if available
+        if (keys.hasPQ && keys.pqKeypair) {
+            result.pqPublicKey = Util.encodeBase64(keys.pqKeypair.publicKey);
+        }
+
+        return result;
     };
 
     Block.proveAncestor = function (O /* oldBlockKeys, N, newBlockKeys */) {
         var u8_pub = Util.find(O, ['sign', 'publicKey']);
-        var u8_secret = Util.find(O, ['sign', 'secretKey']);
         try {
-        // sign your old publicKey with your old privateKey
-            var u8_sig = Crypto.Random.signDetached(u8_pub, u8_secret);
-        // return an array with the sig and the pubkey
-            return JSON.stringify([u8_pub, u8_sig].map(Util.encodeBase64));
+            // Use Block.sign to create a hybrid signature if available
+            var hybridSig = Block.sign(u8_pub, O);
+
+            // Return an array with the signature and the pubkey
+            return JSON.stringify([u8_pub, hybridSig].map(Util.encodeBase64));
         } catch (err) {
             return void console.error(err);
         }
@@ -122,6 +201,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
     };
 
     Block.getBlockUrl = function (keys) {
+        // Use classical keys for backward compatibility with URL structure
         var publicKey = urlSafeB64(keys.sign.publicKey);
         // 'block/' here is hardcoded because it's hardcoded on the server
         // if we want to make CryptPad work in server subfolders, we'll need
@@ -172,9 +252,10 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
 
         ServerCommand(blockKeys.sign, {
             command: command,
-            auth: auth && auth.data
+            auth: auth && auth.data,
         }, cb);
     };
+
     Block.writeLoginBlock = function (data, cb) {
         const { content, blockKeys, oldBlockKeys, auth, pw, session, token, userData } = data;
 
@@ -191,9 +272,10 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
         ServerCommand(blockKeys.sign, {
             command: command,
             content: block,
-            session: session // sso session
+            session: session, // sso session
         }, cb);
     };
+
     Block.removeLoginBlock = function (data, cb) {
         const { reason, blockKeys, auth, edPublic } = data;
 
@@ -204,7 +286,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
             command: command,
             auth: auth && auth.data,
             edPublic: edPublic,
-            reason: reason
+            reason: reason,
         }, cb);
     };
 
@@ -214,7 +296,7 @@ const factory = (Util, ApiConfig = {}, ServerCommand, Nacl, Crypto) => {
 
         ServerCommand(blockKeys.sign, {
             command: 'SSO_UPDATE_BLOCK',
-            ancestorProof: oldProof
+            ancestorProof: oldProof,
         }, cb);
 
     };

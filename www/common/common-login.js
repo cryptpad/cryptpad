@@ -27,7 +27,8 @@ define([
     //var Nacl = window.nacl;
 
     var Exports = {
-        requiredBytes: 192,
+        // Increased required bytes to accommodate post-quantum keys
+        requiredBytes: 256, // Increased from original to accommodate post-quantum keys
     };
 
     var allocateBytes = Exports.allocateBytes = function (bytes) {
@@ -49,9 +50,20 @@ define([
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
 
-        // 64 more bytes to seed an additional signing key
-        var blockKeys = opt.blockKeys = Block.genkeys(new Uint8Array(dispense(64)));
+        // Allocate more bytes for block keys seed to accommodate PQ keys
+        var blockKeysSeed = dispense(96); // Increased from original to fit PQ keys
+
+        // Generate block keys
+        var blockKeys = opt.blockKeys = Block.genkeys(new Uint8Array(blockKeysSeed));
         opt.blockHash = Block.getBlockHash(blockKeys);
+
+        // Store post-quantum keys if they're available
+        if (blockKeys.hasPQ && blockKeys.pqKeypair) {
+            opt.pqKeys = {
+                publicKey: Util.encodeBase64(blockKeys.pqKeypair.publicKey),
+                secretKey: Util.encodeBase64(blockKeys.pqKeypair.secretKey)
+            };
+        }
 
         // derive a private key from the ed seed
         var signingKeypair = Crypto.Random.signKeyPairFromSeed(new Uint8Array(edSeed));
@@ -86,6 +98,12 @@ define([
         opt.channelHex = parsed.channel;
         opt.keys = parsed.keys;
         opt.edPublic = blockInfo.edPublic;
+
+        // Include post-quantum keys if available in the block info
+        if (blockInfo.pqKeys) {
+            opt.pqKeys = blockInfo.pqKeys;
+        }
+
         return opt;
     };
 
@@ -245,7 +263,7 @@ define([
                 return void cb('NO_SUCH_USER');
             }
 
-            if (!isProxyEmpty(rt.proxy) && res.auth_token && res.auth_token.bearer) {
+            if (!isRegister && !isProxyEmpty(rt.proxy) && res.auth_token && res.auth_token.bearer) {
                 LocalStore.setSessionToken(res.auth_token.bearer);
             }
 
